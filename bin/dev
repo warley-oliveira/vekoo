@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+set -a; [ -f .env ] && . ./.env; set +a
+
+echo "==> starting infra (postgres + redis)"
+docker compose up -d
+
+echo "==> waiting for postgres on :${POSTGRES_PORT:-?}"
+for _ in $(seq 1 30); do
+  docker compose exec -T postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1 && break
+  sleep 1
+done
+
+if command -v overmind >/dev/null 2>&1; then
+  exec overmind start -f Procfile.dev
+elif command -v foreman >/dev/null 2>&1; then
+  exec foreman start -f Procfile.dev
+else
+  echo "Neither overmind nor foreman is installed."
+  echo "  gem install foreman        # simplest"
+  echo "  # or overmind (needs tmux): https://github.com/DarthSim/overmind"
+  echo
+  echo "Or run each process in its own terminal:"
+  echo "  cd backend  && bundle exec rails server -p ${RAILS_PORT:-3000}"
+  echo "  cd backend  && bundle exec sidekiq -C config/sidekiq.yml"
+  echo "  cd frontend && npm run dev"
+  exit 1
+fi

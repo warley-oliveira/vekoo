@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+set -a; [ -f .env ] && . ./.env; set +a
+
+echo "==> starting infra (postgres + redis)"
+docker compose up -d
+
+echo "==> backend deps"
+( cd backend && bundle install )
+
+echo "==> frontend deps"
+( cd frontend && npm install )
+
+echo "==> waiting for postgres on :${POSTGRES_PORT:-?}"
+for _ in $(seq 1 30); do
+  docker compose exec -T postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1 && break
+  sleep 1
+done
+
+echo "==> preparing database"
+( cd backend && bin/rails db:prepare )
+
+echo "✅ setup complete — run: bin/dev"

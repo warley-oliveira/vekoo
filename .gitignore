@@ -1,0 +1,19 @@
+# secrets / env
+.env
+backend/.env
+
+# ruby / rails
+/backend/tmp/
+/backend/log/
+/backend/storage/
+/backend/.bundle/
+/backend/coverage/
+
+# node / vite
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+
+# os / editor
+.DS_Store
+*.log
