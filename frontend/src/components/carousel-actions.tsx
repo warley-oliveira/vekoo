@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from "react"
+import { useTranslation } from "react-i18next"
 import {
   Copy,
   Download,
@@ -47,6 +48,7 @@ export function CarouselActionsMenu({
   trigger,
   align = "end",
 }: CarouselActionsMenuProps) {
+  const { t } = useTranslation()
   const { state, dispatch } = useStore()
   const [renameOpen, setRenameOpen] = useState(false)
 
@@ -55,24 +57,27 @@ export function CarouselActionsMenu({
       type: "carousel/duplicate",
       id: carousel.id,
       newId: newId("car"),
+      title: `${carousel.title} (${t("carousels.actions.copySuffix")})`,
       now: Date.now(),
     })
-    toast(`“${carousel.title}” duplicado.`)
+    toast(t("carousels.actions.duplicatedToast", { title: carousel.title }))
   }
 
   function moveTo(folderId: string | null, folderName?: string) {
     dispatch({ type: "carousel/move", id: carousel.id, folderId })
     toast(
-      folderId ? `Movido para “${folderName}”.` : "Carrossel tirado da pasta."
+      folderId
+        ? t("carousels.actions.movedToast", { name: folderName })
+        : t("carousels.actions.removedFromFolderToast")
     )
   }
 
   function moveToTrash() {
     dispatch({ type: "carousel/trash", id: carousel.id, now: Date.now() })
-    toast(`“${carousel.title}” foi para a lixeira.`, {
-      description: "Itens na lixeira somem após 30 dias.",
+    toast(t("carousels.actions.trashedToast", { title: carousel.title }), {
+      description: t("carousels.actions.trashedDescription"),
       action: {
-        label: "Desfazer",
+        label: t("common.undo"),
         onClick: () =>
           dispatch({ type: "carousel/restore", id: carousel.id }),
       },
@@ -85,19 +90,19 @@ export function CarouselActionsMenu({
         <DropdownMenuTrigger render={trigger} />
         <DropdownMenuContent align={align} className="w-52">
           <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-            <Pencil /> Renomear
+            <Pencil /> {t("common.rename")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={duplicate}>
-            <Copy /> Duplicar
+            <Copy /> {t("common.duplicate")}
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
-              <FolderInput /> Mover para pasta
+              <FolderInput /> {t("carousels.actions.moveToFolder")}
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent className="w-48">
               {state.folders.length === 0 ? (
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                  Crie uma pasta no menu lateral para organizar seus carrosséis.
+                  {t("carousels.actions.noFolders")}
                 </p>
               ) : (
                 state.folders.map((folder) => (
@@ -118,7 +123,7 @@ export function CarouselActionsMenu({
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => moveTo(null)}>
-                    <FolderMinus /> Tirar da pasta
+                    <FolderMinus /> {t("carousels.actions.removeFromFolder")}
                   </DropdownMenuItem>
                 </>
               )}
@@ -126,14 +131,14 @@ export function CarouselActionsMenu({
           </DropdownMenuSub>
           <DropdownMenuItem
             onClick={() =>
-              toast("A exportação chega junto com o editor, na próxima etapa.")
+              toast(t("carousels.actions.exportToast"))
             }
           >
-            <Download /> Exportar
+            <Download /> {t("common.export")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={moveToTrash}>
-            <Trash2 /> Excluir
+            <Trash2 /> {t("common.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -156,6 +161,7 @@ function RenameDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
+  const { t } = useTranslation()
   const { dispatch } = useStore()
   const [title, setTitle] = useState(carousel.title)
   const valid = title.trim().length > 0
@@ -163,7 +169,7 @@ function RenameDialog({
   function submit() {
     if (!valid) return
     dispatch({ type: "carousel/rename", id: carousel.id, title: title.trim() })
-    toast("Carrossel renomeado.")
+    toast(t("carousels.actions.renamedToast"))
     onOpenChange(false)
   }
 
@@ -177,9 +183,9 @@ function RenameDialog({
     >
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Renomear carrossel</DialogTitle>
+          <DialogTitle>{t("carousels.actions.renameTitle")}</DialogTitle>
           <DialogDescription className="sr-only">
-            Escolha um novo nome para “{carousel.title}”.
+            {t("carousels.actions.renameDescription", { title: carousel.title })}
           </DialogDescription>
         </DialogHeader>
         <Input
@@ -189,14 +195,14 @@ function RenameDialog({
           onKeyDown={(e) => {
             if (e.key === "Enter") submit()
           }}
-          aria-label="Nome do carrossel"
+          aria-label={t("carousels.actions.renameFieldAria")}
         />
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancelar
+            {t("common.cancel")}
           </Button>
           <Button disabled={!valid} onClick={submit}>
-            Renomear
+            {t("common.rename")}
           </Button>
         </DialogFooter>
       </DialogContent>

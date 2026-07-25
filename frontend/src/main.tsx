@@ -5,17 +5,21 @@ import { Toaster } from 'sonner'
 import './index.css'
 import App from './App.tsx'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import '@/lib/i18n'
+import { AuthProvider } from '@/lib/auth'
 import { StoreProvider } from '@/lib/store'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <StoreProvider>
-        <TooltipProvider>
-          <App />
-          <Toaster position="bottom-right" />
-        </TooltipProvider>
-      </StoreProvider>
+      <AuthProvider>
+        <StoreProvider>
+          <TooltipProvider>
+            <App />
+            <Toaster position="bottom-right" />
+          </TooltipProvider>
+        </StoreProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

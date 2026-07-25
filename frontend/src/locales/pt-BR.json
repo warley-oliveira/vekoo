@@ -1,0 +1,403 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "undo": "Desfazer",
+    "rename": "Renomear",
+    "duplicate": "Duplicar",
+    "export": "Exportar",
+    "delete": "Excluir",
+    "restore": "Restaurar",
+    "esc": "Esc"
+  },
+  "language": {
+    "label": "Idioma",
+    "pt-BR": "Português (Brasil)",
+    "en": "English"
+  },
+  "plans": {
+    "free": "Plano Grátis"
+  },
+  "shell": {
+    "openMenu": "Abrir menu",
+    "collapseMenu": "Recolher menu",
+    "expandMenu": "Expandir menu",
+    "nav": {
+      "carousels": "Meus carrosséis",
+      "search": "Buscar",
+      "templates": "Modelos",
+      "brands": "Marcas",
+      "trash": "Lixeira"
+    },
+    "createBlank": "Começar em branco",
+    "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
+    "createCarousel": "Criar carrossel",
+    "notifications": {
+      "label": "Notificações",
+      "aria": "Notificações",
+      "ariaUnread": "Notificações ({{count}} não lidas)",
+      "markAllRead": "Marcar todas como lidas",
+      "empty": "Nenhuma notificação por aqui."
+    }
+  },
+  "notifications": {
+    "templates": {
+      "title": "Modelos novos na área",
+      "body": "Chegaram 6 modelos de carrossel para lojas e serviços locais."
+    },
+    "folders": {
+      "title": "Dica: organize com pastas",
+      "body": "Arraste um carrossel para uma pasta no menu lateral para movê-lo."
+    },
+    "welcome": {
+      "title": "Boas-vindas ao Vekoo!",
+      "body": "Seus 50 créditos grátis já estão na conta. Bora criar o primeiro carrossel?"
+    }
+  },
+  "account": {
+    "menuAria": "Menu da conta {{organization}}",
+    "fallbackName": "Sua conta",
+    "settings": "Configurações",
+    "settingsToast": "As configurações chegam em breve.",
+    "invite": "Convidar pessoas",
+    "inviteToast": "Convidar pessoas chega em uma próxima etapa.",
+    "inviteToastDescription": "Elas vão entrar em “{{organization}}” e ver os mesmos carrosséis.",
+    "signOut": "Sair",
+    "signOutToast": "Você saiu da sua conta."
+  },
+  "credits": {
+    "remaining": "{{remaining}} <muted>de {{total}} créditos</muted>",
+    "aria": "{{remaining}} de {{total}} créditos",
+    "used": "Créditos usados",
+    "upgrade": "Melhorar plano",
+    "upgradeToast": "Planos e upgrade chegam em uma próxima etapa."
+  },
+  "folders": {
+    "sectionTitle": "Pastas",
+    "create": "Criar pasta",
+    "createFirst": "Criar primeira pasta",
+    "emptyHint": "Pastas agrupam carrosséis por cliente, tema ou campanha. Arraste um carrossel para dentro para movê-lo.",
+    "namePlaceholder": "Nome da pasta",
+    "colorGroupAria": "Cor da pasta",
+    "colors": {
+      "cinza": "cinza",
+      "violeta": "violeta",
+      "azul": "azul",
+      "verde": "verde",
+      "amarelo": "amarelo",
+      "vermelho": "vermelho"
+    },
+    "actionsAria": "Ações da pasta {{name}}",
+    "newNameAria": "Novo nome da pasta",
+    "deleteFolder": "Excluir pasta",
+    "created": "Pasta “{{name}}” criada.",
+    "renamed": "Pasta renomeada.",
+    "deleted": "Pasta “{{name}}” excluída.",
+    "deletedDescription": "Os carrosséis dela voltaram para Meus carrosséis.",
+    "countAria": "{{name}} ({{count}})"
+  },
+  "carousels": {
+    "cardCount_one": "1 card",
+    "cardCount_other": "{{count}} cards",
+    "editedAt": "editado {{when}}",
+    "tabs": {
+      "all": "Todos",
+      "recent": "Recentes",
+      "favorites": "Favoritos"
+    },
+    "sortAria": "Ordenar por",
+    "sort": {
+      "recent": "Editados por último",
+      "oldest": "Mais antigos",
+      "name-asc": "Nome (A–Z)",
+      "name-desc": "Nome (Z–A)"
+    },
+    "viewGrid": "Ver em grade",
+    "viewList": "Ver em lista",
+    "openAria": "Abrir “{{title}}”",
+    "actionsAria": "Ações de “{{title}}”",
+    "favoriteAdd": "Adicionar aos favoritos",
+    "favoriteRemove": "Tirar dos favoritos",
+    "table": {
+      "title": "Título",
+      "cards": "Cards",
+      "format": "Formato",
+      "edited": "Editado",
+      "sortByAria": "Ordenar por {{column}}"
+    },
+    "hero": {
+      "title": "Sobre o que é o seu primeiro carrossel?",
+      "subtitle": "Descreva o assunto em uma frase — o Vekoo monta os cards para você.",
+      "placeholder": "Ex.: 5 erros comuns de quem começa a treinar em casa",
+      "submitAria": "Criar carrossel"
+    },
+    "empty": {
+      "folderTitle": "Esta pasta ainda está vazia",
+      "folderDescription": "Arraste um carrossel até ela no menu lateral, ou use “Mover para pasta” no menu de ações.",
+      "favoritesTitle": "Nenhum favorito ainda",
+      "favoritesDescription": "Passe o mouse sobre um carrossel e toque na estrela para achá-lo rapidinho depois.",
+      "recentTitle": "Nada editado nos últimos 7 dias",
+      "recentDescription": "Os carrosséis que você editar recentemente aparecem aqui."
+    },
+    "actions": {
+      "moveToFolder": "Mover para pasta",
+      "removeFromFolder": "Tirar da pasta",
+      "noFolders": "Crie uma pasta no menu lateral para organizar seus carrosséis.",
+      "renameTitle": "Renomear carrossel",
+      "renameDescription": "Escolha um novo nome para “{{title}}”.",
+      "renameFieldAria": "Nome do carrossel",
+      "renamedToast": "Carrossel renomeado.",
+      "duplicatedToast": "“{{title}}” duplicado.",
+      "copySuffix": "cópia",
+      "movedToast": "Movido para “{{name}}”.",
+      "removedFromFolderToast": "Carrossel tirado da pasta.",
+      "trashedToast": "“{{title}}” foi para a lixeira.",
+      "trashedDescription": "Itens na lixeira somem após 30 dias.",
+      "exportToast": "A exportação chega mais adiante nesta etapa."
+    }
+  },
+  "create": {
+    "title": "Sobre o que é o seu carrossel?",
+    "description": "Descreva o assunto em uma frase — o Vekoo monta os cards para você.",
+    "placeholder": "Ex.: 5 erros comuns de quem começa a treinar em casa",
+    "submit": "Criar carrossel",
+    "savedToast": "Sua ideia ficou guardada!",
+    "savedDescription": "“{{idea}}” — a geração de carrosséis chega na próxima etapa.",
+    "suggestions": {
+      "first": "5 dicas de lanche saudável para levar pro trabalho",
+      "second": "Promoção da semana da minha loja de roupas",
+      "third": "Como funciona o financiamento do primeiro imóvel"
+    }
+  },
+  "editor": {
+    "notFoundToast": "Esse carrossel não está mais disponível.",
+    "topbar": {
+      "backAria": "Voltar para Meus carrosséis",
+      "titleAria": "Renomear carrossel",
+      "titlePlaceholder": "Nome do carrossel",
+      "saving": "Salvando…",
+      "saved": "Salvo",
+      "undo": "Desfazer",
+      "redo": "Refazer",
+      "preview": "Visualizar",
+      "previewToast": "A visualização chega mais adiante nesta etapa.",
+      "export": "Exportar",
+      "exportToast": "A exportação chega em uma próxima etapa.",
+      "brand": "Marca",
+      "brandToast": "A aplicação de marcas chega em breve."
+    },
+    "trail": {
+      "label": "Cards do carrossel",
+      "collapseAria": "Recolher a trilha de cards",
+      "expandAria": "Mostrar a trilha de cards",
+      "viewThumbs": "Ver miniaturas",
+      "viewTitles": "Ver só os títulos",
+      "newCard": "Novo card",
+      "newCardTypes": {
+        "text": "Título e texto",
+        "list": "Lista",
+        "quote": "Citação",
+        "stat": "Número em destaque",
+        "cta": "Chamada final"
+      },
+      "cardAria": "Card {{number}}: {{title}}",
+      "cardFallback": "Card {{number}}"
+    },
+    "canvas": {
+      "position": "{{current}} de {{total}}",
+      "emptyBlock": "Clique para editar",
+      "textPlaceholder": "Escreva aqui…",
+      "listItemPlaceholder": "Item da lista",
+      "statValuePlaceholder": "123",
+      "statLabelPlaceholder": "O que esse número significa",
+      "quoteAttributionPlaceholder": "Quem disse",
+      "buttonLabelPlaceholder": "Texto do botão",
+      "addFirstBlock": "Adicionar bloco"
+    },
+    "blocks": {
+      "text": "Texto",
+      "image": "Imagem",
+      "list": "Lista",
+      "stat": "Número",
+      "quote": "Citação",
+      "divider": "Divisor",
+      "table": "Tabela",
+      "button": "Botão",
+      "insertAria": "Inserir bloco aqui"
+    },
+    "blockBar": {
+      "label": "Inserir blocos"
+    },
+    "properties": {
+      "label": "Propriedades do bloco",
+      "closeAria": "Fechar propriedades",
+      "role": "Tamanho",
+      "roles": {
+        "title": "Título",
+        "subtitle": "Subtítulo",
+        "body": "Texto",
+        "caption": "Detalhe"
+      },
+      "align": "Alinhamento",
+      "alignOptions": {
+        "start": "À esquerda",
+        "center": "Centralizado",
+        "end": "À direita"
+      },
+      "color": "Cor",
+      "colors": {
+        "ink": "Tinta",
+        "accent": "Destaque",
+        "muted": "Suave"
+      },
+      "listStyle": "Marcadores",
+      "listStyles": {
+        "bullet": "Pontos",
+        "number": "Números",
+        "check": "Checks"
+      },
+      "dividerStyle": "Estilo",
+      "dividerStyles": {
+        "line": "Linha",
+        "dots": "Pontos",
+        "accent": "Destaque"
+      },
+      "buttonVariant": "Estilo",
+      "buttonVariants": {
+        "solid": "Cheio",
+        "outline": "Contorno"
+      },
+      "tableRows": "Linhas",
+      "tableColumns": "Colunas",
+      "addRow": "Adicionar linha",
+      "removeRow": "Remover linha",
+      "addColumn": "Adicionar coluna",
+      "removeColumn": "Remover coluna",
+      "imageHint": "Os ajustes de imagem chegam na próxima revisão, junto com o menu do card.",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "delete": "Excluir bloco"
+    }
+  },
+  "trash": {
+    "notice": "Itens na lixeira somem definitivamente após 30 dias.",
+    "emptyTitle": "A lixeira está vazia",
+    "emptyDescription": "Carrosséis excluídos ficam aqui por 30 dias antes de sumirem de vez.",
+    "deletedAt": "excluído {{when}}",
+    "expiresIn_one": "some em {{count}} dia",
+    "expiresIn_other": "some em {{count}} dias",
+    "restoredToast": "“{{title}}” restaurado.",
+    "restoredDescription": "Ele voltou para Meus carrosséis.",
+    "deleteForeverAria": "Excluir “{{title}}” definitivamente",
+    "deleteForeverTitle": "Excluir definitivamente?",
+    "deleteForeverDescription": "“{{title}}” será apagado para sempre. Essa ação não pode ser desfeita.",
+    "deleteForever": "Excluir definitivamente",
+    "deletedForeverToast": "“{{title}}” excluído definitivamente.",
+    "empty": "Esvaziar lixeira",
+    "emptyConfirmTitle": "Esvaziar a lixeira?",
+    "emptyConfirmDescription_one": "O item na lixeira será apagado para sempre. Essa ação não pode ser desfeita.",
+    "emptyConfirmDescription_other": "Os {{count}} itens na lixeira serão apagados para sempre. Essa ação não pode ser desfeita.",
+    "emptiedToast": "Lixeira esvaziada."
+  },
+  "search": {
+    "title": "Buscar carrosséis",
+    "placeholder": "Buscar por título ou conteúdo dos cards…",
+    "hint": "Digite para buscar nos seus carrosséis.",
+    "noResults": "Nada encontrado para “{{query}}”.",
+    "resultsAria": "Resultados da busca"
+  },
+  "templates": {
+    "emptyTitle": "Modelos estão chegando",
+    "emptyDescription": "Estruturas prontas de carrossel — lista, passo a passo, antes e depois — para você começar com meio caminho andado."
+  },
+  "brands": {
+    "emptyTitle": "Marcas estão chegando",
+    "emptyDescription": "Salve logo, cores e fontes uma vez e todo carrossel já sai com a sua cara."
+  },
+  "auth": {
+    "layout": {
+      "markAria": "Vekoo — início",
+      "terms": "Termos de uso",
+      "privacy": "Política de privacidade",
+      "legal": "Ao continuar, você concorda com os <terms>Termos de uso</terms> e a <privacy>Política de privacidade</privacy>.",
+      "showcaseTitle": "Descreva o assunto em uma frase.",
+      "showcaseSubtitle": "Receba um carrossel pronto para editar.",
+      "statCardsValue": "6 a 8",
+      "statCardsLabel": "cards por carrossel",
+      "statCreditsValue": "50",
+      "statCreditsLabel": "créditos grátis ao criar a conta"
+    },
+    "fields": {
+      "email": "E-mail",
+      "emailPlaceholder": "voce@email.com",
+      "password": "Senha",
+      "name": "Seu nome",
+      "namePlaceholder": "Marina Duarte",
+      "organizationName": "Nome da conta",
+      "organizationPlaceholder": "Ex.: Doma Store",
+      "showPassword": "Mostrar senha",
+      "hidePassword": "Esconder senha"
+    },
+    "validation": {
+      "emailRequired": "Informe seu e-mail.",
+      "emailInvalid": "Esse e-mail não parece completo.",
+      "passwordRequired": "Informe sua senha.",
+      "passwordTooShort": "Use pelo menos 8 caracteres.",
+      "nameTooShort": "Escreva seu nome completo.",
+      "nameTooLong": "Nome muito longo.",
+      "organizationTooShort": "Dê um nome — pode ser o seu, o da sua loja ou do seu cliente."
+    },
+    "errors": {
+      "emailNotFound": "Não encontramos uma conta com esse e-mail.",
+      "wrongPassword": "Senha incorreta. Tente de novo.",
+      "emailTaken": "Esse e-mail já tem conta no Vekoo. Que tal entrar?",
+      "signInFailed": "Algo deu errado ao entrar. Tente de novo em instantes.",
+      "signUpFailed": "Algo deu errado ao criar a conta. Tente de novo em instantes."
+    },
+    "login": {
+      "title": "Entrar no Vekoo",
+      "description": "Seus carrosséis estão esperando por você.",
+      "passwordPlaceholder": "Sua senha",
+      "forgotPassword": "Esqueci a senha",
+      "submit": "Entrar",
+      "submitting": "Entrando…",
+      "welcomeBack": "Que bom te ver de novo, {{name}}!",
+      "noAccount": "Ainda não tem conta?",
+      "createAccount": "Criar conta grátis",
+      "demoHint": "Esta é uma versão de demonstração. Entre com a conta da Marina para ver o app com carrosséis prontos.",
+      "demoFill": "Preencher conta de demonstração"
+    },
+    "signup": {
+      "title": "Criar sua conta",
+      "description": "Leva menos de um minuto e já vem com 50 créditos grátis.",
+      "passwordPlaceholder": "Crie uma senha",
+      "passwordHint": "Pelo menos 8 caracteres.",
+      "organizationHint": "Aparece no menu do app. Depois você poderá convidar pessoas para ela.",
+      "organizationSuffix": "Conteúdo",
+      "ownerNote": "Você entra como dono da conta. Convidar o time chega em uma próxima etapa.",
+      "submit": "Criar conta",
+      "submitting": "Criando conta…",
+      "createdToast": "Conta criada! {{organization}} é toda sua.",
+      "createdDescription": "Seus 50 créditos grátis já estão na conta.",
+      "hasAccount": "Já tem conta?",
+      "signIn": "Entrar",
+      "strength": {
+        "weak": "Senha fraca",
+        "good": "Senha boa",
+        "strong": "Senha forte"
+      }
+    },
+    "forgot": {
+      "title": "Recuperar senha",
+      "description": "Informe o e-mail da sua conta e enviamos um link para criar uma senha nova.",
+      "submit": "Enviar link de recuperação",
+      "submitting": "Enviando…",
+      "backToLogin": "Voltar para entrar",
+      "sentTitle": "Olhe seu e-mail",
+      "sentDescription": "Se existir uma conta em <strong>{{email}}</strong>, enviamos um link para criar uma senha nova. Ele vale por 1 hora.",
+      "sentNote": "O envio de e-mails entra junto com o backend, na próxima etapa.",
+      "notReceived": "Não chegou? Confira a caixa de spam ou",
+      "tryAnotherEmail": "tente com outro e-mail"
+    }
+  }
+}

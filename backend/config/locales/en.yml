@@ -29,3 +29,9 @@
 
 en:
   hello: "Hello world"
+
+en:
+  errors:
+    not_found: "Not found."
+    unauthorized: "You need to sign in to continue."
+    unprocessable: "We couldn't save that. Check the fields."

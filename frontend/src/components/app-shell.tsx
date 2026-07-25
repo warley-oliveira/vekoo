@@ -6,6 +6,7 @@ import {
   useState,
 } from "react"
 import { Outlet, useLocation, useParams } from "react-router"
+import { useTranslation } from "react-i18next"
 import { Bell, Menu, Plus, SquarePen } from "lucide-react"
 import { toast } from "sonner"
 
@@ -23,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { formatRelative } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
@@ -127,6 +129,7 @@ export function AppShell() {
 /* ---------- barra superior ---------- */
 
 function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
+  const { t } = useTranslation()
   const location = useLocation()
   const params = useParams()
   const { state } = useStore()
@@ -136,14 +139,14 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
     ? state.folders.find((f) => f.id === params.folderId)
     : undefined
 
-  let title = "Meus carrosséis"
-  if (location.pathname.startsWith("/modelos")) title = "Modelos"
-  else if (location.pathname.startsWith("/marcas")) title = "Marcas"
-  else if (location.pathname.startsWith("/lixeira")) title = "Lixeira"
+  let title = t("shell.nav.carousels")
+  if (location.pathname.startsWith("/templates")) title = t("shell.nav.templates")
+  else if (location.pathname.startsWith("/brands")) title = t("shell.nav.brands")
+  else if (location.pathname.startsWith("/trash")) title = t("shell.nav.trash")
   else if (folder) title = folder.name
 
   const showCreateActions =
-    location.pathname === "/" || location.pathname.startsWith("/pastas/")
+    location.pathname === "/" || location.pathname.startsWith("/folders/")
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:px-6">
@@ -152,7 +155,7 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
         size="icon-sm"
         className="-ml-1.5 lg:hidden"
         onClick={onOpenMobileSidebar}
-        aria-label="Abrir menu"
+        aria-label={t("shell.openMenu")}
       >
         <Menu />
       </Button>
@@ -179,13 +182,13 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
               variant="outline"
               className="hidden sm:inline-flex"
               onClick={() =>
-                toast("Começar em branco abre o editor — ele chega na próxima etapa.")
+                toast(t("shell.createBlankToast"))
               }
             >
-              <SquarePen /> Começar em branco
+              <SquarePen /> {t("shell.createBlank")}
             </Button>
             <Button onClick={openCreate}>
-              <Plus /> Criar carrossel
+              <Plus /> {t("shell.createCarousel")}
             </Button>
           </>
         )}
@@ -195,6 +198,8 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
 }
 
 function NotificationsMenu() {
+  const { t } = useTranslation()
+  const language = useLanguage()
   const { state, dispatch } = useStore()
   const unread = state.notifications.filter((n) => !n.read).length
 
@@ -207,7 +212,9 @@ function NotificationsMenu() {
             size="icon"
             className="relative text-muted-foreground"
             aria-label={
-              unread > 0 ? `Notificações (${unread} não lidas)` : "Notificações"
+              unread > 0
+                ? t("shell.notifications.ariaUnread", { count: unread })
+                : t("shell.notifications.aria")
             }
           />
         }
@@ -223,14 +230,14 @@ function NotificationsMenu() {
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex items-center justify-between">
-            Notificações
+            {t("shell.notifications.label")}
             {unread > 0 && (
               <button
                 type="button"
                 className="text-xs font-normal text-accent-foreground hover:underline"
                 onClick={() => dispatch({ type: "notifications/read-all" })}
               >
-                Marcar todas como lidas
+                {t("shell.notifications.markAllRead")}
               </button>
             )}
           </DropdownMenuLabel>
@@ -238,7 +245,7 @@ function NotificationsMenu() {
         <DropdownMenuSeparator />
         {state.notifications.length === 0 ? (
           <p className="px-2 py-4 text-center text-sm text-muted-foreground">
-            Nenhuma notificação por aqui.
+            {t("shell.notifications.empty")}
           </p>
         ) : (
           state.notifications.map((n) => (
@@ -251,10 +258,14 @@ function NotificationsMenu() {
                 aria-hidden
               />
               <span className="flex min-w-0 flex-col gap-0.5">
-                <span className="text-sm font-medium">{n.title}</span>
-                <span className="text-xs text-muted-foreground">{n.body}</span>
+                <span className="text-sm font-medium">
+                  {t(`notifications.${n.key}.title`)}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {t(`notifications.${n.key}.body`)}
+                </span>
                 <span className="text-xs text-muted-foreground/70">
-                  {formatRelative(n.at)}
+                  {formatRelative(n.at, language)}
                 </span>
               </span>
             </DropdownMenuItem>

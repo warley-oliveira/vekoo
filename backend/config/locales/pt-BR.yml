@@ -1,0 +1,6 @@
+# Textos do backend em pt-BR (idioma padrão). Mantenha as mesmas chaves de en.yml.
+pt-BR:
+  errors:
+    not_found: "Não encontrado."
+    unauthorized: "Você precisa entrar para continuar."
+    unprocessable: "Não foi possível salvar. Confira os campos."

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
@@ -15,15 +16,24 @@ import {
 // descrever o assunto já existe (e é o mesmo do estado vazio), mas o submit
 // avisa honestamente que a geração ainda não está ligada.
 
-export const CREATE_SUGGESTIONS = [
-  "5 dicas de lanche saudável para levar pro trabalho",
-  "Promoção da semana da minha loja de roupas",
-  "Como funciona o financiamento do primeiro imóvel",
-]
+import i18n from "@/lib/i18n"
+
+const SUGGESTION_KEYS = ["first", "second", "third"] as const
+
+/**
+ * Sugestões de assunto, no idioma ativo. Chaves de texto simples de propósito:
+ * `returnObjects` para ler um array do bundle não é confiável junto com
+ * `supportedLngs` + `load: "currentOnly"` — devolve a própria chave.
+ */
+export function createSuggestions(): string[] {
+  return SUGGESTION_KEYS.map((key) => i18n.t(`create.suggestions.${key}`))
+}
 
 export function submitCreateIdea(idea: string) {
-  toast("Sua ideia ficou guardada!", {
-    description: `“${truncate(idea, 80)}” — a geração de carrosséis chega na próxima etapa.`,
+  toast(i18n.t("create.savedToast"), {
+    description: i18n.t("create.savedDescription", {
+      idea: truncate(idea, 80),
+    }),
   })
 }
 
@@ -40,6 +50,7 @@ export function CreateCarouselDialog({
   open,
   onOpenChange,
 }: CreateCarouselDialogProps) {
+  const { t } = useTranslation()
   const [idea, setIdea] = useState("")
   const valid = idea.trim().length > 0
 
@@ -55,11 +66,9 @@ export function CreateCarouselDialog({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
-            Sobre o que é o seu carrossel?
+            {t("create.title")}
           </DialogTitle>
-          <DialogDescription>
-            Descreva o assunto em uma frase — o Vekoo monta os cards para você.
-          </DialogDescription>
+          <DialogDescription>{t("create.description")}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
@@ -74,11 +83,11 @@ export function CreateCarouselDialog({
               }
             }}
             rows={3}
-            placeholder="Ex.: 5 erros comuns de quem começa a treinar em casa"
+            placeholder={t("create.placeholder")}
             className="w-full resize-none rounded-lg border bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
           <div className="flex flex-wrap gap-1.5">
-            {CREATE_SUGGESTIONS.map((suggestion) => (
+            {createSuggestions().map((suggestion) => (
               <button
                 key={suggestion}
                 type="button"
@@ -93,7 +102,7 @@ export function CreateCarouselDialog({
 
         <div className="flex justify-end">
           <Button disabled={!valid} onClick={submit}>
-            <Sparkles /> Criar carrossel <ArrowRight />
+            <Sparkles /> {t("create.submit")} <ArrowRight />
           </Button>
         </div>
       </DialogContent>

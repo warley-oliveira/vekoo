@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Info, RotateCcw, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
-import { CarouselCover } from "@/components/carousel-cover"
+import { CardArt } from "@/components/editor/card-art"
 import { EmptyState } from "@/components/empty-state"
 import {
   AlertDialog,
@@ -16,10 +17,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { daysLeftInTrash, formatCardCount, formatRelative } from "@/lib/format"
+import { daysLeftInTrash, formatRelative } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import { useStore } from "@/lib/store"
 
 export function TrashPage() {
+  const { t } = useTranslation()
+  const language = useLanguage()
   const { state, dispatch } = useStore()
 
   const trashed = useMemo(
@@ -32,8 +36,8 @@ export function TrashPage() {
 
   function restore(id: string, title: string) {
     dispatch({ type: "carousel/restore", id })
-    toast(`“${title}” restaurado.`, {
-      description: "Ele voltou para Meus carrosséis.",
+    toast(t("trash.restoredToast", { title }), {
+      description: t("trash.restoredDescription"),
     })
   }
 
@@ -42,14 +46,14 @@ export function TrashPage() {
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Info className="size-4 shrink-0" />
-          Itens na lixeira somem definitivamente após 30 dias.
+          {t("trash.notice")}
         </p>
         {trashed.length > 0 && (
           <EmptyTrashButton
             count={trashed.length}
             onConfirm={() => {
               dispatch({ type: "trash/empty" })
-              toast("Lixeira esvaziada.")
+              toast(t("trash.emptiedToast"))
             }}
           />
         )}
@@ -58,8 +62,8 @@ export function TrashPage() {
       {trashed.length === 0 ? (
         <EmptyState
           icon={<Trash2 className="size-6" />}
-          title="A lixeira está vazia"
-          description="Carrosséis excluídos ficam aqui por 30 dias antes de sumirem de vez."
+          title={t("trash.emptyTitle")}
+          description={t("trash.emptyDescription")}
         />
       ) : (
         <ul className="divide-y rounded-lg border">
@@ -68,19 +72,27 @@ export function TrashPage() {
             return (
               <li key={carousel.id} className="flex items-center gap-4 p-3">
                 <div className="w-12 shrink-0 opacity-70">
-                  <CarouselCover cover={carousel.cover} />
+                  <CardArt
+                    card={carousel.cards[0]}
+                    theme={carousel.theme}
+                    format={carousel.format}
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{carousel.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {formatCardCount(carousel.cards.length)} · excluído{" "}
-                    {formatRelative(carousel.trashedAt ?? 0)} ·{" "}
+                    {t("carousels.cardCount", { count: carousel.cards.length })}{" "}
+                    ·{" "}
+                    {t("trash.deletedAt", {
+                      when: formatRelative(carousel.trashedAt ?? 0, language),
+                    })}{" "}
+                    ·{" "}
                     {daysLeft <= 5 ? (
                       <span className="text-destructive">
-                        some em {daysLeft} {daysLeft === 1 ? "dia" : "dias"}
+                        {t("trash.expiresIn", { count: daysLeft })}
                       </span>
                     ) : (
-                      `some em ${daysLeft} dias`
+                      t("trash.expiresIn", { count: daysLeft })
                     )}
                   </p>
                 </div>
@@ -90,7 +102,7 @@ export function TrashPage() {
                     size="sm"
                     onClick={() => restore(carousel.id, carousel.title)}
                   >
-                    <RotateCcw /> Restaurar
+                    <RotateCcw /> {t("common.restore")}
                   </Button>
                   <DeleteForeverButton
                     title={carousel.title}
@@ -99,7 +111,11 @@ export function TrashPage() {
                         type: "carousel/delete-forever",
                         id: carousel.id,
                       })
-                      toast(`“${carousel.title}” excluído definitivamente.`)
+                      toast(
+                        t("trash.deletedForeverToast", {
+                          title: carousel.title,
+                        })
+                      )
                     }}
                   />
                 </div>
@@ -119,6 +135,7 @@ function DeleteForeverButton({
   title: string
   onConfirm: () => void
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -128,7 +145,7 @@ function DeleteForeverButton({
             variant="ghost"
             size="icon-sm"
             className="text-muted-foreground hover:text-destructive"
-            aria-label={`Excluir “${title}” definitivamente`}
+            aria-label={t("trash.deleteForeverAria", { title })}
           />
         }
       >
@@ -136,13 +153,15 @@ function DeleteForeverButton({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Excluir definitivamente?</AlertDialogTitle>
+          <AlertDialogTitle>{t("trash.deleteForeverTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            “{title}” será apagado para sempre. Essa ação não pode ser desfeita.
+            {t("trash.deleteForeverDescription", { title })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="ghost">Cancelar</AlertDialogCancel>
+          <AlertDialogCancel variant="ghost">
+            {t("common.cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={() => {
@@ -150,7 +169,7 @@ function DeleteForeverButton({
               setOpen(false)
             }}
           >
-            Excluir definitivamente
+            {t("trash.deleteForever")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -165,26 +184,26 @@ function EmptyTrashButton({
   count: number
   onConfirm: () => void
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger
         render={<Button variant="outline" size="sm" />}
       >
-        <Trash2 /> Esvaziar lixeira
+        <Trash2 /> {t("trash.empty")}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Esvaziar a lixeira?</AlertDialogTitle>
+          <AlertDialogTitle>{t("trash.emptyConfirmTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {count === 1
-              ? "O item na lixeira será apagado para sempre."
-              : `Os ${count} itens na lixeira serão apagados para sempre.`}{" "}
-            Essa ação não pode ser desfeita.
+            {t("trash.emptyConfirmDescription", { count })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="ghost">Cancelar</AlertDialogCancel>
+          <AlertDialogCancel variant="ghost">
+            {t("common.cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={() => {
@@ -192,7 +211,7 @@ function EmptyTrashButton({
               setOpen(false)
             }}
           >
-            Esvaziar lixeira
+            {t("trash.empty")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

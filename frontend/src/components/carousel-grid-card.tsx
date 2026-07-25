@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react"
+import { useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
 import { MoreHorizontal, Star } from "lucide-react"
-import { toast } from "sonner"
 
 import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
-import { CarouselCover } from "@/components/carousel-cover"
+import { CardArt } from "@/components/editor/card-art"
 import { Button } from "@/components/ui/button"
-import { formatCardCount, formatRelative } from "@/lib/format"
+import { formatRelative } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import type { Carousel } from "@/lib/mock-data"
 import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
@@ -21,7 +23,10 @@ export function CarouselGridCard({
   carousel,
   highlighted = false,
 }: CarouselGridCardProps) {
+  const { t } = useTranslation()
+  const language = useLanguage()
   const { dispatch } = useStore()
+  const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -31,7 +36,7 @@ export function CarouselGridCard({
   }, [highlighted])
 
   function openEditor() {
-    toast("O editor de carrosséis chega na próxima etapa.")
+    navigate(`/carousels/${carousel.id}/edit`)
   }
 
   return (
@@ -50,15 +55,17 @@ export function CarouselGridCard({
       <button
         type="button"
         onClick={openEditor}
-        aria-label={`Abrir “${carousel.title}”`}
+        aria-label={t("carousels.openAria", { title: carousel.title })}
         className={cn(
           "block w-full cursor-pointer outline-none",
           "focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           highlighted && "ring-3 ring-ring/60 ring-offset-2 ring-offset-background"
         )}
       >
-        <CarouselCover
-          cover={carousel.cover}
+        <CardArt
+          card={carousel.cards[0]}
+          theme={carousel.theme}
+          format={carousel.format}
           className="transition-transform duration-200 group-hover/card:scale-[1.015]"
         />
       </button>
@@ -76,7 +83,9 @@ export function CarouselGridCard({
           size="icon-sm"
           className="bg-background/85 shadow-sm backdrop-blur-sm hover:bg-background"
           aria-label={
-            carousel.favorite ? "Tirar dos favoritos" : "Adicionar aos favoritos"
+            carousel.favorite
+              ? t("carousels.favoriteRemove")
+              : t("carousels.favoriteAdd")
           }
           aria-pressed={carousel.favorite}
           onClick={() =>
@@ -102,7 +111,7 @@ export function CarouselGridCard({
                 variant="secondary"
                 size="icon-sm"
                 className="bg-background/85 shadow-sm backdrop-blur-sm hover:bg-background"
-                aria-label={`Ações de “${carousel.title}”`}
+                aria-label={t("carousels.actionsAria", { title: carousel.title })}
               >
                 <MoreHorizontal />
               </Button>
@@ -114,8 +123,11 @@ export function CarouselGridCard({
       <div className="mt-2.5 space-y-0.5">
         <h3 className="truncate text-sm font-medium">{carousel.title}</h3>
         <p className="text-xs text-muted-foreground">
-          {formatCardCount(carousel.cards.length)} · {carousel.format} · editado{" "}
-          {formatRelative(carousel.editedAt)}
+          {t("carousels.cardCount", { count: carousel.cards.length })} ·{" "}
+          {carousel.format} ·{" "}
+          {t("carousels.editedAt", {
+            when: formatRelative(carousel.editedAt, language),
+          })}
         </p>
       </div>
     </div>

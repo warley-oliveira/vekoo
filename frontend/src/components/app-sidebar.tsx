@@ -1,8 +1,10 @@
 import { useState, type DragEvent, type ReactNode } from "react"
 import { NavLink, useNavigate } from "react-router"
+import { Trans, useTranslation } from "react-i18next"
 import {
   Check,
   ChevronsUpDown,
+  Languages,
   Layers,
   LayoutTemplate,
   LogOut,
@@ -15,6 +17,7 @@ import {
   Settings,
   Sparkles,
   Trash2,
+  UserPlus,
   X,
   Zap,
 } from "lucide-react"
@@ -24,8 +27,15 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -39,6 +49,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { initials, useAuth } from "@/lib/auth"
+import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
 import { FOLDER_COLORS, type Folder } from "@/lib/mock-data"
 import { newId, useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
@@ -59,13 +71,21 @@ export function AppSidebar({
   onOpenSearch,
   onNavigate,
 }: AppSidebarProps) {
+  const { t } = useTranslation()
   const { state, dispatch } = useStore()
+  const { session, signOut } = useAuth()
+  const navigate = useNavigate()
   const remaining = state.credits.total - state.credits.used
   const usagePercent = (state.credits.used / state.credits.total) * 100
 
+  // A sidebar só existe dentro da sessão (ver RequireAuth), mas o fallback
+  // evita qualquer chance de tela branca durante a saída.
+  const organizationName = session?.organization.name ?? t("account.fallbackName")
+  const personName = session?.account.name ?? ""
+
   return (
     <div className="flex h-full flex-col bg-sidebar">
-      {/* Identidade da conta */}
+      {/* Identidade da conta (organização + pessoa) */}
       <div className={cn("flex items-center gap-2 p-3", collapsed && "justify-center px-2")}>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -73,43 +93,64 @@ export function AppSidebar({
               <Button
                 variant="ghost"
                 className={cn(
-                  "h-auto flex-1 justify-start gap-2.5 px-2 py-1.5",
+                  "h-auto min-w-0 flex-1 justify-start gap-2.5 px-2 py-1.5",
                   collapsed && "size-9 flex-none justify-center p-0"
                 )}
-                aria-label="Menu da conta"
+                aria-label={t("account.menuAria", { organization: organizationName })}
               />
             }
           >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary font-heading text-xs font-bold text-primary-foreground">
-              {initials(state.user.name)}
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary font-heading text-xs font-bold text-primary-foreground">
+              {initials(organizationName)}
             </span>
             {!collapsed && (
               <>
                 <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">
                   <span className="w-full truncate text-sm font-medium">
-                    {state.user.name}
+                    {organizationName}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    {state.user.plan}
+                  <span className="w-full truncate text-xs text-muted-foreground">
+                    {personName}
                   </span>
                 </span>
                 <ChevronsUpDown className="size-3.5 shrink-0 text-muted-foreground" />
               </>
             )}
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-52">
-            <DropdownMenuItem
-              onClick={() => toast("As configurações chegam em breve.")}
-            >
-              <Settings /> Configurações
-            </DropdownMenuItem>
+          <DropdownMenuContent align="start" className="w-64">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="flex flex-col gap-0.5">
+                <span className="truncate text-sm font-medium">{personName}</span>
+                <span className="truncate text-xs font-normal text-muted-foreground">
+                  {session?.account.email}
+                </span>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast(t("account.settingsToast"))}>
+              <Settings /> {t("account.settings")}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() =>
-                toast("Sair vai levar à tela de entrada — ela chega na próxima etapa.")
+                toast(t("account.inviteToast"), {
+                  description: t("account.inviteToastDescription", {
+                    organization: organizationName,
+                  }),
+                })
               }
             >
-              <LogOut /> Sair
+              <UserPlus /> {t("account.invite")}
+            </DropdownMenuItem>
+            <LanguageSubmenu />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                signOut()
+                navigate("/login", { replace: true })
+                toast(t("account.signOutToast"))
+              }}
+            >
+              <LogOut /> {t("account.signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -122,13 +163,13 @@ export function AppSidebar({
                   size="icon-sm"
                   className="hidden shrink-0 text-muted-foreground lg:inline-flex"
                   onClick={onToggleCollapsed}
-                  aria-label="Recolher menu"
+                  aria-label={t("shell.collapseMenu")}
                 />
               }
             >
               <PanelLeftClose />
             </TooltipTrigger>
-            <TooltipContent side="right">Recolher menu</TooltipContent>
+            <TooltipContent side="right">{t("shell.collapseMenu")}</TooltipContent>
           </Tooltip>
         )}
       </div>
@@ -137,7 +178,7 @@ export function AppSidebar({
       <nav className={cn("flex flex-col gap-0.5 px-3", collapsed && "px-2")}>
         {collapsed && (
           <SidebarIconButton
-            label="Expandir menu"
+            label={t("shell.expandMenu")}
             onClick={onToggleCollapsed}
             className="hidden lg:inline-flex"
           >
@@ -147,40 +188,40 @@ export function AppSidebar({
         <SidebarLink
           to="/"
           icon={<Layers />}
-          label="Meus carrosséis"
+          label={t("shell.nav.carousels")}
           collapsed={collapsed}
           onNavigate={onNavigate}
           acceptsDrop
           onDropCarousel={(id) => {
             dispatch({ type: "carousel/move", id, folderId: null })
-            toast("Carrossel tirado da pasta.")
+            toast(t("carousels.actions.removedFromFolderToast"))
           }}
         />
         <SidebarButton
           icon={<Search />}
-          label="Buscar"
+          label={t("shell.nav.search")}
           collapsed={collapsed}
           trailing={<Kbd>⌘K</Kbd>}
           onClick={onOpenSearch}
         />
         <SidebarLink
-          to="/modelos"
+          to="/templates"
           icon={<LayoutTemplate />}
-          label="Modelos"
+          label={t("shell.nav.templates")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
         <SidebarLink
-          to="/marcas"
+          to="/brands"
           icon={<Palette />}
-          label="Marcas"
+          label={t("shell.nav.brands")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
         <SidebarLink
-          to="/lixeira"
+          to="/trash"
           icon={<Trash2 />}
-          label="Lixeira"
+          label={t("shell.nav.trash")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
@@ -201,28 +242,37 @@ export function AppSidebar({
                   variant="ghost"
                   size="icon"
                   className="w-full text-muted-foreground"
-                  onClick={() => toast("Planos e upgrade chegam em uma próxima etapa.")}
-                  aria-label={`${remaining} de ${state.credits.total} créditos`}
+                  onClick={() => toast(t("credits.upgradeToast"))}
+                  aria-label={t("credits.aria", {
+                    remaining,
+                    total: state.credits.total,
+                  })}
                 />
               }
             >
               <Zap />
             </TooltipTrigger>
             <TooltipContent side="right">
-              {remaining} de {state.credits.total} créditos
+              {t("credits.aria", { remaining, total: state.credits.total })}
             </TooltipContent>
           </Tooltip>
         ) : (
           <div className="space-y-2.5">
             <div className="flex items-baseline justify-between text-sm">
               <span className="font-medium">
-                {remaining}{" "}
-                <span className="font-normal text-muted-foreground">
-                  de {state.credits.total} créditos
-                </span>
+                <Trans
+                  i18nKey="credits.remaining"
+                  values={{ remaining, total: state.credits.total }}
+                  components={{
+                    muted: <span className="font-normal text-muted-foreground" />,
+                  }}
+                />
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {session ? t(`plans.${session.organization.plan}`) : null}
               </span>
             </div>
-            <Progress value={usagePercent} aria-label="Créditos usados">
+            <Progress value={usagePercent} aria-label={t("credits.used")}>
               <ProgressTrack className="h-1.5">
                 <ProgressIndicator />
               </ProgressTrack>
@@ -231,14 +281,42 @@ export function AppSidebar({
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={() => toast("Planos e upgrade chegam em uma próxima etapa.")}
+              onClick={() => toast(t("credits.upgradeToast"))}
             >
-              <Sparkles /> Melhorar plano
+              <Sparkles /> {t("credits.upgrade")}
             </Button>
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+/* ---------- idioma ---------- */
+
+/** Troca de idioma onde ela é esperada num SaaS: no menu da conta. */
+function LanguageSubmenu() {
+  const { t, i18n } = useTranslation()
+  const language = useLanguage()
+
+  return (
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger>
+        <Languages /> {t("language.label")}
+      </DropdownMenuSubTrigger>
+      <DropdownMenuSubContent className="w-48">
+        <DropdownMenuRadioGroup
+          value={language}
+          onValueChange={(value) => i18n.changeLanguage(value)}
+        >
+          {SUPPORTED_LANGUAGES.map((code) => (
+            <DropdownMenuRadioItem key={code} value={code}>
+              {t(`language.${code}`)}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuSubContent>
+    </DropdownMenuSub>
   )
 }
 
@@ -396,16 +474,17 @@ function FoldersSection({
   collapsed: boolean
   onNavigate?: () => void
 }) {
+  const { t } = useTranslation()
   const { state, dispatch } = useStore()
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
 
   function createFolder(name: string, color: string) {
-    const folder: Folder = { id: newId("pasta"), name, color }
+    const folder: Folder = { id: newId("folder"), name, color }
     dispatch({ type: "folder/create", folder })
     setCreating(false)
-    toast(`Pasta “${name}” criada.`)
-    navigate(`/pastas/${folder.id}`)
+    toast(t("folders.created", { name }))
+    navigate(`/folders/${folder.id}`)
     onNavigate?.()
   }
 
@@ -423,14 +502,14 @@ function FoldersSection({
     <>
       <div className="mb-1 flex items-center justify-between pl-2.5">
         <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Pastas
+          {t("folders.sectionTitle")}
         </span>
         {state.folders.length > 0 && !creating && (
           <Button
             variant="ghost"
             size="icon-xs"
             className="text-muted-foreground"
-            aria-label="Criar pasta"
+            aria-label={t("folders.create")}
             onClick={() => setCreating(true)}
           >
             <Plus />
@@ -451,8 +530,7 @@ function FoldersSection({
         ) : state.folders.length === 0 ? (
           <div className="mt-1 rounded-lg border border-dashed p-3">
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Pastas agrupam carrosséis por cliente, tema ou campanha. Arraste um
-              carrossel para dentro para movê-lo.
+              {t("folders.emptyHint")}
             </p>
             <Button
               variant="ghost"
@@ -460,7 +538,7 @@ function FoldersSection({
               className="mt-2 -ml-1.5 text-accent-foreground"
               onClick={() => setCreating(true)}
             >
-              <Plus /> Criar primeira pasta
+              <Plus /> {t("folders.createFirst")}
             </Button>
           </div>
         ) : null}
@@ -478,6 +556,7 @@ function FolderRow({
   collapsed?: boolean
   onNavigate?: () => void
 }) {
+  const { t } = useTranslation()
   const { state, dispatch } = useStore()
   const navigate = useNavigate()
   const [dragOver, setDragOver] = useState(false)
@@ -493,7 +572,7 @@ function FolderRow({
         onDone={(name) => {
           if (name && name !== folder.name) {
             dispatch({ type: "folder/rename", id: folder.id, name })
-            toast("Pasta renomeada.")
+            toast(t("folders.renamed"))
           }
           setRenaming(false)
         }}
@@ -503,7 +582,7 @@ function FolderRow({
 
   const link = (
     <NavLink
-      to={`/pastas/${folder.id}`}
+      to={`/folders/${folder.id}`}
       onClick={onNavigate}
       onDragOver={(e) => {
         if (e.dataTransfer.types.includes(CAROUSEL_DRAG_TYPE)) {
@@ -518,7 +597,7 @@ function FolderRow({
         const id = e.dataTransfer.getData(CAROUSEL_DRAG_TYPE)
         if (id) {
           dispatch({ type: "carousel/move", id, folderId: folder.id })
-          toast(`Movido para “${folder.name}”.`)
+          toast(t("carousels.actions.movedToast", { name: folder.name }))
         }
       }}
       className={({ isActive }) =>
@@ -553,7 +632,7 @@ function FolderRow({
                     variant="ghost"
                     size="icon-xs"
                     className="text-muted-foreground"
-                    aria-label={`Ações da pasta ${folder.name}`}
+                    aria-label={t("folders.actionsAria", { name: folder.name })}
                   />
                 }
               >
@@ -561,20 +640,20 @@ function FolderRow({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-44">
                 <DropdownMenuItem onClick={() => setRenaming(true)}>
-                  <Pencil /> Renomear
+                  <Pencil /> {t("common.rename")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => {
                     dispatch({ type: "folder/delete", id: folder.id })
-                    toast(`Pasta “${folder.name}” excluída.`, {
-                      description: "Os carrosséis dela voltaram para Meus carrosséis.",
+                    toast(t("folders.deleted", { name: folder.name }), {
+                      description: t("folders.deletedDescription"),
                     })
                     navigate("/")
                   }}
                 >
-                  <Trash2 /> Excluir pasta
+                  <Trash2 /> {t("folders.deleteFolder")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -589,7 +668,7 @@ function FolderRow({
     <Tooltip>
       <TooltipTrigger render={link} />
       <TooltipContent side="right">
-        {folder.name} ({count})
+        {t("folders.countAria", { name: folder.name, count })}
       </TooltipContent>
     </Tooltip>
   )
@@ -602,6 +681,7 @@ function NewFolderForm({
   onCancel: () => void
   onCreate: (name: string, color: string) => void
 }) {
+  const { t } = useTranslation()
   const [name, setName] = useState("")
   const [color, setColor] = useState<string>(FOLDER_COLORS[1].value)
   const valid = name.trim().length > 0
@@ -614,7 +694,7 @@ function NewFolderForm({
     <div className="mt-1 space-y-2 rounded-lg border p-2.5">
       <Input
         autoFocus
-        placeholder="Nome da pasta"
+        placeholder={t("folders.namePlaceholder")}
         value={name}
         onChange={(e) => setName(e.target.value)}
         onKeyDown={(e) => {
@@ -623,14 +703,18 @@ function NewFolderForm({
         }}
         className="h-8"
       />
-      <div className="flex items-center gap-1.5" role="radiogroup" aria-label="Cor da pasta">
+      <div
+        className="flex items-center gap-1.5"
+        role="radiogroup"
+        aria-label={t("folders.colorGroupAria")}
+      >
         {FOLDER_COLORS.map((c) => (
           <button
             key={c.id}
             type="button"
             role="radio"
             aria-checked={color === c.value}
-            aria-label={c.id}
+            aria-label={t(`folders.colors.${c.id}`)}
             onClick={() => setColor(c.value)}
             className={cn(
               "flex size-6 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
@@ -644,9 +728,14 @@ function NewFolderForm({
       </div>
       <div className="flex gap-1.5">
         <Button size="sm" className="flex-1" disabled={!valid} onClick={submit}>
-          Criar pasta
+          {t("folders.create")}
         </Button>
-        <Button variant="ghost" size="icon-sm" aria-label="Cancelar" onClick={onCancel}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("common.cancel")}
+          onClick={onCancel}
+        >
           <X />
         </Button>
       </div>
@@ -661,6 +750,7 @@ function RenameFolderForm({
   folder: Folder
   onDone: (name: string | null) => void
 }) {
+  const { t } = useTranslation()
   const [name, setName] = useState(folder.name)
   return (
     <div className="flex items-center gap-1.5 px-1">
@@ -678,17 +768,10 @@ function RenameFolderForm({
         }}
         onBlur={() => onDone(name.trim() || null)}
         className="h-8"
-        aria-label="Novo nome da pasta"
+        aria-label={t("folders.newNameAria")}
       />
     </div>
   )
-}
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/)
-  const first = parts[0]?.[0] ?? ""
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : ""
-  return (first + last).toUpperCase()
 }
 
 /** Logo pequena usada no rail recolhido e telas de entrada (próxima etapa). */

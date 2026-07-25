@@ -1,0 +1,403 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "back": "Back",
+    "undo": "Undo",
+    "rename": "Rename",
+    "duplicate": "Duplicate",
+    "export": "Export",
+    "delete": "Delete",
+    "restore": "Restore",
+    "esc": "Esc"
+  },
+  "language": {
+    "label": "Language",
+    "pt-BR": "Português (Brasil)",
+    "en": "English"
+  },
+  "plans": {
+    "free": "Free plan"
+  },
+  "shell": {
+    "openMenu": "Open menu",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "nav": {
+      "carousels": "My carousels",
+      "search": "Search",
+      "templates": "Templates",
+      "brands": "Brands",
+      "trash": "Trash"
+    },
+    "createBlank": "Start from scratch",
+    "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
+    "createCarousel": "Create carousel",
+    "notifications": {
+      "label": "Notifications",
+      "aria": "Notifications",
+      "ariaUnread": "Notifications ({{count}} unread)",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications here."
+    }
+  },
+  "notifications": {
+    "templates": {
+      "title": "New templates are in",
+      "body": "6 new carousel templates for local shops and services just landed."
+    },
+    "folders": {
+      "title": "Tip: organize with folders",
+      "body": "Drag a carousel onto a folder in the sidebar to move it."
+    },
+    "welcome": {
+      "title": "Welcome to Vekoo!",
+      "body": "Your 50 free credits are already in your account. Ready to create your first carousel?"
+    }
+  },
+  "account": {
+    "menuAria": "{{organization}} account menu",
+    "fallbackName": "Your account",
+    "settings": "Settings",
+    "settingsToast": "Settings are coming soon.",
+    "invite": "Invite people",
+    "inviteToast": "Inviting people arrives in a next stage.",
+    "inviteToastDescription": "They'll join “{{organization}}” and see the same carousels.",
+    "signOut": "Sign out",
+    "signOutToast": "You've signed out."
+  },
+  "credits": {
+    "remaining": "{{remaining}} <muted>of {{total}} credits</muted>",
+    "aria": "{{remaining}} of {{total}} credits",
+    "used": "Credits used",
+    "upgrade": "Upgrade plan",
+    "upgradeToast": "Plans and upgrades arrive in a next stage."
+  },
+  "folders": {
+    "sectionTitle": "Folders",
+    "create": "Create folder",
+    "createFirst": "Create your first folder",
+    "emptyHint": "Folders group carousels by client, topic or campaign. Drag a carousel in to move it.",
+    "namePlaceholder": "Folder name",
+    "colorGroupAria": "Folder color",
+    "colors": {
+      "cinza": "gray",
+      "violeta": "violet",
+      "azul": "blue",
+      "verde": "green",
+      "amarelo": "yellow",
+      "vermelho": "red"
+    },
+    "actionsAria": "Actions for folder {{name}}",
+    "newNameAria": "New folder name",
+    "deleteFolder": "Delete folder",
+    "created": "Folder “{{name}}” created.",
+    "renamed": "Folder renamed.",
+    "deleted": "Folder “{{name}}” deleted.",
+    "deletedDescription": "Its carousels went back to My carousels.",
+    "countAria": "{{name}} ({{count}})"
+  },
+  "carousels": {
+    "cardCount_one": "1 card",
+    "cardCount_other": "{{count}} cards",
+    "editedAt": "edited {{when}}",
+    "tabs": {
+      "all": "All",
+      "recent": "Recent",
+      "favorites": "Favorites"
+    },
+    "sortAria": "Sort by",
+    "sort": {
+      "recent": "Last edited",
+      "oldest": "Oldest first",
+      "name-asc": "Name (A–Z)",
+      "name-desc": "Name (Z–A)"
+    },
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "openAria": "Open “{{title}}”",
+    "actionsAria": "Actions for “{{title}}”",
+    "favoriteAdd": "Add to favorites",
+    "favoriteRemove": "Remove from favorites",
+    "table": {
+      "title": "Title",
+      "cards": "Cards",
+      "format": "Format",
+      "edited": "Edited",
+      "sortByAria": "Sort by {{column}}"
+    },
+    "hero": {
+      "title": "What's your first carousel about?",
+      "subtitle": "Describe the topic in one sentence — Vekoo builds the cards for you.",
+      "placeholder": "E.g.: 5 common mistakes people make working out at home",
+      "submitAria": "Create carousel"
+    },
+    "empty": {
+      "folderTitle": "This folder is still empty",
+      "folderDescription": "Drag a carousel onto it in the sidebar, or use “Move to folder” in the actions menu.",
+      "favoritesTitle": "No favorites yet",
+      "favoritesDescription": "Hover a carousel and tap the star to find it quickly later.",
+      "recentTitle": "Nothing edited in the last 7 days",
+      "recentDescription": "Carousels you edit recently show up here."
+    },
+    "actions": {
+      "moveToFolder": "Move to folder",
+      "removeFromFolder": "Remove from folder",
+      "noFolders": "Create a folder in the sidebar to organize your carousels.",
+      "renameTitle": "Rename carousel",
+      "renameDescription": "Pick a new name for “{{title}}”.",
+      "renameFieldAria": "Carousel name",
+      "renamedToast": "Carousel renamed.",
+      "duplicatedToast": "“{{title}}” duplicated.",
+      "copySuffix": "copy",
+      "movedToast": "Moved to “{{name}}”.",
+      "removedFromFolderToast": "Carousel removed from the folder.",
+      "trashedToast": "“{{title}}” moved to the trash.",
+      "trashedDescription": "Items in the trash disappear after 30 days.",
+      "exportToast": "Exporting arrives later in this stage."
+    }
+  },
+  "create": {
+    "title": "What's your carousel about?",
+    "description": "Describe the topic in one sentence — Vekoo builds the cards for you.",
+    "placeholder": "E.g.: 5 common mistakes people make working out at home",
+    "submit": "Create carousel",
+    "savedToast": "Your idea is saved!",
+    "savedDescription": "“{{idea}}” — carousel generation arrives in the next stage.",
+    "suggestions": {
+      "first": "5 healthy snack ideas to take to work",
+      "second": "This week's promotion at my clothing store",
+      "third": "How financing your first home actually works"
+    }
+  },
+  "editor": {
+    "notFoundToast": "This carousel is no longer available.",
+    "topbar": {
+      "backAria": "Back to My carousels",
+      "titleAria": "Rename carousel",
+      "titlePlaceholder": "Carousel name",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "undo": "Undo",
+      "redo": "Redo",
+      "preview": "Preview",
+      "previewToast": "Preview arrives later in this stage.",
+      "export": "Export",
+      "exportToast": "Exporting arrives in a later stage.",
+      "brand": "Brand",
+      "brandToast": "Brand styling is coming soon."
+    },
+    "trail": {
+      "label": "Carousel cards",
+      "collapseAria": "Collapse the card trail",
+      "expandAria": "Show the card trail",
+      "viewThumbs": "Show thumbnails",
+      "viewTitles": "Show titles only",
+      "newCard": "New card",
+      "newCardTypes": {
+        "text": "Title and text",
+        "list": "List",
+        "quote": "Quote",
+        "stat": "Number highlight",
+        "cta": "Final call"
+      },
+      "cardAria": "Card {{number}}: {{title}}",
+      "cardFallback": "Card {{number}}"
+    },
+    "canvas": {
+      "position": "{{current}} of {{total}}",
+      "emptyBlock": "Click to edit",
+      "textPlaceholder": "Write here…",
+      "listItemPlaceholder": "List item",
+      "statValuePlaceholder": "123",
+      "statLabelPlaceholder": "What this number means",
+      "quoteAttributionPlaceholder": "Who said it",
+      "buttonLabelPlaceholder": "Button label",
+      "addFirstBlock": "Add a block"
+    },
+    "blocks": {
+      "text": "Text",
+      "image": "Image",
+      "list": "List",
+      "stat": "Number",
+      "quote": "Quote",
+      "divider": "Divider",
+      "table": "Table",
+      "button": "Button",
+      "insertAria": "Insert a block here"
+    },
+    "blockBar": {
+      "label": "Insert blocks"
+    },
+    "properties": {
+      "label": "Block properties",
+      "closeAria": "Close properties",
+      "role": "Size",
+      "roles": {
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "body": "Text",
+        "caption": "Detail"
+      },
+      "align": "Alignment",
+      "alignOptions": {
+        "start": "Left",
+        "center": "Center",
+        "end": "Right"
+      },
+      "color": "Color",
+      "colors": {
+        "ink": "Ink",
+        "accent": "Accent",
+        "muted": "Muted"
+      },
+      "listStyle": "Markers",
+      "listStyles": {
+        "bullet": "Bullets",
+        "number": "Numbers",
+        "check": "Checks"
+      },
+      "dividerStyle": "Style",
+      "dividerStyles": {
+        "line": "Line",
+        "dots": "Dots",
+        "accent": "Accent"
+      },
+      "buttonVariant": "Style",
+      "buttonVariants": {
+        "solid": "Solid",
+        "outline": "Outline"
+      },
+      "tableRows": "Rows",
+      "tableColumns": "Columns",
+      "addRow": "Add row",
+      "removeRow": "Remove row",
+      "addColumn": "Add column",
+      "removeColumn": "Remove column",
+      "imageHint": "Image controls arrive in the next review, together with the card menu.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "delete": "Delete block"
+    }
+  },
+  "trash": {
+    "notice": "Items in the trash are deleted for good after 30 days.",
+    "emptyTitle": "The trash is empty",
+    "emptyDescription": "Deleted carousels stay here for 30 days before disappearing for good.",
+    "deletedAt": "deleted {{when}}",
+    "expiresIn_one": "gone in {{count}} day",
+    "expiresIn_other": "gone in {{count}} days",
+    "restoredToast": "“{{title}}” restored.",
+    "restoredDescription": "It's back in My carousels.",
+    "deleteForeverAria": "Delete “{{title}}” forever",
+    "deleteForeverTitle": "Delete forever?",
+    "deleteForeverDescription": "“{{title}}” will be erased for good. This can't be undone.",
+    "deleteForever": "Delete forever",
+    "deletedForeverToast": "“{{title}}” deleted forever.",
+    "empty": "Empty trash",
+    "emptyConfirmTitle": "Empty the trash?",
+    "emptyConfirmDescription_one": "The item in the trash will be erased for good. This can't be undone.",
+    "emptyConfirmDescription_other": "All {{count}} items in the trash will be erased for good. This can't be undone.",
+    "emptiedToast": "Trash emptied."
+  },
+  "search": {
+    "title": "Search carousels",
+    "placeholder": "Search by title or card content…",
+    "hint": "Type to search your carousels.",
+    "noResults": "Nothing found for “{{query}}”.",
+    "resultsAria": "Search results"
+  },
+  "templates": {
+    "emptyTitle": "Templates are on the way",
+    "emptyDescription": "Ready-made carousel structures — list, step by step, before and after — so you start halfway there."
+  },
+  "brands": {
+    "emptyTitle": "Brands are on the way",
+    "emptyDescription": "Save your logo, colors and fonts once and every carousel comes out looking like you."
+  },
+  "auth": {
+    "layout": {
+      "markAria": "Vekoo — home",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "legal": "By continuing, you agree to our <terms>Terms of use</terms> and <privacy>Privacy policy</privacy>.",
+      "showcaseTitle": "Describe the topic in one sentence.",
+      "showcaseSubtitle": "Get a carousel ready to edit.",
+      "statCardsValue": "6 to 8",
+      "statCardsLabel": "cards per carousel",
+      "statCreditsValue": "50",
+      "statCreditsLabel": "free credits when you sign up"
+    },
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "password": "Password",
+      "name": "Your name",
+      "namePlaceholder": "Marina Duarte",
+      "organizationName": "Account name",
+      "organizationPlaceholder": "E.g.: Doma Store",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "validation": {
+      "emailRequired": "Enter your email.",
+      "emailInvalid": "That email doesn't look complete.",
+      "passwordRequired": "Enter your password.",
+      "passwordTooShort": "Use at least 8 characters.",
+      "nameTooShort": "Enter your full name.",
+      "nameTooLong": "That name is too long.",
+      "organizationTooShort": "Give it a name — yours, your shop's or your client's."
+    },
+    "errors": {
+      "emailNotFound": "We couldn't find an account with that email.",
+      "wrongPassword": "Wrong password. Try again.",
+      "emailTaken": "That email already has a Vekoo account. Sign in instead?",
+      "signInFailed": "Something went wrong signing in. Try again in a moment.",
+      "signUpFailed": "Something went wrong creating your account. Try again in a moment."
+    },
+    "login": {
+      "title": "Sign in to Vekoo",
+      "description": "Your carousels are waiting for you.",
+      "passwordPlaceholder": "Your password",
+      "forgotPassword": "Forgot password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "welcomeBack": "Good to see you again, {{name}}!",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create a free account",
+      "demoHint": "This is a demo version. Sign in with Marina's account to see the app with carousels ready.",
+      "demoFill": "Fill in the demo account"
+    },
+    "signup": {
+      "title": "Create your account",
+      "description": "It takes less than a minute and comes with 50 free credits.",
+      "passwordPlaceholder": "Create a password",
+      "passwordHint": "At least 8 characters.",
+      "organizationHint": "Shows up in the app menu. Later you'll be able to invite people to it.",
+      "organizationSuffix": "Studio",
+      "ownerNote": "You join as the account owner. Inviting your team arrives in a next stage.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "createdToast": "Account created! {{organization}} is all yours.",
+      "createdDescription": "Your 50 free credits are already in your account.",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "strength": {
+        "weak": "Weak password",
+        "good": "Good password",
+        "strong": "Strong password"
+      }
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "description": "Enter your account email and we'll send a link to create a new password.",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "backToLogin": "Back to sign in",
+      "sentTitle": "Check your email",
+      "sentDescription": "If an account exists for <strong>{{email}}</strong>, we've sent a link to create a new password. It's valid for 1 hour.",
+      "sentNote": "Sending emails arrives together with the backend, in the next stage.",
+      "notReceived": "Didn't arrive? Check your spam folder or",
+      "tryAnotherEmail": "try another email"
+    }
+  }
+}

@@ -4,16 +4,22 @@ import type { Carousel } from "@/lib/mock-data"
 
 export type SortOption = "recent" | "oldest" | "name-asc" | "name-desc"
 export type ViewMode = "grid" | "list"
-export type FilterTab = "todos" | "recentes" | "favoritos"
+export type FilterTab = "all" | "recent" | "favorites"
 
-export const SORT_LABELS: Record<SortOption, string> = {
-  recent: "Editados por último",
-  oldest: "Mais antigos",
-  "name-asc": "Nome (A–Z)",
-  "name-desc": "Nome (Z–A)",
-}
+/** Ordem de exibição do seletor; o rótulo vem de `carousels.sort.<option>`. */
+export const SORT_OPTIONS: readonly SortOption[] = [
+  "recent",
+  "oldest",
+  "name-asc",
+  "name-desc",
+]
 
-export function sortCarousels(carousels: Carousel[], sort: SortOption): Carousel[] {
+export function sortCarousels(
+  carousels: Carousel[],
+  sort: SortOption,
+  /** Colação depende do idioma: "ç" e acentos não ordenam igual em toda língua. */
+  language = "pt-BR"
+): Carousel[] {
   const sorted = [...carousels]
   switch (sort) {
     case "recent":
@@ -21,9 +27,9 @@ export function sortCarousels(carousels: Carousel[], sort: SortOption): Carousel
     case "oldest":
       return sorted.sort((a, b) => a.editedAt - b.editedAt)
     case "name-asc":
-      return sorted.sort((a, b) => a.title.localeCompare(b.title, "pt-BR"))
+      return sorted.sort((a, b) => a.title.localeCompare(b.title, language))
     case "name-desc":
-      return sorted.sort((a, b) => b.title.localeCompare(a.title, "pt-BR"))
+      return sorted.sort((a, b) => b.title.localeCompare(a.title, language))
   }
 }
 

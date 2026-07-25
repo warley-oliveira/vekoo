@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
 import { SearchIcon } from "lucide-react"
 
-import { CarouselCover } from "@/components/carousel-cover"
+import { CardArt } from "@/components/editor/card-art"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { formatCardCount, formatRelative } from "@/lib/format"
+import { cardPlainText, cardTitle } from "@/lib/doc"
+import { formatRelative } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import type { Carousel } from "@/lib/mock-data"
 import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
@@ -17,6 +20,8 @@ type SearchPaletteProps = {
 // Busca por título e pelo conteúdo dos cards, com resultados enquanto digita.
 // Abre por ⌘K / Ctrl+K (registrado no AppShell); Esc fecha via Dialog.
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
+  const { t } = useTranslation()
+  const language = useLanguage()
   const { state } = useStore()
   const navigate = useNavigate()
   const [query, setQuery] = useState("")
@@ -37,10 +42,8 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
     const scored = active
       .map((carousel) => {
         const inTitle = carousel.title.toLowerCase().includes(q)
-        const matchedCard = carousel.cards.find(
-          (card) =>
-            card.title.toLowerCase().includes(q) ||
-            card.body.toLowerCase().includes(q)
+        const matchedCard = carousel.cards.find((card) =>
+          cardPlainText(card).toLowerCase().includes(q)
         )
         if (!inTitle && !matchedCard) return null
         return { carousel, inTitle, matchedCard }
@@ -63,7 +66,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
 
   function openCarousel(carousel: Carousel) {
     onOpenChange(false)
-    const destination = carousel.folderId ? `/pastas/${carousel.folderId}` : "/"
+    const destination = carousel.folderId ? `/folders/${carousel.folderId}` : "/"
     navigate(destination, { state: { highlight: carousel.id } })
   }
 
@@ -74,7 +77,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
         showCloseButton={false}
         aria-describedby={undefined}
       >
-        <DialogTitle className="sr-only">Buscar carrosséis</DialogTitle>
+        <DialogTitle className="sr-only">{t("search.title")}</DialogTitle>
         <div className="flex items-center gap-2.5 border-b px-4">
           <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
           <input
@@ -92,7 +95,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
                 openCarousel(results[activeIndex].carousel)
               }
             }}
-            placeholder="Buscar por título ou conteúdo dos cards…"
+            placeholder={t("search.placeholder")}
             className="h-12 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             role="combobox"
             aria-expanded={results.length > 0}
@@ -102,24 +105,24 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
             }
           />
           <kbd className="rounded border bg-muted px-1.5 py-px text-[11px] text-muted-foreground">
-            Esc
+            {t("common.esc")}
           </kbd>
         </div>
 
         {query.trim() === "" ? (
           <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-            Digite para buscar nos seus carrosséis.
+            {t("search.hint")}
           </p>
         ) : results.length === 0 ? (
           <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-            Nada encontrado para “{query.trim()}”.
+            {t("search.noResults", { query: query.trim() })}
           </p>
         ) : (
           <ul
             id="search-results"
             ref={listRef}
             role="listbox"
-            aria-label="Resultados da busca"
+            aria-label={t("search.resultsAria")}
             className="max-h-80 overflow-y-auto p-1.5"
           >
             {results.map(({ carousel, matchedCard, inTitle }, index) => (
@@ -137,14 +140,22 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
                   )}
                 >
                   <div className="w-9 shrink-0">
-                    <CarouselCover cover={carousel.cover} />
+                    <CardArt
+                      card={carousel.cards[0]}
+                      theme={carousel.theme}
+                      format={carousel.format}
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{carousel.title}</p>
                     <p className="truncate text-xs text-muted-foreground">
                       {!inTitle && matchedCard
-                        ? `“…${matchedCard.title}…”`
-                        : `${formatCardCount(carousel.cards.length)} · editado ${formatRelative(carousel.editedAt)}`}
+                        ? `“…${cardTitle(matchedCard)}…”`
+                        : `${t("carousels.cardCount", {
+                            count: carousel.cards.length,
+                          })} · ${t("carousels.editedAt", {
+                            when: formatRelative(carousel.editedAt, language),
+                          })}`}
                     </p>
                   </div>
                 </button>

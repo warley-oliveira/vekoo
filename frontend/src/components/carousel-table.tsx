@@ -4,12 +4,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, MoreHorizontal, Star } from "lucide-react"
-import { toast } from "sonner"
 
 import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
-import { CarouselCover } from "@/components/carousel-cover"
+import { CardArt } from "@/components/editor/card-art"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -20,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { formatRelative } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import type { Carousel } from "@/lib/mock-data"
 import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
@@ -42,20 +44,27 @@ export function CarouselTable({
   sort,
   onSortChange,
 }: CarouselTableProps) {
+  const { t } = useTranslation()
+  const language = useLanguage()
   const { dispatch } = useStore()
+  const navigate = useNavigate()
 
   const columns = [
     columnHelper.display({
-      id: "capa",
+      id: "cover",
       header: "",
       cell: ({ row }) => (
         <div className="w-9">
-          <CarouselCover cover={row.original.cover} />
+          <CardArt
+            card={row.original.cards[0]}
+            theme={row.original.theme}
+            format={row.original.format}
+          />
         </div>
       ),
     }),
     columnHelper.accessor("title", {
-      header: "Título",
+      header: t("carousels.table.title"),
       cell: ({ row }) => (
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate font-medium">{row.original.title}</span>
@@ -67,7 +76,7 @@ export function CarouselTable({
     }),
     columnHelper.accessor((c) => c.cards.length, {
       id: "cards",
-      header: "Cards",
+      header: t("carousels.table.cards"),
       cell: (info) => (
         <span className="text-muted-foreground tabular-nums">
           {info.getValue()}
@@ -75,21 +84,21 @@ export function CarouselTable({
       ),
     }),
     columnHelper.accessor("format", {
-      header: "Formato",
+      header: t("carousels.table.format"),
       cell: (info) => (
         <span className="text-muted-foreground">{info.getValue()}</span>
       ),
     }),
     columnHelper.accessor("editedAt", {
-      header: "Editado",
+      header: t("carousels.table.edited"),
       cell: (info) => (
         <span className="text-muted-foreground">
-          {formatRelative(info.getValue())}
+          {formatRelative(info.getValue(), language)}
         </span>
       ),
     }),
     columnHelper.display({
-      id: "acoes",
+      id: "actions",
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover/row:opacity-100 group-focus-within/row:opacity-100">
@@ -98,8 +107,8 @@ export function CarouselTable({
             size="icon-sm"
             aria-label={
               row.original.favorite
-                ? "Tirar dos favoritos"
-                : "Adicionar aos favoritos"
+                ? t("carousels.favoriteRemove")
+                : t("carousels.favoriteAdd")
             }
             aria-pressed={row.original.favorite}
             onClick={() =>
@@ -121,7 +130,9 @@ export function CarouselTable({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={`Ações de “${row.original.title}”`}
+                aria-label={t("carousels.actionsAria", {
+                  title: row.original.title,
+                })}
               >
                 <MoreHorizontal />
               </Button>
@@ -148,7 +159,7 @@ export function CarouselTable({
                 <TableHead key={header.id}>
                   {header.column.id === "title" ? (
                     <SortHeader
-                      label="Título"
+                      label={t("carousels.table.title")}
                       ascOption="name-asc"
                       descOption="name-desc"
                       sort={sort}
@@ -156,7 +167,7 @@ export function CarouselTable({
                     />
                   ) : header.column.id === "editedAt" ? (
                     <SortHeader
-                      label="Editado"
+                      label={t("carousels.table.edited")}
                       ascOption="oldest"
                       descOption="recent"
                       sort={sort}
@@ -184,14 +195,14 @@ export function CarouselTable({
                 e.dataTransfer.effectAllowed = "move"
               }}
               onClick={() =>
-                toast("O editor de carrosséis chega na próxima etapa.")
+                navigate(`/carousels/${row.original.id}/edit`)
               }
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell
                   key={cell.id}
                   onClick={
-                    cell.column.id === "acoes"
+                    cell.column.id === "actions"
                       ? (e) => e.stopPropagation()
                       : undefined
                   }
@@ -220,6 +231,7 @@ function SortHeader({
   sort: SortOption
   onSortChange: (sort: SortOption) => void
 }) {
+  const { t } = useTranslation()
   const isAsc = sort === ascOption
   const isDesc = sort === descOption
   const active = isAsc || isDesc
@@ -232,7 +244,9 @@ function SortHeader({
         "flex items-center gap-1 rounded outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
         active && "text-foreground"
       )}
-      aria-label={`Ordenar por ${label.toLowerCase()}`}
+      aria-label={t("carousels.table.sortByAria", {
+        column: label.toLowerCase(),
+      })}
     >
       {label}
       {isDesc && <ArrowDown className="size-3.5" />}

@@ -51,10 +51,26 @@ The root `.env` is the single source of truth. The backend reads it via the syml
 - **Backend:** keep controllers thin; put business logic in service objects; serialize JSON
   explicitly. Background work goes through ActiveJob (Sidekiq is the adapter). RSpec only —
   there is no Minitest.
+- **i18n (hard rule):** **no user-visible string literal in JSX, ever.** Frontend uses
+  **i18next + react-i18next** (`src/lib/i18n.ts`, one namespace, static bundles in
+  `src/locales/<lang>.json`). Languages: `pt-BR` (source, fallback) and `en`; add a key to
+  **both** files in the same commit. `useTranslation()` for copy, `<Trans>` when the string
+  contains markup, `{ count }` for plurals (`key_one` / `key_other`) — never string
+  concatenation. Dates/numbers come from `Intl` with `useLanguage()` (see `lib/format.ts`),
+  never hand-written per locale. Non-UI modules (`lib/auth.tsx`, `lib/store.tsx`) stay
+  language-free: they carry **codes** (`AuthErrorCode`, `plan`, `NotificationKey`) and the
+  screen translates them. Backend: `Localizable` resolves the locale per request from
+  `?locale=` or `Accept-Language`; strings live in `config/locales/{pt-BR,en}.yml`.
+  Fictitious carousel content in `mock-data.ts` is the *user's work*, not UI — it stays
+  pt-BR on purpose.
 - **Frontend:** data fetching goes through the `useApi` hook (SWR) over the typed client in
   `@/lib/api`. shadcn primitives live untouched in `@/components/ui`; composed domain
   components live in `@/components`. Add primitives with
   `npx shadcn@latest add <component>`.
+- **Routes (hard rule):** every URL path in the platform is in **English**, kebab-case —
+  frontend routes and Rails API paths alike (`/login`, `/signup`, `/forgot-password`,
+  `/folders/:id`, `/templates`, `/brands`, `/trash`). Query params too (`?next=`). Only the
+  **visible copy** is pt-BR; the URL never is. Same for file and component names.
 - **Git:** single `main` branch. No feature-branch flow. Small, descriptive commits.
 
 ## Testing scope
@@ -74,6 +90,14 @@ Sem geração de conteúdo, editor, exportação, planos/pagamento, colaboraçã
 autenticação real — deixar portas abertas, não construir. O estado fictício vive em
 `frontend/src/lib/mock-data.ts` + `store.tsx` (localStorage, chave versionada
 `vekoo.etapa1.v1`). O backend Rails existe mas ainda não é consumido.
+
+**Autenticação (fictícia, front-only):** `frontend/src/lib/auth.tsx` (chave
+`vekoo.auth.v1`) guarda contas, organizações e sessão em localStorage. Telas em
+`/login`, `/signup` e `/forgot-password`; guardas em
+`components/auth-guard.tsx`. **Criar conta cria a organização** e a pessoa entra
+como `owner` — é essa organização que vai receber convites depois. Conta de
+demonstração: `marina.duarte@exemplo.com.br` / `carrossel123`. Quando o Rails
+entrar, trocar só este módulo (hash e sessão no servidor) sem mexer nas telas.
 
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
 projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao

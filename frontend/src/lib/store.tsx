@@ -7,17 +7,37 @@ import {
   type ReactNode,
 } from "react"
 
+import type { CarouselCard, CarouselTheme } from "@/lib/doc"
 import { buildSeed, type AppState, type Carousel, type Folder } from "@/lib/mock-data"
 
-// Estado fictício da etapa 1, persistido em localStorage para as ações
-// (renomear, favoritar, mover…) sobreviverem ao reload. Bump na versão
-// descarta o estado salvo e re-semeia.
-const STORAGE_KEY = "vekoo.etapa1.v1"
+// Estado fictício, persistido em localStorage para as ações (renomear,
+// favoritar, editar…) sobreviverem ao reload. Bump na versão descarta o
+// estado salvo e re-semeia.
+// etapa1.v2: notificações passaram a guardar a chave de tradução.
+// etapa2.v1: carrosséis viraram documentos de blocos (tema + cards).
+const STORAGE_KEY = "vekoo.etapa2.v1"
 
 type Action =
   | { type: "carousel/rename"; id: string; title: string }
   | { type: "carousel/toggle-favorite"; id: string }
-  | { type: "carousel/duplicate"; id: string; newId: string; now: number }
+  | {
+      type: "carousel/duplicate"
+      id: string
+      newId: string
+      /** Título da cópia — vem traduzido da tela. */
+      title: string
+      now: number
+    }
+  | {
+      /** Salvamento grosso vindo do editor — o histórico de desfazer é dele. */
+      type: "carousel/save-doc"
+      id: string
+      title: string
+      theme: CarouselTheme
+      cards: CarouselCard[]
+      now: number
+    }
+  | { type: "credits/consume"; amount: number }
   | { type: "carousel/move"; id: string; folderId: string | null }
   | { type: "carousel/trash"; id: string; now: number }
   | { type: "carousel/restore"; id: string }
@@ -58,7 +78,7 @@ function reducer(state: AppState, action: Action): AppState {
       const copy: Carousel = {
         ...original,
         id: action.newId,
-        title: `${original.title} (cópia)`,
+        title: action.title,
         favorite: false,
         editedAt: action.now,
         trashedAt: null,
@@ -68,6 +88,25 @@ function reducer(state: AppState, action: Action): AppState {
       carousels.splice(index + 1, 0, copy)
       return { ...state, carousels }
     }
+    case "carousel/save-doc":
+      return updateCarousel(state, action.id, (c) => ({
+        ...c,
+        title: action.title,
+        theme: action.theme,
+        cards: action.cards,
+        editedAt: action.now,
+      }))
+    case "credits/consume":
+      return {
+        ...state,
+        credits: {
+          ...state.credits,
+          used: Math.min(
+            state.credits.total,
+            state.credits.used + action.amount
+          ),
+        },
+      }
     case "carousel/move":
       return updateCarousel(state, action.id, (c) => ({
         ...c,
