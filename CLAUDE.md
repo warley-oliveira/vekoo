@@ -62,6 +62,30 @@ The root `.env` is the single source of truth. The backend reads it via the syml
 RSpec runs in the backend only. The frontend has **no** test framework by design — do not
 add one.
 
+## Domínio — Vekoo (essencial)
+
+Plataforma onde a pessoa descreve um assunto em uma frase e recebe um carrossel de
+Instagram pronto para editar e exportar. Público amplo (social media, lojista,
+nutricionista, professor…) — a interface não assume repertório de designer nem pode
+parecer ferramenta corporativa.
+
+**Etapa atual (1 — entrada e organização):** tudo com dados fictícios, front-only.
+Sem geração de conteúdo, editor, exportação, planos/pagamento, colaboração ou
+autenticação real — deixar portas abertas, não construir. O estado fictício vive em
+`frontend/src/lib/mock-data.ts` + `store.tsx` (localStorage, chave versionada
+`vekoo.etapa1.v1`). O backend Rails existe mas ainda não é consumido.
+
+**Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
+projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
+fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.
+
+**Direção visual:** tema claro, interface quieta e quase sem cor; hierarquia por
+tipografia (títulos `font-heading` = Bricolage Grotesque; texto = Geist) e espaçamento.
+Um único acento saturado (violeta, `--primary`) reservado a ação principal, seleção e
+foco. A única outra coisa saturada na tela é a obra do usuário: capas de carrossel
+(`CarouselCover`, especs em `mock-data.ts`) têm cor própria e **cantos retos**
+(Instagram não arredonda imagem) — o resto da interface pode ser suave.
+
 ---
 
 ## Front-end / UX Charter (non-negotiable)

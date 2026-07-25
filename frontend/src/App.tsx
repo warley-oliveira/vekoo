@@ -1,24 +1,21 @@
-import { Toaster, toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { EmptyState } from "@/components/empty-state"
+import { Navigate, Route, Routes } from "react-router"
 
-// Scaffolding smoke test. Replace with your first real screen — and when you do,
-// follow the Front-end / UX Charter in CLAUDE.md (full state matrix, inferred
-// affordances, the right representation for the data, purposeful motion).
+import { AppShell } from "@/components/app-shell"
+import { BrandsPage, TemplatesPage } from "@/routes/coming-soon"
+import { MyCarouselsPage } from "@/routes/my-carousels"
+import { TrashPage } from "@/routes/trash"
+
 export default function App() {
   return (
-    <div className="mx-auto flex min-h-svh max-w-lg flex-col items-center justify-center gap-6 p-6">
-      <h1 className="text-xl font-semibold">It works 🎉</h1>
-
-      <Button onClick={() => toast.success("Sonner is wired up")}>Test toast</Button>
-
-      <EmptyState
-        title="Nothing here yet"
-        description="This is the reusable EmptyState pattern. Build the real screen next."
-        action={{ label: "Primary action", onClick: () => toast("Action fired") }}
-      />
-
-      <Toaster richColors />
-    </div>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route path="/" element={<MyCarouselsPage />} />
+        <Route path="/pastas/:folderId" element={<MyCarouselsPage />} />
+        <Route path="/modelos" element={<TemplatesPage />} />
+        <Route path="/marcas" element={<BrandsPage />} />
+        <Route path="/lixeira" element={<TrashPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
