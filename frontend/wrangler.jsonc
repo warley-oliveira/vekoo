@@ -1,0 +1,14 @@
+{
+  // Worker somente-assets: não há código de servidor, só o SPA compilado.
+  // A Cloudflare migrou os projetos novos do Pages para Workers, e é este
+  // arquivo que o `npx wrangler deploy` do painel procura.
+  "name": "vekoo",
+  "compatibility_date": "2026-08-25",
+  "assets": {
+    "directory": "./dist",
+    // Fallback do SPA. Obrigatório com BrowserRouter: /login e /folders/:id não
+    // têm arquivo no disco. Em Workers isto substitui a regra `/* /index.html 200`
+    // do _redirects — reescrita com status 200 não é suportada aqui.
+    "not_found_handling": "single-page-application"
+  }
+}
