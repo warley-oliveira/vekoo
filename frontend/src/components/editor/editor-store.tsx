@@ -45,8 +45,14 @@ type EditorState = {
 
 type EditorAction =
   | { type: "title/set"; title: string }
+  | { type: "doc/set-theme"; theme: CarouselTheme }
+  | { type: "doc/set-format"; format: CarouselFormat }
   | { type: "card/activate"; id: string }
-  | { type: "card/add"; card: CarouselCard }
+  | { type: "card/insert"; index: number; card: CarouselCard }
+  | { type: "card/update"; id: string; patch: Partial<CarouselCard> }
+  | { type: "card/remove"; id: string }
+  | { type: "card/move"; id: string; direction: 1 | -1 }
+  | { type: "card/move-to"; id: string; index: number }
   | { type: "card/reorder"; ids: string[] } // transiente, durante o arrasto
   | { type: "card/reorder-commit"; before: EditorDoc }
   | { type: "block/select"; id: string | null }
@@ -55,6 +61,7 @@ type EditorAction =
   | { type: "block/update"; block: Block }
   | { type: "block/remove"; id: string }
   | { type: "block/move"; id: string; direction: 1 | -1 }
+  | { type: "block/reorder"; from: number; to: number }
   | { type: "history/undo" }
   | { type: "history/redo" }
 
@@ -135,20 +142,65 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
       if (!title || title === state.doc.title) return state
       return commit(state, { ...state.doc, title })
     }
+    case "doc/set-theme":
+      return commit(state, { ...state.doc, theme: action.theme })
+    case "doc/set-format":
+      return action.format === state.doc.format
+        ? state
+        : commit(state, { ...state.doc, format: action.format })
     case "card/activate":
       return state.activeCardId === action.id
         ? state
         : { ...state, activeCardId: action.id, selection: NO_SELECTION }
-    case "card/add": {
-      const doc = { ...state.doc, cards: [...state.doc.cards, action.card] }
+    case "card/insert": {
+      const cards = [...state.doc.cards]
+      cards.splice(Math.max(0, Math.min(action.index, cards.length)), 0, action.card)
       const first = action.card.blocks[0]
       return {
-        ...commit(state, doc, {
+        ...commit(state, { ...state.doc, cards }, {
           blockId: first?.id ?? null,
           editing: first ? isEditableBlock(first.type) : false,
         }),
         activeCardId: action.card.id,
       }
+    }
+    case "card/update": {
+      const target = state.doc.cards.find((c) => c.id === action.id)
+      if (!target) return state
+      const next = { ...target, ...action.patch }
+      if (JSON.stringify(target) === JSON.stringify(next)) return state
+      return commit(state, {
+        ...state.doc,
+        cards: state.doc.cards.map((c) => (c.id === action.id ? next : c)),
+      })
+    }
+    case "card/remove": {
+      const index = state.doc.cards.findIndex((c) => c.id === action.id)
+      if (index < 0) return state
+      const cards = state.doc.cards.filter((c) => c.id !== action.id)
+      const neighbor = cards[index] ?? cards[index - 1]
+      return {
+        ...commit(state, { ...state.doc, cards }, NO_SELECTION),
+        activeCardId: neighbor?.id ?? "",
+      }
+    }
+    case "card/move": {
+      const index = state.doc.cards.findIndex((c) => c.id === action.id)
+      const target = index + action.direction
+      if (index < 0 || target < 0 || target >= state.doc.cards.length) return state
+      const cards = [...state.doc.cards]
+      const [moved] = cards.splice(index, 1)
+      cards.splice(target, 0, moved)
+      return commit(state, { ...state.doc, cards })
+    }
+    case "card/move-to": {
+      const index = state.doc.cards.findIndex((c) => c.id === action.id)
+      const target = Math.max(0, Math.min(action.index, state.doc.cards.length - 1))
+      if (index < 0 || index === target) return state
+      const cards = [...state.doc.cards]
+      const [moved] = cards.splice(index, 1)
+      cards.splice(target, 0, moved)
+      return commit(state, { ...state.doc, cards })
     }
     case "card/reorder": {
       const byId = new Map(state.doc.cards.map((c) => [c.id, c]))
@@ -241,6 +293,18 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
       })
       return commit(state, doc)
     }
+    case "block/reorder": {
+      const card = activeCard(state)
+      if (!card || action.from === action.to) return state
+      if (action.from < 0 || action.from >= card.blocks.length) return state
+      const doc = mutateActiveCard(state, (c) => {
+        const blocks = [...c.blocks]
+        const [moved] = blocks.splice(action.from, 1)
+        blocks.splice(Math.max(0, Math.min(action.to, blocks.length)), 0, moved)
+        return { ...c, blocks }
+      })
+      return commit(state, doc)
+    }
     case "history/undo": {
       const previous = state.past.at(-1)
       if (!previous) return state
@@ -317,6 +381,7 @@ export function EditorProvider({
         type: "carousel/save-doc",
         id: carousel.id,
         title: doc.title,
+        format: doc.format,
         theme: doc.theme,
         cards: doc.cards,
         now: Date.now(),
@@ -337,6 +402,7 @@ export function EditorProvider({
         type: "carousel/save-doc",
         id: carousel.id,
         title: doc.title,
+        format: doc.format,
         theme: doc.theme,
         cards: doc.cards,
         now: Date.now(),

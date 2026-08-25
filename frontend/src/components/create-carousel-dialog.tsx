@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { ArrowRight, Sparkles } from "lucide-react"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,11 +12,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-// A porta de entrada da geração — que só chega na próxima etapa. O fluxo de
-// descrever o assunto já existe (e é o mesmo do estado vazio), mas o submit
-// avisa honestamente que a geração ainda não está ligada.
+// A porta de entrada da geração. Descrever o assunto cria o carrossel de
+// verdade e abre o editor já gerando — a espera acontece lá, onde os cards
+// aparecem, e não num diálogo parado.
 
+import { suggestTheme, suggestTitle } from "@/lib/ai"
+import { emptyCard } from "@/lib/doc"
 import i18n from "@/lib/i18n"
+import { newId, useStore } from "@/lib/store"
+import type { Carousel } from "@/lib/mock-data"
 
 const SUGGESTION_KEYS = ["first", "second", "third"] as const
 
@@ -29,16 +33,32 @@ export function createSuggestions(): string[] {
   return SUGGESTION_KEYS.map((key) => i18n.t(`create.suggestions.${key}`))
 }
 
-export function submitCreateIdea(idea: string) {
-  toast(i18n.t("create.savedToast"), {
-    description: i18n.t("create.savedDescription", {
-      idea: truncate(idea, 80),
-    }),
-  })
-}
+/**
+ * Cria o carrossel a partir da ideia e leva para o editor, que recebe o texto
+ * em `location.state` e começa a gerar sozinho.
+ */
+export function useCreateCarousel(): (idea: string, folderId?: string | null) => void {
+  const { dispatch } = useStore()
+  const navigate = useNavigate()
 
-function truncate(text: string, max: number): string {
-  return text.length > max ? `${text.slice(0, max - 1)}…` : text
+  return useCallback(
+    (idea: string, folderId: string | null = null) => {
+      const carousel: Carousel = {
+        id: newId("car"),
+        title: suggestTitle(idea) || i18n.t("create.untitled"),
+        format: "4:5",
+        theme: suggestTheme(idea),
+        cards: [emptyCard(newId("card"))],
+        folderId,
+        favorite: false,
+        editedAt: Date.now(),
+        trashedAt: null,
+      }
+      dispatch({ type: "carousel/create", carousel })
+      navigate(`/carousels/${carousel.id}/edit`, { state: { generate: idea } })
+    },
+    [dispatch, navigate]
+  )
 }
 
 type CreateCarouselDialogProps = {
@@ -51,14 +71,15 @@ export function CreateCarouselDialog({
   onOpenChange,
 }: CreateCarouselDialogProps) {
   const { t } = useTranslation()
+  const create = useCreateCarousel()
   const [idea, setIdea] = useState("")
   const valid = idea.trim().length > 0
 
   function submit() {
     if (!valid) return
-    submitCreateIdea(idea.trim())
-    setIdea("")
     onOpenChange(false)
+    setIdea("")
+    create(idea.trim())
   }
 
   return (

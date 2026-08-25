@@ -161,13 +161,12 @@
     "description": "Descreva o assunto em uma frase — o Vekoo monta os cards para você.",
     "placeholder": "Ex.: 5 erros comuns de quem começa a treinar em casa",
     "submit": "Criar carrossel",
-    "savedToast": "Sua ideia ficou guardada!",
-    "savedDescription": "“{{idea}}” — a geração de carrosséis chega na próxima etapa.",
     "suggestions": {
       "first": "5 dicas de lanche saudável para levar pro trabalho",
       "second": "Promoção da semana da minha loja de roupas",
       "third": "Como funciona o financiamento do primeiro imóvel"
-    }
+    },
+    "untitled": "Carrossel sem título"
   },
   "editor": {
     "notFoundToast": "Esse carrossel não está mais disponível.",
@@ -180,11 +179,7 @@
       "undo": "Desfazer",
       "redo": "Refazer",
       "preview": "Visualizar",
-      "previewToast": "A visualização chega mais adiante nesta etapa.",
-      "export": "Exportar",
-      "exportToast": "A exportação chega em uma próxima etapa.",
-      "brand": "Marca",
-      "brandToast": "A aplicação de marcas chega em breve."
+      "export": "Exportar"
     },
     "trail": {
       "label": "Cards do carrossel",
@@ -212,7 +207,18 @@
       "statLabelPlaceholder": "O que esse número significa",
       "quoteAttributionPlaceholder": "Quem disse",
       "buttonLabelPlaceholder": "Texto do botão",
-      "addFirstBlock": "Adicionar bloco"
+      "addFirstBlock": "Adicionar bloco",
+      "emptyTitle": "Este carrossel está sem cards",
+      "emptyDescription": "Todo carrossel começa por um card. Crie o primeiro e escreva nele.",
+      "emptyAction": "Criar o primeiro card",
+      "testimonialQuotePlaceholder": "O que a pessoa disse",
+      "testimonialNamePlaceholder": "Nome de quem falou",
+      "testimonialRolePlaceholder": "O que essa pessoa faz",
+      "badgeLabelPlaceholder": "Ex.: 1/8",
+      "zoomIn": "Aproximar",
+      "zoomOut": "Afastar",
+      "safeArea": "Área segura",
+      "safeAreaHint": "Mostra a margem que o feed corta."
     },
     "blocks": {
       "text": "Texto",
@@ -223,10 +229,29 @@
       "divider": "Divisor",
       "table": "Tabela",
       "button": "Botão",
-      "insertAria": "Inserir bloco aqui"
+      "insertAria": "Inserir bloco aqui",
+      "steps": "Passos",
+      "testimonial": "Depoimento",
+      "badge": "Selo",
+      "dragAria": "Arrastar bloco",
+      "selectAria": "{{type}}, bloco {{position}}",
+      "add": {
+        "text": "Adicionar texto",
+        "image": "Adicionar imagem",
+        "list": "Adicionar lista",
+        "steps": "Adicionar passos",
+        "stat": "Adicionar número",
+        "quote": "Adicionar citação",
+        "testimonial": "Adicionar depoimento",
+        "badge": "Adicionar selo",
+        "divider": "Adicionar divisor",
+        "table": "Adicionar tabela",
+        "button": "Adicionar botão"
+      }
     },
     "blockBar": {
-      "label": "Inserir blocos"
+      "label": "Adicionar blocos ao card",
+      "insert": "Adicionar bloco"
     },
     "properties": {
       "label": "Propriedades do bloco",
@@ -273,10 +298,244 @@
       "removeRow": "Remover linha",
       "addColumn": "Adicionar coluna",
       "removeColumn": "Remover coluna",
-      "imageHint": "Os ajustes de imagem chegam na próxima revisão, junto com o menu do card.",
       "moveUp": "Mover para cima",
       "moveDown": "Mover para baixo",
-      "delete": "Excluir bloco"
+      "delete": "Excluir bloco",
+      "badgeVariant": "Estilo do selo",
+      "badgeVariants": {
+        "soft": "Suave",
+        "solid": "Sólido"
+      },
+      "spacing": "Espaço antes",
+      "spacings": {
+        "tight": "Junto",
+        "normal": "Normal",
+        "loose": "Solto"
+      },
+      "width": "Largura",
+      "widths": {
+        "full": "Inteira",
+        "narrow": "Estreita"
+      }
+    },
+    "appearance": {
+      "trigger": "Aparência",
+      "format": "Proporção",
+      "formats": {
+        "4:5": "Retrato (4:5)",
+        "1:1": "Quadrado (1:1)"
+      },
+      "palette": "Paleta",
+      "themes": {
+        "paper": "Papel",
+        "midnight": "Meia-noite",
+        "forest": "Floresta",
+        "clay": "Barro",
+        "ocean": "Oceano",
+        "solar": "Solar",
+        "plum": "Ameixa",
+        "linen": "Linho"
+      },
+      "accent": "Cor de destaque",
+      "accentSwatchAria": "Usar esta cor de destaque",
+      "hint": "A paleta vale para o carrossel inteiro. Cada card pode ter um fundo próprio."
+    },
+    "cardPanel": {
+      "title": "Card {{number}}",
+      "layout": "Disposição",
+      "layouts": {
+        "no-image": "Só texto",
+        "image-top": "Imagem em cima",
+        "image-left": "Imagem à esquerda",
+        "image-right": "Imagem à direita",
+        "image-full": "Imagem de fundo"
+      },
+      "align": "Alinhamento vertical",
+      "aligns": {
+        "top": "Em cima",
+        "center": "No meio",
+        "bottom": "Embaixo"
+      },
+      "background": "Fundo do card",
+      "backgroundSwatchAria": "Usar esta cor de fundo",
+      "moreColors": "Mais cores",
+      "resetBackground": "Voltar ao padrão",
+      "imageStyle": "Estilo da arte",
+      "imageStyles": {
+        "blob": "Manchas",
+        "arc": "Anéis",
+        "waves": "Ondas",
+        "dots": "Pontos",
+        "grid": "Grade",
+        "beams": "Faixas"
+      },
+      "regenerate": "Gerar outra",
+      "imageTint": "Cor da arte",
+      "imageTints": {
+        "accent": "Destaque",
+        "ink": "Tinta",
+        "bg": "Fundo"
+      },
+      "imageSource": "Imagem",
+      "imageSources": {
+        "art": "Arte desenhada",
+        "library": "Da biblioteca",
+        "upload": "Arquivo enviado"
+      },
+      "framing": "Enquadramento",
+      "framingAria": "Arraste para escolher o que aparece",
+      "zoom": "Aproximação",
+      "resetFraming": "Centralizar de novo"
+    },
+    "cardActions": {
+      "menuAria": "Ações do card {{number}}",
+      "insertAfter": "Inserir card depois",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "moveToStart": "Usar como capa",
+      "remove": "Excluir card",
+      "duplicatedToast": "Card duplicado.",
+      "removedToast": "Card excluído."
+    },
+    "format": {
+      "label": "Formatação do texto",
+      "bold": "Negrito",
+      "italic": "Itálico",
+      "underline": "Sublinhado",
+      "link": "Link",
+      "linkPlaceholder": "Cole ou digite o endereço",
+      "linkConfirm": "Aplicar link",
+      "clear": "Limpar formatação"
+    },
+    "slash": {
+      "label": "Inserir bloco",
+      "placeholder": "Buscar um bloco…",
+      "noResults": "Nenhum bloco com esse nome."
+    },
+    "clipboard": {
+      "copiedToast": "Bloco copiado. Cole com ⌘V."
+    },
+    "imagePicker": {
+      "title": "Escolher imagem",
+      "description": "Envie um arquivo, use uma peça da biblioteca ou desenhe uma arte nas cores do carrossel.",
+      "tabs": {
+        "upload": "Enviar",
+        "library": "Biblioteca",
+        "art": "Arte"
+      },
+      "uploadTitle": "Solte a imagem aqui",
+      "uploadHint": "Ou escolha um arquivo do seu computador.",
+      "chooseFile": "Escolher arquivo",
+      "uploadNote": "A imagem é reduzida para no máximo 1600 px e fica guardada neste navegador — nada é enviado para um servidor ainda.",
+      "errors": {
+        "type": "Esse arquivo não é uma imagem.",
+        "tooLarge": "A imagem ficou grande demais para guardar. Tente uma menor.",
+        "decode": "Não foi possível ler essa imagem."
+      },
+      "searchPlaceholder": "Buscar na biblioteca…",
+      "noResults": "Nenhuma peça com esse nome.",
+      "useArt": "Usar esta arte",
+      "library": {
+        "amanhecer": "Amanhecer",
+        "orvalho": "Orvalho",
+        "mare": "Maré",
+        "cerrado": "Cerrado",
+        "brasa": "Brasa",
+        "algodao": "Algodão",
+        "ametista": "Ametista",
+        "grafite": "Grafite",
+        "goiaba": "Goiaba",
+        "menta": "Menta",
+        "areia": "Areia",
+        "meianoite": "Meia-noite"
+      }
+    },
+    "preview": {
+      "label": "Ver o carrossel em sequência",
+      "close": "Sair da visualização",
+      "previous": "Card anterior",
+      "next": "Próximo card",
+      "goTo": "Ir para o card {{number}}"
+    },
+    "export": {
+      "title": "Exportar",
+      "description": "Cada card vira uma imagem PNG de 1080 px — o tamanho que o Instagram publica.",
+      "scope": "O que exportar",
+      "scopeAll": "Todos os {{count}} cards",
+      "scopeCurrent": "Só o card atual",
+      "caption": "Legenda do post",
+      "captionPlaceholder": "O texto que vai junto com as imagens. Hashtags também entram aqui.",
+      "captionCount": "{{count}} caracteres",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "copyFailed": "Não foi possível copiar.",
+      "action": "Baixar PNG",
+      "progress": "{{done}} de {{total}} prontos",
+      "doneToast_one": "1 imagem baixada.",
+      "doneToast_other": "{{count}} imagens baixadas.",
+      "failedToast": "Não foi possível gerar as imagens.",
+      "note": "ZIP e PDF chegam com o servidor."
+    },
+    "ai": {
+      "trigger": "Gerar",
+      "placeholder": "Descreva o assunto do carrossel em uma frase.",
+      "generate": "Gerar carrossel",
+      "stop": "Parar",
+      "close": "Fechar a geração",
+      "cost": "{{count}} créditos",
+      "generating_one": "Escrevendo… 1 card pronto.",
+      "generating_other": "Escrevendo… {{count}} cards prontos.",
+      "doneToast_one": "1 card gerado. Agora é seu para editar.",
+      "doneToast_other": "{{count}} cards gerados. Agora são seus para editar.",
+      "rewriteLabel": "Reescrever com IA",
+      "intents": {
+        "shorten": "Encurtar",
+        "expand": "Desenvolver",
+        "casual": "Mais leve",
+        "expert": "Mais técnico",
+        "fix": "Corrigir"
+      },
+      "imageForCard": "Gerar imagem para este card",
+      "suggestCaption": "Sugerir legenda",
+      "errors": {
+        "noCredits": "Seus créditos acabaram. Renove para continuar gerando.",
+        "failed": "A geração falhou. Tente de novo.",
+        "cancelled": "Geração interrompida."
+      },
+      "title": "Gerar carrossel com IA",
+      "hint": "Enter para gerar · Esc para fechar"
+    },
+    "mobile": {
+      "addBlock": "Adicionar",
+      "adjust": "Ajustar",
+      "close": "Fechar ajustes"
+    },
+    "shortcuts": {
+      "title": "Atalhos do teclado",
+      "description": "O editor inteiro funciona sem tirar as mãos do teclado.",
+      "groups": {
+        "cards": "Cards",
+        "blocks": "Blocos",
+        "document": "Carrossel"
+      },
+      "actions": {
+        "nextCard": "Próximo card",
+        "previousCard": "Card anterior",
+        "moveCard": "Mover o card na trilha",
+        "duplicate": "Duplicar",
+        "removeCard": "Excluir o card",
+        "selectBlock": "Ir para o próximo bloco",
+        "editBlock": "Editar o bloco",
+        "leaveBlock": "Sair do bloco",
+        "moveBlock": "Mover o bloco",
+        "removeBlock": "Excluir o bloco",
+        "copyPaste": "Copiar e colar bloco",
+        "slash": "Inserir bloco digitando",
+        "undo": "Desfazer",
+        "redo": "Refazer",
+        "generate": "Gerar com IA",
+        "shortcuts": "Ver esta lista"
+      }
     }
   },
   "trash": {

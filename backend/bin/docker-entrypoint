@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# jemalloc reduz o RSS do Puma e do Sidekiq de forma significativa numa VPS pequena.
+if [ -z "${LD_PRELOAD+x}" ]; then
+  LD_PRELOAD=$(find /usr/lib -name libjemalloc.so.2 -print -quit)
+  export LD_PRELOAD
+fi
+
+# Só o container web migra. `db:prepare` cria o banco no primeiro boot e aplica
+# as migrations pendentes nos demais — e roda ANTES do Thruster abrir a porta 80,
+# então o healthcheck do kamal-proxy só passa com o schema já no lugar. É isso que
+# fecha a janela de 500 entre "código novo" e "migration aplicada".
+if [ "${*: -2:1}" == "./bin/rails" ] && [ "${*: -1:1}" == "server" ]; then
+  ./bin/rails db:prepare
+fi
+
+exec "${@}"

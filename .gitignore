@@ -2,6 +2,11 @@
 .env
 backend/.env
 
+# deploy (kamal)
+.env.deploy
+/backend/.kamal/certs/*.pem
+/backend/.kamal/certs/*.key
+
 # ruby / rails
 /backend/tmp/
 /backend/log/

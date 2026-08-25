@@ -1,0 +1,34 @@
+# Git
+.git/
+.gitignore
+
+# Segredos — o master.key entra por env (RAILS_MASTER_KEY), nunca pela imagem.
+.env
+.env.*
+config/master.key
+config/credentials/*.key
+.kamal/
+
+# Artefatos locais
+/log/*
+/tmp/*
+!/tmp/.keep
+/storage/*
+!/storage/.keep
+/public/assets
+.bundle/
+vendor/bundle/
+coverage/
+
+# Testes e ferramentas de dev não vão para produção
+/spec/
+.rspec
+.rubocop.yml
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Lixo de editor/SO
+.DS_Store
+*.swp

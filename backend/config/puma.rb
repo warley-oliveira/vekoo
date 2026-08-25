@@ -31,6 +31,14 @@ threads threads_count, threads_count
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 
+# O arquivo stock do Rails não declara `workers` — sem esta linha a variável
+# WEB_CONCURRENCY do deploy.yml não faz absolutamente nada. O role worker seta 0
+# (processo único), o web seta 2.
+workers ENV.fetch("WEB_CONCURRENCY", 0).to_i
+
+# preload_app! só faz sentido com workers > 0; com 0 o Puma ignora.
+preload_app! if ENV.fetch("WEB_CONCURRENCY", 0).to_i > 0
+
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 

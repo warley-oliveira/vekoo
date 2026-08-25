@@ -1,6 +1,70 @@
 # Textos do backend em pt-BR (idioma padrão). Mantenha as mesmas chaves de en.yml.
+#
+# São mensagens de API: acompanham sempre um `code` estável, que é o que a tela
+# usa para decidir. A frase existe para o caso de a tela não conhecer o código.
 pt-BR:
   errors:
     not_found: "Não encontrado."
     unauthorized: "Você precisa entrar para continuar."
     unprocessable: "Não foi possível salvar. Confira os campos."
+    parameter_missing: "Faltou informar %{param}."
+    # Mensagens de validação do Active Record (o produto não usa o rails-i18n).
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "não pode ficar em branco"
+      taken: "já está em uso"
+      invalid: "não parece válido"
+      inclusion: "não está na lista"
+      incomplete: "está incompleto"
+      confirmation: "não bate com a confirmação"
+      too_short: "é curto demais (mínimo de %{count} caracteres)"
+      too_long: "é longo demais (máximo de %{count} caracteres)"
+      not_a_number: "não é um número"
+      greater_than_or_equal_to: "deve ser maior ou igual a %{count}"
+      less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+
+  auth:
+    email_not_found: "Não encontramos uma conta com esse e-mail."
+    wrong_password: "Senha incorreta. Tente de novo."
+    email_taken: "Esse e-mail já tem conta no Vekoo."
+    reset_token_invalid: "Esse link de nova senha venceu ou já foi usado."
+
+  credits:
+    no_credits: "Seus créditos acabaram."
+
+  carousels:
+    copy_suffix: "cópia"
+
+  activerecord:
+    errors:
+      models:
+        account:
+          attributes:
+            # "senha" é feminino — a mensagem genérica sairia "curto demais".
+            password:
+              too_short: "é curta demais (mínimo de %{count} caracteres)"
+    models:
+      account: "conta"
+      carousel: "carrossel"
+      folder: "pasta"
+      organization: "organização"
+    attributes:
+      account:
+        name: "nome"
+        email: "e-mail"
+        password: "senha"
+        role: "papel"
+      organization:
+        # "Nome da conta" é como a tela de cadastro chama a organização.
+        name: "nome da conta"
+        plan: "plano"
+        credits_total: "total de créditos"
+        credits_used: "créditos usados"
+      carousel:
+        title: "título"
+        format: "formato"
+        theme: "tema"
+        cards: "cards"
+      folder:
+        name: "nome"
+        color: "cor"

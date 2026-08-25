@@ -1,0 +1,249 @@
+#!/usr/bin/env bash
+#
+# Provisionamento do host de produção (Ubuntu) — idempotente, rodado como root.
+#
+#   ssh root@<IP> "bash -s -- $(base64 -w0 ~/.ssh/vekoo_deploy.pub)" < bin/deploy-setup
+#
+# A chave pública vai em base64 porque o ssh junta os argumentos numa string de
+# comando única, sem re-aspá-los: passada crua, o shell remoto a quebra nos
+# espaços e só "ssh-ed25519" chega em $1 — gravando uma authorized_keys inválida.
+#
+# O que este script NÃO faz: instalar nginx ou certbot. O kamal-proxy assume
+# 80/443 e resolve TLS e roteamento sozinho.
+set -euo pipefail
+
+PUBKEY_B64="${1:-}"
+[ -n "$PUBKEY_B64" ] || { echo "FATAL: passe a chave pública em base64 como \$1"; exit 1; }
+PUBKEY="$(echo "$PUBKEY_B64" | base64 -d)"
+
+DEPLOY_USER=deploy
+APP=vekoo
+
+log() { printf '\n\033[1;35m==> %s\033[0m\n' "$*"; }
+
+# --- pacotes base ----------------------------------------------------------
+log "Pacotes base"
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq
+apt-get install -y -qq --no-install-recommends \
+  ca-certificates curl gnupg git jq rsync ufw fail2ban unattended-upgrades \
+  iptables
+
+# --- tempo -----------------------------------------------------------------
+log "Timezone e NTP"
+timedatectl set-timezone America/Sao_Paulo || true
+timedatectl set-ntp true || true
+
+# --- swap ------------------------------------------------------------------
+# Sem swap, um build de imagem ou um pico do Sidekiq levam OOM kill.
+if ! swapon --show | grep -q '/swapfile'; then
+  log "Swap de 2 GB"
+  fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+sysctl -w vm.swappiness=10 >/dev/null
+grep -q '^vm.swappiness' /etc/sysctl.conf || echo 'vm.swappiness=10' >> /etc/sysctl.conf
+
+# --- docker ----------------------------------------------------------------
+if ! command -v docker >/dev/null 2>&1; then
+  log "Docker CE (repositório oficial, não o docker.io do Ubuntu)"
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+    | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  chmod a+r /etc/apt/keyrings/docker.gpg
+  CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu ${CODENAME} stable" \
+    > /etc/apt/sources.list.d/docker.list
+  apt-get update -qq
+  apt-get install -y -qq docker-ce docker-ce-cli containerd.io \
+    docker-buildx-plugin docker-compose-plugin
+fi
+
+# Rotação de log do Docker. SEM ISSO o disco enche em semanas, silenciosamente.
+log "Rotação de log do Docker"
+mkdir -p /etc/docker
+cat > /etc/docker/daemon.json <<'JSON'
+{
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "20m", "max-file": "5" },
+  "live-restore": true
+}
+JSON
+systemctl enable --now docker
+systemctl restart docker
+
+# --- usuário de deploy -----------------------------------------------------
+log "Usuário $DEPLOY_USER"
+id -u "$DEPLOY_USER" >/dev/null 2>&1 || adduser --disabled-password --gecos "" "$DEPLOY_USER"
+usermod -aG docker "$DEPLOY_USER"
+install -d -m 700 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "/home/$DEPLOY_USER/.ssh"
+touch "/home/$DEPLOY_USER/.ssh/authorized_keys"
+grep -qxF "$PUBKEY" "/home/$DEPLOY_USER/.ssh/authorized_keys" \
+  || echo "$PUBKEY" >> "/home/$DEPLOY_USER/.ssh/authorized_keys"
+# Herda também as chaves já autorizadas para root, para não trancar ninguém fora.
+if [ -s /root/.ssh/authorized_keys ]; then
+  while IFS= read -r k; do
+    [ -n "$k" ] || continue
+    grep -qxF "$k" "/home/$DEPLOY_USER/.ssh/authorized_keys" \
+      || echo "$k" >> "/home/$DEPLOY_USER/.ssh/authorized_keys"
+  done < /root/.ssh/authorized_keys
+fi
+chmod 600 "/home/$DEPLOY_USER/.ssh/authorized_keys"
+chown -R "$DEPLOY_USER:$DEPLOY_USER" "/home/$DEPLOY_USER/.ssh"
+
+# --- firewall do HOST ------------------------------------------------------
+# O ufw protege apenas serviços do host. Porta publicada por container NÃO passa
+# pelo INPUT: o Docker faz DNAT em PREROUTING e o pacote segue pelo FORWARD, que
+# o ufw não filtra. Por isso 80/443 são tratados adiante, na chain DOCKER-USER.
+log "UFW (serviços do host): só a 22"
+ufw --force reset >/dev/null
+ufw default deny incoming
+ufw default allow outgoing
+ufw allow 22/tcp comment 'ssh'
+ufw --force enable
+
+# --- firewall dos CONTAINERS (DOCKER-USER) ---------------------------------
+# 80/443 do kamal-proxy só podem ser alcançados pelas faixas da Cloudflare —
+# o site é proxied, então nenhum tráfego legítimo chega direto ao IP de origem.
+#
+# A regra casa SÓ o que entra pela interface externa. Um DROP genérico em
+# "dports 80,443" mataria também o tráfego interno do kamal-proxy para o
+# container da API, que também escuta na 80 — e derrubaria o site inteiro.
+log "Firewall dos containers: 80/443 só da Cloudflare"
+install -d -m 755 /usr/local/sbin /var/lib/${APP}
+cat > /usr/local/sbin/${APP}-docker-firewall <<'FW'
+#!/usr/bin/env bash
+set -euo pipefail
+CHAIN=VEKOO-CF
+CACHE=/var/lib/vekoo/cloudflare-ips
+EXT_IF="$(ip route show default | awk '{print $5; exit}')"
+[ -n "$EXT_IF" ] || { echo "sem interface default; abortando"; exit 1; }
+
+# Atualiza o cache das faixas; se a rede falhar, usa o que já está em disco.
+tmp="$(mktemp)"
+if curl -fsS --max-time 20 https://www.cloudflare.com/ips-v4 -o "$tmp" \
+   && curl -fsS --max-time 20 https://www.cloudflare.com/ips-v6 >> "$tmp"; then
+  grep -E '^[0-9a-fA-F:.]+/[0-9]+$' "$tmp" > "$CACHE"
+fi
+rm -f "$tmp"
+[ -s "$CACHE" ] || { echo "sem faixas da Cloudflare em cache; abortando"; exit 1; }
+
+apply() {           # $1 = iptables|ip6tables   $2 = grep -v ou grep de ':'
+  local ipt="$1" filter="$2"
+  command -v "$ipt" >/dev/null 2>&1 || return 0
+  "$ipt" -N $CHAIN 2>/dev/null || "$ipt" -F $CHAIN
+  "$ipt" -A $CHAIN -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN
+  while read -r net; do
+    [ -n "$net" ] || continue
+    "$ipt" -A $CHAIN -i "$EXT_IF" -s "$net" -p tcp -m multiport --dports 80,443 -j RETURN
+  done < <(grep $filter ':' "$CACHE")
+  # Só o que veio de fora pela interface externa é descartado. Tráfego entre
+  # containers entra por uma bridge do Docker e nunca casa com -i $EXT_IF.
+  "$ipt" -A $CHAIN -i "$EXT_IF" -p tcp -m multiport --dports 80,443 -j DROP
+  "$ipt" -A $CHAIN -j RETURN
+  # Engancha em DOCKER-USER de forma idempotente.
+  "$ipt" -D DOCKER-USER -j $CHAIN 2>/dev/null || true
+  "$ipt" -I DOCKER-USER 1 -j $CHAIN
+}
+
+apply iptables  -v      # linhas sem ':' -> IPv4
+apply ip6tables ''      # linhas com  ':' -> IPv6
+echo "$(date -Is) regras aplicadas em $EXT_IF ($(wc -l < "$CACHE") faixas)"
+FW
+chmod +x /usr/local/sbin/${APP}-docker-firewall
+
+cat > /etc/systemd/system/${APP}-docker-firewall.service <<UNIT
+[Unit]
+Description=Restringe 80/443 dos containers às faixas da Cloudflare
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/${APP}-docker-firewall
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+# O Docker recria DOCKER-USER ao reiniciar, então a unidade roda junto com ele;
+# o timer semanal apenas atualiza as faixas, que a Cloudflare muda de tempos em tempos.
+cat > /etc/systemd/system/${APP}-docker-firewall.timer <<UNIT
+[Unit]
+Description=Atualiza semanalmente as faixas da Cloudflare
+
+[Timer]
+OnCalendar=Mon 04:10
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable --now ${APP}-docker-firewall.service
+systemctl enable --now ${APP}-docker-firewall.timer
+
+log "fail2ban"
+cat > /etc/fail2ban/jail.d/sshd.local <<'JAIL'
+[sshd]
+enabled  = true
+port     = ssh
+maxretry = 5
+bantime  = 1h
+findtime = 10m
+JAIL
+systemctl enable --now fail2ban
+systemctl restart fail2ban || true
+
+# --- hardening do ssh ------------------------------------------------------
+# Prefixo 00-: no OpenSSH vale a PRIMEIRA ocorrência de cada diretiva. Esta
+# imagem traz 50-cloud-init.conf com `PasswordAuthentication yes` E
+# 60-cloudimg-settings.conf com `no` — o 50 vence, e é por isso que a senha
+# ainda funcionava. Um 99-hardening.conf não teria efeito nenhum.
+log "Hardening do SSH"
+mkdir -p /etc/ssh/sshd_config.d
+cat > /etc/ssh/sshd_config.d/00-hardening.conf <<'SSHD'
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitRootLogin prohibit-password
+X11Forwarding no
+SSHD
+sshd -t
+# sshd é socket-activated: o ssh.service pode estar inativo e o reload falhar.
+# Cada conexão nova sobe um sshd do zero e já lê a config, então o reload nunca
+# pode abortar o script — senão o servidor tranca no meio do bootstrap.
+systemctl reload ssh 2>/dev/null || systemctl restart ssh.socket 2>/dev/null || true
+
+# --- backup noturno --------------------------------------------------------
+log "Backup noturno (03:20) com retenção de 14 dias"
+install -d -m 750 -o "$DEPLOY_USER" -g "$DEPLOY_USER" /var/backups/$APP
+cat > /usr/local/bin/${APP}-backup <<BACKUP
+#!/usr/bin/env bash
+set -euo pipefail
+DEST=/var/backups/$APP
+STAMP=\$(date +%Y%m%d-%H%M%S)
+# -Fc (custom) porque permite restore seletivo com pg_restore.
+docker exec ${APP}-api-db pg_dump -U $APP -d ${APP}_production -Fc \
+  > "\$DEST/db-\$STAMP.pgdump"
+docker run --rm -v ${APP}_storage:/data:ro -v "\$DEST:/backup" alpine \
+  tar czf "/backup/storage-\$STAMP.tar.gz" -C /data .
+find "\$DEST" -type f -mtime +14 -delete
+BACKUP
+chmod +x /usr/local/bin/${APP}-backup
+cat > /etc/cron.d/${APP}-backup <<CRON
+20 3 * * * root /usr/local/bin/${APP}-backup >> /var/log/${APP}-backup.log 2>&1
+CRON
+
+log "Pronto."
+echo
+echo "  Confirme em OUTRO terminal ANTES de fechar esta sessão:"
+echo "      ssh -i ~/.ssh/vekoo_deploy $DEPLOY_USER@$(hostname -I | awk '{print $1}') 'docker ps'"
+echo
+echo "  A autenticação por senha acabou de ser desligada."
+echo

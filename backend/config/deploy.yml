@@ -1,0 +1,137 @@
+# Kamal 2 — API Vekoo em syco.vekoo.app
+#
+# TLS: NÃO usamos Let's Encrypt. syco.vekoo.app está atrás do proxy da Cloudflare
+# (nuvem laranja), então o desafio ACME HTTP-01 do kamal-proxy não fecha de forma
+# confiável. Em vez disso o kamal-proxy serve um Cloudflare Origin Certificate e o
+# modo SSL da zona fica em Full (strict). Ver DEPLOY.md.
+
+minimum_version: 2.12.0
+service: vekoo-api
+
+# Sem "ghcr.io/" na frente — o Kamal concatena `registry.server` sozinho.
+# `.downcase` porque repositório Docker não aceita maiúscula.
+image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api
+
+servers:
+  web:
+    hosts:
+      - 107.152.37.137
+  worker:
+    hosts:
+      - 107.152.37.137
+    cmd: bundle exec sidekiq -C config/sidekiq.yml
+    proxy: false                    # worker não recebe tráfego HTTP
+    env:
+      clear:
+        # Tem que ser >= :concurrency do config/sidekiq.yml (5), senão o pool do
+        # Active Record estoura com ConnectionTimeoutError intermitente.
+        RAILS_MAX_THREADS: 6
+        WEB_CONCURRENCY: 0
+
+proxy:
+  # Certificado de origem da Cloudflare, carregado dos secrets (.kamal/secrets).
+  ssl:
+    certificate_pem: SSL_CERTIFICATE_PEM
+    private_key_pem: SSL_PRIVATE_KEY_PEM
+  host: syco.vekoo.app
+  app_port: 80
+  ssl_redirect: true
+  # true porque existe um proxy confiável na frente (Cloudflare) e queremos o IP
+  # real do cliente via X-Forwarded-For. Só é seguro porque o firewall do host
+  # aceita 80/443 apenas das faixas da Cloudflare — ver bin/deploy-setup.
+  forward_headers: true
+  healthcheck:
+    path: /up
+    interval: 3
+    timeout: 60                     # boot do Rails + db:prepare numa VPS pequena
+  response_timeout: 60
+  buffering:
+    requests: true
+    max_request_body: 52_428_800    # 50 MB — upload de imagem do editor
+    max_response_body: 0
+
+registry:
+  server: ghcr.io
+  username:
+    - REGISTRY_USER
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  cache:
+    type: registry
+    image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api-cache
+    options: mode=max
+
+ssh:
+  user: deploy
+  # Explícito: o Kamal conecta pelo IP, não herda IdentityFile do ~/.ssh/config.
+  keys:
+    - "~/.ssh/vekoo_deploy"
+
+env:
+  clear:
+    RAILS_ENV: production
+    RAILS_MAX_THREADS: 5
+    WEB_CONCURRENCY: 2
+    APP_HOSTS: syco.vekoo.app                        # config.hosts
+    FRONTEND_ORIGINS: https://my.vekoo.app           # CORS, sem curinga
+    BACKEND_URL: https://syco.vekoo.app              # URLs absolutas de anexo
+    REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
+    CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable
+  secret:
+    - RAILS_MASTER_KEY
+    - SECRET_KEY_BASE
+    - DATABASE_URL
+
+# Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
+# não-root consegue escrever. Um bind mount nasceria root:root e o primeiro
+# upload morreria com EACCES. Sem ele, todo deploy apagaria os anexos.
+volumes:
+  - "vekoo_storage:/rails/storage"
+
+accessories:
+  db:
+    image: postgres:16.10           # fixado no patch: major novo recusa PGDATA existente
+    host: 107.152.37.137
+    # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
+    # do iptables e IGNORA o ufw, expondo o Postgres à internet.
+    env:
+      clear:
+        POSTGRES_USER: vekoo
+        POSTGRES_DB: vekoo_production
+        PGDATA: /var/lib/postgresql/data/pgdata   # subdiretório: evita "lost+found"
+      secret:
+        - POSTGRES_PASSWORD
+    volumes:
+      - "vekoo_pgdata:/var/lib/postgresql/data"
+    options:
+      health-cmd: "pg_isready -U vekoo -d vekoo_production"
+      health-interval: 10s
+      health-retries: 5
+
+  redis:
+    image: redis:7.4-alpine
+    host: 107.152.37.137
+    # O redis-server default NÃO persiste — um reboot descartaria a fila inteira.
+    # noeviction para a fila nunca ser despejada por pressão de memória.
+    cmd: "redis-server --appendonly yes --appendfsync everysec --maxmemory 256mb --maxmemory-policy noeviction"
+    volumes:
+      - "vekoo_redis:/data"
+    options:
+      health-cmd: "redis-cli ping"
+      health-interval: 10s
+      health-retries: 5
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell:   app exec --interactive --reuse "bash"
+  migrate: app exec --reuse "bin/rails db:migrate"
+  seed:    app exec --reuse "bin/rails db:seed"
+  dbc:     accessory exec db --interactive --reuse "psql -U vekoo -d vekoo_production"
+
+retain_containers: 3
+deploy_timeout: 120
+drain_timeout: 30
+readiness_delay: 7

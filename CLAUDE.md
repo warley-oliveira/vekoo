@@ -99,6 +99,25 @@ como `owner` — é essa organização que vai receber convites depois. Conta de
 demonstração: `marina.duarte@exemplo.com.br` / `carrossel123`. Quando o Rails
 entrar, trocar só este módulo (hash e sessão no servidor) sem mexer nas telas.
 
+**API do backend (já existe):** o domínio inteiro está no Rails —
+`Organization`, `Account`, `Session`, `PasswordReset`, `Folder`, `Carousel`
+(documento em jsonb: `theme` + `cards`, o mesmo formato de `lib/doc.ts`),
+`Notification` e o acervo da ferramenta (`ThemePreset`, `LibraryImage`,
+`PaletteColor`). Endpoints: `POST /signup`, `POST /login`, `DELETE /logout`,
+`GET /me`, `POST /password-resets` + `PATCH /password-resets/:token`,
+`/folders`, `/carousels` (+ `duplicate`, `restore`, `permanent`),
+`DELETE /trash`, `/notifications` + `POST /notifications/read-all`, `/credits` +
+`POST /credits/consume` e `GET /catalog`. Sessão por `Authorization: Bearer`
+(o banco guarda só o resumo SHA-256 do token). O JSON sai em **camelCase** e as
+datas em **milissegundos** — a mesma forma dos tipos do front, para a troca do
+mock pela API não mexer nas telas. Erro sempre como
+`{ error: { code, field?, message, details? } }`: `code` é o contrato de
+máquina (os mesmos de `AuthErrorCode`), `message` já vem no idioma da
+requisição. **A semente (`backend/db/seeds.rb`) reproduz `mock-data.ts` card a
+card** (14 carrosséis, 84 cards, mesma conta de demonstração) e é idempotente:
+`bin/rails db:seed`. O front ainda lê o localStorage — rewirar `lib/store.tsx`
+e `lib/auth.tsx` para `useApi` é o passo que falta.
+
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
 projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
 fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.

@@ -2,6 +2,7 @@ import type { CarouselTheme, TextBlock, TextRole } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 import { inkClass, inkStyle, TEXT_ALIGN } from "./shared"
+import { SpansView } from "./spans"
 
 export const ROLE_CLASS: Record<TextRole, string> = {
   title:
@@ -29,7 +30,7 @@ export function TextBlockView({
       )}
       style={inkStyle(block.color, theme)}
     >
-      {block.text}
+      <SpansView spans={block.spans} theme={theme} />
     </Tag>
   )
 }

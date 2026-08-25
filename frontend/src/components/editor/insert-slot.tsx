@@ -1,4 +1,4 @@
-import type { ReactElement } from "react"
+import type { ReactElement, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Plus } from "lucide-react"
 
@@ -18,9 +18,11 @@ import { cn } from "@/lib/utils"
 export function InsertMenu({
   index,
   trigger,
+  children,
 }: {
   index: number
   trigger: ReactElement
+  children?: ReactNode
 }) {
   const { t } = useTranslation()
   const { dispatch } = useEditor()
@@ -35,7 +37,7 @@ export function InsertMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={trigger} />
+      <DropdownMenuTrigger render={trigger}>{children}</DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-40">
         {BLOCK_TYPES.map(({ type, icon: Icon }) => (
           <DropdownMenuItem key={type} onClick={() => insert(type)}>

@@ -6,5 +6,7 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-  channel_prefix: backend_production
+  # Variável PRÓPRIA. Se cable e Sidekiq lerem a mesma REDIS_URL, o pub/sub do
+  # ActionCable vai parar dentro do banco 0 — o mesmo da fila.
+  url: <%= ENV.fetch("CABLE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/1") } %>
+  channel_prefix: vekoo_production

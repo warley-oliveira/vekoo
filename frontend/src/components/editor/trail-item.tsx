@@ -1,7 +1,10 @@
 import { Reorder, useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
+import { MoreHorizontal } from "lucide-react"
 
 import { CardArt } from "@/components/editor/card-art"
+import { CardActionsMenu, CardContextMenu } from "@/components/editor/card-menu"
+import { Button } from "@/components/ui/button"
 import {
   cardTitle,
   type CarouselCard,
@@ -70,9 +73,9 @@ export function TrailItem({
               boxShadow: "0 12px 24px -12px oklch(0.185 0.005 285 / 0.5)",
             }
       }
-      className="relative active:cursor-grabbing"
+      className="group/trail relative active:cursor-grabbing"
     >
-      {view === "titles" ? (
+      <CardContextMenu cardId={card.id}>{view === "titles" ? (
         <button
           type="button"
           onClick={onSelect}
@@ -120,7 +123,29 @@ export function TrailItem({
             <CardArt card={card} theme={theme} format={format} />
           </span>
         </button>
-      )}
+      )}</CardContextMenu>
+
+      {/* Alça de ações — fora do fluxo, aparece no hover ou ao receber foco. */}
+      <div
+        className={cn(
+          "absolute top-0.5 right-0.5 opacity-0 transition-opacity duration-150",
+          "group-hover/trail:opacity-100 focus-within:opacity-100"
+        )}
+      >
+        <CardActionsMenu
+          cardId={card.id}
+          trigger={
+            <Button
+              variant="secondary"
+              size="icon-xs"
+              aria-label={t("editor.cardActions.menuAria", { number: index + 1 })}
+              className="shadow-sm"
+            />
+          }
+        >
+          <MoreHorizontal />
+        </CardActionsMenu>
+      </div>
     </Reorder.Item>
   )
 }

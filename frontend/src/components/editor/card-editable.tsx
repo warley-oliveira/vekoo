@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { Plus } from "lucide-react"
 
 import {
@@ -8,10 +9,11 @@ import {
 } from "@/components/editor/card-art"
 import { EditableBlock } from "@/components/editor/editable-block"
 import { InsertMenu } from "@/components/editor/insert-slot"
-import type {
-  CarouselCard,
-  CarouselFormat,
-  CarouselTheme,
+import {
+  blockLayoutClass,
+  type CarouselCard,
+  type CarouselFormat,
+  type CarouselTheme,
 } from "@/lib/doc"
 
 // O card vivo do canvas: a mesma moldura e as mesmas regiões da arte
@@ -24,6 +26,8 @@ type EditableCardProps = {
 }
 
 export function EditableCard({ card, theme, format }: EditableCardProps) {
+  const reducedMotion = useReducedMotion()
+
   return (
     <CardShell card={card} theme={theme} format={format} interactive>
       <CardImageRegions
@@ -34,15 +38,26 @@ export function EditableCard({ card, theme, format }: EditableCardProps) {
             {card.blocks.length === 0 ? (
               <EmptyCardInsert />
             ) : (
-              card.blocks.map((block, index) => (
-                <EditableBlock
-                  key={block.id}
-                  block={block}
-                  theme={theme}
-                  index={index}
-                  isLast={index === card.blocks.length - 1}
-                />
-              ))
+              <AnimatePresence initial={false} mode="popLayout">
+                {card.blocks.map((block, index) => (
+                  <motion.div
+                    key={block.id}
+                    layout={reducedMotion ? false : "position"}
+                    initial={reducedMotion ? false : { opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.16, ease: "easeOut" }}
+                    className={blockLayoutClass(block)}
+                  >
+                    <EditableBlock
+                      block={block}
+                      theme={theme}
+                      index={index}
+                      isLast={index === card.blocks.length - 1}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             )}
           </div>
         }

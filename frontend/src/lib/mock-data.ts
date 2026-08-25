@@ -10,6 +10,7 @@
 // personalidades visuais das capas antigas viram receitas de card 1 aqui
 // (poster, editorial, split e badge).
 
+import { artImage, spansFromMarkdown } from "@/lib/doc"
 import type {
   Block,
   BlockAlign,
@@ -35,6 +36,8 @@ export type Carousel = {
   format: CarouselFormat
   theme: CarouselTheme
   cards: CarouselCard[]
+  /** Legenda do post — o texto que acompanha as imagens no Instagram. */
+  caption?: string
   folderId: string | null
   favorite: boolean
   editedAt: number
@@ -111,7 +114,14 @@ function blockFactory(cardId: string): BlockFactory {
     value: string,
     align: BlockAlign,
     color: InkColor
-  ): Block => ({ id: id(), type: "text", role, text: value, align, color })
+  ): Block => ({
+    id: id(),
+    type: "text",
+    role,
+    spans: spansFromMarkdown(value),
+    align,
+    color,
+  })
 
   return {
     text,
@@ -120,7 +130,13 @@ function blockFactory(cardId: string): BlockFactory {
     body: (t, align = "start", color = "muted") => text("body", t, align, color),
     caption: (t, color = "muted", align = "start") =>
       text("caption", t, align, color),
-    list: (style, items) => ({ id: id(), type: "list", style, items, color: "ink" }),
+    list: (style, items) => ({
+      id: id(),
+      type: "list",
+      style,
+      items: items.map(spansFromMarkdown),
+      color: "ink",
+    }),
     stat: (value, label, align = "start") => ({
       id: id(),
       type: "stat",
@@ -132,7 +148,7 @@ function blockFactory(cardId: string): BlockFactory {
     quote: (t, attribution) => ({
       id: id(),
       type: "quote",
-      text: t,
+      spans: spansFromMarkdown(t),
       attribution,
       color: "ink",
     }),
@@ -217,7 +233,7 @@ function splitCover(
     cardId,
     {
       layout: "image-top",
-      image: { style: "beams", seed, tint: "accent", position: "center" },
+      image: artImage("beams", seed),
     },
     (b) => [
       ...(parts.kicker ? [b.caption(parts.kicker, "accent")] : []),
@@ -267,7 +283,7 @@ export function buildSeed(now: number): AppState {
           {
             layout: "image-right",
             align: "center",
-            image: { style: "blob", seed: 21, tint: "accent", position: "center" },
+            image: artImage("blob", 21),
           },
           (b) => [
             b.title("Refrigerante → água com gás e limão"),
@@ -339,7 +355,7 @@ export function buildSeed(now: number): AppState {
           {
             layout: "image-left",
             align: "center",
-            image: { style: "waves", seed: 11, tint: "accent", position: "center" },
+            image: artImage("waves", 11),
           },
           (b) => [
             b.title("Jaqueta corta-vento por R$ 149"),
@@ -502,7 +518,7 @@ export function buildSeed(now: number): AppState {
             title: "20 minutos e acabou a desculpa",
             footer: "@felipetreina",
           },
-          { style: "beams", seed: 7, tint: "accent", position: "top" }
+          artImage("beams", 7)
         ),
         card("card-treino-2", {}, (b) => [
           b.title("Aquecimento — 3 min"),
@@ -588,7 +604,7 @@ export function buildSeed(now: number): AppState {
           "card-v60-6",
           {
             layout: "image-top",
-            image: { style: "dots", seed: 33, tint: "accent", position: "center" },
+            image: artImage("dots", 33),
           },
           (b) => [
             b.title("Prove antes de adoçar"),

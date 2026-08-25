@@ -1,37 +1,58 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
-en:
-  hello: "Hello world"
-
+# English copy for the API. Keep the same keys as pt-BR.yml (the source locale).
 en:
   errors:
     not_found: "Not found."
     unauthorized: "You need to sign in to continue."
     unprocessable: "We couldn't save that. Check the fields."
+    parameter_missing: "Missing %{param}."
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "can't be blank"
+      taken: "is already taken"
+      invalid: "doesn't look valid"
+      inclusion: "is not on the list"
+      incomplete: "is incomplete"
+      confirmation: "doesn't match the confirmation"
+      too_short: "is too short (minimum is %{count} characters)"
+      too_long: "is too long (maximum is %{count} characters)"
+      not_a_number: "is not a number"
+      greater_than_or_equal_to: "must be greater than or equal to %{count}"
+      less_than_or_equal_to: "must be less than or equal to %{count}"
+
+  auth:
+    email_not_found: "We couldn't find an account with that email."
+    wrong_password: "Wrong password. Try again."
+    email_taken: "That email already has a Vekoo account."
+    reset_token_invalid: "This password link has expired or was already used."
+
+  credits:
+    no_credits: "You're out of credits."
+
+  carousels:
+    copy_suffix: "copy"
+
+  activerecord:
+    models:
+      account: "account"
+      carousel: "carousel"
+      folder: "folder"
+      organization: "organization"
+    attributes:
+      account:
+        name: "name"
+        email: "email"
+        password: "password"
+        role: "role"
+      organization:
+        name: "account name"
+        plan: "plan"
+        credits_total: "credit total"
+        credits_used: "credits used"
+      carousel:
+        title: "title"
+        format: "format"
+        theme: "theme"
+        cards: "cards"
+      folder:
+        name: "name"
+        color: "color"

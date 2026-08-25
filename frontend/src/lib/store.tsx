@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react"
 
-import type { CarouselCard, CarouselTheme } from "@/lib/doc"
+import type { CarouselCard, CarouselFormat, CarouselTheme } from "@/lib/doc"
 import { buildSeed, type AppState, type Carousel, type Folder } from "@/lib/mock-data"
 
 // Estado fictício, persistido em localStorage para as ações (renomear,
@@ -15,9 +15,11 @@ import { buildSeed, type AppState, type Carousel, type Folder } from "@/lib/mock
 // estado salvo e re-semeia.
 // etapa1.v2: notificações passaram a guardar a chave de tradução.
 // etapa2.v1: carrosséis viraram documentos de blocos (tema + cards).
-const STORAGE_KEY = "vekoo.etapa2.v1"
+// etapa3.v1: o texto virou uma sequência de trechos com marcas (TextSpan[]).
+const STORAGE_KEY = "vekoo.etapa3.v1"
 
 type Action =
+  | { type: "carousel/create"; carousel: Carousel }
   | { type: "carousel/rename"; id: string; title: string }
   | { type: "carousel/toggle-favorite"; id: string }
   | {
@@ -33,10 +35,12 @@ type Action =
       type: "carousel/save-doc"
       id: string
       title: string
+      format: CarouselFormat
       theme: CarouselTheme
       cards: CarouselCard[]
       now: number
     }
+  | { type: "carousel/set-caption"; id: string; caption: string }
   | { type: "credits/consume"; amount: number }
   | { type: "carousel/move"; id: string; folderId: string | null }
   | { type: "carousel/trash"; id: string; now: number }
@@ -62,6 +66,8 @@ function updateCarousel(
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
+    case "carousel/create":
+      return { ...state, carousels: [action.carousel, ...state.carousels] }
     case "carousel/rename":
       return updateCarousel(state, action.id, (c) => ({
         ...c,
@@ -92,9 +98,15 @@ function reducer(state: AppState, action: Action): AppState {
       return updateCarousel(state, action.id, (c) => ({
         ...c,
         title: action.title,
+        format: action.format,
         theme: action.theme,
         cards: action.cards,
         editedAt: action.now,
+      }))
+    case "carousel/set-caption":
+      return updateCarousel(state, action.id, (c) => ({
+        ...c,
+        caption: action.caption,
       }))
     case "credits/consume":
       return {

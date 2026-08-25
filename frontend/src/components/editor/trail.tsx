@@ -55,7 +55,7 @@ function buildCard(kind: NewCardKind): CarouselCard {
     id: newId("block"),
     type: "text",
     role,
-    text: "",
+    spans: [],
     align,
     color: role === "body" ? "muted" : "ink",
   })
@@ -75,14 +75,14 @@ function buildCard(kind: NewCardKind): CarouselCard {
         ...base,
         blocks: [
           text("title"),
-          { id: newId("block"), type: "list", style: "bullet", items: [""], color: "ink" },
+          { id: newId("block"), type: "list", style: "bullet", items: [[]], color: "ink" },
         ],
       }
     case "quote":
       return {
         ...base,
         align: "center",
-        blocks: [{ id: newId("block"), type: "quote", text: "", color: "ink" }],
+        blocks: [{ id: newId("block"), type: "quote", spans: [], color: "ink" }],
       }
     case "stat":
       return {
@@ -147,6 +147,7 @@ export function Trail() {
   }
 
   const { cards, theme, format } = state.doc
+  const activeIndex = cards.findIndex((c) => c.id === state.activeCardId)
 
   return (
     <aside
@@ -223,7 +224,11 @@ export function Trail() {
               <DropdownMenuItem
                 key={kind}
                 onClick={() =>
-                  dispatch({ type: "card/add", card: buildCard(kind) })
+                  dispatch({
+                    type: "card/insert",
+                    index: activeIndex + 1,
+                    card: buildCard(kind),
+                  })
                 }
               >
                 <Icon /> {t(`editor.trail.newCardTypes.${kind}`)}

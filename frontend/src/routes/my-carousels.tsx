@@ -15,7 +15,7 @@ import { CarouselGridCard } from "@/components/carousel-grid-card"
 import { CarouselTable } from "@/components/carousel-table"
 import {
   createSuggestions,
-  submitCreateIdea,
+  useCreateCarousel,
 } from "@/components/create-carousel-dialog"
 import { EmptyState } from "@/components/empty-state"
 import { Button } from "@/components/ui/button"
@@ -203,12 +203,13 @@ export function MyCarouselsPage() {
 // do trabalho, com o campo de descrever já disponível.
 function FirstCarouselHero() {
   const { t } = useTranslation()
+  const create = useCreateCarousel()
   const [idea, setIdea] = useState("")
   const valid = idea.trim().length > 0
 
   function submit() {
     if (!valid) return
-    submitCreateIdea(idea.trim())
+    create(idea.trim())
     setIdea("")
   }
 

@@ -1,15 +1,19 @@
 import type { CSSProperties, ReactNode } from "react"
 
+import { BadgeBlockView } from "@/components/editor/blocks/block-badge"
 import { ButtonBlockView } from "@/components/editor/blocks/block-button"
 import { DividerBlockView } from "@/components/editor/blocks/block-divider"
 import { ImageBlockView } from "@/components/editor/blocks/block-image"
 import { ListBlockView } from "@/components/editor/blocks/block-list"
 import { QuoteBlockView } from "@/components/editor/blocks/block-quote"
 import { StatBlockView } from "@/components/editor/blocks/block-stat"
+import { StepsBlockView } from "@/components/editor/blocks/block-steps"
 import { TableBlockView } from "@/components/editor/blocks/block-table"
+import { TestimonialBlockView } from "@/components/editor/blocks/block-testimonial"
 import { TextBlockView } from "@/components/editor/blocks/block-text"
 import { CardImage } from "@/components/editor/card-image"
 import {
+  blockLayoutClass,
   FORMAT_RATIOS,
   type Block,
   type CarouselCard,
@@ -156,10 +160,16 @@ export function CardBlockView({
       return <ImageBlockView block={block} theme={theme} />
     case "list":
       return <ListBlockView block={block} theme={theme} />
+    case "steps":
+      return <StepsBlockView block={block} theme={theme} />
     case "stat":
       return <StatBlockView block={block} theme={theme} />
     case "quote":
       return <QuoteBlockView block={block} theme={theme} />
+    case "testimonial":
+      return <TestimonialBlockView block={block} theme={theme} />
+    case "badge":
+      return <BadgeBlockView block={block} theme={theme} />
     case "divider":
       return <DividerBlockView block={block} theme={theme} />
     case "table":
@@ -186,7 +196,9 @@ export function CardArt({ card, theme, format = "4:5", className }: CardArtProps
         content={
           <div className={cardContentClass(card.align)}>
             {card.blocks.map((block) => (
-              <CardBlockView key={block.id} block={block} theme={theme} />
+              <div key={block.id} className={blockLayoutClass(block)}>
+                <CardBlockView block={block} theme={theme} />
+              </div>
             ))}
           </div>
         }

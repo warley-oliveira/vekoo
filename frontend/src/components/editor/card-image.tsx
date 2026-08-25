@@ -1,18 +1,12 @@
 import { useMemo, type ReactNode } from "react"
 
-import { mulberry32, type CarouselTheme, type ImageSpec } from "@/lib/doc"
+import type { CarouselTheme, ImageSpec, ImageStyle, ImageTint } from "@/lib/doc"
+import { mulberry32 } from "@/lib/doc"
+import { findLibraryImage, libraryBackground } from "@/lib/image-library"
 import { cn } from "@/lib/utils"
 
-// Imagem desenhada por especificação — não existe arquivo: a mesma semente
-// desenha sempre a mesma geometria, e as cores vêm do tema do carrossel.
-// "Reposicionar" a imagem é escolher qual faixa da arte sobrevive ao corte
-// (alinhamento do preserveAspectRatio).
-
-const POSITION_ALIGN: Record<ImageSpec["position"], string> = {
-  top: "YMin",
-  center: "YMid",
-  bottom: "YMax",
-}
+// A imagem do card, nas três origens. O enquadramento é o mesmo para todas:
+// `focus` diz que ponto sobrevive ao corte e `zoom` o quanto se aproxima.
 
 type CardImageProps = {
   image: ImageSpec
@@ -20,25 +14,86 @@ type CardImageProps = {
   className?: string
 }
 
-export function CardImage({ image, theme, className }: CardImageProps) {
-  const tint =
-    image.tint === "accent"
-      ? theme.accent
-      : image.tint === "ink"
-        ? theme.ink
-        : theme.bg
+/** `object-position`/`background-position` a partir do foco (0 a 1). */
+function framePosition(image: ImageSpec): string {
+  return `${Math.round(image.focus.x * 100)}% ${Math.round(image.focus.y * 100)}%`
+}
 
-  const shapes = useMemo(
-    () => buildShapes(image.style, image.seed, tint),
-    [image.style, image.seed, tint]
+export function CardImage({ image, theme, className }: CardImageProps) {
+  const { source } = image
+  const position = framePosition(image)
+  const zoom = Math.max(1, image.zoom)
+
+  if (source.kind === "upload") {
+    return (
+      <img
+        src={source.dataUrl}
+        alt=""
+        aria-hidden
+        draggable={false}
+        className={cn("h-full w-full object-cover", className)}
+        style={{ objectPosition: position, transform: `scale(${zoom})` }}
+      />
+    )
+  }
+
+  if (source.kind === "library") {
+    const piece = findLibraryImage(source.id)
+    return (
+      <div
+        aria-hidden
+        className={cn("h-full w-full", className)}
+        style={{
+          background: piece ? libraryBackground(piece) : theme.surface,
+          backgroundPosition: position,
+          transform: `scale(${zoom})`,
+        }}
+      />
+    )
+  }
+
+  return (
+    <ArtImage
+      style={source.style}
+      seed={source.seed}
+      tint={source.tint}
+      theme={theme}
+      position={position}
+      zoom={zoom}
+      className={className}
+    />
   )
+}
+
+/** Arte desenhada por especificação — não existe arquivo. */
+function ArtImage({
+  style,
+  seed,
+  tint,
+  theme,
+  position,
+  zoom,
+  className,
+}: {
+  style: ImageStyle
+  seed: number
+  tint: ImageTint
+  theme: CarouselTheme
+  position: string
+  zoom: number
+  className?: string
+}) {
+  const color =
+    tint === "accent" ? theme.accent : tint === "ink" ? theme.ink : theme.bg
+  const shapes = useMemo(() => buildShapes(style, seed, color), [style, seed, color])
 
   return (
     <svg
       aria-hidden
       viewBox="0 0 100 100"
-      preserveAspectRatio={`xMid${POSITION_ALIGN[image.position]} slice`}
+      preserveAspectRatio="xMidYMid slice"
       className={cn("h-full w-full", className)}
+      style={{ objectPosition: position, transform: `scale(${zoom})` }}
     >
       <rect width="100" height="100" fill={theme.surface} />
       {shapes}
@@ -52,7 +107,7 @@ function r2(value: number): number {
 }
 
 function buildShapes(
-  style: ImageSpec["style"],
+  style: ImageStyle,
   seed: number,
   tint: string
 ): ReactNode[] {

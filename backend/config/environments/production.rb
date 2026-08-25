@@ -43,8 +43,10 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  # config.cache_store = :mem_cache_store
+  # O default cai num file store em tmp/cache: apagado a cada deploy e NÃO
+  # compartilhado entre o container web e o worker. memory_store é por processo,
+  # mas ao menos é previsível. Trocar por :redis_cache_store quando houver o que cachear.
+  config.cache_store = :memory_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   # config.active_job.queue_adapter = :resque
@@ -54,7 +56,10 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = {
+    host: URI.parse(ENV.fetch("BACKEND_URL", "https://syco.vekoo.app")).host,
+    protocol: "https"
+  }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -75,12 +80,17 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Proteção contra DNS rebinding / Host header. APP_HOSTS vem do deploy.yml.
+  config.hosts = ENV.fetch("APP_HOSTS", "").split(",").map(&:strip).reject(&:empty?)
+
+  # O kamal-proxy sonda o healthcheck pelo IP do container, não pelo domínio.
+  # Sem esta exclusão o /up toma 403, o Kamal considera o deploy insalubre e
+  # faz rollback — em todo deploy, para sempre.
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # URLs absolutas de anexo (Active Storage) fora do ciclo de request.
+  Rails.application.routes.default_url_options = {
+    host: URI.parse(ENV.fetch("BACKEND_URL", "https://syco.vekoo.app")).host,
+    protocol: "https"
+  }
 end

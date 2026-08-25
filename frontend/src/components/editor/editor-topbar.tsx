@@ -1,31 +1,32 @@
 import { useState } from "react"
 import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
-import {
-  ArrowLeft,
-  Check,
-  Download,
-  Eye,
-  Palette,
-  Redo2,
-  Undo2,
-} from "lucide-react"
-import { toast } from "sonner"
+import { AnimatePresence } from "motion/react"
+import { ArrowLeft, Check, Download, Eye, Redo2, Undo2 } from "lucide-react"
 
-import { useEditor } from "@/components/editor/editor-store"
+import { AiTrigger } from "@/components/editor/ai-bar"
+import { AppearancePopover } from "@/components/editor/appearance-popover"
+import { activeCard, useEditor } from "@/components/editor/editor-store"
+import { ExportDialog } from "@/components/editor/export-dialog"
+import { PreviewOverlay } from "@/components/editor/preview-overlay"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 // Topo do editor: voltar, nome editável no lugar, indicador de salvo,
-// desfazer/refazer e as ações que ainda são vitrine (visualizar, exportar,
-// marca) — visíveis desde já, cada uma respondendo com um aviso honesto.
+// desfazer/refazer, aparência do carrossel e as duas saídas — ver em sequência
+// e exportar.
 
-export function EditorTopbar() {
+export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
   const { t } = useTranslation()
   const { state, dispatch, saveState, folderId } = useEditor()
+  const [previewing, setPreviewing] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const backTo = folderId ? `/folders/${folderId}` : "/"
+  const active = activeCard(state)
+  const activeIndex = active ? state.doc.cards.indexOf(active) : 0
+  const hasCards = state.doc.cards.length > 0
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-3">
@@ -55,15 +56,8 @@ export function EditorTopbar() {
       </span>
 
       <div className="ml-auto flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="hidden text-muted-foreground md:flex"
-          onClick={() => toast(t("editor.topbar.brandToast"))}
-        >
-          <Palette />
-          {t("editor.topbar.brand")}
-        </Button>
+        <AiTrigger onClick={onOpenAi} />
+        <AppearancePopover />
 
         <Separator orientation="vertical" className="mx-1 hidden !h-5 md:block" />
 
@@ -91,16 +85,27 @@ export function EditorTopbar() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => toast(t("editor.topbar.previewToast"))}
+          disabled={!hasCards}
+          onClick={() => setPreviewing(true)}
         >
           <Eye />
           <span className="hidden sm:inline">{t("editor.topbar.preview")}</span>
         </Button>
-        <Button size="sm" onClick={() => toast(t("editor.topbar.exportToast"))}>
+        <Button size="sm" disabled={!hasCards} onClick={() => setExporting(true)}>
           <Download />
           <span className="hidden sm:inline">{t("editor.topbar.export")}</span>
         </Button>
       </div>
+
+      <AnimatePresence>
+        {previewing && (
+          <PreviewOverlay
+            startIndex={Math.max(0, activeIndex)}
+            onClose={() => setPreviewing(false)}
+          />
+        )}
+      </AnimatePresence>
+      <ExportDialog open={exporting} onOpenChange={setExporting} />
     </header>
   )
 }

@@ -2,6 +2,7 @@ import type { CarouselTheme, ListBlock } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 import { inkClass } from "./shared"
+import { SpansView } from "./spans"
 
 /** Marcador de item — compartilhado com o editor inline da lista. */
 export function ListMarker({
@@ -58,7 +59,9 @@ export function ListBlockView({
           className="flex items-start gap-[2.6cqw] text-[4.4cqw] leading-[1.35]"
         >
           <ListMarker style={block.style} index={index} theme={theme} />
-          <span className="min-w-0">{item}</span>
+          <span className="min-w-0">
+            <SpansView spans={item} theme={theme} />
+          </span>
         </li>
       ))}
     </ul>

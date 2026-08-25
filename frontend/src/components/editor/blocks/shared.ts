@@ -24,8 +24,14 @@ export const TEXT_ALIGN: Record<BlockAlign, string> = {
   end: "text-right",
 }
 
-export const SELF_ALIGN: Record<BlockAlign, string> = {
-  start: "self-start",
-  center: "self-center",
-  end: "self-end",
+/**
+ * Alinhamento de um bloco que não ocupa a linha inteira (botão, selo). Vale
+ * `justify-*` numa linha própria, e não `self-*`: o bloco não é filho direto
+ * da coluna do card — vem embrulhado por espaçamento e animação — então
+ * alinhar-se ao pai não funcionaria.
+ */
+export const JUSTIFY_ALIGN: Record<BlockAlign, string> = {
+  start: "justify-start",
+  center: "justify-center",
+  end: "justify-end",
 }
