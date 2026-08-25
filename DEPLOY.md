@@ -79,7 +79,7 @@ Falta preencher **um** valor em `.env.deploy`: o `KAMAL_REGISTRY_PASSWORD`.
 
 ## 4. Passo a passo
 
-### Passo 1 — GHCR: token do registry
+### Passo 1 — GHCR: token do registry  ✅ feito
 
 1. `github.com/settings/tokens` → **Generate new token (classic)**
 2. Escopos: `write:packages` e `read:packages`
@@ -94,7 +94,7 @@ O `REGISTRY_USER` é **`warley-oliveira`** (dono do token), que não precisa
 coincidir com o dono do repositório — a imagem vai para
 `ghcr.io/warley-oliveira/vekoo-api`.
 
-### Passo 2 — TLS da origem
+### Passo 2 — TLS da origem  ✅ feito
 
 **Já feito.** O certificado autoassinado está gerado, com par conferido e handshake
 TLS testado:
@@ -125,7 +125,7 @@ para produção com dados reais de clientes.
 para **Full (strict)** e rode `kamal deploy`. Nenhuma linha de configuração muda —
 o `deploy.yml` já aponta para esses caminhos.
 
-### Passo 3 — DNS
+### Passo 3 — DNS  ✅ feito
 
 Em **DNS → Records** da zona `vekoo.app`:
 
@@ -190,7 +190,7 @@ Comprovado no servidor:
 | `curl` do próprio servidor em `127.0.0.1` | 200 |
 | container → container na porta 80 | 200 |
 
-### Passo 5 — Primeiro deploy da API
+### Passo 5 — Primeiro deploy da API  ✅ feito
 
 ```bash
 set -a; . ./.env.deploy; set +a
@@ -324,6 +324,14 @@ pg_restore -d "postgres://..." --clean --if-exists db-AAAAMMDD-HHMMSS.pgdump
   intermitente.
 - **Postgres fixado em `16.10`.** Um bump de major se recusa a subir sobre um
   `PGDATA` existente.
+- **O Kamal builda a partir de um CLONE do git, não do working directory.** O
+  que não estiver commitado simplesmente não existe no contexto de build — o
+  sintoma é `failed to read dockerfile: no such file or directory` mesmo com o
+  arquivo ali na sua frente. `kamal deploy` sempre depois do commit. (Existe
+  `builder.context: .` para buildar do diretório local, mas isso publica código
+  que não está em lugar nenhum — sem rollback e sem reprodutibilidade.)
+- **O Cloudflare Pages builda a partir do GitHub.** Commit sem `git push` sobe a
+  API e deixa o front parado na versão anterior.
 - **Modo SSL da Cloudflare importa muito.** Com *Flexible* a Cloudflare fala HTTP
   com a origem, o `kamal-proxy` redireciona para HTTPS e o resultado é um loop de
   redirect. Com *Full (strict)* o certificado autoassinado é recusado e o site cai
@@ -349,13 +357,13 @@ de deploy muda, porque `VITE_API_URL` já está no lugar.
 
 ## 9. Checklist do primeiro deploy
 
-- [ ] `KAMAL_REGISTRY_PASSWORD` — PAT **classic** em `.env.deploy`
+- [x] `KAMAL_REGISTRY_PASSWORD` — PAT **classic** em `.env.deploy`
 - [x] Certificado da origem em `backend/.kamal/certs/` (`.pem` **e** `.key`) — gerado
-- [ ] Zona `vekoo.app` em **Full** (não strict), *Always Use HTTPS* ligado
-- [ ] `syco` → A `107.152.37.137`, proxied
+- [x] Zona `vekoo.app` em **Full** (não strict)
+- [x] `syco` → A `107.152.37.137`, proxied
 - [x] `bin/deploy-setup` rodado; login como `deploy` confirmado
-- [ ] `kamal setup` + `kamal seed`
-- [ ] `curl https://syco.vekoo.app/up` → 200
+- [x] `kamal setup`
+- [x] `curl https://syco.vekoo.app/up` → 200
 - [ ] Projeto no Pages com **Root directory = `frontend`**
 - [ ] `VITE_API_URL` e `NODE_VERSION` nas env vars de Production
 - [ ] `my.vekoo.app` ativo; `curl -I https://my.vekoo.app/login` → 200
@@ -363,7 +371,45 @@ de deploy muda, porque `VITE_API_URL` já está no lugar.
 
 ---
 
-## 10. O que já foi verificado localmente
+## 10. API em produção — verificado em 25/08/2026
+
+`https://syco.vekoo.app` está no ar. Imagem
+`ghcr.io/warley-oliveira/vekoo-api:329c216`, cinco containers no host
+(`kamal-proxy`, `vekoo-api-db`, `vekoo-api-redis`, `vekoo-api-web`,
+`vekoo-api-worker`).
+
+| Teste (pela Cloudflare, de fora) | Resultado |
+|---|---|
+| `GET /up` | 200 |
+| `GET /catalog` | JSON com formatos e presets de tema |
+| `POST /login` (conta de demonstração) | 201, devolve conta + organização + token |
+| `GET /carousels` com Bearer | 12 carrosséis, títulos em pt-BR |
+| `GET /me` | conta e organização corretas |
+| CORS de `https://my.vekoo.app` | header presente |
+| CORS de `https://evil.com` | header ausente — bloqueado |
+| Banco | 14 carrosséis, 1 conta, 1 organização, 3 avisos |
+| Sidekiq | conectado a `redis://vekoo-api-redis:6379/0` |
+
+O JSON sai em camelCase com datas em milissegundos
+(`createdAt: 1785088679359`) — a mesma forma dos tipos do front.
+
+### Armadilha encontrada no caminho: fail2ban derrubando o deploy
+
+O primeiro `kamal setup` fez o build (813 s) e o push, e **então** morreu com
+`Connection reset by peer`. Não era rede: um deploy abre muitas conexões SSH e,
+com `maxretry = 5`, a máquina de deploy trip o jail `sshd` no meio do processo —
+depois de a imagem já estar no registry, o que torna o sintoma confuso.
+
+O `bin/deploy-setup` agora resolve isso sozinho: lê `SSH_CLIENT` para descobrir
+o IP de quem está rodando o script e o coloca em `ignoreip`.
+
+Se acontecer de novo (IP dinâmico, outra máquina de deploy):
+
+```bash
+kamal lock release          # a queda deixa o lock preso
+```
+
+## 11. O que já foi verificado localmente
 
 Antes de qualquer coisa tocar o servidor, isto foi testado nesta máquina:
 

@@ -189,9 +189,15 @@ systemctl daemon-reload
 systemctl enable --now ${APP}-docker-firewall.service
 systemctl enable --now ${APP}-docker-firewall.timer
 
-log "fail2ban"
-cat > /etc/fail2ban/jail.d/sshd.local <<'JAIL'
+# A máquina de deploy abre MUITAS conexões SSH por deploy. Sem estar na
+# ignoreip, ela trip o jail no meio de um build longo e o Kamal morre com
+# "Connection reset by peer" — depois de já ter feito o push da imagem.
+# SSH_CLIENT traz o IP de quem está rodando este script.
+DEPLOY_IP="${SSH_CLIENT%% *}"
+log "fail2ban (liberando a máquina de deploy: ${DEPLOY_IP:-nenhum})"
+cat > /etc/fail2ban/jail.d/sshd.local <<JAIL
 [sshd]
+ignoreip = 127.0.0.1/8 ::1 ${DEPLOY_IP}
 enabled  = true
 port     = ssh
 maxretry = 5
