@@ -2,8 +2,15 @@
   // Worker somente-assets: não há código de servidor, só o SPA compilado.
   // A Cloudflare migrou os projetos novos do Pages para Workers, e é este
   // arquivo que o `npx wrangler deploy` do painel procura.
+  // O nome do Worker. É ele que define a URL de preview:
+  //   https://vekoo.<seu-subdominio>.workers.dev
   "name": "vekoo",
   "compatibility_date": "2026-08-25",
+
+  // Explícito de propósito: sem `routes`, o wrangler já habilitaria workers.dev
+  // por padrão, mas depender de default implícito para a URL de preview é como
+  // ficar sem porta de entrada se o default mudar.
+  "workers_dev": true,
   "assets": {
     "directory": "./dist",
     // Fallback do SPA. Obrigatório com BrowserRouter: /login e /folders/:id não
