@@ -1,7 +1,0 @@
-# Fallback do SPA. Obrigatório com BrowserRouter: /folders/:id e /login não têm
-# arquivo no disco, e sem esta regra o Cloudflare Pages devolve 404.
-#
-# 200 (rewrite), não 301/302 — a URL na barra do navegador tem que permanecer.
-# Esta é a ÚLTIMA regra avaliada; qualquer arquivo real (assets, favicon.svg,
-# icons.svg) é servido antes de chegar aqui.
-/*    /index.html   200

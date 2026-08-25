@@ -13,9 +13,13 @@
   "workers_dev": true,
   "assets": {
     "directory": "./dist",
-    // Fallback do SPA. Obrigatório com BrowserRouter: /login e /folders/:id não
-    // têm arquivo no disco. Em Workers isto substitui a regra `/* /index.html 200`
-    // do _redirects — reescrita com status 200 não é suportada aqui.
+    // Fallback do SPA — ÚNICO mecanismo aqui. Obrigatório com BrowserRouter:
+    // /login e /folders/:id não têm arquivo no disco.
+    //
+    // Não recrie um public/_redirects com `/* /index.html 200`: em Workers a
+    // reescrita com status 200 não é apenas ignorada, ela é REJEITADA na
+    // validação ("Infinite loop detected in this rule"), e o deploy falha
+    // depois de já ter subido os assets. Aquela regra é coisa de Pages.
     "not_found_handling": "single-page-application"
   }
 }

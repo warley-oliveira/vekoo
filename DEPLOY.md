@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Front** (`my.vekoo.app`) | Cloudflare Pages — SPA estático, build do Vite no CI da Cloudflare |
+| **Front** (`my.vekoo.app`) | Cloudflare **Workers** (assets estáticos) — build do Vite no CI da Cloudflare |
 | **API** (`syco.vekoo.app`) | Kamal 2 numa VPS própria — `107.152.37.137` |
 | **TLS** | Certificado autoassinado na origem + zona em **Full**. Sem Let's Encrypt, sem certbot, sem credencial da Cloudflare |
 | **Registry** | `ghcr.io/warley-oliveira` — exige PAT **classic** |
@@ -332,6 +332,14 @@ pg_restore -d "postgres://..." --clean --if-exists db-AAAAMMDD-HHMMSS.pgdump
   que não está em lugar nenhum — sem rollback e sem reprodutibilidade.)
 - **O Cloudflare Pages builda a partir do GitHub.** Commit sem `git push` sobe a
   API e deixa o front parado na versão anterior.
+- **Em Workers, `_redirects` com `/* /index.html 200` faz o deploy FALHAR.** Não é
+  ignorado como se poderia supor: a validação recusa com
+  *"Infinite loop detected in this rule"* — e só depois de já ter subido os
+  assets, o que faz parecer erro de rede. O fallback do SPA em Workers vem de
+  `not_found_handling: "single-page-application"` no `wrangler.jsonc`. Aquela
+  regra é de Pages; se algum dia voltar para lá, recrie o arquivo.
+- **`_headers` funciona nos dois** (Pages e Workers), e sem a armadilha de herança
+  do `add_header` do nginx: ali as regras se acumulam.
 - **Modo SSL da Cloudflare importa muito.** Com *Flexible* a Cloudflare fala HTTP
   com a origem, o `kamal-proxy` redireciona para HTTPS e o resultado é um loop de
   redirect. Com *Full (strict)* o certificado autoassinado é recusado e o site cai
