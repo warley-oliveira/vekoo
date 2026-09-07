@@ -54,6 +54,16 @@ module ErrorRendering
     )
   end
 
+  # Tentativas demais. Vale para quem está adivinhando senha e para quem está
+  # varrendo e-mails — nos dois casos, a resposta é a mesma.
+  def render_too_many_requests
+    render_error(
+      status: :too_many_requests,
+      code: "tooManyRequests",
+      message: t("errors.too_many_requests")
+    )
+  end
+
   def render_parameter_missing(exception)
     render_error(
       status: :bad_request,

@@ -4,6 +4,15 @@
 # tem conta" entregaria a lista de quem usa o produto. Quando o envio de e-mail
 # entrar, é daqui que ele sai (ActiveJob → Sidekiq).
 class PasswordResetsController < ApplicationController
+  # O 202 constante já não vaza quem tem conta; o limite impede o resto — usar
+  # o envio de e-mail como forma de incomodar alguém.
+  rate_limit to: 5, within: 15.minutes, only: :create,
+    with: -> { render_too_many_requests }
+  # E do outro lado: token é aleatório de 32 bytes, mas não custa fechar a porta
+  # para quem quiser tentar mesmo assim.
+  rate_limit to: 10, within: 15.minutes, only: :update,
+    with: -> { render_too_many_requests }
+
   def create
     account = Account.find_by(email: params.require(:passwordReset)[:email].to_s.strip.downcase)
     reset = account && PasswordReset.open!(account)

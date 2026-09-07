@@ -28,8 +28,6 @@ RSpec.describe "Geração por IA", type: :request do
     body.scan(/event: (\w+)\ndata: (.+)\n\n/).map { |name, data| [ name.to_sym, JSON.parse(data) ] }
   end
 
-  before { Rails.cache.clear }
-
   describe "POST /ai/rewrite" do
     it "manda o texto em pedaços e fecha com o acumulado" do
       use_chat(fake_chat)

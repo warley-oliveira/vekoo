@@ -3,6 +3,7 @@ en:
   errors:
     not_found: "Not found."
     unauthorized: "You need to sign in to continue."
+    too_many_requests: "Too many attempts. Wait a few minutes and try again."
     unprocessable: "We couldn't save that. Check the fields."
     parameter_missing: "Missing %{param}."
     format: "%{attribute} %{message}"

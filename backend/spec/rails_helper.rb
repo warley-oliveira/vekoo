@@ -38,6 +38,11 @@ RSpec.configure do |config|
   # `create(...)` e `build(...)` sem prefixo nas specs.
   config.include FactoryBot::Syntax::Methods
 
+  # O cache é compartilhado dentro do processo, e agora carrega estado que
+  # importa (contadores de tentativa, a trava de geração). Sem esta limpeza um
+  # exemplo herda o contador do anterior e falha por motivo alheio a si.
+  config.before { Rails.cache.clear }
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')

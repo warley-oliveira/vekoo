@@ -1,5 +1,9 @@
 # POST /signup — criar conta.
 class RegistrationsController < ApplicationController
+  # Criar conta dá 50 créditos de graça: sem limite, uma organização nova por
+  # segundo é geração de conteúdo grátis à vontade.
+  rate_limit to: 5, within: 1.hour, with: -> { render_too_many_requests }
+
   def create
     result = SignUp.new(
       name: registration_params[:name],
