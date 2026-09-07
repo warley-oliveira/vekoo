@@ -2,7 +2,7 @@ import { useMemo, type ReactNode } from "react"
 
 import type { CarouselTheme, ImageSpec, ImageStyle, ImageTint } from "@/lib/doc"
 import { mulberry32 } from "@/lib/doc"
-import { findLibraryImage, libraryBackground } from "@/lib/image-library"
+import { findLibraryImage, libraryBackground } from "@/lib/catalog"
 import { cn } from "@/lib/utils"
 
 // A imagem do card, nas três origens. O enquadramento é o mesmo para todas:

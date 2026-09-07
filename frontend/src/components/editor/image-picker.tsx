@@ -23,7 +23,7 @@ import {
   type ImageTint,
 } from "@/lib/doc"
 import { ImageError, readImageFile } from "@/lib/image"
-import { IMAGE_LIBRARY, libraryBackground } from "@/lib/image-library"
+import { libraryBackground, useCatalog } from "@/lib/catalog"
 import { cn } from "@/lib/utils"
 
 // De onde vem a imagem do card: um arquivo da pessoa, uma peça da biblioteca
@@ -180,15 +180,20 @@ function LibraryPane({
   onPick: (source: ImageSource) => void
 }) {
   const { t } = useTranslation()
+  const { imageLibrary } = useCatalog()
   const [query, setQuery] = useState("")
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase()
-    return IMAGE_LIBRARY.map((piece) => ({
-      piece,
-      label: t(`editor.imagePicker.library.${piece.id}`),
-    })).filter((entry) => entry.label.toLowerCase().includes(term))
-  }, [query, t])
+    return imageLibrary
+      .map((piece) => ({
+        piece,
+        // Peça nova vinda do servidor ainda não tem tradução: mostrar o id é
+        // menos ruim do que mostrar a chave crua.
+        label: t(`editor.imagePicker.library.${piece.id}`, { defaultValue: piece.id }),
+      }))
+      .filter((entry) => entry.label.toLowerCase().includes(term))
+  }, [imageLibrary, query, t])
 
   return (
     <div className="space-y-3 pt-2">

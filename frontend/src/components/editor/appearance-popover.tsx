@@ -9,20 +9,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useCatalog } from "@/lib/catalog"
 import {
-  ACCENT_CHOICES,
   FORMAT_RATIOS,
   readableInk,
-  THEME_PRESETS,
-  type CarouselFormat,
   type CarouselTheme,
 } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 // Aparência do carrossel inteiro: proporção e paleta. Fica no topo porque vale
 // para todos os cards — nada aqui é propriedade de um card só.
-
-const FORMATS: readonly CarouselFormat[] = ["4:5", "1:1"]
 
 function sameTheme(a: CarouselTheme, b: CarouselTheme): boolean {
   return a.bg === b.bg && a.ink === b.ink && a.accent === b.accent
@@ -31,6 +27,7 @@ function sameTheme(a: CarouselTheme, b: CarouselTheme): boolean {
 export function AppearancePopover() {
   const { t } = useTranslation()
   const { state, dispatch } = useEditor()
+  const { formats, themePresets, accentChoices } = useCatalog()
   const { theme, format } = state.doc
 
   return (
@@ -51,7 +48,7 @@ export function AppearancePopover() {
       <PopoverContent className="w-72 gap-4 p-3" align="end">
         <Section label={t("editor.appearance.format")}>
           <div className="flex gap-1.5">
-            {FORMATS.map((option) => (
+            {formats.map(({ id: option }) => (
               <OptionTile
                 key={option}
                 label={t(`editor.appearance.formats.${option}`)}
@@ -72,7 +69,7 @@ export function AppearancePopover() {
 
         <Section label={t("editor.appearance.palette")}>
           <div className="grid grid-cols-4 gap-1.5">
-            {THEME_PRESETS.map((preset) => {
+            {themePresets.map((preset) => {
               const selected = sameTheme(theme, preset.theme)
               return (
                 <OptionTile
@@ -112,7 +109,7 @@ export function AppearancePopover() {
 
         <Section label={t("editor.appearance.accent")}>
           <div className="flex flex-wrap gap-1.5">
-            {ACCENT_CHOICES.map((accent) => (
+            {accentChoices.map((accent) => (
               <Swatch
                 key={accent}
                 color={accent}

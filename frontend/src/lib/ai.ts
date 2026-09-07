@@ -1,3 +1,4 @@
+import { getCatalog, type AiCosts } from "@/lib/catalog"
 import {
   artImage,
   spansFromMarkdown,
@@ -7,7 +8,6 @@ import {
   type CarouselTheme,
   type ImageSource,
   type TextSpan,
-  THEME_PRESETS,
 } from "@/lib/doc"
 
 // O contrato da geração. Hoje tudo acontece aqui no navegador, com latência
@@ -37,14 +37,14 @@ export class AiError extends Error {
   }
 }
 
-/** Quanto cada operação custa em créditos. */
-export const AI_COST = {
-  carousel: 5,
-  card: 1,
-  rewrite: 1,
-  image: 2,
-  caption: 1,
-} as const
+/**
+ * Quanto cada operação custa em créditos — a tabela é do servidor
+ * (`GET /catalog`), não daqui. Função, e não constante, porque o acervo pode
+ * chegar depois do primeiro import deste módulo.
+ */
+export function aiCost(): AiCosts {
+  return getCatalog().aiCosts
+}
 
 const STEP_DELAY = 420
 
@@ -133,8 +133,9 @@ export type GenerateOptions = {
 
 /** Tema sugerido para um assunto — determinístico pelo comprimento da frase. */
 export function suggestTheme(prompt: string): CarouselTheme {
-  const index = prompt.trim().length % THEME_PRESETS.length
-  return THEME_PRESETS[index].theme
+  const presets = getCatalog().themePresets
+  const index = prompt.trim().length % presets.length
+  return presets[index].theme
 }
 
 export function suggestTitle(prompt: string): string {

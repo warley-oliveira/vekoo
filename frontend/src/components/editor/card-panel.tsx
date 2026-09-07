@@ -27,10 +27,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useCatalog } from "@/lib/catalog"
 import {
   CENTER_FRAME,
   defaultImage,
-  EXTENDED_PALETTE,
   type CardLayout,
   type CarouselCard,
   type CarouselTheme,
@@ -66,6 +66,7 @@ export function CardPanel({
   theme: CarouselTheme
 }) {
   const { t } = useTranslation()
+  const { extendedPalette } = useCatalog()
   const { dispatch } = useEditor()
   const actions = useCardActions()
   const [picking, setPicking] = useState(false)
@@ -150,7 +151,7 @@ export function CardPanel({
               </PopoverTrigger>
               <PopoverContent className="w-56" align="end">
                 <div className="grid grid-cols-6 gap-1.5">
-                  {EXTENDED_PALETTE.map((color) => (
+                  {extendedPalette.map((color) => (
                     <Swatch
                       key={color}
                       color={color}

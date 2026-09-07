@@ -5,17 +5,13 @@ import { motion, useReducedMotion } from "motion/react"
 
 import { VekooMark } from "@/components/app-sidebar"
 import { CardArt } from "@/components/editor/card-art"
-import { buildSeed, type Carousel } from "@/lib/mock-data"
+import { SHOWCASE_CAROUSELS } from "@/lib/showcase"
 
 // Moldura das telas de entrada. Duas colunas: à esquerda o formulário, com o
 // mesmo silêncio do resto da interface; à direita a única coisa colorida da
 // tela — capas de carrossel de verdade, que mostram em dois segundos o que a
 // ferramenta entrega. No mobile a coluna da vitrine sai (ninguém se cadastra
 // admirando decoração num celular).
-
-const SHOWCASE: Carousel[] = buildSeed(0)
-  .carousels.filter((c) => c.trashedAt === null)
-  .slice(0, 3)
 
 type AuthLayoutProps = {
   title: string
@@ -110,7 +106,7 @@ function Showcase({ reduceMotion }: { reduceMotion: boolean }) {
         </p>
 
         <div className="mt-10 flex items-end gap-4">
-          {SHOWCASE.map((carousel, index) => (
+          {SHOWCASE_CAROUSELS.map((carousel, index) => (
             <motion.div
               key={carousel.id}
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}

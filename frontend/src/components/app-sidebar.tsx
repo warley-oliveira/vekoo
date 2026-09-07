@@ -51,7 +51,8 @@ import {
 } from "@/components/ui/tooltip"
 import { initials, useAuth } from "@/lib/auth"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
-import { FOLDER_COLORS, type Folder } from "@/lib/mock-data"
+import { useCatalog } from "@/lib/catalog"
+import { type Folder } from "@/lib/mock-data"
 import { newId, useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
@@ -682,8 +683,12 @@ function NewFolderForm({
   onCreate: (name: string, color: string) => void
 }) {
   const { t } = useTranslation()
+  const { folderColors } = useCatalog()
+  // Violeta é o padrão — o mesmo acento da interface.
+  const [color, setColor] = useState<string>(
+    () => folderColors[1]?.value ?? folderColors[0].value
+  )
   const [name, setName] = useState("")
-  const [color, setColor] = useState<string>(FOLDER_COLORS[1].value)
   const valid = name.trim().length > 0
 
   function submit() {
@@ -708,13 +713,13 @@ function NewFolderForm({
         role="radiogroup"
         aria-label={t("folders.colorGroupAria")}
       >
-        {FOLDER_COLORS.map((c) => (
+        {folderColors.map((c) => (
           <button
             key={c.id}
             type="button"
             role="radio"
             aria-checked={color === c.value}
-            aria-label={t(`folders.colors.${c.id}`)}
+            aria-label={t(`folders.colors.${c.id}`, { defaultValue: c.id })}
             onClick={() => setColor(c.value)}
             className={cn(
               "flex size-6 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",

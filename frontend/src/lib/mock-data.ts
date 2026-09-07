@@ -72,19 +72,6 @@ export type AppState = {
   carousels: Carousel[]
 }
 
-/**
- * Cores disponíveis ao criar uma pasta — suaves de propósito (a interface é
- * quieta). `id` é também a chave de tradução em `folders.colors.<id>`.
- */
-export const FOLDER_COLORS = [
-  { id: "cinza", value: "oklch(0.65 0.01 285)" },
-  { id: "violeta", value: "oklch(0.62 0.12 292)" },
-  { id: "azul", value: "oklch(0.62 0.1 245)" },
-  { id: "verde", value: "oklch(0.62 0.1 155)" },
-  { id: "amarelo", value: "oklch(0.75 0.12 90)" },
-  { id: "vermelho", value: "oklch(0.62 0.12 25)" },
-] as const
-
 const HOUR = 3_600_000
 const DAY = 24 * HOUR
 

@@ -167,7 +167,7 @@ export type ImageTint = "accent" | "ink" | "bg"
  * De onde a imagem vem. Três origens de natureza diferente:
  * - `art`: desenhada por especificação, sem arquivo — a mesma `seed` desenha
  *   sempre a mesma geometria, nas cores do tema.
- * - `library`: uma peça da biblioteca da ferramenta (ver lib/image-library.ts).
+ * - `library`: uma peça da biblioteca da ferramenta (ver lib/catalog.tsx).
  * - `upload`: um arquivo da pessoa, já reduzido e guardado como data URL.
  */
 export type ImageSource =
@@ -215,122 +215,6 @@ export type CarouselTheme = {
   /** Tinta legível sobre `accent` (botões sólidos, selos). */
   accentInk: string
 }
-
-/** Paleta ampla do "Mais cores" — tons quietos, além dos do tema. */
-export const EXTENDED_PALETTE: readonly string[] = [
-  "oklch(0.97 0.005 285)",
-  "oklch(0.92 0.02 85)",
-  "oklch(0.9 0.04 25)",
-  "oklch(0.88 0.05 145)",
-  "oklch(0.9 0.04 240)",
-  "oklch(0.88 0.05 300)",
-  "oklch(0.45 0.03 285)",
-  "oklch(0.35 0.06 260)",
-  "oklch(0.4 0.08 155)",
-  "oklch(0.42 0.09 25)",
-  "oklch(0.3 0.04 300)",
-  "oklch(0.22 0.01 285)",
-]
-
-/**
- * Paletas prontas do carrossel — `id` é também a chave de tradução em
- * `editor.appearance.themes.<id>`. Trocar de tema recolore o carrossel inteiro
- * sem tocar nos blocos, porque `InkColor` é relativo ao tema.
- */
-export const THEME_PRESETS: ReadonlyArray<{ id: string; theme: CarouselTheme }> = [
-  {
-    id: "paper",
-    theme: {
-      bg: "oklch(0.97 0.005 90)",
-      surface: "oklch(0.93 0.008 90)",
-      ink: "oklch(0.2 0.01 285)",
-      accent: "oklch(0.5 0.2 292)",
-      accentInk: "oklch(0.98 0.005 292)",
-    },
-  },
-  {
-    id: "midnight",
-    theme: {
-      bg: "oklch(0.2 0.01 285)",
-      surface: "oklch(0.26 0.015 285)",
-      ink: "oklch(0.98 0 0)",
-      accent: "oklch(0.88 0.2 125)",
-      accentInk: "oklch(0.2 0.01 285)",
-    },
-  },
-  {
-    id: "forest",
-    theme: {
-      bg: "oklch(0.46 0.13 155)",
-      surface: "oklch(0.4 0.12 155)",
-      ink: "oklch(0.97 0.02 110)",
-      accent: "oklch(0.88 0.17 110)",
-      accentInk: "oklch(0.3 0.09 155)",
-    },
-  },
-  {
-    id: "clay",
-    theme: {
-      bg: "oklch(0.42 0.14 20)",
-      surface: "oklch(0.37 0.13 20)",
-      ink: "oklch(0.96 0.02 80)",
-      accent: "oklch(0.85 0.15 85)",
-      accentInk: "oklch(0.35 0.12 20)",
-    },
-  },
-  {
-    id: "ocean",
-    theme: {
-      bg: "oklch(0.32 0.1 260)",
-      surface: "oklch(0.28 0.09 260)",
-      ink: "oklch(0.97 0.005 260)",
-      accent: "oklch(0.85 0.15 85)",
-      accentInk: "oklch(0.28 0.09 260)",
-    },
-  },
-  {
-    id: "solar",
-    theme: {
-      bg: "oklch(0.85 0.16 95)",
-      surface: "oklch(0.8 0.15 95)",
-      ink: "oklch(0.2 0.02 95)",
-      accent: "oklch(0.4 0.14 25)",
-      accentInk: "oklch(0.85 0.16 95)",
-    },
-  },
-  {
-    id: "plum",
-    theme: {
-      bg: "oklch(0.3 0.09 320)",
-      surface: "oklch(0.26 0.08 320)",
-      ink: "oklch(0.97 0.01 320)",
-      accent: "oklch(0.83 0.14 350)",
-      accentInk: "oklch(0.3 0.09 320)",
-    },
-  },
-  {
-    id: "linen",
-    theme: {
-      bg: "oklch(0.94 0.02 85)",
-      surface: "oklch(0.89 0.03 85)",
-      ink: "oklch(0.28 0.03 40)",
-      accent: "oklch(0.52 0.14 30)",
-      accentInk: "oklch(0.96 0.02 85)",
-    },
-  },
-]
-
-/** Acentos para o ajuste fino — o único saturado do carrossel além da arte. */
-export const ACCENT_CHOICES: readonly string[] = [
-  "oklch(0.5 0.2 292)",
-  "oklch(0.55 0.19 250)",
-  "oklch(0.6 0.16 195)",
-  "oklch(0.62 0.17 150)",
-  "oklch(0.82 0.17 95)",
-  "oklch(0.68 0.19 45)",
-  "oklch(0.58 0.2 25)",
-  "oklch(0.6 0.19 350)",
-]
 
 /** Claridade de uma cor `oklch(L C H)` — 0 a 1; 0.6 se a string for outra. */
 export function lightnessOf(color: string): number {

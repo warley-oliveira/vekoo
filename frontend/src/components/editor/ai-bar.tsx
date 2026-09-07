@@ -7,7 +7,7 @@ import { ArrowUp, Coins, Loader2, Sparkles, Square } from "lucide-react"
 import { useAi } from "@/components/editor/ai-store"
 import { createSuggestions } from "@/components/create-carousel-dialog"
 import { Button } from "@/components/ui/button"
-import { AI_COST } from "@/lib/ai"
+import { aiCost } from "@/lib/ai"
 import { cn } from "@/lib/utils"
 
 // A barra de geração flutua: em vez de comer uma faixa do editor, ela sobe
@@ -33,7 +33,7 @@ export function AiBar({
   const field = useRef<HTMLTextAreaElement>(null)
   const [prompt, setPrompt] = useState("")
 
-  const enough = creditsLeft >= AI_COST.carousel
+  const enough = creditsLeft >= aiCost().carousel
   const valid = prompt.trim().length > 0 && enough && !busy
   const generating = task?.kind === "carousel"
 
@@ -212,7 +212,7 @@ export function AiBar({
                 <div className="flex items-center gap-2 border-t px-3 py-1.5">
                   <span className="flex items-center gap-1 text-[11px] text-muted-foreground tabular-nums">
                     <Coins className="size-3" />
-                    {t("editor.ai.cost", { count: AI_COST.carousel })}
+                    {t("editor.ai.cost", { count: aiCost().carousel })}
                   </span>
                   {!enough && (
                     <span role="alert" className="text-[11px] text-destructive">

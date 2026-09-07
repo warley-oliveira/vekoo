@@ -12,7 +12,7 @@ import { toast } from "sonner"
 
 import { activeCard, useEditor } from "@/components/editor/editor-store"
 import {
-  AI_COST,
+  aiCost,
   AiError,
   generateCarousel,
   generateCardImage,
@@ -95,7 +95,7 @@ export function AiProvider({ children }: { children: ReactNode }) {
 
   const runCarousel = useCallback(
     (prompt: string) =>
-      guard(AI_COST.carousel, async (signal) => {
+      guard(aiCost().carousel, async (signal) => {
         setTask({ kind: "carousel", produced: 0 })
         // Sai o que havia: gerar substitui, não empilha em cima do antigo.
         for (const card of [...state.doc.cards]) {
@@ -118,7 +118,7 @@ export function AiProvider({ children }: { children: ReactNode }) {
 
   const rewrite = useCallback(
     (block: Block, intent: RewriteIntent) =>
-      guard(AI_COST.rewrite, async (signal) => {
+      guard(aiCost().rewrite, async (signal) => {
         if (block.type !== "text" && block.type !== "quote") return
         setTask({ kind: "rewrite", blockId: block.id })
         let latest: TextSpan[] = block.spans
@@ -135,7 +135,7 @@ export function AiProvider({ children }: { children: ReactNode }) {
 
   const imageForCard = useCallback(
     (cardId: string) =>
-      guard(AI_COST.image, async (signal) => {
+      guard(aiCost().image, async (signal) => {
         setTask({ kind: "image", cardId })
         const card = state.doc.cards.find((c) => c.id === cardId)
         if (!card) return
@@ -155,7 +155,7 @@ export function AiProvider({ children }: { children: ReactNode }) {
 
   const captionFor = useCallback(
     (onChunk: (caption: string) => void) =>
-      guard(AI_COST.caption, async (signal) => {
+      guard(aiCost().caption, async (signal) => {
         setTask({ kind: "caption" })
         const first = state.doc.cards[0]
         const hint = first ? first.blocks.map(blockPlainText).join(" ") : ""
