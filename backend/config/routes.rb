@@ -36,6 +36,14 @@ Rails.application.routes.draw do
   get  "credits"         => "credits#show"
   post "credits/consume" => "credits#consume"
 
+  # --- geração ---------------------------------------------------------------
+  # Fluxo (SSE): o editor insere card a card, então esperar o documento inteiro
+  # ficar pronto tiraria o sentido de esperar.
+  scope :ai, module: :ai, as: :ai do
+    post "rewrite" => "generations#rewrite"
+    post "caption" => "generations#caption"
+  end
+
   # --- acervo da ferramenta -------------------------------------------------
   get "catalog" => "catalog#show"
 

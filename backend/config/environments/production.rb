@@ -43,10 +43,19 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # O default cai num file store em tmp/cache: apagado a cada deploy e NÃO
-  # compartilhado entre o container web e o worker. memory_store é por processo,
-  # mas ao menos é previsível. Trocar por :redis_cache_store quando houver o que cachear.
-  config.cache_store = :memory_store
+  # Redis, e não memory_store, porque o cache passou a guardar coisa que precisa
+  # ser **compartilhada**: a trava de "uma geração por organização" existe para
+  # proteger as threads do Puma, e com WEB_CONCURRENCY: 2 uma trava por processo
+  # protegeria metade do servidor. Banco 2 — 0 é a fila do Sidekiq, 1 é o
+  # ActionCable.
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("CACHE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/2") },
+    # Cache fora do ar não pode derrubar a API: sem Redis a trava simplesmente
+    # não trava, e é melhor assim do que um 500 em toda geração.
+    error_handler: ->(method:, returning:, exception:) {
+      Rails.logger.error("cache #{method}: #{exception.class}")
+    }
+  }
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   # config.active_job.queue_adapter = :resque

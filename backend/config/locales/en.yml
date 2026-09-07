@@ -26,6 +26,10 @@ en:
     email_taken: "That email already has a Vekoo account."
     reset_token_invalid: "This password link has expired or was already used."
 
+  ai:
+    failed: "The generation failed. Try again."
+    busy: "There's already a generation running. Wait for it to finish."
+
   credits:
     no_credits: "You're out of credits."
 

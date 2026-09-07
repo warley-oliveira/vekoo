@@ -30,6 +30,10 @@ pt-BR:
     email_taken: "Esse e-mail já tem conta no Vekoo."
     reset_token_invalid: "Esse link de nova senha venceu ou já foi usado."
 
+  ai:
+    failed: "A geração falhou. Tente de novo."
+    busy: "Já há uma geração em andamento. Espere ela terminar."
+
   credits:
     no_credits: "Seus créditos acabaram."
 

@@ -23,8 +23,11 @@ Rails.application.configure do
     config.action_controller.perform_caching = false
   end
 
-  # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  # Redis também aqui, para a trava de geração se comportar em desenvolvimento
+  # como se comporta em produção (o `bin/dev` já sobe o Redis).
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("CACHE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/2") }
+  }
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local

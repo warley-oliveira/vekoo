@@ -20,7 +20,10 @@ Rails.application.configure do
 
   # Show full error reports.
   config.consider_all_requests_local = true
-  config.cache_store = :null_store
+  # memory_store, e não null_store: há comportamento que **depende** do cache
+  # (a trava de uma geração por organização), e com null_store ele passaria no
+  # teste sem nunca ter funcionado.
+  config.cache_store = :memory_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable

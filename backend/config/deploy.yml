@@ -44,7 +44,9 @@ proxy:
     path: /up
     interval: 3
     timeout: 60                     # boot do Rails + db:prepare numa VPS pequena
-  response_timeout: 60
+  # A geração por IA é um stream longo: 60s cortaria o carrossel no meio. O
+  # `event: start` sai imediatamente, mas o teto precisa caber na geração toda.
+  response_timeout: 300
   buffering:
     requests: true
     max_request_body: 52_428_800    # 50 MB — upload de imagem do editor
@@ -80,10 +82,12 @@ env:
     BACKEND_URL: https://syco.vekoo.app              # URLs absolutas de anexo
     REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable
+    CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2  # Rails.cache (trava da geração)
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - DATABASE_URL
+    - ANTHROPIC_API_KEY
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro
