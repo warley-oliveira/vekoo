@@ -78,7 +78,10 @@ env:
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
     APP_HOSTS: syco.vekoo.app                        # config.hosts
-    FRONTEND_ORIGINS: https://my.vekoo.app           # CORS, sem curinga
+    # CORS, sem curinga — lista explícita. A URL do Worker entra junto porque
+    # a zona vekoo.app vive em outra conta Cloudflare: enquanto o domínio não
+    # for apontado para este Worker, é por workers.dev que o front atende.
+    FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.warleyolf.workers.dev
     BACKEND_URL: https://syco.vekoo.app              # URLs absolutas de anexo
     REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable

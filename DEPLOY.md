@@ -55,7 +55,7 @@ Hardening aplicado ao Rails (`backend/config/`):
 | Arquivo | Mudança | Por quê |
 |---|---|---|
 | `environments/production.rb` | `config.hosts` via `APP_HOSTS` **e** `/up` excluído | Sem a exclusão o healthcheck toma 403 e **todo deploy faz rollback** |
-| `environments/production.rb` | `cache_store = :memory_store` | O default é file store em `tmp/cache`, apagado a cada deploy |
+| `environments/production.rb` | `cache_store = :redis_cache_store` (banco 2) | O cache guarda estado **compartilhado** — a trava de geração e os contadores de tentativa. `memory_store` é por processo, e com `WEB_CONCURRENCY: 2` protegeria metade do servidor |
 | `environments/production.rb` | mailer/`default_url_options` de `BACKEND_URL` | URLs absolutas de anexo apontariam para `example.com` |
 | `initializers/cors.rb` | `FRONTEND_ORIGINS` explícito | `origins '*'` deixa qualquer site dirigir a API pelo navegador de quem está logado |
 | `puma.rb` | `workers` declarado | O arquivo stock não declara — `WEB_CONCURRENCY` não fazia nada |
@@ -324,6 +324,22 @@ pg_restore -d "postgres://..." --clean --if-exists db-AAAAMMDD-HHMMSS.pgdump
   intermitente.
 - **Postgres fixado em `16.10`.** Um bump de major se recusa a subir sobre um
   `PGDATA` existente.
+- **O builder do buildx guarda mount de distro WSL que já morreu.** O Kamal cria
+  um builder `docker-container` chamado `kamal-local-docker-container` e o
+  reaproveita entre deploys. Se o Docker Desktop foi reinstalado ou a distro WSL
+  trocou de nome, o builder guardado aponta para um bind mount que não existe
+  mais e o build morre em `booting buildkit` com *"bind source path does not
+  exist: /run/desktop/mnt/host/wsl/docker-desktop-bind-mounts/Ubuntu-22.04/…"*.
+  Não é erro de rede nem de Dockerfile. A saída é recriar o builder:
+
+  ```bash
+  docker buildx rm kamal-local-docker-container   # o Kamal recria no próximo deploy
+  ```
+
+- **`kamal deploy | tail` esconde a falha.** O código de saída que o shell
+  reporta é o do `tail`, não o do Kamal — um deploy que falhou sai com 0 e
+  parece sucesso. Redirecione para arquivo e cheque o `$?` do próprio `kamal`.
+
 - **O Kamal builda a partir de um CLONE do git, não do working directory.** O
   que não estiver commitado simplesmente não existe no contexto de build — o
   sintoma é `failed to read dockerfile: no such file or directory` mesmo com o
@@ -348,20 +364,51 @@ pg_restore -d "postgres://..." --clean --if-exists db-AAAAMMDD-HHMMSS.pgdump
 
 ---
 
-## 8. Estado atual da integração
+## 8. Estado da integração
 
-O front **ainda não consome a API**: `lib/store.tsx` e `lib/auth.tsx` seguem em
-`localStorage`, e a cadeia `hooks/use-api.ts → lib/api.ts` não é importada por
-nenhuma tela — o bundle de produção nem chega a conter a URL da API (confirmado:
-o rolldown a remove por tree-shaking).
+O front **consome a API**. `lib/auth.tsx` fala com `/login`, `/signup`, `/me` e
+`/password-resets`; a biblioteca, as pastas, a lixeira, o editor, os créditos e
+os avisos passam por hooks SWR sobre `lib/api.ts`; o acervo vem de `/catalog`; a
+geração por IA e o upload de imagem vão para o servidor. `lib/store.tsx` e
+`lib/mock-data.ts` não existem mais.
 
-Consequência prática: depois deste deploy os dois lados estão no ar e saudáveis,
-mas independentes. `my.vekoo.app` funciona sozinho com dados fictícios;
-`syco.vekoo.app` responde e tem os dados semeados. A ligação acontece quando
-`store.tsx`/`auth.tsx` forem rewirados para `useApi` — e aí nenhuma configuração
-de deploy muda, porque `VITE_API_URL` já está no lugar.
+Consequência prática para o deploy: **`my.vekoo.app` agora depende de
+`syco.vekoo.app`**. Antes os dois lados eram independentes e o front funcionava
+sozinho com dados fictícios; agora, se a API cair, a tela de entrada mostra
+"não conseguimos falar com o servidor" com um botão de tentar de novo — e não
+uma biblioteca vazia.
 
----
+`VITE_API_URL` continua sendo a única configuração que liga um lado ao outro, e
+ela já estava no lugar.
+
+### Variáveis que entraram depois do primeiro deploy
+
+| Nome | Onde | Para quê |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `env.secret` do `deploy.yml` + `.env.deploy` | Geração por IA. **Sem ela os endpoints `/ai/*` respondem `failed` com log claro e não cobram crédito** — o resto do produto segue funcionando |
+| `CACHE_REDIS_URL` | `env.clear` do `deploy.yml` | `Rails.cache` (banco 2; 0 é a fila do Sidekiq, 1 o pub/sub do ActionCable) |
+
+### `response_timeout` do proxy subiu para 300s
+
+A geração por IA responde em **SSE**, e um carrossel leva de 5 a 30 segundos. Os
+60s originais cortariam a conexão no meio. O `event: start` sai imediatamente,
+então o tempo até o primeiro byte continua baixo; o teto precisa caber é na
+geração inteira.
+
+> **Buffering é o risco a vigiar aqui.** Entre o Puma e o navegador há Thruster,
+> `kamal-proxy` e Cloudflare. `buffering.max_response_body: 0` (já configurado)
+> desliga o buffer de resposta do proxy, e a API manda `X-Accel-Buffering: no`.
+> Se algum dia os eventos chegarem todos de uma vez no fim, o teste é
+> `curl -N https://syco.vekoo.app/ai/rewrite …` — os eventos têm que sair
+> pingados. O plano B é `app_port: 3000` no `deploy.yml` com
+> `CMD ["./bin/rails","server"]` no Dockerfile, tirando o Thruster do caminho.
+
+### Active Storage
+
+As tabelas `active_storage_*` entraram em UUID, como o resto do banco
+(`config.generators` com `primary_key_type: :uuid`). O volume `vekoo_storage` já
+existia desde o primeiro deploy, então **os anexos sobrevivem a deploy** — mas
+ele precisa entrar no backup, que hoje só leva o Postgres.
 
 ## 9. Checklist do primeiro deploy
 
@@ -372,9 +419,9 @@ de deploy muda, porque `VITE_API_URL` já está no lugar.
 - [x] `bin/deploy-setup` rodado; login como `deploy` confirmado
 - [x] `kamal setup`
 - [x] `curl https://syco.vekoo.app/up` → 200
-- [ ] Projeto no Pages com **Root directory = `frontend`**
-- [ ] `VITE_API_URL` e `NODE_VERSION` nas env vars de Production
-- [ ] `my.vekoo.app` ativo; `curl -I https://my.vekoo.app/login` → 200
+- [x] Front no Cloudflare **Workers** (Worker somente-assets; ver `frontend/wrangler.jsonc`)
+- [x] `VITE_API_URL` e `NODE_VERSION` nas env vars de Production
+- [x] `my.vekoo.app` ativo; `curl -I https://my.vekoo.app/login` → 200
 - [ ] Restore de backup testado uma vez
 
 ---

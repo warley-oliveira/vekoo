@@ -11,6 +11,11 @@
   // por padrão, mas depender de default implícito para a URL de preview é como
   // ficar sem porta de entrada se o default mudar.
   "workers_dev": true,
+
+  // O domínio `my.vekoo.app` NÃO é declarado aqui de propósito: a zona
+  // `vekoo.app` vive em outra conta Cloudflare, e `wrangler deploy` desta conta
+  // falha com "The zone does not exist on your account" ao tentar criar a rota.
+  // O vínculo do domínio é feito no painel da conta dona da zona. Ver DEPLOY.md.
   "assets": {
     "directory": "./dist",
     // Fallback do SPA — ÚNICO mecanismo aqui. Obrigatório com BrowserRouter:
