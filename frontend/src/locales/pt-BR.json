@@ -94,7 +94,10 @@
     "renamed": "Pasta renomeada.",
     "deleted": "Pasta “{{name}}” excluída.",
     "deletedDescription": "Os carrosséis dela voltaram para Meus carrosséis.",
-    "countAria": "{{name}} ({{count}})"
+    "countAria": "{{name}} ({{count}})",
+    "createFailed": "Não deu para criar a pasta. Tente de novo.",
+    "renameFailed": "Não deu para renomear a pasta. Tente de novo.",
+    "deleteFailed": "Não deu para apagar a pasta. Tente de novo."
   },
   "carousels": {
     "cardCount_one": "1 card",
@@ -153,7 +156,13 @@
       "removedFromFolderToast": "Carrossel tirado da pasta.",
       "trashedToast": "“{{title}}” foi para a lixeira.",
       "trashedDescription": "Itens na lixeira somem após 30 dias.",
-      "exportToast": "A exportação chega mais adiante nesta etapa."
+      "exportToast": "A exportação chega mais adiante nesta etapa.",
+      "createFailed": "Não deu para criar o carrossel. Tente de novo.",
+      "renameFailed": "Não deu para renomear. Tente de novo.",
+      "duplicateFailed": "Não deu para duplicar. Tente de novo.",
+      "moveFailed": "Não deu para mover. Tente de novo.",
+      "trashFailed": "Não deu para mandar para a lixeira. Tente de novo.",
+      "favoriteFailed": "Não deu para salvar o favorito. Tente de novo."
     }
   },
   "create": {
@@ -166,7 +175,8 @@
       "second": "Promoção da semana da minha loja de roupas",
       "third": "Como funciona o financiamento do primeiro imóvel"
     },
-    "untitled": "Carrossel sem título"
+    "untitled": "Carrossel sem título",
+    "submitting": "Criando…"
   },
   "editor": {
     "notFoundToast": "Esse carrossel não está mais disponível.",
@@ -556,12 +566,15 @@
     "emptyConfirmTitle": "Esvaziar a lixeira?",
     "emptyConfirmDescription_one": "O item na lixeira será apagado para sempre. Essa ação não pode ser desfeita.",
     "emptyConfirmDescription_other": "Os {{count}} itens na lixeira serão apagados para sempre. Essa ação não pode ser desfeita.",
-    "emptiedToast": "Lixeira esvaziada."
+    "emptiedToast": "Lixeira esvaziada.",
+    "restoreFailed": "Não deu para restaurar. Tente de novo.",
+    "deleteFailed": "Não deu para excluir. Tente de novo.",
+    "emptyFailed": "Não deu para esvaziar a lixeira. Tente de novo."
   },
   "search": {
     "title": "Buscar carrosséis",
-    "placeholder": "Buscar por título ou conteúdo dos cards…",
-    "hint": "Digite para buscar nos seus carrosséis.",
+    "placeholder": "Buscar pelo título do carrossel…",
+    "hint": "Digite para buscar pelo título dos seus carrosséis.",
     "noResults": "Nada encontrado para “{{query}}”.",
     "resultsAria": "Resultados da busca"
   },

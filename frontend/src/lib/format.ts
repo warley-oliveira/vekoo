@@ -27,7 +27,18 @@ export function formatRelative(
 }
 
 /** Dias restantes até o item sumir da lixeira (some após 30 dias). */
-export function daysLeftInTrash(trashedAt: number, now = Date.now()): number {
+/**
+ * Prazo padrão da lixeira, para quem chama sem o valor do catálogo. A fonte da
+ * verdade é o servidor (`trashRetentionDays` em `GET /catalog`), que é quem
+ * apaga de fato — este número é só o palpite de partida.
+ */
+export const TRASH_RETENTION_DAYS = 30
+
+export function daysLeftInTrash(
+  trashedAt: number,
+  now = Date.now(),
+  retentionDays = TRASH_RETENTION_DAYS
+): number {
   const elapsed = Math.floor((now - trashedAt) / DAY)
-  return Math.max(0, 30 - elapsed)
+  return Math.max(0, retentionDays - elapsed)
 }

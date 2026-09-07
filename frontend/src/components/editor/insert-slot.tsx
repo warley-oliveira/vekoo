@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { defaultBlock, type BlockType } from "@/lib/doc"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 /** Menu com os oito tipos — insere um bloco na posição dada e já seleciona. */

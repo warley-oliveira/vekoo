@@ -5,7 +5,7 @@ import { createPortal } from "react-dom"
 import { BLOCK_TYPES } from "@/components/editor/block-types"
 import { activeCard, useEditor } from "@/components/editor/editor-store"
 import { defaultBlock, type BlockType } from "@/lib/doc"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 // O menu "/" — digitar a barra num bloco de texto vazio abre a lista de tipos

@@ -11,6 +11,8 @@ import { ArrowDown, ArrowUp, MoreHorizontal, Star } from "lucide-react"
 import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
 import { CardArt } from "@/components/editor/card-art"
+import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -22,8 +24,8 @@ import {
 } from "@/components/ui/table"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import type { Carousel } from "@/lib/mock-data"
-import { useStore } from "@/lib/store"
+import type { CarouselSummary } from "@/lib/types"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { cn } from "@/lib/utils"
 import type { SortOption } from "@/lib/view-prefs"
 
@@ -32,12 +34,12 @@ import type { SortOption } from "@/lib/view-prefs"
 // ordenável apenas alterna a opção ativa, para grade e lista nunca divergirem.
 
 type CarouselTableProps = {
-  carousels: Carousel[]
+  carousels: CarouselSummary[]
   sort: SortOption
   onSortChange: (sort: SortOption) => void
 }
 
-const columnHelper = createColumnHelper<Carousel>()
+const columnHelper = createColumnHelper<CarouselSummary>()
 
 export function CarouselTable({
   carousels,
@@ -46,7 +48,7 @@ export function CarouselTable({
 }: CarouselTableProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { dispatch } = useStore()
+  const { toggleFavorite } = useCarouselMutations()
   const navigate = useNavigate()
 
   const columns = [
@@ -111,12 +113,11 @@ export function CarouselTable({
                 : t("carousels.favoriteAdd")
             }
             aria-pressed={row.original.favorite}
-            onClick={() =>
-              dispatch({
-                type: "carousel/toggle-favorite",
-                id: row.original.id,
-              })
-            }
+            onClick={() => {
+              toggleFavorite(row.original).catch(() =>
+                toast.error(t("carousels.actions.favoriteFailed"))
+              )
+            }}
           >
             <Star
               className={cn(

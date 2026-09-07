@@ -30,15 +30,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import type { Carousel } from "@/lib/mock-data"
-import { newId, useStore } from "@/lib/store"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useFolders } from "@/hooks/use-folders"
+import type { CarouselSummary } from "@/lib/types"
 
 // Menu de ações de um carrossel — o mesmo na grade, na lista e onde mais
 // aparecer. Excluir manda para a lixeira sem confirmação (é reversível, e o
 // toast traz "Desfazer"); só a exclusão definitiva, na Lixeira, confirma.
 
 type CarouselActionsMenuProps = {
-  carousel: Carousel
+  carousel: CarouselSummary
   trigger: ReactElement
   align?: "start" | "end"
 }
@@ -49,37 +50,52 @@ export function CarouselActionsMenu({
   align = "end",
 }: CarouselActionsMenuProps) {
   const { t } = useTranslation()
-  const { state, dispatch } = useStore()
+  const { folders } = useFolders()
+  const actions = useCarouselMutations()
   const [renameOpen, setRenameOpen] = useState(false)
 
-  function duplicate() {
-    dispatch({
-      type: "carousel/duplicate",
-      id: carousel.id,
-      newId: newId("car"),
-      title: `${carousel.title} (${t("carousels.actions.copySuffix")})`,
-      now: Date.now(),
-    })
-    toast(t("carousels.actions.duplicatedToast", { title: carousel.title }))
+  // O nome da cópia é escolha do servidor (`carousels.copy_suffix`, no idioma
+  // da requisição) — a tela não precisa mais inventá-lo.
+  async function duplicate() {
+    try {
+      await actions.duplicate(carousel.id)
+      toast(t("carousels.actions.duplicatedToast", { title: carousel.title }))
+    } catch {
+      toast.error(t("carousels.actions.duplicateFailed"))
+    }
   }
 
-  function moveTo(folderId: string | null, folderName?: string) {
-    dispatch({ type: "carousel/move", id: carousel.id, folderId })
-    toast(
-      folderId
-        ? t("carousels.actions.movedToast", { name: folderName })
-        : t("carousels.actions.removedFromFolderToast")
-    )
+  async function moveTo(folderId: string | null, folderName?: string) {
+    try {
+      await actions.move(carousel.id, folderId)
+      toast(
+        folderId
+          ? t("carousels.actions.movedToast", { name: folderName })
+          : t("carousels.actions.removedFromFolderToast")
+      )
+    } catch {
+      toast.error(t("carousels.actions.moveFailed"))
+    }
   }
 
-  function moveToTrash() {
-    dispatch({ type: "carousel/trash", id: carousel.id, now: Date.now() })
+  async function moveToTrash() {
+    try {
+      await actions.trash(carousel.id)
+    } catch {
+      toast.error(t("carousels.actions.trashFailed"))
+      return
+    }
     toast(t("carousels.actions.trashedToast", { title: carousel.title }), {
       description: t("carousels.actions.trashedDescription"),
       action: {
         label: t("common.undo"),
-        onClick: () =>
-          dispatch({ type: "carousel/restore", id: carousel.id }),
+        // Desfazer agora é rede, e rede falha: avisar é melhor do que deixar a
+        // pessoa achando que recuperou.
+        onClick: () => {
+          actions
+            .restore(carousel.id)
+            .catch(() => toast.error(t("trash.restoreFailed")))
+        },
       },
     })
   }
@@ -100,12 +116,12 @@ export function CarouselActionsMenu({
               <FolderInput /> {t("carousels.actions.moveToFolder")}
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent className="w-48">
-              {state.folders.length === 0 ? (
+              {!folders || folders.length === 0 ? (
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
                   {t("carousels.actions.noFolders")}
                 </p>
               ) : (
-                state.folders.map((folder) => (
+                folders.map((folder) => (
                   <DropdownMenuItem
                     key={folder.id}
                     disabled={carousel.folderId === folder.id}
@@ -157,20 +173,28 @@ function RenameDialog({
   open,
   onOpenChange,
 }: {
-  carousel: Carousel
+  carousel: CarouselSummary
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const { t } = useTranslation()
-  const { dispatch } = useStore()
+  const { rename } = useCarouselMutations()
   const [title, setTitle] = useState(carousel.title)
-  const valid = title.trim().length > 0
+  const [saving, setSaving] = useState(false)
+  const valid = title.trim().length > 0 && !saving
 
-  function submit() {
+  async function submit() {
     if (!valid) return
-    dispatch({ type: "carousel/rename", id: carousel.id, title: title.trim() })
-    toast(t("carousels.actions.renamedToast"))
-    onOpenChange(false)
+    setSaving(true)
+    try {
+      await rename(carousel.id, title.trim())
+      toast(t("carousels.actions.renamedToast"))
+      onOpenChange(false)
+    } catch {
+      toast.error(t("carousels.actions.renameFailed"))
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (

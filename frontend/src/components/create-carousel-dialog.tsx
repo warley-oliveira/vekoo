@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { ArrowRight, Loader2, Sparkles } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,11 +17,10 @@ import {
 // verdade e abre o editor já gerando — a espera acontece lá, onde os cards
 // aparecem, e não num diálogo parado.
 
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { suggestTheme, suggestTitle } from "@/lib/ai"
-import { emptyCard } from "@/lib/doc"
+import { emptyCard, newId } from "@/lib/doc"
 import i18n from "@/lib/i18n"
-import { newId, useStore } from "@/lib/store"
-import type { Carousel } from "@/lib/mock-data"
 
 const SUGGESTION_KEYS = ["first", "second", "third"] as const
 
@@ -36,29 +36,39 @@ export function createSuggestions(): string[] {
 /**
  * Cria o carrossel a partir da ideia e leva para o editor, que recebe o texto
  * em `location.state` e começa a gerar sozinho.
+ *
+ * Agora é assíncrono: o id vem do servidor, e é ele que compõe a URL do editor.
+ * Por isso a tela precisa mostrar que está trabalhando — daí o `creating`.
  */
-export function useCreateCarousel(): (idea: string, folderId?: string | null) => void {
-  const { dispatch } = useStore()
+export function useCreateCarousel() {
+  const { create } = useCarouselMutations()
   const navigate = useNavigate()
+  const [creating, setCreating] = useState(false)
 
-  return useCallback(
-    (idea: string, folderId: string | null = null) => {
-      const carousel: Carousel = {
-        id: newId("car"),
-        title: suggestTitle(idea) || i18n.t("create.untitled"),
-        format: "4:5",
-        theme: suggestTheme(idea),
-        cards: [emptyCard(newId("card"))],
-        folderId,
-        favorite: false,
-        editedAt: Date.now(),
-        trashedAt: null,
+  const run = useCallback(
+    async (idea: string, folderId: string | null = null) => {
+      setCreating(true)
+      try {
+        const carousel = await create({
+          title: suggestTitle(idea) || i18n.t("create.untitled"),
+          format: "4:5",
+          theme: suggestTheme(idea),
+          cards: [emptyCard(newId("card"))],
+          folderId,
+        })
+        navigate(`/carousels/${carousel.id}/edit`, { state: { generate: idea } })
+        return carousel
+      } catch {
+        toast.error(i18n.t("carousels.actions.createFailed"))
+        return null
+      } finally {
+        setCreating(false)
       }
-      dispatch({ type: "carousel/create", carousel })
-      navigate(`/carousels/${carousel.id}/edit`, { state: { generate: idea } })
     },
-    [dispatch, navigate]
+    [create, navigate]
   )
+
+  return { create: run, creating }
 }
 
 type CreateCarouselDialogProps = {
@@ -71,15 +81,19 @@ export function CreateCarouselDialog({
   onOpenChange,
 }: CreateCarouselDialogProps) {
   const { t } = useTranslation()
-  const create = useCreateCarousel()
+  const { create, creating } = useCreateCarousel()
   const [idea, setIdea] = useState("")
-  const valid = idea.trim().length > 0
+  const valid = idea.trim().length > 0 && !creating
 
-  function submit() {
+  // O diálogo só fecha quando o carrossel existe de verdade: se a criação
+  // falhar, o texto continua aqui para a pessoa tentar de novo sem redigitar.
+  async function submit() {
     if (!valid) return
-    onOpenChange(false)
-    setIdea("")
-    create(idea.trim())
+    const created = await create(idea.trim())
+    if (created) {
+      onOpenChange(false)
+      setIdea("")
+    }
   }
 
   return (
@@ -123,7 +137,15 @@ export function CreateCarouselDialog({
 
         <div className="flex justify-end">
           <Button disabled={!valid} onClick={submit}>
-            <Sparkles /> {t("create.submit")} <ArrowRight />
+            {creating ? (
+              <>
+                <Loader2 className="animate-spin" /> {t("create.submitting")}
+              </>
+            ) : (
+              <>
+                <Sparkles /> {t("create.submit")} <ArrowRight />
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

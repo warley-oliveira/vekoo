@@ -53,7 +53,7 @@ import {
   type TextRole,
 } from "@/lib/doc"
 import type { RewriteIntent } from "@/lib/ai"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 
 // Painel do bloco selecionado. Só ajustes de forma: o conteúdo se edita no
 // card, no lugar.

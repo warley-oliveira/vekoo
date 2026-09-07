@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { defaultBlock, type BlockType } from "@/lib/doc"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 
 // A barra de blocos, à direita. O primeiro item é um "+" que abre a lista
 // nomeada — é ele que diz, sem tooltip nenhuma, para que a barra serve. Os

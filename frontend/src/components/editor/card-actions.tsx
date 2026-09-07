@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 import { activeCard, useEditor } from "@/components/editor/editor-store"
 import { duplicateCard, emptyCard, type CarouselCard } from "@/lib/doc"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 
 // As operações de card num lugar só — a trilha (menu e menu de contexto), o
 // painel do card e os atalhos de teclado chamam exatamente as mesmas funções.

@@ -6,15 +6,17 @@ import { MoreHorizontal, Star } from "lucide-react"
 import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
 import { CardArt } from "@/components/editor/card-art"
+import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import type { Carousel } from "@/lib/mock-data"
-import { useStore } from "@/lib/store"
+import type { CarouselSummary } from "@/lib/types"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { cn } from "@/lib/utils"
 
 type CarouselGridCardProps = {
-  carousel: Carousel
+  carousel: CarouselSummary
   /** Vindo da busca: rola até o card e dá um flash no anel. */
   highlighted?: boolean
 }
@@ -25,7 +27,7 @@ export function CarouselGridCard({
 }: CarouselGridCardProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { dispatch } = useStore()
+  const { toggleFavorite } = useCarouselMutations()
   const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
 
@@ -88,9 +90,11 @@ export function CarouselGridCard({
               : t("carousels.favoriteAdd")
           }
           aria-pressed={carousel.favorite}
-          onClick={() =>
-            dispatch({ type: "carousel/toggle-favorite", id: carousel.id })
-          }
+          onClick={() => {
+            toggleFavorite(carousel).catch(() =>
+              toast.error(t("carousels.actions.favoriteFailed"))
+            )
+          }}
         >
           <Star
             className={cn(

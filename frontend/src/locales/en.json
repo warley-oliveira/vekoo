@@ -94,7 +94,10 @@
     "renamed": "Folder renamed.",
     "deleted": "Folder “{{name}}” deleted.",
     "deletedDescription": "Its carousels went back to My carousels.",
-    "countAria": "{{name}} ({{count}})"
+    "countAria": "{{name}} ({{count}})",
+    "createFailed": "We couldn't create the folder. Try again.",
+    "renameFailed": "We couldn't rename the folder. Try again.",
+    "deleteFailed": "We couldn't delete the folder. Try again."
   },
   "carousels": {
     "cardCount_one": "1 card",
@@ -153,7 +156,13 @@
       "removedFromFolderToast": "Carousel removed from the folder.",
       "trashedToast": "“{{title}}” moved to the trash.",
       "trashedDescription": "Items in the trash disappear after 30 days.",
-      "exportToast": "Exporting arrives later in this stage."
+      "exportToast": "Exporting arrives later in this stage.",
+      "createFailed": "We couldn't create the carousel. Try again.",
+      "renameFailed": "We couldn't rename it. Try again.",
+      "duplicateFailed": "We couldn't duplicate it. Try again.",
+      "moveFailed": "We couldn't move it. Try again.",
+      "trashFailed": "We couldn't move it to the trash. Try again.",
+      "favoriteFailed": "We couldn't save the favorite. Try again."
     }
   },
   "create": {
@@ -166,7 +175,8 @@
       "second": "This week's promotion at my clothing store",
       "third": "How financing your first home actually works"
     },
-    "untitled": "Untitled carousel"
+    "untitled": "Untitled carousel",
+    "submitting": "Creating…"
   },
   "editor": {
     "notFoundToast": "This carousel is no longer available.",
@@ -556,12 +566,15 @@
     "emptyConfirmTitle": "Empty the trash?",
     "emptyConfirmDescription_one": "The item in the trash will be erased for good. This can't be undone.",
     "emptyConfirmDescription_other": "All {{count}} items in the trash will be erased for good. This can't be undone.",
-    "emptiedToast": "Trash emptied."
+    "emptiedToast": "Trash emptied.",
+    "restoreFailed": "We couldn't restore it. Try again.",
+    "deleteFailed": "We couldn't delete it. Try again.",
+    "emptyFailed": "We couldn't empty the trash. Try again."
   },
   "search": {
     "title": "Search carousels",
-    "placeholder": "Search by title or card content…",
-    "hint": "Type to search your carousels.",
+    "placeholder": "Search by carousel title…",
+    "hint": "Type to search your carousels by title.",
     "noResults": "Nothing found for “{{query}}”.",
     "resultsAria": "Search results"
   },

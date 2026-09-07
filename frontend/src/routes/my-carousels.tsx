@@ -7,17 +7,23 @@ import {
   FolderOpen,
   LayoutGrid,
   List,
+  Loader2,
   Sparkles,
   Star,
 } from "lucide-react"
 
 import { CarouselGridCard } from "@/components/carousel-grid-card"
+import {
+  CarouselGridSkeleton,
+  CarouselTableSkeleton,
+} from "@/components/carousel-skeletons"
 import { CarouselTable } from "@/components/carousel-table"
 import {
   createSuggestions,
   useCreateCarousel,
 } from "@/components/create-carousel-dialog"
 import { EmptyState } from "@/components/empty-state"
+import { ErrorState } from "@/components/error-state"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -28,8 +34,9 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useCarousels } from "@/hooks/use-carousels"
+import { useFolders } from "@/hooks/use-folders"
 import { useLanguage } from "@/lib/i18n"
-import { useStore } from "@/lib/store"
 import {
   SORT_OPTIONS,
   sortCarousels,
@@ -45,7 +52,6 @@ const RECENT_WINDOW = 7 * 24 * 3_600_000
 export function MyCarouselsPage() {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { state } = useStore()
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -66,31 +72,46 @@ export function MyCarouselsPage() {
     return () => clearTimeout(timer)
   }, [highlightId, location.pathname, navigate])
 
+  const { folders, isLoading: loadingFolders } = useFolders()
   const folder = params.folderId
-    ? state.folders.find((f) => f.id === params.folderId)
+    ? folders?.find((f) => f.id === params.folderId)
     : undefined
 
-  const active = useMemo(
-    () => state.carousels.filter((c) => c.trashedAt === null),
-    [state.carousels]
-  )
-  const inScope = folder ? active.filter((c) => c.folderId === folder.id) : active
+  // O servidor devolve a pasta já filtrada; abas e ordenação ficam no cliente,
+  // que é onde elas são instantâneas.
+  const { carousels, isLoading, error, reload } = useCarousels({
+    folderId: params.folderId ?? null,
+  })
 
   const filtered = useMemo(() => {
+    if (!carousels) return []
     const now = Date.now()
-    let result = inScope
+    let result = carousels
     if (tab === "recent") {
       result = result.filter((c) => now - c.editedAt < RECENT_WINDOW)
     } else if (tab === "favorites") {
       result = result.filter((c) => c.favorite)
     }
     return sortCarousels(result, sort, language)
-  }, [inScope, tab, sort, language])
+  }, [carousels, tab, sort, language])
 
-  // Pasta apagada / URL inválida → volta para a tela principal
-  if (params.folderId && !folder) return <Navigate to="/" replace />
+  // Pasta apagada / URL inválida → volta para a tela principal. Só depois de a
+  // lista de pastas chegar: antes disso, "não achei" quer dizer "ainda não sei".
+  if (params.folderId && !loadingFolders && folders && !folder) {
+    return <Navigate to="/" replace />
+  }
 
-  const isFirstRun = !folder && active.length === 0
+  if (error) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+        <ErrorState error={error} onRetry={reload} />
+      </div>
+    )
+  }
+
+  // Só depois de carregar: avaliar antes faria o convite de primeiro acesso
+  // piscar para quem tem catorze carrosséis.
+  const isFirstRun = !folder && !isLoading && carousels?.length === 0
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
@@ -155,7 +176,13 @@ export function MyCarouselsPage() {
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {isLoading && !carousels ? (
+            view === "grid" ? (
+              <CarouselGridSkeleton />
+            ) : (
+              <CarouselTableSkeleton />
+            )
+          ) : filtered.length === 0 ? (
             <FilteredEmptyState tab={tab} isFolder={!!folder} />
           ) : view === "grid" ? (
             <motion.div
@@ -203,14 +230,15 @@ export function MyCarouselsPage() {
 // do trabalho, com o campo de descrever já disponível.
 function FirstCarouselHero() {
   const { t } = useTranslation()
-  const create = useCreateCarousel()
+  const { create, creating } = useCreateCarousel()
   const [idea, setIdea] = useState("")
-  const valid = idea.trim().length > 0
+  const valid = idea.trim().length > 0 && !creating
 
-  function submit() {
+  async function submit() {
     if (!valid) return
-    create(idea.trim())
-    setIdea("")
+    // Só limpa o campo se o carrossel nasceu: falhar e apagar o que a pessoa
+    // escreveu seria perder o trabalho dela por causa da rede.
+    if (await create(idea.trim())) setIdea("")
   }
 
   return (
@@ -244,7 +272,7 @@ function FirstCarouselHero() {
             onClick={submit}
             aria-label={t("carousels.hero.submitAria")}
           >
-            <ArrowRight />
+            {creating ? <Loader2 className="animate-spin" /> : <ArrowRight />}
           </Button>
         </div>
 

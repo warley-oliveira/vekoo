@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
-import { SearchIcon } from "lucide-react"
+import { Loader2, SearchIcon } from "lucide-react"
 
 import { CardArt } from "@/components/editor/card-art"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { useApi } from "@/hooks/use-api"
+import { useCarousels } from "@/hooks/use-carousels"
 import { cardPlainText, cardTitle } from "@/lib/doc"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import type { Carousel } from "@/lib/mock-data"
-import { useStore } from "@/lib/store"
+import type { CarouselSummary } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type SearchPaletteProps = {
@@ -17,29 +18,62 @@ type SearchPaletteProps = {
   onOpenChange: (open: boolean) => void
 }
 
-// Busca por título e pelo conteúdo dos cards, com resultados enquanto digita.
-// Abre por ⌘K / Ctrl+K (registrado no AppShell); Esc fecha via Dialog.
+// Busca com resultados enquanto digita. Abre por ⌘K / Ctrl+K (registrado no
+// AppShell); Esc fecha via Dialog.
+//
+// Duas camadas, porque a lista em cache traz só o **primeiro card** de cada
+// carrossel (é o que a grade desenha):
+//
+//   1. instantânea, no que já está em memória — título e capa, sem rede;
+//   2. depois de 250 ms parada, `?q=` no servidor, que busca em todos os
+//      títulos da organização, inclusive os de pastas que a tela nunca abriu.
+//
+// Buscar dentro do texto de todos os cards é pedido para o backend, não para
+// cá: seria carregar a obra inteira no navegador a cada tecla.
+
+const REMOTE_DEBOUNCE = 250
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { state } = useStore()
+  const { carousels } = useCarousels({})
   const navigate = useNavigate()
   const [query, setQuery] = useState("")
+  const [debounced, setDebounced] = useState("")
   const [activeIndex, setActiveIndex] = useState(0)
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     if (open) {
       setQuery("")
+      setDebounced("")
       setActiveIndex(0)
     }
   }, [open])
 
+  useEffect(() => {
+    const trimmed = query.trim()
+    if (!trimmed) {
+      setDebounced("")
+      return
+    }
+    const timer = setTimeout(() => setDebounced(trimmed), REMOTE_DEBOUNCE)
+    return () => clearTimeout(timer)
+  }, [query])
+
+  const { data: remote, isLoading: searching } = useApi<{
+    carousels: CarouselSummary[]
+  }>(debounced ? `/carousels?q=${encodeURIComponent(debounced)}` : null)
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return []
-    const active = state.carousels.filter((c) => c.trashedAt === null)
-    const scored = active
+    // O que veio do servidor entra junto com o que já estava em memória; o id
+    // desempata, para o mesmo carrossel não aparecer duas vezes.
+    const pool = new Map<string, CarouselSummary>()
+    for (const c of carousels ?? []) pool.set(c.id, c)
+    for (const c of remote?.carousels ?? []) pool.set(c.id, c)
+
+    const scored = [...pool.values()]
       .map((carousel) => {
         const inTitle = carousel.title.toLowerCase().includes(q)
         const matchedCard = carousel.cards.find((card) =>
@@ -58,13 +92,13 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
           : 1
     )
     return scored.slice(0, 8)
-  }, [query, state.carousels])
+  }, [query, carousels, remote])
 
   useEffect(() => {
     setActiveIndex(0)
   }, [results.length])
 
-  function openCarousel(carousel: Carousel) {
+  function openCarousel(carousel: CarouselSummary) {
     onOpenChange(false)
     const destination = carousel.folderId ? `/folders/${carousel.folderId}` : "/"
     navigate(destination, { state: { highlight: carousel.id } })
@@ -79,7 +113,13 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
       >
         <DialogTitle className="sr-only">{t("search.title")}</DialogTitle>
         <div className="flex items-center gap-2.5 border-b px-4">
-          <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
+          {/* Gira só enquanto a busca do servidor está em voo: a camada local
+              já respondeu, e um spinner permanente mentiria sobre isso. */}
+          {searching ? (
+            <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" />
+          ) : (
+            <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
+          )}
           <input
             autoFocus
             value={query}

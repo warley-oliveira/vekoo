@@ -32,7 +32,7 @@ import {
   type CarouselCard,
   type TextRole,
 } from "@/lib/doc"
-import { newId } from "@/lib/store"
+import { newId } from "@/lib/doc"
 import { usePersistentState } from "@/lib/view-prefs"
 import { cn } from "@/lib/utils"
 

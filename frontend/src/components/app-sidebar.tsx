@@ -49,11 +49,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useFolderMutations, useFolders } from "@/hooks/use-folders"
+import { InlineError } from "@/components/error-state"
+import { FolderListSkeleton } from "@/components/carousel-skeletons"
 import { initials, useAuth } from "@/lib/auth"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
 import { useCatalog } from "@/lib/catalog"
-import { type Folder } from "@/lib/mock-data"
-import { newId, useStore } from "@/lib/store"
+import type { Folder } from "@/lib/types"
+import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
 export const CAROUSEL_DRAG_TYPE = "application/x-vekoo-carousel"
@@ -73,7 +77,8 @@ export function AppSidebar({
   onNavigate,
 }: AppSidebarProps) {
   const { t } = useTranslation()
-  const { state, dispatch } = useStore()
+  const { state } = useStore()
+  const { move: moveCarousel } = useCarouselMutations()
   const { session, signOut } = useAuth()
   const navigate = useNavigate()
   const remaining = state.credits.total - state.credits.used
@@ -196,8 +201,9 @@ export function AppSidebar({
           onNavigate={onNavigate}
           acceptsDrop
           onDropCarousel={(id) => {
-            dispatch({ type: "carousel/move", id, folderId: null })
-            toast(t("carousels.actions.removedFromFolderToast"))
+            moveCarousel(id, null)
+              .then(() => toast(t("carousels.actions.removedFromFolderToast")))
+              .catch(() => toast.error(t("carousels.actions.moveFailed")))
           }}
         />
         <SidebarButton
@@ -478,23 +484,34 @@ function FoldersSection({
   onNavigate?: () => void
 }) {
   const { t } = useTranslation()
-  const { state, dispatch } = useStore()
+  const { folders, isLoading, error, reload } = useFolders()
+  const { createFolder: create } = useFolderMutations()
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const list = folders ?? []
 
-  function createFolder(name: string, color: string) {
-    const folder: Folder = { id: newId("folder"), name, color }
-    dispatch({ type: "folder/create", folder })
-    setCreating(false)
-    toast(t("folders.created", { name }))
-    navigate(`/folders/${folder.id}`)
-    onNavigate?.()
+  // Não é otimista: a tela navega para /folders/:id logo em seguida, e com um
+  // id inventado essa navegação daria 404.
+  async function createFolder(name: string, color: string) {
+    setSaving(true)
+    try {
+      const folder = await create(name, color)
+      setCreating(false)
+      toast(t("folders.created", { name }))
+      navigate(`/folders/${folder.id}`)
+      onNavigate?.()
+    } catch {
+      toast.error(t("folders.createFailed"))
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (collapsed) {
     return (
       <div className="flex flex-col gap-0.5">
-        {state.folders.map((folder) => (
+        {list.map((folder) => (
           <FolderRow key={folder.id} folder={folder} collapsed onNavigate={onNavigate} />
         ))}
       </div>
@@ -507,7 +524,7 @@ function FoldersSection({
         <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           {t("folders.sectionTitle")}
         </span>
-        {state.folders.length > 0 && !creating && (
+        {list.length > 0 && !creating && (
           <Button
             variant="ghost"
             size="icon-xs"
@@ -521,16 +538,21 @@ function FoldersSection({
       </div>
 
       <div className="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1 pb-2">
-        {state.folders.map((folder) => (
+        {list.map((folder) => (
           <FolderRow key={folder.id} folder={folder} onNavigate={onNavigate} />
         ))}
 
-        {creating ? (
+        {isLoading && !folders ? (
+          <FolderListSkeleton />
+        ) : error ? (
+          <InlineError onRetry={reload} />
+        ) : creating ? (
           <NewFolderForm
             onCancel={() => setCreating(false)}
             onCreate={createFolder}
+            busy={saving}
           />
-        ) : state.folders.length === 0 ? (
+        ) : list.length === 0 ? (
           <div className="mt-1 rounded-lg border border-dashed p-3">
             <p className="text-xs leading-relaxed text-muted-foreground">
               {t("folders.emptyHint")}
@@ -560,13 +582,14 @@ function FolderRow({
   onNavigate?: () => void
 }) {
   const { t } = useTranslation()
-  const { state, dispatch } = useStore()
+  const { renameFolder, deleteFolder } = useFolderMutations()
+  const { move } = useCarouselMutations()
   const navigate = useNavigate()
   const [dragOver, setDragOver] = useState(false)
   const [renaming, setRenaming] = useState(false)
-  const count = state.carousels.filter(
-    (c) => c.folderId === folder.id && c.trashedAt === null
-  ).length
+  // Contado pelo servidor, junto com a lista — a tela não tem mais todos os
+  // carrosséis em memória para contar sozinha.
+  const count = folder.carouselCount
 
   if (renaming) {
     return (
@@ -574,8 +597,9 @@ function FolderRow({
         folder={folder}
         onDone={(name) => {
           if (name && name !== folder.name) {
-            dispatch({ type: "folder/rename", id: folder.id, name })
-            toast(t("folders.renamed"))
+            renameFolder(folder.id, name)
+              .then(() => toast(t("folders.renamed")))
+              .catch(() => toast.error(t("folders.renameFailed")))
           }
           setRenaming(false)
         }}
@@ -599,8 +623,9 @@ function FolderRow({
         setDragOver(false)
         const id = e.dataTransfer.getData(CAROUSEL_DRAG_TYPE)
         if (id) {
-          dispatch({ type: "carousel/move", id, folderId: folder.id })
-          toast(t("carousels.actions.movedToast", { name: folder.name }))
+          move(id, folder.id)
+            .then(() => toast(t("carousels.actions.movedToast", { name: folder.name })))
+            .catch(() => toast.error(t("carousels.actions.moveFailed")))
         }
       }}
       className={({ isActive }) =>
@@ -649,10 +674,13 @@ function FolderRow({
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => {
-                    dispatch({ type: "folder/delete", id: folder.id })
-                    toast(t("folders.deleted", { name: folder.name }), {
-                      description: t("folders.deletedDescription"),
-                    })
+                    deleteFolder(folder.id)
+                      .then(() =>
+                        toast(t("folders.deleted", { name: folder.name }), {
+                          description: t("folders.deletedDescription"),
+                        })
+                      )
+                      .catch(() => toast.error(t("folders.deleteFailed")))
                     navigate("/")
                   }}
                 >
@@ -680,9 +708,12 @@ function FolderRow({
 function NewFolderForm({
   onCancel,
   onCreate,
+  busy = false,
 }: {
   onCancel: () => void
   onCreate: (name: string, color: string) => void
+  /** Criar é ida ao servidor: o botão precisa dizer que está trabalhando. */
+  busy?: boolean
 }) {
   const { t } = useTranslation()
   const { folderColors } = useCatalog()
@@ -691,7 +722,7 @@ function NewFolderForm({
     () => folderColors[1]?.value ?? folderColors[0].value
   )
   const [name, setName] = useState("")
-  const valid = name.trim().length > 0
+  const valid = name.trim().length > 0 && !busy
 
   function submit() {
     if (valid) onCreate(name.trim(), color)

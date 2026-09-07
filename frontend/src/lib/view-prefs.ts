@@ -1,7 +1,5 @@
 import { useState } from "react"
 
-import type { Carousel } from "@/lib/mock-data"
-
 export type SortOption = "recent" | "oldest" | "name-asc" | "name-desc"
 export type ViewMode = "grid" | "list"
 export type FilterTab = "all" | "recent" | "favorites"
@@ -14,12 +12,15 @@ export const SORT_OPTIONS: readonly SortOption[] = [
   "name-desc",
 ]
 
-export function sortCarousels(
-  carousels: Carousel[],
+/** O mínimo para ordenar — serve ao documento inteiro e ao resumo da grade. */
+type Sortable = { title: string; editedAt: number }
+
+export function sortCarousels<T extends Sortable>(
+  carousels: T[],
   sort: SortOption,
   /** Colação depende do idioma: "ç" e acentos não ordenam igual em toda língua. */
   language = "pt-BR"
-): Carousel[] {
+): T[] {
   const sorted = [...carousels]
   switch (sort) {
     case "recent":

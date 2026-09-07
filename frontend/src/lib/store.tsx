@@ -208,9 +208,3 @@ export function useStore(): StoreContextValue {
   if (!ctx) throw new Error("useStore precisa estar dentro de <StoreProvider>")
   return ctx
 }
-
-let idCounter = 0
-export function newId(prefix: string): string {
-  idCounter += 1
-  return `${prefix}-${Date.now().toString(36)}-${idCounter}`
-}

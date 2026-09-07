@@ -19,8 +19,8 @@ import { MobileToolbar } from "@/components/editor/mobile-toolbar"
 import { PropertiesPanel } from "@/components/editor/properties-panel"
 import { ShortcutsDialog } from "@/components/editor/shortcuts-dialog"
 import { MobileTrail, Trail } from "@/components/editor/trail"
-import { duplicateBlock, type Block } from "@/lib/doc"
-import { newId, useStore } from "@/lib/store"
+import { duplicateBlock, newId, type Block } from "@/lib/doc"
+import { useStore } from "@/lib/store"
 
 // O editor vive fora do AppShell de propósito: tela cheia, topo próprio,
 // nada competindo com o card. Três zonas: trilha, canvas e barra de blocos

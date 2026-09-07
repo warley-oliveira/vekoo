@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Info, RotateCcw, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
+import { TrashListSkeleton } from "@/components/carousel-skeletons"
 import { CardArt } from "@/components/editor/card-art"
 import { EmptyState } from "@/components/empty-state"
+import { ErrorState } from "@/components/error-state"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,28 +19,31 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useCarousels } from "@/hooks/use-carousels"
+import { useCatalog } from "@/lib/catalog"
 import { daysLeftInTrash, formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import { useStore } from "@/lib/store"
 
 export function TrashPage() {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { state, dispatch } = useStore()
+  const { trashRetentionDays } = useCatalog()
+  // O servidor já devolve a lixeira na ordem certa (o mais recente primeiro) e
+  // aproveita a visita para apagar de vez o que passou do prazo.
+  const { carousels, isLoading, error, reload } = useCarousels({ trashed: true })
+  const actions = useCarouselMutations()
+  const trashed = carousels ?? []
 
-  const trashed = useMemo(
-    () =>
-      state.carousels
-        .filter((c) => c.trashedAt !== null)
-        .sort((a, b) => (b.trashedAt ?? 0) - (a.trashedAt ?? 0)),
-    [state.carousels]
-  )
-
-  function restore(id: string, title: string) {
-    dispatch({ type: "carousel/restore", id })
-    toast(t("trash.restoredToast", { title }), {
-      description: t("trash.restoredDescription"),
-    })
+  async function restore(id: string, title: string) {
+    try {
+      await actions.restore(id)
+      toast(t("trash.restoredToast", { title }), {
+        description: t("trash.restoredDescription"),
+      })
+    } catch {
+      toast.error(t("trash.restoreFailed"))
+    }
   }
 
   return (
@@ -52,14 +57,20 @@ export function TrashPage() {
           <EmptyTrashButton
             count={trashed.length}
             onConfirm={() => {
-              dispatch({ type: "trash/empty" })
-              toast(t("trash.emptiedToast"))
+              actions
+                .emptyTrash()
+                .then(() => toast(t("trash.emptiedToast")))
+                .catch(() => toast.error(t("trash.emptyFailed")))
             }}
           />
         )}
       </div>
 
-      {trashed.length === 0 ? (
+      {error ? (
+        <ErrorState error={error} onRetry={reload} />
+      ) : isLoading && !carousels ? (
+        <TrashListSkeleton />
+      ) : trashed.length === 0 ? (
         <EmptyState
           icon={<Trash2 className="size-6" />}
           title={t("trash.emptyTitle")}
@@ -68,7 +79,13 @@ export function TrashPage() {
       ) : (
         <ul className="divide-y rounded-lg border">
           {trashed.map((carousel) => {
-            const daysLeft = daysLeftInTrash(carousel.trashedAt ?? 0)
+            // O prazo vem do catálogo: quem apaga é o servidor, então é ele
+            // que diz por quanto tempo o carrossel ainda existe.
+            const daysLeft = daysLeftInTrash(
+              carousel.trashedAt ?? 0,
+              Date.now(),
+              trashRetentionDays
+            )
             return (
               <li key={carousel.id} className="flex items-center gap-4 p-3">
                 <div className="w-12 shrink-0 opacity-70">
@@ -81,7 +98,7 @@ export function TrashPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{carousel.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {t("carousels.cardCount", { count: carousel.cards.length })}{" "}
+                    {t("carousels.cardCount", { count: carousel.cardCount })}{" "}
                     ·{" "}
                     {t("trash.deletedAt", {
                       when: formatRelative(carousel.trashedAt ?? 0, language),
@@ -107,15 +124,16 @@ export function TrashPage() {
                   <DeleteForeverButton
                     title={carousel.title}
                     onConfirm={() => {
-                      dispatch({
-                        type: "carousel/delete-forever",
-                        id: carousel.id,
-                      })
-                      toast(
-                        t("trash.deletedForeverToast", {
-                          title: carousel.title,
-                        })
-                      )
+                      actions
+                        .deleteForever(carousel.id)
+                        .then(() =>
+                          toast(
+                            t("trash.deletedForeverToast", {
+                              title: carousel.title,
+                            })
+                          )
+                        )
+                        .catch(() => toast.error(t("trash.deleteFailed")))
                     }}
                   />
                 </div>

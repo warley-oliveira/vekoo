@@ -437,3 +437,13 @@ export function blockLayoutClass(block: Block): string {
   const width = block.width === "narrow" ? "w-[74%] max-w-full" : ""
   return [spacing, width].filter(Boolean).join(" ")
 }
+
+/**
+ * Id local para card e bloco. Só o **documento** usa isto: id de carrossel e de
+ * pasta vêm do servidor, que é quem sabe se já existe.
+ */
+let idCounter = 0
+export function newId(prefix: string): string {
+  idCounter += 1
+  return `${prefix}-${Date.now().toString(36)}-${idCounter}`
+}
