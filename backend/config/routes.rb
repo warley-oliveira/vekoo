@@ -23,6 +23,10 @@ Rails.application.routes.draw do
 
   delete "trash" => "trash#destroy"
 
+  # Imagem do editor. Só criar: apagar romperia documentos que a usam, e a
+  # galeria "suas imagens" é tela que ainda não existe.
+  resources :uploads, only: :create
+
   resources :notifications, only: :index do
     collection do
       post "read-all", action: :read_all

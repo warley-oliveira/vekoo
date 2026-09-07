@@ -16,6 +16,7 @@ pt-BR:
       invalid: "não parece válido"
       inclusion: "não está na lista"
       incomplete: "está incompleto"
+      too_large: "é grande demais"
       confirmation: "não bate com a confirmação"
       too_short: "é curto demais (mínimo de %{count} caracteres)"
       too_long: "é longo demais (máximo de %{count} caracteres)"
@@ -31,6 +32,10 @@ pt-BR:
 
   credits:
     no_credits: "Seus créditos acabaram."
+
+  uploads:
+    too_large: "A imagem passa do tamanho máximo de %{max}."
+    unsupported_type: "Esse arquivo não é uma imagem JPEG, PNG ou WebP."
 
   carousels:
     copy_suffix: "cópia"

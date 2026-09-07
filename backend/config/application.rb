@@ -41,6 +41,13 @@ module Backend
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # Todo id do projeto é UUID (`gen_random_uuid()`). Dizer isto aqui faz os
+    # geradores — inclusive o do Active Storage — produzirem tabelas coerentes
+    # com o resto do banco, em vez de bigint solto no meio de tudo.
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+
     # i18n — pt-BR é a língua de origem do produto; en existe para a API poder
     # responder no idioma que o cliente pedir (ver ApplicationController).
     config.i18n.available_locales = [ :"pt-BR", :en ]

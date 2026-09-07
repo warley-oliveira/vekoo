@@ -11,6 +11,9 @@ class Account < ApplicationRecord
 
   has_many :sessions, dependent: :destroy
   has_many :password_resets, dependent: :destroy
+  # `nullify` na migration: a conta sai, a imagem fica — o carrossel que a usa
+  # continua de pé.
+  has_many :uploads, dependent: :nullify
 
   has_secure_password
 

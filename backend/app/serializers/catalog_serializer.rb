@@ -31,7 +31,13 @@ class CatalogSerializer < ApplicationSerializer
       aiCosts: AI_COSTS,
       # A tela não crava mais "30 dias" no texto: o prazo é do servidor, que é
       # quem de fato apaga.
-      trashRetentionDays: (Carousel::TRASH_RETENTION / 1.day).to_i
+      trashRetentionDays: (Carousel::TRASH_RETENTION / 1.day).to_i,
+      # O teto do upload é do servidor: a tela não deve mais cravar um número
+      # que veio da época em que a imagem morava no localStorage.
+      uploadLimits: {
+        maxBytes: Upload::MAX_BYTES,
+        contentTypes: Upload::CONTENT_TYPES
+      }
     }
   end
 end

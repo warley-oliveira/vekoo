@@ -11,6 +11,7 @@ class Organization < ApplicationRecord
   has_many :folders, dependent: :destroy
   has_many :carousels, dependent: :destroy
   has_many :notifications, dependent: :destroy
+  has_many :uploads, dependent: :destroy
 
   normalizes :name, with: ->(name) { name.squish }
 

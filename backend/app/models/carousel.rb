@@ -11,6 +11,10 @@ class Carousel < ApplicationRecord
   # ser ela a cravar o prazo.
   TRASH_RETENTION = 30.days
 
+  # Teto do documento serializado. Generoso para texto (oito cards com blocos
+  # dão poucas dezenas de KB) e apertado para quem tentar guardar imagem dentro.
+  MAX_DOCUMENT_BYTES = 1.megabyte
+
   # Ordenações aceitas em `GET /carousels?sort=`. Lista fechada de propósito:
   # `order` com texto de fora é injeção de SQL.
   SORTS = {
@@ -29,6 +33,7 @@ class Carousel < ApplicationRecord
   validates :format, inclusion: { in: FORMATS }
   validate :theme_must_be_complete
   validate :cards_must_be_a_list
+  validate :cards_must_not_be_huge
 
   scope :active, -> { where(trashed_at: nil) }
   scope :trashed, -> { where.not(trashed_at: nil) }
@@ -70,5 +75,14 @@ class Carousel < ApplicationRecord
     return errors.add(:cards, :invalid) unless cards.is_a?(Array)
 
     errors.add(:cards, :invalid) unless cards.all? { |card| card.is_a?(Hash) }
+  end
+
+  # O documento é texto e referência de imagem, nunca a imagem em si. Sem este
+  # teto, nada impede alguém de continuar enfiando data URL em base64 no jsonb
+  # e inchar o banco — que é exatamente o que o upload de verdade veio resolver.
+  def cards_must_not_be_huge
+    return unless cards.is_a?(Array)
+
+    errors.add(:cards, :too_large) if cards.to_json.bytesize > MAX_DOCUMENT_BYTES
   end
 end
