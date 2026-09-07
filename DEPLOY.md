@@ -381,6 +381,50 @@ uma biblioteca vazia.
 `VITE_API_URL` continua sendo a única configuração que liga um lado ao outro, e
 ela já estava no lugar.
 
+### ⚠️ O domínio do front está em outra conta Cloudflare
+
+`wrangler` nesta máquina está logado na conta **Aiva**
+(`17aee35bed892314b81788febc0748f0`, `warleyolf@gmail.com`), e essa conta enxerga
+**uma** zona: `aiva-assets.com`. A zona `vekoo.app` **não está nela**.
+
+O efeito é traiçoeiro: `npx wrangler deploy` publica o Worker com sucesso e
+imprime a URL, mas `my.vekoo.app` continua servindo o bundle anterior. O deploy
+"passa" sem ter mudado nada para quem usa. Declarar a rota no `wrangler.jsonc`
+não resolve — a API recusa com *"The zone vekoo.app does not exist on your
+account"* (código 10083).
+
+Enquanto isso não for resolvido, o endereço vivo do front é:
+
+```
+https://vekoo.warleyolf.workers.dev
+```
+
+E é por isso que `FRONTEND_ORIGINS` lista **duas** origens.
+
+**Como resolver**, na conta que é dona da zona `vekoo.app`:
+
+1. *Workers & Pages* → Worker **vekoo** → *Settings* → *Domains & Routes* →
+   **Add** → *Custom domain* → `my.vekoo.app`.
+2. Ou, se preferir manter tudo em configuração: dê a essa conta acesso ao Worker
+   (ou publique o Worker por ela) e devolva ao `wrangler.jsonc`:
+
+   ```jsonc
+   "routes": [{ "pattern": "my.vekoo.app", "custom_domain": true }]
+   ```
+
+3. Depois, tire `https://vekoo.warleyolf.workers.dev` de `FRONTEND_ORIGINS` no
+   `deploy.yml` e rode `kamal deploy` — a origem de preview não precisa continuar
+   liberada em produção.
+
+> **Um deploy do front só está feito quando o bundle no ar muda.** A conferência
+> é comparar o nome do arquivo servido em `/assets/index-*.js` antes e depois, e
+> confirmar que ele contém a URL da API:
+>
+> ```bash
+> JS=$(curl -s https://vekoo.warleyolf.workers.dev/ | grep -o '/assets/index-[^"]*\.js' | head -1)
+> curl -s "https://vekoo.warleyolf.workers.dev$JS" | grep -c syco.vekoo.app   # > 0
+> ```
+
 ### Variáveis que entraram depois do primeiro deploy
 
 | Nome | Onde | Para quê |
