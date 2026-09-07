@@ -514,7 +514,8 @@
       "errors": {
         "noCredits": "Seus créditos acabaram. Renove para continuar gerando.",
         "failed": "A geração falhou. Tente de novo.",
-        "cancelled": "Geração interrompida."
+        "cancelled": "Geração interrompida.",
+        "busy": "Já há uma geração em andamento. Espere ela terminar."
       },
       "title": "Gerar carrossel com IA",
       "hint": "Enter para gerar · Esc para fechar"

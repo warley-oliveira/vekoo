@@ -61,7 +61,7 @@ export function AiProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   const { state, dispatch } = useEditor()
   const { credits } = useCredits()
-  const { consume, refresh: refreshCredits } = useCreditMutations()
+  const { refresh: refreshCredits } = useCreditMutations()
   const [task, setTask] = useState<AiTask | null>(null)
   const abort = useRef<AbortController | null>(null)
 
@@ -86,10 +86,6 @@ export function AiProvider({ children }: { children: ReactNode }) {
       abort.current = controller
       try {
         await run(controller.signal)
-        // Débito no servidor, depois de entregar. Quando a geração for do
-        // Rails, o débito acontece dentro do endpoint e aqui fica só o
-        // `refreshCredits()` — é por isso que ele mora num ponto só.
-        await consume(cost)
       } catch (error) {
         const code =
           error instanceof AiError
@@ -98,14 +94,16 @@ export function AiProvider({ children }: { children: ReactNode }) {
               ? "noCredits"
               : "failed"
         if (code !== "cancelled") toast.error(t(`editor.ai.errors.${code}`))
-        // Depois de uma falha o saldo verdadeiro é o do servidor.
-        void refreshCredits()
       } finally {
+        // O débito acontece **dentro** do endpoint de geração: reservado na
+        // entrada e estornado se nada útil sair. Aqui só se busca o saldo que
+        // ficou — inclusive quando deu erro, porque pode ter havido estorno.
+        void refreshCredits()
         abort.current = null
         setTask(null)
       }
     },
-    [consume, creditsLeft, refreshCredits, t]
+    [creditsLeft, refreshCredits, t]
   )
 
   const runCarousel = useCallback(

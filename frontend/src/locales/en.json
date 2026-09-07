@@ -514,7 +514,8 @@
       "errors": {
         "noCredits": "You're out of credits. Renew to keep generating.",
         "failed": "Generation failed. Try again.",
-        "cancelled": "Generation stopped."
+        "cancelled": "Generation stopped.",
+        "busy": "There's already a generation running. Wait for it to finish."
       },
       "title": "Generate a carousel with AI",
       "hint": "Enter to generate · Esc to close"

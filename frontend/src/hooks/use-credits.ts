@@ -2,7 +2,6 @@ import { useCallback } from "react"
 import { useSWRConfig } from "swr"
 
 import { useApi } from "@/hooks/use-api"
-import { apiPost } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
 import type { Credits } from "@/lib/types"
 
@@ -33,22 +32,12 @@ export function useCredits() {
 export function useCreditMutations() {
   const { mutate } = useSWRConfig()
 
-  /**
-   * Consumir é decisão do **servidor**: o cliente pede, o servidor confere o
-   * saldo e responde com o novo. Sem saldo vem 422 `noCredits`, que quem chamou
-   * traduz — é isso que impede o saldo de ser "corrigido" no navegador.
-   */
-  const consume = useCallback(
-    async (amount: number): Promise<Credits> => {
-      const credits = await apiPost<Credits>("/credits/consume", { amount })
-      await mutate(KEY, credits, { revalidate: false })
-      return credits
-    },
-    [mutate]
-  )
+  // Não há mais `consume` aqui: o débito acontece **dentro** dos endpoints de
+  // geração, que reservam na entrada e estornam se nada útil sair. Era isso que
+  // impedia o saldo de ser "corrigido" no navegador, e agora nem passa por ele.
 
   /** Depois de uma geração, o saldo verdadeiro é o do servidor. */
   const refresh = useCallback(() => mutate(KEY), [mutate])
 
-  return { consume, refresh }
+  return { refresh }
 }
