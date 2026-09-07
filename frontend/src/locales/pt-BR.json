@@ -37,7 +37,8 @@
       "aria": "Notificações",
       "ariaUnread": "Notificações ({{count}} não lidas)",
       "markAllRead": "Marcar todas como lidas",
-      "empty": "Nenhuma notificação por aqui."
+      "empty": "Nenhuma notificação por aqui.",
+      "loadFailed": "Não deu para carregar os avisos."
     }
   },
   "notifications": {
@@ -70,7 +71,8 @@
     "aria": "{{remaining}} de {{total}} créditos",
     "used": "Créditos usados",
     "upgrade": "Melhorar plano",
-    "upgradeToast": "Planos e upgrade chegam em uma próxima etapa."
+    "upgradeToast": "Planos e upgrade chegam em uma próxima etapa.",
+    "loadFailed": "Não deu para carregar seus créditos."
   },
   "folders": {
     "sectionTitle": "Pastas",
@@ -189,7 +191,9 @@
       "undo": "Desfazer",
       "redo": "Refazer",
       "preview": "Visualizar",
-      "export": "Exportar"
+      "export": "Exportar",
+      "saveFailed": "Não salvou",
+      "retrySave": "Tentar de novo"
     },
     "trail": {
       "label": "Cards do carrossel",
@@ -546,7 +550,9 @@
         "generate": "Gerar com IA",
         "shortcuts": "Ver esta lista"
       }
-    }
+    },
+    "loadErrorTitle": "Não deu para abrir este carrossel",
+    "loadErrorDescription": "A conexão falhou no meio do caminho. Seu trabalho continua salvo."
   },
   "trash": {
     "notice": "Itens na lixeira somem definitivamente após 30 dias.",

@@ -10,6 +10,8 @@ import {
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
+import { ApiError } from "@/lib/api"
+
 import { activeCard, useEditor } from "@/components/editor/editor-store"
 import {
   aiCost,
@@ -27,7 +29,7 @@ import {
   type Block,
   type TextSpan,
 } from "@/lib/doc"
-import { useStore } from "@/lib/store"
+import { useCreditMutations, useCredits } from "@/hooks/use-credits"
 
 // Orquestra a geração dentro do editor: cobra os créditos, consome o fluxo do
 // contrato em lib/ai.ts e vai escrevendo no documento enquanto ele chega.
@@ -58,11 +60,14 @@ const AiContext = createContext<AiContextValue | null>(null)
 export function AiProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   const { state, dispatch } = useEditor()
-  const { state: appState, dispatch: appDispatch } = useStore()
+  const { credits } = useCredits()
+  const { consume, refresh: refreshCredits } = useCreditMutations()
   const [task, setTask] = useState<AiTask | null>(null)
   const abort = useRef<AbortController | null>(null)
 
-  const creditsLeft = appState.credits.total - appState.credits.used
+  // Serve só para habilitar/desabilitar o botão. Quem decide se há saldo é o
+  // servidor: um `left` velho no navegador não pode liberar uma geração.
+  const creditsLeft = credits?.left ?? 0
 
   const cancel = useCallback(() => {
     abort.current?.abort()
@@ -81,16 +86,26 @@ export function AiProvider({ children }: { children: ReactNode }) {
       abort.current = controller
       try {
         await run(controller.signal)
-        appDispatch({ type: "credits/consume", amount: cost })
+        // Débito no servidor, depois de entregar. Quando a geração for do
+        // Rails, o débito acontece dentro do endpoint e aqui fica só o
+        // `refreshCredits()` — é por isso que ele mora num ponto só.
+        await consume(cost)
       } catch (error) {
-        const code = error instanceof AiError ? error.code : "failed"
+        const code =
+          error instanceof AiError
+            ? error.code
+            : error instanceof ApiError && error.code === "noCredits"
+              ? "noCredits"
+              : "failed"
         if (code !== "cancelled") toast.error(t(`editor.ai.errors.${code}`))
+        // Depois de uma falha o saldo verdadeiro é o do servidor.
+        void refreshCredits()
       } finally {
         abort.current = null
         setTask(null)
       }
     },
-    [appDispatch, creditsLeft, t]
+    [consume, creditsLeft, refreshCredits, t]
   )
 
   const runCarousel = useCallback(

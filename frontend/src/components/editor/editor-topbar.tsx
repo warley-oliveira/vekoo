@@ -2,7 +2,15 @@ import { useState } from "react"
 import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence } from "motion/react"
-import { ArrowLeft, Check, Download, Eye, Redo2, Undo2 } from "lucide-react"
+import {
+  ArrowLeft,
+  Check,
+  Download,
+  Eye,
+  Redo2,
+  TriangleAlert,
+  Undo2,
+} from "lucide-react"
 
 import { AiTrigger } from "@/components/editor/ai-bar"
 import { AppearancePopover } from "@/components/editor/appearance-popover"
@@ -19,7 +27,7 @@ import { cn } from "@/lib/utils"
 
 export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
   const { t } = useTranslation()
-  const { state, dispatch, saveState, folderId } = useEditor()
+  const { state, dispatch, saveState, retrySave, folderId } = useEditor()
   const [previewing, setPreviewing] = useState(false)
   const [exporting, setExporting] = useState(false)
 
@@ -41,19 +49,38 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
 
       <TitleField />
 
-      <span
-        role="status"
-        className="hidden shrink-0 items-center gap-1 text-xs text-muted-foreground sm:flex"
-      >
-        {saveState === "saving" ? (
-          t("editor.topbar.saving")
-        ) : (
-          <>
-            <Check className="size-3.5" />
-            {t("editor.topbar.saved")}
-          </>
-        )}
-      </span>
+      {/* Dizer "Salvo" com o servidor fora do ar seria a pior mentira que este
+          editor pode contar — daí o terceiro estado, com saída. */}
+      {saveState === "error" ? (
+        <span
+          role="alert"
+          className="flex shrink-0 items-center gap-1.5 text-xs text-destructive"
+        >
+          <TriangleAlert className="size-3.5" />
+          <span className="hidden sm:inline">{t("editor.topbar.saveFailed")}</span>
+          <button
+            type="button"
+            onClick={retrySave}
+            className="rounded font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {t("editor.topbar.retrySave")}
+          </button>
+        </span>
+      ) : (
+        <span
+          role="status"
+          className="hidden shrink-0 items-center gap-1 text-xs text-muted-foreground sm:flex"
+        >
+          {saveState === "saving" ? (
+            t("editor.topbar.saving")
+          ) : (
+            <>
+              <Check className="size-3.5" />
+              {t("editor.topbar.saved")}
+            </>
+          )}
+        </span>
+      )}
 
       <div className="ml-auto flex items-center gap-1">
         <AiTrigger onClick={onOpenAi} />

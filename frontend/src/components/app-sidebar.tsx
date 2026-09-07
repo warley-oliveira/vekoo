@@ -50,6 +50,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useCredits } from "@/hooks/use-credits"
 import { useFolderMutations, useFolders } from "@/hooks/use-folders"
 import { InlineError } from "@/components/error-state"
 import { FolderListSkeleton } from "@/components/carousel-skeletons"
@@ -57,7 +58,6 @@ import { initials, useAuth } from "@/lib/auth"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
 import { useCatalog } from "@/lib/catalog"
 import type { Folder } from "@/lib/types"
-import { useStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
 export const CAROUSEL_DRAG_TYPE = "application/x-vekoo-carousel"
@@ -77,12 +77,15 @@ export function AppSidebar({
   onNavigate,
 }: AppSidebarProps) {
   const { t } = useTranslation()
-  const { state } = useStore()
+  const { credits } = useCredits()
   const { move: moveCarousel } = useCarouselMutations()
   const { session, signOut } = useAuth()
   const navigate = useNavigate()
-  const remaining = state.credits.total - state.credits.used
-  const usagePercent = (state.credits.used / state.credits.total) * 100
+  // `left` é do servidor: subtrair aqui daria uma segunda opinião sobre o
+  // saldo, e a única que vale é a de quem cobra.
+  const remaining = credits?.left ?? 0
+  const total = credits?.total ?? 0
+  const usagePercent = total > 0 ? (credits!.used / total) * 100 : 0
 
   // A sidebar só existe dentro da sessão (ver RequireAuth), mas o fallback
   // evita qualquer chance de tela branca durante a saída.
@@ -254,7 +257,7 @@ export function AppSidebar({
                   onClick={() => toast(t("credits.upgradeToast"))}
                   aria-label={t("credits.aria", {
                     remaining,
-                    total: state.credits.total,
+                    total,
                   })}
                 />
               }
@@ -262,7 +265,7 @@ export function AppSidebar({
               <Zap />
             </TooltipTrigger>
             <TooltipContent side="right">
-              {t("credits.aria", { remaining, total: state.credits.total })}
+              {t("credits.aria", { remaining, total })}
             </TooltipContent>
           </Tooltip>
         ) : (
@@ -271,7 +274,7 @@ export function AppSidebar({
               <span className="font-medium">
                 <Trans
                   i18nKey="credits.remaining"
-                  values={{ remaining, total: state.credits.total }}
+                  values={{ remaining, total }}
                   components={{
                     muted: <span className="font-normal text-muted-foreground" />,
                   }}

@@ -49,3 +49,19 @@ export function clearToken(): void {
     /* idem */
   }
 }
+
+/**
+ * Restos das etapas em que o produto inteiro morava no navegador. Só apagar:
+ * ninguém lê essas chaves desde que os dados passaram a vir do Rails, e
+ * deixá-las ocupando espaço no armazenamento de quem já usou o protótipo não
+ * ajuda ninguém.
+ */
+const LEGACY_KEYS = ["vekoo.etapa3.v1", "vekoo.etapa1.v1", "vekoo.auth.v1"]
+
+export function dropLegacyStorage(): void {
+  try {
+    for (const key of LEGACY_KEYS) localStorage.removeItem(key)
+  } catch {
+    /* armazenamento indisponível: nada a limpar */
+  }
+}

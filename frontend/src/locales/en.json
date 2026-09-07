@@ -37,7 +37,8 @@
       "aria": "Notifications",
       "ariaUnread": "Notifications ({{count}} unread)",
       "markAllRead": "Mark all as read",
-      "empty": "No notifications here."
+      "empty": "No notifications here.",
+      "loadFailed": "We couldn't load your notifications."
     }
   },
   "notifications": {
@@ -70,7 +71,8 @@
     "aria": "{{remaining}} of {{total}} credits",
     "used": "Credits used",
     "upgrade": "Upgrade plan",
-    "upgradeToast": "Plans and upgrades arrive in a next stage."
+    "upgradeToast": "Plans and upgrades arrive in a next stage.",
+    "loadFailed": "We couldn't load your credits."
   },
   "folders": {
     "sectionTitle": "Folders",
@@ -189,7 +191,9 @@
       "undo": "Undo",
       "redo": "Redo",
       "preview": "Preview",
-      "export": "Export"
+      "export": "Export",
+      "saveFailed": "Not saved",
+      "retrySave": "Try again"
     },
     "trail": {
       "label": "Carousel cards",
@@ -546,7 +550,9 @@
         "generate": "Generate with AI",
         "shortcuts": "See this list"
       }
-    }
+    },
+    "loadErrorTitle": "We couldn't open this carousel",
+    "loadErrorDescription": "The connection dropped along the way. Your work is still saved."
   },
   "trash": {
     "notice": "Items in the trash are deleted for good after 30 days.",

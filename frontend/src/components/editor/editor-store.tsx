@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -16,8 +17,8 @@ import type {
   CarouselFormat,
   CarouselTheme,
 } from "@/lib/doc"
-import type { Carousel } from "@/lib/mock-data"
-import { useStore } from "@/lib/store"
+import type { Carousel } from "@/lib/types"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 
 // Estado local do editor. O documento aberto é a fonte da verdade enquanto a
 // tela existe; o store global só recebe salvamentos grossos (autosave com
@@ -65,7 +66,11 @@ type EditorAction =
   | { type: "history/undo" }
   | { type: "history/redo" }
 
-export type SaveState = "saved" | "saving"
+/**
+ * `error` é novo e não é enfeite: com o mock síncrono o salvamento não podia
+ * falhar. Sem este estado o editor diria "Salvo" com o servidor fora do ar.
+ */
+export type SaveState = "saved" | "saving" | "error"
 
 const HISTORY_LIMIT = 50
 const NO_SELECTION: Selection = { blockId: null, editing: false }
@@ -347,6 +352,8 @@ type EditorContextValue = {
   state: EditorState
   dispatch: (action: EditorAction) => void
   saveState: SaveState
+  /** Tenta gravar de novo depois de uma falha. */
+  retrySave: () => void
   carouselId: string
   folderId: string | null
 }
@@ -362,11 +369,57 @@ export function EditorProvider({
   carousel: Carousel
   children: ReactNode
 }) {
-  const { dispatch: appDispatch } = useStore()
+  const { update } = useCarouselMutations()
   const [state, dispatch] = useReducer(reducer, carousel, initState)
   const [saveState, setSaveState] = useState<SaveState>("saved")
   const skipFirst = useRef(true)
+  /** O documento esperando para ser gravado. */
   const pending = useRef<EditorDoc | null>(null)
+  /** Há um PATCH em voo? */
+  const inFlight = useRef(false)
+  /** O que chegou enquanto o PATCH estava em voo. */
+  const queued = useRef<EditorDoc | null>(null)
+
+  const carouselId = carousel.id
+
+  /**
+   * Grava o documento inteiro.
+   *
+   * A serialização não é zelo: com duas requisições em voo, a que sair primeiro
+   * pode chegar por último e ressuscitar um documento velho por cima do novo.
+   * Isso não existia enquanto o "salvamento" era uma escrita síncrona em
+   * memória.
+   */
+  const save = useCallback(
+    async (doc: EditorDoc) => {
+      if (inFlight.current) {
+        queued.current = doc
+        return
+      }
+      inFlight.current = true
+      setSaveState("saving")
+      try {
+        await update(carouselId, {
+          title: doc.title,
+          format: doc.format,
+          theme: doc.theme,
+          cards: doc.cards,
+        })
+        pending.current = null
+        setSaveState("saved")
+      } catch {
+        // O documento continua pendente: quem edita de novo dispara outra
+        // tentativa, e a barra de cima oferece "tentar de novo".
+        setSaveState("error")
+      } finally {
+        inFlight.current = false
+        const next = queued.current
+        queued.current = null
+        if (next) void save(next)
+      }
+    },
+    [carouselId, update]
+  )
 
   useEffect(() => {
     if (skipFirst.current) {
@@ -375,51 +428,47 @@ export function EditorProvider({
     }
     setSaveState("saving")
     pending.current = state.doc
-    const timer = setTimeout(() => {
-      const doc = state.doc
-      appDispatch({
-        type: "carousel/save-doc",
-        id: carousel.id,
-        title: doc.title,
-        format: doc.format,
-        theme: doc.theme,
-        cards: doc.cards,
-        now: Date.now(),
-      })
-      pending.current = null
-      setSaveState("saved")
-    }, AUTOSAVE_DELAY)
+    const timer = setTimeout(() => void save(state.doc), AUTOSAVE_DELAY)
     return () => clearTimeout(timer)
-  }, [state.doc, appDispatch, carousel.id])
+  }, [state.doc, save])
 
-  // Descarga final: sair do editor com salvamento pendente salva na hora.
+  // Descarga final: sair do editor com salvamento pendente grava na hora. Não
+  // dá para esperar a resposta num cleanup, mas em navegação de SPA a aba
+  // continua viva e a requisição chega.
   useEffect(
     () => () => {
       const doc = pending.current
-      if (!doc) return
-      pending.current = null
-      appDispatch({
-        type: "carousel/save-doc",
-        id: carousel.id,
-        title: doc.title,
-        format: doc.format,
-        theme: doc.theme,
-        cards: doc.cards,
-        now: Date.now(),
-      })
+      if (doc) void save(doc)
     },
-    [appDispatch, carousel.id]
+    [save]
   )
+
+  // Fechar a aba, esse sim, mata a requisição. `keepalive` não salvaria: o teto
+  // de 64 KB é menor que um documento de oito cards.
+  useEffect(() => {
+    function warn(event: BeforeUnloadEvent) {
+      if (!pending.current) return
+      event.preventDefault()
+    }
+    window.addEventListener("beforeunload", warn)
+    return () => window.removeEventListener("beforeunload", warn)
+  }, [])
+
+  const retrySave = useCallback(() => {
+    const doc = pending.current ?? state.doc
+    void save(doc)
+  }, [save, state.doc])
 
   const value = useMemo(
     () => ({
       state,
       dispatch,
       saveState,
+      retrySave,
       carouselId: carousel.id,
       folderId: carousel.folderId,
     }),
-    [state, saveState, carousel.id, carousel.folderId]
+    [state, saveState, retrySave, carousel.id, carousel.folderId]
   )
 
   return (

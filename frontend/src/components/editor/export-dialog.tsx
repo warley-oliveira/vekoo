@@ -20,7 +20,8 @@ import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { FORMAT_RATIOS } from "@/lib/doc"
-import { useStore } from "@/lib/store"
+import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useCarousel } from "@/hooks/use-carousels"
 
 // Exportar de verdade: cada card é redesenhado fora da tela no tamanho que o
 // Instagram publica e vira PNG. O que sai é exatamente o que se editou —
@@ -43,7 +44,8 @@ export function ExportDialog({
 }) {
   const { t } = useTranslation()
   const { state, carouselId } = useEditor()
-  const { state: appState, dispatch: appDispatch } = useStore()
+  const { carousel } = useCarousel(carouselId)
+  const { setCaption: persistCaption } = useCarouselMutations()
   const { captionFor, task, busy } = useAi()
   const stage = useRef<HTMLDivElement>(null)
 
@@ -51,7 +53,6 @@ export function ExportDialog({
   const [done, setDone] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
 
-  const carousel = appState.carousels.find((c) => c.id === carouselId)
   const [caption, setCaption] = useState(carousel?.caption ?? "")
 
   const { cards, theme, format, title } = state.doc
@@ -60,9 +61,13 @@ export function ExportDialog({
   const selected = scope === "all" ? cards : cards.slice(from, from + 1)
   const exporting = done !== null
 
+  // A legenda é digitada e some do diálogo quando ele fecha, então grava a
+  // cada mudança — sem debounce próprio: o campo é curto e a escrita é barata.
+  // Falha aqui é silenciosa de propósito: a legenda não é o trabalho principal
+  // e um toast por tecla seria pior que o problema.
   function saveCaption(value: string) {
     setCaption(value)
-    appDispatch({ type: "carousel/set-caption", id: carouselId, caption: value })
+    persistCaption(carouselId, value).catch(() => {})
   }
 
   async function copyCaption() {

@@ -25,7 +25,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import { useStore } from "@/lib/store"
+import { useFolders } from "@/hooks/use-folders"
+import {
+  useNotificationMutations,
+  useNotifications,
+} from "@/hooks/use-notifications"
+import { InlineError } from "@/components/error-state"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 const SIDEBAR_COLLAPSED_KEY = "vekoo.sidebar.collapsed"
@@ -132,11 +138,11 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
   const { t } = useTranslation()
   const location = useLocation()
   const params = useParams()
-  const { state } = useStore()
+  const { folders } = useFolders()
   const { openCreate } = useShell()
 
   const folder = params.folderId
-    ? state.folders.find((f) => f.id === params.folderId)
+    ? folders?.find((f) => f.id === params.folderId)
     : undefined
 
   let title = t("shell.nav.carousels")
@@ -200,8 +206,8 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
 function NotificationsMenu() {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { state, dispatch } = useStore()
-  const unread = state.notifications.filter((n) => !n.read).length
+  const { notifications, unread, isLoading, error, reload } = useNotifications()
+  const { readAll } = useNotificationMutations()
 
   return (
     <DropdownMenu>
@@ -235,7 +241,7 @@ function NotificationsMenu() {
               <button
                 type="button"
                 className="text-xs font-normal text-accent-foreground hover:underline"
-                onClick={() => dispatch({ type: "notifications/read-all" })}
+                onClick={() => void readAll()}
               >
                 {t("shell.notifications.markAllRead")}
               </button>
@@ -243,12 +249,26 @@ function NotificationsMenu() {
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {state.notifications.length === 0 ? (
+        {isLoading && !notifications ? (
+          <div className="space-y-2 p-2" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex gap-2.5">
+                <Skeleton className="mt-1.5 size-1.5 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-3.5 w-2/3" />
+                  <Skeleton className="h-3 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <InlineError onRetry={reload} />
+        ) : !notifications || notifications.length === 0 ? (
           <p className="px-2 py-4 text-center text-sm text-muted-foreground">
             {t("shell.notifications.empty")}
           </p>
         ) : (
-          state.notifications.map((n) => (
+          notifications.map((n) => (
             <DropdownMenuItem key={n.id} className="items-start gap-2.5 py-2">
               <span
                 className={cn(

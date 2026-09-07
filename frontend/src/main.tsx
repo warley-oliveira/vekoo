@@ -9,8 +9,10 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
 import { CatalogProvider } from '@/lib/catalog'
-import { StoreProvider } from '@/lib/store'
 import { swrConfig } from '@/lib/swr-config'
+import { dropLegacyStorage } from '@/lib/token'
+
+dropLegacyStorage()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,12 +21,10 @@ createRoot(document.getElementById('root')!).render(
         {/* Acima do auth: /catalog é público e as telas de entrada já o usam. */}
         <CatalogProvider>
           <AuthProvider>
-            <StoreProvider>
-              <TooltipProvider>
-                <App />
-                <Toaster position="bottom-right" />
-              </TooltipProvider>
-            </StoreProvider>
+            <TooltipProvider>
+              <App />
+              <Toaster position="bottom-right" />
+            </TooltipProvider>
           </AuthProvider>
         </CatalogProvider>
       </SWRConfig>

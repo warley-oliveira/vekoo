@@ -19,8 +19,11 @@ import { MobileToolbar } from "@/components/editor/mobile-toolbar"
 import { PropertiesPanel } from "@/components/editor/properties-panel"
 import { ShortcutsDialog } from "@/components/editor/shortcuts-dialog"
 import { MobileTrail, Trail } from "@/components/editor/trail"
+import { ErrorState } from "@/components/error-state"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useCarousel } from "@/hooks/use-carousels"
+import { ApiError } from "@/lib/api"
 import { duplicateBlock, newId, type Block } from "@/lib/doc"
-import { useStore } from "@/lib/store"
 
 // O editor vive fora do AppShell de propósito: tela cheia, topo próprio,
 // nada competindo com o card. Três zonas: trilha, canvas e barra de blocos
@@ -28,13 +31,15 @@ import { useStore } from "@/lib/store"
 
 export function EditorPage() {
   const { carouselId } = useParams()
-  const { state } = useStore()
+  // Aqui vem o documento **inteiro** (`GET /carousels/:id`); a biblioteca só
+  // recebe o resumo, com o card 1.
+  const { carousel, isLoading, error, reload } = useCarousel(carouselId)
 
-  const carousel = state.carousels.find(
-    (c) => c.id === carouselId && c.trashedAt === null
-  )
-
-  if (!carousel) return <MissingCarousel />
+  if (isLoading && !carousel) return <EditorSkeleton />
+  // Carrossel que não existe (ou é de outra organização) é 404 — tela própria.
+  // Qualquer outro erro é falha de leitura, e falha de leitura se tenta de novo.
+  if (error instanceof ApiError && error.code === "notFound") return <MissingCarousel />
+  if (error || !carousel) return <EditorLoadError error={error} onRetry={reload} />
 
   return (
     <EditorProvider key={carousel.id} carousel={carousel}>
@@ -42,6 +47,49 @@ export function EditorPage() {
         <EditorShell />
       </AiProvider>
     </EditorProvider>
+  )
+}
+
+/** A moldura do editor enquanto o documento não chegou. */
+function EditorSkeleton() {
+  return (
+    <div className="flex h-dvh flex-col bg-background" aria-hidden>
+      <div className="flex items-center gap-3 border-b px-4 py-2.5">
+        <Skeleton className="h-7 w-28" />
+        <Skeleton className="h-5 w-48" />
+        <Skeleton className="ml-auto h-8 w-24" />
+      </div>
+      <div className="flex min-h-0 flex-1">
+        <div className="hidden w-36 shrink-0 flex-col gap-2 border-r p-3 md:flex">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="aspect-[4/5] w-full rounded-none" />
+          ))}
+        </div>
+        <div className="flex flex-1 items-center justify-center p-6">
+          <Skeleton className="aspect-[4/5] h-full max-h-[70vh] rounded-none" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function EditorLoadError({
+  error,
+  onRetry,
+}: {
+  error: unknown
+  onRetry: () => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <div className="flex h-dvh items-center justify-center p-6">
+      <ErrorState
+        error={error}
+        title={t("editor.loadErrorTitle")}
+        description={t("editor.loadErrorDescription")}
+        onRetry={onRetry}
+      />
+    </div>
   )
 }
 
