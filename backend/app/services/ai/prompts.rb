@@ -35,7 +35,44 @@ module Ai
       "fix" => "Corrija ortografia, gramática e pontuação. Mexa no mínimo: preserve as palavras e o tom de quem escreveu."
     }.freeze
 
+    # O modelo escreve um roteiro, não o documento. Descrever o formato aqui, no
+    # bloco cacheado, é o que mantém a saída previsível sem custar tokens a cada
+    # requisição.
+    CAROUSEL_FORMAT = <<~TEXT.freeze
+      Responda com um **array JSON** e nada mais: sem cerca de markdown, sem
+      explicação antes ou depois.
+
+      Cada item é um card. O primeiro é a capa e aceita:
+        { "kicker": "CHAPÉU CURTO EM CAIXA ALTA",
+          "title": "O título do carrossel",
+          "footer": "@perfil ou nome do negócio" }
+
+      Os demais são cards de conteúdo e aceitam, todos opcionais:
+        { "title": "Título curto do card",
+          "body": "Um parágrafo. Pode ter **negrito**.",
+          "bullets": ["item", "item"],
+          "steps": ["passo", "passo"],
+          "stat": { "value": "3x", "label": "o que esse número significa" },
+          "quote": "uma frase que vale ser destacada",
+          "button": "Chamada curta para ação" }
+
+      Use dois ou três campos por card, no máximo. Card cheio não se lê no
+      celular. Varie: nem todo card precisa de lista.
+
+      O último card fecha — convida a salvar, comentar ou seguir.
+    TEXT
+
     module_function
+
+    def carousel(subject, card_count)
+      <<~TEXT
+        Escreva um carrossel de #{card_count} cards sobre o assunto abaixo.
+
+        #{CAROUSEL_FORMAT}
+
+        Assunto: #{subject}
+      TEXT
+    end
 
     def rewrite(text, intent)
       instruction = REWRITE_INTENTS.fetch(intent, REWRITE_INTENTS["fix"])
@@ -48,6 +85,29 @@ module Ai
 
         Texto:
         #{text}
+      TEXT
+    end
+
+    # A API da Anthropic **não gera imagens**. O que o modelo faz aqui é
+    # *escolher* a arte que combina com o card, entre o que a ferramenta já
+    # sabe desenhar. Gerar foto de verdade é integração de terceiro.
+    def card_image(hint, library_ids)
+      <<~TEXT
+        Escolha a imagem de fundo que combina com o texto deste card.
+
+        Responda com **um JSON e nada mais**, numa destas duas formas:
+
+          {"kind":"art","style":"<estilo>","tint":"<tinta>"}
+          {"kind":"library","id":"<id>"}
+
+        Estilos possíveis: arc, waves, dots, grid, beams, blob.
+        Tintas possíveis: accent, ink, bg.
+        Ids da biblioteca: #{library_ids.join(", ")}.
+
+        Prefira `art` quando o card for direto e o fundo tiver que ficar
+        discreto; prefira `library` quando o assunto pedir cor e clima.
+
+        Texto do card: #{hint}
       TEXT
     end
 

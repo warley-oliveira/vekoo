@@ -40,8 +40,10 @@ Rails.application.routes.draw do
   # Fluxo (SSE): o editor insere card a card, então esperar o documento inteiro
   # ficar pronto tiraria o sentido de esperar.
   scope :ai, module: :ai, as: :ai do
+    post "carousel" => "generations#carousel"
     post "rewrite" => "generations#rewrite"
     post "caption" => "generations#caption"
+    post "card-image" => "generations#card_image"
   end
 
   # --- acervo da ferramenta -------------------------------------------------
