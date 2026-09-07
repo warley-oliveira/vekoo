@@ -381,49 +381,50 @@ uma biblioteca vazia.
 `VITE_API_URL` continua sendo a única configuração que liga um lado ao outro, e
 ela já estava no lugar.
 
-### ⚠️ O domínio do front está em outra conta Cloudflare
+### ⚠️ O front: dois caminhos, e o que sabemos de cada um
 
-`wrangler` nesta máquina está logado na conta **Aiva**
-(`17aee35bed892314b81788febc0748f0`, `warleyolf@gmail.com`), e essa conta enxerga
-**uma** zona: `aiva-assets.com`. A zona `vekoo.app` **não está nela**.
+Há **duas** publicações do front em jogo, e confundi-las custa um deploy que
+parece ter funcionado sem ter mudado nada.
 
-O efeito é traiçoeiro: `npx wrangler deploy` publica o Worker com sucesso e
-imprime a URL, mas `my.vekoo.app` continua servindo o bundle anterior. O deploy
-"passa" sem ter mudado nada para quem usa. Declarar a rota no `wrangler.jsonc`
-não resolve — a API recusa com *"The zone vekoo.app does not exist on your
-account"* (código 10083).
+**1. O Worker desta máquina — `vekoo.warleyolf.workers.dev`.**
+`npx wrangler deploy` daqui publica na conta **Aiva**
+(`17aee35bed892314b81788febc0748f0`, `warleyolf@gmail.com`). Funciona, e é onde a
+versão mais recente do front está viva. Mas essa conta enxerga **uma** zona,
+`aiva-assets.com` — a zona `vekoo.app` **não está nela**. Declarar
+`routes: [{ pattern: "my.vekoo.app", custom_domain: true }]` no
+`wrangler.jsonc` falha com *"The zone vekoo.app does not exist on your account"*
+(código 10083). Por isso o arquivo não declara rota.
 
-Enquanto isso não for resolvido, o endereço vivo do front é:
+**2. O domínio de produção — `my.vekoo.app`.** Servido por outra conta. Não há
+`.github/workflows` no repositório, então quem builda é a própria Cloudflare a
+partir do repositório conectado no painel (era assim que o Passo 6 foi montado).
+**Consequência: o deploy do front é `git push`**, e ele só acontece no
+repositório que o projeto observa.
 
+> **Um `wrangler deploy` bem-sucedido não significa que o site mudou.** Ele
+> publica o Worker da conta em que você está logado. Se `my.vekoo.app` é servido
+> por outra conta, o comando imprime sucesso e o site continua igual.
+
+**A conferência que pega isso**, e que vale fazer sempre depois de publicar:
+
+```bash
+JS=$(curl -s https://my.vekoo.app/ | grep -o '/assets/index-[^"]*\.js' | head -1)
+curl -s "https://my.vekoo.app$JS" | grep -c syco.vekoo.app   # tem que ser > 0
 ```
-https://vekoo.warleyolf.workers.dev
-```
 
-E é por isso que `FRONTEND_ORIGINS` lista **duas** origens.
+O nome do arquivo muda a cada build; se ele **não** mudou, nada foi publicado.
+E se o bundle não contém a URL da API, é uma versão anterior ao rewire — antes
+dele nenhuma tela importava `lib/api.ts`, e o rolldown removia a URL por
+tree-shaking.
 
-**Como resolver**, na conta que é dona da zona `vekoo.app`:
-
-1. *Workers & Pages* → Worker **vekoo** → *Settings* → *Domains & Routes* →
-   **Add** → *Custom domain* → `my.vekoo.app`.
-2. Ou, se preferir manter tudo em configuração: dê a essa conta acesso ao Worker
-   (ou publique o Worker por ela) e devolva ao `wrangler.jsonc`:
-
-   ```jsonc
-   "routes": [{ "pattern": "my.vekoo.app", "custom_domain": true }]
-   ```
-
-3. Depois, tire `https://vekoo.warleyolf.workers.dev` de `FRONTEND_ORIGINS` no
-   `deploy.yml` e rode `kamal deploy` — a origem de preview não precisa continuar
-   liberada em produção.
-
-> **Um deploy do front só está feito quando o bundle no ar muda.** A conferência
-> é comparar o nome do arquivo servido em `/assets/index-*.js` antes e depois, e
-> confirmar que ele contém a URL da API:
->
-> ```bash
-> JS=$(curl -s https://vekoo.warleyolf.workers.dev/ | grep -o '/assets/index-[^"]*\.js' | head -1)
-> curl -s "https://vekoo.warleyolf.workers.dev$JS" | grep -c syco.vekoo.app   # > 0
-> ```
+**Se o push não disparar build**, o projeto está conectado a outro repositório
+(há dois remotos: `origin` → `AndreMatheus29/vekoo`, `origin2` →
+`warley-oliveira/vekoo`). No painel da conta dona de `vekoo.app`:
+*Workers & Pages* → o projeto → *Settings* → *Build* → confira o repositório e o
+branch. Alternativa: apontar `my.vekoo.app` para o Worker `vekoo` desta conta
+(*Domains & Routes* → *Add* → *Custom domain*) — e então tirar
+`https://vekoo.warleyolf.workers.dev` de `FRONTEND_ORIGINS` no `deploy.yml`,
+porque a URL de preview não precisa continuar liberada em produção.
 
 ### Variáveis que entraram depois do primeiro deploy
 
