@@ -85,7 +85,7 @@ RSpec.describe Ai::Chat do
   end
 
   describe "o que é mandado ao modelo" do
-    it "usa Opus 5, pensamento adaptativo e marca o bloco estável para cache" do
+    it "usa Sonnet 5, pensamento adaptativo e marca o bloco estável para cache" do
       messages = double
       client = instance_double(Anthropic::Client)
       allow(client).to receive(:messages).and_return(messages)
@@ -94,7 +94,7 @@ RSpec.describe Ai::Chat do
       described_class.new(client: client).stream_text(system: "voz", prompt: "pedido") { |_| }
 
       expect(messages).to have_received(:stream) do |params|
-        expect(params[:model]).to eq(:"claude-opus-5")
+        expect(params[:model]).to eq(:"claude-sonnet-5")
         # `budget_tokens` foi removido e devolve 400 no Opus 5.
         expect(params[:thinking]).to eq({ type: "adaptive" })
         expect(params).not_to have_key(:budget_tokens)

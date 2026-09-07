@@ -6,7 +6,10 @@ module Ai
     # `::Anthropic` com os dois-pontos em todo lugar: dentro de `module Ai` o
     # Ruby procuraria `Ai::Chat::Anthropic` primeiro e levantaria NameError na
     # hora de casar o `rescue` — mascarando o erro de verdade.
-    MODEL = :"claude-opus-5"
+    # Sonnet 5 por escolha de produto: a geração é curta e frequente, e a
+    # diferença de qualidade não paga a de preço aqui. Trocar por
+    # `claude-opus-5` é uma linha, se um dia os carrosséis pedirem mais.
+    MODEL = :"claude-sonnet-5"
 
     # Sem chave o produto não quebra: o endpoint responde `failed`, registra o
     # motivo e **não cobra crédito**. Melhor do que um 500 sem explicação.
