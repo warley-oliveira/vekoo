@@ -440,11 +440,12 @@
       "uploadTitle": "Solte a imagem aqui",
       "uploadHint": "Ou escolha um arquivo do seu computador.",
       "chooseFile": "Escolher arquivo",
-      "uploadNote": "A imagem é reduzida para no máximo 1600 px e fica guardada neste navegador — nada é enviado para um servidor ainda.",
+      "uploadNote": "A imagem é reduzida para no máximo 1600 px antes de subir, e fica guardada na sua conta.",
       "errors": {
-        "type": "Esse arquivo não é uma imagem.",
-        "tooLarge": "A imagem ficou grande demais para guardar. Tente uma menor.",
-        "decode": "Não foi possível ler essa imagem."
+        "type": "Esse arquivo não é uma imagem JPEG, PNG ou WebP.",
+        "tooLarge": "Essa imagem passa do tamanho máximo. Tente uma menor.",
+        "decode": "Não foi possível ler essa imagem.",
+        "upload": "Não deu para enviar a imagem. Verifique sua conexão e tente de novo."
       },
       "searchPlaceholder": "Buscar na biblioteca…",
       "noResults": "Nenhuma peça com esse nome.",
@@ -462,7 +463,10 @@
         "menta": "Menta",
         "areia": "Areia",
         "meianoite": "Meia-noite"
-      }
+      },
+      "uploading": "Enviando a imagem…",
+      "uploadProgress": "{{percent}}% enviado",
+      "cancelUpload": "Cancelar envio"
     },
     "preview": {
       "label": "Ver o carrossel em sequência",

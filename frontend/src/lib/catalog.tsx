@@ -39,6 +39,12 @@ export type AiCosts = {
   caption: number
 }
 
+export type UploadLimits = {
+  /** Teto por arquivo, em bytes — do servidor, não da tela. */
+  maxBytes: number
+  contentTypes: readonly string[]
+}
+
 export type Catalog = {
   formats: ReadonlyArray<{ id: CarouselFormat; ratio: number }>
   themePresets: readonly ThemePreset[]
@@ -49,6 +55,7 @@ export type Catalog = {
   aiCosts: AiCosts
   /** Quantos dias o carrossel fica na lixeira. Quem apaga é o servidor. */
   trashRetentionDays: number
+  uploadLimits: UploadLimits
 }
 
 /* ---------- os valores de partida ---------- */
@@ -291,6 +298,15 @@ export const FORMATS: ReadonlyArray<{ id: CarouselFormat; ratio: number }> = [
   { id: "1:1", ratio: 1 },
 ]
 
+/**
+ * Teto e tipos aceitos no upload. Os valores de verdade vêm do servidor — este
+ * é só o ponto de partida, para a tela não travar antes do catálogo chegar.
+ */
+export const UPLOAD_LIMITS: UploadLimits = {
+  maxBytes: 10 * 1024 * 1024,
+  contentTypes: ["image/jpeg", "image/png", "image/webp"],
+}
+
 export const DEFAULT_CATALOG: Catalog = {
   formats: FORMATS,
   themePresets: THEME_PRESETS,
@@ -300,6 +316,7 @@ export const DEFAULT_CATALOG: Catalog = {
   extendedPalette: EXTENDED_PALETTE,
   aiCosts: AI_COSTS,
   trashRetentionDays: 30,
+  uploadLimits: UPLOAD_LIMITS,
 }
 
 /* ---------- acesso ---------- */

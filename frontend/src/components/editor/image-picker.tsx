@@ -1,11 +1,15 @@
 import { useMemo, useRef, useState, type DragEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { ImageUp, Loader2, RefreshCw, Search } from "lucide-react"
-import { toast } from "sonner"
 
 import { CardImage } from "@/components/editor/card-image"
 import { OptionTile, Section, Swatch } from "@/components/editor/panel-controls"
 import { Button } from "@/components/ui/button"
+import {
+  Progress,
+  ProgressIndicator,
+  ProgressTrack,
+} from "@/components/ui/progress"
 import {
   Dialog,
   DialogContent,
@@ -22,7 +26,7 @@ import {
   type ImageStyle,
   type ImageTint,
 } from "@/lib/doc"
-import { ImageError, readImageFile } from "@/lib/image"
+import { ImageError, uploadImageFile } from "@/lib/image"
 import { libraryBackground, useCatalog } from "@/lib/catalog"
 import { cn } from "@/lib/utils"
 
@@ -103,19 +107,40 @@ function UploadPane({ onPick }: { onPick: (source: ImageSource) => void }) {
   const { t } = useTranslation()
   const input = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [error, setError] = useState<string | null>(null)
   const [over, setOver] = useState(false)
+  const abort = useRef<AbortController | null>(null)
 
   async function accept(file: File | undefined) {
     if (!file) return
     setBusy(true)
+    setProgress(0)
+    setError(null)
+    const controller = new AbortController()
+    abort.current = controller
     try {
-      onPick(await readImageFile(file))
-    } catch (error) {
-      const code = error instanceof ImageError ? error.code : "decode"
-      toast.error(t(`editor.imagePicker.errors.${code}`))
+      onPick(
+        await uploadImageFile(file, {
+          onProgress: setProgress,
+          signal: controller.signal,
+        })
+      )
+    } catch (caught) {
+      // Cancelar é escolha da pessoa, não erro.
+      if (caught instanceof DOMException && caught.name === "AbortError") return
+      const code = caught instanceof ImageError ? caught.code : "decode"
+      // Erro dentro do painel, e não só em toast: a pessoa está num diálogo, e
+      // o toast some antes de ela entender o que houve.
+      setError(t(`editor.imagePicker.errors.${code}`))
     } finally {
+      abort.current = null
       setBusy(false)
     }
+  }
+
+  function cancel() {
+    abort.current?.abort()
   }
 
   function onDrop(e: DragEvent) {
@@ -145,15 +170,39 @@ function UploadPane({ onPick }: { onPick: (source: ImageSource) => void }) {
         )}
         <div className="space-y-1">
           <p className="text-sm font-medium">
-            {t("editor.imagePicker.uploadTitle")}
+            {busy
+              ? t("editor.imagePicker.uploading")
+              : t("editor.imagePicker.uploadTitle")}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t("editor.imagePicker.uploadHint")}
+            {busy
+              ? t("editor.imagePicker.uploadProgress", { percent: progress })
+              : t("editor.imagePicker.uploadHint")}
           </p>
         </div>
-        <Button size="sm" disabled={busy} onClick={() => input.current?.click()}>
-          {t("editor.imagePicker.chooseFile")}
-        </Button>
+
+        {busy ? (
+          <div className="w-full max-w-56 space-y-2">
+            <Progress value={progress} aria-label={t("editor.imagePicker.uploading")}>
+              <ProgressTrack>
+                <ProgressIndicator />
+              </ProgressTrack>
+            </Progress>
+            <Button variant="ghost" size="sm" onClick={cancel}>
+              {t("editor.imagePicker.cancelUpload")}
+            </Button>
+          </div>
+        ) : (
+          <Button size="sm" onClick={() => input.current?.click()}>
+            {t("editor.imagePicker.chooseFile")}
+          </Button>
+        )}
+
+        {error && (
+          <p role="alert" className="text-xs text-destructive">
+            {error}
+          </p>
+        )}
         <input
           ref={input}
           type="file"

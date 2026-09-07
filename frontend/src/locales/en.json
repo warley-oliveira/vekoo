@@ -440,11 +440,12 @@
       "uploadTitle": "Drop the image here",
       "uploadHint": "Or choose a file from your computer.",
       "chooseFile": "Choose file",
-      "uploadNote": "The image is resized to at most 1600 px and stored in this browser — nothing is sent to a server yet.",
+      "uploadNote": "The image is scaled down to 1600 px before uploading, and is kept in your account.",
       "errors": {
-        "type": "That file is not an image.",
-        "tooLarge": "The image is too large to store. Try a smaller one.",
-        "decode": "That image could not be read."
+        "type": "That file isn't a JPEG, PNG or WebP image.",
+        "tooLarge": "That image is over the size limit. Try a smaller one.",
+        "decode": "That image could not be read.",
+        "upload": "We couldn't upload the image. Check your connection and try again."
       },
       "searchPlaceholder": "Search the library…",
       "noResults": "No piece by that name.",
@@ -462,7 +463,10 @@
         "menta": "Mint",
         "areia": "Sand",
         "meianoite": "Midnight"
-      }
+      },
+      "uploading": "Uploading the image…",
+      "uploadProgress": "{{percent}}% uploaded",
+      "cancelUpload": "Cancel upload"
     },
     "preview": {
       "label": "See the carousel in sequence",

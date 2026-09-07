@@ -168,12 +168,24 @@ export type ImageTint = "accent" | "ink" | "bg"
  * - `art`: desenhada por especificação, sem arquivo — a mesma `seed` desenha
  *   sempre a mesma geometria, nas cores do tema.
  * - `library`: uma peça da biblioteca da ferramenta (ver lib/catalog.tsx).
- * - `upload`: um arquivo da pessoa, já reduzido e guardado como data URL.
+ * - `upload`: um arquivo da pessoa, guardado no servidor. O documento leva o
+ *   `id` (a verdade) e a `url` (conveniência já resolvida). `dataUrl` continua
+ *   aceito, e só: é o formato de quando a imagem morava no localStorage, e
+ *   documentos antigos ainda o trazem.
  */
 export type ImageSource =
   | { kind: "art"; style: ImageStyle; seed: number; tint: ImageTint }
   | { kind: "library"; id: string }
   | {
+      kind: "upload"
+      id: string
+      url: string
+      name: string
+      width: number
+      height: number
+    }
+  | {
+      /** Formato antigo, só de leitura — nada novo nasce assim. */
       kind: "upload"
       dataUrl: string
       name: string
