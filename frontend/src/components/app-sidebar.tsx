@@ -146,7 +146,9 @@ export function AppSidebar({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                signOut()
+                // Navega já: o DELETE /logout é melhor esforço e não deve
+                // segurar a saída se a rede estiver ruim.
+                void signOut()
                 navigate("/login", { replace: true })
                 toast(t("account.signOutToast"))
               }}

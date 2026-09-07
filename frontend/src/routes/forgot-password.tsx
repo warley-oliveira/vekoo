@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trans, useTranslation } from "react-i18next"
 import { Link } from "react-router"
-import { ArrowLeft, Loader2, MailCheck } from "lucide-react"
+import { ArrowLeft, KeyRound, Loader2, MailCheck } from "lucide-react"
 import { z } from "zod"
 
 import { AuthLayout } from "@/components/auth-layout"
@@ -29,6 +29,7 @@ export function ForgotPasswordPage() {
   const { t } = useTranslation()
   const { requestPasswordReset } = useAuth()
   const [sentTo, setSentTo] = useState<string | null>(null)
+  const [devToken, setDevToken] = useState<string | null>(null)
   const schema = useMemo(() => buildSchema(t), [t])
 
   const {
@@ -42,7 +43,11 @@ export function ForgotPasswordPage() {
   })
 
   async function onSubmit(values: FormValues) {
-    await requestPasswordReset(values.email)
+    // O Rails responde 202 exista o e-mail ou não — não vazamos cadastro.
+    const { token } = await requestPasswordReset(values.email)
+    // Ainda não há envio de e-mail: em desenvolvimento o servidor devolve o
+    // token, e é ele que deixa o fluxo inteiro ser exercitado.
+    if (import.meta.env.DEV && token) setDevToken(token)
     setSentTo(values.email.trim())
   }
 
@@ -79,6 +84,21 @@ export function ForgotPasswordPage() {
             {t("auth.forgot.sentNote")}
           </p>
         </div>
+        {devToken && (
+          <div className="mt-4 rounded-lg border border-dashed p-3">
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {t("auth.forgot.devTokenHint")}
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-1.5 -ml-1.5 text-accent-foreground"
+              render={<Link to={`/reset-password/${devToken}`} />}
+            >
+              <KeyRound /> {t("auth.forgot.devTokenOpen")}
+            </Button>
+          </div>
+        )}
         <Button
           variant="outline"
           className="mt-4 h-10 w-full"

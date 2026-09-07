@@ -611,7 +611,9 @@
       "wrongPassword": "Wrong password. Try again.",
       "emailTaken": "That email already has a Vekoo account. Sign in instead?",
       "signInFailed": "Something went wrong signing in. Try again in a moment.",
-      "signUpFailed": "Something went wrong creating your account. Try again in a moment."
+      "signUpFailed": "Something went wrong creating your account. Try again in a moment.",
+      "network": "We couldn't reach the server. Check your connection.",
+      "sessionExpired": "Your session ended. Sign in again to continue."
     },
     "login": {
       "title": "Sign in to Vekoo",
@@ -623,7 +625,7 @@
       "welcomeBack": "Good to see you again, {{name}}!",
       "noAccount": "Don't have an account yet?",
       "createAccount": "Create a free account",
-      "demoHint": "This is a demo version. Sign in with Marina's account to see the app with carousels ready.",
+      "demoHint": "Want to try it first? This example account already comes with carousels.",
       "demoFill": "Fill in the demo account"
     },
     "signup": {
@@ -654,9 +656,44 @@
       "backToLogin": "Back to sign in",
       "sentTitle": "Check your email",
       "sentDescription": "If an account exists for <strong>{{email}}</strong>, we've sent a link to create a new password. It's valid for 1 hour.",
-      "sentNote": "Sending emails arrives together with the backend, in the next stage.",
+      "sentNote": "If there's an account with that email, the password link arrives shortly. It's valid for 2 hours.",
       "notReceived": "Didn't arrive? Check your spam folder or",
-      "tryAnotherEmail": "try another email"
+      "tryAnotherEmail": "try another email",
+      "devTokenHint": "In development there's no email delivery: the server hands the link back directly.",
+      "devTokenOpen": "Open the password link"
+    },
+    "boot": {
+      "failedTitle": "We couldn't reach the server",
+      "failedDescription": "Your session may still be fine — it's the connection to Vekoo that failed. Try again in a moment.",
+      "retry": "Try again"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "description": "Once you change it, you'll sign in with the new one.",
+      "password": "New password",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirm": "Repeat the new password",
+      "confirmPlaceholder": "The same password",
+      "mismatch": "Both passwords need to match.",
+      "submit": "Save new password",
+      "submitting": "Saving…",
+      "doneToast": "Password changed.",
+      "doneDescription": "Sign in with your new password to continue.",
+      "invalidTitle": "This link is no longer valid",
+      "invalidDescription": "Password links last 2 hours and can only be used once. Ask for another.",
+      "requestAgain": "Ask for a new link"
     }
+  },
+  "errors": {
+    "network": "We couldn't reach the server. Check your connection.",
+    "unauthorized": "Your session ended. Sign in again.",
+    "notFound": "We couldn't find what you were looking for.",
+    "unprocessable": "Something in the data doesn't add up.",
+    "parameterMissing": "Some information was missing.",
+    "noCredits": "You're out of credits.",
+    "unknown": "Something went wrong. Try again in a moment.",
+    "retry": "Try again",
+    "loadFailedTitle": "Couldn't load",
+    "loadFailedDescription": "The connection dropped along the way. Try again."
   }
 }

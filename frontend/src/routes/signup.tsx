@@ -73,7 +73,11 @@ export function SignUpPage() {
     } catch (error) {
       if (error instanceof AuthError) {
         const field = error.field === "form" ? "root" : error.field
-        setError(field, { message: t(`auth.errors.${error.code}`) })
+        // A validação de campo é do Rails, e a mensagem dele já vem traduzida
+        // e é mais específica ("é curta demais (mínimo de 8 caracteres)").
+        setError(field, {
+          message: error.serverMessage ?? t(`auth.errors.${error.code}`),
+        })
         return
       }
       setError("root", { message: t("auth.errors.signUpFailed") })

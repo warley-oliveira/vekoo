@@ -611,7 +611,9 @@
       "wrongPassword": "Senha incorreta. Tente de novo.",
       "emailTaken": "Esse e-mail já tem conta no Vekoo. Que tal entrar?",
       "signInFailed": "Algo deu errado ao entrar. Tente de novo em instantes.",
-      "signUpFailed": "Algo deu errado ao criar a conta. Tente de novo em instantes."
+      "signUpFailed": "Algo deu errado ao criar a conta. Tente de novo em instantes.",
+      "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+      "sessionExpired": "Sua sessão terminou. Entre de novo para continuar."
     },
     "login": {
       "title": "Entrar no Vekoo",
@@ -623,7 +625,7 @@
       "welcomeBack": "Que bom te ver de novo, {{name}}!",
       "noAccount": "Ainda não tem conta?",
       "createAccount": "Criar conta grátis",
-      "demoHint": "Esta é uma versão de demonstração. Entre com a conta da Marina para ver o app com carrosséis prontos.",
+      "demoHint": "Quer experimentar antes? Esta conta de exemplo já vem com carrosséis prontos.",
       "demoFill": "Preencher conta de demonstração"
     },
     "signup": {
@@ -654,9 +656,44 @@
       "backToLogin": "Voltar para entrar",
       "sentTitle": "Olhe seu e-mail",
       "sentDescription": "Se existir uma conta em <strong>{{email}}</strong>, enviamos um link para criar uma senha nova. Ele vale por 1 hora.",
-      "sentNote": "O envio de e-mails entra junto com o backend, na próxima etapa.",
+      "sentNote": "Se houver uma conta com esse e-mail, o link de nova senha chega em instantes. Ele vale por 2 horas.",
       "notReceived": "Não chegou? Confira a caixa de spam ou",
-      "tryAnotherEmail": "tente com outro e-mail"
+      "tryAnotherEmail": "tente com outro e-mail",
+      "devTokenHint": "Em desenvolvimento não há envio de e-mail: o servidor devolve o link direto.",
+      "devTokenOpen": "Abrir o link de nova senha"
+    },
+    "boot": {
+      "failedTitle": "Não conseguimos falar com o servidor",
+      "failedDescription": "Sua sessão pode continuar de pé — é a conexão com o Vekoo que falhou. Tente de novo em instantes.",
+      "retry": "Tentar de novo"
+    },
+    "reset": {
+      "title": "Escolha uma nova senha",
+      "description": "Depois de trocar, você entra de novo com ela.",
+      "password": "Nova senha",
+      "passwordPlaceholder": "Pelo menos 8 caracteres",
+      "confirm": "Repita a nova senha",
+      "confirmPlaceholder": "A mesma senha",
+      "mismatch": "As duas senhas precisam ser iguais.",
+      "submit": "Salvar nova senha",
+      "submitting": "Salvando…",
+      "doneToast": "Senha trocada.",
+      "doneDescription": "Entre com a nova senha para continuar.",
+      "invalidTitle": "Este link não vale mais",
+      "invalidDescription": "Links de nova senha valem por 2 horas e só podem ser usados uma vez. Peça outro.",
+      "requestAgain": "Pedir um novo link"
     }
+  },
+  "errors": {
+    "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+    "unauthorized": "Sua sessão terminou. Entre de novo.",
+    "notFound": "Não encontramos o que você procurava.",
+    "unprocessable": "Alguma coisa nos dados não confere.",
+    "parameterMissing": "Faltou uma informação para concluir.",
+    "noCredits": "Seus créditos acabaram.",
+    "unknown": "Algo deu errado. Tente de novo em instantes.",
+    "retry": "Tentar de novo",
+    "loadFailedTitle": "Não deu para carregar",
+    "loadFailedDescription": "A conexão falhou no meio do caminho. Tente de novo."
   }
 }

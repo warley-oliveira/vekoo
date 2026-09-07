@@ -7,6 +7,7 @@ import { EditorPage } from "@/routes/editor"
 import { ForgotPasswordPage } from "@/routes/forgot-password"
 import { LoginPage } from "@/routes/login"
 import { MyCarouselsPage } from "@/routes/my-carousels"
+import { ResetPasswordPage } from "@/routes/reset-password"
 import { SignUpPage } from "@/routes/signup"
 import { TrashPage } from "@/routes/trash"
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       </Route>
 
       {/* Dentro da sessão */}

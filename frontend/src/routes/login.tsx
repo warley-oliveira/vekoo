@@ -7,6 +7,7 @@ import { ArrowRight, Loader2, Wand2 } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
 
+import { safeNext } from "@/components/auth-guard"
 import { AuthLayout } from "@/components/auth-layout"
 import { Field, PasswordInput } from "@/components/form-field"
 import { Button } from "@/components/ui/button"
@@ -33,7 +34,8 @@ export function LoginPage() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const next = searchParams.get("next") ?? "/"
+  // Validado: `next` cru seria redirecionamento aberto (ver auth-guard).
+  const next = safeNext(searchParams.get("next")) ?? "/"
   const schema = useMemo(() => buildSchema(t), [t])
 
   const {
@@ -63,7 +65,11 @@ export function LoginPage() {
           error.field === "email" || error.field === "password"
             ? error.field
             : "root"
-        setError(field, { message: t(`auth.errors.${error.code}`) })
+        // A mensagem do Rails já vem no idioma da requisição e é mais
+        // específica que a nossa quando a validação é dele.
+        setError(field, {
+          message: error.serverMessage ?? t(`auth.errors.${error.code}`),
+        })
         return
       }
       setError("root", { message: t("auth.errors.signInFailed") })
@@ -154,22 +160,24 @@ export function LoginPage() {
         </Button>
       </form>
 
-      {/* Etapa 1 é toda com dados fictícios — então a conta de teste fica à mão. */}
-      <div className="mt-5 rounded-lg border border-dashed p-3">
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          {t("auth.login.demoHint")}
-        </p>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="mt-1.5 -ml-1.5 text-accent-foreground"
-          onClick={fillDemo}
-          disabled={isSubmitting}
-        >
-          <Wand2 /> {t("auth.login.demoFill")}
-        </Button>
-      </div>
+      {/* Só em desenvolvimento: em produção não se anuncia conta de teste. */}
+      {import.meta.env.DEV && (
+        <div className="mt-5 rounded-lg border border-dashed p-3">
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {t("auth.login.demoHint")}
+          </p>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="mt-1.5 -ml-1.5 text-accent-foreground"
+            onClick={fillDemo}
+            disabled={isSubmitting}
+          >
+            <Wand2 /> {t("auth.login.demoFill")}
+          </Button>
+        </div>
+      )}
     </AuthLayout>
   )
 }
