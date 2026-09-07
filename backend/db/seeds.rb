@@ -35,42 +35,11 @@ module VekooSeeds
   # -------------------------------------------------------------------------
   # Documento do carrossel — as mesmas funções de `lib/doc.ts`, em Ruby.
 
-  MARKDOWN = /\*\*(.+?)\*\*|\*(.+?)\*/
-
-  # Junta vizinhos de marcas iguais e descarta os vazios.
-  def normalize_spans(spans)
-    spans.each_with_object([]) do |span, out|
-      next if span["text"].to_s.empty?
-
-      previous = out.last
-      if previous && previous.except("text") == span.except("text")
-        previous["text"] += span["text"]
-      else
-        out << span.dup
-      end
-    end
-  end
-
-  # `**negrito**` e `*itálico*` no conteúdo fictício: a semente escreve como
-  # quem escreve, e o editor recebe trechos de verdade.
-  def spans(text)
-    result = []
-    last = 0
-
-    text.to_enum(:scan, MARKDOWN).each do
-      match = Regexp.last_match
-      result << { "text" => text[last...match.begin(0)] } if match.begin(0) > last
-      result << if match[1]
-        { "text" => match[1], "bold" => true }
-      else
-        { "text" => match[2], "italic" => true }
-      end
-      last = match.end(0)
-    end
-    result << { "text" => text[last..] } if last < text.length
-
-    normalize_spans(result)
-  end
+  # As marcas do texto moram em `lib/doc/spans.rb` — o mesmo código que o
+  # compilador de cards da IA usa, para semente e geração produzirem
+  # exatamente o mesmo documento.
+  def normalize_spans(spans) = Doc::Spans.normalize(spans)
+  def spans(text) = Doc::Spans.from_markdown(text)
 
   # Arte desenhada por especificação, com enquadramento neutro: a mesma semente
   # desenha sempre a mesma geometria, nas cores do tema.

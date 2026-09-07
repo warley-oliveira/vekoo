@@ -6,6 +6,20 @@ class Carousel < ApplicationRecord
   FORMATS = %w[4:5 1:1].freeze
   THEME_KEYS = %w[bg surface ink accent accentInk].freeze
 
+  # Quanto tempo o carrossel fica na lixeira antes de sumir de vez. O número
+  # também sai em `GET /catalog` — a tela promete "some em 30 dias" e não deve
+  # ser ela a cravar o prazo.
+  TRASH_RETENTION = 30.days
+
+  # Ordenações aceitas em `GET /carousels?sort=`. Lista fechada de propósito:
+  # `order` com texto de fora é injeção de SQL.
+  SORTS = {
+    "recent" => { edited_at: :desc },
+    "oldest" => { edited_at: :asc },
+    "title" => { title: :asc },
+    "created" => { created_at: :desc }
+  }.freeze
+
   belongs_to :organization
   belongs_to :folder, optional: true
 
@@ -20,6 +34,8 @@ class Carousel < ApplicationRecord
   scope :trashed, -> { where.not(trashed_at: nil) }
   scope :recent_first, -> { order(edited_at: :desc) }
   scope :trashed_first, -> { order(trashed_at: :desc) }
+  scope :expired_trash, -> { trashed.where(trashed_at: ...TRASH_RETENTION.ago) }
+  scope :sorted_by, ->(key) { order(SORTS.fetch(key.to_s, SORTS["recent"])) }
 
   before_validation :stamp_edited_at, on: :create
 

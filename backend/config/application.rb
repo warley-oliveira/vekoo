@@ -43,8 +43,8 @@ module Backend
 
     # i18n — pt-BR é a língua de origem do produto; en existe para a API poder
     # responder no idioma que o cliente pedir (ver ApplicationController).
-    config.i18n.available_locales = [:"pt-BR", :en]
+    config.i18n.available_locales = [ :"pt-BR", :en ]
     config.i18n.default_locale = :"pt-BR"
-    config.i18n.fallbacks = [:"pt-BR"]
+    config.i18n.fallbacks = [ :"pt-BR" ]
   end
 end

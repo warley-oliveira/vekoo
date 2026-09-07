@@ -28,7 +28,10 @@ class CatalogSerializer < ApplicationSerializer
       },
       accentChoices: PaletteColor.in_group("accent").pluck(:value),
       extendedPalette: PaletteColor.in_group("extended").pluck(:value),
-      aiCosts: AI_COSTS
+      aiCosts: AI_COSTS,
+      # A tela não crava mais "30 dias" no texto: o prazo é do servidor, que é
+      # quem de fato apaga.
+      trashRetentionDays: (Carousel::TRASH_RETENTION / 1.day).to_i
     }
   end
 end

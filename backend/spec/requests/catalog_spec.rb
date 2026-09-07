@@ -18,5 +18,7 @@ RSpec.describe "Catálogo", type: :request do
     expect(json["accentChoices"]).to eq([ "oklch(0.5 0.2 292)" ])
     expect(json["extendedPalette"]).to eq([ "oklch(0.97 0.005 285)" ])
     expect(json["aiCosts"]).to include("carousel" => 5, "rewrite" => 1)
+    # O prazo da lixeira sai daqui para a tela parar de cravar "30 dias" na copy.
+    expect(json["trashRetentionDays"]).to eq(30)
   end
 end

@@ -21,6 +21,11 @@ class SignIn
     return failure("emailNotFound", "email") if account.nil?
     return failure("wrongPassword", "password") unless account.authenticate(@password)
 
+    # Entrar é o único momento garantido em que se toca nas sessões da conta:
+    # aproveitamos para varrer as vencidas, em vez de deixá-las acumulando para
+    # sempre à espera de um agendador que não existe.
+    account.sessions.where(expires_at: ...Time.current).delete_all
+
     Result.new(session: Session.start!(account, user_agent: @user_agent, ip_address: @ip_address))
   end
 

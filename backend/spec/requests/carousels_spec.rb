@@ -46,6 +46,47 @@ RSpec.describe "Carrosséis", type: :request do
 
       expect(json["carousels"]).to be_empty
     end
+
+    it "ordena pelo que a tela pedir" do
+      a = create(:carousel, organization: organization, title: "Abacaxi", edited_at: 1.hour.ago)
+      z = create(:carousel, organization: organization, title: "Zebra", edited_at: 3.days.ago)
+
+      get "/carousels", params: { sort: "title" }, headers: headers
+      expect(json["carousels"].map { |c| c["id"] }).to eq([ a.id, z.id ])
+
+      get "/carousels", params: { sort: "oldest" }, headers: headers
+      expect(json["carousels"].map { |c| c["id"] }).to eq([ z.id, a.id ])
+    end
+
+    it "cai no padrão quando a ordenação é desconhecida, em vez de estourar" do
+      novo = create(:carousel, organization: organization, edited_at: 1.hour.ago)
+      velho = create(:carousel, organization: organization, edited_at: 3.days.ago)
+
+      get "/carousels", params: { sort: "'; DROP TABLE carousels; --" }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(json["carousels"].map { |c| c["id"] }).to eq([ novo.id, velho.id ])
+    end
+
+    it "apaga de vez o que passou do prazo ao abrir a lixeira" do
+      vencido = create(:carousel, :trashed, organization: organization)
+      vencido.update_column(:trashed_at, (Carousel::TRASH_RETENTION + 1.day).ago)
+      recente = create(:carousel, :trashed, organization: organization)
+
+      get "/carousels", params: { trashed: true }, headers: headers
+
+      expect(json["carousels"].map { |c| c["id"] }).to eq([ recente.id ])
+      expect(Carousel.where(id: vencido.id)).not_to exist
+    end
+
+    it "não deixa o prazo da lixeira alcançar o que está fora dela" do
+      ativo = create(:carousel, organization: organization)
+      ativo.update_column(:edited_at, 2.years.ago)
+
+      get "/carousels", params: { trashed: true }, headers: headers
+
+      expect(Carousel.where(id: ativo.id)).to exist
+    end
   end
 
   describe "GET /carousels/:id" do

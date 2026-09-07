@@ -7,6 +7,7 @@ class CarouselsController < AuthenticatedController
   before_action :set_carousel, except: %i[index create]
 
   # GET /carousels?trashed=&folder_id=&favorite=&q=&sort=
+  # `sort` aceita recent (padrão), oldest, title e created.
   def index
     render json: { carousels: CarouselSerializer.many_summaries(scoped_carousels) }
   end
@@ -70,11 +71,28 @@ class CarouselsController < AuthenticatedController
 
   def scoped_carousels
     list = current_organization.carousels
-    list = ActiveModel::Type::Boolean.new.cast(params[:trashed]) ? list.trashed.trashed_first : list.active.recent_first
+
+    if ActiveModel::Type::Boolean.new.cast(params[:trashed])
+      purge_expired_trash
+      list = list.trashed.trashed_first
+    else
+      list = list.active
+      # `sort` só vale para a biblioteca: na lixeira o que importa é o que está
+      # prestes a sumir, e isso é sempre a ordem de quando foi jogado fora.
+      list = params[:sort].present? ? list.sorted_by(params[:sort]) : list.recent_first
+    end
+
     list = list.where(favorite: true) if ActiveModel::Type::Boolean.new.cast(params[:favorite])
     list = list.where(folder_id: params[:folder_id]) if params[:folder_id].present?
     list = list.where("title ILIKE ?", "%#{sanitize_like(params[:q])}%") if params[:q].present?
     list
+  end
+
+  # A tela promete que o que está na lixeira some em 30 dias. Sem agendador,
+  # quem cumpre a promessa é quem abre a lixeira — barato (um DELETE indexado)
+  # e honesto: ninguém vê um item que já deveria ter sumido.
+  def purge_expired_trash
+    current_organization.carousels.expired_trash.destroy_all
   end
 
   def sanitize_like(term)

@@ -5,7 +5,11 @@ default: &default
   port: <%= ENV.fetch("POSTGRES_PORT", 5432) %>
   username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  # +2 porque `ActionController::Live` (o streaming da geração por IA) roda a
+  # action numa thread própria e segura uma segunda conexão enquanto o stream
+  # está aberto. Com o pool igual ao número de threads do Puma, a primeira
+  # geração simultânea derruba o resto com ConnectionTimeoutError.
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 2 %>
 
 development:
   <<: *default
