@@ -9,7 +9,12 @@ import { clearToken, getToken } from "@/lib/token"
 // `message` já vem no idioma da requisição, como rede de segurança para
 // códigos que a tela não enumerou.
 
-export const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
+// Sem VITE_API_URL, a API mora no mesmo host da página (na porta do Rails):
+// é o que faz o app funcionar pela rede local, aberto por IP em outro
+// aparelho, sem gerar um bundle por endereço.
+export const BASE_URL: string =
+  import.meta.env.VITE_API_URL ||
+  `${window.location.protocol}//${window.location.hostname}:${import.meta.env.VITE_RAILS_PORT}`
 
 /**
  * Códigos que a API pode devolver, mais dois sintéticos do cliente
