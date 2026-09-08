@@ -45,11 +45,25 @@ pt-BR:
   carousels:
     copy_suffix: "cópia"
 
+  brand_core:
+    invalid: "Alguma coisa nesta etapa não confere. Confira os campos."
+    incomplete: "Falta preencher o mínimo da marca para publicar."
+    assets:
+      bad_kind: "Esse tipo de ativo não existe."
+      too_large: "O arquivo passa do tamanho máximo de %{max}."
+      unsupported_logo: "O logo precisa ser um PNG com fundo transparente ou um SVG."
+      unsupported_glyph: "O glifo precisa ser um PNG com fundo transparente ou um SVG."
+      unsupported_photo: "Esse arquivo não é uma imagem JPEG, PNG ou WebP."
+      unsupported_font: "Esse arquivo não é uma fonte TTF, OTF ou WOFF2."
+
   activerecord:
     errors:
       models:
         account:
-          attributes:
+            brand_core: "marca"
+      brand_asset: "ativo da marca"
+      brand_core_version: "versão da marca"
+    attributes:
             # "senha" é feminino — a mensagem genérica sairia "curto demais".
             password:
               too_short: "é curta demais (mínimo de %{count} caracteres)"
@@ -78,3 +92,12 @@ pt-BR:
       folder:
         name: "nome"
         color: "cor"
+      brand_core:
+        status: "situação"
+        document: "documento"
+      brand_asset:
+        kind: "tipo"
+        variant: "versão"
+        filename: "arquivo"
+        content_type: "formato"
+        byte_size: "tamanho"

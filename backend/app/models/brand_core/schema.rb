@@ -1,0 +1,300 @@
+# A forma do documento do Brandcore — a fonte única de verdade do lado do
+# servidor. O espelho em TypeScript é `frontend/src/lib/brand-core.ts`: as duas
+# listas de enum abaixo têm que bater com as de lá (a tela traduz os códigos).
+#
+# O documento é um hash de **seções**; a tela salva uma seção inteira por vez
+# (uma etapa do formulário = uma seção). `normalize` recebe o que vier da
+# requisição e devolve só o que a forma conhece, com tipos coerentes;
+# `errors_for` diz o que está inválido, por caminho (`palette.colors.2.hex`).
+module BrandCore::Schema
+  SECTIONS = %w[identity palette typography styles voice facts].freeze
+
+  # Etapas do formulário, na ordem. "assets" não é seção do documento: os
+  # ativos moram em `brand_assets`, mas a etapa existe e conta no progresso.
+  STEPS = %w[identity colors typography styles assets voice facts].freeze
+
+  COLOR_ROLES = %w[
+    darkBackground lightBackground textOnDark textOnLight muted accent campaign
+  ].freeze
+  BACKGROUND_ROLES = { "darkBackground" => "textOnDark", "lightBackground" => "textOnLight" }.freeze
+  HEX = /\A#[0-9a-fA-F]{6}\z/
+
+  FONT_ROLES = %w[display utility].freeze
+  FONT_SOURCES = %w[catalog file system].freeze
+  FONT_WEIGHTS = [ 100, 200, 300, 400, 500, 600, 700, 800, 900 ].freeze
+
+  STYLE_KEYS = %w[kicker title lede body number item footer].freeze
+  STYLE_TRANSFORMS = %w[none uppercase].freeze
+
+  TONES = %w[direct warm playful technical inspiring sober bold educational].freeze
+  QUALITY_RULES = %w[
+    maxOneAntithesis alwaysConcreteData noEmojiRendered noGenericClaims noStackedExclamation
+  ].freeze
+
+  FACT_KINDS = %w[price hours promotion event other].freeze
+  FACT_STATUSES = %w[confirmed pending].freeze
+  WEEKDAYS = %w[mon tue wed thu fri sat sun].freeze
+
+  NETWORKS = %w[instagram tiktok youtube facebook linkedin whatsapp site other].freeze
+
+  # Limites de texto — os mesmos do zod da tela.
+  SHORT = 80
+  LINE = 160
+  PARAGRAPH = 600
+  MAX_LIST = 60
+
+  module_function
+
+  # Estilos com defaults inteligentes: a pessoa ajusta, não cria do zero.
+  def default_styles
+    [
+      style("kicker", font: "utility", size: 14, weight: 600, transform: "uppercase",
+        on_dark: "accent", on_light: "accent"),
+      style("title", font: "display", size: 44, weight: 700),
+      style("lede", font: "display", size: 24, weight: 500),
+      style("body", font: "utility", size: 18, weight: 400),
+      style("number", font: "display", size: 64, weight: 700, on_dark: "accent", on_light: "accent"),
+      style("item", font: "utility", size: 18, weight: 500),
+      style("footer", font: "utility", size: 13, weight: 400, on_dark: "muted", on_light: "muted")
+    ]
+  end
+
+  def style(key, font:, size:, weight:, transform: "none", on_dark: "textOnDark", on_light: "textOnLight")
+    {
+      "key" => key, "font" => font, "size" => size, "weight" => weight,
+      "transform" => transform, "colorOnDark" => on_dark, "colorOnLight" => on_light
+    }
+  end
+
+  def default_document
+    {
+      "identity" => {
+        "name" => "", "segment" => "", "concept" => "", "positioning" => "",
+        "characters" => [], "address" => "", "instagram" => "", "networks" => []
+      },
+      "palette" => { "colors" => [] },
+      "typography" => {
+        "display" => default_font, "utility" => default_font, "rules" => []
+      },
+      "styles" => { "roles" => default_styles },
+      "voice" => {
+        "essence" => "", "tones" => [], "toneNote" => "", "bannedWords" => [],
+        "qualityRules" => QUALITY_RULES.index_with { |rule| rule != "noGenericClaims" },
+        "examples" => []
+      },
+      "facts" => { "items" => [] }
+    }
+  end
+
+  def default_font
+    { "family" => "", "source" => "catalog", "weights" => [ 400, 700 ], "usage" => "", "assetId" => nil }
+  end
+
+  # Documento completo a partir do que está no banco: seções que faltam ganham
+  # o default, para a tela nunca receber `undefined` no meio de um formulário.
+  def complete(document)
+    document = (document || {}).deep_stringify_keys
+    default_document.merge(document.slice(*SECTIONS)) { |_key, default, given|
+      default.merge(given.is_a?(Hash) ? given : {})
+    }
+  end
+
+  # ---------------------------------------------------------------------------
+  # Normalização: o que entra vira a forma conhecida, sem chaves estranhas.
+
+  def normalize_section(section, raw)
+    raw = (raw || {}).deep_stringify_keys
+    case section
+    when "identity" then normalize_identity(raw)
+    when "palette" then normalize_palette(raw)
+    when "typography" then normalize_typography(raw)
+    when "styles" then normalize_styles(raw)
+    when "voice" then normalize_voice(raw)
+    when "facts" then normalize_facts(raw)
+    end
+  end
+
+  def normalize_identity(raw)
+    {
+      "name" => text(raw["name"], SHORT),
+      "segment" => text(raw["segment"], SHORT),
+      "concept" => text(raw["concept"], LINE),
+      "positioning" => text(raw["positioning"], PARAGRAPH),
+      "characters" => items(raw["characters"]) { |c|
+        { "name" => text(c["name"], SHORT), "role" => text(c["role"], LINE) }
+      },
+      "address" => text(raw["address"], LINE),
+      "instagram" => handle(raw["instagram"]),
+      "networks" => items(raw["networks"]) { |n|
+        { "network" => enum(n["network"], NETWORKS, "other"), "handle" => text(n["handle"], LINE) }
+      }
+    }
+  end
+
+  def normalize_palette(raw)
+    {
+      "colors" => items(raw["colors"]) { |c|
+        {
+          "name" => text(c["name"], SHORT),
+          "hex" => text(c["hex"], 9).downcase,
+          "role" => enum(c["role"], COLOR_ROLES, "accent")
+        }
+      }
+    }
+  end
+
+  def normalize_typography(raw)
+    {
+      "display" => normalize_font(raw["display"]),
+      "utility" => normalize_font(raw["utility"]),
+      "rules" => strings(raw["rules"], LINE)
+    }
+  end
+
+  def normalize_font(raw)
+    raw = (raw || {}).deep_stringify_keys
+    weights = Array(raw["weights"]).map(&:to_i).select { |w| FONT_WEIGHTS.include?(w) }.uniq.sort
+    {
+      "family" => text(raw["family"], SHORT),
+      "source" => enum(raw["source"], FONT_SOURCES, "catalog"),
+      "weights" => weights.empty? ? [ 400 ] : weights,
+      "usage" => text(raw["usage"], LINE),
+      "assetId" => raw["assetId"].presence&.to_s
+    }
+  end
+
+  # Os papéis são fixos: a tela ajusta valores, nunca cria ou apaga papéis.
+  def normalize_styles(raw)
+    given = Array(raw["roles"]).map { |r| r.to_h.deep_stringify_keys }.index_by { |r| r["key"] }
+    {
+      "roles" => default_styles.map { |default|
+        role = given[default["key"]] || {}
+        {
+          "key" => default["key"],
+          "font" => enum(role["font"], FONT_ROLES, default["font"]),
+          "size" => clamp(role["size"], 8, 200, default["size"]),
+          "weight" => enum(role["weight"].to_i, FONT_WEIGHTS, default["weight"]),
+          "transform" => enum(role["transform"], STYLE_TRANSFORMS, default["transform"]),
+          "colorOnDark" => enum(role["colorOnDark"], COLOR_ROLES, default["colorOnDark"]),
+          "colorOnLight" => enum(role["colorOnLight"], COLOR_ROLES, default["colorOnLight"])
+        }
+      }
+    }
+  end
+
+  def normalize_voice(raw)
+    rules = (raw["qualityRules"] || {}).to_h.deep_stringify_keys
+    {
+      "essence" => text(raw["essence"], LINE),
+      "tones" => Array(raw["tones"]).map(&:to_s).select { |t| TONES.include?(t) }.uniq,
+      "toneNote" => text(raw["toneNote"], LINE),
+      "bannedWords" => items(raw["bannedWords"]) { |w| { "text" => text(w["text"], SHORT) } },
+      "qualityRules" => QUALITY_RULES.index_with { |rule| rules[rule] == true },
+      "examples" => items(raw["examples"]) { |e| { "text" => text(e["text"], PARAGRAPH) } }
+    }
+  end
+
+  def normalize_facts(raw)
+    {
+      "items" => items(raw["items"]) { |f|
+        kind = enum(f["kind"], FACT_KINDS, "other")
+        item = {
+          "kind" => kind,
+          "label" => text(f["label"], SHORT),
+          "value" => text(f["value"], LINE),
+          "status" => enum(f["status"], FACT_STATUSES, "pending")
+        }
+        if kind == "hours"
+          hours = (f["hours"] || {}).to_h.deep_stringify_keys
+          item["hours"] = WEEKDAYS.index_with { |day| text(hours[day], 40).presence }
+        end
+        item
+      }
+    }
+  end
+
+  # ---------------------------------------------------------------------------
+  # Validação: caminho → código. A tela mostra no campo certo.
+
+  def errors_for(section, data)
+    errors = []
+    case section
+    when "identity"
+      errors << [ "identity.name", :blank ] if data["name"].blank?
+      each_item(data["characters"], "identity.characters", errors) { |c, path|
+        errors << [ "#{path}.name", :blank ] if c["name"].blank?
+      }
+      each_item(data["networks"], "identity.networks", errors) { |n, path|
+        errors << [ "#{path}.handle", :blank ] if n["handle"].blank?
+      }
+    when "palette"
+      each_item(data["colors"], "palette.colors", errors) { |c, path|
+        errors << [ "#{path}.hex", :invalid ] unless c["hex"].match?(HEX)
+        errors << [ "#{path}.name", :blank ] if c["name"].blank?
+      }
+    when "typography"
+      FONT_ROLES.each do |role|
+        font = data[role]
+        errors << [ "typography.#{role}.assetId", :blank ] if font["source"] == "file" && font["assetId"].blank?
+      end
+    when "voice"
+      each_item(data["bannedWords"], "voice.bannedWords", errors) { |w, path|
+        errors << [ "#{path}.text", :blank ] if w["text"].blank?
+      }
+    when "facts"
+      each_item(data["items"], "facts.items", errors) { |f, path|
+        errors << [ "#{path}.label", :blank ] if f["label"].blank?
+        errors << [ "#{path}.value", :blank ] if f["value"].blank? && f["kind"] != "hours"
+      }
+    end
+    errors
+  end
+
+  # As regras da paleta que valem para a completude (não bloqueiam o rascunho:
+  # a pessoa pode salvar uma cor só e voltar depois).
+  def palette_rules(palette)
+    roles = Array(palette["colors"]).select { |c| c["hex"].to_s.match?(HEX) }.map { |c| c["role"] }
+    backgrounds = roles & BACKGROUND_ROLES.keys
+    {
+      "background" => backgrounds.any?,
+      "textPerBackground" => backgrounds.any? && backgrounds.all? { |bg| roles.include?(BACKGROUND_ROLES[bg]) },
+      "accent" => roles.include?("accent")
+    }
+  end
+
+  # ---------------------------------------------------------------------------
+
+  def text(value, max)
+    value.to_s.strip.first(max)
+  end
+
+  def handle(value)
+    text(value, SHORT).delete_prefix("@")
+  end
+
+  def enum(value, allowed, default)
+    allowed.include?(value) ? value : default
+  end
+
+  def clamp(value, min, max, default)
+    number = Integer(value, exception: false)
+    number ? number.clamp(min, max) : default
+  end
+
+  def strings(list, max)
+    Array(list).map { |s| text(s, max) }.reject(&:blank?).first(MAX_LIST)
+  end
+
+  # Lista de itens com id: mantém o id que a tela deu (é como ela casa o erro
+  # com a linha certa) e inventa um se faltar.
+  def items(list)
+    Array(list).first(MAX_LIST).map { |raw|
+      raw = raw.to_h.deep_stringify_keys
+      { "id" => raw["id"].presence&.to_s || SecureRandom.uuid }.merge(yield(raw))
+    }
+  end
+
+  def each_item(list, base, _errors)
+    Array(list).each_with_index { |item, index| yield item, "#{base}.#{index}" }
+  end
+end

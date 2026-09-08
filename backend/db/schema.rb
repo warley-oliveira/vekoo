@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_08_172231) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,52 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "brand_assets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "brand_core_id", null: false
+    t.bigint "byte_size", null: false
+    t.string "content_type", null: false
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.integer "height"
+    t.string "kind", null: false
+    t.uuid "organization_id", null: false
+    t.boolean "transparent"
+    t.datetime "updated_at", null: false
+    t.string "variant"
+    t.integer "width"
+    t.index ["account_id"], name: "index_brand_assets_on_account_id"
+    t.index ["brand_core_id", "kind", "created_at"], name: "index_brand_assets_on_brand_core_id_and_kind_and_created_at"
+    t.index ["brand_core_id"], name: "index_brand_assets_on_brand_core_id"
+    t.index ["organization_id"], name: "index_brand_assets_on_organization_id"
+  end
+
+  create_table "brand_core_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "brand_core_id", null: false
+    t.jsonb "change_list", default: [], null: false
+    t.datetime "created_at", null: false
+    t.integer "number", null: false
+    t.jsonb "snapshot", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_brand_core_versions_on_account_id"
+    t.index ["brand_core_id", "number"], name: "index_brand_core_versions_on_brand_core_id_and_number", unique: true
+    t.index ["brand_core_id"], name: "index_brand_core_versions_on_brand_core_id"
+  end
+
+  create_table "brand_cores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "current_version", default: 0, null: false
+    t.jsonb "document", default: {}, null: false
+    t.uuid "organization_id", null: false
+    t.jsonb "progress", default: {}, null: false
+    t.datetime "published_at"
+    t.jsonb "published_document"
+    t.string "status", default: "draft", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_brand_cores_on_organization_id", unique: true
   end
 
   create_table "carousels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -176,6 +222,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
   add_foreign_key "accounts", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "brand_assets", "accounts", on_delete: :nullify
+  add_foreign_key "brand_assets", "brand_cores"
+  add_foreign_key "brand_assets", "organizations"
+  add_foreign_key "brand_core_versions", "accounts", on_delete: :nullify
+  add_foreign_key "brand_core_versions", "brand_cores"
+  add_foreign_key "brand_cores", "organizations"
   add_foreign_key "carousels", "folders", on_delete: :nullify
   add_foreign_key "carousels", "organizations"
   add_foreign_key "folders", "organizations"

@@ -36,6 +36,19 @@ Rails.application.routes.draw do
   get  "credits"         => "credits#show"
   post "credits/consume" => "credits#consume"
 
+  # --- a marca -----------------------------------------------------------------
+  # Recurso singular: um Brandcore por organização. O rascunho salva seção a
+  # seção (PATCH); só `publish` exige o mínimo obrigatório.
+  get    "brand-core"            => "brand_cores#show"
+  patch  "brand-core"            => "brand_cores#update"
+  post   "brand-core/publish"    => "brand_cores#publish"
+  get    "brand-core/versions"   => "brand_core_versions#index"
+  post   "brand-core/assets"     => "brand_assets#create"
+  delete "brand-core/assets/:id" => "brand_assets#destroy"
+
+  # WebSocket dos avisos ao vivo (`BrandCoreChannel`). Autentica por `?token=`.
+  mount ActionCable.server => "/cable"
+
   # --- geração ---------------------------------------------------------------
   # Fluxo (SSE): o editor insere card a card, então esperar o documento inteiro
   # ficar pronto tiraria o sentido de esperar.

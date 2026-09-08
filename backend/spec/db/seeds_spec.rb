@@ -7,15 +7,15 @@ RSpec.describe "db/seeds.rb" do
   # Uma vez só para o arquivo inteiro — semear é caro e o resultado é o mesmo.
   before(:all) do
     self.use_transactional_tests = false
-    [ Carousel, Notification, Folder, Session, PasswordReset, Account, Organization,
-     ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
+    [ BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+     PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
 
     silence_stream { load Rails.root.join("db/seeds.rb") }
   end
 
   after(:all) do
-    [ Carousel, Notification, Folder, Session, PasswordReset, Account, Organization,
-     ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
+    [ BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+     PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
     self.use_transactional_tests = true
   end
 
@@ -113,5 +113,26 @@ RSpec.describe "db/seeds.rb" do
       .and not_change(Account, :count)
       .and not_change(ThemePreset, :count)
       .and not_change(PaletteColor, :count)
+  end
+
+  it "traz o Brandcore da Marina publicado, com histórico e logos de verdade" do
+    brand_core = organization.brand_core
+    expect(brand_core.status).to eq("published")
+    expect(brand_core.current_version).to eq(2)
+    expect(brand_core.versions.pluck(:number)).to eq([ 2, 1 ])
+    expect(brand_core.versions.first.change_list).to include(
+      "section" => "palette", "path" => "palette.colors.cor-coral", "kind" => "added"
+    )
+    expect(brand_core.completeness.minimum_met?).to be(true)
+    expect(brand_core.completeness.percent).to eq(100)
+    expect(brand_core.generation_contract[:ready]).to be(true)
+    expect(brand_core.generation_contract[:pendingFactIds]).to eq([ "fato-turma" ])
+    expect(brand_core.assets.where(kind: "logo").pluck(:variant)).to contain_exactly("light", "dark")
+    expect(brand_core.assets.all?(&:transparent)).to be(true)
+  end
+
+  it "semeia o Brandcore duas vezes sem duplicar" do
+    expect { silence_stream { load Rails.root.join("db/seeds.rb") } }
+      .to not_change(BrandCore, :count).and not_change(BrandCoreVersion, :count).and not_change(BrandAsset, :count)
   end
 end

@@ -16,6 +16,7 @@
 #   bin/rails db:seed
 
 require "active_support/core_ext/digest/uuid"
+require "zlib"
 
 # Semear duas vezes no mesmo processo é normal (a spec de idempotência faz
 # isso); sem esta linha, a segunda vez enche o log de "already initialized
@@ -983,11 +984,176 @@ module VekooSeeds
       ])
   end
 
+
+  # -------------------------------------------------------------------------
+  # O Brandcore da Marina — a marca dela como dado estruturado, completo e
+  # publicado, com duas versões no histórico. É o que as telas do formulário
+  # e o preview do "cartão da marca" mostram em desenvolvimento.
+
+  def brand_document_v1
+    {
+      "identity" => {
+        "name" => "Marina Duarte Conteúdo",
+        "segment" => "Estratégia de conteúdo para pequenos negócios",
+        "concept" => "Conteúdo que vende sem parecer anúncio.",
+        "positioning" => "A estrategista que traduz marketing para quem toca o próprio negócio: " \
+          "sem jargão, com exemplo na mão e um carrossel por semana que traz cliente.",
+        "characters" => [
+          { "id" => "per-marina", "name" => "Marina", "role" => "Fundadora e voz principal — aparece em primeira pessoa" },
+          { "id" => "per-teo", "name" => "Téo", "role" => "Assistente que responde dúvidas nos comentários" }
+        ],
+        "address" => "Belo Horizonte, MG",
+        "instagram" => "marinaduarte.conteudo",
+        "networks" => [
+          { "id" => "rede-tiktok", "network" => "tiktok", "handle" => "@marinaduarte.conteudo" },
+          { "id" => "rede-site", "network" => "site", "handle" => "marinaduarte.com.br" }
+        ]
+      },
+      "palette" => {
+        "colors" => [
+          { "id" => "cor-ameixa", "name" => "Ameixa", "hex" => "#2b1d3a", "role" => "darkBackground" },
+          { "id" => "cor-creme", "name" => "Creme", "hex" => "#f4ecff", "role" => "textOnDark" },
+          { "id" => "cor-papel", "name" => "Papel", "hex" => "#f7f2ec", "role" => "lightBackground" },
+          { "id" => "cor-tinta", "name" => "Tinta", "hex" => "#1e1528", "role" => "textOnLight" },
+          { "id" => "cor-nevoa", "name" => "Névoa", "hex" => "#8b7f99", "role" => "muted" },
+          { "id" => "cor-violeta", "name" => "Violeta", "hex" => "#7c3aed", "role" => "accent" }
+        ]
+      },
+      "typography" => {
+        "display" => {
+          "family" => "Bricolage Grotesque", "source" => "catalog", "weights" => [ 600, 700, 800 ],
+          "usage" => "Títulos, números de destaque e capas", "assetId" => nil
+        },
+        "utility" => {
+          "family" => "Geist", "source" => "catalog", "weights" => [ 400, 500, 600 ],
+          "usage" => "Corpo, listas, rodapé e legendas", "assetId" => nil
+        },
+        "rules" => [ "Nunca itálico", "Negrito não é ênfase: é hierarquia", "Título nunca passa de duas linhas" ]
+      },
+      "styles" => { "roles" => BrandCore::Schema.default_styles },
+      "voice" => {
+        "essence" => "Explica como amiga que entende do assunto: clara, direta e com exemplo na mão.",
+        "tones" => [ "direct", "warm", "educational" ],
+        "toneNote" => "Pode brincar, mas nunca às custas de quem está começando.",
+        "bannedWords" => [
+          { "id" => "ban-alavancar", "text" => "alavancar" },
+          { "id" => "ban-disruptivo", "text" => "disruptivo" },
+          { "id" => "ban-valor", "text" => "conteúdo de valor" },
+          { "id" => "ban-engajar", "text" => "engajar" },
+          { "id" => "ban-sinergia", "text" => "sinergia" }
+        ],
+        "qualityRules" => {
+          "maxOneAntithesis" => true, "alwaysConcreteData" => true, "noEmojiRendered" => true,
+          "noGenericClaims" => true, "noStackedExclamation" => true
+        },
+        "examples" => [
+          { "id" => "ex-1", "text" => "Você não precisa postar todo dia. Precisa postar o que a pessoa salva. Esta semana: um carrossel, sete dias de retorno." },
+          { "id" => "ex-2", "text" => "Preço no post ou no direct? No post. Quem some quando vê o número não ia comprar." }
+        ]
+      },
+      "facts" => {
+        "items" => [
+          { "id" => "fato-mentoria", "kind" => "price", "label" => "Mentoria individual", "value" => "R$ 890/mês, 4 encontros", "status" => "confirmed" },
+          { "id" => "fato-atendimento", "kind" => "hours", "label" => "Atendimento", "value" => "",
+            "status" => "confirmed",
+            "hours" => { "mon" => "9h–18h", "tue" => "9h–18h", "wed" => "9h–18h", "thu" => "9h–18h", "fri" => "9h–17h", "sat" => nil, "sun" => nil } },
+          { "id" => "fato-workshop", "kind" => "event", "label" => "Workshop Carrossel que vende", "value" => "28 de setembro, online, 19h", "status" => "confirmed" },
+          { "id" => "fato-turma", "kind" => "promotion", "label" => "Turma de outubro", "value" => "20% de desconto até 15 de setembro", "status" => "pending" }
+        ]
+      }
+    }
+  end
+
+  # A segunda versão: entrou a cor de campanha e a Marina afinou a essência.
+  def brand_document_v2
+    v1 = brand_document_v1
+    v1["palette"]["colors"] << { "id" => "cor-coral", "name" => "Coral", "hex" => "#ff6b4a", "role" => "campaign" }
+    v1["voice"]["essence"] = "Explica como amiga que entende do assunto: clara, direta, com exemplo na mão e sem prometer milagre."
+    v1
+  end
+
+  def seed_brand_core!(organization, account)
+    v1 = brand_document_v1
+    v2 = brand_document_v2
+
+    brand_core = BrandCore.find_or_initialize_by(id: id_for("brandcore-marina"))
+    brand_core.assign_attributes(
+      organization: organization,
+      status: "published",
+      document: v2,
+      published_document: v2,
+      progress: { "visitedSteps" => BrandCore::Schema::STEPS, "lastStep" => "facts" },
+      current_version: 2,
+      published_at: 3.days.ago
+    )
+    brand_core.save!
+
+    versions = [
+      [ "brandcore-marina-v1", 1, v1, [], 12.days.ago ],
+      [ "brandcore-marina-v2", 2, v2, BrandCore::Diff.call(v1, v2), 3.days.ago ]
+    ]
+    # Publicações feitas mexendo na tela em desenvolvimento saem: a semente é
+    # o retrato exato, não um acúmulo.
+    brand_core.versions.where.not(id: versions.map { |slug, *| id_for(slug) }).delete_all
+    versions.each do |slug, number, snapshot, changes, at|
+      version = BrandCoreVersion.find_or_initialize_by(id: id_for(slug))
+      version.update!(brand_core: brand_core, account: account, number: number,
+        snapshot: snapshot, change_list: changes, created_at: at)
+    end
+
+    seed_brand_assets!(brand_core, organization, account)
+    brand_core
+  end
+
+  # Logos gerados aqui mesmo (um PNG com fundo transparente de verdade): a
+  # semente não depende de arquivo binário no repositório.
+  def seed_brand_assets!(brand_core, organization, account)
+    [
+      [ "brand-logo-light", "logo", "light", "logo-claro.png", [ 124, 58, 237 ] ],
+      [ "brand-logo-dark", "logo", "dark", "logo-escuro.png", [ 244, 236, 255 ] ],
+      [ "brand-glyph-light", "glyph", "light", "glifo-claro.png", [ 124, 58, 237 ] ]
+    ].each do |slug, kind, variant, filename, rgb|
+      asset = BrandAsset.find_or_initialize_by(id: id_for(slug))
+      png = transparent_png(kind == "glyph" ? 96 : 320, 96, rgb)
+      asset.assign_attributes(
+        brand_core: brand_core, organization: organization, account: account,
+        kind: kind, variant: variant, filename: filename, content_type: "image/png",
+        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 320, height: 96, transparent: true
+      )
+      asset.file.attach(io: StringIO.new(png), filename: filename, content_type: "image/png") unless asset.file.attached?
+      asset.save!
+    end
+  end
+
+  # Um disco da cor da marca sobre fundo transparente — o bastante para as
+  # telas mostrarem um logo de verdade, com alfa de verdade.
+  def transparent_png(width, height, rgb)
+    chunk = ->(type, data) {
+      body = type.b + data.b
+      [ data.bytesize ].pack("N") + body + [ Zlib.crc32(body) ].pack("N")
+    }
+    radius = height / 2.0 - 4
+    rows = (0...height).map { |y|
+      pixels = (0...width).flat_map { |x|
+        # Uma fileira de discos ao longo da largura, para o logo largo.
+        cx = ((x / height) * height) + height / 2.0
+        inside = ((x - cx)**2 + (y - height / 2.0)**2) <= radius**2
+        rgb + [ inside ? 255 : 0 ]
+      }.pack("C*")
+      "\x00".b + pixels
+    }.join
+    "\x89PNG\r\n\x1a\n".b +
+      chunk.call("IHDR", [ width, height, 8, 6, 0, 0, 0 ].pack("NNCCCCC")) +
+      chunk.call("IDAT", Zlib::Deflate.deflate(rows)) +
+      chunk.call("IEND", "")
+  end
+
   def call
     seed_catalog!
     organization = seed_demo_account!
     seed_notifications!(organization)
     seed_carousels!(organization)
+    seed_brand_core!(organization, organization.owner)
     # Nenhuma pasta de propósito: a conta de demonstração começa sem pastas,
     # é assim que a tela mostra o convite a criar a primeira (e o aviso
     # "organize com pastas" faz sentido).
@@ -1007,4 +1173,5 @@ puts <<~REPORT
     Cards       #{organization.carousels.sum { |c| c.cards.length }}
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
+    Marca       #{organization.brand_core.full_document.dig("identity", "name")} · v#{organization.brand_core.current_version} · #{organization.brand_core.completeness.percent}% · #{organization.brand_core.assets.count} ativos
 REPORT

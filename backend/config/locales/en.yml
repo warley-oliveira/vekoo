@@ -41,12 +41,26 @@ en:
   carousels:
     copy_suffix: "copy"
 
+  brand_core:
+    invalid: "Something in this step doesn't add up. Check the fields."
+    incomplete: "The brand minimum isn't filled in yet, so it can't be published."
+    assets:
+      bad_kind: "That asset type doesn't exist."
+      too_large: "The file is over the %{max} limit."
+      unsupported_logo: "The logo must be a PNG with a transparent background or an SVG."
+      unsupported_glyph: "The glyph must be a PNG with a transparent background or an SVG."
+      unsupported_photo: "That file isn't a JPEG, PNG or WebP image."
+      unsupported_font: "That file isn't a TTF, OTF or WOFF2 font."
+
   activerecord:
     models:
       account: "account"
       carousel: "carousel"
       folder: "folder"
       organization: "organization"
+      brand_core: "brand"
+      brand_asset: "brand asset"
+      brand_core_version: "brand version"
     attributes:
       account:
         name: "name"
@@ -66,3 +80,12 @@ en:
       folder:
         name: "name"
         color: "color"
+      brand_core:
+        status: "status"
+        document: "document"
+      brand_asset:
+        kind: "kind"
+        variant: "variant"
+        filename: "file"
+        content_type: "format"
+        byte_size: "size"

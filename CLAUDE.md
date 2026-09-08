@@ -118,6 +118,24 @@ card** (14 carrosséis, 84 cards, mesma conta de demonstração) e é idempotent
 `bin/rails db:seed`. O front ainda lê o localStorage — rewirar `lib/store.tsx`
 e `lib/auth.tsx` para `useApi` é o passo que falta.
 
+**Brandcore (a marca como dado):** um por organização, recurso singular na API —
+`GET/PATCH /brand-core` (rascunho salvo **seção a seção**, `PATCH` recebe
+`{ brandCore: { document: { <seção> }, progress } }`), `POST /brand-core/publish`
+(exige o mínimo obrigatório; cada publicação depois da primeira vira
+`BrandCoreVersion` com `change_list`), `GET /brand-core/versions`,
+`POST/DELETE /brand-core/assets` (logo/glifo/foto/fonte por arquivo; PNG passa por
+`PngInspector`, que confere transparência real sem libvips). A forma do documento é
+**uma só**: `backend/app/models/brand_core/schema.rb` (normaliza, valida por caminho
+`palette.colors.2.hex`, defaults dos estilos) espelhado em
+`frontend/src/lib/brand-core.ts` (tipos, enums e zod por etapa) — mudou um, muda o
+outro. Completude e mínimo em `BrandCore::Completeness`; a geração lê só
+`published_document` via `BrandCore#generation_contract`; fato `pending` não bloqueia
+tudo, só as gerações que dependerem dele. Tempo real por ActionCable
+(`BrandCoreChannel`, montado em `/cable`, token em `?token=`): a outra aba recarrega
+pelo SWR e ignora o próprio eco via `X-Client-Id`. Front: `/brands` (visão geral,
+histórico, publicar) e `/brands/setup/:step` (wizard, 7 etapas, autosave em
+`components/brand/use-step-form.ts`). Cadastro novo cai direto no wizard.
+
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
 projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
 fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.
