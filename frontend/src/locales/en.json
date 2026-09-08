@@ -27,7 +27,8 @@
       "search": "Search",
       "templates": "Templates",
       "brands": "Brand",
-      "trash": "Trash"
+      "trash": "Trash",
+      "pieces": "Pieces"
     },
     "createBlank": "Start from scratch",
     "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
@@ -1155,6 +1156,159 @@
     "review": {
       "title": "Review and publish",
       "description": "Check the card and publish. After the first publish, every change becomes a new version."
+    }
+  },
+  "pieces": {
+    "title": "Pieces",
+    "catalog": {
+      "heading": "What piece do you want to create?",
+      "description": "Each piece type is an engine: it reads the published brand and composes the image. You only fill in what changes.",
+      "open": "Create",
+      "fields_one": "{{count}} field",
+      "fields_other": "{{count}} fields",
+      "series": "Series",
+      "formats": {
+        "post": "Post 1080×1350",
+        "story": "Story 1080×1920"
+      },
+      "formatShort": {
+        "post": "Post",
+        "story": "Story"
+      },
+      "loadFailed": "Couldn't load the engines."
+    },
+    "list": {
+      "heading": "Your pieces",
+      "newPiece": "New piece",
+      "emptyTitle": "No pieces yet",
+      "emptyDescription": "Pick a piece type, fill in the fields and the image comes out ready with your brand.",
+      "allEngines": "All types",
+      "engineFilterAria": "Filter by type",
+      "staleOnly": "Outdated only",
+      "staleCount_one": "{{count}} outdated piece",
+      "staleCount_other": "{{count}} outdated pieces",
+      "frames_one": "{{count}} image",
+      "frames_other": "{{count}} images",
+      "openAria": "Open {{title}}"
+    },
+    "status": {
+      "queued": "Queued",
+      "rendering": "Generating…",
+      "ready": "Ready",
+      "failed": "Failed",
+      "stale": "Outdated",
+      "outdated": "Brand changed"
+    },
+    "form": {
+      "heading": "New piece",
+      "back": "Change type",
+      "format": "Format",
+      "title": "Piece name",
+      "titlePlaceholder": "Just so you can find it later. Optional.",
+      "create": "Generate piece",
+      "creating": "Sending…",
+      "createdToast": "Piece queued. We'll let you know when it's ready.",
+      "createFailed": "Couldn't create the piece.",
+      "required": "required",
+      "counters": {
+        "lines": "{{used}}/{{max}} lines",
+        "chars": "{{used}}/{{max}}",
+        "items": "{{used}}/{{max}} items"
+      },
+      "ref": {
+        "placeholder": "Pick a fact",
+        "none": "None",
+        "empty": "No fact of that kind in the brand. Add one under Brand → Operational facts.",
+        "pendingHint": "A pending fact blocks generation. Confirm it under Brand → Operational facts.",
+        "status": {
+          "confirmed": "Confirmed",
+          "pending": "Pending"
+        }
+      },
+      "choice": {
+        "placeholder": "Choose",
+        "none": "Brand default"
+      },
+      "image": {
+        "none": "No photo",
+        "placeholderHint": "The placeholder stays.",
+        "empty": "No photo in the brand. Upload under Brand → Assets.",
+        "pick": "Brand photo"
+      },
+      "list": {
+        "add": "Add row",
+        "remove": "Remove row",
+        "placeholder": "label | description | value"
+      },
+      "validation": {
+        "required": "Fill in this field.",
+        "tooLong": "Over the character limit.",
+        "tooManyLines": "Over the line limit.",
+        "tooManyItems": "Over the item limit.",
+        "notANumber": "Use a number.",
+        "tooSmall": "Number below the minimum.",
+        "tooLarge": "Number above the maximum."
+      },
+      "brandNotPublished": {
+        "title": "Publish the brand first",
+        "description": "Pieces only read the published version of the Brandcore. Complete the minimum and publish to start generating.",
+        "cta": "Go to the brand"
+      },
+      "optional": "optional"
+    },
+    "preview": {
+      "title": "Preview",
+      "hint": "Updates as you edit. For a series, it's the first frame.",
+      "loading": "Generating preview…",
+      "empty": "Fill in the required fields to see the preview.",
+      "blockedTitle": "The preview couldn't be generated",
+      "alt": "Piece preview"
+    },
+    "detail": {
+      "back": "Pieces",
+      "regenerate": "Generate again",
+      "regenerating": "Queued…",
+      "regeneratedToast": "Piece back in the queue.",
+      "regenerateFailed": "Couldn't generate again.",
+      "delete": "Delete piece",
+      "deleteTitle": "Delete this piece?",
+      "deleteDescription": "The images go away. The values aren't kept anywhere else.",
+      "deletedToast": "Piece deleted.",
+      "deleteFailed": "Couldn't delete.",
+      "download": "Download",
+      "frame": "Image {{index}}",
+      "values": "Fields",
+      "provenance": "Provenance",
+      "brandVersion": "Brand version used",
+      "renderedAt": "Generated {{when}}",
+      "refs": "Facts used",
+      "refsEmpty": "This piece uses no operational facts.",
+      "refInPiece": "in the piece",
+      "refToday": "today",
+      "staleTitle": "This piece is outdated",
+      "staleDescription": "A fact it uses changed in the brand. Generate again to get today's value.",
+      "staleReason": {
+        "changed": "changed",
+        "pending": "went back to pending",
+        "missing": "was removed"
+      },
+      "failedTitle": "Generation failed",
+      "fixFacts": "Review facts",
+      "waiting": "The image shows up here as soon as it's ready."
+    },
+    "errors": {
+      "refPending": "The fact \"{{fact}}\" is pending. Confirm it under Brand → Operational facts.",
+      "refMissing": "A referenced fact no longer exists in the brand.",
+      "brandNotPublished": "The brand must be published.",
+      "valuesInvalid": "Something in the fields doesn't add up.",
+      "renderFailed": "Generation failed. Try again.",
+      "engineUnknown": "That piece type no longer exists.",
+      "formatUnsupported": "That piece type doesn't come in that format.",
+      "unknown": "Something went wrong during generation."
+    },
+    "live": {
+      "ready": "\"{{title}}\" is ready.",
+      "failed": "\"{{title}}\" failed to generate."
     }
   }
 }

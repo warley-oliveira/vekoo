@@ -5,6 +5,7 @@ import {
   Check,
   ChevronsUpDown,
   Languages,
+  Images,
   Layers,
   LayoutTemplate,
   LogOut,
@@ -227,6 +228,13 @@ export function AppSidebar({
           to="/brands"
           icon={<Palette />}
           label={t("shell.nav.brands")}
+          collapsed={collapsed}
+          onNavigate={onNavigate}
+        />
+        <SidebarLink
+          to="/pieces"
+          icon={<Images />}
+          label={t("shell.nav.pieces")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />

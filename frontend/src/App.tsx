@@ -9,6 +9,9 @@ import { EditorPage } from "@/routes/editor"
 import { ForgotPasswordPage } from "@/routes/forgot-password"
 import { LoginPage } from "@/routes/login"
 import { MyCarouselsPage } from "@/routes/my-carousels"
+import { PiecePage } from "@/routes/piece"
+import { PieceNewPage } from "@/routes/piece-new"
+import { PiecesPage } from "@/routes/pieces"
 import { ResetPasswordPage } from "@/routes/reset-password"
 import { SignUpPage } from "@/routes/signup"
 import { TrashPage } from "@/routes/trash"
@@ -35,6 +38,10 @@ export default function App() {
           <Route path="/brands" element={<BrandPage />} />
           <Route path="/brands/setup" element={<BrandSetupPage />} />
           <Route path="/brands/setup/:step" element={<BrandSetupPage />} />
+          <Route path="/pieces" element={<PiecesPage />} />
+          <Route path="/pieces/new" element={<PieceNewPage />} />
+          <Route path="/pieces/new/:engineId" element={<PieceNewPage />} />
+          <Route path="/pieces/:pieceId" element={<PiecePage />} />
           <Route path="/trash" element={<TrashPage />} />
         </Route>
       </Route>

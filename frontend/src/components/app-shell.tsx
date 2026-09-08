@@ -148,6 +148,7 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
   let title = t("shell.nav.carousels")
   if (location.pathname.startsWith("/templates")) title = t("shell.nav.templates")
   else if (location.pathname.startsWith("/brands")) title = t("shell.nav.brands")
+  else if (location.pathname.startsWith("/pieces")) title = t("shell.nav.pieces")
   else if (location.pathname.startsWith("/trash")) title = t("shell.nav.trash")
   else if (folder) title = folder.name
 
