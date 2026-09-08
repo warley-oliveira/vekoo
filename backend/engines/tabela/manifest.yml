@@ -1,0 +1,32 @@
+# Título + linhas [rótulo, descrição, valor]. Guia da semana, lista de preços.
+id: tabela
+name: { pt-BR: "Tabela", en: "Table" }
+description:
+  pt-BR: "Um título e uma lista de linhas com rótulo, descrição e valor. Serve para guia da semana e lista de preços."
+  en: "A title and a list of rows with label, description and value. Good for weekly guides and price lists."
+formats: [post, story]
+fields:
+  - id: title
+    type: text
+    required: true
+    label: { pt-BR: "Título", en: "Title" }
+    constraints: { maxLines: 2, maxCharsPerLine: 24 }
+  - id: rows
+    type: textList
+    required: true
+    label: { pt-BR: "Linhas", en: "Rows" }
+    hint:
+      pt-BR: "Uma linha por item: rótulo | descrição | valor. Escreva {price} no valor para usar o preço referenciado."
+      en: "One row per item: label | description | value. Write {price} in the value to use the referenced price."
+    constraints: { maxItems: 6, maxChars: 90 }
+  - id: price
+    type: ref
+    required: false
+    label: { pt-BR: "Preço referenciado", en: "Referenced price" }
+    hint: { pt-BR: "Entra onde a linha disser {price}.", en: "Goes wherever a row says {price}." }
+    kinds: [price, promotion]
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

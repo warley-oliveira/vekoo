@@ -14,6 +14,7 @@ class Organization < ApplicationRecord
   has_many :uploads, dependent: :destroy
   has_one :brand_core, dependent: :destroy
   has_many :brand_assets, dependent: :destroy
+  has_many :pieces, dependent: :destroy
 
   normalizes :name, with: ->(name) { name.squish }
 

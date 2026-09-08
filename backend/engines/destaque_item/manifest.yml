@@ -1,0 +1,39 @@
+# Um item em destaque: nome, composição, preço e observação.
+id: destaque_item
+name: { pt-BR: "Item em destaque", en: "Featured item" }
+description:
+  pt-BR: "Um item só: nome, composição ou descrição, preço e uma observação. Com foto opcional."
+  en: "A single item: name, composition or description, price and a note. Optional photo."
+formats: [post, story]
+fields:
+  - id: name
+    type: text
+    required: true
+    label: { pt-BR: "Nome do item", en: "Item name" }
+    constraints: { maxLines: 2, maxCharsPerLine: 20 }
+  - id: composition
+    type: text
+    required: true
+    label: { pt-BR: "Composição ou descrição", en: "Composition or description" }
+    constraints: { maxLines: 4, maxCharsPerLine: 38 }
+  - id: price
+    type: ref
+    required: true
+    label: { pt-BR: "Preço", en: "Price" }
+    kinds: [price]
+  - id: note
+    type: text
+    required: false
+    label: { pt-BR: "Observação", en: "Note" }
+    hint: { pt-BR: "Ex.: serve duas pessoas", en: "E.g. serves two" }
+    constraints: { maxLines: 1, maxChars: 60 }
+  - id: photo
+    type: image
+    required: false
+    label: { pt-BR: "Foto", en: "Photo" }
+    kinds: [photo]
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

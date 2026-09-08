@@ -19,6 +19,10 @@ en:
       too_long: "is too long (maximum is %{count} characters)"
       not_a_number: "is not a number"
       greater_than_or_equal_to: "must be greater than or equal to %{count}"
+      too_many_lines: "has too many lines"
+      line_too_long: "has a line that is too long"
+      too_many_items: "has too many items"
+      too_small: "is too small"
       less_than_or_equal_to: "must be less than or equal to %{count}"
 
   auth:
@@ -52,6 +56,16 @@ en:
       unsupported_photo: "That file isn't a JPEG, PNG or WebP image."
       unsupported_font: "That file isn't a TTF, OTF or WOFF2 font."
 
+  pieces:
+    errors:
+      values_invalid: "Something in the piece fields doesn't add up."
+      ref_pending: "The fact \"%{fact}\" is pending. Confirm it under Brand → Operational facts to generate this piece."
+      ref_missing: "The referenced fact no longer exists in the brand."
+      brand_not_published: "Publish the brand before generating pieces."
+      engine_unknown: "That piece type doesn't exist."
+      format_unsupported: "That piece type doesn't come in that format."
+      render_failed: "Generation failed. Try again."
+
   activerecord:
     models:
       account: "account"
@@ -61,6 +75,7 @@ en:
       brand_core: "brand"
       brand_asset: "brand asset"
       brand_core_version: "brand version"
+      piece: "piece"
     attributes:
       account:
         name: "name"
@@ -89,3 +104,8 @@ en:
         filename: "file"
         content_type: "format"
         byte_size: "size"
+      piece:
+        title: "title"
+        engine_id: "piece type"
+        format: "format"
+        status: "status"

@@ -7,14 +7,14 @@ RSpec.describe "db/seeds.rb" do
   # Uma vez só para o arquivo inteiro — semear é caro e o resultado é o mesmo.
   before(:all) do
     self.use_transactional_tests = false
-    [ BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+    [ Piece, BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
      PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
 
     silence_stream { load Rails.root.join("db/seeds.rb") }
   end
 
   after(:all) do
-    [ BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+    [ Piece, BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
      PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
     self.use_transactional_tests = true
   end
@@ -134,5 +134,15 @@ RSpec.describe "db/seeds.rb" do
   it "semeia o Brandcore duas vezes sem duplicar" do
     expect { silence_stream { load Rails.root.join("db/seeds.rb") } }
       .to not_change(BrandCore, :count).and not_change(BrandCoreVersion, :count).and not_change(BrandAsset, :count)
+  end
+
+  it "traz uma peça pronta por motor e uma barrada pelo fato pendente" do
+    ready = organization.pieces.where(status: "ready")
+    expect(ready.map(&:engine_id).uniq.sort).to eq(Engines::Registry.ids.sort)
+    expect(ready.all? { |piece| piece.images.attached? }).to be(true)
+    expect(organization.pieces.find_by(engine_id: "contagem").images.count).to eq(3)
+
+    failed = organization.pieces.find_by(status: "failed")
+    expect(failed.error).to include("code" => "refPending", "factId" => "fato-turma")
   end
 end

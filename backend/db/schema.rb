@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_08_172231) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -182,6 +182,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_172231) do
     t.index ["token_digest"], name: "index_password_resets_on_token_digest", unique: true
   end
 
+  create_table "pieces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "brand_core_id", null: false
+    t.uuid "brand_core_version_id"
+    t.datetime "created_at", null: false
+    t.string "engine_id", null: false
+    t.jsonb "error"
+    t.string "format", null: false
+    t.uuid "organization_id", null: false
+    t.jsonb "provenance", default: {}, null: false
+    t.datetime "rendered_at"
+    t.string "status", default: "queued", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "values", default: {}, null: false
+    t.index ["account_id"], name: "index_pieces_on_account_id"
+    t.index ["brand_core_id"], name: "index_pieces_on_brand_core_id"
+    t.index ["brand_core_version_id"], name: "index_pieces_on_brand_core_version_id"
+    t.index ["organization_id", "created_at"], name: "index_pieces_on_organization_id_and_created_at"
+    t.index ["organization_id", "engine_id"], name: "index_pieces_on_organization_id_and_engine_id"
+    t.index ["organization_id"], name: "index_pieces_on_organization_id"
+  end
+
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
@@ -233,6 +256,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_172231) do
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
   add_foreign_key "password_resets", "accounts"
+  add_foreign_key "pieces", "accounts", on_delete: :nullify
+  add_foreign_key "pieces", "brand_core_versions", on_delete: :nullify
+  add_foreign_key "pieces", "brand_cores"
+  add_foreign_key "pieces", "organizations"
   add_foreign_key "sessions", "accounts"
   add_foreign_key "uploads", "accounts", on_delete: :nullify
   add_foreign_key "uploads", "organizations"

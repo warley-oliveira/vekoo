@@ -136,6 +136,26 @@ pelo SWR e ignora o próprio eco via `X-Client-Id`. Front: `/brands` (visão ger
 histórico, publicar) e `/brands/setup/:step` (wizard, 7 etapas, autosave em
 `components/brand/use-step-form.ts`). Cadastro novo cai direto no wizard.
 
+**Motores e peças (a contraparte do Brandcore):** um motor é um diretório em
+`backend/engines/<id>/` com `manifest.yml` (ficha declarativa: formatos, campos com
+tipo/restrições, `ref` para fato da operação, `choice` derivada da paleta) e
+`render.rb` (`Engines::<Id> < Engines::Base`, função pura de composição sobre o
+`Engines::Canvas`, libvips por camadas). `Engines::Registry` varre o diretório no
+primeiro uso e valida cada manifesto — **motor novo = diretório novo**, nada mais muda
+(guia em `backend/engines/README.md`). A geração lê **só** `published_document` via
+`Engines::Tokens`; `Engines::Refs` resolve os fatos e barra fato pendente com
+`refPending` nomeando o fato; a `Piece` guarda `provenance` (versão da marca + refs com
+valor) e calcula `stale_refs` quando o fato de hoje difere. Fluxo: `POST /pieces`
+valida (`Engines::Values`) e enfileira `RenderPieceJob` (Sidekiq, adapter do ActiveJob
+em `config/initializers/sidekiq.rb`; `:test` nas specs); `PieceChannel` avisa quando
+fica pronta; `POST /engines/:id/preview` devolve o PNG do primeiro quadro. libvips
+fora do sistema: `lib/vips_userspace.rb` relança o processo com `LD_LIBRARY_PATH`
+quando `VIPS_USERSPACE_ROOT` está no `.env`. Front: `/pieces` (galeria, filtro,
+desatualizadas), `/pieces/new[/:engineId]` (formulário **gerado do manifesto** em
+`components/pieces/field-inputs.tsx`, prévia ao vivo) e `/pieces/:id` (imagens,
+proveniência, regenerar). Spec por motor em `spec/engines/engines_spec.rb`, valores de
+exemplo em `spec/support/engine_examples.rb`.
+
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
 projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
 fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.

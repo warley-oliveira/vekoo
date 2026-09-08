@@ -29,6 +29,17 @@ FactoryBot.define do
           "voice" => {
             "essence" => "Fala como quem assa: direta, quente e sem enfeite.",
             "tones" => [ "warm", "direct" ]
+          },
+          # Fatos para os motores: um preço confirmado, um pendente (o portão),
+          # uma promoção pendente e um horário.
+          "facts" => {
+            "items" => [
+              { "id" => "fato-preco", "kind" => "price", "label" => "Pão de fermentação natural", "value" => "R$ 18", "status" => "confirmed" },
+              { "id" => "fato-preco-pendente", "kind" => "price", "label" => "Croissant de amêndoas", "value" => "R$ 14", "status" => "pending" },
+              { "id" => "fato-promo-pendente", "kind" => "promotion", "label" => "Combo de sábado", "value" => "2 pães por R$ 30", "status" => "pending" },
+              { "id" => "fato-horario", "kind" => "hours", "label" => "Loja", "value" => "", "status" => "confirmed",
+                "hours" => { "mon" => "7h–19h", "tue" => "7h–19h", "wed" => "7h–19h", "thu" => "7h–19h", "fri" => "7h–19h", "sat" => "7h–13h", "sun" => nil } }
+            ]
           }
         }
       end

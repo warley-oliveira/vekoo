@@ -1,4 +1,5 @@
-Rails.application.config.active_job.queue_adapter = :sidekiq
+# Nas specs a fila é de mentira (`have_enqueued_job`); ver environments/test.rb.
+Rails.application.config.active_job.queue_adapter = :sidekiq unless Rails.env.test?
 
 redis_url = ENV.fetch("REDIS_URL", "redis://localhost:6379/0")
 

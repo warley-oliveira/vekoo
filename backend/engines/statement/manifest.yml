@@ -1,0 +1,30 @@
+# Frase de impacto na fonte display, com lockup opcional de rótulo + preço.
+id: statement
+name: { pt-BR: "Frase de impacto", en: "Statement" }
+description:
+  pt-BR: "Uma frase curta, grande, na fonte display da marca. Opcionalmente um rótulo com preço embaixo."
+  en: "One short, big line in the brand's display font. Optionally a label with a price below."
+formats: [post, story]
+fields:
+  - id: phrase
+    type: text
+    required: true
+    label: { pt-BR: "Frase", en: "Phrase" }
+    hint: { pt-BR: "Até 4 linhas. Quebre a linha onde quiser a pausa.", en: "Up to 4 lines. Break the line where you want the pause." }
+    constraints: { maxLines: 4, maxCharsPerLine: 26 }
+  - id: label
+    type: text
+    required: false
+    label: { pt-BR: "Rótulo do preço", en: "Price label" }
+    hint: { pt-BR: "Aparece só se houver preço. Ex.: a partir de", en: "Shows only with a price. E.g. from" }
+    constraints: { maxLines: 1, maxChars: 30 }
+  - id: price
+    type: ref
+    required: false
+    label: { pt-BR: "Preço", en: "Price" }
+    kinds: [price]
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

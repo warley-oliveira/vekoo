@@ -1,0 +1,29 @@
+# Foto da marca em cima, faixa de copy embaixo, preço opcional.
+id: foto_copy
+name: { pt-BR: "Foto + copy", en: "Photo + copy" }
+description:
+  pt-BR: "Uma foto oficial da marca ocupando o alto da peça e uma faixa com 1–2 linhas de copy e preço opcional."
+  en: "An official brand photo filling the top and a band with 1–2 lines of copy and an optional price."
+formats: [post, story]
+fields:
+  - id: photo
+    type: image
+    required: false
+    label: { pt-BR: "Foto", en: "Photo" }
+    hint: { pt-BR: "Uma foto de marca (envie em Marca → Ativos). Sem foto, fica o espaço reservado.", en: "A brand photo (upload it under Brand → Assets). Without one, a placeholder stays." }
+    kinds: [photo]
+  - id: copy
+    type: text
+    required: true
+    label: { pt-BR: "Copy", en: "Copy" }
+    constraints: { maxLines: 2, maxCharsPerLine: 32 }
+  - id: price
+    type: ref
+    required: false
+    label: { pt-BR: "Preço", en: "Price" }
+    kinds: [price]
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo da faixa", en: "Band background" }
+    source: palette.backgrounds

@@ -1,0 +1,49 @@
+# Contagem regressiva: número gigante ou frase ("É hoje."), com sublinhas.
+# Em série, gera a sequência N…1 de uma vez.
+id: contagem
+name: { pt-BR: "Contagem regressiva", en: "Countdown" }
+description:
+  pt-BR: "Um número gigante (faltam N dias) ou uma frase (É hoje.), com sublinha. Em série, gera N…1 de uma vez."
+  en: "A huge number (N days left) or a phrase (It's today.), with a subline. As a series, renders N…1 at once."
+formats: [post, story]
+series: true
+fields:
+  - id: mode
+    type: choice
+    required: true
+    label: { pt-BR: "Modo", en: "Mode" }
+    default: number
+    options:
+      - { id: number, label: { pt-BR: "Número", en: "Number" } }
+      - { id: phrase, label: { pt-BR: "Frase", en: "Phrase" } }
+  - id: number
+    type: number
+    required: false
+    label: { pt-BR: "Número", en: "Number" }
+    hint: { pt-BR: "Quantos faltam. Em série, a peça vai de N até 1.", en: "How many are left. As a series, the piece goes from N down to 1." }
+    constraints: { min: 1, max: 30 }
+  - id: phrase
+    type: text
+    required: false
+    label: { pt-BR: "Frase", en: "Phrase" }
+    hint: { pt-BR: "Ex.: É hoje.", en: "E.g. It's today." }
+    constraints: { maxLines: 2, maxCharsPerLine: 16 }
+  - id: subline
+    type: text
+    required: false
+    label: { pt-BR: "Sublinha", en: "Subline" }
+    hint: { pt-BR: "Ex.: dias para o workshop", en: "E.g. days to the workshop" }
+    constraints: { maxLines: 2, maxCharsPerLine: 36 }
+  - id: series
+    type: choice
+    required: true
+    label: { pt-BR: "Série", en: "Series" }
+    default: single
+    options:
+      - { id: single, label: { pt-BR: "Uma peça", en: "Single piece" } }
+      - { id: sequence, label: { pt-BR: "Sequência N…1", en: "Sequence N…1" } }
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

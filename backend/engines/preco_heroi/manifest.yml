@@ -1,0 +1,30 @@
+# O preço como protagonista: gigante, com rótulo em cima e sublinha embaixo.
+id: preco_heroi
+name: { pt-BR: "Preço herói", en: "Hero price" }
+description:
+  pt-BR: "O preço gigante no centro, com um rótulo acima e uma sublinha abaixo."
+  en: "The price, huge, in the center, with a label above and a subline below."
+formats: [post, story]
+fields:
+  - id: label
+    type: text
+    required: true
+    label: { pt-BR: "Rótulo", en: "Label" }
+    hint: { pt-BR: "O que está sendo precificado. Ex.: Mentoria individual", en: "What is being priced. E.g. One-on-one mentoring" }
+    constraints: { maxLines: 1, maxChars: 40 }
+  - id: price
+    type: ref
+    required: true
+    label: { pt-BR: "Preço", en: "Price" }
+    kinds: [price]
+  - id: subline
+    type: text
+    required: false
+    label: { pt-BR: "Sublinha", en: "Subline" }
+    hint: { pt-BR: "Condição ou detalhe. Ex.: em até 3x sem juros", en: "Condition or detail. E.g. in 3 interest-free installments" }
+    constraints: { maxLines: 2, maxCharsPerLine: 40 }
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

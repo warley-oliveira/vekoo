@@ -46,7 +46,17 @@ Rails.application.routes.draw do
   post   "brand-core/assets"     => "brand_assets#create"
   delete "brand-core/assets/:id" => "brand_assets#destroy"
 
-  # WebSocket dos avisos ao vivo (`BrandCoreChannel`). Autentica por `?token=`.
+  # --- motores e peças ---------------------------------------------------------
+  # O catálogo de motores (manifestos de `engines/*/`) e as peças geradas
+  # sobre a versão publicada do Brandcore.
+  resources :engines, only: %i[index show] do
+    member { post :preview }
+  end
+  resources :pieces, only: %i[index show create destroy] do
+    member { post :regenerate }
+  end
+
+  # WebSocket dos avisos ao vivo (`BrandCoreChannel`, `PieceChannel`). Autentica por `?token=`.
   mount ActionCable.server => "/cable"
 
   # --- geração ---------------------------------------------------------------

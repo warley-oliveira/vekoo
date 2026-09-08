@@ -23,6 +23,10 @@ pt-BR:
       too_long: "é longo demais (máximo de %{count} caracteres)"
       not_a_number: "não é um número"
       greater_than_or_equal_to: "deve ser maior ou igual a %{count}"
+      too_many_lines: "tem linhas demais"
+      line_too_long: "tem uma linha longa demais"
+      too_many_items: "tem itens demais"
+      too_small: "é pequeno demais"
       less_than_or_equal_to: "deve ser menor ou igual a %{count}"
 
   auth:
@@ -56,6 +60,16 @@ pt-BR:
       unsupported_photo: "Esse arquivo não é uma imagem JPEG, PNG ou WebP."
       unsupported_font: "Esse arquivo não é uma fonte TTF, OTF ou WOFF2."
 
+  pieces:
+    errors:
+      values_invalid: "Alguma coisa nos campos da peça não confere."
+      ref_pending: "O fato \"%{fact}\" está pendente. Confirme-o em Marca → Dados da operação para gerar esta peça."
+      ref_missing: "O fato referenciado não existe mais na marca."
+      brand_not_published: "Publique a marca antes de gerar peças."
+      engine_unknown: "Esse tipo de peça não existe."
+      format_unsupported: "Esse tipo de peça não sai nesse formato."
+      render_failed: "A geração falhou. Tente de novo."
+
   activerecord:
     errors:
       models:
@@ -63,6 +77,7 @@ pt-BR:
             brand_core: "marca"
       brand_asset: "ativo da marca"
       brand_core_version: "versão da marca"
+      piece: "peça"
     attributes:
             # "senha" é feminino — a mensagem genérica sairia "curto demais".
             password:
@@ -101,3 +116,8 @@ pt-BR:
         filename: "arquivo"
         content_type: "formato"
         byte_size: "tamanho"
+      piece:
+        title: "título"
+        engine_id: "tipo de peça"
+        format: "formato"
+        status: "situação"

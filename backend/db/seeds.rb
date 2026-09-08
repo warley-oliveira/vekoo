@@ -1114,12 +1114,13 @@ module VekooSeeds
       [ "brand-glyph-light", "glyph", "light", "glifo-claro.png", [ 124, 58, 237 ] ]
     ].each do |slug, kind, variant, filename, rgb|
       asset = BrandAsset.find_or_initialize_by(id: id_for(slug))
-      png = transparent_png(kind == "glyph" ? 96 : 320, 96, rgb)
+      png = transparent_png(kind == "glyph" ? 96 : 288, 96, rgb)
       asset.assign_attributes(
         brand_core: brand_core, organization: organization, account: account,
         kind: kind, variant: variant, filename: filename, content_type: "image/png",
-        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 320, height: 96, transparent: true
+        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 288, height: 96, transparent: true
       )
+      asset.file.purge if asset.file.attached? && asset.file.byte_size != png.bytesize
       asset.file.attach(io: StringIO.new(png), filename: filename, content_type: "image/png") unless asset.file.attached?
       asset.save!
     end
@@ -1148,12 +1149,56 @@ module VekooSeeds
       chunk.call("IEND", "")
   end
 
+
+  # -------------------------------------------------------------------------
+  # Peças de exemplo: uma por motor, geradas na hora sobre a marca publicada
+  # da Marina, mais uma que falha de propósito por referenciar um fato
+  # pendente — é assim que a tela mostra o portão dos pendentes.
+
+  PIECE_EXAMPLES = [
+    [ "peca-statement", "statement", "story", "Conteúdo que vende",
+      { "phrase" => "Conteúdo que vende\nsem parecer anúncio.", "label" => "mentoria a partir de", "price" => "fato-mentoria" } ],
+    [ "peca-preco-heroi", "preco_heroi", "post", "Mentoria individual",
+      { "label" => "Mentoria individual", "price" => "fato-mentoria", "subline" => "4 encontros por mês, ao vivo" } ],
+    [ "peca-foto-copy", "foto_copy", "post", "Bastidores",
+      { "copy" => "Um carrossel por semana.\nSete dias de retorno.", "price" => "fato-mentoria" } ],
+    [ "peca-promo-box", "promo_box", "post", "Mentoria de outubro",
+      { "title" => "Sua marca, com estratégia", "support" => "Um mês de acompanhamento para transformar o que você já sabe em conteúdo que traz cliente.",
+        "tag" => "vagas limitadas", "description" => "Mentoria individual, 4 encontros", "price" => "fato-mentoria" } ],
+    [ "peca-tabela", "tabela", "post", "Guia da semana",
+      { "title" => "O que postar esta semana", "rows" => [ "Segunda | bastidor do trabalho | reels", "Quarta | dúvida frequente | carrossel", "Sexta | prova social | story", "Mentoria | acompanhamento mensal | {price}" ], "price" => "fato-mentoria" } ],
+    [ "peca-programa", "programa_evento", "story", "Workshop Carrossel que vende",
+      { "title" => "Workshop\nCarrossel que vende", "schedule" => [ "19h | Abertura e método", "19h30 | Do assunto ao roteiro", "20h15 | Ao vivo: montando um carrossel", "21h | Perguntas" ], "partner" => "Online, ao vivo · 28 de setembro" } ],
+    [ "peca-contagem", "contagem", "story", "Faltam 3 dias",
+      { "mode" => "number", "number" => 3, "subline" => "dias para o workshop", "series" => "sequence" } ],
+    [ "peca-destaque", "destaque_item", "post", "Mentoria individual",
+      { "name" => "Mentoria individual", "composition" => "Quatro encontros por mês, plano de conteúdo semanal e revisão dos posts antes de publicar.", "price" => "fato-mentoria", "note" => "turmas de setembro abertas" } ],
+    # A que falha: a promoção "Turma de outubro" ainda está pendente.
+    [ "peca-promo-pendente", "promo_box", "post", "Turma de outubro",
+      { "title" => "Turma de outubro", "support" => "Desconto para quem entrar até o dia 15.", "tag" => "pré-venda", "description" => "Mentoria em grupo", "price" => "fato-turma" } ]
+  ].freeze
+
+  def seed_pieces!(organization, account)
+    brand_core = organization.brand_core
+    PIECE_EXAMPLES.each do |slug, engine_id, format, title, values|
+      piece = Piece.find_or_initialize_by(id: id_for(slug))
+      piece.assign_attributes(
+        organization: organization, brand_core: brand_core, account: account,
+        engine_id: engine_id, format: format, title: title, values: values, status: "queued", error: nil
+      )
+      piece.save!
+      RenderPiece.new(piece).call
+    end
+    organization.pieces.where.not(id: PIECE_EXAMPLES.map { |slug, *| id_for(slug) }).destroy_all
+  end
+
   def call
     seed_catalog!
     organization = seed_demo_account!
     seed_notifications!(organization)
     seed_carousels!(organization)
     seed_brand_core!(organization, organization.owner)
+    seed_pieces!(organization, organization.owner)
     # Nenhuma pasta de propósito: a conta de demonstração começa sem pastas,
     # é assim que a tela mostra o convite a criar a primeira (e o aviso
     # "organize com pastas" faz sentido).
@@ -1174,4 +1219,5 @@ puts <<~REPORT
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
     Marca       #{organization.brand_core.full_document.dig("identity", "name")} · v#{organization.brand_core.current_version} · #{organization.brand_core.completeness.percent}% · #{organization.brand_core.assets.count} ativos
+    Peças       #{organization.pieces.where(status: "ready").count} prontas · #{organization.pieces.where(status: "failed").count} com falha (#{Engines::Registry.ids.length} motores)
 REPORT
