@@ -12,6 +12,7 @@ import {
   Star,
 } from "lucide-react"
 
+import { BrandNudge } from "@/components/brand/brand-nudge"
 import { CarouselGridCard } from "@/components/carousel-grid-card"
 import {
   CarouselGridSkeleton,
@@ -115,6 +116,7 @@ export function MyCarouselsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+      {!folder && <BrandNudge />}
       {isFirstRun ? (
         <FirstCarouselHero />
       ) : (

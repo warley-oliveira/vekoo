@@ -2,7 +2,9 @@ import { Navigate, Route, Routes } from "react-router"
 
 import { AppShell } from "@/components/app-shell"
 import { RedirectIfAuthenticated, RequireAuth } from "@/components/auth-guard"
-import { BrandsPage, TemplatesPage } from "@/routes/coming-soon"
+import { BrandPage } from "@/routes/brand"
+import { BrandSetupPage } from "@/routes/brand-setup"
+import { TemplatesPage } from "@/routes/coming-soon"
 import { EditorPage } from "@/routes/editor"
 import { ForgotPasswordPage } from "@/routes/forgot-password"
 import { LoginPage } from "@/routes/login"
@@ -30,7 +32,9 @@ export default function App() {
           <Route path="/" element={<MyCarouselsPage />} />
           <Route path="/folders/:folderId" element={<MyCarouselsPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
-          <Route path="/brands" element={<BrandsPage />} />
+          <Route path="/brands" element={<BrandPage />} />
+          <Route path="/brands/setup" element={<BrandSetupPage />} />
+          <Route path="/brands/setup/:step" element={<BrandSetupPage />} />
           <Route path="/trash" element={<TrashPage />} />
         </Route>
       </Route>

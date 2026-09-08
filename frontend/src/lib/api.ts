@@ -9,7 +9,7 @@ import { clearToken, getToken } from "@/lib/token"
 // `message` já vem no idioma da requisição, como rede de segurança para
 // códigos que a tela não enumerou.
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
+export const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
 
 /**
  * Códigos que a API pode devolver, mais dois sintéticos do cliente
@@ -25,6 +25,7 @@ export type ApiErrorCode =
   | "emailTaken"
   | "resetTokenInvalid"
   | "noCredits"
+  | "brandIncomplete"
   | "network"
   | "unknown"
 
@@ -96,6 +97,7 @@ function knownCode(code: string | undefined, status: number): ApiErrorCode {
     "emailTaken",
     "resetTokenInvalid",
     "noCredits",
+    "brandIncomplete",
   ]
   if (code && (codes as string[]).includes(code)) return code as ApiErrorCode
   if (status === 401) return "unauthorized"
