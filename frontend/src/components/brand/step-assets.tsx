@@ -92,7 +92,8 @@ export function StepAssets() {
 function useAssetUpload(kind: BrandAssetKind, variant: string | null) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { uploadAsset } = useBrandCoreMutations()
+  const { brandCore } = useWizard()
+  const { uploadAsset } = useBrandCoreMutations(brandCore.id)
   const [uploading, setUploading] = useState(false)
 
   async function upload(file: File) {
@@ -279,7 +280,8 @@ function TransparencyBadge({ asset }: { asset: BrandAsset }) {
 
 function RemoveAssetButton({ asset, className }: { asset: BrandAsset; className?: string }) {
   const { t } = useTranslation()
-  const { deleteAsset } = useBrandCoreMutations()
+  const { brandCore } = useWizard()
+  const { deleteAsset } = useBrandCoreMutations(brandCore.id)
   const [open, setOpen] = useState(false)
 
   async function remove() {

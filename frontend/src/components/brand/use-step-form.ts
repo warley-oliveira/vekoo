@@ -3,6 +3,7 @@ import { useForm, type DefaultValues, type FieldValues, type Path, type Resolver
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { ZodType } from "zod"
 
+import { useWizard } from "@/components/brand/brand-wizard-context"
 import type { SaveStatus } from "@/components/brand/save-indicator"
 import { useBrandCoreMutations } from "@/hooks/use-brand-core"
 import { ApiError } from "@/lib/api"
@@ -42,7 +43,8 @@ export function useStepForm<S extends BrandSection>({
     defaultValues: defaults as DefaultValues<Values>,
     mode: "onBlur",
   })
-  const { saveSection } = useBrandCoreMutations()
+  const { brandCore } = useWizard()
+  const { saveSection } = useBrandCoreMutations(brandCore.id)
   const [status, setStatus] = useState<SaveStatus>("idle")
 
   const timer = useRef<number | undefined>(undefined)

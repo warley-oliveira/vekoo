@@ -5,6 +5,8 @@ import { Palette, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { useBrandCore } from "@/hooks/use-brand-core"
+import { useActiveBrand } from "@/lib/brand-context"
+import { stepHref } from "@/lib/brand-core"
 
 const DISMISS_KEY = "vekoo.brand.nudge"
 
@@ -15,7 +17,8 @@ const DISMISS_KEY = "vekoo.brand.nudge"
 export function BrandNudge() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { brandCore } = useBrandCore()
+  const { brandId } = useActiveBrand()
+  const { brandCore } = useBrandCore(brandId)
   const [dismissed, setDismissed] = useState(() => {
     try {
       return sessionStorage.getItem(DISMISS_KEY) === "1"
@@ -43,7 +46,7 @@ export function BrandNudge() {
         <p className="text-sm text-muted-foreground">{t("brand.nudge.description")}</p>
       </div>
       <div className="flex items-center gap-1.5">
-        <Button size="sm" onClick={() => navigate(brandCore.progress.lastStep ? `/brands/setup/${brandCore.progress.lastStep}` : "/brands/setup/identity")}>
+        <Button size="sm" onClick={() => navigate(stepHref(brandId, brandCore.progress.lastStep ?? "identity"))}>
           {t("brand.nudge.cta")}
         </Button>
         <Button size="icon-sm" variant="ghost" onClick={dismiss} aria-label={t("brand.nudge.dismiss")}>

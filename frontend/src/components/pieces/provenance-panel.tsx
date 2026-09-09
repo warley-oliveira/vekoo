@@ -2,6 +2,7 @@ import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import { ArrowRight, RefreshCw } from "lucide-react"
 
+import { useActiveBrand } from "@/lib/brand-context"
 import { stepHref } from "@/lib/brand-core"
 import type { Piece } from "@/lib/engines"
 import { formatRelative } from "@/lib/format"
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils"
 export function ProvenancePanel({ piece }: { piece: Piece }) {
   const { t } = useTranslation()
   const language = useLanguage()
+  const { brandId } = useActiveBrand()
   const refs = piece.provenance.refs ?? []
   const staleById = new Map(piece.staleRefs.map((ref) => [ref.factId, ref]))
 
@@ -67,7 +69,7 @@ export function ProvenancePanel({ piece }: { piece: Piece }) {
         </ul>
       )}
       {piece.staleRefs.length > 0 && (
-        <Link to={stepHref("facts")} className="mt-3 inline-flex items-center gap-1 rounded text-sm font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+        <Link to={stepHref(brandId, "facts")} className="mt-3 inline-flex items-center gap-1 rounded text-sm font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
           {t("pieces.detail.fixFacts")} <ArrowRight className="size-3.5" />
         </Link>
       )}

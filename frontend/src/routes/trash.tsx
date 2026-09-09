@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { useCarousels } from "@/hooks/use-carousels"
+import { useActiveBrand } from "@/lib/brand-context"
 import { useCatalog } from "@/lib/catalog"
 import { daysLeftInTrash, formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
@@ -31,7 +32,8 @@ export function TrashPage() {
   const { trashRetentionDays } = useCatalog()
   // O servidor já devolve a lixeira na ordem certa (o mais recente primeiro) e
   // aproveita a visita para apagar de vez o que passou do prazo.
-  const { carousels, isLoading, error, reload } = useCarousels({ trashed: true })
+  const { brandId } = useActiveBrand()
+  const { carousels, isLoading, error, reload } = useCarousels({ brandId, trashed: true })
   const actions = useCarouselMutations()
   const trashed = carousels ?? []
 

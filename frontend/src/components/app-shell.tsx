@@ -11,6 +11,7 @@ import { Bell, Menu, Plus, SquarePen } from "lucide-react"
 import { toast } from "sonner"
 
 import { AppSidebar, VekooMark } from "@/components/app-sidebar"
+import { BrandSwitcher } from "@/components/brand-switcher"
 import { CreateCarouselDialog } from "@/components/create-carousel-dialog"
 import { SearchPalette } from "@/components/search-palette"
 import { Button } from "@/components/ui/button"
@@ -24,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { formatRelative } from "@/lib/format"
+import { useActiveBrand } from "@/lib/brand-context"
 import { useLanguage } from "@/lib/i18n"
 import { useFolders } from "@/hooks/use-folders"
 import {
@@ -138,22 +140,28 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
   const { t } = useTranslation()
   const location = useLocation()
   const params = useParams()
-  const { folders } = useFolders()
+  const { brandId, path } = useActiveBrand()
+  const { folders } = useFolders(brandId)
   const { openCreate } = useShell()
 
   const folder = params.folderId
     ? folders?.find((f) => f.id === params.folderId)
     : undefined
 
-  let title = t("shell.nav.carousels")
-  if (location.pathname.startsWith("/templates")) title = t("shell.nav.templates")
-  else if (location.pathname.startsWith("/brands")) title = t("shell.nav.brands")
-  else if (location.pathname.startsWith("/pieces")) title = t("shell.nav.pieces")
-  else if (location.pathname.startsWith("/trash")) title = t("shell.nav.trash")
+  // O caminho depois de `/brands/:id` — é ele que diz em que tela estamos.
+  const sub = location.pathname.slice(path("").length)
+
+  let title = t("shell.nav.home")
+  if (sub.startsWith("/carousels")) title = t("shell.nav.carousels")
+  else if (sub.startsWith("/templates")) title = t("shell.nav.templates")
+  else if (sub.startsWith("/settings") || sub.startsWith("/setup")) title = t("shell.nav.brands")
+  else if (sub.startsWith("/contents")) title = t("shell.nav.contents")
+  else if (sub.startsWith("/create")) title = t("shell.nav.create")
+  else if (sub.startsWith("/trash")) title = t("shell.nav.trash")
   else if (folder) title = folder.name
 
   const showCreateActions =
-    location.pathname === "/" || location.pathname.startsWith("/folders/")
+    sub === "" || sub === "/carousels" || sub.startsWith("/folders/")
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:px-6">
@@ -169,6 +177,8 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
       <VekooMark className="mr-1 text-base lg:hidden" />
 
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
+        <BrandSwitcher />
+        <span className="hidden h-4 w-px bg-border sm:block" aria-hidden />
         {folder && (
           <span
             className="size-2.5 shrink-0 rounded-full"

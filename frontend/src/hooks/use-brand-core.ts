@@ -2,6 +2,7 @@ import { useCallback } from "react"
 import { useSWRConfig } from "swr"
 
 import { useApi } from "@/hooks/use-api"
+import { BRANDS_KEY } from "@/hooks/use-brands"
 import { apiDelete, apiFetch, apiGet, apiPatch, apiPost } from "@/lib/api"
 import type {
   BrandAssetKind,
@@ -13,16 +14,24 @@ import type {
 } from "@/lib/brand-core"
 import { getClientId } from "@/lib/cable"
 
-export const BRAND_CORE_KEY = "/brand-core"
-export const BRAND_VERSIONS_KEY = "/brand-core/versions"
+// O Brandcore de **uma** marca (`/brands/:id`). Toda mutação recebe o id:
+// não existe mais "a marca da organização", existe a marca da URL.
 
-export function isBrandCoreKey(key: unknown): boolean {
-  return typeof key === "string" && key.startsWith(BRAND_CORE_KEY)
+export function brandKey(brandId: string): string {
+  return `/brands/${brandId}`
 }
 
-/** O Brandcore da organização — criado pelo servidor na primeira visita. */
-export function useBrandCore() {
-  const { data, error, isLoading, mutate } = useApi<BrandCore>(BRAND_CORE_KEY)
+export function brandVersionsKey(brandId: string): string {
+  return `/brands/${brandId}/versions`
+}
+
+/** Chave da marca (documento, versões, peças…) — para invalidar a família. */
+export function isBrandKey(brandId: string) {
+  return (key: unknown): key is string => typeof key === "string" && key.startsWith(brandKey(brandId))
+}
+
+export function useBrandCore(brandId: string | undefined) {
+  const { data, error, isLoading, mutate } = useApi<BrandCore>(brandId ? brandKey(brandId) : null)
 
   return {
     brandCore: data,
@@ -32,9 +41,9 @@ export function useBrandCore() {
   }
 }
 
-export function useBrandVersions(enabled = true) {
+export function useBrandVersions(brandId: string, enabled = true) {
   const { data, error, isLoading, mutate } = useApi<{ versions: BrandVersion[] }>(
-    enabled ? BRAND_VERSIONS_KEY : null
+    enabled ? brandVersionsKey(brandId) : null
   )
 
   return {
@@ -54,12 +63,17 @@ function clientHeaders() {
   return { headers: { "X-Client-Id": getClientId() } }
 }
 
-export function useBrandCoreMutations() {
+export function useBrandCoreMutations(brandId: string) {
   const { mutate } = useSWRConfig()
+  const key = brandKey(brandId)
 
   const store = useCallback(
-    (brandCore: BrandCore) => mutate(BRAND_CORE_KEY, brandCore, { revalidate: false }),
-    [mutate]
+    async (brandCore: BrandCore) => {
+      await mutate(key, brandCore, { revalidate: false })
+      // O resumo no seletor (nome, progresso) acompanha.
+      await mutate(BRANDS_KEY)
+    },
+    [key, mutate]
   )
 
   /**
@@ -74,31 +88,31 @@ export function useBrandCoreMutations() {
       progress?: ProgressPayload
     ): Promise<BrandCore> => {
       const saved = await apiPatch<BrandCore>(
-        BRAND_CORE_KEY,
-        { brandCore: { document: { [section]: data }, progress } },
+        key,
+        { brand: { document: { [section]: data }, progress } },
         clientHeaders()
       )
       await store(saved)
       return saved
     },
-    [store]
+    [key, store]
   )
 
   const saveProgress = useCallback(
     async (progress: ProgressPayload): Promise<BrandCore> => {
-      const saved = await apiPatch<BrandCore>(BRAND_CORE_KEY, { brandCore: { progress } }, clientHeaders())
+      const saved = await apiPatch<BrandCore>(key, { brand: { progress } }, clientHeaders())
       await store(saved)
       return saved
     },
-    [store]
+    [key, store]
   )
 
   const publish = useCallback(async (): Promise<BrandCore> => {
-    const published = await apiPost<BrandCore>(`${BRAND_CORE_KEY}/publish`, undefined, clientHeaders())
+    const published = await apiPost<BrandCore>(`${key}/publish`, undefined, clientHeaders())
     await store(published)
-    await mutate(BRAND_VERSIONS_KEY)
+    await mutate(brandVersionsKey(brandId))
     return published
-  }, [mutate, store])
+  }, [brandId, key, mutate, store])
 
   const uploadAsset = useCallback(
     async (kind: BrandAssetKind, variant: string | null, file: File) => {
@@ -106,36 +120,36 @@ export function useBrandCoreMutations() {
       body.append("file", file)
       body.append("kind", kind)
       if (variant) body.append("variant", variant)
-      const asset = await apiFetch<BrandCore["assets"][number]>(`${BRAND_CORE_KEY}/assets`, {
+      const asset = await apiFetch<BrandCore["assets"][number]>(`${key}/assets`, {
         method: "POST",
         body,
         ...clientHeaders(),
       })
       // A completude muda com o logo, então o documento inteiro volta.
-      await mutate(BRAND_CORE_KEY, apiGet<BrandCore>(BRAND_CORE_KEY), { revalidate: false })
+      await mutate(key, apiGet<BrandCore>(key), { revalidate: false })
       return asset
     },
-    [mutate]
+    [key, mutate]
   )
 
   const deleteAsset = useCallback(
     async (id: string) => {
       await mutate(
-        BRAND_CORE_KEY,
+        key,
         (current?: BrandCore) =>
           current && { ...current, assets: current.assets.filter((asset) => asset.id !== id) },
         { revalidate: false }
       )
       try {
-        await apiDelete(`${BRAND_CORE_KEY}/assets/${id}`, clientHeaders())
+        await apiDelete(`${key}/assets/${id}`, clientHeaders())
       } finally {
-        await mutate(BRAND_CORE_KEY)
+        await mutate(key)
       }
     },
-    [mutate]
+    [key, mutate]
   )
 
-  const reload = useCallback(() => mutate(isBrandCoreKey), [mutate])
+  const reload = useCallback(() => mutate(isBrandKey(brandId)), [brandId, mutate])
 
   return { saveSection, saveProgress, publish, uploadAsset, deleteAsset, reload }
 }

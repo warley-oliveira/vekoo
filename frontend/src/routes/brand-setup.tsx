@@ -11,7 +11,8 @@ import { StepTypography } from "@/components/brand/step-typography"
 import { StepVoice } from "@/components/brand/step-voice"
 import { ErrorState } from "@/components/error-state"
 import { useBrandCore } from "@/hooks/use-brand-core"
-import { isBrandStep, type BrandStep } from "@/lib/brand-core"
+import { useActiveBrand } from "@/lib/brand-context"
+import { isBrandStep, stepHref, type BrandStep } from "@/lib/brand-core"
 
 const STEP_COMPONENTS: Record<BrandStep, () => React.JSX.Element> = {
   identity: StepIdentity,
@@ -26,7 +27,8 @@ const STEP_COMPONENTS: Record<BrandStep, () => React.JSX.Element> = {
 /** `/brands/setup/:step` — o formulário do Brandcore, uma etapa por tela. */
 export function BrandSetupPage() {
   const { step } = useParams()
-  const { brandCore, isLoading, error, reload } = useBrandCore()
+  const { brandId } = useActiveBrand()
+  const { brandCore, isLoading, error, reload } = useBrandCore(brandId)
 
   if (error && !brandCore) {
     return (
@@ -39,7 +41,7 @@ export function BrandSetupPage() {
 
   // Sem etapa (ou etapa inválida): retoma de onde parou.
   if (!isBrandStep(step)) {
-    return <Navigate to={`/brands/setup/${brandCore.progress.lastStep ?? "identity"}`} replace />
+    return <Navigate to={stepHref(brandId, brandCore.progress.lastStep ?? "identity")} replace />
   }
 
   const Step = STEP_COMPONENTS[step]

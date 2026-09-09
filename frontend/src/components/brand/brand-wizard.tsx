@@ -42,7 +42,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const reduced = useReducedMotion()
-  const { saveProgress } = useBrandCoreMutations()
+  const { saveProgress } = useBrandCoreMutations(brandCore.id)
 
   const commitRef = useRef<CommitStep | null>(null)
   const retryRef = useRef<(() => void) | null>(null)
@@ -104,7 +104,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
       const ok = commitRef.current ? await commitRef.current(progress) : true
       if (!ok) return
       if (!commitRef.current) await saveProgress(progress).catch(() => {})
-      navigate(target ? stepHref(target) : "/brands")
+      navigate(target ? stepHref(brandCore.id, target) : `/brands/${brandCore.id}/settings`)
     } finally {
       setAdvancing(false)
     }
@@ -129,7 +129,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
           </div>
           <div className="flex items-center gap-3">
             <SaveIndicator status={status} onRetry={() => retryRef.current?.()} />
-            <Button variant="ghost" size="sm" onClick={() => navigate("/brands")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/brands/${brandCore.id}/settings`)}>
               <X /> {t("brand.nav.exit")}
             </Button>
           </div>
@@ -181,7 +181,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
             <footer className="mt-8 flex items-center justify-between gap-3 border-t pt-5">
               <Button
                 variant="outline"
-                onClick={() => (previous ? void advance(previous) : navigate("/brands"))}
+                onClick={() => (previous ? void advance(previous) : navigate(`/brands/${brandCore.id}/settings`))}
                 disabled={advancing}
               >
                 <ArrowLeft /> {t("brand.nav.back")}

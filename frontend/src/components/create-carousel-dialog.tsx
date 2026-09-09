@@ -18,6 +18,7 @@ import {
 // aparecem, e não num diálogo parado.
 
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
+import { useActiveBrand } from "@/lib/brand-context"
 import { suggestTheme, suggestTitle } from "@/lib/ai"
 import { emptyCard, newId } from "@/lib/doc"
 import i18n from "@/lib/i18n"
@@ -42,6 +43,7 @@ export function createSuggestions(): string[] {
  */
 export function useCreateCarousel() {
   const { create } = useCarouselMutations()
+  const { brandId, path } = useActiveBrand()
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
 
@@ -49,14 +51,17 @@ export function useCreateCarousel() {
     async (idea: string, folderId: string | null = null) => {
       setCreating(true)
       try {
+        // O carrossel nasce dentro da marca ativa — e com as cores dela,
+        // que o servidor põe no tema quando a paleta existe.
         const carousel = await create({
+          brandId,
           title: suggestTitle(idea) || i18n.t("create.untitled"),
           format: "4:5",
           theme: suggestTheme(idea),
           cards: [emptyCard(newId("card"))],
           folderId,
         })
-        navigate(`/carousels/${carousel.id}/edit`, { state: { generate: idea } })
+        navigate(path(`/carousels/${carousel.id}/edit`), { state: { generate: idea } })
         return carousel
       } catch {
         toast.error(i18n.t("carousels.actions.createFailed"))
@@ -65,7 +70,7 @@ export function useCreateCarousel() {
         setCreating(false)
       }
     },
-    [create, navigate]
+    [brandId, create, navigate, path]
   )
 
   return { create: run, creating }

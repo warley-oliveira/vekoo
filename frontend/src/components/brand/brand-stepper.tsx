@@ -69,7 +69,7 @@ export function BrandStepper({ brandCore, current, className }: BrandStepperProp
             <li key={step} className="shrink-0">
               {open ? (
                 <Link
-                  to={stepHref(step)}
+                  to={stepHref(brandCore.id, step)}
                   aria-current={active ? "step" : undefined}
                   aria-label={`${t(`brand.steps.${step}.title`)} — ${state}`}
                   className={classes}

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 const DEBOUNCE = 700
 
 type PiecePreviewProps = {
+  brandId: string
   engine: EngineManifest
   values: PieceValues
   format: PieceFormat
@@ -21,9 +22,9 @@ type PiecePreviewProps = {
  * digitar, pede o PNG do primeiro quadro e mostra. Só pede quando os
  * campos obrigatórios estão preenchidos — antes disso não há o que ver.
  */
-export function PiecePreview({ engine, values, format, className }: PiecePreviewProps) {
+export function PiecePreview({ brandId, engine, values, format, className }: PiecePreviewProps) {
   const { t } = useTranslation()
-  const { preview } = usePieceMutations()
+  const { preview } = usePieceMutations(brandId)
   const [url, setUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ApiError | null>(null)

@@ -217,9 +217,10 @@ function EditorHotkeys({ onToggleAi }: { onToggleAi: () => void }) {
 function MissingCarousel() {
   const { t } = useTranslation()
 
+  const { brandId } = useParams()
   useEffect(() => {
     toast(t("editor.notFoundToast"))
   }, [t])
 
-  return <Navigate to="/" replace />
+  return <Navigate to={brandId ? `/brands/${brandId}/carousels` : "/"} replace />
 }

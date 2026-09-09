@@ -28,7 +28,9 @@
       "templates": "Modelos",
       "brands": "Marca",
       "trash": "Lixeira",
-      "pieces": "Peças"
+      "home": "Início",
+      "contents": "Conteúdos",
+      "create": "Criar peça"
     },
     "createBlank": "Começar em branco",
     "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
@@ -1310,5 +1312,70 @@
       "ready": "\"{{title}}\" ficou pronta.",
       "failed": "\"{{title}}\" falhou na geração."
     }
+  },
+  "brandSwitcher": {
+    "label": "Marcas da conta",
+    "aria": "Marca ativa: {{name}}. Trocar de marca",
+    "untitled": "Marca sem nome",
+    "settings": "Configurações da marca",
+    "newBrand": "Nova marca",
+    "createdToast": "Marca criada. Vamos montá-la.",
+    "createFailed": "Não deu para criar a marca.",
+    "loading": "Abrindo a sua marca…"
+  },
+  "dashboard": {
+    "createTitle": "Criar",
+    "createCarousel": "Criar carrossel",
+    "createCarouselHint": "Descreva o assunto e receba um carrossel pronto para editar.",
+    "createPiece": "Criar peça",
+    "createPieceHint": "Escolha um tipo de peça e preencha só o que muda.",
+    "recentTitle": "Saiu por último",
+    "recentEmpty": "Nada gerado ainda nesta marca. Comece por um carrossel ou uma peça.",
+    "allContents": "Ver tudo",
+    "brandTitle": "A marca",
+    "brandSettings": "Configurar",
+    "contentsCount_one": "{{count}} conteúdo na marca",
+    "contentsCount_other": "{{count}} conteúdos na marca"
+  },
+  "contents": {
+    "kind": {
+      "carousel": "Carrossel"
+    },
+    "meta": "{{format}} · {{when}} · marca {{version}}",
+    "filters": {
+      "allKinds": "Todos os tipos",
+      "allFormats": "Todos os formatos",
+      "kindAria": "Filtrar por tipo",
+      "formatAria": "Filtrar por formato",
+      "periodAria": "Filtrar por período",
+      "period": {
+        "7": "Últimos 7 dias",
+        "30": "Últimos 30 dias",
+        "all": "Todo o período"
+      }
+    },
+    "emptyTitle": "Nada por aqui com esses filtros",
+    "emptyDescription": "Tudo que a marca gera aparece aqui: peças dos motores e carrosséis do editor.",
+    "regenerateAll": "Regenerar desatualizadas",
+    "regenerateAllToast_one": "{{count}} peça de volta à fila.",
+    "regenerateAllToast_other": "{{count}} peças de volta à fila."
+  },
+  "orphans": {
+    "title": "Atribuir marca ao que veio antes",
+    "back": "Voltar",
+    "description": "Estes carrosséis (e pastas) foram criados antes de existir marca. Entregue-os a uma marca da conta. Esta tela some quando não sobrar nenhum.",
+    "targetBrand": "Marca de destino",
+    "counts": "{{carousels}} carrosséis e {{folders}} pastas sem marca",
+    "assignAll": "Atribuir tudo",
+    "assignOne": "Atribuir",
+    "inTrash": "na lixeira",
+    "assignedToast_one": "{{count}} carrossel atribuído.",
+    "assignedToast_other": "{{count}} carrosséis atribuídos.",
+    "assignFailed": "Não deu para atribuir.",
+    "doneTitle": "Tudo tem marca",
+    "doneDescription": "Não sobrou nada de antes. Esta tela pode ser removida.",
+    "banner_one": "{{count}} item de antes de existir marca ainda sem dona.",
+    "banner_other": "{{count}} itens de antes de existir marca ainda sem dona.",
+    "bannerCta": "Atribuir marca"
   }
 }

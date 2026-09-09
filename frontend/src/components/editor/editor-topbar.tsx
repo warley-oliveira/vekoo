@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
+
+import { useBrandIdFromRoute } from "@/lib/brand-context"
 import { AnimatePresence } from "motion/react"
 import {
   ArrowLeft,
@@ -31,7 +33,8 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
   const [previewing, setPreviewing] = useState(false)
   const [exporting, setExporting] = useState(false)
 
-  const backTo = folderId ? `/folders/${folderId}` : "/"
+  const brandId = useBrandIdFromRoute()
+  const backTo = `/brands/${brandId}${folderId ? `/folders/${folderId}` : "/carousels"}`
   const active = activeCard(state)
   const activeIndex = active ? state.doc.cards.indexOf(active) : 0
   const hasCards = state.doc.cards.length > 0

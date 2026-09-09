@@ -32,6 +32,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { useFolders } from "@/hooks/use-folders"
+import { useActiveBrand } from "@/lib/brand-context"
 import type { CarouselSummary } from "@/lib/types"
 
 // Menu de ações de um carrossel — o mesmo na grade, na lista e onde mais
@@ -50,7 +51,8 @@ export function CarouselActionsMenu({
   align = "end",
 }: CarouselActionsMenuProps) {
   const { t } = useTranslation()
-  const { folders } = useFolders()
+  const { brandId } = useActiveBrand()
+  const { folders } = useFolders(brandId)
   const actions = useCarouselMutations()
   const [renameOpen, setRenameOpen] = useState(false)
 

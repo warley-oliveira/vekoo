@@ -224,8 +224,26 @@ export type BrandCompleteness = {
 export type BrandStatus = "draft" | "published"
 export type GenerationBlocker = "notPublished" | "minimumNotMet"
 
+/** O que `GET /brands` devolve por marca — o bastante para o seletor e a lista. */
+export type BrandSummary = {
+  id: string
+  name: string | null
+  status: BrandStatus
+  percent: number
+  minimumMet: boolean
+  readyForGeneration: boolean
+  pendingFacts: number
+  visitedSteps: BrandStep[]
+  lastStep: BrandStep | null
+  currentVersion: number
+  publishedAt: number | null
+  createdAt: number
+  updatedAt: number
+}
+
 export type BrandCore = {
   id: string
+  name: string | null
   status: BrandStatus
   document: BrandDocument
   publishedDocument: BrandDocument | null
@@ -508,8 +526,8 @@ export function previousStep(step: BrandStep): BrandStep | null {
   return BRAND_STEPS[stepIndex(step) - 1] ?? null
 }
 
-export function stepHref(step: BrandStep): string {
-  return `/brands/setup/${step}`
+export function stepHref(brandId: string, step: BrandStep): string {
+  return `/brands/${brandId}/setup/${step}`
 }
 
 /** Etapa que a pessoa pode abrir: visitada, completa ou a próxima da atual. */

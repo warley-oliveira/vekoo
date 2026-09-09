@@ -69,8 +69,8 @@ export function SignUpPage() {
         }),
         { description: t("auth.signup.createdDescription") }
       )
-      // Conta nova cai direto no Brandcore: sem marca preenchida, nada é gerado.
-      navigate("/brands/setup/identity", { replace: true })
+      // Conta nova cai na marca que nasceu com ela (a raiz manda para o formulário).
+      navigate("/", { replace: true })
     } catch (error) {
       if (error instanceof AuthError) {
         const field = error.field === "form" ? "root" : error.field

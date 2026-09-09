@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBrandCore, useBrandCoreMutations, useBrandVersions } from "@/hooks/use-brand-core"
+import { useActiveBrand } from "@/lib/brand-context"
 import { useBrandCoreLive } from "@/hooks/use-brand-core-live"
 import { ApiError } from "@/lib/api"
 import { BRAND_STEPS, stepHref, type BrandCore, type BrandVersion } from "@/lib/brand-core"
@@ -20,10 +21,11 @@ import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
-/** `/brands` — a marca: cartão, estado, mínimo para gerar e histórico. */
+/** `/brands/:id/settings` — a marca: cartão, estado, mínimo para gerar e histórico. */
 export function BrandPage() {
   const { t } = useTranslation()
-  const { brandCore, isLoading, error, reload } = useBrandCore()
+  const { brandId } = useActiveBrand()
+  const { brandCore, isLoading, error, reload } = useBrandCore(brandId)
 
   useBrandCoreLive((event) => {
     const name = event.accountName ?? t("brand.overview.liveSomeone")
@@ -59,12 +61,13 @@ export function BrandPage() {
 function BrandStartHero() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { brandId } = useActiveBrand()
   return (
     <EmptyState
       icon={<Palette className="size-6" />}
       title={t("brand.overview.heading")}
       description={t("brand.overview.description")}
-      action={{ label: t("brand.overview.startSetup"), onClick: () => navigate(stepHref("identity")) }}
+      action={{ label: t("brand.overview.startSetup"), onClick: () => navigate(stepHref(brandId, "identity")) }}
     />
   )
 }
@@ -73,7 +76,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
   const { t } = useTranslation()
   const language = useLanguage()
   const navigate = useNavigate()
-  const { publish } = useBrandCoreMutations()
+  const { publish } = useBrandCoreMutations(brandCore.id)
   const [publishing, setPublishing] = useState(false)
 
   const { completeness } = brandCore
@@ -120,7 +123,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => navigate(stepHref(continueStep))}>
+          <Button variant="outline" onClick={() => navigate(stepHref(brandCore.id, continueStep))}>
             {completeness.percent < 100 ? t("brand.overview.continueSetup") : t("brand.overview.editBrand")}
           </Button>
           <Button
@@ -153,7 +156,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
                 return (
                   <li key={step}>
                     <Link
-                      to={stepHref(step)}
+                      to={stepHref(brandCore.id, step)}
                       className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
                       <span className="flex items-center gap-2">
@@ -170,7 +173,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
             </ul>
           </section>
 
-          <VersionHistory published={published} />
+          <VersionHistory brandId={brandCore.id} published={published} />
         </div>
       </div>
     </div>
@@ -225,7 +228,7 @@ function ReadinessCard({ brandCore }: { brandCore: BrandCore }) {
         <p className="mt-4 flex items-center gap-2 border-t pt-3 text-sm">
           <ShieldAlert className="size-4 shrink-0 text-destructive" aria-hidden />
           <span className="flex-1">{t("brand.overview.pendingFacts", { count: pendingFacts })}</span>
-          <Link to={stepHref("facts")} className="flex items-center gap-1 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+          <Link to={stepHref(brandCore.id, "facts")} className="flex items-center gap-1 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
             {t("brand.overview.reviewFacts")} <ArrowRight className="size-3.5" />
           </Link>
         </p>
@@ -234,10 +237,10 @@ function ReadinessCard({ brandCore }: { brandCore: BrandCore }) {
   )
 }
 
-function VersionHistory({ published }: { published: boolean }) {
+function VersionHistory({ brandId, published }: { brandId: string; published: boolean }) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { versions, isLoading, error, reload } = useBrandVersions(published)
+  const { versions, isLoading, error, reload } = useBrandVersions(brandId, published)
 
   return (
     <section className="rounded-lg border p-4">

@@ -57,7 +57,7 @@ export function StepTypography() {
       <p className="text-sm text-muted-foreground">{t("brand.typography.intro")}</p>
 
       {FONT_ROLES.map((role) => (
-        <FontRoleEditor key={role} role={role} form={form} assets={brandCore.assets} />
+        <FontRoleEditor key={role} role={role} form={form} assets={brandCore.assets} brandId={brandCore.id} />
       ))}
 
       <fieldset className="space-y-3">
@@ -95,9 +95,10 @@ type FontRoleEditorProps = {
   role: FontRole
   form: ReturnType<typeof useStepForm<"typography">>["form"]
   assets: BrandAsset[]
+  brandId: string
 }
 
-function FontRoleEditor({ role, form, assets }: FontRoleEditorProps) {
+function FontRoleEditor({ role, form, assets, brandId }: FontRoleEditorProps) {
   const { t } = useTranslation()
   const { control, register, setValue, formState: { errors } } = form
   const font = useWatch({ control, name: role }) as BrandFont
@@ -106,7 +107,7 @@ function FontRoleEditor({ role, form, assets }: FontRoleEditorProps) {
   const previewFamily = useBrandFont(font, assets)
   const roleErrors = errors[role]
 
-  const { uploadAsset } = useBrandCoreMutations()
+  const { uploadAsset } = useBrandCoreMutations(brandId)
   const [uploading, setUploading] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
   const fileAsset = assets.find((a) => a.id === font.assetId)

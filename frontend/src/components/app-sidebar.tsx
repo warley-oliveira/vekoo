@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next"
 import {
   Check,
   ChevronsUpDown,
+  Home,
   Languages,
   Images,
   Layers,
@@ -23,6 +24,8 @@ import {
   Zap,
 } from "lucide-react"
 import { toast } from "sonner"
+
+import { useActiveBrand } from "@/lib/brand-context"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -80,6 +83,7 @@ export function AppSidebar({
   const { t } = useTranslation()
   const { credits } = useCredits()
   const { move: moveCarousel } = useCarouselMutations()
+  const { path } = useActiveBrand()
   const { session, signOut } = useAuth()
   const navigate = useNavigate()
   // `left` é do servidor: subtrair aqui daria uma segunda opinião sobre o
@@ -198,7 +202,15 @@ export function AppSidebar({
           </SidebarIconButton>
         )}
         <SidebarLink
-          to="/"
+          to={path("")}
+          end
+          icon={<Home />}
+          label={t("shell.nav.home")}
+          collapsed={collapsed}
+          onNavigate={onNavigate}
+        />
+        <SidebarLink
+          to={path("/carousels")}
           icon={<Layers />}
           label={t("shell.nav.carousels")}
           collapsed={collapsed}
@@ -218,28 +230,35 @@ export function AppSidebar({
           onClick={onOpenSearch}
         />
         <SidebarLink
-          to="/templates"
-          icon={<LayoutTemplate />}
-          label={t("shell.nav.templates")}
+          to={path("/contents")}
+          icon={<Images />}
+          label={t("shell.nav.contents")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
         <SidebarLink
-          to="/brands"
+          to={path("/create")}
+          icon={<Sparkles />}
+          label={t("shell.nav.create")}
+          collapsed={collapsed}
+          onNavigate={onNavigate}
+        />
+        <SidebarLink
+          to={path("/settings")}
           icon={<Palette />}
           label={t("shell.nav.brands")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
         <SidebarLink
-          to="/pieces"
-          icon={<Images />}
-          label={t("shell.nav.pieces")}
+          to={path("/templates")}
+          icon={<LayoutTemplate />}
+          label={t("shell.nav.templates")}
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
         <SidebarLink
-          to="/trash"
+          to={path("/trash")}
           icon={<Trash2 />}
           label={t("shell.nav.trash")}
           collapsed={collapsed}
@@ -344,6 +363,7 @@ function LanguageSubmenu() {
 
 function SidebarLink({
   to,
+  end,
   icon,
   label,
   collapsed,
@@ -352,6 +372,8 @@ function SidebarLink({
   onDropCarousel,
 }: {
   to: string
+  /** Só ativo no caminho exato (o Início, que é prefixo de todos os outros). */
+  end?: boolean
   icon: ReactNode
   label: string
   collapsed: boolean
@@ -382,6 +404,7 @@ function SidebarLink({
   const link = (
     <NavLink
       to={to}
+      end={end}
       onClick={onNavigate}
       {...dropHandlers}
       className={({ isActive }) =>
@@ -495,7 +518,8 @@ function FoldersSection({
   onNavigate?: () => void
 }) {
   const { t } = useTranslation()
-  const { folders, isLoading, error, reload } = useFolders()
+  const { brandId, path } = useActiveBrand()
+  const { folders, isLoading, error, reload } = useFolders(brandId)
   const { createFolder: create } = useFolderMutations()
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
@@ -507,10 +531,10 @@ function FoldersSection({
   async function createFolder(name: string, color: string) {
     setSaving(true)
     try {
-      const folder = await create(name, color)
+      const folder = await create(brandId, name, color)
       setCreating(false)
       toast(t("folders.created", { name }))
-      navigate(`/folders/${folder.id}`)
+      navigate(path(`/folders/${folder.id}`))
       onNavigate?.()
     } catch {
       toast.error(t("folders.createFailed"))
@@ -595,6 +619,7 @@ function FolderRow({
   const { t } = useTranslation()
   const { renameFolder, deleteFolder } = useFolderMutations()
   const { move } = useCarouselMutations()
+  const { path } = useActiveBrand()
   const navigate = useNavigate()
   const [dragOver, setDragOver] = useState(false)
   const [renaming, setRenaming] = useState(false)
@@ -620,7 +645,7 @@ function FolderRow({
 
   const link = (
     <NavLink
-      to={`/folders/${folder.id}`}
+      to={path(`/folders/${folder.id}`)}
       onClick={onNavigate}
       onDragOver={(e) => {
         if (e.dataTransfer.types.includes(CAROUSEL_DRAG_TYPE)) {
@@ -692,7 +717,7 @@ function FolderRow({
                         })
                       )
                       .catch(() => toast.error(t("folders.deleteFailed")))
-                    navigate("/")
+                    navigate(path("/carousels"))
                   }}
                 >
                   <Trash2 /> {t("folders.deleteFolder")}

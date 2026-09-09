@@ -86,6 +86,7 @@ export type PieceValues = Record<string, string | number | string[] | null | und
 
 export type Piece = {
   id: string
+  brandId: string
   engineId: string
   engineName: string
   format: PieceFormat
@@ -183,12 +184,12 @@ export function compactValues(values: PieceValues): PieceValues {
   return out
 }
 
-export function pieceHref(id: string): string {
-  return `/pieces/${id}`
+export function pieceHref(brandId: string, id: string): string {
+  return `/brands/${brandId}/contents/${id}`
 }
 
-export function newPieceHref(engineId: string): string {
-  return `/pieces/new/${engineId}`
+export function newPieceHref(brandId: string, engineId: string): string {
+  return `/brands/${brandId}/create/${engineId}`
 }
 
 /** A mensagem de uma falha de geração, no vocabulário de códigos — a tela passa o `t`. */

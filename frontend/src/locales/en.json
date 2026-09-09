@@ -28,7 +28,9 @@
       "templates": "Templates",
       "brands": "Brand",
       "trash": "Trash",
-      "pieces": "Pieces"
+      "home": "Home",
+      "contents": "Contents",
+      "create": "Create piece"
     },
     "createBlank": "Start from scratch",
     "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
@@ -1310,5 +1312,70 @@
       "ready": "\"{{title}}\" is ready.",
       "failed": "\"{{title}}\" failed to generate."
     }
+  },
+  "brandSwitcher": {
+    "label": "Account brands",
+    "aria": "Active brand: {{name}}. Switch brand",
+    "untitled": "Unnamed brand",
+    "settings": "Brand settings",
+    "newBrand": "New brand",
+    "createdToast": "Brand created. Let's set it up.",
+    "createFailed": "Couldn't create the brand.",
+    "loading": "Opening your brand…"
+  },
+  "dashboard": {
+    "createTitle": "Create",
+    "createCarousel": "Create carousel",
+    "createCarouselHint": "Describe the topic and get a carousel ready to edit.",
+    "createPiece": "Create piece",
+    "createPieceHint": "Pick a piece type and fill in only what changes.",
+    "recentTitle": "Latest",
+    "recentEmpty": "Nothing generated for this brand yet. Start with a carousel or a piece.",
+    "allContents": "See all",
+    "brandTitle": "The brand",
+    "brandSettings": "Set up",
+    "contentsCount_one": "{{count}} content in the brand",
+    "contentsCount_other": "{{count}} contents in the brand"
+  },
+  "contents": {
+    "kind": {
+      "carousel": "Carousel"
+    },
+    "meta": "{{format}} · {{when}} · brand {{version}}",
+    "filters": {
+      "allKinds": "All types",
+      "allFormats": "All formats",
+      "kindAria": "Filter by type",
+      "formatAria": "Filter by format",
+      "periodAria": "Filter by period",
+      "period": {
+        "7": "Last 7 days",
+        "30": "Last 30 days",
+        "all": "All time"
+      }
+    },
+    "emptyTitle": "Nothing here with these filters",
+    "emptyDescription": "Everything the brand generates shows up here: engine pieces and editor carousels.",
+    "regenerateAll": "Regenerate outdated",
+    "regenerateAllToast_one": "{{count}} piece back in the queue.",
+    "regenerateAllToast_other": "{{count}} pieces back in the queue."
+  },
+  "orphans": {
+    "title": "Assign a brand to what came before",
+    "back": "Back",
+    "description": "These carousels (and folders) were created before brands existed. Hand them to one of the account's brands. This screen disappears when none are left.",
+    "targetBrand": "Target brand",
+    "counts": "{{carousels}} carousels and {{folders}} folders without a brand",
+    "assignAll": "Assign all",
+    "assignOne": "Assign",
+    "inTrash": "in trash",
+    "assignedToast_one": "{{count}} carousel assigned.",
+    "assignedToast_other": "{{count}} carousels assigned.",
+    "assignFailed": "Couldn't assign.",
+    "doneTitle": "Everything has a brand",
+    "doneDescription": "Nothing from before is left. This screen can be removed.",
+    "banner_one": "{{count}} item from before brands still has no owner.",
+    "banner_other": "{{count}} items from before brands still have no owner.",
+    "bannerCta": "Assign brand"
   }
 }

@@ -8,31 +8,34 @@ import { currentLanguage } from "@/lib/i18n"
 import { getToken } from "@/lib/token"
 import type { Piece, PieceFormat, PieceValues } from "@/lib/engines"
 
+// As peças de uma marca (`/brands/:id/pieces`). Toda função recebe a marca.
+
 export type PieceFilters = { engine?: string; stale?: boolean }
 
-export function piecesKey(filters: PieceFilters = {}): string {
+export function piecesKey(brandId: string, filters: PieceFilters = {}): string {
   const params = new URLSearchParams()
   if (filters.engine) params.set("engine", filters.engine)
   if (filters.stale) params.set("stale", "true")
   const query = params.toString()
-  return `/pieces${query ? `?${query}` : ""}`
+  return `/brands/${brandId}/pieces${query ? `?${query}` : ""}`
 }
 
-export function pieceKey(id: string | undefined): string | null {
-  return id ? `/pieces/${id}` : null
+export function pieceKey(brandId: string, id: string | undefined): string | null {
+  return id ? `/brands/${brandId}/pieces/${id}` : null
 }
 
+/** Qualquer chave de peça, de qualquer marca — para o canal invalidar. */
 export function isPieceKey(key: unknown): key is string {
-  return typeof key === "string" && key.startsWith("/pieces")
+  return typeof key === "string" && key.startsWith("/brands/") && key.includes("/pieces")
 }
 
-export function usePieces(filters: PieceFilters = {}) {
-  const { data, error, isLoading, mutate } = useApi<{ pieces: Piece[] }>(piecesKey(filters))
+export function usePieces(brandId: string, filters: PieceFilters = {}) {
+  const { data, error, isLoading, mutate } = useApi<{ pieces: Piece[] }>(piecesKey(brandId, filters))
   return { pieces: data?.pieces, isLoading: isLoading && !data, error, reload: () => mutate() }
 }
 
-export function usePiece(id: string | undefined) {
-  const { data, error, isLoading, mutate } = useApi<Piece>(pieceKey(id))
+export function usePiece(brandId: string, id: string | undefined) {
+  const { data, error, isLoading, mutate } = useApi<Piece>(pieceKey(brandId, id))
   return { piece: data, isLoading: isLoading && !data, error, reload: () => mutate() }
 }
 
@@ -43,27 +46,28 @@ export type CreatePieceInput = {
   values: PieceValues
 }
 
-export function usePieceMutations() {
+export function usePieceMutations(brandId: string) {
   const { mutate } = useSWRConfig()
+  const base = `/brands/${brandId}/pieces`
   const resync = useCallback(() => mutate(isPieceKey), [mutate])
 
   const create = useCallback(
     async (input: CreatePieceInput): Promise<Piece> => {
-      const piece = await apiPost<Piece>("/pieces", { piece: input }, { headers: { "X-Client-Id": getClientId() } })
+      const piece = await apiPost<Piece>(base, { piece: input }, { headers: { "X-Client-Id": getClientId() } })
       await resync()
       return piece
     },
-    [resync]
+    [base, resync]
   )
 
   const regenerate = useCallback(
     async (id: string): Promise<Piece> => {
-      const piece = await apiPost<Piece>(`/pieces/${id}/regenerate`)
-      await mutate(pieceKey(id), piece, { revalidate: false })
+      const piece = await apiPost<Piece>(`${base}/${id}/regenerate`)
+      await mutate(pieceKey(brandId, id), piece, { revalidate: false })
       await resync()
       return piece
     },
-    [mutate, resync]
+    [base, brandId, mutate, resync]
   )
 
   const remove = useCallback(
@@ -75,12 +79,12 @@ export function usePieceMutations() {
         { revalidate: false }
       )
       try {
-        await apiDelete(`/pieces/${id}`)
+        await apiDelete(`${base}/${id}`)
       } finally {
         await resync()
       }
     },
-    [mutate, resync]
+    [base, mutate, resync]
   )
 
   /**
@@ -90,7 +94,7 @@ export function usePieceMutations() {
   const preview = useCallback(
     async (engineId: string, values: PieceValues, format: PieceFormat, signal?: AbortSignal): Promise<Blob> => {
       const token = getToken()
-      const response = await fetch(`${BASE_URL}/engines/${engineId}/preview`, {
+      const response = await fetch(`${BASE_URL}/brands/${brandId}/engines/${engineId}/preview`, {
         method: "POST",
         signal,
         headers: {
@@ -117,7 +121,7 @@ export function usePieceMutations() {
       }
       return response.blob()
     },
-    []
+    [brandId]
   )
 
   return { create, regenerate, remove, preview, resync }

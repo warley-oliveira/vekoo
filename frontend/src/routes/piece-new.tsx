@@ -10,6 +10,7 @@ import { EngineCatalogSkeleton, PieceFormSkeleton } from "@/components/pieces/pi
 import { Button } from "@/components/ui/button"
 import { useBrandCore } from "@/hooks/use-brand-core"
 import { useEngines } from "@/hooks/use-engines"
+import { useActiveBrand } from "@/lib/brand-context"
 
 /** `/pieces/new` escolhe o motor; `/pieces/new/:engineId` é o formulário gerado do manifesto. */
 export function PieceNewPage() {
@@ -17,7 +18,8 @@ export function PieceNewPage() {
   const { engineId } = useParams()
   const navigate = useNavigate()
   const { engines, isLoading, error, reload } = useEngines()
-  const brand = useBrandCore()
+  const { brandId, path } = useActiveBrand()
+  const brand = useBrandCore(brandId)
 
   if (error && !engines) {
     return (
@@ -46,13 +48,13 @@ export function PieceNewPage() {
   }
 
   const engine = engines?.find((e) => e.id === engineId)
-  if (engines && !engine) return <Navigate to="/pieces/new" replace />
+  if (engines && !engine) return <Navigate to={path("/create")} replace />
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Link to="/pieces/new" className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+          <Link to={path("/create")} className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
             <ArrowLeft className="size-3.5" /> {t("pieces.form.back")}
           </Link>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">{engine?.name ?? t("pieces.form.heading")}</h1>
@@ -69,13 +71,13 @@ export function PieceNewPage() {
           icon={<Palette className="size-6" />}
           title={t("pieces.form.brandNotPublished.title")}
           description={t("pieces.form.brandNotPublished.description")}
-          action={{ label: t("pieces.form.brandNotPublished.cta"), onClick: () => navigate("/brands") }}
+          action={{ label: t("pieces.form.brandNotPublished.cta"), onClick: () => navigate(path("/settings")) }}
         />
       ) : (
         <PieceForm key={engine.id} engine={engine} brandCore={brand.brandCore} />
       )}
       {!engine && !isLoading && (
-        <Button variant="outline" onClick={() => navigate("/pieces/new")}>{t("pieces.form.back")}</Button>
+        <Button variant="outline" onClick={() => navigate(path("/create"))}>{t("pieces.form.back")}</Button>
       )}
     </div>
   )

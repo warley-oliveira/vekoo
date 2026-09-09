@@ -22,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useEngine } from "@/hooks/use-engines"
 import { usePiece, usePieceMutations } from "@/hooks/use-pieces"
 import { usePiecesLive } from "@/hooks/use-pieces-live"
+import { useActiveBrand } from "@/lib/brand-context"
 import { stepHref } from "@/lib/brand-core"
 import { pieceErrorMessage, type Piece } from "@/lib/engines"
 import { cn } from "@/lib/utils"
@@ -31,9 +32,10 @@ export function PiecePage() {
   const { t } = useTranslation()
   const { pieceId } = useParams()
   const navigate = useNavigate()
-  const { piece, isLoading, error, reload } = usePiece(pieceId)
+  const { brandId, path } = useActiveBrand()
+  const { piece, isLoading, error, reload } = usePiece(brandId, pieceId)
   const { engine } = useEngine(piece?.engineId)
-  const { regenerate, remove } = usePieceMutations()
+  const { regenerate, remove } = usePieceMutations(brandId)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [working, setWorking] = useState(false)
 
@@ -78,7 +80,7 @@ export function PiecePage() {
     try {
       await remove(piece!.id)
       toast(t("pieces.detail.deletedToast"))
-      navigate("/pieces")
+      navigate(path("/contents"))
     } catch {
       toast.error(t("pieces.detail.deleteFailed"))
     }
@@ -88,7 +90,7 @@ export function PiecePage() {
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <Link to="/pieces" className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+          <Link to={path("/contents")} className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
             <ArrowLeft className="size-3.5" /> {t("pieces.detail.back")}
           </Link>
           <div className="flex flex-wrap items-center gap-2">
@@ -129,7 +131,7 @@ export function PiecePage() {
             <p className="text-muted-foreground">{pieceErrorMessage(t, piece)}</p>
           </div>
           {piece.error?.code === "refPending" && (
-            <Button size="sm" variant="outline" onClick={() => navigate(stepHref("facts"))}>{t("pieces.detail.fixFacts")}</Button>
+            <Button size="sm" variant="outline" onClick={() => navigate(stepHref(brandId, "facts"))}>{t("pieces.detail.fixFacts")}</Button>
           )}
         </aside>
       )}

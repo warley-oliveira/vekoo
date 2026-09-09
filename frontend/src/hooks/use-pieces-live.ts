@@ -23,7 +23,7 @@ export function usePiecesLive(onEvent?: (event: PieceEvent) => void) {
 
     const unsubscribe = subscribe<PieceEvent>("PieceChannel", {
       received: (message) => {
-        void mutate(pieceKey(message.piece.id), message.piece, { revalidate: false })
+        void mutate(pieceKey(message.piece.brandId, message.piece.id), message.piece, { revalidate: false })
         void mutate(isPieceKey, undefined, { revalidate: true })
         handler.current?.(message)
       },

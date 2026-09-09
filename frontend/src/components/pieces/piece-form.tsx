@@ -34,7 +34,7 @@ type PieceFormProps = { engine: EngineManifest; brandCore: BrandCore }
 export function PieceForm({ engine, brandCore }: PieceFormProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { create } = usePieceMutations()
+  const { create } = usePieceMutations(brandCore.id)
   const [values, setValues] = useState<PieceValues>(() => defaultValues(engine))
   const [format, setFormat] = useState<PieceFormat>(engine.formats[0])
   const [title, setTitle] = useState("")
@@ -74,7 +74,7 @@ export function PieceForm({ engine, brandCore }: PieceFormProps) {
     try {
       const piece = await create({ engineId: engine.id, format, title: title.trim() || undefined, values: compactValues(values) })
       toast(t("pieces.form.createdToast"))
-      navigate(pieceHref(piece.id))
+      navigate(pieceHref(brandCore.id, piece.id))
     } catch (error) {
       if (error instanceof ApiError && error.details) {
         const mapped: Record<string, string> = {}
@@ -140,7 +140,7 @@ export function PieceForm({ engine, brandCore }: PieceFormProps) {
       </div>
 
       <div className="lg:sticky lg:top-6 lg:self-start">
-        <PiecePreview engine={engine} values={values} format={format} />
+        <PiecePreview brandId={brandCore.id} engine={engine} values={values} format={format} />
       </div>
     </form>
   )

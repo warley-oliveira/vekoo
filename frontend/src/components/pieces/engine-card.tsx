@@ -3,15 +3,17 @@ import { useTranslation } from "react-i18next"
 import { ArrowRight, Layers } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
+import { useActiveBrand } from "@/lib/brand-context"
 import { newPieceHref, type EngineManifest } from "@/lib/engines"
 
 /** Um motor no catálogo: nome, descrição, formatos e quantos campos pede. */
 export function EngineCard({ engine }: { engine: EngineManifest }) {
   const { t } = useTranslation()
+  const { brandId } = useActiveBrand()
 
   return (
     <Link
-      to={newPieceHref(engine.id)}
+      to={newPieceHref(brandId, engine.id)}
       className="group flex flex-col gap-3 rounded-xl border bg-card p-5 outline-none transition-colors hover:border-primary/40 hover:bg-accent/30 focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">

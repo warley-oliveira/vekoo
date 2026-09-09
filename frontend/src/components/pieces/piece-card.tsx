@@ -19,7 +19,7 @@ export function PieceCard({ piece }: { piece: Piece }) {
   return (
     <button
       type="button"
-      onClick={() => navigate(pieceHref(piece.id))}
+      onClick={() => navigate(pieceHref(piece.brandId, piece.id))}
       aria-label={t("pieces.list.openAria", { title: piece.title })}
       className="group flex w-full flex-col gap-2 rounded-lg text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >

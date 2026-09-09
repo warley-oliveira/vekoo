@@ -7,6 +7,7 @@ import { CardArt } from "@/components/editor/card-art"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { useApi } from "@/hooks/use-api"
 import { useCarousels } from "@/hooks/use-carousels"
+import { useActiveBrand } from "@/lib/brand-context"
 import { cardPlainText, cardTitle } from "@/lib/doc"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
@@ -35,7 +36,8 @@ const REMOTE_DEBOUNCE = 250
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { carousels } = useCarousels({})
+  const { brandId, path } = useActiveBrand()
+  const { carousels } = useCarousels({ brandId })
   const navigate = useNavigate()
   const [query, setQuery] = useState("")
   const [debounced, setDebounced] = useState("")
@@ -100,7 +102,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
 
   function openCarousel(carousel: CarouselSummary) {
     onOpenChange(false)
-    const destination = carousel.folderId ? `/folders/${carousel.folderId}` : "/"
+    const destination = path(carousel.folderId ? `/folders/${carousel.folderId}` : "/carousels")
     navigate(destination, { state: { highlight: carousel.id } })
   }
 
