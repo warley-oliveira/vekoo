@@ -1,0 +1,178 @@
+{
+  "pieces": {
+    "title": "Peças",
+    "catalog": {
+      "heading": "Que peça você quer criar?",
+      "description": "Cada tipo de peça é um motor: ele lê a marca publicada e monta a imagem. Você só preenche o que muda.",
+      "open": "Criar",
+      "fields_one": "{{count}} campo",
+      "fields_other": "{{count}} campos",
+      "series": "Série",
+      "formats": {
+        "post": "Post 1080×1350",
+        "story": "Story 1080×1920"
+      },
+      "formatShort": {
+        "post": "Post",
+        "story": "Story"
+      },
+      "loadFailed": "Não deu para carregar os motores."
+    },
+    "list": {
+      "heading": "Suas peças",
+      "newPiece": "Nova peça",
+      "emptyTitle": "Nenhuma peça ainda",
+      "emptyDescription": "Escolha um tipo de peça, preencha os campos e a imagem sai pronta com a sua marca.",
+      "allEngines": "Todos os tipos",
+      "engineFilterAria": "Filtrar por tipo",
+      "staleOnly": "Só desatualizadas",
+      "staleCount_one": "{{count}} peça desatualizada",
+      "staleCount_other": "{{count}} peças desatualizadas",
+      "frames_one": "{{count}} imagem",
+      "frames_other": "{{count}} imagens",
+      "openAria": "Abrir {{title}}"
+    },
+    "status": {
+      "queued": "Na fila",
+      "rendering": "Gerando…",
+      "ready": "Pronta",
+      "failed": "Falhou",
+      "stale": "Desatualizada",
+      "outdated": "Marca mudou"
+    },
+    "form": {
+      "heading": "Nova peça",
+      "back": "Trocar tipo",
+      "format": "Formato",
+      "title": "Nome da peça",
+      "titlePlaceholder": "Só para você achar depois. Opcional.",
+      "create": "Gerar peça",
+      "creating": "Enviando…",
+      "createdToast": "Peça na fila. Avisamos quando ficar pronta.",
+      "createFailed": "Não deu para criar a peça.",
+      "required": "obrigatório",
+      "counters": {
+        "lines": "{{used}}/{{max}} linhas",
+        "chars": "{{used}}/{{max}}",
+        "items": "{{used}}/{{max}} itens"
+      },
+      "ref": {
+        "placeholder": "Escolha um fato",
+        "none": "Nenhum",
+        "empty": "Nenhum fato desse tipo na marca. Cadastre em Marca → Dados da operação.",
+        "pendingHint": "Fato pendente bloqueia a geração. Confirme em Marca → Dados da operação.",
+        "status": {
+          "confirmed": "Confirmado",
+          "pending": "Pendente"
+        }
+      },
+      "choice": {
+        "placeholder": "Escolher",
+        "none": "Padrão da marca"
+      },
+      "image": {
+        "none": "Sem foto",
+        "placeholderHint": "Fica o espaço reservado.",
+        "empty": "Nenhuma foto na marca. Envie em Marca → Ativos.",
+        "pick": "Foto da marca"
+      },
+      "list": {
+        "add": "Adicionar linha",
+        "remove": "Remover linha",
+        "placeholder": "rótulo | descrição | valor"
+      },
+      "validation": {
+        "required": "Preencha este campo.",
+        "tooLong": "Passou do máximo de caracteres.",
+        "tooManyLines": "Passou do máximo de linhas.",
+        "tooManyItems": "Passou do máximo de itens.",
+        "notANumber": "Use um número.",
+        "tooSmall": "Número abaixo do mínimo.",
+        "tooLarge": "Número acima do máximo."
+      },
+      "brandNotPublished": {
+        "title": "Publique a marca antes",
+        "description": "As peças leem só a versão publicada do Brandcore. Complete o mínimo e publique para começar a gerar.",
+        "cta": "Ir para a marca"
+      },
+      "optional": "opcional"
+    },
+    "preview": {
+      "title": "Prévia",
+      "hint": "Atualiza enquanto você edita. Em série, é o primeiro quadro.",
+      "loading": "Gerando prévia…",
+      "empty": "Preencha os campos obrigatórios para ver a prévia.",
+      "blockedTitle": "A prévia não pôde ser gerada",
+      "alt": "Prévia da peça"
+    },
+    "detail": {
+      "back": "Peças",
+      "regenerate": "Gerar de novo",
+      "regenerating": "Na fila…",
+      "regeneratedToast": "Peça de volta à fila.",
+      "regenerateFailed": "Não deu para gerar de novo.",
+      "delete": "Excluir peça",
+      "deleteTitle": "Excluir esta peça?",
+      "deleteDescription": "As imagens somem. Os valores não são guardados em outro lugar.",
+      "deletedToast": "Peça excluída.",
+      "deleteFailed": "Não deu para excluir.",
+      "download": "Baixar",
+      "frame": "Imagem {{index}}",
+      "values": "Campos",
+      "provenance": "Proveniência",
+      "brandVersion": "Versão da marca usada",
+      "renderedAt": "Gerada {{when}}",
+      "refs": "Fatos usados",
+      "refsEmpty": "Esta peça não usa fatos da operação.",
+      "refInPiece": "na peça",
+      "refToday": "hoje",
+      "staleTitle": "Esta peça está desatualizada",
+      "staleDescription": "Um fato que ela usa mudou na marca. Gere de novo para sair com o valor de hoje.",
+      "staleReason": {
+        "changed": "mudou",
+        "pending": "voltou a pendente",
+        "missing": "foi removido"
+      },
+      "failedTitle": "A geração falhou",
+      "fixFacts": "Revisar fatos",
+      "waiting": "A imagem aparece aqui assim que ficar pronta."
+    },
+    "errors": {
+      "refPending": "O fato \"{{fact}}\" está pendente. Confirme-o em Marca → Dados da operação.",
+      "refMissing": "Um fato referenciado não existe mais na marca.",
+      "brandNotPublished": "A marca precisa estar publicada.",
+      "valuesInvalid": "Alguma coisa nos campos não confere.",
+      "renderFailed": "A geração falhou. Tente de novo.",
+      "engineUnknown": "Esse tipo de peça não existe mais.",
+      "formatUnsupported": "Esse tipo de peça não sai nesse formato.",
+      "unknown": "Algo deu errado na geração."
+    },
+    "live": {
+      "ready": "\"{{title}}\" ficou pronta.",
+      "failed": "\"{{title}}\" falhou na geração."
+    }
+  },
+  "contents": {
+    "kind": {
+      "carousel": "Carrossel"
+    },
+    "meta": "{{format}} · {{when}} · marca {{version}}",
+    "filters": {
+      "allKinds": "Todos os tipos",
+      "allFormats": "Todos os formatos",
+      "kindAria": "Filtrar por tipo",
+      "formatAria": "Filtrar por formato",
+      "periodAria": "Filtrar por período",
+      "period": {
+        "7": "Últimos 7 dias",
+        "30": "Últimos 30 dias",
+        "all": "Todo o período"
+      }
+    },
+    "emptyTitle": "Nada por aqui com esses filtros",
+    "emptyDescription": "Tudo que a marca gera aparece aqui: peças dos motores e carrosséis do editor.",
+    "regenerateAll": "Regenerar desatualizadas",
+    "regenerateAllToast_one": "{{count}} peça de volta à fila.",
+    "regenerateAllToast_other": "{{count}} peças de volta à fila."
+  }
+}

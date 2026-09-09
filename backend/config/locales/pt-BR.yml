@@ -75,11 +75,7 @@ pt-BR:
     errors:
       models:
         account:
-            brand_core: "marca"
-      brand_asset: "ativo da marca"
-      brand_core_version: "versão da marca"
-      piece: "peça"
-    attributes:
+          attributes:
             # "senha" é feminino — a mensagem genérica sairia "curto demais".
             password:
               too_short: "é curta demais (mínimo de %{count} caracteres)"
@@ -88,6 +84,10 @@ pt-BR:
       carousel: "carrossel"
       folder: "pasta"
       organization: "organização"
+      brand_core: "marca"
+      brand_asset: "ativo da marca"
+      brand_core_version: "versão da marca"
+      piece: "peça"
     attributes:
       account:
         name: "nome"

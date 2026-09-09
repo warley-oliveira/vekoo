@@ -1,0 +1,92 @@
+{
+  "shell": {
+    "openMenu": "Open menu",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "nav": {
+      "carousels": "My carousels",
+      "search": "Search",
+      "templates": "Templates",
+      "brands": "Brand",
+      "trash": "Trash",
+      "home": "Home",
+      "contents": "Contents",
+      "create": "Create piece"
+    },
+    "createBlank": "Start from scratch",
+    "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
+    "createCarousel": "Create carousel",
+    "notifications": {
+      "label": "Notifications",
+      "aria": "Notifications",
+      "ariaUnread": "Notifications ({{count}} unread)",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications here.",
+      "loadFailed": "We couldn't load your notifications."
+    }
+  },
+  "notifications": {
+    "templates": {
+      "title": "New templates are in",
+      "body": "6 new carousel templates for local shops and services just landed."
+    },
+    "folders": {
+      "title": "Tip: organize with folders",
+      "body": "Drag a carousel onto a folder in the sidebar to move it."
+    },
+    "welcome": {
+      "title": "Welcome to Vekoo!",
+      "body": "Your 50 free credits are already in your account. Ready to create your first carousel?"
+    }
+  },
+  "account": {
+    "menuAria": "{{organization}} account menu",
+    "fallbackName": "Your account",
+    "settings": "Settings",
+    "settingsToast": "Settings are coming soon.",
+    "invite": "Invite people",
+    "inviteToast": "Inviting people arrives in a next stage.",
+    "inviteToastDescription": "They'll join “{{organization}}” and see the same carousels.",
+    "signOut": "Sign out",
+    "signOutToast": "You've signed out."
+  },
+  "credits": {
+    "remaining": "{{remaining, number}} <muted>of {{total, number}} credits</muted>",
+    "aria": "{{remaining, number}} of {{total, number}} credits",
+    "used": "Credits used",
+    "upgrade": "Upgrade plan",
+    "upgradeToast": "Plans and upgrades arrive in a next stage.",
+    "loadFailed": "We couldn't load your credits."
+  },
+  "search": {
+    "title": "Search carousels",
+    "placeholder": "Search by carousel title…",
+    "hint": "Type to search your carousels by title.",
+    "noResults": "Nothing found for “{{query}}”.",
+    "resultsAria": "Search results"
+  },
+  "brandSwitcher": {
+    "label": "Account brands",
+    "aria": "Active brand: {{name}}. Switch brand",
+    "untitled": "Unnamed brand",
+    "settings": "Brand settings",
+    "newBrand": "New brand",
+    "createdToast": "Brand created. Let's set it up.",
+    "createFailed": "Couldn't create the brand.",
+    "loading": "Opening your brand…"
+  },
+  "dashboard": {
+    "createTitle": "Create",
+    "createCarousel": "Create carousel",
+    "createCarouselHint": "Describe the topic and get a carousel ready to edit.",
+    "createPiece": "Create piece",
+    "createPieceHint": "Pick a piece type and fill in only what changes.",
+    "recentTitle": "Latest",
+    "recentEmpty": "Nothing generated for this brand yet. Start with a carousel or a piece.",
+    "allContents": "See all",
+    "brandTitle": "The brand",
+    "brandSettings": "Set up",
+    "contentsCount_one": "{{count}} content in the brand",
+    "contentsCount_other": "{{count}} contents in the brand"
+  }
+}

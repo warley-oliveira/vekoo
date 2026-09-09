@@ -5,7 +5,7 @@ import { ArrowRight, RefreshCw } from "lucide-react"
 import { useActiveBrand } from "@/lib/brand-context"
 import { stepHref } from "@/lib/brand-core"
 import type { Piece } from "@/lib/engines"
-import { formatRelative } from "@/lib/format"
+import { formatDateTime, formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
@@ -31,7 +31,7 @@ export function ProvenancePanel({ piece }: { piece: Piece }) {
         {piece.renderedAt && (
           <div className="flex justify-between gap-3">
             <dt className="text-muted-foreground">{t("pieces.detail.renderedAt", { when: "" }).trim()}</dt>
-            <dd>{formatRelative(piece.renderedAt, language)}</dd>
+            <dd title={formatDateTime(piece.renderedAt, language)}>{formatRelative(piece.renderedAt, language)}</dd>
           </div>
         )}
       </dl>

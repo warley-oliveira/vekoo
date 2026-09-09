@@ -1,0 +1,514 @@
+{
+  "carousels": {
+    "cardCount_one": "1 card",
+    "cardCount_other": "{{count}} cards",
+    "editedAt": "edited {{when}}",
+    "tabs": {
+      "all": "All",
+      "recent": "Recent",
+      "favorites": "Favorites"
+    },
+    "sortAria": "Sort by",
+    "sort": {
+      "recent": "Last edited",
+      "oldest": "Oldest first",
+      "name-asc": "Name (A–Z)",
+      "name-desc": "Name (Z–A)"
+    },
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "openAria": "Open “{{title}}”",
+    "actionsAria": "Actions for “{{title}}”",
+    "favoriteAdd": "Add to favorites",
+    "favoriteRemove": "Remove from favorites",
+    "table": {
+      "title": "Title",
+      "cards": "Cards",
+      "format": "Format",
+      "edited": "Edited",
+      "sortByAria": "Sort by {{column}}"
+    },
+    "hero": {
+      "title": "What's your first carousel about?",
+      "subtitle": "Describe the topic in one sentence — Vekoo builds the cards for you.",
+      "placeholder": "E.g.: 5 common mistakes people make working out at home",
+      "submitAria": "Create carousel"
+    },
+    "empty": {
+      "folderTitle": "This folder is still empty",
+      "folderDescription": "Drag a carousel onto it in the sidebar, or use “Move to folder” in the actions menu.",
+      "favoritesTitle": "No favorites yet",
+      "favoritesDescription": "Hover a carousel and tap the star to find it quickly later.",
+      "recentTitle": "Nothing edited in the last 7 days",
+      "recentDescription": "Carousels you edit recently show up here."
+    },
+    "actions": {
+      "moveToFolder": "Move to folder",
+      "removeFromFolder": "Remove from folder",
+      "noFolders": "Create a folder in the sidebar to organize your carousels.",
+      "renameTitle": "Rename carousel",
+      "renameDescription": "Pick a new name for “{{title}}”.",
+      "renameFieldAria": "Carousel name",
+      "renamedToast": "Carousel renamed.",
+      "duplicatedToast": "“{{title}}” duplicated.",
+      "copySuffix": "copy",
+      "movedToast": "Moved to “{{name}}”.",
+      "removedFromFolderToast": "Carousel removed from the folder.",
+      "trashedToast": "“{{title}}” moved to the trash.",
+      "trashedDescription": "Items in the trash disappear after 30 days.",
+      "exportToast": "Exporting arrives later in this stage.",
+      "createFailed": "We couldn't create the carousel. Try again.",
+      "renameFailed": "We couldn't rename it. Try again.",
+      "duplicateFailed": "We couldn't duplicate it. Try again.",
+      "moveFailed": "We couldn't move it. Try again.",
+      "trashFailed": "We couldn't move it to the trash. Try again.",
+      "favoriteFailed": "We couldn't save the favorite. Try again."
+    }
+  },
+  "folders": {
+    "sectionTitle": "Folders",
+    "create": "Create folder",
+    "createFirst": "Create your first folder",
+    "emptyHint": "Folders group carousels by client, topic or campaign. Drag a carousel in to move it.",
+    "namePlaceholder": "Folder name",
+    "colorGroupAria": "Folder color",
+    "colors": {
+      "cinza": "gray",
+      "violeta": "violet",
+      "azul": "blue",
+      "verde": "green",
+      "amarelo": "yellow",
+      "vermelho": "red"
+    },
+    "actionsAria": "Actions for folder {{name}}",
+    "newNameAria": "New folder name",
+    "deleteFolder": "Delete folder",
+    "created": "Folder “{{name}}” created.",
+    "renamed": "Folder renamed.",
+    "deleted": "Folder “{{name}}” deleted.",
+    "deletedDescription": "Its carousels went back to My carousels.",
+    "countAria": "{{name}} ({{count}})",
+    "createFailed": "We couldn't create the folder. Try again.",
+    "renameFailed": "We couldn't rename the folder. Try again.",
+    "deleteFailed": "We couldn't delete the folder. Try again."
+  },
+  "create": {
+    "title": "What's your carousel about?",
+    "description": "Describe the topic in one sentence — Vekoo builds the cards for you.",
+    "placeholder": "E.g.: 5 common mistakes people make working out at home",
+    "submit": "Create carousel",
+    "suggestions": {
+      "first": "5 healthy snack ideas to take to work",
+      "second": "This week's promotion at my clothing store",
+      "third": "How financing your first home actually works"
+    },
+    "untitled": "Untitled carousel",
+    "submitting": "Creating…"
+  },
+  "editor": {
+    "notFoundToast": "This carousel is no longer available.",
+    "topbar": {
+      "backAria": "Back to My carousels",
+      "titleAria": "Rename carousel",
+      "titlePlaceholder": "Carousel name",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "undo": "Undo",
+      "redo": "Redo",
+      "preview": "Preview",
+      "export": "Export",
+      "saveFailed": "Not saved",
+      "retrySave": "Try again"
+    },
+    "trail": {
+      "label": "Carousel cards",
+      "collapseAria": "Collapse the card trail",
+      "expandAria": "Show the card trail",
+      "viewThumbs": "Show thumbnails",
+      "viewTitles": "Show titles only",
+      "newCard": "New card",
+      "newCardTypes": {
+        "text": "Title and text",
+        "list": "List",
+        "quote": "Quote",
+        "stat": "Number highlight",
+        "cta": "Final call"
+      },
+      "cardAria": "Card {{number}}: {{title}}",
+      "cardFallback": "Card {{number}}"
+    },
+    "canvas": {
+      "position": "{{current}} of {{total}}",
+      "emptyBlock": "Click to edit",
+      "textPlaceholder": "Write here…",
+      "listItemPlaceholder": "List item",
+      "statValuePlaceholder": "123",
+      "statLabelPlaceholder": "What this number means",
+      "quoteAttributionPlaceholder": "Who said it",
+      "buttonLabelPlaceholder": "Button label",
+      "addFirstBlock": "Add a block",
+      "emptyTitle": "This carousel has no cards",
+      "emptyDescription": "Every carousel starts with a card. Create the first one and write on it.",
+      "emptyAction": "Create the first card",
+      "testimonialQuotePlaceholder": "What the person said",
+      "testimonialNamePlaceholder": "Who said it",
+      "testimonialRolePlaceholder": "What they do",
+      "badgeLabelPlaceholder": "e.g. 1/8",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "safeArea": "Safe area",
+      "safeAreaHint": "Shows the margin the feed crops."
+    },
+    "blocks": {
+      "text": "Text",
+      "image": "Image",
+      "list": "List",
+      "stat": "Number",
+      "quote": "Quote",
+      "divider": "Divider",
+      "table": "Table",
+      "button": "Button",
+      "insertAria": "Insert a block here",
+      "steps": "Steps",
+      "testimonial": "Testimonial",
+      "badge": "Badge",
+      "dragAria": "Drag block",
+      "selectAria": "{{type}}, block {{position}}",
+      "add": {
+        "text": "Add text",
+        "image": "Add an image",
+        "list": "Add a list",
+        "steps": "Add steps",
+        "stat": "Add a number",
+        "quote": "Add a quote",
+        "testimonial": "Add a testimonial",
+        "badge": "Add a badge",
+        "divider": "Add a divider",
+        "table": "Add a table",
+        "button": "Add a button"
+      }
+    },
+    "blockBar": {
+      "label": "Add blocks to the card",
+      "insert": "Add block"
+    },
+    "properties": {
+      "label": "Block properties",
+      "closeAria": "Close properties",
+      "role": "Size",
+      "roles": {
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "body": "Text",
+        "caption": "Detail"
+      },
+      "align": "Alignment",
+      "alignOptions": {
+        "start": "Left",
+        "center": "Center",
+        "end": "Right"
+      },
+      "color": "Color",
+      "colors": {
+        "ink": "Ink",
+        "accent": "Accent",
+        "muted": "Muted"
+      },
+      "listStyle": "Markers",
+      "listStyles": {
+        "bullet": "Bullets",
+        "number": "Numbers",
+        "check": "Checks"
+      },
+      "dividerStyle": "Style",
+      "dividerStyles": {
+        "line": "Line",
+        "dots": "Dots",
+        "accent": "Accent"
+      },
+      "buttonVariant": "Style",
+      "buttonVariants": {
+        "solid": "Solid",
+        "outline": "Outline"
+      },
+      "tableRows": "Rows",
+      "tableColumns": "Columns",
+      "addRow": "Add row",
+      "removeRow": "Remove row",
+      "addColumn": "Add column",
+      "removeColumn": "Remove column",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "delete": "Delete block",
+      "badgeVariant": "Badge style",
+      "badgeVariants": {
+        "soft": "Soft",
+        "solid": "Solid"
+      },
+      "spacing": "Space above",
+      "spacings": {
+        "tight": "Tight",
+        "normal": "Normal",
+        "loose": "Loose"
+      },
+      "width": "Width",
+      "widths": {
+        "full": "Full",
+        "narrow": "Narrow"
+      }
+    },
+    "appearance": {
+      "trigger": "Appearance",
+      "format": "Aspect ratio",
+      "formats": {
+        "4:5": "Portrait (4:5)",
+        "1:1": "Square (1:1)"
+      },
+      "palette": "Palette",
+      "themes": {
+        "paper": "Paper",
+        "midnight": "Midnight",
+        "forest": "Forest",
+        "clay": "Clay",
+        "ocean": "Ocean",
+        "solar": "Solar",
+        "plum": "Plum",
+        "linen": "Linen"
+      },
+      "accent": "Accent color",
+      "accentSwatchAria": "Use this accent color",
+      "hint": "The palette applies to the whole carousel. Each card can still have its own background."
+    },
+    "cardPanel": {
+      "title": "Card {{number}}",
+      "layout": "Layout",
+      "layouts": {
+        "no-image": "Text only",
+        "image-top": "Image on top",
+        "image-left": "Image on the left",
+        "image-right": "Image on the right",
+        "image-full": "Image as background"
+      },
+      "align": "Vertical alignment",
+      "aligns": {
+        "top": "Top",
+        "center": "Middle",
+        "bottom": "Bottom"
+      },
+      "background": "Card background",
+      "backgroundSwatchAria": "Use this background color",
+      "moreColors": "More colors",
+      "resetBackground": "Back to default",
+      "imageStyle": "Art style",
+      "imageStyles": {
+        "blob": "Blobs",
+        "arc": "Rings",
+        "waves": "Waves",
+        "dots": "Dots",
+        "grid": "Grid",
+        "beams": "Beams"
+      },
+      "regenerate": "Generate another",
+      "imageTint": "Art color",
+      "imageTints": {
+        "accent": "Accent",
+        "ink": "Ink",
+        "bg": "Background"
+      },
+      "imageSource": "Image",
+      "imageSources": {
+        "art": "Generated art",
+        "library": "From the library",
+        "upload": "Uploaded file"
+      },
+      "framing": "Framing",
+      "framingAria": "Drag to choose what shows",
+      "zoom": "Zoom",
+      "resetFraming": "Center again"
+    },
+    "cardActions": {
+      "menuAria": "Card {{number}} actions",
+      "insertAfter": "Insert card after",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "moveToStart": "Use as cover",
+      "remove": "Delete card",
+      "duplicatedToast": "Card duplicated.",
+      "removedToast": "Card deleted."
+    },
+    "format": {
+      "label": "Text formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "link": "Link",
+      "linkPlaceholder": "Paste or type the address",
+      "linkConfirm": "Apply link",
+      "clear": "Clear formatting"
+    },
+    "slash": {
+      "label": "Insert block",
+      "placeholder": "Search for a block…",
+      "noResults": "No block by that name."
+    },
+    "clipboard": {
+      "copiedToast": "Block copied. Paste with ⌘V."
+    },
+    "imagePicker": {
+      "title": "Choose an image",
+      "description": "Upload a file, use a piece from the library, or generate art in the carousel's colors.",
+      "tabs": {
+        "upload": "Upload",
+        "library": "Library",
+        "art": "Art"
+      },
+      "uploadTitle": "Drop the image here",
+      "uploadHint": "Or choose a file from your computer.",
+      "chooseFile": "Choose file",
+      "uploadNote": "The image is scaled down to 1600 px before uploading, and is kept in your account.",
+      "errors": {
+        "type": "That file isn't a JPEG, PNG or WebP image.",
+        "tooLarge": "That image is over the size limit. Try a smaller one.",
+        "decode": "That image could not be read.",
+        "upload": "We couldn't upload the image. Check your connection and try again."
+      },
+      "searchPlaceholder": "Search the library…",
+      "noResults": "No piece by that name.",
+      "useArt": "Use this art",
+      "library": {
+        "amanhecer": "Daybreak",
+        "orvalho": "Dew",
+        "mare": "Tide",
+        "cerrado": "Savanna",
+        "brasa": "Ember",
+        "algodao": "Cotton",
+        "ametista": "Amethyst",
+        "grafite": "Graphite",
+        "goiaba": "Guava",
+        "menta": "Mint",
+        "areia": "Sand",
+        "meianoite": "Midnight"
+      },
+      "uploading": "Uploading the image…",
+      "uploadProgress": "{{percent}}% uploaded",
+      "cancelUpload": "Cancel upload"
+    },
+    "preview": {
+      "label": "See the carousel in sequence",
+      "close": "Leave preview",
+      "previous": "Previous card",
+      "next": "Next card",
+      "goTo": "Go to card {{number}}"
+    },
+    "export": {
+      "title": "Export",
+      "description": "Each card becomes a 1080 px PNG — the size Instagram publishes.",
+      "scope": "What to export",
+      "scopeAll": "All {{count}} cards",
+      "scopeCurrent": "Only the current card",
+      "caption": "Post caption",
+      "captionPlaceholder": "The text that goes with the images. Hashtags belong here too.",
+      "captionCount": "{{count}} characters",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Could not copy.",
+      "action": "Download PNG",
+      "progress": "{{done}} of {{total}} ready",
+      "doneToast_one": "1 image downloaded.",
+      "doneToast_other": "{{count}} images downloaded.",
+      "failedToast": "The images could not be generated.",
+      "note": "ZIP and PDF arrive with the server."
+    },
+    "ai": {
+      "trigger": "Generate",
+      "placeholder": "Describe the carousel's subject in one sentence.",
+      "generate": "Generate carousel",
+      "stop": "Stop",
+      "close": "Close generation",
+      "cost": "{{count}} credits",
+      "generating_one": "Writing… 1 card ready.",
+      "generating_other": "Writing… {{count}} cards ready.",
+      "doneToast_one": "1 card generated. It's yours to edit now.",
+      "doneToast_other": "{{count}} cards generated. They're yours to edit now.",
+      "rewriteLabel": "Rewrite with AI",
+      "intents": {
+        "shorten": "Shorten",
+        "expand": "Expand",
+        "casual": "Lighter",
+        "expert": "More technical",
+        "fix": "Fix"
+      },
+      "imageForCard": "Generate an image for this card",
+      "suggestCaption": "Suggest a caption",
+      "errors": {
+        "noCredits": "You're out of credits. Renew to keep generating.",
+        "failed": "Generation failed. Try again.",
+        "cancelled": "Generation stopped.",
+        "busy": "There's already a generation running. Wait for it to finish."
+      },
+      "title": "Generate a carousel with AI",
+      "hint": "Enter to generate · Esc to close"
+    },
+    "mobile": {
+      "addBlock": "Add",
+      "adjust": "Adjust",
+      "close": "Close adjustments"
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "description": "The whole editor works without leaving the keyboard.",
+      "groups": {
+        "cards": "Cards",
+        "blocks": "Blocks",
+        "document": "Carousel"
+      },
+      "actions": {
+        "nextCard": "Next card",
+        "previousCard": "Previous card",
+        "moveCard": "Move the card in the trail",
+        "duplicate": "Duplicate",
+        "removeCard": "Delete the card",
+        "selectBlock": "Go to the next block",
+        "editBlock": "Edit the block",
+        "leaveBlock": "Leave the block",
+        "moveBlock": "Move the block",
+        "removeBlock": "Delete the block",
+        "copyPaste": "Copy and paste a block",
+        "slash": "Insert a block by typing",
+        "undo": "Undo",
+        "redo": "Redo",
+        "generate": "Generate with AI",
+        "shortcuts": "See this list"
+      }
+    },
+    "loadErrorTitle": "We couldn't open this carousel",
+    "loadErrorDescription": "The connection dropped along the way. Your work is still saved."
+  },
+  "trash": {
+    "notice": "Items in the trash are deleted for good after 30 days.",
+    "emptyTitle": "The trash is empty",
+    "emptyDescription": "Deleted carousels stay here for 30 days before disappearing for good.",
+    "deletedAt": "deleted {{when}}",
+    "expiresIn_one": "gone in {{count}} day",
+    "expiresIn_other": "gone in {{count}} days",
+    "restoredToast": "“{{title}}” restored.",
+    "restoredDescription": "It's back in My carousels.",
+    "deleteForeverAria": "Delete “{{title}}” forever",
+    "deleteForeverTitle": "Delete forever?",
+    "deleteForeverDescription": "“{{title}}” will be erased for good. This can't be undone.",
+    "deleteForever": "Delete forever",
+    "deletedForeverToast": "“{{title}}” deleted forever.",
+    "empty": "Empty trash",
+    "emptyConfirmTitle": "Empty the trash?",
+    "emptyConfirmDescription_one": "The item in the trash will be erased for good. This can't be undone.",
+    "emptyConfirmDescription_other": "All {{count}} items in the trash will be erased for good. This can't be undone.",
+    "emptiedToast": "Trash emptied.",
+    "restoreFailed": "We couldn't restore it. Try again.",
+    "deleteFailed": "We couldn't delete it. Try again.",
+    "emptyFailed": "We couldn't empty the trash. Try again."
+  },
+  "templates": {
+    "emptyTitle": "Templates are on the way",
+    "emptyDescription": "Ready-made carousel structures — list, step by step, before and after — so you start halfway there."
+  }
+}

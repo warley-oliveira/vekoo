@@ -2,13 +2,17 @@ import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next, useTranslation } from "react-i18next"
 
-import en from "@/locales/en.json"
-import ptBR from "@/locales/pt-BR.json"
+import { resources } from "@/locales/resources"
 
 // i18n do app. pt-BR é o idioma de origem (é onde a copy nasce e é revisada);
 // en existe desde já para o texto nunca voltar a ser escrito solto no JSX.
 // Um único namespace: o app é pequeno e os bundles são estáticos — sem
 // carregamento por HTTP, sem estado de "traduções carregando" nas telas.
+//
+// Os arquivos vivem em `src/locales/<idioma>/<módulo>.json` e são costurados
+// em `locales/resources.ts`. Interpolação com formatador do Intl vem de
+// fábrica: `{{quantos, number}}`, `{{preco, currency(BRL)}}`,
+// `{{quando, datetime}}` saem no idioma ativo sem código nenhum.
 
 export const SUPPORTED_LANGUAGES = ["pt-BR", "en"] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
@@ -33,10 +37,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      "pt-BR": { translation: ptBR },
-      en: { translation: en },
-    },
+    resources,
     supportedLngs: SUPPORTED_LANGUAGES,
     // Mapa explícito em vez de `nonExplicitSupportedLngs`: aquela opção resolve
     // "pt-BR" para "pt", que não é um bundle nosso — e aí *toda* chave em
@@ -60,6 +61,17 @@ i18n
       escapeValue: false,
     },
     returnNull: false,
+    // Chave que não existe em idioma nenhum (nem no fallback pt-BR) é bug de
+    // programa: em desenvolvimento ela aparece marcada na tela e no console,
+    // para não passar despercebida; em produção sai calada — melhor um espaço
+    // vazio do que `brand.overview.readyTitle` na cara de quem usa.
+    parseMissingKeyHandler: (key: string) => {
+      if (import.meta.env.DEV) {
+        console.warn(`[i18n] chave sem tradução: ${key}`)
+        return `⟦${key}⟧`
+      }
+      return ""
+    },
   })
 
 /** Mantém `<html lang>` em dia — leitores de tela e `:lang()` dependem disso. */

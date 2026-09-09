@@ -1,0 +1,33 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "undo": "Desfazer",
+    "rename": "Renomear",
+    "duplicate": "Duplicar",
+    "export": "Exportar",
+    "delete": "Excluir",
+    "restore": "Restaurar",
+    "esc": "Esc"
+  },
+  "language": {
+    "label": "Idioma",
+    "pt-BR": "Português (Brasil)",
+    "en": "English"
+  },
+  "plans": {
+    "free": "Plano Grátis"
+  },
+  "errors": {
+    "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+    "unauthorized": "Sua sessão terminou. Entre de novo.",
+    "notFound": "Não encontramos o que você procurava.",
+    "unprocessable": "Alguma coisa nos dados não confere.",
+    "parameterMissing": "Faltou uma informação para concluir.",
+    "noCredits": "Seus créditos acabaram.",
+    "unknown": "Algo deu errado. Tente de novo em instantes.",
+    "retry": "Tentar de novo",
+    "loadFailedTitle": "Não deu para carregar",
+    "loadFailedDescription": "A conexão falhou no meio do caminho. Tente de novo."
+  }
+}

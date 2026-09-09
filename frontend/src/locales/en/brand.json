@@ -1,0 +1,443 @@
+{
+  "brand": {
+    "title": "Your brand",
+    "setupTitle": "Set up the brand",
+    "overview": {
+      "heading": "The brand behind everything",
+      "description": "Everything Vekoo generates reads from here: colors, fonts, voice and the facts of your operation. Fill it in once and every carousel comes out looking like you.",
+      "startSetup": "Start setting up",
+      "continueSetup": "Keep filling in",
+      "editBrand": "Edit brand",
+      "publish": "Publish brand",
+      "publishing": "Publishing…",
+      "publishedToast": "Brand published as version {{version}}.",
+      "publishNothing": "Nothing changed since the last publish.",
+      "publishFailed": "Couldn't publish. Try again.",
+      "publishIncomplete": "The minimum isn't filled in yet.",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "unpublishedChanges": "Unpublished changes"
+      },
+      "publishedAt": "Published {{when}}",
+      "versionLabel": "version {{number}}",
+      "readyTitle": "Ready to generate content",
+      "readyDescription": "The minimum is filled in and published. Generations will read this version.",
+      "notReadyTitle": "Not generating content yet",
+      "notReadyDescription": "Complete the minimum below and publish to unlock generation.",
+      "blockers": {
+        "notPublished": "The brand hasn't been published yet.",
+        "minimumNotMet": "The published version is missing the minimum."
+      },
+      "pendingFacts_one": "{{count}} pending fact blocks any generation that depends on it.",
+      "pendingFacts_other": "{{count}} pending facts block any generation that depends on them.",
+      "reviewFacts": "Review facts",
+      "versionsTitle": "History",
+      "versionsEmpty": "The first publish opens the history.",
+      "versionLine": "Version {{number}}",
+      "versionBy": "by {{name}}",
+      "versionByUnknown": "by someone who left the account",
+      "versionInitial": "First publish",
+      "changedSections": "Changed: {{sections}}",
+      "changeCount_one": "{{count}} change",
+      "changeCount_other": "{{count}} changes",
+      "liveUpdated": "{{name}} updated the brand.",
+      "livePublished": "{{name}} published version {{version}}.",
+      "liveSomeone": "Someone on the team",
+      "sections": "Sections",
+      "sectionPercent": "{{percent}}%"
+    },
+    "steps": {
+      "identity": {
+        "title": "Identity",
+        "description": "Who the brand is, in a few sentences."
+      },
+      "colors": {
+        "title": "Colors",
+        "description": "The palette, with a role for each color."
+      },
+      "typography": {
+        "title": "Typography",
+        "description": "Two fonts: one to call, one to explain."
+      },
+      "styles": {
+        "title": "Text styles",
+        "description": "Size, weight and color for each text role."
+      },
+      "assets": {
+        "title": "Assets",
+        "description": "Official logo, glyph and photos, by file."
+      },
+      "voice": {
+        "title": "Voice",
+        "description": "How the brand speaks — and what it never says."
+      },
+      "facts": {
+        "title": "Operational facts",
+        "description": "Prices, hours, promotions and events, with a status."
+      }
+    },
+    "progress": "{{percent}}% filled in",
+    "minimumTitle": "Minimum to generate",
+    "minimumDescription": "Without these, nothing is generated.",
+    "required": {
+      "identity.name": "Brand name",
+      "identity.segment": "Segment",
+      "identity.concept": "Core concept",
+      "palette.background": "One background color",
+      "palette.textPerBackground": "Text for every background",
+      "palette.accent": "One accent color",
+      "typography.display": "Display font",
+      "typography.utility": "Utility font",
+      "voice.essence": "Voice essence",
+      "voice.tones": "At least one tone"
+    },
+    "stepper": {
+      "aria": "Brand steps",
+      "done": "Complete",
+      "partial": "In progress",
+      "current": "Current step",
+      "locked": "Not visited yet"
+    },
+    "nav": {
+      "back": "Back",
+      "next": "Continue",
+      "finish": "Finish and review",
+      "exit": "Exit",
+      "step": "Step {{current}} of {{total}}"
+    },
+    "save": {
+      "saving": "Saving…",
+      "saved": "Draft saved",
+      "error": "Couldn't save",
+      "retry": "Try again",
+      "idle": "Saves by itself"
+    },
+    "validation": {
+      "required": "Fill in this field.",
+      "tooLong": "Use at most {{max}} characters.",
+      "hex": "Use a hex like #7c3aed."
+    },
+    "identity": {
+      "name": "Brand name",
+      "namePlaceholder": "E.g. Village Bakery",
+      "segment": "Segment",
+      "segmentPlaceholder": "E.g. Artisan bakery",
+      "concept": "Core concept",
+      "conceptHint": "One sentence that sums up why the brand exists.",
+      "conceptPlaceholder": "E.g. Sourdough bread, every day, no rush.",
+      "positioning": "Positioning",
+      "positioningPlaceholder": "How the brand wants to be seen and by whom — a short paragraph.",
+      "characters": "Brand characters",
+      "charactersHint": "Who shows up in the content: the founder, the baker, the mascot. Optional.",
+      "characterName": "Name",
+      "characterRole": "Role",
+      "characterRolePlaceholder": "E.g. Founder, speaks in first person",
+      "addCharacter": "Add character",
+      "address": "Address",
+      "addressPlaceholder": "Street, neighborhood, city — or just the city",
+      "instagram": "Instagram handle",
+      "networks": "Other networks",
+      "addNetwork": "Add network",
+      "networkHandle": "Handle or address",
+      "remove": "Remove"
+    },
+    "networks": {
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "whatsapp": "WhatsApp",
+      "site": "Website",
+      "other": "Other"
+    },
+    "colors": {
+      "intro": "Every color has a role. The role, not the name, tells Vekoo where to use it.",
+      "empty": "No colors yet.",
+      "starter": "Start with a base palette",
+      "starterHint": "Five neutral colors with the right roles — swap each one for yours.",
+      "addColor": "Add color",
+      "name": "Name",
+      "namePlaceholder": "E.g. Plum",
+      "hex": "Hex",
+      "role": "Role",
+      "pickColor": "Pick color",
+      "remove": "Remove color",
+      "rulesTitle": "Palette rules",
+      "rules": {
+        "background": "At least one background (dark or light).",
+        "textPerBackground": "One text color for each background.",
+        "accent": "One accent color."
+      },
+      "roles": {
+        "darkBackground": "Dark background",
+        "lightBackground": "Light background",
+        "textOnDark": "Text on dark",
+        "textOnLight": "Text on light",
+        "muted": "Muted",
+        "accent": "Accent",
+        "campaign": "Campaign tactic"
+      },
+      "roleHints": {
+        "darkBackground": "Covers and impact cards.",
+        "lightBackground": "Reading cards.",
+        "textOnDark": "Text over the dark background.",
+        "textOnLight": "Text over the light background.",
+        "muted": "Footers, captions, details.",
+        "accent": "Highlights and numbers.",
+        "campaign": "Campaigns only — never the default."
+      },
+      "previewTitle": "Background × text",
+      "previewEmpty": "Add a background and a text color to see the pairs.",
+      "previewMissingText": "Missing the text for this background",
+      "previewTitleSample": "A sample headline",
+      "previewBodySample": "Body text looks like this on this background.",
+      "previewAccentSample": "Highlight",
+      "contrast": {
+        "aaa": "Great contrast",
+        "aa": "Good contrast",
+        "large": "Large text only",
+        "fail": "Not enough contrast"
+      }
+    },
+    "typography": {
+      "intro": "Two fonts are enough: one that calls (display) and one that explains (utility).",
+      "roles": {
+        "display": "Display / editorial",
+        "utility": "Utility"
+      },
+      "roleHints": {
+        "display": "Headlines, numbers, covers.",
+        "utility": "Body, lists, footer."
+      },
+      "source": "Source",
+      "sources": {
+        "catalog": "Open catalog",
+        "file": "My file",
+        "system": "Font name"
+      },
+      "family": "Family",
+      "familyPlaceholder": "E.g. Fraunces",
+      "searchFont": "Search fonts…",
+      "noFont": "No font by that name.",
+      "categories": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "display": "Display",
+        "mono": "Mono"
+      },
+      "weights": "Weights in use",
+      "weightsHint": "Check only the ones the brand really uses.",
+      "usage": "Where it applies",
+      "usagePlaceholder": "E.g. headlines, big numbers and covers",
+      "upload": "Upload file (TTF, OTF or WOFF2)",
+      "uploading": "Uploading…",
+      "uploaded": "File: {{name}}",
+      "replace": "Replace file",
+      "uploadFailed": "Couldn't upload the font.",
+      "previewSample": "Write clearly and you sell without shouting.",
+      "rules": "Rules",
+      "rulesHint": "What the AI must never do with the text. Optional.",
+      "addRule": "Add rule",
+      "rulePlaceholder": "E.g. never italic",
+      "suggestions": {
+        "noItalic": "Never italic",
+        "boldIsNotEmphasis": "Bold is not emphasis",
+        "twoLines": "Headlines never exceed two lines"
+      },
+      "validation": {
+        "weights": "Check at least one weight.",
+        "file": "Upload the font file."
+      }
+    },
+    "styles": {
+      "intro": "Text roles come pre-filled. Adjust size, weight and the color on each background — no need to create anything.",
+      "columns": {
+        "role": "Role",
+        "font": "Font",
+        "size": "Size",
+        "weight": "Weight",
+        "transform": "Case",
+        "onDark": "Color on dark",
+        "onLight": "Color on light",
+        "preview": "Preview"
+      },
+      "keys": {
+        "kicker": "Kicker",
+        "title": "Title",
+        "lede": "Lede",
+        "body": "Body",
+        "number": "Big number",
+        "item": "Item",
+        "footer": "Footer"
+      },
+      "keyHints": {
+        "kicker": "The short line above the title.",
+        "title": "What gets read first.",
+        "lede": "The sentence that pulls into the body.",
+        "body": "Running text.",
+        "number": "A big, highlighted figure.",
+        "item": "Each list line or step.",
+        "footer": "The handle and footnotes."
+      },
+      "transform": {
+        "none": "Normal",
+        "uppercase": "UPPERCASE"
+      },
+      "reset": "Back to defaults",
+      "resetToast": "Styles back to default.",
+      "sample": "Homemade cake in 40 minutes",
+      "onDark": "On dark",
+      "onLight": "On light"
+    },
+    "assets": {
+      "intro": "Official assets come in as files and are never recreated by approximation. Logo and glyph as transparent PNG or SVG.",
+      "slots": {
+        "logoLight": "Logo for light background",
+        "logoDark": "Logo for dark background",
+        "glyphLight": "Glyph for light background",
+        "glyphDark": "Glyph for dark background"
+      },
+      "slotHint": "Transparent PNG or SVG, up to {{max}}",
+      "photos": "Brand photos",
+      "photosHint": "Products, team, space — what the AI may use as an official image. JPEG, PNG or WebP.",
+      "addPhoto": "Add photo",
+      "drop": "Drop the file here or",
+      "browse": "browse your computer",
+      "uploading": "Uploading…",
+      "remove": "Remove",
+      "replace": "Replace",
+      "opaqueTitle": "Opaque background",
+      "opaqueWarning": "This PNG has a filled background. The logo will show up with a rectangle behind it — upload a version with a transparent background.",
+      "transparentOk": "Transparent background",
+      "unknownTransparency": "Couldn't check the background",
+      "invalidType": "That file doesn't fit here.",
+      "tooLarge": "The file is over {{max}}.",
+      "uploadFailed": "Couldn't upload the file.",
+      "removed": "Asset removed.",
+      "removeFailed": "Couldn't remove it.",
+      "empty": "No photos yet.",
+      "confirmRemoveTitle": "Remove this asset?",
+      "confirmRemoveDescription": "It leaves the brand. You can upload it again later."
+    },
+    "voice": {
+      "essence": "Voice essence",
+      "essenceHint": "One sentence: how the brand speaks on its best day.",
+      "essencePlaceholder": "E.g. Explains like a friend who knows the subject: clear, direct, with an example at hand.",
+      "tones": "Tone",
+      "tonesHint": "Check the ones that fit. Two or three usually do.",
+      "toneNote": "Any nuance?",
+      "toneNotePlaceholder": "E.g. can joke, but never at the expense of beginners.",
+      "bannedWords": "Banned words and expressions",
+      "bannedHint": "What the brand never writes. The AI obeys.",
+      "addBanned": "Add",
+      "bannedPlaceholder": "E.g. leverage",
+      "qualityRules": "Quality rules",
+      "qualityHint": "Applies to every generated piece.",
+      "examples": "Approved copy examples",
+      "examplesHint": "Snippets the brand already published and liked. Optional, but it teaches a lot.",
+      "addExample": "Add example",
+      "examplePlaceholder": "Paste a text that represents the brand well.",
+      "toneOptions": {
+        "direct": "Direct",
+        "warm": "Warm",
+        "playful": "Playful",
+        "technical": "Technical",
+        "inspiring": "Inspiring",
+        "sober": "Sober",
+        "bold": "Bold",
+        "educational": "Educational"
+      },
+      "rules": {
+        "maxOneAntithesis": "At most one antithesis per piece",
+        "alwaysConcreteData": "Always include a concrete fact",
+        "noEmojiRendered": "No emoji in rendered pieces",
+        "noGenericClaims": "No generic claims (\"the best\", \"unique\")",
+        "noStackedExclamation": "Never more than one exclamation mark"
+      },
+      "validation": {
+        "tones": "Check at least one tone."
+      }
+    },
+    "facts": {
+      "intro": "The facts of the operation: what the AI may state about prices, hours, promotions and events.",
+      "gateTitle": "Pending gate",
+      "gateDescription": "A pending fact never goes into a piece. Any generation that depends on it stays blocked until you confirm it.",
+      "addFact": "Add fact",
+      "empty": "No facts yet. Start with what shows up most in posts: price and hours.",
+      "kind": "Kind",
+      "kinds": {
+        "price": "Price",
+        "hours": "Hours",
+        "promotion": "Promotion",
+        "event": "Event",
+        "other": "Other"
+      },
+      "label": "What",
+      "labelPlaceholder": {
+        "price": "E.g. Lunch combo",
+        "hours": "E.g. Physical store",
+        "promotion": "E.g. October cohort",
+        "event": "E.g. Workshop",
+        "other": "E.g. Delivery time"
+      },
+      "value": "Value",
+      "valuePlaceholder": {
+        "price": "E.g. $39.90",
+        "hours": "",
+        "promotion": "E.g. 20% off until Sep 15",
+        "event": "E.g. Sep 28, 7pm, online",
+        "other": "E.g. up to 3 business days"
+      },
+      "status": "Status",
+      "statuses": {
+        "confirmed": "Confirmed",
+        "pending": "Pending"
+      },
+      "confirm": "Confirm",
+      "markPending": "Mark pending",
+      "hours": "Hours by day",
+      "hoursPlaceholder": "9am–6pm",
+      "closed": "Closed",
+      "weekdays": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "remove": "Remove fact",
+      "pendingCount_one": "{{count}} pending",
+      "pendingCount_other": "{{count}} pending",
+      "allConfirmed": "All confirmed"
+    },
+    "card": {
+      "title": "Brand card",
+      "hint": "Your brand taking shape, from what you've filled in.",
+      "untitled": "Your brand",
+      "noSegment": "Segment",
+      "noConcept": "The core concept shows up here.",
+      "voice": "Voice",
+      "noVoice": "The voice essence shows up here.",
+      "palette": "Palette",
+      "fonts": "Fonts",
+      "display": "Display",
+      "utility": "Utility",
+      "show": "Show brand card",
+      "hide": "Hide card"
+    },
+    "nudge": {
+      "title": "Your brand isn't ready yet",
+      "description": "Fill in the minimum and publish so carousels come out looking like you.",
+      "cta": "Set up the brand",
+      "dismiss": "Later"
+    },
+    "review": {
+      "title": "Review and publish",
+      "description": "Check the card and publish. After the first publish, every change becomes a new version."
+    }
+  }
+}

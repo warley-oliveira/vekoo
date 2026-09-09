@@ -17,7 +17,7 @@ import { useActiveBrand } from "@/lib/brand-context"
 import { useBrandCoreLive } from "@/hooks/use-brand-core-live"
 import { ApiError } from "@/lib/api"
 import { BRAND_STEPS, stepHref, type BrandCore, type BrandVersion } from "@/lib/brand-core"
-import { formatRelative } from "@/lib/format"
+import { formatDateTime, formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
@@ -284,7 +284,11 @@ function VersionRow({ version, language }: { version: BrandVersion; language: st
             : `${t("brand.overview.changeCount", { count: version.changes.length })} · ${t("brand.overview.changedSections", { sections })}`}
         </p>
       </div>
-      <time className="text-xs text-muted-foreground" dateTime={new Date(version.createdAt).toISOString()}>
+      <time
+        className="text-xs text-muted-foreground"
+        dateTime={new Date(version.createdAt).toISOString()}
+        title={formatDateTime(version.createdAt, language)}
+      >
         {formatRelative(version.createdAt, language)}
       </time>
     </li>

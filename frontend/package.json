@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "lint": "oxlint && node scripts/check-i18n.mjs",
+    "preview": "vite preview",
+    "lint:i18n": "node scripts/check-i18n.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

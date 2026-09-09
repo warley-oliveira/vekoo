@@ -1,0 +1,443 @@
+{
+  "brand": {
+    "title": "Sua marca",
+    "setupTitle": "Montar a marca",
+    "overview": {
+      "heading": "A marca que alimenta tudo",
+      "description": "Tudo que o Vekoo gera lê daqui: cores, fontes, voz e os fatos da sua operação. Preencha uma vez e todo carrossel já sai com a sua cara.",
+      "startSetup": "Começar a montar",
+      "continueSetup": "Continuar preenchimento",
+      "editBrand": "Editar marca",
+      "publish": "Publicar marca",
+      "publishing": "Publicando…",
+      "publishedToast": "Marca publicada como versão {{version}}.",
+      "publishNothing": "Nada mudou desde a última publicação.",
+      "publishFailed": "Não deu para publicar. Tente de novo.",
+      "publishIncomplete": "Falta preencher o mínimo para publicar.",
+      "status": {
+        "draft": "Rascunho",
+        "published": "Publicada",
+        "unpublishedChanges": "Mudanças não publicadas"
+      },
+      "publishedAt": "Publicada {{when}}",
+      "versionLabel": "versão {{number}}",
+      "readyTitle": "Pronta para gerar conteúdo",
+      "readyDescription": "O mínimo está preenchido e publicado. As gerações vão ler esta versão.",
+      "notReadyTitle": "Ainda não gera conteúdo",
+      "notReadyDescription": "Complete o mínimo abaixo e publique para liberar a geração.",
+      "blockers": {
+        "notPublished": "A marca ainda não foi publicada.",
+        "minimumNotMet": "A versão publicada não tem o mínimo."
+      },
+      "pendingFacts_one": "{{count}} fato pendente bloqueia as gerações que dependerem dele.",
+      "pendingFacts_other": "{{count}} fatos pendentes bloqueiam as gerações que dependerem deles.",
+      "reviewFacts": "Revisar fatos",
+      "versionsTitle": "Histórico",
+      "versionsEmpty": "A primeira publicação abre o histórico.",
+      "versionLine": "Versão {{number}}",
+      "versionBy": "por {{name}}",
+      "versionByUnknown": "por alguém que saiu da conta",
+      "versionInitial": "Primeira publicação",
+      "changedSections": "Mudou: {{sections}}",
+      "changeCount_one": "{{count}} alteração",
+      "changeCount_other": "{{count}} alterações",
+      "liveUpdated": "{{name}} atualizou a marca.",
+      "livePublished": "{{name}} publicou a versão {{version}}.",
+      "liveSomeone": "Alguém da equipe",
+      "sections": "Seções",
+      "sectionPercent": "{{percent}}%"
+    },
+    "steps": {
+      "identity": {
+        "title": "Identidade",
+        "description": "Quem é a marca, em poucas frases."
+      },
+      "colors": {
+        "title": "Cores",
+        "description": "A paleta, com o papel de cada cor."
+      },
+      "typography": {
+        "title": "Tipografia",
+        "description": "Duas fontes: uma para chamar, outra para explicar."
+      },
+      "styles": {
+        "title": "Estilos de texto",
+        "description": "Tamanho, peso e cor de cada papel de texto."
+      },
+      "assets": {
+        "title": "Ativos",
+        "description": "Logo, glifo e fotos oficiais, por arquivo."
+      },
+      "voice": {
+        "title": "Voz",
+        "description": "Como a marca fala — e o que ela nunca diz."
+      },
+      "facts": {
+        "title": "Dados da operação",
+        "description": "Preços, horários, promoções e eventos, com status."
+      }
+    },
+    "progress": "{{percent}}% preenchido",
+    "minimumTitle": "Mínimo para gerar",
+    "minimumDescription": "Sem estes itens, nada é gerado.",
+    "required": {
+      "identity.name": "Nome da marca",
+      "identity.segment": "Segmento",
+      "identity.concept": "Conceito-mãe",
+      "palette.background": "Uma cor de fundo",
+      "palette.textPerBackground": "Texto para cada fundo",
+      "palette.accent": "Uma cor de acento",
+      "typography.display": "Fonte de display",
+      "typography.utility": "Fonte utilitária",
+      "voice.essence": "Essência da voz",
+      "voice.tones": "Pelo menos um tom"
+    },
+    "stepper": {
+      "aria": "Etapas da marca",
+      "done": "Completa",
+      "partial": "Em andamento",
+      "current": "Etapa atual",
+      "locked": "Ainda não visitada"
+    },
+    "nav": {
+      "back": "Voltar",
+      "next": "Continuar",
+      "finish": "Concluir e revisar",
+      "exit": "Sair",
+      "step": "Etapa {{current}} de {{total}}"
+    },
+    "save": {
+      "saving": "Salvando…",
+      "saved": "Rascunho salvo",
+      "error": "Não foi possível salvar",
+      "retry": "Tentar de novo",
+      "idle": "Salva sozinho"
+    },
+    "validation": {
+      "required": "Preencha este campo.",
+      "tooLong": "Use no máximo {{max}} caracteres.",
+      "hex": "Use um hex como #7c3aed."
+    },
+    "identity": {
+      "name": "Nome da marca",
+      "namePlaceholder": "Ex.: Pão da Vila",
+      "segment": "Segmento",
+      "segmentPlaceholder": "Ex.: Padaria artesanal",
+      "concept": "Conceito-mãe",
+      "conceptHint": "Uma frase que resume por que a marca existe.",
+      "conceptPlaceholder": "Ex.: Pão de fermentação natural, todo dia, sem pressa.",
+      "positioning": "Posicionamento",
+      "positioningPlaceholder": "Como a marca quer ser vista e para quem — um parágrafo curto.",
+      "characters": "Personagens da marca",
+      "charactersHint": "Quem aparece no conteúdo: a fundadora, o padeiro, a mascote. Opcional.",
+      "characterName": "Nome",
+      "characterRole": "Papel",
+      "characterRolePlaceholder": "Ex.: Fundadora, fala em primeira pessoa",
+      "addCharacter": "Adicionar personagem",
+      "address": "Endereço",
+      "addressPlaceholder": "Rua, bairro, cidade — ou só a cidade",
+      "instagram": "@ do Instagram",
+      "networks": "Outras redes",
+      "addNetwork": "Adicionar rede",
+      "networkHandle": "Perfil ou endereço",
+      "remove": "Remover"
+    },
+    "networks": {
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "whatsapp": "WhatsApp",
+      "site": "Site",
+      "other": "Outra"
+    },
+    "colors": {
+      "intro": "Cada cor tem um papel. É o papel, não o nome, que diz ao Vekoo onde usar cada uma.",
+      "empty": "Nenhuma cor ainda.",
+      "starter": "Começar com uma paleta base",
+      "starterHint": "Cinco cores neutras já com os papéis certos — troque cada uma pela sua.",
+      "addColor": "Adicionar cor",
+      "name": "Nome",
+      "namePlaceholder": "Ex.: Ameixa",
+      "hex": "Hex",
+      "role": "Papel",
+      "pickColor": "Escolher cor",
+      "remove": "Remover cor",
+      "rulesTitle": "Regras da paleta",
+      "rules": {
+        "background": "Pelo menos um fundo (escuro ou claro).",
+        "textPerBackground": "Um texto para cada contexto de fundo.",
+        "accent": "Uma cor de acento."
+      },
+      "roles": {
+        "darkBackground": "Fundo escuro",
+        "lightBackground": "Fundo claro",
+        "textOnDark": "Texto sobre escuro",
+        "textOnLight": "Texto sobre claro",
+        "muted": "Apoio",
+        "accent": "Acento",
+        "campaign": "Tática de campanha"
+      },
+      "roleHints": {
+        "darkBackground": "Capas e cards de impacto.",
+        "lightBackground": "Cards de leitura.",
+        "textOnDark": "Texto sobre o fundo escuro.",
+        "textOnLight": "Texto sobre o fundo claro.",
+        "muted": "Rodapés, legendas, detalhes.",
+        "accent": "Destaques e números.",
+        "campaign": "Só em campanha — não vira padrão."
+      },
+      "previewTitle": "Fundo × texto",
+      "previewEmpty": "Adicione um fundo e um texto para ver as combinações.",
+      "previewMissingText": "Falta o texto deste fundo",
+      "previewTitleSample": "Um título de exemplo",
+      "previewBodySample": "O corpo do texto aparece assim sobre este fundo.",
+      "previewAccentSample": "Destaque",
+      "contrast": {
+        "aaa": "Contraste ótimo",
+        "aa": "Contraste bom",
+        "large": "Só para texto grande",
+        "fail": "Contraste insuficiente"
+      }
+    },
+    "typography": {
+      "intro": "Duas fontes bastam: uma que chama (display) e uma que explica (utilitária).",
+      "roles": {
+        "display": "Display / editorial",
+        "utility": "Utilitária"
+      },
+      "roleHints": {
+        "display": "Títulos, números, capas.",
+        "utility": "Corpo, listas, rodapé."
+      },
+      "source": "Origem",
+      "sources": {
+        "catalog": "Catálogo aberto",
+        "file": "Meu arquivo",
+        "system": "Nome da fonte"
+      },
+      "family": "Família",
+      "familyPlaceholder": "Ex.: Fraunces",
+      "searchFont": "Buscar fonte…",
+      "noFont": "Nenhuma fonte com esse nome.",
+      "categories": {
+        "sans": "Sem serifa",
+        "serif": "Com serifa",
+        "display": "Display",
+        "mono": "Mono"
+      },
+      "weights": "Pesos usados",
+      "weightsHint": "Marque só os que a marca usa de verdade.",
+      "usage": "Onde se aplica",
+      "usagePlaceholder": "Ex.: títulos, números de destaque e capas",
+      "upload": "Enviar arquivo (TTF, OTF ou WOFF2)",
+      "uploading": "Enviando…",
+      "uploaded": "Arquivo: {{name}}",
+      "replace": "Trocar arquivo",
+      "uploadFailed": "Não deu para enviar a fonte.",
+      "previewSample": "Quem escreve claro, vende sem gritar.",
+      "rules": "Regras",
+      "rulesHint": "O que a IA nunca deve fazer com o texto. Opcional.",
+      "addRule": "Adicionar regra",
+      "rulePlaceholder": "Ex.: nunca itálico",
+      "suggestions": {
+        "noItalic": "Nunca itálico",
+        "boldIsNotEmphasis": "Negrito não é ênfase",
+        "twoLines": "Título nunca passa de duas linhas"
+      },
+      "validation": {
+        "weights": "Marque pelo menos um peso.",
+        "file": "Envie o arquivo da fonte."
+      }
+    },
+    "styles": {
+      "intro": "Os papéis de texto já vêm preenchidos. Ajuste tamanho, peso e a cor em cada fundo — não precisa criar nada.",
+      "columns": {
+        "role": "Papel",
+        "font": "Fonte",
+        "size": "Tamanho",
+        "weight": "Peso",
+        "transform": "Caixa",
+        "onDark": "Cor no escuro",
+        "onLight": "Cor no claro",
+        "preview": "Como fica"
+      },
+      "keys": {
+        "kicker": "Kicker",
+        "title": "Título",
+        "lede": "Lede",
+        "body": "Corpo",
+        "number": "Número de destaque",
+        "item": "Item",
+        "footer": "Rodapé"
+      },
+      "keyHints": {
+        "kicker": "A linha curta acima do título.",
+        "title": "O que se lê primeiro.",
+        "lede": "A frase que puxa para o corpo.",
+        "body": "O texto corrido.",
+        "number": "Dado grande, em destaque.",
+        "item": "Cada linha de lista ou passo.",
+        "footer": "O @ e as notas de rodapé."
+      },
+      "transform": {
+        "none": "Normal",
+        "uppercase": "MAIÚSCULAS"
+      },
+      "reset": "Voltar aos padrões",
+      "resetToast": "Estilos de volta ao padrão.",
+      "sample": "Bolo caseiro em 40 minutos",
+      "onDark": "No escuro",
+      "onLight": "No claro"
+    },
+    "assets": {
+      "intro": "Ativo oficial entra por arquivo, nunca é recriado por aproximação. Logo e glifo em PNG com fundo transparente ou SVG.",
+      "slots": {
+        "logoLight": "Logo para fundo claro",
+        "logoDark": "Logo para fundo escuro",
+        "glyphLight": "Glifo para fundo claro",
+        "glyphDark": "Glifo para fundo escuro"
+      },
+      "slotHint": "PNG transparente ou SVG, até {{max}}",
+      "photos": "Fotos de marca",
+      "photosHint": "Produtos, equipe, ambiente — o que a IA pode usar como imagem oficial. JPEG, PNG ou WebP.",
+      "addPhoto": "Adicionar foto",
+      "drop": "Solte o arquivo aqui ou",
+      "browse": "escolha no computador",
+      "uploading": "Enviando…",
+      "remove": "Remover",
+      "replace": "Trocar",
+      "opaqueTitle": "Fundo opaco",
+      "opaqueWarning": "Este PNG tem o fundo preenchido. O logo vai aparecer com um retângulo por trás — envie uma versão com fundo transparente.",
+      "transparentOk": "Fundo transparente",
+      "unknownTransparency": "Não deu para conferir o fundo",
+      "invalidType": "Esse arquivo não serve aqui.",
+      "tooLarge": "O arquivo passa de {{max}}.",
+      "uploadFailed": "Não deu para enviar o arquivo.",
+      "removed": "Ativo removido.",
+      "removeFailed": "Não deu para remover.",
+      "empty": "Nenhuma foto ainda.",
+      "confirmRemoveTitle": "Remover este ativo?",
+      "confirmRemoveDescription": "Ele some da marca. Você pode enviar de novo depois."
+    },
+    "voice": {
+      "essence": "Essência da voz",
+      "essenceHint": "Uma frase: como a marca fala quando está no melhor dia.",
+      "essencePlaceholder": "Ex.: Explica como amiga que entende do assunto: clara, direta e com exemplo na mão.",
+      "tones": "Tom",
+      "tonesHint": "Marque os que combinam. Dois ou três costumam bastar.",
+      "toneNote": "Alguma nuance?",
+      "toneNotePlaceholder": "Ex.: pode brincar, mas nunca às custas de quem está começando.",
+      "bannedWords": "Palavras e expressões banidas",
+      "bannedHint": "O que a marca nunca escreve. A IA obedece.",
+      "addBanned": "Adicionar",
+      "bannedPlaceholder": "Ex.: alavancar",
+      "qualityRules": "Regras de qualidade",
+      "qualityHint": "Vale para toda peça gerada.",
+      "examples": "Exemplos de copy aprovado",
+      "examplesHint": "Trechos que a marca já publicou e gostou. Opcional, mas ensina muito.",
+      "addExample": "Adicionar exemplo",
+      "examplePlaceholder": "Cole um texto que representa bem a marca.",
+      "toneOptions": {
+        "direct": "Direta",
+        "warm": "Acolhedora",
+        "playful": "Bem-humorada",
+        "technical": "Técnica",
+        "inspiring": "Inspiradora",
+        "sober": "Sóbria",
+        "bold": "Ousada",
+        "educational": "Didática"
+      },
+      "rules": {
+        "maxOneAntithesis": "No máximo uma antítese por peça",
+        "alwaysConcreteData": "Sempre incluir um dado concreto",
+        "noEmojiRendered": "Sem emoji em peça renderizada",
+        "noGenericClaims": "Sem promessa genérica (\"o melhor\", \"único\")",
+        "noStackedExclamation": "Nunca mais de uma exclamação"
+      },
+      "validation": {
+        "tones": "Marque pelo menos um tom."
+      }
+    },
+    "facts": {
+      "intro": "Os fatos da operação: o que a IA pode afirmar sobre preço, horário, promoção e evento.",
+      "gateTitle": "Portão dos pendentes",
+      "gateDescription": "Fato pendente não entra em peça nenhuma. Toda geração que depender dele fica bloqueada até você confirmar.",
+      "addFact": "Adicionar fato",
+      "empty": "Nenhum fato ainda. Comece pelo que mais aparece nos posts: preço e horário.",
+      "kind": "Tipo",
+      "kinds": {
+        "price": "Preço",
+        "hours": "Horário",
+        "promotion": "Promoção",
+        "event": "Evento",
+        "other": "Outro"
+      },
+      "label": "O quê",
+      "labelPlaceholder": {
+        "price": "Ex.: Combo do almoço",
+        "hours": "Ex.: Loja física",
+        "promotion": "Ex.: Turma de outubro",
+        "event": "Ex.: Workshop",
+        "other": "Ex.: Prazo de entrega"
+      },
+      "value": "Valor",
+      "valuePlaceholder": {
+        "price": "Ex.: R$ 39,90",
+        "hours": "",
+        "promotion": "Ex.: 20% até 15/09",
+        "event": "Ex.: 28/09, 19h, online",
+        "other": "Ex.: até 3 dias úteis"
+      },
+      "status": "Status",
+      "statuses": {
+        "confirmed": "Confirmado",
+        "pending": "Pendente"
+      },
+      "confirm": "Confirmar",
+      "markPending": "Marcar pendente",
+      "hours": "Horário por dia",
+      "hoursPlaceholder": "9h–18h",
+      "closed": "Fechado",
+      "weekdays": {
+        "mon": "Seg",
+        "tue": "Ter",
+        "wed": "Qua",
+        "thu": "Qui",
+        "fri": "Sex",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "remove": "Remover fato",
+      "pendingCount_one": "{{count}} pendente",
+      "pendingCount_other": "{{count}} pendentes",
+      "allConfirmed": "Tudo confirmado"
+    },
+    "card": {
+      "title": "Cartão da marca",
+      "hint": "Sua marca tomando forma, com o que você já preencheu.",
+      "untitled": "Sua marca",
+      "noSegment": "Segmento",
+      "noConcept": "O conceito-mãe aparece aqui.",
+      "voice": "Voz",
+      "noVoice": "A essência da voz aparece aqui.",
+      "palette": "Paleta",
+      "fonts": "Fontes",
+      "display": "Display",
+      "utility": "Utilitária",
+      "show": "Ver cartão da marca",
+      "hide": "Esconder cartão"
+    },
+    "nudge": {
+      "title": "Sua marca ainda não está pronta",
+      "description": "Preencha o mínimo e publique para os carrosséis saírem com a sua cara.",
+      "cta": "Montar a marca",
+      "dismiss": "Depois"
+    },
+    "review": {
+      "title": "Revisar e publicar",
+      "description": "Confira o cartão e publique. Depois da primeira publicação, cada mudança vira uma versão nova."
+    }
+  }
+}

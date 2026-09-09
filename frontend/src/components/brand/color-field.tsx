@@ -63,6 +63,7 @@ export function ColorField({
         spellCheck={false}
         inputMode="text"
         maxLength={7}
+        // i18n-exempt: um hex de exemplo, igual em qualquer idioma.
         placeholder="#7c3aed"
         aria-invalid={invalid}
         aria-label={aria["aria-label"]}
