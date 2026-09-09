@@ -1,40 +1,52 @@
-# GET/PATCH /brand-core e POST /brand-core/publish — o Brandcore da
-# organização. Recurso singular de propósito: hoje é um por organização, e a
-# tela nunca precisa de id para achá-lo.
+# As marcas da organização — cada uma é um Brandcore. `index` alimenta o
+# seletor de marca; `create` abre uma marca nova em rascunho; o resto é o
+# formulário e a publicação de uma marca (`/brands/:id`).
 #
 # O PATCH recebe **seções inteiras** (uma etapa do formulário = uma seção) e o
 # progresso (etapas visitadas, última aberta). É o salvamento automático do
 # rascunho: nada aqui exige o documento completo — isso é papel de `publish`.
-class BrandCoresController < AuthenticatedController
-  before_action :set_brand_core
+class BrandsController < AuthenticatedController
+  before_action :set_brand, except: %i[index create]
+
+  def index
+    render json: { brands: BrandCoreSerializer.many_summaries(current_organization.brand_cores.ordered) }
+  end
 
   def show
-    render json: BrandCoreSerializer.one(@brand_core)
+    render json: BrandCoreSerializer.one(@brand)
+  end
+
+  def create
+    brand = current_organization.brand_cores.new
+    name = params.dig(:brand, :name).to_s.strip
+    brand.assign_section("identity", { "name" => name }) if name.present?
+    brand.save!
+    render json: BrandCoreSerializer.one(brand), status: :created
   end
 
   def update
-    payload = params.require(:brandCore)
+    payload = params.require(:brand)
     errors = assign_sections(payload[:document])
     return render_document_invalid(errors) if errors.any?
 
     if payload[:progress].present?
       progress = payload[:progress]
-      @brand_core.track_progress(visited: progress[:visitedSteps], last_step: progress[:lastStep])
+      @brand.track_progress(visited: progress[:visitedSteps], last_step: progress[:lastStep])
     end
 
-    @brand_core.save!
+    @brand.save!
     broadcast("updated")
-    render json: BrandCoreSerializer.one(@brand_core)
+    render json: BrandCoreSerializer.one(@brand)
   end
 
   def publish
-    result = PublishBrandCore.new(@brand_core, account: current_account).call
+    result = PublishBrandCore.new(@brand, account: current_account).call
 
     if result.success?
       broadcast("published") if result.version
-      render json: BrandCoreSerializer.one(@brand_core.reload)
+      render json: BrandCoreSerializer.one(@brand.reload)
     else
-      unmet = @brand_core.completeness.required.reject { |item| item["met"] }.map { |item| item["key"] }
+      unmet = @brand.completeness.required.reject { |item| item["met"] }.map { |item| item["key"] }
       render_error(
         status: :unprocessable_entity,
         code: result.error,
@@ -46,8 +58,8 @@ class BrandCoresController < AuthenticatedController
 
   private
 
-  def set_brand_core
-    @brand_core = BrandCore.for(current_organization)
+  def set_brand
+    @brand = current_organization.brand_cores.find(params[:id])
   end
 
   # Cada seção entra inteira e passa por `BrandCore::Schema.normalize_section`,
@@ -59,7 +71,7 @@ class BrandCoresController < AuthenticatedController
     document.to_unsafe_h.each_with_object([]) do |(section, raw), errors|
       next unless BrandCore::Schema::SECTIONS.include?(section.to_s)
 
-      errors.concat(@brand_core.assign_section(section.to_s, raw))
+      errors.concat(@brand.assign_section(section.to_s, raw))
     end
   end
 
@@ -83,7 +95,7 @@ class BrandCoresController < AuthenticatedController
   def broadcast(event)
     BrandCoreChannel.broadcast_to(
       current_organization,
-      BrandCoreSerializer.event(@brand_core, event: event, account: current_account,
+      BrandCoreSerializer.event(@brand, event: event, account: current_account,
         client_id: request.headers["X-Client-Id"])
     )
   end

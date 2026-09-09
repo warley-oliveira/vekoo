@@ -3,6 +3,7 @@ class FolderSerializer < ApplicationSerializer
     {
       id: folder.id,
       name: folder.name,
+      brandId: folder.brand_core_id,
       color: folder.color,
       createdAt: epoch_ms(folder.created_at)
     }

@@ -5,6 +5,7 @@ class FoldersController < AuthenticatedController
 
   def index
     folders = current_organization.folders.ordered
+    folders = folders.in_brand(params[:brand_id]) if params[:brand_id].present?
     counts = current_organization.carousels.active.group(:folder_id).count
 
     render json: {
@@ -15,7 +16,16 @@ class FoldersController < AuthenticatedController
   end
 
   def create
+    brand = current_organization.brand_cores.find_by(id: params.dig(:folder, :brandId).presence)
+    unless brand
+      return render_error(
+        status: :unprocessable_entity, code: "brandRequired", field: "brandId",
+        message: t("errors.brand_required"), details: { "brandId" => [ t("errors.brand_required") ] }
+      )
+    end
+
     folder = current_organization.folders.new(folder_params)
+    folder.brand_core = brand
 
     if folder.save
       render json: FolderSerializer.one(folder), status: :created

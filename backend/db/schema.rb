@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_08_212252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,10 +97,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
     t.jsonb "published_document"
     t.string "status", default: "draft", null: false
     t.datetime "updated_at", null: false
-    t.index ["organization_id"], name: "index_brand_cores_on_organization_id", unique: true
+    t.index ["organization_id", "created_at"], name: "index_brand_cores_on_organization_id_and_created_at"
   end
 
   create_table "carousels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "brand_core_id"
+    t.uuid "brand_core_version_id"
     t.text "caption"
     t.jsonb "cards", default: [], null: false
     t.datetime "created_at", null: false
@@ -113,6 +115,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
     t.string "title", null: false
     t.datetime "trashed_at"
     t.datetime "updated_at", null: false
+    t.index ["brand_core_id"], name: "index_carousels_on_brand_core_id"
+    t.index ["brand_core_version_id"], name: "index_carousels_on_brand_core_version_id"
     t.index ["folder_id"], name: "index_carousels_on_folder_id"
     t.index ["organization_id", "favorite"], name: "index_carousels_on_organization_id_and_favorite"
     t.index ["organization_id", "trashed_at", "edited_at"], name: "idx_on_organization_id_trashed_at_edited_at_28a7be86a4"
@@ -120,11 +124,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
   end
 
   create_table "folders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "brand_core_id"
     t.string "color", null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.uuid "organization_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["brand_core_id"], name: "index_folders_on_brand_core_id"
     t.index ["organization_id", "name"], name: "index_folders_on_organization_id_and_name"
     t.index ["organization_id"], name: "index_folders_on_organization_id"
   end
@@ -251,8 +257,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_204217) do
   add_foreign_key "brand_core_versions", "accounts", on_delete: :nullify
   add_foreign_key "brand_core_versions", "brand_cores"
   add_foreign_key "brand_cores", "organizations"
+  add_foreign_key "carousels", "brand_core_versions", on_delete: :nullify
+  add_foreign_key "carousels", "brand_cores"
   add_foreign_key "carousels", "folders", on_delete: :nullify
   add_foreign_key "carousels", "organizations"
+  add_foreign_key "folders", "brand_cores"
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
   add_foreign_key "password_resets", "accounts"

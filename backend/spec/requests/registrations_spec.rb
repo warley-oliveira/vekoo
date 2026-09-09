@@ -27,6 +27,9 @@ RSpec.describe "Criar conta", type: :request do
 
     organization = Organization.find(json["organization"]["id"])
     expect(organization.notifications.pluck(:key)).to eq([ "welcome" ])
+    # A primeira marca nasce com a conta: é para o formulário dela que a
+    # pessoa vai em seguida.
+    expect(organization.brand_cores.count).to eq(1)
   end
 
   it "normaliza o e-mail" do

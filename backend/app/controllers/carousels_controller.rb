@@ -6,8 +6,10 @@
 class CarouselsController < AuthenticatedController
   before_action :set_carousel, except: %i[index create]
 
-  # GET /carousels?trashed=&folder_id=&favorite=&q=&sort=
-  # `sort` aceita recent (padrão), oldest, title e created.
+  # GET /carousels?brand_id=&trashed=&folder_id=&favorite=&q=&sort=
+  # `sort` aceita recent (padrão), oldest, title e created. `brand_id` é o
+  # contexto da tela; sem ele a lista é da organização inteira (a migração
+  # dos órfãos usa isso).
   def index
     render json: { carousels: CarouselSerializer.many_summaries(scoped_carousels) }
   end
@@ -16,9 +18,14 @@ class CarouselsController < AuthenticatedController
     render json: CarouselSerializer.one(@carousel)
   end
 
+  # Todo carrossel nasce dentro de uma marca: sem `brandId` não há criação.
   def create
+    brand = brand_from_params
+    return render_brand_required unless brand
+
     carousel = current_organization.carousels.new(carousel_params)
-    carousel.theme = default_theme if carousel.theme.blank?
+    carousel.brand_core = brand
+    carousel.theme = default_theme(brand) if carousel.theme.blank?
     carousel.edited_at = Time.current
 
     if carousel.save
@@ -82,6 +89,7 @@ class CarouselsController < AuthenticatedController
       list = params[:sort].present? ? list.sorted_by(params[:sort]) : list.recent_first
     end
 
+    list = list.in_brand(params[:brand_id]) if params[:brand_id].present?
     list = list.where(favorite: true) if ActiveModel::Type::Boolean.new.cast(params[:favorite])
     list = list.where(folder_id: params[:folder_id]) if params[:folder_id].present?
     list = list.where("title ILIKE ?", "%#{sanitize_like(params[:q])}%") if params[:q].present?
@@ -101,11 +109,13 @@ class CarouselsController < AuthenticatedController
 
   def carousel_params
     permitted = params.require(:carousel).permit(
-      :title, :format, :caption, :favorite, :folderId,
+      :title, :format, :caption, :favorite, :folderId, :brandId,
       theme: {},
       cards: []
     )
     permitted[:folder_id] = permitted.delete(:folderId) if permitted.key?(:folderId)
+    # A marca não muda depois de nascer: o carrossel é dela.
+    permitted.delete(:brandId)
     permitted[:cards] = raw_cards if params[:carousel].key?(:cards)
     permitted
   end
@@ -121,9 +131,25 @@ class CarouselsController < AuthenticatedController
     (@carousel.changed & %w[title format theme cards caption]).any?
   end
 
-  # Carrossel novo nasce com o primeiro tema pronto do catálogo.
-  def default_theme
-    ThemePreset.ordered.first&.theme || {
+  def brand_from_params
+    id = params.dig(:carousel, :brandId).presence
+    id && current_organization.brand_cores.find_by(id: id)
+  end
+
+  def render_brand_required
+    render_error(
+      status: :unprocessable_entity,
+      code: "brandRequired",
+      field: "brandId",
+      message: t("errors.brand_required"),
+      details: { "brandId" => [ t("errors.brand_required") ] }
+    )
+  end
+
+  # Carrossel novo nasce com as cores da marca; sem paleta ainda, com o
+  # primeiro tema pronto do catálogo.
+  def default_theme(brand)
+    brand.carousel_theme || ThemePreset.ordered.first&.theme || {
       "bg" => "oklch(0.97 0.005 90)",
       "surface" => "oklch(0.93 0.008 90)",
       "ink" => "oklch(0.2 0.01 285)",

@@ -36,25 +36,30 @@ Rails.application.routes.draw do
   get  "credits"         => "credits#show"
   post "credits/consume" => "credits#consume"
 
-  # --- a marca -----------------------------------------------------------------
-  # Recurso singular: um Brandcore por organização. O rascunho salva seção a
-  # seção (PATCH); só `publish` exige o mínimo obrigatório.
-  get    "brand-core"            => "brand_cores#show"
-  patch  "brand-core"            => "brand_cores#update"
-  post   "brand-core/publish"    => "brand_cores#publish"
-  get    "brand-core/versions"   => "brand_core_versions#index"
-  post   "brand-core/assets"     => "brand_assets#create"
-  delete "brand-core/assets/:id" => "brand_assets#destroy"
+  # --- as marcas -------------------------------------------------------------
+  # Todo conteúdo nasce dentro de uma marca: o Brandcore, os ativos, o
+  # histórico, as peças e a prévia moram sob `/brands/:id`. Carrosséis e
+  # pastas mantêm as rotas próprias (o editor os abre por id) e recebem a
+  # marca na criação (`brandId`) — sem ela a API recusa.
+  resources :brands, only: %i[index show create update] do
+    member { post :publish }
+    get "versions" => "brand_core_versions#index"
+    resources :assets, only: %i[create destroy], controller: :brand_assets
+    resources :pieces, only: %i[index show create destroy] do
+      member { post :regenerate }
+    end
+    resources :engines, only: [] do
+      member { post :preview }
+    end
+  end
 
-  # --- motores e peças ---------------------------------------------------------
-  # O catálogo de motores (manifestos de `engines/*/`) e as peças geradas
-  # sobre a versão publicada do Brandcore.
-  resources :engines, only: %i[index show] do
-    member { post :preview }
-  end
-  resources :pieces, only: %i[index show create destroy] do
-    member { post :regenerate }
-  end
+  # O catálogo de motores (manifestos de `engines/*/`) é igual para todo mundo.
+  resources :engines, only: %i[index show]
+
+  # Migração do legado: carrosséis e pastas sem marca. Temporária (ver
+  # `OrphanMigration`).
+  get  "orphans"        => "orphans#index"
+  post "orphans/assign" => "orphans#assign"
 
   # WebSocket dos avisos ao vivo (`BrandCoreChannel`, `PieceChannel`). Autentica por `?token=`.
   mount ActionCable.server => "/cable"

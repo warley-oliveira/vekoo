@@ -7,14 +7,14 @@ RSpec.describe "db/seeds.rb" do
   # Uma vez só para o arquivo inteiro — semear é caro e o resultado é o mesmo.
   before(:all) do
     self.use_transactional_tests = false
-    [ Piece, BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+    [ Piece, Carousel, Folder, BrandCoreVersion, BrandAsset, BrandCore, Notification, Session,
      PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
 
     silence_stream { load Rails.root.join("db/seeds.rb") }
   end
 
   after(:all) do
-    [ Piece, BrandCoreVersion, BrandAsset, BrandCore, Carousel, Notification, Folder, Session,
+    [ Piece, Carousel, Folder, BrandCoreVersion, BrandAsset, BrandCore, Notification, Session,
      PasswordReset, Account, Organization, ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
     self.use_transactional_tests = true
   end
@@ -116,7 +116,7 @@ RSpec.describe "db/seeds.rb" do
   end
 
   it "traz o Brandcore da Marina publicado, com histórico e logos de verdade" do
-    brand_core = organization.brand_core
+    brand_core = organization.brand_cores.first
     expect(brand_core.status).to eq("published")
     expect(brand_core.current_version).to eq(2)
     expect(brand_core.versions.pluck(:number)).to eq([ 2, 1 ])
@@ -134,6 +134,13 @@ RSpec.describe "db/seeds.rb" do
   it "semeia o Brandcore duas vezes sem duplicar" do
     expect { silence_stream { load Rails.root.join("db/seeds.rb") } }
       .to not_change(BrandCore, :count).and not_change(BrandCoreVersion, :count).and not_change(BrandAsset, :count)
+  end
+
+  it "faz todo carrossel nascer dentro da marca da Marina" do
+    expect(organization.carousels.orphans).not_to exist
+    expect(organization.carousels.pluck(:brand_core_id).uniq).to eq([ organization.brand_cores.first.id ])
+    # Nasceram depois da publicação: carregam a versão publicada da marca.
+    expect(organization.carousels.map { |c| c.brand_core_version&.number }.uniq).to eq([ 2 ])
   end
 
   it "traz uma peça pronta por motor e uma barrada pelo fato pendente" do

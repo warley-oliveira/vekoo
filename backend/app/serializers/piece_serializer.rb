@@ -4,6 +4,7 @@ class PieceSerializer < ApplicationSerializer
     stale = piece.stale_refs
     {
       id: piece.id,
+      brandId: piece.brand_core_id,
       engineId: piece.engine_id,
       engineName: manifest ? manifest.as_json(locale: I18n.locale)["name"] : piece.engine_id,
       format: piece.format,

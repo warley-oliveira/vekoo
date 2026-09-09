@@ -388,7 +388,12 @@ module VekooSeeds
 
   def carousel!(organization, slug, attributes)
     carousel = Carousel.find_or_initialize_by(id: id_for(slug))
-    carousel.assign_attributes(attributes.merge(organization: organization, folder: nil))
+    brand = organization.brand_cores.first
+    carousel.assign_attributes(attributes.merge(
+      organization: organization, folder: nil, brand_core: brand,
+      # Nasceram depois da publicação: carregam a versão publicada da marca.
+      brand_core_version: brand.versions.find_by(number: brand.current_version)
+    ))
     carousel.save!
     carousel
   end
@@ -1179,7 +1184,7 @@ module VekooSeeds
   ].freeze
 
   def seed_pieces!(organization, account)
-    brand_core = organization.brand_core
+    brand_core = organization.brand_cores.first
     PIECE_EXAMPLES.each do |slug, engine_id, format, title, values|
       piece = Piece.find_or_initialize_by(id: id_for(slug))
       piece.assign_attributes(
@@ -1196,8 +1201,9 @@ module VekooSeeds
     seed_catalog!
     organization = seed_demo_account!
     seed_notifications!(organization)
-    seed_carousels!(organization)
+    # A marca antes dos carrosséis: todo conteúdo nasce dentro dela.
     seed_brand_core!(organization, organization.owner)
+    seed_carousels!(organization)
     seed_pieces!(organization, organization.owner)
     # Nenhuma pasta de propósito: a conta de demonstração começa sem pastas,
     # é assim que a tela mostra o convite a criar a primeira (e o aviso
@@ -1218,6 +1224,6 @@ puts <<~REPORT
     Cards       #{organization.carousels.sum { |c| c.cards.length }}
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
-    Marca       #{organization.brand_core.full_document.dig("identity", "name")} · v#{organization.brand_core.current_version} · #{organization.brand_core.completeness.percent}% · #{organization.brand_core.assets.count} ativos
+    Marca       #{organization.brand_cores.first.full_document.dig("identity", "name")} · v#{organization.brand_cores.first.current_version} · #{organization.brand_cores.first.completeness.percent}% · #{organization.brand_cores.first.assets.count} ativos
     Peças       #{organization.pieces.where(status: "ready").count} prontas · #{organization.pieces.where(status: "failed").count} com falha (#{Engines::Registry.ids.length} motores)
 REPORT

@@ -23,7 +23,7 @@ RSpec.describe "Peças e motores", type: :request do
 
   describe "POST /engines/:id/preview" do
     it "devolve o PNG do primeiro quadro com os valores em edição" do
-      post "/engines/statement/preview", headers: headers, as: :json,
+      post "/brands/#{brand_core.id}/engines/statement/preview", headers: headers, as: :json,
         params: { piece: { format: "story", values: { phrase: "Hoje tem pão", price: "fato-preco" } } }
 
       expect(response).to have_http_status(:ok)
@@ -33,7 +33,7 @@ RSpec.describe "Peças e motores", type: :request do
     end
 
     it "explica quando a ref está pendente, nomeando o fato" do
-      post "/engines/statement/preview", headers: headers, as: :json,
+      post "/brands/#{brand_core.id}/engines/statement/preview", headers: headers, as: :json,
         params: { piece: { format: "post", values: { phrase: "Hoje tem pão", price: "fato-preco-pendente" } } }
 
       expect(response).to have_http_status(:unprocessable_entity)
@@ -43,7 +43,7 @@ RSpec.describe "Peças e motores", type: :request do
     end
 
     it "aponta o campo inválido" do
-      post "/engines/statement/preview", headers: headers, as: :json,
+      post "/brands/#{brand_core.id}/engines/statement/preview", headers: headers, as: :json,
         params: { piece: { format: "post", values: { phrase: "" } } }
 
       expect(response).to have_http_status(:unprocessable_entity)
@@ -54,7 +54,7 @@ RSpec.describe "Peças e motores", type: :request do
   describe "POST /pieces" do
     it "cria a peça na fila e enfileira a renderização" do
       expect {
-        post "/pieces", headers: headers, as: :json, params: {
+        post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: {
           piece: { engineId: "preco_heroi", format: "post", values: { label: "Pão rústico", price: "fato-preco" } }
         }
       }.to change(Piece, :count).by(1).and have_enqueued_job(RenderPieceJob)
@@ -65,7 +65,7 @@ RSpec.describe "Peças e motores", type: :request do
     end
 
     it "recusa valores fora do manifesto apontando o campo" do
-      post "/pieces", headers: headers, as: :json, params: {
+      post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: {
         piece: { engineId: "statement", format: "post", values: { phrase: "uma\nduas\ntrês\nquatro\ncinco" } }
       }
 
@@ -75,14 +75,14 @@ RSpec.describe "Peças e motores", type: :request do
     end
 
     it "recusa motor desconhecido" do
-      post "/pieces", headers: headers, as: :json, params: { piece: { engineId: "inventado", values: {} } }
+      post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: { piece: { engineId: "inventado", values: {} } }
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "code")).to eq("engineUnknown")
     end
 
     it "recusa formato que o motor não sai" do
-      post "/pieces", headers: headers, as: :json, params: {
+      post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: {
         piece: { engineId: "promo_box", format: "story", values: EngineExamples.values("promo_box") }
       }
 
@@ -93,7 +93,7 @@ RSpec.describe "Peças e motores", type: :request do
     it "exige marca publicada" do
       brand_core.update!(status: "draft", published_document: nil)
 
-      post "/pieces", headers: headers, as: :json, params: { piece: { engineId: "statement", values: { phrase: "x" } } }
+      post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: { piece: { engineId: "statement", values: { phrase: "x" } } }
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "code")).to eq("brandNotPublished")
@@ -105,8 +105,10 @@ RSpec.describe "Peças e motores", type: :request do
       piece = create(:piece, organization: organization, brand_core: brand_core)
       RenderPiece.new(piece).call
       create(:piece)
+      # Outra marca da mesma organização: não aparece nesta.
+      create(:piece, organization: organization, brand_core: create(:brand_core, :published, organization: organization))
 
-      get "/pieces", headers: headers
+      get "/brands/#{brand_core.id}/pieces", headers: headers
       expect(json["pieces"].map { |p| p["id"] }).to eq([ piece.id ])
       expect(json["pieces"].first).to include("status" => "ready", "stale" => false)
       expect(json["pieces"].first["images"].first["url"]).to start_with("/rails/active_storage/blobs/proxy/")
@@ -116,7 +118,7 @@ RSpec.describe "Peças e motores", type: :request do
       document["facts"]["items"].first["value"] = "R$ 20"
       brand_core.update!(published_document: document, document: document, current_version: 2)
 
-      get "/pieces", params: { stale: true }, headers: headers
+      get "/brands/#{brand_core.id}/pieces", params: { stale: true }, headers: headers
       expect(json["pieces"].map { |p| p["id"] }).to eq([ piece.id ])
       expect(json["pieces"].first["staleRefs"].first).to include("factId" => "fato-preco", "previous" => "R$ 18", "current" => "R$ 20", "reason" => "changed")
       expect(json["pieces"].first["outdated"]).to be(true)
@@ -127,7 +129,7 @@ RSpec.describe "Peças e motores", type: :request do
     it "volta a peça para a fila com os mesmos valores" do
       piece = create(:piece, organization: organization, brand_core: brand_core, status: "failed", error: { "code" => "refPending" })
 
-      expect { post "/pieces/#{piece.id}/regenerate", headers: headers }.to have_enqueued_job(RenderPieceJob).with(piece.id)
+      expect { post "/brands/#{brand_core.id}/pieces/#{piece.id}/regenerate", headers: headers }.to have_enqueued_job(RenderPieceJob).with(piece.id)
 
       expect(response).to have_http_status(:accepted)
       expect(json).to include("status" => "queued", "error" => nil)
@@ -139,10 +141,10 @@ RSpec.describe "Peças e motores", type: :request do
       mine = create(:piece, organization: organization, brand_core: brand_core)
       other = create(:piece)
 
-      delete "/pieces/#{mine.id}", headers: headers
+      delete "/brands/#{brand_core.id}/pieces/#{mine.id}", headers: headers
       expect(response).to have_http_status(:no_content)
 
-      delete "/pieces/#{other.id}", headers: headers
+      delete "/brands/#{brand_core.id}/pieces/#{other.id}", headers: headers
       expect(response).to have_http_status(:not_found)
     end
   end

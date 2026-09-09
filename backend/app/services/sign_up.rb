@@ -51,6 +51,9 @@ class SignUp
       account.organization = organization
       account.save!
       welcome(organization)
+      # A primeira marca nasce com a conta: é nela que todo conteúdo vai
+      # nascer, e é para o formulário dela que a pessoa vai logo em seguida.
+      organization.brand_cores.create!
       session = Session.start!(account, user_agent: @user_agent, ip_address: @ip_address)
     end
 

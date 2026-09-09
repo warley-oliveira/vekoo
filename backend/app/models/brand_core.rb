@@ -12,14 +12,19 @@ class BrandCore < ApplicationRecord
   belongs_to :organization
   has_many :assets, class_name: "BrandAsset", dependent: :destroy
   has_many :versions, -> { order(number: :desc) }, class_name: "BrandCoreVersion", dependent: :destroy
+  # Todo conteúdo nasce dentro da marca — e vai embora com ela.
+  has_many :carousels, dependent: :destroy
+  has_many :folders, dependent: :destroy
+  has_many :pieces, dependent: :destroy
 
   validates :status, inclusion: { in: STATUSES }
-  validates :organization_id, uniqueness: true
   validate :document_must_be_a_hash
 
-  # Um por organização, criado na primeira visita ao formulário.
-  def self.for(organization)
-    organization.brand_core || organization.create_brand_core!
+  scope :ordered, -> { order(:created_at) }
+
+  # O nome que a tela mostra no seletor: o da identidade, mesmo em rascunho.
+  def name
+    full_document.dig("identity", "name").presence
   end
 
   def published?
@@ -90,6 +95,32 @@ class BrandCore < ApplicationRecord
       blockers: blockers,
       document: published? ? BrandCore::Schema.complete(published_document) : nil,
       pendingFactIds: pending_fact_ids
+    }
+  end
+
+  # O tema do editor de carrossel derivado dos papéis da paleta: o carrossel
+  # continua guardando cores relativas (`ink`, `accent`), e é este mapa que
+  # as traduz para a marca. Lê a publicação quando há; senão, o rascunho —
+  # um carrossel novo não deveria nascer cinza só porque a marca ainda não
+  # foi publicada.
+  def carousel_theme
+    doc = BrandCore::Schema.complete(published? ? published_document : document)
+    colors = doc["palette"]["colors"].select { |c| c["hex"].to_s.match?(BrandCore::Schema::HEX) }
+    pick = ->(role) { colors.find { |c| c["role"] == role }&.fetch("hex") }
+    bg = pick.call("darkBackground") || pick.call("lightBackground")
+    return nil unless bg
+
+    ink = pick.call(BrandCore::Schema::BACKGROUND_ROLES.fetch(colors.find { |c| c["hex"] == bg }["role"])) ||
+      (BrandCore::Colors.luminance(bg) > 0.4 ? "#1c1a24" : "#f6f3ee")
+    accent = pick.call("accent") || ink
+    candidates = [ pick.call("textOnDark"), pick.call("textOnLight"), bg, ink ].compact
+    accent_ink = candidates.max_by { |c| BrandCore::Colors.contrast(accent, c) }
+    {
+      "bg" => bg,
+      "surface" => BrandCore::Colors.mix(bg, ink, 0.08),
+      "ink" => ink,
+      "accent" => accent,
+      "accentInk" => accent_ink
     }
   end
 

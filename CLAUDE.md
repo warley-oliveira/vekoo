@@ -156,6 +156,26 @@ desatualizadas), `/pieces/new[/:engineId]` (formulário **gerado do manifesto** 
 proveniência, regenerar). Spec por motor em `spec/engines/engines_spec.rb`, valores de
 exemplo em `spec/support/engine_examples.rb`.
 
+**Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
+nunca é vinculado depois; não existe tela de associação manual. A organização tem
+**várias** marcas (`BrandCore`, `GET/POST /brands`); carrossel, pasta e peça carregam
+`brand_core_id` desde a criação (`POST /carousels` e `POST /folders` exigem `brandId`,
+senão `brandRequired`), e o carrossel ainda grava `brand_core_version_id` (a versão
+publicada da marca no nascimento) e nasce com o tema derivado da paleta
+(`BrandCore#carousel_theme`). API sob a marca: `/brands/:id` (+`publish`, `versions`,
+`assets`, `pieces`, `engines/:id/preview`); carrosséis e pastas mantêm rota própria e
+filtram por `?brand_id=`. Front: tudo vive sob `/brands/:brandId/...` (início,
+`carousels`, `folders/:id`, `carousels/:id/edit`, `contents`, `contents/:pieceId`,
+`create[/:engineId]`, `settings`, `setup/:step`, `templates`, `trash`); a raiz `/` só
+escolhe a marca ativa (última usada em `localStorage`, senão a primeira) e redireciona;
+o seletor de marca fica no topo (`components/brand-switcher.tsx`); `useActiveBrand()`
+(`lib/brand-context.tsx`) dá `brandId` e `path("/contents")` para links. A primeira
+marca nasce com a conta (`SignUp`). O criador de carrossel é **acoplamento raso** por
+decisão: continua editor por blocos com IA e exportação no navegador, só nasce na marca
+e lê os tokens dela. Legado sem marca: `bin/rails brands:migrate_orphans` (resolve quem
+tem uma marca só) ou a tela temporária `/migration/orphans` (`GET /orphans`,
+`POST /orphans/assign`, desligável com `ORPHAN_MIGRATION=false`) — para remover depois.
+
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos — nunca
 projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
 fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.

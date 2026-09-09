@@ -1,13 +1,42 @@
 require "rails_helper"
 
-RSpec.describe "Brandcore", type: :request do
+RSpec.describe "Marcas", type: :request do
   let(:account) { create(:account) }
   let(:organization) { account.organization }
   let(:headers) { auth_headers(account) }
+  let(:brand) { create(:brand_core, organization: organization) }
 
-  describe "GET /brand-core" do
-    it "cria o Brandcore na primeira visita, já com os defaults" do
-      expect { get "/brand-core", headers: headers }.to change(BrandCore, :count).by(1)
+  describe "GET /brands" do
+    it "lista as marcas da organização em resumo, na ordem de criação" do
+      first = create(:brand_core, :published, organization: organization)
+      second = create(:brand_core, organization: organization)
+      create(:brand_core)
+
+      get "/brands", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(json["brands"].map { |b| b["id"] }).to eq([ first.id, second.id ])
+      expect(json["brands"].first).to include("name" => "Pão da Vila", "status" => "published", "readyForGeneration" => true)
+      expect(json["brands"].last).to include("name" => nil, "status" => "draft", "percent" => 10)
+      expect(json["brands"].first).not_to have_key("document")
+    end
+  end
+
+  describe "POST /brands" do
+    it "abre uma marca nova em rascunho, com o nome se vier" do
+      expect { post "/brands", params: { brand: { name: "Segunda marca" } }, headers: headers, as: :json }
+        .to change(organization.brand_cores, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+      expect(json["name"]).to eq("Segunda marca")
+      expect(json["status"]).to eq("draft")
+      expect(json["document"]["identity"]["name"]).to eq("Segunda marca")
+    end
+  end
+
+  describe "GET /brands/:id" do
+    it "devolve a marca com os defaults preenchidos" do
+      get "/brands/#{brand.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(json["status"]).to eq("draft")
@@ -22,21 +51,21 @@ RSpec.describe "Brandcore", type: :request do
       expect(json["progress"]).to eq("visitedSteps" => [], "lastStep" => nil)
     end
 
-    it "não cria de novo na segunda visita" do
-      get "/brand-core", headers: headers
-      expect { get "/brand-core", headers: headers }.not_to change(BrandCore, :count)
+    it "não alcança a marca de outra organização" do
+      get "/brands/#{create(:brand_core).id}", headers: headers
+      expect(response).to have_http_status(:not_found)
     end
 
     it "exige sessão" do
-      get "/brand-core"
+      get "/brands/#{brand.id}"
       expect(response).to have_http_status(:unauthorized)
     end
   end
 
-  describe "PATCH /brand-core" do
+  describe "PATCH /brands/:id" do
     it "salva uma seção inteira, normalizando o que vem da tela" do
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: {
+      patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
+        brand: {
           document: {
             identity: {
               name: "  Pão da Vila ", segment: "Padaria", concept: "Pão sem pressa.",
@@ -59,8 +88,8 @@ RSpec.describe "Brandcore", type: :request do
     end
 
     it "aplica as regras da paleta na completude, sem travar o rascunho" do
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: { document: { palette: { colors: [
+      patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
+        brand: { document: { palette: { colors: [
           { id: "c1", name: "Noite", hex: "#101018", role: "darkBackground" },
           { id: "c2", name: "Giz", hex: "#F5F5F5", role: "textOnDark" }
         ] } } }
@@ -75,8 +104,8 @@ RSpec.describe "Brandcore", type: :request do
     end
 
     it "recusa o inválido apontando o caminho do campo" do
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: { document: { palette: { colors: [
+      patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
+        brand: { document: { palette: { colors: [
           { id: "c1", name: "", hex: "vermelho", role: "accent" }
         ] } } }
       }
@@ -84,12 +113,12 @@ RSpec.describe "Brandcore", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "field")).to eq("palette.colors.0.hex")
       expect(json.dig("error", "details")).to include("palette.colors.0.hex", "palette.colors.0.name")
-      expect(BrandCore.find_by(organization: organization).document).to eq({})
+      expect(brand.reload.document).to eq({})
     end
 
     it "mantém os papéis de estilo fixos e limita os valores" do
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: { document: { styles: { roles: [
+      patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
+        brand: { document: { styles: { roles: [
           { key: "title", size: 999, weight: 800, font: "display", transform: "uppercase" },
           { key: "inventado", size: 12 }
         ] } } }
@@ -102,8 +131,8 @@ RSpec.describe "Brandcore", type: :request do
     end
 
     it "guarda o status de cada fato — o portão dos pendentes" do
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: { document: { facts: { items: [
+      patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
+        brand: { document: { facts: { items: [
           { id: "f1", kind: "price", label: "Combo", value: "R$ 39", status: "confirmed" },
           { id: "f2", kind: "promotion", label: "Setembro", value: "20% off", status: "pendente?" },
           { id: "f3", kind: "hours", label: "Loja", status: "confirmed", hours: { mon: "9h–18h", sun: "" } }
@@ -119,8 +148,8 @@ RSpec.describe "Brandcore", type: :request do
 
     it "avisa quem mais estiver com a marca aberta" do
       expect {
-        patch "/brand-core", headers: headers.merge("X-Client-Id" => "aba-1"), as: :json,
-          params: { brandCore: { document: { voice: { essence: "Direta." } } } }
+        patch "/brands/#{brand.id}", headers: headers.merge("X-Client-Id" => "aba-1"), as: :json,
+          params: { brand: { document: { voice: { essence: "Direta." } } } }
       }.to have_broadcasted_to(organization).from_channel(BrandCoreChannel)
         .with(hash_including("event" => "updated", "clientId" => "aba-1", "accountId" => account.id))
     end
@@ -128,19 +157,17 @@ RSpec.describe "Brandcore", type: :request do
     it "não alcança a marca de outra organização" do
       outra = create(:brand_core, :complete)
 
-      patch "/brand-core", headers: headers, as: :json,
-        params: { brandCore: { document: { identity: { name: "Invasor" } } } }
+      patch "/brands/#{outra.id}", headers: headers, as: :json,
+        params: { brand: { document: { identity: { name: "Invasor" } } } }
 
+      expect(response).to have_http_status(:not_found)
       expect(outra.reload.document["identity"]["name"]).to eq("Pão da Vila")
-      expect(BrandCore.find_by(organization: organization).document["identity"]["name"]).to eq("Invasor")
     end
   end
 
-  describe "POST /brand-core/publish" do
+  describe "POST /brands/:id/publish" do
     it "recusa sem o mínimo obrigatório, dizendo o que falta" do
-      create(:brand_core, organization: organization)
-
-      expect { post "/brand-core/publish", headers: headers }.not_to change(BrandCoreVersion, :count)
+      expect { post "/brands/#{brand.id}/publish", headers: headers }.not_to change(BrandCoreVersion, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "code")).to eq("brandIncomplete")
@@ -148,10 +175,10 @@ RSpec.describe "Brandcore", type: :request do
     end
 
     it "publica a primeira versão e libera a geração" do
-      create(:brand_core, :complete, organization: organization)
+      brand = create(:brand_core, :complete, organization: organization)
 
       expect {
-        post "/brand-core/publish", headers: headers
+        post "/brands/#{brand.id}/publish", headers: headers
       }.to change(BrandCoreVersion, :count).by(1)
         .and have_broadcasted_to(organization).from_channel(BrandCoreChannel)
         .with(hash_including("event" => "published"))
@@ -166,21 +193,21 @@ RSpec.describe "Brandcore", type: :request do
     end
 
     it "não cria versão quando nada mudou" do
-      create(:brand_core, :published, organization: organization)
+      brand = create(:brand_core, :published, organization: organization)
 
-      expect { post "/brand-core/publish", headers: headers }.not_to change(BrandCoreVersion, :count)
+      expect { post "/brands/#{brand.id}/publish", headers: headers }.not_to change(BrandCoreVersion, :count)
       expect(response).to have_http_status(:ok)
     end
 
     it "gera versão nova com o que mudou, depois da primeira publicação" do
       brand_core = create(:brand_core, :published, organization: organization)
 
-      patch "/brand-core", headers: headers, as: :json, params: {
-        brandCore: { document: { voice: { essence: "Fala de padeiro.", tones: [ "warm" ] } } }
+      patch "/brands/#{brand_core.id}", headers: headers, as: :json, params: {
+        brand: { document: { voice: { essence: "Fala de padeiro.", tones: [ "warm" ] } } }
       }
       expect(json["hasUnpublishedChanges"]).to be(true)
 
-      post "/brand-core/publish", headers: headers
+      post "/brands/#{brand_core.id}/publish", headers: headers
 
       expect(json["currentVersion"]).to eq(2)
       version = brand_core.versions.first
@@ -190,7 +217,7 @@ RSpec.describe "Brandcore", type: :request do
     end
   end
 
-  describe "GET /brand-core/versions" do
+  describe "GET /brands/:id/versions" do
     it "lista o histórico: quem, quando e o quê" do
       brand_core = create(:brand_core, :published, organization: organization)
       brand_core.versions.create!(account: account, number: 1, snapshot: brand_core.document, change_list: [])
@@ -199,7 +226,7 @@ RSpec.describe "Brandcore", type: :request do
         change_list: [ { "section" => "palette", "path" => "palette.colors.c9", "kind" => "added" } ]
       )
 
-      get "/brand-core/versions", headers: headers
+      get "/brands/#{brand_core.id}/versions", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(json["versions"].map { |v| v["number"] }).to eq([ 2, 1 ])

@@ -8,6 +8,7 @@ pt-BR:
     unauthorized: "Você precisa entrar para continuar."
     too_many_requests: "Tentativas demais. Espere alguns minutos e tente de novo."
     unprocessable: "Não foi possível salvar. Confira os campos."
+    brand_required: "Todo carrossel nasce dentro de uma marca. Escolha a marca antes de criar."
     parameter_missing: "Faltou informar %{param}."
     # Mensagens de validação do Active Record (o produto não usa o rails-i18n).
     format: "%{attribute} %{message}"

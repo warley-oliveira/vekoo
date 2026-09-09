@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :carousel do
     organization
+    brand_core { association :brand_core, organization: organization }
     sequence(:title) { |n| "Carrossel #{n}" }
     format { "4:5" }
     favorite { false }

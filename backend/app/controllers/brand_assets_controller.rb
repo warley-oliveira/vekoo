@@ -1,4 +1,4 @@
-# POST /brand-core/assets e DELETE /brand-core/assets/:id — logos, glifos,
+# POST /brands/:brand_id/assets e DELETE /brands/:brand_id/assets/:id — logos, glifos,
 # fotos e arquivos de fonte da marca. Multipart, como `/uploads`.
 #
 # O arquivo é analisado na hora (dimensões e, no PNG, transparência real): o
@@ -44,7 +44,7 @@ class BrandAssetsController < AuthenticatedController
   private
 
   def set_brand_core
-    @brand_core = BrandCore.for(current_organization)
+    @brand_core = current_organization.brand_cores.find(params[:brand_id])
   end
 
   def render_bad_kind

@@ -9,6 +9,7 @@ class BrandCoreSerializer < ApplicationSerializer
 
     {
       id: brand_core.id,
+      name: brand_core.name,
       status: brand_core.status,
       document: brand_core.full_document,
       publishedDocument: contract[:document],
@@ -26,6 +27,30 @@ class BrandCoreSerializer < ApplicationSerializer
       publishedAt: epoch_ms(brand_core.published_at),
       updatedAt: epoch_ms(brand_core.updated_at)
     }
+  end
+
+  # O resumo para o seletor de marcas e a lista: sem documento, sem ativos.
+  def self.summary(brand_core)
+    completeness = brand_core.completeness
+    {
+      id: brand_core.id,
+      name: brand_core.name,
+      status: brand_core.status,
+      percent: completeness.percent,
+      minimumMet: completeness.minimum_met?,
+      readyForGeneration: brand_core.generation_contract[:ready],
+      pendingFacts: completeness.pending_facts,
+      visitedSteps: brand_core.visited_steps,
+      lastStep: brand_core.last_step,
+      currentVersion: brand_core.current_version,
+      publishedAt: epoch_ms(brand_core.published_at),
+      createdAt: epoch_ms(brand_core.created_at),
+      updatedAt: epoch_ms(brand_core.updated_at)
+    }
+  end
+
+  def self.many_summaries(brand_cores)
+    brand_cores.map { |brand_core| summary(brand_core) }
   end
 
   # O que vai pelo ActionCable: só o bastante para a outra aba decidir
