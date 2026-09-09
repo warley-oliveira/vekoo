@@ -17,10 +17,11 @@ fields:
     label: { pt-BR: "Composição ou descrição", en: "Composition or description" }
     constraints: { maxLines: 4, maxCharsPerLine: 38 }
   - id: price
-    type: ref
+    type: text
     required: true
     label: { pt-BR: "Preço", en: "Price" }
-    kinds: [price]
+    hint: { pt-BR: "Ex.: R$ 18", en: "E.g. $18" }
+    constraints: { maxLines: 1, maxChars: 24 }
   - id: note
     type: text
     required: false

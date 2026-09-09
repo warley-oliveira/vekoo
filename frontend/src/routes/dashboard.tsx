@@ -33,7 +33,7 @@ export function BrandDashboardPage() {
     () => mergeContents(pieces.pieces ?? [], carousels.carousels ?? []).slice(0, 8),
     [pieces.pieces, carousels.carousels]
   )
-  const staleCount = pieces.pieces?.filter((p) => p.stale).length ?? 0
+  const outdatedCount = pieces.pieces?.filter((p) => p.outdated).length ?? 0
   const orphanCount = (orphans?.counts.carousels ?? 0) + (orphans?.counts.folders ?? 0)
 
   if (error && !brandCore) {
@@ -90,11 +90,11 @@ export function BrandDashboardPage() {
               {t("dashboard.allContents")} <ArrowRight className="size-3.5" />
             </Link>
           </div>
-          {staleCount > 0 && (
-            <p className="mb-3 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm">
-              <RefreshCw className="size-4 shrink-0 text-destructive" aria-hidden />
-              <span className="flex-1">{t("pieces.list.staleCount", { count: staleCount })}</span>
-              <Link to={path("/contents?stale=1")} className="font-medium underline-offset-4 hover:underline">{t("pieces.list.staleOnly")}</Link>
+          {outdatedCount > 0 && (
+            <p className="mb-3 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm">
+              <RefreshCw className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+              <span className="flex-1">{t("pieces.list.outdatedCount", { count: outdatedCount })}</span>
+              <Link to={path("/contents?outdated=1")} className="font-medium underline-offset-4 hover:underline">{t("pieces.list.outdatedOnly")}</Link>
             </p>
           )}
           {pieces.isLoading || carousels.isLoading ? (

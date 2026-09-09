@@ -1,7 +1,6 @@
 class PieceSerializer < ApplicationSerializer
   def self.one(piece)
     manifest = piece.manifest
-    stale = piece.stale_refs
     {
       id: piece.id,
       brandId: piece.brand_core_id,
@@ -19,8 +18,6 @@ class PieceSerializer < ApplicationSerializer
           url: Rails.application.routes.url_helpers.rails_storage_proxy_url(image, only_path: true)
         }
       } : [],
-      stale: stale.any?,
-      staleRefs: stale,
       outdated: piece.outdated?,
       brandCoreVersion: piece.provenance["brandCoreVersion"],
       renderedAt: epoch_ms(piece.rendered_at),

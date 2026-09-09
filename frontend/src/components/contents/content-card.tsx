@@ -74,7 +74,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
     >
       <div className={cn("relative w-full overflow-hidden border bg-muted", piece.format === "story" ? "aspect-[9/16]" : "aspect-[4/5]")}>
         {first ? (
-          <img src={first.url} alt="" className={cn("size-full object-cover", piece.stale && "opacity-70")} loading="lazy" />
+          <img src={first.url} alt="" className={cn("size-full object-cover", piece.outdated && "opacity-80")} loading="lazy" />
         ) : (
           <div className="flex size-full items-center justify-center text-muted-foreground">
             {piece.status === "failed" ? <AlertTriangle className="size-6 text-destructive" /> : <Loader2 className="size-6 animate-spin" />}

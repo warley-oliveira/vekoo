@@ -1056,15 +1056,11 @@ module VekooSeeds
           { "id" => "ex-2", "text" => "Preço no post ou no direct? No post. Quem some quando vê o número não ia comprar." }
         ]
       },
-      "facts" => {
-        "items" => [
-          { "id" => "fato-mentoria", "kind" => "price", "label" => "Mentoria individual", "value" => "R$ 890/mês, 4 encontros", "status" => "confirmed" },
-          { "id" => "fato-atendimento", "kind" => "hours", "label" => "Atendimento", "value" => "",
-            "status" => "confirmed",
-            "hours" => { "mon" => "9h–18h", "tue" => "9h–18h", "wed" => "9h–18h", "thu" => "9h–18h", "fri" => "9h–17h", "sat" => nil, "sun" => nil } },
-          { "id" => "fato-workshop", "kind" => "event", "label" => "Workshop Carrossel que vende", "value" => "28 de setembro, online, 19h", "status" => "confirmed" },
-          { "id" => "fato-turma", "kind" => "promotion", "label" => "Turma de outubro", "value" => "20% de desconto até 15 de setembro", "status" => "pending" }
-        ]
+      "notes" => {
+        "text" => "Mentoria individual: R$ 890/mês, 4 encontros\n" \
+          "Atendimento: Seg–Qui 9h–18h · Sex 9h–17h\n" \
+          "Workshop Carrossel que vende: 28 de setembro, online, 19h\n" \
+          "Turma de outubro: 20% de desconto até 15 de setembro"
       }
     }
   end
@@ -1087,7 +1083,7 @@ module VekooSeeds
       status: "published",
       document: v2,
       published_document: v2,
-      progress: { "visitedSteps" => BrandCore::Schema::STEPS, "lastStep" => "facts" },
+      progress: { "visitedSteps" => BrandCore::Schema::STEPS, "lastStep" => "notes" },
       current_version: 2,
       published_at: 3.days.ago
     )
@@ -1157,30 +1153,26 @@ module VekooSeeds
 
   # -------------------------------------------------------------------------
   # Peças de exemplo: uma por motor, geradas na hora sobre a marca publicada
-  # da Marina, mais uma que falha de propósito por referenciar um fato
-  # pendente — é assim que a tela mostra o portão dos pendentes.
+  # da Marina.
 
   PIECE_EXAMPLES = [
     [ "peca-statement", "statement", "story", "Conteúdo que vende",
-      { "phrase" => "Conteúdo que vende\nsem parecer anúncio.", "label" => "mentoria a partir de", "price" => "fato-mentoria" } ],
+      { "phrase" => "Conteúdo que vende\nsem parecer anúncio.", "label" => "mentoria a partir de", "price" => "R$ 890/mês" } ],
     [ "peca-preco-heroi", "preco_heroi", "post", "Mentoria individual",
-      { "label" => "Mentoria individual", "price" => "fato-mentoria", "subline" => "4 encontros por mês, ao vivo" } ],
+      { "label" => "Mentoria individual", "price" => "R$ 890/mês", "subline" => "4 encontros por mês, ao vivo" } ],
     [ "peca-foto-copy", "foto_copy", "post", "Bastidores",
-      { "copy" => "Um carrossel por semana.\nSete dias de retorno.", "price" => "fato-mentoria" } ],
+      { "copy" => "Um carrossel por semana.\nSete dias de retorno.", "price" => "R$ 890/mês" } ],
     [ "peca-promo-box", "promo_box", "post", "Mentoria de outubro",
       { "title" => "Sua marca, com estratégia", "support" => "Um mês de acompanhamento para transformar o que você já sabe em conteúdo que traz cliente.",
-        "tag" => "vagas limitadas", "description" => "Mentoria individual, 4 encontros", "price" => "fato-mentoria" } ],
+        "tag" => "vagas limitadas", "description" => "Mentoria individual, 4 encontros", "price" => "R$ 890/mês" } ],
     [ "peca-tabela", "tabela", "post", "Guia da semana",
-      { "title" => "O que postar esta semana", "rows" => [ "Segunda | bastidor do trabalho | reels", "Quarta | dúvida frequente | carrossel", "Sexta | prova social | story", "Mentoria | acompanhamento mensal | {price}" ], "price" => "fato-mentoria" } ],
+      { "title" => "O que postar esta semana", "rows" => [ "Segunda | bastidor do trabalho | reels", "Quarta | dúvida frequente | carrossel", "Sexta | prova social | story", "Mentoria | acompanhamento mensal | R$ 890/mês" ] } ],
     [ "peca-programa", "programa_evento", "story", "Workshop Carrossel que vende",
       { "title" => "Workshop\nCarrossel que vende", "schedule" => [ "19h | Abertura e método", "19h30 | Do assunto ao roteiro", "20h15 | Ao vivo: montando um carrossel", "21h | Perguntas" ], "partner" => "Online, ao vivo · 28 de setembro" } ],
     [ "peca-contagem", "contagem", "story", "Faltam 3 dias",
       { "mode" => "number", "number" => 3, "subline" => "dias para o workshop", "series" => "sequence" } ],
     [ "peca-destaque", "destaque_item", "post", "Mentoria individual",
-      { "name" => "Mentoria individual", "composition" => "Quatro encontros por mês, plano de conteúdo semanal e revisão dos posts antes de publicar.", "price" => "fato-mentoria", "note" => "turmas de setembro abertas" } ],
-    # A que falha: a promoção "Turma de outubro" ainda está pendente.
-    [ "peca-promo-pendente", "promo_box", "post", "Turma de outubro",
-      { "title" => "Turma de outubro", "support" => "Desconto para quem entrar até o dia 15.", "tag" => "pré-venda", "description" => "Mentoria em grupo", "price" => "fato-turma" } ]
+      { "name" => "Mentoria individual", "composition" => "Quatro encontros por mês, plano de conteúdo semanal e revisão dos posts antes de publicar.", "price" => "R$ 890/mês", "note" => "turmas de setembro abertas" } ]
   ].freeze
 
   def seed_pieces!(organization, account)
@@ -1225,5 +1217,5 @@ puts <<~REPORT
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
     Marca       #{organization.brand_cores.first.full_document.dig("identity", "name")} · v#{organization.brand_cores.first.current_version} · #{organization.brand_cores.first.completeness.percent}% · #{organization.brand_cores.first.assets.count} ativos
-    Peças       #{organization.pieces.where(status: "ready").count} prontas · #{organization.pieces.where(status: "failed").count} com falha (#{Engines::Registry.ids.length} motores)
+    Peças       #{organization.pieces.where(status: "ready").count} prontas (#{Engines::Registry.ids.length} motores)
 REPORT

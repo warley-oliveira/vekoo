@@ -10,12 +10,12 @@ import type { Piece, PieceFormat, PieceValues } from "@/lib/engines"
 
 // As peças de uma marca (`/brands/:id/pieces`). Toda função recebe a marca.
 
-export type PieceFilters = { engine?: string; stale?: boolean }
+export type PieceFilters = { engine?: string; outdated?: boolean }
 
 export function piecesKey(brandId: string, filters: PieceFilters = {}): string {
   const params = new URLSearchParams()
   if (filters.engine) params.set("engine", filters.engine)
-  if (filters.stale) params.set("stale", "true")
+  if (filters.outdated) params.set("outdated", "true")
   const query = params.toString()
   return `/brands/${brandId}/pieces${query ? `?${query}` : ""}`
 }

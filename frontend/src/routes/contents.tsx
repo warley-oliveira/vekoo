@@ -43,7 +43,7 @@ export function ContentsPage() {
   const [kind, setKind] = useState<string>(ALL)
   const [format, setFormat] = useState<string>(ALL)
   const [period, setPeriod] = useState<Period>("all")
-  const [staleOnly, setStaleOnly] = useState(searchParams.get("stale") === "1")
+  const [outdatedOnly, setOutdatedOnly] = useState(searchParams.get("outdated") === "1")
 
   usePiecesLive((event) => {
     if (event.piece.status === "ready") toast(t("pieces.live.ready", { title: event.piece.title }))
@@ -67,19 +67,19 @@ export function ContentsPage() {
       if (kind !== ALL && item.engineId !== kind) return false
       if (format !== ALL && item.format !== format) return false
       if (item.at < since) return false
-      if (staleOnly && !(item.kind === "piece" && item.piece.stale)) return false
+      if (outdatedOnly && !(item.kind === "piece" && item.piece.outdated)) return false
       return true
     })
-  }, [pieces.pieces, carousels.carousels, kind, format, period, staleOnly])
+  }, [pieces.pieces, carousels.carousels, kind, format, period, outdatedOnly])
 
-  const stale = (pieces.pieces ?? []).filter((p) => p.stale)
+  const outdated = (pieces.pieces ?? []).filter((p) => p.outdated)
   const error = pieces.error ?? carousels.error
   const loading = (pieces.isLoading && !pieces.pieces) || (carousels.isLoading && !carousels.carousels)
 
   async function regenerateAll() {
     try {
-      await Promise.all(stale.map((p) => regenerate(p.id)))
-      toast(t("contents.regenerateAllToast", { count: stale.length }))
+      await Promise.all(outdated.map((p) => regenerate(p.id)))
+      toast(t("contents.regenerateAllToast", { count: outdated.length }))
     } catch {
       toast.error(t("pieces.detail.regenerateFailed"))
     }
@@ -110,8 +110,8 @@ export function ContentsPage() {
             </SelectContent>
           </Select>
           <Label className="flex cursor-pointer items-center gap-2 text-sm font-normal">
-            <Switch checked={staleOnly} onCheckedChange={setStaleOnly} />
-            {t("pieces.list.staleOnly")}
+            <Switch checked={outdatedOnly} onCheckedChange={setOutdatedOnly} />
+            {t("pieces.list.outdatedOnly")}
           </Label>
         </div>
         <Button onClick={() => navigate(path("/create"))}>
@@ -119,11 +119,11 @@ export function ContentsPage() {
         </Button>
       </div>
 
-      {stale.length > 0 && (
-        <p className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm">
-          <RefreshCw className="size-4 shrink-0 text-destructive" aria-hidden />
-          <span className="flex-1">{t("pieces.list.staleCount", { count: stale.length })}</span>
-          {!staleOnly && <Button variant="outline" size="sm" onClick={() => setStaleOnly(true)}>{t("pieces.list.staleOnly")}</Button>}
+      {outdated.length > 0 && (
+        <p className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm">
+          <RefreshCw className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+          <span className="flex-1">{t("pieces.list.outdatedCount", { count: outdated.length })}</span>
+          {!outdatedOnly && <Button variant="outline" size="sm" onClick={() => setOutdatedOnly(true)}>{t("pieces.list.outdatedOnly")}</Button>}
           <Button size="sm" onClick={() => void regenerateAll()}>{t("contents.regenerateAll")}</Button>
         </p>
       )}

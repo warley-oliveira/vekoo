@@ -126,7 +126,6 @@ RSpec.describe "db/seeds.rb" do
     expect(brand_core.completeness.minimum_met?).to be(true)
     expect(brand_core.completeness.percent).to eq(100)
     expect(brand_core.generation_contract[:ready]).to be(true)
-    expect(brand_core.generation_contract[:pendingFactIds]).to eq([ "fato-turma" ])
     expect(brand_core.assets.where(kind: "logo").pluck(:variant)).to contain_exactly("light", "dark")
     expect(brand_core.assets.all?(&:transparent)).to be(true)
   end
@@ -143,13 +142,12 @@ RSpec.describe "db/seeds.rb" do
     expect(organization.carousels.map { |c| c.brand_core_version&.number }.uniq).to eq([ 2 ])
   end
 
-  it "traz uma peça pronta por motor e uma barrada pelo fato pendente" do
+  it "traz uma peça pronta por motor" do
     ready = organization.pieces.where(status: "ready")
     expect(ready.map(&:engine_id).uniq.sort).to eq(Engines::Registry.ids.sort)
     expect(ready.all? { |piece| piece.images.attached? }).to be(true)
     expect(organization.pieces.find_by(engine_id: "contagem").images.count).to eq(3)
 
-    failed = organization.pieces.find_by(status: "failed")
-    expect(failed.error).to include("code" => "refPending", "factId" => "fato-turma")
+    expect(organization.pieces.where(status: "failed")).not_to exist
   end
 end

@@ -60,8 +60,6 @@ en:
   pieces:
     errors:
       values_invalid: "Something in the piece fields doesn't add up."
-      ref_pending: "The fact \"%{fact}\" is pending. Confirm it under Brand → Operational facts to generate this piece."
-      ref_missing: "The referenced fact no longer exists in the brand."
       brand_not_published: "Publish the brand before generating pieces."
       engine_unknown: "That piece type doesn't exist."
       format_unsupported: "That piece type doesn't come in that format."

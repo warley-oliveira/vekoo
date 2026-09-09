@@ -31,7 +31,7 @@ module Engines
       cy += tag_h + 16
       _, h = canvas.text(values["description"], x: x, y: cy, width: inner, style: "lede", color: s.ink, max_lines: 2)
       cy += h + 24
-      canvas.text(ref_value("price"), x: x, y: cy, width: inner, style: "number", color: s.ink, max_lines: 1)
+      canvas.text(values["price"], x: x, y: cy, width: inner, style: "number", color: s.ink, max_lines: 1)
 
       draw_footer(canvas, s)
     end

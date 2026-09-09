@@ -5,7 +5,7 @@ module Engines
       paint_background(canvas, s)
 
       width = content_width(canvas)
-      price = ref_value("price")
+      price = values["price"]
       # O lockup mede o preço de verdade: um valor longo quebra em duas
       # linhas mesmo depois de encolher, e a frase precisa saber disso.
       _, price_h = price ? canvas.measure(price, width: width, style: "number", max_lines: 2) : [ 0, 0 ]

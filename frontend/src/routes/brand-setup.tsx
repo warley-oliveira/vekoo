@@ -4,7 +4,7 @@ import { BrandWizard } from "@/components/brand/brand-wizard"
 import { BrandWizardSkeleton } from "@/components/brand/brand-skeletons"
 import { StepAssets } from "@/components/brand/step-assets"
 import { StepColors } from "@/components/brand/step-colors"
-import { StepFacts } from "@/components/brand/step-facts"
+import { StepNotes } from "@/components/brand/step-notes"
 import { StepIdentity } from "@/components/brand/step-identity"
 import { StepStyles } from "@/components/brand/step-styles"
 import { StepTypography } from "@/components/brand/step-typography"
@@ -21,7 +21,7 @@ const STEP_COMPONENTS: Record<BrandStep, () => React.JSX.Element> = {
   styles: StepStyles,
   assets: StepAssets,
   voice: StepVoice,
-  facts: StepFacts,
+  notes: StepNotes,
 }
 
 /** `/brands/setup/:step` — o formulário do Brandcore, uma etapa por tela. */

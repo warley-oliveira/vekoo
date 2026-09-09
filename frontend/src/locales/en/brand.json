@@ -29,9 +29,6 @@
         "notPublished": "The brand hasn't been published yet.",
         "minimumNotMet": "The published version is missing the minimum."
       },
-      "pendingFacts_one": "{{count}} pending fact blocks any generation that depends on it.",
-      "pendingFacts_other": "{{count}} pending facts block any generation that depends on them.",
-      "reviewFacts": "Review facts",
       "versionsTitle": "History",
       "versionsEmpty": "The first publish opens the history.",
       "versionLine": "Version {{number}}",
@@ -72,9 +69,9 @@
         "title": "Voice",
         "description": "How the brand speaks — and what it never says."
       },
-      "facts": {
-        "title": "Operational facts",
-        "description": "Prices, hours, promotions and events, with a status."
+      "notes": {
+        "title": "Notes",
+        "description": "Prices, hours and promotions — what the brand needs at hand."
       }
     },
     "progress": "{{percent}}% filled in",
@@ -360,60 +357,6 @@
         "tones": "Check at least one tone."
       }
     },
-    "facts": {
-      "intro": "The facts of the operation: what the AI may state about prices, hours, promotions and events.",
-      "gateTitle": "Pending gate",
-      "gateDescription": "A pending fact never goes into a piece. Any generation that depends on it stays blocked until you confirm it.",
-      "addFact": "Add fact",
-      "empty": "No facts yet. Start with what shows up most in posts: price and hours.",
-      "kind": "Kind",
-      "kinds": {
-        "price": "Price",
-        "hours": "Hours",
-        "promotion": "Promotion",
-        "event": "Event",
-        "other": "Other"
-      },
-      "label": "What",
-      "labelPlaceholder": {
-        "price": "E.g. Lunch combo",
-        "hours": "E.g. Physical store",
-        "promotion": "E.g. October cohort",
-        "event": "E.g. Workshop",
-        "other": "E.g. Delivery time"
-      },
-      "value": "Value",
-      "valuePlaceholder": {
-        "price": "E.g. $39.90",
-        "hours": "",
-        "promotion": "E.g. 20% off until Sep 15",
-        "event": "E.g. Sep 28, 7pm, online",
-        "other": "E.g. up to 3 business days"
-      },
-      "status": "Status",
-      "statuses": {
-        "confirmed": "Confirmed",
-        "pending": "Pending"
-      },
-      "confirm": "Confirm",
-      "markPending": "Mark pending",
-      "hours": "Hours by day",
-      "hoursPlaceholder": "9am–6pm",
-      "closed": "Closed",
-      "weekdays": {
-        "mon": "Mon",
-        "tue": "Tue",
-        "wed": "Wed",
-        "thu": "Thu",
-        "fri": "Fri",
-        "sat": "Sat",
-        "sun": "Sun"
-      },
-      "remove": "Remove fact",
-      "pendingCount_one": "{{count}} pending",
-      "pendingCount_other": "{{count}} pending",
-      "allConfirmed": "All confirmed"
-    },
     "card": {
       "title": "Brand card",
       "hint": "Your brand taking shape, from what you've filled in.",
@@ -438,6 +381,15 @@
     "review": {
       "title": "Review and publish",
       "description": "Check the card and publish. After the first publish, every change becomes a new version."
+    },
+    "notes": {
+      "intro": "Jot down what the brand needs at hand: prices, opening hours, promotions, dates. Free text and optional.",
+      "label": "Operational notes",
+      "placeholder": "E.g.\nOne-on-one mentoring: $890/month\nHours: Mon–Fri 9am–6pm\nWorkshop: September 28, 7pm",
+      "hint": "Kept with the brand, for reference.",
+      "counter": "{{used}}/{{max}}",
+      "asideTitle": "This doesn't go into pieces on its own",
+      "asideBody": "You write each piece's text in its own form. This is your quick reference while writing."
     }
   }
 }

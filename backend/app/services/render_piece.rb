@@ -1,7 +1,7 @@
-# Gera as imagens de uma peça: valida os valores contra o manifesto, resolve
-# as refs na versão publicada (fato pendente barra aqui), compõe cada quadro
-# e guarda a proveniência. Falha limpa: o erro vira `piece.error` com código
-# e o fato que bloqueou, nunca uma exceção solta no job.
+# Gera as imagens de uma peça: valida os valores contra o manifesto, compõe
+# cada quadro sobre a versão publicada da marca e guarda a proveniência.
+# Falha limpa: o erro vira `piece.error` com código, nunca uma exceção solta
+# no job.
 class RenderPiece
   attr_reader :piece
 
@@ -15,9 +15,8 @@ class RenderPiece
     tokens = Engines::Tokens.new(piece.brand_core)
     entry = Engines::Registry.fetch(piece.engine_id)
     values = validated_values(entry.manifest, tokens)
-    refs = Engines::Refs.resolve(entry.manifest, values, tokens)
 
-    renderer = entry.renderer.new(manifest: entry.manifest, tokens: tokens, values: values, refs: refs, format: piece.format)
+    renderer = entry.renderer.new(manifest: entry.manifest, tokens: tokens, values: values, format: piece.format)
     frames = renderer.render_all
 
     store(frames)
@@ -28,7 +27,6 @@ class RenderPiece
       provenance: {
         "brandCoreVersion" => tokens.version,
         "brandCoreVersionId" => tokens.version_record&.id,
-        "refs" => refs.values.map(&:to_h),
         "frames" => frames.length,
         "renderedAt" => (Time.current.to_f * 1000).round
       }
@@ -52,8 +50,7 @@ class RenderPiece
     result = Engines::Values.call(entry.manifest, raw_values, tokens: tokens)
     raise Engines::GenerationError.new("valuesInvalid", nil, errors: result.errors) unless result.valid?
 
-    refs = Engines::Refs.resolve(entry.manifest, result.values, tokens)
-    renderer = entry.renderer.new(manifest: entry.manifest, tokens: tokens, values: result.values, refs: refs, format: format)
+    renderer = entry.renderer.new(manifest: entry.manifest, tokens: tokens, values: result.values, format: format)
     # Só o primeiro quadro: a prévia precisa voltar rápido.
     first = renderer.frames.first
     width, height = entry.manifest.dimensions(format)

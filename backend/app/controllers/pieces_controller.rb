@@ -8,12 +8,12 @@ class PiecesController < AuthenticatedController
   before_action :set_brand
   before_action :set_piece, only: %i[show destroy regenerate]
 
-  # GET /brands/:brand_id/pieces?engine=&stale=
+  # GET /brands/:brand_id/pieces?engine=&outdated=
   def index
     pieces = @brand.pieces.with_attached_images.recent_first
     pieces = pieces.for_engine(params[:engine]) if params[:engine].present?
     list = pieces.to_a
-    list = list.select(&:stale?) if ActiveModel::Type::Boolean.new.cast(params[:stale])
+    list = list.select(&:outdated?) if ActiveModel::Type::Boolean.new.cast(params[:outdated])
     render json: { pieces: PieceSerializer.many(list) }
   end
 

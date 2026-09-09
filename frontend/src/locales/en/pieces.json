@@ -25,19 +25,18 @@
       "emptyDescription": "Pick a piece type, fill in the fields and the image comes out ready with your brand.",
       "allEngines": "All types",
       "engineFilterAria": "Filter by type",
-      "staleOnly": "Outdated only",
-      "staleCount_one": "{{count}} outdated piece",
-      "staleCount_other": "{{count}} outdated pieces",
       "frames_one": "{{count}} image",
       "frames_other": "{{count}} images",
-      "openAria": "Open {{title}}"
+      "openAria": "Open {{title}}",
+      "outdatedOnly": "Outdated only",
+      "outdatedCount_one": "{{count}} piece came out of an earlier brand version.",
+      "outdatedCount_other": "{{count}} pieces came out of an earlier brand version."
     },
     "status": {
       "queued": "Queued",
       "rendering": "Generating…",
       "ready": "Ready",
       "failed": "Failed",
-      "stale": "Outdated",
       "outdated": "Brand changed"
     },
     "form": {
@@ -55,16 +54,6 @@
         "lines": "{{used}}/{{max}} lines",
         "chars": "{{used}}/{{max}}",
         "items": "{{used}}/{{max}} items"
-      },
-      "ref": {
-        "placeholder": "Pick a fact",
-        "none": "None",
-        "empty": "No fact of that kind in the brand. Add one under Brand → Operational facts.",
-        "pendingHint": "A pending fact blocks generation. Confirm it under Brand → Operational facts.",
-        "status": {
-          "confirmed": "Confirmed",
-          "pending": "Pending"
-        }
       },
       "choice": {
         "placeholder": "Choose",
@@ -122,24 +111,12 @@
       "provenance": "Provenance",
       "brandVersion": "Brand version used",
       "renderedAt": "Generated {{when}}",
-      "refs": "Facts used",
-      "refsEmpty": "This piece uses no operational facts.",
-      "refInPiece": "in the piece",
-      "refToday": "today",
-      "staleTitle": "This piece is outdated",
-      "staleDescription": "A fact it uses changed in the brand. Generate again to get today's value.",
-      "staleReason": {
-        "changed": "changed",
-        "pending": "went back to pending",
-        "missing": "was removed"
-      },
       "failedTitle": "Generation failed",
-      "fixFacts": "Review facts",
-      "waiting": "The image shows up here as soon as it's ready."
+      "waiting": "The image shows up here as soon as it's ready.",
+      "outdatedTitle": "The brand changed since this piece",
+      "outdatedDescription": "It came out of an earlier version. Generate again to use today's colors, fonts and voice."
     },
     "errors": {
-      "refPending": "The fact \"{{fact}}\" is pending. Confirm it under Brand → Operational facts.",
-      "refMissing": "A referenced fact no longer exists in the brand.",
       "brandNotPublished": "The brand must be published.",
       "valuesInvalid": "Something in the fields doesn't add up.",
       "renderFailed": "Generation failed. Try again.",

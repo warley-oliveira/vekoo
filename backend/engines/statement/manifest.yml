@@ -19,10 +19,11 @@ fields:
     hint: { pt-BR: "Aparece só se houver preço. Ex.: a partir de", en: "Shows only with a price. E.g. from" }
     constraints: { maxLines: 1, maxChars: 30 }
   - id: price
-    type: ref
+    type: text
     required: false
     label: { pt-BR: "Preço", en: "Price" }
-    kinds: [price]
+    hint: { pt-BR: "Ex.: R$ 890/mês", en: "E.g. $890/month" }
+    constraints: { maxLines: 1, maxChars: 40 }
   - id: background
     type: choice
     required: false

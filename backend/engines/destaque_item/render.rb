@@ -17,7 +17,7 @@ module Engines
       y += h + 24
       _, h = canvas.text(values["composition"], x: margin, y: y, width: width, style: "lede", color: s.ink, opacity: 0.85, max_lines: 4)
       y += h + 40
-      _, h = canvas.text(ref_value("price"), x: margin, y: y, width: width, style: "number", color: s.accent, max_lines: 1)
+      _, h = canvas.text(values["price"], x: margin, y: y, width: width, style: "number", color: s.accent, max_lines: 1)
       y += h + 16
       muted_text(canvas, values["note"], s, x: margin, y: y, width: width, style: "footer", max_lines: 1) if values["note"]
 

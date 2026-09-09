@@ -7,11 +7,11 @@
 # requisição e devolve só o que a forma conhece, com tipos coerentes;
 # `errors_for` diz o que está inválido, por caminho (`palette.colors.2.hex`).
 module BrandCore::Schema
-  SECTIONS = %w[identity palette typography styles voice facts].freeze
+  SECTIONS = %w[identity palette typography styles voice notes].freeze
 
   # Etapas do formulário, na ordem. "assets" não é seção do documento: os
   # ativos moram em `brand_assets`, mas a etapa existe e conta no progresso.
-  STEPS = %w[identity colors typography styles assets voice facts].freeze
+  STEPS = %w[identity colors typography styles assets voice notes].freeze
 
   COLOR_ROLES = %w[
     darkBackground lightBackground textOnDark textOnLight muted accent campaign
@@ -31,16 +31,13 @@ module BrandCore::Schema
     maxOneAntithesis alwaysConcreteData noEmojiRendered noGenericClaims noStackedExclamation
   ].freeze
 
-  FACT_KINDS = %w[price hours promotion event other].freeze
-  FACT_STATUSES = %w[confirmed pending].freeze
-  WEEKDAYS = %w[mon tue wed thu fri sat sun].freeze
-
   NETWORKS = %w[instagram tiktok youtube facebook linkedin whatsapp site other].freeze
 
   # Limites de texto — os mesmos do zod da tela.
   SHORT = 80
   LINE = 160
   PARAGRAPH = 600
+  NOTES = 2000
   MAX_LIST = 60
 
   module_function
@@ -82,7 +79,10 @@ module BrandCore::Schema
         "qualityRules" => QUALITY_RULES.index_with { |rule| rule != "noGenericClaims" },
         "examples" => []
       },
-      "facts" => { "items" => [] }
+      # Anotações da operação: preço, horário, promoção — texto livre e
+      # opcional. Era uma lista de fatos com status, que barrava geração; virou
+      # o que sempre foi na prática, uma nota de contexto da marca.
+      "notes" => { "text" => "" }
     }
   end
 
@@ -110,7 +110,7 @@ module BrandCore::Schema
     when "typography" then normalize_typography(raw)
     when "styles" then normalize_styles(raw)
     when "voice" then normalize_voice(raw)
-    when "facts" then normalize_facts(raw)
+    when "notes" then normalize_notes(raw)
     end
   end
 
@@ -194,23 +194,8 @@ module BrandCore::Schema
     }
   end
 
-  def normalize_facts(raw)
-    {
-      "items" => items(raw["items"]) { |f|
-        kind = enum(f["kind"], FACT_KINDS, "other")
-        item = {
-          "kind" => kind,
-          "label" => text(f["label"], SHORT),
-          "value" => text(f["value"], LINE),
-          "status" => enum(f["status"], FACT_STATUSES, "pending")
-        }
-        if kind == "hours"
-          hours = (f["hours"] || {}).to_h.deep_stringify_keys
-          item["hours"] = WEEKDAYS.index_with { |day| text(hours[day], 40).presence }
-        end
-        item
-      }
-    }
+  def normalize_notes(raw)
+    { "text" => text(raw["text"], NOTES) }
   end
 
   # ---------------------------------------------------------------------------
@@ -240,11 +225,6 @@ module BrandCore::Schema
     when "voice"
       each_item(data["bannedWords"], "voice.bannedWords", errors) { |w, path|
         errors << [ "#{path}.text", :blank ] if w["text"].blank?
-      }
-    when "facts"
-      each_item(data["items"], "facts.items", errors) { |f, path|
-        errors << [ "#{path}.label", :blank ] if f["label"].blank?
-        errors << [ "#{path}.value", :blank ] if f["value"].blank? && f["kind"] != "hours"
       }
     end
     errors

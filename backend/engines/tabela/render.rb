@@ -14,10 +14,8 @@ module Engines
       text_w = width - value_w - 32
       item_h = canvas.line_height(style: "item")
       body_h = canvas.line_height(style: "footer")
-      price = ref_value("price")
 
       rows.each_with_index do |(label, description, value), index|
-        value = value.to_s.gsub("{price}", price.to_s)
         row_top = y
         canvas.text(label, x: margin, y: y, width: text_w, style: "item", color: s.ink, max_lines: 1)
         y += item_h

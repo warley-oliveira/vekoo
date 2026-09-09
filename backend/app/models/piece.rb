@@ -1,9 +1,8 @@
 # Uma peça: a saída de um motor sobre a versão publicada do Brandcore.
 #
 # O ciclo é queued → rendering → ready | failed (a renderização é um job).
-# `provenance` guarda de que versão da marca a peça saiu e que fatos (refs)
-# consumiu, com valor — é isso que permite detectar peça desatualizada
-# quando um preço muda, e oferecer a regeneração.
+# `provenance` guarda de que versão da marca a peça saiu — é isso que permite
+# dizer "a marca mudou desde então" e oferecer a regeneração.
 class Piece < ApplicationRecord
   STATUSES = %w[queued rendering ready failed].freeze
 
@@ -37,32 +36,8 @@ class Piece < ApplicationRecord
   def failed? = status == "failed"
   def pending? = %w[queued rendering].include?(status)
 
-  # Refs cuja fonte mudou desde a geração: fato sumiu, voltou a pendente ou
-  # o valor de hoje não é o que está impresso na peça.
-  def stale_refs
-    return [] unless ready? && brand_core.published?
-
-    published = BrandCore::Schema.complete(brand_core.published_document)
-    facts = published.dig("facts", "items")
-    Array(provenance["refs"]).filter_map do |ref|
-      current = facts.find { |fact| fact["id"] == ref["factId"] }
-      current_value = current && current["status"] == "confirmed" ? Engines::Refs.format_fact(current) : nil
-      next if current_value == ref["value"]
-
-      {
-        "field" => ref["field"], "factId" => ref["factId"], "label" => ref["label"],
-        "previous" => ref["value"], "current" => current_value,
-        "reason" => current.nil? ? "missing" : current["status"] == "pending" ? "pending" : "changed"
-      }
-    end
-  end
-
-  def stale?
-    stale_refs.any?
-  end
-
-  # Saiu de uma versão anterior da marca. Não quer dizer que esteja errada —
-  # só as refs dizem isso —, mas a tela mostra.
+  # Saiu de uma versão anterior da marca: as cores, as fontes ou a voz de hoje
+  # não são as que estão impressas. A tela oferece gerar de novo.
   def outdated?
     version = provenance["brandCoreVersion"]
     version.present? && version != brand_core.current_version

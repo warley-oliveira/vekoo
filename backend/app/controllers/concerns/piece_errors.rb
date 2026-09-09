@@ -1,6 +1,6 @@
 # `Engines::GenerationError` como resposta da API: o código é o contrato
-# (`refPending`, `brandNotPublished`…), a mensagem já nomeia o fato que
-# barrou, no idioma da requisição.
+# (`brandNotPublished`, `engineUnknown`…) e a mensagem vem no idioma da
+# requisição.
 module PieceErrors
   extend ActiveSupport::Concern
 
@@ -18,7 +18,7 @@ module PieceErrors
       status: :unprocessable_entity,
       code: error.code,
       field: details["field"],
-      message: t("pieces.errors.#{error.code.underscore}", fact: details["factLabel"], default: t("pieces.errors.render_failed")),
+      message: t("pieces.errors.#{error.code.underscore}", default: t("pieces.errors.render_failed")),
       details: details
     )
   end

@@ -24,8 +24,8 @@ RSpec.describe "Motores", type: :model do
 
   it "recusa um manifesto quebrado em vez de deixá-lo virar formulário" do
     expect {
-      Engines::Manifest.new({ "id" => "quebrado", "name" => "x", "formats" => [ "post" ], "fields" => [ { "id" => "a", "type" => "ref", "label" => "a" } ] })
-    }.to raise_error(Engines::InvalidManifest, /kinds/)
+      Engines::Manifest.new({ "id" => "quebrado", "name" => "x", "formats" => [ "post" ], "fields" => [ { "id" => "a", "type" => "inventado", "label" => "a" } ] })
+    }.to raise_error(Engines::InvalidManifest, /desconhecido/)
     expect {
       Engines::Manifest.new({ "id" => "dup", "name" => "x", "formats" => [ "post" ], "fields" => [ { "id" => "a", "type" => "text", "label" => "a" }, { "id" => "a", "type" => "text", "label" => "b" } ] })
     }.to raise_error(Engines::InvalidManifest, /repetidos/)
@@ -49,7 +49,7 @@ RSpec.describe "Motores", type: :model do
         end
       end
 
-      it "persiste a proveniência: versão da marca e refs consumidas com valor" do
+      it "persiste a proveniência: de que versão da marca a peça saiu" do
         piece = create(:piece, organization: organization, brand_core: brand_core, engine_id: engine_id,
           format: manifest.formats.first, values: EngineExamples.values(engine_id))
 
@@ -57,40 +57,21 @@ RSpec.describe "Motores", type: :model do
 
         expect(piece.provenance["brandCoreVersion"]).to eq(brand_core.current_version)
         expect(piece.provenance["frames"]).to eq(EngineExamples.frames(engine_id))
-        used_refs = manifest.ref_fields.select { |field| EngineExamples.values(engine_id)[field.id].present? }
-        expect(piece.provenance["refs"].length).to eq(used_refs.length)
-        used_refs.each do |field|
-          ref = piece.provenance["refs"].find { |r| r["field"] == field.id }
-          expect(ref).to include("factId" => "fato-preco", "value" => "R$ 18", "status" => "confirmed")
-        end
+        expect(piece.provenance["brandCoreVersionId"]).to eq(brand_core.versions.first&.id)
       end
 
-      if entry.manifest.ref_fields.any?
-        it "falha de forma limpa quando a ref aponta para um fato pendente, nomeando o fato" do
-          field = manifest.ref_fields.first
-          values = EngineExamples.values(engine_id).merge(field.id => EngineExamples.pending_fact_for(field))
-          piece = create(:piece, organization: organization, brand_core: brand_core, engine_id: engine_id,
-            format: manifest.formats.first, values: values)
-
-          RenderPiece.new(piece).call
-
-          expect(piece.status).to eq("failed")
-          expect(piece.error).to include("code" => "refPending", "field" => field.id)
-          expect(piece.error["factLabel"]).to be_present
-          expect(piece.images).not_to be_attached
-          expect(piece.provenance).to eq({})
-        end
-      end
     end
   end
 
-  it "só lê a versão publicada: o rascunho não muda a peça" do
-    brand_core.update!(document: brand_core.document.deep_merge("facts" => { "items" => [ brand_core.document["facts"]["items"].first.merge("value" => "R$ 99") ] }))
-    piece = create(:piece, organization: organization, brand_core: brand_core)
+  it "só lê a versão publicada: mexer no rascunho não muda o que a peça enxerga" do
+    brand_core.update!(
+      document: brand_core.document.deep_merge("identity" => { "name" => "Outro nome" })
+    )
 
-    RenderPiece.new(piece).call
+    tokens = Engines::Tokens.new(brand_core)
 
-    expect(piece.provenance["refs"].first["value"]).to eq("R$ 18")
+    expect(tokens.identity["name"]).to eq("Pão da Vila")
+    expect(tokens.version).to eq(brand_core.current_version)
   end
 
   it "não gera sem marca publicada" do

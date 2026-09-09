@@ -55,16 +55,19 @@ module Engines
     # tamanho/peso/fonte explícitos. Devolve [largura, altura] do bloco.
     #
     # `max_lines` + `fit` encolhem a fonte até caber (frase de impacto em até
-    # quatro linhas, número gigante que não estoura a largura).
+    # quatro linhas, número gigante que não estoura a largura). `min_scale` é
+    # o quanto a fonte pode encolher antes de desistir: quem desenha um número
+    # que **precisa** caber numa linha só baixa esse piso.
     def text(str, x:, y:, width:, color:, style: nil, size: nil, weight: nil, font_role: nil,
-             align: :left, max_lines: nil, fit: true, opacity: 1.0, transform: nil, spacing: 0)
+             align: :left, max_lines: nil, fit: true, opacity: 1.0, transform: nil, spacing: 0,
+             min_scale: MIN_SHRINK)
       str = str.to_s.strip
       return [ 0, 0 ] if str.empty?
 
       spec = style_spec(style, size: size, weight: weight, font_role: font_role, transform: transform)
       str = str.upcase if spec[:transform] == "uppercase"
 
-      rendered = render_fitting(str, spec, width, align, max_lines, fit, spacing)
+      rendered = render_fitting(str, spec, width, align, max_lines, fit, spacing, min_scale)
       layer = colorize(rendered, color, opacity)
       offset = case align
       when :centre, :center then (width - rendered.width) / 2
@@ -75,13 +78,14 @@ module Engines
       [ rendered.width, rendered.height ]
     end
 
-    def measure(str, width:, style: nil, size: nil, weight: nil, font_role: nil, max_lines: nil, fit: true, transform: nil, spacing: 0)
+    def measure(str, width:, style: nil, size: nil, weight: nil, font_role: nil, max_lines: nil,
+                fit: true, transform: nil, spacing: 0, min_scale: MIN_SHRINK)
       str = str.to_s.strip
       return [ 0, 0 ] if str.empty?
 
       spec = style_spec(style, size: size, weight: weight, font_role: font_role, transform: transform)
       str = str.upcase if spec[:transform] == "uppercase"
-      rendered = render_fitting(str, spec, width, :left, max_lines, fit, spacing)
+      rendered = render_fitting(str, spec, width, :left, max_lines, fit, spacing, min_scale)
       [ rendered.width, rendered.height ]
     end
 
@@ -147,9 +151,9 @@ module Engines
 
     # Renderiza a máscara do texto, encolhendo até respeitar `max_lines` e a
     # largura (uma palavra maior que a coluna também conta como estouro).
-    def render_fitting(str, spec, width, align, max_lines, fit, spacing)
+    def render_fitting(str, spec, width, align, max_lines, fit, spacing, min_scale = MIN_SHRINK)
       size = spec[:size]
-      floor = (size * MIN_SHRINK).round
+      floor = (size * min_scale).round
       loop do
         rendered = render_mask(str, spec, size, width, align, spacing)
         line = (size * LINE_HEIGHT)

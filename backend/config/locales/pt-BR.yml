@@ -64,8 +64,6 @@ pt-BR:
   pieces:
     errors:
       values_invalid: "Alguma coisa nos campos da peça não confere."
-      ref_pending: "O fato \"%{fact}\" está pendente. Confirme-o em Marca → Dados da operação para gerar esta peça."
-      ref_missing: "O fato referenciado não existe mais na marca."
       brand_not_published: "Publique a marca antes de gerar peças."
       engine_unknown: "Esse tipo de peça não existe."
       format_unsupported: "Esse tipo de peça não sai nesse formato."

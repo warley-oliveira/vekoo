@@ -18,10 +18,11 @@ fields:
     label: { pt-BR: "Copy", en: "Copy" }
     constraints: { maxLines: 2, maxCharsPerLine: 32 }
   - id: price
-    type: ref
+    type: text
     required: false
     label: { pt-BR: "Preço", en: "Price" }
-    kinds: [price]
+    hint: { pt-BR: "Ex.: R$ 39", en: "E.g. $39" }
+    constraints: { maxLines: 1, maxChars: 24 }
   - id: background
     type: choice
     required: false

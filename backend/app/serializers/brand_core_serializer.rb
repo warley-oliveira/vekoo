@@ -18,7 +18,6 @@ class BrandCoreSerializer < ApplicationSerializer
         lastStep: brand_core.last_step
       },
       completeness: completeness.as_json,
-      pendingFacts: completeness.pending_facts,
       readyForGeneration: contract[:ready],
       generationBlockers: contract[:blockers],
       hasUnpublishedChanges: brand_core.unpublished_changes?,
@@ -39,7 +38,6 @@ class BrandCoreSerializer < ApplicationSerializer
       percent: completeness.percent,
       minimumMet: completeness.minimum_met?,
       readyForGeneration: brand_core.generation_contract[:ready],
-      pendingFacts: completeness.pending_facts,
       visitedSteps: brand_core.visited_steps,
       lastStep: brand_core.last_step,
       currentVersion: brand_core.current_version,

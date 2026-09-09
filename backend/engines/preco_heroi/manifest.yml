@@ -13,10 +13,11 @@ fields:
     hint: { pt-BR: "O que está sendo precificado. Ex.: Mentoria individual", en: "What is being priced. E.g. One-on-one mentoring" }
     constraints: { maxLines: 1, maxChars: 40 }
   - id: price
-    type: ref
+    type: text
     required: true
     label: { pt-BR: "Preço", en: "Price" }
-    kinds: [price]
+    hint: { pt-BR: "Ex.: R$ 890/mês", en: "E.g. $890/month" }
+    constraints: { maxLines: 1, maxChars: 40 }
   - id: subline
     type: text
     required: false

@@ -8,13 +8,12 @@ module Engines
   class Base
     Surface = Struct.new(:background, :background_role, :ink, :accent, :muted, :dark, keyword_init: true)
 
-    attr_reader :manifest, :tokens, :values, :refs, :format
+    attr_reader :manifest, :tokens, :values, :format
 
-    def initialize(manifest:, tokens:, values:, refs:, format:)
+    def initialize(manifest:, tokens:, values:, format:)
       @manifest = manifest
       @tokens = tokens
       @values = values
-      @refs = refs
       @format = format.to_s
     end
 
@@ -99,12 +98,5 @@ module Engines
       h
     end
 
-    def ref_value(field)
-      refs[field]&.value
-    end
-
-    def ref_label(field)
-      refs[field]&.label
-    end
   end
 end

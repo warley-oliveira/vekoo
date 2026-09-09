@@ -4,7 +4,7 @@
 
 export type PieceFormat = "post" | "story"
 
-export type FieldType = "text" | "textList" | "number" | "choice" | "ref" | "image"
+export type FieldType = "text" | "textList" | "number" | "choice" | "image"
 
 export type FieldConstraints = {
   maxLines?: number
@@ -28,7 +28,7 @@ export type EngineField = {
   options?: { id: string; label: string }[]
   /** Opções derivadas do Brandcore (choice). */
   source?: ChoiceSource
-  /** Tipos de fato aceitos (ref) ou de ativo (image). */
+  /** Tipos de ativo aceitos (image). */
   kinds?: string[]
   default?: string | number
 }
@@ -56,30 +56,11 @@ export type PieceError = {
   factLabel?: string
 }
 
-export type ProvenanceRef = {
-  field: string
-  factId: string
-  kind: string
-  label: string
-  value: string
-  status: string
-}
-
 export type Provenance = {
   brandCoreVersion?: number
   brandCoreVersionId?: string | null
-  refs?: ProvenanceRef[]
   frames?: number
   renderedAt?: number
-}
-
-export type StaleRef = {
-  field: string
-  factId: string
-  label: string
-  previous: string
-  current: string | null
-  reason: "changed" | "pending" | "missing"
 }
 
 export type PieceValues = Record<string, string | number | string[] | null | undefined>
@@ -96,8 +77,7 @@ export type Piece = {
   error: PieceError | null
   provenance: Provenance
   images: { index: number; url: string }[]
-  stale: boolean
-  staleRefs: StaleRef[]
+  /** Saiu de uma versão anterior da marca — a tela oferece gerar de novo. */
   outdated: boolean
   brandCoreVersion: number | null
   renderedAt: number | null
@@ -199,7 +179,7 @@ export function pieceErrorMessage(
 ): string {
   const error = piece.error
   if (!error) return t("pieces.errors.unknown")
-  const known = ["refPending", "refMissing", "brandNotPublished", "valuesInvalid", "renderFailed", "engineUnknown", "formatUnsupported"]
+  const known = ["brandNotPublished", "valuesInvalid", "renderFailed", "engineUnknown", "formatUnsupported"]
   if (!known.includes(error.code)) return t("pieces.errors.unknown")
   return t(`pieces.errors.${error.code}`, { fact: error.factLabel ?? error.factId ?? "" })
 }

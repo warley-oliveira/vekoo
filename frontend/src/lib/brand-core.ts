@@ -16,7 +16,7 @@ export const BRAND_STEPS = [
   "styles",
   "assets",
   "voice",
-  "facts",
+  "notes",
 ] as const
 export type BrandStep = (typeof BRAND_STEPS)[number]
 
@@ -28,7 +28,7 @@ export const STEP_SECTION: Record<BrandStep, BrandSection | null> = {
   styles: "styles",
   assets: null,
   voice: "voice",
-  facts: "facts",
+  notes: "notes",
 }
 
 export type BrandSection =
@@ -37,7 +37,7 @@ export type BrandSection =
   | "typography"
   | "styles"
   | "voice"
-  | "facts"
+  | "notes"
 
 export const COLOR_ROLES = [
   "darkBackground",
@@ -97,15 +97,6 @@ export const QUALITY_RULES = [
   "noStackedExclamation",
 ] as const
 export type QualityRule = (typeof QUALITY_RULES)[number]
-
-export const FACT_KINDS = ["price", "hours", "promotion", "event", "other"] as const
-export type FactKind = (typeof FACT_KINDS)[number]
-
-export const FACT_STATUSES = ["confirmed", "pending"] as const
-export type FactStatus = (typeof FACT_STATUSES)[number]
-
-export const WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const
-export type Weekday = (typeof WEEKDAYS)[number]
 
 export const NETWORKS = [
   "instagram",
@@ -176,15 +167,12 @@ export type BrandVoice = {
   examples: CopyExample[]
 }
 
-export type BrandFact = {
-  id: string
-  kind: FactKind
-  label: string
-  value: string
-  status: FactStatus
-  hours?: Record<Weekday, string | null>
-}
-export type BrandFacts = { items: BrandFact[] }
+/**
+ * Anotações da operação: preços, horários, promoções — texto livre e
+ * opcional. Era uma lista de fatos com status, que barrava a geração; o que
+ * sobrou é o que sempre foi útil, uma nota de contexto da marca.
+ */
+export type BrandNotes = { text: string }
 
 export type BrandDocument = {
   identity: BrandIdentity
@@ -192,7 +180,7 @@ export type BrandDocument = {
   typography: BrandTypography
   styles: BrandStyles
   voice: BrandVoice
-  facts: BrandFacts
+  notes: BrandNotes
 }
 
 /* ---------- o que a API devolve ---------- */
@@ -232,7 +220,6 @@ export type BrandSummary = {
   percent: number
   minimumMet: boolean
   readyForGeneration: boolean
-  pendingFacts: number
   visitedSteps: BrandStep[]
   lastStep: BrandStep | null
   currentVersion: number
@@ -249,7 +236,6 @@ export type BrandCore = {
   publishedDocument: BrandDocument | null
   progress: { visitedSteps: BrandStep[]; lastStep: BrandStep | null }
   completeness: BrandCompleteness
-  pendingFacts: number
   readyForGeneration: boolean
   generationBlockers: GenerationBlocker[]
   hasUnpublishedChanges: boolean
@@ -294,16 +280,6 @@ export function newBannedWord(): BannedWord {
 
 export function newExample(): CopyExample {
   return { id: newId("ex"), text: "" }
-}
-
-export function emptyHours(): Record<Weekday, string | null> {
-  return { mon: null, tue: null, wed: null, thu: null, fri: null, sat: null, sun: null }
-}
-
-export function newFact(kind: FactKind = "price"): BrandFact {
-  const fact: BrandFact = { id: newId("fato"), kind, label: "", value: "", status: "pending" }
-  if (kind === "hours") fact.hours = emptyHours()
-  return fact
 }
 
 /**
@@ -488,26 +464,11 @@ export function buildStepSchemas(t: T) {
     examples: z.array(z.object({ id, text: optional(600) })),
   })
 
-  const facts = z.object({
-    items: z.array(
-      z
-        .object({
-          id,
-          kind: z.enum(FACT_KINDS),
-          label: required(80),
-          value: optional(160),
-          status: z.enum(FACT_STATUSES),
-          hours: z.record(z.enum(WEEKDAYS), z.string().nullable()).optional(),
-        })
-        .superRefine((fact, ctx) => {
-          if (fact.kind !== "hours" && fact.value.length === 0) {
-            ctx.addIssue({ code: "custom", path: ["value"], message: t("brand.validation.required") })
-          }
-        })
-    ),
+  const notes = z.object({
+    text: z.string().trim().max(2000, t("brand.validation.tooLong", { max: 2000 })),
   })
 
-  return { identity, palette, typography, styles, voice, facts }
+  return { identity, palette, typography, styles, voice, notes }
 }
 
 export type StepSchemas = ReturnType<typeof buildStepSchemas>

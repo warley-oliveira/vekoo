@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 import { Check, Plus, X } from "lucide-react"
 
 import { Field } from "@/components/form-field"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -14,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import type { BrandCore, BrandFact } from "@/lib/brand-core"
+import type { BrandCore } from "@/lib/brand-core"
 import { BACKGROUND_ROLES } from "@/lib/brand-core"
 import { effectiveLines, type EngineField, type PieceValues } from "@/lib/engines"
 import { cn } from "@/lib/utils"
@@ -39,7 +38,6 @@ export function FieldInput(props: FieldInputProps) {
     case "textList": return <TextListInput {...props} />
     case "number": return <NumberInput {...props} />
     case "choice": return <ChoiceInput {...props} />
-    case "ref": return <RefInput {...props} />
     case "image": return <ImageInput {...props} />
   }
 }
@@ -207,61 +205,6 @@ function ChoiceInput({ field, value, onChange, error, brandCore }: FieldInputPro
           </SelectContent>
         </Select>
       )}
-    </Field>
-  )
-}
-
-/* ---------- ref: um fato da operação, nunca digitado ---------- */
-
-function factSummary(fact: BrandFact): string {
-  if (fact.kind !== "hours") return fact.value
-  const days = Object.values(fact.hours ?? {}).filter(Boolean)
-  return days[0] ?? ""
-}
-
-function RefInput({ field, value, onChange, error, brandCore }: FieldInputProps) {
-  const { t } = useTranslation()
-  const facts = (brandCore.publishedDocument?.facts.items ?? []).filter((fact) => field.kinds?.includes(fact.kind))
-  const items = useMemo(
-    () => Object.fromEntries([[NONE, t("pieces.form.ref.none")], ...facts.map((f) => [f.id, f.label])]),
-    [facts, t]
-  )
-  const selected = facts.find((f) => f.id === value)
-  const current = value ? String(value) : field.required ? null : NONE
-
-  return (
-    <Field
-      label={labelOf(field, t)}
-      hint={selected?.status === "pending" ? t("pieces.form.ref.pendingHint") : field.hint}
-      error={error}
-    >
-      {(aria) =>
-        facts.length === 0 ? (
-          <p className="rounded-lg border border-dashed px-3 py-2 text-sm text-muted-foreground">{t("pieces.form.ref.empty")}</p>
-        ) : (
-          <Select value={current} items={items} onValueChange={(v) => onChange(v === NONE || v === null ? "" : String(v))}>
-            <SelectTrigger id={aria.id} aria-invalid={aria["aria-invalid"]} className="w-full sm:w-96">
-              <SelectValue placeholder={t("pieces.form.ref.placeholder")} />
-            </SelectTrigger>
-            <SelectContent>
-              {!field.required && <SelectItem value={NONE}>{t("pieces.form.ref.none")}</SelectItem>}
-              {facts.map((fact) => (
-                <SelectItem key={fact.id} value={fact.id}>
-                  <span className="flex w-full items-center gap-2">
-                    <span className="flex min-w-0 flex-col">
-                      <span className="truncate">{fact.label}</span>
-                      <span className="truncate text-xs text-muted-foreground">{factSummary(fact)}</span>
-                    </span>
-                    <Badge variant={fact.status === "pending" ? "destructive" : "secondary"} className="ml-auto shrink-0">
-                      {t(`pieces.form.ref.status.${fact.status}`)}
-                    </Badge>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )
-      }
     </Field>
   )
 }

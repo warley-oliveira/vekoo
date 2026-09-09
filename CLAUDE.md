@@ -129,8 +129,9 @@ e `lib/auth.tsx` para `useApi` é o passo que falta.
 `palette.colors.2.hex`, defaults dos estilos) espelhado em
 `frontend/src/lib/brand-core.ts` (tipos, enums e zod por etapa) — mudou um, muda o
 outro. Completude e mínimo em `BrandCore::Completeness`; a geração lê só
-`published_document` via `BrandCore#generation_contract`; fato `pending` não bloqueia
-tudo, só as gerações que dependerem dele. Tempo real por ActionCable
+`published_document` via `BrandCore#generation_contract`. A etapa "anotações" é um
+texto livre e opcional (`document.notes.text`) — não entra na conta da completude e
+não bloqueia nada. Tempo real por ActionCable
 (`BrandCoreChannel`, montado em `/cable`, token em `?token=`): a outra aba recarrega
 pelo SWR e ignora o próprio eco via `X-Client-Id`. Front: `/brands` (visão geral,
 histórico, publicar) e `/brands/setup/:step` (wizard, 7 etapas, autosave em
@@ -138,20 +139,21 @@ histórico, publicar) e `/brands/setup/:step` (wizard, 7 etapas, autosave em
 
 **Motores e peças (a contraparte do Brandcore):** um motor é um diretório em
 `backend/engines/<id>/` com `manifest.yml` (ficha declarativa: formatos, campos com
-tipo/restrições, `ref` para fato da operação, `choice` derivada da paleta) e
+tipo e restrições) e
 `render.rb` (`Engines::<Id> < Engines::Base`, função pura de composição sobre o
 `Engines::Canvas`, libvips por camadas). `Engines::Registry` varre o diretório no
 primeiro uso e valida cada manifesto — **motor novo = diretório novo**, nada mais muda
-(guia em `backend/engines/README.md`). A geração lê **só** `published_document` via
-`Engines::Tokens`; `Engines::Refs` resolve os fatos e barra fato pendente com
-`refPending` nomeando o fato; a `Piece` guarda `provenance` (versão da marca + refs com
-valor) e calcula `stale_refs` quando o fato de hoje difere. Fluxo: `POST /pieces`
+(guia em `backend/engines/README.md`). Campos são `text`, `textList`, `number`,
+`choice` (opções fixas ou derivadas da paleta) e `image` — **não existe referência a
+dado da marca: o texto da peça se digita no formulário dela**. A geração lê **só**
+`published_document` via `Engines::Tokens`; a `Piece` guarda `provenance` (de que
+versão da marca saiu) e fica `outdated` quando a marca é publicada de novo. Fluxo: `POST /pieces`
 valida (`Engines::Values`) e enfileira `RenderPieceJob` (Sidekiq, adapter do ActiveJob
 em `config/initializers/sidekiq.rb`; `:test` nas specs); `PieceChannel` avisa quando
 fica pronta; `POST /engines/:id/preview` devolve o PNG do primeiro quadro. libvips
 fora do sistema: `lib/vips_userspace.rb` relança o processo com `LD_LIBRARY_PATH`
 quando `VIPS_USERSPACE_ROOT` está no `.env`. Front: `/pieces` (galeria, filtro,
-desatualizadas), `/pieces/new[/:engineId]` (formulário **gerado do manifesto** em
+desatualizadas = saíram de uma versão anterior da marca), `/pieces/new[/:engineId]` (formulário **gerado do manifesto** em
 `components/pieces/field-inputs.tsx`, prévia ao vivo) e `/pieces/:id` (imagens,
 proveniência, regenerar). Spec por motor em `spec/engines/engines_spec.rb`, valores de
 exemplo em `spec/support/engine_examples.rb`.

@@ -34,7 +34,6 @@ module Engines
     end
 
     def identity = document["identity"]
-    def facts = document["facts"]["items"]
     def styles = document["styles"]["roles"]
 
     def colors
@@ -81,10 +80,6 @@ module Engines
     def asset_image(asset_id, kinds: %w[photo])
       asset = brand_core.assets.find_by(id: asset_id, kind: kinds)
       asset && image_for(asset)
-    end
-
-    def fact(id)
-      facts.find { |f| f["id"] == id.to_s }
     end
 
     private

@@ -25,7 +25,7 @@ export function PieceCard({ piece }: { piece: Piece }) {
     >
       <div className={cn("relative w-full overflow-hidden border bg-muted", ratio)}>
         {first ? (
-          <img src={first.url} alt="" className={cn("size-full object-cover transition-opacity", piece.stale && "opacity-70")} loading="lazy" />
+          <img src={first.url} alt="" className={cn("size-full object-cover transition-opacity", piece.outdated && "opacity-80")} loading="lazy" />
         ) : (
           <div className="flex size-full items-center justify-center text-muted-foreground">
             {piece.status === "failed" ? (

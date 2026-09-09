@@ -24,22 +24,12 @@ RSpec.describe "Peças e motores", type: :request do
   describe "POST /engines/:id/preview" do
     it "devolve o PNG do primeiro quadro com os valores em edição" do
       post "/brands/#{brand_core.id}/engines/statement/preview", headers: headers, as: :json,
-        params: { piece: { format: "story", values: { phrase: "Hoje tem pão", price: "fato-preco" } } }
+        params: { piece: { format: "story", values: { phrase: "Hoje tem pão", price: "R$ 18" } } }
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("image/png")
       result = PngInspector.call(StringIO.new(response.body))
       expect([ result.width, result.height ]).to eq([ 1080, 1920 ])
-    end
-
-    it "explica quando a ref está pendente, nomeando o fato" do
-      post "/brands/#{brand_core.id}/engines/statement/preview", headers: headers, as: :json,
-        params: { piece: { format: "post", values: { phrase: "Hoje tem pão", price: "fato-preco-pendente" } } }
-
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(json.dig("error", "code")).to eq("refPending")
-      expect(json.dig("error", "message")).to include("Croissant de amêndoas")
-      expect(json.dig("error", "details", "factId")).to eq("fato-preco-pendente")
     end
 
     it "aponta o campo inválido" do
@@ -55,13 +45,13 @@ RSpec.describe "Peças e motores", type: :request do
     it "cria a peça na fila e enfileira a renderização" do
       expect {
         post "/brands/#{brand_core.id}/pieces", headers: headers, as: :json, params: {
-          piece: { engineId: "preco_heroi", format: "post", values: { label: "Pão rústico", price: "fato-preco" } }
+          piece: { engineId: "preco_heroi", format: "post", values: { label: "Pão rústico", price: "R$ 18" } }
         }
       }.to change(Piece, :count).by(1).and have_enqueued_job(RenderPieceJob)
 
       expect(response).to have_http_status(:created)
       expect(json).to include("status" => "queued", "engineId" => "preco_heroi", "title" => "Preço herói")
-      expect(json["values"]).to eq("label" => "Pão rústico", "price" => "fato-preco")
+      expect(json["values"]).to eq("label" => "Pão rústico", "price" => "R$ 18")
     end
 
     it "recusa valores fora do manifesto apontando o campo" do
@@ -101,7 +91,7 @@ RSpec.describe "Peças e motores", type: :request do
   end
 
   describe "GET /pieces" do
-    it "lista as peças com o sinal de desatualizada quando o preço mudou" do
+    it "lista as peças e marca as que saíram de uma versão anterior da marca" do
       piece = create(:piece, organization: organization, brand_core: brand_core)
       RenderPiece.new(piece).call
       create(:piece)
@@ -110,18 +100,15 @@ RSpec.describe "Peças e motores", type: :request do
 
       get "/brands/#{brand_core.id}/pieces", headers: headers
       expect(json["pieces"].map { |p| p["id"] }).to eq([ piece.id ])
-      expect(json["pieces"].first).to include("status" => "ready", "stale" => false)
+      expect(json["pieces"].first).to include("status" => "ready", "outdated" => false)
       expect(json["pieces"].first["images"].first["url"]).to start_with("/rails/active_storage/blobs/proxy/")
 
-      # O preço mudou na marca publicada: a peça impressa com R$ 18 fica velha.
-      document = brand_core.published_document.deep_dup
-      document["facts"]["items"].first["value"] = "R$ 20"
-      brand_core.update!(published_document: document, document: document, current_version: 2)
+      # A marca foi publicada de novo: a peça saiu da versão anterior.
+      brand_core.update!(current_version: 2)
 
-      get "/brands/#{brand_core.id}/pieces", params: { stale: true }, headers: headers
+      get "/brands/#{brand_core.id}/pieces", params: { outdated: true }, headers: headers
       expect(json["pieces"].map { |p| p["id"] }).to eq([ piece.id ])
-      expect(json["pieces"].first["staleRefs"].first).to include("factId" => "fato-preco", "previous" => "R$ 18", "current" => "R$ 20", "reason" => "changed")
-      expect(json["pieces"].first["outdated"]).to be(true)
+      expect(json["pieces"].first).to include("outdated" => true, "brandCoreVersion" => 1)
     end
   end
 

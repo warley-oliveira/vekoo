@@ -23,7 +23,6 @@ import { useEngine } from "@/hooks/use-engines"
 import { usePiece, usePieceMutations } from "@/hooks/use-pieces"
 import { usePiecesLive } from "@/hooks/use-pieces-live"
 import { useActiveBrand } from "@/lib/brand-context"
-import { stepHref } from "@/lib/brand-core"
 import { pieceErrorMessage, type Piece } from "@/lib/engines"
 import { cn } from "@/lib/utils"
 
@@ -112,12 +111,12 @@ export function PiecePage() {
         </div>
       </header>
 
-      {piece.stale && (
-        <aside className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
-          <RefreshCw className="size-4 shrink-0 text-destructive" aria-hidden />
+      {piece.outdated && (
+        <aside className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border px-4 py-3 text-sm">
+          <RefreshCw className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <div className="min-w-0 flex-1">
-            <p className="font-medium">{t("pieces.detail.staleTitle")}</p>
-            <p className="text-muted-foreground">{t("pieces.detail.staleDescription")}</p>
+            <p className="font-medium">{t("pieces.detail.outdatedTitle")}</p>
+            <p className="text-muted-foreground">{t("pieces.detail.outdatedDescription")}</p>
           </div>
           <Button size="sm" onClick={() => void onRegenerate()} disabled={working}>{t("pieces.detail.regenerate")}</Button>
         </aside>
@@ -130,9 +129,6 @@ export function PiecePage() {
             <p className="font-medium">{t("pieces.detail.failedTitle")}</p>
             <p className="text-muted-foreground">{pieceErrorMessage(t, piece)}</p>
           </div>
-          {piece.error?.code === "refPending" && (
-            <Button size="sm" variant="outline" onClick={() => navigate(stepHref(brandId, "facts"))}>{t("pieces.detail.fixFacts")}</Button>
-          )}
         </aside>
       )}
 
@@ -146,12 +142,11 @@ export function PiecePage() {
               {(engine?.fields ?? []).map((field) => {
                 const value = piece.values[field.id]
                 if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) return null
-                const ref = piece.provenance.refs?.find((r) => r.field === field.id)
                 return (
                   <div key={field.id}>
                     <dt className="text-xs text-muted-foreground">{field.label}</dt>
                     <dd className="whitespace-pre-line">
-                      {field.type === "ref" ? ref?.label ?? String(value) : Array.isArray(value) ? value.join("\n") : String(value)}
+                      {Array.isArray(value) ? value.join("\n") : String(value)}
                     </dd>
                   </div>
                 )
@@ -196,7 +191,7 @@ function PieceImages({ piece }: { piece: Piece }) {
     <ul className={cn("grid gap-4", piece.images.length > 1 ? "grid-cols-2 md:grid-cols-3" : "max-w-md")}>
       {piece.images.map((image) => (
         <li key={image.index} className="space-y-2">
-          <img src={image.url} alt={t("pieces.detail.frame", { index: image.index })} className={cn("w-full border object-cover", ratio, piece.stale && "opacity-80")} />
+          <img src={image.url} alt={t("pieces.detail.frame", { index: image.index })} className={cn("w-full border object-cover", ratio, piece.outdated && "opacity-80")} />
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>{t("pieces.detail.frame", { index: image.index })}</span>
             <a

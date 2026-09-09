@@ -1,5 +1,5 @@
 # Os valores dos campos de uma peça, conferidos contra o manifesto do motor e
-# contra o Brandcore do cliente (opções derivadas, refs e ativos existem?).
+# contra o Brandcore do cliente (as opções derivadas e os ativos existem?).
 # Devolve os valores normalizados e os erros por caminho (`values.frase`),
 # no mesmo formato de validação do resto da API.
 module Engines
@@ -41,7 +41,6 @@ module Engines
       when "textList" then text_list(field, value)
       when "number" then number(field, value)
       when "choice" then choice(field, value)
-      when "ref" then ref(field, value)
       when "image" then image(field, value)
       end
     end
@@ -90,14 +89,6 @@ module Engines
       value = value.to_s
       allowed = field.derived? ? derived_ids(field.source) : field.options.map { |o| o["id"] }
       return value if allowed.include?(value)
-
-      @errors << [ path(field), :inclusion ]
-      nil
-    end
-
-    def ref(field, value)
-      fact = @tokens.fact(value)
-      return value.to_s if fact && field.kinds.include?(fact["kind"])
 
       @errors << [ path(field), :inclusion ]
       nil

@@ -16,7 +16,7 @@ module Engines
       end
 
       width = content_width(canvas)
-      price = ref_value("price")
+      price = values["price"]
       y = photo_h + (story? ? 72 : 56)
       copy_width = price ? width - 320 : width
       canvas.text(values["copy"], x: margin, y: y, width: copy_width, style: "title", color: s.ink, max_lines: 2)

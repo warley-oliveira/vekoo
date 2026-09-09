@@ -17,8 +17,8 @@ export function PieceStatusBadge({ piece }: { piece: Piece }) {
   if (piece.status === "queued") {
     return <Badge variant="outline"><Clock /> {t("pieces.status.queued")}</Badge>
   }
-  if (piece.stale) {
-    return <Badge variant="destructive"><RefreshCw /> {t("pieces.status.stale")}</Badge>
+  if (piece.outdated) {
+    return <Badge variant="outline"><RefreshCw /> {t("pieces.status.outdated")}</Badge>
   }
   return <Badge variant="secondary"><Check /> {t("pieces.status.ready")}</Badge>
 }

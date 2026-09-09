@@ -84,8 +84,7 @@ class BrandCore < ApplicationRecord
   end
 
   # Contrato para o módulo de geração: ele lê daqui, nunca do rascunho.
-  # `blockers` vazio é o sinal verde; fato pendente não bloqueia tudo — só as
-  # gerações que dependerem dele (o "portão dos pendentes", item a item).
+  # `blockers` vazio é o sinal verde.
   def generation_contract
     blockers = []
     blockers << "notPublished" unless published?
@@ -93,8 +92,7 @@ class BrandCore < ApplicationRecord
     {
       ready: blockers.empty?,
       blockers: blockers,
-      document: published? ? BrandCore::Schema.complete(published_document) : nil,
-      pendingFactIds: pending_fact_ids
+      document: published? ? BrandCore::Schema.complete(published_document) : nil
     }
   end
 
@@ -122,12 +120,6 @@ class BrandCore < ApplicationRecord
       "accent" => accent,
       "accentInk" => accent_ink
     }
-  end
-
-  def pending_fact_ids
-    source = published? ? published_document : document
-    Array(BrandCore::Schema.complete(source).dig("facts", "items"))
-      .select { |item| item["status"] == "pending" }.map { |item| item["id"] }
   end
 
   private

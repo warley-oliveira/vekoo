@@ -16,15 +16,9 @@ fields:
     required: true
     label: { pt-BR: "Linhas", en: "Rows" }
     hint:
-      pt-BR: "Uma linha por item: rótulo | descrição | valor. Escreva {price} no valor para usar o preço referenciado."
-      en: "One row per item: label | description | value. Write {price} in the value to use the referenced price."
+      pt-BR: "Uma linha por item: rótulo | descrição | valor."
+      en: "One row per item: label | description | value."
     constraints: { maxItems: 6, maxChars: 90 }
-  - id: price
-    type: ref
-    required: false
-    label: { pt-BR: "Preço referenciado", en: "Referenced price" }
-    hint: { pt-BR: "Entra onde a linha disser {price}.", en: "Goes wherever a row says {price}." }
-    kinds: [price, promotion]
   - id: background
     type: choice
     required: false

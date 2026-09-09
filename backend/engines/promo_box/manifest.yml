@@ -28,10 +28,11 @@ fields:
     label: { pt-BR: "Descrição da oferta", en: "Offer description" }
     constraints: { maxLines: 2, maxCharsPerLine: 34 }
   - id: price
-    type: ref
+    type: text
     required: true
-    label: { pt-BR: "Preço", en: "Price" }
-    kinds: [price, promotion]
+    label: { pt-BR: "Preço ou oferta", en: "Price or offer" }
+    hint: { pt-BR: "Ex.: R$ 39 · 20% de desconto", en: "E.g. $39 · 20% off" }
+    constraints: { maxLines: 1, maxChars: 40 }
   - id: background
     type: choice
     required: false

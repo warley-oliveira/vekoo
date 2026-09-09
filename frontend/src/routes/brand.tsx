@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
-import { ArrowRight, Check, Circle, History, Loader2, Palette, ShieldAlert, Sparkles, Upload } from "lucide-react"
+import { Check, Circle, History, Loader2, Palette, Sparkles, Upload } from "lucide-react"
 import { toast } from "sonner"
 
 import { BrandCard } from "@/components/brand/brand-card"
@@ -183,7 +183,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
 /** Pronta ou não para gerar — e, se não, exatamente o que falta. */
 function ReadinessCard({ brandCore }: { brandCore: BrandCore }) {
   const { t } = useTranslation()
-  const { completeness, readyForGeneration, generationBlockers, pendingFacts } = brandCore
+  const { completeness, readyForGeneration, generationBlockers } = brandCore
   const unmet = completeness.required.filter((r) => !r.met)
 
   return (
@@ -224,15 +224,6 @@ function ReadinessCard({ brandCore }: { brandCore: BrandCore }) {
         </div>
       )}
 
-      {pendingFacts > 0 && (
-        <p className="mt-4 flex items-center gap-2 border-t pt-3 text-sm">
-          <ShieldAlert className="size-4 shrink-0 text-destructive" aria-hidden />
-          <span className="flex-1">{t("brand.overview.pendingFacts", { count: pendingFacts })}</span>
-          <Link to={stepHref(brandCore.id, "facts")} className="flex items-center gap-1 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
-            {t("brand.overview.reviewFacts")} <ArrowRight className="size-3.5" />
-          </Link>
-        </p>
-      )}
     </section>
   )
 }

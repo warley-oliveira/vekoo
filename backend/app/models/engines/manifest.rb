@@ -9,8 +9,7 @@ module Engines
   class Manifest
     FORMATS = %w[post story].freeze
     DIMENSIONS = { "post" => [ 1080, 1350 ], "story" => [ 1080, 1920 ] }.freeze
-    FIELD_TYPES = %w[text textList number choice ref image].freeze
-    REF_KINDS = BrandCore::Schema::FACT_KINDS
+    FIELD_TYPES = %w[text textList number choice image].freeze
     IMAGE_KINDS = %w[photo logo glyph].freeze
     # De onde uma `choice` pode derivar as opções no Brandcore do cliente.
     CHOICE_SOURCES = %w[palette.backgrounds palette.accents palette.colors].freeze
@@ -18,7 +17,6 @@ module Engines
 
     Field = Struct.new(:id, :type, :required, :label, :hint, :constraints, :options, :source, :kinds, :default, keyword_init: true) do
       def choice? = type == "choice"
-      def ref? = type == "ref"
       def image? = type == "image"
       def derived? = choice? && source.present?
     end
@@ -49,10 +47,6 @@ module Engines
 
     def field(field_id)
       fields.find { |field| field.id == field_id.to_s }
-    end
-
-    def ref_fields
-      fields.select(&:ref?)
     end
 
     def dimensions(format)
@@ -132,9 +126,6 @@ module Engines
         else
           fail!("campo #{field.id}: choice precisa de options ou source") if field.options.blank?
         end
-      when "ref"
-        fail!("campo #{field.id}: ref precisa de kinds") if field.kinds.blank?
-        fail!("campo #{field.id}: kinds inválidos") if (field.kinds - REF_KINDS).any?
       when "image"
         kinds = field.kinds || [ "photo" ]
         fail!("campo #{field.id}: kinds de imagem inválidos") if (kinds - IMAGE_KINDS).any?

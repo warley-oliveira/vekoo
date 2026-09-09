@@ -5,9 +5,11 @@
 #   - `required`: o conjunto mínimo obrigatório. Sem ele nada é gerado — e é
 #     isso que a tela sinaliza como "mínimo para gerar", não o 100%.
 class BrandCore::Completeness
+  # As anotações são opcionais e ficam de fora do peso: quem nunca escreve uma
+  # não deveria travar em 90%.
   WEIGHTS = {
-    "identity" => 20, "palette" => 20, "typography" => 15, "styles" => 10,
-    "assets" => 10, "voice" => 15, "facts" => 10
+    "identity" => 20, "palette" => 25, "typography" => 15, "styles" => 10,
+    "assets" => 10, "voice" => 20
   }.freeze
 
   REQUIRED = %w[
@@ -30,13 +32,14 @@ class BrandCore::Completeness
       "styles" => 100,
       "assets" => @has_logo ? 100 : 0,
       "voice" => ratio(voice_checks.values),
-      "facts" => @doc["facts"]["items"].any? ? 100 : 0
+      "notes" => @doc["notes"]["text"].present? ? 100 : 0
     }
   end
 
   def percent
     total = WEIGHTS.values.sum
-    (sections.sum { |section, value| value * WEIGHTS[section] }.fdiv(total)).round
+    weighted = sections.sum { |section, value| value * WEIGHTS.fetch(section, 0) }
+    (weighted.fdiv(total)).round
   end
 
   def required
@@ -47,10 +50,6 @@ class BrandCore::Completeness
 
   def minimum_met?
     required.all? { |item| item["met"] }
-  end
-
-  def pending_facts
-    @doc["facts"]["items"].count { |item| item["status"] == "pending" }
   end
 
   def as_json

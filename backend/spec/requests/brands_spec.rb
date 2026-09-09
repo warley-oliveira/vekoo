@@ -130,20 +130,18 @@ RSpec.describe "Marcas", type: :request do
       expect(title).to include("size" => 200, "weight" => 800, "transform" => "uppercase")
     end
 
-    it "guarda o status de cada fato — o portão dos pendentes" do
+    it "guarda as anotações da operação como texto livre" do
       patch "/brands/#{brand.id}", headers: headers, as: :json, params: {
-        brand: { document: { facts: { items: [
-          { id: "f1", kind: "price", label: "Combo", value: "R$ 39", status: "confirmed" },
-          { id: "f2", kind: "promotion", label: "Setembro", value: "20% off", status: "pendente?" },
-          { id: "f3", kind: "hours", label: "Loja", status: "confirmed", hours: { mon: "9h–18h", sun: "" } }
-        ] } } }
+        brand: { document: { notes: { text: "  Combo: R$ 39
+Loja: Seg–Sex 9h–18h  " } } }
       }
 
       expect(response).to have_http_status(:ok)
-      items = json["document"]["facts"]["items"]
-      expect(items.map { |i| i["status"] }).to eq(%w[confirmed pending confirmed])
-      expect(items.last["hours"]).to include("mon" => "9h–18h", "sun" => nil)
-      expect(json["pendingFacts"]).to eq(1)
+      expect(json["document"]["notes"]["text"]).to eq("Combo: R$ 39
+Loja: Seg–Sex 9h–18h")
+      # Opcionais: não entram na conta do que falta para publicar.
+      expect(json["completeness"]["sections"]["notes"]).to eq(100)
+      expect(json["completeness"]["required"].map { |r| r["key"] }).not_to include(a_string_matching(/notes/))
     end
 
     it "avisa quem mais estiver com a marca aberta" do

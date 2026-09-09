@@ -25,19 +25,18 @@
       "emptyDescription": "Escolha um tipo de peça, preencha os campos e a imagem sai pronta com a sua marca.",
       "allEngines": "Todos os tipos",
       "engineFilterAria": "Filtrar por tipo",
-      "staleOnly": "Só desatualizadas",
-      "staleCount_one": "{{count}} peça desatualizada",
-      "staleCount_other": "{{count}} peças desatualizadas",
       "frames_one": "{{count}} imagem",
       "frames_other": "{{count}} imagens",
-      "openAria": "Abrir {{title}}"
+      "openAria": "Abrir {{title}}",
+      "outdatedOnly": "Só desatualizadas",
+      "outdatedCount_one": "{{count}} peça saiu de uma versão anterior da marca.",
+      "outdatedCount_other": "{{count}} peças saíram de uma versão anterior da marca."
     },
     "status": {
       "queued": "Na fila",
       "rendering": "Gerando…",
       "ready": "Pronta",
       "failed": "Falhou",
-      "stale": "Desatualizada",
       "outdated": "Marca mudou"
     },
     "form": {
@@ -55,16 +54,6 @@
         "lines": "{{used}}/{{max}} linhas",
         "chars": "{{used}}/{{max}}",
         "items": "{{used}}/{{max}} itens"
-      },
-      "ref": {
-        "placeholder": "Escolha um fato",
-        "none": "Nenhum",
-        "empty": "Nenhum fato desse tipo na marca. Cadastre em Marca → Dados da operação.",
-        "pendingHint": "Fato pendente bloqueia a geração. Confirme em Marca → Dados da operação.",
-        "status": {
-          "confirmed": "Confirmado",
-          "pending": "Pendente"
-        }
       },
       "choice": {
         "placeholder": "Escolher",
@@ -122,24 +111,12 @@
       "provenance": "Proveniência",
       "brandVersion": "Versão da marca usada",
       "renderedAt": "Gerada {{when}}",
-      "refs": "Fatos usados",
-      "refsEmpty": "Esta peça não usa fatos da operação.",
-      "refInPiece": "na peça",
-      "refToday": "hoje",
-      "staleTitle": "Esta peça está desatualizada",
-      "staleDescription": "Um fato que ela usa mudou na marca. Gere de novo para sair com o valor de hoje.",
-      "staleReason": {
-        "changed": "mudou",
-        "pending": "voltou a pendente",
-        "missing": "foi removido"
-      },
       "failedTitle": "A geração falhou",
-      "fixFacts": "Revisar fatos",
-      "waiting": "A imagem aparece aqui assim que ficar pronta."
+      "waiting": "A imagem aparece aqui assim que ficar pronta.",
+      "outdatedTitle": "A marca mudou desde esta peça",
+      "outdatedDescription": "Ela saiu de uma versão anterior. Gere de novo para sair com as cores, as fontes e a voz de hoje."
     },
     "errors": {
-      "refPending": "O fato \"{{fact}}\" está pendente. Confirme-o em Marca → Dados da operação.",
-      "refMissing": "Um fato referenciado não existe mais na marca.",
       "brandNotPublished": "A marca precisa estar publicada.",
       "valuesInvalid": "Alguma coisa nos campos não confere.",
       "renderFailed": "A geração falhou. Tente de novo.",

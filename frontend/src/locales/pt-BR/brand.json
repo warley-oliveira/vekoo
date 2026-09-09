@@ -29,9 +29,6 @@
         "notPublished": "A marca ainda não foi publicada.",
         "minimumNotMet": "A versão publicada não tem o mínimo."
       },
-      "pendingFacts_one": "{{count}} fato pendente bloqueia as gerações que dependerem dele.",
-      "pendingFacts_other": "{{count}} fatos pendentes bloqueiam as gerações que dependerem deles.",
-      "reviewFacts": "Revisar fatos",
       "versionsTitle": "Histórico",
       "versionsEmpty": "A primeira publicação abre o histórico.",
       "versionLine": "Versão {{number}}",
@@ -72,9 +69,9 @@
         "title": "Voz",
         "description": "Como a marca fala — e o que ela nunca diz."
       },
-      "facts": {
-        "title": "Dados da operação",
-        "description": "Preços, horários, promoções e eventos, com status."
+      "notes": {
+        "title": "Anotações",
+        "description": "Preços, horários e promoções — o que a marca precisa ter à mão."
       }
     },
     "progress": "{{percent}}% preenchido",
@@ -360,60 +357,6 @@
         "tones": "Marque pelo menos um tom."
       }
     },
-    "facts": {
-      "intro": "Os fatos da operação: o que a IA pode afirmar sobre preço, horário, promoção e evento.",
-      "gateTitle": "Portão dos pendentes",
-      "gateDescription": "Fato pendente não entra em peça nenhuma. Toda geração que depender dele fica bloqueada até você confirmar.",
-      "addFact": "Adicionar fato",
-      "empty": "Nenhum fato ainda. Comece pelo que mais aparece nos posts: preço e horário.",
-      "kind": "Tipo",
-      "kinds": {
-        "price": "Preço",
-        "hours": "Horário",
-        "promotion": "Promoção",
-        "event": "Evento",
-        "other": "Outro"
-      },
-      "label": "O quê",
-      "labelPlaceholder": {
-        "price": "Ex.: Combo do almoço",
-        "hours": "Ex.: Loja física",
-        "promotion": "Ex.: Turma de outubro",
-        "event": "Ex.: Workshop",
-        "other": "Ex.: Prazo de entrega"
-      },
-      "value": "Valor",
-      "valuePlaceholder": {
-        "price": "Ex.: R$ 39,90",
-        "hours": "",
-        "promotion": "Ex.: 20% até 15/09",
-        "event": "Ex.: 28/09, 19h, online",
-        "other": "Ex.: até 3 dias úteis"
-      },
-      "status": "Status",
-      "statuses": {
-        "confirmed": "Confirmado",
-        "pending": "Pendente"
-      },
-      "confirm": "Confirmar",
-      "markPending": "Marcar pendente",
-      "hours": "Horário por dia",
-      "hoursPlaceholder": "9h–18h",
-      "closed": "Fechado",
-      "weekdays": {
-        "mon": "Seg",
-        "tue": "Ter",
-        "wed": "Qua",
-        "thu": "Qui",
-        "fri": "Sex",
-        "sat": "Sáb",
-        "sun": "Dom"
-      },
-      "remove": "Remover fato",
-      "pendingCount_one": "{{count}} pendente",
-      "pendingCount_other": "{{count}} pendentes",
-      "allConfirmed": "Tudo confirmado"
-    },
     "card": {
       "title": "Cartão da marca",
       "hint": "Sua marca tomando forma, com o que você já preencheu.",
@@ -438,6 +381,15 @@
     "review": {
       "title": "Revisar e publicar",
       "description": "Confira o cartão e publique. Depois da primeira publicação, cada mudança vira uma versão nova."
+    },
+    "notes": {
+      "intro": "Anote o que a marca precisa ter à mão: preços, horários de funcionamento, promoções, datas. É texto livre e opcional.",
+      "label": "Anotações da operação",
+      "placeholder": "Ex.:\nMentoria individual: R$ 890/mês\nAtendimento: Seg–Sex 9h–18h\nWorkshop: 28 de setembro, 19h",
+      "hint": "Fica guardado com a marca, para consulta.",
+      "counter": "{{used}}/{{max}}",
+      "asideTitle": "Isto não entra sozinho nas peças",
+      "asideBody": "O texto de cada peça você escreve no formulário dela. Aqui é a sua consulta rápida quando for escrever."
     }
   }
 }
