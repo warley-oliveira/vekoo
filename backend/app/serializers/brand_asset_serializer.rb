@@ -7,12 +7,15 @@ class BrandAssetSerializer < ApplicationSerializer
       kind: asset.kind,
       variant: asset.variant,
       name: asset.filename,
-      url: Rails.application.routes.url_helpers.rails_storage_proxy_url(asset.file, only_path: true),
+      url: blob_url(asset.file),
       contentType: asset.content_type,
       width: asset.width,
       height: asset.height,
       # true/false quando o servidor conseguiu olhar o PNG; null é "não sei".
       transparent: asset.transparent,
+      # true quando foi a Vekoo que desenhou (o logotipo tipográfico de quem
+      # não tem logo) — a tela oferece refazer, não avisa sobre transparência.
+      generated: asset.generated,
       byteSize: asset.byte_size,
       createdAt: epoch_ms(asset.created_at)
     }

@@ -2,8 +2,8 @@
   "pieces": {
     "title": "Pieces",
     "catalog": {
-      "heading": "What piece do you want to create?",
-      "description": "Each piece type is an engine: it reads the published brand and composes the image. You only fill in what changes.",
+      "heading": "Advanced mode",
+      "description": "Pick the piece type and fill the fields in by hand. The everyday path is to describe what you want and let the assistant build it.",
       "open": "Create",
       "fields_one": "{{count}} field",
       "fields_other": "{{count}} fields",
@@ -16,7 +16,8 @@
         "post": "Post",
         "story": "Story"
       },
-      "loadFailed": "Couldn't load the engines."
+      "loadFailed": "Couldn't load the engines.",
+      "backToChat": "Back to creating by conversation"
     },
     "list": {
       "heading": "Your pieces",

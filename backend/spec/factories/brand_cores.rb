@@ -30,9 +30,16 @@ FactoryBot.define do
             "essence" => "Fala como quem assa: direta, quente e sem enfeite.",
             "tones" => [ "warm", "direct" ]
           },
+          "offers" => {
+            "items" => [
+              {
+                "id" => "of-pao", "name" => "Pão de fermentação natural", "price" => "R$ 18",
+                "description" => "Massa de 36 horas, casca grossa.", "validity" => "Todo dia, a partir das 7h"
+              }
+            ]
+          },
           "notes" => {
-            "text" => "Pão de fermentação natural: R$ 18
-Loja: Seg–Sex 7h–19h · Sáb 7h–13h"
+            "text" => "Loja: Seg–Sex 7h–19h · Sáb 7h–13h"
           }
         }
       end

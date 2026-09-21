@@ -7,11 +7,11 @@
 # requisição e devolve só o que a forma conhece, com tipos coerentes;
 # `errors_for` diz o que está inválido, por caminho (`palette.colors.2.hex`).
 module BrandCore::Schema
-  SECTIONS = %w[identity palette typography styles voice notes].freeze
+  SECTIONS = %w[identity palette typography styles voice offers notes].freeze
 
   # Etapas do formulário, na ordem. "assets" não é seção do documento: os
   # ativos moram em `brand_assets`, mas a etapa existe e conta no progresso.
-  STEPS = %w[identity colors typography styles assets voice notes].freeze
+  STEPS = %w[identity colors typography styles assets voice offers notes].freeze
 
   COLOR_ROLES = %w[
     darkBackground lightBackground textOnDark textOnLight muted accent campaign
@@ -32,6 +32,10 @@ module BrandCore::Schema
   ].freeze
 
   NETWORKS = %w[instagram tiktok youtube facebook linkedin whatsapp site other].freeze
+
+  # Quantos produtos a marca guarda. O limite é do prompt do agente: a lista
+  # inteira viaja em toda geração, e uma lista sem fim viraria conta de token.
+  MAX_OFFERS = 40
 
   # Limites de texto — os mesmos do zod da tela.
   SHORT = 80
@@ -79,9 +83,14 @@ module BrandCore::Schema
         "qualityRules" => QUALITY_RULES.index_with { |rule| rule != "noGenericClaims" },
         "examples" => []
       },
-      # Anotações da operação: preço, horário, promoção — texto livre e
-      # opcional. Era uma lista de fatos com status, que barrava geração; virou
-      # o que sempre foi na prática, uma nota de contexto da marca.
+      # Produtos e ofertas: o que a marca vende, por quanto e quando vale.
+      # É **conhecimento**, não burocracia — o agente lê para escrever com
+      # precisão (e para nunca inventar preço). Sem status, sem vínculo com
+      # peça, sem bloquear publicação.
+      "offers" => { "items" => [] },
+      # Anotações da operação: horário, endereço, o que não coube em oferta —
+      # texto livre e opcional. Era uma lista de fatos com status, que barrava
+      # geração; virou o que sempre foi na prática, uma nota de contexto.
       "notes" => { "text" => "" }
     }
   end
@@ -110,6 +119,7 @@ module BrandCore::Schema
     when "typography" then normalize_typography(raw)
     when "styles" then normalize_styles(raw)
     when "voice" then normalize_voice(raw)
+    when "offers" then normalize_offers(raw)
     when "notes" then normalize_notes(raw)
     end
   end
@@ -194,6 +204,23 @@ module BrandCore::Schema
     }
   end
 
+  # `price` e `validity` são texto de propósito: "R$ 18", "3x de R$ 40",
+  # "até domingo", "toda quarta". Número e data cravados obrigariam a pessoa a
+  # traduzir o negócio dela para a forma do banco — e o agente escreve melhor
+  # com a frase que ela usaria.
+  def normalize_offers(raw)
+    {
+      "items" => items(raw["items"], MAX_OFFERS) { |offer|
+        {
+          "name" => text(offer["name"], SHORT),
+          "price" => text(offer["price"], SHORT),
+          "description" => text(offer["description"], LINE),
+          "validity" => text(offer["validity"], LINE)
+        }
+      }
+    }
+  end
+
   def normalize_notes(raw)
     { "text" => text(raw["text"], NOTES) }
   end
@@ -225,6 +252,10 @@ module BrandCore::Schema
     when "voice"
       each_item(data["bannedWords"], "voice.bannedWords", errors) { |w, path|
         errors << [ "#{path}.text", :blank ] if w["text"].blank?
+      }
+    when "offers"
+      each_item(data["items"], "offers.items", errors) { |offer, path|
+        errors << [ "#{path}.name", :blank ] if offer["name"].blank?
       }
     end
     errors
@@ -267,8 +298,8 @@ module BrandCore::Schema
 
   # Lista de itens com id: mantém o id que a tela deu (é como ela casa o erro
   # com a linha certa) e inventa um se faltar.
-  def items(list)
-    Array(list).first(MAX_LIST).map { |raw|
+  def items(list, max = MAX_LIST)
+    Array(list).first(max).map { |raw|
       raw = raw.to_h.deep_stringify_keys
       { "id" => raw["id"].presence&.to_s || SecureRandom.uuid }.merge(yield(raw))
     }

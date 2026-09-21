@@ -12,7 +12,16 @@ import { useBrandCore } from "@/hooks/use-brand-core"
 import { useEngines } from "@/hooks/use-engines"
 import { useActiveBrand } from "@/lib/brand-context"
 
-/** `/pieces/new` escolhe o motor; `/pieces/new/:engineId` é o formulário gerado do manifesto. */
+/**
+ * O **modo avançado**: `/advanced` escolhe o motor e `/advanced/:engineId` é o
+ * formulário gerado do manifesto.
+ *
+ * Era a tela principal de criação e deixou de ser: expor a engrenagem — "qual
+ * motor?", "quantos caracteres cabem?" — é pedir que a pessoa aprenda o
+ * sistema antes de usar o produto. O caminho padrão é a conversa
+ * (`/create`); isto aqui serve a quem sabe exatamente o que quer e à operação
+ * da Vekoo, que precisa testar motor por motor.
+ */
 export function PieceNewPage() {
   const { t } = useTranslation()
   const { engineId } = useParams()
@@ -33,6 +42,12 @@ export function PieceNewPage() {
     return (
       <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
         <header className="mb-6">
+          <Link
+            to={path("/create")}
+            className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <ArrowLeft className="size-3.5" /> {t("pieces.catalog.backToChat")}
+          </Link>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">{t("pieces.catalog.heading")}</h1>
           <p className="mt-1 max-w-prose text-sm text-muted-foreground">{t("pieces.catalog.description")}</p>
         </header>
@@ -48,13 +63,13 @@ export function PieceNewPage() {
   }
 
   const engine = engines?.find((e) => e.id === engineId)
-  if (engines && !engine) return <Navigate to={path("/create")} replace />
+  if (engines && !engine) return <Navigate to={path("/advanced")} replace />
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Link to={path("/create")} className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+          <Link to={path("/advanced")} className="inline-flex items-center gap-1 rounded text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
             <ArrowLeft className="size-3.5" /> {t("pieces.form.back")}
           </Link>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">{engine?.name ?? t("pieces.form.heading")}</h1>
@@ -77,7 +92,7 @@ export function PieceNewPage() {
         <PieceForm key={engine.id} engine={engine} brandCore={brand.brandCore} />
       )}
       {!engine && !isLoading && (
-        <Button variant="outline" onClick={() => navigate(path("/create"))}>{t("pieces.form.back")}</Button>
+        <Button variant="outline" onClick={() => navigate(path("/advanced"))}>{t("pieces.form.back")}</Button>
       )}
     </div>
   )

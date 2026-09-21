@@ -8,6 +8,12 @@ FactoryBot.define do
     content_type { "image/png" }
     byte_size { 1234 }
 
+    trait :photo do
+      kind { "photo" }
+      variant { nil }
+      filename { "foto.png" }
+    end
+
     after(:build) do |asset|
       asset.file.attach(
         io: File.open(Rails.root.join("spec/fixtures/files/logo-transparente.png")),

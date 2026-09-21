@@ -13,10 +13,7 @@ class PieceSerializer < ApplicationSerializer
       error: piece.error,
       provenance: piece.provenance,
       images: piece.images.attached? ? piece.images.order(:created_at).map.with_index(1) { |image, index|
-        {
-          index: index,
-          url: Rails.application.routes.url_helpers.rails_storage_proxy_url(image, only_path: true)
-        }
+        { index: index, url: blob_url(image) }
       } : [],
       outdated: piece.outdated?,
       brandCoreVersion: piece.provenance["brandCoreVersion"],

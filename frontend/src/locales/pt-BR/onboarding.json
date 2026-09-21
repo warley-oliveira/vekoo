@@ -1,0 +1,184 @@
+{
+  "onboarding": {
+    "progress": "{{current}} de {{total}}",
+    "back": "Voltar",
+    "continue": "Continuar",
+    "skip": "Pular",
+    "saveFailed": "Não deu para salvar sua resposta. Tente de novo.",
+    "suggest": {
+      "cta": "Não sei — cria pra mim",
+      "loading": "Preparando opções…",
+      "again": "Mostrar outras",
+      "failed": "Não deu para preparar as opções."
+    },
+    "preview": {
+      "title": "Como sua marca vai ficar",
+      "kicker": "Novidade",
+      "name": "Sua marca",
+      "concept": "O que você faz aparece aqui.",
+      "footer": "@seu.perfil"
+    },
+    "intro": {
+      "title": "Vamos montar a sua marca",
+      "description": "São {{count}} perguntas rápidas. Nenhuma é sobre design — é sobre o seu negócio.",
+      "points": {
+        "detail": {
+          "title": "Quanto mais detalhe, melhor o conteúdo",
+          "body": "Tudo o que você responder aqui vira a base de cada post, story e peça que a Vekoo escrever por você. Uma resposta específica (“pão de fermentação natural, assado às 6h”) rende conteúdo muito melhor que uma genérica (“padaria”)."
+        },
+        "help": {
+          "title": "Travou? A Vekoo responde por você",
+          "body": "Em toda pergunta de cor, fonte ou jeito de falar existe o botão “não sei — cria pra mim”. Você escolhe entre opções prontas, com prévia, em vez de criar do zero."
+        },
+        "later": {
+          "title": "Nada aqui é definitivo",
+          "body": "Você pode mudar tudo depois e ir acrescentando informação com o tempo. A marca vai ficando mais completa — e o conteúdo, mais afiado."
+        }
+      },
+      "time": "Leva uns 3 minutos. Dá para sair no meio e voltar de onde parou.",
+      "cta": "Começar"
+    },
+    "name": {
+      "title": "Qual é o nome do seu negócio?",
+      "description": "É o nome que vai aparecer nas peças.",
+      "label": "Nome do negócio",
+      "placeholder": "Ex.: Padaria do João",
+      "hint": "Do jeito que as pessoas te chamam."
+    },
+    "what": {
+      "title": "O que você faz ou vende?",
+      "description": "Em uma frase. É a partir daqui que a Vekoo escreve.",
+      "conceptLabel": "Em uma frase",
+      "conceptPlaceholder": "Ex.: Pão de fermentação natural assado todo dia às 6h e bolo de fubá à tarde.",
+      "conceptHint": "Quanto mais concreto, melhor o conteúdo depois. Fale do que você tem de diferente.",
+      "segmentLabel": "Seu ramo",
+      "segments": {
+        "restaurant": "Restaurante ou bar",
+        "shop": "Loja",
+        "services": "Serviços",
+        "health": "Saúde",
+        "education": "Educação",
+        "creator": "Conteúdo ou criador",
+        "other": "Outro"
+      },
+      "segmentTextLabel": "Como você descreveria o ramo",
+      "segmentTextPlaceholder": "Ex.: Padaria de bairro",
+      "segmentTextHint": "Pode ajustar do seu jeito — o chip só preenche para você não digitar do zero."
+    },
+    "handle": {
+      "title": "Onde as pessoas te encontram?",
+      "description": "O @ vai no rodapé das peças. A cidade ajuda a Vekoo a falar de onde você está.",
+      "instagramLabel": "Instagram",
+      "instagramPlaceholder": "padariadojoao",
+      "instagramHint": "Sem o arroba, a gente coloca.",
+      "cityLabel": "Cidade",
+      "cityPlaceholder": "Ex.: Belo Horizonte, MG",
+      "cityHint": "Opcional."
+    },
+    "logo": {
+      "title": "Você tem uma logo?",
+      "description": "Se não tiver, a Vekoo desenha um logotipo com o nome do seu negócio.",
+      "uploadTitle": "Enviar minha logo",
+      "uploadHint": "PNG com fundo transparente ou SVG",
+      "drawTitle": "Não tenho — desenha pra mim",
+      "drawHint": "Logotipo com o nome, na sua fonte",
+      "uploaded": "Logo enviada.",
+      "uploadFailed": "Não deu para enviar a logo.",
+      "drawn": "Logotipo desenhado nas duas versões.",
+      "drawFailed": "Não deu para desenhar o logotipo.",
+      "listAria": "Logos da marca",
+      "generatedName": "Logotipo da Vekoo",
+      "variant": {
+        "light": "Para fundo claro",
+        "dark": "Para fundo escuro"
+      },
+      "remove": "Remover",
+      "replace": "Enviar outro arquivo",
+      "opaqueTitle": "Essa logo tem fundo sólido",
+      "opaqueBody": "Em peça de fundo escuro vai aparecer um retângulo branco em volta dela. Se der, envie a versão com fundo transparente.",
+      "generatedHint": "Refazemos o logotipo se você trocar a fonte ou as cores depois.",
+      "later": "Combinado: desenhamos o logotipo no fim, com a fonte que você escolher."
+    },
+    "colors": {
+      "title": "Sua marca tem cores?",
+      "description": "Duas ou três bastam. A Vekoo monta o resto e garante que o texto sempre dê para ler.",
+      "haveColors": "Tenho cores",
+      "suggestMe": "Não sei — cria pra mim",
+      "listAria": "Cores da marca",
+      "colorAria": "Cor {{index}}",
+      "addColor": "Adicionar cor",
+      "removeColor": "Remover cor",
+      "derivedHint": "Fundo, texto e apoio saem daí automaticamente — você não precisa escolher cada um.",
+      "optionsAria": "Paletas propostas",
+      "roles": {
+        "darkBackground": "Fundo escuro",
+        "lightBackground": "Fundo claro",
+        "textOnDark": "Texto no escuro",
+        "textOnLight": "Texto no claro",
+        "muted": "Apoio",
+        "accent": "Destaque",
+        "campaign": "Campanha"
+      }
+    },
+    "fonts": {
+      "title": "E as fontes?",
+      "description": "Uma para chamar atenção e uma para o texto. Se não fizer ideia, a Vekoo escolhe.",
+      "haveFonts": "Quero escolher",
+      "suggestMe": "Não sei — cria pra mim",
+      "searchLabel": "Buscar fonte",
+      "searchPlaceholder": "Digite o nome da fonte…",
+      "searchHint": "Fontes abertas, de graça e prontas para usar.",
+      "catalogAria": "Fontes do catálogo",
+      "pairHint": "A segunda fonte, do texto corrido, a Vekoo escolhe para combinar. Você troca depois se quiser.",
+      "optionsAria": "Pares de fontes propostos"
+    },
+    "voice": {
+      "title": "Como você fala com seu cliente?",
+      "description": "Marque o jeito e a Vekoo escreve a frase que resume sua voz.",
+      "tonesLabel": "O jeito da sua marca",
+      "tonesHint": "Escolha até três.",
+      "noteLabel": "Quer explicar com suas palavras?",
+      "notePlaceholder": "Ex.: falo como quem atende no balcão, sem formalidade",
+      "noteHint": "Opcional, mas ajuda muito.",
+      "essenceLabel": "Sua voz em uma frase",
+      "optionsAria": "Vozes propostas",
+      "finalLabel": "A frase que vai valer",
+      "finalPlaceholder": "Escolha uma opção acima ou escreva do seu jeito.",
+      "finalHint": "Você pode ajustar o texto à vontade.",
+      "bannedLabel": "Palavras que a marca não usa",
+      "bannedHint": "A Vekoo nunca vai escrever essas palavras nas suas peças.",
+      "bannedPreview": "Evita: {{words}}"
+    },
+    "offers": {
+      "title": "Quer cadastrar seus produtos agora?",
+      "description": "É daqui que sai todo preço que aparece nas peças. Sem esta lista, a Vekoo pergunta em vez de inventar.",
+      "listAria": "Produtos e preços",
+      "namePlaceholder": "Produto ou serviço",
+      "pricePlaceholder": "Preço",
+      "descriptionPlaceholder": "Descrição curta (opcional)",
+      "add": "Adicionar outro",
+      "hint": "Dá para pular e cadastrar depois, quando precisar."
+    },
+    "done": {
+      "title": "Pronto, {{name}}",
+      "description": "É assim que sua marca vai aparecer. Confira e publique para começar a criar.",
+      "cta": "Publicar e criar minha primeira peça",
+      "ctaCreate": "Criar minha primeira peça",
+      "publishing": "Publicando a versão 1…",
+      "publishedToast": "Marca publicada. Agora é só pedir o que você quer criar.",
+      "publishFailed": "Não deu para publicar a marca.",
+      "incomplete": "Ainda falta responder o mínimo: nome, o que você faz, cores e fontes.",
+      "summaryAria": "O que já está pronto",
+      "summary": {
+        "colors": "Suas cores, com fundo, texto e destaque já definidos.",
+        "fonts": "Suas fontes, aplicadas em título e texto.",
+        "voice": "Seu jeito de falar, para a Vekoo escrever como você.",
+        "logo": "Sua logo, nas versões para fundo claro e escuro."
+      },
+      "nextTitle": "E depois?",
+      "nextBody": "Você descreve o que quer numa frase e recebe a peça pronta. Quanto mais informação a marca tiver, melhor fica — e dá para completar quando quiser.",
+      "edit": "Ajustar detalhes da marca",
+      "drawing": "Desenhando seu logotipo…"
+    }
+  }
+}

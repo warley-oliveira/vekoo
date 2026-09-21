@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link, Navigate, useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { Check, Circle, History, Loader2, Palette, Sparkles, Upload } from "lucide-react"
 import { toast } from "sonner"
@@ -17,6 +17,7 @@ import { useActiveBrand } from "@/lib/brand-context"
 import { useBrandCoreLive } from "@/hooks/use-brand-core-live"
 import { ApiError } from "@/lib/api"
 import { BRAND_STEPS, stepHref, type BrandCore, type BrandVersion } from "@/lib/brand-core"
+import { onboardingHref } from "@/lib/onboarding"
 import { formatDateTime, formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
@@ -44,6 +45,12 @@ export function BrandPage() {
     )
   }
   if (isLoading || !brandCore) return <BrandOverviewSkeleton />
+
+  // Onboarding por terminar: a marca ainda não é uma marca, e a tela de
+  // visão geral não tem o que mostrar.
+  if (!brandCore.onboarding.done && brandCore.status === "draft") {
+    return <Navigate to={onboardingHref(brandCore.id, brandCore.onboarding.step)} replace />
+  }
 
   const started = brandCore.progress.visitedSteps.length > 0 || brandCore.completeness.percent > 10
 

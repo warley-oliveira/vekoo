@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import { newId } from "@/lib/doc"
+import type { OnboardingState, OnboardingStep } from "@/lib/onboarding"
 
 // O Brandcore — a marca como dado estruturado. Espelho de
 // `backend/app/models/brand_core/schema.rb`: as listas de código abaixo têm que
@@ -16,6 +17,7 @@ export const BRAND_STEPS = [
   "styles",
   "assets",
   "voice",
+  "offers",
   "notes",
 ] as const
 export type BrandStep = (typeof BRAND_STEPS)[number]
@@ -28,6 +30,7 @@ export const STEP_SECTION: Record<BrandStep, BrandSection | null> = {
   styles: "styles",
   assets: null,
   voice: "voice",
+  offers: "offers",
   notes: "notes",
 }
 
@@ -37,6 +40,7 @@ export type BrandSection =
   | "typography"
   | "styles"
   | "voice"
+  | "offers"
   | "notes"
 
 export const COLOR_ROLES = [
@@ -168,9 +172,28 @@ export type BrandVoice = {
 }
 
 /**
- * Anotações da operação: preços, horários, promoções — texto livre e
- * opcional. Era uma lista de fatos com status, que barrava a geração; o que
- * sobrou é o que sempre foi útil, uma nota de contexto da marca.
+ * Um produto ou oferta da marca: o que ela vende, por quanto e quando vale.
+ *
+ * `price` e `validity` são texto de propósito — "R$ 18", "3x de R$ 40", "até
+ * domingo", "toda quarta". Número e data cravados obrigariam a pessoa a
+ * traduzir o negócio dela para a forma do banco, e o agente escreve melhor com
+ * a frase que ela usaria. Não tem status, não vira referência em peça e não
+ * bloqueia nada: é conhecimento que o agente consulta para não inventar preço.
+ */
+export type BrandOffer = {
+  id: string
+  name: string
+  price: string
+  description: string
+  validity: string
+}
+
+export type BrandOffers = { items: BrandOffer[] }
+
+/**
+ * Anotações da operação: horário, endereço, o que não coube em oferta — texto
+ * livre e opcional. Era uma lista de fatos com status, que barrava a geração;
+ * o que sobrou é o que sempre foi útil, uma nota de contexto da marca.
  */
 export type BrandNotes = { text: string }
 
@@ -180,6 +203,7 @@ export type BrandDocument = {
   typography: BrandTypography
   styles: BrandStyles
   voice: BrandVoice
+  offers: BrandOffers
   notes: BrandNotes
 }
 
@@ -196,6 +220,8 @@ export type BrandAsset = {
   height: number | null
   /** true/false quando o servidor olhou o PNG; null é "não sei". */
   transparent: boolean | null
+  /** true quando foi a Vekoo que desenhou (o logotipo de quem não tem logo). */
+  generated: boolean
   byteSize: number
   createdAt: number
 }
@@ -222,6 +248,10 @@ export type BrandSummary = {
   readyForGeneration: boolean
   visitedSteps: BrandStep[]
   lastStep: BrandStep | null
+  /** O seletor e a raiz usam isto para saber quem vai ao onboarding. */
+  onboardingDone: boolean
+  onboardingPending: boolean
+  onboardingStep: OnboardingStep
   currentVersion: number
   publishedAt: number | null
   createdAt: number
@@ -235,6 +265,8 @@ export type BrandCore = {
   document: BrandDocument
   publishedDocument: BrandDocument | null
   progress: { visitedSteps: BrandStep[]; lastStep: BrandStep | null }
+  /** O estado do onboarding guiado — a outra porta para este mesmo documento. */
+  onboarding: OnboardingState
   completeness: BrandCompleteness
   readyForGeneration: boolean
   generationBlockers: GenerationBlocker[]
@@ -280,6 +312,10 @@ export function newBannedWord(): BannedWord {
 
 export function newExample(): CopyExample {
   return { id: newId("ex"), text: "" }
+}
+
+export function newOffer(): BrandOffer {
+  return { id: newId("of"), name: "", price: "", description: "", validity: "" }
 }
 
 /**
@@ -336,6 +372,120 @@ export function contrastLevel(ratio: number): ContrastLevel {
   if (ratio >= 4.5) return "aa"
   if (ratio >= 3) return "large"
   return "fail"
+}
+
+/* ---------- paleta derivada ---------- */
+
+// Espelho de `backend/app/models/brand_core/palette_builder.rb` — mudou um,
+// muda o outro. Existe nos dois lados porque a proposta da IA chega pronta do
+// servidor, mas o caminho manual ("tenho cores") precisa mostrar a paleta
+// inteira **enquanto** a pessoa mexe no seletor, sem ida e volta.
+
+export const MIN_CONTRAST = 4.5
+const TARGET_CONTRAST = 7
+const NEAR_BLACK = "#12101a"
+const NEAR_WHITE = "#faf8f5"
+
+function rgbOf(hex: string): [number, number, number] {
+  const h = hex.replace("#", "")
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ]
+}
+
+function toHex(r: number, g: number, b: number): string {
+  const part = (v: number) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, "0")
+  return `#${part(r)}${part(g)}${part(b)}`
+}
+
+/** `amount` de `b` misturado em `a` (0 = a, 1 = b). */
+export function mixColors(a: string, b: string, amount: number): string {
+  const [ra, ga, ba] = rgbOf(a)
+  const [rb, gb, bb] = rgbOf(b)
+  return toHex(ra + (rb - ra) * amount, ga + (gb - ga) * amount, ba + (bb - ba) * amount)
+}
+
+/** Quanta cor tem aqui: separa cinza de cor melhor que saturação HSL. */
+function chroma(hex: string): number {
+  const values = rgbOf(hex)
+  return (Math.max(...values) - Math.min(...values)) / 255
+}
+
+/**
+ * Duas ou três cores viram a paleta inteira, com os papéis que a geração
+ * precisa e o contraste conferido.
+ *
+ * Ninguém que abriu uma loja sabe responder "qual é a sua cor de texto sobre
+ * fundo escuro". A pessoa aponta as cores que já usa e o resto se deriva.
+ */
+export function buildPalette(
+  input: Array<string | { hex: string; name?: string }>,
+  label: (role: ColorRole) => string
+): BrandColor[] {
+  const picks = input
+    .map((item) => (typeof item === "string" ? { hex: item, name: "" } : { hex: item.hex, name: item.name ?? "" }))
+    .map((item) => ({ ...item, hex: normalizeHex(item.hex) }))
+    .filter((item) => HEX_RE.test(item.hex))
+    .filter((item, index, all) => all.findIndex((other) => other.hex === item.hex) === index)
+    .slice(0, 3)
+
+  if (picks.length === 0) return []
+
+  const accent = picks.reduce((best, item) => (chroma(item.hex) > chroma(best.hex) ? item : best))
+
+  const darks = picks.map((p) => p.hex).filter((hex) => luminance(hex) < 0.12)
+  const dark = darks.length
+    ? darks.reduce((a, b) => (luminance(a) <= luminance(b) ? a : b))
+    : mixColors(accent.hex, NEAR_BLACK, 0.86)
+
+  const lights = picks.map((p) => p.hex).filter((hex) => luminance(hex) > 0.82)
+  const light = lights.length
+    ? lights.reduce((a, b) => (luminance(a) >= luminance(b) ? a : b))
+    : mixColors(NEAR_WHITE, accent.hex, 0.05)
+
+  const readable = (base: string, background: string) => {
+    const tinted = mixColors(base, accent.hex, 0.08)
+    if (contrastRatio(tinted, background) >= TARGET_CONTRAST) return tinted
+    if (contrastRatio(base, background) >= MIN_CONTRAST) return base
+    return luminance(background) > 0.4 ? "#000000" : "#ffffff"
+  }
+
+  const onDark = readable(NEAR_WHITE, dark)
+  const onLight = readable(NEAR_BLACK, light)
+
+  let muted = onLight
+  for (const amount of [0.55, 0.45, 0.35, 0.25, 0.15]) {
+    const candidate = mixColors(onLight, light, amount)
+    if (contrastRatio(candidate, light) >= 3) {
+      muted = candidate
+      break
+    }
+  }
+
+  const taken = [accent.hex, dark, light]
+  const campaign = picks
+    .filter((item) => !taken.includes(item.hex) && chroma(item.hex) > 0.12)
+    .reduce<{ hex: string; name: string } | null>(
+      (best, item) => (!best || chroma(item.hex) > chroma(best.hex) ? item : best),
+      null
+    )
+
+  const roles: Array<[ColorRole, string]> = [
+    ["darkBackground", dark],
+    ["lightBackground", light],
+    ["textOnDark", onDark],
+    ["textOnLight", onLight],
+    ["accent", accent.hex],
+    ["muted", muted],
+  ]
+  if (campaign) roles.push(["campaign", campaign.hex])
+
+  return roles.map(([role, hex]) => {
+    const given = picks.find((item) => item.hex === hex && item.name)
+    return { id: `cor-${role}`, name: given ? given.name : label(role), hex, role }
+  })
 }
 
 export function colorsByRole(colors: BrandColor[], role: ColorRole): BrandColor[] {
@@ -464,11 +614,25 @@ export function buildStepSchemas(t: T) {
     examples: z.array(z.object({ id, text: optional(600) })),
   })
 
+  // Só o nome é obrigatório: preço, descrição e vigência são conhecimento
+  // parcial, e conhecimento parcial é melhor do que campo em branco.
+  const offers = z.object({
+    items: z.array(
+      z.object({
+        id,
+        name: required(80),
+        price: optional(80),
+        description: optional(160),
+        validity: optional(160),
+      })
+    ),
+  })
+
   const notes = z.object({
     text: z.string().trim().max(2000, t("brand.validation.tooLong", { max: 2000 })),
   })
 
-  return { identity, palette, typography, styles, voice, notes }
+  return { identity, palette, typography, styles, voice, offers, notes }
 }
 
 export type StepSchemas = ReturnType<typeof buildStepSchemas>

@@ -10,6 +10,10 @@ class Piece < ApplicationRecord
   belongs_to :brand_core
   belongs_to :brand_core_version, optional: true
   belongs_to :account, optional: true
+  # De que pedido da conversa a peça nasceu. Opcional: a peça feita no modo
+  # avançado não tem turno, e a conversa some depois de 30 dias enquanto a
+  # peça fica.
+  belongs_to :agent_turn, optional: true
 
   has_many_attached :images
 

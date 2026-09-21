@@ -1,0 +1,82 @@
+{
+  "agent": {
+    "hero": {
+      "title": "What are we making?",
+      "description": "Describe it in one sentence. The assistant picks the format, writes the copy from {{brand}}'s own data and hands you finished pieces."
+    },
+    "composer": {
+      "label": "Describe the piece you want",
+      "placeholder": "Write what you want to create…",
+      "examples": [
+        "a story for Father's Day tomorrow",
+        "post for Wednesday's promotion",
+        "countdown to Sunday's event",
+        "post with the mentoring price and what's included",
+        "story saying the October cohort has a discount"
+      ],
+      "adjustExamples": [
+        "make the background darker",
+        "shorten the line",
+        "put the price front and centre",
+        "try a more direct tone",
+        "use the other brand colour"
+      ],
+      "attach": "Attach photo",
+      "hint": "{{credits}} credits per request",
+      "send": "Create",
+      "working": "Creating…",
+      "attachmentsAria": "Photos attached to the request",
+      "removePhoto": "Remove {{name}}",
+      "photoAdded": "Photo added to the brand's assets.",
+      "photoFailed": "Couldn't upload the photo.",
+      "photoType": "Upload a JPEG, PNG or WebP image.",
+      "photoTooLarge": "That image is over the size limit."
+    },
+    "turn": {
+      "aria": "Request from {{when}}",
+      "thinking": "Picking the format and writing the copy…",
+      "results_one": "{{count}} option. Pick one and refine it, or download it as is.",
+      "results_other": "{{count}} options. Pick one and refine it, or download it as is.",
+      "oneResult": "Done. Ask for another tweak if it isn't quite right.",
+      "questionHint": "Without that fact the piece would carry an invented number. Answer below and I'll carry on.",
+      "answer": "Answer",
+      "failedHint": "No credits were charged.",
+      "retry": "Try again",
+      "varyRequest": "Other compositions of this piece",
+      "adjustLabel": "tweak to the chosen piece"
+    },
+    "variation": {
+      "download": "Download",
+      "adjust": "Tweak",
+      "vary": "Vary",
+      "open": "Open {{title}} in the gallery"
+    },
+    "recent": {
+      "title": "Recent requests",
+      "delete": "Delete “{{title}}”",
+      "deleted": "Request deleted. The pieces stay in the gallery.",
+      "deleteFailed": "Couldn't delete the request.",
+      "retention_one": "Requests disappear after {{count}} day of inactivity. The pieces stay.",
+      "retention_other": "Requests disappear after {{count}} days of inactivity. The pieces stay."
+    },
+    "errors": {
+      "failed": "I couldn't put the piece together right now.",
+      "agentInvalidPlan": "I couldn't fit that request into any piece type. Try describing it another way.",
+      "brandNotPublished": "The brand needs to be published.",
+      "noCredits": "You're out of credits.",
+      "busy": "I'm still working on the previous request.",
+      "costCapReached": "Creating by conversation is unavailable right now. Try again later.",
+      "sendFailed": "Couldn't send the request."
+    },
+    "brandNotPublished": {
+      "title": "Publish the brand first",
+      "description": "The assistant writes with the colours, fonts, voice and products of the published version. Fill in the minimum and publish to start.",
+      "cta": "Go to the brand"
+    },
+    "advancedLink": "Advanced mode: pick the piece type and fill it in by hand",
+    "newRequest": "New request",
+    "backToNew": "Start a new request",
+    "adjustingChip": "Tweaking “{{title}}”",
+    "adjustingCancel": "Cancel the tweak"
+  }
+}

@@ -66,10 +66,19 @@ module Engines
         BrandCore::Schema.default_styles.find { |s| s["key"] == key.to_s }
     end
 
+    # A fonte do papel, **com o arquivo** sempre que der.
+    #
+    # Passar só o nome da família ao Pango não basta: ele resolve por
+    # fontconfig, e o servidor não tem as fontes do catálogo instaladas — a
+    # peça saía em DejaVu para todo mundo, independentemente da escolha da
+    # marca. Fonte por arquivo vem do ativo; fonte do catálogo, do
+    # `BrandFonts` (baixa uma vez e guarda em disco). Sem arquivo, cai no
+    # comportamento antigo em vez de derrubar a renderização.
     def font(role)
       raw = document["typography"][role.to_s]
-      asset = raw["source"] == "file" && raw["assetId"] ? brand_core.assets.find_by(id: raw["assetId"], kind: "font") : nil
-      Font.new(family: raw["family"].presence, weights: raw["weights"], fontfile: asset && font_path(asset))
+      family = raw["family"].presence
+      weights = raw["weights"]
+      Font.new(family: family, weights: weights, fontfile: font_file(raw, family, weights))
     end
 
     def logo(variant)
@@ -96,6 +105,19 @@ module Engines
           nil
         end
       end
+    end
+
+    def font_file(raw, family, weights)
+      if raw["source"] == "file" && raw["assetId"]
+        asset = brand_core.assets.find_by(id: raw["assetId"], kind: "font")
+        return asset && font_path(asset)
+      end
+      return nil unless family
+
+      # O peso mais usado da família é o que vale a pena ter em disco: o
+      # Pango sintetiza os outros a partir dele, e baixar nove arquivos por
+      # marca custaria mais do que a diferença de traço.
+      BrandFonts.path(family, Array(weights).min || 400)
     end
 
     def font_path(asset)

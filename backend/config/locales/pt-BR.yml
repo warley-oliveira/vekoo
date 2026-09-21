@@ -40,6 +40,19 @@ pt-BR:
     failed: "A geração falhou. Tente de novo."
     busy: "Já há uma geração em andamento. Espere ela terminar."
 
+  onboarding:
+    unknown_step: "Essa pergunta não existe."
+    unknown_kind: "Não sei propor isso."
+    cannot_finish: "Ainda falta responder o mínimo: nome, o que você faz, cores e fontes."
+    logo_required: "Envie a logo ou peça um logotipo para a Vekoo."
+    wordmark_failed: "Não deu para desenhar o logotipo. Você pode enviar um arquivo."
+
+  agent:
+    untitled: "Pedido sem título"
+    busy: "Ainda estou preparando o pedido anterior. Só um instante."
+    attachment_unknown: "Essa foto não está no acervo da marca."
+    cost_cap: "A criação por conversa está indisponível agora. Tente mais tarde."
+
   credits:
     no_credits: "Seus créditos acabaram."
 
@@ -53,6 +66,25 @@ pt-BR:
   brand_core:
     invalid: "Alguma coisa nesta etapa não confere. Confira os campos."
     incomplete: "Falta preencher o mínimo da marca para publicar."
+    # Nomes dos papéis de cor, para as cores derivadas terem nome sem obrigar
+    # a pessoa a batizar seis cores que ela não escolheu uma a uma.
+    roles:
+      dark_background: "Fundo escuro"
+      light_background: "Fundo claro"
+      text_on_dark: "Texto no escuro"
+      text_on_light: "Texto no claro"
+      muted: "Apoio"
+      accent: "Destaque"
+      campaign: "Campanha"
+    tones:
+      direct: "direto"
+      warm: "acolhedor"
+      playful: "divertido"
+      technical: "técnico"
+      inspiring: "inspirador"
+      sober: "sóbrio"
+      bold: "ousado"
+      educational: "didático"
     assets:
       bad_kind: "Esse tipo de ativo não existe."
       too_large: "O arquivo passa do tamanho máximo de %{max}."

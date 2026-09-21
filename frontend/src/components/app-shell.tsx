@@ -12,6 +12,7 @@ import { toast } from "sonner"
 
 import { AppSidebar, VekooMark } from "@/components/app-sidebar"
 import { BrandSwitcher } from "@/components/brand-switcher"
+import { NewBrandButton } from "@/components/new-brand-button"
 import { CreateCarouselDialog } from "@/components/create-carousel-dialog"
 import { SearchPalette } from "@/components/search-palette"
 import { Button } from "@/components/ui/button"
@@ -177,7 +178,12 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
       <VekooMark className="mr-1 text-base lg:hidden" />
 
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
-        <BrandSwitcher />
+        {/* Seletor e "nova marca" andam juntos: escolher e abrir são a mesma
+            decisão, e abrir não pode ficar escondido dentro do menu. */}
+        <div className="flex shrink-0 items-center gap-1">
+          <BrandSwitcher />
+          <NewBrandButton />
+        </div>
         <span className="hidden h-4 w-px bg-border sm:block" aria-hidden />
         {folder && (
           <span

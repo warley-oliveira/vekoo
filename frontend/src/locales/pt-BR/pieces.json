@@ -2,8 +2,8 @@
   "pieces": {
     "title": "Peças",
     "catalog": {
-      "heading": "Que peça você quer criar?",
-      "description": "Cada tipo de peça é um motor: ele lê a marca publicada e monta a imagem. Você só preenche o que muda.",
+      "heading": "Modo avançado",
+      "description": "Escolha o tipo de peça e preencha os campos à mão. O caminho de todo dia é descrever o que você quer e deixar o assistente montar.",
       "open": "Criar",
       "fields_one": "{{count}} campo",
       "fields_other": "{{count}} campos",
@@ -16,7 +16,8 @@
         "post": "Post",
         "story": "Story"
       },
-      "loadFailed": "Não deu para carregar os motores."
+      "loadFailed": "Não deu para carregar os motores.",
+      "backToChat": "Voltar para a criação por conversa"
     },
     "list": {
       "heading": "Suas peças",

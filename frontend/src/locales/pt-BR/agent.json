@@ -1,0 +1,82 @@
+{
+  "agent": {
+    "hero": {
+      "title": "O que vamos criar?",
+      "description": "Descreva em uma frase. O assistente escolhe o formato, escreve a copy com os dados de {{brand}} e entrega as peças prontas."
+    },
+    "composer": {
+      "label": "Descreva a peça que você quer",
+      "placeholder": "Escreva o que você quer criar…",
+      "examples": [
+        "um story para o Dia dos Pais amanhã",
+        "post da promoção de quarta",
+        "contagem regressiva para o evento de domingo",
+        "post com o preço da mentoria e o que está incluído",
+        "story avisando que a turma de outubro está com desconto"
+      ],
+      "adjustExamples": [
+        "deixa o fundo mais escuro",
+        "encurta a frase",
+        "põe o preço em destaque",
+        "tenta um tom mais direto",
+        "usa a outra cor da marca"
+      ],
+      "attach": "Anexar foto",
+      "hint": "{{credits}} créditos por pedido",
+      "send": "Criar",
+      "working": "Criando…",
+      "attachmentsAria": "Fotos anexadas ao pedido",
+      "removePhoto": "Remover {{name}}",
+      "photoAdded": "Foto adicionada ao acervo da marca.",
+      "photoFailed": "Não deu para enviar a foto.",
+      "photoType": "Envie uma imagem JPEG, PNG ou WebP.",
+      "photoTooLarge": "A imagem passa do tamanho máximo."
+    },
+    "turn": {
+      "aria": "Pedido de {{when}}",
+      "thinking": "Escolhendo o formato e escrevendo a copy…",
+      "results_one": "{{count}} opção. Escolha uma e refine, ou baixe direto.",
+      "results_other": "{{count}} opções. Escolha uma e refine, ou baixe direto.",
+      "oneResult": "Pronto. Peça a mais um ajuste se ainda não estiver do jeito.",
+      "questionHint": "Sem esse dado a peça sairia com número inventado. Responda no campo abaixo e eu sigo.",
+      "answer": "Responder",
+      "failedHint": "Nenhum crédito foi cobrado.",
+      "retry": "Tentar de novo",
+      "varyRequest": "Outras composições desta peça",
+      "adjustLabel": "ajuste da peça escolhida"
+    },
+    "variation": {
+      "download": "Baixar",
+      "adjust": "Ajustar",
+      "vary": "Variar",
+      "open": "Abrir {{title}} na galeria"
+    },
+    "recent": {
+      "title": "Pedidos recentes",
+      "delete": "Apagar “{{title}}”",
+      "deleted": "Pedido apagado. As peças continuam na galeria.",
+      "deleteFailed": "Não deu para apagar o pedido.",
+      "retention_one": "Os pedidos somem depois de {{count}} dia sem uso. As peças ficam.",
+      "retention_other": "Os pedidos somem depois de {{count}} dias sem uso. As peças ficam."
+    },
+    "errors": {
+      "failed": "Não consegui montar a peça agora.",
+      "agentInvalidPlan": "Não consegui encaixar esse pedido em nenhum tipo de peça. Tente descrever de outro jeito.",
+      "brandNotPublished": "A marca precisa estar publicada.",
+      "noCredits": "Seus créditos acabaram.",
+      "busy": "Ainda estou preparando o pedido anterior.",
+      "costCapReached": "A criação por conversa está indisponível agora. Tente mais tarde.",
+      "sendFailed": "Não deu para mandar o pedido."
+    },
+    "brandNotPublished": {
+      "title": "Publique a marca antes",
+      "description": "O assistente escreve com as cores, as fontes, a voz e os produtos da versão publicada. Complete o mínimo e publique para começar.",
+      "cta": "Ir para a marca"
+    },
+    "advancedLink": "Modo avançado: escolher o tipo de peça e preencher à mão",
+    "newRequest": "Novo pedido",
+    "backToNew": "Começar um pedido novo",
+    "adjustingChip": "Ajustando “{{title}}”",
+    "adjustingCancel": "Cancelar o ajuste"
+  }
+}

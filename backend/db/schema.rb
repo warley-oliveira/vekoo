@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_140100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "agent_conversations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "brand_core_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "last_turn_at"
+    t.uuid "organization_id", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_agent_conversations_on_account_id"
+    t.index ["brand_core_id", "last_turn_at"], name: "index_agent_conversations_on_brand_core_id_and_last_turn_at"
+    t.index ["brand_core_id"], name: "index_agent_conversations_on_brand_core_id"
+    t.index ["organization_id"], name: "index_agent_conversations_on_organization_id"
+  end
+
+  create_table "agent_turns", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "agent_conversation_id", null: false
+    t.jsonb "attachments", default: [], null: false
+    t.uuid "base_piece_id"
+    t.integer "cost_micro_usd", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.integer "credits_charged", default: 0, null: false
+    t.jsonb "error"
+    t.string "kind", default: "create", null: false
+    t.string "model"
+    t.uuid "organization_id", null: false
+    t.jsonb "plan", default: {}, null: false
+    t.text "prompt", null: false
+    t.text "question"
+    t.string "status", default: "thinking", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "usage", default: {}, null: false
+    t.index ["account_id"], name: "index_agent_turns_on_account_id"
+    t.index ["agent_conversation_id", "created_at"], name: "index_agent_turns_on_agent_conversation_id_and_created_at"
+    t.index ["agent_conversation_id"], name: "index_agent_turns_on_agent_conversation_id"
+    t.index ["organization_id", "created_at"], name: "index_agent_turns_on_organization_id_and_created_at"
+    t.index ["organization_id"], name: "index_agent_turns_on_organization_id"
+  end
+
   create_table "brand_assets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.uuid "brand_core_id", null: false
@@ -61,6 +100,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
     t.string "content_type", null: false
     t.datetime "created_at", null: false
     t.string "filename", null: false
+    t.boolean "generated", default: false, null: false
     t.integer "height"
     t.string "kind", null: false
     t.uuid "organization_id", null: false
@@ -156,6 +196,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
   end
 
+  create_table "onboarding_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.string "action", null: false
+    t.uuid "brand_core_id"
+    t.integer "cost_micro_usd", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.string "model"
+    t.uuid "organization_id", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "step", null: false
+    t.jsonb "usage", default: {}, null: false
+    t.index ["account_id"], name: "index_onboarding_events_on_account_id"
+    t.index ["brand_core_id", "created_at"], name: "index_onboarding_events_on_brand_core_id_and_created_at"
+    t.index ["brand_core_id"], name: "index_onboarding_events_on_brand_core_id"
+    t.index ["organization_id", "created_at"], name: "index_onboarding_events_on_organization_id_and_created_at"
+    t.index ["organization_id"], name: "index_onboarding_events_on_organization_id"
+    t.index ["step", "action"], name: "index_onboarding_events_on_step_and_action"
+  end
+
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "credits_total", default: 50, null: false
@@ -190,6 +249,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
 
   create_table "pieces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
+    t.uuid "agent_turn_id"
     t.uuid "brand_core_id", null: false
     t.uuid "brand_core_version_id"
     t.datetime "created_at", null: false
@@ -204,6 +264,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
     t.datetime "updated_at", null: false
     t.jsonb "values", default: {}, null: false
     t.index ["account_id"], name: "index_pieces_on_account_id"
+    t.index ["agent_turn_id"], name: "index_pieces_on_agent_turn_id"
     t.index ["brand_core_id"], name: "index_pieces_on_brand_core_id"
     t.index ["brand_core_version_id"], name: "index_pieces_on_brand_core_version_id"
     t.index ["organization_id", "created_at"], name: "index_pieces_on_organization_id_and_created_at"
@@ -251,6 +312,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
   add_foreign_key "accounts", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "agent_conversations", "accounts", on_delete: :nullify
+  add_foreign_key "agent_conversations", "brand_cores"
+  add_foreign_key "agent_conversations", "organizations"
+  add_foreign_key "agent_turns", "accounts", on_delete: :nullify
+  add_foreign_key "agent_turns", "agent_conversations"
+  add_foreign_key "agent_turns", "organizations"
   add_foreign_key "brand_assets", "accounts", on_delete: :nullify
   add_foreign_key "brand_assets", "brand_cores"
   add_foreign_key "brand_assets", "organizations"
@@ -264,8 +331,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_010913) do
   add_foreign_key "folders", "brand_cores"
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
+  add_foreign_key "onboarding_events", "accounts", on_delete: :nullify
+  add_foreign_key "onboarding_events", "brand_cores", on_delete: :nullify
+  add_foreign_key "onboarding_events", "organizations"
   add_foreign_key "password_resets", "accounts"
   add_foreign_key "pieces", "accounts", on_delete: :nullify
+  add_foreign_key "pieces", "agent_turns", on_delete: :nullify
   add_foreign_key "pieces", "brand_core_versions", on_delete: :nullify
   add_foreign_key "pieces", "brand_cores"
   add_foreign_key "pieces", "organizations"

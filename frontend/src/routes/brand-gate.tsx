@@ -6,13 +6,16 @@ import { ErrorState } from "@/components/error-state"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBrandMutations, useBrands } from "@/hooks/use-brands"
 import { brandPath, readActiveBrandId } from "@/lib/brand-context"
-import { stepHref } from "@/lib/brand-core"
+import { onboardingHref } from "@/lib/onboarding"
 
 /**
  * A raiz (`/`) e `/brands` sem id: manda para a marca ativa — a última
  * usada, se ainda existir; senão a primeira. Conta sem marca nenhuma
  * (não deveria acontecer: a primeira nasce com a conta) ganha uma na hora.
- * Marca ainda não começada abre no formulário; as outras, no início.
+ *
+ * Marca que ainda não terminou o onboarding volta para a pergunta onde
+ * parou — inclusive de outro aparelho, porque quem guarda o ponto é o
+ * servidor. As demais abrem no início.
  */
 export function BrandGate() {
   const { t } = useTranslation()
@@ -25,7 +28,7 @@ export function BrandGate() {
     if (!brands || brands.length > 0 || creating.current) return
     creating.current = true
     createBrand()
-      .then((brand) => navigate(stepHref(brand.id, "identity"), { replace: true }))
+      .then((brand) => navigate(onboardingHref(brand.id, "intro"), { replace: true }))
       .catch(() => {
         creating.current = false
       })
@@ -49,6 +52,10 @@ export function BrandGate() {
 
   const remembered = readActiveBrandId()
   const active = brands.find((b) => b.id === remembered) ?? brands[0]
-  const untouched = active.visitedSteps.length === 0 && active.status === "draft"
-  return <Navigate to={untouched ? stepHref(active.id, "identity") : brandPath(active.id)} replace />
+  // Onboarding pendente ganha prioridade sobre qualquer outra tela: uma marca
+  // pela metade não serve para nada até fechar.
+  if (!active.onboardingDone && active.status === "draft") {
+    return <Navigate to={onboardingHref(active.id, active.onboardingStep)} replace />
+  }
+  return <Navigate to={brandPath(active.id)} replace />
 }

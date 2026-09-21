@@ -69,9 +69,13 @@
         "title": "Voz",
         "description": "Como a marca fala — e o que ela nunca diz."
       },
+      "offers": {
+        "title": "Produtos & ofertas",
+        "description": "O que a marca vende, por quanto e quando vale."
+      },
       "notes": {
         "title": "Anotações",
-        "description": "Preços, horários e promoções — o que a marca precisa ter à mão."
+        "description": "Horário, endereço e o que mais a marca precisa ter à mão."
       }
     },
     "progress": "{{percent}}% preenchido",
@@ -383,13 +387,35 @@
       "description": "Confira o cartão e publique. Depois da primeira publicação, cada mudança vira uma versão nova."
     },
     "notes": {
-      "intro": "Anote o que a marca precisa ter à mão: preços, horários de funcionamento, promoções, datas. É texto livre e opcional.",
-      "label": "Anotações da operação",
-      "placeholder": "Ex.:\nMentoria individual: R$ 890/mês\nAtendimento: Seg–Sex 9h–18h\nWorkshop: 28 de setembro, 19h",
+      "intro": "O que sobra depois dos produtos: horário de atendimento, endereço, combinados internos. É texto livre e opcional.",
+      "label": "Anotações da marca",
+      "placeholder": "Ex.:\nAtendimento: Seg–Sex 9h–18h\nResponde direct em até um dia útil\nNunca faz post de “bom dia”",
       "hint": "Fica guardado com a marca, para consulta.",
       "counter": "{{used}}/{{max}}",
-      "asideTitle": "Isto não entra sozinho nas peças",
-      "asideBody": "O texto de cada peça você escreve no formulário dela. Aqui é a sua consulta rápida quando for escrever."
+      "asideTitle": "O assistente lê isto",
+      "asideBody": "Vale como contexto na hora de escrever a peça. Preço e oferta, porém, moram na etapa anterior — lá eles ficam em campos separados, e o assistente acerta mais."
+    },
+    "offers": {
+      "intro": "Liste o que a marca vende. É daqui que sai todo preço e toda data que aparecem nas peças — sem esta lista, o assistente pergunta em vez de inventar.",
+      "emptyTitle": "Nenhum produto ainda",
+      "emptyDescription": "Um serviço, um plano, um prato, um curso. Só o nome já ajuda; preço e vigência ajudam mais.",
+      "add": "Adicionar produto",
+      "remove": "Remover {{name}}",
+      "unnamed": "produto sem nome",
+      "listAria": "Produtos e ofertas da marca",
+      "name": "Nome",
+      "namePlaceholder": "Ex.: Mentoria individual",
+      "price": "Preço",
+      "priceHint": "Escreva como você diria.",
+      "pricePlaceholder": "Ex.: R$ 890/mês",
+      "description": "Descrição curta",
+      "descriptionPlaceholder": "Ex.: Quatro encontros ao vivo por mês, com plano de conteúdo revisado.",
+      "validity": "Quando vale",
+      "validityHint": "Vigência, dia da semana, data do evento — texto livre.",
+      "validityPlaceholder": "Ex.: Turma de outubro, inscrições até 15 de setembro",
+      "counter": "{{used}} de {{max}}",
+      "asideTitle": "Isto é conhecimento, não formulário",
+      "asideBody": "Nada aqui é obrigatório e nada bloqueia a publicação da marca. O assistente lê esta lista para escrever com o número certo; se o dado não estiver aqui, ele pergunta."
     }
   }
 }

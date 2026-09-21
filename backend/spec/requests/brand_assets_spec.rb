@@ -18,7 +18,9 @@ RSpec.describe "Ativos da marca", type: :request do
 
       expect(response).to have_http_status(:created)
       expect(json).to include("kind" => "logo", "variant" => "light", "transparent" => true, "width" => 24, "height" => 16)
-      expect(json["url"]).to start_with("/rails/active_storage/blobs/proxy/")
+      # Absoluta quando `API_ORIGIN` existe (Vite e Rails moram em portas
+      # diferentes em desenvolvimento); relativa quando não.
+      expect(json["url"]).to include("/rails/active_storage/blobs/proxy/")
     end
 
     it "alerta quando o PNG tem canal alfa mas o fundo é opaco" do

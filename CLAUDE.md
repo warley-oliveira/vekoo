@@ -22,14 +22,14 @@ vekoo_app/
 └── .env                # single source of truth (NOT committed)
 ```
 
-## Ports (this project — offset 40)
+## Ports (this project — offset 10)
 
 | Service   | URL / host                  |
 |-----------|-----------------------------|
-| Postgres  | localhost:5472  |
-| Redis     | localhost:6419     |
-| Rails API | http://localhost:3040 |
-| Vite      | http://localhost:5213  |
+| Postgres  | localhost:5442  |
+| Redis     | localhost:6389     |
+| Rails API | http://localhost:3010 |
+| Vite      | http://localhost:5183  |
 
 All derived from `PORT_OFFSET` in `.env`. Docker Compose is namespaced via
 `COMPOSE_PROJECT_NAME`, so this project runs alongside others without collision.
@@ -118,6 +118,46 @@ card** (14 carrosséis, 84 cards, mesma conta de demonstração) e é idempotent
 `bin/rails db:seed`. O front ainda lê o localStorage — rewirar `lib/store.tsx`
 e `lib/auth.tsx` para `useApi` é o passo que falta.
 
+**Onboarding guiado (a porta de entrada de toda marca):** marca nova cai em
+`/brands/:id/onboarding/:step` — dez telas, uma pergunta por vez, em linguagem
+de dono de negócio: `intro` (o que esperar e por que detalhe importa), `name`,
+`what` (frase + chip de ramo), `handle`, `logo`, `colors`, `fonts`, `voice`,
+`offers`, `done`. **Não pergunta hierarquia de texto**: os estilos saem dos
+defaults do schema e o ajuste fino fica no modo de edição. Cada resposta entra
+numa seção do **mesmo** documento pelo `PATCH /brands/:id/onboarding` — não
+existe brandcore do onboarding, existe outra porta; o wizard de oito seções
+continua inteiro em `/setup/:step`, agora como modo de **edição**, alcançável
+pelas configurações da marca. O estado (onde parou, o que respondeu, o que
+pulou, o código do ramo) mora em `progress["onboarding"]`
+(`BrandCore::Onboarding`, `#track_onboarding`); marca publicada conta como
+concluída, o que dispensa migração das antigas. Em toda pergunta de cor, fonte
+e voz existe **"não sei / cria pra mim"**: `POST /brands/:id/onboarding/suggest`
+(`Onboarding::Suggest`) devolve **três** opções validadas — paleta já com os
+papéis derivados e contraste conferido (`BrandCore::PaletteBuilder`, espelhado
+em `buildPalette()` no front), par de fontes que existe no catálogo, voz com
+tons válidos. **Nunca falha**: sem chave, sem rede ou com resposta torta entram
+as propostas curadas de `Onboarding::Fallbacks`, e a tela não muda de forma.
+Quem não tem logo ganha um **logotipo tipográfico** (`RenderWordmark`, libvips —
+determinístico, nada de imagem por IA), desenhado no fechamento porque ele usa a
+tipografia escolhida depois da pergunta da logo. Logo enviada tem transparência
+conferida de verdade (`PngInspector`) e nunca é substituída
+(`brand_assets.generated`); ela também alimenta a proposta de paleta
+(`BrandCore::DominantColors`). `POST /onboarding/finish` publica a **versão 1**
+e leva direto ao agente. O mínimo é nome + o que faz + cores + fontes — voz
+pulada é preenchida no fechamento e **aparece no cartão antes de publicar**.
+Telemetria de funil e custo em `onboarding_events`
+(`bin/rails onboarding:funnel`). Front: `routes/onboarding.tsx` +
+`components/onboarding/`.
+
+**Fontes que realmente renderizam:** `BrandFonts` baixa o TTF do catálogo aberto
+(Google Fonts) e guarda em `tmp/brand_fonts`; `Engines::Tokens#font` passa o
+arquivo ao Pango. Sem isso o catálogo era decorativo — o servidor só tem DejaVu
+e Ubuntu instaladas, e toda peça saía na mesma fonte independentemente da
+escolha da marca. Falha vira `nil` e cai no comportamento antigo, nunca derruba
+a renderização. `bin/rails fonts:warm` enche o cache. A lista vive nos dois
+lados (`BrandCore::FontCatalog` / `lib/font-catalog.ts`), com spec que compara
+as duas.
+
 **Brandcore (a marca como dado):** um por organização, recurso singular na API —
 `GET/PATCH /brand-core` (rascunho salvo **seção a seção**, `PATCH` recebe
 `{ brandCore: { document: { <seção> }, progress } }`), `POST /brand-core/publish`
@@ -129,13 +169,17 @@ e `lib/auth.tsx` para `useApi` é o passo que falta.
 `palette.colors.2.hex`, defaults dos estilos) espelhado em
 `frontend/src/lib/brand-core.ts` (tipos, enums e zod por etapa) — mudou um, muda o
 outro. Completude e mínimo em `BrandCore::Completeness`; a geração lê só
-`published_document` via `BrandCore#generation_contract`. A etapa "anotações" é um
-texto livre e opcional (`document.notes.text`) — não entra na conta da completude e
-não bloqueia nada. Tempo real por ActionCable
+`published_document` via `BrandCore#generation_contract`. A etapa **"produtos & ofertas"**
+(`document.offers.items`: nome, preço, descrição, vigência — tudo texto livre) é
+o conhecimento de que o agente tira todo número que a peça mostra; a etapa
+"anotações" é um texto livre e opcional (`document.notes.text`) para o que sobra
+(horário, endereço). Nenhuma das duas entra na conta da completude nem bloqueia
+nada. Tempo real por ActionCable
 (`BrandCoreChannel`, montado em `/cable`, token em `?token=`): a outra aba recarrega
 pelo SWR e ignora o próprio eco via `X-Client-Id`. Front: `/brands` (visão geral,
-histórico, publicar) e `/brands/setup/:step` (wizard, 7 etapas, autosave em
-`components/brand/use-step-form.ts`). Cadastro novo cai direto no wizard.
+histórico, publicar) e `/brands/setup/:step` (wizard, 8 etapas, autosave em
+`components/brand/use-step-form.ts`). Cadastro novo cai no **onboarding
+guiado** (acima); o wizard é o modo de edição.
 
 **Motores e peças (a contraparte do Brandcore):** um motor é um diretório em
 `backend/engines/<id>/` com `manifest.yml` (ficha declarativa: formatos, campos com
@@ -152,11 +196,42 @@ valida (`Engines::Values`) e enfileira `RenderPieceJob` (Sidekiq, adapter do Act
 em `config/initializers/sidekiq.rb`; `:test` nas specs); `PieceChannel` avisa quando
 fica pronta; `POST /engines/:id/preview` devolve o PNG do primeiro quadro. libvips
 fora do sistema: `lib/vips_userspace.rb` relança o processo com `LD_LIBRARY_PATH`
-quando `VIPS_USERSPACE_ROOT` está no `.env`. Front: `/pieces` (galeria, filtro,
-desatualizadas = saíram de uma versão anterior da marca), `/pieces/new[/:engineId]` (formulário **gerado do manifesto** em
-`components/pieces/field-inputs.tsx`, prévia ao vivo) e `/pieces/:id` (imagens,
-proveniência, regenerar). Spec por motor em `spec/engines/engines_spec.rb`, valores de
-exemplo em `spec/support/engine_examples.rb`.
+quando `VIPS_USERSPACE_ROOT` está no `.env`. **Quem escolhe o motor e preenche o
+manifesto é o agente, não o usuário** (ver abaixo): o catálogo e o formulário
+manual continuam existindo em `/brands/:id/advanced[/:engineId]` (formulário
+**gerado do manifesto** em `components/pieces/field-inputs.tsx`, prévia ao vivo),
+como modo avançado atrás de link discreto. Front: `/contents` (galeria, filtro,
+desatualizadas = saíram de uma versão anterior da marca) e `/contents/:id`
+(imagens, proveniência, regenerar). Spec por motor em
+`spec/engines/engines_spec.rb`, valores de exemplo em
+`spec/support/engine_examples.rb`.
+
+**Criação por conversa (o caminho principal):** a pessoa descreve a peça numa
+frase e recebe 2–3 variações prontas. Um `AgentTurn` é uma chamada ao modelo:
+`POST /brands/:id/conversations` abre a conversa com o primeiro pedido,
+`POST .../conversations/:id/turns` manda os seguintes (`kind`: `create` = pedido
+livre com 3 variações, `adjust` = ajuste em linguagem natural sobre uma peça
+(1 variação), `vary` = outras composições). O controlador só confere marca,
+saldo e teto e enfileira; quem pensa é o `AgentTurnJob` e quem avisa é o
+`AgentChannel` — as imagens continuam chegando pelo `PieceChannel`, porque
+decidir e desenhar são dois tempos. O contexto do modelo vai em três blocos, na
+ordem que o cache premia: regras do produto (`Agent::Prompts`), catálogo de
+manifestos (`Agent::Catalog`, ponto de cache) e a ficha da marca publicada
+(`Agent::BrandBrief`, ponto de cache); só o pedido e a data de hoje viajam na
+mensagem. A saída é JSON validado por `Agent::Plan` contra os mesmos
+`Engines::Values` do formulário manual — plano inválido ganha **uma** tentativa
+de correção com o erro no contexto e depois falha limpo. **Regra-mestra do
+prompt: nunca inventar preço, data ou fato** — faltando um dado essencial o
+agente devolve `question` e a tela pergunta, sem cobrar. Cada turno guarda
+tokens, modelo e `cost_micro_usd`: é dessa soma que sai o teto mensal de OPEX
+(`Agent::Budget`, `AGENT_MONTHLY_COST_CENTS_CAP`), que é controle da Vekoo —
+o cliente vê créditos (`AI_COSTS[:agent]` / `[:agentAdjust]`). Modelo em
+`AGENT_MODEL` (padrão `claude-opus-5`). A conversa é andaime e some em 30 dias
+(`bin/rails agent:purge`); a peça é obra e fica (`pieces.agent_turn_id` vira
+nulo). Front: `/brands/:id/create[/:conversationId]`
+(`routes/create.tsx` + `components/create/`), com campo único, exemplos
+rotativos no placeholder, anexo de foto (vira `BrandAsset` de tipo `photo`) e
+ajuste em linguagem natural sobre a variação escolhida.
 
 **Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
 nunca é vinculado depois; não existe tela de associação manual. A organização tem
@@ -168,11 +243,12 @@ publicada da marca no nascimento) e nasce com o tema derivado da paleta
 `assets`, `pieces`, `engines/:id/preview`); carrosséis e pastas mantêm rota própria e
 filtram por `?brand_id=`. Front: tudo vive sob `/brands/:brandId/...` (início,
 `carousels`, `folders/:id`, `carousels/:id/edit`, `contents`, `contents/:pieceId`,
-`create[/:engineId]`, `settings`, `setup/:step`, `templates`, `trash`); a raiz `/` só
+`create[/:conversationId]`, `advanced[/:engineId]`, `settings`,
+`onboarding/:step`, `setup/:step`, `templates`, `trash`); a raiz `/` só
 escolhe a marca ativa (última usada em `localStorage`, senão a primeira) e redireciona;
 o seletor de marca fica no topo (`components/brand-switcher.tsx`); `useActiveBrand()`
 (`lib/brand-context.tsx`) dá `brandId` e `path("/contents")` para links. A primeira
-marca nasce com a conta (`SignUp`). O criador de carrossel é **acoplamento raso** por
+marca nasce com a conta (`SignUp`) e cai direto no onboarding guiado. O criador de carrossel é **acoplamento raso** por
 decisão: continua editor por blocos com IA e exportação no navegador, só nasce na marca
 e lê os tokens dela. Legado sem marca: `bin/rails brands:migrate_orphans` (resolve quem
 tem uma marca só) ou a tela temporária `/migration/orphans` (`GET /orphans`,

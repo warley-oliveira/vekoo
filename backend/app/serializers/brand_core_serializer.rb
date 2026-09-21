@@ -17,6 +17,17 @@ class BrandCoreSerializer < ApplicationSerializer
         visitedSteps: brand_core.visited_steps,
         lastStep: brand_core.last_step
       },
+      # O onboarding guiado é a outra porta para este documento: a tela precisa
+      # saber em que pergunta a pessoa parou e se já dá para publicar a v1.
+      onboarding: {
+        step: brand_core.onboarding_step,
+        answered: brand_core.onboarding_answered,
+        skipped: brand_core.onboarding_skipped,
+        segment: brand_core.onboarding_segment,
+        wantsWordmark: brand_core.wants_wordmark?,
+        done: brand_core.onboarding_done?,
+        readyToFinish: brand_core.onboarding_ready_to_finish?
+      },
       completeness: completeness.as_json,
       readyForGeneration: contract[:ready],
       generationBlockers: contract[:blockers],
@@ -40,6 +51,11 @@ class BrandCoreSerializer < ApplicationSerializer
       readyForGeneration: brand_core.generation_contract[:ready],
       visitedSteps: brand_core.visited_steps,
       lastStep: brand_core.last_step,
+      # O seletor e a raiz usam isto para mandar marca nova ao onboarding e
+      # marca em andamento de volta à pergunta onde parou.
+      onboardingDone: brand_core.onboarding_done?,
+      onboardingPending: brand_core.onboarding_pending?,
+      onboardingStep: brand_core.onboarding_step,
       currentVersion: brand_core.current_version,
       publishedAt: epoch_ms(brand_core.published_at),
       createdAt: epoch_ms(brand_core.created_at),

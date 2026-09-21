@@ -1,8 +1,6 @@
-import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { Check, ChevronsUpDown, Loader2, Plus, Settings } from "lucide-react"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,9 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useBrandMutations } from "@/hooks/use-brands"
+import { useCreateBrand } from "@/hooks/use-create-brand"
 import { brandPath, useActiveBrand } from "@/lib/brand-context"
-import { stepHref } from "@/lib/brand-core"
 import { cn } from "@/lib/utils"
 
 /**
@@ -28,8 +25,7 @@ export function BrandSwitcher() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { brandId, brand, brands, path } = useActiveBrand()
-  const { createBrand } = useBrandMutations()
-  const [creating, setCreating] = useState(false)
+  const { create, creating } = useCreateBrand()
   const single = (brands?.length ?? 0) <= 1
 
   function switchTo(id: string) {
@@ -38,19 +34,6 @@ export function BrandSwitcher() {
     const sub = window.location.pathname.slice(path("").length)
     const keep = sub.startsWith("/carousels/") || sub.startsWith("/contents/") || sub.startsWith("/folders/") ? "" : sub
     navigate(brandPath(id, keep))
-  }
-
-  async function create() {
-    setCreating(true)
-    try {
-      const created = await createBrand()
-      toast(t("brandSwitcher.createdToast"))
-      navigate(stepHref(created.id, "identity"))
-    } catch {
-      toast.error(t("brandSwitcher.createFailed"))
-    } finally {
-      setCreating(false)
-    }
   }
 
   const label = brand?.name ?? t("brandSwitcher.untitled")
@@ -82,7 +65,11 @@ export function BrandSwitcher() {
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate">{item.name ?? t("brandSwitcher.untitled")}</span>
                 <span className="text-xs text-muted-foreground">
-                  {item.readyForGeneration ? t("brand.overview.status.published") : t("brand.progress", { percent: item.percent })}
+                  {item.readyForGeneration
+                    ? t("brand.overview.status.published")
+                    : item.onboardingDone
+                      ? t("brand.progress", { percent: item.percent })
+                      : t("brandSwitcher.incomplete")}
                 </span>
               </span>
               {item.id === brandId && <Check className="size-4 text-primary" />}

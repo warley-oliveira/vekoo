@@ -37,6 +37,10 @@ export type AiCosts = {
   rewrite: number
   image: number
   caption: number
+  /** Um pedido na conversa de criação — uma chamada ao agente, 2–3 peças. */
+  agent: number
+  /** Um ajuste em linguagem natural sobre uma peça — uma peça só. */
+  agentAdjust: number
 }
 
 export type UploadLimits = {
@@ -290,6 +294,8 @@ export const AI_COSTS: AiCosts = {
   rewrite: 1,
   image: 2,
   caption: 1,
+  agent: 6,
+  agentAdjust: 2,
 }
 
 /** Formatos publicáveis. 9:16 entra em etapa futura. */

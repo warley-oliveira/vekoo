@@ -101,7 +101,7 @@ RSpec.describe "Peças e motores", type: :request do
       get "/brands/#{brand_core.id}/pieces", headers: headers
       expect(json["pieces"].map { |p| p["id"] }).to eq([ piece.id ])
       expect(json["pieces"].first).to include("status" => "ready", "outdated" => false)
-      expect(json["pieces"].first["images"].first["url"]).to start_with("/rails/active_storage/blobs/proxy/")
+      expect(json["pieces"].first["images"].first["url"]).to include("/rails/active_storage/blobs/proxy/")
 
       # A marca foi publicada de novo: a peça saiu da versão anterior.
       brand_core.update!(current_version: 2)

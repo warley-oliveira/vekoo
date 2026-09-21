@@ -11,7 +11,7 @@
       "trash": "Lixeira",
       "home": "Início",
       "contents": "Conteúdos",
-      "create": "Criar peça"
+      "create": "Criar"
     },
     "createBlank": "Começar em branco",
     "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
@@ -73,14 +73,15 @@
     "newBrand": "Nova marca",
     "createdToast": "Marca criada. Vamos montá-la.",
     "createFailed": "Não deu para criar a marca.",
-    "loading": "Abrindo a sua marca…"
+    "loading": "Abrindo a sua marca…",
+    "incomplete": "Cadastro incompleto"
   },
   "dashboard": {
     "createTitle": "Criar",
     "createCarousel": "Criar carrossel",
     "createCarouselHint": "Descreva o assunto e receba um carrossel pronto para editar.",
-    "createPiece": "Criar peça",
-    "createPieceHint": "Escolha um tipo de peça e preencha só o que muda.",
+    "createPiece": "Criar uma peça",
+    "createPieceHint": "Descreva em uma frase e receba 2–3 opções prontas, com a cara da marca.",
     "recentTitle": "Saiu por último",
     "recentEmpty": "Nada gerado ainda nesta marca. Comece por um carrossel ou uma peça.",
     "allContents": "Ver tudo",

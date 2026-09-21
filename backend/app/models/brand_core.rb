@@ -16,6 +16,7 @@ class BrandCore < ApplicationRecord
   has_many :carousels, dependent: :destroy
   has_many :folders, dependent: :destroy
   has_many :pieces, dependent: :destroy
+  has_many :agent_conversations, dependent: :destroy
 
   validates :status, inclusion: { in: STATUSES }
   validate :document_must_be_a_hash
@@ -73,10 +74,93 @@ class BrandCore < ApplicationRecord
     steps = visited_steps
     steps |= (Array(visited) & BrandCore::Schema::STEPS)
     steps |= [ last_step ] if BrandCore::Schema::STEPS.include?(last_step)
-    self.progress = {
+    # Mescla, não substitui: o estado do onboarding mora no mesmo jsonb, e
+    # salvar uma etapa do wizard de edição não pode apagá-lo.
+    self.progress = progress.merge(
       "visitedSteps" => BrandCore::Schema::STEPS & steps,
       "lastStep" => BrandCore::Schema::STEPS.include?(last_step) ? last_step : self.last_step
-    }
+    )
+  end
+
+  # --------------------------------------------------------------- onboarding
+  #
+  # O onboarding guiado é outra porta para este mesmo documento: perguntas em
+  # linguagem de dono de negócio, uma por tela. O estado dele mora no
+  # `progress` porque é exatamente isso — progresso —, e ficar numa tabela à
+  # parte obrigaria dois lugares a concordar sobre onde a pessoa parou.
+
+  def onboarding_state
+    state = progress["onboarding"]
+    state.is_a?(Hash) ? state : {}
+  end
+
+  # Marca publicada terminou o cadastro, por definição — inclusive as que
+  # nasceram antes de o onboarding existir. É o que evita uma migração de
+  # dados só para não mandar uma marca pronta de volta à primeira pergunta.
+  def onboarding_done?
+    onboarding_state["done"] == true || published?
+  end
+
+  # Nunca começou o onboarding **nem** o wizard de edição: marca recém-criada.
+  def onboarding_pending?
+    !onboarding_done? && visited_steps.empty?
+  end
+
+  # Onde retomar. Quem já respondeu tudo até "cores" volta em "cores", não no
+  # começo.
+  def onboarding_step
+    step = onboarding_state["step"]
+    BrandCore::Onboarding.valid?(step) ? step : BrandCore::Onboarding.first_step
+  end
+
+  def onboarding_answered
+    Array(onboarding_state["answered"]) & BrandCore::Onboarding::STEPS
+  end
+
+  def onboarding_skipped
+    Array(onboarding_state["skipped"]) & BrandCore::Onboarding::STEPS
+  end
+
+  # O código do chip de segmento. `identity.segment` guarda o texto que a
+  # pessoa confirmou (que ela pode ter reescrito); o código fica aqui porque é
+  # o que a IA e as propostas curadas usam para escolher.
+  def onboarding_segment
+    onboarding_state["segment"].to_s.presence
+  end
+
+  # A pessoa disse "não tenho logo" e aceitou o logotipo da Vekoo. A intenção
+  # fica guardada porque o desenho só acontece no fechamento: o logotipo usa a
+  # tipografia, e a tipografia é escolhida **depois** da pergunta da logo.
+  def wants_wordmark?
+    onboarding_state["wantsWordmark"] == true
+  end
+
+  def track_onboarding(step:, action: nil, segment: nil, done: nil, wants_wordmark: nil)
+    state = onboarding_state.dup
+    state["startedAt"] ||= (Time.current.to_f * 1000).round
+
+    if BrandCore::Onboarding.valid?(step)
+      state["step"] = step
+      case action
+      when "answered"
+        state["answered"] = (Array(state["answered"]) | [ step ]) & BrandCore::Onboarding::STEPS
+        state["skipped"] = Array(state["skipped"]) - [ step ]
+      when "skipped"
+        state["skipped"] = (Array(state["skipped"]) | [ step ]) & BrandCore::Onboarding::STEPS
+      end
+    end
+
+    state["segment"] = segment if segment.present?
+    state["wantsWordmark"] = wants_wordmark unless wants_wordmark.nil?
+    state["done"] = done unless done.nil?
+    self.progress = progress.merge("onboarding" => state)
+  end
+
+  # O mínimo do onboarding: nome, o que faz, cor e fonte. Voz e produtos são
+  # puláveis — a voz que falta é preenchida no fechamento, e a pessoa a vê no
+  # cartão antes de publicar.
+  def onboarding_ready_to_finish?
+    BrandCore::Onboarding::REQUIRED_STEPS.all? { |step| onboarding_answered.include?(step) }
   end
 
   def unpublished_changes?

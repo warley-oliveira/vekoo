@@ -51,6 +51,20 @@ Rails.application.routes.draw do
     resources :engines, only: [] do
       member { post :preview }
     end
+    # O onboarding guiado: a porta de entrada de toda marca nova. Escreve no
+    # mesmo documento do wizard de edição, uma pergunta por vez.
+    resource :onboarding, only: :update, controller: :onboardings do
+      post :suggest
+      post :wordmark
+      post :finish
+    end
+
+    # A conversa de criação: o caminho principal do produto. O catálogo de
+    # motores continua existindo em `/engines` — ele virou o modo avançado.
+    resources :conversations, only: %i[index show create destroy],
+      controller: :agent_conversations do
+      member { post :turns }
+    end
   end
 
   # O catálogo de motores (manifestos de `engines/*/`) é igual para todo mundo.
@@ -61,7 +75,8 @@ Rails.application.routes.draw do
   get  "orphans"        => "orphans#index"
   post "orphans/assign" => "orphans#assign"
 
-  # WebSocket dos avisos ao vivo (`BrandCoreChannel`, `PieceChannel`). Autentica por `?token=`.
+  # WebSocket dos avisos ao vivo (`BrandCoreChannel`, `PieceChannel`,
+  # `AgentChannel`). Autentica por `?token=`.
   mount ActionCable.server => "/cable"
 
   # --- geração ---------------------------------------------------------------

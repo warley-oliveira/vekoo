@@ -5,6 +5,7 @@ import { BrandWizardSkeleton } from "@/components/brand/brand-skeletons"
 import { StepAssets } from "@/components/brand/step-assets"
 import { StepColors } from "@/components/brand/step-colors"
 import { StepNotes } from "@/components/brand/step-notes"
+import { StepOffers } from "@/components/brand/step-offers"
 import { StepIdentity } from "@/components/brand/step-identity"
 import { StepStyles } from "@/components/brand/step-styles"
 import { StepTypography } from "@/components/brand/step-typography"
@@ -21,6 +22,7 @@ const STEP_COMPONENTS: Record<BrandStep, () => React.JSX.Element> = {
   styles: StepStyles,
   assets: StepAssets,
   voice: StepVoice,
+  offers: StepOffers,
   notes: StepNotes,
 }
 

@@ -31,6 +31,9 @@ export type ApiErrorCode =
   | "resetTokenInvalid"
   | "noCredits"
   | "brandIncomplete"
+  | "brandNotPublished"
+  | "busy"
+  | "costCapReached"
   | "network"
   | "unknown"
 
@@ -103,6 +106,9 @@ function knownCode(code: string | undefined, status: number): ApiErrorCode {
     "resetTokenInvalid",
     "noCredits",
     "brandIncomplete",
+    "brandNotPublished",
+    "busy",
+    "costCapReached",
   ]
   if (code && (codes as string[]).includes(code)) return code as ApiErrorCode
   if (status === 401) return "unauthorized"

@@ -11,7 +11,7 @@
       "trash": "Trash",
       "home": "Home",
       "contents": "Contents",
-      "create": "Create piece"
+      "create": "Create"
     },
     "createBlank": "Start from scratch",
     "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
@@ -73,14 +73,15 @@
     "newBrand": "New brand",
     "createdToast": "Brand created. Let's set it up.",
     "createFailed": "Couldn't create the brand.",
-    "loading": "Opening your brand…"
+    "loading": "Opening your brand…",
+    "incomplete": "Setup incomplete"
   },
   "dashboard": {
     "createTitle": "Create",
     "createCarousel": "Create carousel",
     "createCarouselHint": "Describe the topic and get a carousel ready to edit.",
-    "createPiece": "Create piece",
-    "createPieceHint": "Pick a piece type and fill in only what changes.",
+    "createPiece": "Create a piece",
+    "createPieceHint": "Describe it in one sentence and get 2–3 finished options, in the brand's own look.",
     "recentTitle": "Latest",
     "recentEmpty": "Nothing generated for this brand yet. Start with a carousel or a piece.",
     "allContents": "See all",

@@ -5,8 +5,9 @@
 #   - `required`: o conjunto mínimo obrigatório. Sem ele nada é gerado — e é
 #     isso que a tela sinaliza como "mínimo para gerar", não o 100%.
 class BrandCore::Completeness
-  # As anotações são opcionais e ficam de fora do peso: quem nunca escreve uma
-  # não deveria travar em 90%.
+  # Anotações e ofertas são opcionais e ficam de fora do peso: quem não vende
+  # produto avulso (nem escreve anotação) não deveria travar em 90%. As duas
+  # aparecem em `sections` mesmo assim — a etapa marca "preenchida".
   WEIGHTS = {
     "identity" => 20, "palette" => 25, "typography" => 15, "styles" => 10,
     "assets" => 10, "voice" => 20
@@ -32,6 +33,7 @@ class BrandCore::Completeness
       "styles" => 100,
       "assets" => @has_logo ? 100 : 0,
       "voice" => ratio(voice_checks.values),
+      "offers" => @doc["offers"]["items"].any? ? 100 : 0,
       "notes" => @doc["notes"]["text"].present? ? 100 : 0
     }
   end

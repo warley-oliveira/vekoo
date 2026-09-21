@@ -1056,11 +1056,31 @@ module VekooSeeds
           { "id" => "ex-2", "text" => "Preço no post ou no direct? No post. Quem some quando vê o número não ia comprar." }
         ]
       },
+      # O que a Marina vende. É daqui que o agente tira todo número que a
+      # peça mostra — e é por isso que ele nunca precisa inventar um.
+      "offers" => {
+        "items" => [
+          {
+            "id" => "of-mentoria", "name" => "Mentoria individual", "price" => "R$ 890/mês",
+            "description" => "Quatro encontros ao vivo por mês, com plano de conteúdo revisado junto.",
+            "validity" => "Vagas abrem no primeiro dia útil de cada mês"
+          },
+          {
+            "id" => "of-workshop", "name" => "Workshop Carrossel que vende", "price" => "R$ 149",
+            "description" => "Três horas ao vivo, com um modelo pronto para adaptar ao seu negócio.",
+            "validity" => "28 de setembro, online, 19h"
+          },
+          {
+            "id" => "of-turma", "name" => "Turma de outubro da mentoria", "price" => "20% de desconto",
+            "description" => "Mesma mentoria, com desconto para quem entra na turma de outubro.",
+            "validity" => "Até 15 de setembro"
+          }
+        ]
+      },
       "notes" => {
-        "text" => "Mentoria individual: R$ 890/mês, 4 encontros\n" \
-          "Atendimento: Seg–Qui 9h–18h · Sex 9h–17h\n" \
-          "Workshop Carrossel que vende: 28 de setembro, online, 19h\n" \
-          "Turma de outubro: 20% de desconto até 15 de setembro"
+        "text" => "Atendimento: Seg–Qui 9h–18h · Sex 9h–17h\n" \
+          "Responde direct em até um dia útil\n" \
+          "Nunca faz post de \"bom dia\": todo post ensina ou vende"
       }
     }
   end

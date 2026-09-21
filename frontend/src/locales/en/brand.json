@@ -69,9 +69,13 @@
         "title": "Voice",
         "description": "How the brand speaks — and what it never says."
       },
+      "offers": {
+        "title": "Products & offers",
+        "description": "What the brand sells, for how much and when it applies."
+      },
       "notes": {
         "title": "Notes",
-        "description": "Prices, hours and promotions — what the brand needs at hand."
+        "description": "Hours, address and anything else the brand keeps at hand."
       }
     },
     "progress": "{{percent}}% filled in",
@@ -383,13 +387,35 @@
       "description": "Check the card and publish. After the first publish, every change becomes a new version."
     },
     "notes": {
-      "intro": "Jot down what the brand needs at hand: prices, opening hours, promotions, dates. Free text and optional.",
-      "label": "Operational notes",
-      "placeholder": "E.g.\nOne-on-one mentoring: $890/month\nHours: Mon–Fri 9am–6pm\nWorkshop: September 28, 7pm",
+      "intro": "What's left after the products: opening hours, address, internal rules. Free text and optional.",
+      "label": "Brand notes",
+      "placeholder": "E.g.:\nHours: Mon–Fri 9am–6pm\nReplies to DMs within one business day\nNever posts “good morning” filler",
       "hint": "Kept with the brand, for reference.",
       "counter": "{{used}}/{{max}}",
-      "asideTitle": "This doesn't go into pieces on its own",
-      "asideBody": "You write each piece's text in its own form. This is your quick reference while writing."
+      "asideTitle": "The assistant reads this",
+      "asideBody": "It counts as context when writing a piece. Prices and offers, though, live in the previous step — there they sit in separate fields, and the assistant gets them right more often."
+    },
+    "offers": {
+      "intro": "List what the brand sells. Every price and date on a piece comes from here — without this list the assistant asks instead of inventing.",
+      "emptyTitle": "No products yet",
+      "emptyDescription": "A service, a plan, a dish, a course. The name alone already helps; price and validity help more.",
+      "add": "Add product",
+      "remove": "Remove {{name}}",
+      "unnamed": "unnamed product",
+      "listAria": "Brand products and offers",
+      "name": "Name",
+      "namePlaceholder": "E.g. One-on-one mentoring",
+      "price": "Price",
+      "priceHint": "Write it the way you'd say it.",
+      "pricePlaceholder": "E.g. $180/month",
+      "description": "Short description",
+      "descriptionPlaceholder": "E.g. Four live sessions a month, with the content plan reviewed together.",
+      "validity": "When it applies",
+      "validityHint": "Validity, weekday, event date — free text.",
+      "validityPlaceholder": "E.g. October cohort, sign-ups until September 15",
+      "counter": "{{used}} of {{max}}",
+      "asideTitle": "This is knowledge, not paperwork",
+      "asideBody": "Nothing here is required and nothing blocks publishing the brand. The assistant reads this list to write the right number; if the fact isn't here, it asks."
     }
   }
 }
