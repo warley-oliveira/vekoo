@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { newId } from "@/lib/doc"
-import type { OnboardingState, OnboardingStep } from "@/lib/onboarding"
+import type { OnboardingState } from "@/lib/onboarding"
 
 // O Brandcore — a marca como dado estruturado. Espelho de
 // `backend/app/models/brand_core/schema.rb`: as listas de código abaixo têm que
@@ -126,6 +126,8 @@ export type BrandIdentity = {
   name: string
   segment: string
   concept: string
+  /** Pra quem a marca escreve. Separado de `positioning` porque o agente precisa dos dois. */
+  audience: string
   positioning: string
   characters: BrandCharacter[]
   address: string
@@ -251,7 +253,6 @@ export type BrandSummary = {
   /** O seletor e a raiz usam isto para saber quem vai ao onboarding. */
   onboardingDone: boolean
   onboardingPending: boolean
-  onboardingStep: OnboardingStep
   currentVersion: number
   publishedAt: number | null
   createdAt: number
@@ -265,7 +266,7 @@ export type BrandCore = {
   document: BrandDocument
   publishedDocument: BrandDocument | null
   progress: { visitedSteps: BrandStep[]; lastStep: BrandStep | null }
-  /** O estado do onboarding guiado — a outra porta para este mesmo documento. */
+  /** O estado do onboarding por conversa — a outra porta para este mesmo documento. */
   onboarding: OnboardingState
   completeness: BrandCompleteness
   readyForGeneration: boolean
@@ -542,6 +543,7 @@ export function buildStepSchemas(t: T) {
     name: required(80),
     segment: required(80),
     concept: required(160),
+    audience: optional(600),
     positioning: optional(600),
     characters: z.array(z.object({ id, name: required(80), role: optional(160) })),
     address: optional(160),

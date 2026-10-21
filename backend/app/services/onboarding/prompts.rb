@@ -35,6 +35,8 @@ module Onboarding
       lines = [ "Negócio: #{brief[:name]}" ]
       lines << "O que faz: #{brief[:what]}" if brief[:what].present?
       lines << "Segmento: #{brief[:segment]}" if brief[:segment].present?
+      lines << "Pra quem: #{brief[:audience]}" if brief[:audience].present?
+      lines << "Por que escolhem ela: #{brief[:positioning]}" if brief[:positioning].present?
       lines << "Cidade: #{brief[:city]}" if brief[:city].present?
       lines << "Tons que ela marcou: #{brief[:tones].join(', ')}" if brief[:tones].present?
       lines << "Cores que já aparecem na logo dela: #{brief[:logo_colors].join(', ')}" if brief[:logo_colors].present?
@@ -64,7 +66,7 @@ module Onboarding
         Proponha três pares de fontes para esta marca: uma **display** (títulos
         e números, é ela que dá o caráter) e uma **utilitária** (texto corrido,
         tem que sumir e deixar ler). Nunca as duas iguais.
-
+        #{brief[:wanted_font].present? ? "\nEla queria #{brief[:wanted_font]}, que não está no catálogo: a display das três propostas deve chegar perto dela no desenho.\n" : ''}
         Escolha **só** destas famílias:
         #{catalog.map { |category, families| "#{category}: #{families.join(', ')}" }.join("\n")}
 

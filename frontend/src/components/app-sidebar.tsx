@@ -1,4 +1,4 @@
-import { useState, type DragEvent, type ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import { NavLink, useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import {
@@ -7,7 +7,6 @@ import {
   Home,
   Languages,
   Images,
-  Layers,
   LayoutTemplate,
   LogOut,
   Palette,
@@ -82,7 +81,6 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const { t } = useTranslation()
   const { credits } = useCredits()
-  const { move: moveCarousel } = useCarouselMutations()
   const { path } = useActiveBrand()
   const { session, signOut } = useAuth()
   const navigate = useNavigate()
@@ -208,19 +206,6 @@ export function AppSidebar({
           label={t("shell.nav.home")}
           collapsed={collapsed}
           onNavigate={onNavigate}
-        />
-        <SidebarLink
-          to={path("/carousels")}
-          icon={<Layers />}
-          label={t("shell.nav.carousels")}
-          collapsed={collapsed}
-          onNavigate={onNavigate}
-          acceptsDrop
-          onDropCarousel={(id) => {
-            moveCarousel(id, null)
-              .then(() => toast(t("carousels.actions.removedFromFolderToast")))
-              .catch(() => toast.error(t("carousels.actions.moveFailed")))
-          }}
         />
         <SidebarButton
           icon={<Search />}
@@ -368,8 +353,6 @@ function SidebarLink({
   label,
   collapsed,
   onNavigate,
-  acceptsDrop,
-  onDropCarousel,
 }: {
   to: string
   /** Só ativo no caminho exato (o Início, que é prefixo de todos os outros). */
@@ -378,43 +361,19 @@ function SidebarLink({
   label: string
   collapsed: boolean
   onNavigate?: () => void
-  acceptsDrop?: boolean
-  onDropCarousel?: (carouselId: string) => void
 }) {
-  const [dragOver, setDragOver] = useState(false)
-
-  const dropHandlers = acceptsDrop
-    ? {
-        onDragOver: (e: DragEvent) => {
-          if (e.dataTransfer.types.includes(CAROUSEL_DRAG_TYPE)) {
-            e.preventDefault()
-            setDragOver(true)
-          }
-        },
-        onDragLeave: () => setDragOver(false),
-        onDrop: (e: DragEvent) => {
-          e.preventDefault()
-          setDragOver(false)
-          const id = e.dataTransfer.getData(CAROUSEL_DRAG_TYPE)
-          if (id) onDropCarousel?.(id)
-        },
-      }
-    : {}
-
   const link = (
     <NavLink
       to={to}
       end={end}
       onClick={onNavigate}
-      {...dropHandlers}
       className={({ isActive }) =>
         cn(
           "flex h-8 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
           isActive
             ? "bg-accent text-accent-foreground"
             : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
-          collapsed && "justify-center px-0",
-          dragOver && "bg-accent text-accent-foreground ring-2 ring-ring/60"
+          collapsed && "justify-center px-0"
         )
       }
     >

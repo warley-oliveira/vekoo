@@ -24,7 +24,7 @@ export function useCreateBrand() {
     try {
       const created = await createBrand()
       toast(t("brandSwitcher.createdToast"))
-      navigate(onboardingHref(created.id, "intro"))
+      navigate(onboardingHref(created.id))
     } catch {
       toast.error(t("brandSwitcher.createFailed"))
     } finally {

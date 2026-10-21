@@ -1,184 +1,126 @@
 {
   "onboarding": {
-    "progress": "{{current}} of {{total}}",
-    "back": "Back",
-    "continue": "Continue",
-    "skip": "Skip",
-    "saveFailed": "Couldn't save your answer. Try again.",
-    "suggest": {
-      "cta": "I don't know — do it for me",
-      "loading": "Preparing options…",
-      "again": "Show others",
-      "failed": "Couldn't prepare the options."
+    "intro": {
+      "titleLead": "Tell us about your brand.",
+      "titleRest": "The platform builds the rest.",
+      "sub": "It's a conversation, not a form. No question is about design — they're about your business.",
+      "cards": {
+        "detail": {
+          "title": "Detail becomes content",
+          "body": "Everything you say here becomes the base of every piece the engine writes. “Sourdough bread, baked at 6 a.m.” goes further than “bakery”."
+        },
+        "help": {
+          "title": "Stuck? Ask “make it for me”",
+          "body": "Color, font, way of speaking: if you don't have it, the platform proposes options with a preview. You choose."
+        },
+        "later": {
+          "title": "Nothing here is final",
+          "body": "You can change everything later and keep adding. The more the brand knows about itself, the sharper the content."
+        }
+      },
+      "footer": "// about 3 minutes. you can leave halfway and pick up where you stopped.",
+      "cta": "Start the conversation →"
+    },
+    "opening": {
+      "intro": "Let's build your brand's brandcore. I ask, you answer your way. If you get stuck on one, ask “make it for me”.",
+      "first": "First: what's the brand called and what does it sell?"
+    },
+    "questions": {
+      "brand": "What's the brand called and what does it sell?",
+      "audience": "Who is it for? Describe the customer you most want to attract.",
+      "differential": "What makes someone choose you over a competitor?",
+      "voice": "How does the brand talk? Give me a sentence it would say in a post.",
+      "banned": "And what would it never say? Words, tone, topics that stay out.",
+      "offers": "Main products or services, with prices if you have them.",
+      "logo": "Do you have a logo? Send it here or ask “make it for me”.",
+      "palette": "Colors and font: do you have them or should we propose?",
+      "fonts": "Colors and font: do you have them or should we propose?"
+    },
+    "topics": {
+      "brand": "brand",
+      "audience": "audience",
+      "differential": "differentiator",
+      "voice": "tone of voice",
+      "banned": "blocklist",
+      "offers": "offer",
+      "logo": "logo",
+      "palette": "palette and font"
+    },
+    "status": {
+      "brand": "brand saved ✓",
+      "audience": "audience saved ✓",
+      "differential": "differentiator saved ✓",
+      "voice": "tone of voice saved ✓",
+      "banned": "blocklist saved ✓",
+      "offers": "offer saved ✓",
+      "logoUploaded": "logo received ✓",
+      "logoNoted": "wordmark noted ✓",
+      "palette": "palette saved ✓",
+      "fonts": "font saved ✓"
+    },
+    "confirm": {
+      "voice": "Tone of voice saved ✓",
+      "palette": "Palette saved ✓",
+      "fonts": "Font saved ✓"
+    },
+    "agent": {
+      "followUpGeneric": "Can you be more specific? The more detail, the better the engine writes.",
+      "adjustAsk": "What do you want to adjust? Tell me the topic and the new value.",
+      "fontMissing": "{{font}} isn't in the catalog. Ask “make it for me” and I'll propose three that come close.",
+      "wordmarkNoted": "Noted. I'll draw the wordmark at the end, with the font you choose.",
+      "logoOpaque": "This logo has a solid background. On dark pieces a white box will show around it. If you can, send the version with a transparent background.",
+      "suggest": {
+        "voice": "Three ways of speaking, based on what you told me. Click the one that sounds like your brand.",
+        "palette": "Three palettes, based on what you told me. Click the one that looks like your brand.",
+        "fonts": "Three font pairs. Click the one that fits the palette."
+      }
+    },
+    "resume": "We stopped here: {{topic}}. Shall we continue?",
+    "empty": "no brand built yet",
+    "progress": "brandcore · {{current}}/{{total}}",
+    "chip": "not sure — make it for me",
+    "placeholder": "answer your way",
+    "summary": {
+      "done": "brandcore built ✓",
+      "body": "Check the summary. If it's right, publish and the engine starts working with it. If not, tell me what to adjust.",
+      "publish": "Publish brandcore →",
+      "adjust": "Adjust something /",
+      "labels": {
+        "brand": "BRAND",
+        "what": "WHAT IT SELLS",
+        "audience": "FOR WHOM",
+        "differential": "DIFFERENTIATOR",
+        "voice": "TONE OF VOICE",
+        "banned": "BLOCKLIST",
+        "offers": "OFFER",
+        "logo": "LOGO",
+        "palette": "PALETTE",
+        "fonts": "FONTS"
+      }
+    },
+    "errors": {
+      "modelDown": "The engine didn't respond. Your answer was saved. Try again.",
+      "retry": "Try again",
+      "offline": "No connection. Nothing was lost. Come back when the network does.",
+      "logoUpload": "The logo didn't upload. Try again or ask “make it for me”.",
+      "publish": "Not published. The brandcore is saved as a draft. Try again in a moment."
+    },
+    "options": {
+      "palette": "Proposed palettes",
+      "fonts": "Proposed font pairs",
+      "voice": "Proposed voices"
+    },
+    "a11y": {
+      "attachLogo": "Send my logo",
+      "send": "Send answer",
+      "thinking": "The agent is replying",
+      "thread": "Brandcore conversation"
     },
     "preview": {
-      "title": "How your brand will look",
       "kicker": "New",
       "name": "Your brand",
       "concept": "What you do shows up here.",
       "footer": "@your.handle"
-    },
-    "intro": {
-      "title": "Let's build your brand",
-      "description": "{{count}} quick questions. None of them is about design — they're about your business.",
-      "points": {
-        "detail": {
-          "title": "The more detail, the better the content",
-          "body": "Everything you answer here becomes the basis for every post, story and piece Vekoo writes for you. A specific answer (“sourdough bread, baked at 6am”) produces far better content than a generic one (“bakery”)."
-        },
-        "help": {
-          "title": "Stuck? Vekoo answers for you",
-          "body": "Every question about colour, type or tone of voice has an “I don't know — do it for me” button. You pick from ready-made options, with a preview, instead of creating from scratch."
-        },
-        "later": {
-          "title": "Nothing here is final",
-          "body": "You can change everything later and keep adding information over time. The brand gets richer — and the content sharper."
-        }
-      },
-      "time": "Takes about 3 minutes. You can leave halfway and pick up where you left off.",
-      "cta": "Start"
-    },
-    "name": {
-      "title": "What's your business called?",
-      "description": "This is the name that shows up on your pieces.",
-      "label": "Business name",
-      "placeholder": "E.g. João's Bakery",
-      "hint": "The way people actually call you."
-    },
-    "what": {
-      "title": "What do you make or sell?",
-      "description": "In one sentence. It's what Vekoo writes from.",
-      "conceptLabel": "In one sentence",
-      "conceptPlaceholder": "E.g. Sourdough bread baked every day at 6am and cornmeal cake in the afternoon.",
-      "conceptHint": "The more concrete, the better the content later. Say what makes you different.",
-      "segmentLabel": "Your line of work",
-      "segments": {
-        "restaurant": "Restaurant or bar",
-        "shop": "Shop",
-        "services": "Services",
-        "health": "Health",
-        "education": "Education",
-        "creator": "Content or creator",
-        "other": "Other"
-      },
-      "segmentTextLabel": "How you'd describe it",
-      "segmentTextPlaceholder": "E.g. Neighbourhood bakery",
-      "segmentTextHint": "Adjust it your way — the chip only fills it in so you don't type from scratch."
-    },
-    "handle": {
-      "title": "Where do people find you?",
-      "description": "The handle goes in the footer of your pieces. The city helps Vekoo mention where you are.",
-      "instagramLabel": "Instagram",
-      "instagramPlaceholder": "joaosbakery",
-      "instagramHint": "Without the at sign, we add it.",
-      "cityLabel": "City",
-      "cityPlaceholder": "E.g. Belo Horizonte, MG",
-      "cityHint": "Optional."
-    },
-    "logo": {
-      "title": "Do you have a logo?",
-      "description": "If you don't, Vekoo draws a wordmark with your business name.",
-      "uploadTitle": "Upload my logo",
-      "uploadHint": "PNG with a transparent background, or SVG",
-      "drawTitle": "I don't — draw one for me",
-      "drawHint": "A wordmark with your name, in your font",
-      "uploaded": "Logo uploaded.",
-      "uploadFailed": "Couldn't upload the logo.",
-      "drawn": "Wordmark drawn in both versions.",
-      "drawFailed": "Couldn't draw the wordmark.",
-      "listAria": "Brand logos",
-      "generatedName": "Vekoo wordmark",
-      "variant": {
-        "light": "For light backgrounds",
-        "dark": "For dark backgrounds"
-      },
-      "remove": "Remove",
-      "replace": "Upload a different file",
-      "opaqueTitle": "That logo has a solid background",
-      "opaqueBody": "On a dark piece it will show a white rectangle around it. If you can, upload the version with a transparent background.",
-      "generatedHint": "We redraw the wordmark if you change the font or colours later.",
-      "later": "Got it: we'll draw the wordmark at the end, with the font you choose."
-    },
-    "colors": {
-      "title": "Does your brand have colours?",
-      "description": "Two or three are enough. Vekoo builds the rest and makes sure text is always readable.",
-      "haveColors": "I have colours",
-      "suggestMe": "I don't know — do it for me",
-      "listAria": "Brand colours",
-      "colorAria": "Colour {{index}}",
-      "addColor": "Add colour",
-      "removeColor": "Remove colour",
-      "derivedHint": "Background, text and support colours come out of those automatically — you don't pick each one.",
-      "optionsAria": "Proposed palettes",
-      "roles": {
-        "darkBackground": "Dark background",
-        "lightBackground": "Light background",
-        "textOnDark": "Text on dark",
-        "textOnLight": "Text on light",
-        "muted": "Support",
-        "accent": "Accent",
-        "campaign": "Campaign"
-      }
-    },
-    "fonts": {
-      "title": "And the fonts?",
-      "description": "One to grab attention and one for the text. If you have no idea, Vekoo picks.",
-      "haveFonts": "I'll choose",
-      "suggestMe": "I don't know — do it for me",
-      "searchLabel": "Search fonts",
-      "searchPlaceholder": "Type a font name…",
-      "searchHint": "Open fonts, free and ready to use.",
-      "catalogAria": "Font catalogue",
-      "pairHint": "Vekoo picks the second font, for body text, to go with it. You can swap it later.",
-      "optionsAria": "Proposed font pairs"
-    },
-    "voice": {
-      "title": "How do you talk to your customers?",
-      "description": "Pick the style and Vekoo writes the sentence that sums up your voice.",
-      "tonesLabel": "Your brand's style",
-      "tonesHint": "Pick up to three.",
-      "noteLabel": "Want to explain it in your own words?",
-      "notePlaceholder": "E.g. I talk like someone behind the counter, no formality",
-      "noteHint": "Optional, but it helps a lot.",
-      "essenceLabel": "Your voice in one sentence",
-      "optionsAria": "Proposed voices",
-      "finalLabel": "The sentence that counts",
-      "finalPlaceholder": "Pick an option above or write it your way.",
-      "finalHint": "You can edit the text freely.",
-      "bannedLabel": "Words your brand never uses",
-      "bannedHint": "Vekoo will never write these words on your pieces.",
-      "bannedPreview": "Avoids: {{words}}"
-    },
-    "offers": {
-      "title": "Want to add your products now?",
-      "description": "Every price on a piece comes from here. Without this list, Vekoo asks instead of inventing.",
-      "listAria": "Products and prices",
-      "namePlaceholder": "Product or service",
-      "pricePlaceholder": "Price",
-      "descriptionPlaceholder": "Short description (optional)",
-      "add": "Add another",
-      "hint": "You can skip and add them later, when you need them."
-    },
-    "done": {
-      "title": "All set, {{name}}",
-      "description": "This is how your brand will look. Check it and publish to start creating.",
-      "cta": "Publish and create my first piece",
-      "ctaCreate": "Create my first piece",
-      "publishing": "Publishing version 1…",
-      "publishedToast": "Brand published. Now just say what you want to create.",
-      "publishFailed": "Couldn't publish the brand.",
-      "incomplete": "Still missing the basics: name, what you do, colours and fonts.",
-      "summaryAria": "What's ready",
-      "summary": {
-        "colors": "Your colours, with background, text and accent already set.",
-        "fonts": "Your fonts, applied to headings and body text.",
-        "voice": "Your way of talking, so Vekoo writes like you.",
-        "logo": "Your logo, in light and dark versions."
-      },
-      "nextTitle": "What's next?",
-      "nextBody": "You describe what you want in one sentence and get a finished piece. The more the brand knows, the better it gets — and you can fill it in whenever you like.",
-      "edit": "Adjust brand details",
-      "drawing": "Drawing your wordmark…"
     }
   }
 }

@@ -37,7 +37,6 @@ en:
     busy: "There's already a generation running. Wait for it to finish."
 
   onboarding:
-    unknown_step: "That question doesn't exist."
     unknown_kind: "I can't propose that."
     cannot_finish: "Still missing the basics: name, what you do, colours and fonts."
     logo_required: "Upload your logo or let Vekoo draw a wordmark."

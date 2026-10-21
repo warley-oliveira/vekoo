@@ -3,13 +3,17 @@
 # Só escrita e leitura agregada: nada no produto depende de um evento
 # específico. Por isso não tem `updated_at` — evento não muda.
 class OnboardingEvent < ApplicationRecord
-  ACTIONS = %w[viewed answered skipped suggested finished].freeze
+  ACTIONS = %w[viewed answered skipped suggested followed_up finished].freeze
+  # Os temas da conversa e o resumo. Os passos do onboarding de telas ficam
+  # válidos porque os eventos antigos continuam no banco.
+  STEPS = (BrandCore::Onboarding::TOPICS + [ BrandCore::Onboarding::SUMMARY ] +
+    BrandCore::Onboarding::LEGACY_STEPS).uniq.freeze
 
   belongs_to :organization
   belongs_to :brand_core, optional: true
   belongs_to :account, optional: true
 
-  validates :step, inclusion: { in: ->(_) { BrandCore::Onboarding::STEPS } }
+  validates :step, inclusion: { in: STEPS }
   validates :action, inclusion: { in: ACTIONS }
 
   scope :since, ->(time) { where(created_at: time..) }
@@ -17,8 +21,9 @@ class OnboardingEvent < ApplicationRecord
   # mais recente. Quem quiser a última usa isto.
   scope :ordered, -> { order(:created_at) }
 
-  # O funil: quantas marcas chegaram a cada pergunta, quantas responderam,
-  # quantas pularam e quantas pediram ajuda à IA.
+  # O funil: quantas marcas chegaram a cada tema, quantas responderam,
+  # quantas pularam, quantas precisaram de seguimento e quantas pediram ajuda
+  # à IA. O resumo entra no fim: é onde se publica.
   #
   # "Chegou" é ter **qualquer** evento na etapa, e não só o `viewed`: quem
   # respondeu obviamente chegou, e contar só a visita subestimaria o alcance
@@ -26,18 +31,20 @@ class OnboardingEvent < ApplicationRecord
   def self.funnel(since: 90.days.ago)
     rows = since(since).group(:step, :action).distinct.count(:brand_core_id)
     reached = since(since).group(:step).distinct.count(:brand_core_id)
-    base = reached[BrandCore::Onboarding::STEPS.second].to_i
+    steps = BrandCore::Onboarding::TOPICS + [ BrandCore::Onboarding::SUMMARY ]
+    base = reached[steps.first].to_i
 
-    BrandCore::Onboarding::STEPS.map do |step|
+    steps.map do |step|
       arrived = reached[step].to_i
       {
         "step" => step,
         "reached" => arrived,
-        # Da primeira pergunta de verdade (`name`) até aqui.
+        # Da primeira pergunta (`brand`) até aqui.
         "reachPercent" => base.positive? ? (arrived * 100.0 / base).round : 0,
         "answered" => rows[[ step, "answered" ]].to_i,
         "skipped" => rows[[ step, "skipped" ]].to_i,
         "suggested" => rows[[ step, "suggested" ]].to_i,
+        "followedUp" => rows[[ step, "followed_up" ]].to_i,
         "finished" => rows[[ step, "finished" ]].to_i
       }
     end

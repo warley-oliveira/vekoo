@@ -8,7 +8,14 @@ class AgentTurn < ApplicationRecord
   # `create` é o pedido livre (2–3 variações); `adjust` é o ajuste em
   # linguagem natural sobre uma peça (1 variação); `vary` pede mais
   # composições da mesma ideia.
-  KINDS = %w[create adjust vary].freeze
+  #
+  # No onboarding, cada fala da pessoa é um turno: `answer` é a resposta
+  # escrita, `suggest` é o "cria pra mim", `choose` é o clique numa das
+  # propostas e `logo` é o arquivo enviado. O que o agente responde vai em
+  # `plan["reply"]`, como **códigos** — a tela traduz.
+  CREATION_KINDS = %w[create adjust vary].freeze
+  ONBOARDING_KINDS = %w[answer suggest choose logo].freeze
+  KINDS = (CREATION_KINDS + ONBOARDING_KINDS).freeze
   STATUSES = %w[thinking answered question failed].freeze
 
   belongs_to :conversation, class_name: "AgentConversation",
@@ -22,8 +29,9 @@ class AgentTurn < ApplicationRecord
   validates :kind, inclusion: { in: KINDS }
   validates :status, inclusion: { in: STATUSES }
   # `vary` não tem pedido escrito: a pessoa clicou "gerar variações" sobre uma
-  # peça. A tela desenha esse turno pelo `kind`, não pelo texto.
-  validates :prompt, presence: true, unless: -> { kind == "vary" }
+  # peça. A tela desenha esse turno pelo `kind`, não pelo texto. No
+  # onboarding, só a resposta escrita tem texto.
+  validates :prompt, presence: true, if: -> { kind.in?(%w[create adjust answer]) }
   validates :prompt, length: { maximum: 2_000 }
 
   scope :thinking, -> { where(status: "thinking") }
@@ -36,6 +44,10 @@ class AgentTurn < ApplicationRecord
 
   def variations
     Array(plan["variations"])
+  end
+
+  def reply
+    Array(plan["reply"])
   end
 
   # Quanto a organização gastou de verdade no período — a base do teto mensal.

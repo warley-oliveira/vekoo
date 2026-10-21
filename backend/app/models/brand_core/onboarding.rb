@@ -1,8 +1,8 @@
-# O onboarding guiado: a marca montada por perguntas, em linguagem de dono de
-# negócio.
+# O onboarding por conversa: a marca montada pelo que a pessoa conta, uma
+# pergunta por vez, com o agente interpretando cada resposta.
 #
-# É outra **porta** para o mesmo Brandcore, não outro modelo: cada pergunta
-# escreve numa seção do documento que o wizard de edição já conhece. Quem
+# É outra **porta** para o mesmo Brandcore, não outro modelo: cada tema
+# escreve em campos do documento que o wizard de edição já conhece. Quem
 # terminar aqui e abrir `/setup/:step` depois encontra tudo preenchido.
 #
 # O que não se pergunta: a hierarquia de estilos. Ninguém que abriu uma
@@ -10,72 +10,79 @@
 # tipografia escolhida (`Schema.default_styles`) e o ajuste fino fica no modo
 # de edição, para quem quiser.
 module BrandCore::Onboarding
-  # `intro` explica o jogo antes de começar; `done` é o fechamento com o
-  # cartão montado e a publicação da v1.
-  STEPS = %w[intro name what handle logo colors fonts voice offers done].freeze
+  # Os temas, na ordem em que o agente pergunta. Paleta e fonte são **uma**
+  # pergunta para a pessoa ("cores e fonte") e dois temas aqui dentro: cada um
+  # tem o próprio "cria pra mim", o próprio status gravado e pode ficar aberto
+  # sem o outro.
+  TOPICS = %w[brand audience differential voice banned offers logo palette fonts].freeze
 
-  # A seção do documento que cada pergunta escreve. As que não escrevem
-  # (`intro`, `logo`, `done`) mexem em ativo ou em nada.
-  SECTION = {
-    "name" => "identity",
-    "what" => "identity",
-    "handle" => "identity",
-    "colors" => "palette",
-    "fonts" => "typography",
-    "voice" => "voice",
-    "offers" => "offers"
+  # A posição que a pessoa vê no `brandcore · n/8`.
+  POSITION = {
+    "brand" => 1, "audience" => 2, "differential" => 3, "voice" => 4,
+    "banned" => 5, "offers" => 6, "logo" => 7, "palette" => 8, "fonts" => 8
   }.freeze
+  QUESTION_COUNT = 8
 
-  # O que dá para pular sem quebrar nada. Cor e tipografia não estão aqui —
-  # mas as duas têm "cria pra mim", que é o jeito de não travar quem não sabe
-  # responder.
-  SKIPPABLE = %w[handle logo voice offers].freeze
+  # Depois do último tema a conversa não acaba: vira o resumo, e o que a
+  # pessoa escrever ali é ajuste.
+  SUMMARY = "summary".freeze
 
-  # Onde existe o botão "não sei / cria pra mim".
-  SUGGESTIBLE = %w[colors fonts voice].freeze
-
-  # Os chips de segmento. São **códigos**: a tela traduz e o texto que a
-  # pessoa confirmar é o que vai para `identity.segment`.
-  SEGMENTS = %w[restaurant shop services health education creator other].freeze
-
-  # O mínimo para terminar e publicar a v1. Curto de propósito: nome, o que
-  # faz, cor e fonte — e as duas últimas podem vir da IA.
+  # Sem estes três não há marca: nome e o que vende, cor, fonte. Tema
+  # obrigatório não fecha com resposta vaga — o agente repete a pergunta (com
+  # o "cria pra mim" à mão) em vez de seguir com um buraco.
   #
   # A voz fica de fora mesmo sendo exigida para publicar (`Completeness`): se
-  # a pessoa pular, o fechamento preenche uma proposta curada e **mostra** no
-  # cartão antes de publicar. Travar o cadastro numa pergunta sobre tom de voz
-  # seria perder a marca inteira por causa de uma frase.
-  REQUIRED_STEPS = %w[name what colors fonts].freeze
+  # a pessoa não souber dizer, o fechamento preenche uma proposta curada e
+  # **mostra** no resumo antes de publicar.
+  REQUIRED = %w[brand palette fonts].freeze
+
+  # Onde existe o chip "não sei — cria pra mim". Na logo ele não propõe nada:
+  # anota o pedido, e o logotipo é desenhado no fim com a fonte escolhida.
+  SUGGESTIBLE = %w[voice logo palette fonts].freeze
+
+  # Os códigos de ramo que escolhem as propostas curadas. O texto livre que a
+  # pessoa usou vai para `identity.segment`; o código fica no progresso.
+  SEGMENTS = %w[restaurant shop services health education creator other].freeze
+
+  # O onboarding de telas (até out/2026) guardava os passos respondidos com
+  # outros nomes. Marca que parou no meio dele retoma a conversa no primeiro
+  # tema aberto — `handle` e `name` não fecham tema nenhum sozinhos.
+  LEGACY_STEPS = %w[intro name what handle logo colors fonts voice offers done].freeze
+  LEGACY = {
+    "what" => "brand", "voice" => "voice", "offers" => "offers",
+    "logo" => "logo", "colors" => "palette", "fonts" => "fonts"
+  }.freeze
 
   module_function
 
-  def first_step = STEPS.first
+  def topic?(value) = TOPICS.include?(value.to_s)
 
-  def index(step) = STEPS.index(step.to_s)
-
-  def valid?(step) = STEPS.include?(step.to_s)
-
-  def next_step(step)
-    STEPS[index(step).to_i + 1]
+  def position(topic)
+    topic.to_s == SUMMARY ? QUESTION_COUNT : POSITION.fetch(topic.to_s, 1)
   end
 
-  def previous_step(step)
-    position = index(step)
-    position&.positive? ? STEPS[position - 1] : nil
+  def required?(topic) = REQUIRED.include?(topic.to_s)
+
+  def suggestible?(topic) = SUGGESTIBLE.include?(topic.to_s)
+
+  def from_legacy(steps)
+    Array(steps).filter_map { |step| LEGACY[step.to_s] }
   end
 
-  def skippable?(step) = SKIPPABLE.include?(step.to_s)
-
-  def suggestible?(step) = SUGGESTIBLE.include?(step.to_s)
-
-  # Quantas perguntas a barra de progresso conta: `intro` e `done` não são
-  # perguntas, e contá-las faria a barra começar em 10%.
-  def question_count = STEPS.length - 2
-
-  def question_position(step)
-    position = index(step)
-    return nil if position.nil? || position.zero? || step.to_s == "done"
-
-    position
+  # O tema tem o que precisa para fechar? Os opcionais fecham com qualquer
+  # resposta que não seja vaga (ou depois do seguimento); os obrigatórios só
+  # com o dado no documento.
+  def satisfied?(topic, document)
+    case topic.to_s
+    when "brand"
+      identity = document["identity"]
+      %w[name concept segment].all? { |key| identity[key].present? }
+    when "palette"
+      BrandCore::Schema.palette_rules(document["palette"]).values.all?
+    when "fonts"
+      BrandCore::Schema::FONT_ROLES.all? { |role| document["typography"][role]["family"].present? }
+    else
+      true
+    end
   end
 end

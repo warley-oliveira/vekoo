@@ -70,7 +70,7 @@ module BrandCore::Schema
   def default_document
     {
       "identity" => {
-        "name" => "", "segment" => "", "concept" => "", "positioning" => "",
+        "name" => "", "segment" => "", "concept" => "", "audience" => "", "positioning" => "",
         "characters" => [], "address" => "", "instagram" => "", "networks" => []
       },
       "palette" => { "colors" => [] },
@@ -129,6 +129,10 @@ module BrandCore::Schema
       "name" => text(raw["name"], SHORT),
       "segment" => text(raw["segment"], SHORT),
       "concept" => text(raw["concept"], LINE),
+      # Pra quem a marca escreve. Separado de `positioning` (o que faz alguém
+      # escolher esta marca e não a do lado) porque o agente precisa dos dois,
+      # e misturados no mesmo parágrafo ele não sabe qual é qual.
+      "audience" => text(raw["audience"], PARAGRAPH),
       "positioning" => text(raw["positioning"], PARAGRAPH),
       "characters" => items(raw["characters"]) { |c|
         { "name" => text(c["name"], SHORT), "role" => text(c["role"], LINE) }

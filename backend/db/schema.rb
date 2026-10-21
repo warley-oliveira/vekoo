@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_09_140100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,11 +60,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_140100) do
     t.datetime "created_at", null: false
     t.datetime "last_turn_at"
     t.uuid "organization_id", null: false
+    t.string "purpose", default: "create", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_agent_conversations_on_account_id"
     t.index ["brand_core_id", "last_turn_at"], name: "index_agent_conversations_on_brand_core_id_and_last_turn_at"
     t.index ["brand_core_id"], name: "index_agent_conversations_on_brand_core_id"
+    t.index ["brand_core_id"], name: "index_agent_conversations_one_onboarding_per_brand", unique: true, where: "((purpose)::text = 'onboarding'::text)"
     t.index ["organization_id"], name: "index_agent_conversations_on_organization_id"
   end
 

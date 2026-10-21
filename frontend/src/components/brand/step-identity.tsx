@@ -64,6 +64,18 @@ export function StepIdentity() {
         )}
       </Field>
 
+      <Field label={t("brand.identity.audience")} error={errors.audience?.message}>
+        {(field) => (
+          <Textarea
+            {...field}
+            {...register("audience")}
+            rows={2}
+            placeholder={t("brand.identity.audiencePlaceholder")}
+            maxLength={600}
+          />
+        )}
+      </Field>
+
       <Field label={t("brand.identity.positioning")} error={errors.positioning?.message}>
         {(field) => (
           <Textarea

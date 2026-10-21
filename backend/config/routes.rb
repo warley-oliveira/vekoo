@@ -51,10 +51,13 @@ Rails.application.routes.draw do
     resources :engines, only: [] do
       member { post :preview }
     end
-    # O onboarding guiado: a porta de entrada de toda marca nova. Escreve no
-    # mesmo documento do wizard de edição, uma pergunta por vez.
-    resource :onboarding, only: :update, controller: :onboardings do
-      post :suggest
+    # O onboarding por conversa: a porta de entrada de toda marca nova. A
+    # pessoa conta da marca e o agente escreve no mesmo documento do wizard de
+    # edição.
+    resource :onboarding, only: :show, controller: :onboardings do
+      post :start
+      post :messages
+      post :retry, action: :retry_turn
       post :wordmark
       post :finish
     end

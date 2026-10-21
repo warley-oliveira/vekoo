@@ -84,10 +84,11 @@ class BrandCore < ApplicationRecord
 
   # --------------------------------------------------------------- onboarding
   #
-  # O onboarding guiado é outra porta para este mesmo documento: perguntas em
-  # linguagem de dono de negócio, uma por tela. O estado dele mora no
-  # `progress` porque é exatamente isso — progresso —, e ficar numa tabela à
-  # parte obrigaria dois lugares a concordar sobre onde a pessoa parou.
+  # O onboarding por conversa é outra porta para este mesmo documento. O
+  # estado dele mora no `progress` porque é exatamente isso — progresso —, e
+  # ficar numa tabela à parte obrigaria dois lugares a concordar sobre onde a
+  # pessoa parou. A conversa em si (o que foi dito) mora na
+  # `AgentConversation` de propósito `onboarding`.
 
   def onboarding_state
     state = progress["onboarding"]
@@ -106,61 +107,70 @@ class BrandCore < ApplicationRecord
     !onboarding_done? && visited_steps.empty?
   end
 
-  # Onde retomar. Quem já respondeu tudo até "cores" volta em "cores", não no
-  # começo.
-  def onboarding_step
-    step = onboarding_state["step"]
-    BrandCore::Onboarding.valid?(step) ? step : BrandCore::Onboarding.first_step
+  # Os temas fechados. Inclui os passos do onboarding de telas, para quem
+  # parou no meio dele retomar a conversa sem responder de novo.
+  def onboarding_closed
+    legacy = BrandCore::Onboarding.from_legacy(Array(onboarding_state["answered"]) | Array(onboarding_state["skipped"]))
+    BrandCore::Onboarding::TOPICS & (Array(onboarding_state["topics"]) | legacy)
   end
 
-  def onboarding_answered
-    Array(onboarding_state["answered"]) & BrandCore::Onboarding::STEPS
+  # Onde a conversa está: o primeiro tema aberto, ou o resumo.
+  def onboarding_topic
+    BrandCore::Onboarding::TOPICS.find { |topic| !onboarding_closed.include?(topic) } ||
+      BrandCore::Onboarding::SUMMARY
   end
 
-  def onboarding_skipped
-    Array(onboarding_state["skipped"]) & BrandCore::Onboarding::STEPS
+  # Temas em que o agente já gastou o seguimento ("dá pra ser mais
+  # específico?"). Um por tema: depois disso ele segue em frente.
+  def onboarding_follow_ups
+    BrandCore::Onboarding::TOPICS & Array(onboarding_state["followUps"])
   end
 
-  # O código do chip de segmento. `identity.segment` guarda o texto que a
-  # pessoa confirmou (que ela pode ter reescrito); o código fica aqui porque é
-  # o que a IA e as propostas curadas usam para escolher.
+  # O código do ramo. `identity.segment` guarda o texto que a pessoa usou; o
+  # código fica aqui porque é o que as propostas curadas usam para escolher.
   def onboarding_segment
     onboarding_state["segment"].to_s.presence
   end
 
-  # A pessoa disse "não tenho logo" e aceitou o logotipo da Vekoo. A intenção
-  # fica guardada porque o desenho só acontece no fechamento: o logotipo usa a
-  # tipografia, e a tipografia é escolhida **depois** da pergunta da logo.
+  # A pessoa pediu "cria pra mim" na logo. A intenção fica guardada porque o
+  # desenho só acontece no fim: o logotipo usa a tipografia, e a tipografia é
+  # escolhida **depois** da pergunta da logo.
   def wants_wordmark?
     onboarding_state["wantsWordmark"] == true
   end
 
-  def track_onboarding(step:, action: nil, segment: nil, done: nil, wants_wordmark: nil)
+  # A fonte que a pessoa pediu e o catálogo não tem — o "cria pra mim" da
+  # fonte propõe as que chegam perto dela.
+  def onboarding_wanted_font
+    onboarding_state["wantedFont"].to_s.presence
+  end
+
+  def track_onboarding(close: nil, follow_up: nil, segment: nil, done: nil, wants_wordmark: nil, wanted_font: nil)
     state = onboarding_state.dup
     state["startedAt"] ||= (Time.current.to_f * 1000).round
 
-    if BrandCore::Onboarding.valid?(step)
-      state["step"] = step
-      case action
-      when "answered"
-        state["answered"] = (Array(state["answered"]) | [ step ]) & BrandCore::Onboarding::STEPS
-        state["skipped"] = Array(state["skipped"]) - [ step ]
-      when "skipped"
-        state["skipped"] = (Array(state["skipped"]) | [ step ]) & BrandCore::Onboarding::STEPS
-      end
+    closing = Array(close) & BrandCore::Onboarding::TOPICS
+    state["topics"] = BrandCore::Onboarding::TOPICS & (onboarding_closed | closing) if closing.any?
+    if BrandCore::Onboarding.topic?(follow_up)
+      state["followUps"] = BrandCore::Onboarding::TOPICS & (onboarding_follow_ups | [ follow_up.to_s ])
     end
 
-    state["segment"] = segment if segment.present?
+    state["segment"] = segment if BrandCore::Onboarding::SEGMENTS.include?(segment.to_s)
     state["wantsWordmark"] = wants_wordmark unless wants_wordmark.nil?
+    state["wantedFont"] = wanted_font.presence unless wanted_font.nil?
     state["done"] = done unless done.nil?
     self.progress = progress.merge("onboarding" => state)
   end
 
-  # O mínimo do onboarding: nome, o que faz, cor e fonte. Voz e produtos são
-  # puláveis — a voz que falta é preenchida no fechamento, e a pessoa a vê no
-  # cartão antes de publicar.
+  # O mínimo do onboarding: marca, paleta e fonte fechadas. Voz e o resto são
+  # opcionais — a voz que falta é preenchida no fechamento, e a pessoa a vê no
+  # resumo antes de publicar.
   def onboarding_ready_to_finish?
-    BrandCore::Onboarding::REQUIRED_STEPS.all? { |step| onboarding_answered.include?(step) }
+    BrandCore::Onboarding::REQUIRED.all? { |topic| onboarding_closed.include?(topic) }
+  end
+
+  def onboarding_conversation
+    agent_conversations.onboarding.first
   end
 
   def unpublished_changes?

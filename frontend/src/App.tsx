@@ -47,10 +47,12 @@ export default function App() {
         <Route path="/brands/:brandId" element={<BrandLayout />}>
           {/* Editor em tela cheia — fora do AppShell de propósito */}
           <Route path="carousels/:carouselId/edit" element={<EditorPage />} />
-          {/* Onboarding também em tela cheia: uma pergunta por vez, sem menu
-              lateral disputando a atenção de quem ainda não tem uma marca. */}
+          {/* Onboarding também em tela cheia: uma conversa, sem menu lateral
+              disputando a atenção de quem ainda não tem uma marca. O
+              `/:step` era o onboarding de telas — o link antigo cai na
+              conversa, que retoma sozinha de onde parou. */}
           <Route path="onboarding" element={<OnboardingPage />} />
-          <Route path="onboarding/:step" element={<OnboardingPage />} />
+          <Route path="onboarding/:step" element={<Navigate to=".." relative="path" replace />} />
           <Route element={<AppShell />}>
             <Route index element={<BrandDashboardPage />} />
             <Route path="carousels" element={<MyCarouselsPage />} />

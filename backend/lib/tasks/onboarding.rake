@@ -1,11 +1,12 @@
 namespace :onboarding do
-  desc "O funil: em que pergunta as pessoas param, pulam ou pedem ajuda à IA"
+  desc "O funil: em que tema as pessoas param, pulam, precisam de seguimento ou pedem ajuda à IA"
   task funnel: :environment do
     rows = OnboardingEvent.funnel
-    puts format("%-10s %8s %8s %10s %8s %8s", "pergunta", "chegou", "%", "respondeu", "pulou", "IA")
+    puts format("%-13s %8s %8s %10s %8s %10s %8s", "tema", "chegou", "%", "respondeu", "pulou", "seguimento", "IA")
     rows.each do |row|
-      puts format("%-10s %8d %7d%% %10d %8d %8d",
-        row["step"], row["reached"], row["reachPercent"], row["answered"], row["skipped"], row["suggested"])
+      puts format("%-13s %8d %7d%% %10d %8d %10d %8d",
+        row["step"], row["reached"], row["reachPercent"], row["answered"], row["skipped"],
+        row["followedUp"], row["suggested"])
     end
 
     cost = OnboardingEvent.cost_per_brand

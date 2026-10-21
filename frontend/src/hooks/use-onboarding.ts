@@ -1,80 +1,109 @@
-import { useCallback } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useSWRConfig } from "swr"
 
 import { BRANDS_KEY } from "@/hooks/use-brands"
+import { useApi } from "@/hooks/use-api"
 import { brandKey } from "@/hooks/use-brand-core"
-import { apiPost, apiPatch } from "@/lib/api"
-import { getClientId } from "@/lib/cable"
-import type { BrandAsset, BrandCore, BrandDocument, BrandSection } from "@/lib/brand-core"
-import type { OnboardingStep, SuggestKind, SuggestOption, SuggestResult } from "@/lib/onboarding"
+import type { AgentEvent } from "@/hooks/use-agent-live"
+import { apiPost } from "@/lib/api"
+import { useAuth } from "@/lib/auth"
+import { getClientId, subscribe } from "@/lib/cable"
+import type { BrandAsset, BrandCore } from "@/lib/brand-core"
+import { onboardingHref, type MessageInput, type OnboardingThread } from "@/lib/onboarding"
 
-// O onboarding guiado de uma marca. Três verbos e nada mais: responder,
-// pedir proposta e fechar publicando a v1.
-
-type AnswerInput = {
-  step: OnboardingStep
-  action?: "viewed" | "answered" | "skipped"
-  /** A seção inteira, como o wizard de edição também manda. */
-  document?: Partial<Pick<BrandDocument, BrandSection>>
-  segment?: string | null
-  wantsWordmark?: boolean
-}
+// O onboarding por conversa de uma marca. A conversa vem pelo SWR; quem avisa
+// que o agente respondeu é o `AgentChannel` — o mesmo da criação de peças.
 
 function clientHeaders() {
   return { headers: { "X-Client-Id": getClientId() } }
 }
 
+export function onboardingKey(brandId: string): string {
+  return onboardingHref(brandId)
+}
+
+/** Rede de segurança do canal: enquanto o agente pensa, a tela confere sozinha. */
+const THINKING_POLL_MS = 4_000
+
+export function useOnboardingThread(brandId: string) {
+  const { data, error, isLoading, mutate } = useApi<OnboardingThread>(onboardingKey(brandId), {
+    refreshInterval: (latest) => (latest?.turns.at(-1)?.status === "thinking" ? THINKING_POLL_MS : 0),
+  })
+  return { thread: data, isLoading: isLoading && !data, error, reload: () => mutate() }
+}
+
+/**
+ * A resposta do agente ao vivo: o job termina, o turno muda e a conversa
+ * volta do servidor. A marca também — cada resposta grava no rascunho, e o
+ * resumo lê o documento.
+ */
+export function useOnboardingLive(brandId: string, conversationId: string | null) {
+  const { session } = useAuth()
+  const { mutate } = useSWRConfig()
+  const current = useRef(conversationId)
+  current.current = conversationId
+
+  useEffect(() => {
+    if (!session) return
+
+    const unsubscribe = subscribe<AgentEvent>("AgentChannel", {
+      received: (message) => {
+        if (message.conversationId !== current.current) return
+        void mutate(onboardingKey(brandId))
+        void mutate(brandKey(brandId))
+      },
+      // Voltou a conexão: o que chegou enquanto ela caiu vem agora.
+      connected: () => void mutate(onboardingKey(brandId)),
+    })
+
+    return () => unsubscribe?.()
+  }, [brandId, session, mutate])
+}
+
 export function useOnboarding(brandId: string) {
   const { mutate } = useSWRConfig()
-  const base = `/brands/${brandId}/onboarding`
-  const key = brandKey(brandId)
+  const key = onboardingKey(brandId)
 
   const store = useCallback(
-    async (brandCore: BrandCore) => {
-      await mutate(key, brandCore, { revalidate: false })
-      await mutate(BRANDS_KEY)
-    },
+    (thread: OnboardingThread) => mutate(key, thread, { revalidate: false }),
     [key, mutate]
   )
 
-  /**
-   * Responde (ou pula, ou só registra que viu). O servidor devolve o
-   * documento inteiro, que substitui o cache — sem revalidar por cima do que
-   * a pessoa está digitando.
-   */
-  const answer = useCallback(
-    async (input: AnswerInput): Promise<BrandCore> => {
-      const saved = await apiPatch<BrandCore>(
-        base,
-        { onboarding: { action: "answered", ...input } },
-        clientHeaders()
-      )
-      await store(saved)
-      return saved
+  /** "Começar a conversa". Idempotente: duas abas caem na mesma. */
+  const start = useCallback(async () => {
+    await store(await apiPost<OnboardingThread>(`${key}/start`))
+  }, [key, store])
+
+  /** Uma fala da pessoa. Volta com o turno `thinking`; a resposta chega pelo canal. */
+  const send = useCallback(
+    async (input: MessageInput) => {
+      await store(await apiPost<OnboardingThread>(`${key}/messages`, { message: input }, clientHeaders()))
     },
-    [base, store]
+    [key, store]
   )
 
-  /** O "não sei / cria pra mim". Nunca falha por falta de modelo. */
-  const suggest = useCallback(
-    async <T extends SuggestOption>(kind: SuggestKind): Promise<SuggestResult<T>> =>
-      apiPost<SuggestResult<T>>(base + "/suggest", { kind }),
-    [base]
+  /** "O motor não respondeu": a mesma fala, de volta à fila. */
+  const retry = useCallback(
+    async (turnId: string) => {
+      await store(await apiPost<OnboardingThread>(`${key}/retry`, { turnId }))
+    },
+    [key, store]
   )
 
-  /** "Não tenho logo": a Vekoo desenha o logotipo tipográfico. */
+  /** O logotipo tipográfico de quem pediu "cria pra mim" na logo. */
   const wordmark = useCallback(async (): Promise<BrandAsset[]> => {
-    const { assets } = await apiPost<{ assets: BrandAsset[] }>(base + "/wordmark", undefined, clientHeaders())
-    await mutate(key)
+    const { assets } = await apiPost<{ assets: BrandAsset[] }>(`${key}/wordmark`, undefined, clientHeaders())
+    await mutate(brandKey(brandId))
     return assets
-  }, [base, key, mutate])
+  }, [brandId, key, mutate])
 
-  /** Fecha: publica a versão 1 e libera a criação de peças. */
+  /** "Publicar brandcore": a versão 1 e a criação de peças liberada. */
   const finish = useCallback(async (): Promise<BrandCore> => {
-    const published = await apiPost<BrandCore>(base + "/finish", undefined, clientHeaders())
-    await store(published)
+    const published = await apiPost<BrandCore>(`${key}/finish`, undefined, clientHeaders())
+    await mutate(brandKey(brandId), published, { revalidate: false })
+    await mutate(BRANDS_KEY)
     return published
-  }, [base, store])
+  }, [brandId, key, mutate])
 
-  return { answer, suggest, wordmark, finish }
+  return { start, send, retry, wordmark, finish }
 }

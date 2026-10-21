@@ -104,43 +104,8 @@ module Agent
       nil
     end
 
-    # Modelos gostam de embrulhar JSON em cerca de markdown ou de comentar
-    # antes. O que importa é o primeiro objeto de topo que fecha — o resto é
-    # ruído e é descartado sem drama.
     def extract
-      start = @raw.index("{")
-      return nil unless start
-
-      depth = 0
-      in_string = false
-      escaped = false
-
-      @raw[start..].each_char.with_index do |char, index|
-        if in_string
-          if escaped then escaped = false
-          elsif char == "\\" then escaped = true
-          elsif char == '"' then in_string = false
-          end
-          next
-        end
-
-        case char
-        when '"' then in_string = true
-        when "{" then depth += 1
-        when "}"
-          depth -= 1
-          return parse(@raw[start, index + 1]) if depth.zero?
-        end
-      end
-
-      nil
-    end
-
-    def parse(slice)
-      value = JSON.parse(slice)
-      value.is_a?(Hash) ? value : nil
-    rescue JSON::ParserError
-      nil
+      Ai::JsonObject.extract(@raw)
     end
   end
 end

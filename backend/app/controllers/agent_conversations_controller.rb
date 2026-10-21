@@ -15,7 +15,7 @@ class AgentConversationsController < AuthenticatedController
   before_action :set_conversation, only: %i[show destroy turns]
 
   def index
-    conversations = @brand.agent_conversations.recent_first.limit(50)
+    conversations = @brand.agent_conversations.creation.recent_first.limit(50)
     render json: {
       conversations: AgentConversationSerializer.many_summaries(conversations),
       retentionDays: (AgentConversation::RETENTION / 1.day).to_i
@@ -78,7 +78,7 @@ class AgentConversationsController < AuthenticatedController
   end
 
   def set_conversation
-    @conversation = @brand.agent_conversations.find(params[:id])
+    @conversation = @brand.agent_conversations.creation.find(params[:id])
   end
 
   def ready?
@@ -88,7 +88,7 @@ class AgentConversationsController < AuthenticatedController
   # Cria o turno depois de conferir tudo o que pode dar errado antes de gastar.
   # Devolve `nil` quando já respondeu (`performed?`).
   def start_turn(conversation, payload)
-    kind = AgentTurn::KINDS.include?(payload[:kind].to_s) ? payload[:kind].to_s : "create"
+    kind = AgentTurn::CREATION_KINDS.include?(payload[:kind].to_s) ? payload[:kind].to_s : "create"
     prompt = payload[:prompt].to_s.strip
     return render_prompt_missing if prompt.blank? && kind != "vary"
 

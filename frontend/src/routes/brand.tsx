@@ -49,7 +49,7 @@ export function BrandPage() {
   // Onboarding por terminar: a marca ainda não é uma marca, e a tela de
   // visão geral não tem o que mostrar.
   if (!brandCore.onboarding.done && brandCore.status === "draft") {
-    return <Navigate to={onboardingHref(brandCore.id, brandCore.onboarding.step)} replace />
+    return <Navigate to={onboardingHref(brandCore.id)} replace />
   }
 
   const started = brandCore.progress.visitedSteps.length > 0 || brandCore.completeness.percent > 10

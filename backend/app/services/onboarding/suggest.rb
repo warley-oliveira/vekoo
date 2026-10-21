@@ -97,7 +97,10 @@ module Onboarding
         name: identity["name"],
         what: identity["concept"],
         segment: identity["segment"],
+        audience: identity["audience"],
+        positioning: identity["positioning"],
         city: identity["address"],
+        wanted_font: @kind == "fonts" ? @brand_core.onboarding_wanted_font : nil,
         tones: @document.dig("voice", "tones"),
         logo_colors: logo_colors
       }
@@ -114,14 +117,6 @@ module Onboarding
       BrandCore::DominantColors.call(asset.file.download)
     rescue StandardError
       []
-    end
-
-    def fallback
-      case @kind
-      when "palette" then Fallbacks.palettes(segment_code).map { |option| build_palette(option) }.compact
-      when "fonts" then Fallbacks.fonts(segment_code).map { |option| build_fonts(option) }.compact
-      else Fallbacks.voices(@document.dig("voice", "tones")).map { |option| build_voice(option) }.compact
-      end
     end
 
     # O código do segmento fica no progresso do onboarding: `identity.segment`
@@ -210,38 +205,8 @@ module Onboarding
       value.to_s.squish.first(max).to_s
     end
 
-    # Mesmo extrator do agente: o modelo às vezes embrulha o JSON em conversa.
     def extract(raw)
-      start = raw.to_s.index("{")
-      return nil unless start
-
-      depth = 0
-      in_string = false
-      escaped = false
-      raw[start..].each_char.with_index do |char, index|
-        if in_string
-          if escaped then escaped = false
-          elsif char == "\\" then escaped = true
-          elsif char == '"' then in_string = false
-          end
-          next
-        end
-        case char
-        when '"' then in_string = true
-        when "{" then depth += 1
-        when "}"
-          depth -= 1
-          return safe_parse(raw[start, index + 1]) if depth.zero?
-        end
-      end
-      nil
-    end
-
-    def safe_parse(slice)
-      value = JSON.parse(slice)
-      value.is_a?(Hash) ? value : nil
-    rescue JSON::ParserError
-      nil
+      Ai::JsonObject.extract(raw)
     end
   end
 end

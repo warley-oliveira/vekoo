@@ -127,6 +127,8 @@
       "concept": "Core concept",
       "conceptHint": "One sentence that sums up why the brand exists.",
       "conceptPlaceholder": "E.g. Sourdough bread, every day, no rush.",
+      "audience": "Who it's for",
+      "audiencePlaceholder": "Who is it for? Describe the customer you most want to attract.",
       "positioning": "Positioning",
       "positioningPlaceholder": "How the brand wants to be seen and by whom — a short paragraph.",
       "characters": "Brand characters",

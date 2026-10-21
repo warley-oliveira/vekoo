@@ -28,7 +28,7 @@ export function BrandGate() {
     if (!brands || brands.length > 0 || creating.current) return
     creating.current = true
     createBrand()
-      .then((brand) => navigate(onboardingHref(brand.id, "intro"), { replace: true }))
+      .then((brand) => navigate(onboardingHref(brand.id), { replace: true }))
       .catch(() => {
         creating.current = false
       })
@@ -55,7 +55,7 @@ export function BrandGate() {
   // Onboarding pendente ganha prioridade sobre qualquer outra tela: uma marca
   // pela metade não serve para nada até fechar.
   if (!active.onboardingDone && active.status === "draft") {
-    return <Navigate to={onboardingHref(active.id, active.onboardingStep)} replace />
+    return <Navigate to={onboardingHref(active.id)} replace />
   }
   return <Navigate to={brandPath(active.id)} replace />
 }

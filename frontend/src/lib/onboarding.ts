@@ -1,60 +1,53 @@
 import type { BrandColor, BrandFont, Tone } from "@/lib/brand-core"
 
-// O onboarding guiado — a porta de entrada de toda marca nova.
+// O onboarding por conversa — a porta de entrada de toda marca nova.
 //
-// Perguntas em linguagem de dono de negócio, uma por tela. Cada resposta
-// escreve numa seção do mesmo documento que o wizard de edição já conhece:
-// não existe "brandcore do onboarding", existe outra porta para o mesmo. O
-// espelho no servidor é `backend/app/models/brand_core/onboarding.rb`.
+// A pessoa conta da marca e o agente monta o brandcore por baixo. Cada fala
+// dela é um turno; o que o agente responde chega como **códigos** (`reply`)
+// e a tela escreve o texto no idioma dela. O espelho no servidor é
+// `backend/app/models/brand_core/onboarding.rb` + `Onboarding::Run`.
 //
 // Módulo sem idioma: só códigos e regras. O que aparece na tela vem de
 // `onboarding.*` no i18n.
 
-export const ONBOARDING_STEPS = [
-  "intro",
-  "name",
-  "what",
-  "handle",
-  "logo",
-  "colors",
-  "fonts",
+/**
+ * Os temas, na ordem em que o agente pergunta. Paleta e fonte são **uma**
+ * pergunta para a pessoa e dois temas aqui: cada um tem o próprio "cria pra
+ * mim" e o próprio status gravado.
+ */
+export const TOPICS = [
+  "brand",
+  "audience",
+  "differential",
   "voice",
+  "banned",
   "offers",
-  "done",
+  "logo",
+  "palette",
+  "fonts",
 ] as const
-export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
+export type Topic = (typeof TOPICS)[number]
+/** Depois do último tema, a conversa vira o resumo — e o que se escreve ali é ajuste. */
+export type ThreadTopic = Topic | "summary"
 
-/** Dá para seguir sem responder. Cor e fonte não estão aqui: têm "cria pra mim". */
-export const SKIPPABLE: readonly OnboardingStep[] = ["handle", "logo", "voice", "offers"]
+/** Os temas como a pessoa os conta no `brandcore · n/8`. */
+export const QUESTION_COUNT = 8
 
-/** Onde existe o botão "não sei / cria pra mim". */
-export const SUGGESTIBLE: readonly OnboardingStep[] = ["colors", "fonts", "voice"]
-
-/** O mínimo para publicar a v1. Curto de propósito. */
-export const REQUIRED_STEPS: readonly OnboardingStep[] = ["name", "what", "colors", "fonts"]
-
-/** Os chips de segmento. São códigos: a tela traduz. */
-export const SEGMENTS = [
-  "restaurant",
-  "shop",
-  "services",
-  "health",
-  "education",
-  "creator",
-  "other",
-] as const
-export type Segment = (typeof SEGMENTS)[number]
+/** O nome do tema na retomada ("Paramos aqui: paleta e fonte"). Paleta e fonte dividem o nome. */
+export function topicLabelKey(topic: ThreadTopic): string {
+  return topic === "fonts" ? "onboarding.topics.palette" : `onboarding.topics.${topic}`
+}
 
 export type OnboardingState = {
-  step: OnboardingStep
-  answered: OnboardingStep[]
-  skipped: OnboardingStep[]
-  segment: Segment | null
-  /**
-   * A pessoa disse "não tenho logo" e aceitou o logotipo da Vekoo. O desenho
-   * acontece no fechamento, e não na hora: o logotipo usa a tipografia, e a
-   * tipografia é escolhida **depois** da pergunta da logo.
-   */
+  topic: ThreadTopic
+  /** 1…8 — paleta e fonte são ambas a 8. */
+  position: number
+  total: number
+  closed: Topic[]
+  /** O tema atual tem o chip "não sei — cria pra mim". */
+  suggestible: boolean
+  segment: string | null
+  /** A pessoa pediu "cria pra mim" na logo: o logotipo sai desenhado no resumo. */
   wantsWordmark: boolean
   done: boolean
   readyToFinish: boolean
@@ -86,57 +79,86 @@ export type VoiceOption = {
 
 export type SuggestOption = PaletteOption | FontsOption | VoiceOption
 
-/**
- * `curated` significa que as propostas vieram da lista curada, não do modelo
- * — sem chave, sem rede ou com resposta torta. A tela **não** muda por causa
- * disso: quem clicou em "não sei" não deveria receber um aviso técnico.
- */
-export type SuggestResult<T extends SuggestOption = SuggestOption> = {
-  kind: SuggestKind
-  source: "ai" | "curated"
-  options: T[]
-  costMicroUsd: number
+/* ---------- a conversa ---------- */
+
+/** Os status gravados. `logoUploaded` e `logoNoted` são os dois jeitos de fechar a logo. */
+export type StatusTopic = Exclude<Topic, "logo"> | "logoUploaded" | "logoNoted"
+
+/** Os textos fixos que o agente pode dizer — `onboarding.agent.<code>`. */
+export type AgentTextCode =
+  | "followUpGeneric"
+  | "adjustAsk"
+  | "fontMissing"
+  | "wordmarkNoted"
+  | "logoOpaque"
+  | "suggest.voice"
+  | "suggest.palette"
+  | "suggest.fonts"
+
+/** Um pedaço da resposta do agente, na ordem em que aparece. */
+export type ReplyItem =
+  | { type: "status"; topic: StatusTopic }
+  /** A confirmação depois de escolher uma proposta ("Paleta gravada ✓"). */
+  | { type: "confirm"; topic: "voice" | "palette" | "fonts" }
+  | { type: "text"; code: AgentTextCode; params?: Record<string, string> }
+  /** O seguimento escrito pelo modelo, sobre o que a pessoa disse. */
+  | { type: "followUp"; text: string }
+  | { type: "question"; topic: Topic }
+  | {
+      type: "options"
+      kind: SuggestKind
+      source: "ai" | "curated"
+      items: SuggestOption[]
+    }
+  | { type: "summary" }
+
+export type TurnKind = "answer" | "suggest" | "choose" | "logo"
+
+export type OnboardingTurn = {
+  id: string
+  kind: TurnKind
+  status: "thinking" | "answered" | "failed"
+  /** O tema em que a pessoa estava quando falou. */
+  topic: ThreadTopic
+  /** A resposta escrita (só em `answer`). */
+  text: string | null
+  /** A proposta escolhida (só em `choose`), copiada do turno das propostas. */
+  choice: { kind: SuggestKind; index: number; option: SuggestOption } | null
+  /** O turno das propostas de onde a escolha saiu. */
+  sourceTurnId: string | null
+  /** A logo enviada (só em `logo`). */
+  assetId: string | null
+  reply: ReplyItem[]
+  /** `modelDown` quando o motor não respondeu — a resposta ficou salva. */
+  error: string | null
+  createdAt: number
 }
+
+export type OnboardingThread = {
+  /** Nulo antes de "Começar a conversa": a tela mostra a intro. */
+  conversationId: string | null
+  startedAt: number | null
+  state: OnboardingState
+  turns: OnboardingTurn[]
+}
+
+export type MessageInput =
+  | { kind: "answer"; text: string }
+  | { kind: "suggest" }
+  | { kind: "choose"; turnId: string; index: number }
+  | { kind: "logo"; assetId: string }
 
 /* ---------- navegação ---------- */
 
-export function stepIndex(step: OnboardingStep): number {
-  return ONBOARDING_STEPS.indexOf(step)
+export function onboardingHref(brandId: string): string {
+  return `/brands/${brandId}/onboarding`
 }
 
-export function nextStep(step: OnboardingStep): OnboardingStep | null {
-  return ONBOARDING_STEPS[stepIndex(step) + 1] ?? null
+/** Paleta e fonte: dá para perguntar pela fonte sem perder o "8/8". */
+export function isPaletteOption(option: SuggestOption): option is PaletteOption {
+  return "colors" in option
 }
 
-export function previousStep(step: OnboardingStep): OnboardingStep | null {
-  const index = stepIndex(step)
-  return index > 0 ? ONBOARDING_STEPS[index - 1] : null
-}
-
-export function isOnboardingStep(value: string | undefined): value is OnboardingStep {
-  return (ONBOARDING_STEPS as readonly string[]).includes(value ?? "")
-}
-
-export function onboardingHref(brandId: string, step: OnboardingStep): string {
-  return `/brands/${brandId}/onboarding/${step}`
-}
-
-export function isSkippable(step: OnboardingStep): boolean {
-  return SKIPPABLE.includes(step)
-}
-
-export function isSuggestible(step: OnboardingStep): boolean {
-  return SUGGESTIBLE.includes(step)
-}
-
-/**
- * Quantas perguntas a barra conta. `intro` e `done` não são perguntas —
- * contá-las faria a barra começar em 10% antes de a pessoa digitar nada.
- */
-export const QUESTION_COUNT = ONBOARDING_STEPS.length - 2
-
-/** A posição da pergunta (1…8), ou `null` para as telas que não perguntam. */
-export function questionPosition(step: OnboardingStep): number | null {
-  const index = stepIndex(step)
-  return index > 0 && step !== "done" ? index : null
+export function isFontsOption(option: SuggestOption): option is FontsOption {
+  return "display" in option
 }

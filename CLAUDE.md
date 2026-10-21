@@ -118,36 +118,37 @@ card** (14 carrosséis, 84 cards, mesma conta de demonstração) e é idempotent
 `bin/rails db:seed`. O front ainda lê o localStorage — rewirar `lib/store.tsx`
 e `lib/auth.tsx` para `useApi` é o passo que falta.
 
-**Onboarding guiado (a porta de entrada de toda marca):** marca nova cai em
-`/brands/:id/onboarding/:step` — dez telas, uma pergunta por vez, em linguagem
-de dono de negócio: `intro` (o que esperar e por que detalhe importa), `name`,
-`what` (frase + chip de ramo), `handle`, `logo`, `colors`, `fonts`, `voice`,
-`offers`, `done`. **Não pergunta hierarquia de texto**: os estilos saem dos
-defaults do schema e o ajuste fino fica no modo de edição. Cada resposta entra
-numa seção do **mesmo** documento pelo `PATCH /brands/:id/onboarding` — não
-existe brandcore do onboarding, existe outra porta; o wizard de oito seções
-continua inteiro em `/setup/:step`, agora como modo de **edição**, alcançável
-pelas configurações da marca. O estado (onde parou, o que respondeu, o que
-pulou, o código do ramo) mora em `progress["onboarding"]`
-(`BrandCore::Onboarding`, `#track_onboarding`); marca publicada conta como
-concluída, o que dispensa migração das antigas. Em toda pergunta de cor, fonte
-e voz existe **"não sei / cria pra mim"**: `POST /brands/:id/onboarding/suggest`
-(`Onboarding::Suggest`) devolve **três** opções validadas — paleta já com os
-papéis derivados e contraste conferido (`BrandCore::PaletteBuilder`, espelhado
-em `buildPalette()` no front), par de fontes que existe no catálogo, voz com
-tons válidos. **Nunca falha**: sem chave, sem rede ou com resposta torta entram
-as propostas curadas de `Onboarding::Fallbacks`, e a tela não muda de forma.
-Quem não tem logo ganha um **logotipo tipográfico** (`RenderWordmark`, libvips —
-determinístico, nada de imagem por IA), desenhado no fechamento porque ele usa a
-tipografia escolhida depois da pergunta da logo. Logo enviada tem transparência
-conferida de verdade (`PngInspector`) e nunca é substituída
-(`brand_assets.generated`); ela também alimenta a proposta de paleta
-(`BrandCore::DominantColors`). `POST /onboarding/finish` publica a **versão 1**
-e leva direto ao agente. O mínimo é nome + o que faz + cores + fontes — voz
-pulada é preenchida no fechamento e **aparece no cartão antes de publicar**.
-Telemetria de funil e custo em `onboarding_events`
-(`bin/rails onboarding:funnel`). Front: `routes/onboarding.tsx` +
-`components/onboarding/`.
+**Onboarding por conversa (a porta de entrada de toda marca):** marca nova cai em
+`/brands/:id/onboarding` — intro e depois uma **conversa**: o agente pergunta um
+tema por vez, a pessoa responde do jeito dela e o LLM grava no campo certo do
+rascunho. Ela nunca vê campo, seção ou schema. Temas (`BrandCore::Onboarding`):
+`brand` (nome + o que vende + ramo), `audience` (`identity.audience`),
+`differential` (`identity.positioning`), `voice` (exemplo → `voice.examples`,
+essência e tons inferidos), `banned`, `offers`, `logo`, `palette`, `fonts` —
+paleta e fonte são **uma** pergunta (`brandcore · 8/8`) e dois temas. Obrigatórios:
+`brand`, `palette`, `fonts` (não fecham vazios); resposta vaga ganha **um**
+seguimento por tema, escrito pelo modelo sobre o que ela disse (fallback fixo). A
+conversa é uma `AgentConversation` de `purpose: "onboarding"` (uma por marca, fora
+da faxina de 30 dias) e cada fala é um `AgentTurn` (`answer`/`suggest`/`choose`/`logo`)
+— mesma fila (`AgentTurnJob` → `Onboarding::Run`) e mesmo canal (`AgentChannel`) da
+criação de peças. O agente responde em **códigos** (`plan["reply"]`: status, pergunta,
+propostas, resumo) e a tela traduz; só o seguimento vem como texto. Leitura em
+`Onboarding::Interpret` (campos permitidos por tema) + `Onboarding::Fields` (grava via
+`assign_section`). Sem chave ou com o teto de OPEX batido, lê sem modelo (as palavras
+dela no campo principal); falha do modelo vira `modelDown` com "tenta de novo"
+(`POST .../onboarding/retry`). **Não gasta crédito.** "Não sei — cria pra mim" (chip
+em tom, logo, paleta, fonte) usa `Onboarding::Suggest` — três opções validadas, nunca
+falha (curadas em `Onboarding::Fallbacks`); escolher paleta já abre as fontes; na logo
+ele só anota e o **logotipo tipográfico** (`RenderWordmark`, libvips) é desenhado ao
+chegar no resumo, com a fonte escolhida. Logo enviada passa por `PngInspector` e
+alimenta a paleta (`DominantColors`). Fonte fora do catálogo não entra: o agente avisa
+e o "cria pra mim" propõe as que chegam perto. Depois do resumo, o que se escreve é
+ajuste (qualquer campo). `POST /onboarding/finish` publica a **versão 1** pelo
+`PublishBrandCore` e leva ao agente. Marcas do onboarding de telas retomam no primeiro
+tema aberto; publicadas contam como concluídas. O wizard de oito seções segue em
+`/setup/:step` como modo de edição, sem link no fluxo. Telemetria em
+`onboarding_events` (`bin/rails onboarding:funnel`). Front: `routes/onboarding.tsx` +
+`components/onboarding/` (labels e status em IBM Plex Mono, `font-mono`).
 
 **Fontes que realmente renderizam:** `BrandFonts` baixa o TTF do catálogo aberto
 (Google Fonts) e guarda em `tmp/brand_fonts`; `Engines::Tokens#font` passa o
@@ -244,11 +245,11 @@ publicada da marca no nascimento) e nasce com o tema derivado da paleta
 filtram por `?brand_id=`. Front: tudo vive sob `/brands/:brandId/...` (início,
 `carousels`, `folders/:id`, `carousels/:id/edit`, `contents`, `contents/:pieceId`,
 `create[/:conversationId]`, `advanced[/:engineId]`, `settings`,
-`onboarding/:step`, `setup/:step`, `templates`, `trash`); a raiz `/` só
+`onboarding`, `setup/:step`, `templates`, `trash`); a raiz `/` só
 escolhe a marca ativa (última usada em `localStorage`, senão a primeira) e redireciona;
 o seletor de marca fica no topo (`components/brand-switcher.tsx`); `useActiveBrand()`
 (`lib/brand-context.tsx`) dá `brandId` e `path("/contents")` para links. A primeira
-marca nasce com a conta (`SignUp`) e cai direto no onboarding guiado. O criador de carrossel é **acoplamento raso** por
+marca nasce com a conta (`SignUp`) e cai direto no onboarding por conversa. O criador de carrossel é **acoplamento raso** por
 decisão: continua editor por blocos com IA e exportação no navegador, só nasce na marca
 e lê os tokens dela. Legado sem marca: `bin/rails brands:migrate_orphans` (resolve quem
 tem uma marca só) ou a tela temporária `/migration/orphans` (`GET /orphans`,

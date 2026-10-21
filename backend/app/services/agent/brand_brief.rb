@@ -43,6 +43,7 @@ module Agent
         "nome" => i["name"],
         "segmento" => i["segment"].presence,
         "conceito" => i["concept"].presence,
+        "publico" => i["audience"].presence,
         "posicionamento" => i["positioning"].presence,
         "instagram" => i["instagram"].presence&.then { |handle| "@#{handle}" },
         "endereco" => i["address"].presence,

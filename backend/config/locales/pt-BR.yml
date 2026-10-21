@@ -41,7 +41,6 @@ pt-BR:
     busy: "Já há uma geração em andamento. Espere ela terminar."
 
   onboarding:
-    unknown_step: "Essa pergunta não existe."
     unknown_kind: "Não sei propor isso."
     cannot_finish: "Ainda falta responder o mínimo: nome, o que você faz, cores e fontes."
     logo_required: "Envie a logo ou peça um logotipo para a Vekoo."

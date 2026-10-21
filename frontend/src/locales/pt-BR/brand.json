@@ -127,6 +127,8 @@
       "concept": "Conceito-mãe",
       "conceptHint": "Uma frase que resume por que a marca existe.",
       "conceptPlaceholder": "Ex.: Pão de fermentação natural, todo dia, sem pressa.",
+      "audience": "Pra quem",
+      "audiencePlaceholder": "Pra quem é? Descreve o cliente que você mais quer atrair.",
       "positioning": "Posicionamento",
       "positioningPlaceholder": "Como a marca quer ser vista e para quem — um parágrafo curto.",
       "characters": "Personagens da marca",
