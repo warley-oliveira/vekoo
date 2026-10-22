@@ -1,10 +1,10 @@
-# Kamal 2 — API Vekoo em api.107-152-37-59.sslip.io
+# Kamal 2 — API Vekoo em syco.vekoo.app (e api.107-152-37-59.sslip.io)
 #
-# Servidor sem domínio próprio: o sslip.io resolve o hostname para o IP embutido
-# nele, e o kamal-proxy emite o certificado no Let's Encrypt (HTTP-01). Por isso o
-# host foi provisionado com `bin/deploy-setup <chave> open` — 80/443 abertos ao
-# mundo, não só às faixas da Cloudflare. Quando houver domínio, troque o host
-# aqui. O front fica no Cloudflare (wrangler), fora deste host. Ver DEPLOY.md.
+# syco.vekoo.app é proxied na Cloudflare; o hostname sslip.io (que resolve para o
+# IP embutido nele) é o acesso direto à origem. Os dois têm certificado do Let's
+# Encrypt emitido pelo kamal-proxy (HTTP-01). O host foi provisionado com
+# `bin/deploy-setup <chave> open` — 80/443 abertos ao mundo, não só às faixas da
+# Cloudflare. O front fica no Cloudflare (wrangler), fora deste host. Ver DEPLOY.md.
 
 minimum_version: 2.12.0
 service: vekoo-api
@@ -28,8 +28,13 @@ servers:
         WEB_CONCURRENCY: 0
 
 proxy:
-  ssl: true                         # Let's Encrypt pelo kamal-proxy
-  host: api.107-152-37-59.sslip.io
+  # Let's Encrypt pelo kamal-proxy, inclusive para syco (proxied na Cloudflare):
+  # o desafio HTTP-01 atravessa a Cloudflare porque *Always Use HTTPS* está
+  # desligado na zona. Ligar essa opção quebra a renovação do certificado.
+  ssl: true
+  hosts:
+    - syco.vekoo.app
+    - api.107-152-37-59.sslip.io    # acesso direto, sem a Cloudflare
   app_port: 80
   healthcheck:
     path: /up
@@ -60,10 +65,10 @@ env:
     RAILS_ENV: production
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
-    APP_HOSTS: api.107-152-37-59.sslip.io                     # config.hosts
+    APP_HOSTS: syco.vekoo.app,api.107-152-37-59.sslip.io      # config.hosts
     FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.vekoo.workers.dev  # CORS, sem curinga
-    BACKEND_URL: https://api.107-152-37-59.sslip.io           # mailer/url_options
-    API_ORIGIN: https://api.107-152-37-59.sslip.io            # URL absoluta dos blobs
+    BACKEND_URL: https://syco.vekoo.app                       # mailer/url_options
+    API_ORIGIN: https://syco.vekoo.app                        # URL absoluta dos blobs
     REDIS_URL: redis://vekoo-api-redis:6379/0                 # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1           # pub/sub do ActionCable
     CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2           # Rails.cache
