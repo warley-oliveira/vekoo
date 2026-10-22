@@ -12,7 +12,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   # connect-src libera só a API do Vekoo (HTTPS e o WebSocket do /cable). Se aparecer erro de CSP no console ao
   # integrar algo novo (analytics, fonte externa), é aqui que se ajusta.
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://api.107-152-37-59.sslip.io wss://api.107-152-37-59.sslip.io; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://syco.vekoo.app wss://syco.vekoo.app; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # Arquivos com hash no nome — imutáveis por definição.
 /assets/*
