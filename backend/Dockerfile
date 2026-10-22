@@ -8,13 +8,15 @@ WORKDIR /rails
 
 # Só dependências de runtime:
 #   libpq5            -> gem pg
-#   libvips           -> image_processing / variantes do Active Storage
+#   libvips           -> motores de peça (Pango), PngInspector, Active Storage
+#   fontconfig + DejaVu -> fonte de reserva do Pango quando BrandFonts falha
 #   libyaml-0-2       -> psych
 #   libjemalloc2      -> RSS menor sob carga de Puma + Sidekiq
 #   postgresql-client -> pg_isready/psql no entrypoint e em `kamal shell`
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      curl libjemalloc2 libpq5 libvips libyaml-0-2 postgresql-client && \
+      curl fontconfig fonts-dejavu-core libjemalloc2 libpq5 libvips libyaml-0-2 \
+      postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 ENV RAILS_ENV=production \

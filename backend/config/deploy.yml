@@ -1,24 +1,23 @@
-# Kamal 2 — API Vekoo em syco.vekoo.app
+# Kamal 2 — API Vekoo em api.107-152-37-59.sslip.io
 #
-# TLS: NÃO usamos Let's Encrypt. syco.vekoo.app está atrás do proxy da Cloudflare
-# (nuvem laranja), então o desafio ACME HTTP-01 do kamal-proxy não fecha de forma
-# confiável. Em vez disso o kamal-proxy serve um Cloudflare Origin Certificate e o
-# modo SSL da zona fica em Full (strict). Ver DEPLOY.md.
+# Servidor sem domínio próprio: o sslip.io resolve o hostname para o IP embutido
+# nele, e o kamal-proxy emite o certificado no Let's Encrypt (HTTP-01). Por isso o
+# host foi provisionado com `bin/deploy-setup <chave> open` — 80/443 abertos ao
+# mundo, não só às faixas da Cloudflare. Quando houver domínio, troque os hosts
+# aqui e em frontend/config/deploy.yml. Ver DEPLOY.md.
 
 minimum_version: 2.12.0
 service: vekoo-api
 
-# Sem "ghcr.io/" na frente — o Kamal concatena `registry.server` sozinho.
-# `.downcase` porque repositório Docker não aceita maiúscula.
-image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api
+image: vekoo-api
 
 servers:
   web:
     hosts:
-      - 107.152.37.137
+      - 107.152.37.59
   worker:
     hosts:
-      - 107.152.37.137
+      - 107.152.37.59
     cmd: bundle exec sidekiq -C config/sidekiq.yml
     proxy: false                    # worker não recebe tráfego HTTP
     env:
@@ -29,42 +28,26 @@ servers:
         WEB_CONCURRENCY: 0
 
 proxy:
-  # Certificado de origem da Cloudflare, carregado dos secrets (.kamal/secrets).
-  ssl:
-    certificate_pem: SSL_CERTIFICATE_PEM
-    private_key_pem: SSL_PRIVATE_KEY_PEM
-  host: syco.vekoo.app
+  ssl: true                         # Let's Encrypt pelo kamal-proxy
+  host: api.107-152-37-59.sslip.io
   app_port: 80
-  ssl_redirect: true
-  # true porque existe um proxy confiável na frente (Cloudflare) e queremos o IP
-  # real do cliente via X-Forwarded-For. Só é seguro porque o firewall do host
-  # aceita 80/443 apenas das faixas da Cloudflare — ver bin/deploy-setup.
-  forward_headers: true
   healthcheck:
     path: /up
     interval: 3
     timeout: 60                     # boot do Rails + db:prepare numa VPS pequena
-  # A geração por IA é um stream longo: 60s cortaria o carrossel no meio. O
-  # `event: start` sai imediatamente, mas o teto precisa caber na geração toda.
+  # O agente pensa por vários segundos; o teto precisa caber no turno inteiro.
   response_timeout: 300
   buffering:
     requests: true
-    max_request_body: 52_428_800    # 50 MB — upload de imagem do editor
+    max_request_body: 52_428_800    # 50 MB — upload de logo, foto e fonte
     max_response_body: 0
 
+# Registry local do Kamal: a imagem sobe por túnel SSH, sem GHCR nem token.
 registry:
-  server: ghcr.io
-  username:
-    - REGISTRY_USER
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  server: localhost:5555
 
 builder:
   arch: amd64
-  cache:
-    type: registry
-    image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api-cache
-    options: mode=max
 
 ssh:
   user: deploy
@@ -77,15 +60,15 @@ env:
     RAILS_ENV: production
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
-    APP_HOSTS: syco.vekoo.app                        # config.hosts
-    # CORS, sem curinga — lista explícita. A URL do Worker entra junto porque
-    # a zona vekoo.app vive em outra conta Cloudflare: enquanto o domínio não
-    # for apontado para este Worker, é por workers.dev que o front atende.
-    FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.warleyolf.workers.dev
-    BACKEND_URL: https://syco.vekoo.app              # URLs absolutas de anexo
-    REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
-    CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable
-    CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2  # Rails.cache (trava da geração)
+    APP_HOSTS: api.107-152-37-59.sslip.io                     # config.hosts
+    FRONTEND_ORIGINS: https://app.107-152-37-59.sslip.io      # CORS, sem curinga
+    BACKEND_URL: https://api.107-152-37-59.sslip.io           # mailer/url_options
+    API_ORIGIN: https://api.107-152-37-59.sslip.io            # URL absoluta dos blobs
+    REDIS_URL: redis://vekoo-api-redis:6379/0                 # fila do Sidekiq
+    CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1           # pub/sub do ActionCable
+    CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2           # Rails.cache
+    AGENT_MODEL: claude-sonnet-5-5
+    AGENT_MONTHLY_COST_CENTS_CAP: 50000
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
@@ -101,7 +84,7 @@ volumes:
 accessories:
   db:
     image: postgres:16.10           # fixado no patch: major novo recusa PGDATA existente
-    host: 107.152.37.137
+    host: 107.152.37.59
     # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
     # do iptables e IGNORA o ufw, expondo o Postgres à internet.
     env:
@@ -120,7 +103,7 @@ accessories:
 
   redis:
     image: redis:7.4-alpine
-    host: 107.152.37.137
+    host: 107.152.37.59
     # O redis-server default NÃO persiste — um reboot descartaria a fila inteira.
     # noeviction para a fila nunca ser despejada por pressão de memória.
     cmd: "redis-server --appendonly yes --appendfsync everysec --maxmemory 256mb --maxmemory-policy noeviction"
