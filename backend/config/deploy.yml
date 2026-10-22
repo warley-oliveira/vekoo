@@ -3,8 +3,8 @@
 # Servidor sem domínio próprio: o sslip.io resolve o hostname para o IP embutido
 # nele, e o kamal-proxy emite o certificado no Let's Encrypt (HTTP-01). Por isso o
 # host foi provisionado com `bin/deploy-setup <chave> open` — 80/443 abertos ao
-# mundo, não só às faixas da Cloudflare. Quando houver domínio, troque os hosts
-# aqui e em frontend/config/deploy.yml. Ver DEPLOY.md.
+# mundo, não só às faixas da Cloudflare. Quando houver domínio, troque o host
+# aqui. O front fica no Cloudflare (wrangler), fora deste host. Ver DEPLOY.md.
 
 minimum_version: 2.12.0
 service: vekoo-api
