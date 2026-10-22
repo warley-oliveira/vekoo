@@ -46,6 +46,19 @@ All derived from `PORT_OFFSET` in `.env`. Docker Compose is namespaced via
 The root `.env` is the single source of truth. The backend reads it via the symlink
 `backend/.env -> ../.env`; the frontend reads it via `envDir: '..'` in `vite.config.ts`.
 
+## Deploy (production) — full guide in `DEPLOY.md`
+
+| Piece | URL | Deploy |
+|---|---|---|
+| API | `https://syco.vekoo.app` (VPS `107.152.37.59`, Kamal) | commit first, then `set -a; . ./.env.deploy; set +a; cd backend && kamal deploy` |
+| App | `https://my.vekoo.app` (Cloudflare Worker `vekoo`) | `cd frontend && rm -rf dist && VITE_API_URL=https://syco.vekoo.app npm run build && npx wrangler deploy` |
+| Landing | `https://vekoo.app` (Cloudflare Worker `vekoo-landing`) | `cd landingpage && npx wrangler deploy` (source: `vekoo-saas-landing_2.html`) |
+
+Needs `~/.ssh/vekoo_deploy`, the root `.env.deploy` and `wrangler login` on the
+**Vekoo** Cloudflare account. Kamal builds from a **git clone** (uncommitted changes
+never ship) and uses its local registry (no GHCR). Never turn on *Always Use HTTPS* on
+the `vekoo.app` zone — it breaks the Let's Encrypt renewal for `syco`.
+
 ## Conventions
 
 - **Backend:** keep controllers thin; put business logic in service objects; serialize JSON

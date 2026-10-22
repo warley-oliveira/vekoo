@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vekoo Plataforma — Sua marca posta sem você</title>
+<meta name="description" content="Descreva a marca uma vez e peça em uma frase. O motor produz e dispara no padrão de estúdio. Preço de fundador pra quem chega antes. Entre na lista.">
+<meta property="og:title" content="Vekoo Plataforma — Social media no padrão de estúdio, sem você produzir">
+<meta property="og:description" content="Bastou uma conversa. Lista de espera aberta.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================================
+   VEKOO PLATAFORMA — LANDING SAAS (pré-lançamento / waitlist)
+
+   TEMA: light é o padrão (fundo off-white #F4F1EA, texto preto #0A0A0A).
+   O switch no header liga o dark mode (fundo preto, texto off-white).
+
+   COMO FUNCIONA O TEMA:
+   • Todas as cores são TOKENS declarados em :root  → valores do LIGHT
+   • O bloco [data-theme="dark"] redefine SÓ os tokens → valores do DARK
+   • Nenhuma regra abaixo usa cor "crua" — sempre var(--token)
+   • Pra ajustar uma cor: mexa no token, não na regra que usa
+
+   ESTRUTURA: [0] TOKENS · [1] BASE/DESKTOP · [2] ACESSIBILIDADE · [3] TABLET · [4] MOBILE
+   ============================================================================ */
+
+
+/* ============================================================================
+   [0] TOKENS DE COR
+   ============================================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* --- Superfície e texto --- */
+  --bg: #F4F1EA;                                   /* fundo da página */
+  --fg: #0A0A0A;                                   /* texto principal */
+  --muted: #6F6A60;                                /* labels mono, numeração */
+  --muted-strong: #4A463E;                         /* texto de apoio (parágrafos) */
+  --faint: rgba(10, 10, 10, 0.045);                /* hover sutil */
+  --border: rgba(10, 10, 10, 0.12);
+  --border-strong: rgba(10, 10, 10, 0.22);
+
+  /* --- Cards flutuantes --- */
+  --surface: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.55) 100%);
+  --surface-hover: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
+  --shadow: 0 1px 2px rgba(10, 10, 10, 0.04), 0 10px 30px rgba(10, 10, 10, 0.05);
+
+  /* --- Componentes --- */
+  --header-bg: rgba(244, 241, 234, 0.85);
+  --scrim: rgba(10, 10, 10, 0.55);                 /* fundo atrás do modal */
+  --modal-bg: #FFFFFF;
+  --modal-shadow: 0 24px 70px rgba(10, 10, 10, 0.25);
+  --input-bg: rgba(10, 10, 10, 0.035);
+  --btn-bg: #0A0A0A;                               /* botão primário */
+  --btn-fg: #F4F1EA;
+  --btn-bg-hover: #2E2E2E;
+  --green: #16A34A;                                /* status "no ar" / checks */
+  --green-glow: rgba(22, 163, 74, 0.35);
+  --ghost-v: rgba(10, 10, 10, 0.04);               /* "V" gigante do CTA final */
+
+  /* --- Aurora holográfica (acento da marca) --- */
+  --holo: linear-gradient(120deg, #0891B2, #2563EB, #7C3AED, #C026D3, #DB2777, #0891B2);
+
+  --container: 1280px;
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0A0A0A;
+  --fg: #F4F1EA;
+  --muted: #6B6B6B;
+  --muted-strong: #B5B0A4;
+  --faint: rgba(244, 241, 234, 0.06);
+  --border: rgba(244, 241, 234, 0.12);
+  --border-strong: rgba(244, 241, 234, 0.25);
+
+  --surface: linear-gradient(180deg, rgba(244, 241, 234, 0.045) 0%, rgba(244, 241, 234, 0.008) 100%);
+  --surface-hover: rgba(244, 241, 234, 0.06);
+  --shadow: none;
+
+  --header-bg: rgba(10, 10, 10, 0.85);
+  --scrim: rgba(10, 10, 10, 0.85);
+  --modal-bg: #0A0A0A;
+  --modal-shadow: none;
+  --input-bg: rgba(244, 241, 234, 0.06);
+  --btn-bg: #F4F1EA;
+  --btn-fg: #0A0A0A;
+  --btn-bg-hover: #B5B0A4;
+  --green: #4ADE80;
+  --green-glow: rgba(74, 222, 128, 0.5);
+  --ghost-v: rgba(244, 241, 234, 0.06);
+
+  --holo: linear-gradient(120deg, #00E5FF, #5EEAD4, #C4B5FD, #A855F7, #EC4899, #38BDF8, #00E5FF);
+}
+
+
+/* ============================================================================
+   [1] BASE / DESKTOP
+   ============================================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 320ms ease, color 320ms ease;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+.mono { font-family: 'IBM Plex Mono', monospace; }
+h1, h2, h3, h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.028em;
+  max-width: 780px;
+}
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 500; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+.h2-line-1, .h2-line-2 { display: block; }
+.h2-line-2 { opacity: 0.5; margin-top: 0.1em; }
+
+.container { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.tag::before { content: ''; width: 24px; height: 1px; background: var(--muted); }
+.tag-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 100px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+
+/* Aurora holográfica — o acento "tech" da marca */
+@keyframes holoFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.holo {
+  background: var(--holo);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: holoFlow 6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--header-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background 320ms ease;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 18px 0;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.logo-group { display: flex; align-items: baseline; gap: 14px; flex-shrink: 0; }
+.logo { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+.logo-tag {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.nav { flex: 1; display: flex; justify-content: center; gap: 40px; }
+.nav a { font-size: 13px; color: var(--muted-strong); transition: color var(--transition); }
+.nav a:hover { color: var(--fg); }
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+  flex-shrink: 0;
+}
+.header-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+.nav-cta {
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 2px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.nav-cta:hover { background: var(--btn-bg-hover); }
+.menu-toggle { display: none; font-size: 24px; }
+
+/* --- Switch de tema (mesma linguagem do switch da aurora no site) --- */
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 6px 0;
+}
+.theme-switch .tsw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+.theme-switch:hover .tsw-label { color: var(--fg); }
+.tsw-track {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  transition: border-color 400ms ease, background 400ms ease;
+  flex-shrink: 0;
+}
+.tsw-thumb {
+  position: absolute;
+  top: 50%;
+  left: 3.5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transform: translateY(-50%);
+  transition: left 400ms cubic-bezier(0.34, 1.56, 0.64, 1), background 400ms ease;
+}
+.theme-switch:hover .tsw-track { border-color: var(--fg); }
+.theme-switch:hover .tsw-thumb { background: var(--fg); }
+/* Ligado = dark mode: thumb desliza e a trilha ganha a aurora */
+[data-theme="dark"] .tsw-track {
+  border-color: transparent;
+  background: var(--holo);
+  background-size: 300% 300%;
+  animation: holoFlow 5s ease-in-out infinite;
+}
+[data-theme="dark"] .tsw-thumb { left: 26px; background: #FFFFFF; }
+
+/* ===== HERO ===== */
+.hero { padding: 72px 0 100px; position: relative; overflow: hidden; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.hero-meta {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 56px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-meta span { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.hero-meta span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--fg);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: locationBeacon 2.2s ease-in-out infinite;
+}
+@keyframes locationBeacon {
+  0% { transform: scale(1); opacity: 1; }
+  70% { transform: scale(1.6); opacity: 0.35; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.hero h1 { margin-bottom: 32px; }
+.hero h1 .line { display: block; }
+.hero h1 .line-2 { opacity: 0.5; margin-top: 0.05em; }
+.hero-sub {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted-strong);
+  margin-bottom: 48px;
+  max-width: 560px;
+}
+.hero-sub strong { color: var(--fg); font-weight: 600; }
+.hero-cta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-primary:hover { background: var(--btn-bg-hover); transform: translateY(-1px); }
+.btn-primary .arrow { transition: transform var(--transition); }
+.btn-primary:hover .arrow { transform: translateX(4px); }
+.btn-ghost { color: var(--muted-strong); padding: 16px 0; }
+.btn-ghost:hover { color: var(--fg); }
+
+/* Terminal do motor — o produto rodando, sem screenshot de tela que ainda não existe */
+.terminal {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  overflow: hidden;
+}
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.terminal-bar::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+.terminal-body { padding: 20px 16px 24px; min-height: 264px; }
+.t-line {
+  padding: 5px 0;
+  color: var(--muted-strong);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 320ms ease, transform 320ms ease;
+  line-height: 1.5;
+}
+.t-line.on { opacity: 1; transform: translateY(0); }
+.t-line .t-dim { color: var(--muted); }
+.t-line .t-ok { color: var(--green); }
+.t-line .t-white { color: var(--fg); font-weight: 500; }
+.t-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: var(--fg);
+  vertical-align: text-bottom;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ===== SEÇÕES ===== */
+section { padding: 100px 0; }
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  margin-bottom: 80px;
+  align-items: start;
+}
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+.section-head-left .tag { margin-bottom: 16px; }
+.section-head-right p {
+  font-size: 17px;
+  color: var(--muted-strong);
+  margin-top: 24px;
+  max-width: 640px;
+  line-height: 1.65;
+}
+
+/* Cards flutuantes */
+.pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pain-card {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 48px 36px;
+}
+.pain-card .mono-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.pain-card h3 { font-size: 22px; line-height: 1.25; margin-bottom: 16px; }
+.pain-card p { font-size: 14px; line-height: 1.6; color: var(--muted-strong); }
+
+/* Fluxo: brandcore → motor → disparo */
+.method-flow { display: flex; flex-direction: column; gap: 16px; }
+.flow-step {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 24px;
+  padding: 32px;
+  align-items: center;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: background var(--transition);
+}
+.flow-step:hover { background: var(--surface-hover); }
+.flow-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); }
+.flow-content h4 { font-size: 16px; margin-bottom: 6px; }
+.flow-content p { font-size: 13.5px; color: var(--muted-strong); line-height: 1.55; max-width: 620px; }
+.flow-actor {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ===== PLANOS ===== */
+.pricing-list { display: flex; flex-direction: column; gap: 16px; }
+.plan {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 2fr auto auto;
+  gap: 32px;
+  padding: 40px 32px;
+  align-items: center;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: background var(--transition);
+  position: relative;
+}
+.plan:hover { background: var(--surface-hover); }
+.plan.featured::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--holo);
+  background-size: 100% 300%;
+  animation: holoFlow 6s ease-in-out infinite;
+}
+.plan-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); padding-left: 8px; }
+.plan-info h3 { font-size: 22px; margin-bottom: 6px; }
+.plan-info .plan-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.plan-features { font-size: 13px; color: var(--muted-strong); line-height: 1.65; }
+.plan-price {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-align: right;
+  white-space: nowrap;
+}
+.plan-price small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.plan-cta {
+  padding: 12px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  letter-spacing: 0.02em;
+  transition: all var(--transition);
+}
+.plan-cta:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.plan.featured .plan-cta { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.plan.featured .plan-cta:hover { background: var(--btn-bg-hover); border-color: var(--btn-bg-hover); }
+.pricing-note {
+  margin-top: 32px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  line-height: 2;
+}
+.pricing-note strong { color: var(--fg); font-weight: 500; }
+
+/* ===== FAQ ===== */
+.faq-list { max-width: 900px; margin: 0 auto; }
+.faq-question {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  text-align: left;
+  padding: 28px 0;
+}
+.faq-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; }
+.faq-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+}
+.faq-icon {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  color: var(--muted);
+  transition: transform var(--transition);
+  width: 24px;
+  text-align: center;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--fg); }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms ease, padding 300ms ease;
+  font-size: 15px;
+  color: var(--muted-strong);
+  line-height: 1.65;
+  padding-left: 84px;
+  padding-right: 60px;
+}
+.faq-item.open .faq-answer { max-height: 400px; padding-bottom: 28px; }
+
+/* ===== CTA FINAL / WAITLIST ===== */
+.cta-final {
+  text-align: center;
+  padding: 140px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-final::before {
+  content: 'V';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(300px, 50vw, 600px);
+  font-weight: 700;
+  color: var(--ghost-v);
+  letter-spacing: -0.05em;
+  z-index: 0;
+  user-select: none;
+}
+.cta-final > * { position: relative; z-index: 1; }
+.cta-final .tag { margin-bottom: 32px; justify-content: center; display: inline-flex; }
+.cta-final h2 { margin-bottom: 24px; }
+.cta-final p {
+  font-size: 17px;
+  color: var(--muted-strong);
+  max-width: 580px;
+  margin: 0 auto 48px;
+  line-height: 1.65;
+}
+.cta-final .btn-primary { padding: 20px 36px; font-size: 14px; }
+
+/* ===== MODAL WAITLIST ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--modal-bg);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--modal-shadow);
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 48px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  font-size: 28px;
+  color: var(--muted);
+  transition: color var(--transition);
+}
+.modal-close:hover { color: var(--fg); }
+.modal-header { margin-bottom: 32px; }
+.modal-header .tag { margin-bottom: 12px; }
+.modal-header h3 { font-size: 24px; margin-bottom: 12px; }
+.modal-header p { font-size: 14px; color: var(--muted-strong); line-height: 1.5; }
+.modal-form .field { margin-bottom: 24px; }
+.modal-form label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.modal-form input, .modal-form select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  transition: border-color var(--transition);
+}
+.modal-form input::placeholder { color: var(--muted); }
+.modal-form input:focus, .modal-form select:focus { outline: none; border-color: var(--fg); }
+.modal-form select { cursor: pointer; }
+.modal-form .submit {
+  width: 100%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  padding: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  transition: all var(--transition);
+}
+.modal-form .submit:hover { background: var(--btn-bg-hover); }
+.modal-success { display: none; text-align: center; padding: 24px 0 8px; }
+.modal-success.on { display: block; }
+.modal-success .check { font-family: 'IBM Plex Mono', monospace; font-size: 48px; margin-bottom: 16px; }
+.modal-success h3 { font-size: 22px; margin-bottom: 12px; }
+.modal-success p { font-size: 14px; color: var(--muted-strong); line-height: 1.6; max-width: 380px; margin: 0 auto; }
+
+/* ===== FOOTER ===== */
+.footer { padding: 80px 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 60px; }
+.footer-brand .logo { margin-bottom: 16px; font-size: 28px; }
+.footer-brand p { font-size: 14px; color: var(--muted-strong); line-height: 1.6; max-width: 360px; margin-bottom: 24px; }
+.footer-brand .footer-parent {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.footer-col h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.footer-col a { display: block; padding: 6px 0; font-size: 14px; color: var(--muted-strong); transition: color var(--transition); }
+.footer-col a:hover { color: var(--fg); }
+.footer-bottom {
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 200;
+  padding: 100px 32px 32px;
+  flex-direction: column;
+  gap: 4px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 20px 0;
+  font-size: 24px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-close { position: absolute; top: 24px; right: 32px; font-size: 32px; color: var(--fg); }
+
+/* Animação ao scroll */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1), transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-animate].is-visible { opacity: 1; transform: translateY(0); }
+
+
+/* ============================================================================
+   [2] ACESSIBILIDADE
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate], .t-line { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .holo, .plan.featured::before, [data-theme="dark"] .tsw-track { animation: none !important; }
+  .header-status::before, .terminal-bar::before, .hero-meta span::before { animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ============================================================================
+   [3] TABLET — até 1024px
+   ============================================================================ */
+@media (max-width: 1024px) {
+  .header-inner { justify-content: space-between; gap: 16px; }
+  .header-status { display: none; }
+  .logo-tag { display: none; }
+  .nav { display: none; }
+  .theme-switch { margin-left: auto; }
+  .theme-switch .tsw-label { display: none; }
+  .menu-toggle { display: block; }
+  .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+  .section-head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 60px; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .plan { grid-template-columns: 40px 1fr; gap: 16px; }
+  .plan-features, .plan-price, .plan-cta { grid-column: 2; }
+  .plan-price { text-align: left; font-size: 28px; }
+  .plan-cta { justify-self: start; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+
+/* ============================================================================
+   [4] MOBILE — até 640px
+   ============================================================================ */
+@media (max-width: 640px) {
+  .container { padding: 0 20px; }
+  .nav-cta { display: none; }
+  .hero { padding: 40px 0 60px; }
+  .hero h1 { font-size: 1.85rem; line-height: 1.35; letter-spacing: -0.035em; }
+  .hero-meta { flex-direction: column; gap: 8px; align-items: flex-start; margin-bottom: 36px; }
+  .hero-sub { font-size: 15px; line-height: 1.7; }
+  section { padding: 70px 0; }
+  .pain-card { padding: 32px 24px; }
+  .flow-step {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 14px 16px;
+    padding: 28px 24px;
+    align-items: start;
+  }
+  .flow-num { grid-column: 1; grid-row: 1; }
+  .flow-actor { grid-column: 2; grid-row: 1; justify-self: end; }
+  .flow-content { grid-column: 1 / -1; grid-row: 2; }
+  .plan { padding: 24px 20px; }
+  .faq-question { grid-template-columns: 40px 1fr auto; gap: 16px; }
+  .faq-answer { padding-left: 56px; padding-right: 40px; }
+  .modal { padding: 32px 24px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .terminal-body { min-height: 240px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo-group">
+      <a href="#" class="logo">Vekoo</a>
+      <span class="logo-tag">Plataforma</span>
+    </div>
+    <nav class="nav">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#planos">Planos</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="theme-switch" onclick="toggleTheme()" aria-label="Alternar modo escuro" aria-pressed="false">
+      <span class="tsw-label" id="tsw-label">Modo escuro</span>
+      <span class="tsw-track"><span class="tsw-thumb"></span></span>
+    </button>
+    <div class="header-status">Lista de espera aberta</div>
+    <button class="nav-cta" onclick="openModal()">Entrar na lista →</button>
+    <button class="menu-toggle" onclick="document.querySelector('.mobile-menu').classList.add('open')">≡</button>
+  </div>
+</header>
+
+<div class="mobile-menu">
+  <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">×</button>
+  <a href="#como-funciona" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Como funciona</a>
+  <a href="#planos" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Planos</a>
+  <a href="#faq" onclick="document.querySelector('.mobile-menu').classList.remove('open')">FAQ</a>
+  <a href="#" onclick="document.querySelector('.mobile-menu').classList.remove('open'); openModal(); return false;">Entrar na lista →</a>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">
+      <span>Em breve · Lista de espera aberta</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1>
+          <span class="line line-1">Sua marca posta sem você.</span>
+          <span class="line line-2">Bastou uma <span class="holo">conversa</span>.</span>
+        </h1>
+        <p class="hero-sub">Você descreve a marca uma vez. Depois pede como pediria pra alguém da equipe: “um story pro Dia dos Pais amanhã”. <strong>O motor escreve na sua voz, monta a peça e dispara no calendário.</strong></p>
+
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="openModal()">
+            Entrar na lista
+            <span class="arrow">→</span>
+          </button>
+          <a href="#como-funciona" class="btn btn-ghost">Ver como funciona /</a>
+        </div>
+      </div>
+
+      <div class="terminal" data-animate aria-hidden="true">
+        <div class="terminal-bar">vekoo · motor de conteúdo</div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="t-line"><span class="t-dim">$</span> <span class="t-white">"um carrossel da promoção de sexta"</span></div>
+          <div class="t-line"><span class="t-dim">→</span> brandcore lido <span class="t-ok">✓</span></div>
+          <div class="t-line"><span class="t-dim">→</span> formato: carrossel, 5 slides <span class="t-ok">✓</span></div>
+          <div class="t-line"><span class="t-dim">→</span> texto na voz da marca <span class="t-ok">✓</span></div>
+          <div class="t-line"><span class="t-dim">→</span> peça montada · aguardando aprovação</div>
+          <div class="t-line"><span class="t-dim">→</span> aprovado pelo celular <span class="t-ok">✓</span></div>
+          <div class="t-line"><span class="t-ok">●</span> <span class="t-white">disparo agendado — sex 11:00</span></div>
+          <div class="t-line"><span class="t-dim">$</span> <span class="t-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">01 / Contexto</div>
+        <div class="tag">O problema</div>
+      </div>
+      <div class="section-head-right">
+        <h2 data-animate>Você sabe que precisa postar. O difícil sempre foi tudo o que vem antes.</h2>
+        <p>Pensar o quê, escrever como, montar onde, publicar quando. As três saídas que existem hoje falham em pontos previsíveis.</p>
+      </div>
+    </div>
+
+    <div class="pain-grid">
+      <div class="pain-card" data-animate data-delay="0">
+        <div class="mono-label">01 / Ferramenta genérica</div>
+        <h3>ChatGPT + Canva não é uma marca.</h3>
+        <p>Texto que qualquer um poderia ter escrito, visual que qualquer um já viu. Seu público reconhece template de longe.</p>
+      </div>
+      <div class="pain-card" data-animate data-delay="120">
+        <div class="mono-label">02 / Agência</div>
+        <h3>Qualidade tem, mas o preço não cabe.</h3>
+        <p>Social media de estúdio custa alguns milhares por mês. Pra maioria dos negócios pequenos a conta não fecha — e a qualidade fica pra quem pode.</p>
+      </div>
+      <div class="pain-card" data-animate data-delay="240">
+        <div class="mono-label">03 / Constância</div>
+        <h3>Todo mundo começa. Quase ninguém continua.</h3>
+        <p>O terceiro post nunca chega. Falta sistema, não vontade: algo que produza e publique quando a sua semana apertou.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">02 / Método</div>
+        <div class="tag">Como funciona</div>
+      </div>
+      <div class="section-head-right">
+        <h2 data-animate><span class="h2-line-1">Você responde uma vez.</span><span class="h2-line-2">O sistema trabalha todo dia.</span></h2>
+        <p>O método que a Vekoo usa como estúdio, empacotado numa plataforma. Três etapas. Só a primeira é sua.</p>
+      </div>
+    </div>
+
+    <div class="method-flow">
+      <div class="flow-step" data-animate data-delay="0">
+        <div class="flow-num">— 01</div>
+        <div class="flow-content">
+          <h4>Descreva a marca</h4>
+          <p>Uma conversa guiada, pelo celular, monta o seu brandcore: tom de voz, público, oferta, o que a marca nunca diria. Sem logo ou paleta? O “cria pra mim” propõe opções e você escolhe.</p>
+        </div>
+        <div class="flow-actor">Você</div>
+      </div>
+      <div class="flow-step" data-animate data-delay="120">
+        <div class="flow-num">— 02</div>
+        <div class="flow-content">
+          <h4>O motor produz as peças</h4>
+          <p>A partir do brandcore, o motor define os eixos de conteúdo, monta o calendário editorial e produz texto e visual de cada peça. Precisa de algo fora do calendário? Pede em uma frase.</p>
+        </div>
+        <div class="flow-actor">Plataforma</div>
+      </div>
+      <div class="flow-step" data-animate data-delay="240">
+        <div class="flow-num">— 03</div>
+        <div class="flow-content">
+          <h4>A peça vai pro ar</h4>
+          <p>Disparo no dia e na hora marcados, no ritmo do plano. Você aprova peça a peça ou deixa no automático e ajusta quando quiser. A semana apertou, a máquina continua.</p>
+        </div>
+        <div class="flow-actor">Automático</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="planos">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">03 / Assinaturas</div>
+        <div class="tag">Planos de lançamento</div>
+      </div>
+      <div class="section-head-right">
+        <h2 data-animate>Três planos. Preço redondo. Sem fidelidade.</h2>
+        <p>O que está escrito é o que você paga. Quem entra na lista trava o preço de fundador enquanto for assinante.</p>
+      </div>
+    </div>
+
+    <div class="pricing-list">
+      <div class="plan" data-animate data-delay="0">
+        <div class="plan-num">— 01</div>
+        <div class="plan-info">
+          <h3>Start</h3>
+          <div class="plan-meta">Pra tirar a marca do zero</div>
+        </div>
+        <div class="plan-features">1 marca · 12 peças por mês · Legenda pronta · Calendário editorial automático · Aprovação antes do disparo · 1 rede conectada</div>
+        <div class="plan-price">R$ 100<small> / mês</small></div>
+        <button class="plan-cta" onclick="openModal('Start')">Entrar na lista →</button>
+      </div>
+
+      <div class="plan featured" data-animate data-delay="120">
+        <div class="plan-num">— 02</div>
+        <div class="plan-info">
+          <h3>Pro <span class="tag-pill" style="margin-left: 8px;">Recomendado</span></h3>
+          <div class="plan-meta">Pra ter presença toda semana</div>
+        </div>
+        <div class="plan-features">1 marca · 30 peças por mês · Carrosséis, stories e roteiros · Disparo em várias redes · Refação em 1 clique · Relatório mensal</div>
+        <div class="plan-price">R$ 200<small> / mês</small></div>
+        <button class="plan-cta" onclick="openModal('Pro')">Entrar na lista →</button>
+      </div>
+
+      <div class="plan" data-animate data-delay="240">
+        <div class="plan-num">— 03</div>
+        <div class="plan-info">
+          <h3>Studio</h3>
+          <div class="plan-meta">Pra quem cuida de mais marcas</div>
+        </div>
+        <div class="plan-features">Até 3 marcas · 60 peças por mês · Tudo do Pro, por marca · Seu cliente aprova na plataforma · Suporte prioritário</div>
+        <div class="plan-price">R$ 400<small> / mês</small></div>
+        <button class="plan-cta" onclick="openModal('Studio')">Entrar na lista →</button>
+      </div>
+    </div>
+
+    <div class="pricing-note">
+      // <strong>Preço de fundador:</strong> quem entra na lista trava esse valor enquanto for assinante <br>
+      // Anual com 2 meses grátis · Garantia de 30 dias · Cancela quando quiser
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">04 / FAQ</div>
+        <div class="tag">Perguntas frequentes</div>
+      </div>
+      <div class="section-head-right">
+        <h2 data-animate>O que todo mundo pergunta antes de entrar.</h2>
+      </div>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">01</span>
+          <span class="faq-text">O que é o brandcore?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">É o DNA da sua marca dentro da plataforma: tom de voz, público, oferta, referências visuais, o que você nunca diria. Tudo que o motor produz nasce dali. Você descreve uma vez e refina quando quiser.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">02</span>
+          <span class="faq-text">Preciso escrever brief toda vez?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Não. Você pede em uma frase, como pediria pra alguém da equipe. O motor escolhe o formato e escreve na voz do brandcore. Quem quiser controlar cada detalhe tem o modo avançado.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">03</span>
+          <span class="faq-text">É tudo feito por IA?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">A produção é automatizada. O método por trás é o do estúdio: eixos de conteúdo, calendário e padrão de qualidade definidos por quem faz isso profissionalmente. IA aqui é ferramenta. Não a dona do negócio.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">04</span>
+          <span class="faq-text">Não tenho logo nem paleta. Dá?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Dá. No onboarding, o “cria pra mim” propõe logo, paleta e tipografia a partir do que você contou sobre a marca. Você escolhe, o brandcore guarda.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">05</span>
+          <span class="faq-text">Posso aprovar antes de publicar?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Sim. Aprovação peça a peça, ou disparo automático com ajuste a qualquer momento. O controle é seu — a constância é da máquina.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">06</span>
+          <span class="faq-text">Quando lança?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">A lista de espera entra primeiro, em ondas. Quem está nela trava o preço de fundador enquanto for assinante. O aviso chega por e-mail e WhatsApp quando a sua onda abrir.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span class="faq-num">07</span>
+          <span class="faq-text">Tem fidelidade ou multa?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Não. Mensal, cancela quando quiser. Garantia de 30 dias com devolução integral se o primeiro mês não servir. A regra que a Vekoo sempre usou como estúdio.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="tag">Lista de espera</div>
+  <h2 data-animate>Entre antes. Pague menos. Pra sempre.</h2>
+  <p>As vagas abrem em ondas. Quem entra agora trava o preço de fundador enquanto for assinante. Depois do lançamento, os planos sobem.</p>
+  <button class="btn btn-primary" onclick="openModal()">
+    Entrar na lista
+    <span class="arrow">→</span>
+  </button>
+</section>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-form-wrap">
+      <div class="modal-header">
+        <div class="tag">Lista de espera</div>
+        <h3>Seu lugar e seu preço, garantidos.</h3>
+        <p>Cinco campos, trinta segundos. A gente avisa por e-mail e WhatsApp quando a sua onda abrir.</p>
+      </div>
+      <form class="modal-form" onsubmit="event.preventDefault(); submitWaitlist();">
+        <div class="field">
+          <label>01 / Seu nome</label>
+          <input type="text" id="wl-nome" placeholder="Ex: Ana Souza" required>
+        </div>
+        <div class="field">
+          <label>02 / E-mail</label>
+          <input type="email" id="wl-email" placeholder="voce@email.com" required>
+        </div>
+        <div class="field">
+          <label>03 / WhatsApp</label>
+          <input type="tel" id="wl-whats" placeholder="(31) 9 0000-0000" required>
+        </div>
+        <div class="field">
+          <label>04 / Você é</label>
+          <select id="wl-perfil" required>
+            <option value="">Selecione...</option>
+            <option>Dono(a) de negócio</option>
+            <option>Social media / agência</option>
+            <option>Criador(a) de conteúdo</option>
+            <option>Só curioso mesmo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>05 / Plano de interesse</label>
+          <select id="wl-plano">
+            <option value="">Ainda não sei</option>
+            <option>Start — R$100/mês</option>
+            <option>Pro — R$200/mês</option>
+            <option>Studio — R$400/mês</option>
+          </select>
+        </div>
+        <button type="submit" class="submit">Entrar na lista →</button>
+      </form>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <div class="check holo">✓</div>
+      <h3>Você está na lista.</h3>
+      <p>Lugar guardado, preço de fundador travado. Quando a sua onda abrir, o convite chega por e-mail e WhatsApp.</p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">Vekoo</div>
+        <p>A plataforma de social media da Vekoo. Você descreve a marca uma vez; o motor produz e dispara no padrão de estúdio, pelo preço que negócio pequeno aguenta.</p>
+        <div class="footer-parent">Vekoo Studio · Minas Gerais · Est. 2026</div>
+      </div>
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Vekoo</h4>
+        <a href="https://vekoobrasil.com">Estúdio / site</a>
+        <a href="mailto:contato@vekoobrasil.com">contato@vekoobrasil.com</a>
+        <a href="#">@vekoo</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Vekoo · Todos os direitos reservados</div>
+      <div>Minas Gerais / Brasil</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================================================
+// TEMA — light é o padrão; o switch no header liga o dark
+// ============================================================================
+function toggleTheme() {
+  const root = document.documentElement;
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+
+  const btn = document.querySelector('.theme-switch');
+  btn.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+  document.getElementById('tsw-label').textContent = next === 'dark' ? 'Modo claro' : 'Modo escuro';
+
+  // EM PRODUÇÃO: descomente pra lembrar a escolha do visitante entre visitas
+  // try { localStorage.setItem('vekoo-theme', next); } catch (e) {}
+}
+
+// EM PRODUÇÃO: descomente pra restaurar a escolha salva no carregamento
+// (function() {
+//   try {
+//     const saved = localStorage.getItem('vekoo-theme');
+//     if (saved === 'dark') toggleTheme();
+//   } catch (e) {}
+// })();
+
+// ============================================================================
+// MODAL WAITLIST
+// ============================================================================
+function openModal(plano) {
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal-form-wrap').style.display = '';
+  document.getElementById('modal-success').classList.remove('on');
+  if (plano) {
+    const sel = document.getElementById('wl-plano');
+    for (const opt of sel.options) {
+      if (opt.text.indexOf(plano) === 0) { opt.selected = true; break; }
+    }
+  }
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function submitWaitlist() {
+  // EM PRODUÇÃO: enviar para backend/CRM (Tally, FormSpark, Sheets, Kommo...)
+  // Campos: wl-nome, wl-email, wl-whats, wl-perfil, wl-plano
+  document.getElementById('modal-form-wrap').style.display = 'none';
+  document.getElementById('modal-success').classList.add('on');
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ============================================================================
+// ANIMAÇÃO AO SCROLL
+// ============================================================================
+const animateObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      const delay = parseInt(entry.target.dataset.delay || 0, 10);
+      setTimeout(function() { entry.target.classList.add('is-visible'); }, delay);
+      animateObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('[data-animate]').forEach(function(el) { animateObserver.observe(el); });
+
+// ============================================================================
+// TERMINAL DO HERO — linhas entram em sequência, em loop
+// ============================================================================
+(function() {
+  const lines = document.querySelectorAll('#terminal-body .t-line');
+  if (!lines.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    lines.forEach(function(l) { l.classList.add('on'); });
+    return;
+  }
+
+  function runSequence() {
+    lines.forEach(function(l) { l.classList.remove('on'); });
+    lines.forEach(function(l, i) {
+      setTimeout(function() { l.classList.add('on'); }, 400 + i * 650);
+    });
+    setTimeout(runSequence, 400 + lines.length * 650 + 6000);
+  }
+
+  const termObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        runSequence();
+        termObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  termObserver.observe(document.getElementById('terminal-body'));
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Cabeçalhos da landing (Workers Static Assets).
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  # O HTML nunca é cacheado no navegador: uma edição da landing aparece no próximo acesso.
+  Cache-Control: no-cache

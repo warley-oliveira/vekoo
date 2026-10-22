@@ -1,0 +1,27 @@
+{
+  // Landing de pré-lançamento em vekoo.app — Worker somente-assets.
+  // O HTML é a fonte única (vekoo-saas-landing_2.html); o build só o copia
+  // para dist/index.html junto com os cabeçalhos.
+  //
+  //   cd landingpage && npx wrangler deploy
+  "name": "vekoo-landing",
+  "compatibility_date": "2026-10-21",
+  "workers_dev": false,
+
+  // Rotas, não custom domain: vekoo.app e www já existem como registros
+  // proxied na zona (apontando para o estacionamento da Hostinger). A rota
+  // intercepta o tráfego sem exigir apagar esses registros.
+  "routes": [
+    { "pattern": "vekoo.app/*", "zone_name": "vekoo.app" },
+    { "pattern": "www.vekoo.app/*", "zone_name": "vekoo.app" }
+  ],
+
+  "build": {
+    "command": "rm -rf dist && mkdir -p dist && cp vekoo-saas-landing_2.html dist/index.html && cp _headers dist/_headers"
+  },
+  "assets": {
+    "directory": "./dist",
+    // Qualquer caminho desconhecido cai na landing, em vez de um 404 seco.
+    "not_found_handling": "single-page-application"
+  }
+}
