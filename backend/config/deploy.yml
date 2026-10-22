@@ -61,7 +61,7 @@ env:
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
     APP_HOSTS: api.107-152-37-59.sslip.io                     # config.hosts
-    FRONTEND_ORIGINS: https://app.107-152-37-59.sslip.io      # CORS, sem curinga
+    FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.vekoo.workers.dev  # CORS, sem curinga
     BACKEND_URL: https://api.107-152-37-59.sslip.io           # mailer/url_options
     API_ORIGIN: https://api.107-152-37-59.sslip.io            # URL absoluta dos blobs
     REDIS_URL: redis://vekoo-api-redis:6379/0                 # fila do Sidekiq
