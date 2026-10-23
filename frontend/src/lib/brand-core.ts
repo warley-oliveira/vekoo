@@ -28,10 +28,19 @@ export const STEP_SECTION: Record<BrandStep, BrandSection | null> = {
   colors: "palette",
   typography: "typography",
   styles: "styles",
-  assets: null,
+  assets: "assets",
   voice: "voice",
   offers: "offers",
   notes: "notes",
+}
+
+/**
+ * Quanto de uma etapa está preenchido. A API conta por seção do documento e
+ * a etapa "Cores" grava em `palette`: ler `sections[step]` direto dava
+ * `undefined` nas Cores — o "%" sem número.
+ */
+export function sectionPercent(completeness: BrandCompleteness, step: BrandStep): number {
+  return completeness.sections[STEP_SECTION[step] ?? "assets"] ?? 0
 }
 
 export type BrandSection =
@@ -42,6 +51,8 @@ export type BrandSection =
   | "voice"
   | "offers"
   | "notes"
+  /** Só a escolha da logo principal — os arquivos moram em `assets` da API. */
+  | "assets"
 
 export const COLOR_ROLES = [
   "darkBackground",
@@ -207,6 +218,8 @@ export type BrandDocument = {
   voice: BrandVoice
   offers: BrandOffers
   notes: BrandNotes
+  /** A logo principal: o `id` de uma das `logos`. Vazio = a de sempre. */
+  assets: { primaryLogoId: string }
 }
 
 /* ---------- o que a API devolve ---------- */
@@ -225,14 +238,56 @@ export type BrandAsset = {
   /** true quando foi a Vekoo que desenhou (o logotipo de quem não tem logo). */
   generated: boolean
   byteSize: number
+  /** A logo (grupo de variantes) de que o arquivo faz parte; nulo fora de logo. */
+  logoId: string | null
   createdAt: number
+}
+
+export type LogoStyle = "asWritten" | "spacedCaps" | "boldLower"
+export type LogoVariant = "light" | "dark"
+
+/** Um arquivo para baixar: `size` nulo é o original. */
+export type LogoDownload = { variant: LogoVariant; format: "svg" | "png"; size: number | null }
+
+/**
+ * Uma logo da marca: as variantes de um mesmo desenho (ids de `assets`). As
+ * logos nunca são apagadas por trocar ou regenerar — só a principal muda.
+ */
+export type BrandLogo = {
+  id: string
+  /** A principal do rascunho (a escolhida, ou a de sempre quando não há escolha). */
+  primary: boolean
+  source: "generated" | "uploaded"
+  /** Onde nasceu: no onboarding, no "regenerar" da marca, ou enviada. */
+  origin: "onboarding" | "brand" | "upload"
+  style: LogoStyle | null
+  formats: Array<"svg" | "png">
+  variants: Partial<Record<LogoVariant, string>>
+  downloads: LogoDownload[]
+  createdAt: number
+}
+
+/** A logo principal e o arquivo de uma variante (com a outra de reserva). */
+export function logoAsset(
+  brandCore: Pick<BrandCore, "assets">,
+  logo: BrandLogo | undefined,
+  variant: LogoVariant
+): BrandAsset | undefined {
+  if (!logo) return undefined
+  const id = logo.variants[variant] ?? logo.variants[variant === "dark" ? "light" : "dark"]
+  return brandCore.assets.find((asset) => asset.id === id)
+}
+
+export function primaryLogo(brandCore: Pick<BrandCore, "logos">): BrandLogo | undefined {
+  return brandCore.logos.find((logo) => logo.primary)
 }
 
 export type RequiredCheck = { key: string; met: boolean }
 
 export type BrandCompleteness = {
   percent: number
-  sections: Record<BrandStep, number>
+  /** Por **seção do documento** (`palette`, não `colors`) — leia com `sectionPercent`. */
+  sections: Record<BrandSection | "assets", number>
   required: RequiredCheck[]
   minimumMet: boolean
 }
@@ -245,6 +300,8 @@ export type BrandSummary = {
   id: string
   name: string | null
   status: BrandStatus
+  /** A cor de acento da paleta — o ponto do seletor. Nulo antes de ter paleta. */
+  accentColor: string | null
   percent: number
   minimumMet: boolean
   readyForGeneration: boolean
@@ -272,7 +329,10 @@ export type BrandCore = {
   readyForGeneration: boolean
   generationBlockers: GenerationBlocker[]
   hasUnpublishedChanges: boolean
+  /** Quantas mudanças o rascunho tem sobre a última publicação. */
+  unpublishedChangeCount: number
   assets: BrandAsset[]
+  logos: BrandLogo[]
   currentVersion: number
   publishedAt: number | null
   updatedAt: number
@@ -660,7 +720,7 @@ export function stepHref(brandId: string, step: BrandStep): string {
 /** Etapa que a pessoa pode abrir: visitada, completa ou a próxima da atual. */
 export function canOpenStep(brandCore: BrandCore, step: BrandStep, current: BrandStep): boolean {
   if (brandCore.progress.visitedSteps.includes(step)) return true
-  if (brandCore.completeness.sections[step] === 100) return true
+  if (sectionPercent(brandCore.completeness, step) === 100) return true
   return stepIndex(step) <= stepIndex(current) + 1
 }
 

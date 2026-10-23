@@ -90,6 +90,13 @@ export function useOnboarding(brandId: string) {
     [key, store]
   )
 
+  /** "← voltar": reabre a pergunta anterior. O que já foi gravado fica. */
+  const back = useCallback(async (): Promise<OnboardingThread> => {
+    const thread = await apiPost<OnboardingThread>(`${key}/back`, undefined, clientHeaders())
+    await store(thread)
+    return thread
+  }, [key, store])
+
   /** O logotipo tipográfico de quem pediu "cria pra mim" na logo. */
   const wordmark = useCallback(async (): Promise<BrandAsset[]> => {
     const { assets } = await apiPost<{ assets: BrandAsset[] }>(`${key}/wordmark`, undefined, clientHeaders())
@@ -105,5 +112,5 @@ export function useOnboarding(brandId: string) {
     return published
   }, [brandId, key, mutate])
 
-  return { start, send, retry, wordmark, finish }
+  return { start, send, retry, back, wordmark, finish }
 }

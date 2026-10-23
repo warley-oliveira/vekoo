@@ -47,6 +47,8 @@ module Onboarding
         assign(brand_core, "typography", document["typography"].merge(
           "display" => option["display"], "utility" => option["utility"]
         ))
+      when "wordmark"
+        brand_core.choose_logo(option["logoId"].to_s)
       when "voice"
         voice = document["voice"]
         banned = merge_banned(voice["bannedWords"], Array(option["bannedWords"]))

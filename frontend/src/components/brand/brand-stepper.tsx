@@ -2,7 +2,7 @@ import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import { Check, Lock } from "lucide-react"
 
-import { BRAND_STEPS, canOpenStep, stepHref, type BrandCore, type BrandStep } from "@/lib/brand-core"
+import { BRAND_STEPS, canOpenStep, sectionPercent, stepHref, type BrandCore, type BrandStep } from "@/lib/brand-core"
 import { cn } from "@/lib/utils"
 
 type BrandStepperProps = {
@@ -22,7 +22,7 @@ export function BrandStepper({ brandCore, current, className }: BrandStepperProp
     <nav aria-label={t("brand.stepper.aria")} className={className}>
       <ol className="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:pb-0">
         {BRAND_STEPS.map((step, index) => {
-          const percent = brandCore.completeness.sections[step]
+          const percent = sectionPercent(brandCore.completeness, step)
           const open = canOpenStep(brandCore, step, current)
           const active = step === current
           const done = percent === 100

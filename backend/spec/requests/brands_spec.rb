@@ -19,6 +19,8 @@ RSpec.describe "Marcas", type: :request do
       expect(json["brands"].first).to include("name" => "Pão da Vila", "status" => "published", "readyForGeneration" => true)
       expect(json["brands"].last).to include("name" => nil, "status" => "draft", "percent" => 10)
       expect(json["brands"].first).not_to have_key("document")
+      expect(json["brands"].first["accentColor"]).to match(/\A#\h{6}\z/)
+      expect(json["brands"].last["accentColor"]).to be_nil
     end
   end
 
@@ -204,6 +206,7 @@ Loja: Seg–Sex 9h–18h")
         brand: { document: { voice: { essence: "Fala de padeiro.", tones: [ "warm" ] } } }
       }
       expect(json["hasUnpublishedChanges"]).to be(true)
+      expect(json["unpublishedChangeCount"]).to be >= 1
 
       post "/brands/#{brand_core.id}/publish", headers: headers
 
@@ -232,6 +235,33 @@ Loja: Seg–Sex 9h–18h")
       expect(json["versions"].first["account"]).to be_nil
       expect(json["versions"].first["changedSections"]).to eq([ "palette" ])
       expect(json["versions"].first["createdAt"]).to be_a(Integer)
+    end
+  end
+
+  describe "POST /brands/:id/versions/:id/restore" do
+    it "devolve o documento da versão ao rascunho, sem publicar nem criar versão" do
+      brand_core = create(:brand_core, :published, organization: organization)
+      original = brand_core.full_document
+      version = brand_core.versions.create!(account: account, number: 1, snapshot: original, change_list: [])
+      brand_core.assign_section("voice", original["voice"].merge("essence" => "Outra voz."))
+      brand_core.save!
+
+      expect {
+        post "/brands/#{brand_core.id}/versions/#{version.id}/restore", headers: headers
+      }.not_to change(BrandCoreVersion, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(json["document"]["voice"]["essence"]).to eq(original["voice"]["essence"])
+      expect(json["currentVersion"]).to eq(brand_core.current_version)
+      expect(json["unpublishedChangeCount"]).to eq(0)
+    end
+
+    it "não restaura versão de outra marca" do
+      other = create(:brand_core, :published)
+      version = other.versions.create!(number: 1, snapshot: other.document, change_list: [])
+
+      post "/brands/#{brand.id}/versions/#{version.id}/restore", headers: headers
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

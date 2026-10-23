@@ -14,7 +14,9 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource "*",
       headers: :any,
       methods: %i[get post put patch delete options head],
-      expose: %w[],
+      # O nome do arquivo no download da logo (`brand_logos#download`): sem
+      # expor, o navegador esconde o cabeçalho do front, que mora em outra porta.
+      expose: %w[Content-Disposition],
       credentials: false
   end
 end

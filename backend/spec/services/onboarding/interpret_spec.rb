@@ -135,6 +135,16 @@ RSpec.describe Onboarding::Interpret do
       expect(brand.full_document.dig("identity", "instagram")).to eq("padariadojoao")
     end
 
+    it "marca: o modelo não classificou o ramo, o que ela vende vira o ramo" do
+      result, = apply("brand", { "fields" => { "name" => "Vinix", "concept" => "Vinis raros com potencial de valorização" } })
+      expect(result.fields["segment"]).to eq("Vinis raros com potencial de valorização")
+
+      # Nome e conceito já gravados, resposta sem campo novo: o ramo ainda sai.
+      brand.assign_section("identity", brand.full_document["identity"].merge("segment" => ""))
+      result = interpret("brand", { "fields" => {}, "vague" => true })
+      expect(result.fields).to eq("segment" => "Vinis raros com potencial de valorização")
+    end
+
     it "no ajuste depois do resumo, vale qualquer campo" do
       result, = apply("summary", { "fields" => { "name" => "Padaria da Vila", "colors" => [ "#112233" ] } })
 

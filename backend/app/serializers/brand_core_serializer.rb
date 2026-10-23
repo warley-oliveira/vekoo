@@ -24,7 +24,10 @@ class BrandCoreSerializer < ApplicationSerializer
       readyForGeneration: contract[:ready],
       generationBlockers: contract[:blockers],
       hasUnpublishedChanges: brand_core.unpublished_changes?,
+      unpublishedChangeCount: brand_core.unpublished_changes.size,
       assets: BrandAssetSerializer.many(brand_core.assets.ordered),
+      # As logos (grupos de `assets`), com a principal **do rascunho** marcada.
+      logos: BrandLogoSerializer.many(brand_core.logos, primary: brand_core.primary_logo),
       currentVersion: brand_core.current_version,
       publishedAt: epoch_ms(brand_core.published_at),
       updatedAt: epoch_ms(brand_core.updated_at)
@@ -38,6 +41,8 @@ class BrandCoreSerializer < ApplicationSerializer
       id: brand_core.id,
       name: brand_core.name,
       status: brand_core.status,
+      # O ponto do seletor: a única cor da marca no chrome da plataforma.
+      accentColor: brand_core.accent_color,
       percent: completeness.percent,
       minimumMet: completeness.minimum_met?,
       readyForGeneration: brand_core.generation_contract[:ready],

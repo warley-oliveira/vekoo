@@ -161,7 +161,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
                 <ChevronDown className={cardOpen ? "rotate-180 transition-transform" : "transition-transform"} />
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-3">
-                <BrandCard document={previewDocument} assets={brandCore.assets} className="mx-auto max-w-sm" />
+                <BrandCard document={previewDocument} assets={brandCore.assets} logos={brandCore.logos} className="mx-auto max-w-sm" />
               </CollapsibleContent>
             </Collapsible>
 
@@ -197,7 +197,7 @@ export function BrandWizard({ brandCore, step, children }: BrandWizardProps) {
           <aside className="hidden xl:block">
             <div className="sticky top-6 space-y-2">
               <p className="text-xs font-medium text-muted-foreground">{t("brand.card.title")}</p>
-              <BrandCard document={previewDocument} assets={brandCore.assets} />
+              <BrandCard document={previewDocument} assets={brandCore.assets} logos={brandCore.logos} />
               <p className="text-xs text-muted-foreground">{t("brand.card.hint")}</p>
             </div>
           </aside>

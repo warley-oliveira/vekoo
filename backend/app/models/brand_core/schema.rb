@@ -7,10 +7,12 @@
 # requisição e devolve só o que a forma conhece, com tipos coerentes;
 # `errors_for` diz o que está inválido, por caminho (`palette.colors.2.hex`).
 module BrandCore::Schema
-  SECTIONS = %w[identity palette typography styles voice offers notes].freeze
+  SECTIONS = %w[identity palette typography styles voice offers notes assets].freeze
 
-  # Etapas do formulário, na ordem. "assets" não é seção do documento: os
-  # ativos moram em `brand_assets`, mas a etapa existe e conta no progresso.
+  # Etapas do formulário, na ordem. Os **arquivos** moram em `brand_assets`;
+  # a seção `assets` do documento guarda só a escolha — qual logo é a
+  # principal —, e é por isso que trocar a logo passa por rascunho, histórico
+  # e publicação como qualquer outra mudança da marca.
   STEPS = %w[identity colors typography styles assets voice offers notes].freeze
 
   COLOR_ROLES = %w[
@@ -91,7 +93,11 @@ module BrandCore::Schema
       # Anotações da operação: horário, endereço, o que não coube em oferta —
       # texto livre e opcional. Era uma lista de fatos com status, que barrava
       # geração; virou o que sempre foi na prática, uma nota de contexto.
-      "notes" => { "text" => "" }
+      "notes" => { "text" => "" },
+      # A logo principal: o `logo_id` de um grupo de `brand_assets`. Vazio é
+      # "a de sempre" — a enviada mais recente, senão o nosso logotipo
+      # (`BrandCore::Logos#primary`).
+      "assets" => { "primaryLogoId" => "" }
     }
   end
 
@@ -121,6 +127,7 @@ module BrandCore::Schema
     when "voice" then normalize_voice(raw)
     when "offers" then normalize_offers(raw)
     when "notes" then normalize_notes(raw)
+    when "assets" then normalize_assets(raw)
     end
   end
 
@@ -227,6 +234,13 @@ module BrandCore::Schema
 
   def normalize_notes(raw)
     { "text" => text(raw["text"], NOTES) }
+  end
+
+  UUID = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
+
+  def normalize_assets(raw)
+    id = raw["primaryLogoId"].to_s.strip.downcase
+    { "primaryLogoId" => id.match?(UUID) ? id : "" }
   end
 
   # ---------------------------------------------------------------------------

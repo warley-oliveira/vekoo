@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Navigate } from "react-router"
+import { Navigate, useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
@@ -8,9 +8,14 @@ import { OnboardingChat } from "@/components/onboarding/onboarding-chat"
 import { OnboardingIntro } from "@/components/onboarding/onboarding-intro"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBrandCore } from "@/hooks/use-brand-core"
+import { useBrands } from "@/hooks/use-brands"
+import { useVekooSurface } from "@/hooks/use-vekoo-surface"
 import { useOnboarding, useOnboardingThread } from "@/hooks/use-onboarding"
 import { ApiError } from "@/lib/api"
-import { useActiveBrand } from "@/lib/brand-context"
+import { brandPath, rememberActiveBrand, useActiveBrand } from "@/lib/brand-context"
+
+/** O site, para onde volta quem sai da intro sem ter outra marca pronta. */
+const LANDING_URL = import.meta.env.VITE_LANDING_URL || "https://vekoo.app"
 
 /**
  * `/brands/:brandId/onboarding` — a marca montada por conversa.
@@ -19,8 +24,16 @@ import { useActiveBrand } from "@/lib/brand-context"
  * a conversa, que persiste no servidor — sair e voltar (inclusive de outro
  * aparelho) retoma de onde parou. O wizard de seções continua em
  * `/setup/:step`, como modo de edição, e não é linkado daqui.
+ *
+ * A tela inteira — intro, conversa, esqueleto e erro — veste a paleta do site
+ * (`.surface-vekoo`): é a primeira coisa que a pessoa vê depois de se cadastrar.
  */
 export function OnboardingPage() {
+  useVekooSurface()
+  return <OnboardingContent />
+}
+
+function OnboardingContent() {
   const { t } = useTranslation()
   const { brandId, path } = useActiveBrand()
   const brand = useBrandCore(brandId)
@@ -28,6 +41,21 @@ export function OnboardingPage() {
   const { start } = useOnboarding(brandId)
   const [starting, setStarting] = useState(false)
   const [justStarted, setJustStarted] = useState(false)
+  // A pessoa voltou da primeira pergunta para a intro. A conversa continua no
+  // servidor: "Começar" só a mostra de novo.
+  const [atIntro, setAtIntro] = useState(false)
+  const navigate = useNavigate()
+  const { brands } = useBrands()
+
+  // O "← voltar" da intro sai do onboarding. Para uma marca pronta, se houver
+  // — a marca em rascunho redirecionaria de volta para cá. Sem outra, de
+  // volta ao site: a conversa fica salva e retoma quando ela entrar de novo.
+  function leave() {
+    const other = brands?.find((item) => item.id !== brandId && (item.onboardingDone || item.status === "published"))
+    if (!other) return window.location.assign(LANDING_URL)
+    rememberActiveBrand(other.id)
+    navigate(brandPath(other.id))
+  }
 
   async function begin() {
     setStarting(true)
@@ -65,29 +93,52 @@ export function OnboardingPage() {
   // Marca publicada já passou por aqui: o caminho dela é criar.
   if (brand.brandCore.status === "published") return <Navigate to={path("/create")} replace />
 
-  if (!thread.conversationId) return <OnboardingIntro starting={starting} onStart={() => void begin()} />
+  if (!thread.conversationId) {
+    return <OnboardingIntro starting={starting} onStart={() => void begin()} onBack={leave} />
+  }
 
-  return <OnboardingChat brandCore={brand.brandCore} thread={thread} justStarted={justStarted} />
+  if (atIntro) {
+    return (
+      <OnboardingIntro
+        starting={false}
+        onBack={leave}
+        onStart={() => {
+          setJustStarted(true)
+          setAtIntro(false)
+        }}
+      />
+    )
+  }
+
+  return (
+    <OnboardingChat
+      brandCore={brand.brandCore}
+      thread={thread}
+      justStarted={justStarted}
+      onExit={() => setAtIntro(true)}
+    />
+  )
 }
 
 /** O esqueleto tem a forma da conversa: cabeçalho, falas e o campo embaixo. */
 function ChatSkeleton() {
   return (
     <div className="flex h-dvh flex-col" aria-busy>
-      <div className="h-12 shrink-0 border-b">
-        <div className="mx-auto flex h-full max-w-2xl items-center px-4">
+      <div className="shrink-0">
+        <div className="mx-auto flex h-12 max-w-160 items-center px-4">
           <Skeleton className="h-3 w-28" />
         </div>
+        <div className="h-0.5 bg-vk-faint" />
       </div>
-      <div className="mx-auto w-full max-w-2xl flex-1 space-y-4 px-4 pt-6">
+      <div className="mx-auto w-full max-w-160 flex-1 space-y-4 px-4 pt-8">
         <Skeleton className="h-4 w-11/12" />
         <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="ml-auto h-10 w-1/2 rounded-2xl" />
+        <Skeleton className="ml-auto h-10 w-1/2 rounded-vk-sm" />
         <Skeleton className="h-3 w-32" />
         <Skeleton className="h-4 w-3/4" />
       </div>
-      <div className="mx-auto w-full max-w-2xl px-3 pb-3">
-        <Skeleton className="h-[3.25rem] w-full rounded-2xl" />
+      <div className="mx-auto w-full max-w-160 px-3 pb-3">
+        <Skeleton className="h-[3.25rem] w-full rounded-vk" />
       </div>
     </div>
   )

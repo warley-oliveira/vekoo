@@ -3,7 +3,7 @@ import { useSWRConfig } from "swr"
 
 import { useApi } from "@/hooks/use-api"
 import { BRANDS_KEY } from "@/hooks/use-brands"
-import { apiDelete, apiFetch, apiGet, apiPatch, apiPost } from "@/lib/api"
+import { apiDelete, apiDownload, apiFetch, apiGet, apiPatch, apiPost } from "@/lib/api"
 import type {
   BrandAssetKind,
   BrandCore,
@@ -11,6 +11,7 @@ import type {
   BrandSection,
   BrandStep,
   BrandVersion,
+  LogoDownload,
 } from "@/lib/brand-core"
 import { getClientId } from "@/lib/cable"
 
@@ -114,12 +115,73 @@ export function useBrandCoreMutations(brandId: string) {
     return published
   }, [brandId, key, mutate, store])
 
+  /**
+   * "restaurar": o documento de uma versão antiga volta para o rascunho. Não
+   * publica — o motor segue na versão atual até alguém publicar.
+   */
+  const restoreVersion = useCallback(
+    async (versionId: string): Promise<BrandCore> => {
+      const restored = await apiPost<BrandCore>(`${key}/versions/${versionId}/restore`, undefined, clientHeaders())
+      await store(restored)
+      return restored
+    },
+    [key, store]
+  )
+
+  /**
+   * Torna uma logo a principal. É uma mudança do **rascunho** (seção
+   * `assets`): o motor só a usa depois de publicar.
+   */
+  const chooseLogo = useCallback(
+    async (logoId: string): Promise<BrandCore> => {
+      const saved = await apiPatch<BrandCore>(
+        key,
+        { brand: { document: { assets: { primaryLogoId: logoId } } } },
+        clientHeaders()
+      )
+      await store(saved)
+      return saved
+    },
+    [key, store]
+  )
+
+  /** "regenerar": três logotipos novos, sem apagar nem trocar a principal. */
+  const generateLogos = useCallback(async (): Promise<string[]> => {
+    const { logoIds, brandCore } = await apiPost<{ logoIds: string[]; brandCore: BrandCore }>(
+      `${key}/logos/generate`,
+      undefined,
+      clientHeaders()
+    )
+    await store(brandCore)
+    return logoIds
+  }, [key, store])
+
+  const downloadLogo = useCallback(
+    (logoId: string, option: LogoDownload, fallbackName: string) => {
+      const query = new URLSearchParams({ variant: option.variant, format: option.format })
+      if (option.size) query.set("size", String(option.size))
+      return apiDownload(`${key}/logos/${logoId}/download?${query}`, fallbackName)
+    },
+    [key]
+  )
+
+  /**
+   * Logo: `logoId` junta a variante a uma logo enviada que já existe;
+   * `primary` a torna a principal no rascunho.
+   */
   const uploadAsset = useCallback(
-    async (kind: BrandAssetKind, variant: string | null, file: File) => {
+    async (
+      kind: BrandAssetKind,
+      variant: string | null,
+      file: File,
+      options: { logoId?: string; primary?: boolean } = {}
+    ) => {
       const body = new FormData()
       body.append("file", file)
       body.append("kind", kind)
       if (variant) body.append("variant", variant)
+      if (options.logoId) body.append("logoId", options.logoId)
+      if (options.primary) body.append("primary", "true")
       const asset = await apiFetch<BrandCore["assets"][number]>(`${key}/assets`, {
         method: "POST",
         body,
@@ -151,5 +213,16 @@ export function useBrandCoreMutations(brandId: string) {
 
   const reload = useCallback(() => mutate(isBrandKey(brandId)), [brandId, mutate])
 
-  return { saveSection, saveProgress, publish, uploadAsset, deleteAsset, reload }
+  return {
+    saveSection,
+    saveProgress,
+    publish,
+    restoreVersion,
+    chooseLogo,
+    generateLogos,
+    downloadLogo,
+    uploadAsset,
+    deleteAsset,
+    reload,
+  }
 }

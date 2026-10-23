@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react"
 
 import { FontPair } from "@/components/onboarding/option-picker"
 import { Button } from "@/components/ui/button"
-import type { BrandCore } from "@/lib/brand-core"
+import { logoAsset, primaryLogo, type BrandCore } from "@/lib/brand-core"
 
 /** Quantos produtos o resumo mostra antes de virar "+n". */
 const OFFERS_SHOWN = 3
@@ -28,9 +28,8 @@ type BrandSummaryProps = {
 export function BrandSummary({ brandCore, publishing, onPublish, onAdjust }: BrandSummaryProps) {
   const { t } = useTranslation()
   const { identity, voice, offers, palette, typography } = brandCore.document
-  const logo =
-    brandCore.assets.find((asset) => asset.kind === "logo" && asset.variant !== "dark") ??
-    brandCore.assets.find((asset) => asset.kind === "logo")
+  // A principal (a escolhida entre os três logotipos, ou a enviada).
+  const logo = logoAsset(brandCore, primaryLogo(brandCore), "light")
   const banned = voice.bannedWords.map((word) => word.text).filter(Boolean)
 
   return (

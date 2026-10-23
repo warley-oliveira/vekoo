@@ -56,12 +56,14 @@
       "logoUploaded": "logo received ✓",
       "logoNoted": "wordmark noted ✓",
       "palette": "palette saved ✓",
-      "fonts": "font saved ✓"
+      "fonts": "font saved ✓",
+      "logoSaved": "logo saved to assets ✓ · download or swap it anytime"
     },
     "confirm": {
       "voice": "Tone of voice saved ✓",
       "palette": "Palette saved ✓",
-      "fonts": "Font saved ✓"
+      "fonts": "Font saved ✓",
+      "logo": "Wordmark chosen ✓"
     },
     "agent": {
       "followUpGeneric": "Can you be more specific? The more detail, the better the engine writes.",
@@ -73,11 +75,18 @@
         "voice": "Three ways of speaking, based on what you told me. Click the one that sounds like your brand.",
         "palette": "Three palettes, based on what you told me. Click the one that looks like your brand.",
         "fonts": "Three font pairs. Click the one that fits the palette."
-      }
+      },
+      "wordmarkReady": "I drew three versions of the wordmark in your font. The first one is already in the summary — click another if you like it better."
     },
     "resume": "We stopped here: {{topic}}. Shall we continue?",
     "empty": "no brand built yet",
     "progress": "brandcore · {{current}}/{{total}}",
+    "questionLabel": "{{number}} / {{topic}}",
+    "back": {
+      "action": "← back",
+      "a11y": "Back to the previous question",
+      "echo": "← back to: {{topic}}"
+    },
     "chip": "not sure — make it for me",
     "placeholder": "answer your way",
     "summary": {
@@ -108,7 +117,8 @@
     "options": {
       "palette": "Proposed palettes",
       "fonts": "Proposed font pairs",
-      "voice": "Proposed voices"
+      "voice": "Proposed voices",
+      "wordmark": "Suggested wordmarks"
     },
     "a11y": {
       "attachLogo": "Send my logo",

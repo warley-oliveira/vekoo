@@ -39,6 +39,28 @@ export function formatDate(timestamp: number, language: string): string {
   }).format(timestamp)
 }
 
+/**
+ * "5 set 2026" em pt-BR, "Sep 5 2026" em en — a data dos metadados em mono.
+ * Fica só com dia, mês e ano, na ordem do locale, sem as preposições e o
+ * ponto da abreviação: quem escolhe a ordem e o nome do mês é o Intl.
+ */
+export function formatShortDate(timestamp: number, language: string): string {
+  return new Intl.DateTimeFormat(language, { day: "numeric", month: "short", year: "numeric" })
+    .formatToParts(timestamp)
+    .filter((part) => part.type === "day" || part.type === "month" || part.type === "year")
+    .map((part) => part.value.replace(/\.$/, ""))
+    .join(" ")
+}
+
+/** "27 ago" / "Aug 27" — o dia e o mês, do mesmo jeito que `formatShortDate`. */
+export function formatDayMonth(timestamp: number, language: string): string {
+  return new Intl.DateTimeFormat(language, { day: "numeric", month: "short" })
+    .formatToParts(timestamp)
+    .filter((part) => part.type === "day" || part.type === "month")
+    .map((part) => part.value.replace(/\.$/, ""))
+    .join(" ")
+}
+
 /** A data com a hora — o que aparece ao passar o mouse sobre "há 3 horas". */
 export function formatDateTime(timestamp: number, language: string): string {
   return new Intl.DateTimeFormat(language, {

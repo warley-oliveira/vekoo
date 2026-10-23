@@ -1,4 +1,4 @@
-import type { BrandColor, BrandFont, Tone } from "@/lib/brand-core"
+import type { BrandColor, BrandFont, LogoStyle, Tone } from "@/lib/brand-core"
 
 // O onboarding por conversa — a porta de entrada de toda marca nova.
 //
@@ -33,6 +33,41 @@ export type ThreadTopic = Topic | "summary"
 /** Os temas como a pessoa os conta no `brandcore · n/8`. */
 export const QUESTION_COUNT = 8
 
+/** A posição de cada tema no `n/8` — espelho de `BrandCore::Onboarding::POSITION`. */
+const POSITION: Record<Topic, number> = {
+  brand: 1,
+  audience: 2,
+  differential: 3,
+  voice: 4,
+  banned: 5,
+  offers: 6,
+  logo: 7,
+  palette: 8,
+  fonts: 8,
+}
+
+export function topicPosition(topic: ThreadTopic): number {
+  return topic === "summary" ? QUESTION_COUNT : POSITION[topic]
+}
+
+/**
+ * O que a pessoa escreveu da última vez que respondeu esta pergunta — o
+ * "← voltar" devolve isso ao campo, para ela editar em vez de redigitar.
+ * Junta as respostas da última passagem pela pergunta (a resposta e a do
+ * seguimento); escolha de proposta e logo não têm texto e ficam de fora.
+ */
+export function lastAnswerFor(turns: OnboardingTurn[], topic: ThreadTopic): string {
+  const position = topicPosition(topic)
+  const here = (turn: OnboardingTurn) => turn.topic !== "summary" && topicPosition(turn.topic) === position
+  const end = turns.findLastIndex(here)
+  const texts: string[] = []
+  for (let index = end; index >= 0 && here(turns[index]); index--) {
+    const turn = turns[index]
+    if (turn.kind === "answer" && turn.text) texts.unshift(turn.text)
+  }
+  return texts.join("\n")
+}
+
 /** O nome do tema na retomada ("Paramos aqui: paleta e fonte"). Paleta e fonte dividem o nome. */
 export function topicLabelKey(topic: ThreadTopic): string {
   return topic === "fonts" ? "onboarding.topics.palette" : `onboarding.topics.${topic}`
@@ -55,7 +90,7 @@ export type OnboardingState = {
 
 /* ---------- as propostas do "cria pra mim" ---------- */
 
-export type SuggestKind = "palette" | "fonts" | "voice"
+export type SuggestKind = "palette" | "fonts" | "voice" | "wordmark"
 
 /** Paleta já com os papéis derivados e o contraste conferido pelo servidor. */
 export type PaletteOption = {
@@ -77,12 +112,18 @@ export type VoiceOption = {
   bannedWords: string[]
 }
 
-export type SuggestOption = PaletteOption | FontsOption | VoiceOption
+/** Um dos três logotipos do resumo: a logo já está nos ativos da marca. */
+export type WordmarkOption = {
+  logoId: string
+  style: LogoStyle | null
+}
+
+export type SuggestOption = PaletteOption | FontsOption | VoiceOption | WordmarkOption
 
 /* ---------- a conversa ---------- */
 
 /** Os status gravados. `logoUploaded` e `logoNoted` são os dois jeitos de fechar a logo. */
-export type StatusTopic = Exclude<Topic, "logo"> | "logoUploaded" | "logoNoted"
+export type StatusTopic = Exclude<Topic, "logo"> | "logoUploaded" | "logoNoted" | "logoSaved"
 
 /** Os textos fixos que o agente pode dizer — `onboarding.agent.<code>`. */
 export type AgentTextCode =
@@ -91,6 +132,7 @@ export type AgentTextCode =
   | "fontMissing"
   | "wordmarkNoted"
   | "logoOpaque"
+  | "wordmarkReady"
   | "suggest.voice"
   | "suggest.palette"
   | "suggest.fonts"
@@ -99,7 +141,7 @@ export type AgentTextCode =
 export type ReplyItem =
   | { type: "status"; topic: StatusTopic }
   /** A confirmação depois de escolher uma proposta ("Paleta gravada ✓"). */
-  | { type: "confirm"; topic: "voice" | "palette" | "fonts" }
+  | { type: "confirm"; topic: "voice" | "palette" | "fonts" | "logo" }
   | { type: "text"; code: AgentTextCode; params?: Record<string, string> }
   /** O seguimento escrito pelo modelo, sobre o que a pessoa disse. */
   | { type: "followUp"; text: string }
@@ -112,7 +154,8 @@ export type ReplyItem =
     }
   | { type: "summary" }
 
-export type TurnKind = "answer" | "suggest" | "choose" | "logo"
+/** `back` é o "← voltar": não passa pelo agente, só reabre a pergunta anterior. */
+export type TurnKind = "answer" | "suggest" | "choose" | "logo" | "back"
 
 export type OnboardingTurn = {
   id: string
@@ -161,4 +204,8 @@ export function isPaletteOption(option: SuggestOption): option is PaletteOption 
 
 export function isFontsOption(option: SuggestOption): option is FontsOption {
   return "display" in option
+}
+
+export function isWordmarkOption(option: SuggestOption): option is WordmarkOption {
+  return "logoId" in option
 }

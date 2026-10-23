@@ -145,20 +145,34 @@ RSpec.describe RenderWordmark do
     expect(described_class.call(create(:brand_core)).length).to eq(0)
   end
 
-  it "guarda como ativo da marca, marcado como desenhado pela Vekoo" do
-    assets = described_class.attach!(brand)
+  it "guarda como uma logo da marca (claro + escuro), marcada como desenhada pela Vekoo" do
+    logo_id = described_class.attach!(brand)
 
-    expect(assets.length).to eq(2)
+    assets = brand.reload.assets.where(logo_id: logo_id)
+    expect(assets.map(&:variant)).to contain_exactly("light", "dark")
     expect(assets).to all(be_generated)
-    expect(brand.reload.logo?).to be(true)
+    expect(brand.logo?).to be(true)
   end
 
-  it "refaz sem acumular, e nunca toca num arquivo que a pessoa enviou" do
-    uploaded = create(:brand_asset, brand_core: brand, variant: "light")
-    described_class.attach!(brand)
-    described_class.attach!(brand)
+  it "desenha em alta: 2048 px de largura, para o PNG grande do download" do
+    logo_id = described_class.attach!(brand)
+    expect(brand.reload.assets.where(logo_id: logo_id).map(&:width)).to all(eq(2048))
+  end
 
-    expect(brand.reload.assets.where(kind: "logo", generated: true).count).to eq(2)
+  it "as três opções são três logos novas, e nada anterior é apagado" do
+    uploaded = create(:brand_asset, brand_core: brand, variant: "light")
+    first = described_class.attach!(brand)
+    options = described_class.options!(brand)
+
+    expect(options.length).to eq(3)
+    expect(brand.reload.logos.map(&:id)).to include(first, *options)
+    expect(brand.logos.find_logo(options.second).style).to eq("spacedCaps")
     expect(BrandAsset.exists?(uploaded.id)).to be(true)
+  end
+
+  it "os estilos desenham coisas diferentes" do
+    plain = described_class.call(brand, style: "asWritten").first.png
+    caps = described_class.call(brand, style: "spacedCaps").first.png
+    expect(caps).not_to eq(plain)
   end
 end

@@ -19,13 +19,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useBrandCoreMutations } from "@/hooks/use-brand-core"
 import { ApiError } from "@/lib/api"
-import { formatBytes, type BrandAsset, type BrandAssetKind } from "@/lib/brand-core"
+import { formatBytes, primaryLogo, type BrandAsset, type BrandAssetKind, type BrandCore } from "@/lib/brand-core"
 import { useLanguage } from "@/lib/i18n"
 import { inspectPngTransparency } from "@/lib/png-transparency"
 import { cn } from "@/lib/utils"
 
 // Os mesmos tetos de `BrandAsset` no Rails.
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+const MAX_LOGO_BYTES = 5 * 1024 * 1024
 const IMAGE_ACCEPT = "image/png,image/svg+xml"
 const PHOTO_ACCEPT = "image/jpeg,image/png,image/webp"
 
@@ -58,7 +59,7 @@ export function StepAssets() {
             kind={slot.kind}
             variant={slot.variant}
             label={t(`brand.assets.slots.${slot.key}`)}
-            asset={brandCore.assets.find((a) => a.kind === slot.kind && a.variant === slot.variant)}
+            asset={slotAsset(brandCore, slot.kind, slot.variant)}
             onDark={slot.variant === "dark"}
           />
         ))}
@@ -87,6 +88,16 @@ export function StepAssets() {
   )
 }
 
+/**
+ * O arquivo de um slot. Logo é a variante da **principal** — a marca guarda
+ * várias, e é a principal que o wizard edita; glifo é o de sempre.
+ */
+function slotAsset(brandCore: BrandCore, kind: "logo" | "glyph", variant: "light" | "dark"): BrandAsset | undefined {
+  if (kind === "glyph") return brandCore.assets.find((a) => a.kind === kind && a.variant === variant)
+  const id = primaryLogo(brandCore)?.variants[variant]
+  return brandCore.assets.find((a) => a.id === id)
+}
+
 /* ---------- upload ---------- */
 
 function useAssetUpload(kind: BrandAssetKind, variant: string | null) {
@@ -97,15 +108,21 @@ function useAssetUpload(kind: BrandAssetKind, variant: string | null) {
   const [uploading, setUploading] = useState(false)
 
   async function upload(file: File) {
-    if (file.size > MAX_IMAGE_BYTES) {
-      toast.error(t("brand.assets.tooLarge", { max: formatBytes(MAX_IMAGE_BYTES, language) }))
+    const max = kind === "logo" ? MAX_LOGO_BYTES : MAX_IMAGE_BYTES
+    if (file.size > max) {
+      toast.error(t("brand.assets.tooLarge", { max: formatBytes(max, language) }))
       return
     }
+    // Logo pelo wizard: a variante entra na logo enviada que é a principal
+    // (a escura ao lado da clara) e continua sendo a principal.
+    const primary = primaryLogo(brandCore)
+    const logoOptions =
+      kind === "logo" ? { logoId: primary?.source === "uploaded" ? primary.id : undefined, primary: true } : {}
     setUploading(true)
     try {
       // A conferência local só antecipa o alerta; a que vale é a do servidor.
       const [asset, localTransparent] = await Promise.all([
-        uploadAsset(kind, variant, file),
+        uploadAsset(kind, variant, file, logoOptions),
         kind === "photo" ? Promise.resolve(null) : inspectPngTransparency(file),
       ])
       const transparent = asset.transparent ?? localTransparent

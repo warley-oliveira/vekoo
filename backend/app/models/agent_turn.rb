@@ -12,10 +12,11 @@ class AgentTurn < ApplicationRecord
   # No onboarding, cada fala da pessoa é um turno: `answer` é a resposta
   # escrita, `suggest` é o "cria pra mim", `choose` é o clique numa das
   # propostas e `logo` é o arquivo enviado. O que o agente responde vai em
-  # `plan["reply"]`, como **códigos** — a tela traduz.
+  # `plan["reply"]`, como **códigos** — a tela traduz. `back` é o "← voltar":
+  # não passa pelo modelo nem pela fila, só deixa no fio a pergunta reaberta.
   CREATION_KINDS = %w[create adjust vary].freeze
   ONBOARDING_KINDS = %w[answer suggest choose logo].freeze
-  KINDS = (CREATION_KINDS + ONBOARDING_KINDS).freeze
+  KINDS = (CREATION_KINDS + ONBOARDING_KINDS + %w[back]).freeze
   STATUSES = %w[thinking answered question failed].freeze
 
   belongs_to :conversation, class_name: "AgentConversation",

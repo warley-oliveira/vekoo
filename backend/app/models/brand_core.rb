@@ -37,6 +37,9 @@ class BrandCore < ApplicationRecord
   def assign_section(section, raw)
     normalized = BrandCore::Schema.normalize_section(section, raw)
     errors = BrandCore::Schema.errors_for(section, normalized)
+    # A forma não conhece o banco: a logo escolhida tem que ser desta marca.
+    chosen = section == "assets" && normalized["primaryLogoId"].presence
+    errors += [ [ "assets.primaryLogoId", :invalid ] ] if chosen && !logos.find_logo(chosen)
     return errors if errors.any?
 
     self.document = full_document.merge(section => normalized)
@@ -54,11 +57,27 @@ class BrandCore < ApplicationRecord
   def published_completeness
     return nil unless published?
 
-    BrandCore::Completeness.new(published_document, has_logo: logo?)
+    BrandCore::Completeness.new(published_document, has_logo: logo?(BrandCore::Schema.complete(published_document)))
   end
 
-  def logo?
-    assets.any? { |asset| asset.kind == "logo" }
+  def logo?(document = full_document)
+    primary_logo(document).present?
+  end
+
+  def logos
+    BrandCore::Logos.new(assets.to_a)
+  end
+
+  # A logo principal do rascunho (padrão) ou de outro documento — o motor
+  # passa o publicado.
+  def primary_logo(document = full_document)
+    logos.primary(document)
+  end
+
+  # Torna uma logo a principal **no rascunho**: vale para o motor só depois de
+  # publicar, como qualquer mudança da marca.
+  def choose_logo(logo_id)
+    assign_section("assets", full_document["assets"].merge("primaryLogoId" => logo_id))
   end
 
   def visited_steps
@@ -145,12 +164,20 @@ class BrandCore < ApplicationRecord
     onboarding_state["wantedFont"].to_s.presence
   end
 
-  def track_onboarding(close: nil, follow_up: nil, segment: nil, done: nil, wants_wordmark: nil, wanted_font: nil)
+  def track_onboarding(close: nil, reopen: nil, follow_up: nil, segment: nil, done: nil, wants_wordmark: nil, wanted_font: nil)
     state = onboarding_state.dup
     state["startedAt"] ||= (Time.current.to_f * 1000).round
 
     closing = Array(close) & BrandCore::Onboarding::TOPICS
     state["topics"] = BrandCore::Onboarding::TOPICS & (onboarding_closed | closing) if closing.any?
+    # Reabrir grava a lista explícita e larga os passos do onboarding de
+    # telas: senão o tema legado continuaria fechado por baixo.
+    reopening = Array(reopen) & BrandCore::Onboarding::TOPICS
+    if reopening.any?
+      state["topics"] = onboarding_closed - reopening
+      state.delete("answered")
+      state.delete("skipped")
+    end
     if BrandCore::Onboarding.topic?(follow_up)
       state["followUps"] = BrandCore::Onboarding::TOPICS & (onboarding_follow_ups | [ follow_up.to_s ])
     end
@@ -175,6 +202,17 @@ class BrandCore < ApplicationRecord
 
   def unpublished_changes?
     published? && full_document != BrandCore::Schema.complete(published_document)
+  end
+
+  # O que o rascunho mudou desde a última publicação — a mesma lista que a
+  # próxima versão vai guardar em `change_list`.
+  def unpublished_changes
+    unpublished_changes? ? BrandCore::Diff.call(published_document, full_document) : []
+  end
+
+  # A cor que identifica a marca fora dela (o ponto do seletor no topo).
+  def accent_color
+    full_document.dig("palette", "colors")&.find { |color| color["role"] == "accent" }&.dig("hex").presence
   end
 
   # Contrato para o módulo de geração: ele lê daqui, nunca do rascunho.

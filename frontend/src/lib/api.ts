@@ -165,6 +165,35 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
   return (await res.json()) as T
 }
 
+/**
+ * Baixa um arquivo da API com a sessão (o `Authorization` não vai num `<a
+ * href>`): busca o blob e entrega ao navegador com o nome que o servidor deu.
+ */
+export async function apiDownload(path: string, fallbackName: string): Promise<void> {
+  const token = getToken()
+  const headers = new Headers({ "Accept-Language": currentLanguage() })
+  if (token) headers.set("Authorization", `Bearer ${token}`)
+
+  let res: Response
+  try {
+    res = await fetch(`${BASE_URL}${path}`, { headers })
+  } catch {
+    throw new ApiError({ status: 0, code: "network" })
+  }
+  if (!res.ok) throw new ApiError({ status: res.status, code: knownCode(undefined, res.status) })
+
+  const disposition = res.headers.get("Content-Disposition") ?? ""
+  const name = /filename="([^"]+)"/.exec(disposition)?.[1] ?? fallbackName
+  const url = URL.createObjectURL(await res.blob())
+  const link = document.createElement("a")
+  link.href = url
+  link.download = name
+  document.body.append(link)
+  link.click()
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
+}
+
 /* ---------- atalhos ---------- */
 
 export function apiGet<T>(path: string, init?: ApiInit): Promise<T> {

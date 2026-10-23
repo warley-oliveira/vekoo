@@ -43,6 +43,7 @@ pt-BR:
   onboarding:
     unknown_kind: "Não sei propor isso."
     cannot_finish: "Ainda falta responder o mínimo: nome, o que você faz, cores e fontes."
+    cannot_go_back: "Esta já é a primeira pergunta."
     logo_required: "Envie a logo ou peça um logotipo para a Vekoo."
     wordmark_failed: "Não deu para desenhar o logotipo. Você pode enviar um arquivo."
 

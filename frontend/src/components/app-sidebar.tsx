@@ -807,12 +807,12 @@ function RenameFolderForm({
   )
 }
 
-/** Logo pequena usada no rail recolhido e telas de entrada (próxima etapa). */
+/** O wordmark, em mono como no site: no topo do app e nas telas de entrada. */
 export function VekooMark({ className }: { className?: string }) {
   return (
-    <span className={cn("font-heading text-lg font-bold tracking-tight", className)}>
+    <span className={cn("font-mono text-lg font-semibold tracking-tight", className)}>
       {/* i18n-exempt: o nome da marca não se traduz. */}
-      vekoo<span className="text-primary">.</span>
+      vekoo
     </span>
   )
 }

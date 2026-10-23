@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type KeyboardEvent } from "react"
+import { useImperativeHandle, useRef, useState, type FormEvent, type KeyboardEvent, type Ref } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { ArrowUp, ImagePlus, Loader2 } from "lucide-react"
@@ -13,7 +13,13 @@ const MAX_CHARS = 2_000
 /** O `id` do campo: quem quer devolver o foco a ele (o "Ajustar algo") usa este. */
 export const COMPOSER_ID = "onboarding-answer"
 
+/** Quem precisa pôr texto no campo de fora — o "← voltar" devolve a resposta anterior. */
+export type ChatComposerHandle = {
+  fill: (text: string) => void
+}
+
 type ChatComposerProps = {
+  ref?: Ref<ChatComposerHandle>
   /** Rejeita quando não foi: o texto fica no campo para tentar de novo. */
   onSend: (text: string) => Promise<void>
   /** O chip "não sei — cria pra mim" — só nos temas que têm proposta. */
@@ -31,13 +37,27 @@ type ChatComposerProps = {
  * Enter envia, Shift+Enter quebra linha. Enquanto o agente lê a resposta, o
  * campo continua aberto para escrever, mas não envia: uma fala de cada vez.
  */
-export function ChatComposer({ onSend, onSuggest, onLogo, busy }: ChatComposerProps) {
+export function ChatComposer({ ref, onSend, onSuggest, onLogo, busy }: ChatComposerProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const [value, setValue] = useState("")
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
+  const field = useRef<HTMLTextAreaElement>(null)
+
+  useImperativeHandle(ref, () => ({
+    fill(text) {
+      setValue(text.slice(0, MAX_CHARS))
+      // O foco vai com o cursor no fim: é para editar, não redigitar.
+      window.requestAnimationFrame(() => {
+        const element = field.current
+        if (!element) return
+        element.focus()
+        element.setSelectionRange(element.value.length, element.value.length)
+      })
+    },
+  }))
 
   const locked = busy || sending || uploading
   const canSend = value.trim().length > 0 && !locked
@@ -90,7 +110,7 @@ export function ChatComposer({ onSend, onSuggest, onLogo, busy }: ChatComposerPr
               disabled={locked}
               className={cn(
                 "inline-flex h-10 items-center rounded-full border bg-background px-4 font-mono text-xs outline-none transition-colors",
-                "enabled:hover:border-primary/60 enabled:hover:text-primary focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+                "enabled:hover:border-vk-fg enabled:hover:text-vk-fg focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
               )}
             >
               {t("onboarding.chip")}
@@ -101,7 +121,7 @@ export function ChatComposer({ onSend, onSuggest, onLogo, busy }: ChatComposerPr
 
       <form
         onSubmit={submit}
-        className="flex items-end gap-1.5 rounded-2xl border bg-card p-1.5 shadow-sm transition-shadow focus-within:ring-3 focus-within:ring-ring/50"
+        className="flex items-end gap-1.5 rounded-vk border border-vk-border bg-vk-input p-1.5 transition-colors focus-within:border-vk-fg"
       >
         {onLogo && (
           <>
@@ -127,6 +147,7 @@ export function ChatComposer({ onSend, onSuggest, onLogo, busy }: ChatComposerPr
           </>
         )}
         <Textarea
+          ref={field}
           id={COMPOSER_ID}
           value={value}
           onChange={(event) => setValue(event.target.value.slice(0, MAX_CHARS))}
@@ -137,12 +158,12 @@ export function ChatComposer({ onSend, onSuggest, onLogo, busy }: ChatComposerPr
           aria-label={t("onboarding.placeholder")}
           // `field-sizing-content` cresce com o texto; o teto evita que uma
           // resposta longa empurre o botão para fora da tela do celular.
-          className="max-h-40 min-h-10 resize-none border-0 bg-transparent px-2.5 py-2.5 text-base shadow-none focus-visible:border-transparent focus-visible:ring-0 md:text-[15px]"
+          className="max-h-40 min-h-10 resize-none border-0 bg-transparent px-2.5 py-2.5 text-base shadow-none placeholder:text-vk-muted focus-visible:border-transparent focus-visible:ring-0 md:text-[15px]"
         />
         <Button
           type="submit"
           size="icon"
-          className="size-10 shrink-0 rounded-xl"
+          className="size-10 shrink-0 rounded-full bg-vk-btn text-vk-btn-fg hover:bg-vk-btn-hover focus-visible:ring-vk-fg/30"
           disabled={!canSend}
           aria-label={t("onboarding.a11y.send")}
         >

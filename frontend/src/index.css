@@ -6,13 +6,35 @@
 /* Mono dos labels e status da conversa do brandcore — o "log" da plataforma. */
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
+/* Texto da conversa do brandcore — a mesma do site (landingpage/). */
+@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: 'Bricolage Grotesque Variable', var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
+    /* Por variável: a superfície do site (`.surface-vekoo`) troca as duas. */
+    --font-heading: var(--app-font-heading);
+    --font-sans: var(--app-font-sans);
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-chat: 'Inter Variable', var(--font-sans);
+    /* A paleta do site (`vk-*`), para as telas que falam a língua dele. */
+    --color-vk-bg: var(--vk-bg);
+    --color-vk-fg: var(--vk-fg);
+    --color-vk-muted: var(--vk-muted);
+    --color-vk-muted-strong: var(--vk-muted-strong);
+    --color-vk-border: var(--vk-border);
+    --color-vk-border-strong: var(--vk-border-strong);
+    --color-vk-surface: var(--vk-surface);
+    --color-vk-track: var(--vk-track);
+    --color-vk-green: var(--vk-green);
+    --color-vk-term-ok: var(--vk-term-ok);
+    --color-vk-faint: var(--vk-faint);
+    --color-vk-input: var(--vk-input-bg);
+    --color-vk-btn: var(--vk-btn-bg);
+    --color-vk-btn-fg: var(--vk-btn-fg);
+    --color-vk-btn-hover: var(--vk-btn-bg-hover);
+    --radius-vk-sm: var(--vk-radius-sm);
+    --radius-vk: var(--vk-radius);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -59,6 +81,8 @@
  * Capas de carrossel têm cor própria e cantos retos; isso as separa da ferramenta.
  */
 :root {
+    --app-font-sans: 'Geist Variable', sans-serif;
+    --app-font-heading: 'Bricolage Grotesque Variable', var(--app-font-sans);
     --background: oklch(0.995 0.001 90);
     --foreground: oklch(0.185 0.005 285);
     --card: oklch(1 0 0);
@@ -91,6 +115,82 @@
     --sidebar-accent-foreground: oklch(0.185 0.005 285);
     --sidebar-border: oklch(0.925 0.003 285);
     --sidebar-ring: oklch(0.6 0.2 292);
+
+    /*
+     * A paleta do site da Vekoo (landingpage/vekoo-saas-landing_2.html): papel
+     * off-white, tinta preta, labels em mono e o holográfico como único brilho.
+     * Vive ao lado do tema da ferramenta, não no lugar dele — quem a usa é
+     * `.surface-vekoo`.
+     */
+    --vk-bg: #F4F1EA;
+    --vk-fg: #0A0A0A;
+    --vk-muted: #5F5A52;
+    --vk-muted-strong: #4A463E;
+    --vk-border: rgba(10, 10, 10, 0.12);
+    --vk-border-strong: rgba(10, 10, 10, 0.22);
+    --vk-track: rgba(10, 10, 10, 0.08);
+    --vk-faint: rgba(10, 10, 10, 0.045);
+    --vk-input-bg: rgba(10, 10, 10, 0.035);
+    --vk-surface: rgba(255, 255, 255, 0.6);
+    --vk-green: #16A34A;
+    --vk-green-glow: rgba(22, 163, 74, 0.35);
+    /* O ✓ do bloco de terminal: o verde que lê em fundo preto. */
+    --vk-term-ok: #4ADE80;
+    --vk-btn-bg: #0A0A0A;
+    --vk-btn-fg: #F4F1EA;
+    --vk-btn-bg-hover: #2E2E2E;
+    --vk-holo: linear-gradient(120deg, #0891B2, #2563EB, #7C3AED, #C026D3, #DB2777, #0891B2);
+    --vk-radius-sm: 8px;
+    --vk-radius: 12px;
+}
+
+/*
+ * O chrome da plataforma com a cara do site. Remapeia os tokens do shadcn
+ * para a paleta `vk-*`: os primitivos (botão, menu, diálogo, cartão)
+ * acompanham sem classe nova — e o violeta da ferramenta sai, o acento é a
+ * tinta. Vai no `<html>` (`useVekooSurface`) para alcançar também o que
+ * abre em portal.
+ */
+.surface-vekoo {
+    --app-font-sans: 'Inter Variable', sans-serif;
+    --app-font-heading: var(--app-font-sans);
+    --background: var(--vk-bg);
+    --foreground: var(--vk-fg);
+    --card: var(--vk-surface);
+    --card-foreground: var(--vk-fg);
+    --popover: var(--vk-bg);
+    --popover-foreground: var(--vk-fg);
+    --primary: var(--vk-btn-bg);
+    --primary-foreground: var(--vk-btn-fg);
+    --secondary: var(--vk-faint);
+    --secondary-foreground: var(--vk-fg);
+    --muted: var(--vk-faint);
+    --muted-foreground: var(--vk-muted);
+    --accent: var(--vk-faint);
+    --accent-foreground: var(--vk-fg);
+    --border: var(--vk-border);
+    --input: var(--vk-border);
+    --ring: var(--vk-fg);
+    --sidebar: var(--vk-bg);
+    --sidebar-foreground: var(--vk-fg);
+    --sidebar-primary: var(--vk-btn-bg);
+    --sidebar-primary-foreground: var(--vk-btn-fg);
+    --sidebar-accent: var(--vk-faint);
+    --sidebar-accent-foreground: var(--vk-fg);
+    --sidebar-border: var(--vk-border);
+    --sidebar-ring: var(--vk-fg);
+    background-color: var(--vk-bg);
+    color: var(--vk-fg);
+    font-family: var(--font-chat);
+}
+
+.surface-vekoo ::selection {
+    background: rgba(10, 10, 10, 0.12);
+}
+
+/* O único brilho da paleta: a barra de progresso. */
+@utility bg-holo {
+    background-image: var(--vk-holo);
 }
 
 @layer base {

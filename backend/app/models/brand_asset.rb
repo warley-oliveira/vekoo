@@ -23,6 +23,8 @@ class BrandAsset < ApplicationRecord
   }.freeze
 
   MAX_IMAGE_BYTES = 10.megabytes
+  # Logo é traço, não foto: 5 MB sobram para SVG e PNG em 2048 px.
+  MAX_LOGO_BYTES = 5.megabytes
   MAX_FONT_BYTES = 5.megabytes
 
   belongs_to :brand_core
@@ -30,6 +32,10 @@ class BrandAsset < ApplicationRecord
   belongs_to :account, optional: true
 
   has_one_attached :file
+
+  # Toda logo pertence a um grupo (`BrandCore::Logos`). Quem não disse qual
+  # é uma logo sozinha — nunca um arquivo invisível.
+  before_validation { self.logo_id ||= SecureRandom.uuid if kind == "logo" }
 
   validates :kind, inclusion: { in: KINDS }
   validates :filename, presence: true
@@ -49,7 +55,11 @@ class BrandAsset < ApplicationRecord
   end
 
   def self.max_bytes(kind)
-    kind == "font" ? MAX_FONT_BYTES : MAX_IMAGE_BYTES
+    case kind
+    when "font" then MAX_FONT_BYTES
+    when "logo" then MAX_LOGO_BYTES
+    else MAX_IMAGE_BYTES
+    end
   end
 
   # Tipo real do arquivo enviado, para o `kind` pedido — nil quando não serve.

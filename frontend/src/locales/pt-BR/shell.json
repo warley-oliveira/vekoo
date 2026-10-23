@@ -23,6 +23,14 @@
       "markAllRead": "Marcar todas como lidas",
       "empty": "Nenhuma notificação por aqui.",
       "loadFailed": "Não deu para carregar os avisos."
+    },
+    "live": {
+      "online": "motor no ar",
+      "connecting": "conectando…",
+      "offline": "motor fora do ar",
+      "onlineHint": "Conexão em tempo real ativa: peças e respostas chegam sozinhas.",
+      "connectingHint": "Abrindo a conexão em tempo real.",
+      "offlineHint": "Sem conexão em tempo real. O que terminar aparece quando a página recarregar."
     }
   },
   "notifications": {

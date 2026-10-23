@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -105,6 +105,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_120000) do
     t.boolean "generated", default: false, null: false
     t.integer "height"
     t.string "kind", null: false
+    t.uuid "logo_id"
+    t.jsonb "meta", default: {}, null: false
     t.uuid "organization_id", null: false
     t.boolean "transparent"
     t.datetime "updated_at", null: false
@@ -112,6 +114,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_120000) do
     t.integer "width"
     t.index ["account_id"], name: "index_brand_assets_on_account_id"
     t.index ["brand_core_id", "kind", "created_at"], name: "index_brand_assets_on_brand_core_id_and_kind_and_created_at"
+    t.index ["brand_core_id", "logo_id"], name: "index_brand_assets_on_brand_core_id_and_logo_id"
     t.index ["brand_core_id"], name: "index_brand_assets_on_brand_core_id"
     t.index ["organization_id"], name: "index_brand_assets_on_organization_id"
   end

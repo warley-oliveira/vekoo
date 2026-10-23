@@ -112,6 +112,22 @@ RSpec.describe "Onboarding por conversa", type: :request do
       expect(json["state"]).to include("topic" => "audience", "position" => 2)
     end
 
+    it "marca: o ramo sai do que ela vende, e vaga de novo depois do seguimento não prende no tema" do
+      model_answers(
+        { "fields" => { "name" => "Vinix", "concept" => "Vinis" }, "vague" => true,
+          "followUp" => "Que tipo de vinil? Novos, usados, raros?" },
+        { "fields" => { "concept" => "Vinis raros com potencial de valorização" }, "vague" => true }
+      )
+
+      answer("Vinix uma marca de vinis")
+      expect(reply_types).to eq([ "followUp" ])
+
+      answer("vinis raros com potencial de valorização")
+      expect(statuses).to eq([ "brand" ])
+      expect(reply.last).to eq("type" => "question", "topic" => "audience")
+      expect(brand.reload.full_document.dig("identity", "segment")).to eq("Vinis")
+    end
+
     it "não gasta crédito — só conta o custo no turno" do
       model_answers({ "fields" => { "name" => "Padaria do João", "concept" => "Pão.", "segment" => "Padaria" } })
 
@@ -244,7 +260,7 @@ RSpec.describe "Onboarding por conversa", type: :request do
       expect(voice["tones"]).to eq(chosen["tones"])
     end
 
-    it "paleta e fonte: dois seletores em sequência, e o logotipo pedido sai desenhado no resumo" do
+    it "paleta e fonte: dois seletores em sequência, e o logotipo pedido sai em três opções no resumo" do
       reach("logo")
       brand.assign_section("palette", "colors" => [])
       brand.assign_section("typography", "display" => {}, "utility" => {})
@@ -262,13 +278,28 @@ RSpec.describe "Onboarding por conversa", type: :request do
 
       fonts = last_turn["id"]
       message("choose", turnId: fonts, index: 2)
-      expect(reply).to eq([ { "type" => "confirm", "topic" => "fonts" }, { "type" => "summary" } ])
+      expect(reply_types).to eq(%w[confirm text options summary])
+      options = reply.find { |item| item["type"] == "options" }
+      expect(options).to include("kind" => "wordmark")
+      expect(options["items"].map { |item| item["style"] }).to eq(%w[asWritten spacedCaps boldLower])
 
       brand.reload
       expect(BrandCore::Onboarding.satisfied?("palette", brand.full_document)).to be(true)
       expect(BrandCore::Onboarding.satisfied?("fonts", brand.full_document)).to be(true)
-      expect(brand.assets.where(kind: "logo", generated: true).count).to eq(2)
+      # Três logos, claro + escuro cada; a primeira já é a principal.
+      expect(brand.assets.where(kind: "logo", generated: true).count).to eq(6)
+      expect(brand.primary_logo.id).to eq(options["items"].first["logoId"])
       expect(json["state"]).to include("topic" => "summary", "readyToFinish" => true)
+
+      # Escolher outra troca a principal e diz que a logo ficou nos ativos.
+      message("choose", turnId: last_turn["id"], index: 1)
+      expect(reply).to eq([
+        { "type" => "confirm", "topic" => "logo" },
+        { "type" => "status", "topic" => "logoSaved" },
+        { "type" => "summary" }
+      ])
+      expect(brand.reload.primary_logo.id).to eq(options["items"].second["logoId"])
+      expect(brand.logos.count).to eq(3)
     end
 
     it "\"não sei\" escrito vale o mesmo que o chip" do
@@ -305,8 +336,10 @@ RSpec.describe "Onboarding por conversa", type: :request do
       message("logo", assetId: asset)
       expect(reply).to eq([
         { "type" => "status", "topic" => "logoUploaded" },
+        { "type" => "status", "topic" => "logoSaved" },
         { "type" => "question", "topic" => "palette" }
       ])
+      expect(brand.reload.full_document.dig("assets", "primaryLogoId")).to eq(json["turns"].last && BrandAsset.find(asset).logo_id)
     end
 
     it "avisa quando a logo tem fundo chapado" do
@@ -376,6 +409,58 @@ RSpec.describe "Onboarding por conversa", type: :request do
       answer("Quem mora no bairro.")
       expect(last_turn["status"]).to eq("answered")
       expect(brand.reload.full_document.dig("identity", "audience")).to eq("Quem mora no bairro.")
+    end
+  end
+
+  describe "← voltar" do
+    def back
+      post "#{base}/back", headers: headers, as: :json
+    end
+
+    it "reabre o tema anterior, guarda o que foi gravado e deixa a pergunta no fio" do
+      reach("voice")
+      back
+
+      expect(response).to have_http_status(:ok)
+      expect(json["state"]).to include("topic" => "differential", "position" => 3)
+      expect(json["turns"].last).to include("kind" => "back", "status" => "answered", "topic" => "voice",
+        "reply" => [ { "type" => "question", "topic" => "differential" } ])
+      expect(brand.reload.onboarding_closed).to eq(%w[brand audience])
+      expect(brand.full_document.dig("identity", "positioning")).to be_present
+    end
+
+    it "a resposta nova fecha o tema reaberto e a conversa segue de onde estava" do
+      reach("voice")
+      back
+      answer("A única do bairro que entrega quentinho às 6h.")
+
+      expect(statuses).to eq([ "differential" ])
+      expect(reply.last).to eq("type" => "question", "topic" => "voice")
+    end
+
+    it "do resumo, volta para cores e fonte — uma pergunta, dois temas" do
+      reach("summary")
+      back
+
+      expect(json["state"]).to include("topic" => "palette", "position" => 8)
+      expect(brand.reload.onboarding_closed).not_to include("palette", "fonts")
+    end
+
+    it "da primeira pergunta não há para onde voltar" do
+      start
+      back
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json.dig("error", "field")).to eq("topic")
+    end
+
+    it "não volta enquanto o agente lê a resposta" do
+      reach("voice")
+      post "#{base}/messages", params: { message: { kind: "answer", text: "Fala de vizinho." } }, headers: headers, as: :json
+      back
+
+      expect(response).to have_http_status(:conflict)
+      clear_enqueued_jobs
     end
   end
 

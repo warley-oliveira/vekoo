@@ -2,11 +2,11 @@ import { useTranslation } from "react-i18next"
 import { RotateCcw } from "lucide-react"
 
 import { BrandSummary } from "@/components/onboarding/brand-summary"
-import { AgentLine, Appear, StatusLine, Thinking, UserBubble } from "@/components/onboarding/chat-parts"
+import { AgentLine, Appear, QuestionLabel, StatusLine, Thinking, UserBubble } from "@/components/onboarding/chat-parts"
 import { ChoiceEcho, OptionPicker } from "@/components/onboarding/option-picker"
 import { Button } from "@/components/ui/button"
 import type { BrandCore } from "@/lib/brand-core"
-import type { OnboardingTurn, ReplyItem } from "@/lib/onboarding"
+import { topicLabelKey, type OnboardingTurn, type ReplyItem } from "@/lib/onboarding"
 
 type ThreadTurnProps = {
   turn: OnboardingTurn
@@ -48,9 +48,18 @@ function PersonSide({ turn, brandCore }: { turn: OnboardingTurn; brandCore: Bran
     case "choose":
       return turn.choice ? (
         <UserBubble>
-          <ChoiceEcho option={turn.choice.option} />
+          <ChoiceEcho option={turn.choice.option} assets={brandCore.assets} />
         </UserBubble>
       ) : null
+    case "back": {
+      // O tema reaberto é o da pergunta que o turno deixou no fio.
+      const question = turn.reply.find((item) => item.type === "question")
+      return question ? (
+        <div className="flex justify-end">
+          <StatusLine>{t("onboarding.back.echo", { topic: t(topicLabelKey(question.topic)) })}</StatusLine>
+        </div>
+      ) : null
+    }
     case "logo": {
       const asset = brandCore.assets.find((item) => item.id === turn.assetId)
       return asset ? (
@@ -139,7 +148,12 @@ function ReplyPiece({ item, brandCore, showsSummary, chosen, locked, publishing,
     case "followUp":
       return <AgentLine>{item.text}</AgentLine>
     case "question":
-      return <AgentLine>{t(`onboarding.questions.${item.topic}`)}</AgentLine>
+      return (
+        <div className="space-y-1.5 pt-1">
+          <QuestionLabel topic={item.topic} />
+          <AgentLine>{t(`onboarding.questions.${item.topic}`)}</AgentLine>
+        </div>
+      )
     case "options":
       return (
         <div className="pt-1">
@@ -147,6 +161,7 @@ function ReplyPiece({ item, brandCore, showsSummary, chosen, locked, publishing,
             kind={item.kind}
             items={item.items}
             document={brandCore.document}
+            assets={brandCore.assets}
             chosen={chosen}
             disabled={locked}
             onChoose={onChoose}

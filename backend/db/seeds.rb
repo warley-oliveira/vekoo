@@ -1139,7 +1139,10 @@ module VekooSeeds
       asset.assign_attributes(
         brand_core: brand_core, organization: organization, account: account,
         kind: kind, variant: variant, filename: filename, content_type: "image/png",
-        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 288, height: 96, transparent: true
+        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 288, height: 96, transparent: true,
+        # As duas variantes são **uma** logo (o mesmo grupo), enviada pela Marina.
+        logo_id: kind == "logo" ? id_for("brand-logo") : nil,
+        meta: kind == "logo" ? { "origin" => "upload" } : {}
       )
       asset.file.purge if asset.file.attached? && asset.file.byte_size != png.bytesize
       asset.file.attach(io: StringIO.new(png), filename: filename, content_type: "image/png") unless asset.file.attached?

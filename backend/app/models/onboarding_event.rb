@@ -3,7 +3,7 @@
 # Só escrita e leitura agregada: nada no produto depende de um evento
 # específico. Por isso não tem `updated_at` — evento não muda.
 class OnboardingEvent < ApplicationRecord
-  ACTIONS = %w[viewed answered skipped suggested followed_up finished].freeze
+  ACTIONS = %w[viewed answered skipped suggested followed_up went_back finished].freeze
   # Os temas da conversa e o resumo. Os passos do onboarding de telas ficam
   # válidos porque os eventos antigos continuam no banco.
   STEPS = (BrandCore::Onboarding::TOPICS + [ BrandCore::Onboarding::SUMMARY ] +

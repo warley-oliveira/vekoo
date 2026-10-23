@@ -44,7 +44,12 @@ Rails.application.routes.draw do
   resources :brands, only: %i[index show create update] do
     member { post :publish }
     get "versions" => "brand_core_versions#index"
+    post "versions/:id/restore" => "brand_core_versions#restore", as: :restore_version
     resources :assets, only: %i[create destroy], controller: :brand_assets
+    resources :logos, only: [], controller: :brand_logos do
+      collection { post :generate }
+      member { get :download }
+    end
     resources :pieces, only: %i[index show create destroy] do
       member { post :regenerate }
     end
@@ -58,6 +63,7 @@ Rails.application.routes.draw do
       post :start
       post :messages
       post :retry, action: :retry_turn
+      post :back
       post :wordmark
       post :finish
     end

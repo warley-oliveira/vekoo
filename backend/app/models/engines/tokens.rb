@@ -81,8 +81,10 @@ module Engines
       Font.new(family: family, weights: weights, fontfile: font_file(raw, family, weights))
     end
 
+    # A logo principal **da versão publicada** — trocar a logo no rascunho não
+    # muda peça nenhuma até publicar.
     def logo(variant)
-      asset = brand_core.assets.find_by(kind: "logo", variant: variant.to_s)
+      asset = brand_core.primary_logo(document)&.variant(variant)
       asset && image_for(asset)
     end
 

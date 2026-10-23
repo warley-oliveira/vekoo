@@ -33,20 +33,24 @@ export function BrandWizardSkeleton() {
 /** A página da marca: cartão à esquerda, estado e histórico à direita. */
 export function BrandOverviewSkeleton() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 md:px-6" aria-busy>
-      <div className="flex items-end justify-between gap-4">
-        <div className="space-y-2">
-          <Skeleton className="h-7 w-64" />
-          <Skeleton className="h-4 w-96" />
+    <div className="mx-auto max-w-[1180px] px-4 py-8 md:px-8 md:py-10" aria-busy>
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="space-y-3">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="h-3 w-80" />
         </div>
-        <Skeleton className="h-8 w-36" />
+        <div className="flex gap-2">
+          <Skeleton className="h-10 w-36" />
+          <Skeleton className="h-10 w-40" />
+        </div>
       </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,22rem)_1fr]">
-        <Skeleton className="aspect-[3/4] w-full rounded-xl" />
-        <div className="space-y-4">
-          <Skeleton className="h-28" />
-          <Skeleton className="h-40" />
-          <Skeleton className="h-32" />
+      <div className="mt-8 grid items-start gap-8 lg:grid-cols-[400px_1fr]">
+        <Skeleton className="h-[34rem] w-full rounded-vk" />
+        <div className="space-y-6">
+          <Skeleton className="h-48 rounded-vk" />
+          <Skeleton className="h-64 rounded-vk" />
+          <Skeleton className="h-40 rounded-vk" />
         </div>
       </div>
     </div>

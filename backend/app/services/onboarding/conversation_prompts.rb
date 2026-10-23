@@ -22,6 +22,11 @@ module Onboarding
         com as palavras dela. Na dúvida, não grave.
       - Exceção: no tema `voice`, a essência e os tons podem ser **inferidos**
         da frase de exemplo — é para isso que a pergunta pede um exemplo.
+      - Exceção: no tema `brand`, `segment` e `segmentCode` são
+        classificação, não fato — **deduza** do que a marca vende ("vinis
+        raros" → "loja de discos raros", shop). A pergunta não pede o ramo:
+        devolva os dois sempre que souber o que ela vende e o ramo ainda não
+        estiver gravado.
       - Preserve o jeito dela de dizer. "Pão de fermentação natural, assado às
         6h" fica assim; não vire "produtos artesanais de panificação".
       - Todo campo que você devolver é o **valor completo novo** daquele

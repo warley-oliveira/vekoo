@@ -34,6 +34,8 @@ import {
   useNotifications,
 } from "@/hooks/use-notifications"
 import { InlineError } from "@/components/error-state"
+import { useLiveStatus } from "@/hooks/use-live-status"
+import { useVekooSurface } from "@/hooks/use-vekoo-surface"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
@@ -53,6 +55,8 @@ export function useShell(): ShellContextValue {
 }
 
 export function AppShell() {
+  // O chrome da plataforma é o do site: off-white, tinta, sem violeta.
+  useVekooSurface()
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1"
   )
@@ -152,10 +156,12 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
   // O caminho depois de `/brands/:id` — é ele que diz em que tela estamos.
   const sub = location.pathname.slice(path("").length)
 
-  let title = t("shell.nav.home")
+  let title: string | null = t("shell.nav.home")
   if (sub.startsWith("/carousels")) title = t("shell.nav.carousels")
   else if (sub.startsWith("/templates")) title = t("shell.nav.templates")
-  else if (sub.startsWith("/settings") || sub.startsWith("/setup")) title = t("shell.nav.brands")
+  // A tela da marca leva o nome no próprio cabeçalho: aqui seria repetição.
+  else if (sub.startsWith("/settings")) title = null
+  else if (sub.startsWith("/setup")) title = t("shell.nav.brands")
   else if (sub.startsWith("/contents")) title = t("shell.nav.contents")
   else if (sub.startsWith("/create")) title = t("shell.nav.create")
   else if (sub.startsWith("/trash")) title = t("shell.nav.trash")
@@ -165,7 +171,7 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
     sub === "" || sub === "/carousels" || sub.startsWith("/folders/")
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:px-6">
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b px-4 md:px-6">
       <Button
         variant="ghost"
         size="icon-sm"
@@ -175,7 +181,8 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
       >
         <Menu />
       </Button>
-      <VekooMark className="mr-1 text-base lg:hidden" />
+      <VekooMark className="hidden text-base sm:inline" />
+      <span className="hidden h-5 w-px bg-vk-border sm:block" aria-hidden />
 
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
         {/* Seletor e "nova marca" andam juntos: escolher e abrir são a mesma
@@ -184,20 +191,25 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
           <BrandSwitcher />
           <NewBrandButton />
         </div>
-        <span className="hidden h-4 w-px bg-border sm:block" aria-hidden />
-        {folder && (
-          <span
-            className="size-2.5 shrink-0 rounded-full"
-            style={{ backgroundColor: folder.color }}
-            aria-hidden
-          />
+        {title && (
+          <>
+            <span className="hidden h-4 w-px bg-vk-border sm:block" aria-hidden />
+            {folder && (
+              <span
+                className="size-2.5 shrink-0 rounded-full"
+                style={{ backgroundColor: folder.color }}
+                aria-hidden
+              />
+            )}
+            <h1 className="hidden truncate text-base font-semibold tracking-tight sm:block">
+              {title}
+            </h1>
+          </>
         )}
-        <h1 className="truncate font-heading text-lg font-semibold tracking-tight">
-          {title}
-        </h1>
       </div>
 
       <div className="flex shrink-0 items-center gap-1.5">
+        <LiveIndicator />
         <NotificationsMenu />
         {showCreateActions && (
           <>
@@ -217,6 +229,30 @@ function Topbar({ onOpenMobileSidebar }: { onOpenMobileSidebar: () => void }) {
         )}
       </div>
     </header>
+  )
+}
+
+/** "motor no ar": a conexão em tempo real, com o verde do site. */
+function LiveIndicator() {
+  const { t } = useTranslation()
+  const status = useLiveStatus()
+  const online = status === "online"
+  return (
+    <span
+      className="hidden items-center gap-2 px-2 font-mono text-xs text-vk-muted sm:inline-flex"
+      role="status"
+      title={t(`shell.live.${status}Hint`)}
+    >
+      <span
+        className={cn(
+          "size-2 rounded-full",
+          online ? "bg-vk-green shadow-[0_0_0_3px_var(--vk-green-glow)]" : "bg-vk-border-strong",
+          status === "connecting" && "animate-pulse"
+        )}
+        aria-hidden
+      />
+      {t(`shell.live.${status}`)}
+    </span>
   )
 }
 
@@ -245,7 +281,7 @@ function NotificationsMenu() {
         <Bell />
         {unread > 0 && (
           <span
-            className="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary"
+            className="absolute top-2 right-2 size-1.5 rounded-full bg-vk-fg"
             aria-hidden
           />
         )}
@@ -290,7 +326,7 @@ function NotificationsMenu() {
               <span
                 className={cn(
                   "mt-1.5 size-1.5 shrink-0 rounded-full",
-                  n.read ? "bg-border" : "bg-primary"
+                  n.read ? "bg-border" : "bg-vk-fg"
                 )}
                 aria-hidden
               />

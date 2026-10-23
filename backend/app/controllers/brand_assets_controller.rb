@@ -3,6 +3,10 @@
 #
 # O arquivo é analisado na hora (dimensões e, no PNG, transparência real): o
 # alerta de fundo opaco precisa vir na mesma resposta do upload.
+#
+# Logo entra num **grupo** (`logo_id`): `logoId` junta a variante a uma logo
+# enviada que já existe (a versão escura da mesma logo); sem ele, é uma logo
+# nova. `primary=true` a torna a principal no rascunho.
 class BrandAssetsController < AuthenticatedController
   before_action :set_brand_core
 
@@ -24,9 +28,11 @@ class BrandAssetsController < AuthenticatedController
       byte_size: file.size
     )
     asset.file.attach(io: file, filename: file.original_filename, content_type: content_type)
+    group_logo(asset) if kind == "logo"
 
     if asset.save
       AnalyzeBrandAsset.call(asset, file)
+      choose_logo(asset) if kind == "logo" && ActiveModel::Type::Boolean.new.cast(params[:primary])
       broadcast("assetsChanged")
       render json: BrandAssetSerializer.one(asset), status: :created
     else
@@ -45,6 +51,18 @@ class BrandAssetsController < AuthenticatedController
 
   def set_brand_core
     @brand_core = current_organization.brand_cores.find(params[:brand_id])
+  end
+
+  # Só junta a logo **enviada**: o logotipo nosso é um desenho fechado.
+  def group_logo(asset)
+    target = params[:logoId].presence && @brand_core.logos.find_logo(params[:logoId])
+    asset.logo_id = target && !target.generated? ? target.id : SecureRandom.uuid
+    asset.meta = { "origin" => "upload" }
+  end
+
+  def choose_logo(asset)
+    @brand_core.reload.choose_logo(asset.logo_id)
+    @brand_core.save!
   end
 
   def render_bad_kind

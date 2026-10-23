@@ -6,6 +6,8 @@ class BrandAssetSerializer < ApplicationSerializer
       id: asset.id,
       kind: asset.kind,
       variant: asset.variant,
+      # A logo (grupo de variantes) de que o arquivo faz parte.
+      logoId: asset.logo_id,
       name: asset.filename,
       url: blob_url(asset.file),
       contentType: asset.content_type,

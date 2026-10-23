@@ -17,7 +17,29 @@
       "status": {
         "draft": "Rascunho",
         "published": "Publicada",
-        "unpublishedChanges": "Mudanças não publicadas"
+        "unpublishedChanges": "Mudanças não publicadas",
+        "label": "status",
+        "state": {
+          "ready": "pronta para gerar",
+          "incomplete": "incompleta",
+          "unpublished": "não publicada"
+        },
+        "lines": {
+          "published": "brandcore v{{number}} publicado",
+          "notPublished": "brandcore ainda não publicado",
+          "sections": "{{filled}}/{{total}} seções preenchidas",
+          "missing": "falta: {{item}}",
+          "engineReading": "motor lendo esta versão",
+          "engineIdle": "motor parado até a publicação",
+          "pending_one": "{{count}} alteração não publicada",
+          "pending_other": "{{count}} alterações não publicadas"
+        },
+        "next": {
+          "generate": "próximo: gerar a primeira peça",
+          "publishFirst": "próximo: publicar a marca",
+          "publishChanges": "próximo: publicar as alterações",
+          "complete": "próximo: completar {{section}}"
+        }
       },
       "publishedAt": "Publicada {{when}}",
       "versionLabel": "versão {{number}}",
@@ -42,7 +64,40 @@
       "livePublished": "{{name}} publicou a versão {{version}}.",
       "liveSomeone": "Alguém da equipe",
       "sections": "Seções",
-      "sectionPercent": "{{percent}}%"
+      "sectionPercent": "{{percent}}%",
+      "eyebrow": "02 / marca",
+      "meta": {
+        "published": "publicada",
+        "draft": "rascunho",
+        "version": "v{{number}}",
+        "brandcore": "brandcore {{filled}}/{{total}}"
+      },
+      "actions": {
+        "generate": "Gerar conteúdo →",
+        "edit": "Editar brandcore",
+        "publishChanges_one": "Publicar · {{count}} alteração →",
+        "publishChanges_other": "Publicar · {{count}} alterações →",
+        "publishFirst": "Publicar marca →"
+      },
+      "sectionsSummary": "{{filled}}/{{total}} · {{percent}}%",
+      "sectionsFootnote": "// clique numa seção pra editar só ela. mudanças ficam em rascunho até você publicar.",
+      "versionCount_one": "{{count}} versão",
+      "versionCount_other": "{{count}} versões",
+      "publishedBy": "Publicada por {{name}}",
+      "publishedByUnknown": "Publicada por alguém que saiu da conta",
+      "viewDiff": "ver diff",
+      "restore": "restaurar",
+      "restoreTitle": "Restaurar a versão {{number}}?",
+      "restoreBody": "O rascunho passa a ser o documento da v{{number}}. Nada é publicado: o motor continua lendo a versão atual até você publicar.",
+      "restoreConfirm": "Restaurar",
+      "restored": "Versão {{number}} restaurada no rascunho.",
+      "restoreFailed": "Não deu para restaurar. Tente de novo.",
+      "diffTitle": "O que mudou na v{{number}}",
+      "diffKind": {
+        "added": "adicionado",
+        "changed": "alterado",
+        "removed": "removido"
+      }
     },
     "steps": {
       "identity": {
@@ -376,7 +431,14 @@
       "display": "Display",
       "utility": "Utilitária",
       "show": "Ver cartão da marca",
-      "hide": "Esconder cartão"
+      "hide": "Esconder cartão",
+      "previewLabel": "preview · feed",
+      "noPalette": "A paleta aparece aqui.",
+      "noFont": "Fonte por escolher",
+      "fontRoles": {
+        "display": "títulos",
+        "utility": "corpo"
+      }
     },
     "nudge": {
       "title": "Sua marca ainda não está pronta",
@@ -418,6 +480,53 @@
       "counter": "{{used}} de {{max}}",
       "asideTitle": "Isto é conhecimento, não formulário",
       "asideBody": "Nada aqui é obrigatório e nada bloqueia a publicação da marca. O assistente lê esta lista para escrever com o número certo; se o dado não estiver aqui, ele pergunta."
+    },
+    "logo": {
+      "label": "logo",
+      "alt": "Logo de {{name}}",
+      "empty": "sem logo",
+      "origin": {
+        "onboarding": "gerada no onboarding · {{when}}",
+        "brand": "gerada na marca · {{when}}",
+        "upload": "enviada por você · {{when}}"
+      },
+      "actions": {
+        "download": "baixar",
+        "swap": "trocar",
+        "regenerate": "regenerar",
+        "createNow": "criar agora"
+      },
+      "variants": {
+        "light": "para fundo claro",
+        "dark": "para fundo escuro"
+      },
+      "size": "{{size}} px",
+      "original": "original",
+      "styles": {
+        "asWritten": "como se escreve",
+        "spacedCaps": "caixa alta espaçada",
+        "boldLower": "minúsculas fortes"
+      },
+      "downloadFailed": "Não deu para baixar. Tente de novo.",
+      "offline": "Sem conexão. Tente quando a rede voltar.",
+      "generated": "Três logotipos novos na galeria. Clique num para usar.",
+      "generateFailed": "Não deu para desenhar o logotipo. Confira se a marca tem nome.",
+      "chosen": "Logo principal trocada. Vale nas peças depois de publicar.",
+      "chooseFailed": "Não deu para trocar a logo. Tente de novo.",
+      "uploaded": "Logo enviada e marcada como principal. Vale nas peças depois de publicar.",
+      "sheet": {
+        "title": "Logos da marca",
+        "description": "Todas ficam guardadas. A principal é a que entra nas peças — depois de publicar.",
+        "empty": "Nenhuma logo ainda. Envie um arquivo ou peça para a Vekoo desenhar.",
+        "upload": "Enviar arquivo",
+        "uploadHint": "// svg ou png, até 5 MB. png com fundo transparente fica melhor.",
+        "generate": "Desenhar opções",
+        "generating": "Desenhando…",
+        "primary": "principal",
+        "new": "nova",
+        "isPrimary": "Esta é a logo principal",
+        "makePrimary": "Usar como logo principal"
+      }
     }
   }
 }

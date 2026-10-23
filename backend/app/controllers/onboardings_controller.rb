@@ -85,12 +85,42 @@ class OnboardingsController < AuthenticatedController
     render json: OnboardingSerializer.one(@brand, conversation.reload), status: :accepted
   end
 
+  # POST /brands/:brand_id/onboarding/back — "← voltar": reabre o tema da
+  # posição anterior. O que foi gravado fica no documento; a resposta nova
+  # substitui. O turno `back` já nasce respondido, com a pergunta reaberta.
+  def back
+    conversation = @brand.onboarding_conversation
+    return render_cannot_go_back unless conversation
+    return render_busy if conversation.busy?
+
+    current = @brand.onboarding_topic
+    reopened = BrandCore::Onboarding.previous(current)
+    return render_cannot_go_back if reopened.empty?
+
+    @brand.track_onboarding(reopen: reopened)
+    @brand.save!
+    turn = conversation.turns.create!(
+      organization: current_organization, account: current_account,
+      kind: "back", prompt: "", status: "answered",
+      plan: { "topic" => current, "reply" => [ { "type" => "question", "topic" => reopened.first } ] }
+    )
+    conversation.touch_turn!
+    record("went_back", step: reopened.first)
+    AgentChannel.broadcast_to(current_organization, AgentTurnSerializer.event(turn))
+
+    render json: OnboardingSerializer.one(@brand.reload, conversation.reload)
+  end
+
   # POST /brands/:brand_id/onboarding/wordmark — desenha (ou redesenha) o
   # logotipo tipográfico com a fonte e as cores já escolhidas. É o mesmo
   # libvips das peças: determinístico.
   def wordmark
-    assets = RenderWordmark.attach!(@brand, account: current_account)
-    return render_wordmark_failed if assets.empty?
+    logo_id = RenderWordmark.attach!(@brand, account: current_account)
+    return render_wordmark_failed unless logo_id
+
+    @brand.choose_logo(logo_id)
+    @brand.save!
+    assets = @brand.assets.where(logo_id: logo_id).to_a
 
     broadcast("assetsChanged")
     render json: { assets: BrandAssetSerializer.many(assets) }, status: :created
@@ -159,18 +189,23 @@ class OnboardingsController < AuthenticatedController
   end
 
   # Rede de segurança: quem pediu o logotipo e chegou ao fim sem ele (fechou a
-  # aba na hora errada) sai daqui com ele mesmo assim.
+  # aba na hora errada) sai daqui com ele mesmo assim — as três opções, com a
+  # primeira como principal.
   def ensure_wordmark!
     return unless @brand.wants_wordmark?
     return if @brand.assets.exists?(kind: "logo")
 
-    RenderWordmark.attach!(@brand, account: current_account)
+    logo_ids = RenderWordmark.options!(@brand, account: current_account)
+    return if logo_ids.empty?
+
+    @brand.choose_logo(logo_ids.first)
+    @brand.save!
   end
 
-  def record(action)
+  def record(action, step: BrandCore::Onboarding::SUMMARY)
     OnboardingEvent.create!(
       organization: current_organization, brand_core: @brand, account: current_account,
-      step: BrandCore::Onboarding::SUMMARY, action: action
+      step: step, action: action
     )
   rescue StandardError => e
     # Telemetria não derruba cadastro.
@@ -218,6 +253,11 @@ class OnboardingsController < AuthenticatedController
     unmet = @brand.completeness.required.reject { |item| item["met"] }.map { |item| item["key"] }
     render_error(status: :unprocessable_entity, code: "brandIncomplete",
       message: t("onboarding.cannot_finish"), details: { "required" => unmet })
+  end
+
+  def render_cannot_go_back
+    render_error(status: :unprocessable_entity, code: "unprocessable", field: "topic",
+      message: t("onboarding.cannot_go_back"))
   end
 
   def render_wordmark_failed

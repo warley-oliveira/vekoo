@@ -4,16 +4,18 @@ import { motion, useReducedMotion } from "motion/react"
 import { Check } from "lucide-react"
 
 import { BrandPreview } from "@/components/onboarding/brand-preview"
-import type { BrandDocument } from "@/lib/brand-core"
+import type { BrandAsset, BrandDocument } from "@/lib/brand-core"
 import { ensureCatalogFont, findCatalogFont, fontStack } from "@/lib/font-catalog"
 import {
   isFontsOption,
   isPaletteOption,
+  isWordmarkOption,
   type FontsOption,
   type PaletteOption,
   type SuggestKind,
   type SuggestOption,
   type VoiceOption,
+  type WordmarkOption,
 } from "@/lib/onboarding"
 import { cn } from "@/lib/utils"
 
@@ -21,6 +23,8 @@ type OptionPickerProps = {
   kind: SuggestKind
   items: SuggestOption[]
   document: BrandDocument
+  /** Os arquivos da marca — o logotipo proposto já é um deles. */
+  assets: BrandAsset[]
   /** A que a pessoa escolheu — as outras ficam apagadas, a escolha fica marcada. */
   chosen: number | null
   disabled?: boolean
@@ -35,7 +39,7 @@ type OptionPickerProps = {
  * não consegue imaginar o resultado a partir de um hex. A escolha é um clique,
  * e vira fala dela na conversa.
  */
-export function OptionPicker({ kind, items, document, chosen, disabled, onChoose }: OptionPickerProps) {
+export function OptionPicker({ kind, items, document, assets, chosen, disabled, onChoose }: OptionPickerProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const settled = chosen !== null
@@ -67,7 +71,9 @@ export function OptionPicker({ kind, items, document, chosen, disabled, onChoose
                   <Check className="size-3" aria-hidden />
                 </span>
               )}
-              {isPaletteOption(option) ? (
+              {isWordmarkOption(option) ? (
+                <WordmarkCard option={option} assets={assets} />
+              ) : isPaletteOption(option) ? (
                 <PaletteCard option={option} document={document} />
               ) : isFontsOption(option) ? (
                 <FontsCard option={option} document={document} />
@@ -89,6 +95,29 @@ function Why({ title, why }: { title?: string; why: string | null }) {
       {title && <p className="text-sm font-medium">{title}</p>}
       {why && <p className="text-xs text-muted-foreground text-pretty">{why}</p>}
     </div>
+  )
+}
+
+/**
+ * O logotipo nas duas versões: no claro e no escuro, como vai aparecer nas
+ * peças. O fundo escuro é da marca (a tinta do texto claro é dela também).
+ */
+function WordmarkCard({ option, assets }: { option: WordmarkOption; assets: BrandAsset[] }) {
+  const { t } = useTranslation()
+  const light = assets.find((asset) => asset.logoId === option.logoId && asset.variant === "light")
+  const dark = assets.find((asset) => asset.logoId === option.logoId && asset.variant === "dark")
+  return (
+    <>
+      <span className="grid aspect-[3/2] place-items-center overflow-hidden rounded-lg bg-background p-3">
+        {light && <img src={light.url} alt="" className="max-h-full max-w-full object-contain" />}
+      </span>
+      {dark && (
+        <span className="grid h-12 place-items-center overflow-hidden rounded-lg bg-foreground px-3">
+          <img src={dark.url} alt="" className="max-h-7 max-w-full object-contain" />
+        </span>
+      )}
+      {option.style && <Why title={t(`brand.logo.styles.${option.style}`)} why={null} />}
+    </>
   )
 }
 
@@ -138,7 +167,11 @@ function VoiceCard({ option }: { option: VoiceOption }) {
 }
 
 /** A escolha como fala da pessoa: a proposta em miniatura, não um "escolhi a 2". */
-export function ChoiceEcho({ option }: { option: SuggestOption }) {
+export function ChoiceEcho({ option, assets }: { option: SuggestOption; assets: BrandAsset[] }) {
+  if (isWordmarkOption(option)) {
+    const light = assets.find((asset) => asset.logoId === option.logoId && asset.variant === "light")
+    return light ? <img src={light.url} alt="" className="h-8 max-w-48 object-contain" /> : null
+  }
   if (isPaletteOption(option)) {
     return (
       <span className="flex items-center gap-2">

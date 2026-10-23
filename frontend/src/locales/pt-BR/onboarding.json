@@ -56,12 +56,14 @@
       "logoUploaded": "logo recebida ✓",
       "logoNoted": "logotipo anotado ✓",
       "palette": "paleta gravada ✓",
-      "fonts": "fonte gravada ✓"
+      "fonts": "fonte gravada ✓",
+      "logoSaved": "logo salva em ativos ✓ · você baixa e troca quando quiser"
     },
     "confirm": {
       "voice": "Tom de voz gravado ✓",
       "palette": "Paleta gravada ✓",
-      "fonts": "Fonte gravada ✓"
+      "fonts": "Fonte gravada ✓",
+      "logo": "Logotipo escolhido ✓"
     },
     "agent": {
       "followUpGeneric": "Dá pra ser mais específico? Quanto mais detalhe, melhor o motor escreve.",
@@ -73,11 +75,18 @@
         "voice": "Três jeitos de falar, com base no que você contou. Clica no que soa como a sua marca.",
         "palette": "Três paletas, com base no que você contou. Clica na que parece a sua marca.",
         "fonts": "Três pares de fonte. Clica no que combina com a paleta."
-      }
+      },
+      "wordmarkReady": "Desenhei três versões do logotipo com a sua fonte. A primeira já está no resumo — clica em outra se gostar mais."
     },
     "resume": "Paramos aqui: {{topic}}. Seguimos?",
     "empty": "nenhuma marca montada ainda",
     "progress": "brandcore · {{current}}/{{total}}",
+    "questionLabel": "{{number}} / {{topic}}",
+    "back": {
+      "action": "← voltar",
+      "a11y": "Voltar à pergunta anterior",
+      "echo": "← de volta: {{topic}}"
+    },
     "chip": "não sei — cria pra mim",
     "placeholder": "responde do seu jeito",
     "summary": {
@@ -108,7 +117,8 @@
     "options": {
       "palette": "Paletas propostas",
       "fonts": "Pares de fontes propostos",
-      "voice": "Vozes propostas"
+      "voice": "Vozes propostas",
+      "wordmark": "Logotipos propostos"
     },
     "a11y": {
       "attachLogo": "Enviar minha logo",

@@ -39,6 +39,7 @@ en:
   onboarding:
     unknown_kind: "I can't propose that."
     cannot_finish: "Still missing the basics: name, what you do, colours and fonts."
+    cannot_go_back: "This is already the first question."
     logo_required: "Upload your logo or let Vekoo draw a wordmark."
     wordmark_failed: "Couldn't draw the wordmark. You can upload a file instead."
 

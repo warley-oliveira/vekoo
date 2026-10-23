@@ -63,6 +63,14 @@ module BrandCore::Onboarding
 
   def required?(topic) = REQUIRED.include?(topic.to_s)
 
+  # O "← voltar": os temas que reabrem quando a pessoa está em `topic`. Volta
+  # uma **posição** do `n/8`, não um tema — paleta e fonte são uma pergunta
+  # só, e do resumo se volta para ela inteira. Da primeira, não há para onde.
+  def previous(topic)
+    target = topic.to_s == SUMMARY ? QUESTION_COUNT : position(topic) - 1
+    TOPICS.select { |candidate| POSITION[candidate] == target }
+  end
+
   def suggestible?(topic) = SUGGESTIBLE.include?(topic.to_s)
 
   def from_legacy(steps)

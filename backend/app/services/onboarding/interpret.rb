@@ -61,7 +61,7 @@ module Onboarding
       return plain(answer) unless payload.is_a?(Hash) && payload["fields"].is_a?(Hash)
 
       Result.new(
-        fields: sanitize(payload["fields"]),
+        fields: with_segment(sanitize(payload["fields"])),
         vague: payload["vague"] == true,
         follow_up: @follow_up_available ? line(payload["followUp"], 240).presence : nil,
         skip: payload["skip"] == true,
@@ -115,6 +115,18 @@ module Onboarding
 
     def allowed
       @topic == BrandCore::Onboarding::SUMMARY ? ALL : FIELDS.fetch(@topic, []) + EXTRAS
+    end
+
+    # O ramo não é perguntado: sai do que ela vende. Se o modelo não
+    # classificou, o "o que vende" serve de ramo — como na leitura sem modelo.
+    # Sem isso o tema `brand`, que é obrigatório, nunca fecha e a mesma
+    # pergunta volta para sempre.
+    def with_segment(fields)
+      return fields unless @topic == "brand"
+      return fields if fields["segment"].present? || @document["identity"]["segment"].present?
+
+      concept = fields["concept"].presence || @document["identity"]["concept"]
+      concept.present? ? fields.merge("segment" => line(concept, BrandCore::Schema::SHORT)) : fields
     end
 
     # ------------------------------------------------------------- limpeza

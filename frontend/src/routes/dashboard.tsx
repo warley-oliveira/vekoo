@@ -118,7 +118,7 @@ export function BrandDashboardPage() {
             </Link>
           </div>
           {brandCore ? (
-            <BrandCard document={brandCore.document} assets={brandCore.assets} />
+            <BrandCard document={brandCore.document} assets={brandCore.assets} logos={brandCore.logos} />
           ) : (
             <Skeleton className="aspect-[3/4] w-full rounded-xl" />
           )}

@@ -23,6 +23,14 @@
       "markAllRead": "Mark all as read",
       "empty": "No notifications here.",
       "loadFailed": "We couldn't load your notifications."
+    },
+    "live": {
+      "online": "engine live",
+      "connecting": "connecting…",
+      "offline": "engine offline",
+      "onlineHint": "Real-time connection is on: pieces and replies arrive on their own.",
+      "connectingHint": "Opening the real-time connection.",
+      "offlineHint": "No real-time connection. Finished work shows up when the page reloads."
     }
   },
   "notifications": {

@@ -2,11 +2,14 @@ import { useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 import { Loader2 } from "lucide-react"
 
+import { BackButton } from "@/components/onboarding/chat-parts"
 import { Button } from "@/components/ui/button"
 
 type OnboardingIntroProps = {
   starting: boolean
   onStart: () => void
+  /** Sair do onboarding — a conversa fica salva para retomar. */
+  onBack: () => void
 }
 
 const CARDS = ["detail", "help", "later"] as const
@@ -17,12 +20,17 @@ const CARDS = ["detail", "help", "later"] as const
  * toda vez que escrever. Os três cartões são as três coisas que mudam como
  * ela responde, na ordem em que importam.
  */
-export function OnboardingIntro({ starting, onStart }: OnboardingIntroProps) {
+export function OnboardingIntro({ starting, onStart, onBack }: OnboardingIntroProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
+      <header className="relative shrink-0">
+        <div className="mx-auto flex h-12 max-w-xl items-center px-4">
+          <BackButton onClick={onBack} disabled={starting} />
+        </div>
+      </header>
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-4 py-10 md:py-16">
         <motion.div
           initial={reduced ? false : { opacity: 0, y: 8 }}

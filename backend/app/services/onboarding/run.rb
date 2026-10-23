@@ -15,7 +15,7 @@ module Onboarding
   # coisa por capricho de uma geração.
   class Run
     SUGGEST_KIND = { "voice" => "voice", "palette" => "palette", "fonts" => "fonts", "logo" => "wordmark" }.freeze
-    CHOICE_TOPIC = { "voice" => "voice", "palette" => "palette", "fonts" => "fonts" }.freeze
+    CHOICE_TOPIC = { "voice" => "voice", "palette" => "palette", "fonts" => "fonts", "wordmark" => "logo" }.freeze
 
     def self.suggest_kind(topic) = SUGGEST_KIND[topic.to_s]
 
@@ -97,7 +97,9 @@ module Onboarding
         return ask_next
       end
 
-      if satisfied?(@topic) && !result.vague?
+      # Vaga de novo depois do seguimento, mas com o dado no documento: fecha.
+      # Repetir a pergunta aí só prende a pessoa no mesmo tema.
+      if satisfied?(@topic) && (!result.vague? || !follow_up_available?(@topic))
         close(@topic)
         saved(outcome.touched)
         record("answered")
@@ -188,7 +190,10 @@ module Onboarding
       @reply << { "type" => "confirm", "topic" => topic }
       record("answered", step: topic, payload: { "kind" => kind })
 
-      if in_summary
+      if kind == "wordmark"
+        logo_saved
+        @reply << { "type" => "summary" }
+      elsif in_summary
         redraw_wordmark if kind.in?(%w[palette fonts])
         @reply << { "type" => "summary" }
       elsif kind == "palette" && !closed?("fonts")
@@ -203,8 +208,10 @@ module Onboarding
     def logo
       asset = @brand.assets.find_by(id: @turn.plan["assetId"], kind: "logo")
       @brand.track_onboarding(wants_wordmark: false)
+      @brand.choose_logo(asset.logo_id) if asset&.logo_id
       close("logo")
       @reply << { "type" => "status", "topic" => "logoUploaded" }
+      logo_saved
       # Fundo chapado estraga toda peça de fundo escuro: melhor saber agora.
       say("logoOpaque") if asset&.transparent == false
       record("answered", step: "logo")
@@ -219,6 +226,11 @@ module Onboarding
 
       draw_wordmark
       @reply << { "type" => "summary" }
+    end
+
+    # "a logo não some": ela é um ativo da marca, com download e troca depois.
+    def logo_saved
+      @reply << { "type" => "status", "topic" => "logoSaved" }
     end
 
     def question(topic)
@@ -256,22 +268,35 @@ module Onboarding
     end
 
     # O logotipo de quem pediu "cria pra mim" na logo, desenhado quando a
-    # conversa chega ao resumo — é a primeira vez que a fonte existe.
+    # conversa chega ao resumo — é a primeira vez que a fonte existe. Saem
+    # três desenhos; o primeiro já entra como principal (o resumo precisa de
+    # uma logo) e a pessoa troca clicando noutro.
     def draw_wordmark
       return unless @brand.wants_wordmark?
       return if @brand.assets.exists?(kind: "logo")
 
       @brand.save!
-      RenderWordmark.attach!(@brand, account: @turn.account)
+      logo_ids = RenderWordmark.options!(@brand, account: @turn.account)
+      return if logo_ids.empty?
+
+      @brand.choose_logo(logo_ids.first)
+      say("wordmarkReady")
+      @reply << {
+        "type" => "options", "kind" => "wordmark", "source" => "curated",
+        "items" => logo_ids.map { |id| { "logoId" => id, "style" => @brand.logos.find_logo(id)&.style } }
+      }
     end
 
-    # Ajustou nome, cor ou fonte depois do resumo: o logotipo nosso acompanha.
-    # Logo enviada pela pessoa nunca é tocada.
+    # Ajustou nome, cor ou fonte depois do resumo: o logotipo nosso acompanha,
+    # no mesmo estilo, como logo nova — a anterior fica nos ativos. Logo
+    # enviada pela pessoa nunca é tocada.
     def redraw_wordmark
-      return unless @brand.assets.exists?(kind: "logo", generated: true)
+      current = @brand.primary_logo
+      return unless current&.generated?
 
       @brand.save!
-      RenderWordmark.attach!(@brand, account: @turn.account)
+      logo_id = RenderWordmark.attach!(@brand, account: @turn.account, style: current.style || "asWritten")
+      @brand.choose_logo(logo_id) if logo_id
     end
 
     # -------------------------------------------------------------- dinheiro
