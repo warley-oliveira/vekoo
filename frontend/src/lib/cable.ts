@@ -27,6 +27,7 @@ export function getConsumer(): Consumer | null {
 }
 
 export function dropConsumer(): void {
+  channels.clear()
   consumer?.disconnect()
   consumer = null
   consumerToken = null
@@ -67,6 +68,35 @@ export type ChannelHandlers<Message> = {
   disconnected?: () => void
 }
 
+/*
+ * Uma assinatura **de verdade** por canal, dividida entre quem ouve.
+ *
+ * O ActionCable identifica a assinatura só pelo nome do canal: duas
+ * assinaturas de `AgentChannel` na mesma aba são uma só para o servidor, e o
+ * `unsubscribe` de qualquer uma derruba as duas — a outra continua achando
+ * que ouve e nunca mais recebe nada (era o "pensando…" que não terminava).
+ * Aqui cada canal tem uma assinatura e uma lista de ouvintes; ela só sai
+ * quando o último ouvinte sai, e com um respiro, para o monta-desmonta-monta
+ * do React (StrictMode, troca de rota) não virar sai-e-entra no servidor.
+ */
+const RELEASE_MS = 300
+
+type Listener = ChannelHandlers<unknown>
+type Entry = {
+  consumer: Consumer
+  subscription: Subscription
+  listeners: Set<Listener>
+  connected: boolean
+  release: number | null
+}
+
+const channels = new Map<string, Entry>()
+
+function forget(channel: string, entry: Entry) {
+  if (channels.get(channel) === entry) channels.delete(channel)
+  entry.subscription.unsubscribe()
+}
+
 /** Assina um canal e devolve a função que desassina. */
 export function subscribe<Message>(
   channel: string,
@@ -75,11 +105,47 @@ export function subscribe<Message>(
   const current = getConsumer()
   if (!current) return null
 
-  const subscription: Subscription = current.subscriptions.create(channel, {
-    received: (message: Message) => handlers.received(message),
-    connected: () => handlers.connected?.(),
-    disconnected: () => handlers.disconnected?.(),
-  })
+  let entry = channels.get(channel)
+  // O consumidor mudou (outro token): a assinatura antiga morreu com ele.
+  if (entry && entry.consumer !== current) {
+    channels.delete(channel)
+    entry = undefined
+  }
 
-  return () => subscription.unsubscribe()
+  if (!entry) {
+    const listeners = new Set<Listener>()
+    const created: Entry = { consumer: current, subscription: null as unknown as Subscription, listeners, connected: false, release: null }
+    created.subscription = current.subscriptions.create(channel, {
+      received: (message: unknown) => listeners.forEach((listener) => listener.received(message)),
+      connected: () => {
+        created.connected = true
+        listeners.forEach((listener) => listener.connected?.())
+      },
+      disconnected: () => {
+        created.connected = false
+        listeners.forEach((listener) => listener.disconnected?.())
+      },
+    })
+    channels.set(channel, created)
+    entry = created
+  }
+
+  const shared = entry
+  if (shared.release !== null) {
+    window.clearTimeout(shared.release)
+    shared.release = null
+  }
+  const listener = handlers as Listener
+  shared.listeners.add(listener)
+  // Quem chega depois da conexão ouve o "conectado" também.
+  if (shared.connected) listener.connected?.()
+
+  return () => {
+    shared.listeners.delete(listener)
+    if (shared.listeners.size > 0 || shared.release !== null) return
+    shared.release = window.setTimeout(() => {
+      shared.release = null
+      if (shared.listeners.size === 0) forget(channel, shared)
+    }, RELEASE_MS)
+  }
 }

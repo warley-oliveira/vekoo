@@ -97,6 +97,5 @@ module Engines
       _, h = canvas.text(str, x: margin, y: y, width: content_width(canvas), style: "kicker", color: surface.accent, align: align, max_lines: 1)
       h
     end
-
   end
 end

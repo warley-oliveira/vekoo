@@ -1,0 +1,25 @@
+id: carousel-last-cta
+name: { pt-BR: "Chamada final", en: "Closing call to action" }
+description:
+  pt-BR: "A última lâmina: a chamada para agir (salvar, comprar, chamar no direct) e a logo grande."
+  en: "The last slide: the call to action and a big logo."
+formats: [carousel]
+position: last
+background_options: [color]
+background_default: { type: color, color_token: primary }
+align_options: [left, center]
+slots:
+  title: { type: text, role_default: display, max_chars: 60, max_lines: 3, required: true }
+  body:  { type: text, role_default: body, max_chars: 120, max_lines: 3 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: logo, slot: logo, box: { left: 96, top: 96 }, height: 120 }
+    - kind: stack
+      box: { left: 96, right: 96, top: 300, bottom: 160 }
+      anchor: center
+      gap: 32
+      ink: background
+      items: [ { slot: title, size: 88 }, { slot: body, size: 40 } ]

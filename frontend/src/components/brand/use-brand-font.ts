@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 
 import type { BrandAsset, BrandFont } from "@/lib/brand-core"
-import { ensureCatalogFont, ensureFileFont, findCatalogFont, fontStack } from "@/lib/font-catalog"
+import { ensureCatalogFont, ensureFileFont, findOpenFont, fontStack } from "@/lib/font-catalog"
 
 /** Carrega a fonte do preview (catálogo ou arquivo) quando ela muda e devolve o `font-family`. */
 export function useBrandFont(font: BrandFont, assets: BrandAsset[]): string {
@@ -9,9 +9,9 @@ export function useBrandFont(font: BrandFont, assets: BrandAsset[]): string {
 
   useEffect(() => {
     if (!font.family) return
-    if (font.source === "catalog") ensureCatalogFont(font.family)
+    if (font.source === "catalog") ensureCatalogFont(font.family, font.weights)
     if (font.source === "file" && asset) ensureFileFont(font.family, asset.url)
-  }, [font.family, font.source, asset])
+  }, [font.family, font.source, font.weights, asset])
 
-  return fontStack(font.family, findCatalogFont(font.family)?.category)
+  return fontStack(font.family, findOpenFont(font.family)?.category)
 }

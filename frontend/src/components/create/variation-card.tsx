@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { AgentVariation } from "@/lib/agent"
 import { pieceErrorMessage, pieceHref, type Piece } from "@/lib/engines"
+import { slideHeadline } from "@/lib/piece-document"
 import { cn } from "@/lib/utils"
 
 type VariationCardProps = {
@@ -35,8 +36,11 @@ export function VariationCard({ variation, piece, index, onAdjust, onVary, disab
   const reduced = useReducedMotion()
   const [downloading, setDownloading] = useState(false)
   const image = piece?.images[0]
-  const ratio = variation.format === "story" ? "aspect-[9/16]" : "aspect-[4/5]"
-  const pending = !piece || piece.status === "queued" || piece.status === "rendering"
+  const ratio = variation.format === "story" ? "aspect-[9/16]" : variation.format === "feed_square" ? "aspect-square" : "aspect-[4/5]"
+  const pending = !piece || piece.status === "queued" || piece.status === "rendering" || piece.status === "generating"
+  // Peça-documento ainda sem render: o texto da primeira lâmina no lugar da
+  // imagem, em vez de um carregando que não termina.
+  const headline = piece?.kind === "document" ? slideHeadline(piece.document?.slides[0]) : ""
 
   async function download() {
     if (!image) return
@@ -70,6 +74,11 @@ export function VariationCard({ variation, piece, index, onAdjust, onVary, disab
           <div className="flex size-full items-center justify-center">
             {piece?.status === "failed" ? (
               <AlertTriangle className="size-6 text-destructive" aria-hidden />
+            ) : piece?.kind === "document" && !pending ? (
+              <div className="flex size-full flex-col justify-between p-4">
+                <p className="line-clamp-6 text-lg leading-tight font-semibold text-pretty">{headline}</p>
+                <p className="font-mono text-[11px] text-muted-foreground">{t("pieces.documentPending")}</p>
+              </div>
             ) : piece?.status === "ready" ? (
               <ImageOff className="size-6 text-muted-foreground" aria-hidden />
             ) : (

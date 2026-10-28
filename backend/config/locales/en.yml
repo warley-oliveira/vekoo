@@ -82,12 +82,16 @@ en:
     assets:
       bad_kind: "That asset type doesn't exist."
       too_large: "The file is over the %{max} limit."
-      unsupported_logo: "The logo must be a PNG with a transparent background or an SVG."
-      unsupported_glyph: "The glyph must be a PNG with a transparent background or an SVG."
+      unsupported_logo: "The logo must be a PNG, SVG, JPEG or WebP image — ideally a PNG with a transparent background."
+      unsupported_glyph: "The glyph must be a PNG, SVG, JPEG or WebP image — ideally a PNG with a transparent background."
       unsupported_photo: "That file isn't a JPEG, PNG or WebP image."
       unsupported_font: "That file isn't a TTF, OTF or WOFF2 font."
 
+  images:
+    unavailable: "Image generation isn't switched on for this account yet."
   pieces:
+    locked: "This piece is approved. Undo the approval to edit it."
+    conflict: "This piece was changed in another tab. Reload to continue."
     errors:
       values_invalid: "Something in the piece fields doesn't add up."
       brand_not_published: "Publish the brand before generating pieces."

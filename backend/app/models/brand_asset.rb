@@ -12,6 +12,8 @@ class BrandAsset < ApplicationRecord
   }.freeze
 
   IMAGE_TYPES = %w[image/png image/svg+xml].freeze
+  # Aceitos em logo e glifo, mas guardados como PNG (`RasterToPng`).
+  CONVERTED_TYPES = %w[image/jpeg image/webp].freeze
   PHOTO_TYPES = %w[image/jpeg image/png image/webp].freeze
   FONT_TYPES = %w[font/ttf font/otf font/woff2].freeze
   FONT_EXTENSIONS = { ".ttf" => "font/ttf", ".otf" => "font/otf", ".woff2" => "font/woff2" }.freeze
@@ -32,6 +34,11 @@ class BrandAsset < ApplicationRecord
   belongs_to :account, optional: true
 
   has_one_attached :file
+  # SVG não aparece na tela pelo `file`: o Active Storage serve SVG como
+  # download (`application/octet-stream`), porque SVG pode carregar script.
+  # A tela mostra este PNG, rasterizado no upload (`AnalyzeBrandAsset`); o
+  # SVG original continua sendo o que se baixa.
+  has_one_attached :preview
 
   # Toda logo pertence a um grupo (`BrandCore::Logos`). Quem não disse qual
   # é uma logo sozinha — nunca um arquivo invisível.
@@ -45,9 +52,23 @@ class BrandAsset < ApplicationRecord
 
   scope :ordered, -> { order(:kind, :created_at) }
 
+  # O que vai para a tela e para o render no navegador: o PNG do SVG, ou o
+  # próprio arquivo.
+  def display_file
+    preview.attached? ? preview : file
+  end
+
+  # Largura e altura do que a tela mostra — o layout precisa da proporção
+  # antes de a imagem carregar. SVG não tem medida própria; o PNG dele tem.
+  def display_size
+    return [ width, height ] if width || !preview.attached?
+
+    preview.metadata.values_at("width", "height")
+  end
+
   def self.accepted_types(kind)
     case kind
-    when "logo", "glyph" then IMAGE_TYPES
+    when "logo", "glyph" then IMAGE_TYPES + CONVERTED_TYPES
     when "photo" then PHOTO_TYPES
     when "font" then FONT_TYPES
     else []

@@ -16,6 +16,11 @@ class AgentTurnSerializer < ApplicationSerializer
       attachments: turn.attachments,
       question: turn.question,
       variations: turn.variations,
+      # O que o agente fez enquanto pensava — cada foto que pediu, com as que
+      # já saíram no formato dos ativos da marca. É a trilha ao vivo da tela.
+      steps: steps(turn),
+      # A pessoa pediu foto, não peça: o resultado são as fotos da trilha.
+      onlyImages: turn.only_images?,
       error: turn.error,
       creditsCharged: turn.credits_charged,
       # O custo real da chamada. Fica visível de propósito: é o número que
@@ -26,6 +31,17 @@ class AgentTurnSerializer < ApplicationSerializer
       model: turn.model,
       createdAt: epoch_ms(turn.created_at),
       updatedAt: epoch_ms(turn.updated_at)
+    }
+  end
+
+  def self.steps(turn)
+    list = turn.step_list
+    return [] if list.empty?
+
+    assets = BrandAsset.where(id: turn.generated_asset_ids).with_attached_file.index_by(&:id)
+    list.map { |step|
+      step.slice("id", "kind", "status", "caption", "aspectRatio", "count", "error", "startedAt", "finishedAt")
+        .merge("assets" => BrandAssetSerializer.many(Array(step["assetIds"]).filter_map { |id| assets[id] }))
     }
   end
 

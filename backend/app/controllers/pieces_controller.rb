@@ -6,7 +6,7 @@ class PiecesController < AuthenticatedController
   include PieceErrors
 
   before_action :set_brand
-  before_action :set_piece, only: %i[show destroy regenerate]
+  before_action :set_piece, only: %i[show destroy regenerate render_payload render_document]
 
   # GET /brands/:brand_id/pieces?engine=&outdated=
   def index
@@ -52,12 +52,44 @@ class PiecesController < AuthenticatedController
   end
 
   def regenerate
-    @piece.reset_for_render!
-    RenderPieceJob.perform_later(@piece.id)
+    if @piece.legacy?
+      @piece.reset_for_render!
+      RenderPieceJob.perform_later(@piece.id)
+    else
+      RenderPieceJob.perform_later(@piece.id, @piece.provenance["renderer"] || PieceRenderers.default)
+    end
+    render json: PieceSerializer.one(@piece), status: :accepted
+  end
+
+  # GET /brands/:brand_id/pieces/:id/render-payload — documento, tema da
+  # marca publicada, arquivos e geometria: o que o React precisa para
+  # desenhar a peça na tela (o mesmo que o Chromium do export recebe).
+  def render_payload
+    return render_legacy_piece unless @piece.document?
+
+    render json: PieceRenderers.payload(@piece.current_version)
+  end
+
+  # POST /brands/:brand_id/pieces/:id/render { renderer: "react" | "libvips" }
+  # — os PNGs da versão atual pelo renderizador escolhido (em segundo plano).
+  def render_document
+    return render_legacy_piece unless @piece.document?
+
+    renderer = params[:renderer].to_s
+    unless PieceRenderers::NAMES.include?(renderer)
+      return render_error(status: :unprocessable_entity, code: "unprocessable", field: "renderer",
+        message: t("errors.messages.inclusion"))
+    end
+
+    RenderPieceJob.perform_later(@piece.id, renderer)
     render json: PieceSerializer.one(@piece), status: :accepted
   end
 
   private
+
+  def render_legacy_piece
+    render_error(status: :unprocessable_entity, code: "unprocessable", message: t("errors.messages.invalid"))
+  end
 
   def set_brand
     @brand = current_organization.brand_cores.find(params[:brand_id])

@@ -6,7 +6,6 @@ import { toast } from "sonner"
 
 import { BrandCard } from "@/components/brand/brand-card"
 import { BrandOverviewSkeleton } from "@/components/brand/brand-skeletons"
-import { LogoBlock } from "@/components/brand/logo-block"
 import { EmptyState } from "@/components/empty-state"
 import { ErrorState } from "@/components/error-state"
 import { HoloBar } from "@/components/holo-bar"
@@ -208,12 +207,7 @@ function BrandOverview({ brandCore }: { brandCore: BrandCore }) {
       </header>
 
       <div className="mt-8 grid items-start gap-8 lg:grid-cols-[400px_1fr]">
-        <BrandCard
-          document={brandCore.document}
-          assets={brandCore.assets}
-          logos={brandCore.logos}
-          logoSlot={<LogoBlock brandCore={brandCore} />}
-        />
+        <BrandCard document={brandCore.document} assets={brandCore.assets} logos={brandCore.logos} />
 
         <div className="min-w-0 space-y-6">
           <StatusTerminal brandCore={brandCore} filled={filled} pending={pending} />

@@ -14,10 +14,14 @@ RSpec.describe "Conversa de criação", type: :request do
 
   def statement(overrides = {})
     {
-      "engineId" => "statement",
-      "format" => "post",
+      "format" => "feed_portrait",
       "title" => "Pão de verdade",
-      "values" => { "phrase" => "Pão de verdade\nleva tempo.", "price" => "R$ 18" },
+      "slides" => [ {
+        "layout" => "text-only-solid",
+        "background" => { "colorToken" => "primary" },
+        "content" => { "title" => "Pão de verdade\nleva tempo.", "body" => "R$ 18" }
+      } ],
+      "caption" => { "text" => "Fermentação natural, todo dia às 6h.", "hashtags" => [ "#paodefermentacaonatural" ] },
       "why" => "fundo escuro, frase seca"
     }.merge(overrides)
   end
@@ -109,11 +113,18 @@ RSpec.describe "Conversa de criação", type: :request do
       expect(brand.pieces.pluck(:agent_turn_id).uniq).to eq([ turn.id ])
     end
 
-    it "enfileira a renderização de cada peça" do
-      fake_chat(reply(statement, statement))
+    it "cada peça nasce em rascunho, com o documento como primeira versão" do
+      fake_chat(reply(statement))
       start
+      think!
 
-      expect { think! }.to have_enqueued_job(RenderPieceJob).twice
+      piece = brand.pieces.last
+      expect(piece).to have_attributes(status: "draft", format: "feed_portrait", engine_id: nil)
+      expect(piece.versions.map(&:source)).to eq([ "generation" ])
+      expect(piece.versions.first.summary).to eq("post da promoção de quarta")
+      expect(piece.document.dig("slides", 0, "layoutId")).to eq("text-only-solid")
+      expect(piece.document.dig("slides", 0, "blocks").map { |b| b["slot"] }).to eq(%w[title body logo])
+      expect(piece.document["caption"]["hashtags"]).to eq([ "#paodefermentacaonatural" ])
     end
 
     it "registra tokens, custo e modelo — é a base do teto de OPEX" do
@@ -139,7 +150,7 @@ RSpec.describe "Conversa de criação", type: :request do
       expect(blocks.length).to eq(3)
       # Regras primeiro, catálogo e marca com ponto de cache: é a ordem que
       # faz a leitura de cache valer no turno seguinte.
-      expect(blocks[1][:text]).to include("Catálogo de motores").and include("statement")
+      expect(blocks[1][:text]).to include("Biblioteca de layouts").and include("text-only-solid")
       expect(blocks[1][:cache_control]).to eq({ type: "ephemeral" })
       expect(blocks[2][:text]).to include("Pão da Vila").and include("Pão de fermentação natural")
       expect(blocks[2][:cache_control]).to eq({ type: "ephemeral" })
@@ -175,18 +186,18 @@ RSpec.describe "Conversa de criação", type: :request do
 
   describe "quando o plano não passa na validação" do
     it "tenta corrigir uma vez, com o erro no contexto" do
-      calls = fake_chat(reply(statement("engineId" => "motor_inventado")), reply(statement))
+      calls = fake_chat(reply(statement("slides" => [ { "layout" => "layout-inventado", "content" => { "title" => "Oi" } } ])), reply(statement))
       start
       think!
 
       expect(calls.length).to eq(2)
-      expect(calls.last[:messages].last[:content]).to include("motor_inventado")
+      expect(calls.last[:messages].last[:content]).to include("layout-inventado")
       expect(AgentTurn.last.status).to eq("answered")
       expect(brand.pieces.count).to eq(1)
     end
 
     it "desiste na segunda e estorna, em vez de queimar crédito tentando" do
-      calls = fake_chat(reply(statement("engineId" => "motor_inventado")))
+      calls = fake_chat(reply(statement("slides" => [ { "layout" => "layout-inventado", "content" => { "title" => "Oi" } } ])))
       start
       think!
 
@@ -216,7 +227,7 @@ RSpec.describe "Conversa de criação", type: :request do
 
     it "ajusta a peça escolhida e custa menos que o pedido inicial" do
       piece = conversation.turns.last.variations.first["pieceId"]
-      fake_chat(reply(statement("values" => { "phrase" => "Mais curto.", "price" => "R$ 18" })))
+      fake_chat(reply(statement("slides" => [ { "layout" => "text-only-solid", "content" => { "title" => "Mais curto.", "body" => "R$ 18" } } ])))
 
       expect {
         post "/brands/#{brand.id}/conversations/#{conversation.id}/turns",

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { AddButton, List, ListRow } from "@/components/brand/list-row"
 import { useRegisterStep, useWizard } from "@/components/brand/brand-wizard-context"
+import { LogoBlock } from "@/components/brand/logo-block"
 import { useStepForm } from "@/components/brand/use-step-form"
 import { Field } from "@/components/form-field"
 import { Input } from "@/components/ui/input"
@@ -63,6 +64,10 @@ export function StepIdentity() {
           <Input {...field} {...register("concept")} placeholder={t("brand.identity.conceptPlaceholder")} maxLength={160} />
         )}
       </Field>
+
+      {/* A logo e as ações dela (baixar, trocar, regenerar): o cartão da
+          marca é só leitura. Fora do formulário — cada ação salva sozinha. */}
+      <LogoBlock brandCore={brandCore} />
 
       <Field label={t("brand.identity.audience")} error={errors.audience?.message}>
         {(field) => (

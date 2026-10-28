@@ -30,7 +30,8 @@ import { cn } from "@/lib/utils"
 
 /** O teto de `BrandAsset::MAX_LOGO_BYTES` no Rails. */
 const MAX_LOGO_BYTES = 5 * 1024 * 1024
-const LOGO_ACCEPT = "image/png,image/svg+xml"
+// JPEG e WebP entram e o servidor guarda como PNG (fundo chapado gera o alerta).
+const LOGO_ACCEPT = "image/png,image/svg+xml,image/jpeg,image/webp"
 
 /** O xadrez de transparência, nos tokens do site. */
 const CHECKER: CSSProperties = {

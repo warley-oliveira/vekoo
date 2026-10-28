@@ -2,17 +2,17 @@
   "agent": {
     "hero": {
       "title": "What are we making?",
-      "description": "Describe it in one sentence. The assistant picks the format, writes the copy from {{brand}}'s own data and hands you finished pieces."
+      "description": "Describe it in one sentence. The assistant writes the copy with {{brand}}'s details, creates the photo when one is missing and delivers the pieces ready."
     },
     "composer": {
       "label": "Describe the piece you want",
       "placeholder": "Write what you want to create…",
       "examples": [
         "a story for Father's Day tomorrow",
-        "post for Wednesday's promotion",
-        "countdown to Sunday's event",
-        "post with the mentoring price and what's included",
-        "story saying the October cohort has a discount"
+        "a post about our cheese bread with a photo fresh out of the oven",
+        "a post for Wednesday's promotion",
+        "3 photos of the shop window in the morning for the feed",
+        "a story saying the October class is on sale"
       ],
       "adjustExamples": [
         "make the background darker",
@@ -22,7 +22,7 @@
         "use the other brand colour"
       ],
       "attach": "Attach photo",
-      "hint": "{{credits}} credits per request",
+      "hint": "{{credits}} credits per request · new photo, {{image}} each",
       "send": "Create",
       "working": "Creating…",
       "attachmentsAria": "Photos attached to the request",
@@ -34,7 +34,6 @@
     },
     "turn": {
       "aria": "Request from {{when}}",
-      "thinking": "Picking the format and writing the copy…",
       "results_one": "{{count}} option. Pick one and refine it, or download it as is.",
       "results_other": "{{count}} options. Pick one and refine it, or download it as is.",
       "oneResult": "Done. Ask for another tweak if it isn't quite right.",
@@ -43,7 +42,10 @@
       "failedHint": "No credits were charged.",
       "retry": "Try again",
       "varyRequest": "Other compositions of this piece",
-      "adjustLabel": "tweak to the chosen piece"
+      "adjustLabel": "tweak to the chosen piece",
+      "failedHintPhotos": "The request wasn't charged. The photo it created stays in the brand's photos.",
+      "photos_one": "Done: {{count}} photo. It's already in the brand's photos — use it in a piece or download it.",
+      "photos_other": "Done: {{count}} photos. They're already in the brand's photos — use one in a piece or download it."
     },
     "variation": {
       "download": "Download",
@@ -77,6 +79,33 @@
     "newRequest": "New request",
     "backToNew": "Start a new request",
     "adjustingChip": "Tweaking “{{title}}”",
-    "adjustingCancel": "Cancel the tweak"
+    "adjustingCancel": "Cancel the tweak",
+    "progress": {
+      "reading": "Reading the request and the brand…",
+      "photo": "Creating the photo: {{caption}}",
+      "composing": "Checking the photo and putting the rest together…",
+      "seconds": "{{seconds}}s"
+    },
+    "photo": {
+      "developing": "developing · {{seconds}}s",
+      "notOut": "didn't come out",
+      "zoom": "Enlarge: {{caption}}",
+      "zoomHint": "The photo, larger.",
+      "download": "Download",
+      "downloadFailed": "Couldn't download the photo.",
+      "use": "Use in a piece",
+      "attached": "Photo attached. Now describe the piece.",
+      "stepOne": "photo · {{caption}}",
+      "stepMany": "{{count}} photos · {{caption}}",
+      "strip_one": "Photo created for these pieces. It's already in the brand's photos.",
+      "strip_other": "{{count}} photos created for these pieces. They're already in the brand's photos.",
+      "errors": {
+        "blocked": "the generator turned this photo down",
+        "failed": "the photo didn't come out",
+        "unavailable": "photo generator unavailable",
+        "noCredits": "no credits left for the photo",
+        "costCapReached": "photos unavailable right now"
+      }
+    }
   }
 }

@@ -55,8 +55,8 @@ export function BrandSwitcher() {
         <ChevronsUpDown className="size-3.5 shrink-0 opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
-        <DropdownMenuLabel>{t("brandSwitcher.label")}</DropdownMenuLabel>
         <DropdownMenuGroup>
+          <DropdownMenuLabel>{t("brandSwitcher.label")}</DropdownMenuLabel>
           {(brands ?? []).map((item) => (
             <DropdownMenuItem key={item.id} onClick={() => switchTo(item.id)}>
               <BrandDot color={item.accentColor} />

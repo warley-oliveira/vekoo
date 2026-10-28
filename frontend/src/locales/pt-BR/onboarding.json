@@ -68,13 +68,15 @@
     "agent": {
       "followUpGeneric": "Dá pra ser mais específico? Quanto mais detalhe, melhor o motor escreve.",
       "adjustAsk": "O que você quer ajustar? Me diz o tema e o novo valor.",
-      "fontMissing": "Não tenho {{font}} no catálogo. Pede “cria pra mim” que eu proponho três que chegam perto.",
+      "fontMissing": "Não acho {{font}} entre as fontes abertas, então não consigo desenhar com ela. Pede “cria pra mim” que eu proponho três que chegam perto.",
+      "fontPartial": "{{kept}} entrou. {{font}} não está entre as fontes abertas, então não consigo desenhar com ela. Pede “cria pra mim” que eu proponho três que chegam perto, mantendo a {{kept}}.",
       "wordmarkNoted": "Anotado. Desenho o logotipo no fim, com a fonte que você escolher.",
       "logoOpaque": "Essa logo tem fundo sólido. Em peça de fundo escuro vai aparecer um retângulo branco em volta dela. Se der, envie a versão com fundo transparente.",
       "suggest": {
         "voice": "Três jeitos de falar, com base no que você contou. Clica no que soa como a sua marca.",
         "palette": "Três paletas, com base no que você contou. Clica na que parece a sua marca.",
-        "fonts": "Três pares de fonte. Clica no que combina com a paleta."
+        "fonts": "Três pares de fonte. Clica no que combina com a paleta.",
+        "fontsKept": "Três fontes para usar com a {{kept}}. Clica na que combina."
       },
       "wordmarkReady": "Desenhei três versões do logotipo com a sua fonte. A primeira já está no resumo — clica em outra se gostar mais."
     },
@@ -118,7 +120,11 @@
       "palette": "Paletas propostas",
       "fonts": "Pares de fontes propostos",
       "voice": "Vozes propostas",
-      "wordmark": "Logotipos propostos"
+      "wordmark": "Logotipos propostos",
+      "roles": {
+        "display": "título",
+        "utility": "texto"
+      }
     },
     "a11y": {
       "attachLogo": "Enviar minha logo",

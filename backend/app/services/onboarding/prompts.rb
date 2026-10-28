@@ -66,13 +66,33 @@ module Onboarding
         Proponha três pares de fontes para esta marca: uma **display** (títulos
         e números, é ela que dá o caráter) e uma **utilitária** (texto corrido,
         tem que sumir e deixar ler). Nunca as duas iguais.
-        #{brief[:wanted_font].present? ? "\nEla queria #{brief[:wanted_font]}, que não está no catálogo: a display das três propostas deve chegar perto dela no desenho.\n" : ''}
+        #{kept_font(brief[:kept_fonts])}#{wanted_font(brief)}
         Escolha **só** destas famílias:
         #{catalog.map { |category, families| "#{category}: #{families.join(', ')}" }.join("\n")}
 
         Formato:
         {"options":[{"display":"Familia","utility":"Familia","why":"uma linha"}]}
       TEXT
+    end
+
+    ROLES = { "display" => "display", "utility" => "utilitária" }.freeze
+
+    # Ela já tem uma das duas: as três propostas mudam só a outra.
+    def kept_font(kept)
+      return "" if kept.blank?
+
+      role, family = kept.first
+      other = ROLES.fetch((ROLES.keys - [ role ]).first)
+      "\nA #{ROLES.fetch(role)} já está escolhida: #{family}. Repita #{family} como #{ROLES.fetch(role)} " \
+        "nas três propostas e varie só a #{other}, que tem que combinar com ela.\n"
+    end
+
+    def wanted_font(brief)
+      return "" if brief[:wanted_font].blank?
+
+      kept_role = brief[:kept_fonts].to_h.keys.first
+      role = kept_role == "display" ? "utilitária" : "display"
+      "\nEla queria #{brief[:wanted_font]}, que não está entre as fontes abertas: a #{role} das três propostas deve chegar perto dela no desenho.\n"
     end
 
     def voice(brief, tones, quality_rules)

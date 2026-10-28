@@ -22,7 +22,7 @@ export type ContentItem =
 
 export function mergeContents(pieces: Piece[], carousels: CarouselSummary[]): ContentItem[] {
   const items: ContentItem[] = [
-    ...pieces.map((piece): ContentItem => ({ key: `p-${piece.id}`, kind: "piece", at: piece.createdAt, format: piece.format, engineId: piece.engineId, piece })),
+    ...pieces.map((piece): ContentItem => ({ key: `p-${piece.id}`, kind: "piece", at: piece.createdAt, format: piece.format, engineId: piece.engineId ?? "document", piece })),
     ...carousels.map((carousel): ContentItem => ({ key: `c-${carousel.id}`, kind: "carousel", at: carousel.editedAt, format: carousel.format, engineId: "carousel", carousel })),
   ]
   return items.sort((a, b) => b.at - a.at)

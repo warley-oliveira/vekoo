@@ -2,11 +2,13 @@ import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { AlertTriangle, HelpCircle, RefreshCw, Sparkles, Wand2 } from "lucide-react"
 
+import { PhotoTile } from "@/components/create/photo-tile"
+import { PhotoStrip, TurnProgress } from "@/components/create/turn-progress"
 import { VariationCard } from "@/components/create/variation-card"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatRelative } from "@/lib/format"
-import type { AgentTurn, AgentVariation } from "@/lib/agent"
+import { turnPhotos, type AgentTurn, type AgentVariation } from "@/lib/agent"
+import type { BrandAsset } from "@/lib/brand-core"
 import type { Piece } from "@/lib/engines"
 import { useLanguage } from "@/lib/i18n"
 
@@ -17,21 +19,29 @@ type TurnBlockProps = {
   onVary: (variation: AgentVariation) => void
   onAnswer: (question: string) => void
   onRetry: (turn: AgentTurn) => void
+  /** "Usar numa peça": a foto criada vira anexo do próximo pedido. */
+  onUsePhoto: (asset: BrandAsset, caption: string) => void
   busy?: boolean
 }
 
 /**
  * Um turno na conversa: o que a pessoa pediu e o que voltou.
  *
- * São quatro finais possíveis e todos são desenhados aqui, porque nenhum é
- * exceção: as variações (o caminho feliz), a **pergunta** (faltou um fato e o
- * agente não inventou — não é erro, é acerto), a falha (com o caminho de
- * volta) e o "ainda pensando".
+ * São cinco finais possíveis e todos são desenhados aqui, porque nenhum é
+ * exceção: as variações (o caminho feliz), **só fotos** (a pessoa pediu
+ * imagem, não peça), a **pergunta** (faltou um fato e o agente não inventou —
+ * não é erro, é acerto), a falha (com o caminho de volta) e o "ainda
+ * pensando", que mostra a trilha ao vivo.
+ *
+ * A foto que o agente criou aparece em todos eles: ela já é da marca e já
+ * custou crédito, então nunca some de vista — nem quando o resto deu errado.
  */
-export function TurnBlock({ turn, pieces, onAdjust, onVary, onAnswer, onRetry, busy }: TurnBlockProps) {
+export function TurnBlock({ turn, pieces, onAdjust, onVary, onAnswer, onRetry, onUsePhoto, busy }: TurnBlockProps) {
   const { t } = useTranslation()
   const language = useLanguage()
   const reduced = useReducedMotion()
+  const photos = turnPhotos(turn)
+  const pickPhoto = (caption: string) => (asset: BrandAsset) => onUsePhoto(asset, caption)
 
   return (
     <motion.section
@@ -66,57 +76,69 @@ export function TurnBlock({ turn, pieces, onAdjust, onVary, onAnswer, onRetry, b
             key="thinking"
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={reduced ? undefined : { opacity: 0 }}
-            className="space-y-3"
+            exit={reduced ? undefined : { opacity: 0, transition: { duration: 0.15 } }}
           >
-            <p className="flex items-center gap-2 text-sm text-muted-foreground" role="status">
-              <Sparkles className="size-4 animate-pulse text-primary" aria-hidden />
-              {t("agent.turn.thinking")}
-            </p>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3" aria-busy>
-              {Array.from({ length: turn.kind === "adjust" ? 1 : 3 }).map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="aspect-[4/5] w-full rounded-none" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
-                </div>
-              ))}
-            </div>
+            <TurnProgress turn={turn} />
           </motion.div>
         ) : turn.status === "question" ? (
           <motion.div
             key="question"
             initial={reduced ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-[42rem] space-y-3 rounded-2xl rounded-bl-sm border bg-card p-4"
+            className="space-y-3"
           >
-            <p className="flex items-start gap-2 text-sm">
-              <HelpCircle className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-              <span>{turn.question}</span>
-            </p>
-            <p className="text-xs text-muted-foreground">{t("agent.turn.questionHint")}</p>
-            <Button size="sm" variant="outline" onClick={() => onAnswer(turn.question ?? "")} disabled={busy}>
-              {t("agent.turn.answer")}
-            </Button>
+            <PhotoStrip turn={turn} onUse={onUsePhoto} disabled={busy} />
+            <div className="max-w-[42rem] space-y-3 rounded-2xl rounded-bl-sm border bg-card p-4">
+              <p className="flex items-start gap-2 text-sm">
+                <HelpCircle className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                <span>{turn.question}</span>
+              </p>
+              <p className="text-xs text-muted-foreground">{t("agent.turn.questionHint")}</p>
+              <Button size="sm" variant="outline" onClick={() => onAnswer(turn.question ?? "")} disabled={busy}>
+                {t("agent.turn.answer")}
+              </Button>
+            </div>
           </motion.div>
         ) : turn.status === "failed" ? (
           <motion.div
             key="failed"
             initial={reduced ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-[42rem] space-y-3 rounded-2xl rounded-bl-sm border border-destructive/40 bg-card p-4"
+            className="space-y-3"
           >
-            <p className="flex items-start gap-2 text-sm">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
-              <span>{t(`agent.errors.${turn.error?.code ?? "failed"}`, { defaultValue: t("agent.errors.failed") })}</span>
-            </p>
-            <p className="text-xs text-muted-foreground">{t("agent.turn.failedHint")}</p>
-            <Button size="sm" variant="outline" onClick={() => onRetry(turn)} disabled={busy}>
-              <RefreshCw /> {t("agent.turn.retry")}
-            </Button>
+            <PhotoStrip turn={turn} onUse={onUsePhoto} disabled={busy} />
+            <div className="max-w-[42rem] space-y-3 rounded-2xl rounded-bl-sm border border-destructive/40 bg-card p-4">
+              <p className="flex items-start gap-2 text-sm">
+                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
+                <span>{t(`agent.errors.${turn.error?.code ?? "failed"}`, { defaultValue: t("agent.errors.failed") })}</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {photos.length > 0 ? t("agent.turn.failedHintPhotos") : t("agent.turn.failedHint")}
+              </p>
+              <Button size="sm" variant="outline" onClick={() => onRetry(turn)} disabled={busy}>
+                <RefreshCw /> {t("agent.turn.retry")}
+              </Button>
+            </div>
+          </motion.div>
+        ) : turn.onlyImages ? (
+          <motion.div key="photos" initial={false} className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t("agent.turn.photos", { count: photos.length })}</p>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {photos.map(({ asset, step }, index) => (
+                <PhotoTile
+                  key={asset.id}
+                  step={step}
+                  asset={asset}
+                  index={index}
+                  onUse={pickPhoto(step.caption)}
+                  disabled={busy}
+                />
+              ))}
+            </div>
           </motion.div>
         ) : (
           <motion.div key="answered" initial={false} className="space-y-3">
+            <PhotoStrip turn={turn} onUse={onUsePhoto} disabled={busy} />
             <p className="text-sm text-muted-foreground">
               {turn.variations.length === 1
                 ? t("agent.turn.oneResult")

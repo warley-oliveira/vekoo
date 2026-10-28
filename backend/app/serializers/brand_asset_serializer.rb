@@ -9,7 +9,9 @@ class BrandAssetSerializer < ApplicationSerializer
       # A logo (grupo de variantes) de que o arquivo faz parte.
       logoId: asset.logo_id,
       name: asset.filename,
-      url: blob_url(asset.file),
+      # SVG aparece pelo PNG rasterizado (`preview`); baixar o SVG é pela
+      # rota da logo.
+      url: blob_url(asset.display_file),
       contentType: asset.content_type,
       width: asset.width,
       height: asset.height,

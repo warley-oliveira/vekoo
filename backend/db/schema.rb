@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
     t.text "prompt", null: false
     t.text "question"
     t.string "status", default: "thinking", null: false
+    t.jsonb "steps", default: [], null: false
     t.datetime "updated_at", null: false
     t.jsonb "usage", default: {}, null: false
     t.index ["account_id"], name: "index_agent_turns_on_account_id"
@@ -180,6 +181,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
     t.index ["organization_id"], name: "index_folders_on_organization_id"
   end
 
+  create_table "image_generations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "agent_turn_id"
+    t.string "aspect_ratio", null: false
+    t.jsonb "asset_ids", default: [], null: false
+    t.uuid "brand_core_id", null: false
+    t.bigint "cost_micro_usd", default: 0, null: false
+    t.integer "count", null: false
+    t.datetime "created_at", null: false
+    t.integer "credits_charged", default: 0, null: false
+    t.jsonb "error"
+    t.string "model"
+    t.uuid "organization_id", null: false
+    t.string "origin", default: "studio", null: false
+    t.text "prompt", null: false
+    t.uuid "reference_asset_id"
+    t.string "status", default: "queued", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_image_generations_on_account_id"
+    t.index ["agent_turn_id"], name: "index_image_generations_on_agent_turn_id"
+    t.index ["brand_core_id", "created_at"], name: "index_image_generations_on_brand_core_id_and_created_at"
+    t.index ["brand_core_id"], name: "index_image_generations_on_brand_core_id"
+    t.index ["organization_id", "created_at"], name: "index_image_generations_on_organization_id_and_created_at"
+    t.index ["organization_id"], name: "index_image_generations_on_organization_id"
+  end
+
   create_table "library_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "base", null: false
     t.datetime "created_at", null: false
@@ -252,13 +279,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
     t.index ["token_digest"], name: "index_password_resets_on_token_digest", unique: true
   end
 
+  create_table "piece_renders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.integer "height", null: false
+    t.uuid "piece_version_id", null: false
+    t.integer "position", null: false
+    t.datetime "rendered_at", null: false
+    t.string "renderer", null: false
+    t.string "slide_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "width", null: false
+    t.index ["checksum", "renderer"], name: "index_piece_renders_on_checksum_and_renderer"
+    t.index ["piece_version_id", "renderer", "position"], name: "idx_on_piece_version_id_renderer_position_bd065ebbad", unique: true
+    t.index ["piece_version_id"], name: "index_piece_renders_on_piece_version_id"
+  end
+
+  create_table "piece_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "base_version_id"
+    t.datetime "created_at", null: false
+    t.jsonb "document", default: {}, null: false
+    t.uuid "piece_id", null: false
+    t.string "source", null: false
+    t.string "summary"
+    t.index ["account_id"], name: "index_piece_versions_on_account_id"
+    t.index ["piece_id", "created_at"], name: "index_piece_versions_on_piece_id_and_created_at"
+    t.index ["piece_id"], name: "index_piece_versions_on_piece_id"
+  end
+
   create_table "pieces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.uuid "agent_turn_id"
     t.uuid "brand_core_id", null: false
     t.uuid "brand_core_version_id"
     t.datetime "created_at", null: false
-    t.string "engine_id", null: false
+    t.uuid "current_version_id"
+    t.string "engine_id"
     t.jsonb "error"
     t.string "format", null: false
     t.uuid "organization_id", null: false
@@ -272,6 +329,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
     t.index ["agent_turn_id"], name: "index_pieces_on_agent_turn_id"
     t.index ["brand_core_id"], name: "index_pieces_on_brand_core_id"
     t.index ["brand_core_version_id"], name: "index_pieces_on_brand_core_version_id"
+    t.index ["current_version_id"], name: "index_pieces_on_current_version_id"
     t.index ["organization_id", "created_at"], name: "index_pieces_on_organization_id_and_created_at"
     t.index ["organization_id", "engine_id"], name: "index_pieces_on_organization_id_and_engine_id"
     t.index ["organization_id"], name: "index_pieces_on_organization_id"
@@ -335,11 +393,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010653) do
   add_foreign_key "carousels", "organizations"
   add_foreign_key "folders", "brand_cores"
   add_foreign_key "folders", "organizations"
+  add_foreign_key "image_generations", "accounts", on_delete: :nullify
+  add_foreign_key "image_generations", "agent_turns", on_delete: :nullify
+  add_foreign_key "image_generations", "brand_cores"
+  add_foreign_key "image_generations", "organizations"
   add_foreign_key "notifications", "organizations"
   add_foreign_key "onboarding_events", "accounts", on_delete: :nullify
   add_foreign_key "onboarding_events", "brand_cores", on_delete: :nullify
   add_foreign_key "onboarding_events", "organizations"
   add_foreign_key "password_resets", "accounts"
+  add_foreign_key "piece_renders", "piece_versions"
+  add_foreign_key "piece_versions", "accounts", on_delete: :nullify
+  add_foreign_key "piece_versions", "pieces"
   add_foreign_key "pieces", "accounts", on_delete: :nullify
   add_foreign_key "pieces", "agent_turns", on_delete: :nullify
   add_foreign_key "pieces", "brand_core_versions", on_delete: :nullify

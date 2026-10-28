@@ -46,12 +46,24 @@ Rails.application.routes.draw do
     get "versions" => "brand_core_versions#index"
     post "versions/:id/restore" => "brand_core_versions#restore", as: :restore_version
     resources :assets, only: %i[create destroy], controller: :brand_assets
+    # A geração de imagens (Gemini): as fotos viram ativos da marca.
+    resources :image_generations, only: %i[index show create], path: "image-generations"
     resources :logos, only: [], controller: :brand_logos do
       collection { post :generate }
       member { get :download }
     end
     resources :pieces, only: %i[index show create destroy] do
-      member { post :regenerate }
+      member do
+        post :regenerate
+        # O documento pronto para desenhar (preview do editor) e o export.
+        get "render-payload" => "pieces#render_payload"
+        post :render, action: :render_document
+        # O editor: salvamento automático, operações e histórico.
+        patch "document" => "piece_documents#update"
+        post "operations" => "piece_documents#operations"
+        get "versions" => "piece_documents#versions"
+        post "versions/:version_id/restore" => "piece_documents#restore", as: :restore_version
+      end
     end
     resources :engines, only: [] do
       member { post :preview }
@@ -78,6 +90,11 @@ Rails.application.routes.draw do
 
   # O catálogo de motores (manifestos de `engines/*/`) é igual para todo mundo.
   resources :engines, only: %i[index show]
+  # A biblioteca de layouts das peças (contratos): o editor monta o seletor e
+  # valida localmente com ela.
+  resources :layouts, only: :index
+  # A rota `/render` do front, aberta pelo Chromium do export, lê por aqui.
+  get "render/piece-versions/:id" => "piece_render_payloads#show", as: :piece_render_payload
 
   # Migração do legado: carrosséis e pastas sem marca. Temporária (ver
   # `OrphanMigration`).

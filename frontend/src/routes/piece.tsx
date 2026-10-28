@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowLeft, Download, Loader2, RefreshCw, Trash2 } from "
 import { toast } from "sonner"
 
 import { ErrorState } from "@/components/error-state"
+import { PieceEditor } from "@/components/piece-editor/piece-editor"
 import { PieceStatusBadge } from "@/components/pieces/piece-status-badge"
 import { ProvenancePanel } from "@/components/pieces/provenance-panel"
 import {
@@ -33,7 +34,7 @@ export function PiecePage() {
   const navigate = useNavigate()
   const { brandId, path } = useActiveBrand()
   const { piece, isLoading, error, reload } = usePiece(brandId, pieceId)
-  const { engine } = useEngine(piece?.engineId)
+  const { engine } = useEngine(piece?.engineId ?? undefined)
   const { regenerate, remove } = usePieceMutations(brandId)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [working, setWorking] = useState(false)
@@ -62,6 +63,9 @@ export function PiecePage() {
       </div>
     )
   }
+
+  // A peça-documento abre no editor: o editor é a visualização.
+  if (piece.kind === "document") return <PieceEditor key={piece.id} piece={piece} />
 
   async function onRegenerate() {
     setWorking(true)
@@ -97,7 +101,8 @@ export function PiecePage() {
             <PieceStatusBadge piece={piece} />
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
-            {piece.engineName} · {t(`pieces.catalog.formats.${piece.format}`)}
+            {piece.engineName ? `${piece.engineName} · ` : ""}
+            {t(`pieces.catalog.formats.${piece.format}`)}
           </p>
         </div>
         <div className="flex gap-2">

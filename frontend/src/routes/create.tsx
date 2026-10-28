@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Link, Navigate, useNavigate, useParams } from "react-router"
+import { Navigate, useNavigate, useParams } from "react-router"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
-import { Palette, Settings2, Sparkles, X } from "lucide-react"
+import { Palette, Sparkles, X } from "lucide-react"
 import { toast } from "sonner"
 
-import { Composer } from "@/components/create/composer"
+import { Composer, type ComposerAttachment } from "@/components/create/composer"
 import { ConversationList } from "@/components/create/conversation-list"
 import { TurnBlock } from "@/components/create/turn-block"
 import { EmptyState } from "@/components/empty-state"
@@ -23,6 +23,7 @@ import { usePieces } from "@/hooks/use-pieces"
 import { usePiecesLive } from "@/hooks/use-pieces-live"
 import { ApiError } from "@/lib/api"
 import { isBusy, type AgentTurn, type AgentVariation, type StartTurnInput } from "@/lib/agent"
+import type { BrandAsset } from "@/lib/brand-core"
 import { useActiveBrand } from "@/lib/brand-context"
 import { useCatalog } from "@/lib/catalog"
 
@@ -30,14 +31,15 @@ import { useCatalog } from "@/lib/catalog"
  * `/brands/:brandId/create` — a criação por conversa.
  *
  * É o caminho principal do produto: a pessoa descreve a peça numa frase e
- * recebe 2–3 variações prontas. Quem escolhe o motor e preenche o manifesto é
- * o agente; o catálogo continua existindo, mas mudou de lugar — virou o modo
- * avançado, no link discreto do rodapé.
+ * recebe 2–3 variações prontas. Quem escolhe o layout e escreve a copy é o
+ * agente — e, quando a peça pede uma foto que a marca não tem (ou quando a
+ * pessoa pediu só a foto), é ele também quem chama o gerador de imagens. Não
+ * existe mais uma tela de "gerar imagem" separada: foto é um pedido como outro.
  *
  * Dois canais alimentam esta tela, e é isso que a faz parecer viva: o
- * `AgentChannel` traz a decisão do agente (as variações aparecem com o
- * esqueleto no lugar da arte) e o `PieceChannel` traz cada imagem quando o
- * motor termina de desenhar.
+ * `AgentChannel` traz cada passo do agente (a foto revelando, depois as
+ * variações com o esqueleto no lugar da arte) e o `PieceChannel` traz cada
+ * imagem quando o motor termina de desenhar.
  */
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -61,6 +63,7 @@ export function CreatePage() {
   const { start, send } = useConversationMutations(brandId)
 
   const [adjusting, setAdjusting] = useState<AgentVariation | null>(null)
+  const [injected, setInjected] = useState<{ attachment: ComposerAttachment; nonce: number } | null>(null)
   const [sending, setSending] = useState(false)
   const bottom = useRef<HTMLDivElement>(null)
 
@@ -139,6 +142,17 @@ export function CreatePage() {
     window.requestAnimationFrame(() => document.getElementById("agent-prompt")?.focus())
   }, [])
 
+  // A foto criada vai para o próximo pedido como anexo: "agora faz um post com
+  // ela" é a continuação natural de "gera uma foto de…".
+  const onUsePhoto = useCallback(
+    (asset: BrandAsset, caption: string) => {
+      setAdjusting(null)
+      setInjected({ attachment: { id: asset.id, name: caption || asset.name, url: asset.url }, nonce: Date.now() })
+      toast.success(t("agent.photo.attached"))
+    },
+    [t]
+  )
+
   const onAnswer = useCallback(() => {
     setAdjusting(null)
     window.requestAnimationFrame(() => document.getElementById("agent-prompt")?.focus())
@@ -157,7 +171,8 @@ export function CreatePage() {
 
   /* ---------- estados que não são a conversa ---------- */
 
-  if (legacyEngine) return <Navigate to={path(`/advanced/${legacyEngine}`)} replace />
+  // `/create/:engineId` era o formulário de um motor — que não existe mais.
+  if (legacyEngine) return <Navigate to={path("/create")} replace />
 
   if (brand.error && !brand.brandCore) {
     return (
@@ -238,8 +253,6 @@ export function CreatePage() {
               isLoading={list.isLoading}
               retentionDays={list.retentionDays}
             />
-
-            <AdvancedLink to={path("/advanced")} />
           </motion.div>
         ) : (
           <motion.div
@@ -279,6 +292,7 @@ export function CreatePage() {
                     onVary={onVary}
                     onAnswer={onAnswer}
                     onRetry={onRetry}
+                    onUsePhoto={onUsePhoto}
                     busy={busy}
                   />
                 ))
@@ -316,8 +330,8 @@ export function CreatePage() {
                 variant="bar"
                 placeholderKey={adjusting ? "agent.composer.adjustExamples" : "agent.composer.examples"}
                 cost={adjusting ? costs.agentAdjust : costs.agent}
+                injected={injected}
               />
-              <AdvancedLink to={path("/advanced")} />
             </div>
           </motion.div>
         )}
@@ -328,23 +342,4 @@ export function CreatePage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-4xl px-4 py-6 md:px-6">{children}</div>
-}
-
-/**
- * A porta para o catálogo de motores e os formulários manuais. Discreta de
- * propósito: continua servindo a quem sabe o que quer (e à própria operação
- * da Vekoo), mas não é mais a experiência principal.
- */
-function AdvancedLink({ to }: { to: string }) {
-  const { t } = useTranslation()
-  return (
-    <p className="text-center text-xs text-muted-foreground">
-      <Link
-        to={to}
-        className="inline-flex items-center gap-1 rounded outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-      >
-        <Settings2 className="size-3" aria-hidden /> {t("agent.advancedLink")}
-      </Link>
-    </p>
-  )
 }

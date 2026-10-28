@@ -108,6 +108,30 @@ RSpec.describe Onboarding::Interpret do
       expect(outcome.touched).to eq([ "fonts" ])
     end
 
+    it "qualquer fonte aberta do Google Fonts entra, não só a vitrine" do
+      _, outcome, document = apply("fonts", { "fields" => { "displayFont" => "libre caslon text bold" } })
+
+      expect(document.dig("typography", "display")).to include("family" => "Libre Caslon Text", "weights" => [ 700 ])
+      expect(document.dig("typography", "utility", "family")).to eq("Libre Caslon Text")
+      expect(outcome.touched).to eq([ "fonts" ])
+    end
+
+    it "nome exato vence a vitrine: Inter Tight não vira Inter" do
+      _, _, document = apply("fonts", { "fields" => { "displayFont" => "Inter Tight" } })
+
+      expect(document.dig("typography", "display", "family")).to eq("Inter Tight")
+    end
+
+    it "par com uma fonte fechada: a aberta entra no papel dela e a outra volta como a que falta" do
+      _, outcome, document = apply("fonts", { "fields" => { "displayFont" => "Gotham", "utilityFont" => "Montserrat" } })
+
+      expect(outcome.missing_font).to eq("Gotham")
+      expect(outcome.kept_font).to eq("Montserrat")
+      expect(outcome.touched).to be_empty
+      expect(document.dig("typography", "utility", "family")).to eq("Montserrat")
+      expect(document.dig("typography", "display", "family")).to eq("")
+    end
+
     it "fonte fora do catálogo não entra: volta como a que falta" do
       _, outcome, document = apply("fonts", { "fields" => { "displayFont" => "Interstate" } })
 

@@ -25,7 +25,9 @@ class AgentTurn < ApplicationRecord
   belongs_to :account, optional: true
 
   # A peça sobrevive à faxina da conversa: por isso `nullify`, nunca `destroy`.
+  # A foto criada pela ferramenta também — ela já é da marca.
   has_many :pieces, foreign_key: :agent_turn_id, inverse_of: :agent_turn, dependent: :nullify
+  has_many :image_generations, dependent: :nullify
 
   validates :kind, inclusion: { in: KINDS }
   validates :status, inclusion: { in: STATUSES }
@@ -50,6 +52,27 @@ class AgentTurn < ApplicationRecord
   def reply
     Array(plan["reply"])
   end
+
+  # O que o agente fez enquanto pensava — hoje, cada foto que pediu ao
+  # gerador. A tela desenha a trilha ao vivo a partir daqui.
+  def step_list
+    Array(steps)
+  end
+
+  # Os ids de todas as fotos que este turno criou, na ordem em que saíram.
+  def generated_asset_ids
+    step_list.flat_map { |step| Array(step["assetIds"]) }
+  end
+
+  # Grava um passo (novo ou atualizado pelo `id`) sem tocar no resto do turno.
+  def put_step!(step)
+    list = step_list.reject { |entry| entry["id"] == step["id"] }
+    index = step_list.index { |entry| entry["id"] == step["id"] } || list.length
+    update!(steps: list.insert(index, step))
+  end
+
+  # O pedido entregou só fotos — nenhuma peça.
+  def only_images? = plan["onlyImages"] == true
 
   # Quanto a organização gastou de verdade no período — a base do teto mensal.
   def self.cost_micro_usd_since(organization, since)

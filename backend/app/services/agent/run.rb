@@ -16,6 +16,11 @@ module Agent
 
     CACHE_CONTROL = { type: "ephemeral" }.freeze
 
+    # Quantas idas ao modelo um turno pode fazer com ferramenta no meio. A
+    # ferramenta tem o próprio limite (`ImageTool::MAX_CALLS`); este é o
+    # cinto de segurança para um laço que não termina.
+    MAX_ROUNDS = 4
+
     def initialize(turn, chat: Ai::Chat.new)
       @turn = turn
       @chat = chat
@@ -26,6 +31,7 @@ module Agent
       # O modelo que **respondeu**, não o que pedimos: se um dia houver
       # fallback, a conta tem que bater com quem de fato trabalhou.
       @model = self.class.model
+      @image_tool = ImageTool.new(turn, on_change: -> { broadcast }) if ImageTool.available?
     end
 
     def self.model
@@ -36,19 +42,19 @@ module Agent
       tokens = Engines::Tokens.new(@brand)
       messages = history(tokens) + [ { role: "user", content: request_text(@turn) } ]
 
-      answer = ask(tokens, messages)
-      plan = Plan.call(answer.text, tokens: tokens, limit: wanted)
+      answer, messages = converse(tokens, messages)
+      plan = plan_from(answer)
 
       # Uma segunda tentativa, com o erro no contexto. Uma só: duas seriam
       # pagar duas vezes por um motor que o agente não entendeu.
       if !plan.ok? && plan.errors.any?
         Rails.logger.info("agent: corrigindo — #{plan.errors.join(' | ')}")
         messages += [
-          { role: "assistant", content: answer.text },
+          { role: "assistant", content: answer.content.presence || answer.text },
           { role: "user", content: Prompts.repair(plan.errors) }
         ]
-        answer = ask(tokens, messages)
-        plan = Plan.call(answer.text, tokens: tokens, limit: wanted)
+        answer, = converse(tokens, messages)
+        plan = plan_from(answer)
       end
 
       plan.ok? ? deliver(plan) : fail_with("agentInvalidPlan", plan.errors)
@@ -71,15 +77,46 @@ module Agent
       @turn.kind == "adjust" ? 1 : Plan::MAX_VARIATIONS
     end
 
+    def plan_from(answer)
+      Plan.call(answer.text, brand_core: @brand, request_text: @turn.prompt, limit: wanted, generated: @turn.generated_asset_ids)
+    end
+
+    # Pergunta ao modelo e, enquanto ele pedir ferramenta, roda e devolve o
+    # resultado — o assistente vai de volta **como veio** (pensamento e
+    # pedidos de ferramenta juntos) e todos os resultados num turno só.
+    # Devolve a resposta final e a conversa até ela.
+    def converse(tokens, messages)
+      MAX_ROUNDS.times do
+        answer = ask(tokens, messages)
+        return [ answer, messages ] unless answer.tool_use? && @image_tool
+
+        results = answer.tool_uses.map { |tool_use| @image_tool.call(tool_use) }
+        messages += [
+          { role: "assistant", content: answer.content },
+          { role: "user", content: results }
+        ]
+      end
+      raise Ai::Chat::Failed, "laço de ferramentas não terminou em #{MAX_ROUNDS} voltas"
+    end
+
     def ask(tokens, messages)
       answer = @chat.answer(
-        system: system_blocks(tokens),
+        # Montado **uma vez** por turno e nunca mais mexido: a foto que a
+        # ferramenta cria entra na ficha da marca, e uma ficha diferente na
+        # segunda volta mudaria o prefixo — o pensamento da primeira volta é
+        # assinado contra ele e seria recusado. A foto nova chega ao modelo
+        # pelo resultado da ferramenta; a ficha atualizada fica para o
+        # próximo pedido.
+        system: @system ||= system_blocks(tokens),
         messages: messages,
         model: self.class.model,
         max_tokens: 8_000,
         # `medium` porque a tarefa é decisão estruturada sobre um catálogo
         # pequeno, não pesquisa: `high` custou mais sem escolher melhor.
-        effort: "medium"
+        effort: "medium",
+        # Sem gerador configurado a ferramenta nem aparece: o agente compõe
+        # com as fotos que a marca já tem, como antes.
+        tools: @image_tool ? [ ImageTool::DEFINITION ] : nil
       )
       account(answer)
       answer
@@ -129,51 +166,67 @@ module Agent
       end
     end
 
-    # A peça de onde o ajuste partiu, na forma que o agente devolveu. Vem do
-    # `plan` do turno que a gerou; se a peça foi apagada, o ajuste vira um
-    # pedido comum em vez de quebrar.
+    # A peça de onde o ajuste partiu, como está **agora** (com o que a pessoa
+    # já editou), na forma compacta que o agente escreve. Se a peça foi
+    # apagada — ou é legada, sem documento —, o ajuste vira um pedido comum.
     def base_for(turn)
       piece = turn.base_piece_id && Piece.find_by(id: turn.base_piece_id)
-      return { "aviso" => "a peça de origem não existe mais" } unless piece
+      return { "aviso" => "a peça de origem não existe mais" } unless piece&.document
 
-      {
-        "engineId" => piece.engine_id,
-        "format" => piece.format,
-        "title" => piece.title,
-        "values" => piece.values
-      }
+      PieceDocument::Compact.call(piece.document, title: piece.title)
     end
 
     def deliver(plan)
       return answer_question(plan.question) if plan.question?
+      return deliver_images if plan.only_images?
 
       variations = ActiveRecord::Base.transaction do
         plan.variations.map { |variation| create_piece(variation) }
       end
 
-      variations.each { |entry| RenderPieceJob.perform_later(entry["pieceId"]) }
+      variations.each { |entry| RenderPieceJob.perform_later(entry["pieceId"], PieceRenderers.default) }
 
-      finish(status: "answered", plan: { "question" => nil, "variations" => variations })
+      finish(status: "answered", plan: { "question" => nil, "variations" => variations, "images" => images_summary })
     end
 
+    # A pessoa pediu foto, não peça: o resultado são as fotos que a
+    # ferramenta criou. Cada foto já cobrou o seu crédito; o do pedido volta —
+    # pedir uma foto pela conversa custa o mesmo que pedir direto.
+    def deliver_images
+      refund!
+      finish(status: "answered", plan: { "question" => nil, "variations" => [], "images" => images_summary, "onlyImages" => true })
+    end
+
+    # As fotos criadas neste turno, com o que o agente disse que elas são — é
+    # isso que volta ao contexto no histórico ("usa aquela foto de novo").
+    def images_summary
+      @turn.step_list.select { |step| step["status"] == "done" }.flat_map { |step|
+        Array(step["assetIds"]).map { |id| { "assetId" => id, "caption" => step["caption"] } }
+      }
+    end
+
+    # A peça nasce em rascunho, com o documento como primeira versão. No
+    # `plan` do turno fica a forma compacta — é ela que volta ao contexto do
+    # modelo no histórico, sem o peso do documento inteiro.
     def create_piece(variation)
       piece = @turn.organization.pieces.create!(
         brand_core: @brand,
         account: @turn.account,
         agent_turn: @turn,
-        engine_id: variation.engine_id,
         format: variation.format,
         title: variation.title,
-        values: variation.values
+        status: "draft",
+        brand_core_version_id: variation.document["brandCoreVersionId"]
       )
-      variation.as_json.merge("pieceId" => piece.id)
+      piece.record_version!(variation.document, source: "generation", summary: @turn.prompt, account: @turn.account)
+      PieceDocument::Compact.call(piece.document, title: piece.title).merge("why" => variation.why, "pieceId" => piece.id)
     end
 
     # Faltou um fato e o agente perguntou em vez de inventar. Isso é acerto,
     # não erro — mas não é entrega: o crédito volta.
     def answer_question(question)
       refund!
-      finish(status: "question", question: question, plan: { "question" => question, "variations" => [] })
+      finish(status: "question", question: question, plan: { "question" => question, "variations" => [], "images" => images_summary })
     end
 
     def fail_with(code, details = [])

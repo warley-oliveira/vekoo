@@ -18,6 +18,13 @@ class BrandAssetsController < AuthenticatedController
     content_type = BrandAsset.detect_type(kind, file)
     return render_unsupported_file(kind, file) unless content_type
 
+    if BrandAsset::CONVERTED_TYPES.include?(content_type)
+      file = RasterToPng.call(file)
+      return render_unsupported_file(kind, params[:file]) unless file
+
+      content_type = "image/png"
+    end
+
     asset = @brand_core.assets.new(
       organization: current_organization,
       account: current_account,

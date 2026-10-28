@@ -34,6 +34,8 @@ export type ApiErrorCode =
   | "brandNotPublished"
   | "busy"
   | "costCapReached"
+  | "conflict"
+  | "pieceLocked"
   | "network"
   | "unknown"
 
@@ -109,6 +111,8 @@ function knownCode(code: string | undefined, status: number): ApiErrorCode {
     "brandNotPublished",
     "busy",
     "costCapReached",
+    "conflict",
+    "pieceLocked",
   ]
   if (code && (codes as string[]).includes(code)) return code as ApiErrorCode
   if (status === 401) return "unauthorized"

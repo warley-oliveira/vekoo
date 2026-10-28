@@ -5,7 +5,7 @@ import { useApi } from "@/hooks/use-api"
 import { isPieceKey } from "@/hooks/use-pieces"
 import { apiDelete, apiPost } from "@/lib/api"
 import { getClientId } from "@/lib/cable"
-import type { AgentTurn, Conversation, ConversationSummary, StartTurnInput } from "@/lib/agent"
+import { isBusy, type AgentTurn, type Conversation, type ConversationSummary, type StartTurnInput } from "@/lib/agent"
 
 // As conversas de criação de uma marca. Toda função recebe a marca — a
 // conversa vive dentro dela, como todo o resto.
@@ -37,8 +37,18 @@ export function useConversations(brandId: string) {
   }
 }
 
+/**
+ * O canal ao vivo (`AgentChannel`) é o caminho normal da atualização; o
+ * `refreshInterval` enquanto há turno pensando é a rede de segurança — um
+ * WebSocket que caiu (celular, troca de rede) não pode deixar a tela presa
+ * em "pensando" para sempre.
+ */
+const THINKING_POLL_MS = 4_000
+
 export function useConversation(brandId: string, id: string | undefined) {
-  const { data, error, isLoading, mutate } = useApi<Conversation>(conversationKey(brandId, id))
+  const { data, error, isLoading, mutate } = useApi<Conversation>(conversationKey(brandId, id), {
+    refreshInterval: (latest?: Conversation) => (isBusy(latest) ? THINKING_POLL_MS : 0),
+  })
   return { conversation: data, isLoading: isLoading && !data, error, reload: () => mutate() }
 }
 

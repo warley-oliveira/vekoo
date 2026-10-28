@@ -140,6 +140,8 @@
     --vk-btn-fg: #F4F1EA;
     --vk-btn-bg-hover: #2E2E2E;
     --vk-holo: linear-gradient(120deg, #0891B2, #2563EB, #7C3AED, #C026D3, #DB2777, #0891B2);
+    /* A guia do arrasto livre: o magenta do holográfico, que lê sobre qualquer peça. */
+    --vk-guide: #DB2777;
     --vk-radius-sm: 8px;
     --vk-radius: 12px;
 }
@@ -191,6 +193,53 @@
 /* O único brilho da paleta: a barra de progresso. */
 @utility bg-holo {
     background-image: var(--vk-holo);
+}
+
+/*
+ * A foto revelando: o mesmo holográfico, desfocado, em dois véus que derivam
+ * em ritmos diferentes (9s e 13s, sentidos opostos) — por isso nunca repete
+ * igual e parece vivo, não carregando. Só `transform` anima: roda na GPU.
+ * Com movimento reduzido, os véus ficam parados.
+ */
+@layer components {
+    /* Na camada de componentes: posição e tamanho ficam com as utilities. */
+    .photo-developing {
+        isolation: isolate;
+        overflow: hidden;
+        background: var(--vk-faint);
+    }
+
+    .photo-developing::before,
+    .photo-developing::after {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        z-index: -1;
+        background-image: var(--vk-holo);
+        border-radius: 45%;
+        filter: blur(32px) saturate(0.7);
+        opacity: 0.26;
+        animation: vk-drift 9s ease-in-out infinite alternate;
+    }
+
+    .photo-developing::after {
+        inset: -15% -40% -45% -5%;
+        opacity: 0.18;
+        animation-duration: 13s;
+        animation-direction: alternate-reverse;
+    }
+}
+
+@keyframes vk-drift {
+    from { transform: translate3d(-14%, -10%, 0) rotate(0deg) scale(1); }
+    to { transform: translate3d(12%, 14%, 0) rotate(38deg) scale(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .photo-developing::before,
+    .photo-developing::after {
+        animation: none;
+    }
 }
 
 @layer base {

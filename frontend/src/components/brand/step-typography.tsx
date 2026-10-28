@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState, type ReactNode } from "react"
 import { Controller, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Check, ChevronsUpDown, Loader2, Upload } from "lucide-react"
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useBrandCoreMutations } from "@/hooks/use-brand-core"
+import { useFontDirectory } from "@/hooks/use-font-directory"
 import {
   FONT_ROLES,
   FONT_SOURCES,
@@ -24,7 +25,7 @@ import {
   type FontRole,
   type FontSource,
 } from "@/lib/brand-core"
-import { FONT_CATALOG, findCatalogFont, type FontCategory } from "@/lib/font-catalog"
+import { FONT_CATALOG, findCatalogFont, findOpenFont, type CatalogFont, type FontCategory } from "@/lib/font-catalog"
 import { cn } from "@/lib/utils"
 
 const CATEGORIES: FontCategory[] = ["sans", "serif", "display", "mono"]
@@ -102,7 +103,9 @@ function FontRoleEditor({ role, form, assets, brandId }: FontRoleEditorProps) {
   const { t } = useTranslation()
   const { control, register, setValue, formState: { errors } } = form
   const font = useWatch({ control, name: role }) as BrandFont
-  const catalogFont = findCatalogFont(font.family)
+  // Fonte fora da vitrine: os pesos dela vêm do índice inteiro.
+  useFontDirectory(font.source === "catalog" && Boolean(font.family) && !findCatalogFont(font.family))
+  const catalogFont = findOpenFont(font.family)
   const available = font.source === "catalog" && catalogFont ? catalogFont.weights : [...FONT_WEIGHTS]
   const previewFamily = useBrandFont(font, assets)
   const roleErrors = errors[role]
@@ -170,7 +173,7 @@ function FontRoleEditor({ role, form, assets, brandId }: FontRoleEditorProps) {
                   value={field.value}
                   onChange={(family) => {
                     field.onChange(family)
-                    const weights = findCatalogFont(family)?.weights ?? []
+                    const weights = findOpenFont(family)?.weights ?? []
                     const kept = font.weights.filter((w) => weights.includes(w))
                     setValue(`${role}.weights`, kept.length ? kept : [weights.includes(400) ? 400 : weights[0]], { shouldDirty: true })
                   }}
@@ -258,12 +261,31 @@ function FontRoleEditor({ role, form, assets, brandId }: FontRoleEditorProps) {
 
 type FontPickerProps = { value: string; onChange: (family: string) => void; invalid?: boolean }
 
-/** Busca no catálogo aberto, agrupada por categoria, com o nome na própria fonte. */
+/** Quantas famílias do índice inteiro aparecem de uma vez: o resto pede uma busca mais precisa. */
+const MORE_LIMIT = 40
+
+/**
+ * Busca no catálogo aberto, agrupada por categoria. Sem busca, só a vitrine;
+ * com busca, também o Google Fonts inteiro — quem já tem uma fonte aberta no
+ * manual acha a dela.
+ */
 function FontPicker({ value, onChange, invalid }: FontPickerProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
-  const matches = FONT_CATALOG.filter((font) => font.family.toLowerCase().includes(query.trim().toLowerCase()))
+  const { fonts: directory, failed } = useFontDirectory(open)
+  const needle = query.trim().toLowerCase()
+  const matches = FONT_CATALOG.filter((font) => font.family.toLowerCase().includes(needle))
+  const more = needle && directory
+    ? directory.filter((font) => !findCatalogFont(font.family) && font.family.toLowerCase().includes(needle))
+    : []
+  const searching = Boolean(needle) && !directory && !failed
+
+  function pick(family: string) {
+    onChange(family)
+    setOpen(false)
+    setQuery("")
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -293,40 +315,66 @@ function FontPicker({ value, onChange, invalid }: FontPickerProps) {
           className="mb-2"
         />
         <div className="max-h-72 overflow-y-auto" role="listbox">
-          {matches.length === 0 && <p className="px-2 py-3 text-sm text-muted-foreground">{t("brand.typography.noFont")}</p>}
+          {matches.length === 0 && more.length === 0 && !searching && (
+            <p className="px-2 py-3 text-sm text-muted-foreground">{t("brand.typography.noFont")}</p>
+          )}
           {CATEGORIES.map((category) => {
             const fonts = matches.filter((font) => font.category === category)
             if (fonts.length === 0) return null
             return (
-              <div key={category} className="mb-1">
-                <p className="px-2 py-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-                  {t(`brand.typography.categories.${category}`)}
-                </p>
+              <FontGroup key={category} title={t(`brand.typography.categories.${category}`)}>
                 {fonts.map((font) => (
-                  <button
-                    key={font.family}
-                    type="button"
-                    role="option"
-                    aria-selected={font.family === value}
-                    onClick={() => {
-                      onChange(font.family)
-                      setOpen(false)
-                      setQuery("")
-                    }}
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-muted focus-visible:bg-muted",
-                      font.family === value && "bg-accent text-accent-foreground"
-                    )}
-                  >
-                    <span>{font.family}</span>
-                    {font.family === value && <Check className="size-4" />}
-                  </button>
+                  <FontOption key={font.family} font={font} selected={font.family === value} onPick={pick} />
                 ))}
-              </div>
+              </FontGroup>
             )
           })}
+          {searching && (
+            <p className="flex items-center gap-2 px-2 py-3 text-sm text-muted-foreground">
+              <Loader2 className="size-3.5 animate-spin" /> {t("brand.typography.loadingFonts")}
+            </p>
+          )}
+          {more.length > 0 && (
+            <FontGroup title={t("brand.typography.moreFonts")}>
+              {more.slice(0, MORE_LIMIT).map((font) => (
+                <FontOption key={font.family} font={font} selected={font.family === value} onPick={pick} />
+              ))}
+              {more.length > MORE_LIMIT && (
+                <p className="px-2 py-2 text-xs text-muted-foreground">
+                  {t("brand.typography.refineSearch", { count: more.length - MORE_LIMIT })}
+                </p>
+              )}
+            </FontGroup>
+          )}
         </div>
       </PopoverContent>
     </Popover>
+  )
+}
+
+function FontGroup({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="mb-1">
+      <p className="px-2 py-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">{title}</p>
+      {children}
+    </div>
+  )
+}
+
+function FontOption({ font, selected, onPick }: { font: CatalogFont; selected: boolean; onPick: (family: string) => void }) {
+  return (
+    <button
+      type="button"
+      role="option"
+      aria-selected={selected}
+      onClick={() => onPick(font.family)}
+      className={cn(
+        "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-muted focus-visible:bg-muted",
+        selected && "bg-accent text-accent-foreground"
+      )}
+    >
+      <span>{font.family}</span>
+      {selected && <Check className="size-4" />}
+    </button>
   )
 }

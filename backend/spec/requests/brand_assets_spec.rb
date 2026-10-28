@@ -32,6 +32,27 @@ RSpec.describe "Ativos da marca", type: :request do
       expect(json["transparent"]).to be(false)
     end
 
+    it "mostra o SVG por um PNG: o Active Storage serve SVG como download, e a imagem quebraria" do
+      post "/brands/#{brand.id}/assets",
+        params: { file: upload("logo.svg", "image/svg+xml"), kind: "logo", variant: "light" },
+        headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(json).to include("contentType" => "image/svg+xml", "transparent" => true)
+      expect(json["url"]).to end_with("/logo.png")
+      preview = BrandAsset.find(json["id"]).preview
+      expect(preview.content_type).to eq("image/png")
+    end
+
+    it "alerta quando o SVG traz o fundo da prancheta atrás da logo" do
+      post "/brands/#{brand.id}/assets",
+        params: { file: upload("logo-prancheta.svg", "image/svg+xml"), kind: "logo", variant: "light" },
+        headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(json["transparent"]).to be(false)
+    end
+
     it "conta o logo na completude" do
       post "/brands/#{brand.id}/assets",
         params: { file: upload("logo-transparente.png", "image/png"), kind: "logo", variant: "light" },
@@ -60,6 +81,17 @@ RSpec.describe "Ativos da marca", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "field")).to eq("file")
       expect(json.dig("error", "message")).to match(/PNG/)
+    end
+
+    it "aceita o logo em JPEG e guarda como PNG, com o alerta de fundo opaco" do
+      post "/brands/#{brand.id}/assets",
+        params: { file: upload("logo.jpg", "image/jpeg"), kind: "logo", variant: "light" },
+        headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(json).to include("contentType" => "image/png", "name" => "logo.png",
+        "transparent" => false, "width" => 48, "height" => 32)
+      expect(BrandAsset.last.file.download.b).to start_with(PngInspector::SIGNATURE)
     end
 
     it "recusa um tipo de ativo que não existe" do

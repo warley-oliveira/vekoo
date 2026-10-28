@@ -1,6 +1,6 @@
 require "net/http"
 
-# O arquivo de uma fonte do catálogo aberto, em disco, para o Pango desenhar
+# O arquivo de uma fonte aberta (qualquer família do Google Fonts), em disco, para o Pango desenhar
 # com ela de verdade.
 #
 # Sem isto o catálogo era decorativo: `Vips::Image.text` resolve família por
@@ -28,8 +28,10 @@ class BrandFonts
   class << self
     # Caminho local do arquivo, ou `nil` quando não deu para obter.
     def path(family, weight = 400)
-      return nil unless BrandCore::FontCatalog.exists?(family)
+      font = BrandCore::FontCatalog.resolve(family)
+      return nil unless font
 
+      family = font.family
       weight = BrandCore::FontCatalog.nearest_weight(family, weight)
       cached = cache_path(family, weight)
       return cached.to_s if cached.exist?

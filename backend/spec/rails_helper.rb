@@ -42,6 +42,10 @@ RSpec.configure do |config|
   # importa (contadores de tentativa, a trava de geração). Sem esta limpeza um
   # exemplo herda o contador do anterior e falha por motivo alheio a si.
   config.before { Rails.cache.clear }
+  # O gerador de imagens depende do ADC da máquina: desligado por padrão, para
+  # o resultado não mudar de um computador para outro. A spec que quer a
+  # ferramenta liga explicitamente.
+  config.before { allow(Ai::GeminiImage).to receive(:available?).and_return(false) }
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [

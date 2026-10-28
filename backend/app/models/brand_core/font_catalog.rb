@@ -70,10 +70,16 @@ module BrandCore::FontCatalog
     FONTS.map(&:family)
   end
 
+  # Qualquer família aberta que a marca pode usar: a vitrine primeiro, depois
+  # o índice inteiro do Google Fonts (`FontDirectory`).
+  def resolve(family)
+    find(family) || BrandCore::FontDirectory.find(family)
+  end
+
   # O peso publicado mais próximo do pedido: pedir um peso que a família não
   # tem faz o Google devolver folha vazia e a fonte não baixa.
   def nearest_weight(family, weight)
-    font = find(family)
+    font = resolve(family)
     return weight.to_i unless font
 
     font.weights.min_by { |w| (w - weight.to_i).abs }

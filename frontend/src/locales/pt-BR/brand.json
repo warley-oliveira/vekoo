@@ -279,6 +279,10 @@
       "familyPlaceholder": "Ex.: Fraunces",
       "searchFont": "Buscar fonte…",
       "noFont": "Nenhuma fonte com esse nome.",
+      "loadingFonts": "Buscando no Google Fonts…",
+      "moreFonts": "Mais fontes abertas",
+      "refineSearch_one": "E mais {{count}}. Escreva mais do nome para achar.",
+      "refineSearch_other": "E mais {{count}}. Escreva mais do nome para achar.",
       "categories": {
         "sans": "Sem serifa",
         "serif": "Com serifa",
@@ -350,14 +354,14 @@
       "onLight": "No claro"
     },
     "assets": {
-      "intro": "Ativo oficial entra por arquivo, nunca é recriado por aproximação. Logo e glifo em PNG com fundo transparente ou SVG.",
+      "intro": "Ativo oficial entra por arquivo, nunca é recriado por aproximação. Logo e glifo de preferência em PNG com fundo transparente ou SVG (JPEG e WebP também entram).",
       "slots": {
         "logoLight": "Logo para fundo claro",
         "logoDark": "Logo para fundo escuro",
         "glyphLight": "Glifo para fundo claro",
         "glyphDark": "Glifo para fundo escuro"
       },
-      "slotHint": "PNG transparente ou SVG, até {{max}}",
+      "slotHint": "PNG transparente, SVG, JPEG ou WebP, até {{max}}",
       "photos": "Fotos de marca",
       "photosHint": "Produtos, equipe, ambiente — o que a IA pode usar como imagem oficial. JPEG, PNG ou WebP.",
       "addPhoto": "Adicionar foto",
@@ -367,7 +371,7 @@
       "remove": "Remover",
       "replace": "Trocar",
       "opaqueTitle": "Fundo opaco",
-      "opaqueWarning": "Este PNG tem o fundo preenchido. O logo vai aparecer com um retângulo por trás — envie uma versão com fundo transparente.",
+      "opaqueWarning": "Esta imagem tem o fundo preenchido. O logo vai aparecer com um retângulo por trás — envie uma versão com fundo transparente.",
       "transparentOk": "Fundo transparente",
       "unknownTransparency": "Não deu para conferir o fundo",
       "invalidType": "Esse arquivo não serve aqui.",
@@ -377,7 +381,18 @@
       "removeFailed": "Não deu para remover.",
       "empty": "Nenhuma foto ainda.",
       "confirmRemoveTitle": "Remover este ativo?",
-      "confirmRemoveDescription": "Ele some da marca. Você pode enviar de novo depois."
+      "confirmRemoveDescription": "Ele some da marca. Você pode enviar de novo depois.",
+      "viewer": {
+        "title": "Fotos da marca",
+        "open": "Ver {{name}}",
+        "counter": "{{current}} de {{total}}",
+        "previous": "Foto anterior",
+        "next": "Próxima foto",
+        "close": "Fechar",
+        "strip": "Todas as fotos",
+        "goTo": "Ver foto {{index}}",
+        "size": "{{width}} × {{height}} px"
+      }
     },
     "voice": {
       "essence": "Essência da voz",
@@ -425,20 +440,21 @@
       "noSegment": "Segmento",
       "noConcept": "O conceito-mãe aparece aqui.",
       "voice": "Voz",
-      "noVoice": "A essência da voz aparece aqui.",
       "palette": "Paleta",
       "fonts": "Fontes",
-      "display": "Display",
-      "utility": "Utilitária",
       "show": "Ver cartão da marca",
       "hide": "Esconder cartão",
       "previewLabel": "preview · feed",
-      "noPalette": "A paleta aparece aqui.",
-      "noFont": "Fonte por escolher",
       "fontRoles": {
         "display": "títulos",
         "utility": "corpo"
-      }
+      },
+      "specimen": "Aa",
+      "paletteHint_one": "{{count}} cor · clique pra copiar o hex",
+      "paletteHint_other": "{{count}} cores · clique pra copiar o hex",
+      "copied": "✓ copiado",
+      "copyColor": "Copiar {{color}}",
+      "copyFailed": "Não deu para copiar o hex."
     },
     "nudge": {
       "title": "Sua marca ainda não está pronta",

@@ -22,4 +22,21 @@ namespace :fonts do
     count = BrandFonts.warm
     puts "Arquivos em cache: #{count} (#{BrandFonts.root})"
   end
+
+  desc "Regera o índice do Google Fonts (config/google_fonts.json + o espelho do front)"
+  task directory: :environment do
+    require "net/http"
+
+    body = Net::HTTP.get(URI("https://fonts.google.com/metadata/fonts"))
+    families = JSON.parse(body.sub(/\A\)\]\}'\n?/, "")).fetch("familyMetadataList")
+    rows = BrandCore::FontDirectory.from_metadata(families)
+
+    targets = [ BrandCore::FontDirectory::PATH, Rails.root.join("../frontend/src/lib/google-fonts.json") ]
+    targets.each do |path|
+      next unless path.dirname.exist?
+
+      File.write(path, BrandCore::FontDirectory.dump(rows))
+      puts "#{rows.size} famílias em #{path}"
+    end
+  end
 end

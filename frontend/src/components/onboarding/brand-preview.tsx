@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 
-import { ensureCatalogFont, findCatalogFont, fontStack } from "@/lib/font-catalog"
+import { ensureCatalogFont, findOpenFont, fontStack } from "@/lib/font-catalog"
 import { firstColor, type BrandColor } from "@/lib/brand-core"
 import { cn } from "@/lib/utils"
 
@@ -38,13 +38,13 @@ export function BrandPreview({ name, concept, colors, display, utility, classNam
   const accent = firstColor(colors, "accent")?.hex ?? "#7c3aed"
   const muted = firstColor(colors, "muted")?.hex ?? onLight
 
-  const displayStack = fontStack(display ?? "", findCatalogFont(display ?? "")?.category)
-  const utilityStack = fontStack(utility ?? "", findCatalogFont(utility ?? "")?.category)
+  const displayStack = fontStack(display ?? "", findOpenFont(display ?? "")?.category)
+  const utilityStack = fontStack(utility ?? "", findOpenFont(utility ?? "")?.category)
 
   return (
     <div className={cn("grid grid-cols-2 overflow-hidden rounded-lg", className)}>
       {/* Cantos retos por dentro: é a obra, e o Instagram não arredonda. */}
-      <div className="flex aspect-[4/5] flex-col justify-between p-4" style={{ backgroundColor: dark, color: onDark }}>
+      <div className="flex aspect-[4/5] min-h-0 min-w-0 flex-col justify-between overflow-hidden p-3" style={{ backgroundColor: dark, color: onDark }}>
         <span
           className="text-[10px] font-semibold tracking-[0.14em] uppercase"
           style={{ color: accent, fontFamily: utilityStack }}
@@ -52,18 +52,18 @@ export function BrandPreview({ name, concept, colors, display, utility, classNam
           {t("onboarding.preview.kicker")}
         </span>
         <span
-          className="text-lg leading-[1.05] font-bold text-balance"
+          className="line-clamp-4 text-base leading-[1.05] font-bold text-balance hyphens-auto [overflow-wrap:anywhere]"
           style={{ fontFamily: displayStack }}
         >
           {name || t("onboarding.preview.name")}
         </span>
       </div>
-      <div className="flex aspect-[4/5] flex-col justify-between p-4" style={{ backgroundColor: light, color: onLight }}>
-        <p className="text-[11px] leading-snug" style={{ fontFamily: utilityStack }}>
+      <div className="flex aspect-[4/5] min-h-0 min-w-0 flex-col justify-between overflow-hidden p-3" style={{ backgroundColor: light, color: onLight }}>
+        <p className="line-clamp-4 text-[11px] leading-snug" style={{ fontFamily: utilityStack }}>
           {concept || t("onboarding.preview.concept")}
         </p>
         <div className="space-y-2">
-          <span className="block text-2xl leading-none font-bold" style={{ fontFamily: displayStack, color: accent }}>
+          <span className="block text-xl leading-none font-bold whitespace-nowrap" style={{ fontFamily: displayStack, color: accent }}>
             R$ 18
           </span>
           <span className="block text-[10px]" style={{ fontFamily: utilityStack, color: muted }}>

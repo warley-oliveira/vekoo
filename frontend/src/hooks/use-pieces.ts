@@ -6,7 +6,7 @@ import { BASE_URL, ApiError, apiDelete, apiPost } from "@/lib/api"
 import { getClientId } from "@/lib/cable"
 import { currentLanguage } from "@/lib/i18n"
 import { getToken } from "@/lib/token"
-import type { Piece, PieceFormat, PieceValues } from "@/lib/engines"
+import type { Piece, PieceFormat, PieceRenderer, PieceValues } from "@/lib/engines"
 
 // As peças de uma marca (`/brands/:id/pieces`). Toda função recebe a marca.
 
@@ -124,5 +124,15 @@ export function usePieceMutations(brandId: string) {
     [brandId]
   )
 
-  return { create, regenerate, remove, preview, resync }
+  /** Os PNGs da versão atual pelo renderizador escolhido (em segundo plano). */
+  const renderDocument = useCallback(
+    async (id: string, renderer: PieceRenderer): Promise<Piece> => {
+      const piece = await apiPost<Piece>(`${base}/${id}/render`, { renderer })
+      await mutate(pieceKey(brandId, id), piece, { revalidate: false })
+      return piece
+    },
+    [base, brandId, mutate]
+  )
+
+  return { create, regenerate, remove, preview, resync, renderDocument }
 }

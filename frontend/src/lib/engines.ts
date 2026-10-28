@@ -2,7 +2,10 @@
 // `/pieces`. O formulário de criação é **gerado do manifesto**: não existe
 // tela por tipo de peça, existe um renderizador por tipo de campo.
 
-export type PieceFormat = "post" | "story"
+import type { DocumentFormat, PieceDocument } from "@/lib/piece-document"
+
+/** `post`/`story` são das peças legadas (motores); as de agora usam os do documento. */
+export type PieceFormat = "post" | "story" | DocumentFormat
 
 export type FieldType = "text" | "textList" | "number" | "choice" | "image"
 
@@ -46,7 +49,32 @@ export type Dimensions = Record<PieceFormat, { width: number; height: number }>
 
 export type EngineCatalog = { engines: EngineManifest[]; dimensions: Dimensions }
 
-export type PieceStatus = "queued" | "rendering" | "ready" | "failed"
+/**
+ * Peça-documento: generating → draft → approved → scheduled → published.
+ * Peça legada (motor): queued → rendering → ready. As duas podem falhar.
+ */
+/** Os dois intérpretes da geometria: o navegador (React) e o servidor (libvips). */
+export type PieceRenderer = "react" | "libvips"
+
+export type PieceRenderImage = {
+  index: number
+  slideId: string
+  url: string
+  width: number
+  height: number
+  renderedAt: number
+}
+
+export type PieceStatus =
+  | "generating"
+  | "draft"
+  | "approved"
+  | "scheduled"
+  | "published"
+  | "queued"
+  | "rendering"
+  | "ready"
+  | "failed"
 
 export type PieceError = {
   code: string
@@ -68,8 +96,14 @@ export type PieceValues = Record<string, string | number | string[] | null | und
 export type Piece = {
   id: string
   brandId: string
-  engineId: string
-  engineName: string
+  /** `legacy`: saída de um motor sem layout equivalente — só leitura. */
+  kind: "document" | "legacy"
+  document: PieceDocument | null
+  currentVersionId: string | null
+  engineId: string | null
+  engineName: string | null
+  /** Peça-documento: os PNGs da versão atual por renderizador. */
+  renders: Partial<Record<PieceRenderer, PieceRenderImage[]>> | null
   format: PieceFormat
   title: string
   values: PieceValues

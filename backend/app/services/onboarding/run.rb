@@ -72,8 +72,7 @@ module Onboarding
       if outcome.missing_font
         close("palette") if @topic == "palette" && satisfied?("palette")
         saved(outcome.touched)
-        @brand.track_onboarding(wanted_font: outcome.missing_font)
-        say("fontMissing", font: outcome.missing_font)
+        font_missing(outcome)
         return record("answered")
       end
 
@@ -128,8 +127,7 @@ module Onboarding
       redraw_wordmark if (outcome.touched & %w[brand palette fonts]).any?
 
       if outcome.missing_font
-        @brand.track_onboarding(wanted_font: outcome.missing_font)
-        say("fontMissing", font: outcome.missing_font)
+        font_missing(outcome)
       elsif outcome.touched.any?
         @reply << { "type" => "summary" }
       elsif result.follow_up
@@ -138,6 +136,17 @@ module Onboarding
         say("adjustAsk")
       end
       record("answered")
+    end
+
+    # A que existe já entrou: dizer isso responde o "não tem nem a X?" — falar
+    # só da que falta parece que ela não foi ouvida.
+    def font_missing(outcome)
+      @brand.track_onboarding(wanted_font: outcome.missing_font)
+      if outcome.kept_font
+        say("fontPartial", font: outcome.missing_font, kept: outcome.kept_font)
+      else
+        say("fontMissing", font: outcome.missing_font)
+      end
     end
 
     def follow_up(topic, text)
@@ -163,7 +172,11 @@ module Onboarding
         end
       account(result)
 
-      say("suggest.#{kind}")
+      if result.kept
+        say("suggest.fontsKept", kept: result.kept)
+      else
+        say("suggest.#{kind}")
+      end
       @reply << { "type" => "options", "kind" => kind, "source" => result.source, "items" => result.options }
       record("suggested", payload: { "kind" => kind, "source" => result.source })
     end

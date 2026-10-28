@@ -1,0 +1,50 @@
+id: split-image-text
+name: { pt-BR: "Imagem e texto lado a lado", en: "Image and text split" }
+description:
+  pt-BR: "Metade foto, metade bloco de cor da marca com o texto. Empilhado no retrato e no story, lado a lado no quadrado. Para explicar algo sem esconder a foto."
+  en: "Half photo, half brand-colour block with the text. Stacked in portrait and story, side by side in square."
+formats: [feed_square, feed_portrait, story, carousel]
+background_options: [color]
+background_default: { type: color, color_token: primary }
+align_options: [left]
+slots:
+  image: { type: image, required: true }
+  title: { type: text, role_default: headline, max_chars: 60, max_lines: 3, required: true }
+  body:  { type: text, role_default: body, max_chars: 180, max_lines: 5 }
+  badge: { type: text, role_default: label, max_chars: 24 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 0, right: 0, top: 0, height: "50%" } }
+    - kind: stack
+      box: { left: 80, right: 80, top: "50%", bottom: 96 }
+      inset: [ 72, 0, 0, 0 ]
+      anchor: top
+      gap: 22
+      ink: background
+      items: [ { slot: badge, size: 28 }, { slot: title, size: 64 }, { slot: body, size: 34 } ]
+    - { kind: logo, slot: logo, box: { right: 80, bottom: 80 }, height: 52 }
+  feed_square:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 0, top: 0, bottom: 0, width: "42%" } }
+    - kind: stack
+      box: { left: "42%", right: 64, top: 64, bottom: 140 }
+      inset: [ 0, 0, 0, 56 ]
+      anchor: center
+      gap: 18
+      ink: background
+      items: [ { slot: badge, size: 24 }, { slot: title, size: 46 }, { slot: body, size: 26 } ]
+    - { kind: logo, slot: logo, box: { right: 64, bottom: 64 }, height: 44 }
+  story:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 0, right: 0, top: 0, height: "46%" } }
+    - kind: stack
+      box: { left: 80, right: 80, top: "46%", bottom: 320 }
+      inset: [ 80, 0, 0, 0 ]
+      anchor: top
+      gap: 26
+      ink: background
+      items: [ { slot: badge, size: 30 }, { slot: title, size: 72 }, { slot: body, size: 38 } ]
+    - { kind: logo, slot: logo, box: { right: 80, bottom: 300 }, height: 56 }

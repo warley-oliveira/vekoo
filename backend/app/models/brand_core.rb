@@ -11,6 +11,7 @@ class BrandCore < ApplicationRecord
 
   belongs_to :organization
   has_many :assets, class_name: "BrandAsset", dependent: :destroy
+  has_many :image_generations, dependent: :destroy
   has_many :versions, -> { order(number: :desc) }, class_name: "BrandCoreVersion", dependent: :destroy
   # Todo conteúdo nasce dentro da marca — e vai embora com ela.
   has_many :carousels, dependent: :destroy

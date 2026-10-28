@@ -68,6 +68,12 @@ env:
     APP_HOSTS: syco.vekoo.app,api.107-152-37-59.sslip.io      # config.hosts
     FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.vekoo.workers.dev  # CORS, sem curinga
     BACKEND_URL: https://syco.vekoo.app                       # mailer/url_options
+    # Renderizador "navegador" das peças: o Chromium da imagem abre a rota
+    # /render do front publicado. Sem estas duas, o React falha limpo e o
+    # libvips (o padrão) continua desenhando.
+    FRONTEND_URL: https://my.vekoo.app
+    CHROME_PATH: /usr/bin/chromium
+    PIECE_RENDERER: libvips
     API_ORIGIN: https://syco.vekoo.app                        # URL absoluta dos blobs
     REDIS_URL: redis://vekoo-api-redis:6379/0                 # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1           # pub/sub do ActionCable

@@ -15,9 +15,9 @@ import { ForgotPasswordPage } from "@/routes/forgot-password"
 import { LoginPage } from "@/routes/login"
 import { MyCarouselsPage } from "@/routes/my-carousels"
 import { OnboardingPage } from "@/routes/onboarding"
+import { RenderPage } from "@/routes/render"
 import { OrphansPage } from "@/routes/orphans"
 import { PiecePage } from "@/routes/piece"
-import { PieceNewPage } from "@/routes/piece-new"
 import { ResetPasswordPage } from "@/routes/reset-password"
 import { SignUpPage } from "@/routes/signup"
 import { TrashPage } from "@/routes/trash"
@@ -37,6 +37,10 @@ export default function App() {
       </Route>
 
       {/* Dentro da sessão */}
+      {/* A peça para o Chromium do export fotografar: sem sessão (token) e
+          sem chrome do app. */}
+      <Route path="/render" element={<RenderPage />} />
+
       <Route element={<RequireAuth />}>
         <Route path="/" element={<BrandGate />} />
         <Route path="/brands" element={<BrandGate />} />
@@ -59,14 +63,18 @@ export default function App() {
             <Route path="folders/:folderId" element={<MyCarouselsPage />} />
             <Route path="contents" element={<ContentsPage />} />
             <Route path="contents/:pieceId" element={<PiecePage />} />
+            {/* A geração de imagem virou ferramenta do agente: foto se pede no Criar. */}
+            <Route path="images" element={<Navigate to="../create" relative="path" replace />} />
             {/* A criação por conversa é o caminho principal. */}
             <Route path="create" element={<CreatePage />} />
             <Route path="create/:conversationId" element={<CreatePage />} />
             {/* Modo avançado: o catálogo de motores e o formulário do manifesto.
                 Continua existindo para quem sabe o que quer — e para a própria
                 operação da Vekoo —, atrás de um link discreto. */}
-            <Route path="advanced" element={<PieceNewPage />} />
-            <Route path="advanced/:engineId" element={<PieceNewPage />} />
+            {/* O modo avançado (formulário por motor) saiu: o editor de peças é o
+                modo manual. Link salvo cai em Criar. */}
+            <Route path="advanced" element={<Navigate to="../create" relative="path" replace />} />
+            <Route path="advanced/:engineId" element={<Navigate to="../../create" relative="path" replace />} />
             <Route path="settings" element={<BrandPage />} />
             <Route path="setup" element={<BrandSetupPage />} />
             <Route path="setup/:step" element={<BrandSetupPage />} />

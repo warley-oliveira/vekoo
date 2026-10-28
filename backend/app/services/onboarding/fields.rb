@@ -8,7 +8,7 @@ module Onboarding
   # Devolve os **temas** tocados (é deles que sai o "paleta gravada ✓") e a
   # fonte que a pessoa pediu e o catálogo não tem.
   module Fields
-    Outcome = Struct.new(:touched, :missing_font, keyword_init: true)
+    Outcome = Struct.new(:touched, :missing_font, :kept_font, keyword_init: true)
 
     IDENTITY = {
       "name" => "brand", "concept" => "brand", "segment" => "brand",
@@ -32,7 +32,7 @@ module Onboarding
       fonts = typography(brand_core, document, fields)
       touched |= fonts[:touched]
 
-      Outcome.new(touched: BrandCore::Onboarding::TOPICS & touched, missing_font: fonts[:missing])
+      Outcome.new(touched: BrandCore::Onboarding::TOPICS & touched, missing_font: fonts[:missing], kept_font: fonts[:kept])
     end
 
     # Uma opção do "cria pra mim" que a pessoa escolheu. Já vem pronta do
@@ -119,38 +119,49 @@ module Onboarding
       assign(brand_core, "palette", "colors" => colors) ? [ "palette" ] : []
     end
 
-    # Fonte só entra se existe no catálogo: fora dele ela não renderiza, e uma
-    # marca que promete Gotham e sai em DejaVu é pior do que perguntar de novo.
-    # Uma fonte só vale para título e texto.
+    # Fonte só entra se é aberta (vitrine ou qualquer família do Google
+    # Fonts): fora disso ela não renderiza, e uma marca que promete Gotham e
+    # sai em DejaVu é pior do que perguntar de novo. Uma fonte só vale para
+    # título e texto. Num par em que só uma existe, a que existe entra no
+    # papel dela (`kept`) e o tema segue aberto pela que falta (`missing`).
+    FONT_WEIGHTS = { "display" => [ 600, 700 ], "utility" => [ 400, 500 ] }.freeze
+
     def typography(brand_core, document, fields)
-      wanted = fields.slice("displayFont", "utilityFont").values.compact_blank
-      return { touched: [], missing: nil } if wanted.empty?
+      wanted = { "display" => fields["displayFont"], "utility" => fields["utilityFont"] }.compact_blank
+      return { touched: [], missing: nil, kept: nil } if wanted.empty?
 
-      found = wanted.map { |family| [ family, catalog(family) ] }
-      missing = found.find { |_, font| font.nil? }&.first
-      return { touched: [], missing: missing } if missing
+      wanted = FONT_WEIGHTS.keys.index_with(wanted.values.first) if wanted.size == 1
+      found = wanted.to_h { |role, family| [ role, catalog(family) ] }
+      missing = wanted[found.key(nil)]
+      kept = found.compact
+      return { touched: [], missing: missing, kept: nil } if kept.empty?
 
-      display, utility = found.map(&:last)
-      utility ||= display
-      typography = document["typography"].merge(
-        "display" => font_payload(display, [ 600, 700 ]),
-        "utility" => font_payload(utility, [ 400, 500 ])
-      )
-      { touched: assign(brand_core, "typography", typography) ? [ "fonts" ] : [], missing: nil }
+      typography = document["typography"].merge(kept.to_h { |role, font| [ role, font_payload(font, FONT_WEIGHTS[role]) ] })
+      saved = assign(brand_core, "typography", typography)
+      return { touched: [], missing: missing, kept: (kept.values.first.family if saved) } if missing
+
+      { touched: saved ? [ "fonts" ] : [], missing: nil, kept: nil }
     end
 
     # ----------------------------------------------------------------- apoio
 
     # "Montserrat", "montserrat", "Montserrat Bold" — a pessoa escreve do
-    # jeito dela; o catálogo tem um nome só. Por palavra inteira: "Interstate"
-    # não é "Inter".
+    # jeito dela; o catálogo tem um nome só. Primeiro o nome exato em todo o
+    # Google Fonts (com peso ou estilo no fim): "Inter Tight" é uma família,
+    # não "Inter". Depois a vitrine no meio da frase, por palavra inteira —
+    # "Interstate" não é "Inter". O índice inteiro não entra nessa busca
+    # solta: são 1.800 famílias, e "Oi" também é uma delas.
     def catalog(family)
       BrandCore::FontCatalog.find(family) ||
+        BrandCore::FontDirectory.find(family) ||
+        BrandCore::FontDirectory.find(family.to_s.sub(STYLE_SUFFIX, "")) ||
         BrandCore::FontCatalog.families
           .sort_by { |name| -name.length }
           .find { |name| family.match?(/(?<![[:alnum:]])#{Regexp.escape(name)}(?![[:alnum:]])/i) }
           &.then { |name| BrandCore::FontCatalog.find(name) }
     end
+
+    STYLE_SUFFIX = /(?:\s+(?:thin|extralight|extra light|light|regular|book|medium|semibold|semi bold|bold|extrabold|extra bold|black|heavy|italic|\d{3}))+\s*\z/i
 
     def font_payload(font, wanted)
       weights = wanted.map { |weight| BrandCore::FontCatalog.nearest_weight(font.family, weight) }.uniq.sort

@@ -34,6 +34,9 @@ export function useAgentLive(onEvent?: (event: AgentEvent) => void) {
         void mutate(isConversationKey, undefined, { revalidate: true })
         // As peças nascem com o turno — a galeria precisa saber delas.
         void mutate(isPieceKey, undefined, { revalidate: true })
+        // O saldo muda no meio do turno (cada foto criada cobra a sua) e no
+        // fim (o estorno de pergunta, falha ou pedido só de fotos).
+        void mutate("/credits")
         handler.current?.(message)
       },
     })

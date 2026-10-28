@@ -4,8 +4,8 @@ import { motion, useReducedMotion } from "motion/react"
 import { Check } from "lucide-react"
 
 import { BrandPreview } from "@/components/onboarding/brand-preview"
-import type { BrandAsset, BrandDocument } from "@/lib/brand-core"
-import { ensureCatalogFont, findCatalogFont, fontStack } from "@/lib/font-catalog"
+import { firstColor, type BrandAsset, type BrandDocument } from "@/lib/brand-core"
+import { ensureCatalogFont, findOpenFont, fontStack } from "@/lib/font-catalog"
 import {
   isFontsOption,
   isPaletteOption,
@@ -43,6 +43,7 @@ export function OptionPicker({ kind, items, document, assets, chosen, disabled, 
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const settled = chosen !== null
+  const fixed = kind === "fonts" ? fixedFontRole(items) : null
 
   return (
     <ul className="grid gap-3 sm:grid-cols-3" aria-label={t(`onboarding.options.${kind}`)}>
@@ -76,7 +77,7 @@ export function OptionPicker({ kind, items, document, assets, chosen, disabled, 
               ) : isPaletteOption(option) ? (
                 <PaletteCard option={option} document={document} />
               ) : isFontsOption(option) ? (
-                <FontsCard option={option} document={document} />
+                <FontsCard option={option} document={document} fixed={fixed} />
               ) : (
                 <VoiceCard option={option as VoiceOption} />
               )}
@@ -136,18 +137,84 @@ function PaletteCard({ option, document }: { option: PaletteOption; document: Br
   )
 }
 
-function FontsCard({ option, document }: { option: FontsOption; document: BrandDocument }) {
+type FontRole = "display" | "utility"
+
+/**
+ * O par como amostra de letra, não como mini-carrossel: o nome dela grande na
+ * fonte de título, o que ela vende na fonte de texto, sobre o fundo escuro da
+ * paleta dela. Embaixo, cada papel com o nome da família escrito nela mesma —
+ * é isso que se compara entre as três. O papel que já era dela (`fixed`) fica
+ * apagado: só o outro muda de uma proposta para a outra.
+ */
+function FontsCard({ option, document, fixed }: { option: FontsOption; document: BrandDocument; fixed: FontRole | null }) {
+  const { t } = useTranslation()
+  const { display, utility } = option
+
+  useEffect(() => {
+    ensureCatalogFont(display.family, display.weights)
+    ensureCatalogFont(utility.family, utility.weights)
+  }, [display.family, display.weights, utility.family, utility.weights])
+
+  const colors = document.palette.colors
+  const surface = {
+    backgroundColor: firstColor(colors, "darkBackground")?.hex,
+    color: firstColor(colors, "textOnDark")?.hex,
+  }
+  const displayStack = fontStack(display.family, display.category)
+  const utilityStack = fontStack(utility.family, utility.category)
+
   return (
     <>
-      <BrandPreview
-        name={document.identity.name}
-        concept={document.identity.concept}
-        colors={document.palette.colors}
-        display={option.display.family}
-        utility={option.utility.family}
-      />
-      <Why title={`${option.display.family} + ${option.utility.family}`} why={option.why} />
+      {/* Cantos retos por dentro: é a obra. Sem paleta ainda, o escuro da interface. */}
+      <div
+        className="flex aspect-[4/3] min-h-0 flex-col justify-end gap-2 overflow-hidden bg-foreground p-4 text-background"
+        style={surface}
+      >
+        <p
+          className="line-clamp-3 text-[1.625rem] leading-[1.02] text-balance hyphens-auto [overflow-wrap:anywhere]"
+          style={{ fontFamily: displayStack, fontWeight: Math.max(...display.weights) }}
+        >
+          {document.identity.name || t("onboarding.preview.name")}
+        </p>
+        <p className="line-clamp-2 text-xs leading-snug opacity-75" style={{ fontFamily: utilityStack }}>
+          {document.identity.concept || t("onboarding.preview.concept")}
+        </p>
+      </div>
+      <dl className="grid gap-1 px-1.5 pt-0.5">
+        {(["display", "utility"] as const).map((role) => {
+          const font = option[role]
+          return (
+            <div
+              key={role}
+              className={cn("flex items-baseline justify-between gap-3", fixed === role && "text-muted-foreground")}
+            >
+              <dt className="shrink-0 font-mono text-[11px] text-muted-foreground">
+                {t(`onboarding.options.roles.${role}`)}
+              </dt>
+              <dd
+                className="min-w-0 truncate text-sm"
+                style={{ fontFamily: role === "display" ? displayStack : utilityStack }}
+                title={font.family}
+              >
+                {font.family}
+              </dd>
+            </div>
+          )
+        })}
+      </dl>
+      <Why why={option.why} />
     </>
+  )
+}
+
+/** O papel que é o mesmo nas três propostas — a fonte que ela já tinha. */
+function fixedFontRole(items: SuggestOption[]): FontRole | null {
+  const pairs = items.filter(isFontsOption)
+  if (pairs.length < 2) return null
+  return (
+    (["display", "utility"] as const).find((role) =>
+      pairs.every((pair) => pair[role].family === pairs[0][role].family)
+    ) ?? null
   )
 }
 
@@ -198,9 +265,9 @@ export function FontPair({ display, utility }: { display: string; utility: strin
 
   return (
     <span>
-      <span style={{ fontFamily: fontStack(display, findCatalogFont(display)?.category) }}>{display}</span>
+      <span style={{ fontFamily: fontStack(display, findOpenFont(display)?.category) }}>{display}</span>
       {" + "}
-      <span style={{ fontFamily: fontStack(utility, findCatalogFont(utility)?.category) }}>{utility}</span>
+      <span style={{ fontFamily: fontStack(utility, findOpenFont(utility)?.category) }}>{utility}</span>
     </span>
   )
 }

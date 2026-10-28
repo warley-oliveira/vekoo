@@ -1,0 +1,39 @@
+id: hero-image-title-top
+name: { pt-BR: "Imagem cheia, título em cima", en: "Full image, title at the top" }
+description:
+  pt-BR: "Igual à imagem cheia, com o texto no alto. Para fotos cujo assunto está embaixo."
+  en: "Like the full image, with the text at the top. For photos whose subject sits low."
+formats: [feed_square, feed_portrait, story, carousel]
+background_options: [color]
+background_default: { type: color, color_token: primary }
+align_options: [left, center]
+slots:
+  image: { type: image, required: true }
+  title: { type: text, role_default: display, max_chars: 60, max_lines: 3, required: true }
+  body:  { type: text, role_default: body, max_chars: 140, max_lines: 3 }
+  badge: { type: text, role_default: label, max_chars: 24 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: full }
+    - { kind: scrim, box: { left: 0, right: 0, top: 0, height: "68%" }, from: top, opacity: 0.62 }
+    - { kind: logo, slot: logo, box: { left: 80, bottom: 80 }, height: 64 }
+    - kind: stack
+      box: { left: 80, right: 80, top: 96 }
+      anchor: top
+      gap: 24
+      ink: image
+      items: [ { slot: badge, size: 30 }, { slot: title, size: 84 }, { slot: body, size: 38 } ]
+  story:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: full }
+    - { kind: scrim, box: { left: 0, right: 0, top: 0, height: "62%" }, from: top, opacity: 0.62 }
+    - { kind: logo, slot: logo, box: { left: 80, bottom: 320 }, height: 64 }
+    - kind: stack
+      box: { left: 80, right: 80, top: 260 }
+      anchor: top
+      gap: 28
+      ink: image
+      items: [ { slot: badge, size: 32 }, { slot: title, size: 92 }, { slot: body, size: 40 } ]

@@ -1,0 +1,35 @@
+id: text-only-accent-quote
+name: { pt-BR: "Citação", en: "Quote" }
+description:
+  pt-BR: "Uma citação grande com aspas em cor de acento. Para depoimento, frase da marca ou de quem atende."
+  en: "A large quote with accent-colour quotation marks. For testimonials or a line from the brand."
+formats: [feed_square, feed_portrait, story, carousel]
+background_options: [color]
+background_default: { type: color, color_token: surface }
+align_options: [left, center]
+slots:
+  title: { type: text, role_default: headline, max_chars: 160, max_lines: 6, required: true }
+  body:  { type: text, role_default: caption, max_chars: 60, max_lines: 1 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: quote_mark, box: { left: 72, top: 40 }, size: 400 }
+    - kind: stack
+      box: { left: 96, right: 96, top: 330, bottom: 200 }
+      anchor: top
+      gap: 40
+      ink: background
+      items: [ { slot: title, size: 62 }, { slot: body, size: 32 } ]
+    - { kind: logo, slot: logo, box: { right: 96, bottom: 96 }, height: 48 }
+  story:
+    - { kind: fill, box: full }
+    - { kind: quote_mark, box: { left: 72, top: 220 }, size: 440 }
+    - kind: stack
+      box: { left: 96, right: 96, top: 560, bottom: 420 }
+      anchor: top
+      gap: 44
+      ink: background
+      items: [ { slot: title, size: 68 }, { slot: body, size: 34 } ]
+    - { kind: logo, slot: logo, box: { right: 96, bottom: 320 }, height: 52 }

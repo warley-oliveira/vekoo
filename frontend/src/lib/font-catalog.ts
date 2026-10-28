@@ -2,6 +2,11 @@
 // Lista curada e curta de propósito: a pessoa escolhe entre poucas fontes
 // boas, não entre mil. Os pesos são os que cada família publica — pedir um
 // peso inexistente faria a folha inteira falhar.
+//
+// A vitrine não é o limite: quem já tem uma fonte aberta no manual (Libre
+// Caslon Text, Inter Tight…) usa a dela. O índice inteiro do Google Fonts
+// (`google-fonts.json`, espelho de `backend/config/google_fonts.json`, gerado
+// por `bin/rails fonts:directory`) carrega sob demanda, fora do bundle.
 
 export type FontCategory = "sans" | "serif" | "display" | "mono"
 
@@ -60,21 +65,53 @@ export function findCatalogFont(family: string): CatalogFont | undefined {
   return FONT_CATALOG.find((font) => font.family === family)
 }
 
+let directory: ReadonlyMap<string, CatalogFont> | undefined
+let directoryLoad: Promise<readonly CatalogFont[]> | undefined
+
+/** O índice inteiro do Google Fonts, baixado uma vez (~20 KB comprimido). */
+export function loadFontDirectory(): Promise<readonly CatalogFont[]> {
+  directoryLoad ??= import("./google-fonts.json")
+    .then(({ default: rows }) => {
+      const fonts = rows as CatalogFont[]
+      directory = new Map(fonts.map((font) => [font.family, font]))
+      return fonts
+    })
+    .catch((error: unknown) => {
+      directoryLoad = undefined
+      throw error
+    })
+  return directoryLoad
+}
+
+/** Vitrine primeiro; depois o índice inteiro, se já carregou. */
+export function findOpenFont(family: string): CatalogFont | undefined {
+  return findCatalogFont(family) ?? directory?.get(family)
+}
+
 const loaded = new Set<string>()
 
 /**
- * Carrega a folha da fonte do catálogo uma vez por família. Só para o
- * preview: o carrossel exportado embute a fonte por conta própria.
+ * Carrega a folha de uma fonte aberta uma vez por família. Só para o
+ * preview: o carrossel exportado embute a fonte por conta própria. Fora da
+ * vitrine e sem pesos na mão, espera o índice dizer quais pesos existem.
  */
-export function ensureCatalogFont(family: string): void {
-  const font = findCatalogFont(family)
-  if (!font || loaded.has(family)) return
-  loaded.add(family)
+export function ensureCatalogFont(family: string, weights?: readonly number[]): void {
+  if (!family) return
+  const known = findOpenFont(family)?.weights ?? (weights?.length ? weights : undefined)
+  if (!known) {
+    void loadFontDirectory()
+      .then(() => findOpenFont(family) && ensureCatalogFont(family))
+      .catch(() => undefined)
+    return
+  }
+  const key = `${family}:${known.join(";")}`
+  if (loaded.has(key)) return
+  loaded.add(key)
 
   const name = encodeURIComponent(family).replace(/%20/g, "+")
   const link = document.createElement("link")
   link.rel = "stylesheet"
-  link.href = `https://fonts.googleapis.com/css2?family=${name}:wght@${font.weights.join(";")}&display=swap`
+  link.href = `https://fonts.googleapis.com/css2?family=${name}:wght@${known.join(";")}&display=swap`
   document.head.appendChild(link)
 }
 

@@ -1,0 +1,50 @@
+id: product-card
+name: { pt-BR: "Cartão de produto", en: "Product card" }
+description:
+  pt-BR: "Foto do produto com respiro, nome, preço e um selo. Para oferta e item do cardápio. Sem foto, fica o espaço reservado."
+  en: "Product photo with room around it, name, price and a tag. For offers and menu items."
+formats: [feed_square, feed_portrait, story, carousel]
+background_options: [color]
+background_default: { type: color, color_token: surface }
+align_options: [left, center]
+slots:
+  image: { type: image }
+  badge: { type: text, role_default: label, max_chars: 24 }
+  title: { type: text, role_default: headline, max_chars: 50, max_lines: 2, required: true }
+  body:  { type: text, role_default: body, max_chars: 110, max_lines: 3 }
+  price: { type: text, role_default: display, max_chars: 24, max_lines: 1 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 80, right: 80, top: 80, height: "50%" } }
+    - kind: stack
+      box: { left: 80, right: 80, top: "50%", bottom: 96 }
+      inset: [ 112, 0, 0, 0 ]
+      anchor: top
+      gap: 16
+      ink: background
+      items: [ { slot: badge, size: 28 }, { slot: title, size: 60 }, { slot: body, size: 32 }, { slot: price, size: 88, gap: 28 } ]
+    - { kind: logo, slot: logo, box: { right: 80, bottom: 96 }, height: 48 }
+  feed_square:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 64, right: 64, top: 64, height: "44%" } }
+    - kind: stack
+      box: { left: 64, right: 64, top: "44%", bottom: 72 }
+      inset: [ 100, 0, 0, 0 ]
+      anchor: top
+      gap: 12
+      ink: background
+      items: [ { slot: badge, size: 24 }, { slot: title, size: 48 }, { slot: body, size: 26 }, { slot: price, size: 66, gap: 20 } ]
+    - { kind: logo, slot: logo, box: { right: 64, bottom: 72 }, height: 40 }
+  story:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: { left: 80, right: 80, top: 240, height: "40%" } }
+    - kind: stack
+      box: { left: 80, right: 80, top: "53%", bottom: 320 }
+      anchor: top
+      gap: 18
+      ink: background
+      items: [ { slot: badge, size: 30 }, { slot: title, size: 68 }, { slot: body, size: 36 }, { slot: price, size: 100, gap: 32 } ]
+    - { kind: logo, slot: logo, box: { right: 80, bottom: 300 }, height: 52 }

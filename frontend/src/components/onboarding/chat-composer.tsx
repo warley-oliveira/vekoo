@@ -128,7 +128,8 @@ export function ChatComposer({ ref, onSend, onSuggest, onLogo, busy }: ChatCompo
             <input
               ref={fileInput}
               type="file"
-              accept="image/png,image/svg+xml"
+              // Logo de WhatsApp vem em JPEG: o servidor converte para PNG.
+              accept="image/png,image/svg+xml,image/jpeg,image/webp"
               className="sr-only"
               tabIndex={-1}
               onChange={(event) => void attach(event.target.files?.[0])}

@@ -1,4 +1,5 @@
 import type { BrandColor, BrandFont, LogoStyle, Tone } from "@/lib/brand-core"
+import type { FontCategory } from "@/lib/font-catalog"
 
 // O onboarding por conversa — a porta de entrada de toda marca nova.
 //
@@ -101,8 +102,8 @@ export type PaletteOption = {
 
 export type FontsOption = {
   why: string | null
-  display: BrandFont & { category: string }
-  utility: BrandFont & { category: string }
+  display: BrandFont & { category: FontCategory }
+  utility: BrandFont & { category: FontCategory }
 }
 
 export type VoiceOption = {
@@ -130,12 +131,14 @@ export type AgentTextCode =
   | "followUpGeneric"
   | "adjustAsk"
   | "fontMissing"
+  | "fontPartial"
   | "wordmarkNoted"
   | "logoOpaque"
   | "wordmarkReady"
   | "suggest.voice"
   | "suggest.palette"
   | "suggest.fonts"
+  | "suggest.fontsKept"
 
 /** Um pedaço da resposta do agente, na ordem em que aparece. */
 export type ReplyItem =

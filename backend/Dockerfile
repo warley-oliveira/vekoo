@@ -13,9 +13,11 @@ WORKDIR /rails
 #   libyaml-0-2       -> psych
 #   libjemalloc2      -> RSS menor sob carga de Puma + Sidekiq
 #   postgresql-client -> pg_isready/psql no entrypoint e em `kamal shell`
+#   chromium          -> renderizador "navegador" das peças (Ferrum abre a rota
+#                        /render do front e fotografa cada lâmina)
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      curl fontconfig fonts-dejavu-core libjemalloc2 libpq5 libvips libyaml-0-2 \
+      chromium curl fontconfig fonts-dejavu-core libjemalloc2 libpq5 libvips libyaml-0-2 \
       postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 

@@ -279,6 +279,10 @@
       "familyPlaceholder": "E.g. Fraunces",
       "searchFont": "Search fonts…",
       "noFont": "No font by that name.",
+      "loadingFonts": "Searching Google Fonts…",
+      "moreFonts": "More open fonts",
+      "refineSearch_one": "And {{count}} more. Type more of the name to find it.",
+      "refineSearch_other": "And {{count}} more. Type more of the name to find it.",
       "categories": {
         "sans": "Sans",
         "serif": "Serif",
@@ -350,14 +354,14 @@
       "onLight": "On light"
     },
     "assets": {
-      "intro": "Official assets come in as files and are never recreated by approximation. Logo and glyph as transparent PNG or SVG.",
+      "intro": "Official assets come in as files and are never recreated by approximation. Logo and glyph ideally as transparent PNG or SVG (JPEG and WebP work too).",
       "slots": {
         "logoLight": "Logo for light background",
         "logoDark": "Logo for dark background",
         "glyphLight": "Glyph for light background",
         "glyphDark": "Glyph for dark background"
       },
-      "slotHint": "Transparent PNG or SVG, up to {{max}}",
+      "slotHint": "Transparent PNG, SVG, JPEG or WebP, up to {{max}}",
       "photos": "Brand photos",
       "photosHint": "Products, team, space — what the AI may use as an official image. JPEG, PNG or WebP.",
       "addPhoto": "Add photo",
@@ -367,7 +371,7 @@
       "remove": "Remove",
       "replace": "Replace",
       "opaqueTitle": "Opaque background",
-      "opaqueWarning": "This PNG has a filled background. The logo will show up with a rectangle behind it — upload a version with a transparent background.",
+      "opaqueWarning": "This image has a filled background. The logo will show up with a rectangle behind it — upload a version with a transparent background.",
       "transparentOk": "Transparent background",
       "unknownTransparency": "Couldn't check the background",
       "invalidType": "That file doesn't fit here.",
@@ -377,7 +381,18 @@
       "removeFailed": "Couldn't remove it.",
       "empty": "No photos yet.",
       "confirmRemoveTitle": "Remove this asset?",
-      "confirmRemoveDescription": "It leaves the brand. You can upload it again later."
+      "confirmRemoveDescription": "It leaves the brand. You can upload it again later.",
+      "viewer": {
+        "title": "Brand photos",
+        "open": "View {{name}}",
+        "counter": "{{current}} of {{total}}",
+        "previous": "Previous photo",
+        "next": "Next photo",
+        "close": "Close",
+        "strip": "All photos",
+        "goTo": "View photo {{index}}",
+        "size": "{{width}} × {{height}} px"
+      }
     },
     "voice": {
       "essence": "Voice essence",
@@ -425,20 +440,21 @@
       "noSegment": "Segment",
       "noConcept": "The core concept shows up here.",
       "voice": "Voice",
-      "noVoice": "The voice essence shows up here.",
       "palette": "Palette",
       "fonts": "Fonts",
-      "display": "Display",
-      "utility": "Utility",
       "show": "Show brand card",
       "hide": "Hide card",
       "previewLabel": "preview · feed",
-      "noPalette": "The palette shows up here.",
-      "noFont": "Font to be picked",
       "fontRoles": {
         "display": "headings",
         "utility": "body"
-      }
+      },
+      "specimen": "Aa",
+      "paletteHint_one": "{{count}} color · click to copy the hex",
+      "paletteHint_other": "{{count}} colors · click to copy the hex",
+      "copied": "✓ copied",
+      "copyColor": "Copy {{color}}",
+      "copyFailed": "Couldn't copy the hex."
     },
     "nudge": {
       "title": "Your brand isn't ready yet",

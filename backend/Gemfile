@@ -60,3 +60,9 @@ end
 group :test do
   gem "shoulda-matchers"
 end
+
+gem "ferrum", "~> 0.19.1"
+
+# Credenciais do Google (Application Default Credentials) para o Vertex AI —
+# a geração de imagens (`Ai::GeminiImage`).
+gem "googleauth", "~> 1.17"

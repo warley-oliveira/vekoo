@@ -68,13 +68,15 @@
     "agent": {
       "followUpGeneric": "Can you be more specific? The more detail, the better the engine writes.",
       "adjustAsk": "What do you want to adjust? Tell me the topic and the new value.",
-      "fontMissing": "{{font}} isn't in the catalog. Ask “make it for me” and I'll propose three that come close.",
+      "fontMissing": "{{font}} isn't among the open fonts, so I can't draw with it. Ask “make it for me” and I'll propose three that come close.",
+      "fontPartial": "{{kept}} is in. {{font}} isn't among the open fonts, so I can't draw with it. Ask “make it for me” and I'll propose three that come close, keeping {{kept}}.",
       "wordmarkNoted": "Noted. I'll draw the wordmark at the end, with the font you choose.",
       "logoOpaque": "This logo has a solid background. On dark pieces a white box will show around it. If you can, send the version with a transparent background.",
       "suggest": {
         "voice": "Three ways of speaking, based on what you told me. Click the one that sounds like your brand.",
         "palette": "Three palettes, based on what you told me. Click the one that looks like your brand.",
-        "fonts": "Three font pairs. Click the one that fits the palette."
+        "fonts": "Three font pairs. Click the one that fits the palette.",
+        "fontsKept": "Three fonts to pair with {{kept}}. Click the one that fits."
       },
       "wordmarkReady": "I drew three versions of the wordmark in your font. The first one is already in the summary — click another if you like it better."
     },
@@ -118,7 +120,11 @@
       "palette": "Proposed palettes",
       "fonts": "Proposed font pairs",
       "voice": "Proposed voices",
-      "wordmark": "Suggested wordmarks"
+      "wordmark": "Suggested wordmarks",
+      "roles": {
+        "display": "titles",
+        "utility": "text"
+      }
     },
     "a11y": {
       "attachLogo": "Send my logo",

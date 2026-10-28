@@ -59,7 +59,6 @@ RSpec.describe "Motores", type: :model do
         expect(piece.provenance["frames"]).to eq(EngineExamples.frames(engine_id))
         expect(piece.provenance["brandCoreVersionId"]).to eq(brand_core.versions.first&.id)
       end
-
     end
   end
 

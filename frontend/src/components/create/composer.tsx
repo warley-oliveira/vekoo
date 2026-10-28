@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils"
 const ROTATION_MS = 4200
 const MAX_CHARS = 2000
 
-type Attachment = { id: string; name: string; url: string }
+export type ComposerAttachment = { id: string; name: string; url: string }
+type Attachment = ComposerAttachment
 
 type ComposerProps = {
   brandId: string
@@ -27,6 +28,12 @@ type ComposerProps = {
   placeholderKey?: string
   /** Quanto o pedido vai custar em créditos — o ajuste custa menos. */
   cost?: number
+  /**
+   * Uma foto que chega de fora — o "usar numa peça" de uma foto criada. Entra
+   * como anexo e o foco vai para o campo; `nonce` muda a cada pedido, para a
+   * mesma foto poder voltar depois de removida.
+   */
+  injected?: { attachment: ComposerAttachment; nonce: number } | null
 }
 
 /**
@@ -45,6 +52,7 @@ export function Composer({
   autoFocus,
   placeholderKey = "agent.composer.examples",
   cost,
+  injected,
 }: ComposerProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
@@ -69,6 +77,13 @@ export function Composer({
     const timer = window.setInterval(() => setIndex((i) => (i + 1) % examples.length), ROTATION_MS)
     return () => window.clearInterval(timer)
   }, [idle, examples.length])
+
+  useEffect(() => {
+    if (!injected) return
+    const { attachment } = injected
+    setAttachments((current) => (current.some((a) => a.id === attachment.id) ? current : [...current, attachment]))
+    window.requestAnimationFrame(() => document.getElementById("agent-prompt")?.focus())
+  }, [injected])
 
   const canSend = value.trim().length > 0 && !disabled && !busy && !sending && !uploading
 
@@ -176,7 +191,13 @@ export function Composer({
       {attachments.length > 0 && (
         <ul className="flex flex-wrap gap-2 px-2 pb-2" aria-label={t("agent.composer.attachmentsAria")}>
           {attachments.map((attachment) => (
-            <li key={attachment.id} className="relative">
+            <motion.li
+              key={attachment.id}
+              className="relative"
+              initial={reduced ? false : { opacity: 0, scale: 0.85, y: 4 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", bounce: 0.08, duration: 0.4 }}
+            >
               <img
                 src={attachment.url}
                 alt={attachment.name}
@@ -190,7 +211,7 @@ export function Composer({
               >
                 <X className="size-3" />
               </button>
-            </li>
+            </motion.li>
           ))}
         </ul>
       )}
@@ -215,7 +236,7 @@ export function Composer({
             <span className={hero ? "" : "sr-only sm:not-sr-only"}>{t("agent.composer.attach")}</span>
           </Button>
           <p id="agent-prompt-hint" className="hidden text-xs text-muted-foreground sm:block">
-            {t("agent.composer.hint", { credits: cost ?? catalog.aiCosts.agent })}
+            {t("agent.composer.hint", { credits: cost ?? catalog.aiCosts.agent, image: catalog.aiCosts.image })}
           </p>
         </div>
         <Button type="submit" size={hero ? "default" : "sm"} disabled={!canSend} aria-label={t("agent.composer.send")}>

@@ -1,10 +1,20 @@
-# Uma peça: a saída de um motor sobre a versão publicada do Brandcore.
+# Uma peça. Há dois tipos, e um vai sumindo:
 #
-# O ciclo é queued → rendering → ready | failed (a renderização é um job).
+#   - **documento** (o caminho de agora): a peça é um `PieceDocument`, salvo
+#     em versões (`PieceVersion`); a imagem é derivada dele por um
+#     renderizador. Ciclo: generating → draft → approved → scheduled →
+#     published (+ failed).
+#   - **legada**: a saída de um motor (`engine_id` + `values`) sem equivalente
+#     na biblioteca de layouts. Ciclo antigo, de render: queued → rendering →
+#     ready | failed. Só leitura.
+#
 # `provenance` guarda de que versão da marca a peça saiu — é isso que permite
 # dizer "a marca mudou desde então" e oferecer a regeneração.
 class Piece < ApplicationRecord
-  STATUSES = %w[queued rendering ready failed].freeze
+  DOCUMENT_STATUSES = %w[generating draft approved scheduled published failed].freeze
+  LEGACY_STATUSES = %w[queued rendering ready failed].freeze
+  STATUSES = (DOCUMENT_STATUSES + LEGACY_STATUSES).uniq.freeze
+  LEGACY_FORMATS = Engines::Manifest::FORMATS
 
   belongs_to :organization
   belongs_to :brand_core
@@ -16,20 +26,43 @@ class Piece < ApplicationRecord
   belongs_to :agent_turn, optional: true
 
   has_many_attached :images
+  has_many :versions, -> { order(:created_at) }, class_name: "PieceVersion", dependent: :destroy
+  belongs_to :current_version, class_name: "PieceVersion", optional: true
 
   normalizes :title, with: ->(title) { title.squish }
 
   validates :title, presence: true, length: { maximum: 120 }
   validates :status, inclusion: { in: STATUSES }
-  validates :format, inclusion: { in: Engines::Manifest::FORMATS }
-  validate :engine_must_exist
-  validate :format_must_be_supported
+  validates :format, inclusion: { in: ->(piece) { piece.legacy? ? LEGACY_FORMATS : PieceDocument::FORMATS.keys } }
+  validate :engine_must_exist, if: :legacy?
+  validate :format_must_be_supported, if: :legacy?
 
   scope :recent_first, -> { order(created_at: :desc) }
   scope :for_engine, ->(id) { where(engine_id: id) }
 
+  # Sem documento, a peça é a saída de um motor.
+  def legacy? = current_version_id.nil? && engine_id.present?
+  def document? = !legacy?
+
+  def document
+    current_version&.document
+  end
+
+  # Grava o documento como versão nova e a torna a atual. `base_version` é a
+  # versão de que a alteração partiu (o conflito entre abas se mede por ela).
+  def record_version!(document, source:, summary: nil, account: nil, base_version: current_version)
+    transaction do
+      version = versions.create!(
+        document: document.merge("pieceId" => id), source: source, summary: summary&.first(200),
+        account: account, base_version_id: base_version&.id
+      )
+      update!(current_version: version)
+      version
+    end
+  end
+
   def entry
-    Engines::Registry.find(engine_id)
+    engine_id.present? ? Engines::Registry.find(engine_id) : nil
   end
 
   def manifest

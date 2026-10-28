@@ -18,8 +18,14 @@ module Ai
     # Falha vinda do modelo ou da rede. Quem chama traduz para `failed`.
     class Failed < StandardError; end
 
-    # O que `answer` devolve: o texto e o que ele custou.
-    Answer = Struct.new(:text, :usage, :model, keyword_init: true)
+    # O que `answer` devolve: o texto e o que ele custou. Com ferramentas,
+    # também os pedidos de ferramenta (`tool_uses`: id, nome, entrada) e o
+    # conteúdo cru (`content`), que volta ao modelo **como veio** — os blocos
+    # de pensamento entre uma ferramenta e outra precisam ir junto.
+    Answer = Struct.new(:text, :usage, :model, :content, :tool_uses, :stop_reason, keyword_init: true) do
+      def tool_uses = self[:tool_uses] || []
+      def tool_use? = tool_uses.any?
+    end
 
     def self.available? = ENV["ANTHROPIC_API_KEY"].present?
 
@@ -42,7 +48,7 @@ module Ai
 
       stream.text.each { |piece| yield piece }
     rescue ::Anthropic::Errors::APIStatusError => e
-      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
     rescue ::Anthropic::Errors::APIConnectionError => e
       raise Failed, e.class.name.demodulize
     end
@@ -57,31 +63,41 @@ module Ai
     #
     # `system:` recebe os blocos já prontos (com `cache_control` onde quem
     # chama quiser); `messages:` recebe a conversa inteira.
-    def answer(system:, messages:, model: MODEL, max_tokens: 8_000, effort: "medium", schema: nil)
+    #
+    # `tools:` liga o uso de ferramenta (escolha do modelo, `auto`): quando ele
+    # pede uma, a resposta volta com `tool_uses` e quem chama roda o laço.
+    def answer(system:, messages:, model: MODEL, max_tokens: 8_000, effort: "medium", schema: nil, tools: nil)
       output_config = { effort: effort }
       # A saída estruturada fica atrás de uma chave: ligada, o modelo é
       # obrigado a devolver o formato; desligada (o padrão), o `Agent::Plan`
       # extrai o JSON do texto e a validação contra o manifesto faz o resto.
       output_config[:format_] = { type: :json_schema, schema: schema } if schema
 
-      message = client.messages.create(
+      request = {
         model: model.to_s.to_sym,
         max_tokens: max_tokens,
         system_: Array(system),
         thinking: { type: "adaptive" },
         output_config: output_config,
         messages: messages
-      )
+      }
+      request[:tools] = tools if tools.present?
+      message = client.messages.create(**request)
 
       raise Failed, "refusal" if message.stop_reason == :refusal
 
       Answer.new(
         text: message.content.filter_map { |block| block.text if block.type == :text }.join,
         usage: self.class.usage_from(message.usage),
-        model: model.to_s
+        model: model.to_s,
+        content: message.content,
+        tool_uses: message.content.filter_map { |block|
+          { id: block.id, name: block.name, input: block.input.to_h.deep_stringify_keys } if block.type == :tool_use
+        },
+        stop_reason: message.stop_reason
       )
     rescue ::Anthropic::Errors::APIStatusError => e
-      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
     rescue ::Anthropic::Errors::APIConnectionError => e
       raise Failed, e.class.name.demodulize
     end
@@ -115,7 +131,7 @@ module Ai
 
       message.content.filter_map { |block| block.text if block.type == :text }.join
     rescue ::Anthropic::Errors::APIStatusError => e
-      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
     rescue ::Anthropic::Errors::APIConnectionError => e
       raise Failed, e.class.name.demodulize
     end

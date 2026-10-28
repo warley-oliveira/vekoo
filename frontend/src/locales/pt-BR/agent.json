@@ -2,16 +2,16 @@
   "agent": {
     "hero": {
       "title": "O que vamos criar?",
-      "description": "Descreva em uma frase. O assistente escolhe o formato, escreve a copy com os dados de {{brand}} e entrega as peças prontas."
+      "description": "Descreva em uma frase. O assistente escreve a copy com os dados de {{brand}}, cria a foto quando faltar e entrega as peças prontas."
     },
     "composer": {
       "label": "Descreva a peça que você quer",
       "placeholder": "Escreva o que você quer criar…",
       "examples": [
         "um story para o Dia dos Pais amanhã",
+        "post do pão de queijo com uma foto saindo do forno",
         "post da promoção de quarta",
-        "contagem regressiva para o evento de domingo",
-        "post com o preço da mentoria e o que está incluído",
+        "3 fotos da vitrine de manhã para o feed",
         "story avisando que a turma de outubro está com desconto"
       ],
       "adjustExamples": [
@@ -22,7 +22,7 @@
         "usa a outra cor da marca"
       ],
       "attach": "Anexar foto",
-      "hint": "{{credits}} créditos por pedido",
+      "hint": "{{credits}} créditos por pedido · foto nova, {{image}} cada",
       "send": "Criar",
       "working": "Criando…",
       "attachmentsAria": "Fotos anexadas ao pedido",
@@ -34,7 +34,6 @@
     },
     "turn": {
       "aria": "Pedido de {{when}}",
-      "thinking": "Escolhendo o formato e escrevendo a copy…",
       "results_one": "{{count}} opção. Escolha uma e refine, ou baixe direto.",
       "results_other": "{{count}} opções. Escolha uma e refine, ou baixe direto.",
       "oneResult": "Pronto. Peça a mais um ajuste se ainda não estiver do jeito.",
@@ -43,7 +42,10 @@
       "failedHint": "Nenhum crédito foi cobrado.",
       "retry": "Tentar de novo",
       "varyRequest": "Outras composições desta peça",
-      "adjustLabel": "ajuste da peça escolhida"
+      "adjustLabel": "ajuste da peça escolhida",
+      "failedHintPhotos": "O pedido não foi cobrado. A foto criada ficou nas fotos da marca.",
+      "photos_one": "Pronto: {{count}} foto. Já está nas fotos da marca — use numa peça ou baixe.",
+      "photos_other": "Pronto: {{count}} fotos. Já estão nas fotos da marca — use numa peça ou baixe."
     },
     "variation": {
       "download": "Baixar",
@@ -77,6 +79,33 @@
     "newRequest": "Novo pedido",
     "backToNew": "Começar um pedido novo",
     "adjustingChip": "Ajustando “{{title}}”",
-    "adjustingCancel": "Cancelar o ajuste"
+    "adjustingCancel": "Cancelar o ajuste",
+    "progress": {
+      "reading": "Lendo o pedido e a marca…",
+      "photo": "Criando a foto: {{caption}}",
+      "composing": "Conferindo a foto e montando o resto…",
+      "seconds": "{{seconds}}s"
+    },
+    "photo": {
+      "developing": "revelando · {{seconds}}s",
+      "notOut": "não saiu",
+      "zoom": "Ampliar: {{caption}}",
+      "zoomHint": "A foto em tamanho maior.",
+      "download": "Baixar",
+      "downloadFailed": "Não deu para baixar a foto.",
+      "use": "Usar numa peça",
+      "attached": "Foto anexada. Agora descreva a peça.",
+      "stepOne": "foto · {{caption}}",
+      "stepMany": "{{count}} fotos · {{caption}}",
+      "strip_one": "Foto criada para estas peças. Já está nas fotos da marca.",
+      "strip_other": "{{count}} fotos criadas para estas peças. Já estão nas fotos da marca.",
+      "errors": {
+        "blocked": "o gerador recusou esta foto",
+        "failed": "a foto não saiu",
+        "unavailable": "gerador de fotos indisponível",
+        "noCredits": "sem créditos para a foto",
+        "costCapReached": "fotos indisponíveis agora"
+      }
+    }
   }
 }

@@ -30,7 +30,7 @@ module Agent
         "voz" => voice,
         "produtosEOfertas" => offers,
         "anotacoes" => @document["notes"]["text"].presence,
-        "coresDisponiveis" => colors,
+        "tokensDeCor" => color_tokens,
         "ativosDisponiveis" => assets
       }.compact
     end
@@ -84,29 +84,31 @@ module Agent
 
     # Os ids que um campo `choice` com `source: palette.*` aceita. Sem isto o
     # agente escolheria "fundo escuro" por nome e a validação recusaria.
-    def colors
-      @tokens.colors.map { |color|
-        {
-          "id" => color["id"],
-          "nome" => color["name"],
-          "papel" => color["role"],
-          "hex" => color["hex"],
-          "serveComoFundo" => BrandCore::Schema::BACKGROUND_ROLES.key?(color["role"]),
-          "serveComoAcento" => %w[accent campaign].include?(color["role"])
-        }
-      }
+    # Os tokens que a peça pode usar como fundo e a cor que cada um vale
+    # nesta marca — o agente escolhe pelo token, o render resolve o hex.
+    def color_tokens
+      PieceDocument::COLOR_TOKENS.keys.filter_map { |token|
+        color = PieceDocument.resolve_token(@tokens.colors, token)
+        next unless color
+
+        [ token, { "cor" => color["name"].presence, "hex" => color["hex"] }.compact ]
+      }.to_h
     end
 
-    # Os ids que um campo `image` aceita, por tipo de ativo.
+    # As fotos que um slot `image` aceita. A logo não vai por id: o slot
+    # `logo` é ligar/desligar, e a peça usa a principal da marca.
     def assets
       @tokens.brand_core.assets.ordered.filter_map { |asset|
-        next if asset.kind == "font"
+        next unless asset.kind == "photo"
 
         {
           "id" => asset.id,
           "tipo" => asset.kind,
           "variante" => asset.variant,
-          "arquivo" => asset.filename
+          "arquivo" => asset.filename,
+          # A foto que o gerador criou diz o que mostra: o agente reaproveita
+          # em vez de pagar por outra igual.
+          "descricao" => asset.generated? ? asset.meta.to_h["prompt"].to_s.first(160).presence : nil
         }.compact
       }.presence
     end

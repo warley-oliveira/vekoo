@@ -26,4 +26,29 @@ RSpec.describe BrandCore::FontCatalog do
   it "agrupa por categoria para o agente escolher com critério" do
     expect(described_class.as_prompt.keys).to match_array(described_class::CATEGORIES)
   end
+
+  it "toda fonte da vitrine existe no índice do Google Fonts" do
+    missing = described_class.families.reject { |family| BrandCore::FontDirectory.exists?(family) }
+    expect(missing).to be_empty
+  end
+
+  it "resolve qualquer família aberta, com os pesos que ela publica" do
+    expect(described_class.resolve("Libre Caslon Text").weights).to eq([ 400, 700 ])
+    expect(described_class.nearest_weight("Libre Caslon Text", 600)).to eq(700)
+    expect(described_class.resolve("Gotham")).to be_nil
+  end
+end
+
+RSpec.describe BrandCore::FontDirectory do
+  FRONT_DIRECTORY = Rails.root.join("../frontend/src/lib/google-fonts.json").freeze
+
+  it "é o mesmo arquivo do front" do
+    skip "front não está neste checkout" unless File.exist?(FRONT_DIRECTORY)
+
+    expect(File.read(FRONT_DIRECTORY)).to eq(File.read(described_class::PATH))
+  end
+
+  it "acha sem diferenciar maiúscula nem espaço sobrando" do
+    expect(described_class.find("  libre   caslon text ")&.family).to eq("Libre Caslon Text")
+  end
 end

@@ -195,30 +195,45 @@ histórico, publicar) e `/brands/setup/:step` (wizard, 8 etapas, autosave em
 `components/brand/use-step-form.ts`). Cadastro novo cai no **onboarding
 guiado** (acima); o wizard é o modo de edição.
 
-**Motores e peças (a contraparte do Brandcore):** um motor é um diretório em
-`backend/engines/<id>/` com `manifest.yml` (ficha declarativa: formatos, campos com
-tipo e restrições) e
-`render.rb` (`Engines::<Id> < Engines::Base`, função pura de composição sobre o
-`Engines::Canvas`, libvips por camadas). `Engines::Registry` varre o diretório no
-primeiro uso e valida cada manifesto — **motor novo = diretório novo**, nada mais muda
-(guia em `backend/engines/README.md`). Campos são `text`, `textList`, `number`,
-`choice` (opções fixas ou derivadas da paleta) e `image` — **não existe referência a
-dado da marca: o texto da peça se digita no formulário dela**. A geração lê **só**
-`published_document` via `Engines::Tokens`; a `Piece` guarda `provenance` (de que
-versão da marca saiu) e fica `outdated` quando a marca é publicada de novo. Fluxo: `POST /pieces`
-valida (`Engines::Values`) e enfileira `RenderPieceJob` (Sidekiq, adapter do ActiveJob
-em `config/initializers/sidekiq.rb`; `:test` nas specs); `PieceChannel` avisa quando
-fica pronta; `POST /engines/:id/preview` devolve o PNG do primeiro quadro. libvips
-fora do sistema: `lib/vips_userspace.rb` relança o processo com `LD_LIBRARY_PATH`
-quando `VIPS_USERSPACE_ROOT` está no `.env`. **Quem escolhe o motor e preenche o
-manifesto é o agente, não o usuário** (ver abaixo): o catálogo e o formulário
-manual continuam existindo em `/brands/:id/advanced[/:engineId]` (formulário
-**gerado do manifesto** em `components/pieces/field-inputs.tsx`, prévia ao vivo),
-como modo avançado atrás de link discreto. Front: `/contents` (galeria, filtro,
-desatualizadas = saíram de uma versão anterior da marca) e `/contents/:id`
-(imagens, proveniência, regenerar). Spec por motor em
-`spec/engines/engines_spec.rb`, valores de exemplo em
-`spec/support/engine_examples.rb`.
+**Layouts e peças (a contraparte do Brandcore):** a peça **é** um documento
+(`PieceDocument`, espelho em `frontend/src/lib/piece-document.ts`); a imagem é
+derivada dele. O documento tem `format` (`feed_square`, `feed_portrait`, `story`,
+`carousel`), `slides` (cada lâmina = um `layoutId` + `background` + `blocks` nos
+slots do layout), `caption` (legenda + hashtags) e `meta`. Três travas de marca
+moram na forma: cor é **token** (`primary`, `secondary`, `accent`, `surface`,
+resolvido contra a paleta publicada no render), tipografia é **papel** (`display`,
+`headline`, `body`, `label`, `caption`) + `sizeStep` relativo, posição é **slot** do
+layout (bloco arrastado ganha `frame`, preso na área segura). Um layout é um
+**contrato** em `backend/layouts/<id>.yml` (slots com tipo `text`/`image`/`logo`,
+`max_chars`/`max_lines`, formatos, posição no carrossel, opções de fundo e
+`geometry` por formato), lido por `Layouts::Registry` — **layout novo = arquivo
+novo** + o componente nos dois renderizadores (guia em `backend/layouts/README.md`).
+`PieceDocument.normalize` dá a forma (bloco sem slot vai para `orphans`, nunca some)
+e `PieceDocument::Validator` confere contra os contratos (modo `strict` para o
+agente). Cada gravação é uma `PieceVersion` imutável (`source`: `generation`,
+`user_edit`, `conversation`, `layout_change`, `restore`, `migration`…); restaurar
+cria versão nova. Editor: `PATCH .../pieces/:id/document` (autosave, com
+`baseVersionId` — outra aba salvou antes = 409, sem merge), `POST .../operations`
+(vocabulário fechado de `PieceDocument::Operations`, espelho em
+`lib/piece-operations.ts`), `GET .../versions` + `restore`. Render: dois intérpretes
+da mesma geometria — `libvips` (Pango, padrão em `PIECE_RENDERER`) e `react` (o
+Chromium via Ferrum abre a rota `/render` do front com um token de 10 min,
+`FRONTEND_URL` + `CHROME_PATH`) —, um `PieceRender` por lâmina, reaproveitado por
+**checksum** (lâmina igual não redesenha, nem em outra peça). `RenderPieceJob`
+(Sidekiq, adapter do ActiveJob em `config/initializers/sidekiq.rb`; `:test` nas
+specs) roda o render e o `PieceChannel` avisa. Ciclo da peça-documento: `generating
+→ draft → approved → scheduled → published` (+ `failed`). A geração lê **só**
+`published_document` (o tema por `PieceDocument::Theme`); a peça guarda de que versão
+da marca saiu e fica `outdated` quando a marca é publicada de novo. `GET /layouts`
+entrega os contratos ao editor (que valida localmente). Front: `/contents` (galeria,
+filtro, desatualizadas) e `/contents/:pieceId` (editor em `components/piece-editor/`,
+lâmina em `components/piece-render/`). **Motores (legado, só leitura):** a peça antiga
+de `backend/engines/<id>/` (`engine_id` + `values`, ciclo `queued → rendering →
+ready`) continua abrindo com as imagens que tem; `bin/rails pieces:to_documents`
+converte as que têm layout equivalente (`PieceDocument::Legacy`, `DRY_RUN=1` só
+relata). O formulário manual por manifesto saiu; `/advanced` redireciona para a
+criação. libvips fora do sistema: `lib/vips_userspace.rb` relança o processo com
+`LD_LIBRARY_PATH` quando `VIPS_USERSPACE_ROOT` está no `.env`.
 
 **Criação por conversa (o caminho principal):** a pessoa descreve a peça numa
 frase e recebe 2–3 variações prontas. Um `AgentTurn` é uma chamada ao modelo:
@@ -228,13 +243,20 @@ livre com 3 variações, `adjust` = ajuste em linguagem natural sobre uma peça
 (1 variação), `vary` = outras composições). O controlador só confere marca,
 saldo e teto e enfileira; quem pensa é o `AgentTurnJob` e quem avisa é o
 `AgentChannel` — as imagens continuam chegando pelo `PieceChannel`, porque
-decidir e desenhar são dois tempos. O contexto do modelo vai em três blocos, na
-ordem que o cache premia: regras do produto (`Agent::Prompts`), catálogo de
-manifestos (`Agent::Catalog`, ponto de cache) e a ficha da marca publicada
-(`Agent::BrandBrief`, ponto de cache); só o pedido e a data de hoje viajam na
-mensagem. A saída é JSON validado por `Agent::Plan` contra os mesmos
-`Engines::Values` do formulário manual — plano inválido ganha **uma** tentativa
-de correção com o erro no contexto e depois falha limpo. **Regra-mestra do
+decidir e desenhar são dois tempos. O agente escolhe formato e layout de cada
+lâmina e **escreve o conteúdo de cada slot** (mais legenda e hashtags). O contexto
+do modelo vai em três blocos, na ordem que o cache premia: regras do produto
+(`Agent::Prompts`), biblioteca de layouts (`Agent::Catalog`, gerada dos mesmos
+contratos de `layouts/*.yml`, ponto de cache) e a ficha da marca publicada
+(`Agent::BrandBrief`: identidade, voz, ofertas, `tokensDeCor`, `ativosDisponiveis`;
+ponto de cache); só o pedido e a data de hoje viajam na mensagem — o que muda por
+pedido **nunca** entra no sistema, senão quebra o cache da marca. A saída é JSON
+que `Agent::Plan` transforma em `PieceDocument` (`PieceDocument::Build.from_agent`)
+e confere no `Validator` estrito — o mesmo do editor; plano inválido ganha **uma**
+tentativa de correção com o erro no contexto e depois falha limpo. A peça nasce em
+`draft` com a primeira `PieceVersion` (`source: generation`); no `plan` do turno
+fica a forma compacta (`PieceDocument::Compact`), que é o que volta ao modelo no
+histórico e em `adjust`/`vary`. **Regra-mestra do
 prompt: nunca inventar preço, data ou fato** — faltando um dado essencial o
 agente devolve `question` e a tela pergunta, sem cobrar. Cada turno guarda
 tokens, modelo e `cost_micro_usd`: é dessa soma que sai o teto mensal de OPEX
@@ -247,6 +269,22 @@ nulo). Front: `/brands/:id/create[/:conversationId]`
 rotativos no placeholder, anexo de foto (vira `BrandAsset` de tipo `photo`) e
 ajuste em linguagem natural sobre a variação escolhida.
 
+**Foto como ferramenta do agente (não há tela de "gerar imagem"):** o agente tem
+a tool `generate_image` (`Agent::ImageTool`, só oferecida quando o Vertex está
+configurado). Ele cria foto quando a peça pede uma que a marca não tem, ou entrega
+**só fotos** quando foi isso que a pessoa pediu (`onlyImages: true`, o crédito do
+pedido volta; cada foto cobra `AI_COSTS[:image]`). Cada chamada é um
+`ImageGeneration` de `origin: "agent"` ligado ao turno, no máximo 2 chamadas / 4
+fotos por pedido, e o resultado volta ao modelo com o id **e a foto em miniatura**
+(ele compõe olhando o que saiu). A trilha vai ao vivo em `agent_turns.steps`. Laço em
+`Agent::Run#converse`: o assistente volta **como veio** (pensamento + `tool_use`) e
+o prompt de sistema é montado uma vez por turno — mudar a ficha da marca entre
+voltas invalida a assinatura do pensamento (400). Foto gerada entra em
+`ativosDisponiveis` com `descricao`, para ser reaproveitada. Gerador:
+`Ai::GeminiImage` (Nano Banana 2, `gemini-3.1-flash-image`, Vertex AI por ADC,
+`bin/rails images:smoke` testa). O "gerar" do seletor de imagem do editor
+continua (`components/images/image-generator.tsx`).
+
 **Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
 nunca é vinculado depois; não existe tela de associação manual. A organização tem
 **várias** marcas (`BrandCore`, `GET/POST /brands`); carrossel, pasta e peça carregam
@@ -254,10 +292,10 @@ nunca é vinculado depois; não existe tela de associação manual. A organizaç
 senão `brandRequired`), e o carrossel ainda grava `brand_core_version_id` (a versão
 publicada da marca no nascimento) e nasce com o tema derivado da paleta
 (`BrandCore#carousel_theme`). API sob a marca: `/brands/:id` (+`publish`, `versions`,
-`assets`, `pieces`, `engines/:id/preview`); carrosséis e pastas mantêm rota própria e
+`assets`, `logos`, `image-generations`, `pieces`, `conversations`, `onboarding`); carrosséis e pastas mantêm rota própria e
 filtram por `?brand_id=`. Front: tudo vive sob `/brands/:brandId/...` (início,
 `carousels`, `folders/:id`, `carousels/:id/edit`, `contents`, `contents/:pieceId`,
-`create[/:conversationId]`, `advanced[/:engineId]`, `settings`,
+`create[/:conversationId]`, `settings`,
 `onboarding`, `setup/:step`, `templates`, `trash`); a raiz `/` só
 escolhe a marca ativa (última usada em `localStorage`, senão a primeira) e redireciona;
 o seletor de marca fica no topo (`components/brand-switcher.tsx`); `useActiveBrand()`

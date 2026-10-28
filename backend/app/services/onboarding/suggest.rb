@@ -15,7 +15,9 @@ module Onboarding
     KINDS = %w[palette fonts voice].freeze
     WANTED = 3
 
-    Result = Struct.new(:kind, :options, :source, :usage, :model, :cost_micro_usd, keyword_init: true)
+    # `kept`: no par de fontes pela metade, a família que ela já tem — as
+    # propostas variam só o outro papel.
+    Result = Struct.new(:kind, :options, :source, :usage, :model, :cost_micro_usd, :kept, keyword_init: true)
 
     def self.call(brand_core, kind:, chat: Ai::Chat.new)
       new(brand_core, kind, chat).call
@@ -25,7 +27,7 @@ module Onboarding
     # teto de custo do mês já bateu: a pessoa não deveria descobrir isso.
     def self.curated(brand_core, kind:)
       instance = new(brand_core, kind, nil)
-      Result.new(kind: kind, options: instance.fallback, source: "curated", usage: {}, cost_micro_usd: 0)
+      Result.new(kind: kind, options: instance.fallback, source: "curated", usage: {}, cost_micro_usd: 0, kept: instance.kept_family)
     end
 
     def initialize(brand_core, kind, chat)
@@ -43,11 +45,11 @@ module Onboarding
 
       if options.length >= 2
         Result.new(kind: @kind, options: options.first(WANTED), source: "ai",
-          usage: answer.usage, model: answer.model,
+          usage: answer.usage, model: answer.model, kept: kept_family,
           cost_micro_usd: Agent::Pricing.micro_usd(answer.model, answer.usage))
       else
         Result.new(kind: @kind, options: fallback, source: "curated",
-          usage: answer&.usage || {}, model: answer&.model,
+          usage: answer&.usage || {}, model: answer&.model, kept: kept_family,
           cost_micro_usd: answer ? Agent::Pricing.micro_usd(answer.model, answer.usage) : 0)
       end
     end
@@ -59,6 +61,10 @@ module Onboarding
       when "fonts" then Fallbacks.fonts(segment_code).map { |option| build_fonts(option) }.compact
       else Fallbacks.voices(@document.dig("voice", "tones")).map { |option| build_voice(option) }.compact
       end
+    end
+
+    def kept_family
+      kept_fonts.values.first&.family
     end
 
     private
@@ -101,6 +107,7 @@ module Onboarding
         positioning: identity["positioning"],
         city: identity["address"],
         wanted_font: @kind == "fonts" ? @brand_core.onboarding_wanted_font : nil,
+        kept_fonts: @kind == "fonts" ? kept_fonts.transform_values(&:family) : {},
         tones: @document.dig("voice", "tones"),
         logo_colors: logo_colors
       }
@@ -157,8 +164,8 @@ module Onboarding
     end
 
     def build_fonts(option)
-      display = BrandCore::FontCatalog.find(option["display"].to_s)
-      utility = BrandCore::FontCatalog.find(option["utility"].to_s)
+      proposed = BrandCore::Schema::FONT_ROLES.to_h { |role| [ role, BrandCore::FontCatalog.find(option[role].to_s) ] }
+      display, utility = proposed.merge(kept_fonts).values_at("display", "utility")
       return nil unless display && utility && display.family != utility.family
 
       {
@@ -166,6 +173,23 @@ module Onboarding
         "display" => font_payload(display, [ 600, 700 ]),
         "utility" => font_payload(utility, [ 400, 500 ])
       }
+    end
+
+    # Par pela metade ("Gotham nos títulos, Montserrat no texto" — só a
+    # Montserrat é aberta): a que ela já tem fica fixa em toda proposta, também
+    # nas curadas — escolher uma não pode trocar o que ela já tinha decidido.
+    # Com os dois papéis preenchidos (ajuste depois do resumo), nada fica fixo.
+    def kept_fonts
+      return @kept_fonts if defined?(@kept_fonts)
+
+      typography = @document["typography"]
+      roles = BrandCore::Schema::FONT_ROLES.select { |role| typography.dig(role, "family").present? }
+      @kept_fonts =
+        if roles.one?
+          roles.to_h { |role| [ role, BrandCore::FontCatalog.resolve(typography[role]["family"]) ] }.compact
+        else
+          {}
+        end
     end
 
     def font_payload(font, wanted)
