@@ -28,6 +28,7 @@ export type ApiErrorCode =
   | "emailNotFound"
   | "wrongPassword"
   | "emailTaken"
+  | "signupClosed"
   | "resetTokenInvalid"
   | "noCredits"
   | "brandIncomplete"
@@ -105,6 +106,7 @@ function knownCode(code: string | undefined, status: number): ApiErrorCode {
     "emailNotFound",
     "wrongPassword",
     "emailTaken",
+    "signupClosed",
     "resetTokenInvalid",
     "noCredits",
     "brandIncomplete",
