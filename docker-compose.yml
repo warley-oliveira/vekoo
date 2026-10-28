@@ -29,8 +29,9 @@ services:
     image: redis:7
     container_name: ${COMPOSE_PROJECT_NAME}_redis
     restart: unless-stopped
+    # Só na máquina, como o Postgres: o Redis de dev não tem senha.
     ports:
-      - "${REDIS_PORT}:6379"
+      - "127.0.0.1:${REDIS_PORT}:6379"
     volumes:
       - redisdata:/data
 
