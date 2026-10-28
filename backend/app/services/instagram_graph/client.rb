@@ -18,8 +18,15 @@ module InstagramGraph
     # Os ~50 posts mais recentes da conta.
     LIMIT = 50
     # O Meta pode devolver menos do que o pedido por página; o cursor segue,
-    # até este teto de chamadas por conta.
-    MAX_PAGES = 4
+    # até este teto de páginas por conta (com a página no piso, 100 posts são 10).
+    MAX_PAGES = 12
+    # "Please reduce the amount of data you're asking for" (código 1, HTTP
+    # 500): o peso é das lâminas — 50 posts de uma conta de carrosséis são
+    # ~300 mídias — e depende da carga do Meta (a mesma consulta passa e falha
+    # minutos depois). A página cai pela metade, até este piso, e o cursor
+    # segue de onde parou.
+    SHRINK_CODE = 1
+    MIN_PAGE = 10
     ACCOUNT_FIELDS = %w[username name followers_count media_count].freeze
     MEDIA_FIELDS = %w[id caption media_type media_product_type like_count comments_count permalink media_url thumbnail_url timestamp].freeze
     CHILD_FIELDS = %w[id media_type media_url thumbnail_url].freeze
@@ -83,12 +90,19 @@ module InstagramGraph
       account = nil
       media = []
       after = nil
-      MAX_PAGES.times do
-        wanted = limit - media.size
-        page = "media.limit(#{wanted})#{".after(#{after})" if after}"
-        fields = "business_discovery.username(#{name}){#{ACCOUNT_FIELDS.join(',')}," \
-          "#{page}{#{MEDIA_FIELDS.join(',')},children{#{CHILD_FIELDS.join(',')}}}}"
-        discovery = get(self.class.ig_user_id, { fields: fields })["business_discovery"] or raise Error, "accountUnavailable"
+      page_size = limit
+      pages = 0
+      while pages < MAX_PAGES
+        wanted = [ limit - media.size, page_size ].min
+        begin
+          discovery = page(name, wanted, after)
+        rescue Error => e
+          raise unless e.graph_code == SHRINK_CODE && wanted > MIN_PAGE
+
+          page_size = [ wanted / 2, MIN_PAGE ].max
+          next
+        end
+        pages += 1
 
         account ||= Account.new(**discovery.slice(*ACCOUNT_FIELDS).symbolize_keys)
         batch = Array(discovery.dig("media", "data"))
@@ -109,6 +123,13 @@ module InstagramGraph
     end
 
     private
+
+    def page(name, size, after)
+      media = "media.limit(#{size})#{".after(#{after})" if after}"
+      fields = "business_discovery.username(#{name}){#{ACCOUNT_FIELDS.join(',')}," \
+        "#{media}{#{MEDIA_FIELDS.join(',')},children{#{CHILD_FIELDS.join(',')}}}}"
+      get(self.class.ig_user_id, { fields: fields })["business_discovery"] or raise Error, "accountUnavailable"
+    end
 
     def build_media(raw)
       children = Array(raw.dig("children", "data")).map { |child|

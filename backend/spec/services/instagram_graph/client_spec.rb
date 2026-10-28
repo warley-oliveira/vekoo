@@ -60,6 +60,31 @@ RSpec.describe InstagramGraph::Client do
       expect(URI.decode_www_form(@calls.last[:uri].query).to_h["fields"]).to include("media.limit(1).after(QVFIUjEz)")
     end
 
+    describe "consulta pesada demais (código 1)" do
+      let(:heavy) { ig_error(1, message: "Please reduce the amount of data you're asking for, then retry your request", status: 500) }
+
+      def page_params
+        @calls.map { |call| URI.decode_www_form(call[:uri].query).to_h["fields"][/media\.limit\(\d+\)(\.after\(\w+\))?/] }
+      end
+
+      it "a página cai pela metade e o cursor segue de onde parou" do
+        pages = ->(fields) {
+          next heavy if fields[/media\.limit\((\d+)\)/, 1].to_i > 25
+
+          fields.include?(".after(") ? ig_discovery("padoca", [ ig_media("3") ]) : ig_discovery("padoca", [ ig_media("1"), ig_media("2") ], after: "QVFIUjEz")
+        }
+        discovery = client("padoca" => pages).discover("padoca")
+
+        expect(discovery.media.map(&:id)).to eq(%w[1 2 3])
+        expect(page_params).to eq([ "media.limit(50)", "media.limit(25)", "media.limit(25).after(QVFIUjEz)" ])
+      end
+
+      it "no piso, desiste com o erro do Meta" do
+        expect(error_for(heavy).code).to eq("failed")
+        expect(page_params).to eq(%w[media.limit(50) media.limit(25) media.limit(12) media.limit(10)])
+      end
+    end
+
     it "recusa o que não é @ de Instagram sem chamar o Meta" do
       expect { client({}).discover("padoca){id}") }.to raise_error(described_class::Error) { |e| expect(e.code).to eq("accountUnavailable") }
       expect(@calls).to be_empty
