@@ -9,6 +9,13 @@
 #      escritos em pt-BR de nichos variados. É *obra do usuário* fictício, não
 #      interface: fica em pt-BR mesmo quando a API responde em inglês.
 #
+# **A demonstração só existe em development e test.** A conta tem e-mail e
+# senha escritos neste arquivo, então em qualquer outro ambiente — produção
+# inclusive, onde o `db:prepare` de um banco vazio roda esta semente — só o
+# acervo é aplicado. Não há chave para ligar: quem precisar de conta lá usa o
+# cadastro, como todo mundo. Nenhuma semente cria conta staff
+# (`bin/rails 'staff:grant[email]'` é o único caminho).
+#
 # Idempotente: os ids são UUIDv5 derivados do apelido de cada registro
 # (`car-nutricao` → sempre o mesmo UUID), então rodar de novo atualiza em vez
 # de duplicar.
@@ -349,6 +356,9 @@ module VekooSeeds
 
   DEMO_EMAIL = "marina.duarte@exemplo.com.br"
   DEMO_PASSWORD = "carrossel123"
+  DEMO_ENVIRONMENTS = %w[development test].freeze
+
+  def demo? = DEMO_ENVIRONMENTS.include?(Rails.env.to_s)
 
   def seed_demo_account!
     organization = Organization.find_or_initialize_by(id: id_for("org-marina"))
@@ -1212,8 +1222,12 @@ module VekooSeeds
     organization.pieces.where.not(id: PIECE_EXAMPLES.map { |slug, *| id_for(slug) }).destroy_all
   end
 
+  # Devolve a organização de demonstração — ou nil fora de development/test,
+  # onde só o acervo é aplicado.
   def call
     seed_catalog!
+    return nil unless demo?
+
     organization = seed_demo_account!
     seed_notifications!(organization)
     # A marca antes dos carrosséis: todo conteúdo nasce dentro dela.
@@ -1228,6 +1242,16 @@ module VekooSeeds
 end
 
 organization = VekooSeeds.call
+
+unless organization
+  puts <<~REPORT
+    Semente aplicada (#{Rails.env}): só o acervo.
+
+      Acervo      #{ThemePreset.count} temas · #{LibraryImage.count} imagens · #{PaletteColor.count} cores
+      Demonstração não criada — ela só existe em #{VekooSeeds::DEMO_ENVIRONMENTS.join(' e ')}.
+  REPORT
+  return
+end
 
 puts <<~REPORT
   Semente aplicada.

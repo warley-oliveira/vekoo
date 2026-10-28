@@ -142,6 +142,22 @@ RSpec.describe "db/seeds.rb" do
     expect(organization.carousels.map { |c| c.brand_core_version&.number }.uniq).to eq([ 2 ])
   end
 
+  # A conta de demonstração tem a senha escrita na semente: fora de
+  # development e test ela não pode nascer — nem no `db:prepare` de produção.
+  %w[production staging].each do |environment|
+    it "em #{environment}, aplica só o acervo — sem conta, organização nem staff" do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::EnvironmentInquirer.new(environment))
+
+      expect {
+        expect(VekooSeeds.call).to be_nil
+      }.to not_change(Account, :count).and not_change(Organization, :count).and not_change(ThemePreset, :count)
+    end
+  end
+
+  it "não cria conta staff em ambiente nenhum" do
+    expect(Account.where(staff: true)).not_to exist
+  end
+
   it "traz uma peça pronta por motor" do
     ready = organization.pieces.where(status: "ready")
     expect(ready.map(&:engine_id).uniq.sort).to eq(Engines::Registry.ids.sort)
