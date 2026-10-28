@@ -29,7 +29,22 @@ class SignUp
     @ip_address = ip_address
   end
 
+  # Antes do lançamento o cadastro de produção é fechado: só os e-mails da
+  # lista (`config.x.signup_allowlist`, de SIGNUP_ALLOWLIST) criam conta. Sem
+  # lista configurada — dev e test — fica aberto. Quem já tem conta não passa
+  # por aqui: o login não consulta a lista.
+  def self.open_to?(email)
+    list = Rails.configuration.x.signup_allowlist
+    # `config.x` sem a chave devolve um OrderedOptions vazio, não nil. Só um
+    # texto (vazio inclusive, que fecha para todos) liga a restrição.
+    return true unless list.is_a?(String)
+
+    list.split(",").map { |entry| entry.strip.downcase }.reject(&:empty?).include?(email.to_s.strip.downcase)
+  end
+
   def call
+    return closed unless self.class.open_to?(@email)
+
     organization = Organization.new(name: @organization_name)
     account = Account.new(
       organization: organization,
@@ -65,6 +80,10 @@ class SignUp
   end
 
   private
+
+  def closed
+    Result.new(error: Error.new(code: "signupClosed", field: "email"))
+  end
 
   def taken_email
     Result.new(error: Error.new(code: "emailTaken", field: "email"))

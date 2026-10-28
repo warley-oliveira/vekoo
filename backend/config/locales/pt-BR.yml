@@ -34,6 +34,7 @@ pt-BR:
     email_not_found: "Não encontramos uma conta com esse e-mail."
     wrong_password: "Senha incorreta. Tente de novo."
     email_taken: "Esse e-mail já tem conta no Vekoo."
+    signup_closed: "O cadastro ainda está fechado: por enquanto, só entra quem foi convidado."
     reset_token_invalid: "Esse link de nova senha venceu ou já foi usado."
 
   ai:

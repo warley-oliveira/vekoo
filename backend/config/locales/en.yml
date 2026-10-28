@@ -30,6 +30,7 @@ en:
     email_not_found: "We couldn't find an account with that email."
     wrong_password: "Wrong password. Try again."
     email_taken: "That email already has a Vekoo account."
+    signup_closed: "Sign-up is still closed: for now, only invited people can join."
     reset_token_invalid: "This password link has expired or was already used."
 
   ai:
