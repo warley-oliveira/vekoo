@@ -206,6 +206,15 @@ RSpec.describe ReferenceCard do
     end
   end
 
+  it "devolve os originais na ordem em que entraram — a ordem do post" do
+    card = create(:reference_card)
+    %w[capa meio fim].each do |name|
+      card.originals.attach(io: file_fixture("foto.png").open, filename: "#{name}.png", content_type: "image/png")
+    end
+
+    expect(card.reload.ordered_originals.map { |o| o.filename.to_s }).to eq(%w[capa.png meio.png fim.png])
+  end
+
   it "serve os formatos de peça do seu formato de referência" do
     expect(build(:reference_card, format: "static").piece_formats).to eq(%w[feed_square feed_portrait])
     expect(build(:reference_card, format: "reels").piece_formats).to eq([])

@@ -76,6 +76,12 @@ class ReferenceCard < ApplicationRecord
   def analysis_failed? = analysis_status == "failed"
   def analyzing? = analysis_status.in?(%w[pending running])
 
+  # Os originais na ordem em que entraram — a ordem do post. Os ids são UUID,
+  # então sem isto as lâminas de um carrossel chegariam ao modelo embaralhadas.
+  def ordered_originals
+    originals_attachments.includes(:blob).order(:created_at, :id)
+  end
+
   # O que impede (ou atrapalha) o card de ir para o agente: a análise cita a
   # fonte (`leak`), repete frase do post (`copied`) ou ficou sem vetor
   # (`noEmbedding`, o único que não barra a publicação — só tira a

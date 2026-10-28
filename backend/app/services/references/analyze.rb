@@ -80,7 +80,7 @@ module References
     private
 
     def ask
-      images = @card.originals.map { |original| Images.for_model(original.download) }
+      images = @card.ordered_originals.map { |original| Images.for_model(original.download) }
       @chat.answer(
         system: [ { type: "text", text: Prompts.system, cache_control: { type: "ephemeral" } } ],
         messages: [ { role: "user", content: [ *images, { type: "text", text: Prompts.request(@card) } ] } ],
