@@ -81,6 +81,7 @@ export type AuthErrorCode =
   | "emailNotFound"
   | "wrongPassword"
   | "emailTaken"
+  | "signupClosed"
   | "signInFailed"
   | "signUpFailed"
   | "network"
@@ -135,6 +136,8 @@ function toAuthError(error: unknown, fallback: AuthErrorCode): AuthError {
   if (error.code === "emailNotFound") return new AuthError("email", "emailNotFound")
   if (error.code === "wrongPassword") return new AuthError("password", "wrongPassword")
   if (error.code === "emailTaken") return new AuthError("email", "emailTaken")
+  // Produção antes do lançamento: só e-mails convidados criam conta.
+  if (error.code === "signupClosed") return new AuthError("email", "signupClosed")
 
   // Validação: o Rails já manda os campos em camelCase, iguais aos do
   // formulário, então a mensagem dele é melhor do que um genérico nosso.
