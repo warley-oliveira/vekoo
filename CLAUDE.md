@@ -329,6 +329,25 @@ original apagado (fica a miniatura, servida só pela rota da curadoria) e `in_re
 proibidos), `copied` e `noEmbedding`; os dois primeiros barram a publicação. Credenciais do
 Vertex em `Ai::Vertex` (divididas com o `Ai::GeminiImage`). Custo da análise no card, fora
 do teto de OPEX das organizações.
+**Importação do Instagram (`/admin/imports`):** a curadoria cola até 20 @ e
+`ImportReferenceAccountJob` lê os ~50 posts recentes de cada conta pela **Business
+Discovery** oficial (`InstagramGraph::Client`, único lugar que fala com o Meta, token no
+cabeçalho; sem raspagem; só contas profissionais públicas). `References::InstagramRanking`
+mede cada post contra a **mediana da própria conta** (curtidas + comentários), deixa fora
+da lista e da mediana o post de menos de 7 dias e o de curtida oculta fica sem métrica;
+≥ 1,5× é destaque, 5 por conta na tela. Os escolhidos viram card em rascunho
+(`References::Imports.analyze!`: fonte, @ e nome da conta nos termos proibidos, métricas
+e a mediana) e `FetchInstagramReferenceJob` busca **de novo** mídia e legenda (a URL do
+Meta expira) — carrossel com mais de 10 lâminas vai com as 9 primeiras e a última; vídeo
+vai pela capa, com `partial_analysis` (melhoria futura: vídeo pelo Gemini no Vertex). **A
+legenda nunca é gravada**: só viaja na mensagem ao modelo, marcada como dado e não
+instrução, e entra na conferência de cópia; nenhum job a recebe por argumento. Um post vira
+no máximo um card (índice único em `source->>'igMediaId'`). Lotes e candidatos somem em 30
+dias (a cada lote novo, ou `bin/rails references:purge_imports`). Erros do Meta viram
+código (`tokenInvalid`, `rateLimited` — trava o app inteiro até a hora indicada —,
+`accountUnavailable`, `permissionDenied`); `InstagramGraph::TokenStatus` (cache de 1 h)
+avisa a 14 dias do vencimento do token ou do acesso aos dados. Setup e Passo 0
+(`references:instagram_smoke`) em DEPLOY.md §2.
 
 **Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
 nunca é vinculado depois; não existe tela de associação manual. A organização tem

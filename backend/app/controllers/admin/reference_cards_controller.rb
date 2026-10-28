@@ -105,13 +105,15 @@ module Admin
       render json: ReferenceCardSerializer.one(@card)
     end
 
+    # Com os originais no lugar, a análise roda de novo; o card do Instagram
+    # (sem originais: a URL do Meta expira) busca a mídia de novo antes.
     def retry_analysis
-      unless @card.analysis_failed? && @card.originals.attached?
+      unless @card.analysis_failed? && (@card.originals.attached? || @card.instagram?)
         return render_error(status: :unprocessable_entity, code: "analysisNotRetryable")
       end
 
       @card.update!(analysis_status: "pending", analysis_error: nil)
-      AnalyzeReferenceJob.perform_later(@card.id)
+      (@card.originals.attached? ? AnalyzeReferenceJob : FetchInstagramReferenceJob).perform_later(@card.id)
       render json: ReferenceCardSerializer.one(@card)
     end
 

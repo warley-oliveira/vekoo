@@ -39,6 +39,9 @@ module Admin
         summary: card.analysis.dig("structure", "summary").to_s.first(160).presence,
         channel: card.source["channel"],
         hasThumbnail: card.thumbnail.attached?,
+        # Veio de um vídeo: a análise viu só a capa e a legenda.
+        partialAnalysis: card.partial_analysis,
+        instagram: card.instagram?,
         embedded: card.embedded_at.present?,
         createdAt: epoch_ms(card.created_at),
         updatedAt: epoch_ms(card.updated_at)

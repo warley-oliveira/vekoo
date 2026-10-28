@@ -34,6 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -269,6 +270,7 @@ function Review({ card, onChange }: { card: ReferenceCard; onChange: (card: Refe
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-heading text-2xl font-semibold tracking-tight">{title}</h1>
             <ReferenceStatusBadge status={card.status} analysis={card.analysisStatus} />
+            {card.partialAnalysis && <Badge variant="outline">{t("admin.review.partialAnalysis")}</Badge>}
             <span className="font-mono text-xs text-muted-foreground">{t("admin.review.version", { version: card.version })}</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -317,7 +319,7 @@ function Review({ card, onChange }: { card: ReferenceCard; onChange: (card: Refe
               <p className="font-medium">{t("admin.review.failed.title")}</p>
               <p className="text-muted-foreground">{t(`admin.review.failed.${card.analysisError?.code ?? "failed"}`, { defaultValue: t("admin.review.failed.failed") })}</p>
             </div>
-            {card.originalsCount > 0 && (
+            {(card.originalsCount > 0 || card.instagram) && (
               <Button type="button" size="sm" variant="outline" disabled={busy !== null} onClick={() => void act("retry")}>
                 <RotateCcw aria-hidden />
                 {t("admin.review.retry")}

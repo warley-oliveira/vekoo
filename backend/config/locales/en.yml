@@ -17,6 +17,13 @@ en:
     analysis_not_retryable: "Only a failed analysis can run again."
     analysis_running: "The analysis is still running. Wait for it to finish before editing."
     card_archived: "An archived card is read-only. Reopen it to edit."
+    handles_required: "Paste at least one Instagram account @."
+    too_many_handles: "Up to %{max} accounts per batch."
+    invalid_handles: "Some items aren't Instagram @s. Check them and try again."
+    instagram_not_configured: "Instagram import isn't set up in this environment (DEPLOY.md, Instagram)."
+    instagram_token_invalid: "The Instagram token expired or was revoked. Generate a new one (DEPLOY.md, Instagram)."
+    nothing_selected: "Pick at least one post to analyze."
+    import_not_retryable: "There's nothing to retry for this account."
     format: "%{attribute} %{message}"
     messages:
       blank: "can't be blank"

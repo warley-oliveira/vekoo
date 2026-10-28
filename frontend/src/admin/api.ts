@@ -46,7 +46,7 @@ export type ReferenceAnalysis = {
   }
 }
 
-export type ReferenceSource = { url?: string; channel?: string; bannedTerms?: string[] }
+export type ReferenceSource = { url?: string; channel?: string; bannedTerms?: string[]; igMediaId?: string }
 
 /** `leak`: cita a origem · `copied`: repete frase do post · `noEmbedding`: sem vetor (não barra). */
 export type ReferenceFinding =
@@ -71,6 +71,10 @@ export type ReferenceSummary = {
   summary: string | null
   channel: string | null
   hasThumbnail: boolean
+  /** Veio de um vídeo: a análise viu só a capa e a legenda. */
+  partialAnalysis: boolean
+  /** Veio da importação do Instagram (a mídia se busca de novo para analisar). */
+  instagram: boolean
   embedded: boolean
   createdAt: number
   updatedAt: number
@@ -198,4 +202,102 @@ export function useThumbnail(id: string, enabled: boolean): string | null {
   }, [id, enabled])
 
   return url
+}
+
+/* ---------- importação do Instagram ---------- */
+
+export type InstagramTokenState = "ok" | "expiring" | "invalid" | "unknown" | "notConfigured"
+
+export type InstagramStatus = {
+  state: InstagramTokenState
+  expiresAt?: number
+  dataAccessExpiresAt?: number
+  missingScopes?: string[]
+}
+
+export type ImportAccountStatus = "pending" | "running" | "done" | "error"
+
+export type ReferenceCandidate = {
+  id: string
+  igMediaId: string
+  mediaType: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM"
+  productType: string | null
+  format: ReferenceFormat
+  permalink: string | null
+  previewUrl: string | null
+  likeCount: number | null
+  commentsCount: number | null
+  relativeEngagement: number | null
+  highlight: boolean
+  postedAt: number | null
+  childrenCount: number
+  partial: boolean
+  status: "pending" | "carded"
+  referenceCardId: string | null
+}
+
+export type ReferenceImportAccount = {
+  id: string
+  username: string
+  status: ImportAccountStatus
+  errorCode: string | null
+  retryable: boolean
+  retryAt: number | null
+  name: string | null
+  followersCount: number | null
+  fetchedCount: number | null
+  eligibleCount: number | null
+  baselineMedian: number | null
+  fetchedAt: number | null
+  candidates: ReferenceCandidate[]
+}
+
+export type ReferenceImportSummary = {
+  id: string
+  niche: Niche | null
+  size: ReferenceSize | null
+  handles: string[]
+  running: boolean
+  counts: { accounts: number; errors: number; candidates: number; highlighted: number; carded: number }
+  createdAt: number
+}
+
+export type ReferenceImport = ReferenceImportSummary & { accounts: ReferenceImportAccount[] }
+
+const IMPORTS = "/admin/reference-imports"
+
+export function useInstagramStatus() {
+  return useSWR<InstagramStatus>("/admin/instagram/status", (key: string) => apiGet<InstagramStatus>(key))
+}
+
+export function useReferenceImports() {
+  return useSWR<{ referenceImports: ReferenceImportSummary[]; instagram: InstagramStatus }>(IMPORTS, (key: string) =>
+    apiGet<{ referenceImports: ReferenceImportSummary[]; instagram: InstagramStatus }>(key)
+  )
+}
+
+export function useReferenceImport(id: string | undefined) {
+  return useSWR<ReferenceImport>(id ? `${IMPORTS}/${id}` : null, (key: string) => apiGet<ReferenceImport>(key), {
+    // Enquanto alguma conta está na fila, o lote se atualiza sozinho.
+    refreshInterval: (data) => (data?.running ? 3000 : 0),
+  })
+}
+
+export const createReferenceImport = (input: { handles: string; niche: Niche | ""; size: ReferenceSize | "" }) =>
+  apiPost<ReferenceImport>(IMPORTS, input)
+export const analyzeCandidates = (importId: string, candidateIds: string[]) =>
+  apiPost<{ created: string[]; referenceImport: ReferenceImport }>(`${IMPORTS}/${importId}/analyze`, { candidateIds })
+export const retryImportAccount = (importId: string, accountId: string) =>
+  apiPost<ReferenceImport>(`${IMPORTS}/${importId}/accounts/${accountId}/retry`)
+
+/**
+ * Estimativa de custo da análise (US$): uma base por post e um tanto por
+ * imagem — carrossel vai com até 10 lâminas. É ordem de grandeza para decidir,
+ * não fatura: o custo real fica no card depois da análise.
+ */
+export function estimateAnalysisCost(candidates: ReferenceCandidate[]): number {
+  return candidates.reduce((sum, candidate) => {
+    const images = candidate.mediaType === "CAROUSEL_ALBUM" ? Math.min(Math.max(candidate.childrenCount, 1), 10) : 1
+    return sum + 0.05 + 0.01 * images
+  }, 0)
 }

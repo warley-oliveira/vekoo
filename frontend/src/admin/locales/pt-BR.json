@@ -4,7 +4,8 @@
     "nav": {
       "label": "Áreas da curadoria",
       "references": "Referências",
-      "backToApp": "Voltar ao Vekoo"
+      "backToApp": "Voltar ao Vekoo",
+      "imports": "Importar"
     },
     "status": {
       "draft": "Rascunho",
@@ -108,7 +109,8 @@
         "perPage": "Por página",
         "previous": "Anterior",
         "next": "Próxima"
-      }
+      },
+      "partial": "análise parcial"
     },
     "new": {
       "back": "Referências",
@@ -190,7 +192,14 @@
         "noKey": "A chave do modelo não está configurada neste ambiente.",
         "refused": "O modelo recusou analisar estas imagens.",
         "invalidOutput": "A resposta veio fora do formato. Tente de novo.",
-        "noImages": "O card não tem imagens para analisar."
+        "noImages": "O card não tem imagens para analisar.",
+        "mediaGone": "O post não está mais entre os recentes da conta (ou foi apagado).",
+        "mediaUnavailable": "Não deu para baixar as imagens do post. Tente de novo mais tarde.",
+        "tokenInvalid": "O token do Instagram venceu. Gere outro e tente de novo.",
+        "rateLimited": "O Meta pediu uma pausa (limite de chamadas). Tente de novo mais tarde.",
+        "accountUnavailable": "A conta não responde mais como profissional pública.",
+        "permissionDenied": "O app do Meta não tem permissão para ler esta conta.",
+        "notConfigured": "A importação do Instagram não está configurada neste ambiente."
       },
       "retry": "Tentar de novo",
       "archived": {
@@ -285,6 +294,130 @@
         },
         "copied": "Repete uma frase do post",
         "noEmbedding": "Sem vetor: a busca não mede semelhança com este card"
+      },
+      "partialAnalysis": "Análise parcial (vídeo)"
+    },
+    "instagram": {
+      "token": {
+        "expiring": {
+          "title": "O token do Instagram vence em breve",
+          "description": "Vence em {{date}}. Gere outro antes disso (DEPLOY.md, Instagram) para a importação não parar."
+        },
+        "invalid": {
+          "title": "O token do Instagram não vale mais",
+          "description": "A importação está parada. Gere um token novo (DEPLOY.md, Instagram)."
+        },
+        "notConfigured": {
+          "title": "Importação do Instagram não configurada",
+          "description": "Falta o app da Meta e o token neste ambiente (DEPLOY.md, Instagram)."
+        },
+        "missingScopes": "Permissões que faltam: {{scopes}}"
+      }
+    },
+    "imports": {
+      "title": "Importar do Instagram",
+      "description": "Cole os @ de contas profissionais. Puxamos os últimos ~50 posts de cada uma pela API oficial e ordenamos pelo engajamento em relação à própria conta. Você escolhe o que vira card.",
+      "running": "Buscando",
+      "form": {
+        "handles": "Contas",
+        "handlesHint": "Um @ por linha ou separados por vírgula. Até {{max}} por lote.",
+        "handlesPlaceholder": "@padaria.exemplo\n@clinica.exemplo",
+        "required": "Cole ao menos um @.",
+        "invalid": "Não são @ de Instagram: {{handles}}",
+        "niche": "Nicho sugerido",
+        "nicheHint": "Vale para os cards que saírem deste lote.",
+        "size": "Porte sugerido",
+        "submit": "Importar",
+        "created_one": "{{count}} conta na fila.",
+        "created_other": "{{count}} contas na fila."
+      },
+      "recent": {
+        "title": "Lotes recentes",
+        "empty": {
+          "title": "Nenhum lote ainda",
+          "description": "Os lotes ficam aqui por 30 dias. O que virou card continua no banco."
+        },
+        "more_one": "+{{count}}",
+        "more_other": "+{{count}}",
+        "counts": "{{candidates}} candidatos · {{highlighted}} em destaque · {{carded}} viraram card",
+        "errors_one": "{{count}} com erro",
+        "errors_other": "{{count}} com erro"
+      },
+      "batch": {
+        "back": "Importações",
+        "title": "Lote de {{date}}",
+        "noHints": "Sem nicho nem porte sugeridos",
+        "boostedNotice": "Posts impulsionados podem ter engajamento inflado: o Meta não separa o orgânico do pago. Confira no Instagram antes de escolher.",
+        "freshNotice": "Posts com menos de 7 dias ficam de fora da lista e da mediana: ainda não acumularam engajamento.",
+        "notFound": {
+          "title": "Lote não encontrado",
+          "description": "Lotes somem depois de 30 dias. Os cards que saíram deles continuam no banco."
+        },
+        "analyzed_one": "{{count}} card criado. A análise roda em segundo plano.",
+        "analyzed_other": "{{count}} cards criados. A análise roda em segundo plano.",
+        "openList": "Ver cards",
+        "selected_one": "{{count}} selecionado",
+        "selected_other": "{{count}} selecionados",
+        "estimate": "estimativa US$ {{cost}}",
+        "clear": "Limpar",
+        "analyze_one": "Analisar {{count}}",
+        "analyze_other": "Analisar {{count}}",
+        "confirm": {
+          "title_one": "Analisar {{count}} post?",
+          "title_other": "Analisar {{count}} posts?",
+          "description": "Cada post vira um card em rascunho e passa pela análise (estimativa de US$ {{cost}} no total). As imagens são apagadas depois; a legenda não é guardada.",
+          "cancel": "Cancelar",
+          "action": "Analisar"
+        }
+      },
+      "account": {
+        "followers_one": "{{value}} seguidor",
+        "followers_other": "{{value}} seguidores",
+        "posts": "{{fetched}} posts lidos, {{eligible}} com 7+ dias",
+        "median": "mediana {{value}}",
+        "selectHighlights": "Selecionar destaques",
+        "retry": "Tentar de novo",
+        "noCandidates": "Nenhum post com 7 dias ou mais entre os recentes.",
+        "showAll_one": "Ver todos ({{count}})",
+        "showAll_other": "Ver todos ({{count}})",
+        "showFewer": "Ver menos"
+      },
+      "errors": {
+        "accountUnavailable": {
+          "title": "Conta não encontrada ou não profissional",
+          "description": "O @ não existe, é pessoal ou é privado. Só contas profissionais públicas respondem à Business Discovery."
+        },
+        "rateLimited": {
+          "title": "Limite de chamadas do Meta",
+          "description": "Dá para tentar de novo a partir de {{when}}."
+        },
+        "tokenInvalid": {
+          "title": "Token do Instagram vencido",
+          "description": "Gere um token novo e importe de novo."
+        },
+        "permissionDenied": {
+          "title": "Sem permissão para ler contas de terceiros",
+          "description": "O acesso Standard do app não liberou a Business Discovery. É o caso de App Review."
+        },
+        "notConfigured": {
+          "title": "Importação não configurada",
+          "description": "Falta o token do Instagram neste ambiente."
+        },
+        "failed": {
+          "title": "O Meta não respondeu",
+          "description": "Tente de novo em alguns minutos."
+        }
+      },
+      "candidate": {
+        "select": "Selecionar post de {{date}}",
+        "noMetric": "sem métrica",
+        "carousel_one": "Carrossel · {{count}} lâmina",
+        "carousel_other": "Carrossel · {{count}} lâminas",
+        "partial": "vídeo · parcial",
+        "hiddenLikes": "curtidas ocultas · {{comments}} comentários",
+        "engagement": "{{likes}} curtidas · {{comments}} comentários",
+        "carded": "Virou card",
+        "open": "Abrir no Instagram"
       }
     }
   }

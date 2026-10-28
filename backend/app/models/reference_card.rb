@@ -74,13 +74,17 @@ class ReferenceCard < ApplicationRecord
   end
 
   def analysis_failed? = analysis_status == "failed"
-  def analyzing? = analysis_status.in?(%w[pending running])
+
+  # Veio da importação do Instagram: as imagens se buscam de novo pelo id da
+  # mídia (a URL do Meta expira, e a legenda não é guardada).
+  def instagram? = source["igMediaId"].present?
 
   # Os originais na ordem em que entraram — a ordem do post. Os ids são UUID,
   # então sem isto as lâminas de um carrossel chegariam ao modelo embaralhadas.
   def ordered_originals
     originals_attachments.includes(:blob).order(:created_at, :id)
   end
+  def analyzing? = analysis_status.in?(%w[pending running])
 
   # O que impede (ou atrapalha) o card de ir para o agente: a análise cita a
   # fonte (`leak`), repete frase do post (`copied`) ou ficou sem vetor
@@ -140,7 +144,11 @@ class ReferenceCard < ApplicationRecord
     channel = raw["channel"].to_s.strip.downcase.delete(" ")
     channel = "@#{channel}" if channel.present? && !channel.start_with?("@")
     terms = Array(raw["bannedTerms"]).filter_map { |term| term.to_s.squish.first(80).presence }.uniq.first(MAX_BANNED_TERMS)
-    { "url" => raw["url"].to_s.strip.presence, "channel" => channel.presence, "bannedTerms" => terms.presence }.compact
+    media_id = raw["igMediaId"].to_s.strip
+    {
+      "url" => raw["url"].to_s.strip.presence, "channel" => channel.presence, "bannedTerms" => terms.presence,
+      "igMediaId" => (media_id if media_id.match?(/\A\d{1,32}\z/))
+    }.compact
   end
 
   def stamp_publication

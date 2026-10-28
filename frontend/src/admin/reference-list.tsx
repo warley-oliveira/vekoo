@@ -116,6 +116,7 @@ export function ReferenceListPage() {
                 >
                   {title || t("admin.list.untitled")}
                 </Link>
+                {card.partialAnalysis && <span className="ml-1.5 text-xs text-muted-foreground">{t("admin.list.partial")}</span>}
                 <p className="line-clamp-1 max-w-md text-xs text-muted-foreground">{card.summary ?? card.channel ?? "—"}</p>
               </div>
             </div>

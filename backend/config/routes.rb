@@ -109,6 +109,14 @@ Rails.application.routes.draw do
         get :thumbnail
       end
     end
+    # A importação pela Business Discovery do Instagram.
+    resources :reference_imports, path: "reference-imports", only: %i[index show create] do
+      member do
+        post :analyze
+        post "accounts/:account_id/retry", action: :retry_account, as: :retry_account
+      end
+    end
+    get "instagram/status" => "instagram#status"
   end
 
   # Migração do legado: carrosséis e pastas sem marca. Temporária (ver

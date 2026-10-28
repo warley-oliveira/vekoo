@@ -4,7 +4,8 @@
     "nav": {
       "label": "Curation areas",
       "references": "References",
-      "backToApp": "Back to Vekoo"
+      "backToApp": "Back to Vekoo",
+      "imports": "Import"
     },
     "status": {
       "draft": "Draft",
@@ -108,7 +109,8 @@
         "perPage": "Per page",
         "previous": "Previous",
         "next": "Next"
-      }
+      },
+      "partial": "partial analysis"
     },
     "new": {
       "back": "References",
@@ -190,7 +192,14 @@
         "noKey": "The model key isn't set up in this environment.",
         "refused": "The model declined to analyze these images.",
         "invalidOutput": "The answer came back in the wrong shape. Try again.",
-        "noImages": "The card has no images to analyze."
+        "noImages": "The card has no images to analyze.",
+        "mediaGone": "The post is no longer among the account's recent ones (or was deleted).",
+        "mediaUnavailable": "We couldn't download the post's images. Try again later.",
+        "tokenInvalid": "The Instagram token expired. Generate a new one and try again.",
+        "rateLimited": "Meta asked for a pause (call limit). Try again later.",
+        "accountUnavailable": "The account no longer answers as a public professional account.",
+        "permissionDenied": "The Meta app isn't allowed to read this account.",
+        "notConfigured": "Instagram import isn't set up in this environment."
       },
       "retry": "Try again",
       "archived": {
@@ -285,6 +294,130 @@
         },
         "copied": "Repeats a sentence from the post",
         "noEmbedding": "No vector: search can't measure similarity to this card"
+      },
+      "partialAnalysis": "Partial analysis (video)"
+    },
+    "instagram": {
+      "token": {
+        "expiring": {
+          "title": "The Instagram token expires soon",
+          "description": "It expires on {{date}}. Generate a new one before then (DEPLOY.md, Instagram) so imports keep working."
+        },
+        "invalid": {
+          "title": "The Instagram token is no longer valid",
+          "description": "Importing is stopped. Generate a new token (DEPLOY.md, Instagram)."
+        },
+        "notConfigured": {
+          "title": "Instagram import isn't set up",
+          "description": "This environment is missing the Meta app and token (DEPLOY.md, Instagram)."
+        },
+        "missingScopes": "Missing permissions: {{scopes}}"
+      }
+    },
+    "imports": {
+      "title": "Import from Instagram",
+      "description": "Paste the @s of professional accounts. We pull each one's last ~50 posts through the official API and rank them by engagement relative to the account itself. You pick what becomes a card.",
+      "running": "Fetching",
+      "form": {
+        "handles": "Accounts",
+        "handlesHint": "One @ per line or comma-separated. Up to {{max}} per batch.",
+        "handlesPlaceholder": "@bakery.example\n@clinic.example",
+        "required": "Paste at least one @.",
+        "invalid": "Not Instagram @s: {{handles}}",
+        "niche": "Suggested niche",
+        "nicheHint": "Applies to the cards that come out of this batch.",
+        "size": "Suggested size",
+        "submit": "Import",
+        "created_one": "{{count}} account queued.",
+        "created_other": "{{count}} accounts queued."
+      },
+      "recent": {
+        "title": "Recent batches",
+        "empty": {
+          "title": "No batches yet",
+          "description": "Batches stay here for 30 days. Whatever became a card stays in the bank."
+        },
+        "more_one": "+{{count}}",
+        "more_other": "+{{count}}",
+        "counts": "{{candidates}} candidates · {{highlighted}} highlighted · {{carded}} became cards",
+        "errors_one": "{{count}} with an error",
+        "errors_other": "{{count}} with errors"
+      },
+      "batch": {
+        "back": "Imports",
+        "title": "Batch from {{date}}",
+        "noHints": "No suggested niche or size",
+        "boostedNotice": "Boosted posts may have inflated engagement: Meta doesn't separate organic from paid. Check on Instagram before picking.",
+        "freshNotice": "Posts younger than 7 days are left out of the list and the median: they haven't built up engagement yet.",
+        "notFound": {
+          "title": "Batch not found",
+          "description": "Batches go away after 30 days. The cards that came out of them stay in the bank."
+        },
+        "analyzed_one": "{{count}} card created. The analysis runs in the background.",
+        "analyzed_other": "{{count}} cards created. The analysis runs in the background.",
+        "openList": "See cards",
+        "selected_one": "{{count}} selected",
+        "selected_other": "{{count}} selected",
+        "estimate": "estimate US$ {{cost}}",
+        "clear": "Clear",
+        "analyze_one": "Analyze {{count}}",
+        "analyze_other": "Analyze {{count}}",
+        "confirm": {
+          "title_one": "Analyze {{count}} post?",
+          "title_other": "Analyze {{count}} posts?",
+          "description": "Each post becomes a draft card and goes through the analysis (estimated US$ {{cost}} in total). Images are deleted afterwards; the caption is never stored.",
+          "cancel": "Cancel",
+          "action": "Analyze"
+        }
+      },
+      "account": {
+        "followers_one": "{{value}} follower",
+        "followers_other": "{{value}} followers",
+        "posts": "{{fetched}} posts read, {{eligible}} 7+ days old",
+        "median": "median {{value}}",
+        "selectHighlights": "Select highlights",
+        "retry": "Try again",
+        "noCandidates": "No post 7 or more days old among the recent ones.",
+        "showAll_one": "See all ({{count}})",
+        "showAll_other": "See all ({{count}})",
+        "showFewer": "See fewer"
+      },
+      "errors": {
+        "accountUnavailable": {
+          "title": "Account not found or not professional",
+          "description": "The @ doesn't exist, is personal, or is private. Only public professional accounts answer Business Discovery."
+        },
+        "rateLimited": {
+          "title": "Meta call limit",
+          "description": "You can try again from {{when}}."
+        },
+        "tokenInvalid": {
+          "title": "Instagram token expired",
+          "description": "Generate a new token and import again."
+        },
+        "permissionDenied": {
+          "title": "Not allowed to read third-party accounts",
+          "description": "The app's Standard access didn't unlock Business Discovery. This needs App Review."
+        },
+        "notConfigured": {
+          "title": "Import isn't set up",
+          "description": "This environment is missing the Instagram token."
+        },
+        "failed": {
+          "title": "Meta didn't respond",
+          "description": "Try again in a few minutes."
+        }
+      },
+      "candidate": {
+        "select": "Select post from {{date}}",
+        "noMetric": "no metric",
+        "carousel_one": "Carousel · {{count}} slide",
+        "carousel_other": "Carousel · {{count}} slides",
+        "partial": "video · partial",
+        "hiddenLikes": "likes hidden · {{comments}} comments",
+        "engagement": "{{likes}} likes · {{comments}} comments",
+        "carded": "Became a card",
+        "open": "Open on Instagram"
       }
     }
   }

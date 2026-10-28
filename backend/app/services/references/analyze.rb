@@ -45,10 +45,13 @@ module References
 
     def self.reset! = (@output_schema = nil)
 
-    def initialize(card, chat: Ai::Chat.new, embed: Embed.new)
+    # `caption`: a legenda do post, quando veio do Instagram. Só na memória —
+    # vai ao modelo e entra na conferência de cópia, e não é gravada.
+    def initialize(card, chat: Ai::Chat.new, embed: Embed.new, caption: nil)
       @card = card
       @chat = chat
       @embed = embed
+      @caption = caption.to_s.presence
     end
 
     def call
@@ -83,7 +86,7 @@ module References
       images = @card.ordered_originals.map { |original| Images.for_model(original.download) }
       @chat.answer(
         system: [ { type: "text", text: Prompts.system, cache_control: { type: "ephemeral" } } ],
-        messages: [ { role: "user", content: [ *images, { type: "text", text: Prompts.request(@card) } ] } ],
+        messages: [ { role: "user", content: [ *images, { type: "text", text: Prompts.request(@card, caption: @caption) } ] } ],
         model: self.class.model,
         max_tokens: MAX_TOKENS,
         effort: self.class.effort,
@@ -108,7 +111,7 @@ module References
         archetypes: @card.archetypes.presence || (Array(found["archetypes"]) & Taxonomy::ARCHETYPES).first(ReferenceCard::MAX_ARCHETYPES),
         objective: @card.objective || pick(found["objective"], Taxonomy::OBJECTIVES),
         format: @card.format || pick(found["format"], Taxonomy::FORMATS),
-        copy_shingles: CopyGuard.shingles(payload["visibleText"]),
+        copy_shingles: CopyGuard.shingles(payload["visibleText"]) | CopyGuard.shingles(@caption),
         analysis_status: "done",
         analysis_error: nil,
         analysis_model: answer.model,

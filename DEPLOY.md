@@ -235,6 +235,115 @@ kamal app exec --reuse "bin/rails images:smoke"     # gera 1 imagem (~US$ 0,07)
 **Rotação:** nova chave no console → troca o `vertex-sa.json` → deploy → apaga a chave
 velha no console. **Emergência:** apagar a chave no console corta o acesso na hora.
 
+### Instagram (Business Discovery) — app da Meta e token
+
+A importação de referências (curadoria, `/admin/imports`) lê posts públicos de **contas
+profissionais** pela Business Discovery da Instagram Graph API — oficial, sem raspagem.
+Uso interno da equipe: acesso **Standard**, sem App Review. O token é segredo e nunca
+entra no código, no chat ou no histórico do shell.
+
+**Passo 0 (obrigatório antes de usar):** com o token pronto, rode
+`bin/rails 'references:instagram_smoke[<@ de uma conta profissional conhecida>]'`. Se a
+resposta for `permissionDenied`, o acesso Standard não libera dado de terceiros — **pare**:
+o caminho passa a ser App Review com verificação da empresa.
+
+**1. Pré-requisitos** (uma vez):
+
+1. O Instagram da Vekoo é conta **profissional do tipo Empresa** (no app: *Configurações →
+   Tipo de conta e ferramentas → Mudar para conta profissional → Empresa*).
+2. A Vekoo tem uma **Página do Facebook**, e o Instagram está **ligado** a ela (Meta
+   Business Suite → *Configurações → Contas → Contas do Instagram → Conectar*).
+3. Página e Instagram estão no **portfólio empresarial** da Vekoo
+   (business.facebook.com → *Configurações → Contas*).
+
+**2. O app** (developers.facebook.com → *Meus apps → Criar app*):
+
+1. Caso de uso *Outro* → tipo **Empresa** → nome `Vekoo Referências (interno)` → portfólio
+   empresarial da Vekoo.
+2. No painel do app, *Adicionar produto* → **Instagram** → *API com login do Facebook*.
+3. Não peça App Review e não mude o nível de acesso: Standard é o que vale para quem tem
+   função no app. Anote o **ID do app** e a **chave secreta** (*Configurações → Básico*).
+
+**3. O token — plano A: usuário do sistema** (não vence em 60 dias):
+
+1. business.facebook.com → *Configurações → Usuários → Usuários do sistema → Adicionar*:
+   nome `vekoo-referencias`, função **Funcionário** (não administrador).
+2. *Atribuir ativos*: o **app** (`Vekoo Referências`), a **Página** e a **conta do
+   Instagram** — o mínimo que a tela oferecer para ler conteúdo e insights, nada de
+   gerenciar anúncios.
+3. *Gerar novo token* → o app → expiração **Nunca** → permissões **`instagram_basic`,
+   `instagram_manage_insights`, `pages_read_engagement`, `pages_show_list`** (e
+   `business_management`, se a tela pedir). O token aparece **uma vez**: copie direto para
+   o passo 6.
+
+**4. O token — plano B: usuário de longa duração** (60 dias; o acesso aos dados vence em
+90 sem nova autorização). Só se o usuário do sistema não estiver disponível:
+
+1. *Ferramentas → Explorador da Graph API* → o app → *Token de acesso do usuário* → as
+   mesmas permissões do plano A (mais `ads_read` se o acesso à Página vier pelo Business
+   Manager) → *Gerar* → autorize a Página e o Instagram da Vekoo.
+2. Troque o token curto pelo longo, sem deixar nada no histórico:
+
+```bash
+read -rs SHORT_TOKEN; read -rs META_APP_SECRET    # cole e Enter, sem eco
+curl -sG https://graph.facebook.com/oauth/access_token \
+  -d grant_type=fb_exchange_token -d client_id=<ID do app> \
+  -d client_secret="$META_APP_SECRET" -d fb_exchange_token="$SHORT_TOKEN"
+#  → {"access_token": "...", "expires_in": ~5184000}
+```
+
+**5. O id do Instagram e a versão da API:**
+
+```bash
+read -rs META_ACCESS_TOKEN
+curl -sG https://graph.facebook.com/me/accounts -H "Authorization: Bearer $META_ACCESS_TOKEN" \
+  -d fields='name,instagram_business_account{id,username}'
+#  → o "id" dentro de instagram_business_account é o META_IG_USER_ID
+curl -sG https://graph.facebook.com/debug_token -d input_token="$META_ACCESS_TOKEN" \
+  -d access_token="<ID do app>|$META_APP_SECRET"
+#  → is_valid true, as permissões em scopes, expires_at 0 (plano A) ou a data (plano B)
+```
+
+Se alguma chamada responder que falta o token, troque o cabeçalho `Authorization` por
+`-d access_token="$META_ACCESS_TOKEN"` e me avise — o importador manda o token no cabeçalho
+(para ele nunca aparecer em URL nem em log), e o Passo 0 confirma que a API aceita.
+
+A versão da Graph API é a que o Explorador mostra (ex.: `v25.0`). Sem
+`META_GRAPH_VERSION`, as chamadas usam a versão padrão do app.
+
+**6. Onde guardar:**
+
+```bash
+# .env (dev) e .env.deploy (produção) — nenhum dos dois é versionado:
+META_ACCESS_TOKEN=...
+META_APP_SECRET=...
+META_APP_ID=<ID do app>
+META_IG_USER_ID=<id do instagram_business_account>
+META_GRAPH_VERSION=<versão do Explorador>
+
+# backend/.kamal/secrets
+META_ACCESS_TOKEN=$META_ACCESS_TOKEN
+META_APP_SECRET=$META_APP_SECRET
+```
+
+```yaml
+# backend/config/deploy.yml → env
+  clear:
+    META_APP_ID: <ID do app>
+    META_IG_USER_ID: <id>
+    META_GRAPH_VERSION: <versão>
+  secret:
+    - META_ACCESS_TOKEN
+    - META_APP_SECRET
+```
+
+Como no Vertex: não entre com o `secret:` antes de o token existir.
+
+**7. Vencimento e revogação:** a curadoria mostra um aviso a partir de 14 dias do
+vencimento (do token ou do acesso aos dados) e desliga a importação quando o token deixa de
+valer. Plano B: repita o passo 4 antes dos 60 dias. Emergência: remova o usuário do sistema
+(ou o app) no Business Manager — o token para na hora.
+
 ### TLS
 
 O kamal-proxy emite **Let's Encrypt** para os dois hosts (`syco.vekoo.app` e o
@@ -381,6 +490,7 @@ Restore **ainda não testado**.
 - [ ] Firewall em modo `open`: a origem aceita tráfego que não vem da Cloudflare (§6)
 - [ ] Restore de backup testado uma vez
 - [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3
+- [ ] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`)
 - [ ] Conta de demonstração em produção: conferir se existe (o seed antigo a criava no
   primeiro `db:prepare`) e removê-la na janela do próximo deploy, com ok explícito
 - [ ] Trocar a senha root da VPS, que circulou em texto; o SSH já não aceita senha

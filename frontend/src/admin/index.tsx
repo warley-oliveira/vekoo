@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next"
 import { Link, Navigate, NavLink, Outlet, Route, Routes } from "react-router"
 import { ArrowLeft } from "lucide-react"
 
+import { InstagramTokenBanner } from "@/admin/components/instagram-token-banner"
+import { ReferenceImportPage } from "@/admin/reference-import"
+import { ReferenceImportsPage } from "@/admin/reference-imports"
 import { ReferenceListPage } from "@/admin/reference-list"
 import { ReferenceNewPage } from "@/admin/reference-new"
 import { ReferenceReviewPage } from "@/admin/reference-review"
@@ -22,6 +25,8 @@ export default function AdminApp() {
         <Route path="references" element={<ReferenceListPage />} />
         <Route path="references/new" element={<ReferenceNewPage />} />
         <Route path="references/:referenceId" element={<ReferenceReviewPage />} />
+        <Route path="imports" element={<ReferenceImportsPage />} />
+        <Route path="imports/:importId" element={<ReferenceImportPage />} />
         <Route path="*" element={<Navigate to="references" replace />} />
       </Route>
     </Routes>
@@ -38,17 +43,25 @@ function AdminLayout() {
           <VekooMark />
           <span className="font-mono text-xs tracking-wide text-muted-foreground uppercase">{t("admin.title")}</span>
           <nav aria-label={t("admin.nav.label")} className="flex items-center gap-1">
-            <NavLink
-              to="/admin/references"
-              className={({ isActive }) =>
-                cn(
-                  "rounded-md px-2.5 py-1.5 text-sm transition-colors hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
-                  isActive ? "font-medium text-foreground" : "text-muted-foreground"
-                )
-              }
-            >
-              {t("admin.nav.references")}
-            </NavLink>
+            {(
+              [
+                ["/admin/references", "admin.nav.references"],
+                ["/admin/imports", "admin.nav.imports"],
+              ] as const
+            ).map(([to, label]) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  cn(
+                    "rounded-md px-2.5 py-1.5 text-sm transition-colors hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+                    isActive ? "font-medium text-foreground" : "text-muted-foreground"
+                  )
+                }
+              >
+                {t(label)}
+              </NavLink>
+            ))}
           </nav>
           <Button variant="ghost" size="sm" className="ml-auto" render={<Link to="/" />}>
             <ArrowLeft aria-hidden />
@@ -56,7 +69,9 @@ function AdminLayout() {
           </Button>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+      <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:py-8">
+        {/* Token vencendo ou vencido: em toda a curadoria. */}
+        <InstagramTokenBanner />
         <Outlet />
       </main>
     </div>
