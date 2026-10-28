@@ -13,62 +13,23 @@ Servidor montado do zero em 21/10/2026. O servidor antigo (`107.152.37.137`) nã
 
 ---
 
-## Em andamento — hotfix do Redis (parado em 2026-10-28; nada feito em produção)
+## Hotfix do Redis — no ar desde 2026-10-28 (`da2e0da`)
 
-Produção roda `e6c2eb9` (tag `prod-e6c2eb9`), com o tempo real fora do ar (§8). O hotfix é
-`da2e0da` na branch `hotfix/redis-cable`: e6c2eb9 + o credentials novo (e1de80c) +
-`redis < 6` e a spec do adaptador — nada além. Testado no dev com as imagens reais: o hotfix
-sobe com a chave nova, faz broadcast pelo Redis e responde 200 no `/up` depois do
-`db:prepare`; a e6c2eb9 sobe só com a chave antiga e reproduz o `Gem::LoadError`. A mesma
-correção está na main (`3a29091`, tag `pre-reference-bank`) e na `feat/reference-bank`.
+Produção roda `da2e0da` (branch `hotfix/redis-cable`): a e6c2eb9 (tag `prod-e6c2eb9`) + o
+credentials novo (e1de80c) + `redis < 6` e a spec do adaptador — nada além. Sem medição nem
+dump: produção ainda não tinha assinante, só dado de teste (decisão do usuário). Deploy de
+136 s; a web nova passou no `/up` antes de receber tráfego e só então o worker subiu.
 
-Tudo roda da **worktree do hotfix** — o `deploy.yml` dela é o de produção (o da branch tem
-variáveis que a e6c2eb9 não conhece). Uma shell só, do começo ao fim:
+Conferência: `https://syco.vekoo.app/up` → 200; na web e no worker o adaptador Redis carrega
+(redis 5.4.1) e uma mensagem faz ida e volta pelo Redis; `/cable` pela Cloudflare responde
+`101 Switching Protocols` (sem token, `unauthorized`, como deve); zero "pubsub adapter" nos
+logs dos containers novos. A mesma correção está na main (`3a29091`, tag
+`pre-reference-bank`) e na `feat/reference-bank`.
 
-```bash
-cd ~/projects/vekoo_trimit-hotfix/backend
-# se a worktree sumiu: git -C ~/projects/vekoo_trimit worktree add ~/projects/vekoo_trimit-hotfix hotfix/redis-cable
-set -a; . ~/projects/vekoo_trimit/.env.deploy; set +a
-SSH="ssh -i ~/.ssh/vekoo_deploy deploy@107.152.37.59"; STAMP=$(date +%F-%H%M)
-```
+O `deploy.yml` de produção é o da **worktree do hotfix** (`~/projects/vekoo_trimit-hotfix`) até
+o próximo deploy da main — o da branch tem variáveis que a e6c2eb9 não conhece.
 
-Próximos passos, **um por vez**, conferindo a saída antes do seguinte:
-
-```bash
-# 1. Medição do "antes" (só leitura): Sidekiq, peças e turnos, e os logs de 24 h.
-M=~/projects/vekoo_trimit/backend/script/prod/cable_health.rb
-kamal app exec -q --reuse --roles=web "bin/rails runner 'eval(%q($(base64 -w0 $M)).unpack1(%q(m0)).force_encoding(%q(UTF-8)))'"
-for r in web worker; do printf "logs $r (24h) com 'pubsub adapter': "; kamal app logs -q -r $r --since 24h --grep "pubsub adapter" | grep -v "Running docker" | grep -c "pubsub adapter"; done
-printf "logs web (24h) com 'Completed 500': "; kamal app logs -q -r web --since 24h --grep "Completed 500" | grep -v "Running docker" | grep -c "Completed 500"
-
-# 2a. Dump completo + globals na home do deploy (não há migration, mas é a regra).
-$SSH "mkdir -p ~/backups && docker exec vekoo-api-db pg_dump -U vekoo -Fc vekoo_production > ~/backups/pre-hotfix-$STAMP.dump \
-  && docker exec vekoo-api-db pg_dumpall -U vekoo --globals-only > ~/backups/pre-hotfix-globals-$STAMP.sql"
-# 2b. Validar: tamanho perto do backup da noite (nunca zero) e o TABLE DATA das tabelas com dado.
-$SSH "ls -l ~/backups/pre-hotfix-$STAMP.dump /var/backups/vekoo | tail -4"
-$SSH "docker exec -i vekoo-api-db pg_restore --list < ~/backups/pre-hotfix-$STAMP.dump | grep -c 'TABLE DATA'; \
-  docker exec -i vekoo-api-db pg_restore --list < ~/backups/pre-hotfix-$STAMP.dump | grep 'TABLE DATA public' \
-  | grep -E ' (accounts|organizations|brand_cores|brand_core_versions|pieces|carousels) '"
-# 2c. Copiar para fora do servidor e conferir o hash dos dois lados.
-mkdir -p ~/backups/vekoo && scp -i ~/.ssh/vekoo_deploy "deploy@107.152.37.59:backups/pre-hotfix-$STAMP.*" ~/backups/vekoo/
-$SSH "sha256sum ~/backups/pre-hotfix-$STAMP.*"; sha256sum ~/backups/vekoo/pre-hotfix-$STAMP.*
-
-# 3. Containers guardados (a volta precisa do da e6c2eb9; retain_containers: 3).
-kamal app containers -q
-
-# 4. Deploy. O kamal-proxy só troca o tráfego com /up 200 em até 120 s; se o container
-#    novo falhar, o Kamal o para e a e6c2eb9 segue atendendo — e o worker novo nem sobe.
-kamal deploy
-
-# 5. Conferência: no app, o tempo real fica "online"; editar e publicar a marca sem erro;
-#    um onboarding até o fim; e nenhum "pubsub adapter" no container novo:
-for r in web worker; do kamal app logs -q -r $r --since 15m --grep "pubsub adapter" | grep -v "Running docker" | grep -c "pubsub adapter"; done
-
-# 6. Medição de novo (passo 1) e comparar. Os jobs em retry com Gem::LoadError se resolvem
-#    nas próximas tentativas: o AgentTurnJob vira no-op; o RenderPieceJob redesenha uma vez.
-```
-
-**Voltar** (só se o deploy passou e algo der errado depois): a e6c2eb9 **não sobe com a
+**Voltar para a e6c2eb9** (da worktree do hotfix, com o `.env.deploy` carregado): ela **não sobe com a
 `RAILS_MASTER_KEY` nova** — o `kamal rollback` cria o container com os segredos desta
 máquina, então a chave antiga entra só na subshell (lida do git, sem aparecer na tela):
 
@@ -605,7 +566,7 @@ Restore **ainda não testado**.
   terminam e o job falha depois (o render volta a rodar a cada nova tentativa do Sidekiq).
   Correção: `gem "redis", ">= 4.0.1", "< 6"` (resolve 5.4.1 com a `redis-client` 0.30.1) e
   uma spec que carrega o adaptador. Dev (`async`) e test (`test`) nunca passam por ele.
-  **Hotfix pronto e testado, falta subir** — ver "Em andamento" no topo
+  **Corrigido em produção** em 2026-10-28 pelo hotfix `da2e0da` — ver o topo
 - [ ] **IP real** — em vez de ler `CF-Connecting-IP`: `proxy.forward_headers: true` no
   `deploy.yml` + `config.action_dispatch.trusted_proxies` com as faixas da Cloudflare.
   Conserta o `request.remote_ip` inteiro, não só a sessão: hoje o `rate_limit` do login
