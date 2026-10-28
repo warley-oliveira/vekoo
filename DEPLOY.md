@@ -245,7 +245,10 @@ entra no código, no chat ou no histórico do shell.
 **Passo 0 (obrigatório antes de usar):** com o token pronto, rode
 `bin/rails 'references:instagram_smoke[<@ de uma conta profissional conhecida>]'`. Se a
 resposta for `permissionDenied`, o acesso Standard não libera dado de terceiros — **pare**:
-o caminho passa a ser App Review com verificação da empresa.
+o caminho passa a ser App Review com verificação da empresa. Em 2026-10-28 (usuário do
+sistema, v26.0) o Standard **liberou**: conta profissional de terceiro volta com os ~50
+posts numa chamada, curtidas e comentários inclusos. Conta pessoal, privada ou inexistente
+volta igual — HTTP 400 `(#110) Invalid user id` —, então a tela não tem como separar os três.
 
 **1. Pré-requisitos** (uma vez):
 
@@ -304,11 +307,11 @@ curl -sG https://graph.facebook.com/debug_token -d input_token="$META_ACCESS_TOK
 #  → is_valid true, as permissões em scopes, expires_at 0 (plano A) ou a data (plano B)
 ```
 
-Se alguma chamada responder que falta o token, troque o cabeçalho `Authorization` por
-`-d access_token="$META_ACCESS_TOKEN"` e me avise — o importador manda o token no cabeçalho
-(para ele nunca aparecer em URL nem em log), e o Passo 0 confirma que a API aceita.
+O token vai no cabeçalho `Authorization: Bearer` (nunca na URL nem em log) — o Meta
+aceita, conferido no Passo 0.
 
-A versão da Graph API é a que o Explorador mostra (ex.: `v25.0`). Sem
+A versão da Graph API é a que o Explorador mostra (no Passo 0, em 2026-10-28: `v26.0` — é a
+que o cabeçalho `facebook-api-version` da resposta traz). Sem
 `META_GRAPH_VERSION`, as chamadas usam a versão padrão do app.
 
 **6. Onde guardar:**
