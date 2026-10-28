@@ -7,7 +7,7 @@ Environment: **WSL2 Ubuntu** — use Linux commands only.
 
 - **Backend:** Ruby on Rails 8.1 (API-only), Ruby 3.4, PostgreSQL 16, Sidekiq (ActiveJob), RSpec.
 - **Frontend:** React 19, Vite, TypeScript (strict), Tailwind v4, shadcn/ui (new-york), SWR, Motion, sonner, react-hook-form + zod, TanStack Table.
-- **Infra (dev):** Postgres + Redis via Docker Compose. The Rails app and Vite run natively on WSL2.
+- **Infra (dev):** Postgres 16 with pgvector (`pgvector/pgvector:0.8.7-pg16-trixie`) + Redis via Docker Compose. The Rails app and Vite run natively on WSL2.
 
 ## Layout
 
@@ -183,7 +183,16 @@ as duas.
 `palette.colors.2.hex`, defaults dos estilos) espelhado em
 `frontend/src/lib/brand-core.ts` (tipos, enums e zod por etapa) — mudou um, muda o
 outro. Completude e mínimo em `BrandCore::Completeness`; a geração lê só
-`published_document` via `BrandCore#generation_contract`. A etapa **"produtos & ofertas"**
+`published_document` via `BrandCore#generation_contract`. A identidade carrega também
+`niche` e `archetypes: { primary, secondary }` ("Nicho" e "Estilo da marca" no passo de
+identidade; o onboarding deduz o nicho no tema `brand` e o estilo no tema `voice`), nos
+códigos da taxonomia do banco de referências — dentro do documento de propósito, para
+versionar como o resto. Marca publicada antes do campo não ganha nicho no rascunho:
+`BrandCore#generation_niche` lê o publicado e, sem ele, deduz por
+`BrandCore::NicheInference` (palavra-chave no ramo, depois no conceito; padrão só para
+`restaurant`/`health`/`education`; loja e serviço sem pista ficam **vazios** — nicho
+errado é pior que nenhum). `bin/rails brands:infer_niche` (`DRY_RUN=1`) preenche só o
+rascunho das nunca publicadas. A etapa **"produtos & ofertas"**
 (`document.offers.items`: nome, preço, descrição, vigência — tudo texto livre) é
 o conhecimento de que o agente tira todo número que a peça mostra; a etapa
 "anotações" é um texto livre e opcional (`document.notes.text`) para o que sobra
@@ -284,6 +293,25 @@ voltas invalida a assinatura do pensamento (400). Foto gerada entra em
 `Ai::GeminiImage` (Nano Banana 2, `gemini-3.1-flash-image`, Vertex AI por ADC,
 `bin/rails images:smoke` testa). O "gerar" do seletor de imagem do editor
 continua (`components/images/image-generator.tsx`).
+
+**Banco de referências (interno — o assinante nunca vê):** cards de padrão
+(`ReferenceCard`): posts reais analisados e guardados como texto estruturado — gancho,
+estrutura, visual, **função** do copy (nunca a frase), por que funciona, replicabilidade
+e métricas —, que o agente de criação vai consultar na geração. É acervo da plataforma,
+como os layouts: sem organização e sem marca. Nenhuma rota, serializer ou canal fora de
+`Admin::` toca o modelo, e a peça guarda em `pieces.reference_ids` os cards usados sem
+que o `PieceSerializer` os mostre. A taxonomia tem **uma fonte só**:
+`backend/config/reference_taxonomy.yml` (`Taxonomy`: nicho, porte, arquétipos, objetivo,
+formato, tipo de gancho, replicabilidade 1–3, origem, status) → `bin/rails
+taxonomy:export` gera `frontend/src/lib/taxonomy.ts` (spec falha se ficar velho); rótulos
+de tela em `locales/<idioma>/taxonomy.json`, descrição para o modelo no próprio YAML. A
+análise é um JSON Schema (`ReferenceCard::Analysis`, `json_schemer`), leve no rascunho e
+estrito para publicar (é também o contrato da saída do modelo); engajamento relativo é
+sempre a conta (curtidas + comentários) / mediana dos últimos 30 posts da conta, nulo sem
+os três números. Curadoria: `draft → in_review → published`, `archived` = rejeitado ou
+aposentado, sempre com motivo; `version` sobe a cada mudança de conteúdo depois da primeira
+publicação. Embedding em `vector(768)` (pgvector + gem `neighbor`, cosseno, busca exata —
+sem HNSW de propósito, o filtro duro vem antes).
 
 **Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
 nunca é vinculado depois; não existe tela de associação manual. A organização tem

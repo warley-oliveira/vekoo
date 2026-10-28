@@ -94,7 +94,12 @@ volumes:
 
 accessories:
   db:
-    image: postgres:16.10           # fixado no patch: major novo recusa PGDATA existente
+    # Postgres 16 + pgvector (embedding do banco de referências), fixado na
+    # tag e no digest: major novo recusa PGDATA existente, e o Debian tem que
+    # ser o da imagem anterior — trixie, glibc 2.41, conferido no servidor em
+    # 2026-10-27 — para a collation não mudar. O digest é o da imagem testada
+    # no dev. Só vale depois de `kamal accessory reboot db` (DEPLOY.md §2).
+    image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:40d828eda66737aaacb934387a337babf1455ebd56e9bdd13fc08e211257c972
     host: 107.152.37.59
     # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
     # do iptables e IGNORA o ufw, expondo o Postgres à internet.

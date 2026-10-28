@@ -25,6 +25,7 @@ en:
       too_many_items: "has too many items"
       too_small: "is too small"
       less_than_or_equal_to: "must be less than or equal to %{count}"
+      invalid_transition: "can't go from %{from} to %{to}"
 
   auth:
     email_not_found: "We couldn't find an account with that email."
@@ -109,6 +110,7 @@ en:
       brand_asset: "brand asset"
       brand_core_version: "brand version"
       piece: "piece"
+      reference_card: "reference card"
     attributes:
       account:
         name: "name"
@@ -142,3 +144,15 @@ en:
         engine_id: "piece type"
         format: "format"
         status: "status"
+      reference_card:
+        status: "status"
+        origin: "origin"
+        niche: "niche"
+        size: "size"
+        archetypes: "archetypes"
+        objective: "objective"
+        format: "format"
+        suggested_layout_id: "suggested layout"
+        analysis: "analysis"
+        source: "source"
+        archived_reason: "reason"

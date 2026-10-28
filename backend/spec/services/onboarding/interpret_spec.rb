@@ -240,4 +240,79 @@ RSpec.describe Onboarding::Interpret do
       expect(result.model).to eq("claude-opus-5")
     end
   end
+
+  # O nicho e o estilo vão para o documento — é deles que a recuperação de
+  # referências parte. Ninguém pergunta: o modelo deduz do que ela contou.
+  describe "nicho e estilo da marca" do
+    # A voz vem depois do tema `brand`, que só fecha com o nome — e a
+    # identidade sem nome não grava.
+    def named!
+      brand.assign_section("identity", brand.full_document["identity"].merge("name" => "Padaria do João"))
+    end
+
+    it "marca: o nicho deduzido do que ela vende vai para identity.niche" do
+      _, outcome, document = apply("brand", { "fields" => {
+        "name" => "Padaria do João", "concept" => "Pão de fermentação natural.", "segmentCode" => "restaurant",
+        "niche" => "food_beverage"
+      } })
+
+      expect(document["identity"]["niche"]).to eq("food_beverage")
+      expect(outcome.touched).to eq([ "brand" ])
+    end
+
+    it "nicho fora da taxonomia não entra" do
+      _, _, document = apply("brand", { "fields" => { "name" => "Discoteca", "concept" => "Vinis raros.", "niche" => "music" } })
+
+      expect(document["identity"]["niche"]).to eq("")
+    end
+
+    it "voz: o estilo inferido vai para identity.archetypes, principal primeiro" do
+      named!
+      _, outcome, document = apply("voice", { "fields" => {
+        "example" => "Saiu do forno agora. Corre.", "essence" => "Curta e quente.", "tones" => [ "warm" ],
+        "archetypes" => [ "popular_warm", "inventado", "natural_artisanal", "bold_energetic" ]
+      } })
+
+      expect(document["identity"]["archetypes"]).to eq("primary" => "popular_warm", "secondary" => "natural_artisanal")
+      expect(outcome.touched).to eq([ "voice" ])
+    end
+
+    it "um estilo só: fica sem secundário" do
+      named!
+      _, _, document = apply("voice", { "fields" => { "example" => "Bom dia.", "archetypes" => [ "caring_welcoming" ] } })
+
+      expect(document["identity"]["archetypes"]).to eq("primary" => "caring_welcoming", "secondary" => "")
+    end
+
+    it "estilo e nicho em resposta de outro tema são descartados" do
+      result = interpret("audience", { "fields" => {
+        "audience" => "Vizinhos.", "archetypes" => [ "premium_minimal" ], "niche" => "pet"
+      } })
+
+      expect(result.fields.keys).to eq([ "audience" ])
+    end
+
+    it "sem o modelo, só a palavra explícita decide o nicho" do
+      result = described_class.call(brand, topic: "brand", text: "Lar Imóveis, imobiliária de alto padrão",
+        follow_up_available: true, chat: nil)
+      vague = described_class.call(brand, topic: "brand", text: "Casa Verde, loja de presentes",
+        follow_up_available: true, chat: nil)
+
+      expect(result.fields["niche"]).to eq("real_estate")
+      expect(vague.fields).not_to have_key("niche")
+    end
+
+    it "o modelo recebe o que já está gravado, para não apagar" do
+      brand.assign_section("identity", brand.full_document["identity"].merge(
+        "name" => "Banho de Gato", "niche" => "pet", "archetypes" => { "primary" => "caring_welcoming", "secondary" => "" }
+      ))
+      chat = chat_saying(JSON.generate("fields" => {}))
+
+      described_class.call(brand, topic: "voice", text: "Oi.", follow_up_available: true, chat: chat)
+
+      expect(chat).to have_received(:answer) { |messages:, **|
+        expect(messages.first[:content]).to include('"niche":"pet"', '"archetypes":["caring_welcoming"]')
+      }
+    end
+  end
 end

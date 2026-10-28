@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_27_213003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "vector"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -320,6 +321,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.string "format", null: false
     t.uuid "organization_id", null: false
     t.jsonb "provenance", default: {}, null: false
+    t.uuid "reference_ids", default: [], null: false, array: true
     t.datetime "rendered_at"
     t.string "status", default: "queued", null: false
     t.string "title", null: false
@@ -333,6 +335,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.index ["organization_id", "created_at"], name: "index_pieces_on_organization_id_and_created_at"
     t.index ["organization_id", "engine_id"], name: "index_pieces_on_organization_id_and_engine_id"
     t.index ["organization_id"], name: "index_pieces_on_organization_id"
+    t.index ["reference_ids"], name: "index_pieces_on_reference_ids", using: :gin
+  end
+
+  create_table "reference_cards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "analysis", default: {}, null: false
+    t.string "archetypes", default: [], null: false, array: true
+    t.text "archived_reason"
+    t.datetime "created_at", null: false
+    t.uuid "curated_by_id"
+    t.vector "embedding", limit: 768
+    t.string "format"
+    t.string "hook_type"
+    t.string "niche"
+    t.string "objective"
+    t.string "origin", default: "external", null: false
+    t.datetime "published_at"
+    t.decimal "relative_engagement", precision: 8, scale: 2
+    t.integer "replicability"
+    t.string "size"
+    t.jsonb "source", default: {}, null: false
+    t.string "status", default: "draft", null: false
+    t.string "suggested_layout_id"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 1, null: false
+    t.index ["archetypes"], name: "index_reference_cards_on_archetypes", using: :gin
+    t.index ["curated_by_id"], name: "index_reference_cards_on_curated_by_id"
+    t.index ["niche"], name: "index_reference_cards_on_niche"
+    t.index ["status", "format", "replicability"], name: "index_reference_cards_on_status_and_format_and_replicability"
   end
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -410,6 +440,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
   add_foreign_key "pieces", "brand_core_versions", on_delete: :nullify
   add_foreign_key "pieces", "brand_cores"
   add_foreign_key "pieces", "organizations"
+  add_foreign_key "reference_cards", "accounts", column: "curated_by_id", on_delete: :nullify
   add_foreign_key "sessions", "accounts"
   add_foreign_key "uploads", "accounts", on_delete: :nullify
   add_foreign_key "uploads", "organizations"

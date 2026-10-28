@@ -82,11 +82,78 @@ curl -s -X POST https://syco.vekoo.app/login -H 'Content-Type: application/json'
 | Lock preso após queda | `kamal lock release` |
 
 Containers no host: `kamal-proxy`, `vekoo-api-web-<sha>`, `vekoo-api-worker-<sha>`,
-`vekoo-api-db` (Postgres 16.10), `vekoo-api-redis` (Redis 7.4, AOF ligado).
+`vekoo-api-db` (Postgres 16 + pgvector, tag fixada no `deploy.yml`), `vekoo-api-redis` (Redis 7.4, AOF ligado).
 Volumes nomeados: `vekoo_pgdata`, `vekoo_redis`, `vekoo_storage` (uploads do Active Storage).
 
 Acesso direto: `ssh -i ~/.ssh/vekoo_deploy deploy@107.152.37.59` (o usuário
 `deploy` está no grupo `docker`, sem sudo).
+
+### Trocar a imagem do Postgres (pgvector) — uma vez
+
+O banco de referências guarda embedding em `vector(768)`: o accessory `db` passa de
+`postgres:16.10` para `pgvector/pgvector:0.8.7-pg16-trixie` (Postgres 16.15), fixada
+na **tag específica e no digest** da imagem testada no dev — nunca `pg16` ou `latest`.
+Mesma major, então o `PGDATA` sobe sem conversão; **mesmo Debian**: o `postgres:16.10`
+do servidor é trixie com glibc 2.41 (conferido em 2026-10-27), e a imagem nova também —
+a ordenação de texto dos índices não muda. Mudar o `deploy.yml` não basta:
+a imagem só troca com `kamal accessory reboot db`. **Isso tem que acontecer antes do
+primeiro deploy com a migration `20261027213001_enable_vector`** — sem a extensão, o
+`db:prepare` falha, o healthcheck não passa e o Kamal mantém o container antigo.
+
+Regras: janela de madrugada (longe do backup das 03:20), com horário confirmado; o
+dump **validado e copiado para fora do servidor** antes de qualquer outra coisa; e
+**ok explícito antes de cada passo destrutivo** (⚠ abaixo). De `backend/` com
+`.env.deploy` carregado:
+
+```bash
+SSH="ssh -i ~/.ssh/vekoo_deploy deploy@107.152.37.59"
+STAMP=$(date +%F-%H%M)
+
+# 0. Pré-checagem (só leitura): tem que dizer trixie e glibc 2.41, como em 2026-10-27.
+#    Se mudou, PARE: a tag no deploy.yml tem que acompanhar a base. Anote a collation.
+$SSH "docker exec vekoo-api-db sh -c 'grep PRETTY /etc/os-release; postgres --version'"
+$SSH "docker exec vekoo-api-db psql -U vekoo -d vekoo_production -tAc \
+  \"select datcollversion from pg_database where datname = current_database()\""
+
+# 1. Dump completo na home do `deploy` (que ele sempre pode escrever)…
+$SSH "mkdir -p ~/backups \
+  && docker exec vekoo-api-db pg_dump -U vekoo -Fc vekoo_production > ~/backups/pre-pgvector-$STAMP.dump \
+  && docker exec vekoo-api-db pg_dumpall -U vekoo --globals-only > ~/backups/pre-pgvector-globals-$STAMP.sql"
+
+# 2. …validado: tamanho (perto do backup da última noite, nunca zero) e conteúdo
+#    (as tabelas com dado estão lá: TABLE DATA de accounts, brand_cores, pieces…).
+$SSH "ls -l ~/backups/pre-pgvector-$STAMP.dump /var/backups/vekoo | tail -4"
+$SSH "docker exec -i vekoo-api-db pg_restore --list < ~/backups/pre-pgvector-$STAMP.dump \
+  | grep -c 'TABLE DATA'; docker exec -i vekoo-api-db pg_restore --list < ~/backups/pre-pgvector-$STAMP.dump \
+  | grep 'TABLE DATA public' | grep -E ' (accounts|organizations|brand_cores|brand_core_versions|pieces|piece_versions) '"
+
+# 3. …e copiado para fora do servidor, conferido pelo hash dos dois lados.
+mkdir -p ~/backups/vekoo
+scp -i ~/.ssh/vekoo_deploy "deploy@107.152.37.59:backups/pre-pgvector-$STAMP.*" ~/backups/vekoo/
+$SSH "sha256sum ~/backups/pre-pgvector-$STAMP.*"; sha256sum ~/backups/vekoo/pre-pgvector-$STAMP.*
+
+# 4. ⚠ Para a API e o worker (nada escreve durante a troca).
+kamal app stop
+
+# 5. ⚠ Troca a imagem (para, remove e sobe o container no mesmo volume).
+kamal accessory reboot db
+
+# 6. Confere: 16.15 · o mesmo número de contas · vector 0.8.7 · as duas versões de
+#    collation iguais (2.41). Se divergirem — não deve, a glibc é a mesma —, PARE antes
+#    do passo 7: a correção é `REINDEX DATABASE vekoo_production;` seguido de
+#    `ALTER DATABASE vekoo_production REFRESH COLLATION VERSION;`, com a API ainda parada.
+$SSH "docker exec vekoo-api-db psql -U vekoo -d vekoo_production -tAc \
+  \"select version(); select count(*) from accounts; \
+    select default_version from pg_available_extensions where name = 'vector'; \
+    select datcollversion, pg_database_collation_actual_version(oid) from pg_database where datname = current_database()\""
+
+# 7. Sobe a API de novo; /up e login (ver acima). Só então o deploy da Fase 1.
+kamal app start
+```
+
+Voltar atrás: versões *minor* de uma mesma major nunca mudam o formato em disco, então
+devolver `image: postgres:16.10` ao `deploy.yml` e rodar `kamal accessory reboot db` de
+novo sobe o mesmo volume. Último recurso: `pg_restore` do dump do passo 1 num volume novo.
 
 ### TLS
 
@@ -215,7 +282,9 @@ Restore **ainda não testado**.
   `root:root` e o primeiro upload morre com `EACCES` (o container roda como 1000).
 - **`RAILS_MAX_THREADS` do worker (6) ≥ `:concurrency` do `config/sidekiq.yml` (5)**,
   senão aparece `ConnectionTimeoutError` intermitente.
-- **Postgres fixado em `16.10`.** Um major novo se recusa a subir sobre o `PGDATA` existente.
+- **Postgres fixado na tag (`pgvector/pgvector:0.8.7-pg16-trixie`).** Um major novo se
+  recusa a subir sobre o `PGDATA` existente, e outro Debian muda a collation da glibc
+  (índices de texto passam a ordenar diferente). Troca de imagem: roteiro em §2.
 - **Builder do buildx velho:** se o build morrer em `booting buildkit` com *bind source
   path does not exist*, rode `docker buildx rm kamal-local-docker-container` (o Kamal recria).
 - **Fontes:** a imagem traz `fontconfig` + DejaVu como reserva do Pango; as fontes

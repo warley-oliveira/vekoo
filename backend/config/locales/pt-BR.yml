@@ -29,6 +29,7 @@ pt-BR:
       too_many_items: "tem itens demais"
       too_small: "é pequeno demais"
       less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+      invalid_transition: "não pode ir de %{from} para %{to}"
 
   auth:
     email_not_found: "Não encontramos uma conta com esse e-mail."
@@ -122,6 +123,7 @@ pt-BR:
       brand_asset: "ativo da marca"
       brand_core_version: "versão da marca"
       piece: "peça"
+      reference_card: "card de referência"
     attributes:
       account:
         name: "nome"
@@ -156,3 +158,15 @@ pt-BR:
         engine_id: "tipo de peça"
         format: "formato"
         status: "situação"
+      reference_card:
+        status: "situação"
+        origin: "origem"
+        niche: "nicho"
+        size: "porte"
+        archetypes: "arquétipos"
+        objective: "objetivo"
+        format: "formato"
+        suggested_layout_id: "layout sugerido"
+        analysis: "análise"
+        source: "fonte"
+        archived_reason: "motivo"

@@ -15,10 +15,10 @@ module Onboarding
     # Os campos que cada tema pode escrever. Fora daqui o que o modelo
     # devolver é descartado: a resposta sobre o público não reescreve o nome.
     FIELDS = {
-      "brand" => %w[name concept segment segmentCode],
+      "brand" => %w[name concept segment segmentCode niche],
       "audience" => %w[audience],
       "differential" => %w[positioning],
-      "voice" => %w[example essence tones toneNote],
+      "voice" => %w[example essence tones toneNote archetypes],
       "banned" => %w[bannedWords toneNote],
       "offers" => %w[offers],
       "logo" => %w[],
@@ -101,6 +101,7 @@ module Onboarding
       voice = @document["voice"]
       {
         name: identity["name"], concept: identity["concept"], segment: identity["segment"],
+        niche: identity["niche"], archetypes: identity["archetypes"].values_at("primary", "secondary").compact_blank,
         audience: identity["audience"], positioning: identity["positioning"],
         instagram: identity["instagram"], address: identity["address"],
         essence: voice["essence"], tones: voice["tones"], toneNote: voice["toneNote"],
@@ -148,12 +149,21 @@ module Onboarding
       when "notes" then value.to_s.strip.first(schema::NOTES)
       when "instagram" then line(value, schema::SHORT).delete_prefix("@")
       when "segmentCode" then BrandCore::Onboarding::SEGMENTS.include?(value.to_s) ? value.to_s : nil
+      when "niche" then Taxonomy::NICHES.include?(value.to_s) ? value.to_s : nil
+      when "archetypes" then archetypes(value)
       when "tones" then Array(value).map(&:to_s).select { |tone| schema::TONES.include?(tone) }.uniq.first(3)
       when "bannedWords" then Array(value).filter_map { |word| line(word, schema::SHORT).presence }.uniq.first(schema::MAX_LIST)
       when "colors" then Array(value).filter_map { |hex| BrandCore::PaletteBuilder.normalize(hex) }.uniq.first(3)
       when "displayFont", "utilityFont" then line(value, schema::SHORT)
       when "offers" then offers(value)
       end
+    end
+
+    # O modelo responde em lista — principal primeiro —, o documento guarda
+    # os dois nomeados.
+    def archetypes(value)
+      picked = Array(value).map(&:to_s).select { |code| Taxonomy::ARCHETYPES.include?(code) }.uniq
+      { "primary" => picked[0], "secondary" => picked[1].to_s } if picked.any?
     end
 
     def offers(value)
@@ -210,10 +220,17 @@ module Onboarding
 
     # "Padaria do João, pão de fermentação natural" → nome antes da vírgula,
     # o resto é o que vende. Sem separador, a frase inteira é as duas coisas.
+    #
+    # O nicho sai pela regra de palavras (`BrandCore::NicheInference`) — com o
+    # modelo é ele quem classifica; sem ele, só a palavra explícita decide.
     def brand_from(text)
       name, rest = text.split(/\s*(?:[,.:;—–]|\s-\s)\s*/, 2)
       concept = rest.presence || text
-      { "name" => name, "concept" => concept, "segment" => concept }
+      fields = { "name" => name, "concept" => concept, "segment" => concept }
+      return fields if @document["identity"]["niche"].present?
+
+      niche = BrandCore::NicheInference.infer(segment: concept, segment_code: @brand_core.onboarding_segment)
+      niche ? fields.merge("niche" => niche) : fields
     end
 
     def offer_from(row)

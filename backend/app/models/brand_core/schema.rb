@@ -73,7 +73,8 @@ module BrandCore::Schema
     {
       "identity" => {
         "name" => "", "segment" => "", "concept" => "", "audience" => "", "positioning" => "",
-        "characters" => [], "address" => "", "instagram" => "", "networks" => []
+        "characters" => [], "address" => "", "instagram" => "", "networks" => [],
+        "niche" => "", "archetypes" => { "primary" => "", "secondary" => "" }
       },
       "palette" => { "colors" => [] },
       "typography" => {
@@ -148,8 +149,23 @@ module BrandCore::Schema
       "instagram" => handle(raw["instagram"]),
       "networks" => items(raw["networks"]) { |n|
         { "network" => enum(n["network"], NETWORKS, "other"), "handle" => text(n["handle"], LINE) }
-      }
+      },
+      # O nicho e o estilo da marca, nos códigos de `Taxonomy` — os mesmos do
+      # banco de referências, que é onde a geração os cruza. `segment` continua
+      # sendo o texto que a pessoa usou; `niche` é a classificação.
+      "niche" => enum(raw["niche"].to_s, Taxonomy::NICHES, ""),
+      "archetypes" => normalize_archetypes(raw["archetypes"])
     }
+  end
+
+  # Principal e secundário, nessa ordem. Secundário sem principal sobe, e o
+  # repetido some: a forma corrige em vez de reclamar, porque o onboarding
+  # também escreve aqui, e uma inferência repetida não pode derrubar a seção
+  # inteira da identidade.
+  def normalize_archetypes(raw)
+    raw = raw.respond_to?(:to_h) ? raw.to_h.stringify_keys : {}
+    picked = raw.values_at("primary", "secondary").map(&:to_s).select { |code| Taxonomy::ARCHETYPES.include?(code) }.uniq
+    { "primary" => picked[0].to_s, "secondary" => picked[1].to_s }
   end
 
   def normalize_palette(raw)

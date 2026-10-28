@@ -25,6 +25,10 @@ class Piece < ApplicationRecord
   # peça fica.
   belongs_to :agent_turn, optional: true
 
+  # Os cards do banco de referências que o agente usou para compor. Registro
+  # interno: nenhuma resposta da API do assinante o mostra.
+  normalizes :reference_ids, with: ->(ids) { Array(ids).compact_blank.uniq }
+
   has_many_attached :images
   has_many :versions, -> { order(:created_at) }, class_name: "PieceVersion", dependent: :destroy
   belongs_to :current_version, class_name: "PieceVersion", optional: true

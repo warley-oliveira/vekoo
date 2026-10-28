@@ -10,10 +10,12 @@ module Onboarding
   module Fields
     Outcome = Struct.new(:touched, :missing_font, :kept_font, keyword_init: true)
 
+    # Campo da identidade → o tema que ele fecha. O estilo (`archetypes`) é
+    # inferido junto da voz e não fecha tema nenhum sozinho.
     IDENTITY = {
-      "name" => "brand", "concept" => "brand", "segment" => "brand",
+      "name" => "brand", "concept" => "brand", "segment" => "brand", "niche" => "brand",
       "audience" => "audience", "positioning" => "differential",
-      "instagram" => nil, "address" => nil
+      "instagram" => nil, "address" => nil, "archetypes" => nil
     }.freeze
 
     module_function

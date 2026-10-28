@@ -229,6 +229,18 @@ class BrandCore < ApplicationRecord
     }
   end
 
+  # O nicho que a geração usa: o da marca publicada; sem ele, o deduzido do
+  # que ela publicou — a marca de antes do campo não ganha nicho no rascunho
+  # (isso apareceria como "alteração não publicada" para quem nunca mexeu).
+  # Nunca lê o rascunho.
+  def generation_niche
+    return nil unless published?
+
+    document = BrandCore::Schema.complete(published_document)
+    document.dig("identity", "niche").presence ||
+      BrandCore::NicheInference.call(document, segment_code: onboarding_segment)
+  end
+
   # O tema do editor de carrossel derivado dos papéis da paleta: o carrossel
   # continua guardando cores relativas (`ink`, `accent`), e é este mapa que
   # as traduz para a marca. Lê a publicação quando há; senão, o rascunho —

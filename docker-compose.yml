@@ -4,7 +4,10 @@
 
 services:
   postgres:
-    image: postgres:16
+    # Postgres 16 com pgvector (o embedding do banco de referências). Mesma
+    # major e mesmo Debian (trixie) da imagem oficial: o volume existente sobe
+    # sem conversão e a collation da glibc não muda.
+    image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:40d828eda66737aaacb934387a337babf1455ebd56e9bdd13fc08e211257c972
     container_name: ${COMPOSE_PROJECT_NAME}_postgres
     restart: unless-stopped
     ports:
