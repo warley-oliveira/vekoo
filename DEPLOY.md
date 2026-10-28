@@ -59,16 +59,19 @@ cd backend && kamal deploy > /tmp/kamal.log 2>&1; echo "exit=$?"; tail -3 /tmp/k
   que falhou parece sucesso.
 - `db:prepare` roda no entrypoint do container web antes de a porta abrir: as
   migrations aplicam sozinhas e o healthcheck só passa com o schema no lugar. Num
-  banco vazio ele também roda o seed.
+  banco vazio ele também roda o seed — que em produção aplica **só o acervo** (temas,
+  imagens, paletas): a conta de demonstração, que tem a senha no código, só nasce em
+  development e test (`db/seeds.rb`).
 - Um deploy leva de 1 a 2 minutos com cache. O primeiro `kamal setup` levou cerca de 4 minutos.
 
 Conferir:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' https://syco.vekoo.app/up       # 200
+# A conta de demonstração não existe em produção: o login dela tem que falhar.
 curl -s -X POST https://syco.vekoo.app/login -H 'Content-Type: application/json' \
   -d '{"session":{"email":"marina.duarte@exemplo.com.br","password":"carrossel123"}}' \
-  -o /dev/null -w '%{http_code}\n'                                     # 201
+  -o /dev/null -w '%{http_code}\n'                                     # 401
 ```
 
 | Situação | Comando (em `backend/`, com `.env.deploy` carregado) |
@@ -78,7 +81,7 @@ curl -s -X POST https://syco.vekoo.app/login -H 'Content-Type: application/json'
 | Logs | `kamal app logs -f` · `kamal app logs -r worker` · `kamal proxy logs` |
 | Console Rails / shell | `kamal console` · `kamal shell` |
 | psql | `kamal dbc` |
-| Rodar seed de novo (idempotente) | `kamal seed` |
+| Reaplicar o acervo (idempotente; em produção não cria conta) | `kamal seed` |
 | Lock preso após queda | `kamal lock release` |
 
 Containers no host: `kamal-proxy`, `vekoo-api-web-<sha>`, `vekoo-api-worker-<sha>`,
@@ -154,6 +157,83 @@ kamal app start
 Voltar atrás: versões *minor* de uma mesma major nunca mudam o formato em disco, então
 devolver `image: postgres:16.10` ao `deploy.yml` e rodar `kamal accessory reboot db` de
 novo sobe o mesmo volume. Último recurso: `pg_restore` do dump do passo 1 num volume novo.
+
+### Vertex AI em produção (conta de serviço) — uma vez, antes da Fase 3
+
+O Vertex AI atende duas coisas: a geração de imagens (Nano Banana — a ferramenta de
+foto do agente e o "gerar" do editor) e o embedding do banco de referências. Sem ele a
+API responde "indisponível" e não cobra nada, o agente compõe sem foto gerada e os
+cards publicam sem vetor (a semelhança não pontua na busca). Em 2026-10-28 a produção
+roda `e6c2eb9`, anterior às duas funções; o primeiro deploy que as leva já deve ter isto
+pronto.
+
+A credencial é uma **conta de serviço dedicada**, só com o papel **Vertex AI User** —
+nunca o ADC pessoal de alguém —, e a chave vai como **segredo do Kamal**, em base64 (o
+env-file do Docker não aceita valor com várias linhas). `Ai::Vertex` lê
+`GOOGLE_CREDENTIALS_BASE64`; segredo inválido deixa tudo indisponível, com log, e não
+cai em outra identidade.
+
+**1. No console do Google Cloud** (o projeto do `GOOGLE_CLOUD_PROJECT` do `.env`):
+
+1. *APIs e serviços* → confirme que a **Vertex AI API** (`aiplatform.googleapis.com`)
+   está ativada.
+2. *IAM e administrador* → *Contas de serviço* → *Criar conta de serviço*: nome
+   `vekoo-api-vertex`, descrição "API de produção: imagens e embedding".
+3. *Conceder acesso ao projeto*: **só** o papel **Vertex AI User**
+   (`roles/aiplatform.user`). Pule "conceder acesso a usuários".
+4. Na conta criada → *Chaves* → *Adicionar chave* → *Criar nova chave* → **JSON**. O
+   arquivo baixa uma vez só.
+
+Se o console disser que a criação de chave está desativada (política
+`iam.disableServiceAccountKeyCreation`, ligada por padrão em organizações criadas a
+partir de 2024), um administrador da organização precisa abrir exceção para este
+projeto. A alternativa sem chave é Workload Identity Federation — mais trabalho; decidir
+antes de seguir.
+
+**2. Na máquina de deploy** (WSL — o download fica em `/mnt/c/Users/<você>/Downloads`):
+
+```bash
+mkdir -p ~/.config/vekoo && chmod 700 ~/.config/vekoo
+mv /mnt/c/Users/<você>/Downloads/<projeto>-*.json ~/.config/vekoo/vertex-sa.json
+chmod 600 ~/.config/vekoo/vertex-sa.json
+```
+
+Não deixe cópia em `Downloads` e nunca coloque o JSON dentro do repositório.
+
+**3. O segredo e a configuração** (commit no repositório, menos o `.env.deploy`):
+
+```bash
+# .env.deploy (raiz, NÃO versionado) — o shell lê o arquivo na hora do deploy:
+GOOGLE_CREDENTIALS_BASE64=$(base64 -w0 ~/.config/vekoo/vertex-sa.json)
+
+# backend/.kamal/secrets
+GOOGLE_CREDENTIALS_BASE64=$GOOGLE_CREDENTIALS_BASE64
+```
+
+```yaml
+# backend/config/deploy.yml → env
+  clear:
+    GOOGLE_GENAI_USE_VERTEXAI: "True"
+    GOOGLE_CLOUD_PROJECT: <o mesmo do .env>
+    GOOGLE_CLOUD_LOCATION: global          # Nano Banana
+    EMBEDDING_LOCATION: us-central1        # gemini-embedding-001
+  secret:
+    - GOOGLE_CREDENTIALS_BASE64
+```
+
+Não entre com o `secret:` antes de a chave existir: o Kamal recusa o deploy com segredo
+faltando.
+
+**4. Deploy e conferência:**
+
+```bash
+kamal app exec --reuse "bin/rails runner 'puts Ai::Vertex.available?; puts Ai::Embeddings.new.embed(%q(teste)).size'"
+#  → true · 768
+kamal app exec --reuse "bin/rails images:smoke"     # gera 1 imagem (~US$ 0,07)
+```
+
+**Rotação:** nova chave no console → troca o `vertex-sa.json` → deploy → apaga a chave
+velha no console. **Emergência:** apagar a chave no console corta o acesso na hora.
 
 ### TLS
 
@@ -300,4 +380,7 @@ Restore **ainda não testado**.
 - [ ] Formulário da landing grava em lugar nenhum (§4)
 - [ ] Firewall em modo `open`: a origem aceita tráfego que não vem da Cloudflare (§6)
 - [ ] Restore de backup testado uma vez
+- [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3
+- [ ] Conta de demonstração em produção: conferir se existe (o seed antigo a criava no
+  primeiro `db:prepare`) e removê-la na janela do próximo deploy, com ok explícito
 - [ ] Trocar a senha root da VPS, que circulou em texto; o SSH já não aceita senha

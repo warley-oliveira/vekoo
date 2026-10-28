@@ -16,6 +16,7 @@ import {
   Plus,
   Search,
   Settings,
+  ShieldCheck,
   Sparkles,
   Trash2,
   UserPlus,
@@ -153,6 +154,12 @@ export function AppSidebar({
             >
               <UserPlus /> {t("account.invite")}
             </DropdownMenuItem>
+            {/* Só a conta da Vekoo vê: a curadoria do banco de referências. */}
+            {session?.account.staff && (
+              <DropdownMenuItem onClick={() => navigate("/admin")}>
+                <ShieldCheck /> {t("account.curation")}
+              </DropdownMenuItem>
+            )}
             <LanguageSubmenu />
             <DropdownMenuSeparator />
             <DropdownMenuItem

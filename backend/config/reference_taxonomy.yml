@@ -69,6 +69,14 @@ hook_types:
   controversy: abre contrariando uma crença comum
   curiosity: abre escondendo a resposta para fazer continuar
 
+# O que o padrão move — uma ou duas por card (`whyItWorks.targetMetrics`).
+target_metrics:
+  saves: salvamentos — conteúdo que a pessoa quer rever depois
+  shares: compartilhamentos — conteúdo que a pessoa manda para alguém
+  comments: comentários — conteúdo que puxa resposta ou opinião
+  clicks: cliques — conteúdo que leva ao link, ao perfil ou ao WhatsApp
+  reach: alcance — conteúdo que a plataforma entrega a quem ainda não segue
+
 # Quanto custa reproduzir o padrão. A geração só usa 2 e 3 por padrão.
 replicability:
   1: exige produção profissional — estúdio, equipe, edição elaborada

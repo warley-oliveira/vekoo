@@ -40,13 +40,15 @@ RSpec.describe ReferenceCard do
 
       expect(card).not_to be_valid
       expect(error_keys(card)).to include("analysis.hook.type", "analysis.replicability.score")
+      expect(card.errors.full_messages).to all(be_present)
     end
 
     it "corta o texto da análise no limite em vez de recusar" do
-      card = build(:reference_card, analysis: { "whyItWorks" => "a" * 2_000 })
+      card = build(:reference_card, analysis: { "whyItWorks" => { "mechanism" => "a" * 2_000, "transferablePrinciple" => "b" * 500 } })
 
       expect(card).to be_valid
-      expect(card.analysis["whyItWorks"].length).to eq(ReferenceCard::Analysis::PARAGRAPH)
+      expect(card.analysis.dig("whyItWorks", "mechanism").length).to eq(ReferenceCard::Analysis::PARAGRAPH)
+      expect(card.analysis.dig("whyItWorks", "transferablePrinciple").length).to eq(ReferenceCard::Analysis::SENTENCE)
     end
   end
 

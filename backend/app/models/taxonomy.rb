@@ -12,6 +12,7 @@ module Taxonomy
   OBJECTIVES = DATA.fetch("objectives").keys.freeze
   FORMATS = DATA.fetch("formats").keys.freeze
   HOOK_TYPES = DATA.fetch("hook_types").keys.freeze
+  TARGET_METRICS = DATA.fetch("target_metrics").keys.freeze
   REPLICABILITY = DATA.fetch("replicability").keys.freeze
   ORIGINS = DATA.fetch("origins").keys.freeze
   STATUSES = DATA.fetch("statuses").keys.freeze
@@ -27,6 +28,7 @@ module Taxonomy
     "objectives" => %w[OBJECTIVES Objective],
     "formats" => %w[REFERENCE_FORMATS ReferenceFormat],
     "hook_types" => %w[HOOK_TYPES HookType],
+    "target_metrics" => %w[TARGET_METRICS TargetMetric],
     "replicability" => %w[REPLICABILITY Replicability],
     "origins" => %w[REFERENCE_ORIGINS ReferenceOrigin],
     "statuses" => %w[REFERENCE_STATUSES ReferenceStatus]
@@ -49,6 +51,7 @@ module Taxonomy
       items = values(list).map { |value| "  #{value.to_json}," }.join("\n")
       "export const #{constant} = [\n#{items}\n] as const\nexport type #{type} = (typeof #{constant})[number]\n"
     }
+    formats = PIECE_FORMATS.map { |piece, reference| "  #{piece}: #{reference.to_json}," }.join("\n")
     <<~TS
       // Gerado por `bin/rails taxonomy:export` a partir de
       // backend/config/reference_taxonomy.yml — não edite à mão.
@@ -57,6 +60,11 @@ module Taxonomy
       // nos locales, em `taxonomy.<lista>.<código>`.
 
       #{lists.join("\n").chomp}
+
+      /** Formato da peça do Vekoo → formato de referência que serve a ela. */
+      export const PIECE_FORMAT_REFERENCE = {
+      #{formats}
+      } as const satisfies Record<string, ReferenceFormat>
     TS
   end
 end

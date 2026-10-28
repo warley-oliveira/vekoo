@@ -14,6 +14,9 @@ class ReferenceCard < ApplicationRecord
   STATUSES = Taxonomy::STATUSES
   ORIGINS = Taxonomy::ORIGINS
   MAX_ARCHETYPES = 3
+  # O andamento do job de análise, à parte da curadoria.
+  ANALYSIS_STATUSES = %w[pending running done failed].freeze
+  MAX_BANNED_TERMS = 20
 
   TRANSITIONS = {
     "draft" => %w[in_review archived],
@@ -31,6 +34,11 @@ class ReferenceCard < ApplicationRecord
 
   belongs_to :curated_by, class_name: "Account", optional: true
 
+  # As imagens do post: só até a análise terminar (depois são apagadas). A
+  # miniatura fica, e só o painel da curadoria a serve.
+  has_many_attached :originals
+  has_one_attached :thumbnail
+
   # Cosseno: o vetor é normalizado na gravação.
   has_neighbors :embedding, normalize: true
 
@@ -38,6 +46,7 @@ class ReferenceCard < ApplicationRecord
   before_save :stamp_publication, :bump_version
 
   validates :status, inclusion: { in: STATUSES }
+  validates :analysis_status, inclusion: { in: ANALYSIS_STATUSES }
   validates :origin, inclusion: { in: ORIGINS }
   validates :niche, inclusion: { in: Taxonomy::NICHES }, allow_nil: true
   validates :size, inclusion: { in: Taxonomy::SIZES }, allow_nil: true
@@ -62,6 +71,36 @@ class ReferenceCard < ApplicationRecord
 
   def can_transition_to?(target)
     TRANSITIONS.fetch(status, []).include?(target.to_s)
+  end
+
+  def analysis_failed? = analysis_status == "failed"
+  def analyzing? = analysis_status.in?(%w[pending running])
+
+  # O que impede (ou atrapalha) o card de ir para o agente: a análise cita a
+  # fonte (`leak`), repete frase do post (`copied`) ou ficou sem vetor
+  # (`noEmbedding`, o único que não barra a publicação — só tira a
+  # similaridade da conta).
+  def findings
+    found = References::Leakage.findings(analysis, source).map { |finding| finding.merge("code" => "leak") }
+    found += References::CopyGuard.copied_paths(analysis, copy_shingles).map { |path| { "code" => "copied", "path" => path } }
+    found << { "code" => "noEmbedding" } if embedding.nil? && analysis_status == "done"
+    found
+  end
+
+  def blocking_findings = findings.reject { |finding| finding["code"] == "noEmbedding" }
+
+  # Os erros da análise e da fonte saem pelo caminho do campo
+  # (`analysis.hook.type`, `source.url`); a mensagem de erro lê o valor dali.
+  def read_attribute_for_validation(attribute)
+    root, *path = attribute.to_s.split(".")
+    return super if path.empty?
+
+    path.reduce(public_send(root)) { |value, key|
+      case value
+      when Hash then value[key]
+      when Array then value[key.to_i]
+      end
+    }
   end
 
   # O formato da peça → os formatos do Vekoo que este card serve.
@@ -94,7 +133,8 @@ class ReferenceCard < ApplicationRecord
     raw = raw.is_a?(Hash) ? raw.stringify_keys : {}
     channel = raw["channel"].to_s.strip.downcase.delete(" ")
     channel = "@#{channel}" if channel.present? && !channel.start_with?("@")
-    { "url" => raw["url"].to_s.strip.presence, "channel" => channel.presence }.compact
+    terms = Array(raw["bannedTerms"]).filter_map { |term| term.to_s.squish.first(80).presence }.uniq.first(MAX_BANNED_TERMS)
+    { "url" => raw["url"].to_s.strip.presence, "channel" => channel.presence, "bannedTerms" => terms.presence }.compact
   end
 
   def stamp_publication
@@ -150,5 +190,8 @@ class ReferenceCard < ApplicationRecord
   def must_be_complete_to_publish
     %i[niche objective format].each { |attribute| errors.add(attribute, :blank) if self[attribute].blank? }
     errors.add(:archetypes, :blank) if archetypes.empty?
+    blocking_findings.each do |finding|
+      errors.add(:"analysis.#{finding['path']}", finding["code"].to_sym, term: finding["match"])
+    end
   end
 end

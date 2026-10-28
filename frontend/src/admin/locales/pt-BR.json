@@ -1,0 +1,291 @@
+{
+  "admin": {
+    "title": "Curadoria",
+    "nav": {
+      "label": "Áreas da curadoria",
+      "references": "Referências",
+      "backToApp": "Voltar ao Vekoo"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "in_review": "Em revisão",
+      "published": "Publicado",
+      "archived": "Arquivado"
+    },
+    "analysisStatus": {
+      "pending": "Na fila",
+      "running": "Analisando",
+      "done": "Analisado",
+      "failed": "Análise falhou"
+    },
+    "taxonomy": {
+      "sizes": {
+        "global": "Global",
+        "national": "Nacional",
+        "regional": "Regional",
+        "local": "Local"
+      },
+      "objectives": {
+        "direct_sale": "Venda direta",
+        "launch": "Lançamento",
+        "authority_education": "Autoridade e educação",
+        "community_engagement": "Engajamento",
+        "behind_the_scenes": "Bastidores",
+        "social_proof": "Prova social",
+        "seasonal_date": "Data sazonal"
+      },
+      "formats": {
+        "carousel": "Carrossel",
+        "static": "Post único",
+        "story": "Story",
+        "reels": "Reels",
+        "ad": "Anúncio"
+      },
+      "hookTypes": {
+        "question": "Pergunta",
+        "number": "Número",
+        "contrast": "Contraste",
+        "promise": "Promessa",
+        "controversy": "Polêmica",
+        "curiosity": "Curiosidade"
+      },
+      "targetMetrics": {
+        "saves": "Salvamentos",
+        "shares": "Compartilhamentos",
+        "comments": "Comentários",
+        "clicks": "Cliques",
+        "reach": "Alcance"
+      },
+      "replicability": {
+        "1": "Exige produção profissional",
+        "2": "Exige algum recurso: foto boa, pessoa em cena, produto",
+        "3": "Qualquer negócio faz com o celular"
+      },
+      "origins": {
+        "external": "Externa",
+        "vekoo": "Vekoo",
+        "authored": "Autoral"
+      }
+    },
+    "list": {
+      "title": "Banco de referências",
+      "description": "Padrões analisados de posts reais. O agente de criação usa os publicados; o assinante não vê nada daqui.",
+      "new": "Cadastrar referência",
+      "untitled": "Referência sem análise",
+      "columns": {
+        "pattern": "Padrão",
+        "status": "Situação",
+        "niche": "Nicho",
+        "objective": "Objetivo",
+        "replicability": "Replic.",
+        "engagement": "Engaj. relativo",
+        "version": "Versão",
+        "updated": "Atualizado"
+      },
+      "engagementValue": "{{value}}×",
+      "filters": {
+        "status": "Situação",
+        "all": "Todas",
+        "search": "Buscar na análise ou no perfil",
+        "niche": "Nicho",
+        "anyNiche": "Qualquer nicho",
+        "format": "Formato",
+        "anyFormat": "Qualquer formato",
+        "objective": "Objetivo",
+        "anyObjective": "Qualquer objetivo",
+        "clear": "Limpar filtros"
+      },
+      "empty": {
+        "title": "Nenhuma referência ainda",
+        "description": "Cadastre o print de um post que funcionou. A análise roda sozinha e o card cai em revisão."
+      },
+      "emptyFiltered": {
+        "title": "Nada com esses filtros",
+        "description": "Tente outro nicho ou formato, ou limpe a busca."
+      },
+      "pagination": {
+        "range": "{{from}}–{{to}} de {{total}}",
+        "perPage": "Por página",
+        "previous": "Anterior",
+        "next": "Próxima"
+      }
+    },
+    "new": {
+      "back": "Referências",
+      "title": "Cadastrar referência",
+      "description": "Envie as imagens do post (o print, ou as lâminas do carrossel na ordem). A análise descreve o padrão — nunca copia o texto — e a imagem original é apagada depois.",
+      "images": {
+        "label": "Imagens do post",
+        "hint": "Até {{max}} imagens, 10 MB cada. A ordem é a do post.",
+        "drop": "Arraste as imagens para cá ou clique em adicionar.",
+        "add": "Adicionar",
+        "preview": "Imagem {{index}}",
+        "moveLeft": "Mover para antes",
+        "moveRight": "Mover para depois",
+        "remove": "Tirar imagem",
+        "skipped": "Algum arquivo ficou de fora: só imagens de até 10 MB.",
+        "tooMany": "No máximo {{max}} imagens.",
+        "required": "Envie ao menos uma imagem ou o link direto de uma."
+      },
+      "url": {
+        "label": "Link do post",
+        "hint": "Fica como procedência. Sem imagem enviada, ele precisa ser o link direto de uma imagem.",
+        "invalid": "Use um link começando com https://"
+      },
+      "channel": {
+        "label": "Perfil de origem",
+        "hint": "O @ da conta que publicou. A análise não pode citá-lo."
+      },
+      "baseline": {
+        "label": "Mediana da conta",
+        "hint": "Curtidas + comentários, mediana dos últimos 30 posts.",
+        "invalid": "Use um número maior que zero."
+      },
+      "niche": {
+        "label": "Nicho",
+        "hint": "Se você já sabe; senão, a análise sugere.",
+        "placeholder": "A análise sugere",
+        "none": "Deixar para a análise"
+      },
+      "size": {
+        "label": "Porte da conta",
+        "placeholder": "Não informado",
+        "none": "Não informar"
+      },
+      "terms": {
+        "label": "Termos proibidos",
+        "hint": "O nome da marca, de quem aparece, do produto. Se a análise citar um deles, o card não publica."
+      },
+      "cancel": "Cancelar",
+      "submit": "Cadastrar e analisar",
+      "submitting": "Enviando…",
+      "created": "Referência cadastrada. A análise começou."
+    },
+    "terms": {
+      "remove": "Tirar {{term}}",
+      "placeholder": "Digite e aperte Enter"
+    },
+    "errors": {
+      "generic": "Não deu certo. Tente de novo."
+    },
+    "review": {
+      "notFound": {
+        "title": "Referência não encontrada",
+        "description": "Ela pode ter sido apagada, ou o link está errado."
+      },
+      "back": "Referências",
+      "version": "v{{version}}",
+      "reopen": "Reabrir",
+      "reject": "Rejeitar",
+      "save": "Salvar",
+      "publish": "Aprovar e publicar",
+      "republish": "Publicar alterações",
+      "analyzing": {
+        "title": "Analisando o post",
+        "description": "Costuma levar menos de um minuto. Esta tela se atualiza sozinha."
+      },
+      "failed": {
+        "title": "A análise não saiu",
+        "failed": "O modelo não respondeu. Tente de novo.",
+        "noKey": "A chave do modelo não está configurada neste ambiente.",
+        "refused": "O modelo recusou analisar estas imagens.",
+        "invalidOutput": "A resposta veio fora do formato. Tente de novo.",
+        "noImages": "O card não tem imagens para analisar."
+      },
+      "retry": "Tentar de novo",
+      "archived": {
+        "title": "Arquivado — só leitura"
+      },
+      "thumbnailAlt": "Miniatura do post",
+      "source": {
+        "title": "Fonte · só a curadoria vê"
+      },
+      "meta": {
+        "curatedBy": "Cadastrado por",
+        "created": "Criado",
+        "analyzed": "Analisado",
+        "cost": "Análise",
+        "costValue": "{{model}} · US$ {{cost}}",
+        "embedding": "Vetor",
+        "embedded": "gerado",
+        "notEmbedded": "sem vetor"
+      },
+      "sections": {
+        "fit": "Encaixe",
+        "hook": "Gancho",
+        "structure": "Estrutura",
+        "visual": "Visual",
+        "copy": "Copy",
+        "copyHint": "A função do texto, nunca o texto do post.",
+        "why": "Por que funciona",
+        "replicability": "Replicabilidade",
+        "metrics": "Métricas",
+        "metricsHint": "Sem os três números, o card fica sem engajamento relativo — e sem o ponto extra na busca."
+      },
+      "fields": {
+        "niche": "Nicho",
+        "size": "Porte",
+        "objective": "Objetivo",
+        "format": "Formato",
+        "choose": "Escolha",
+        "clear": "Limpar",
+        "archetypes": "Estilos",
+        "archetypesHint": "Até {{max}}, o que mais combina primeiro.",
+        "suggestedLayout": "Layout sugerido",
+        "suggestedLayoutHint": "O layout do Vekoo que reproduz a mecânica, no formato do card.",
+        "noLayout": "Nenhum",
+        "hookType": "Tipo de gancho",
+        "hookDescription": "Como a abertura prende",
+        "summary": "Resumo da estrutura",
+        "beats": "Movimentos, na ordem",
+        "beat": "Movimento {{index}}",
+        "removeBeat": "Tirar movimento {{index}}",
+        "addBeat": "Adicionar movimento",
+        "composition": "Composição",
+        "color": "Cor",
+        "typography": "Tipografia",
+        "imagery": "Imagem",
+        "copyFunction": "O que o texto faz",
+        "tone": "Tom",
+        "cta": "Chamada para ação",
+        "mechanism": "O mecanismo neste post",
+        "mechanismHint": "Por que este post funciona, no contexto dele.",
+        "transferablePrinciple": "Princípio transferível",
+        "transferablePrincipleHint": "Uma frase sem nicho, que valha para qualquer ramo. Entra na busca por semelhança.",
+        "targetMetrics": "Métricas que o padrão move",
+        "targetMetricsHint": "Até {{max}}, a mais forte primeiro.",
+        "whenNotToUse": "Quando não usar",
+        "whenNotToUseHint": "Uma frase com o contexto em que o padrão não serve. O agente lê isto antes de usar o card.",
+        "replicability": "Replicabilidade",
+        "requirements": "O que precisa para repetir",
+        "likes": "Curtidas",
+        "comments": "Comentários",
+        "baselineMedian": "Mediana da conta",
+        "relativeEngagement": "Engajamento relativo",
+        "collectedAt": "Coletado em"
+      },
+      "saved": "Alterações salvas.",
+      "published": "Publicado. O agente já pode usar este padrão.",
+      "rejected": "Arquivado.",
+      "reopened": "De volta para revisão.",
+      "retrying": "A análise entrou na fila de novo.",
+      "rejectDialog": {
+        "title": "Rejeitar esta referência?",
+        "description": "Ela vai para o arquivo e o agente não a usa. Dá para reabrir depois.",
+        "reason": "Motivo",
+        "cancel": "Cancelar",
+        "confirm": "Rejeitar"
+      },
+      "findings": {
+        "title": "Antes de publicar",
+        "leak": {
+          "url": "Cita um link: {{match}}",
+          "handle": "Cita um perfil: {{match}}",
+          "term": "Cita a origem: {{match}}"
+        },
+        "copied": "Repete uma frase do post",
+        "noEmbedding": "Sem vetor: a busca não mede semelhança com este card"
+      }
+    }
+  }
+}

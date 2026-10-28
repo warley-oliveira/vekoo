@@ -1,0 +1,291 @@
+{
+  "admin": {
+    "title": "Curation",
+    "nav": {
+      "label": "Curation areas",
+      "references": "References",
+      "backToApp": "Back to Vekoo"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "analysisStatus": {
+      "pending": "Queued",
+      "running": "Analyzing",
+      "done": "Analyzed",
+      "failed": "Analysis failed"
+    },
+    "taxonomy": {
+      "sizes": {
+        "global": "Global",
+        "national": "National",
+        "regional": "Regional",
+        "local": "Local"
+      },
+      "objectives": {
+        "direct_sale": "Direct sale",
+        "launch": "Launch",
+        "authority_education": "Authority and education",
+        "community_engagement": "Engagement",
+        "behind_the_scenes": "Behind the scenes",
+        "social_proof": "Social proof",
+        "seasonal_date": "Seasonal date"
+      },
+      "formats": {
+        "carousel": "Carousel",
+        "static": "Single post",
+        "story": "Story",
+        "reels": "Reels",
+        "ad": "Ad"
+      },
+      "hookTypes": {
+        "question": "Question",
+        "number": "Number",
+        "contrast": "Contrast",
+        "promise": "Promise",
+        "controversy": "Controversy",
+        "curiosity": "Curiosity"
+      },
+      "targetMetrics": {
+        "saves": "Saves",
+        "shares": "Shares",
+        "comments": "Comments",
+        "clicks": "Clicks",
+        "reach": "Reach"
+      },
+      "replicability": {
+        "1": "Needs professional production",
+        "2": "Needs some resource: a good photo, a person on camera, a product",
+        "3": "Any business can do it with a phone"
+      },
+      "origins": {
+        "external": "External",
+        "vekoo": "Vekoo",
+        "authored": "Authored"
+      }
+    },
+    "list": {
+      "title": "Reference bank",
+      "description": "Patterns analyzed from real posts. The creation agent uses the published ones; subscribers never see any of this.",
+      "new": "Add reference",
+      "untitled": "Reference without analysis",
+      "columns": {
+        "pattern": "Pattern",
+        "status": "Status",
+        "niche": "Niche",
+        "objective": "Objective",
+        "replicability": "Repl.",
+        "engagement": "Relative eng.",
+        "version": "Version",
+        "updated": "Updated"
+      },
+      "engagementValue": "{{value}}×",
+      "filters": {
+        "status": "Status",
+        "all": "All",
+        "search": "Search the analysis or the profile",
+        "niche": "Niche",
+        "anyNiche": "Any niche",
+        "format": "Format",
+        "anyFormat": "Any format",
+        "objective": "Objective",
+        "anyObjective": "Any objective",
+        "clear": "Clear filters"
+      },
+      "empty": {
+        "title": "No references yet",
+        "description": "Add a screenshot of a post that worked. The analysis runs on its own and the card lands in review."
+      },
+      "emptyFiltered": {
+        "title": "Nothing matches these filters",
+        "description": "Try another niche or format, or clear the search."
+      },
+      "pagination": {
+        "range": "{{from}}–{{to}} of {{total}}",
+        "perPage": "Per page",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
+    "new": {
+      "back": "References",
+      "title": "Add reference",
+      "description": "Send the post's images (the screenshot, or the carousel slides in order). The analysis describes the pattern — it never copies the text — and the original image is deleted afterwards.",
+      "images": {
+        "label": "Post images",
+        "hint": "Up to {{max}} images, 10 MB each. Keep the post's order.",
+        "drop": "Drag the images here or click add.",
+        "add": "Add",
+        "preview": "Image {{index}}",
+        "moveLeft": "Move earlier",
+        "moveRight": "Move later",
+        "remove": "Remove image",
+        "skipped": "Some files were left out: only images up to 10 MB.",
+        "tooMany": "Up to {{max}} images.",
+        "required": "Send at least one image or a direct link to one."
+      },
+      "url": {
+        "label": "Post link",
+        "hint": "Kept as provenance. Without an uploaded image, it must be a direct image link.",
+        "invalid": "Use a link starting with https://"
+      },
+      "channel": {
+        "label": "Source profile",
+        "hint": "The @ of the account that posted it. The analysis can't mention it."
+      },
+      "baseline": {
+        "label": "Account median",
+        "hint": "Likes + comments, median of the last 30 posts.",
+        "invalid": "Use a number greater than zero."
+      },
+      "niche": {
+        "label": "Niche",
+        "hint": "If you already know; otherwise the analysis suggests one.",
+        "placeholder": "The analysis suggests",
+        "none": "Leave it to the analysis"
+      },
+      "size": {
+        "label": "Account size",
+        "placeholder": "Not given",
+        "none": "Don't give"
+      },
+      "terms": {
+        "label": "Banned terms",
+        "hint": "The brand's name, the people in it, the product. If the analysis mentions any of them, the card can't be published."
+      },
+      "cancel": "Cancel",
+      "submit": "Add and analyze",
+      "submitting": "Sending…",
+      "created": "Reference added. The analysis has started."
+    },
+    "terms": {
+      "remove": "Remove {{term}}",
+      "placeholder": "Type and press Enter"
+    },
+    "errors": {
+      "generic": "That didn't work. Try again."
+    },
+    "review": {
+      "notFound": {
+        "title": "Reference not found",
+        "description": "It may have been deleted, or the link is wrong."
+      },
+      "back": "References",
+      "version": "v{{version}}",
+      "reopen": "Reopen",
+      "reject": "Reject",
+      "save": "Save",
+      "publish": "Approve and publish",
+      "republish": "Publish changes",
+      "analyzing": {
+        "title": "Analyzing the post",
+        "description": "It usually takes under a minute. This page updates on its own."
+      },
+      "failed": {
+        "title": "The analysis didn't come through",
+        "failed": "The model didn't respond. Try again.",
+        "noKey": "The model key isn't set up in this environment.",
+        "refused": "The model declined to analyze these images.",
+        "invalidOutput": "The answer came back in the wrong shape. Try again.",
+        "noImages": "The card has no images to analyze."
+      },
+      "retry": "Try again",
+      "archived": {
+        "title": "Archived — read-only"
+      },
+      "thumbnailAlt": "Post thumbnail",
+      "source": {
+        "title": "Source · curation only"
+      },
+      "meta": {
+        "curatedBy": "Added by",
+        "created": "Created",
+        "analyzed": "Analyzed",
+        "cost": "Analysis",
+        "costValue": "{{model}} · US$ {{cost}}",
+        "embedding": "Vector",
+        "embedded": "generated",
+        "notEmbedded": "no vector"
+      },
+      "sections": {
+        "fit": "Fit",
+        "hook": "Hook",
+        "structure": "Structure",
+        "visual": "Visual",
+        "copy": "Copy",
+        "copyHint": "What the text does, never the post's text.",
+        "why": "Why it works",
+        "replicability": "Replicability",
+        "metrics": "Metrics",
+        "metricsHint": "Without all three numbers the card has no relative engagement — and no extra point in search."
+      },
+      "fields": {
+        "niche": "Niche",
+        "size": "Size",
+        "objective": "Objective",
+        "format": "Format",
+        "choose": "Choose",
+        "clear": "Clear",
+        "archetypes": "Styles",
+        "archetypesHint": "Up to {{max}}, best match first.",
+        "suggestedLayout": "Suggested layout",
+        "suggestedLayoutHint": "The Vekoo layout that reproduces the mechanics, in the card's format.",
+        "noLayout": "None",
+        "hookType": "Hook type",
+        "hookDescription": "How the opening hooks",
+        "summary": "Structure summary",
+        "beats": "Moves, in order",
+        "beat": "Move {{index}}",
+        "removeBeat": "Remove move {{index}}",
+        "addBeat": "Add move",
+        "composition": "Composition",
+        "color": "Color",
+        "typography": "Typography",
+        "imagery": "Imagery",
+        "copyFunction": "What the text does",
+        "tone": "Tone",
+        "cta": "Call to action",
+        "mechanism": "The mechanism in this post",
+        "mechanismHint": "Why this post works, in its own context.",
+        "transferablePrinciple": "Transferable principle",
+        "transferablePrincipleHint": "One sentence, niche-free, that holds for any business. Used in similarity search.",
+        "targetMetrics": "Metrics the pattern moves",
+        "targetMetricsHint": "Up to {{max}}, strongest first.",
+        "whenNotToUse": "When not to use",
+        "whenNotToUseHint": "One sentence on where the pattern doesn't fit. The agent reads this before using the card.",
+        "replicability": "Replicability",
+        "requirements": "What it takes to repeat",
+        "likes": "Likes",
+        "comments": "Comments",
+        "baselineMedian": "Account median",
+        "relativeEngagement": "Relative engagement",
+        "collectedAt": "Collected on"
+      },
+      "saved": "Changes saved.",
+      "published": "Published. The agent can use this pattern now.",
+      "rejected": "Archived.",
+      "reopened": "Back in review.",
+      "retrying": "The analysis is queued again.",
+      "rejectDialog": {
+        "title": "Reject this reference?",
+        "description": "It goes to the archive and the agent won't use it. You can reopen it later.",
+        "reason": "Reason",
+        "cancel": "Cancel",
+        "confirm": "Reject"
+      },
+      "findings": {
+        "title": "Before publishing",
+        "leak": {
+          "url": "Mentions a link: {{match}}",
+          "handle": "Mentions a profile: {{match}}",
+          "term": "Mentions the source: {{match}}"
+        },
+        "copied": "Repeats a sentence from the post",
+        "noEmbedding": "No vector: search can't measure similarity to this card"
+      }
+    }
+  }
+}

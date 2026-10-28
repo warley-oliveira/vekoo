@@ -13,9 +13,12 @@
 # Chaves em camelCase, como o documento do Brandcore e o resto da API.
 module ReferenceCard::Analysis
   SHORT = 160
+  # Uma frase: o princípio transferível e o "quando não usar".
+  SENTENCE = 200
   TEXT = 280
   PARAGRAPH = 600
   MAX_BEATS = 10
+  MAX_TARGET_METRICS = 2
 
   # Os textos que a análise tem que ter para publicar, por caminho.
   TEXTS = {
@@ -23,6 +26,11 @@ module ReferenceCard::Analysis
     "structure" => { "summary" => PARAGRAPH },
     "visual" => { "composition" => TEXT, "color" => TEXT, "typography" => TEXT, "imagery" => TEXT },
     "copy" => { "function" => PARAGRAPH, "tone" => SHORT, "cta" => SHORT },
+    # Por que funciona, em quatro partes: o mecanismo **deste** post; o
+    # princípio que vale para qualquer ramo (é ele que o embedding lê); as
+    # métricas que o padrão move (`targetMetrics`, à parte por ser lista); e
+    # quando não usar (vai na ficha do agente, não no embedding).
+    "whyItWorks" => { "mechanism" => PARAGRAPH, "transferablePrinciple" => SENTENCE, "whenNotToUse" => SENTENCE },
     "replicability" => { "requirements" => TEXT }
   }.freeze
 
@@ -31,7 +39,7 @@ module ReferenceCard::Analysis
   # Erro do JSON Schema → o código que a tela e a API já conhecem.
   CODES = {
     "enum" => :inclusion, "required" => :blank, "minLength" => :blank, "minItems" => :blank,
-    "maxLength" => :too_long, "maxItems" => :too_long, "minimum" => :invalid,
+    "maxLength" => :too_long, "maxItems" => :too_many_items, "minimum" => :invalid,
     "exclusiveMinimum" => :invalid, "type" => :invalid, "format" => :invalid,
     "additionalProperties" => :invalid
   }.freeze
@@ -62,7 +70,13 @@ module ReferenceCard::Analysis
         ),
         "visual" => object(TEXTS["visual"].transform_values { |max| text.call(max) }),
         "copy" => object(TEXTS["copy"].transform_values { |max| text.call(max) }),
-        "whyItWorks" => text.call(PARAGRAPH),
+        "whyItWorks" => object(
+          "mechanism" => text.call(PARAGRAPH),
+          "transferablePrinciple" => text.call(SENTENCE),
+          "targetMetrics" => { "type" => "array", "maxItems" => MAX_TARGET_METRICS, "items" => { "enum" => Taxonomy::TARGET_METRICS } }
+            .merge(strict ? { "minItems" => 1 } : {}),
+          "whenNotToUse" => text.call(SENTENCE)
+        ),
         "replicability" => object(
           "score" => choice.call(Taxonomy::REPLICABILITY),
           "requirements" => text.call(TEXT)
@@ -78,6 +92,30 @@ module ReferenceCard::Analysis
         )
       }
     }
+  end
+
+  # O schema estrito na forma que a saída estruturada do modelo aceita: sem
+  # limites de tamanho, de número e de itens (o modelo não os garante; quem
+  # confere é `errors_for`, depois) e com o nulo por `anyOf`.
+  UNSUPPORTED = %w[$schema minLength maxLength minimum maximum exclusiveMinimum exclusiveMaximum multipleOf minItems maxItems].freeze
+
+  def model_schema
+    for_model(schema(strict: true))
+  end
+
+  def for_model(node)
+    case node
+    when Hash
+      node = node.except(*UNSUPPORTED).transform_values { |value| for_model(value) }
+      if node["type"].is_a?(Array)
+        types = node.delete("type")
+        { "anyOf" => types.map { |type| node.merge("type" => type).then { |branch| type == "null" ? { "type" => "null" } : branch } } }
+      else
+        node
+      end
+    when Array then node.map { |item| for_model(item) }
+    else node
+    end
   end
 
   def object(properties)
@@ -103,6 +141,9 @@ module ReferenceCard::Analysis
   # conta (`baselineMedian`). Faltou qualquer um dos três, fica nulo.
   def normalize(raw)
     raw = raw.is_a?(Hash) ? raw.deep_stringify_keys : {}
+    # Antes de virar quatro campos, "por que funciona" era um texto só: ele é
+    # o mecanismo.
+    raw = raw.merge("whyItWorks" => { "mechanism" => raw["whyItWorks"] }) if raw["whyItWorks"].is_a?(String)
     section = ->(key) { raw[key].is_a?(Hash) ? raw[key] : {} }
 
     analysis = TEXTS.to_h { |key, fields|
@@ -112,7 +153,12 @@ module ReferenceCard::Analysis
     analysis["structure"]["beats"] = Array(section.call("structure")["beats"]).filter_map { |beat|
       text(beat, SHORT).presence
     }.first(MAX_BEATS)
-    analysis["whyItWorks"] = text(raw["whyItWorks"], PARAGRAPH)
+    why = analysis["whyItWorks"]
+    metrics = Array(section.call("whyItWorks")["targetMetrics"]).filter_map { |metric| code(metric) }.uniq.first(MAX_TARGET_METRICS)
+    analysis["whyItWorks"] = {
+      "mechanism" => why["mechanism"], "transferablePrinciple" => why["transferablePrinciple"],
+      "targetMetrics" => metrics, "whenNotToUse" => why["whenNotToUse"]
+    }
     analysis["replicability"] = { "score" => score(section.call("replicability")["score"]) }.merge(analysis["replicability"])
     analysis["metrics"] = metrics(section.call("metrics"))
 

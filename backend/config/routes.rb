@@ -96,6 +96,21 @@ Rails.application.routes.draw do
   # A rota `/render` do front, aberta pelo Chromium do export, lê por aqui.
   get "render/piece-versions/:id" => "piece_render_payloads#show", as: :piece_render_payload
 
+  # --- área da Vekoo (staff) -------------------------------------------------
+  # A curadoria do banco de referências. Quem não é staff recebe 404 em tudo
+  # aqui dentro, como se a rota não existisse (`Admin::BaseController`).
+  namespace :admin do
+    resources :reference_cards, path: "reference-cards", only: %i[index show create update] do
+      member do
+        post :publish
+        post :reject
+        post :reopen
+        post :retry, action: :retry_analysis
+        get :thumbnail
+      end
+    end
+  end
+
   # Migração do legado: carrosséis e pastas sem marca. Temporária (ver
   # `OrphanMigration`).
   get  "orphans"        => "orphans#index"

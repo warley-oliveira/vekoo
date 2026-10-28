@@ -51,6 +51,8 @@ export type Account = {
   email: string
   organizationId: string
   role: MemberRole
+  /** Conta da Vekoo: a área `/admin` aparece (e a API confere de novo). */
+  staff: boolean
   createdAt: number
 }
 

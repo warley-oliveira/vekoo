@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_213003) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_28_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -22,6 +22,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_213003) do
     t.uuid "organization_id", null: false
     t.string "password_digest", null: false
     t.string "role", default: "member", null: false
+    t.boolean "staff", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["organization_id"], name: "index_accounts_on_organization_id"
@@ -340,10 +341,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_213003) do
 
   create_table "reference_cards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.jsonb "analysis", default: {}, null: false
+    t.bigint "analysis_cost_micro_usd", default: 0, null: false
+    t.jsonb "analysis_error"
+    t.string "analysis_model"
+    t.string "analysis_status", default: "pending", null: false
+    t.jsonb "analysis_usage", default: {}, null: false
+    t.datetime "analyzed_at"
     t.string "archetypes", default: [], null: false, array: true
     t.text "archived_reason"
+    t.string "copy_shingles", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.uuid "curated_by_id"
+    t.datetime "embedded_at"
     t.vector "embedding", limit: 768
     t.string "format"
     t.string "hook_type"
@@ -359,6 +368,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_213003) do
     t.string "suggested_layout_id"
     t.datetime "updated_at", null: false
     t.integer "version", default: 1, null: false
+    t.index ["analysis_status"], name: "index_reference_cards_on_analysis_status"
     t.index ["archetypes"], name: "index_reference_cards_on_archetypes", using: :gin
     t.index ["curated_by_id"], name: "index_reference_cards_on_curated_by_id"
     t.index ["niche"], name: "index_reference_cards_on_niche"

@@ -10,6 +10,16 @@ pt-BR:
     unprocessable: "Não foi possível salvar. Confira os campos."
     brand_required: "Todo carrossel nasce dentro de uma marca. Escolha a marca antes de criar."
     parameter_missing: "Faltou informar %{param}."
+    images_required: "Envie ao menos uma imagem do post (ou o link direto de uma imagem)."
+    too_many_images: "No máximo 10 imagens por referência."
+    image_invalid: "Esse arquivo não é uma imagem que dê para abrir."
+    image_too_large: "Cada imagem pode ter até 10 MB."
+    url_not_image: "Esse link não é de uma imagem. Envie um print do post."
+    url_refused: "Esse endereço não é aceito. Use um link https público."
+    url_failed: "Não deu para baixar a imagem desse link. Envie o arquivo."
+    analysis_not_retryable: "Só a análise que falhou pode rodar de novo."
+    analysis_running: "A análise ainda está rodando. Espere ela terminar para editar."
+    card_archived: "Card arquivado é só leitura. Reabra para editar."
     # Mensagens de validação do Active Record (o produto não usa o rails-i18n).
     format: "%{attribute} %{message}"
     messages:
@@ -30,6 +40,8 @@ pt-BR:
       too_small: "é pequeno demais"
       less_than_or_equal_to: "deve ser menor ou igual a %{count}"
       invalid_transition: "não pode ir de %{from} para %{to}"
+      leak: "cita a origem da referência (%{term})"
+      copied: "repete uma frase do post"
 
   auth:
     email_not_found: "Não encontramos uma conta com esse e-mail."

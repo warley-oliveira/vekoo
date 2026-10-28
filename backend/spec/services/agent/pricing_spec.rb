@@ -17,6 +17,19 @@ RSpec.describe Agent::Pricing do
     expect(warm).to eq(cold / 10)
   end
 
+  it "cobra os modelos 5.5 pelo preço deles, com a leitura de cache própria do Opus 5.5" do
+    usage = { input: 1_000_000, output: 100_000, cacheRead: 1_000_000, cacheWrite: 0 }
+
+    # 4 + 2 (saída) + 0,20 (cache)
+    expect(described_class.micro_usd("claude-opus-5-5", usage)).to eq(6_200_000)
+    # 2 + 1 + 0,20 (0,1× da entrada)
+    expect(described_class.micro_usd("claude-sonnet-5-5", usage)).to eq(3_200_000)
+  end
+
+  it "acha o preço do id com data de snapshot" do
+    expect(described_class.price("claude-opus-5-20260401")).to eq(described_class.price("claude-opus-5"))
+  end
+
   it "cobra modelo desconhecido como o mais caro, para o teto errar para o lado seguro" do
     usage = { input: 1_000, output: 0, cacheRead: 0, cacheWrite: 0 }
 

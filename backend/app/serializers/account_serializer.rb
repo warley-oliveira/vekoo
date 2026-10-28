@@ -6,6 +6,8 @@ class AccountSerializer < ApplicationSerializer
       email: account.email,
       organizationId: account.organization_id,
       role: account.role,
+      # Conta da Vekoo: a tela abre a área `/admin` (que a API confere de novo).
+      staff: account.staff?,
       createdAt: epoch_ms(account.created_at)
     }
   end

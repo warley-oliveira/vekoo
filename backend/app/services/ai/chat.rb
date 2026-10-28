@@ -29,6 +29,11 @@ module Ai
 
     def self.available? = ENV["ANTHROPIC_API_KEY"].present?
 
+    # Recusa do classificador de segurança com nova tentativa no servidor, num
+    # modelo que a Anthropic escolhe pela categoria da recusa (`fallbacks:
+    # :default`) — sem lista de modelos para manter aqui.
+    FALLBACK_BETA = "server-side-fallback-2026-07-01"
+
     def initialize(client: nil)
       @client = client
     end
@@ -66,7 +71,14 @@ module Ai
     #
     # `tools:` liga o uso de ferramenta (escolha do modelo, `auto`): quando ele
     # pede uma, a resposta volta com `tool_uses` e quem chama roda o laço.
-    def answer(system:, messages:, model: MODEL, max_tokens: 8_000, effort: "medium", schema: nil, tools: nil)
+    #
+    # `fallbacks: :default` vai pelo caminho beta, com a nova tentativa do
+    # servidor quando o modelo recusa.
+    #
+    # O `model` da resposta é sempre o de quem **atendeu** (o campo `model` da
+    # mensagem), não o pedido: com o fallback eles divergem, e é por quem
+    # atendeu que o custo é calculado e o log é escrito.
+    def answer(system:, messages:, model: MODEL, max_tokens: 8_000, effort: "medium", schema: nil, tools: nil, fallbacks: nil)
       output_config = { effort: effort }
       # A saída estruturada fica atrás de uma chave: ligada, o modelo é
       # obrigado a devolver o formato; desligada (o padrão), o `Agent::Plan`
@@ -82,14 +94,19 @@ module Ai
         messages: messages
       }
       request[:tools] = tools if tools.present?
-      message = client.messages.create(**request)
+      message =
+        if fallbacks
+          client.beta.messages.create(**request, fallbacks: fallbacks, betas: [ FALLBACK_BETA ])
+        else
+          client.messages.create(**request)
+        end
 
       raise Failed, "refusal" if message.stop_reason == :refusal
 
       Answer.new(
         text: message.content.filter_map { |block| block.text if block.type == :text }.join,
         usage: self.class.usage_from(message.usage),
-        model: model.to_s,
+        model: message.model.to_s.presence || model.to_s,
         content: message.content,
         tool_uses: message.content.filter_map { |block|
           { id: block.id, name: block.name, input: block.input.to_h.deep_stringify_keys } if block.type == :tool_use

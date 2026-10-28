@@ -68,6 +68,15 @@ export const HOOK_TYPES = [
 ] as const
 export type HookType = (typeof HOOK_TYPES)[number]
 
+export const TARGET_METRICS = [
+  "saves",
+  "shares",
+  "comments",
+  "clicks",
+  "reach",
+] as const
+export type TargetMetric = (typeof TARGET_METRICS)[number]
+
 export const REPLICABILITY = [
   1,
   2,
@@ -89,3 +98,11 @@ export const REFERENCE_STATUSES = [
   "archived",
 ] as const
 export type ReferenceStatus = (typeof REFERENCE_STATUSES)[number]
+
+/** Formato da peça do Vekoo → formato de referência que serve a ela. */
+export const PIECE_FORMAT_REFERENCE = {
+  feed_square: "static",
+  feed_portrait: "static",
+  story: "story",
+  carousel: "carousel",
+} as const satisfies Record<string, ReferenceFormat>

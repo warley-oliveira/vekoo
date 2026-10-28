@@ -8,6 +8,7 @@ FactoryBot.define do
     # — só a função de cada parte.
     trait :analyzed do
       status { "in_review" }
+      analysis_status { "done" }
       niche { "food_beverage" }
       size { "local" }
       archetypes { %w[natural_artisanal popular_warm] }
@@ -31,7 +32,12 @@ FactoryBot.define do
             "tone" => "Próximo, de quem faz com as próprias mãos.",
             "cta" => "Convida para provar na loja, sem preço."
           },
-          "whyItWorks" => "Transforma o processo em história e gera confiança pelo detalhe concreto.",
+          "whyItWorks" => {
+            "mechanism" => "Transforma o processo em história e gera confiança pelo detalhe concreto.",
+            "transferablePrinciple" => "Mostrar o processo em etapas concretas transforma ofício em confiança.",
+            "targetMetrics" => %w[saves shares],
+            "whenNotToUse" => "Marca sem processo próprio para mostrar, que só revende."
+          },
           "replicability" => { "score" => 3, "requirements" => "Celular e luz de janela; o processo já existe." },
           "metrics" => { "likes" => 840, "comments" => 60, "baselineMedian" => 300, "collectedAt" => "2026-10-20" }
         }

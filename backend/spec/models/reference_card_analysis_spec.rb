@@ -17,9 +17,9 @@ RSpec.describe ReferenceCard::Analysis do
     end
 
     it "apara e junta espaços, e ignora texto que não é texto" do
-      normalized = described_class.normalize("whyItWorks" => "  um   dois \n três ", "copy" => { "tone" => { "x" => 1 } })
+      normalized = described_class.normalize("whyItWorks" => { "mechanism" => "  um   dois \n três " }, "copy" => { "tone" => { "x" => 1 } })
 
-      expect(normalized["whyItWorks"]).to eq("um dois três")
+      expect(normalized.dig("whyItWorks", "mechanism")).to eq("um dois três")
       expect(normalized.dig("copy", "tone")).to eq("")
     end
 
@@ -33,6 +33,28 @@ RSpec.describe ReferenceCard::Analysis do
     it "lê a replicabilidade como inteiro" do
       expect(described_class.normalize("replicability" => { "score" => "2" }).dig("replicability", "score")).to eq(2)
       expect(described_class.normalize("replicability" => { "score" => 3.0 }).dig("replicability", "score")).to eq(3)
+    end
+
+    describe "por que funciona" do
+      it "vira quatro campos; o texto único de antes é o mecanismo" do
+        expect(described_class.normalize("whyItWorks" => "Gera confiança.")["whyItWorks"]).to eq(
+          "mechanism" => "Gera confiança.", "transferablePrinciple" => "", "targetMetrics" => [], "whenNotToUse" => ""
+        )
+      end
+
+      it "guarda até duas métricas-alvo, sem repetir, e deixa a desconhecida para a validação apontar" do
+        why = described_class.normalize("whyItWorks" => { "targetMetrics" => [ "saves", " saves ", "views", "reach" ] })
+
+        expect(why.dig("whyItWorks", "targetMetrics")).to eq(%w[saves views])
+        expect(described_class.errors_for(why)).to include([ "whyItWorks.targetMetrics.1", :inclusion, {} ])
+      end
+
+      it "exige ao menos uma métrica-alvo para publicar" do
+        analysis = described_class.normalize(complete.deep_merge("whyItWorks" => { "targetMetrics" => [] }))
+
+        expect(described_class.errors_for(analysis)).to be_empty
+        expect(described_class.errors_for(analysis, strict: true).map(&:first)).to eq([ "whyItWorks.targetMetrics" ])
+      end
     end
 
     describe "engajamento relativo" do
@@ -66,7 +88,8 @@ RSpec.describe ReferenceCard::Analysis do
       paths = described_class.errors_for(described_class.blank, strict: true).map(&:first)
 
       expect(paths).to include("hook.type", "hook.description", "structure.summary", "structure.beats",
-        "visual.imagery", "copy.function", "copy.cta", "whyItWorks", "replicability.score", "replicability.requirements")
+        "visual.imagery", "copy.function", "copy.cta", "whyItWorks.mechanism", "whyItWorks.transferablePrinciple",
+        "whyItWorks.targetMetrics", "whyItWorks.whenNotToUse", "replicability.score", "replicability.requirements")
       expect(paths.grep(/\Ametrics/)).to be_empty
     end
 
@@ -104,6 +127,7 @@ RSpec.describe ReferenceCard::Analysis do
 
       expect(properties.dig("hook", "properties", "type", "enum")).to eq(Taxonomy::HOOK_TYPES)
       expect(properties.dig("replicability", "properties", "score", "enum")).to eq(Taxonomy::REPLICABILITY)
+      expect(properties.dig("whyItWorks", "properties", "targetMetrics", "items", "enum")).to eq(Taxonomy::TARGET_METRICS)
     end
 
     it "fecha todo objeto: nada fora da forma passa, nem no modo de rascunho" do

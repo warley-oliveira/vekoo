@@ -311,7 +311,24 @@ sempre a conta (curtidas + comentários) / mediana dos últimos 30 posts da cont
 os três números. Curadoria: `draft → in_review → published`, `archived` = rejeitado ou
 aposentado, sempre com motivo; `version` sobe a cada mudança de conteúdo depois da primeira
 publicação. Embedding em `vector(768)` (pgvector + gem `neighbor`, cosseno, busca exata —
-sem HNSW de propósito, o filtro duro vem antes).
+sem HNSW de propósito, o filtro duro vem antes). **Curadoria (`/admin`, só `accounts.staff`,
+`bin/rails 'staff:grant[email]'`):** `Admin::BaseController` responde **404** a quem não é
+staff (com ou sem sessão), como rota inexistente; front em `src/admin/` carregado por
+`React.lazy` (o assinante não baixa o código nem os textos — `src/admin/locales/`, lidos
+pela guarda de i18n). Cadastro: imagens (até 10) ou o link **direto** de uma imagem
+(`References::FetchImage`: só https, IP público conferido, redirecionamento reconferido —
+página de post do Instagram não serve, manda-se o print), mais nicho/porte/@/termos
+proibidos/mediana. `AnalyzeReferenceJob` → `References::Analyze`: as imagens vão ao
+Claude com o schema estrito como saída estruturada (`ReferenceCard::Analysis.model_schema`
+tira o que a API não aceita; `fallbacks: :default` na recusa), devolvendo análise,
+classificação e a transcrição do texto visível — que vira só resumos de janelas de 6
+palavras (`copy_shingles`, `References::CopyGuard`) e é descartada. Depois: vetor
+(`References::Embed`, `Ai::Embeddings` no Vertex, refeito a cada edição de conteúdo), o
+original apagado (fica a miniatura, servida só pela rota da curadoria) e `in_review`.
+`ReferenceCard#findings`: `leak` (`References::Leakage`: link, @, site, perfil, termos
+proibidos), `copied` e `noEmbedding`; os dois primeiros barram a publicação. Credenciais do
+Vertex em `Ai::Vertex` (divididas com o `Ai::GeminiImage`). Custo da análise no card, fora
+do teto de OPEX das organizações.
 
 **Marca como contexto raiz (hard rule):** todo conteúdo nasce dentro de uma marca —
 nunca é vinculado depois; não existe tela de associação manual. A organização tem

@@ -198,6 +198,25 @@ export async function apiDownload(path: string, fallbackName: string): Promise<v
   window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
 }
 
+/**
+ * Um binário da API com a sessão — para imagem que não pode ir num `<img
+ * src>` aberto (a miniatura privada da curadoria, por exemplo).
+ */
+export async function apiBlob(path: string): Promise<Blob> {
+  const token = getToken()
+  const headers = new Headers({ "Accept-Language": currentLanguage() })
+  if (token) headers.set("Authorization", `Bearer ${token}`)
+
+  let res: Response
+  try {
+    res = await fetch(`${BASE_URL}${path}`, { headers })
+  } catch {
+    throw new ApiError({ status: 0, code: "network" })
+  }
+  if (!res.ok) throw new ApiError({ status: res.status, code: knownCode(undefined, res.status) })
+  return res.blob()
+}
+
 /* ---------- atalhos ---------- */
 
 export function apiGet<T>(path: string, init?: ApiInit): Promise<T> {

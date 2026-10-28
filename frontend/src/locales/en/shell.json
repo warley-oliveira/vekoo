@@ -55,6 +55,7 @@
     "invite": "Invite people",
     "inviteToast": "Inviting people arrives in a next stage.",
     "inviteToastDescription": "They'll join “{{organization}}” and see the same carousels.",
+    "curation": "Curation",
     "signOut": "Sign out",
     "signOutToast": "You've signed out."
   },

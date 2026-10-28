@@ -7,6 +7,16 @@ en:
     unprocessable: "We couldn't save that. Check the fields."
     brand_required: "Every carousel is born inside a brand. Pick the brand before creating."
     parameter_missing: "Missing %{param}."
+    images_required: "Send at least one image of the post (or a direct image link)."
+    too_many_images: "Up to 10 images per reference."
+    image_invalid: "That file isn't an image we can open."
+    image_too_large: "Each image can be up to 10 MB."
+    url_not_image: "That link isn't an image. Send a screenshot of the post."
+    url_refused: "That address isn't accepted. Use a public https link."
+    url_failed: "We couldn't download the image from that link. Send the file."
+    analysis_not_retryable: "Only a failed analysis can run again."
+    analysis_running: "The analysis is still running. Wait for it to finish before editing."
+    card_archived: "An archived card is read-only. Reopen it to edit."
     format: "%{attribute} %{message}"
     messages:
       blank: "can't be blank"
@@ -26,6 +36,8 @@ en:
       too_small: "is too small"
       less_than_or_equal_to: "must be less than or equal to %{count}"
       invalid_transition: "can't go from %{from} to %{to}"
+      leak: "mentions where the reference came from (%{term})"
+      copied: "repeats a sentence from the post"
 
   auth:
     email_not_found: "We couldn't find an account with that email."
