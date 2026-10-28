@@ -41,6 +41,36 @@ Depois do hotfix: a main já tem a correção, e o próximo deploy é o dela, na
 pgvector (§2). Aí a branch `hotfix/redis-cable` e a worktree saem
 (`git worktree remove ~/projects/vekoo_trimit-hotfix`).
 
+### Segundo hotfix — cadastro fechado (`a02d3e4`, pronto, ainda não subiu)
+
+Em cima do `da2e0da`, na mesma branch: só os e-mails de `SIGNUP_ALLOWLIST` criam conta em
+produção; sem a variável, ou vazia, ninguém (fechado por padrão). Quem não está na lista
+recebe **403 `signupClosed`** e nada é criado. O login não olha a lista. Dev e test seguem
+abertos. A mesma mudança está na main e na `feat/reference-bank`, que também ensinam a
+tela de cadastro a mostrar o aviso.
+
+`SIGNUP_ALLOWLIST` vive no `.env.deploy` (e-mails separados por vírgula, segredo do Kamal,
+fora do git). **Antes de subir:** o e-mail do sócio na lista — ele ainda não tem conta. Para
+subir e, depois, a cada mudança na lista (da worktree do hotfix, com o `.env.deploy`
+carregado):
+
+```bash
+kamal deploy        # a primeira vez (código novo)
+kamal app boot      # depois, só para a lista nova valer — reenvia os segredos e troca o container
+```
+
+Conferir: `/up` 200; um cadastro com e-mail fora da lista volta 403 `signupClosed`:
+
+```bash
+curl -s -X POST https://syco.vekoo.app/signup -H 'Content-Type: application/json' \
+  -d '{"account":{"name":"Teste","email":"fora-da-lista@exemplo.com.br","password":"senha12345","organizationName":"Teste"}}' \
+  -w '\n%{http_code}\n'
+```
+
+**A tela de produção ainda é a da e6c2eb9:** o código novo vira `unknown` nela, e quem está
+fora da lista vê "Algo deu errado ao criar a conta" em vez do aviso — barrado do mesmo jeito.
+O aviso certo chega com o deploy do front da main.
+
 ---
 
 ## 1. Pré-requisitos na máquina de deploy
@@ -576,3 +606,11 @@ Restore **ainda não testado**.
   conexão direta
 - [ ] **Fechar a origem para a Cloudflare** (janela, depois do deploy) — roteiro no §6
 - [ ] Trocar a senha root da VPS, que circulou em texto; o SSH já não aceita senha
+- [ ] **Lançamento — teto GLOBAL de gasto de IA.** O `AGENT_MONTHLY_COST_CENTS_CAP`
+  (US$ 500/mês) vale **por organização**: cada conta nova ganha o seu, e nada soma o app
+  inteiro. Falta um teto que some todas as organizações (agente, onboarding e o que
+  mais chamar modelo) e pare de chamar quando estourar. Até lá: limite de gasto no
+  Console da Anthropic e alerta de orçamento no Google Cloud (o usuário configura)
+- [ ] **Lançamento — abrir o cadastro.** Hoje produção é fechada por padrão
+  (`config.x.signup_allowlist` no `production.rb`, de `SIGNUP_ALLOWLIST`). Abrir é tirar
+  essa linha — ou trocar a lista por convite
