@@ -1,6 +1,12 @@
-# secrets / env
+# secrets / env — nenhum .env* entra no git (cópias como .env.bak-* inclusive),
+# só os exemplos sem valor. A chave do credentials também não.
 .env
+.env.*
+!.env.example
+!.env.deploy.example
 backend/.env
+backend/config/master.key
+backend/config/credentials/*.key
 
 # deploy (kamal)
 .env.deploy

@@ -465,6 +465,10 @@ Restore **ainda não testado**.
 ## 7. Armadilhas
 
 - **`kamal proxy reboot` derruba tudo do host**: o proxy é global.
+- **`RAILS_MASTER_KEY` tem que abrir o `backend/config/credentials.yml.enc` versionado.** O app
+  não usa nada de lá (o `secret_key_base` vem do `SECRET_KEY_BASE`), mas o Active Record
+  Encryption abre o credentials no boot: chave que não abre derruba o container. Trocou a
+  chave, recriptografe o arquivo no mesmo commit. O `master.key` não vai para o git.
 - **Nenhum accessory com `port:`.** Porta publicada pelo Docker ignora o UFW e
   exporia Postgres/Redis à internet. App e accessories conversam pela rede `kamal`.
 - **`vekoo_storage` é volume nomeado, nunca bind mount.** O bind mount nasce
