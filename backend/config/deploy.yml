@@ -85,6 +85,7 @@ env:
     - SECRET_KEY_BASE
     - DATABASE_URL
     - ANTHROPIC_API_KEY
+    - SIGNUP_ALLOWLIST    # e-mails que podem criar conta; vazio = cadastro fechado
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro

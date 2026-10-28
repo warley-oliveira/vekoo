@@ -65,4 +65,44 @@ RSpec.describe "Criar conta", type: :request do
   it "não deixa organização órfã quando a conta não vale" do
     expect { signup(password: "123") }.not_to change(Organization, :count)
   end
+
+  # Produção antes do lançamento: `config.x.signup_allowlist` vem de
+  # SIGNUP_ALLOWLIST. Dev e test não definem a lista e ficam abertos.
+  describe "com o cadastro fechado" do
+    around do |example|
+      previous = Rails.configuration.x.signup_allowlist
+      Rails.configuration.x.signup_allowlist = " Bruno@Exemplo.com.br, socia@exemplo.com.br,,"
+      example.run
+    ensure
+      Rails.configuration.x.signup_allowlist = previous
+    end
+
+    it "deixa entrar quem está na lista, sem diferença de maiúscula ou espaço" do
+      expect { signup(email: " bruno@EXEMPLO.com.br") }.to change(Account, :count).by(1)
+      expect(response).to have_http_status(:created)
+    end
+
+    it "recusa quem não está na lista com 403, sem criar nada" do
+      expect { signup(email: "intrusa@exemplo.com.br") }.not_to change(Organization, :count)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json["error"]).to include("code" => "signupClosed", "field" => "email")
+      expect(json["error"]["message"]).to eq(I18n.t("auth.signup_closed"))
+    end
+
+    it "fecha para todo mundo quando a lista está vazia" do
+      Rails.configuration.x.signup_allowlist = ""
+
+      expect { signup }.not_to change(Account, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "não muda nada para quem já tem conta: o login segue" do
+      create(:account, email: "antiga@exemplo.com.br")
+
+      post "/login", params: { session: { email: "antiga@exemplo.com.br", password: "carrossel123" } }, as: :json
+
+      expect(response).to have_http_status(:created)
+    end
+  end
 end
