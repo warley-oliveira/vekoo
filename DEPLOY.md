@@ -249,6 +249,10 @@ o caminho passa a ser App Review com verificação da empresa. Em 2026-10-28 (us
 sistema, v26.0) o Standard **liberou**: conta profissional de terceiro volta com os ~50
 posts numa chamada, curtidas e comentários inclusos. Conta pessoal, privada ou inexistente
 volta igual — HTTP 400 `(#110) Invalid user id` —, então a tela não tem como separar os três.
+Conta de carrosséis grandes pesa: a mesma consulta da @homeandapartments (39 posts, 290
+lâminas, ~8 s) passou duas vezes e falhou uma com HTTP 500 `(#1) Please reduce the amount of
+data you're asking for`. O cliente responde a esse erro pedindo a página pela metade (até 10)
+e seguindo o cursor.
 
 **1. Pré-requisitos** (uma vez):
 
@@ -441,8 +445,26 @@ senha no SSH**. O segundo argumento é o modo do firewall dos containers:
   host sslip.io responde direto e para o Let's Encrypt.
 - `cloudflare` (padrão): 80/443 só das faixas da Cloudflare, via chain
   `VEKOO-CF` em `DOCKER-USER`, porque o UFW não filtra portas publicadas por container.
-  Exige que todo acesso venha pela Cloudflare (tirar o host sslip.io) e que o
-  certificado seja de origem, e não Let's Encrypt.
+  Exige que todo acesso venha pela Cloudflare (tirar o host sslip.io). O Let's Encrypt
+  de `syco` continua renovando: o desafio HTTP-01 chega pela Cloudflare, dos IPs dela.
+
+**Fechar a origem (de `open` para `cloudflare`) — na janela, depois do deploy:**
+
+1. Antes (só leitura): no DNS da Cloudflare, todo registro que aponta para
+   `107.152.37.59` está **proxied** (laranja); SSL em *Full (strict)*; nada usa o host
+   sslip.io (monitor, front, script). `curl -s http://syco.vekoo.app/.well-known/acme-challenge/x`
+   tem que responder do kamal-proxy (404), não da Cloudflare.
+2. No deploy: tirar `api.107-152-37-59.sslip.io` de `proxy.hosts` e de `APP_HOSTS` no
+   `deploy.yml` (commit antes — o Kamal builda do git).
+3. Aplicar **só o bloco do firewall**, como root (chave pelo console da VPS). Não rodar o
+   `deploy-setup` inteiro de novo: pelo console o `SSH_CLIENT` vem vazio e o fail2ban perde
+   o `ignoreip` da máquina de deploy. Proposta: extrair o bloco `DOCKER-USER` para
+   `bin/origin-firewall <cloudflare|open>`, que o `deploy-setup` chama.
+4. Conferir: `curl -s https://syco.vekoo.app/up` → 200; direto na origem
+   (`curl -m 5 -sk https://107.152.37.59/up -H 'Host: syco.vekoo.app'`) → timeout; o tempo
+   real conecta pelo app; `iptables -L VEKOO-CF -n | wc -l` com as faixas.
+5. Voltar atrás: o mesmo script com `open`. Depuração direta na origem passa a ser por
+   túnel SSH (`ssh -L 8443:localhost:443 deploy@107.152.37.59` + `curl --resolve`).
 
 **O root do servidor não tem a chave de deploy.** Rodar o script de novo exige
 colocar uma chave em `/root/.ssh/authorized_keys` pelo console da VPS.
@@ -498,6 +520,28 @@ Restore **ainda não testado**.
 - [ ] Restore de backup testado uma vez
 - [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3
 - [ ] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`)
-- [ ] Conta de demonstração em produção: conferir se existe (o seed antigo a criava no
-  primeiro `db:prepare`) e removê-la na janela do próximo deploy, com ok explícito
+- [ ] Conta de demonstração em produção: **existe**. Nasceu do seed antigo no primeiro
+  `db:prepare` do servidor novo, em 2026-10-22 00:55 UTC (o `created_at` diz 22/09 porque
+  o seed antedata 30 dias). Seis sessões até 26/10, US$ 0,0126 de IA: teste interno; a de
+  `201.80.77.187` é a máquina de deploy na conferência do pós-deploy. **Travada** em
+  2026-10-28 05:31 UTC (senha aleatória, sessões vencidas, nada apagado). Falta apagar a
+  organização dela na janela do próximo deploy, **depois** do dump, com ok explícito
+- [ ] Conta própria em produção para o sócio (pelo cadastro, como todo mundo), antes de
+  apagar a da demonstração
+- [ ] **Tempo real fora do ar desde o primeiro deploy.** O adaptador Redis do Action Cable
+  8.1.3 exige `redis >= 4, < 6`, e o `Gemfile.lock` trava `redis 6.0.0` desde 2026-09-07
+  (e6c2eb9, main e branch). Todo broadcast levanta `Gem::LoadError` — que não é
+  `StandardError`, nenhum `rescue` segura: o autosave e a publicação da marca, o envio de
+  logo e o fim do onboarding gravam e respondem 500; o turno do agente e o render da peça
+  terminam e o job falha depois (o render volta a rodar a cada nova tentativa do Sidekiq).
+  Correção: `gem "redis", ">= 4.0.1", "< 6"` (resolve 5.4.1 com a `redis-client` 0.30.1) e
+  uma spec que carrega o adaptador. Dev (`async`) e test (`test`) nunca passam por ele
+- [ ] **IP real** — em vez de ler `CF-Connecting-IP`: `proxy.forward_headers: true` no
+  `deploy.yml` + `config.action_dispatch.trusted_proxies` com as faixas da Cloudflare.
+  Conserta o `request.remote_ip` inteiro, não só a sessão: hoje o `rate_limit` do login
+  (10/3 min), do cadastro (5/hora) e da nova senha conta **por IP da Cloudflare**, e quem
+  entra pela mesma borda divide o limite. Não é falsificável mesmo com a origem aberta (só
+  salto da Cloudflare é confiável); o `CF-Connecting-IP` é, enquanto a origem aceitar
+  conexão direta
+- [ ] **Fechar a origem para a Cloudflare** (janela, depois do deploy) — roteiro no §6
 - [ ] Trocar a senha root da VPS, que circulou em texto; o SSH já não aceita senha
