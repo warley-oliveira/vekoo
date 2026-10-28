@@ -10,8 +10,9 @@ services:
     image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:40d828eda66737aaacb934387a337babf1455ebd56e9bdd13fc08e211257c972
     container_name: ${COMPOSE_PROJECT_NAME}_postgres
     restart: unless-stopped
+    # Só na máquina: sem o 127.0.0.1, o Docker publica em todas as interfaces.
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
