@@ -1,10 +1,11 @@
-# As imagens e a legenda de um card que veio do Instagram, e a análise dele.
-# Só o id do card viaja na fila — a legenda nunca passa pelo Redis.
+# As imagens e a legenda dos cards que vieram do Instagram, e a análise de
+# cada um — uma leitura do Meta por conta. Só os ids dos cards viajam na fila;
+# a legenda nunca passa pelo Redis.
 class FetchInstagramReferenceJob < ApplicationJob
   queue_as :default
 
-  def perform(card_id)
-    card = ReferenceCard.find_by(id: card_id)
-    References::FetchInstagramMedia.new(card).call if card&.analysis_status == "pending"
+  def perform(*card_ids)
+    cards = ReferenceCard.where(id: card_ids, analysis_status: "pending").to_a
+    References::FetchInstagramMedia.new(cards).call if cards.any?
   end
 end

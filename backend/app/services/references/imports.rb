@@ -50,14 +50,19 @@ module References
 
     # Os escolhidos viram card em rascunho, já com a fonte (permalink, o @, os
     # termos proibidos — o @ e o nome da conta) e as métricas; as imagens e a
-    # legenda vêm na hora da análise (`FetchInstagramReferenceJob`). Post que
-    # já virou card não vira outro.
+    # legenda vêm na hora da análise (`FetchInstagramReferenceJob`, um por
+    # conta: uma leitura do Meta serve a todos os cards dela). Post que já
+    # virou card não vira outro.
     def analyze!(import, candidate_ids:, curated_by:)
       ids = Array(candidate_ids).first(MAX_SELECTION)
       candidates = import.candidates.where(id: ids, status: "pending").includes(:account).to_a
       raise Invalid, "nothingSelected" if candidates.empty?
 
-      candidates.filter_map { |candidate| card_for(import, candidate, curated_by) }
+      cards = candidates.filter_map { |candidate| card_for(import, candidate, curated_by) }
+      cards.group_by { |card| card.source["channel"] }.each_value do |group|
+        FetchInstagramReferenceJob.perform_later(*group.map(&:id))
+      end
+      cards
     end
 
     # O card novo, ou nil quando o post já tinha card (o candidato passa a
@@ -85,7 +90,6 @@ module References
         }
       )
       mark(candidate, card)
-      FetchInstagramReferenceJob.perform_later(card.id)
       card
     rescue ActiveRecord::RecordNotUnique
       mark(candidate, ReferenceCard.find_by("source->>'igMediaId' = ?", candidate.ig_media_id))

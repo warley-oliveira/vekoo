@@ -60,6 +60,16 @@ RSpec.describe InstagramGraph::Client do
       expect(URI.decode_www_form(@calls.last[:uri].query).to_h["fields"]).to include("media.limit(1).after(QVFIUjEz)")
     end
 
+    it "para de paginar quando o bloco diz que já achou o que procurava" do
+      pages = ->(fields) {
+        fields.include?(".after(") ? ig_discovery("padoca", [ ig_media("3") ]) : ig_discovery("padoca", [ ig_media("1"), ig_media("2") ], after: "QVFIUjEz")
+      }
+      discovery = client("padoca" => pages).discover("padoca", limit: 3) { |media| media.map(&:id).include?("2") }
+
+      expect(discovery.media.map(&:id)).to eq(%w[1 2])
+      expect(@calls.length).to eq(1)
+    end
+
     describe "consulta pesada demais (código 1)" do
       let(:heavy) { ig_error(1, message: "Please reduce the amount of data you're asking for, then retry your request", status: 500) }
 

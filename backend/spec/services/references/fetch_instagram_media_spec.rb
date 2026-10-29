@@ -68,6 +68,54 @@ RSpec.describe References::FetchInstagramMedia do
     expect(card.originals).not_to be_attached
   end
 
+  describe "vários cards da mesma conta" do
+    let(:other) do
+      create(:reference_card, format: "static", size: "local",
+        source: { "url" => "https://www.instagram.com/p/100/", "channel" => "@padoca.exemplo", "bannedTerms" => [ "padoca.exemplo" ], "igMediaId" => "100" })
+    end
+    let(:pages) do
+      ->(fields) {
+        fields.include?(".after(") ? ig_discovery("padoca.exemplo", [ ig_media("50") ]) : ig_discovery("padoca.exemplo", [ ig_media("100"), ig_media("200") ], after: "QVFIUjEz")
+      }
+    end
+
+    def run_all(cards, analyze:)
+      transport, @calls = ig_transport("padoca.exemplo" => pages)
+      described_class.new(cards, client: InstagramGraph::Client.new(transport: transport), fetch: fetch, analyze: analyze).call
+    end
+
+    it "uma leitura do Meta serve a todos, e para de paginar quando acha os posts" do
+      received = []
+      run_all([ card, other ], analyze: ->(c, text) { received << [ c.id, text ] })
+
+      expect(@calls.length).to eq(1)
+      expect(received.map(&:first)).to eq([ card.id, other.id ])
+      expect(received.map(&:last)).to all(start_with("Legenda do post"))
+      expect([ card.reload, other.reload ].map { |c| c.originals.attached? }).to eq([ true, true ])
+    end
+
+    it "um card que falha não derruba o outro" do
+      analyzed = []
+      boom = ->(c, _text) { c.id == card.id ? raise("legenda no meio do erro") : analyzed << c.id }
+      log = StringIO.new
+      allow(Rails).to receive(:logger).and_return(ActiveSupport::Logger.new(log))
+
+      run_all([ card, other ], analyze: boom)
+
+      expect(card.reload).to have_attributes(analysis_status: "failed", analysis_error: { "code" => "failed" })
+      expect(analyzed).to eq([ other.id ])
+      expect(log.string).to include("RuntimeError")
+      expect(log.string).not_to include("legenda no meio do erro")
+    end
+
+    it "o Meta fora do ar falha todos os cards da conta, com o motivo" do
+      transport, = ig_transport("padoca.exemplo" => ig_error(190))
+      described_class.new([ card, other ], client: InstagramGraph::Client.new(transport: transport), fetch: fetch).call
+
+      expect([ card.reload, other.reload ].map(&:analysis_error)).to all(eq("code" => "tokenInvalid"))
+    end
+  end
+
   describe "a legenda nunca é gravada" do
     let(:chat) do
       payload = {

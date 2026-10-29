@@ -103,8 +103,10 @@ RSpec.describe "Admin: importação do Instagram", type: :request do
     it "os escolhidos viram card em rascunho, com fonte, termos proibidos e métricas, e vão buscar a mídia" do
       expect {
         post "/admin/reference-imports/#{import.id}/analyze", headers: headers, as: :json, params: { candidateIds: [ strong.id, reel.id ] }
-      }.to have_enqueued_job(FetchInstagramReferenceJob).twice
+      }.to have_enqueued_job(FetchInstagramReferenceJob).once
 
+      # Uma busca por conta: os dois cards da mesma conta vão no mesmo job.
+      expect(ActiveJob::Base.queue_adapter.enqueued_jobs.last[:args]).to match_array(json["created"])
       cards = ReferenceCard.where(id: json["created"]).index_by { |card| card.source["igMediaId"] }
       expect(cards["100"]).to have_attributes(status: "draft", analysis_status: "pending", niche: "food_beverage", size: "local",
         format: "static", partial_analysis: false, curated_by: staff)

@@ -82,8 +82,9 @@ module InstagramGraph
     end
 
     # A conta e os posts dela, mais recentes primeiro (com os filhos de cada
-    # carrossel). Pagina pelo cursor até `limit`.
-    def discover(username, limit: LIMIT)
+    # carrossel). Pagina pelo cursor até `limit` — ou até o bloco, que recebe
+    # os posts lidos até ali, dizer que já achou o que procurava.
+    def discover(username, limit: LIMIT, &found_all)
       raise Error, "notConfigured" unless self.class.configured?
 
       name = self.class.username(username) or raise Error, "accountUnavailable"
@@ -108,7 +109,7 @@ module InstagramGraph
         batch = Array(discovery.dig("media", "data"))
         media.concat(batch.map { |raw| build_media(raw) })
         after = discovery.dig("media", "paging", "cursors", "after").to_s
-        break if batch.empty? || media.length >= limit || !after.match?(CURSOR)
+        break if batch.empty? || media.length >= limit || !after.match?(CURSOR) || found_all&.call(media)
       end
       Discovery.new(account: account, media: media.first(limit))
     end
