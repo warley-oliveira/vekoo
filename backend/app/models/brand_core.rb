@@ -241,6 +241,27 @@ class BrandCore < ApplicationRecord
       BrandCore::NicheInference.call(document, segment_code: onboarding_segment)
   end
 
+  # O estilo que a geração usa, como o nicho: o da marca publicada; sem ele, o
+  # deduzido do que ela publicou (`ArchetypeInference`). Nunca lê o rascunho —
+  # a marca que confirmou o estilo deduzido só o publica na próxima versão.
+  def generation_archetypes
+    return { "primary" => nil, "secondary" => nil } unless published?
+
+    document = BrandCore::Schema.complete(published_document)
+    archetypes = document.dig("identity", "archetypes")
+    archetypes["primary"].present? ? archetypes : BrandCore::ArchetypeInference.call(document)
+  end
+
+  # O estilo deduzido que a tela pede para a pessoa confirmar: só na marca
+  # publicada sem estilo que ainda não escolheu um no rascunho.
+  def archetype_suggestion
+    return unless published?
+    return if full_document.dig("identity", "archetypes", "primary").present?
+
+    suggestion = generation_archetypes
+    suggestion if suggestion["primary"].present?
+  end
+
   # O tema do editor de carrossel derivado dos papéis da paleta: o carrossel
   # continua guardando cores relativas (`ink`, `accent`), e é este mapa que
   # as traduz para a marca. Lê a publicação quando há; senão, o rascunho —

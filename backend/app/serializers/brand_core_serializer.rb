@@ -23,6 +23,9 @@ class BrandCoreSerializer < ApplicationSerializer
       completeness: completeness.as_json,
       readyForGeneration: contract[:ready],
       generationBlockers: contract[:blockers],
+      # Marca publicada antes do campo de estilo: o estilo que a busca de
+      # referências deduziu, para a pessoa confirmar ou trocar.
+      styleSuggestion: brand_core.archetype_suggestion,
       hasUnpublishedChanges: brand_core.unpublished_changes?,
       unpublishedChangeCount: brand_core.unpublished_changes.size,
       assets: BrandAssetSerializer.many(brand_core.assets.ordered),

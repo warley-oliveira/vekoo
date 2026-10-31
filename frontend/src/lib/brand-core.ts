@@ -349,6 +349,12 @@ export type BrandCore = {
   completeness: BrandCompleteness
   readyForGeneration: boolean
   generationBlockers: GenerationBlocker[]
+  /**
+   * Marca publicada antes do campo de estilo: o estilo que a busca de
+   * referências deduziu do que ela publicou, para a pessoa confirmar ou trocar.
+   * Nulo quando a marca já tem estilo (publicado ou escolhido no rascunho).
+   */
+  styleSuggestion: { primary: Archetype; secondary: Archetype | null } | null
   hasUnpublishedChanges: boolean
   /** Quantas mudanças o rascunho tem sobre a última publicação. */
   unpublishedChangeCount: number

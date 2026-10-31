@@ -464,6 +464,17 @@
       "copyColor": "Copiar {{color}}",
       "copyFailed": "Não deu para copiar o hex."
     },
+    "styleSuggestion": {
+      "title": "Estilo da marca",
+      "titleOne": "Pelo que a sua marca publicou, o estilo dela parece “{{primary}}”.",
+      "titleTwo": "Pelo que a sua marca publicou, o estilo dela parece “{{primary}}”, com um toque de “{{secondary}}”.",
+      "description": "O estilo guia as referências que a plataforma usa para criar as suas peças. Confirme ou escolha outro.",
+      "confirm": "Confirmar estilo",
+      "change": "Escolher outro",
+      "dismiss": "Depois",
+      "confirmed": "Estilo confirmado. Ele entra na marca na próxima publicação.",
+      "failed": "Não deu para salvar o estilo. Tente de novo."
+    },
     "nudge": {
       "title": "Sua marca ainda não está pronta",
       "description": "Preencha o mínimo e publique para os carrosséis saírem com a sua cara.",

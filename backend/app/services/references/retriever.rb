@@ -93,9 +93,10 @@ module References
 
     private
 
-    # O estilo vive no documento **publicado**, como tudo o que a geração lê.
+    # O estilo publicado ou, na marca de antes do campo, o deduzido do que ela
+    # publicou (`BrandCore#generation_archetypes`).
     def brand_archetypes
-      archetypes = BrandCore::Schema.complete(@brand.published_document).dig("identity", "archetypes").to_h
+      archetypes = @brand.generation_archetypes
       { primary: archetypes["primary"].presence, secondary: archetypes["secondary"].presence }
     end
 

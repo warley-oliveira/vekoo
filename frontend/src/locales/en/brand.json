@@ -464,6 +464,17 @@
       "copyColor": "Copy {{color}}",
       "copyFailed": "Couldn't copy the hex."
     },
+    "styleSuggestion": {
+      "title": "Brand style",
+      "titleOne": "From what your brand has published, its style looks “{{primary}}”.",
+      "titleTwo": "From what your brand has published, its style looks “{{primary}}”, with a touch of “{{secondary}}”.",
+      "description": "The style guides the references the platform uses to create your pieces. Confirm it or pick another.",
+      "confirm": "Confirm style",
+      "change": "Pick another",
+      "dismiss": "Later",
+      "confirmed": "Style confirmed. It becomes part of the brand at the next publish.",
+      "failed": "Couldn't save the style. Try again."
+    },
     "nudge": {
       "title": "Your brand isn't ready yet",
       "description": "Fill in the minimum and publish so carousels come out looking like you.",

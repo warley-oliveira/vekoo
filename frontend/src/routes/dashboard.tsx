@@ -6,6 +6,7 @@ import { ArrowRight, Images, Layers, Palette, RefreshCw, Sparkles, SquarePen } f
 import { useShell } from "@/components/app-shell"
 import { BrandCard } from "@/components/brand/brand-card"
 import { BrandNudge } from "@/components/brand/brand-nudge"
+import { StyleSuggestion } from "@/components/brand/style-suggestion"
 import { ContentCard, mergeContents } from "@/components/contents/content-card"
 import { ErrorState } from "@/components/error-state"
 import { Button } from "@/components/ui/button"
@@ -47,6 +48,7 @@ export function BrandDashboardPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
       <BrandNudge />
+      <StyleSuggestion />
 
       {orphanCount > 0 && (
         <aside className="mb-5 flex flex-wrap items-center gap-3 rounded-lg border px-4 py-3 text-sm">
