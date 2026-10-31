@@ -23,6 +23,35 @@ namespace :references do
     exit 1
   end
 
+  # O que a busca da geração escolheria para um pedido de uma marca, com a
+  # conta de cada card — para a curadoria conferir a busca sem gerar peça.
+  # INCLUDE_REVIEW=1 busca também nos cards em revisão (o banco do dev começa
+  # sem nenhum publicado).
+  desc "Prévia da busca de referências: BRAND=id PEDIDO=\"...\" [INCLUDE_REVIEW=1] [EXCLUDE=id,id]"
+  task preview: :environment do
+    brand = BrandCore.find(ENV.fetch("BRAND"))
+    text = ENV.fetch("PEDIDO")
+    statuses = ENV["INCLUDE_REVIEW"].present? ? %w[published in_review] : %w[published]
+    result = References::Retriever.call(
+      brand, text, scope: ReferenceCard.where(status: statuses), exclude_ids: ENV["EXCLUDE"].to_s.split(",")
+    )
+    intent = result.intent
+    name = BrandCore::Schema.complete(brand.published_document).dig("identity", "name") if brand.published?
+    puts "marca: #{name || brand.id} · nicho #{result.niche || '—'} · estilo #{result.archetypes[:primary] || '—'} / #{result.archetypes[:secondary] || '—'}"
+    puts "  tem: #{result.has.map { |need, yes| "#{need} #{yes ? 'sim' : 'não'}" }.join(' · ').presence || '—'}"
+    puts "pedido: objetivo #{intent.objective || '—'} · formato #{intent.format || '—'} · traz #{intent.brings.presence&.join(', ') || 'nada'} · US$ #{format('%.4f', intent.cost_micro_usd / 1e6)}"
+    puts "busca: #{result.candidates} candidatos (#{statuses.join(' + ')}) · vetor do pedido #{result.similarity ? 'sim' : 'não — só as colunas'}"
+    puts "nenhum card passou: a peça sai sem referência." if result.picks.empty?
+    result.picks.each_with_index do |pick, index|
+      card = pick.card
+      points = pick.points.reject { |_, value| value.zero? }.map { |key, value| "#{key} #{value.positive? ? '+' : ''}#{value}" }
+      puts "#{index + 1}. #{card.source['channel'] || card.id} · #{card.hook_type} · #{card.objective} · #{card.archetypes.first} · #{card.niche} — " \
+        "total #{pick.total} (#{points.join(', ')})#{pick.cosine ? " · cosseno #{pick.cosine}" : ''}"
+      puts "   exige: #{card.requires.presence&.join(', ') || 'nada'}#{pick.missing.any? ? " · a marca não tem: #{pick.missing.join(', ')}" : ''}"
+      puts "   #{card.analysis.dig('whyItWorks', 'transferablePrinciple')}"
+    end
+  end
+
   # Quando o critério de gancho ou de replicabilidade muda
   # (`References::Prompts::CALIBRATION`): refaz os dois campos de todo card
   # analisado e, depois, o vetor de cada um — um por vez, com folga, porque a

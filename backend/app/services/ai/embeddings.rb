@@ -28,15 +28,16 @@ module Ai
     def self.available? = Vertex.available?
 
     # Um texto → um vetor de `DIMENSIONS` floats. O modelo aceita um texto por
-    # chamada no Vertex.
-    def embed(text, task: :document)
+    # chamada no Vertex. `timeout` curto para quem está no caminho de uma
+    # geração (o vetor do pedido): esperar 20 s por um ponto de busca não vale.
+    def embed(text, task: :document, timeout: TIMEOUT)
       raise MissingKey unless Vertex.vertex? && Vertex.project
 
       body = {
         instances: [ { content: text.to_s, task_type: TASKS.fetch(task) } ],
         parameters: { outputDimensionality: DIMENSIONS, autoTruncate: true }
       }
-      values = post(body).dig("predictions", 0, "embeddings", "values")
+      values = post(body, timeout).dig("predictions", 0, "embeddings", "values")
       raise Failed, "resposta sem vetor" unless values.is_a?(Array) && values.length == DIMENSIONS
 
       values.map(&:to_f)
@@ -44,11 +45,11 @@ module Ai
 
     private
 
-    def post(body)
+    def post(body, timeout = TIMEOUT)
       uri = Vertex.model_url(self.class.model, "predict", location: self.class.location)
       request = Net::HTTP::Post.new(uri, "Content-Type" => "application/json", "Authorization" => Vertex.authorization)
       request.body = JSON.generate(body)
-      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: TIMEOUT, open_timeout: 10) { |http| http.request(request) }
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: timeout, open_timeout: [ timeout, 10 ].min) { |http| http.request(request) }
       payload = JSON.parse(response.body.presence || "{}")
       raise Failed, "HTTP #{response.code}: #{payload.dig('error', 'message').to_s.first(160)}" unless response.is_a?(Net::HTTPSuccess)
 
