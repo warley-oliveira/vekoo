@@ -4,9 +4,11 @@ module Ai
   # O acesso ao Vertex AI que o gerador de imagens (`Ai::GeminiImage`) e o de
   # embedding (`Ai::Embeddings`) dividem: configuração e credenciais.
   #
-  # Autentica pela conta de serviço de `GOOGLE_CREDENTIALS_BASE64` (produção,
-  # DEPLOY.md) ou por Application Default Credentials (`gcloud auth
-  # application-default login` no dev); nunca por chave de API. Configuração
+  # Autentica pela conta de serviço `vekoo-api-vertex` (DEPLOY.md §2): em
+  # produção pela chave de `GOOGLE_CREDENTIALS_BASE64`; no dev pela chave de dev
+  # em `GOOGLE_APPLICATION_CREDENTIALS` (o caminho do arquivo, fora do
+  # repositório), que o Application Default Credentials lê antes do login
+  # pessoal do `gcloud` — esse vence a cada poucos dias. Nunca por chave de API. Configuração
   # pelas mesmas variáveis do SDK `google-genai`:
   #
   #   GOOGLE_GENAI_USE_VERTEXAI=True

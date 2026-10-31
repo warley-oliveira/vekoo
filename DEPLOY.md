@@ -242,23 +242,48 @@ cai em outra identidade.
 3. *Conceder acesso ao projeto*: **só** o papel **Vertex AI User**
    (`roles/aiplatform.user`). Pule "conceder acesso a usuários".
 4. Na conta criada → *Chaves* → *Adicionar chave* → *Criar nova chave* → **JSON**. O
-   arquivo baixa uma vez só.
+   arquivo baixa uma vez só. Crie **duas** chaves, uma de cada vez: a de produção e a de
+   dev. São a mesma conta e o mesmo papel; chave separada deixa apagar a de dev (vazou,
+   máquina nova) sem derrubar a produção.
 
 Se o console disser que a criação de chave está desativada (política
 `iam.disableServiceAccountKeyCreation`, ligada por padrão em organizações criadas a
 partir de 2024), um administrador da organização precisa abrir exceção para este
-projeto. A alternativa sem chave é Workload Identity Federation — mais trabalho; decidir
-antes de seguir.
+projeto: *IAM e administrador* → *Políticas da organização* (com o **projeto**
+selecionado) → "Disable service account key creation" → *Gerenciar política* →
+*Substituir a política do pai* → regra **Não aplicar** → salvar. Quem faz isso precisa
+do papel **Administrador de políticas da organização** (`roles/orgpolicy.policyAdmin`)
+no nível da organização — o superadministrador do Workspace pode se dar o papel em
+*IAM* com a organização selecionada. Depois de criar as duas chaves, volte a política do
+projeto para **herdar do pai**: as chaves criadas continuam valendo e ninguém cria
+outra por engano. A alternativa sem chave é Workload Identity Federation — mais
+trabalho; decidir antes de seguir.
 
 **2. Na máquina de deploy** (WSL — o download fica em `/mnt/c/Users/<você>/Downloads`):
 
 ```bash
 mkdir -p ~/.config/vekoo && chmod 700 ~/.config/vekoo
-mv /mnt/c/Users/<você>/Downloads/<projeto>-*.json ~/.config/vekoo/vertex-sa.json
-chmod 600 ~/.config/vekoo/vertex-sa.json
+mv /mnt/c/Users/<você>/Downloads/<chave-de-producao>.json ~/.config/vekoo/vertex-sa.json
+mv /mnt/c/Users/<você>/Downloads/<chave-de-dev>.json ~/.config/vekoo/vertex-sa-dev.json
+chmod 600 ~/.config/vekoo/*.json
 ```
 
 Não deixe cópia em `Downloads` e nunca coloque o JSON dentro do repositório.
+
+**No dev**, o `.env` da raiz aponta para a chave de dev — só o caminho; a chave fica em
+`~/.config/vekoo`:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=/home/<você>/.config/vekoo/vertex-sa-dev.json
+```
+
+O Application Default Credentials lê essa variável antes do login pessoal do `gcloud`
+(que o Workspace faz vencer a cada poucos dias). Reinicie o `bin/dev` e confira:
+
+```bash
+cd backend && bin/rails runner 'puts Ai::Vertex.credentials.class; puts Ai::Embeddings.new.embed(%q(teste)).size'
+#  → Google::Auth::ServiceAccountCredentials · 768
+```
 
 **3. O segredo e a configuração** (commit no repositório, menos o `.env.deploy`):
 
