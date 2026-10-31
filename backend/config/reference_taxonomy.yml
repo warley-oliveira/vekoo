@@ -61,13 +61,15 @@ formats:
   reels: vídeo curto vertical
   ad: anúncio pago
 
+# O que a capa oferece para a pessoa continuar. Critério e exemplos de cada um
+# em `References::Prompts::CALIBRATION`.
 hook_types:
-  question: abre com uma pergunta para quem lê
-  number: abre com um número, uma lista ou um dado
-  contrast: abre com um contraste — antes e depois, isso ou aquilo, mito e verdade
-  promise: abre prometendo um resultado ou um benefício
-  controversy: abre contrariando uma crença comum
-  curiosity: abre escondendo a resposta para fazer continuar
+  question: a frase principal da capa é uma pergunta a quem lê, e o post a responde
+  number: um número é o protagonista da capa — tamanho da lista, dado, marco, contagem (preço não conta)
+  contrast: a capa põe duas coisas lado a lado — antes e depois, mito e verdade, isto ou aquilo
+  promise: a capa diz ou mostra o ganho de quem lê — benefício, resultado, oferta, preço, prêmio, algo grátis
+  controversy: a capa contraria uma crença comum ou assume uma posição que divide
+  curiosity: a capa retém de propósito uma informação que só a sequência entrega — o último recurso
 
 # O que o padrão move — uma ou duas por card (`whyItWorks.targetMetrics`).
 target_metrics:
@@ -77,11 +79,13 @@ target_metrics:
   clicks: cliques — conteúdo que leva ao link, ao perfil ou ao WhatsApp
   reach: alcance — conteúdo que a plataforma entrega a quem ainda não segue
 
-# Quanto custa reproduzir o padrão. A geração só usa 2 e 3 por padrão.
+# Quanto custa reproduzir o padrão — o que o negócio precisa trazer, já que o
+# Vekoo faz o design. A geração só usa 2 e 3 por padrão. Critério e exemplos
+# em `References::Prompts::CALIBRATION`.
 replicability:
-  1: exige produção profissional — estúdio, equipe, edição elaborada
-  2: exige algum recurso — foto boa, pessoa em cena, produto físico
-  3: qualquer negócio faz com o celular
+  1: exige produção ou acesso fora do alcance de pequeno negócio — estúdio, celebridade, vídeo editado, licença, drone
+  2: exige um ativo real que o negócio precisa ter ou produzir para o post — foto caprichada, pessoa em cena, cliente, evento, promoção
+  3: qualquer negócio faz hoje com o que já sabe e uma foto comum de celular — o Vekoo faz o resto
 
 origins:
   external: post real de outra conta, analisado pela curadoria

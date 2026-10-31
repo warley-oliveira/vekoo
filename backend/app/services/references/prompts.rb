@@ -76,22 +76,102 @@ module References
       conferir que a análise não repete o post; não é guardado.
     TEXT
 
+    # Os dois campos que escorregavam para o meio (na onda 1, gancho
+    # `curiosity` em metade dos cards e replicabilidade 2 em quatro de cinco):
+    # critério e exemplo para cada valor. `Reclassify` usa o mesmo texto.
+    CALIBRATION = <<~TEXT.freeze
+      ## Como decidir o gancho e a replicabilidade
+
+      ### Gancho (`hook.type`)
+      O gancho é o que a **capa** (a primeira lâmina ou o primeiro quadro)
+      oferece para a pessoa continuar; se a capa não tem texto, vale também a
+      primeira linha da legenda. Escolha pelo recurso que **domina** a capa. Se
+      dois servem, esta ordem desempata: `question`, `number`, `contrast`,
+      `controversy`, `promise`, `curiosity`.
+
+      - `question`: a frase principal da capa é uma pergunta a quem lê, e o
+        post é a resposta. "Você sabe a hora de trocar a escova?", "Qual bairro
+        combina com a sua família?". Uma pergunta pequena enfeitando uma oferta
+        não conta: vale o que domina.
+      - `number`: um número é o protagonista. O tamanho da lista ("5 erros
+        ao…"), um dado ("1 em cada 3…"), um marco ("10 mil famílias"), uma
+        contagem ("faltam 3 dias"). Preço e desconto **não** são `number`: são
+        `promise`.
+      - `contrast`: duas coisas lado a lado para comparar. Antes e depois, mito
+        e verdade, certo e errado, expectativa e realidade, isto ou aquilo, "o
+        comum × o nosso".
+      - `controversy`: a capa contraria o que o público acredita ou espera, ou
+        assume uma posição que divide. "Pare de…", "ninguém precisa de…", "aqui
+        não fazemos…". Precisa de um "não" contra uma crença.
+      - `promise`: a capa diz ou mostra, explícito, o ganho de quem lê.
+        Benefício, resultado, oferta, preço, desconto, prêmio, brinde, algo
+        grátis, "aprenda a…", "garanta o seu".
+      - `curiosity`: **o último recurso.** Só quando a capa retém de propósito
+        uma informação específica que a sequência entrega: a revelação guardada
+        para o fim, a frase cortada, o "adivinha", o produto escondido ou
+        borrado, o "você não vai acreditar". Capa que só é bonita, ou que só
+        anuncia uma novidade, **não** é curiosidade.
+
+      Capa que prende só pela imagem — o prato em close, o ambiente, a textura
+      —, sem frase de gancho: se a imagem já mostra pronto o ganho (o prato
+      servido, o espaço montado), `promise`; `curiosity` só se a sequência
+      revela o que a capa esconde de propósito.
+
+      ### Replicabilidade (`replicability.score`)
+      O Vekoo faz o design (layout, tipografia, cor) e gera foto genérica —
+      cena, ingrediente, objeto. A pergunta é: **o que o negócio precisa
+      trazer?** Julgue a versão mínima que ainda preserva o mecanismo de
+      `whyItWorks`: se ele sobrevive trocando a produção cara por algo simples
+      (o meme vira tipografia, a foto de estúdio vira foto boa de celular),
+      pontue pela versão simples; se a parte cara **é** o mecanismo (a
+      celebridade, o drone, o brinquedo licenciado), ela decide.
+
+      - `3` — qualquer negócio faz hoje, com o que já sabe e o que já tem.
+        Texto e design, informação do próprio ramo (dicas, passo a passo,
+        preços, horários, unidades, perguntas frequentes, uma opinião) e no
+        máximo uma foto comum de celular do produto, do espaço ou da equipe, ou
+        uma imagem genérica. Ex.: dicas numeradas do ofício; checklist de
+        cuidados; mito e verdade; cardápio com preço em lâminas tipográficas;
+        lista de vagas; meme em texto; pergunta para o público comentar.
+      - `2` — exige um ativo real que o negócio precisa ter ou produzir **para
+        este post**. A foto é o argumento (o post não funciona com foto comum:
+        luz, composição e produto montado com cuidado); uma pessoa da marca em
+        várias lâminas; um cliente real com autorização (depoimento, entrega da
+        chave); um evento real registrado; uma promoção ou sorteio com prêmio
+        de verdade; uma linha de vários produtos fotografados no mesmo padrão;
+        um espaço fotogênico; fotos antigas da casa; um mascote que a marca já
+        tem.
+      - `1` — exige produção ou acesso que pequeno negócio não tem. Estúdio com
+        equipe, modelo, celebridade ou influenciador; personagem licenciado ou
+        parceria com marca famosa; vídeo editado, animação ou 3D como
+        mecanismo; drone, locação de luxo; campanha com regulamento nacional ou
+        prêmio de alto valor; evento de grande porte; pesquisa própria em
+        escala.
+
+      Na dúvida entre 2 e 3: se o negócio precisa **produzir algo novo** para o
+      post (fotografar com cuidado, chamar um cliente, montar um evento), é 2;
+      se só precisa do que já sabe e de uma foto comum do que já tem, é 3.
+    TEXT
+
+    LISTS = {
+      "Tipos de gancho (`hook.type`)" => :hook_types,
+      "Métricas que o padrão move (`whyItWorks.targetMetrics`)" => :target_metrics,
+      "Replicabilidade (`replicability.score`)" => :replicability,
+      "Nichos (`niche`)" => :niches,
+      "Estilos (`archetypes`)" => :archetypes,
+      "Objetivos (`objective`)" => :objectives,
+      "Formatos (`format`)" => :formats
+    }.freeze
+
     module_function
 
     def system
-      [ ROLE, RULES, FIELDS, taxonomy, layouts ].join("\n")
+      [ ROLE, RULES, FIELDS, CALIBRATION, taxonomy, layouts ].join("\n")
     end
 
-    def taxonomy
-      lists = {
-        "Tipos de gancho (`hook.type`)" => :hook_types,
-        "Métricas que o padrão move (`whyItWorks.targetMetrics`)" => :target_metrics,
-        "Replicabilidade (`replicability.score`)" => :replicability,
-        "Nichos (`niche`)" => :niches,
-        "Estilos (`archetypes`)" => :archetypes,
-        "Objetivos (`objective`)" => :objectives,
-        "Formatos (`format`)" => :formats
-      }
+    # `only`: as listas que entram (todas, sem argumento).
+    def taxonomy(*only)
+      lists = only.empty? ? LISTS : LISTS.select { |_, list| only.include?(list) }
       body = lists.map { |title, list|
         "### #{title}\n" + Taxonomy.values(list).map { |code| "- `#{code}`: #{Taxonomy.describe(list, code)}" }.join("\n")
       }
