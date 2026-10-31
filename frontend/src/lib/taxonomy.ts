@@ -65,6 +65,8 @@ export const HOOK_TYPES = [
   "promise",
   "controversy",
   "curiosity",
+  "announcement",
+  "visual",
 ] as const
 export type HookType = (typeof HOOK_TYPES)[number]
 

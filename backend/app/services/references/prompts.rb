@@ -78,16 +78,18 @@ module References
 
     # Os dois campos que escorregavam para o meio (na onda 1, gancho
     # `curiosity` em metade dos cards e replicabilidade 2 em quatro de cinco):
-    # critério e exemplo para cada valor. `Reclassify` usa o mesmo texto.
+    # critério e exemplo para cada valor. `visual` e `announcement` nasceram
+    # da recalibração: sem eles, capa só de imagem e anúncio de novidade caíam
+    # à força em `promise` ou `curiosity`. `Reclassify` usa o mesmo texto.
     CALIBRATION = <<~TEXT.freeze
       ## Como decidir o gancho e a replicabilidade
 
       ### Gancho (`hook.type`)
       O gancho é o que a **capa** (a primeira lâmina ou o primeiro quadro)
-      oferece para a pessoa continuar; se a capa não tem texto, vale também a
-      primeira linha da legenda. Escolha pelo recurso que **domina** a capa. Se
-      dois servem, esta ordem desempata: `question`, `number`, `contrast`,
-      `controversy`, `promise`, `curiosity`.
+      oferece para a pessoa continuar. A legenda não decide: no feed, quem para
+      a pessoa é a capa. Escolha pelo recurso que **domina** a capa. Se dois
+      servem, esta ordem desempata: `question`, `number`, `contrast`,
+      `controversy`, `promise`, `announcement`, `curiosity`, `visual`.
 
       - `question`: a frase principal da capa é uma pergunta a quem lê, e o
         post é a resposta. "Você sabe a hora de trocar a escova?", "Qual bairro
@@ -103,19 +105,22 @@ module References
       - `controversy`: a capa contraria o que o público acredita ou espera, ou
         assume uma posição que divide. "Pare de…", "ninguém precisa de…", "aqui
         não fazemos…". Precisa de um "não" contra uma crença.
-      - `promise`: a capa diz ou mostra, explícito, o ganho de quem lê.
-        Benefício, resultado, oferta, preço, desconto, prêmio, brinde, algo
-        grátis, "aprenda a…", "garanta o seu".
-      - `curiosity`: **o último recurso.** Só quando a capa retém de propósito
-        uma informação específica que a sequência entrega: a revelação guardada
-        para o fim, a frase cortada, o "adivinha", o produto escondido ou
-        borrado, o "você não vai acreditar". Capa que só é bonita, ou que só
-        anuncia uma novidade, **não** é curiosidade.
-
-      Capa que prende só pela imagem — o prato em close, o ambiente, a textura
-      —, sem frase de gancho: se a imagem já mostra pronto o ganho (o prato
-      servido, o espaço montado), `promise`; `curiosity` só se a sequência
-      revela o que a capa esconde de propósito.
+      - `promise`: a capa **diz** o ganho de quem lê. Benefício, resultado,
+        oferta, preço, desconto, prêmio, brinde, algo grátis, "aprenda a…",
+        "garanta o seu". A foto bonita do produto sem o ganho dito não é
+        promessa: é `visual`.
+      - `announcement`: a capa anuncia uma novidade ou um feito **da marca**.
+        Lançamento, "chegou", "agora tem", coleção nova, inauguração, nova
+        unidade, novo horário, prêmio, aniversário da casa. Novidade com preço
+        ou oferta na capa é `promise`; marco que é só um número grande é
+        `number`.
+      - `curiosity`: a capa retém de propósito uma informação específica que a
+        sequência entrega. A revelação guardada para o fim, a frase cortada, o
+        "adivinha", o produto escondido ou borrado, o "você não vai acreditar".
+        Capa que só é bonita não é curiosidade.
+      - `visual`: a capa prende só pela imagem — o prato em close, o ambiente,
+        a textura, a pessoa, o mascote, a ilustração —, sem frase de gancho (no
+        máximo o nome da marca ou do produto) e sem esconder nada de propósito.
 
       ### Replicabilidade (`replicability.score`)
       O Vekoo faz o design (layout, tipografia, cor) e gera foto genérica —

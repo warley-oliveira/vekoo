@@ -69,7 +69,9 @@ hook_types:
   contrast: a capa põe duas coisas lado a lado — antes e depois, mito e verdade, isto ou aquilo
   promise: a capa diz ou mostra o ganho de quem lê — benefício, resultado, oferta, preço, prêmio, algo grátis
   controversy: a capa contraria uma crença comum ou assume uma posição que divide
-  curiosity: a capa retém de propósito uma informação que só a sequência entrega — o último recurso
+  curiosity: a capa retém de propósito uma informação que só a sequência entrega
+  announcement: a capa anuncia uma novidade ou um feito da marca — lançamento, chegada, inauguração, prêmio, marco
+  visual: a capa prende só pela imagem, sem frase de gancho e sem esconder nada de propósito
 
 # O que o padrão move — uma ou duas por card (`whyItWorks.targetMetrics`).
 target_metrics:

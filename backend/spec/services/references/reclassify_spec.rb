@@ -40,7 +40,7 @@ RSpec.describe References::Reclassify do
       text = messages.first[:content].first[:text]
       expect(text).to include("A capa mostra o resultado", "O que um negócio precisa para repetir")
       expect(text).not_to include("curiosity", "padoca")
-      expect(system.first[:text]).to include("o último recurso", "Na dúvida entre 2 e 3", "### Tipos de gancho")
+      expect(system.first[:text]).to include("`announcement`", "Na dúvida entre 2 e 3", "### Tipos de gancho")
       expect(system.first[:text]).not_to include("### Nichos")
       expect(schema["required"]).to eq(%w[hookType hookFit replicability reason])
     }
@@ -54,7 +54,7 @@ RSpec.describe References::Reclassify do
   end
 
   it "resposta fora da lista falha sem gravar" do
-    chat = chat_answering(payload.merge("hookType" => "visual"))
+    chat = chat_answering(payload.merge("hookType" => "meme"))
 
     expect { described_class.new(card, chat: chat).call }.to raise_error(Ai::Chat::Failed)
     expect(card.reload.hook_type).to eq("curiosity")

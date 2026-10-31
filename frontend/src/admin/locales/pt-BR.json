@@ -48,7 +48,9 @@
         "contrast": "Contraste",
         "promise": "Promessa",
         "controversy": "Polêmica",
-        "curiosity": "Curiosidade"
+        "curiosity": "Curiosidade",
+        "announcement": "Novidade",
+        "visual": "Visual"
       },
       "targetMetrics": {
         "saves": "Salvamentos",
