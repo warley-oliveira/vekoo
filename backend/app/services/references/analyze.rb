@@ -96,13 +96,15 @@ module References
     end
 
     # A curadoria manda no que ela já disse (nicho, porte, estilo, objetivo,
-    # formato, a mediana da conta); o modelo preenche o que ela deixou em
-    # branco. O layout sugerido só entra se servir ao formato.
+    # formato, a mediana da conta, as curtidas e comentários que vieram do
+    # Meta); o modelo preenche o que ela deixou em branco — as curtidas do
+    # print. O layout sugerido só entra se servir ao formato.
     def apply(payload, answer)
       found = payload["classification"].is_a?(Hash) ? payload["classification"] : {}
-      metrics = payload["analysis"]["metrics"].to_h.merge(
-        "baselineMedian" => @card.analysis.dig("metrics", "baselineMedian"),
-        "collectedAt" => @card.analysis.dig("metrics", "collectedAt")
+      known = @card.analysis["metrics"].to_h
+      metrics = payload["analysis"]["metrics"].to_h.merge(known.slice("likes", "comments").compact).merge(
+        "baselineMedian" => known["baselineMedian"],
+        "collectedAt" => known["collectedAt"]
       )
 
       @card.assign_attributes(

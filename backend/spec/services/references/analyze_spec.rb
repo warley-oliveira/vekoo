@@ -61,6 +61,15 @@ RSpec.describe References::Analyze do
     expect(card.analysis.to_json).not_to include("três passos")
   end
 
+  it "post importado: curtidas e comentários do Meta valem sobre o que o modelo leu" do
+    card.update!(analysis: { "metrics" => { "likes" => 900, "comments" => 60, "baselineMedian" => 300 } })
+    unread = analysis.merge("metrics" => { "likes" => nil, "comments" => nil, "baselineMedian" => nil, "relativeEngagement" => nil, "collectedAt" => nil })
+    analyze(chat_answering(JSON.generate(payload.merge("analysis" => unread))))
+
+    expect(card.reload.analysis["metrics"]).to include("likes" => 900, "comments" => 60)
+    expect(card.relative_engagement).to eq(3.2)
+  end
+
   it "manda as imagens em ordem, o schema como saída estruturada e o fallback de recusa" do
     chat = chat_answering(JSON.generate(payload))
     analyze(chat)
