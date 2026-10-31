@@ -21,8 +21,13 @@ module Agent
     # cinto de segurança para um laço que não termina.
     MAX_ROUNDS = 4
 
-    def initialize(turn, chat: Ai::Chat.new)
+    # `references`: força o modo da busca de referências neste turno (o teste
+    # lado a lado gera o mesmo pedido com `"on"` e com `"off"`); nulo segue o
+    # interruptor. `image_tool: false` tira a ferramenta de foto — no teste,
+    # para a foto não decidir a disputa.
+    def initialize(turn, chat: Ai::Chat.new, references: nil, image_tool: true)
       @turn = turn
+      @references_mode = references
       @chat = chat
       @conversation = turn.conversation
       @brand = @conversation.brand_core
@@ -31,7 +36,7 @@ module Agent
       # O modelo que **respondeu**, não o que pedimos: se um dia houver
       # fallback, a conta tem que bater com quem de fato trabalhou.
       @model = self.class.model
-      @image_tool = ImageTool.new(turn, on_change: -> { broadcast }) if ImageTool.available?
+      @image_tool = ImageTool.new(turn, on_change: -> { broadcast }) if image_tool && ImageTool.available?
     end
 
     def self.model
@@ -90,7 +95,7 @@ module Agent
     # variações": o ajuste mexe numa peça que já tem forma. Falha aqui nunca
     # derruba o turno — a peça sai como saía antes.
     def find_references
-      mode = References::Retriever.mode
+      mode = @references_mode || References::Retriever.mode
       return if mode == "off" || @turn.kind == "adjust"
 
       query, exclude = reference_query

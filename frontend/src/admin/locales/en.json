@@ -5,7 +5,8 @@
       "label": "Curation areas",
       "references": "References",
       "backToApp": "Back to Vekoo",
-      "imports": "Import"
+      "imports": "Import",
+      "evals": "Search test"
     },
     "status": {
       "draft": "Draft",
@@ -430,6 +431,88 @@
         "engagement": "{{likes}} likes · {{comments}} comments",
         "carded": "Became a card",
         "open": "Open on Instagram"
+      }
+    },
+    "evals": {
+      "title": "Search test",
+      "description": "The same request generated with and without patterns from the reference bank, side by side and blind. You don't know which side is which until the round ends.",
+      "empty": {
+        "title": "No rounds yet",
+        "description": "A round is generated from the terminal, with the test brands and the reviewed requests. It shows up here when it's ready."
+      },
+      "round": "Round {{round}}",
+      "progress": "{{decided}} of {{total}} rated",
+      "start": "Start rating",
+      "continue": "Keep rating",
+      "seeResults": "See results",
+      "sides": {
+        "left": "A",
+        "right": "B"
+      },
+      "reasons": {
+        "hook": "Hook",
+        "structure": "Structure",
+        "copy": "Copy",
+        "visual": "Visual"
+      },
+      "pair": {
+        "rounds": "Rounds",
+        "position": "Round {{round}} · pair {{position}} of {{total}}",
+        "previous": "Previous pair",
+        "next": "Next pair",
+        "request": "Request",
+        "side": "Side {{side}}",
+        "options_one": "{{count}} option",
+        "options_other": "{{count}} options",
+        "rendering": "Drawing the slides…",
+        "slide": "Slide {{index}}",
+        "caption": "Caption"
+      },
+      "form": {
+        "label": "Pair rating",
+        "verdict": "Which set would you use?",
+        "chooseSide": "Side {{side}}",
+        "tie": "Tie",
+        "usable": "How many would you post as is?",
+        "usableSide": "Would post as is, side {{side}}",
+        "reasons": "Why? (optional)",
+        "copied": "Does any piece look copied from a real post?",
+        "copiedSide": "Yes, on side {{side}}",
+        "notes": "Note (optional)",
+        "notesPlaceholder": "What tipped the choice",
+        "save": "Save and go to the next",
+        "saved": "Rating saved.",
+        "missing": "Pick a side (or tie) and how many you'd post from each side.",
+        "shortcuts": "Shortcuts: A, B, E · Ctrl+Enter saves."
+      },
+      "results": {
+        "title": "Results · round {{round}}",
+        "incomplete": "Pairs left: {{decided}} of {{total}} rated",
+        "incompleteHint": "Results come out once every pair is rated — before that, the screen can't know which side was which.",
+        "decisionLabel": "Decision by the agreed rule",
+        "decision": {
+          "turnOn": "Turn reference search on",
+          "adjust": "Adjust and run a 2nd round with new requests",
+          "keepOff": "Keep it off",
+          "noSignal": "No signal: every pair was a tie"
+        },
+        "rule": "Turns on at 60% or more of non-tied pairs, with no drop in \"would post as is\" and no piece with references looking copied. Between 50% and 60%, adjust. Below that, keep off.",
+        "winRate": "With references won",
+        "wins": "{{references}} with · {{plain}} without · {{ties}} ties",
+        "usable": "Would post as is (with × without)",
+        "usableHint": "Average pieces per pair, 0 to 3.",
+        "controls": "Controls with a side picked",
+        "controlsHint": "Without × without pairs. Two equal sides should tie; a strong preference here is noise.",
+        "copied": "Looks copied, with references",
+        "copiedHint": "Without references: {{plain}}. Any with references blocks turning on.",
+        "inBank": "Niches with cards in the bank",
+        "outOfBank": "Niches without cards (pet, accounting)",
+        "pairs_one": "{{count}} pair",
+        "pairs_other": "{{count}} pairs",
+        "followed": "Pieces that followed a pattern",
+        "followedHint": "Out of the pieces generated with references.",
+        "cost": "Cost per request (with × without)",
+        "costHint": "Average of the creation turn."
       }
     }
   }

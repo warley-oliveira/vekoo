@@ -5,7 +5,8 @@
       "label": "Áreas da curadoria",
       "references": "Referências",
       "backToApp": "Voltar ao Vekoo",
-      "imports": "Importar"
+      "imports": "Importar",
+      "evals": "Teste da busca"
     },
     "status": {
       "draft": "Rascunho",
@@ -430,6 +431,88 @@
         "engagement": "{{likes}} curtidas · {{comments}} comentários",
         "carded": "Virou card",
         "open": "Abrir no Instagram"
+      }
+    },
+    "evals": {
+      "title": "Teste da busca",
+      "description": "O mesmo pedido gerado com e sem os padrões do banco de referências, lado a lado e às cegas. Você não sabe qual lado é qual até o fim da rodada.",
+      "empty": {
+        "title": "Nenhuma rodada ainda",
+        "description": "A rodada é gerada pelo terminal, com as marcas de teste e os pedidos revisados. Ela aparece aqui quando estiver pronta."
+      },
+      "round": "Rodada {{round}}",
+      "progress": "{{decided}} de {{total}} avaliados",
+      "start": "Começar a avaliar",
+      "continue": "Continuar avaliando",
+      "seeResults": "Ver resultado",
+      "sides": {
+        "left": "A",
+        "right": "B"
+      },
+      "reasons": {
+        "hook": "Gancho",
+        "structure": "Estrutura",
+        "copy": "Copy",
+        "visual": "Visual"
+      },
+      "pair": {
+        "rounds": "Rodadas",
+        "position": "Rodada {{round}} · par {{position}} de {{total}}",
+        "previous": "Par anterior",
+        "next": "Próximo par",
+        "request": "Pedido",
+        "side": "Lado {{side}}",
+        "options_one": "{{count}} opção",
+        "options_other": "{{count}} opções",
+        "rendering": "Desenhando as lâminas…",
+        "slide": "Lâmina {{index}}",
+        "caption": "Legenda"
+      },
+      "form": {
+        "label": "Avaliação do par",
+        "verdict": "Qual conjunto você usaria?",
+        "chooseSide": "Lado {{side}}",
+        "tie": "Empate",
+        "usable": "Quantas você postaria sem mexer?",
+        "usableSide": "Postaria sem mexer, lado {{side}}",
+        "reasons": "Por quê? (opcional)",
+        "copied": "Alguma peça parece cópia de um post real?",
+        "copiedSide": "Sim, no lado {{side}}",
+        "notes": "Anotação (opcional)",
+        "notesPlaceholder": "O que pesou na escolha",
+        "save": "Salvar e ir para o próximo",
+        "saved": "Avaliação salva.",
+        "missing": "Escolha um lado (ou empate) e quantas postaria de cada lado.",
+        "shortcuts": "Atalhos: A, B, E · Ctrl+Enter salva."
+      },
+      "results": {
+        "title": "Resultado · rodada {{round}}",
+        "incomplete": "Faltam pares: {{decided}} de {{total}} avaliados",
+        "incompleteHint": "O resultado sai quando todos os pares estiverem avaliados — antes disso, a tela não pode saber que lado era qual.",
+        "decisionLabel": "Decisão pela regra combinada",
+        "decision": {
+          "turnOn": "Ligar a busca de referências",
+          "adjust": "Ajustar e rodar uma 2ª rodada com pedidos novos",
+          "keepOff": "Manter desligada",
+          "noSignal": "Sem sinal: todos os pares empataram"
+        },
+        "rule": "Liga com 60% ou mais dos pares sem empate, sem perder no \"postaria sem mexer\" e sem nenhuma peça com referência parecendo cópia. Entre 50% e 60%, ajusta. Abaixo, não liga.",
+        "winRate": "Com referência venceu",
+        "wins": "{{references}} com · {{plain}} sem · {{ties}} empates",
+        "usable": "Postaria sem mexer (com × sem)",
+        "usableHint": "Média de peças por par, de 0 a 3.",
+        "controls": "Controles com um lado escolhido",
+        "controlsHint": "Pares sem × sem. Dois lados iguais deveriam empatar; preferência forte aqui é ruído.",
+        "copied": "Parece cópia, com referência",
+        "copiedHint": "Sem referência: {{plain}}. Qualquer um com referência barra ligar.",
+        "inBank": "Nichos com card no banco",
+        "outOfBank": "Nichos sem card (pet, contabilidade)",
+        "pairs_one": "{{count}} par",
+        "pairs_other": "{{count}} pares",
+        "followed": "Peças que seguiram um padrão",
+        "followedHint": "Das peças geradas com referência.",
+        "cost": "Custo por pedido (com × sem)",
+        "costHint": "Média do turno de criação."
       }
     }
   }

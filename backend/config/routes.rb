@@ -117,6 +117,13 @@ Rails.application.routes.draw do
       end
     end
     get "instagram/status" => "instagram#status"
+    # O teste lado a lado da Fase 3 (as rotas do par vêm antes: `pairs` não é
+    # nome de rodada).
+    get "reference-evals/pairs/:id" => "reference_evals#pair", as: :reference_eval_pair
+    patch "reference-evals/pairs/:id" => "reference_evals#update_pair"
+    get "reference-evals" => "reference_evals#index", as: :reference_evals
+    get "reference-evals/:round" => "reference_evals#show", as: :reference_eval
+    get "reference-evals/:round/results" => "reference_evals#results", as: :reference_eval_results
   end
 
   # Migração do legado: carrosséis e pastas sem marca. Temporária (ver

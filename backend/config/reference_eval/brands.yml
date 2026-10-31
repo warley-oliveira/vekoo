@@ -1,0 +1,199 @@
+# As marcas do teste lado a lado da Fase 3 (`bin/rails references:eval:brands`).
+# Fictícias, com conteúdo brasileiro de verdade. Ficam numa organização só
+# delas, no dev — nunca em produção.
+#
+# Quatro nos nichos que o banco tem e duas fora (pet e contabilidade), para
+# medir se o padrão atravessa de ramo. Cada uma nasce publicada, com nicho e
+# estilo, e com 5 fotos fixas — geradas uma vez e guardadas como foto enviada
+# pela marca: no teste a ferramenta de foto fica desligada nos dois lados, e a
+# foto não decide a disputa.
+#
+# A chave (`padaria`, `burger`…) é a mesma dos pedidos na página do teste.
+
+padaria:
+  identity:
+    name: Padaria Fermento Lento
+    segment: Padaria de fermentação natural
+    concept: Pão de fermentação natural com 48 horas de descanso, assado todo dia às 5 da manhã no forno de lastro.
+    positioning: A padaria de bairro que trata o pão como ofício, sem pressa e sem atalho.
+    niche: food_beverage
+    archetypes: { primary: natural_artisanal, secondary: traditional_heritage }
+  palette:
+    - { name: Casca, hex: "#3b2a1a", role: darkBackground }
+    - { name: Miolo, hex: "#f6efe3", role: textOnDark }
+    - { name: Farinha, hex: "#fbf8f2", role: lightBackground }
+    - { name: Café, hex: "#2a1d12", role: textOnLight }
+    - { name: Mel, hex: "#d9902f", role: accent }
+  typography:
+    display: Fraunces
+    utility: Work Sans
+  voice:
+    essence: Fala como quem assa — devagar, com detalhe e sem enfeite.
+    tones: [warm, direct]
+  offers:
+    - { name: Pão de fermentação natural, price: R$ 22, description: Massa de 48 horas, casca grossa e miolo aberto., validity: Todo dia a partir das 7h }
+    - { name: Combo café com pão na chapa, price: R$ 12, description: Café coado e pão na chapa com manteiga., validity: Segunda a sexta, até as 10h }
+    - { name: Panetone de fermentação natural, price: R$ 89, description: Frutas maceradas no rum e 72 horas de fermentação., validity: Encomendas até 15 de dezembro }
+  notes: "Rua das Laranjeiras, 214. Seg–Sáb 6h–19h. Dom 7h–13h."
+  photos:
+    - Pão de fermentação natural recém-saído do forno sobre bancada de madeira, casca dourada e rachada, luz lateral de janela, fundo escuro desfocado.
+    - Mãos enfarinhadas moldando massa sobre mesa de madeira, close, luz quente da manhã, sem rosto.
+    - Interior de padaria de bairro com prateleiras de pães e balcão de madeira, luz natural, sem pessoas.
+    - Xícara de café coado e pão na chapa com manteiga derretendo sobre mesa de mármore, vista de cima, espaço livre na metade de cima.
+    - Forno de lastro aberto com pães assando, brasa ao fundo, tons quentes, madrugada.
+
+burger:
+  identity:
+    name: Brasa Smash
+    segment: Hamburgueria de smash burger
+    concept: Smash burger na chapa bem quente, pão brioche e cheddar derretido; delivery e salão pequeno.
+    positioning: A hamburgueria divertida do bairro, que não se leva a sério e leva o burger muito a sério.
+    niche: food_beverage
+    archetypes: { primary: young_irreverent, secondary: bold_energetic }
+  palette:
+    - { name: Carvão, hex: "#141414", role: darkBackground }
+    - { name: Brasa, hex: "#ffd23f", role: textOnDark }
+    - { name: Papel, hex: "#fff6e5", role: lightBackground }
+    - { name: Chapa, hex: "#1f1a17", role: textOnLight }
+    - { name: Ketchup, hex: "#e4572e", role: accent }
+  typography:
+    display: Anton
+    utility: Rubik
+  voice:
+    essence: Zoeira com fome — frase curta, piada rápida, sem perder o respeito pelo burger.
+    tones: [playful, bold]
+  offers:
+    - { name: Smash duplo com cheddar, price: R$ 34, description: Dois blends de 90 g, cheddar e cebola na chapa., validity: Todos os dias }
+    - { name: Terça do burger em dobro, price: R$ 34, description: Compre um smash duplo e leve outro., validity: Toda terça, só no salão }
+    - { name: Combo pra dois, price: R$ 79, description: Dois smash simples, batata grande e dois refris., validity: Todos os dias }
+  notes: "Delivery pelo app e pelo WhatsApp. Ter–Dom 18h–23h30."
+  photos:
+    - Smash burger duplo com cheddar escorrendo, pão brioche brilhante, close frontal, fundo escuro, luz dura de lado.
+    - Chapa quente com dois discos de carne sendo prensados, fumaça, faíscas de gordura, close.
+    - Batata frita crocante em cesto de metal sobre papel manteiga, vista de cima, fundo de madeira escura.
+    - Salão pequeno de hamburgueria com neon na parede e bancos altos, noite, sem pessoas.
+    - Dois burgers e dois copos de refrigerante lado a lado numa bandeja, vista de cima, fundo amarelo liso.
+
+imob:
+  identity:
+    name: Imobiliária Casa do Bairro
+    segment: Imobiliária de bairro, venda e aluguel
+    concept: Venda e aluguel de apartamentos e casas no bairro, com atendimento acolhedor e corretor que mora na região.
+    positioning: A imobiliária que conhece cada rua e acompanha a família do primeiro contato à entrega da chave.
+    niche: real_estate
+    archetypes: { primary: caring_welcoming, secondary: traditional_heritage }
+  palette:
+    - { name: Verde-musgo, hex: "#24382f", role: darkBackground }
+    - { name: Creme, hex: "#f4efe6", role: textOnDark }
+    - { name: Areia, hex: "#faf7f1", role: lightBackground }
+    - { name: Grafite, hex: "#22262a", role: textOnLight }
+    - { name: Terracota, hex: "#c8693d", role: accent }
+  typography:
+    display: Lora
+    utility: Nunito
+  voice:
+    essence: Calma e próxima, como um vizinho que entende de imóvel e explica sem pressa.
+    tones: [warm, educational]
+  offers:
+    - { name: Apartamento de 2 quartos para alugar, price: R$ 2.400 por mês, description: 68 m², varanda, uma vaga, a 400 m do metrô., validity: Disponível a partir de novembro }
+    - { name: Avaliação de imóvel, price: Grátis, description: Visita de um corretor e laudo de preço em até 3 dias., validity: Para imóveis no bairro }
+  notes: "Há 20 anos no bairro. Rua Voluntários da Pátria, 1.120. Seg–Sex 9h–18h, Sáb 9h–13h."
+  photos:
+    - Sala de apartamento iluminada com varanda e plantas, sofá claro, luz da tarde, sem pessoas.
+    - Fachada de prédio residencial de cinco andares numa rua arborizada, céu azul, metade de cima livre.
+    - Chave de casa com chaveiro de madeira sobre mesa, close, fundo desfocado de sala.
+    - Rua de bairro residencial com calçada larga e árvores, fim de tarde, sem carros em destaque.
+    - Cozinha americana de apartamento pequeno, bancada clara, luz natural, sem pessoas.
+
+odonto:
+  identity:
+    name: Clínica Sorriso Pleno
+    segment: Clínica odontológica
+    concept: Implante, clareamento e aparelho invisível com equipe especialista e planejamento digital do sorriso.
+    positioning: A clínica que explica cada etapa do tratamento com evidência e precisão, sem promessa milagrosa.
+    niche: healthcare
+    archetypes: { primary: technical_authority, secondary: caring_welcoming }
+  palette:
+    - { name: Azul-petróleo, hex: "#123c4a", role: darkBackground }
+    - { name: Branco, hex: "#f7fbfc", role: textOnDark }
+    - { name: Gelo, hex: "#f2f7f8", role: lightBackground }
+    - { name: Ardósia, hex: "#1d2b31", role: textOnLight }
+    - { name: Água, hex: "#2bb3a3", role: accent }
+  typography:
+    display: Sora
+    utility: Inter
+  voice:
+    essence: Clara e segura — explica como especialista, sem jargão e sem assustar.
+    tones: [technical, educational]
+  offers:
+    - { name: Avaliação de aparelho invisível, price: R$ 150, description: Escaneamento digital e plano de tratamento., validity: Agenda aberta em novembro }
+    - { name: Clareamento a laser, price: R$ 900, description: Duas sessões no consultório com moldeira de manutenção., validity: Até 30 de novembro }
+  notes: "Av. Paulista, 1.500, conjunto 82. Seg–Sex 8h–20h. Responsável técnica: Dra. Helena Prado, CRO-SP 98.765."
+  photos:
+    - Consultório odontológico moderno e claro, cadeira branca, luz natural, sem pessoas.
+    - Alinhador transparente de aparelho invisível sobre fundo azul claro, close, espaço livre à direita.
+    - Mãos de dentista com luvas segurando espelho e sonda, close, fundo desfocado do consultório, sem rosto.
+    - Recepção de clínica com balcão branco e plantas, luz suave, sem pessoas.
+    - Escova de dente e fio dental sobre bancada de banheiro clara, vista de cima, metade de cima livre.
+
+pet:
+  identity:
+    name: Pet Shop Patas & Cia
+    segment: Pet shop com banho e tosa
+    concept: Banho e tosa, ração e acessórios com preço justo e atendimento que trata cada bicho pelo nome.
+    positioning: O pet shop popular do bairro, de preço acessível e carinho de sobra.
+    niche: pet
+    archetypes: { primary: popular_warm, secondary: caring_welcoming }
+  palette:
+    - { name: Azul-noite, hex: "#1e2a5a", role: darkBackground }
+    - { name: Neve, hex: "#f8f8fc", role: textOnDark }
+    - { name: Algodão, hex: "#fffaf3", role: lightBackground }
+    - { name: Tinta, hex: "#232323", role: textOnLight }
+    - { name: Laranja, hex: "#ff8a3d", role: accent }
+  typography:
+    display: Poppins
+    utility: Nunito
+  voice:
+    essence: Alegre e próxima, fala com o tutor como fala com o vizinho que tem cachorro.
+    tones: [warm, playful]
+  offers:
+    - { name: Banho e tosa para porte grande, price: 20% de desconto, description: Banho, tosa higiênica e corte de unhas., validity: Até o fim de novembro }
+    - { name: Ração natural 10 kg, price: R$ 189, description: Sem corante e sem transgênico., validity: Enquanto durar o estoque }
+  notes: "Rua Augusta, 900. Seg–Sáb 8h–19h. Leva e traz no bairro."
+  photos:
+    - Cachorro golden retriever molhado e feliz numa banheira de pet shop, espuma, luz clara, sem pessoas.
+    - Gato tricolor deitado numa caminha nova sobre fundo liso laranja-claro, espaço livre em cima.
+    - Prateleiras de pet shop com sacos de ração e brinquedos coloridos, sem pessoas.
+    - Cachorro pequeno com laço depois da tosa, sentado numa mesa, fundo desfocado, luz suave.
+    - Pote de ração natural em grãos sobre piso de madeira, close, vista de cima.
+
+contab:
+  identity:
+    name: Conta Certa Contabilidade
+    segment: Escritório de contabilidade para MEI e pequena empresa
+    concept: Abertura de empresa, MEI, imposto de renda e troca de regime tributário com contador especialista e atendimento digital.
+    positioning: A contabilidade que traduz o fisco para quem tem pequeno negócio, com precisão e sem juridiquês.
+    niche: professional_services
+    archetypes: { primary: technical_authority, secondary: premium_minimal }
+  palette:
+    - { name: Marinho, hex: "#0f1f3d", role: darkBackground }
+    - { name: Papel, hex: "#f5f7fa", role: textOnDark }
+    - { name: Branco, hex: "#ffffff", role: lightBackground }
+    - { name: Nanquim, hex: "#111827", role: textOnLight }
+    - { name: Verde-conta, hex: "#16a34a", role: accent }
+  typography:
+    display: Manrope
+    utility: Inter
+  voice:
+    essence: Precisa e tranquila — explica o imposto como especialista, em português de gente.
+    tones: [technical, sober]
+  offers:
+    - { name: Abertura de empresa, price: R$ 690, description: CNPJ, alvará e enquadramento no regime certo., validity: Prazo médio de 15 dias }
+    - { name: Declaração de imposto de renda, price: A partir de R$ 250, description: Pessoa física, com conferência de deduções., validity: Até o fim do prazo da Receita }
+  notes: "Atendimento online em todo o Brasil. Escritório na Rua da Consolação, 2.000. Seg–Sex 9h–18h. CRC-SP 1SP234567."
+  photos:
+    - Mesa de escritório clara com notebook, calculadora e caderno, vista de cima, luz natural, sem pessoas.
+    - Pilha organizada de pastas e documentos sobre mesa de madeira, close, fundo desfocado.
+    - Sala de reunião pequena e moderna com mesa redonda e cadeiras, luz natural, sem pessoas.
+    - Mãos digitando numa calculadora ao lado de um notebook, close, sem rosto.
+    - Fachada de escritório com porta de vidro e placa sem texto legível, dia, metade de cima livre.

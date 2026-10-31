@@ -5,6 +5,9 @@ import { Link, Navigate, NavLink, Outlet, Route, Routes } from "react-router"
 import { ArrowLeft } from "lucide-react"
 
 import { InstagramTokenBanner } from "@/admin/components/instagram-token-banner"
+import { EvalPairPage, EvalRoundEntry } from "@/admin/eval-pair"
+import { EvalResultsPage } from "@/admin/eval-results"
+import { EvalRoundsPage } from "@/admin/evals"
 import { ReferenceImportPage } from "@/admin/reference-import"
 import { ReferenceImportsPage } from "@/admin/reference-imports"
 import { ReferenceListPage } from "@/admin/reference-list"
@@ -27,6 +30,10 @@ export default function AdminApp() {
         <Route path="references/:referenceId" element={<ReferenceReviewPage />} />
         <Route path="imports" element={<ReferenceImportsPage />} />
         <Route path="imports/:importId" element={<ReferenceImportPage />} />
+        <Route path="evals" element={<EvalRoundsPage />} />
+        <Route path="evals/:round" element={<EvalRoundEntry />} />
+        <Route path="evals/:round/pairs/:pairId" element={<EvalPairPage />} />
+        <Route path="evals/:round/results" element={<EvalResultsPage />} />
         <Route path="*" element={<Navigate to="references" replace />} />
       </Route>
     </Routes>
@@ -47,6 +54,7 @@ function AdminLayout() {
               [
                 ["/admin/references", "admin.nav.references"],
                 ["/admin/imports", "admin.nav.imports"],
+                ["/admin/evals", "admin.nav.evals"],
               ] as const
             ).map(([to, label]) => (
               <NavLink

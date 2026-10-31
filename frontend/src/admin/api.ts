@@ -307,3 +307,119 @@ export function estimateAnalysisCost(candidates: ReferenceCandidate[]): number {
     return sum + 0.05 + 0.01 * images
   }, 0)
 }
+
+/* ---------- teste lado a lado (Fase 3) ---------- */
+
+// Espelho de `Admin::ReferenceEvalsController` e `ReferenceEvalPairSerializer`.
+// O par nunca diz que lado tem referência nem se é controle: a avaliação é às
+// cegas, e o braço só aparece na conta do resultado.
+
+export type EvalSide = "left" | "right"
+export type EvalVerdict = EvalSide | "tie"
+export const EVAL_REASONS = ["hook", "structure", "copy", "visual"] as const
+export type EvalReason = (typeof EVAL_REASONS)[number]
+export const EVAL_MAX_USABLE = 3
+
+export type EvalRoundSummary = { round: string; total: number; decided: number; createdAt: number }
+
+export type EvalRound = {
+  round: string
+  total: number
+  decided: number
+  pairs: { id: string; position: number; requestText: string; brandName: string | null; decided: boolean }[]
+}
+
+export type EvalPiece = {
+  id: string
+  title: string | null
+  format: string
+  images: { index: number; url: string }[]
+  /** As lâminas ainda estão sendo desenhadas. */
+  rendering: boolean
+  caption: string | null
+  hashtags: string[]
+  why: string | null
+}
+
+export type EvalPair = {
+  id: string
+  round: string
+  position: number
+  total: number
+  requestText: string
+  brand: {
+    name: string | null
+    segment: string | null
+    niche: Niche | null
+    archetypes: { primary: Archetype | ""; secondary: Archetype | "" }
+  }
+  left: EvalPiece[]
+  right: EvalPiece[]
+  verdict: EvalVerdict | null
+  usableLeft: number | null
+  usableRight: number | null
+  reasons: EvalReason[]
+  copiedSides: EvalSide[]
+  notes: string | null
+  decidedAt: number | null
+  previousId: string | null
+  nextId: string | null
+  nextPendingId: string | null
+}
+
+export type EvalInput = {
+  verdict: EvalVerdict
+  usableLeft: number
+  usableRight: number
+  reasons: EvalReason[]
+  copiedSides: EvalSide[]
+  notes: string
+}
+
+type EvalTally = {
+  pairs: number
+  referencesWins: number
+  plainWins: number
+  ties: number
+  winRate: number | null
+  usable: { references: number | null; plain: number | null }
+}
+
+export type EvalDecision = "turnOn" | "adjust" | "keepOff" | "noSignal"
+
+export type EvalResults = {
+  round: string
+  pairs: number
+  main: EvalTally
+  inBank: EvalTally
+  outOfBank: EvalTally
+  controls: { pairs: number; ties: number; preferred: number }
+  copied: { references: number; plain: number }
+  followed: { pieces: number; withReference: number }
+  costMicroUsd: { references?: number; plain?: number }
+  decision: EvalDecision
+}
+
+const EVALS = "/admin/reference-evals"
+
+export function useEvalRounds() {
+  return useSWR<{ rounds: EvalRoundSummary[] }>(EVALS, (key: string) => apiGet<{ rounds: EvalRoundSummary[] }>(key))
+}
+
+export function useEvalRound(round: string | undefined) {
+  return useSWR<EvalRound>(round ? `${EVALS}/${round}` : null, (key: string) => apiGet<EvalRound>(key))
+}
+
+export function useEvalPair(id: string | undefined) {
+  return useSWR<EvalPair>(id ? `${EVALS}/pairs/${id}` : null, (key: string) => apiGet<EvalPair>(key), {
+    // As imagens chegam pelo Sidekiq depois da rodada: enquanto alguma peça
+    // ainda desenha, o par se atualiza sozinho.
+    refreshInterval: (data) => (data && [...data.left, ...data.right].some((piece) => piece.rendering) ? 4000 : 0),
+  })
+}
+
+export function useEvalResults(round: string | undefined, ready: boolean) {
+  return useSWR<EvalResults>(round && ready ? `${EVALS}/${round}/results` : null, (key: string) => apiGet<EvalResults>(key))
+}
+
+export const saveEvalPair = (id: string, input: EvalInput) => apiPatch<EvalPair>(`${EVALS}/pairs/${id}`, { pair: input })

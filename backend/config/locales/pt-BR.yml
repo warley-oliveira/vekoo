@@ -19,6 +19,7 @@ pt-BR:
     url_failed: "Não deu para baixar a imagem desse link. Envie o arquivo."
     analysis_not_retryable: "Só a análise que falhou pode rodar de novo."
     analysis_running: "A análise ainda está rodando. Espere ela terminar para editar."
+    eval_incomplete: "A rodada ainda tem pares sem avaliação. O resultado sai quando todos estiverem avaliados."
     card_archived: "Card arquivado é só leitura. Reabra para editar."
     handles_required: "Cole ao menos um @ de conta do Instagram."
     too_many_handles: "No máximo %{max} contas por lote."

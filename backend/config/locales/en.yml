@@ -16,6 +16,7 @@ en:
     url_failed: "We couldn't download the image from that link. Send the file."
     analysis_not_retryable: "Only a failed analysis can run again."
     analysis_running: "The analysis is still running. Wait for it to finish before editing."
+    eval_incomplete: "The round still has pairs without a verdict. Results come out once every pair is rated."
     card_archived: "An archived card is read-only. Reopen it to edit."
     handles_required: "Paste at least one Instagram account @."
     too_many_handles: "Up to %{max} accounts per batch."

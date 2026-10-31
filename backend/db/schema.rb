@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_130001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_140001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -401,6 +401,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130001) do
     t.index ["status", "format", "replicability"], name: "index_reference_cards_on_status_and_format_and_replicability"
   end
 
+  create_table "reference_eval_pairs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "brand_core_id", null: false
+    t.boolean "control", default: false, null: false
+    t.string "copied_sides", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "decided_at"
+    t.uuid "decided_by_id"
+    t.string "left_arm", null: false
+    t.integer "left_cost_micro_usd", default: 0, null: false
+    t.uuid "left_piece_ids", default: [], null: false, array: true
+    t.text "notes"
+    t.string "objective"
+    t.integer "position", null: false
+    t.string "reasons", default: [], null: false, array: true
+    t.string "request_key", null: false
+    t.text "request_text", null: false
+    t.string "right_arm", null: false
+    t.integer "right_cost_micro_usd", default: 0, null: false
+    t.uuid "right_piece_ids", default: [], null: false, array: true
+    t.string "round", null: false
+    t.datetime "updated_at", null: false
+    t.integer "usable_left"
+    t.integer "usable_right"
+    t.string "verdict"
+    t.index ["brand_core_id"], name: "index_reference_eval_pairs_on_brand_core_id"
+    t.index ["decided_by_id"], name: "index_reference_eval_pairs_on_decided_by_id"
+    t.index ["round", "position"], name: "index_reference_eval_pairs_on_round_and_position", unique: true
+  end
+
   create_table "reference_import_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "baseline_median", precision: 12, scale: 2
     t.datetime "created_at", null: false
@@ -507,6 +536,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130001) do
   add_foreign_key "reference_candidates", "reference_cards", on_delete: :nullify
   add_foreign_key "reference_candidates", "reference_import_accounts", on_delete: :cascade
   add_foreign_key "reference_cards", "accounts", column: "curated_by_id", on_delete: :nullify
+  add_foreign_key "reference_eval_pairs", "accounts", column: "decided_by_id", on_delete: :nullify
+  add_foreign_key "reference_eval_pairs", "brand_cores", on_delete: :cascade
   add_foreign_key "reference_import_accounts", "reference_imports", on_delete: :cascade
   add_foreign_key "reference_imports", "accounts", column: "curated_by_id", on_delete: :nullify
   add_foreign_key "sessions", "accounts"
