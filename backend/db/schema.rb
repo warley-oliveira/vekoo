@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_28_140002) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -385,6 +385,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_140002) do
     t.datetime "published_at"
     t.decimal "relative_engagement", precision: 8, scale: 2
     t.integer "replicability"
+    t.string "requires", default: [], null: false, array: true
     t.string "size"
     t.jsonb "source", default: {}, null: false
     t.string "status", default: "draft", null: false

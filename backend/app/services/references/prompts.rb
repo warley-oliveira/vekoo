@@ -59,7 +59,9 @@ module References
         - `whenNotToUse`: **uma** frase com o contexto em que o padrão não
           serve ("marca sem processo próprio para mostrar").
       - `replicability.score`: 1, 2 ou 3 pela escala abaixo; `requirements`: o
-        que um negócio precisa ter para repetir.
+        que um negócio precisa ter para repetir; `requires`: o mesmo em códigos
+        (lista abaixo) — vazia se o post não exige nada além do que qualquer
+        negócio já sabe e de uma imagem genérica.
       - `metrics`: `likes` e `comments` só se os números estiverem legíveis
         nas imagens; senão, null. `baselineMedian`, `relativeEngagement` e
         `collectedAt` sempre null — a curadoria preenche.
@@ -80,7 +82,8 @@ module References
     # `curiosity` em metade dos cards e replicabilidade 2 em quatro de cinco):
     # critério e exemplo para cada valor. `visual` e `announcement` nasceram
     # da recalibração: sem eles, capa só de imagem e anúncio de novidade caíam
-    # à força em `promise` ou `curiosity`. `Reclassify` usa o mesmo texto.
+    # à força em `promise` ou `curiosity`. `requires` veio na Fase 3: é o que a
+    # recuperação cruza com o que a marca tem. `Reclassify` usa o mesmo texto.
     CALIBRATION = <<~TEXT.freeze
       ## Como decidir o gancho e a replicabilidade
 
@@ -156,12 +159,41 @@ module References
       Na dúvida entre 2 e 3: se o negócio precisa **produzir algo novo** para o
       post (fotografar com cuidado, chamar um cliente, montar um evento), é 2;
       se só precisa do que já sabe e de uma foto comum do que já tem, é 3.
+
+      ### O que o post exige (`replicability.requires`)
+      A replicabilidade diz quanto custa repetir; esta lista diz **o quê**. O
+      Vekoo vai cruzá-la com o que a marca tem: um post que exige cliente não
+      serve a quem não tem depoimento. Marque só o que o **mecanismo** precisa,
+      na mesma versão mínima da replicabilidade — o que dá para trocar por
+      texto, design ou imagem genérica não entra.
+
+      - `product_photo`: a imagem tem que ser o produto ou o resultado de
+        verdade — o prato da casa, a peça da coleção, o imóvel à venda, o antes
+        e depois do tratamento. Foto de celular serve; foto genérica, não. Se
+        a ideia sobrevive com ilustração ou imagem gerada, não marque.
+      - `brand_person`: alguém da marca aparece e é parte do argumento — o
+        dono que explica, a equipe no trabalho, a profissional que atende.
+      - `customer`: um cliente real — depoimento, foto com o produto, resultado
+        dele, entrega da chave. Depoimento escrito sem rosto também conta.
+      - `space`: o lugar da marca é o assunto ou o cenário necessário — a loja,
+        o salão, a cozinha, o consultório, a obra.
+      - `event`: algo que aconteceu e foi registrado — inauguração, aula,
+        feira, festa, ação na rua.
+      - `promotion`: o post só existe com uma oferta concreta — preço,
+        desconto, condição, combo, brinde, sorteio com prêmio. Data comemorativa
+        sem oferta não conta.
+
+      Ex.: dicas numeradas em tipografia → `[]`; cardápio com foto dos pratos e
+      preço → `product_photo`, `promotion`; bastidores da cozinha com a equipe →
+      `brand_person`, `space`; depoimento com foto do cliente → `customer`;
+      inauguração registrada → `event`, `space`.
     TEXT
 
     LISTS = {
       "Tipos de gancho (`hook.type`)" => :hook_types,
       "Métricas que o padrão move (`whyItWorks.targetMetrics`)" => :target_metrics,
       "Replicabilidade (`replicability.score`)" => :replicability,
+      "O que o post exige (`replicability.requires`)" => :requires,
       "Nichos (`niche`)" => :niches,
       "Estilos (`archetypes`)" => :archetypes,
       "Objetivos (`objective`)" => :objectives,

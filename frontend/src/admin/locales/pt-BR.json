@@ -60,9 +60,17 @@
         "reach": "Alcance"
       },
       "replicability": {
-        "1": "Exige produção profissional",
-        "2": "Exige algum recurso: foto boa, pessoa em cena, produto",
-        "3": "Qualquer negócio faz com o celular"
+        "1": "Exige produção ou acesso fora do alcance de pequeno negócio",
+        "2": "Exige algo real feito para o post: foto caprichada, pessoa, cliente, evento, promoção",
+        "3": "Qualquer negócio faz com o que já sabe e uma foto de celular"
+      },
+      "requires": {
+        "product_photo": "Foto do produto",
+        "brand_person": "Pessoa da marca",
+        "customer": "Cliente",
+        "space": "Espaço",
+        "event": "Evento",
+        "promotion": "Promoção"
       },
       "origins": {
         "external": "Externa",
@@ -269,6 +277,8 @@
         "whenNotToUseHint": "Uma frase com o contexto em que o padrão não serve. O agente lê isto antes de usar o card.",
         "replicability": "Replicabilidade",
         "requirements": "O que precisa para repetir",
+        "requires": "O que o post exige da marca",
+        "requiresHint": "A busca cruza isto com o que a marca tem. Nada marcado: qualquer negócio repete só com texto e imagem genérica.",
         "likes": "Curtidas",
         "comments": "Comentários",
         "baselineMedian": "Mediana da conta",

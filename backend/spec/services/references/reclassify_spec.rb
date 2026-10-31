@@ -53,6 +53,29 @@ RSpec.describe References::Reclassify do
     expect(card.reload).to have_attributes(hook_type: "curiosity", analysis_cost_micro_usd: 90_000)
   end
 
+  describe "o que o post exige" do
+    it "refaz só esse campo quando é ele que se pede, na ordem da lista e sem repetir" do
+      chat = chat_answering("requires" => %w[promotion customer customer], "reason" => "Depoimento com oferta.")
+      result = described_class.new(card, fields: %i[requires], chat: chat).call
+
+      expect(result.before).to eq(requires: [])
+      expect(result.after).to eq(requires: %w[customer promotion])
+      expect(card.reload).to have_attributes(requires: %w[customer promotion], hook_type: "curiosity", replicability: 3)
+      expect(chat).to have_received(:answer) { |system:, messages:, schema:, **|
+        expect(schema["required"]).to eq(%w[requires reason])
+        expect(system.first[:text]).to include("### O que o post exige", "`product_photo`")
+        expect(messages.first[:content].first[:text]).to end_with("Decida o que o post exige.")
+      }
+    end
+
+    it "requisito fora da lista falha sem gravar" do
+      chat = chat_answering("requires" => %w[drone], "reason" => "x")
+
+      expect { described_class.new(card, fields: %i[requires], chat: chat).call }.to raise_error(Ai::Chat::Failed)
+      expect(card.reload.requires).to eq([])
+    end
+  end
+
   it "resposta fora da lista falha sem gravar" do
     chat = chat_answering(payload.merge("hookType" => "meme"))
 

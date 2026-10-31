@@ -60,9 +60,17 @@
         "reach": "Reach"
       },
       "replicability": {
-        "1": "Needs professional production",
-        "2": "Needs some resource: a good photo, a person on camera, a product",
-        "3": "Any business can do it with a phone"
+        "1": "Needs production or access beyond a small business",
+        "2": "Needs something real made for the post: a careful photo, a person, a customer, an event, a promotion",
+        "3": "Any business can do it with what it knows and a phone photo"
+      },
+      "requires": {
+        "product_photo": "Product photo",
+        "brand_person": "Brand person",
+        "customer": "Customer",
+        "space": "Venue",
+        "event": "Event",
+        "promotion": "Promotion"
       },
       "origins": {
         "external": "External",
@@ -269,6 +277,8 @@
         "whenNotToUseHint": "One sentence on where the pattern doesn't fit. The agent reads this before using the card.",
         "replicability": "Replicability",
         "requirements": "What it takes to repeat",
+        "requires": "What the post needs from the brand",
+        "requiresHint": "Search matches this against what the brand has. Nothing selected: any business can repeat it with text and a generic image.",
         "likes": "Likes",
         "comments": "Comments",
         "baselineMedian": "Account median",

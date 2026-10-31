@@ -89,6 +89,18 @@ replicability:
   2: exige um ativo real que o negócio precisa ter ou produzir para o post — foto caprichada, pessoa em cena, cliente, evento, promoção
   3: qualquer negócio faz hoje com o que já sabe e uma foto comum de celular — o Vekoo faz o resto
 
+# O que o post exige que a marca tenha ou produza (`replicability.requires`) —
+# a recuperação cruza com o que a marca tem. Lista vazia: nada além do que
+# qualquer negócio já sabe e de uma imagem genérica. Critério e exemplos em
+# `References::Prompts::CALIBRATION`.
+requires:
+  product_photo: foto de verdade do produto ou do resultado do serviço — o prato, a peça, o imóvel, o antes e depois; imagem genérica não serve
+  brand_person: uma pessoa da marca em cena — dono, equipe, profissional
+  customer: um cliente real, com autorização — depoimento, foto, resultado, entrega
+  space: o espaço físico da marca — loja, salão, consultório, cozinha, obra
+  event: um evento real registrado — inauguração, aula, feira, festa, ação
+  promotion: uma oferta concreta — preço, desconto, condição, combo, sorteio com prêmio
+
 origins:
   external: post real de outra conta, analisado pela curadoria
   vekoo: peça gerada no Vekoo que performou acima da mediana da marca

@@ -136,6 +136,7 @@ class ReferenceCard < ApplicationRecord
     score = analysis.dig("replicability", "score")
     self.hook_type = Taxonomy::HOOK_TYPES.include?(hook) ? hook : nil
     self.replicability = Taxonomy::REPLICABILITY.include?(score) ? score : nil
+    self.requires = analysis.dig("replicability", "requires") & Taxonomy::REQUIRES
     self.relative_engagement = analysis.dig("metrics", "relativeEngagement")
   end
 

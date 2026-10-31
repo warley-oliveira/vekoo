@@ -27,9 +27,11 @@ namespace :references do
   # (`References::Prompts::CALIBRATION`): refaz os dois campos de todo card
   # analisado e, depois, o vetor de cada um — um por vez, com folga, porque a
   # cota de embedding do Vertex é por minuto.
-  desc "Refaz gancho e replicabilidade dos cards analisados pelo critério atual (DRY_RUN=1 só relata; ONLY=id,id)"
+  desc "Refaz a classificação dos cards analisados pelo critério atual — FIELDS=hook,replicability (padrão) ou requires; DRY_RUN=1 só relata; ONLY=id,id"
   task reclassify: :environment do
     dry_run = ENV["DRY_RUN"].present?
+    fields = ENV.fetch("FIELDS", "hook,replicability").split(",").map { |field| field.strip.to_sym }
+    abort "FIELDS: use #{References::Reclassify::FIELDS.join(', ')}" if (fields - References::Reclassify::FIELDS).any?
     scope = ReferenceCard.where(analysis_status: "done")
     scope = scope.where(id: ENV["ONLY"].split(",")) if ENV["ONLY"].present?
     queue = Queue.new
@@ -44,7 +46,7 @@ namespace :references do
         Rails.application.executor.wrap do
           while (card = (queue.pop(true) rescue nil))
             begin
-              result = References::Reclassify.new(card).call(dry_run: dry_run)
+              result = References::Reclassify.new(card, fields: fields).call(dry_run: dry_run)
               lock.synchronize { results << result }
             rescue StandardError => e
               lock.synchronize { failures << "#{card.id} #{card.source['channel']}: #{e.class} #{e.message.to_s.first(120)}" }
@@ -55,7 +57,8 @@ namespace :references do
     end
     workers.each(&:join)
 
-    unless dry_run
+    # Só o gancho entra no texto do vetor.
+    if !dry_run && fields.include?(:hook)
       embed = References::Embed.new
       results.each do |result|
         3.times do
@@ -69,18 +72,26 @@ namespace :references do
 
     if ENV["VERBOSE"].present?
       results.sort_by { |r| r.card.source["channel"].to_s }.each do |r|
-        puts "#{r.card.source['channel']} #{r.card.id.first(8)} · gancho #{r.before[:hook]} → #{r.after[:hook]} (#{r.fit}) · " \
-          "replicabilidade #{r.before[:replicability]} → #{r.after[:replicability]} · #{r.reason}"
+        changes = fields.map { |field| "#{field} #{r.before[field].inspect} → #{r.after[field].inspect}" }
+        puts "#{r.card.source['channel']} #{r.card.id.first(8)} · #{changes.join(' · ')}#{r.fit ? " (#{r.fit})" : ''} · #{r.reason}"
       end
     end
     tally = ->(key, side) { results.map { |r| r.public_send(side)[key] }.tally.sort_by { |code, _| code.to_s }.to_h }
     puts "#{dry_run ? '[DRY_RUN] ' : ''}cards: #{total} · reclassificados: #{results.size} · mudaram: #{results.count(&:changed?)} · custo: US$ #{format('%.2f', results.sum(&:cost_micro_usd) / 1e6)}"
-    puts "gancho antes:  #{tally.(:hook, :before)}"
-    puts "gancho depois: #{tally.(:hook, :after)}"
-    puts "encaixe forçado do gancho: #{results.count { |r| r.fit == 'forced' }}"
-    puts "replicabilidade antes:  #{tally.(:replicability, :before)}"
-    puts "replicabilidade depois: #{tally.(:replicability, :after)}"
-    puts "sem vetor: #{scope.where(embedding: nil).count}" unless dry_run
+    if fields.include?(:hook)
+      puts "gancho antes:  #{tally.(:hook, :before)}"
+      puts "gancho depois: #{tally.(:hook, :after)}"
+      puts "encaixe forçado do gancho: #{results.count { |r| r.fit == 'forced' }}"
+    end
+    if fields.include?(:replicability)
+      puts "replicabilidade antes:  #{tally.(:replicability, :before)}"
+      puts "replicabilidade depois: #{tally.(:replicability, :after)}"
+    end
+    if fields.include?(:requires)
+      needs = results.flat_map { |r| r.after[:requires] }.tally.sort_by { |_, count| -count }.to_h
+      puts "o que o post exige: #{needs} · nada além do básico: #{results.count { |r| r.after[:requires].empty? }}"
+    end
+    puts "sem vetor: #{scope.where(embedding: nil).count}" if !dry_run && fields.include?(:hook)
     failures.each { |line| puts "falhou: #{line}" }
   end
 

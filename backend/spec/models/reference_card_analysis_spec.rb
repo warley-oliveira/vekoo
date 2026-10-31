@@ -35,6 +35,19 @@ RSpec.describe ReferenceCard::Analysis do
       expect(described_class.normalize("replicability" => { "score" => 3.0 }).dig("replicability", "score")).to eq(3)
     end
 
+    it "guarda o que o post exige sem repetir e deixa o código desconhecido para a validação apontar" do
+      normalized = described_class.normalize("replicability" => { "requires" => [ "customer", " customer ", "drone", "promotion" ] })
+
+      expect(normalized.dig("replicability", "requires")).to eq(%w[customer drone promotion])
+      expect(described_class.errors_for(normalized)).to include([ "replicability.requires.1", :inclusion, {} ])
+    end
+
+    it "aceita lista vazia do que o post exige, até para publicar" do
+      analysis = described_class.normalize(complete.deep_merge("replicability" => { "requires" => [] }))
+
+      expect(described_class.errors_for(analysis, strict: true)).to be_empty
+    end
+
     describe "por que funciona" do
       it "vira quatro campos; o texto único de antes é o mecanismo" do
         expect(described_class.normalize("whyItWorks" => "Gera confiança.")["whyItWorks"]).to eq(

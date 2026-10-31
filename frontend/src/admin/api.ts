@@ -7,6 +7,7 @@ import type {
   HookType,
   Niche,
   Objective,
+  PostRequirement,
   ReferenceFormat,
   ReferenceOrigin,
   ReferenceSize,
@@ -36,7 +37,12 @@ export type ReferenceAnalysis = {
     /** Uma frase: onde o padrão não serve (vai na ficha do agente). */
     whenNotToUse: string
   }
-  replicability: { score: Replicability | null; requirements: string }
+  replicability: {
+    score: Replicability | null
+    requirements: string
+    /** O mesmo que `requirements`, em códigos: o que a busca cruza com o que a marca tem. */
+    requires: PostRequirement[]
+  }
   metrics: {
     likes: number | null
     comments: number | null

@@ -50,6 +50,7 @@ import {
   NICHES,
   OBJECTIVES,
   PIECE_FORMAT_REFERENCE,
+  POST_REQUIREMENTS,
   REFERENCE_FORMATS,
   REFERENCE_SIZES,
   REPLICABILITY,
@@ -57,6 +58,7 @@ import {
   type Archetype,
   type Niche,
   type Objective,
+  type PostRequirement,
   type ReferenceFormat,
   type ReferenceSize,
   type Replicability,
@@ -635,6 +637,35 @@ function Review({ card, onChange }: { card: ReferenceCard; onChange: (card: Refe
               )}
             />
             {textField("analysis.replicability.requirements", t("admin.review.fields.requirements"), TEXT)}
+            <Controller
+              control={control}
+              name="analysis.replicability.requires"
+              render={({ field }) => (
+                <div className="space-y-1.5">
+                  <span id="review-requires-label" className="text-sm font-medium">{t("admin.review.fields.requires")}</span>
+                  <ToggleGroup
+                    multiple
+                    value={field.value}
+                    // Na ordem da lista, sem repetir — a mesma forma que o servidor grava.
+                    onValueChange={(value) => field.onChange(POST_REQUIREMENTS.filter((code) => (value as PostRequirement[]).includes(code)))}
+                    variant="outline"
+                    size="sm"
+                    className="flex-wrap"
+                    aria-labelledby="review-requires-label"
+                    id={fieldId("analysis.replicability.requires")}
+                  >
+                    {POST_REQUIREMENTS.map((code) => (
+                      <ToggleGroupItem key={code} value={code} className="aria-pressed:border-primary aria-pressed:bg-primary/5">
+                        {t(`admin.taxonomy.requires.${code}`)}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                  <p className={cn("text-xs", errorFor("analysis.replicability.requires") ? "text-destructive" : "text-muted-foreground")}>
+                    {errorFor("analysis.replicability.requires") ?? t("admin.review.fields.requiresHint")}
+                  </p>
+                </div>
+              )}
+            />
           </Section>
 
           <Section title={t("admin.review.sections.metrics")} description={t("admin.review.sections.metricsHint")}>

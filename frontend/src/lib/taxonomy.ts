@@ -86,6 +86,16 @@ export const REPLICABILITY = [
 ] as const
 export type Replicability = (typeof REPLICABILITY)[number]
 
+export const POST_REQUIREMENTS = [
+  "product_photo",
+  "brand_person",
+  "customer",
+  "space",
+  "event",
+  "promotion",
+] as const
+export type PostRequirement = (typeof POST_REQUIREMENTS)[number]
+
 export const REFERENCE_ORIGINS = [
   "external",
   "vekoo",

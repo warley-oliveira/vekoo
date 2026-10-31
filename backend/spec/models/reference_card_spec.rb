@@ -81,6 +81,15 @@ RSpec.describe ReferenceCard do
       expect(card).to have_attributes(hook_type: "curiosity", replicability: 3, relative_engagement: 3.0)
     end
 
+    it "refletem o que o post exige, para a busca cruzar com o que a marca tem" do
+      card = create(:reference_card, :analyzed)
+      expect(card.requires).to eq([])
+
+      card.update!(analysis: card.analysis.deep_merge("replicability" => { "requires" => %w[customer promotion] }))
+
+      expect(card.reload.requires).to eq(%w[customer promotion])
+    end
+
     it "ficam nulas quando a análise não diz — sem métrica não há engajamento" do
       card = create(:reference_card, :analyzed)
       card.update!(analysis: card.analysis.merge("metrics" => { "likes" => 10 }))

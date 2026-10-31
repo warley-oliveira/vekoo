@@ -77,9 +77,12 @@ module ReferenceCard::Analysis
             .merge(strict ? { "minItems" => 1 } : {}),
           "whenNotToUse" => text.call(SENTENCE)
         ),
+        # `requires` pode ficar vazio mesmo para publicar: é o post que
+        # qualquer negócio repete sem trazer nada além do que já sabe.
         "replicability" => object(
           "score" => choice.call(Taxonomy::REPLICABILITY),
-          "requirements" => text.call(TEXT)
+          "requirements" => text.call(TEXT),
+          "requires" => { "type" => "array", "maxItems" => Taxonomy::REQUIRES.size, "items" => { "enum" => Taxonomy::REQUIRES } }
         ),
         # Nunca obrigatórias: referência curada sem dado de desempenho é
         # legítima — só não ganha o ponto de engajamento na recuperação.
@@ -159,7 +162,10 @@ module ReferenceCard::Analysis
       "mechanism" => why["mechanism"], "transferablePrinciple" => why["transferablePrinciple"],
       "targetMetrics" => metrics, "whenNotToUse" => why["whenNotToUse"]
     }
-    analysis["replicability"] = { "score" => score(section.call("replicability")["score"]) }.merge(analysis["replicability"])
+    replicability = section.call("replicability")
+    analysis["replicability"] = { "score" => score(replicability["score"]) }.merge(analysis["replicability"]).merge(
+      "requires" => Array(replicability["requires"]).filter_map { |need| code(need) }.uniq.first(Taxonomy::REQUIRES.size)
+    )
     analysis["metrics"] = metrics(section.call("metrics"))
 
     analysis.slice("hook", "structure", "visual", "copy", "whyItWorks", "replicability", "metrics")

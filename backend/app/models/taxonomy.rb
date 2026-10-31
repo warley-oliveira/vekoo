@@ -14,6 +14,7 @@ module Taxonomy
   HOOK_TYPES = DATA.fetch("hook_types").keys.freeze
   TARGET_METRICS = DATA.fetch("target_metrics").keys.freeze
   REPLICABILITY = DATA.fetch("replicability").keys.freeze
+  REQUIRES = DATA.fetch("requires").keys.freeze
   ORIGINS = DATA.fetch("origins").keys.freeze
   STATUSES = DATA.fetch("statuses").keys.freeze
 
@@ -30,6 +31,7 @@ module Taxonomy
     "hook_types" => %w[HOOK_TYPES HookType],
     "target_metrics" => %w[TARGET_METRICS TargetMetric],
     "replicability" => %w[REPLICABILITY Replicability],
+    "requires" => %w[POST_REQUIREMENTS PostRequirement],
     "origins" => %w[REFERENCE_ORIGINS ReferenceOrigin],
     "statuses" => %w[REFERENCE_STATUSES ReferenceStatus]
   }.freeze

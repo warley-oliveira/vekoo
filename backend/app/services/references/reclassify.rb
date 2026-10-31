@@ -1,41 +1,41 @@
 module References
-  # Refaz só o gancho (`hook.type`) e a replicabilidade (`replicability.score`)
-  # de um card já analisado, quando o critério dos dois muda
-  # (`Prompts::CALIBRATION`). O resto do card fica como está.
+  # Refaz campos de classificação de um card já analisado — o gancho
+  # (`hook.type`), a replicabilidade (`replicability.score`) e o que o post
+  # exige (`replicability.requires`) — quando o critério muda
+  # (`Prompts::CALIBRATION`) ou um campo novo nasce. Só os campos pedidos
+  # (`fields:`) são gravados; o resto do card fica como está.
   #
   # Lê a análise gravada: o original foi apagado depois da análise e a legenda
   # nunca foi guardada. O modelo julga pelo que a análise descreve do post, sem
   # ver a classificação antiga (para não ancorar nela).
   #
-  # O gancho entra no texto do vetor (`CardText`): quem chama refaz o embedding
-  # — em série, porque a cota de embedding do Vertex é por minuto.
+  # O gancho entra no texto do vetor (`CardText`): quem refaz o gancho refaz o
+  # embedding — em série, porque a cota de embedding do Vertex é por minuto.
   class Reclassify
     MAX_TOKENS = 8_000
+    FIELDS = %i[hook replicability requires].freeze
 
     ROLE = <<~TEXT.freeze
-      Você revisa dois campos de um card do banco de referências do Vekoo — uma
-      plataforma que cria peças de Instagram para pequenos negócios: o tipo de
-      gancho e a replicabilidade. Você não vê o post: lê a análise que foi
-      feita olhando para ele e decide pelos critérios abaixo.
+      Você revisa campos de classificação de um card do banco de referências do
+      Vekoo — uma plataforma que cria peças de Instagram para pequenos negócios.
+      Você não vê o post: lê a análise que foi feita olhando para ele e decide
+      pelos critérios abaixo.
 
-      Responda:
-      - `hookType` e `replicability`, pelos critérios;
+      Responda só as chaves do formato pedido:
+      - `hookType`, `replicability` e `requires`, pelos critérios;
       - `hookFit`: `clear` se o gancho cabe com folga num tipo da lista,
         `forced` se nenhum serve de verdade e você escolheu o menos errado;
-      - `reason`: uma frase curta com o motivo das duas escolhas.
+      - `reason`: uma frase curta com o motivo das escolhas.
     TEXT
 
-    OUTPUT_SCHEMA = {
-      "type" => "object",
-      "additionalProperties" => false,
-      "required" => %w[hookType hookFit replicability reason],
-      "properties" => {
-        "hookType" => { "enum" => Taxonomy::HOOK_TYPES },
-        "hookFit" => { "enum" => %w[clear forced] },
-        "replicability" => { "enum" => Taxonomy::REPLICABILITY },
-        "reason" => { "type" => "string" }
-      }
+    # Campo → as chaves que ele pede na saída do modelo, e a lista que vai ao prompt.
+    OUTPUT = {
+      hook: { "hookType" => { "enum" => Taxonomy::HOOK_TYPES }, "hookFit" => { "enum" => %w[clear forced] } },
+      replicability: { "replicability" => { "enum" => Taxonomy::REPLICABILITY } },
+      requires: { "requires" => { "type" => "array", "items" => { "enum" => Taxonomy::REQUIRES } } }
     }.freeze
+    LISTS = { hook: :hook_types, replicability: :replicability, requires: :requires }.freeze
+    WHAT = { hook: "o gancho", replicability: "a replicabilidade", requires: "o que o post exige" }.freeze
 
     # O que mudou (`before`/`after`), mais o diagnóstico do modelo (`fit`,
     # `reason`) — que não é gravado: serve à curadoria conferir a calibração.
@@ -43,25 +43,35 @@ module References
       def changed? = before != after
     end
 
-    def self.system = [ ROLE, Prompts::CALIBRATION, Prompts.taxonomy(:hook_types, :replicability) ].join("\n")
+    def self.output_schema(fields)
+      properties = fields.map { |field| OUTPUT.fetch(field) }.reduce(:merge).merge("reason" => { "type" => "string" })
+      { "type" => "object", "additionalProperties" => false, "required" => properties.keys, "properties" => properties }
+    end
 
-    def initialize(card, chat: Ai::Chat.new)
+    def self.system(fields = %i[hook replicability])
+      [ ROLE, Prompts::CALIBRATION, Prompts.taxonomy(*fields.map { |field| LISTS.fetch(field) }) ].join("\n")
+    end
+
+    # `fields`: o que refazer — por padrão o gancho e a replicabilidade, os dois
+    # da recalibração; `requires` nasceu depois e se pede à parte.
+    def initialize(card, fields: %i[hook replicability], chat: Ai::Chat.new)
       @card = card
+      @fields = FIELDS & fields.map(&:to_sym)
+      raise ArgumentError, "nenhum campo para refazer" if @fields.empty?
+
       @chat = chat
     end
 
     # `dry_run`: pergunta e devolve o resultado sem gravar nada.
     def call(dry_run: false)
       answer = ask
-      payload = Ai::JsonObject.extract(answer.text)
-      raise Ai::Chat::Failed, "invalidOutput" unless payload.is_a?(Hash) && Taxonomy::HOOK_TYPES.include?(payload["hookType"]) &&
-        Taxonomy::REPLICABILITY.include?(payload["replicability"])
+      after = read(Ai::JsonObject.extract(answer.text))
+      raise Ai::Chat::Failed, "invalidOutput" unless after
 
       cost = Agent::Pricing.micro_usd(answer.model, answer.usage)
       result = Result.new(
-        card: @card, before: { hook: @card.hook_type, replicability: @card.replicability },
-        after: { hook: payload["hookType"], replicability: payload["replicability"] },
-        fit: payload["hookFit"], reason: payload["reason"].to_s, cost_micro_usd: cost
+        card: @card, before: current, after: after.except(:fit, :reason),
+        fit: after[:fit], reason: after[:reason], cost_micro_usd: cost
       )
       apply(result) unless dry_run
       result
@@ -71,14 +81,43 @@ module References
 
     def ask
       @chat.answer(
-        system: [ { type: "text", text: self.class.system, cache_control: { type: "ephemeral" } } ],
+        system: [ { type: "text", text: self.class.system(@fields), cache_control: { type: "ephemeral" } } ],
         messages: [ { role: "user", content: [ { type: "text", text: description } ] } ],
         model: Analyze.model,
         max_tokens: MAX_TOKENS,
         effort: Analyze.effort,
-        schema: OUTPUT_SCHEMA,
+        schema: self.class.output_schema(@fields),
         fallbacks: :default
       )
+    end
+
+    def current
+      { hook: @card.hook_type, replicability: @card.replicability, requires: @card.requires }.slice(*@fields)
+    end
+
+    # A resposta → os campos pedidos, ou nil se algum veio fora da lista. Os
+    # requisitos ficam na ordem da taxonomia, sem repetir.
+    def read(payload)
+      return unless payload.is_a?(Hash)
+
+      after = { fit: payload["hookFit"], reason: payload["reason"].to_s }
+      if @fields.include?(:hook)
+        return unless Taxonomy::HOOK_TYPES.include?(payload["hookType"])
+
+        after[:hook] = payload["hookType"]
+      end
+      if @fields.include?(:replicability)
+        return unless Taxonomy::REPLICABILITY.include?(payload["replicability"])
+
+        after[:replicability] = payload["replicability"]
+      end
+      if @fields.include?(:requires)
+        needs = payload["requires"]
+        return unless needs.is_a?(Array) && (needs - Taxonomy::REQUIRES).empty?
+
+        after[:requires] = Taxonomy::REQUIRES & needs
+      end
+      after
     end
 
     # A análise como o modelo a lê: o que ela diz do post, nunca a
@@ -98,14 +137,15 @@ module References
       lines << "\nTexto do post — função: #{analysis.dig('copy', 'function')} Tom: #{analysis.dig('copy', 'tone')} Chamada: #{analysis.dig('copy', 'cta')}"
       lines << "\nPor que funciona: #{why['mechanism']} Princípio: #{why['transferablePrinciple']}"
       lines << "\nO que um negócio precisa para repetir, segundo a análise: #{analysis.dig('replicability', 'requirements')}"
-      lines << "\nDecida o gancho e a replicabilidade."
+      lines << "\nDecida #{@fields.map { |field| WHAT.fetch(field) }.to_sentence(words_connector: ', ', two_words_connector: ' e ', last_word_connector: ' e ')}."
       lines.join("\n")
     end
 
     def apply(result)
       analysis = @card.analysis.deep_dup
-      analysis["hook"]["type"] = result.after[:hook]
-      analysis["replicability"]["score"] = result.after[:replicability]
+      analysis["hook"]["type"] = result.after[:hook] if result.after.key?(:hook)
+      analysis["replicability"]["score"] = result.after[:replicability] if result.after.key?(:replicability)
+      analysis["replicability"]["requires"] = result.after[:requires] if result.after.key?(:requires)
       @card.update!(analysis: analysis, analysis_cost_micro_usd: @card.analysis_cost_micro_usd + result.cost_micro_usd)
     end
   end
