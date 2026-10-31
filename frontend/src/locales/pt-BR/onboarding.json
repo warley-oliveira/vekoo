@@ -85,9 +85,21 @@
     "progress": "brandcore · {{current}}/{{total}}",
     "questionLabel": "{{number}} / {{topic}}",
     "back": {
-      "action": "← voltar",
+      "action": "← pergunta anterior",
       "a11y": "Voltar à pergunta anterior",
       "echo": "← de volta: {{topic}}"
+    },
+    "leave": {
+      "action": "← início",
+      "a11y": "Sair para o início da marca — a conversa fica salva"
+    },
+    "resumeCard": {
+      "title": "Sua marca está pela metade",
+      "position": "A conversa parou na pergunta {{current}} de {{total}}. O que você já contou está salvo.",
+      "notStarted_one": "A conversa da marca ainda não começou. É {{count}} pergunta sobre o seu negócio.",
+      "notStarted_other": "A conversa da marca ainda não começou. São {{count}} perguntas sobre o seu negócio.",
+      "continue": "Continuar de onde parei",
+      "start": "Começar a conversa"
     },
     "chip": "não sei — cria pra mim",
     "placeholder": "responde do seu jeito",

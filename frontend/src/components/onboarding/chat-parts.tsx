@@ -36,6 +36,7 @@ export function AgentLine({ children, className }: { children: ReactNode; classN
  * coluna já é a tela inteira e ele fica no fluxo. Quem o põe na tela dá um
  * pai `relative` com 48px de altura.
  */
+/** O "← início" do topo: sai do onboarding para o painel da marca. A conversa fica salva. */
 export function BackButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
   const { t } = useTranslation()
   return (
@@ -43,8 +44,27 @@ export function BackButton({ onClick, disabled }: { onClick: () => void; disable
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={t("onboarding.back.a11y")}
+      aria-label={t("onboarding.leave.a11y")}
       className="-ml-2 inline-flex h-10 shrink-0 items-center rounded-vk-sm px-2 font-mono text-sm font-medium text-vk-fg outline-none transition-opacity enabled:hover:opacity-70 focus-visible:ring-2 focus-visible:ring-vk-fg/30 disabled:cursor-default disabled:opacity-45 md:absolute md:top-1 md:left-4 md:ml-0"
+    >
+      {t("onboarding.leave.action")}
+    </button>
+  )
+}
+
+/**
+ * Voltar uma pergunta — ação da conversa, não da página: mora junto do campo,
+ * longe do "← início", para as duas não se confundirem.
+ */
+export function PreviousQuestionButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useTranslation()
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={t("onboarding.back.a11y")}
+      className="-ml-2 inline-flex h-10 items-center rounded-vk-sm px-2 font-mono text-xs text-vk-muted outline-none transition-colors enabled:hover:text-vk-fg focus-visible:ring-2 focus-visible:ring-vk-fg/30 disabled:cursor-default disabled:opacity-45"
     >
       {t("onboarding.back.action")}
     </button>

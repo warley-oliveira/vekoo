@@ -8,14 +8,10 @@ import { OnboardingChat } from "@/components/onboarding/onboarding-chat"
 import { OnboardingIntro } from "@/components/onboarding/onboarding-intro"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBrandCore } from "@/hooks/use-brand-core"
-import { useBrands } from "@/hooks/use-brands"
 import { useVekooSurface } from "@/hooks/use-vekoo-surface"
 import { useOnboarding, useOnboardingThread } from "@/hooks/use-onboarding"
 import { ApiError } from "@/lib/api"
-import { brandPath, rememberActiveBrand, useActiveBrand } from "@/lib/brand-context"
-
-/** O site, para onde volta quem sai da intro sem ter outra marca pronta. */
-const LANDING_URL = import.meta.env.VITE_LANDING_URL || "https://vekoo.app"
+import { brandPath, useActiveBrand } from "@/lib/brand-context"
 
 /**
  * `/brands/:brandId/onboarding` — a marca montada por conversa.
@@ -41,20 +37,12 @@ function OnboardingContent() {
   const { start } = useOnboarding(brandId)
   const [starting, setStarting] = useState(false)
   const [justStarted, setJustStarted] = useState(false)
-  // A pessoa voltou da primeira pergunta para a intro. A conversa continua no
-  // servidor: "Começar" só a mostra de novo.
-  const [atIntro, setAtIntro] = useState(false)
   const navigate = useNavigate()
-  const { brands } = useBrands()
 
-  // O "← voltar" da intro sai do onboarding. Para uma marca pronta, se houver
-  // — a marca em rascunho redirecionaria de volta para cá. Sem outra, de
-  // volta ao site: a conversa fica salva e retoma quando ela entrar de novo.
+  // Sair do onboarding é ir para o início da marca, nunca para fora do app: a
+  // conversa fica salva no servidor e o card do painel a retoma de onde parou.
   function leave() {
-    const other = brands?.find((item) => item.id !== brandId && (item.onboardingDone || item.status === "published"))
-    if (!other) return window.location.assign(LANDING_URL)
-    rememberActiveBrand(other.id)
-    navigate(brandPath(other.id))
+    navigate(brandPath(brandId))
   }
 
   async function begin() {
@@ -97,27 +85,7 @@ function OnboardingContent() {
     return <OnboardingIntro starting={starting} onStart={() => void begin()} onBack={leave} />
   }
 
-  if (atIntro) {
-    return (
-      <OnboardingIntro
-        starting={false}
-        onBack={leave}
-        onStart={() => {
-          setJustStarted(true)
-          setAtIntro(false)
-        }}
-      />
-    )
-  }
-
-  return (
-    <OnboardingChat
-      brandCore={brand.brandCore}
-      thread={thread}
-      justStarted={justStarted}
-      onExit={() => setAtIntro(true)}
-    />
-  )
+  return <OnboardingChat brandCore={brand.brandCore} thread={thread} justStarted={justStarted} onLeave={leave} />
 }
 
 /** O esqueleto tem a forma da conversa: cabeçalho, falas e o campo embaixo. */

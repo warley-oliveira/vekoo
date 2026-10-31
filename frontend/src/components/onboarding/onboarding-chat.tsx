@@ -5,7 +5,15 @@ import { useReducedMotion } from "motion/react"
 import { toast } from "sonner"
 
 import { ChatComposer, COMPOSER_ID, type ChatComposerHandle } from "@/components/onboarding/chat-composer"
-import { AgentLine, Appear, BackButton, ProgressBar, QuestionLabel, StatusLine } from "@/components/onboarding/chat-parts"
+import {
+  AgentLine,
+  Appear,
+  BackButton,
+  PreviousQuestionButton,
+  ProgressBar,
+  QuestionLabel,
+  StatusLine,
+} from "@/components/onboarding/chat-parts"
 import { ThreadTurn } from "@/components/onboarding/thread-turn"
 import { useBrandCoreMutations } from "@/hooks/use-brand-core"
 import { useOnboarding, useOnboardingLive } from "@/hooks/use-onboarding"
@@ -19,8 +27,8 @@ type OnboardingChatProps = {
   thread: OnboardingThread
   /** A conversa começou agora, nesta tela — não é retomada. */
   justStarted: boolean
-  /** O "← voltar" da primeira pergunta: de volta à intro, sem perder nada. */
-  onExit: () => void
+  /** O "← início" do topo: sai para o painel da marca, sem perder nada. */
+  onLeave: () => void
 }
 
 /**
@@ -31,7 +39,7 @@ type OnboardingChatProps = {
  * Retomar é o caso comum, não a exceção: quem volta encontra a conversa
  * inteira e uma linha dizendo onde parou.
  */
-export function OnboardingChat({ brandCore, thread, justStarted, onExit }: OnboardingChatProps) {
+export function OnboardingChat({ brandCore, thread, justStarted, onLeave }: OnboardingChatProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const reduced = useReducedMotion()
@@ -48,7 +56,7 @@ export function OnboardingChat({ brandCore, thread, justStarted, onExit }: Onboa
   const { state, turns } = thread
   const last = turns.at(-1)
   const busy = last?.status === "thinking"
-  // Da primeira pergunta, o "voltar" leva à intro; das outras, à pergunta anterior.
+  // Na primeira pergunta não há anterior: o botão some.
   const atFirst = state.position === 1 && state.topic !== "summary"
 
   // Onde a conversa estava quando a tela abriu. A linha de retomada fica
@@ -139,10 +147,9 @@ export function OnboardingChat({ brandCore, thread, justStarted, onExit }: Onboa
     }
   }, [brandCore.id, finish, navigate, t])
 
-  // "← voltar": a pergunta anterior reaparece no fio e a resposta que ela deu
-  // volta ao campo, para editar — o que estava gravado continua gravado.
+  // "← pergunta anterior": a pergunta reaparece no fio e a resposta que ela
+  // deu volta ao campo, para editar — o que estava gravado continua gravado.
   const onBack = useCallback(async () => {
-    if (atFirst) return onExit()
     setGoingBack(true)
     try {
       const updated = await back()
@@ -154,7 +161,7 @@ export function OnboardingChat({ brandCore, thread, justStarted, onExit }: Onboa
     } finally {
       setGoingBack(false)
     }
-  }, [atFirst, back, fail, onExit, turns])
+  }, [back, fail, turns])
 
   const onAdjust = useCallback(() => {
     setAdjusting(true)
@@ -168,9 +175,9 @@ export function OnboardingChat({ brandCore, thread, justStarted, onExit }: Onboa
     <div className="flex h-dvh flex-col">
       <header className="relative shrink-0">
         <div className="mx-auto flex h-12 max-w-160 items-center gap-3 px-4">
-          {/* Só trava nos segundos em que o agente está respondendo — o
-              servidor não reabre tema com uma resposta a caminho. */}
-          <BackButton onClick={() => void onBack()} disabled={busy || publishing || goingBack} />
+          {/* Sair não espera o agente: a resposta a caminho chega no
+              servidor e espera no fio para quando ela voltar. */}
+          <BackButton onClick={onLeave} disabled={publishing} />
           <p className="font-mono text-xs text-vk-muted lowercase tabular-nums" aria-live="polite">
             {t("onboarding.progress", { current: state.position, total: state.total })}
           </p>
@@ -229,6 +236,11 @@ export function OnboardingChat({ brandCore, thread, justStarted, onExit }: Onboa
       {/* Sem linha: a conversa some num degradê do fundo logo acima do campo. */}
       <footer className="relative shrink-0 bg-vk-bg before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-8 before:bg-linear-to-b before:from-transparent before:to-vk-bg">
         <div className="mx-auto max-w-160 px-3 pt-1 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+          {/* Só trava nos segundos em que o agente está respondendo — o
+              servidor não reabre tema com uma resposta a caminho. */}
+          {!atFirst && (
+            <PreviousQuestionButton onClick={() => void onBack()} disabled={busy || publishing || goingBack} />
+          )}
           <ChatComposer
             ref={composer}
             busy={busy || publishing}

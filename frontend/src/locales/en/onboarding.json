@@ -85,9 +85,21 @@
     "progress": "brandcore · {{current}}/{{total}}",
     "questionLabel": "{{number}} / {{topic}}",
     "back": {
-      "action": "← back",
+      "action": "← previous question",
       "a11y": "Back to the previous question",
       "echo": "← back to: {{topic}}"
+    },
+    "leave": {
+      "action": "← home",
+      "a11y": "Leave to the brand's home — the conversation is saved"
+    },
+    "resumeCard": {
+      "title": "Your brand is halfway done",
+      "position": "The conversation stopped at question {{current}} of {{total}}. Everything you've said is saved.",
+      "notStarted_one": "The brand conversation hasn't started yet. It's {{count}} question about your business.",
+      "notStarted_other": "The brand conversation hasn't started yet. It's {{count}} questions about your business.",
+      "continue": "Pick up where I left off",
+      "start": "Start the conversation"
     },
     "chip": "not sure — make it for me",
     "placeholder": "answer your way",

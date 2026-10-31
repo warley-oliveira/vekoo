@@ -6,16 +6,17 @@ import { ErrorState } from "@/components/error-state"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBrandMutations, useBrands } from "@/hooks/use-brands"
 import { brandPath, readActiveBrandId } from "@/lib/brand-context"
-import { onboardingHref } from "@/lib/onboarding"
+import { needsOnboarding, onboardingHref } from "@/lib/onboarding"
 
 /**
  * A raiz (`/`) e `/brands` sem id: manda para a marca ativa — a última
  * usada, se ainda existir; senão a primeira. Conta sem marca nenhuma
  * (não deveria acontecer: a primeira nasce com a conta) ganha uma na hora.
  *
- * Marca que ainda não terminou o onboarding volta para a pergunta onde
- * parou — inclusive de outro aparelho, porque quem guarda o ponto é o
- * servidor. As demais abrem no início.
+ * A marca pronta tem prioridade: quem já tem uma abre no início dela, mesmo
+ * que a última usada esteja pela metade — essa se retoma pelo card do
+ * painel. Só quem não tem nenhuma pronta cai no onboarding, na pergunta
+ * onde parou (inclusive de outro aparelho: quem guarda o ponto é o servidor).
  */
 export function BrandGate() {
   const { t } = useTranslation()
@@ -50,12 +51,10 @@ export function BrandGate() {
     )
   }
 
-  const remembered = readActiveBrandId()
-  const active = brands.find((b) => b.id === remembered) ?? brands[0]
-  // Onboarding pendente ganha prioridade sobre qualquer outra tela: uma marca
-  // pela metade não serve para nada até fechar.
-  if (!active.onboardingDone && active.status === "draft") {
-    return <Navigate to={onboardingHref(active.id)} replace />
-  }
-  return <Navigate to={brandPath(active.id)} replace />
+  const remembered = brands.find((b) => b.id === readActiveBrandId())
+  const ready =
+    remembered && !needsOnboarding(remembered) ? remembered : brands.find((b) => !needsOnboarding(b))
+  // Sem marca pronta, o onboarding é a única tela que serve para alguma coisa.
+  if (!ready) return <Navigate to={onboardingHref((remembered ?? brands[0]).id)} replace />
+  return <Navigate to={brandPath(ready.id)} replace />
 }

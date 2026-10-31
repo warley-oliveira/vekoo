@@ -154,12 +154,6 @@ export function AppSidebar({
             >
               <UserPlus /> {t("account.invite")}
             </DropdownMenuItem>
-            {/* Só a conta da Vekoo vê: a curadoria do banco de referências. */}
-            {session?.account.staff && (
-              <DropdownMenuItem onClick={() => navigate("/admin")}>
-                <ShieldCheck /> {t("account.curation")}
-              </DropdownMenuItem>
-            )}
             <LanguageSubmenu />
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -256,6 +250,19 @@ export function AppSidebar({
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
+        {/* Só a conta da Vekoo vê: a curadoria do banco de referências. Fica
+            à vista, separada da navegação da marca por um respiro. */}
+        {session?.account.staff && (
+          <div className="mt-3 flex flex-col">
+            <SidebarLink
+              to="/admin/references"
+              icon={<ShieldCheck />}
+              label={t("account.curation")}
+              collapsed={collapsed}
+              onNavigate={onNavigate}
+            />
+          </div>
+        )}
       </nav>
 
       {/* Pastas */}
