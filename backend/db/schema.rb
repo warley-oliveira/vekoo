@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_130001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -83,6 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120001) do
     t.jsonb "error"
     t.string "kind", default: "create", null: false
     t.string "model"
+    t.uuid "offered_reference_ids", default: [], null: false, array: true
     t.uuid "organization_id", null: false
     t.jsonb "plan", default: {}, null: false
     t.text "prompt", null: false

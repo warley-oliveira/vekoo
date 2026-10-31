@@ -8,7 +8,9 @@ module Agent
   class Plan
     MAX_VARIATIONS = 3
 
-    Variation = Struct.new(:format, :title, :document, :why, keyword_init: true) do
+    # `reference_ids`: os cards do banco que a variação seguiu — vão para a
+    # peça (`pieces.reference_ids`), nunca para a tela.
+    Variation = Struct.new(:format, :title, :document, :why, :reference_ids, keyword_init: true) do
       def as_json(*)
         { "format" => format, "title" => title, "document" => document, "why" => why }
       end
@@ -27,17 +29,19 @@ module Agent
     end
 
     # `generated`: os ids das fotos que a ferramenta criou neste turno — sem
-    # elas, "só fotos" não é entrega.
-    def self.call(raw, brand_core:, request_text: nil, limit: MAX_VARIATIONS, generated: [])
-      new(raw, brand_core, request_text, limit, generated).call
+    # elas, "só fotos" não é entrega. `references`: apelido → id dos padrões
+    # de referência que foram ao agente (`References::AgentBrief#aliases`).
+    def self.call(raw, brand_core:, request_text: nil, limit: MAX_VARIATIONS, generated: [], references: {})
+      new(raw, brand_core, request_text, limit, generated, references).call
     end
 
-    def initialize(raw, brand_core, request_text, limit, generated)
+    def initialize(raw, brand_core, request_text, limit, generated, references)
       @raw = raw.to_s
       @brand = brand_core
       @request_text = request_text
       @limit = limit
       @generated = Array(generated)
+      @references = references.to_h
       @errors = []
     end
 
@@ -82,8 +86,15 @@ module Agent
         format: document["format"],
         title: raw["title"].to_s.squish.presence&.first(120) || document.dig("slides", 0, "layoutId"),
         document: document,
-        why: raw["why"].to_s.strip.presence
+        why: raw["why"].to_s.strip.presence,
+        reference_ids: reference_ids(raw["referenceIds"])
       )
+    end
+
+    # Apelido desconhecido some sem erro: errar o rótulo da referência não é
+    # motivo para pagar uma segunda tentativa.
+    def reference_ids(raw)
+      Array(raw).filter_map { |name| @references[name.to_s.strip.upcase] }.uniq
     end
 
     # O erro volta ao modelo em pt-BR e na língua dele — o slot e o layout,

@@ -40,7 +40,8 @@ module Agent
 
     def call
       tokens = Engines::Tokens.new(@brand)
-      messages = history(tokens) + [ { role: "user", content: request_text(@turn) } ]
+      @references = find_references
+      messages = history(tokens) + [ { role: "user", content: current_request } ]
 
       answer, messages = converse(tokens, messages)
       plan = plan_from(answer)
@@ -78,7 +79,58 @@ module Agent
     end
 
     def plan_from(answer)
-      Plan.call(answer.text, brand_core: @brand, request_text: @turn.prompt, limit: wanted, generated: @turn.generated_asset_ids)
+      Plan.call(
+        answer.text, brand_core: @brand, request_text: @turn.prompt, limit: wanted, generated: @turn.generated_asset_ids,
+        references: injected_references? ? @references[:brief].aliases : {}
+      )
+    end
+
+    # Os padrões do banco de referências para este pedido (Fase 3), conforme o
+    # interruptor (`References::Retriever.mode`). Só no pedido novo e no "mais
+    # variações": o ajuste mexe numa peça que já tem forma. Falha aqui nunca
+    # derruba o turno — a peça sai como saía antes.
+    def find_references
+      mode = References::Retriever.mode
+      return if mode == "off" || @turn.kind == "adjust"
+
+      query, exclude = reference_query
+      return if query.blank?
+
+      result = References::Retriever.call(@brand, query, attachments: Array(@turn.attachments), exclude_ids: exclude)
+      @cost += result.intent.cost_micro_usd
+      { mode: mode, result: result, brief: References::AgentBrief.new(result.cards) }
+    rescue StandardError => e
+      Rails.logger.warn("agent turn #{@turn.id}: busca de referências falhou — #{e.class}: #{e.message.to_s.first(160)}")
+      nil
+    end
+
+    # O texto que a busca lê. No "mais variações", o pedido que criou a peça
+    # de origem — sem os padrões que ela já seguiu, para vir forma nova.
+    def reference_query
+      return [ @turn.prompt, [] ] unless @turn.kind == "vary"
+
+      piece = @turn.base_piece_id && Piece.find_by(id: @turn.base_piece_id)
+      return [ nil, [] ] unless piece
+
+      [ piece.agent_turn&.prompt.presence || piece.title, piece.reference_ids ]
+    end
+
+    def injected_references?
+      @references.present? && @references[:mode] == "on" && !@references[:brief].empty?
+    end
+
+    # O pedido de agora. Com padrões de referência, eles vêm antes, num bloco à
+    # parte, e o pedido ganha o terceiro ponto de cache: a volta da ferramenta
+    # de foto e a correção releem tudo isso do cache. O histórico nunca leva
+    # os padrões — o turno antigo volta só com o pedido e o plano.
+    def current_request
+      text = request_text(@turn)
+      return text unless injected_references?
+
+      [
+        { type: "text", text: @references[:brief].text },
+        { type: "text", text: text, cache_control: CACHE_CONTROL }
+      ]
     end
 
     # Pergunta ao modelo e, enquanto ele pedir ferramenta, roda e devolve o
@@ -216,7 +268,8 @@ module Agent
         format: variation.format,
         title: variation.title,
         status: "draft",
-        brand_core_version_id: variation.document["brandCoreVersionId"]
+        brand_core_version_id: variation.document["brandCoreVersionId"],
+        reference_ids: variation.reference_ids.to_a
       )
       piece.record_version!(variation.document, source: "generation", summary: @turn.prompt, account: @turn.account)
       PieceDocument::Compact.call(piece.document, title: piece.title).merge("why" => variation.why, "pieceId" => piece.id)
@@ -251,7 +304,8 @@ module Agent
         model: @model,
         usage: @usage,
         cost_micro_usd: @cost,
-        credits_charged: @turn.credits_charged
+        credits_charged: @turn.credits_charged,
+        offered_reference_ids: @references ? @references[:result].cards.map(&:id) : []
       )
       @conversation.touch_turn!
       broadcast

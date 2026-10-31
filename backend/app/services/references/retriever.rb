@@ -39,6 +39,16 @@ module References
 
     POINTS = { niche: 3, primary: 2, secondary: 1, objective: 2, similarity: 3, engagement: 1, missing: -2 }.freeze
 
+    # O interruptor da busca na geração (`REFERENCES_IN_GENERATION`): `off`
+    # não busca; `shadow` busca e grava no turno o que ofereceria, sem mandar
+    # ao agente; `on` manda. Desligado até o teste lado a lado decidir.
+    MODES = %w[off shadow on].freeze
+
+    def self.mode
+      value = ENV.fetch("REFERENCES_IN_GENERATION", "off")
+      MODES.include?(value) ? value : "off"
+    end
+
     # `points`: o que somou cada critério (para a curadoria conferir);
     # `missing`: as exigências do card que a marca comprovadamente não cumpre.
     Pick = Struct.new(:card, :points, :total, :cosine, :missing, keyword_init: true)

@@ -161,6 +161,28 @@ module Agent
         em que a foto não é obrigatória. Não tente mais de uma vez.
     TEXT
 
+    # Fica no bloco estável mesmo quando o pedido chega sem padrão: regra que
+    # aparece e some mudaria o prefixo e derrubaria o cache de todo mundo.
+    REFERENCE_RULES = <<~TEXT.freeze
+      ## Padrões de referência
+
+      Às vezes o pedido chega com padrões de referência (R1, R2, R3): posts
+      reais que funcionaram, descritos pela mecânica. São sugestão de forma,
+      nunca fonte de fato.
+
+      - Use a mecânica — como a capa prende, a ordem das lâminas, o que o
+        texto faz — com o conteúdo desta marca. Nunca copie frase de um
+        padrão, nunca diga que existe referência e nunca cite outra marca.
+      - A regra-mestra vale por cima: um padrão de promoção não autoriza
+        inventar preço. Se o padrão depende de algo que a marca não tem
+        (oferta, cliente, evento, foto do produto), adapte ou pergunte.
+      - Padrão que não serve ao pedido, ignore. Melhor nenhum do que forçado.
+      - Variações diferentes podem seguir padrões diferentes: é o jeito de dar
+        opções de verdade.
+      - Em cada variação, `referenceIds` lista os padrões que ela seguiu (ex.:
+        `["R2"]`), ou `[]` se nenhum.
+    TEXT
+
     FORMAT_RULES = <<~TEXT.freeze
       ## Formato
 
@@ -193,7 +215,8 @@ module Agent
               }
             ],
             "caption": { "text": "<legenda>", "hashtags": ["#exemplo"] },
-            "why": "<uma linha em pt-BR: o que diferencia esta variação>"
+            "why": "<uma linha em pt-BR: o que diferencia esta variação>",
+            "referenceIds": []
           }
         ]
       }
@@ -211,7 +234,7 @@ module Agent
 
     # O bloco estável, na ordem em que o modelo o lê.
     def system
-      [ ROLE, MASTER_RULE, COPY_RULES, FIELD_RULES, VARIATION_RULES, IMAGE_RULES, FORMAT_RULES, OUTPUT ].join("\n")
+      [ ROLE, MASTER_RULE, COPY_RULES, FIELD_RULES, VARIATION_RULES, IMAGE_RULES, REFERENCE_RULES, FORMAT_RULES, OUTPUT ].join("\n")
     end
 
     def catalog_block
