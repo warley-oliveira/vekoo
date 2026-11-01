@@ -83,7 +83,10 @@
     "createdToast": "Brand created. Let's set it up.",
     "createFailed": "Couldn't create the brand.",
     "loading": "Opening your brand…",
-    "incomplete": "Setup incomplete"
+    "incomplete": "Setup incomplete",
+    "organizations": "Organization",
+    "organizationFailed": "Couldn't switch organization.",
+    "internalBadge": "test"
   },
   "dashboard": {
     "createTitle": "Create",

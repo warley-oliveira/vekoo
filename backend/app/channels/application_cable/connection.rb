@@ -3,19 +3,23 @@
 # cable — a única diferença em relação ao `Bearer` do resto.
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :current_account
+    identified_by :current_account, :current_organization
 
+    # A organização é a da sessão (a interna, se staff entrou nela): trocar de
+    # organização recarrega a tela e abre outra conexão.
     def connect
-      self.current_account = find_account || reject_unauthorized_connection
+      session = find_session || reject_unauthorized_connection
+      self.current_account = session.account
+      self.current_organization = session.organization
     end
 
     private
 
-    def find_account
+    def find_session
       token = request.params[:token].presence
       return nil unless token
 
-      Session.authenticate(token)&.account
+      Session.authenticate(token)
     end
   end
 end

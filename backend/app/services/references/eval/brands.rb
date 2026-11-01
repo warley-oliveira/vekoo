@@ -45,6 +45,8 @@ module References
       # documentos sem gastar).
       def call(only: nil, photos: true)
         organization = Organization.find_or_create_by!(name: ORGANIZATION)
+        # Interna: staff entra nela pelo seletor, sem login próprio.
+        organization.update!(internal: true) unless organization.internal?
         existing = self.class.all
         self.class.data.each_with_object({}) do |(key, spec), brands|
           next if only.present? && !only.include?(key)

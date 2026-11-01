@@ -4,7 +4,7 @@ RSpec.describe BrandCoreChannel, type: :channel do
   let(:account) { create(:account) }
 
   it "assina os avisos da própria organização" do
-    stub_connection current_account: account
+    stub_connection current_account: account, current_organization: account.organization
 
     subscribe
 
@@ -13,7 +13,7 @@ RSpec.describe BrandCoreChannel, type: :channel do
   end
 
   it "entrega o que o servidor transmite para a organização" do
-    stub_connection current_account: account
+    stub_connection current_account: account, current_organization: account.organization
     subscribe
 
     expect {

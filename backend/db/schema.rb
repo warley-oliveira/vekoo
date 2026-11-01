@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_190001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -258,6 +258,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
     t.datetime "created_at", null: false
     t.integer "credits_total", default: 50, null: false
     t.integer "credits_used", default: 0, null: false
+    t.boolean "internal", default: false, null: false
     t.string "name", null: false
     t.string "plan", default: "free", null: false
     t.datetime "updated_at", null: false
@@ -290,6 +291,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.integer "height", null: false
+    t.jsonb "legibility"
     t.uuid "piece_version_id", null: false
     t.integer "position", null: false
     t.datetime "rendered_at", null: false
@@ -464,6 +466,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
+    t.uuid "acting_organization_id"
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
     t.string "ip_address"
@@ -472,6 +475,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
     t.datetime "updated_at", null: false
     t.string "user_agent"
     t.index ["account_id"], name: "index_sessions_on_account_id"
+    t.index ["acting_organization_id"], name: "index_sessions_on_acting_organization_id"
     t.index ["token_digest"], name: "index_sessions_on_token_digest", unique: true
   end
 
@@ -545,6 +549,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
   add_foreign_key "reference_import_accounts", "reference_imports", on_delete: :cascade
   add_foreign_key "reference_imports", "accounts", column: "curated_by_id", on_delete: :nullify
   add_foreign_key "sessions", "accounts"
+  add_foreign_key "sessions", "organizations", column: "acting_organization_id", on_delete: :nullify
   add_foreign_key "uploads", "accounts", on_delete: :nullify
   add_foreign_key "uploads", "organizations"
 end

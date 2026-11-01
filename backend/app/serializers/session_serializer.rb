@@ -3,7 +3,7 @@
 class SessionSerializer < ApplicationSerializer
   def self.one(session)
     account = session.account
-    organization = account.organization
+    organization = session.organization
 
     payload = {
       account: AccountSerializer.one(account),
@@ -11,6 +11,8 @@ class SessionSerializer < ApplicationSerializer
       credits: CreditsSerializer.one(organization),
       expiresAt: epoch_ms(session.expires_at)
     }
+    # Só staff tem para onde trocar: a organização da conta e as internas.
+    payload[:organizations] = session.organizations.map { |org| OrganizationSerializer.one(org) } if account.staff?
     payload[:token] = session.token if session.token.present?
     payload
   end

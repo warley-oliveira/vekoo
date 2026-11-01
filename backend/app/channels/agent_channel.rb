@@ -4,6 +4,6 @@
 # desenha, e são dois tempos diferentes.
 class AgentChannel < ApplicationCable::Channel
   def subscribed
-    stream_for current_account.organization
+    stream_for current_organization
   end
 end

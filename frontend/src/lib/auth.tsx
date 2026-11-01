@@ -39,6 +39,8 @@ export type Organization = {
   name: string
   /** Código do plano; o rótulo visível vem de `plans.<plan>`. */
   plan: PlanCode
+  /** Organização interna da Vekoo (as marcas de teste): só staff entra. */
+  internal?: boolean
   createdAt: number
 }
 
@@ -68,6 +70,8 @@ export type Session = {
    */
   credits: Credits
   expiresAt: number
+  /** Só staff: a organização da conta e as internas, para onde a sessão pode ir. */
+  organizations?: Organization[]
 }
 
 /** O que `POST /login`, `POST /signup` e `GET /me` devolvem. */
@@ -176,6 +180,8 @@ type AuthContextValue = {
   signIn: (email: string, password: string) => Promise<Session>
   signUp: (input: SignUpInput) => Promise<Session>
   signOut: () => Promise<void>
+  /** Staff: troca a organização em que a sessão age (`null` = a da conta). */
+  switchOrganization: (organizationId: string | null) => Promise<Session>
   /** Devolve o token de redefinição fora de produção — não há e-mail ainda. */
   requestPasswordReset: (email: string) => Promise<{ token?: string }>
   resetPassword: (token: string, password: string) => Promise<void>
@@ -266,10 +272,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       organization: payload.organization,
       credits: payload.credits,
       expiresAt: payload.expiresAt,
+      organizations: payload.organizations,
     }
     setSession(next)
     return next
   }, [])
+
+  // Staff entra numa organização interna (ou volta à da conta, com `null`).
+  // Quem chama recarrega a tela: as marcas, os canais e o cache mudam juntos.
+  const switchOrganization = useCallback(
+    async (organizationId: string | null): Promise<Session> =>
+      start(await apiPatch<SessionPayload>("/me/organization", { organizationId })),
+    [start]
+  )
 
   const signIn = useCallback(
     async (email: string, password: string): Promise<Session> => {
@@ -346,6 +361,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signIn,
       signUp,
       signOut,
+      switchOrganization,
       requestPasswordReset,
       resetPassword,
     }),
@@ -357,6 +373,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signIn,
       signUp,
       signOut,
+      switchOrganization,
       requestPasswordReset,
       resetPassword,
     ]

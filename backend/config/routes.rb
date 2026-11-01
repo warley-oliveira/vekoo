@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post   "login"  => "sessions#create"
   delete "logout" => "sessions#destroy"
   get    "me"     => "sessions#show"
+  patch  "me/organization" => "sessions#organization"
 
   post  "password-resets"        => "password_resets#create"
   patch "password-resets/:token" => "password_resets#update", as: :password_reset

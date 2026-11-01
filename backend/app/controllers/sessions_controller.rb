@@ -45,6 +45,20 @@ class SessionsController < AuthenticatedController
     head :no_content
   end
 
+  # PATCH /me/organization — staff entra numa organização interna (as marcas
+  # de teste) ou volta à da conta (`organizationId` nulo). Para quem não é
+  # staff a rota não existe, como as do /admin.
+  def organization
+    return render_not_found unless current_account.staff?
+
+    id = params[:organizationId].presence
+    target = id && current_session.organizations.find { |org| org.id == id }
+    return render_error(status: :unprocessable_entity, code: "unprocessable", field: "organizationId", message: t("errors.unprocessable")) if id && target.nil?
+
+    current_session.update!(acting_organization: target == current_account.organization ? nil : target)
+    render json: SessionSerializer.one(current_session.reload)
+  end
+
   private
 
   def session_params

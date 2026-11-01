@@ -83,7 +83,10 @@
     "createdToast": "Marca criada. Vamos montá-la.",
     "createFailed": "Não deu para criar a marca.",
     "loading": "Abrindo a sua marca…",
-    "incomplete": "Cadastro incompleto"
+    "incomplete": "Cadastro incompleto",
+    "organizations": "Organização",
+    "organizationFailed": "Não deu para trocar de organização.",
+    "internalBadge": "teste"
   },
   "dashboard": {
     "createTitle": "Criar",

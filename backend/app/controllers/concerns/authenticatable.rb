@@ -21,7 +21,7 @@ module Authenticatable
   end
 
   def current_organization
-    current_account&.organization
+    current_session&.organization
   end
 
   def signed_in?

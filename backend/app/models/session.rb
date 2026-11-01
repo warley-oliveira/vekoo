@@ -5,6 +5,10 @@ class Session < ApplicationRecord
   DURATION = 30.days
 
   belongs_to :account
+  # Staff pode agir numa organização interna da Vekoo (as marcas de teste)
+  # sem trocar de conta. Conferido a cada uso: deixou de ser staff, ou a
+  # organização deixou de ser interna, volta à da conta.
+  belongs_to :acting_organization, class_name: "Organization", optional: true
 
   scope :active, -> { where(expires_at: Time.current..) }
 
@@ -34,6 +38,20 @@ class Session < ApplicationRecord
     )
     session.instance_variable_set(:@token, token)
     session
+  end
+
+  # A organização em que esta sessão age — a de toda requisição e de todo
+  # canal do ActionCable.
+  def organization
+    acting = acting_organization
+    acting && account.staff? && acting.internal? ? acting : account.organization
+  end
+
+  # As organizações em que esta sessão pode agir: a da conta e, para staff,
+  # as internas.
+  def organizations
+    internal = account.staff? ? Organization.where(internal: true).where.not(id: account.organization_id).order(:name).to_a : []
+    [ account.organization, *internal ]
   end
 
   def touch_usage!

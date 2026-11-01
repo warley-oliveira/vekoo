@@ -3,6 +3,6 @@
 # recebe o evento e recarrega pelo SWR — o canal não carrega documento.
 class BrandCoreChannel < ApplicationCable::Channel
   def subscribed
-    stream_for current_account.organization
+    stream_for current_organization
   end
 end
