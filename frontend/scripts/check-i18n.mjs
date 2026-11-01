@@ -22,6 +22,9 @@ import ts from "typescript"
 const ROOT = path.resolve(import.meta.dirname, "..")
 const SRC = path.join(ROOT, "src")
 const LOCALES = path.join(SRC, "locales")
+// Os textos da área da Vekoo (`/admin`) ficam fora do bundle do assinante:
+// moram junto do código dela e só carregam com ela. A guarda os lê também.
+const ADMIN_LOCALES = path.join(SRC, "admin", "locales")
 const SOURCE_LANGUAGE = "pt-BR"
 
 // Primitivos do shadcn entram intocados (é regra do projeto) e não carregam
@@ -113,12 +116,13 @@ function flatten(object, prefix = "", into = new Set()) {
 
 function loadBundle(language) {
   const dir = path.join(LOCALES, language)
-  if (fs.existsSync(dir)) {
-    return fs.readdirSync(dir)
+  const bundle = fs.existsSync(dir)
+    ? fs.readdirSync(dir)
       .filter((name) => name.endsWith(".json"))
       .reduce((acc, name) => Object.assign(acc, JSON.parse(fs.readFileSync(path.join(dir, name), "utf8"))), {})
-  }
-  return JSON.parse(fs.readFileSync(`${dir}.json`, "utf8"))
+    : JSON.parse(fs.readFileSync(`${dir}.json`, "utf8"))
+  const admin = path.join(ADMIN_LOCALES, `${language}.json`)
+  return fs.existsSync(admin) ? Object.assign(bundle, JSON.parse(fs.readFileSync(admin, "utf8"))) : bundle
 }
 
 /** Uma pasta por idioma (o `resources.ts` da costura não é idioma). */

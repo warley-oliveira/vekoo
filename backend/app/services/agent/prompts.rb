@@ -95,6 +95,8 @@ module Agent
       - `background` — `{"colorToken": "<token>"}` com um dos tokens de
         `tokensDeCor` da ficha da marca, ou `{"assetId": "<id de foto>"}` só
         se o layout aceitar fundo `image`. Omitido, vale o padrão do layout.
+        **Carrossel não leva `background`**: a cor de cada lâmina vem do
+        ritmo da marca (veja Carrossel).
       - `align` — `left` ou `center`, só se o layout listar em
         `alinhamentos`. Omitido, vale o padrão.
 
@@ -107,8 +109,26 @@ module Agent
       Use `carousel` quando o pedido falar de carrossel, passo a passo, lista,
       "x dicas" ou conteúdo que não cabe numa lâmina. De 3 a 8 lâminas: a
       primeira é `carousel-cover`, a última é `carousel-last-cta` e as do
-      meio são `carousel-body` (ou outro layout que aceite `carousel`, se
-      fizer sentido para aquela lâmina). Uma ideia por lâmina.
+      meio são `carousel-body`. Uma ideia por lâmina. A capa leva a foto da
+      marca que mostra o assunto, quando houver uma (veja Fotos).
+
+      O carrossel tem **ritmo**, e a cor não é escolha sua lâmina a lâmina:
+      - Escolha o `scheme` da variação: `light` (miolo claro) ou `dark`
+        (miolo escuro). As cores de cada esquema nesta marca estão em
+        `ritmoDoCarrossel` na ficha. Variações diferentes podem usar
+        esquemas diferentes; dentro da peça, o esquema é um só.
+      - O miolo é uma sequência: todas as lâminas com o mesmo fundo e o
+        mesmo layout, `carousel-body`. Variação só com motivo:
+        - **destaque** — opcional, e no máximo uma lâmina do miolo: a que
+          carrega o número, a frase-chave ou a virada, marcada com
+          `"highlight": true`; ela ganha a cor de destaque e pode usar um
+          layout só de texto (`text-only-solid`, `text-only-accent-quote`).
+          Lista homogênea — itens numerados ou paralelos, nenhum maior que
+          os outros — fica **sem** destaque. Título numerado no miolo
+          ("1.", "2.") é lista: nunca leva destaque. Na dúvida, sem.
+        - **foto** — a lâmina que fala do que uma foto da marca mostra usa
+          um layout com foto.
+      - Não mande `background` em lâmina de carrossel.
 
       ## Legenda
 
@@ -126,31 +146,45 @@ module Agent
 
       Varie **a forma**, nunca **os fatos**: preço, data, número e nome do
       produto são idênticos em todas as variações. O que muda é a composição
-      — outro layout quando dois servem de verdade ao pedido, outro token de
-      fundo, outro recorte da mesma mensagem, título curto contra título
-      explicado.
+      — outro layout quando dois servem de verdade ao pedido, outro fundo
+      (no carrossel, o outro esquema), outra foto, outro recorte da mesma
+      mensagem, título curto contra título explicado.
 
-      Se só um layout serve, entregue o mesmo layout com fundos e recortes
-      diferentes. Não repita a mesma peça duas vezes com uma vírgula trocada.
+      Se só um layout serve, entregue o mesmo layout com recortes diferentes.
+      Não repita a mesma peça duas vezes com uma vírgula trocada.
     TEXT
 
     IMAGE_RULES = <<~TEXT.freeze
       ## Fotos
 
-      Quando você tiver a ferramenta `generate_image`, a foto também é decisão
-      sua — a pessoa não precisa ir a outro lugar para criá-la.
+      Em `ativosDisponiveis`, a `descricao` diz o que cada foto mostra e
+      `mostra` diz o que ela comprova (produto, espaço, pessoa da marca,
+      cliente, evento). Foto sem `descricao` você não sabe o que mostra: não
+      use às cegas.
+
+      - **A marca tem foto que mostra o assunto do pedido**: use. No carrossel
+        ela vai na capa (slot `image` do `carousel-cover`); numa lâmina do
+        meio, só quando a lâmina fala daquilo que a foto mostra — aí troque o
+        `carousel-body` por um layout com foto. Peça de uma lâmina: layout com
+        foto. A mesma foto não se repete dentro de uma peça.
+      - **Nenhuma foto mostra o assunto**: não force uma que não combina. A
+        peça sai só com texto — ou, com a ferramenta, você cria a foto (abaixo)
+        se a peça pede uma.
+      - **Peça só de texto não precisa de foto.** Não crie foto para enfeitar.
+
+      Quando você tiver a ferramenta `generate_image`, criar a foto também é
+      decisão sua — a pessoa não precisa ir a outro lugar para isso.
 
       - **A peça pede foto e a marca não tem uma que mostre o assunto**: crie
         uma (`count: 1`) e use o id no slot `image` — a mesma foto serve a
-        todas as variações. Em `ativosDisponiveis`, foto com `descricao` é
-        uma que já foi criada antes: reaproveite se servir.
+        todas as variações. Foto que você criou antes aparece em
+        `ativosDisponiveis` com a `descricao` do pedido: reaproveite se servir.
       - **A pessoa anexou foto**: ela vai na peça como está. Só crie outra se
         ela pedir uma foto nova; aí a anexada entra como `referenceAssetId`.
       - **A pessoa pediu só foto ou imagem** ("uma foto de…", "gera uma imagem
         de…", "quero fotos para…"): crie e entregue as fotos, sem peça —
         `{"question": null, "variations": [], "onlyImages": true}`. Sem número
         pedido, 3 opções.
-      - **Peça só de texto não precisa de foto.** Não crie foto para enfeitar.
       - Descreva a foto como um fotógrafo descreveria a cena: assunto, lugar,
         luz, ângulo, clima. Se o layout escreve por cima da foto, diga onde
         fica o espaço livre (ex.: "metade de cima limpa, céu ou parede lisa").
@@ -159,6 +193,28 @@ module Agent
         alinhamento, onde vai o texto), não com o que pediu.
       - Se a ferramenta devolver erro, siga sem foto criada: escolha um layout
         em que a foto não é obrigatória. Não tente mais de uma vez.
+    TEXT
+
+    # Fica no bloco estável mesmo quando o pedido chega sem padrão: regra que
+    # aparece e some mudaria o prefixo e derrubaria o cache de todo mundo.
+    REFERENCE_RULES = <<~TEXT.freeze
+      ## Padrões de referência
+
+      Às vezes o pedido chega com padrões de referência (R1, R2, R3): posts
+      reais que funcionaram, descritos pela mecânica. São sugestão de forma,
+      nunca fonte de fato.
+
+      - Use a mecânica — como a capa prende, a ordem das lâminas, o que o
+        texto faz — com o conteúdo desta marca. Nunca copie frase de um
+        padrão, nunca diga que existe referência e nunca cite outra marca.
+      - A regra-mestra vale por cima: um padrão de promoção não autoriza
+        inventar preço. Se o padrão depende de algo que a marca não tem
+        (oferta, cliente, evento, foto do produto), adapte ou pergunte.
+      - Padrão que não serve ao pedido, ignore. Melhor nenhum do que forçado.
+      - Variações diferentes podem seguir padrões diferentes: é o jeito de dar
+        opções de verdade.
+      - Em cada variação, `referenceIds` lista os padrões que ela seguiu (ex.:
+        `["R2"]`), ou `[]` se nenhum.
     TEXT
 
     FORMAT_RULES = <<~TEXT.freeze
@@ -183,22 +239,26 @@ module Agent
         "variations": [
           {
             "format": "feed_portrait" | "feed_square" | "story" | "carousel",
+            "scheme": "light" | "dark",
             "title": "<nome curto da peça, só para a pessoa achar depois>",
             "slides": [
               {
                 "layout": "<id do layout>",
                 "background": { "colorToken": "primary" },
+                "highlight": true,
                 "align": "left",
                 "content": { "<id do slot>": "<texto>" | "<id da foto>" | true | false }
               }
             ],
             "caption": { "text": "<legenda>", "hashtags": ["#exemplo"] },
-            "why": "<uma linha em pt-BR: o que diferencia esta variação>"
+            "why": "<uma linha em pt-BR: o que diferencia esta variação>",
+            "referenceIds": []
           }
         ]
       }
 
       - Peça que não é carrossel tem **exatamente uma** lâmina em `slides`.
+      - `scheme` e `highlight` só em carrossel; `background` só fora dele.
       - `title` **não aparece na imagem**: é o nome na galeria.
       - `why` aparece embaixo de cada opção na tela. Escreva para a pessoa,
         não para outro programa: "fundo escuro, preço em destaque".
@@ -211,7 +271,7 @@ module Agent
 
     # O bloco estável, na ordem em que o modelo o lê.
     def system
-      [ ROLE, MASTER_RULE, COPY_RULES, FIELD_RULES, VARIATION_RULES, IMAGE_RULES, FORMAT_RULES, OUTPUT ].join("\n")
+      [ ROLE, MASTER_RULE, COPY_RULES, FIELD_RULES, VARIATION_RULES, IMAGE_RULES, REFERENCE_RULES, FORMAT_RULES, OUTPUT ].join("\n")
     end
 
     def catalog_block
@@ -281,7 +341,8 @@ module Agent
         que ela não pediu para mudar** — a começar pelos fatos. Se o pedido
         for sobre aparência (fundo, layout, composição), a copy fica; se for
         sobre a copy, a aparência fica. Fonte e cor exata não mudam: vêm da
-        marca.
+        marca. No carrossel, "fundo escuro" ou "fundo claro" é trocar o
+        `scheme` da peça inteira, não o de uma lâmina.
 
         Entregue 1 variação.
       TEXT
@@ -297,9 +358,9 @@ module Agent
 
         #{JSON.pretty_generate(base)}
 
-        Mantenha os fatos e a mensagem. Mude a forma — outro fundo, outro
-        recorte, outro layout se houver um que sirva melhor. Não repita a
-        composição acima.
+        Mantenha os fatos e a mensagem. Mude a forma — outro fundo (no
+        carrossel, o outro `scheme`), outro recorte, outro layout se houver um
+        que sirva melhor. Não repita a composição acima.
 
         Entregue #{count} #{count == 1 ? 'variação' : 'variações'}.
       TEXT

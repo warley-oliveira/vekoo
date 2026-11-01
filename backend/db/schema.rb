@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "vector"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -21,6 +22,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.uuid "organization_id", null: false
     t.string "password_digest", null: false
     t.string "role", default: "member", null: false
+    t.boolean "staff", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["organization_id"], name: "index_accounts_on_organization_id"
@@ -81,6 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.jsonb "error"
     t.string "kind", default: "create", null: false
     t.string "model"
+    t.uuid "offered_reference_ids", default: [], null: false, array: true
     t.uuid "organization_id", null: false
     t.jsonb "plan", default: {}, null: false
     t.text "prompt", null: false
@@ -102,6 +105,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.bigint "byte_size", null: false
     t.string "content_type", null: false
     t.datetime "created_at", null: false
+    t.datetime "described_at"
+    t.text "description"
+    t.integer "description_cost_micro_usd", default: 0, null: false
     t.string "filename", null: false
     t.boolean "generated", default: false, null: false
     t.integer "height"
@@ -109,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.uuid "logo_id"
     t.jsonb "meta", default: {}, null: false
     t.uuid "organization_id", null: false
+    t.string "shows", default: [], null: false, array: true
     t.boolean "transparent"
     t.datetime "updated_at", null: false
     t.string "variant"
@@ -320,6 +327,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.string "format", null: false
     t.uuid "organization_id", null: false
     t.jsonb "provenance", default: {}, null: false
+    t.uuid "reference_ids", default: [], null: false, array: true
     t.datetime "rendered_at"
     t.string "status", default: "queued", null: false
     t.string "title", null: false
@@ -333,6 +341,125 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
     t.index ["organization_id", "created_at"], name: "index_pieces_on_organization_id_and_created_at"
     t.index ["organization_id", "engine_id"], name: "index_pieces_on_organization_id_and_engine_id"
     t.index ["organization_id"], name: "index_pieces_on_organization_id"
+    t.index ["reference_ids"], name: "index_pieces_on_reference_ids", using: :gin
+  end
+
+  create_table "reference_candidates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "children_count", default: 0, null: false
+    t.integer "comments_count"
+    t.datetime "created_at", null: false
+    t.string "ig_media_id", null: false
+    t.integer "like_count"
+    t.string "media_type", null: false
+    t.boolean "partial", default: false, null: false
+    t.text "permalink"
+    t.datetime "posted_at"
+    t.text "preview_url"
+    t.string "product_type"
+    t.uuid "reference_card_id"
+    t.uuid "reference_import_account_id", null: false
+    t.decimal "relative_engagement", precision: 8, scale: 2
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ig_media_id"], name: "index_reference_candidates_on_ig_media_id"
+    t.index ["reference_card_id"], name: "index_reference_candidates_on_reference_card_id"
+    t.index ["reference_import_account_id"], name: "index_reference_candidates_on_reference_import_account_id"
+  end
+
+  create_table "reference_cards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "analysis", default: {}, null: false
+    t.bigint "analysis_cost_micro_usd", default: 0, null: false
+    t.jsonb "analysis_error"
+    t.string "analysis_model"
+    t.string "analysis_status", default: "pending", null: false
+    t.jsonb "analysis_usage", default: {}, null: false
+    t.datetime "analyzed_at"
+    t.string "archetypes", default: [], null: false, array: true
+    t.text "archived_reason"
+    t.string "copy_shingles", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.uuid "curated_by_id"
+    t.datetime "embedded_at"
+    t.vector "embedding", limit: 768
+    t.string "format"
+    t.string "hook_type"
+    t.string "niche"
+    t.string "objective"
+    t.string "origin", default: "external", null: false
+    t.boolean "partial_analysis", default: false, null: false
+    t.datetime "published_at"
+    t.decimal "relative_engagement", precision: 8, scale: 2
+    t.integer "replicability"
+    t.string "requires", default: [], null: false, array: true
+    t.string "size"
+    t.jsonb "source", default: {}, null: false
+    t.string "status", default: "draft", null: false
+    t.string "suggested_layout_id"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 1, null: false
+    t.index "((source ->> 'igMediaId'::text))", name: "index_reference_cards_on_ig_media_id", unique: true, where: "(source ? 'igMediaId'::text)"
+    t.index ["analysis_status"], name: "index_reference_cards_on_analysis_status"
+    t.index ["archetypes"], name: "index_reference_cards_on_archetypes", using: :gin
+    t.index ["curated_by_id"], name: "index_reference_cards_on_curated_by_id"
+    t.index ["niche"], name: "index_reference_cards_on_niche"
+    t.index ["status", "format", "replicability"], name: "index_reference_cards_on_status_and_format_and_replicability"
+  end
+
+  create_table "reference_eval_pairs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "brand_core_id", null: false
+    t.boolean "control", default: false, null: false
+    t.string "copied_sides", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "decided_at"
+    t.uuid "decided_by_id"
+    t.string "left_arm", null: false
+    t.integer "left_cost_micro_usd", default: 0, null: false
+    t.uuid "left_piece_ids", default: [], null: false, array: true
+    t.text "notes"
+    t.string "objective"
+    t.integer "position", null: false
+    t.string "reasons", default: [], null: false, array: true
+    t.string "request_key", null: false
+    t.text "request_text", null: false
+    t.string "right_arm", null: false
+    t.integer "right_cost_micro_usd", default: 0, null: false
+    t.uuid "right_piece_ids", default: [], null: false, array: true
+    t.string "round", null: false
+    t.datetime "updated_at", null: false
+    t.integer "usable_left"
+    t.integer "usable_right"
+    t.string "verdict"
+    t.index ["brand_core_id"], name: "index_reference_eval_pairs_on_brand_core_id"
+    t.index ["decided_by_id"], name: "index_reference_eval_pairs_on_decided_by_id"
+    t.index ["round", "position"], name: "index_reference_eval_pairs_on_round_and_position", unique: true
+  end
+
+  create_table "reference_import_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "baseline_median", precision: 12, scale: 2
+    t.datetime "created_at", null: false
+    t.integer "eligible_count"
+    t.string "error_code"
+    t.datetime "fetched_at"
+    t.integer "fetched_count"
+    t.integer "followers_count"
+    t.string "name"
+    t.uuid "reference_import_id", null: false
+    t.datetime "retry_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.string "username", null: false
+    t.index ["reference_import_id", "username"], name: "idx_on_reference_import_id_username_b26fadea2f", unique: true
+    t.index ["reference_import_id"], name: "index_reference_import_accounts_on_reference_import_id"
+  end
+
+  create_table "reference_imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "curated_by_id"
+    t.string "niche"
+    t.string "size"
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_reference_imports_on_created_at"
+    t.index ["curated_by_id"], name: "index_reference_imports_on_curated_by_id"
   end
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -410,6 +537,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_015352) do
   add_foreign_key "pieces", "brand_core_versions", on_delete: :nullify
   add_foreign_key "pieces", "brand_cores"
   add_foreign_key "pieces", "organizations"
+  add_foreign_key "reference_candidates", "reference_cards", on_delete: :nullify
+  add_foreign_key "reference_candidates", "reference_import_accounts", on_delete: :cascade
+  add_foreign_key "reference_cards", "accounts", column: "curated_by_id", on_delete: :nullify
+  add_foreign_key "reference_eval_pairs", "accounts", column: "decided_by_id", on_delete: :nullify
+  add_foreign_key "reference_eval_pairs", "brand_cores", on_delete: :cascade
+  add_foreign_key "reference_import_accounts", "reference_imports", on_delete: :cascade
+  add_foreign_key "reference_imports", "accounts", column: "curated_by_id", on_delete: :nullify
   add_foreign_key "sessions", "accounts"
   add_foreign_key "uploads", "accounts", on_delete: :nullify
   add_foreign_key "uploads", "organizations"

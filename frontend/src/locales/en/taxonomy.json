@@ -1,0 +1,26 @@
+{
+  "taxonomy": {
+    "niches": {
+      "food_beverage": "Food and beverage",
+      "real_estate": "Real estate",
+      "healthcare": "Healthcare",
+      "beauty_aesthetics": "Beauty and aesthetics",
+      "fashion_retail": "Fashion and retail",
+      "fitness": "Fitness and sports",
+      "education": "Education",
+      "professional_services": "Professional services",
+      "pet": "Pet",
+      "home_construction": "Home and construction"
+    },
+    "archetypes": {
+      "premium_minimal": { "label": "Premium and minimal", "hint": "Lots of space, little text, the photo leads." },
+      "popular_warm": { "label": "Popular and warm", "hint": "Warm colors, close conversation, a clear offer." },
+      "technical_authority": { "label": "Technical and didactic", "hint": "Data, explanation and a confident tone." },
+      "young_irreverent": { "label": "Young and irreverent", "hint": "Humor and type with personality." },
+      "natural_artisanal": { "label": "Natural and artisanal", "hint": "Textures, earthy tones, process and origin." },
+      "caring_welcoming": { "label": "Welcoming", "hint": "People, testimonials and a caring tone." },
+      "bold_energetic": { "label": "Bold and energetic", "hint": "High contrast and a strong call to act." },
+      "traditional_heritage": { "label": "Traditional", "hint": "History, years in business, classic look." }
+    }
+  }
+}

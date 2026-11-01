@@ -68,3 +68,11 @@ gem "ferrum", "~> 0.19.1"
 # Credenciais do Google (Application Default Credentials) para o Vertex AI —
 # a geração de imagens (`Ai::GeminiImage`).
 gem "googleauth", "~> 1.17"
+
+# Tipo `vector` (pgvector) no ActiveRecord e busca por vizinho mais próximo —
+# o embedding do banco de referências.
+gem "neighbor", "~> 1.2"
+
+# Validação do JSON de análise das referências contra o JSON Schema que também
+# vai ao modelo como saída estruturada.
+gem "json_schemer", "~> 2.5"

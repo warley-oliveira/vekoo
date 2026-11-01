@@ -10,6 +10,24 @@ pt-BR:
     unprocessable: "Não foi possível salvar. Confira os campos."
     brand_required: "Todo carrossel nasce dentro de uma marca. Escolha a marca antes de criar."
     parameter_missing: "Faltou informar %{param}."
+    images_required: "Envie ao menos uma imagem do post (ou o link direto de uma imagem)."
+    too_many_images: "No máximo 10 imagens por referência."
+    image_invalid: "Esse arquivo não é uma imagem que dê para abrir."
+    image_too_large: "Cada imagem pode ter até 10 MB."
+    url_not_image: "Esse link não é de uma imagem. Envie um print do post."
+    url_refused: "Esse endereço não é aceito. Use um link https público."
+    url_failed: "Não deu para baixar a imagem desse link. Envie o arquivo."
+    analysis_not_retryable: "Só a análise que falhou pode rodar de novo."
+    analysis_running: "A análise ainda está rodando. Espere ela terminar para editar."
+    eval_incomplete: "A rodada ainda tem pares sem avaliação. O resultado sai quando todos estiverem avaliados."
+    card_archived: "Card arquivado é só leitura. Reabra para editar."
+    handles_required: "Cole ao menos um @ de conta do Instagram."
+    too_many_handles: "No máximo %{max} contas por lote."
+    invalid_handles: "Alguns itens não são @ de Instagram. Confira e tente de novo."
+    instagram_not_configured: "A importação do Instagram não está configurada neste ambiente (DEPLOY.md, Instagram)."
+    instagram_token_invalid: "O token do Instagram venceu ou foi revogado. Gere outro (DEPLOY.md, Instagram)."
+    nothing_selected: "Escolha ao menos um post para analisar."
+    import_not_retryable: "Esta conta não tem o que tentar de novo."
     # Mensagens de validação do Active Record (o produto não usa o rails-i18n).
     format: "%{attribute} %{message}"
     messages:
@@ -29,6 +47,9 @@ pt-BR:
       too_many_items: "tem itens demais"
       too_small: "é pequeno demais"
       less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+      invalid_transition: "não pode ir de %{from} para %{to}"
+      leak: "cita a origem da referência (%{term})"
+      copied: "repete uma frase do post"
 
   auth:
     email_not_found: "Não encontramos uma conta com esse e-mail."
@@ -123,6 +144,7 @@ pt-BR:
       brand_asset: "ativo da marca"
       brand_core_version: "versão da marca"
       piece: "peça"
+      reference_card: "card de referência"
     attributes:
       account:
         name: "nome"
@@ -157,3 +179,15 @@ pt-BR:
         engine_id: "tipo de peça"
         format: "formato"
         status: "situação"
+      reference_card:
+        status: "situação"
+        origin: "origem"
+        niche: "nicho"
+        size: "porte"
+        archetypes: "arquétipos"
+        objective: "objetivo"
+        format: "formato"
+        suggested_layout_id: "layout sugerido"
+        analysis: "análise"
+        source: "fonte"
+        archived_reason: "motivo"

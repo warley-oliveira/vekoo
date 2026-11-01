@@ -71,13 +71,14 @@ export function coverRect(
 }
 
 /**
- * O degradê do escurecimento: alfa = t^1,4 × opacidade, da borda para dentro.
- * Em paradas, porque o CSS não tem curva de potência — as mesmas do libvips.
+ * O degradê do escurecimento: alfa = t^curva × opacidade, da borda para
+ * dentro (curva 1,4 por padrão; menor, escurece mais cedo). Em paradas,
+ * porque o CSS não tem curva de potência — as mesmas do libvips.
  */
-export function scrimGradient(from: "top" | "bottom", opacity: number): string {
+export function scrimGradient(from: "top" | "bottom", opacity: number, curve = 1.4): string {
   const stops = Array.from({ length: 9 }, (_, index) => {
     const t = index / 8
-    const alpha = (t ** 1.4 * opacity).toFixed(3)
+    const alpha = (t ** curve * opacity).toFixed(3)
     return `rgba(0,0,0,${alpha}) ${(t * 100).toFixed(1)}%`
   })
   return `linear-gradient(${from === "bottom" ? "to bottom" : "to top"}, ${stops.join(", ")})`

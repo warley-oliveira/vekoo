@@ -1,0 +1,519 @@
+{
+  "admin": {
+    "title": "Curation",
+    "nav": {
+      "label": "Curation areas",
+      "references": "References",
+      "backToApp": "Back to Vekoo",
+      "imports": "Import",
+      "evals": "Search test"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "analysisStatus": {
+      "pending": "Queued",
+      "running": "Analyzing",
+      "done": "Analyzed",
+      "failed": "Analysis failed"
+    },
+    "taxonomy": {
+      "sizes": {
+        "global": "Global",
+        "national": "National",
+        "regional": "Regional",
+        "local": "Local"
+      },
+      "objectives": {
+        "direct_sale": "Direct sale",
+        "launch": "Launch",
+        "authority_education": "Authority and education",
+        "community_engagement": "Engagement",
+        "behind_the_scenes": "Behind the scenes",
+        "social_proof": "Social proof",
+        "seasonal_date": "Seasonal date"
+      },
+      "formats": {
+        "carousel": "Carousel",
+        "static": "Single post",
+        "story": "Story",
+        "reels": "Reels",
+        "ad": "Ad"
+      },
+      "hookTypes": {
+        "question": "Question",
+        "number": "Number",
+        "contrast": "Contrast",
+        "promise": "Promise",
+        "controversy": "Controversy",
+        "curiosity": "Curiosity",
+        "announcement": "Announcement",
+        "visual": "Visual"
+      },
+      "targetMetrics": {
+        "saves": "Saves",
+        "shares": "Shares",
+        "comments": "Comments",
+        "clicks": "Clicks",
+        "reach": "Reach"
+      },
+      "replicability": {
+        "1": "Needs production or access beyond a small business",
+        "2": "Needs something real made for the post: a careful photo, a person, a customer, an event, a promotion",
+        "3": "Any business can do it with what it knows and a phone photo"
+      },
+      "requires": {
+        "product_photo": "Product photo",
+        "brand_person": "Brand person",
+        "customer": "Customer",
+        "space": "Venue",
+        "event": "Event",
+        "promotion": "Promotion"
+      },
+      "origins": {
+        "external": "External",
+        "vekoo": "Vekoo",
+        "authored": "Authored"
+      }
+    },
+    "list": {
+      "title": "Reference bank",
+      "description": "Patterns analyzed from real posts. The creation agent uses the published ones; subscribers never see any of this.",
+      "new": "Add reference",
+      "untitled": "Reference without analysis",
+      "columns": {
+        "pattern": "Pattern",
+        "status": "Status",
+        "niche": "Niche",
+        "objective": "Objective",
+        "replicability": "Repl.",
+        "engagement": "Relative eng.",
+        "version": "Version",
+        "updated": "Updated"
+      },
+      "engagementValue": "{{value}}×",
+      "filters": {
+        "status": "Status",
+        "all": "All",
+        "search": "Search the analysis or the profile",
+        "niche": "Niche",
+        "anyNiche": "Any niche",
+        "format": "Format",
+        "anyFormat": "Any format",
+        "objective": "Objective",
+        "anyObjective": "Any objective",
+        "clear": "Clear filters"
+      },
+      "empty": {
+        "title": "No references yet",
+        "description": "Add a screenshot of a post that worked. The analysis runs on its own and the card lands in review."
+      },
+      "emptyFiltered": {
+        "title": "Nothing matches these filters",
+        "description": "Try another niche or format, or clear the search."
+      },
+      "pagination": {
+        "range": "{{from}}–{{to}} of {{total}}",
+        "perPage": "Per page",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "partial": "partial analysis"
+    },
+    "new": {
+      "back": "References",
+      "title": "Add reference",
+      "description": "Send the post's images (the screenshot, or the carousel slides in order). The analysis describes the pattern — it never copies the text — and the original image is deleted afterwards.",
+      "images": {
+        "label": "Post images",
+        "hint": "Up to {{max}} images, 10 MB each. Keep the post's order.",
+        "drop": "Drag the images here or click add.",
+        "add": "Add",
+        "preview": "Image {{index}}",
+        "moveLeft": "Move earlier",
+        "moveRight": "Move later",
+        "remove": "Remove image",
+        "skipped": "Some files were left out: only images up to 10 MB.",
+        "tooMany": "Up to {{max}} images.",
+        "required": "Send at least one image or a direct link to one."
+      },
+      "url": {
+        "label": "Post link",
+        "hint": "Kept as provenance. Without an uploaded image, it must be a direct image link.",
+        "invalid": "Use a link starting with https://"
+      },
+      "channel": {
+        "label": "Source profile",
+        "hint": "The @ of the account that posted it. The analysis can't mention it."
+      },
+      "baseline": {
+        "label": "Account median",
+        "hint": "Likes + comments, median of the last 30 posts.",
+        "invalid": "Use a number greater than zero."
+      },
+      "niche": {
+        "label": "Niche",
+        "hint": "If you already know; otherwise the analysis suggests one.",
+        "placeholder": "The analysis suggests",
+        "none": "Leave it to the analysis"
+      },
+      "size": {
+        "label": "Account size",
+        "placeholder": "Not given",
+        "none": "Don't give"
+      },
+      "terms": {
+        "label": "Banned terms",
+        "hint": "The brand's name, the people in it, the product. If the analysis mentions any of them, the card can't be published."
+      },
+      "cancel": "Cancel",
+      "submit": "Add and analyze",
+      "submitting": "Sending…",
+      "created": "Reference added. The analysis has started."
+    },
+    "terms": {
+      "remove": "Remove {{term}}",
+      "placeholder": "Type and press Enter"
+    },
+    "errors": {
+      "generic": "That didn't work. Try again."
+    },
+    "review": {
+      "notFound": {
+        "title": "Reference not found",
+        "description": "It may have been deleted, or the link is wrong."
+      },
+      "back": "References",
+      "version": "v{{version}}",
+      "reopen": "Reopen",
+      "reject": "Reject",
+      "save": "Save",
+      "publish": "Approve and publish",
+      "republish": "Publish changes",
+      "analyzing": {
+        "title": "Analyzing the post",
+        "description": "It usually takes under a minute. This page updates on its own."
+      },
+      "failed": {
+        "title": "The analysis didn't come through",
+        "failed": "The model didn't respond. Try again.",
+        "noKey": "The model key isn't set up in this environment.",
+        "refused": "The model declined to analyze these images.",
+        "invalidOutput": "The answer came back in the wrong shape. Try again.",
+        "noImages": "The card has no images to analyze.",
+        "mediaGone": "The post is no longer among the account's recent ones (or was deleted).",
+        "mediaUnavailable": "We couldn't download the post's images. Try again later.",
+        "tokenInvalid": "The Instagram token expired. Generate a new one and try again.",
+        "rateLimited": "Meta asked for a pause (call limit). Try again later.",
+        "accountUnavailable": "The account no longer answers as a public professional account.",
+        "permissionDenied": "The Meta app isn't allowed to read this account.",
+        "notConfigured": "Instagram import isn't set up in this environment."
+      },
+      "retry": "Try again",
+      "archived": {
+        "title": "Archived — read-only"
+      },
+      "thumbnailAlt": "Post thumbnail",
+      "source": {
+        "title": "Source · curation only"
+      },
+      "meta": {
+        "curatedBy": "Added by",
+        "created": "Created",
+        "analyzed": "Analyzed",
+        "cost": "Analysis",
+        "costValue": "{{model}} · US$ {{cost}}",
+        "embedding": "Vector",
+        "embedded": "generated",
+        "notEmbedded": "no vector"
+      },
+      "sections": {
+        "fit": "Fit",
+        "hook": "Hook",
+        "structure": "Structure",
+        "visual": "Visual",
+        "copy": "Copy",
+        "copyHint": "What the text does, never the post's text.",
+        "why": "Why it works",
+        "replicability": "Replicability",
+        "metrics": "Metrics",
+        "metricsHint": "Without all three numbers the card has no relative engagement — and no extra point in search."
+      },
+      "fields": {
+        "niche": "Niche",
+        "size": "Size",
+        "objective": "Objective",
+        "format": "Format",
+        "choose": "Choose",
+        "clear": "Clear",
+        "archetypes": "Styles",
+        "archetypesHint": "Up to {{max}}, best match first.",
+        "suggestedLayout": "Suggested layout",
+        "suggestedLayoutHint": "The Vekoo layout that reproduces the mechanics, in the card's format.",
+        "noLayout": "None",
+        "hookType": "Hook type",
+        "hookDescription": "How the opening hooks",
+        "summary": "Structure summary",
+        "beats": "Moves, in order",
+        "beat": "Move {{index}}",
+        "removeBeat": "Remove move {{index}}",
+        "addBeat": "Add move",
+        "composition": "Composition",
+        "color": "Color",
+        "typography": "Typography",
+        "imagery": "Imagery",
+        "copyFunction": "What the text does",
+        "tone": "Tone",
+        "cta": "Call to action",
+        "mechanism": "The mechanism in this post",
+        "mechanismHint": "Why this post works, in its own context.",
+        "transferablePrinciple": "Transferable principle",
+        "transferablePrincipleHint": "One sentence, niche-free, that holds for any business. Used in similarity search.",
+        "targetMetrics": "Metrics the pattern moves",
+        "targetMetricsHint": "Up to {{max}}, strongest first.",
+        "whenNotToUse": "When not to use",
+        "whenNotToUseHint": "One sentence on where the pattern doesn't fit. The agent reads this before using the card.",
+        "replicability": "Replicability",
+        "requirements": "What it takes to repeat",
+        "requires": "What the post needs from the brand",
+        "requiresHint": "Search matches this against what the brand has. Nothing selected: any business can repeat it with text and a generic image.",
+        "likes": "Likes",
+        "comments": "Comments",
+        "baselineMedian": "Account median",
+        "relativeEngagement": "Relative engagement",
+        "collectedAt": "Collected on"
+      },
+      "saved": "Changes saved.",
+      "published": "Published. The agent can use this pattern now.",
+      "rejected": "Archived.",
+      "reopened": "Back in review.",
+      "retrying": "The analysis is queued again.",
+      "rejectDialog": {
+        "title": "Reject this reference?",
+        "description": "It goes to the archive and the agent won't use it. You can reopen it later.",
+        "reason": "Reason",
+        "cancel": "Cancel",
+        "confirm": "Reject"
+      },
+      "findings": {
+        "title": "Before publishing",
+        "leak": {
+          "url": "Mentions a link: {{match}}",
+          "handle": "Mentions a profile: {{match}}",
+          "term": "Mentions the source: {{match}}"
+        },
+        "copied": "Repeats a sentence from the post",
+        "noEmbedding": "No vector: search can't measure similarity to this card"
+      },
+      "partialAnalysis": "Partial analysis (video)"
+    },
+    "instagram": {
+      "token": {
+        "expiring": {
+          "title": "The Instagram token expires soon",
+          "description": "It expires on {{date}}. Generate a new one before then (DEPLOY.md, Instagram) so imports keep working."
+        },
+        "invalid": {
+          "title": "The Instagram token is no longer valid",
+          "description": "Importing is stopped. Generate a new token (DEPLOY.md, Instagram)."
+        },
+        "notConfigured": {
+          "title": "Instagram import isn't set up",
+          "description": "This environment is missing the Meta app and token (DEPLOY.md, Instagram)."
+        },
+        "missingScopes": "Missing permissions: {{scopes}}"
+      }
+    },
+    "imports": {
+      "title": "Import from Instagram",
+      "description": "Paste the @s of professional accounts. We pull each one's last ~50 posts through the official API and rank them by engagement relative to the account itself. You pick what becomes a card.",
+      "running": "Fetching",
+      "form": {
+        "handles": "Accounts",
+        "handlesHint": "One @ per line or comma-separated. Up to {{max}} per batch.",
+        "handlesPlaceholder": "@bakery.example\n@clinic.example",
+        "required": "Paste at least one @.",
+        "invalid": "Not Instagram @s: {{handles}}",
+        "niche": "Suggested niche",
+        "nicheHint": "Applies to the cards that come out of this batch.",
+        "size": "Suggested size",
+        "submit": "Import",
+        "created_one": "{{count}} account queued.",
+        "created_other": "{{count}} accounts queued."
+      },
+      "recent": {
+        "title": "Recent batches",
+        "empty": {
+          "title": "No batches yet",
+          "description": "Batches stay here for 30 days. Whatever became a card stays in the bank."
+        },
+        "more_one": "+{{count}}",
+        "more_other": "+{{count}}",
+        "counts": "{{candidates}} candidates · {{highlighted}} highlighted · {{carded}} became cards",
+        "errors_one": "{{count}} with an error",
+        "errors_other": "{{count}} with errors"
+      },
+      "batch": {
+        "back": "Imports",
+        "title": "Batch from {{date}}",
+        "noHints": "No suggested niche or size",
+        "boostedNotice": "Boosted posts may have inflated engagement: Meta doesn't separate organic from paid. Check on Instagram before picking.",
+        "freshNotice": "Posts younger than 7 days are left out of the list and the median: they haven't built up engagement yet.",
+        "notFound": {
+          "title": "Batch not found",
+          "description": "Batches go away after 30 days. The cards that came out of them stay in the bank."
+        },
+        "analyzed_one": "{{count}} card created. The analysis runs in the background.",
+        "analyzed_other": "{{count}} cards created. The analysis runs in the background.",
+        "openList": "See cards",
+        "selected_one": "{{count}} selected",
+        "selected_other": "{{count}} selected",
+        "estimate": "estimate US$ {{cost}}",
+        "clear": "Clear",
+        "analyze_one": "Analyze {{count}}",
+        "analyze_other": "Analyze {{count}}",
+        "confirm": {
+          "title_one": "Analyze {{count}} post?",
+          "title_other": "Analyze {{count}} posts?",
+          "description": "Each post becomes a draft card and goes through the analysis (estimated US$ {{cost}} in total). Images are deleted afterwards; the caption is never stored.",
+          "cancel": "Cancel",
+          "action": "Analyze"
+        }
+      },
+      "account": {
+        "followers_one": "{{value}} follower",
+        "followers_other": "{{value}} followers",
+        "posts": "{{fetched}} posts read, {{eligible}} 7+ days old",
+        "median": "median {{value}}",
+        "selectHighlights": "Select highlights",
+        "retry": "Try again",
+        "noCandidates": "No post 7 or more days old among the recent ones.",
+        "showAll_one": "See all ({{count}})",
+        "showAll_other": "See all ({{count}})",
+        "showFewer": "See fewer"
+      },
+      "errors": {
+        "accountUnavailable": {
+          "title": "Account not found or not professional",
+          "description": "The @ doesn't exist, is personal, or is private. Only public professional accounts answer Business Discovery."
+        },
+        "rateLimited": {
+          "title": "Meta call limit",
+          "description": "You can try again from {{when}}."
+        },
+        "tokenInvalid": {
+          "title": "Instagram token expired",
+          "description": "Generate a new token and import again."
+        },
+        "permissionDenied": {
+          "title": "Not allowed to read third-party accounts",
+          "description": "The app's Standard access didn't unlock Business Discovery. This needs App Review."
+        },
+        "notConfigured": {
+          "title": "Import isn't set up",
+          "description": "This environment is missing the Instagram token."
+        },
+        "failed": {
+          "title": "Meta didn't respond",
+          "description": "Try again in a few minutes."
+        }
+      },
+      "candidate": {
+        "select": "Select post from {{date}}",
+        "noMetric": "no metric",
+        "carousel_one": "Carousel · {{count}} slide",
+        "carousel_other": "Carousel · {{count}} slides",
+        "partial": "video · partial",
+        "hiddenLikes": "likes hidden · {{comments}} comments",
+        "engagement": "{{likes}} likes · {{comments}} comments",
+        "carded": "Became a card",
+        "open": "Open on Instagram"
+      }
+    },
+    "evals": {
+      "title": "Search test",
+      "description": "The same request generated with and without patterns from the reference bank, side by side and blind. You don't know which side is which until the round ends.",
+      "empty": {
+        "title": "No rounds yet",
+        "description": "A round is generated from the terminal, with the test brands and the reviewed requests. It shows up here when it's ready."
+      },
+      "round": "Round {{round}}",
+      "progress": "{{decided}} of {{total}} rated",
+      "start": "Start rating",
+      "continue": "Keep rating",
+      "seeResults": "See results",
+      "sides": {
+        "left": "A",
+        "right": "B"
+      },
+      "reasons": {
+        "hook": "Hook",
+        "structure": "Structure",
+        "copy": "Copy",
+        "visual": "Visual"
+      },
+      "pair": {
+        "rounds": "Rounds",
+        "position": "Round {{round}} · pair {{position}} of {{total}}",
+        "previous": "Previous pair",
+        "next": "Next pair",
+        "request": "Request",
+        "side": "Side {{side}}",
+        "options_one": "{{count}} option",
+        "options_other": "{{count}} options",
+        "rendering": "Drawing the slides…",
+        "slide": "Slide {{index}}",
+        "caption": "Caption"
+      },
+      "form": {
+        "label": "Pair rating",
+        "verdict": "Which set would you use?",
+        "chooseSide": "Side {{side}}",
+        "tie": "Tie",
+        "usable": "How many would you post as is?",
+        "usableSide": "Would post as is, side {{side}}",
+        "reasons": "Why? (optional)",
+        "copied": "Does any piece look copied from a real post?",
+        "copiedSide": "Yes, on side {{side}}",
+        "notes": "Note (optional)",
+        "notesPlaceholder": "What tipped the choice",
+        "save": "Save and go to the next",
+        "saved": "Rating saved.",
+        "missing": "Pick a side (or tie) and how many you'd post from each side.",
+        "shortcuts": "Shortcuts: A, B, E · Ctrl+Enter saves."
+      },
+      "results": {
+        "title": "Results · round {{round}}",
+        "incomplete": "Pairs left: {{decided}} of {{total}} rated",
+        "incompleteHint": "Results come out once every pair is rated — before that, the screen can't know which side was which.",
+        "decisionLabel": "Decision by the agreed rule",
+        "decision": {
+          "turnOn": "Turn reference search on",
+          "adjust": "Adjust and run a 2nd round with new requests",
+          "keepOff": "Keep it off",
+          "noSignal": "No signal: every pair was a tie"
+        },
+        "rule": "Turns on at 60% or more of non-tied pairs, with no drop in \"would post as is\" and no piece with references looking copied. Between 50% and 60%, adjust. Below that, keep off.",
+        "winRate": "With references won",
+        "wins": "{{references}} with · {{plain}} without · {{ties}} ties",
+        "usable": "Would post as is (with × without)",
+        "usableHint": "Average pieces per pair, 0 to 3.",
+        "controls": "Controls with a side picked",
+        "controlsHint": "Without × without pairs. Two equal sides should tie; a strong preference here is noise.",
+        "copied": "Looks copied, with references",
+        "copiedHint": "Without references: {{plain}}. Any with references blocks turning on.",
+        "inBank": "Niches with cards in the bank",
+        "outOfBank": "Niches without cards (pet, accounting)",
+        "pairs_one": "{{count}} pair",
+        "pairs_other": "{{count}} pairs",
+        "followed": "Pieces that followed a pattern",
+        "followedHint": "Out of the pieces generated with references.",
+        "cost": "Cost per request (with × without)",
+        "costHint": "Average of the creation turn."
+      }
+    }
+  }
+}

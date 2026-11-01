@@ -59,6 +59,9 @@ geometry:
 - `box`: `full`, ou bordas `left/right/top/bottom` com `width/height`.
 - `image` com `optional: true` não desenha espaço reservado; `when: image`
   só desenha a camada se a foto existir.
+- `scrim`: alfa = t^`curve` × `opacity`, da borda `from` para dentro da
+  caixa; `curve` (padrão 1.4) menor escurece mais cedo — é o que segura o
+  texto branco em foto movimentada.
 - `stack.ink` decide a tinta do texto: sobre foto (clara, com escurecimento)
   ou sobre o fundo (a tinta que o token pede); `auto` é foto se houver.
 - `size` é o tamanho do papel **neste layout**, em px; o `sizeStep` do

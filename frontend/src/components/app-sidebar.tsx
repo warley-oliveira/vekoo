@@ -16,6 +16,7 @@ import {
   Plus,
   Search,
   Settings,
+  ShieldCheck,
   Sparkles,
   Trash2,
   UserPlus,
@@ -249,6 +250,19 @@ export function AppSidebar({
           collapsed={collapsed}
           onNavigate={onNavigate}
         />
+        {/* Só a conta da Vekoo vê: a curadoria do banco de referências. Fica
+            à vista, separada da navegação da marca por um respiro. */}
+        {session?.account.staff && (
+          <div className="mt-3 flex flex-col">
+            <SidebarLink
+              to="/admin/references"
+              icon={<ShieldCheck />}
+              label={t("account.curation")}
+              collapsed={collapsed}
+              onNavigate={onNavigate}
+            />
+          </div>
+        )}
       </nav>
 
       {/* Pastas */}

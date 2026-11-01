@@ -21,8 +21,13 @@ module Agent
     # cinto de segurança para um laço que não termina.
     MAX_ROUNDS = 4
 
-    def initialize(turn, chat: Ai::Chat.new)
+    # `references`: força o modo da busca de referências neste turno (o teste
+    # lado a lado gera o mesmo pedido com `"on"` e com `"off"`); nulo segue o
+    # interruptor. `image_tool: false` tira a ferramenta de foto — no teste,
+    # para a foto não decidir a disputa.
+    def initialize(turn, chat: Ai::Chat.new, references: nil, image_tool: true)
       @turn = turn
+      @references_mode = references
       @chat = chat
       @conversation = turn.conversation
       @brand = @conversation.brand_core
@@ -31,7 +36,7 @@ module Agent
       # O modelo que **respondeu**, não o que pedimos: se um dia houver
       # fallback, a conta tem que bater com quem de fato trabalhou.
       @model = self.class.model
-      @image_tool = ImageTool.new(turn, on_change: -> { broadcast }) if ImageTool.available?
+      @image_tool = ImageTool.new(turn, on_change: -> { broadcast }) if image_tool && ImageTool.available?
     end
 
     def self.model
@@ -39,8 +44,10 @@ module Agent
     end
 
     def call
+      describe_attachments
       tokens = Engines::Tokens.new(@brand)
-      messages = history(tokens) + [ { role: "user", content: request_text(@turn) } ]
+      @references = find_references
+      messages = history(tokens) + [ { role: "user", content: current_request } ]
 
       answer, messages = converse(tokens, messages)
       plan = plan_from(answer)
@@ -78,7 +85,65 @@ module Agent
     end
 
     def plan_from(answer)
-      Plan.call(answer.text, brand_core: @brand, request_text: @turn.prompt, limit: wanted, generated: @turn.generated_asset_ids)
+      Plan.call(
+        answer.text, brand_core: @brand, request_text: @turn.prompt, limit: wanted, generated: @turn.generated_asset_ids,
+        references: injected_references? ? @references[:brief].aliases : {}
+      )
+    end
+
+    # Os padrões do banco de referências para este pedido (Fase 3), conforme o
+    # interruptor (`References::Retriever.mode`). Só no pedido novo e no "mais
+    # variações": o ajuste mexe numa peça que já tem forma. Falha aqui nunca
+    # derruba o turno — a peça sai como saía antes.
+    # A foto anexada agora pode ainda estar sem descrição (o job do envio corre
+    # junto): sem ela, nem a ficha da marca nem a busca sabem o que a foto
+    # mostra. Uma chamada curta, só nesse caso.
+    def describe_attachments
+      @brand.assets.where(id: Array(@turn.attachments), description: nil).find_each { |asset| DescribeBrandAsset.call(asset) }
+    end
+
+    def find_references
+      mode = @references_mode || References::Retriever.mode
+      return if mode == "off" || @turn.kind == "adjust"
+
+      query, exclude = reference_query
+      return if query.blank?
+
+      result = References::Retriever.call(@brand, query, exclude_ids: exclude)
+      @cost += result.intent.cost_micro_usd
+      { mode: mode, result: result, brief: References::AgentBrief.new(result.cards) }
+    rescue StandardError => e
+      Rails.logger.warn("agent turn #{@turn.id}: busca de referências falhou — #{e.class}: #{e.message.to_s.first(160)}")
+      nil
+    end
+
+    # O texto que a busca lê. No "mais variações", o pedido que criou a peça
+    # de origem — sem os padrões que ela já seguiu, para vir forma nova.
+    def reference_query
+      return [ @turn.prompt, [] ] unless @turn.kind == "vary"
+
+      piece = @turn.base_piece_id && Piece.find_by(id: @turn.base_piece_id)
+      return [ nil, [] ] unless piece
+
+      [ piece.agent_turn&.prompt.presence || piece.title, piece.reference_ids ]
+    end
+
+    def injected_references?
+      @references.present? && @references[:mode] == "on" && !@references[:brief].empty?
+    end
+
+    # O pedido de agora. Com padrões de referência, eles vêm antes, num bloco à
+    # parte, e o pedido ganha o terceiro ponto de cache: a volta da ferramenta
+    # de foto e a correção releem tudo isso do cache. O histórico nunca leva
+    # os padrões — o turno antigo volta só com o pedido e o plano.
+    def current_request
+      text = request_text(@turn)
+      return text unless injected_references?
+
+      [
+        { type: "text", text: @references[:brief].text },
+        { type: "text", text: text, cache_control: CACHE_CONTROL }
+      ]
     end
 
     # Pergunta ao modelo e, enquanto ele pedir ferramenta, roda e devolve o
@@ -216,7 +281,8 @@ module Agent
         format: variation.format,
         title: variation.title,
         status: "draft",
-        brand_core_version_id: variation.document["brandCoreVersionId"]
+        brand_core_version_id: variation.document["brandCoreVersionId"],
+        reference_ids: variation.reference_ids.to_a
       )
       piece.record_version!(variation.document, source: "generation", summary: @turn.prompt, account: @turn.account)
       PieceDocument::Compact.call(piece.document, title: piece.title).merge("why" => variation.why, "pieceId" => piece.id)
@@ -251,7 +317,8 @@ module Agent
         model: @model,
         usage: @usage,
         cost_micro_usd: @cost,
-        credits_charged: @turn.credits_charged
+        credits_charged: @turn.credits_charged,
+        offered_reference_ids: @references ? @references[:result].cards.map(&:id) : []
       )
       @conversation.touch_turn!
       broadcast

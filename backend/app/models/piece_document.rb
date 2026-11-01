@@ -243,7 +243,9 @@ module PieceDocument
     {
       "requestText" => raw["requestText"].to_s.presence,
       "generatedAt" => raw["generatedAt"].presence,
-      "generatedBy" => %w[agent user migration].include?(raw["generatedBy"]) ? raw["generatedBy"] : "user"
+      "generatedBy" => %w[agent user migration].include?(raw["generatedBy"]) ? raw["generatedBy"] : "user",
+      # O esquema do ritmo do carrossel (`Rhythm`) com que a peça nasceu.
+      "scheme" => Rhythm::SCHEMES.key?(raw["scheme"]) ? raw["scheme"] : nil
     }.compact
   end
 end

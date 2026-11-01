@@ -80,12 +80,25 @@ env:
     CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2           # Rails.cache
     AGENT_MODEL: claude-sonnet-5-5
     AGENT_MONTHLY_COST_CENTS_CAP: 50000
+    # Vertex AI (imagens e embedding) — conta de serviço `vekoo-api-vertex` (DEPLOY.md §2)
+    GOOGLE_GENAI_USE_VERTEXAI: "True"
+    GOOGLE_CLOUD_PROJECT: logical-lock-512900-p7
+    GOOGLE_CLOUD_LOCATION: global          # Nano Banana
+    EMBEDDING_LOCATION: us-central1        # gemini-embedding-001
+    # Instagram (Business Discovery) — importação da curadoria
+    META_APP_ID: "2244673452932169"
+    META_IG_USER_ID: "17841434450042278"
+    META_GRAPH_VERSION: v26.0
+    REFERENCES_IN_GENERATION: "off"      # liga depois do teste lado a lado
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - DATABASE_URL
     - ANTHROPIC_API_KEY
     - SIGNUP_ALLOWLIST    # e-mails que podem criar conta; vazio = cadastro fechado
+    - GOOGLE_CREDENTIALS_BASE64
+    - META_ACCESS_TOKEN
+    - META_APP_SECRET
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro
@@ -95,7 +108,12 @@ volumes:
 
 accessories:
   db:
-    image: postgres:16.10           # fixado no patch: major novo recusa PGDATA existente
+    # Postgres 16 + pgvector (embedding do banco de referências), fixado na
+    # tag e no digest: major novo recusa PGDATA existente, e o Debian tem que
+    # ser o da imagem anterior — trixie, glibc 2.41, conferido no servidor em
+    # 2026-10-27 — para a collation não mudar. O digest é o da imagem testada
+    # no dev. Só vale depois de `kamal accessory reboot db` (DEPLOY.md §2).
+    image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:40d828eda66737aaacb934387a337babf1455ebd56e9bdd13fc08e211257c972
     host: 107.152.37.59
     # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
     # do iptables e IGNORA o ufw, expondo o Postgres à internet.

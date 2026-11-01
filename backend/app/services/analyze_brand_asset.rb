@@ -3,7 +3,8 @@ require "vips"
 # Mede o ativo recém-enviado: largura, altura e — para PNG — se o fundo é
 # transparente de verdade; SVG ganha o PNG que a tela mostra (`preview`).
 # Roda na hora, não em job: a resposta do upload precisa sair com o alerta de
-# fundo opaco, senão a pessoa só descobre depois.
+# fundo opaco, senão a pessoa só descobre depois. A foto enviada ganha também
+# a descrição (`DescribeBrandAsset`) — essa, sim, em job.
 class AnalyzeBrandAsset
   def self.call(asset, io)
     new(asset, io).call
@@ -15,6 +16,13 @@ class AnalyzeBrandAsset
   end
 
   def call
+    measure
+    DescribeBrandAssetJob.perform_later(@asset.id) if DescribeBrandAsset.describable?(@asset)
+  end
+
+  private
+
+  def measure
     attributes = {}
     if @asset.content_type == "image/png"
       result = PngInspector.call(@io)
@@ -30,8 +38,6 @@ class AnalyzeBrandAsset
     # Sem medidas o ativo ainda serve; perder o upload por causa disso, não.
     Rails.logger.warn("brand asset #{@asset.id}: análise falhou (#{e.class})")
   end
-
-  private
 
   PREVIEW_WIDTH = 1024
 

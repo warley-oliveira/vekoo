@@ -7,33 +7,51 @@ module PieceDocument
   #                   "background": { "colorToken": "primary" } | { "assetId": "…" },
   #                   "content": { "title": "…", "image": "<assetId>", "logo": true } } ] }
   #
+  # Carrossel: `"scheme": "light" | "dark"` na peça e `"highlight": true` na
+  # lâmina de destaque, em vez de `background`.
+  #
   # O modelo decide conteúdo e composição; ids, papéis de texto, degraus e
   # defaults do layout são do servidor — menos token, nenhum id inventado.
   module Build
     module_function
 
-    def from_agent(raw, brand_core:, request_text: nil)
+    # No carrossel, a cor de cada lâmina vem do ritmo da marca (`Rhythm`) e o
+    # tamanho da letra do miolo, do texto que mais ocupa (`Fit`); o fundo que
+    # o agente mandar ali não conta. `measurer` entra pronto nas specs.
+    def from_agent(raw, brand_core:, request_text: nil, measurer: nil)
       raw = (raw || {}).to_h.deep_stringify_keys
-      slides = Array(raw["slides"]).map { |slide| slide_from_agent(slide) }
+      raw_slides = Array(raw["slides"])
+      meta = { "requestText" => request_text, "generatedAt" => Time.current.iso8601, "generatedBy" => "agent" }
+      carousel = raw["format"] == "carousel"
+      tokens = []
+      if carousel
+        scheme, roles = Rhythm.scheme_for(raw["scheme"], Engines::Tokens.new(brand_core).colors)
+        if roles
+          tokens = Rhythm.tokens(raw_slides, roles)
+          meta["scheme"] = scheme
+        end
+      end
+      slides = raw_slides.each_with_index.map { |slide, index| slide_from_agent(slide, token: tokens[index]) }
+      Fit.carousel!(slides, measurer: measurer || PieceRenderers::Libvips.new(brand_core)) if carousel
 
       PieceDocument.normalize(
         {
           "format" => raw["format"],
           "slides" => slides,
           "caption" => raw["caption"],
-          "meta" => { "requestText" => request_text, "generatedAt" => Time.current.iso8601, "generatedBy" => "agent" }
+          "meta" => meta
         },
         brand_id: brand_core.id,
         brand_core_version_id: brand_core.versions.find_by(number: brand_core.current_version)&.id
       )
     end
 
-    def slide_from_agent(raw)
+    def slide_from_agent(raw, token: nil)
       raw = (raw || {}).to_h.stringify_keys
       layout_id = raw["layout"].presence || raw["layoutId"]
       contract = Layouts::Registry.find(layout_id)
       content = (raw["content"] || {}).to_h.stringify_keys
-      background = background_from_agent(raw["background"], contract)
+      background = token ? { "type" => "color", "colorToken" => token } : background_from_agent(raw["background"], contract)
 
       blocks = (contract&.slots&.values || []).filter_map { |slot|
         value = content[slot.id]

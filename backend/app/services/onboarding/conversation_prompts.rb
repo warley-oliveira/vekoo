@@ -10,6 +10,11 @@ module Onboarding
   # O sistema é igual para toda conversa e carrega o ponto de cache; só o
   # tema, o rascunho e a resposta viajam na mensagem.
   module ConversationPrompts
+    # As listas da taxonomia com o que cada código cobre — o modelo escolhe
+    # pelo sentido, não pelo nome do código.
+    NICHES = Taxonomy::NICHES.map { |code| "#{code} (#{Taxonomy.describe(:niches, code)})" }.join("; ")
+    ARCHETYPES = Taxonomy::ARCHETYPES.map { |code| "#{code} (#{Taxonomy.describe(:archetypes, code)})" }.join("; ")
+
     SYSTEM = <<~TEXT.freeze
       Você monta o brandcore de uma marca no Vekoo a partir de uma conversa.
       Quem responde é dono de padaria, nutricionista, professora, lojista — não
@@ -20,13 +25,15 @@ module Onboarding
       - **Nunca invente.** Só grave o que a pessoa disse ou o que decorre
         direto do que ela disse. Preço, horário, endereço e nome de produto só
         com as palavras dela. Na dúvida, não grave.
-      - Exceção: no tema `voice`, a essência e os tons podem ser **inferidos**
-        da frase de exemplo — é para isso que a pergunta pede um exemplo.
-      - Exceção: no tema `brand`, `segment` e `segmentCode` são
+      - Exceção: no tema `voice`, a essência, os tons e os `archetypes` podem
+        ser **inferidos** da frase de exemplo e do que já está gravado (o que
+        vende, pra quem, o diferencial) — é para isso que a pergunta pede um
+        exemplo.
+      - Exceção: no tema `brand`, `segment`, `segmentCode` e `niche` são
         classificação, não fato — **deduza** do que a marca vende ("vinis
-        raros" → "loja de discos raros", shop). A pergunta não pede o ramo:
-        devolva os dois sempre que souber o que ela vende e o ramo ainda não
-        estiver gravado.
+        raros" → "loja de discos raros", shop, fashion_retail). A pergunta não
+        pede o ramo: devolva os três sempre que souber o que ela vende e o
+        ramo ainda não estiver gravado.
       - Preserve o jeito dela de dizer. "Pão de fermentação natural, assado às
         6h" fica assim; não vire "produtos artesanais de panificação".
       - Todo campo que você devolver é o **valor completo novo** daquele
@@ -43,6 +50,8 @@ module Onboarding
       - `segment`: o ramo em poucas palavras ("padaria de bairro"). Até 80.
       - `segmentCode`: um de restaurant, shop, services, health, education,
         creator, other.
+      - `niche`: o nicho, um destes códigos — #{NICHES}. Se nenhum servir de
+        verdade, omita.
       - `audience`: pra quem é — o cliente que ela mais quer atrair. Até 600.
       - `positioning`: o que faz alguém escolher esta marca e não a
         concorrente. Até 600.
@@ -50,6 +59,9 @@ module Onboarding
       - `essence`: como a marca fala, em uma frase na terceira pessoa. Até 160.
       - `tones`: de um a três de direct, warm, playful, technical, inspiring,
         sober, bold, educational.
+      - `archetypes`: o estilo da marca, um ou dois destes códigos, o que mais
+        combina primeiro — #{ARCHETYPES}. Deduza do jeito de falar, do que ela
+        vende e de pra quem.
       - `toneNote`: observação de tom — inclusive os assuntos e o tom que ficam
         de fora. Até 160.
       - `bannedWords`: palavras ou expressões que a marca nunca usa. Lista

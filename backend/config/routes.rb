@@ -96,6 +96,36 @@ Rails.application.routes.draw do
   # A rota `/render` do front, aberta pelo Chromium do export, lê por aqui.
   get "render/piece-versions/:id" => "piece_render_payloads#show", as: :piece_render_payload
 
+  # --- área da Vekoo (staff) -------------------------------------------------
+  # A curadoria do banco de referências. Quem não é staff recebe 404 em tudo
+  # aqui dentro, como se a rota não existisse (`Admin::BaseController`).
+  namespace :admin do
+    resources :reference_cards, path: "reference-cards", only: %i[index show create update] do
+      member do
+        post :publish
+        post :reject
+        post :reopen
+        post :retry, action: :retry_analysis
+        get :thumbnail
+      end
+    end
+    # A importação pela Business Discovery do Instagram.
+    resources :reference_imports, path: "reference-imports", only: %i[index show create] do
+      member do
+        post :analyze
+        post "accounts/:account_id/retry", action: :retry_account, as: :retry_account
+      end
+    end
+    get "instagram/status" => "instagram#status"
+    # O teste lado a lado da Fase 3 (as rotas do par vêm antes: `pairs` não é
+    # nome de rodada).
+    get "reference-evals/pairs/:id" => "reference_evals#pair", as: :reference_eval_pair
+    patch "reference-evals/pairs/:id" => "reference_evals#update_pair"
+    get "reference-evals" => "reference_evals#index", as: :reference_evals
+    get "reference-evals/:round" => "reference_evals#show", as: :reference_eval
+    get "reference-evals/:round/results" => "reference_evals#results", as: :reference_eval_results
+  end
+
   # Migração do legado: carrosséis e pastas sem marca. Temporária (ver
   # `OrphanMigration`).
   get  "orphans"        => "orphans#index"

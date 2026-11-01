@@ -2,6 +2,7 @@ import { z } from "zod"
 
 import { newId } from "@/lib/doc"
 import type { OnboardingState } from "@/lib/onboarding"
+import { ARCHETYPES, NICHES, type Archetype, type Niche } from "@/lib/taxonomy"
 
 // O Brandcore — a marca como dado estruturado. Espelho de
 // `backend/app/models/brand_core/schema.rb`: as listas de código abaixo têm que
@@ -144,6 +145,26 @@ export type BrandIdentity = {
   address: string
   instagram: string
   networks: BrandNetwork[]
+  /** O nicho, num código da taxonomia (`lib/taxonomy.ts`). Vazio = não definido. */
+  niche: Niche | ""
+  archetypes: BrandArchetypes
+}
+
+/** O estilo da marca: principal e secundário, nos códigos da taxonomia. */
+export type BrandArchetypes = { primary: Archetype | ""; secondary: Archetype | "" }
+
+/**
+ * O estilo depois de um clique, na ordem em que a pessoa escolheu — o
+ * primeiro é o principal. Com dois marcados, o terceiro troca o secundário;
+ * desmarcar o principal promove o secundário.
+ */
+export function nextArchetypes(current: BrandArchetypes, pressed: Archetype[]): BrandArchetypes {
+  const before = [current.primary, current.secondary].filter((code): code is Archetype => code !== "")
+  const kept = before.filter((code) => pressed.includes(code))
+  const added = pressed.filter((code) => !before.includes(code))
+  const next = [...kept, ...added]
+  const picked = next.length > 2 ? [next[0], next[next.length - 1]] : next
+  return { primary: picked[0] ?? "", secondary: picked[1] ?? "" }
 }
 
 export type BrandColor = { id: string; name: string; hex: string; role: ColorRole }
@@ -328,6 +349,12 @@ export type BrandCore = {
   completeness: BrandCompleteness
   readyForGeneration: boolean
   generationBlockers: GenerationBlocker[]
+  /**
+   * Marca publicada antes do campo de estilo: o estilo que a busca de
+   * referências deduziu do que ela publicou, para a pessoa confirmar ou trocar.
+   * Nulo quando a marca já tem estilo (publicado ou escolhido no rascunho).
+   */
+  styleSuggestion: { primary: Archetype; secondary: Archetype | null } | null
   hasUnpublishedChanges: boolean
   /** Quantas mudanças o rascunho tem sobre a última publicação. */
   unpublishedChangeCount: number
@@ -609,6 +636,11 @@ export function buildStepSchemas(t: T) {
     address: optional(160),
     instagram: optional(80),
     networks: z.array(z.object({ id, network: z.enum(NETWORKS), handle: required(160) })),
+    niche: z.union([z.enum(NICHES), z.literal("")]),
+    archetypes: z.object({
+      primary: z.union([z.enum(ARCHETYPES), z.literal("")]),
+      secondary: z.union([z.enum(ARCHETYPES), z.literal("")]),
+    }),
   })
 
   const palette = z

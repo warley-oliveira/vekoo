@@ -1,4 +1,4 @@
-import type { BrandColor, BrandFont, LogoStyle, Tone } from "@/lib/brand-core"
+import type { BrandColor, BrandFont, BrandStatus, LogoStyle, Tone } from "@/lib/brand-core"
 import type { FontCategory } from "@/lib/font-catalog"
 
 // O onboarding por conversa — a porta de entrada de toda marca nova.
@@ -198,6 +198,14 @@ export type MessageInput =
 
 export function onboardingHref(brandId: string): string {
   return `/brands/${brandId}/onboarding`
+}
+
+/**
+ * A marca ainda não fechou o onboarding e não gera nada até fechar. Publicada
+ * conta como fechada — o servidor já soma isso em `onboardingDone`.
+ */
+export function needsOnboarding(brand: { onboardingDone: boolean; status: BrandStatus }): boolean {
+  return !brand.onboardingDone && brand.status === "draft"
 }
 
 /** Paleta e fonte: dá para perguntar pela fonte sem perder o "8/8". */

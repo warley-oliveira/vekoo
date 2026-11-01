@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Navigate, Outlet, useLocation, useSearchParams } from "react-router"
 import { RefreshCw } from "lucide-react"
@@ -55,7 +56,17 @@ export function RedirectIfAuthenticated() {
   return <Outlet />
 }
 
-function AuthSplash() {
+/**
+ * A área da Vekoo (`/admin`). Quem não é staff volta para o app sem aviso — a
+ * tela não anuncia que a área existe (a API responde 404 do mesmo jeito).
+ */
+export function RequireStaff({ children }: { children: ReactNode }) {
+  const { session } = useAuth()
+  if (!session?.account.staff) return <Navigate to="/" replace />
+  return children
+}
+
+export function AuthSplash() {
   return (
     <div className="flex h-dvh items-center justify-center">
       <VekooMark className="animate-pulse text-xl" />

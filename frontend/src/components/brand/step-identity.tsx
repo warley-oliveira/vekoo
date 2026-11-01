@@ -1,7 +1,8 @@
-import { useMemo } from "react"
+import { useId, useMemo } from "react"
 import { Controller, useFieldArray } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
+import { ArchetypePicker } from "@/components/brand/archetype-picker"
 import { AddButton, List, ListRow } from "@/components/brand/list-row"
 import { useRegisterStep, useWizard } from "@/components/brand/brand-wizard-context"
 import { LogoBlock } from "@/components/brand/logo-block"
@@ -23,6 +24,10 @@ import {
   newNetwork,
   type Network,
 } from "@/lib/brand-core"
+import { NICHES, type Niche } from "@/lib/taxonomy"
+
+// O valor do item "deixar sem nicho": o documento guarda vazio.
+const NO_NICHE = "none"
 
 export function StepIdentity() {
   const { t } = useTranslation()
@@ -43,6 +48,15 @@ export function StepIdentity() {
     () => Object.fromEntries(NETWORKS.map((n) => [n, t(`brand.networks.${n}`)])),
     [t]
   )
+  const nicheLabels = useMemo<Record<string, string>>(
+    () => ({
+      ...Object.fromEntries(NICHES.map((n) => [n, t(`taxonomy.niches.${n}`)])),
+      [NO_NICHE]: t("brand.identity.nicheNone"),
+    }),
+    [t]
+  )
+  const archetypesLabelId = useId()
+  const archetypesHintId = useId()
 
   return (
     <form noValidate className="space-y-6" onSubmit={(e) => e.preventDefault()}>
@@ -64,6 +78,34 @@ export function StepIdentity() {
           <Input {...field} {...register("concept")} placeholder={t("brand.identity.conceptPlaceholder")} maxLength={160} />
         )}
       </Field>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("brand.identity.niche")} hint={t("brand.identity.nicheHint")} error={errors.niche?.message}>
+          {(field) => (
+            <Controller
+              control={control}
+              name="niche"
+              render={({ field: niche }) => (
+                <Select
+                  value={(niche.value || null) as string | null}
+                  items={nicheLabels}
+                  onValueChange={(v) => niche.onChange(v === NO_NICHE || v === null ? "" : (v as Niche))}
+                >
+                  <SelectTrigger id={field.id} aria-describedby={field["aria-describedby"]} className="w-full">
+                    <SelectValue placeholder={t("brand.identity.nichePlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {NICHES.map((code) => (
+                      <SelectItem key={code} value={code}>{nicheLabels[code]}</SelectItem>
+                    ))}
+                    {niche.value && <SelectItem value={NO_NICHE}>{nicheLabels[NO_NICHE]}</SelectItem>}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          )}
+        </Field>
+      </div>
 
       {/* A logo e as ações dela (baixar, trocar, regenerar): o cartão da
           marca é só leitura. Fora do formulário — cada ação salva sozinha. */}
@@ -92,6 +134,23 @@ export function StepIdentity() {
           />
         )}
       </Field>
+
+      <div className="space-y-1.5">
+        <span id={archetypesLabelId} className="text-sm font-medium">{t("brand.identity.archetypes")}</span>
+        <p id={archetypesHintId} className="text-xs text-muted-foreground">{t("brand.identity.archetypesHint")}</p>
+        <Controller
+          control={control}
+          name="archetypes"
+          render={({ field }) => (
+            <ArchetypePicker
+              value={field.value}
+              onChange={field.onChange}
+              labelId={archetypesLabelId}
+              hintId={archetypesHintId}
+            />
+          )}
+        />
+      </div>
 
       <fieldset className="space-y-3">
         <legend className="text-sm font-medium">{t("brand.identity.characters")}</legend>

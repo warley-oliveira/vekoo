@@ -32,6 +32,16 @@ module PieceRenderers
       }
     end
 
+    # A altura que um texto ocupa nesta marca, nesta largura, e se passou de
+    # `max_lines` — o motor mede antes de desenhar para escolher o degrau da
+    # letra do carrossel (`PieceDocument::Fit`).
+    def text_height(text, role_key, size, width, max_lines)
+      role = @theme["roles"][role_key] || @theme["roles"]["body"]
+      text = role["transform"] == "uppercase" ? text.upcase : text
+      lines, cut = wrap(text, role, size, width, max_lines)
+      [ lines.length * size * role["lineHeight"], cut ]
+    end
+
     def render_slide(document, slide, index, total)
       canvas = document["canvas"]
       @w = canvas["width"].to_i
@@ -100,7 +110,7 @@ module PieceRenderers
       y = box.y || (@h - layer.dig("box", "bottom").to_f - h)
       ramp = ::Vips::Image.xyz(w, h)[1] / [ h - 1, 1 ].max.to_f
       ramp = ramp * -1 + 1 if layer["from"] == "top"
-      alpha = (ramp**1.4) * (layer["opacity"].to_f * 255)
+      alpha = (ramp**(layer["curve"] || 1.4).to_f) * (layer["opacity"].to_f * 255)
       layer_image = ::Vips::Image.black(w, h, bands: 3).bandjoin(alpha).cast(:uchar).copy(interpretation: :srgb)
       composite(image, layer_image, box.x || 0, y)
     end

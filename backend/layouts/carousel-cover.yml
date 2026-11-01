@@ -19,7 +19,9 @@ geometry:
   default:
     - { kind: fill, box: full }
     - { kind: image, slot: image, box: full, optional: true }
-    - { kind: scrim, box: { left: 0, right: 0, bottom: 0, height: "70%" }, from: bottom, opacity: 0.64, when: image }
+    # Mais alto e com curva menor que o padrão: escurece antes do título
+    # começar, e o texto branco segura em foto movimentada (prédio, árvores).
+    - { kind: scrim, box: { left: 0, right: 0, bottom: 0, height: "85%" }, from: bottom, opacity: 0.8, curve: 0.9, when: image }
     - { kind: logo, slot: logo, box: { left: 80, top: 80 }, height: 56 }
     - { kind: swipe_hint, box: { right: 80, top: 88 }, size: 28, text: "arrasta →" }
     - kind: stack

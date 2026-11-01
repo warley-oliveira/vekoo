@@ -1,0 +1,121 @@
+# A taxonomia do banco de referências — a fonte ÚNICA destas listas.
+#
+# Ruby lê daqui (`Taxonomy`); o front recebe as mesmas listas em
+# `frontend/src/lib/taxonomy.ts`, gerado por `bin/rails taxonomy:export` (uma
+# spec falha se o gerado ficar velho). Mudou aqui, rode o export.
+#
+# Os códigos são contrato (banco, API, prompt) e não mudam de nome. O texto ao
+# lado de cada código é para o **modelo** — o que aquele valor quer dizer,
+# em pt-BR. O rótulo da tela não é este: mora nos locales do front.
+#
+# Nicho e arquétipos também valem para a marca (`identity.niche`,
+# `identity.archetypes` no Brandcore): é o encontro dos dois lados que o
+# `ReferenceRetriever` pontua.
+
+niches:
+  food_beverage: bares, restaurantes, cafés, padarias, confeitarias, delivery de comida
+  real_estate: imobiliárias, corretores, lançamentos, aluguel e venda de imóveis
+  healthcare: clínicas médicas e odontológicas, consultórios, nutrição, psicologia, fisioterapia
+  beauty_aesthetics: salões, barbearias, clínicas de estética, manicure, maquiagem
+  fashion_retail: lojas de roupa, calçados, acessórios e varejo em geral
+  fitness: academias, estúdios, personal trainers, esportes
+  education: escolas, cursos, professores, idiomas, infoprodutos educativos
+  professional_services: advocacia, contabilidade, consultoria, agências
+  pet: pet shops, veterinárias, banho e tosa, produtos para animais
+  home_construction: decoração, móveis, arquitetura, construção, reforma
+
+# O tamanho da conta de onde a referência saiu. Serve para calibrar o que é
+# alcançável: o post de uma marca global costuma ter verba que um negócio
+# local não tem.
+sizes:
+  global: marca global, presença em vários países
+  national: marca nacional, presença no país inteiro
+  regional: marca regional, alguns estados ou uma região metropolitana
+  local: negócio local, um bairro ou uma cidade
+
+archetypes:
+  premium_minimal: muito respiro, pouco texto, foto protagonista
+  popular_warm: cores quentes, linguagem próxima, oferta clara
+  technical_authority: dados, didática, tom seguro
+  young_irreverent: humor, tipografia expressiva
+  natural_artisanal: texturas, tons terrosos, processo e origem
+  caring_welcoming: pessoas, depoimentos, tom empático
+  bold_energetic: alto contraste, chamada para ação forte
+  traditional_heritage: história, tempo de casa, estética clássica
+
+objectives:
+  direct_sale: vender agora — produto, preço, condição e chamada para comprar
+  launch: apresentar algo novo — produto, serviço, unidade ou coleção
+  authority_education: ensinar ou explicar para ganhar confiança
+  community_engagement: puxar conversa, comentário, compartilhamento
+  behind_the_scenes: mostrar o processo, a equipe, o dia a dia
+  social_proof: depoimento, resultado de cliente, números de quem já comprou
+  seasonal_date: data do calendário — Dia das Mães, Black Friday, Natal, aniversário da marca
+
+# O formato da referência. A peça do Vekoo tem formatos próprios
+# (`PieceDocument::FORMATS`); o encontro entre os dois é `piece_formats`.
+formats:
+  carousel: várias lâminas em sequência
+  static: post de imagem única no feed
+  story: tela vertical de 24 horas
+  reels: vídeo curto vertical
+  ad: anúncio pago
+
+# O que a capa oferece para a pessoa continuar. Critério e exemplos de cada um
+# em `References::Prompts::CALIBRATION`.
+hook_types:
+  question: a frase principal da capa é uma pergunta a quem lê, e o post a responde
+  number: um número é o protagonista da capa — tamanho da lista, dado, marco, contagem (preço não conta)
+  contrast: a capa põe duas coisas lado a lado — antes e depois, mito e verdade, isto ou aquilo
+  promise: a capa diz ou mostra o ganho de quem lê — benefício, resultado, oferta, preço, prêmio, algo grátis
+  controversy: a capa contraria uma crença comum ou assume uma posição que divide
+  curiosity: a capa retém de propósito uma informação que só a sequência entrega
+  announcement: a capa anuncia uma novidade ou um feito da marca — lançamento, chegada, inauguração, prêmio, marco
+  visual: a capa prende só pela imagem, sem frase de gancho e sem esconder nada de propósito
+
+# O que o padrão move — uma ou duas por card (`whyItWorks.targetMetrics`).
+target_metrics:
+  saves: salvamentos — conteúdo que a pessoa quer rever depois
+  shares: compartilhamentos — conteúdo que a pessoa manda para alguém
+  comments: comentários — conteúdo que puxa resposta ou opinião
+  clicks: cliques — conteúdo que leva ao link, ao perfil ou ao WhatsApp
+  reach: alcance — conteúdo que a plataforma entrega a quem ainda não segue
+
+# Quanto custa reproduzir o padrão — o que o negócio precisa trazer, já que o
+# Vekoo faz o design. A geração só usa 2 e 3 por padrão. Critério e exemplos
+# em `References::Prompts::CALIBRATION`.
+replicability:
+  1: exige produção ou acesso fora do alcance de pequeno negócio — estúdio, celebridade, vídeo editado, licença, drone
+  2: exige um ativo real que o negócio precisa ter ou produzir para o post — foto caprichada, pessoa em cena, cliente, evento, promoção
+  3: qualquer negócio faz hoje com o que já sabe e uma foto comum de celular — o Vekoo faz o resto
+
+# O que o post exige que a marca tenha ou produza (`replicability.requires`) —
+# a recuperação cruza com o que a marca tem. Lista vazia: nada além do que
+# qualquer negócio já sabe e de uma imagem genérica. Critério e exemplos em
+# `References::Prompts::CALIBRATION`.
+requires:
+  product_photo: foto de verdade do produto ou do resultado do serviço — o prato, a peça, o imóvel, o antes e depois; imagem genérica não serve
+  brand_person: uma pessoa da marca em cena — dono, equipe, profissional
+  customer: um cliente real, com autorização — depoimento, foto, resultado, entrega
+  space: o espaço físico da marca — loja, salão, consultório, cozinha, obra
+  event: um evento real registrado — inauguração, aula, feira, festa, ação
+  promotion: uma oferta concreta — preço, desconto, condição, combo, sorteio com prêmio
+
+origins:
+  external: post real de outra conta, analisado pela curadoria
+  vekoo: peça gerada no Vekoo que performou acima da mediana da marca
+  authored: peça autoral da Vekoo validada por teste A/B pago
+
+# A curadoria. `archived` também é o "rejeitado" — com o motivo.
+statuses:
+  draft: cadastrada, análise ainda não revisada
+  in_review: analisada, esperando a curadoria aprovar ou rejeitar
+  published: aprovada — o agente pode usar
+  archived: fora de uso (rejeitada ou aposentada)
+
+# Formato da peça do Vekoo → formato de referência que serve a ela.
+piece_formats:
+  feed_square: static
+  feed_portrait: static
+  story: story
+  carousel: carousel

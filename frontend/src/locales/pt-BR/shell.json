@@ -55,6 +55,7 @@
     "invite": "Convidar pessoas",
     "inviteToast": "Convidar pessoas chega em uma próxima etapa.",
     "inviteToastDescription": "Elas vão entrar em “{{organization}}” e ver os mesmos carrosséis.",
+    "curation": "Curadoria",
     "signOut": "Sair",
     "signOutToast": "Você saiu da sua conta."
   },

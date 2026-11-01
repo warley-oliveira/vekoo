@@ -1,0 +1,519 @@
+{
+  "admin": {
+    "title": "Curadoria",
+    "nav": {
+      "label": "Áreas da curadoria",
+      "references": "Referências",
+      "backToApp": "Voltar ao Vekoo",
+      "imports": "Importar",
+      "evals": "Teste da busca"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "in_review": "Em revisão",
+      "published": "Publicado",
+      "archived": "Arquivado"
+    },
+    "analysisStatus": {
+      "pending": "Na fila",
+      "running": "Analisando",
+      "done": "Analisado",
+      "failed": "Análise falhou"
+    },
+    "taxonomy": {
+      "sizes": {
+        "global": "Global",
+        "national": "Nacional",
+        "regional": "Regional",
+        "local": "Local"
+      },
+      "objectives": {
+        "direct_sale": "Venda direta",
+        "launch": "Lançamento",
+        "authority_education": "Autoridade e educação",
+        "community_engagement": "Engajamento",
+        "behind_the_scenes": "Bastidores",
+        "social_proof": "Prova social",
+        "seasonal_date": "Data sazonal"
+      },
+      "formats": {
+        "carousel": "Carrossel",
+        "static": "Post único",
+        "story": "Story",
+        "reels": "Reels",
+        "ad": "Anúncio"
+      },
+      "hookTypes": {
+        "question": "Pergunta",
+        "number": "Número",
+        "contrast": "Contraste",
+        "promise": "Promessa",
+        "controversy": "Polêmica",
+        "curiosity": "Curiosidade",
+        "announcement": "Novidade",
+        "visual": "Visual"
+      },
+      "targetMetrics": {
+        "saves": "Salvamentos",
+        "shares": "Compartilhamentos",
+        "comments": "Comentários",
+        "clicks": "Cliques",
+        "reach": "Alcance"
+      },
+      "replicability": {
+        "1": "Exige produção ou acesso fora do alcance de pequeno negócio",
+        "2": "Exige algo real feito para o post: foto caprichada, pessoa, cliente, evento, promoção",
+        "3": "Qualquer negócio faz com o que já sabe e uma foto de celular"
+      },
+      "requires": {
+        "product_photo": "Foto do produto",
+        "brand_person": "Pessoa da marca",
+        "customer": "Cliente",
+        "space": "Espaço",
+        "event": "Evento",
+        "promotion": "Promoção"
+      },
+      "origins": {
+        "external": "Externa",
+        "vekoo": "Vekoo",
+        "authored": "Autoral"
+      }
+    },
+    "list": {
+      "title": "Banco de referências",
+      "description": "Padrões analisados de posts reais. O agente de criação usa os publicados; o assinante não vê nada daqui.",
+      "new": "Cadastrar referência",
+      "untitled": "Referência sem análise",
+      "columns": {
+        "pattern": "Padrão",
+        "status": "Situação",
+        "niche": "Nicho",
+        "objective": "Objetivo",
+        "replicability": "Replic.",
+        "engagement": "Engaj. relativo",
+        "version": "Versão",
+        "updated": "Atualizado"
+      },
+      "engagementValue": "{{value}}×",
+      "filters": {
+        "status": "Situação",
+        "all": "Todas",
+        "search": "Buscar na análise ou no perfil",
+        "niche": "Nicho",
+        "anyNiche": "Qualquer nicho",
+        "format": "Formato",
+        "anyFormat": "Qualquer formato",
+        "objective": "Objetivo",
+        "anyObjective": "Qualquer objetivo",
+        "clear": "Limpar filtros"
+      },
+      "empty": {
+        "title": "Nenhuma referência ainda",
+        "description": "Cadastre o print de um post que funcionou. A análise roda sozinha e o card cai em revisão."
+      },
+      "emptyFiltered": {
+        "title": "Nada com esses filtros",
+        "description": "Tente outro nicho ou formato, ou limpe a busca."
+      },
+      "pagination": {
+        "range": "{{from}}–{{to}} de {{total}}",
+        "perPage": "Por página",
+        "previous": "Anterior",
+        "next": "Próxima"
+      },
+      "partial": "análise parcial"
+    },
+    "new": {
+      "back": "Referências",
+      "title": "Cadastrar referência",
+      "description": "Envie as imagens do post (o print, ou as lâminas do carrossel na ordem). A análise descreve o padrão — nunca copia o texto — e a imagem original é apagada depois.",
+      "images": {
+        "label": "Imagens do post",
+        "hint": "Até {{max}} imagens, 10 MB cada. A ordem é a do post.",
+        "drop": "Arraste as imagens para cá ou clique em adicionar.",
+        "add": "Adicionar",
+        "preview": "Imagem {{index}}",
+        "moveLeft": "Mover para antes",
+        "moveRight": "Mover para depois",
+        "remove": "Tirar imagem",
+        "skipped": "Algum arquivo ficou de fora: só imagens de até 10 MB.",
+        "tooMany": "No máximo {{max}} imagens.",
+        "required": "Envie ao menos uma imagem ou o link direto de uma."
+      },
+      "url": {
+        "label": "Link do post",
+        "hint": "Fica como procedência. Sem imagem enviada, ele precisa ser o link direto de uma imagem.",
+        "invalid": "Use um link começando com https://"
+      },
+      "channel": {
+        "label": "Perfil de origem",
+        "hint": "O @ da conta que publicou. A análise não pode citá-lo."
+      },
+      "baseline": {
+        "label": "Mediana da conta",
+        "hint": "Curtidas + comentários, mediana dos últimos 30 posts.",
+        "invalid": "Use um número maior que zero."
+      },
+      "niche": {
+        "label": "Nicho",
+        "hint": "Se você já sabe; senão, a análise sugere.",
+        "placeholder": "A análise sugere",
+        "none": "Deixar para a análise"
+      },
+      "size": {
+        "label": "Porte da conta",
+        "placeholder": "Não informado",
+        "none": "Não informar"
+      },
+      "terms": {
+        "label": "Termos proibidos",
+        "hint": "O nome da marca, de quem aparece, do produto. Se a análise citar um deles, o card não publica."
+      },
+      "cancel": "Cancelar",
+      "submit": "Cadastrar e analisar",
+      "submitting": "Enviando…",
+      "created": "Referência cadastrada. A análise começou."
+    },
+    "terms": {
+      "remove": "Tirar {{term}}",
+      "placeholder": "Digite e aperte Enter"
+    },
+    "errors": {
+      "generic": "Não deu certo. Tente de novo."
+    },
+    "review": {
+      "notFound": {
+        "title": "Referência não encontrada",
+        "description": "Ela pode ter sido apagada, ou o link está errado."
+      },
+      "back": "Referências",
+      "version": "v{{version}}",
+      "reopen": "Reabrir",
+      "reject": "Rejeitar",
+      "save": "Salvar",
+      "publish": "Aprovar e publicar",
+      "republish": "Publicar alterações",
+      "analyzing": {
+        "title": "Analisando o post",
+        "description": "Costuma levar menos de um minuto. Esta tela se atualiza sozinha."
+      },
+      "failed": {
+        "title": "A análise não saiu",
+        "failed": "O modelo não respondeu. Tente de novo.",
+        "noKey": "A chave do modelo não está configurada neste ambiente.",
+        "refused": "O modelo recusou analisar estas imagens.",
+        "invalidOutput": "A resposta veio fora do formato. Tente de novo.",
+        "noImages": "O card não tem imagens para analisar.",
+        "mediaGone": "O post não está mais entre os recentes da conta (ou foi apagado).",
+        "mediaUnavailable": "Não deu para baixar as imagens do post. Tente de novo mais tarde.",
+        "tokenInvalid": "O token do Instagram venceu. Gere outro e tente de novo.",
+        "rateLimited": "O Meta pediu uma pausa (limite de chamadas). Tente de novo mais tarde.",
+        "accountUnavailable": "A conta não responde mais como profissional pública.",
+        "permissionDenied": "O app do Meta não tem permissão para ler esta conta.",
+        "notConfigured": "A importação do Instagram não está configurada neste ambiente."
+      },
+      "retry": "Tentar de novo",
+      "archived": {
+        "title": "Arquivado — só leitura"
+      },
+      "thumbnailAlt": "Miniatura do post",
+      "source": {
+        "title": "Fonte · só a curadoria vê"
+      },
+      "meta": {
+        "curatedBy": "Cadastrado por",
+        "created": "Criado",
+        "analyzed": "Analisado",
+        "cost": "Análise",
+        "costValue": "{{model}} · US$ {{cost}}",
+        "embedding": "Vetor",
+        "embedded": "gerado",
+        "notEmbedded": "sem vetor"
+      },
+      "sections": {
+        "fit": "Encaixe",
+        "hook": "Gancho",
+        "structure": "Estrutura",
+        "visual": "Visual",
+        "copy": "Copy",
+        "copyHint": "A função do texto, nunca o texto do post.",
+        "why": "Por que funciona",
+        "replicability": "Replicabilidade",
+        "metrics": "Métricas",
+        "metricsHint": "Sem os três números, o card fica sem engajamento relativo — e sem o ponto extra na busca."
+      },
+      "fields": {
+        "niche": "Nicho",
+        "size": "Porte",
+        "objective": "Objetivo",
+        "format": "Formato",
+        "choose": "Escolha",
+        "clear": "Limpar",
+        "archetypes": "Estilos",
+        "archetypesHint": "Até {{max}}, o que mais combina primeiro.",
+        "suggestedLayout": "Layout sugerido",
+        "suggestedLayoutHint": "O layout do Vekoo que reproduz a mecânica, no formato do card.",
+        "noLayout": "Nenhum",
+        "hookType": "Tipo de gancho",
+        "hookDescription": "Como a abertura prende",
+        "summary": "Resumo da estrutura",
+        "beats": "Movimentos, na ordem",
+        "beat": "Movimento {{index}}",
+        "removeBeat": "Tirar movimento {{index}}",
+        "addBeat": "Adicionar movimento",
+        "composition": "Composição",
+        "color": "Cor",
+        "typography": "Tipografia",
+        "imagery": "Imagem",
+        "copyFunction": "O que o texto faz",
+        "tone": "Tom",
+        "cta": "Chamada para ação",
+        "mechanism": "O mecanismo neste post",
+        "mechanismHint": "Por que este post funciona, no contexto dele.",
+        "transferablePrinciple": "Princípio transferível",
+        "transferablePrincipleHint": "Uma frase sem nicho, que valha para qualquer ramo. Entra na busca por semelhança.",
+        "targetMetrics": "Métricas que o padrão move",
+        "targetMetricsHint": "Até {{max}}, a mais forte primeiro.",
+        "whenNotToUse": "Quando não usar",
+        "whenNotToUseHint": "Uma frase com o contexto em que o padrão não serve. O agente lê isto antes de usar o card.",
+        "replicability": "Replicabilidade",
+        "requirements": "O que precisa para repetir",
+        "requires": "O que o post exige da marca",
+        "requiresHint": "A busca cruza isto com o que a marca tem. Nada marcado: qualquer negócio repete só com texto e imagem genérica.",
+        "likes": "Curtidas",
+        "comments": "Comentários",
+        "baselineMedian": "Mediana da conta",
+        "relativeEngagement": "Engajamento relativo",
+        "collectedAt": "Coletado em"
+      },
+      "saved": "Alterações salvas.",
+      "published": "Publicado. O agente já pode usar este padrão.",
+      "rejected": "Arquivado.",
+      "reopened": "De volta para revisão.",
+      "retrying": "A análise entrou na fila de novo.",
+      "rejectDialog": {
+        "title": "Rejeitar esta referência?",
+        "description": "Ela vai para o arquivo e o agente não a usa. Dá para reabrir depois.",
+        "reason": "Motivo",
+        "cancel": "Cancelar",
+        "confirm": "Rejeitar"
+      },
+      "findings": {
+        "title": "Antes de publicar",
+        "leak": {
+          "url": "Cita um link: {{match}}",
+          "handle": "Cita um perfil: {{match}}",
+          "term": "Cita a origem: {{match}}"
+        },
+        "copied": "Repete uma frase do post",
+        "noEmbedding": "Sem vetor: a busca não mede semelhança com este card"
+      },
+      "partialAnalysis": "Análise parcial (vídeo)"
+    },
+    "instagram": {
+      "token": {
+        "expiring": {
+          "title": "O token do Instagram vence em breve",
+          "description": "Vence em {{date}}. Gere outro antes disso (DEPLOY.md, Instagram) para a importação não parar."
+        },
+        "invalid": {
+          "title": "O token do Instagram não vale mais",
+          "description": "A importação está parada. Gere um token novo (DEPLOY.md, Instagram)."
+        },
+        "notConfigured": {
+          "title": "Importação do Instagram não configurada",
+          "description": "Falta o app da Meta e o token neste ambiente (DEPLOY.md, Instagram)."
+        },
+        "missingScopes": "Permissões que faltam: {{scopes}}"
+      }
+    },
+    "imports": {
+      "title": "Importar do Instagram",
+      "description": "Cole os @ de contas profissionais. Puxamos os últimos ~50 posts de cada uma pela API oficial e ordenamos pelo engajamento em relação à própria conta. Você escolhe o que vira card.",
+      "running": "Buscando",
+      "form": {
+        "handles": "Contas",
+        "handlesHint": "Um @ por linha ou separados por vírgula. Até {{max}} por lote.",
+        "handlesPlaceholder": "@padaria.exemplo\n@clinica.exemplo",
+        "required": "Cole ao menos um @.",
+        "invalid": "Não são @ de Instagram: {{handles}}",
+        "niche": "Nicho sugerido",
+        "nicheHint": "Vale para os cards que saírem deste lote.",
+        "size": "Porte sugerido",
+        "submit": "Importar",
+        "created_one": "{{count}} conta na fila.",
+        "created_other": "{{count}} contas na fila."
+      },
+      "recent": {
+        "title": "Lotes recentes",
+        "empty": {
+          "title": "Nenhum lote ainda",
+          "description": "Os lotes ficam aqui por 30 dias. O que virou card continua no banco."
+        },
+        "more_one": "+{{count}}",
+        "more_other": "+{{count}}",
+        "counts": "{{candidates}} candidatos · {{highlighted}} em destaque · {{carded}} viraram card",
+        "errors_one": "{{count}} com erro",
+        "errors_other": "{{count}} com erro"
+      },
+      "batch": {
+        "back": "Importações",
+        "title": "Lote de {{date}}",
+        "noHints": "Sem nicho nem porte sugeridos",
+        "boostedNotice": "Posts impulsionados podem ter engajamento inflado: o Meta não separa o orgânico do pago. Confira no Instagram antes de escolher.",
+        "freshNotice": "Posts com menos de 7 dias ficam de fora da lista e da mediana: ainda não acumularam engajamento.",
+        "notFound": {
+          "title": "Lote não encontrado",
+          "description": "Lotes somem depois de 30 dias. Os cards que saíram deles continuam no banco."
+        },
+        "analyzed_one": "{{count}} card criado. A análise roda em segundo plano.",
+        "analyzed_other": "{{count}} cards criados. A análise roda em segundo plano.",
+        "openList": "Ver cards",
+        "selected_one": "{{count}} selecionado",
+        "selected_other": "{{count}} selecionados",
+        "estimate": "estimativa US$ {{cost}}",
+        "clear": "Limpar",
+        "analyze_one": "Analisar {{count}}",
+        "analyze_other": "Analisar {{count}}",
+        "confirm": {
+          "title_one": "Analisar {{count}} post?",
+          "title_other": "Analisar {{count}} posts?",
+          "description": "Cada post vira um card em rascunho e passa pela análise (estimativa de US$ {{cost}} no total). As imagens são apagadas depois; a legenda não é guardada.",
+          "cancel": "Cancelar",
+          "action": "Analisar"
+        }
+      },
+      "account": {
+        "followers_one": "{{value}} seguidor",
+        "followers_other": "{{value}} seguidores",
+        "posts": "{{fetched}} posts lidos, {{eligible}} com 7+ dias",
+        "median": "mediana {{value}}",
+        "selectHighlights": "Selecionar destaques",
+        "retry": "Tentar de novo",
+        "noCandidates": "Nenhum post com 7 dias ou mais entre os recentes.",
+        "showAll_one": "Ver todos ({{count}})",
+        "showAll_other": "Ver todos ({{count}})",
+        "showFewer": "Ver menos"
+      },
+      "errors": {
+        "accountUnavailable": {
+          "title": "Conta não encontrada ou não profissional",
+          "description": "O @ não existe, é pessoal ou é privado. Só contas profissionais públicas respondem à Business Discovery."
+        },
+        "rateLimited": {
+          "title": "Limite de chamadas do Meta",
+          "description": "Dá para tentar de novo a partir de {{when}}."
+        },
+        "tokenInvalid": {
+          "title": "Token do Instagram vencido",
+          "description": "Gere um token novo e importe de novo."
+        },
+        "permissionDenied": {
+          "title": "Sem permissão para ler contas de terceiros",
+          "description": "O acesso Standard do app não liberou a Business Discovery. É o caso de App Review."
+        },
+        "notConfigured": {
+          "title": "Importação não configurada",
+          "description": "Falta o token do Instagram neste ambiente."
+        },
+        "failed": {
+          "title": "O Meta não respondeu",
+          "description": "Tente de novo em alguns minutos."
+        }
+      },
+      "candidate": {
+        "select": "Selecionar post de {{date}}",
+        "noMetric": "sem métrica",
+        "carousel_one": "Carrossel · {{count}} lâmina",
+        "carousel_other": "Carrossel · {{count}} lâminas",
+        "partial": "vídeo · parcial",
+        "hiddenLikes": "curtidas ocultas · {{comments}} comentários",
+        "engagement": "{{likes}} curtidas · {{comments}} comentários",
+        "carded": "Virou card",
+        "open": "Abrir no Instagram"
+      }
+    },
+    "evals": {
+      "title": "Teste da busca",
+      "description": "O mesmo pedido gerado com e sem os padrões do banco de referências, lado a lado e às cegas. Você não sabe qual lado é qual até o fim da rodada.",
+      "empty": {
+        "title": "Nenhuma rodada ainda",
+        "description": "A rodada é gerada pelo terminal, com as marcas de teste e os pedidos revisados. Ela aparece aqui quando estiver pronta."
+      },
+      "round": "Rodada {{round}}",
+      "progress": "{{decided}} de {{total}} avaliados",
+      "start": "Começar a avaliar",
+      "continue": "Continuar avaliando",
+      "seeResults": "Ver resultado",
+      "sides": {
+        "left": "A",
+        "right": "B"
+      },
+      "reasons": {
+        "hook": "Gancho",
+        "structure": "Estrutura",
+        "copy": "Copy",
+        "visual": "Visual"
+      },
+      "pair": {
+        "rounds": "Rodadas",
+        "position": "Rodada {{round}} · par {{position}} de {{total}}",
+        "previous": "Par anterior",
+        "next": "Próximo par",
+        "request": "Pedido",
+        "side": "Lado {{side}}",
+        "options_one": "{{count}} opção",
+        "options_other": "{{count}} opções",
+        "rendering": "Desenhando as lâminas…",
+        "slide": "Lâmina {{index}}",
+        "caption": "Legenda"
+      },
+      "form": {
+        "label": "Avaliação do par",
+        "verdict": "Qual conjunto você usaria?",
+        "chooseSide": "Lado {{side}}",
+        "tie": "Empate",
+        "usable": "Quantas você postaria sem mexer?",
+        "usableSide": "Postaria sem mexer, lado {{side}}",
+        "reasons": "Por quê? (opcional)",
+        "copied": "Alguma peça parece cópia de um post real?",
+        "copiedSide": "Sim, no lado {{side}}",
+        "notes": "Anotação (opcional)",
+        "notesPlaceholder": "O que pesou na escolha",
+        "save": "Salvar e ir para o próximo",
+        "saved": "Avaliação salva.",
+        "missing": "Escolha um lado (ou empate) e quantas postaria de cada lado.",
+        "shortcuts": "Atalhos: A, B, E · Ctrl+Enter salva."
+      },
+      "results": {
+        "title": "Resultado · rodada {{round}}",
+        "incomplete": "Faltam pares: {{decided}} de {{total}} avaliados",
+        "incompleteHint": "O resultado sai quando todos os pares estiverem avaliados — antes disso, a tela não pode saber que lado era qual.",
+        "decisionLabel": "Decisão pela regra combinada",
+        "decision": {
+          "turnOn": "Ligar a busca de referências",
+          "adjust": "Ajustar e rodar uma 2ª rodada com pedidos novos",
+          "keepOff": "Manter desligada",
+          "noSignal": "Sem sinal: todos os pares empataram"
+        },
+        "rule": "Liga com 60% ou mais dos pares sem empate, sem perder no \"postaria sem mexer\" e sem nenhuma peça com referência parecendo cópia. Entre 50% e 60%, ajusta. Abaixo, não liga.",
+        "winRate": "Com referência venceu",
+        "wins": "{{references}} com · {{plain}} sem · {{ties}} empates",
+        "usable": "Postaria sem mexer (com × sem)",
+        "usableHint": "Média de peças por par, de 0 a 3.",
+        "controls": "Controles com um lado escolhido",
+        "controlsHint": "Pares sem × sem. Dois lados iguais deveriam empatar; preferência forte aqui é ruído.",
+        "copied": "Parece cópia, com referência",
+        "copiedHint": "Sem referência: {{plain}}. Qualquer um com referência barra ligar.",
+        "inBank": "Nichos com card no banco",
+        "outOfBank": "Nichos sem card (pet, contabilidade)",
+        "pairs_one": "{{count}} par",
+        "pairs_other": "{{count}} pares",
+        "followed": "Peças que seguiram um padrão",
+        "followedHint": "Das peças geradas com referência.",
+        "cost": "Custo por pedido (com × sem)",
+        "costHint": "Média do turno de criação."
+      }
+    }
+  }
+}

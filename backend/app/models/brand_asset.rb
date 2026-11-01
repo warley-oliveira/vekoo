@@ -107,6 +107,12 @@ class BrandAsset < ApplicationRecord
     content_type.start_with?("image/")
   end
 
+  # O que as descrições de foto (`DescribeBrandAsset`) custaram — entra no teto
+  # de OPEX junto com o agente e o gerador.
+  def self.description_cost_micro_usd_since(organization, since)
+    where(organization: organization).where(described_at: since..).sum(:description_cost_micro_usd)
+  end
+
   private
 
   def variant_must_fit_kind

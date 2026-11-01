@@ -1,7 +1,8 @@
+import { lazy, Suspense } from "react"
 import { Navigate, Route, Routes } from "react-router"
 
 import { AppShell } from "@/components/app-shell"
-import { RedirectIfAuthenticated, RequireAuth } from "@/components/auth-guard"
+import { AuthSplash, RedirectIfAuthenticated, RequireAuth, RequireStaff } from "@/components/auth-guard"
 import { BrandPage } from "@/routes/brand"
 import { BrandGate } from "@/routes/brand-gate"
 import { BrandLayout } from "@/routes/brand-layout"
@@ -21,6 +22,9 @@ import { PiecePage } from "@/routes/piece"
 import { ResetPasswordPage } from "@/routes/reset-password"
 import { SignUpPage } from "@/routes/signup"
 import { TrashPage } from "@/routes/trash"
+
+// A área da Vekoo carrega sob demanda: o assinante nunca baixa este código.
+const AdminApp = lazy(() => import("@/admin"))
 
 // A marca é o contexto raiz: tudo que a pessoa faz vive sob `/brands/:brandId`.
 // A raiz (`/`) só escolhe a marca ativa e redireciona.
@@ -44,6 +48,18 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route path="/" element={<BrandGate />} />
         <Route path="/brands" element={<BrandGate />} />
+
+        {/* A curadoria do banco de referências — só staff. */}
+        <Route
+          path="/admin/*"
+          element={
+            <RequireStaff>
+              <Suspense fallback={<AuthSplash />}>
+                <AdminApp />
+              </Suspense>
+            </RequireStaff>
+          }
+        />
 
         {/* Migração do legado — rota isolada, some quando os órfãos zeram. */}
         <Route path="/migration/orphans" element={<OrphansPage />} />
