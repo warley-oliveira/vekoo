@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { ChevronDown, Crosshair, Redo2, Undo2, X } from "lucide-react"
+import { AlertTriangle, ChevronDown, Crosshair, Redo2, Undo2, X } from "lucide-react"
 
 import { LayoutThumb } from "@/components/piece-editor/layout-thumb"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,9 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { BrandAsset } from "@/lib/brand-core"
+import type { RenderLegibility } from "@/lib/engines"
+import { formatNumber } from "@/lib/format"
+import { useLanguage } from "@/lib/i18n"
 import {
   COLOR_TOKENS,
   SIZE_STEPS,
@@ -43,7 +46,12 @@ type EditorPanelProps = {
   onRedo: () => void
   onPickImage: (slot: string) => void
   onToggleFocal: (slot: string) => void
+  /** A leitura do texto sobre a foto no último desenho desta lâmina. */
+  legibility?: RenderLegibility | null
 }
+
+/** Do mais leve ao mais forte; `default` é o degradê do layout. */
+const SCRIM_CHOICES = ["none", "light", "default", "strong"] as const
 
 /**
  * O painel: os campos da lâmina ativa, na ordem dos slots do layout. É o
@@ -52,8 +60,14 @@ type EditorPanelProps = {
  */
 export function EditorPanel(props: EditorPanelProps) {
   const { t } = useTranslation()
+  const language = useLanguage()
   const { document, slide, layout, onApply } = props
   const blocks = new Map(slide.blocks.map((block) => [block.slot, block]))
+  // O degradê só se escolhe onde ele existe: layout com camada de escurecimento
+  // e foto de verdade na lâmina.
+  const hasScrim = (layout.geometry[document.format] ?? layout.geometry.default ?? []).some((layer) => layer.kind === "scrim")
+  const hasPhoto = slide.blocks.some((block) => block.type === "image" && block.visible && block.assetId)
+  const scrimLevel = slide.scrim ?? "default"
   const index = document.slides.indexOf(slide)
   const last = document.slides.length - 1
   // Capa só na primeira lâmina, chamada final só na última; o resto, em qualquer uma.
@@ -145,6 +159,41 @@ export function EditorPanel(props: EditorPanelProps) {
                 )
               })}
             </div>
+          </Section>
+        )}
+
+        {hasScrim && hasPhoto && (
+          <Section title={t("pieceEditor.panel.scrim.title")}>
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("pieceEditor.panel.scrim.title")}>
+              {SCRIM_CHOICES.map((level) => {
+                const current = scrimLevel === level
+                return (
+                  <button
+                    key={level}
+                    type="button"
+                    role="radio"
+                    aria-checked={current}
+                    onClick={() =>
+                      !current && onApply([{ op: "set_scrim", slideId: slide.id, level: level === "default" ? null : level }])
+                    }
+                    className={cn(
+                      "flex h-10 items-center rounded-md border px-3 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-vk-fg/30",
+                      current ? "border-vk-fg" : "border-vk-border hover:border-vk-border-strong"
+                    )}
+                  >
+                    {t(`pieceEditor.panel.scrim.levels.${level}`)}
+                  </button>
+                )
+              })}
+            </div>
+            {props.legibility && !props.legibility.ok && (
+              <p role="status" className="flex items-start gap-2 text-xs text-vk-fg">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-destructive" aria-hidden />
+                <span>
+                  {t("pieceEditor.panel.scrim.warning", { contrast: formatNumber(props.legibility.contrast, language) })}
+                </span>
+              </p>
+            )}
           </Section>
         )}
 

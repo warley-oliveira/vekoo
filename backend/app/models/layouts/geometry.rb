@@ -16,6 +16,22 @@ module Layouts
 
     def size_for(base, step) = (base * (STEP_RATIO**step.to_i)).round
 
+    # O degradê de uma camada `scrim` no nível que a lâmina escolheu: nil é o
+    # do layout; `none` não desenha; `light` é bem mais leve; `strong` escurece
+    # mais e mais cedo. O espelho do front é `scrimFor` em `piece-geometry.ts`.
+    SCRIM_CURVE = 1.4
+
+    def scrim(layer, level)
+      opacity = layer["opacity"].to_f
+      curve = (layer["curve"] || SCRIM_CURVE).to_f
+      case level
+      when "none" then nil
+      when "light" then { opacity: (opacity * 0.55).round(3), curve: curve }
+      when "strong" then { opacity: [ [ opacity, 0.6 ].max + 0.15, 0.92 ].min.round(3), curve: [ curve * 0.7, 0.6 ].max.round(3) }
+      else { opacity: opacity, curve: curve }
+      end
+    end
+
     # Bordas → caixa em px. Largura e altura podem ficar nil (o conteúdo
     # decide: a logo, a pilha sem topo). `x`/`y` nil também: aí manda a borda
     # oposta (`right`/`bottom`), resolvida por quem desenha.

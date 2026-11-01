@@ -43,6 +43,9 @@ module PieceDocument
   }.freeze
 
   SIZE_STEPS = (-2..2)
+  # O degradê atrás do texto, por lâmina (`set_scrim`): sem, leve ou forte.
+  # Ausente = o do layout (`Layouts::Geometry.scrim`).
+  SCRIM_LEVELS = %w[none light strong].freeze
   LOGO_VARIANTS = %w[light dark].freeze
   IMAGE_FITS = %w[cover contain].freeze
   # Instagram: carrossel de 2 a 10 lâminas, legenda de até 2 200 caracteres e
@@ -134,13 +137,17 @@ module PieceDocument
     end
     placed.sort_by! { |block| contract.slots.keys.index(block["slot"]) || 99 } if contract
 
-    {
+    slide = {
       "id" => uuid?(raw["id"]) ? raw["id"] : SecureRandom.uuid,
       "layoutId" => raw["layoutId"].to_s,
       "background" => normalize_background(raw["background"], contract),
       "blocks" => placed,
       "orphans" => orphans
     }
+    # Só aparece quando foi escolhido: a lâmina de sempre continua igual (e
+    # com o mesmo checksum de render).
+    slide["scrim"] = raw["scrim"] if SCRIM_LEVELS.include?(raw["scrim"])
+    slide
   end
 
   def normalize_background(raw, contract)

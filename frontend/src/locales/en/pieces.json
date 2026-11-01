@@ -219,6 +219,16 @@
       "aligns": {
         "left": "Left",
         "center": "Center"
+      },
+      "scrim": {
+        "title": "gradient",
+        "levels": {
+          "none": "None",
+          "light": "Light",
+          "default": "Default",
+          "strong": "Strong"
+        },
+        "warning": "The text may be hard to read on this photo (contrast {{contrast}}:1). Try the strong gradient or another photo."
       }
     },
     "image": {

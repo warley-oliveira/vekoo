@@ -50,7 +50,7 @@ class PieceSerializer < ApplicationSerializer
     version.renders.with_attached_file.ordered.group_by(&:renderer).transform_values { |list|
       list.map { |render|
         { index: render.position + 1, slideId: render.slide_id, url: blob_url(render.file), width: render.width,
-          height: render.height, renderedAt: epoch_ms(render.rendered_at) }
+          height: render.height, renderedAt: epoch_ms(render.rendered_at), legibility: render.legibility }
       }
     }
   end

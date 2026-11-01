@@ -33,11 +33,13 @@ class RenderPieceDocument
         record = entry[:existing] || @version.renders.new(renderer: renderer, position: entry[:position])
         next if record.persisted? && record.checksum == entry[:checksum]
 
-        png = pngs[entry[:position]]
+        drawn = pngs[entry[:position]]
+        png = drawn&.dig(:png)
         image = png ? Vips::Image.new_from_buffer(png, "") : nil
         record.assign_attributes(
           slide_id: entry[:slide]["id"], checksum: entry[:checksum], rendered_at: Time.current,
-          width: image&.width || entry[:reuse].width, height: image&.height || entry[:reuse].height
+          width: image&.width || entry[:reuse].width, height: image&.height || entry[:reuse].height,
+          legibility: drawn ? drawn[:legibility] : entry[:reuse].legibility
         )
         if png
           record.file.attach(io: StringIO.new(png), filename: "lamina-#{entry[:position] + 1}.png", content_type: "image/png")
@@ -64,17 +66,18 @@ class RenderPieceDocument
 
   private
 
-  # { posição => png } das lâminas que faltam.
+  # { posição => { png:, legibility: } } das lâminas que faltam.
   def draw(document, theme, positions)
     case renderer
     when "libvips"
       vips = PieceRenderers::Libvips.new(piece.brand_core, theme: theme)
       positions.to_h { |position|
         slide = document["slides"][position]
-        [ position, vips.render_slide(document, slide, position, document["slides"].length) ]
+        png = vips.render_slide(document, slide, position, document["slides"].length)
+        [ position, { png: png, legibility: vips.legibility } ]
       }
     when "react"
-      PieceRenderers::Chromium.render(@version, positions: positions)
+      PieceRenderers::Chromium.render(@version, positions: positions).transform_values { |png| { png: png, legibility: nil } }
     end
   end
 

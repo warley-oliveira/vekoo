@@ -219,6 +219,16 @@
       "aligns": {
         "left": "Esquerda",
         "center": "Centro"
+      },
+      "scrim": {
+        "title": "degradê",
+        "levels": {
+          "none": "Sem",
+          "light": "Leve",
+          "default": "Padrão",
+          "strong": "Forte"
+        },
+        "warning": "O texto pode ficar difícil de ler sobre esta foto (contraste {{contrast}}:1). Tente o degradê forte ou outra foto."
       }
     },
     "image": {

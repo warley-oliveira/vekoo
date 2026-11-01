@@ -23,12 +23,19 @@ module PieceRenderers
     end
 
     attr_reader :theme
+    # A leitura do texto sobre foto na última lâmina desenhada: o pior
+    # contraste e se passou do mínimo (WCAG: 3:1 no texto grande, 4,5:1 no
+    # resto). Nil quando não há texto sobre foto.
+    attr_reader :legibility
+
+    LARGE_TEXT = 60
 
     # Um PNG por lâmina, na ordem do documento.
     def render(document)
       slides = Array(document["slides"])
       slides.each_with_index.map { |slide, index|
-        { "slideId" => slide["id"], "png" => render_slide(document, slide, index, slides.length) }
+        png = render_slide(document, slide, index, slides.length)
+        { "slideId" => slide["id"], "png" => png, "legibility" => legibility }
       }
     end
 
@@ -48,6 +55,7 @@ module PieceRenderers
       @h = canvas["height"].to_i
       contract = Layouts::Registry.find(slide["layoutId"]) or raise ArgumentError, "layout #{slide['layoutId']}"
       @slide = slide
+      @legibility = nil
       @blocks = Array(slide["blocks"]).index_by { |block| block["slot"] }
       @token = slide.dig("background", "colorToken").presence || "primary"
       @index = index
@@ -104,13 +112,14 @@ module PieceRenderers
     def paint_scrim(image, layer)
       return image if layer["when"] == "image" && !image_present?
 
+      scrim = Layouts::Geometry.scrim(layer, @slide["scrim"]) or return image
       box = Layouts::Geometry.box(layer["box"], @w, @h)
       w = box.w.round
       h = box.h.round
       y = box.y || (@h - layer.dig("box", "bottom").to_f - h)
       ramp = ::Vips::Image.xyz(w, h)[1] / [ h - 1, 1 ].max.to_f
       ramp = ramp * -1 + 1 if layer["from"] == "top"
-      alpha = (ramp**(layer["curve"] || 1.4).to_f) * (layer["opacity"].to_f * 255)
+      alpha = (ramp**scrim[:curve]) * (scrim[:opacity] * 255)
       layer_image = ::Vips::Image.black(w, h, bands: 3).bandjoin(alpha).cast(:uchar).copy(interpretation: :srgb)
       composite(image, layer_image, box.x || 0, y)
     end
@@ -161,7 +170,7 @@ module PieceRenderers
         lines, cut = wrap(text, role, size, frame["w"], slot&.max_lines) if frame
         { lines: lines, cut: cut, role: role, size: size, line_height: line_height,
           height: lines.length * line_height, color: color, align: block["align"],
-          gap: item.key?("gap") ? item["gap"].to_f : gap, frame: frame }
+          gap: item.key?("gap") ? item["gap"].to_f : gap, frame: frame, on_image: on_image }
       }
       # Quem foi arrastado sai do fluxo da pilha e é desenhado no `frame`,
       # na mesma camada (a mesma ordem de sobreposição).
@@ -194,9 +203,41 @@ module PieceRenderers
         line_x = item[:align] == "center" ? x + (width - mask.width) / 2.0 : x
         line_y = y + line_index * item[:line_height] + (item[:line_height] - mask.height) / 2.0
         fade = item[:cut] && line_index == item[:lines].length - 1
+        note_legibility(image, item, line_x, line_y, mask.width, mask.height) if item[:on_image]
         image = composite(image, colorize(mask, item[:color], fade: fade), line_x, line_y)
       end
       image
+    end
+
+    # O fundo já composto (foto + degradê) atrás da linha, antes do texto: os
+    # pontos claros (percentil 90) contra texto claro, os escuros contra texto
+    # escuro.
+    def note_legibility(image, item, x, y, width, height)
+      x0 = x.round.clamp(0, @w - 1)
+      y0 = y.round.clamp(0, @h - 1)
+      w0 = [ width.round, @w - x0 ].min
+      h0 = [ height.round, @h - y0 ].min
+      return if w0 < 2 || h0 < 2
+
+      region = image.crop(x0, y0, w0, h0)
+      region = region.extract_band(0, n: 3) if region.bands > 3
+      grey = region.colourspace("b-w")
+      ink = relative_luminance(item[:color])
+      background = linearize((ink > 0.5 ? grey.percent(90) : grey.percent(10)) / 255.0)
+      contrast = ((([ ink, background ].max + 0.05) / ([ ink, background ].min + 0.05))).round(2)
+      minimum = item[:size] >= LARGE_TEXT ? 3.0 : 4.5
+      worst = @legibility&.dig("contrast")
+      ok = contrast >= minimum && (@legibility.nil? || @legibility["ok"])
+      @legibility = { "contrast" => worst ? [ worst, contrast ].min : contrast, "ok" => ok }
+    end
+
+    def relative_luminance(hex)
+      r, g, b = hex.to_s.delete("#").scan(/../).map { |pair| linearize(pair.to_i(16) / 255.0) }
+      (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+    end
+
+    def linearize(channel)
+      channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055)**2.4
     end
 
     def frame_box(block)

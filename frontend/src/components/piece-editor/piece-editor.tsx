@@ -266,6 +266,7 @@ function EditorWorkspace({ piece, payload, layouts }: { piece: Piece; payload: R
             onUndo={() => dispatch({ type: "undo" })}
             onRedo={() => dispatch({ type: "redo" })}
             onPickImage={(slot) => setPickerSlot(slot)}
+            legibility={(piece.renders?.libvips ?? piece.renders?.react ?? []).find((render) => render.slideId === slide.id)?.legibility}
             onToggleFocal={(slot) => {
               dispatch({ type: "select", slot })
               dispatch({ type: "mode", mode: state.mode === "focal" && state.selection.slot === slot ? "idle" : "focal" })

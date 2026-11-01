@@ -17,6 +17,7 @@ import {
   type LayoutContract,
   type LayoutSlot,
   type PieceDocument,
+  type ScrimLevel,
   type SizeStep,
   type Slide,
 } from "@/lib/piece-document"
@@ -31,6 +32,8 @@ export type Operation =
   /** Arrastar para fora do lugar do layout; `null` devolve. */
   | { op: "set_frame"; slideId: string; slot: string; frame: Frame | null }
   | { op: "set_background"; slideId: string; type: "color"; colorToken: ColorToken }
+  /** O degradê atrás do texto; `null` volta ao do layout. */
+  | { op: "set_scrim"; slideId: string; level: ScrimLevel | null }
   | { op: "set_layout"; slideId: string; layoutId: string }
   | { op: "set_logo"; slideId: string; visible?: boolean; variant?: "light" | "dark" }
   | { op: "set_caption"; text?: string; hashtags?: string[] }
@@ -63,6 +66,11 @@ function apply(doc: PieceDocument, operation: Operation, contracts: Contracts): 
         ...slide,
         background: { type: "color", colorToken: operation.colorToken },
       }))
+    case "set_scrim":
+      return withSlide(doc, operation.slideId, (slide) => {
+        const { scrim: _previous, ...rest } = slide
+        return operation.level ? { ...rest, scrim: operation.level } : rest
+      })
     case "move_slide": {
       const from = doc.slides.findIndex((slide) => slide.id === operation.slideId)
       if (from < 0) return doc

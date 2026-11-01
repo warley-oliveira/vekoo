@@ -71,6 +71,30 @@ export function coverRect(
 }
 
 /**
+ * O degradê de uma camada `scrim` no nível que a lâmina escolheu — espelho de
+ * `Layouts::Geometry.scrim`: sem nível, o do layout; `none` não desenha;
+ * `light` bem mais leve; `strong` escurece mais e mais cedo.
+ */
+export function scrimFor(
+  layer: { opacity?: number; curve?: number },
+  level: "none" | "light" | "strong" | undefined
+): { opacity: number; curve: number } | null {
+  const opacity = layer.opacity ?? 0.6
+  const curve = layer.curve ?? 1.4
+  const round = (value: number) => Math.round(value * 1000) / 1000
+  switch (level) {
+    case "none":
+      return null
+    case "light":
+      return { opacity: round(opacity * 0.55), curve }
+    case "strong":
+      return { opacity: round(Math.min(Math.max(opacity, 0.6) + 0.15, 0.92)), curve: round(Math.max(curve * 0.7, 0.6)) }
+    default:
+      return { opacity, curve }
+  }
+}
+
+/**
  * O degradê do escurecimento: alfa = t^curva × opacidade, da borda para
  * dentro (curva 1,4 por padrão; menor, escurece mais cedo). Em paradas,
  * porque o CSS não tem curva de potência — as mesmas do libvips.

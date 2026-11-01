@@ -10,7 +10,7 @@ module PieceDocument
     # O que o painel e a conversa podem pedir.
     EDITOR = %w[
       set_text set_size_step set_align set_visible set_image set_focal_point set_frame set_background
-      set_layout set_logo move_slide set_caption add_slide remove_slide
+      set_scrim set_layout set_logo move_slide set_caption add_slide remove_slide
     ].freeze
 
     # O que a conversa (etapa 7) pode pedir — sem criar nem apagar lâmina.
@@ -115,6 +115,24 @@ module PieceDocument
         return "unknownToken" if type == "color" && !COLOR_TOKENS.key?(op["colorToken"].to_s)
 
         slide["background"] = PieceDocument.normalize_background(op.slice("type", "colorToken", "assetId", "focalPoint"), contract)
+      end
+    end
+
+    # `level` nulo (ou `default`) volta ao degradê do layout.
+    def set_scrim(doc, op)
+      with_slide(doc, op) do |slide, contract|
+        next "scrimUnsupported" unless contract.layers_for(doc["format"]).any? { |layer| layer["kind"] == "scrim" }
+
+        level = op["level"].to_s
+        if level.empty? || level == "default"
+          slide.delete("scrim")
+        elsif SCRIM_LEVELS.include?(level)
+          slide["scrim"] = level
+        else
+          next "invalid"
+        end
+        # Texto devolvido pelo bloco é motivo de recusa: o nível não pode vazar.
+        nil
       end
     end
 

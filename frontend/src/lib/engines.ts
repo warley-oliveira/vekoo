@@ -56,6 +56,9 @@ export type EngineCatalog = { engines: EngineManifest[]; dimensions: Dimensions 
 /** Os dois intérpretes da geometria: o navegador (React) e o servidor (libvips). */
 export type PieceRenderer = "react" | "libvips"
 
+/** O pior contraste do texto sobre foto na lâmina desenhada (WCAG). */
+export type RenderLegibility = { contrast: number; ok: boolean }
+
 export type PieceRenderImage = {
   index: number
   slideId: string
@@ -63,6 +66,7 @@ export type PieceRenderImage = {
   width: number
   height: number
   renderedAt: number
+  legibility?: RenderLegibility | null
 }
 
 export type PieceStatus =

@@ -84,6 +84,10 @@ export type SlideBackground =
   | { type: "color"; colorToken: ColorToken; overlay?: { token: "scrim-dark"; opacity: number } }
   | { type: "image"; assetId: string | null; focalPoint: FocalPoint; overlay?: { token: "scrim-dark"; opacity: number } }
 
+/** O degradê atrás do texto, por lâmina. Ausente = o do layout. */
+export const SCRIM_LEVELS = ["none", "light", "strong"] as const
+export type ScrimLevel = (typeof SCRIM_LEVELS)[number]
+
 export type Slide = {
   id: string
   layoutId: string
@@ -91,6 +95,7 @@ export type Slide = {
   blocks: Block[]
   /** Blocos sem slot no layout atual — voltam se o layout mudar de novo. */
   orphans: Block[]
+  scrim?: ScrimLevel
 }
 
 export type PieceDocument = {

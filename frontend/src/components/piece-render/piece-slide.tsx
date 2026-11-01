@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react"
 
-import { coverRect, resolveBox, resolveInset, scrimGradient, sizeFor, type Box } from "@/lib/piece-geometry"
+import { coverRect, resolveBox, resolveInset, scrimFor, scrimGradient, sizeFor, type Box } from "@/lib/piece-geometry"
 import type { Block, FocalPoint, ImageBlock, LogoBlock, PieceDocument, Slide, TextBlock } from "@/lib/piece-document"
 import type { GeometryLayer, RenderAsset, RenderLayout, RenderTheme, RoleTheme } from "@/lib/piece-render"
 
@@ -64,6 +64,7 @@ export function PieceSlide({ document, slide, index, theme, assets, layout, inte
     assets,
     layout,
     imagePresent,
+    scrim: slide.scrim,
     index,
     total: document.slides.length,
     interaction,
@@ -91,6 +92,8 @@ type Context = {
   assets: Record<string, RenderAsset>
   layout: RenderLayout
   imagePresent: boolean
+  /** O nível do degradê que a lâmina escolheu (ausente = o do layout). */
+  scrim: Slide["scrim"]
   index: number
   total: number
   interaction?: SlideInteraction
@@ -103,9 +106,12 @@ function Layer({ layer, context }: { layer: GeometryLayer; context: Context }) {
       return <div style={{ ...place(box), backgroundColor: context.theme.colors[context.token], pointerEvents: "none" }} />
     case "image":
       return <ImageLayer layer={layer} box={box} context={context} />
-    case "scrim":
+    case "scrim": {
       if (layer.when === "image" && !context.imagePresent) return null
-      return <div style={{ ...place(box), backgroundImage: scrimGradient(layer.from ?? "bottom", layer.opacity ?? 0.6, layer.curve), pointerEvents: "none" }} />
+      const scrim = scrimFor(layer, context.scrim)
+      if (!scrim) return null
+      return <div style={{ ...place(box), backgroundImage: scrimGradient(layer.from ?? "bottom", scrim.opacity, scrim.curve), pointerEvents: "none" }} />
+    }
     case "logo":
       return <LogoLayer layer={layer} context={context} />
     case "stack":
