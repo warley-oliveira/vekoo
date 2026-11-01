@@ -13,63 +13,37 @@ Servidor montado do zero em 21/10/2026. O servidor antigo (`107.152.37.137`) nã
 
 ---
 
-## Hotfix do Redis — no ar desde 2026-10-28 (`da2e0da`)
+## Produção — `8d804fd` desde 2026-11-01 (tag `prod-8d804fd`)
 
-Produção roda `da2e0da` (branch `hotfix/redis-cable`): a e6c2eb9 (tag `prod-e6c2eb9`) + o
-credentials novo (e1de80c) + `redis < 6` e a spec do adaptador — nada além. Sem medição nem
-dump: produção ainda não tinha assinante, só dado de teste (decisão do usuário). Deploy de
-136 s; a web nova passou no `/up` antes de receber tráfego e só então o worker subiu.
+Deploy grande da `main` (merge da `feat/reference-bank`): documento da peça e editor,
+agente com foto, onboarding por conversa, banco de referências e curadoria, descrição das
+fotos, ritmo do carrossel e cadastro fechado (`SIGNUP_ALLOWLIST`, 3 e-mails). 16 migrations,
+a primeira com a extensão `vector`. Antes: `da2e0da` (tag `prod-da2e0da`, o hotfix do Redis
+sobre a `e6c2eb9`).
 
-Conferência: `https://syco.vekoo.app/up` → 200; na web e no worker o adaptador Redis carrega
-(redis 5.4.1) e uma mensagem faz ida e volta pelo Redis; `/cable` pela Cloudflare responde
-`101 Switching Protocols` (sem token, `unauthorized`, como deve); zero "pubsub adapter" nos
-logs dos containers novos. A mesma correção está na main (`3a29091`, tag
-`pre-reference-bank`) e na `feat/reference-bank`.
+A janela, na ordem: dump validado e copiado (`~/backups/vekoo/pre-deploy-2026-11-01-0008.*`,
+hash conferido) → `kamal app stop` → `kamal accessory reboot db` (pgvector 0.8.7, Postgres
+16.15, collation 2.41 igual) → `ALTER USER vekoo` com a senha nova → `kamal deploy
+--skip-push` (imagem construída antes, 122 s) → conferências → marcas de teste
+(`references:eval:brands PHOTOS=0`) e o acervo da curadoria do dev
+(`references:import FILE=-`: 60 cards com vetor e miniatura, 30 fotos descritas) → organização
+da demonstração apagada → front. API fora do ar por ~10 min.
 
-O `deploy.yml` de produção é o da **worktree do hotfix** (`~/projects/vekoo_trimit-hotfix`) até
-o próximo deploy da main — o da branch tem variáveis que a e6c2eb9 não conhece.
+**Segredos trocados na mesma janela** (vazaram num print): `RAILS_MASTER_KEY` (com o
+`credentials.yml.enc` recriptografado), `SECRET_KEY_BASE`, a senha do Postgres
+(`POSTGRES_PASSWORD` e `DATABASE_URL`) e a `ANTHROPIC_API_KEY` — agora uma chave para
+produção e outra para o dev. O Postgres e o Redis não publicam porta: só existem na rede
+`kamal`, e o `DATABASE_URL` não serve de fora do servidor. A `e6c2eb9` e a `da2e0da` não
+sobem mais (chave mestra e senha do banco antigas): voltar atrás é pelo dump, não por
+`kamal rollback`.
 
-**Voltar para a e6c2eb9** (da worktree do hotfix, com o `.env.deploy` carregado): ela **não sobe com a
-`RAILS_MASTER_KEY` nova** — o `kamal rollback` cria o container com os segredos desta
-máquina, então a chave antiga entra só na subshell (lida do git, sem aparecer na tela):
-
-```bash
-(export RAILS_MASTER_KEY="$(git show e6c2eb9:backend/config/master.key)"; kamal rollback e6c2eb9e10d96ee5bee90b4996ae5c85591eb043)
-```
-
-Depois do hotfix: a main já tem a correção, e o próximo deploy é o dela, na janela do
-pgvector (§2). Aí a branch `hotfix/redis-cable` e a worktree saem
-(`git worktree remove ~/projects/vekoo_trimit-hotfix`).
-
-### Segundo hotfix — cadastro fechado (`a02d3e4`, pronto, ainda não subiu)
-
-Em cima do `da2e0da`, na mesma branch: só os e-mails de `SIGNUP_ALLOWLIST` criam conta em
-produção; sem a variável, ou vazia, ninguém (fechado por padrão). Quem não está na lista
-recebe **403 `signupClosed`** e nada é criado. O login não olha a lista. Dev e test seguem
-abertos. A mesma mudança está na main e na `feat/reference-bank`, que também ensinam a
-tela de cadastro a mostrar o aviso.
-
-`SIGNUP_ALLOWLIST` vive no `.env.deploy` (e-mails separados por vírgula, segredo do Kamal,
-fora do git). **Antes de subir:** o e-mail do sócio na lista — ele ainda não tem conta. Para
-subir e, depois, a cada mudança na lista (da worktree do hotfix, com o `.env.deploy`
-carregado):
-
-```bash
-kamal deploy        # a primeira vez (código novo)
-kamal app boot      # depois, só para a lista nova valer — reenvia os segredos e troca o container
-```
-
-Conferir: `/up` 200; um cadastro com e-mail fora da lista volta 403 `signupClosed`:
-
-```bash
-curl -s -X POST https://syco.vekoo.app/signup -H 'Content-Type: application/json' \
-  -d '{"account":{"name":"Teste","email":"fora-da-lista@exemplo.com.br","password":"senha12345","organizationName":"Teste"}}' \
-  -w '\n%{http_code}\n'
-```
-
-**A tela de produção ainda é a da e6c2eb9:** o código novo vira `unknown` nela, e quem está
-fora da lista vê "Algo deu errado ao criar a conta" em vez do aviso — barrado do mesmo jeito.
-O aviso certo chega com o deploy do front da main.
+Aprendido na janela:
+- `kamal app exec --reuse` **sem `-r web` roda em todos os papéis** (web e worker, um depois
+  do outro): tarefa que cria coisa roda duas vezes. Comando avulso: sempre `-r web`.
+- Apagar uma organização falhava: `onboarding_events` e `image_generations` apontam para
+  ela e o modelo não as apagava junto (corrigir no código).
+- O `.env.deploy` é lido pelo shell: valor com espaço (a lista de e-mails) precisa vir sem
+  espaço ou entre aspas, senão só o primeiro pedaço entra.
 
 ---
 
@@ -603,31 +577,22 @@ Restore **ainda não testado**.
 - [ ] Formulário da landing grava em lugar nenhum (§4)
 - [ ] Firewall em modo `open`: a origem aceita tráfego que não vem da Cloudflare (§6)
 - [ ] Restore de backup testado uma vez
-- [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3.
+- [x] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — no ar desde 2026-11-01.
   Conta e as duas chaves criadas em 2026-10-31 (o dev já usa a dele); falta a de produção
   como `GOOGLE_CREDENTIALS_BASE64` no Kamal
-- [ ] Na janela do deploy da Fase 3, depois das migrations: descrever as fotos que as marcas
+- [x] Na janela do deploy da Fase 3, depois das migrations: descrever as fotos que as marcas
   já enviaram — `bin/rails brands:describe_photos DRY_RUN=1` (conta), depois sem o
   `DRY_RUN` (Haiku 5.5, ~US$ 0,0004 por foto). Sem isso o agente vê só o nome do arquivo
   e a busca não desconta produto nem espaço dessas marcas
-- [ ] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`)
-- [ ] Conta de demonstração em produção: **existe**. Nasceu do seed antigo no primeiro
+- [x] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`) — em produção desde 2026-11-01, token sem vencimento
+- [x] Conta de demonstração em produção: **apagada** com a organização em 2026-11-01, depois do dump. Existia: Nasceu do seed antigo no primeiro
   `db:prepare` do servidor novo, em 2026-10-22 00:55 UTC (o `created_at` diz 22/09 porque
   o seed antedata 30 dias). Seis sessões até 26/10, US$ 0,0126 de IA: teste interno; a de
   `201.80.77.187` é a máquina de deploy na conferência do pós-deploy. **Travada** em
   2026-10-28 05:31 UTC (senha aleatória, sessões vencidas, nada apagado). Falta apagar a
   organização dela na janela do próximo deploy, **depois** do dump, com ok explícito
-- [ ] Conta própria em produção para o sócio (pelo cadastro, como todo mundo), antes de
-  apagar a da demonstração
-- [ ] **Tempo real fora do ar desde o primeiro deploy.** O adaptador Redis do Action Cable
-  8.1.3 exige `redis >= 4, < 6`, e o `Gemfile.lock` trava `redis 6.0.0` desde 2026-09-07
-  (e6c2eb9, main e branch). Todo broadcast levanta `Gem::LoadError` — que não é
-  `StandardError`, nenhum `rescue` segura: o autosave e a publicação da marca, o envio de
-  logo e o fim do onboarding gravam e respondem 500; o turno do agente e o render da peça
-  terminam e o job falha depois (o render volta a rodar a cada nova tentativa do Sidekiq).
-  Correção: `gem "redis", ">= 4.0.1", "< 6"` (resolve 5.4.1 com a `redis-client` 0.30.1) e
-  uma spec que carrega o adaptador. Dev (`async`) e test (`test`) nunca passam por ele.
-  **Corrigido em produção** em 2026-10-28 pelo hotfix `da2e0da` — ver o topo
+- [ ] Contas dos dois sócios em produção (pelo cadastro; os e-mails já estão na lista) e
+  `bin/rails 'staff:grant[email]'` (com `-r web`) para os dois
 - [ ] **IP real** — em vez de ler `CF-Connecting-IP`: `proxy.forward_headers: true` no
   `deploy.yml` + `config.action_dispatch.trusted_proxies` com as faixas da Cloudflare.
   Conserta o `request.remote_ip` inteiro, não só a sessão: hoje o `rate_limit` do login
@@ -652,6 +617,8 @@ Restore **ainda não testado**.
   tela de criação mostra "a foto não saiu" só enquanto o pedido roda — quando as variações
   chegam, a faixa de fotos mostra só as que deram certo e a peça sai sem foto, em silêncio.
   Precisa de um aviso claro no resultado (qual foto faltou e o que fazer)
+- [ ] **Próximo deploy — `Organization` apaga `onboarding_events` e `image_generations`**
+  junto (hoje a exclusão falha na chave estrangeira; na janela de 2026-11-01 foram apagados à mão)
 - [ ] **Próximo deploy — controle do degradê no editor.** Por lâmina com foto: sem, leve
   ou forte, com aviso quando o texto perde leitura. Hoje o degradê é o do layout (a capa
   do carrossel ganhou um mais forte em 2026-11-01: 85%, 0,8, curva 0,9)
