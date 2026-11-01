@@ -2,6 +2,14 @@
 # Imagem de produção da API Vekoo. Construída pelo Kamal (`kamal deploy`), nunca
 # usada em desenvolvimento — no WSL2 o Rails roda nativo (ver docker-compose.yml).
 ARG RUBY_VERSION=3.4.10
+
+# --- vtracer -----------------------------------------------------------------
+# Vetoriza o símbolo das logos que a Vekoo propõe (Logos::Concepts): binário
+# fixo, compilado da versão publicada com o Cargo.lock dela. Só o executável
+# vai para a imagem final. O dev usa o mesmo binário, tirado deste estágio.
+FROM docker.io/library/rust:1.85-slim-bookworm AS vtracer
+RUN cargo install vtracer --version 0.6.4 --locked --root /opt/vtracer
+
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim AS base
 
 WORKDIR /rails
@@ -50,6 +58,7 @@ FROM base
 
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
+COPY --from=vtracer /opt/vtracer/bin/vtracer /usr/local/bin/vtracer
 
 # uid/gid 1000 tem que bater com o dono do volume nomeado vekoo_storage —
 # um volume novo nasce com o dono do diretório da imagem.
