@@ -22,10 +22,12 @@ module Agent
     end
 
     def spent_cents(organization)
-      # O agente e o gerador de imagens dividem o mesmo teto.
+      # O agente, o gerador de imagens e a descrição das fotos dividem o
+      # mesmo teto.
       Pricing.micro_usd_to_cents(
         AgentTurn.cost_micro_usd_since(organization, period_start) +
-          ImageGeneration.cost_micro_usd_since(organization, period_start)
+          ImageGeneration.cost_micro_usd_since(organization, period_start) +
+          BrandAsset.description_cost_micro_usd_since(organization, period_start)
       )
     end
 

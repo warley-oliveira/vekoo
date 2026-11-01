@@ -606,6 +606,10 @@ Restore **ainda não testado**.
 - [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3.
   Conta e as duas chaves criadas em 2026-10-31 (o dev já usa a dele); falta a de produção
   como `GOOGLE_CREDENTIALS_BASE64` no Kamal
+- [ ] Na janela do deploy da Fase 3, depois das migrations: descrever as fotos que as marcas
+  já enviaram — `bin/rails brands:describe_photos DRY_RUN=1` (conta), depois sem o
+  `DRY_RUN` (Haiku 5.5, ~US$ 0,0004 por foto). Sem isso o agente vê só o nome do arquivo
+  e a busca não desconta produto nem espaço dessas marcas
 - [ ] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`)
 - [ ] Conta de demonstração em produção: **existe**. Nasceu do seed antigo no primeiro
   `db:prepare` do servidor novo, em 2026-10-22 00:55 UTC (o `created_at` diz 22/09 porque

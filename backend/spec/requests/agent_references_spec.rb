@@ -183,7 +183,7 @@ RSpec.describe "Padrões de referência na conversa de criação", type: :reques
       think!
 
       expect(References::Retriever).to have_received(:call)
-        .with(brand, "post da promoção de quarta", attachments: [], exclude_ids: [ cards.first.id ])
+        .with(brand, "post da promoção de quarta", exclude_ids: [ cards.first.id ])
     end
   end
 

@@ -44,6 +44,7 @@ module Agent
     end
 
     def call
+      describe_attachments
       tokens = Engines::Tokens.new(@brand)
       @references = find_references
       messages = history(tokens) + [ { role: "user", content: current_request } ]
@@ -94,6 +95,13 @@ module Agent
     # interruptor (`References::Retriever.mode`). Só no pedido novo e no "mais
     # variações": o ajuste mexe numa peça que já tem forma. Falha aqui nunca
     # derruba o turno — a peça sai como saía antes.
+    # A foto anexada agora pode ainda estar sem descrição (o job do envio corre
+    # junto): sem ela, nem a ficha da marca nem a busca sabem o que a foto
+    # mostra. Uma chamada curta, só nesse caso.
+    def describe_attachments
+      @brand.assets.where(id: Array(@turn.attachments), description: nil).find_each { |asset| DescribeBrandAsset.call(asset) }
+    end
+
     def find_references
       mode = @references_mode || References::Retriever.mode
       return if mode == "off" || @turn.kind == "adjust"
@@ -101,7 +109,7 @@ module Agent
       query, exclude = reference_query
       return if query.blank?
 
-      result = References::Retriever.call(@brand, query, attachments: Array(@turn.attachments), exclude_ids: exclude)
+      result = References::Retriever.call(@brand, query, exclude_ids: exclude)
       @cost += result.intent.cost_micro_usd
       { mode: mode, result: result, brief: References::AgentBrief.new(result.cards) }
     rescue StandardError => e

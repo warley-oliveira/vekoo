@@ -106,9 +106,11 @@ module Agent
           "tipo" => asset.kind,
           "variante" => asset.variant,
           "arquivo" => asset.filename,
-          # A foto que o gerador criou diz o que mostra: o agente reaproveita
-          # em vez de pagar por outra igual.
-          "descricao" => asset.generated? ? asset.meta.to_h["prompt"].to_s.first(160).presence : nil
+          # O que a foto mostra: a enviada pela marca, lida pelo modelo de
+          # visão (`DescribeBrandAsset`); a criada pelo gerador, pelo pedido
+          # dela — o agente reaproveita em vez de pagar por outra igual.
+          "descricao" => asset.generated? ? asset.meta.to_h["prompt"].to_s.first(160).presence : asset.description.presence,
+          "mostra" => asset.generated? ? nil : asset.shows.presence
         }.compact
       }.presence
     end

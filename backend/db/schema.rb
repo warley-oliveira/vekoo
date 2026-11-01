@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_140001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -105,6 +105,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_140001) do
     t.bigint "byte_size", null: false
     t.string "content_type", null: false
     t.datetime "created_at", null: false
+    t.datetime "described_at"
+    t.text "description"
+    t.integer "description_cost_micro_usd", default: 0, null: false
     t.string "filename", null: false
     t.boolean "generated", default: false, null: false
     t.integer "height"
@@ -112,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_140001) do
     t.uuid "logo_id"
     t.jsonb "meta", default: {}, null: false
     t.uuid "organization_id", null: false
+    t.string "shows", default: [], null: false, array: true
     t.boolean "transparent"
     t.datetime "updated_at", null: false
     t.string "variant"

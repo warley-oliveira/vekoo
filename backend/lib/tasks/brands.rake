@@ -48,4 +48,29 @@ namespace :brands do
       puts "#{asset.id} #{asset.filename}: #{asset.preview.attached? ? 'ok' : 'falhou'}"
     end
   end
+
+  desc "Descreve as fotos enviadas que ainda não têm descrição: BRAND=id DRY_RUN=1 (só conta) FORCE=1 (refaz todas)"
+  task describe_photos: :environment do
+    scope = BrandAsset.where(kind: "photo", generated: false).order(:created_at)
+    scope = scope.where(brand_core_id: ENV["BRAND"]) if ENV["BRAND"].present?
+    scope = scope.where(description: nil) unless ENV["FORCE"].present?
+    abort "sem ANTHROPIC_API_KEY" unless ENV["DRY_RUN"].present? || Ai::Chat.available?
+
+    puts "#{scope.count} fotos a descrever"
+    next if ENV["DRY_RUN"].present?
+
+    counts = Hash.new(0)
+    scope.includes(:brand_core).find_each do |asset|
+      before = asset.description_cost_micro_usd
+      if DescribeBrandAsset.call(asset, force: ENV["FORCE"].present?)
+        counts[:described] += 1
+        counts[:cost] += asset.description_cost_micro_usd - before
+        puts "  #{asset.brand_core.name} · #{asset.filename} · [#{asset.shows.join(', ')}] #{asset.description}"
+      else
+        counts[:failed] += 1
+        puts "  #{asset.brand_core.name} · #{asset.filename} · não saiu"
+      end
+    end
+    puts "descritas: #{counts[:described]} · não saíram: #{counts[:failed]} · US$ #{format('%.4f', counts[:cost] / 1e6)}"
+  end
 end

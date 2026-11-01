@@ -125,11 +125,44 @@ RSpec.describe References::Retriever do
       expect(pick.missing).to be_empty
     end
 
-    it "conta a foto anexada ao pedido como foto do produto" do
+    def photo(description:, shows: [], generated: false)
+      create(:brand_asset, :photo, brand_core: brand, generated: generated, description: description, shows: shows)
+    end
+
+    it "produto e espaço se comprovam pela foto enviada que os mostra" do
+      card("@conta_foto", requires: %w[product_photo space])
+
+      expect(search.picks.first.missing).to eq(%w[product_photo space])
+
+      photo(description: "Pão na bancada.", shows: %w[product_photo])
+      expect(search.picks.first.missing).to eq(%w[space])
+
+      photo(description: "O salão da padaria.", shows: %w[space])
+      expect(search.picks.first.missing).to be_empty
+    end
+
+    it "foto gerada não comprova nada" do
       card("@conta_foto", requires: %w[product_photo])
+      photo(description: nil, shows: %w[product_photo], generated: true)
 
       expect(search.picks.first.missing).to eq(%w[product_photo])
-      expect(search(attachments: [ "asset-1" ]).picks.first.missing).to be_empty
+    end
+
+    it "com foto ainda sem descrição, a falta não prova e não desconta" do
+      card("@conta_foto", requires: %w[product_photo space])
+      photo(description: nil)
+
+      expect(search.picks.first.missing).to be_empty
+    end
+
+    it "pessoa da marca, cliente e evento nunca descontam" do
+      card("@conta_gente", requires: %w[brand_person customer event])
+      photo(description: "Pão na bancada.", shows: %w[product_photo])
+
+      pick = search.picks.first
+
+      expect(pick.missing).to be_empty
+      expect(search.has.keys).to contain_exactly("promotion", "product_photo", "space")
     end
   end
 

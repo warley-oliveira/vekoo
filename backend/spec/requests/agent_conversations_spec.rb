@@ -280,15 +280,30 @@ RSpec.describe "Conversa de criação", type: :request do
   end
 
   describe "anexo de foto" do
-    it "aceita ativo da marca e o passa ao agente" do
+    it "aceita ativo da marca, descreve antes de pensar e o passa ao agente com a descrição" do
       photo = create(:brand_asset, :photo, brand_core: brand, organization: organization)
-      calls = fake_chat(reply(statement))
+      described = JSON.generate("description" => "Pão de fermentação natural na bancada, luz da janela.", "shows" => %w[product_photo])
+      calls = fake_chat(described, reply(statement))
 
       start(attachments: [ photo.id ])
       think!
 
       expect(response).to have_http_status(:created)
-      expect(calls.first[:messages].last[:content]).to include(photo.id)
+      expect(calls.first[:model]).to eq(DescribeBrandAsset.model)
+      agent = calls.last
+      expect(agent[:messages].last[:content]).to include(photo.id)
+      expect(agent[:system][2][:text]).to include("Pão de fermentação natural na bancada").and include("product_photo")
+    end
+
+    it "foto já descrita não chama o modelo de novo" do
+      photo = create(:brand_asset, :photo, brand_core: brand, organization: organization, description: "Vitrine de pães.", shows: %w[product_photo])
+      calls = fake_chat(reply(statement))
+
+      start(attachments: [ photo.id ])
+      think!
+
+      expect(calls.length).to eq(1)
+      expect(calls.first[:system][2][:text]).to include("Vitrine de pães.")
     end
 
     it "recusa foto que não é da marca" do

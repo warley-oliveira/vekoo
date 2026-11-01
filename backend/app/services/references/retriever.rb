@@ -38,6 +38,8 @@ module References
     QUERY_CACHE = 1.day
 
     POINTS = { niche: 3, primary: 2, secondary: 1, objective: 2, similarity: 3, engagement: 1, missing: -2 }.freeze
+    # As exigências que a falta de foto prova que a marca não cumpre.
+    PHOTO_PROOF = %w[product_photo space].freeze
 
     # O interruptor da busca na geração (`REFERENCES_IN_GENERATION`): `off`
     # não busca; `shadow` busca e grava no turno o que ofereceria, sem mandar
@@ -65,14 +67,13 @@ module References
 
     def self.call(...) = new(...).call
 
-    # `attachments`: fotos anexadas ao pedido; `exclude_ids`: cards que já
-    # serviram nesta conversa (o "mais variações" pede outros padrões);
+    # `exclude_ids`: cards que já serviram nesta conversa (o "mais variações"
+    # pede outros padrões);
     # `scope`: de onde a busca escolhe — só publicados, salvo na prévia da
     # curadoria; `intent` e `embedder` entram prontos nas specs.
-    def initialize(brand_core, text, attachments: [], exclude_ids: [], scope: ReferenceCard.published, intent: nil, embedder: :default)
+    def initialize(brand_core, text, exclude_ids: [], scope: ReferenceCard.published, intent: nil, embedder: :default)
       @brand = brand_core
       @text = text.to_s.strip
-      @attachments = Array(attachments)
       @exclude_ids = Array(exclude_ids)
       @scope = scope
       @intent = intent
@@ -110,17 +111,28 @@ module References
       { primary: archetypes["primary"].presence, secondary: archetypes["secondary"].presence }
     end
 
-    # O que dá para saber que a marca tem. Só foto do produto e promoção se
-    # comprovam (foto enviada que não foi gerada, oferta com preço, ou o
-    # próprio pedido trazendo); pessoa, cliente, espaço e evento a busca não
-    # tem como saber — o card leva a exigência e o agente pergunta ou adapta.
+    # O que dá para saber que a marca tem — e, mais importante, o que dá para
+    # saber que ela **não** tem, porque é isso que desconta. Promoção se
+    # comprova pela oferta com preço; produto e espaço, pela foto enviada que
+    # os mostra (`DescribeBrandAsset`). Com todas as fotos descritas, a falta
+    # prova; com alguma ainda sem descrição, não se sabe e não desconta.
+    # Pessoa da marca, cliente e evento nunca descontam: depoimento escrito ou
+    # evento sem foto existem — o card leva a exigência e o agente pergunta ou
+    # adapta. O próprio pedido trazendo vale para todos.
     def brand_has(intent)
       offers = BrandCore::Schema.complete(@brand.published_document).dig("offers", "items").to_a
-      {
-        "product_photo" => @attachments.any? || intent.brings.include?("product_photo") ||
-          @brand.assets.where(kind: "photo", generated: false).exists?,
-        "promotion" => intent.brings.include?("promotion") || offers.any? { |offer| offer["price"].present? }
-      }
+      has = { "promotion" => intent.brings.include?("promotion") || offers.any? { |offer| offer["price"].present? } }
+      photos = @brand.assets.where(kind: "photo", generated: false)
+      shown = photos.pluck(:shows).flatten
+      undescribed = photos.where(description: nil).exists?
+      PHOTO_PROOF.each do |code|
+        if intent.brings.include?(code) || shown.include?(code)
+          has[code] = true
+        elsif !undescribed
+          has[code] = false
+        end
+      end
+      has
     end
 
     def pool_for(niche, intent)
