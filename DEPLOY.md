@@ -13,7 +13,15 @@ Servidor montado do zero em 21/10/2026. O servidor antigo (`107.152.37.137`) nã
 
 ---
 
-## Produção — `8d804fd` desde 2026-11-01 (tag `prod-8d804fd`)
+## Produção — `3fa4f53` desde 2026-11-01 (tag `prod-3fa4f53`)
+
+Deploy pequeno sobre a `8d804fd` (sem janela: a API não caiu, 67 s; dump antes em
+`~/backups/vekoo/pre-deploy-2026-11-01-0056.dump`): degradê por lâmina no editor com aviso de
+leitura, staff entrando na organização das marcas de teste pelo seletor de marca, e a exclusão
+de organização corrigida. Migrations só acrescentam (`piece_renders.legibility`,
+`organizations.internal`, `sessions.acting_organization_id`).
+
+### O deploy grande — `8d804fd` (tag `prod-8d804fd`)
 
 Deploy grande da `main` (merge da `feat/reference-bank`): documento da peça e editor,
 agente com foto, onboarding por conversa, banco de referências e curadoria, descrição das
@@ -617,9 +625,9 @@ Restore **ainda não testado**.
   tela de criação mostra "a foto não saiu" só enquanto o pedido roda — quando as variações
   chegam, a faixa de fotos mostra só as que deram certo e a peça sai sem foto, em silêncio.
   Precisa de um aviso claro no resultado (qual foto faltou e o que fazer)
-- [ ] **Próximo deploy — `Organization` apaga `onboarding_events` e `image_generations`**
+- [x] **Próximo deploy — `Organization` apaga `onboarding_events` e `image_generations`**
   junto (hoje a exclusão falha na chave estrangeira; na janela de 2026-11-01 foram apagados à mão)
-- [ ] **Próximo deploy — controle do degradê no editor.** Por lâmina com foto: sem, leve
+- [x] **Próximo deploy — controle do degradê no editor.** No ar em `3fa4f53`. Por lâmina com foto: sem, leve
   ou forte, com aviso quando o texto perde leitura. Hoje o degradê é o do layout (a capa
   do carrossel ganhou um mais forte em 2026-11-01: 85%, 0,8, curva 0,9)
 - [ ] **Lançamento — abrir o cadastro.** Hoje produção é fechada por padrão
