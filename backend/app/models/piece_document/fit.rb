@@ -10,6 +10,9 @@ module PieceDocument
   # editor.
   module Fit
     LAYOUT = "carousel-body"
+    # Os outros layouts do miolo que seguem o degrau do carrossel, medidos na
+    # caixa deles: só descem se o texto não couber.
+    FOLLOWERS = %w[split-image-text].freeze
     STEPS = [ 2, 1, 0 ].freeze
     # O texto do miolo cabe com folga: até 90% da caixa da pilha.
     ROOM = 0.9
@@ -20,18 +23,25 @@ module PieceDocument
     # `content`). `measurer`: quem mede o texto na fonte da marca
     # (`PieceRenderers::Libvips#text_height`).
     def carousel!(slides, measurer:)
-      middle = Array(slides[1...-1]).select { |slide| slide["layoutId"] == LAYOUT }
-      return slides if middle.empty?
+      middle = Array(slides[1...-1])
+      body = middle.select { |slide| slide["layoutId"] == LAYOUT }
+      step = body.any? ? step_for(body, LAYOUT, STEPS, measurer) : STEPS.first
+      body.each { |slide| set_step(slide, step) }
 
-      step = step_for(middle, measurer)
-      middle.each do |slide|
-        slide["blocks"].each { |block| block["sizeStep"] = step if block.key?("content") }
+      middle.select { |slide| FOLLOWERS.include?(slide["layoutId"]) }.each do |slide|
+        set_step(slide, step_for([ slide ], slide["layoutId"], STEPS.select { |candidate| candidate <= step }, measurer))
       end
       slides
     end
 
-    def step_for(middle, measurer)
-      contract = Layouts::Registry.find(LAYOUT)
+    def set_step(slide, step)
+      slide["blocks"].each { |block| block["sizeStep"] = step if block.key?("content") }
+    end
+
+    # O maior degrau de `steps` em que o texto de todas as `slides` cabe na
+    # caixa da pilha do layout.
+    def step_for(slides, layout_id, steps, measurer)
+      contract = Layouts::Registry.find(layout_id)
       canvas = PieceDocument.canvas_for("carousel")
       layer = contract.layers_for("carousel").find { |item| item["kind"] == "stack" }
       box = Layouts::Geometry.box(layer["box"], canvas["width"], canvas["height"])
@@ -39,7 +49,7 @@ module PieceDocument
       width = box.w - left - right
       room = (box.h - top - bottom) * ROOM
 
-      STEPS.find { |step| middle.all? { |slide| fits?(slide, layer, contract, step, width, room, measurer) } } || 0
+      steps.find { |step| slides.all? { |slide| fits?(slide, layer, contract, step, width, room, measurer) } } || 0
     rescue StandardError => e
       # Sem medir, a letra fica no tamanho do layout: nunca derruba a peça.
       Rails.logger.warn("fit: #{e.class}: #{e.message.to_s.first(160)}")

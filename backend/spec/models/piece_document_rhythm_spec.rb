@@ -37,7 +37,7 @@ RSpec.describe "Ritmo do carrossel" do
       schemes = described_class.schemes(colors)
 
       expect(schemes["light"]).to eq("cover" => "primary", "body" => "surface", "highlight" => "accent", "cta" => "primary")
-      expect(schemes["dark"]).to eq("cover" => "accent", "body" => "primary", "highlight" => "accent", "cta" => "accent")
+      expect(schemes["dark"]).to eq("cover" => "accent", "body" => "primary", "highlight" => "surface", "cta" => "accent")
     end
 
     it "sem fundo claro na paleta não há esquema claro; sem acento, o destaque cai no que a marca tem" do
@@ -59,8 +59,9 @@ RSpec.describe "Ritmo do carrossel" do
       expect(document.dig("meta", "scheme")).to eq("light")
     end
 
-    it "esquema escuro inverte o miolo; esquema desconhecido vira o padrão" do
-      expect(tokens(build(carousel(slide("carousel-body"), scheme: "dark")))).to eq(%w[accent primary accent])
+    it "esquema escuro inverte o miolo e destaca no fundo claro; esquema desconhecido vira o padrão" do
+      expect(tokens(build(carousel(slide("carousel-body"), slide("carousel-body", highlight: true), scheme: "dark"))))
+        .to eq(%w[accent primary surface accent])
       expect(build(carousel(slide("carousel-body"), scheme: "neon")).dig("meta", "scheme")).to eq("light")
     end
 
@@ -95,6 +96,19 @@ RSpec.describe "Ritmo do carrossel" do
       document = build(carousel(slide("carousel-body", body: "Curto."), slide("carousel-body", title: title, body: body)))
 
       expect(steps(document)).to eq([ [ 1, 1 ], [ 1, 1 ] ])
+    end
+
+    it "o split-image-text segue o degrau do carrossel e só desce se o texto não couber na caixa dele" do
+      photo = create(:brand_asset, :photo, brand_core: brand).id
+      short = slide("split-image-text", body: "Pouco.")
+      long = slide("split-image-text", title: "Um título comprido que ocupa três linhas inteiras", body: "Texto longo. " * 23)
+      [ short, long ].each { |s| s["content"]["image"] = photo }
+
+      document = build(carousel(slide("carousel-body", body: "Curto."), short, long))
+
+      expect(steps(document)).to eq([ [ 2, 2 ] ])
+      split = document["slides"].select { |s| s["layoutId"] == "split-image-text" }
+      expect(split.map { |s| s["blocks"].select { |b| b["type"] == "text" }.map { |b| b["sizeStep"] }.uniq }).to eq([ [ 2 ], [ 1 ] ])
     end
 
     it "sem conseguir medir, fica no tamanho do layout" do

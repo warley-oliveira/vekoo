@@ -9,27 +9,39 @@ module PieceDocument
   # vem daqui. Hoje é o padrão tirado da paleta da marca; a escolha da marca
   # no Brandcore entra no lugar de `SCHEMES` quando existir.
   module Rhythm
+    # Por papel, os tokens na ordem de preferência — o primeiro que a marca
+    # tem. O destaque é a cor que contrasta com o miolo: o acento no miolo
+    # claro, o fundo claro no miolo escuro.
     SCHEMES = {
-      "light" => { "cover" => "primary", "body" => "surface", "highlight" => "accent", "cta" => "primary" },
-      "dark" => { "cover" => "accent", "body" => "primary", "highlight" => "accent", "cta" => "accent" }
+      "light" => {
+        "body" => %w[surface],
+        "cover" => %w[primary accent secondary], "highlight" => %w[accent secondary primary], "cta" => %w[primary accent secondary]
+      },
+      "dark" => {
+        "body" => %w[primary],
+        "cover" => %w[accent secondary primary], "highlight" => %w[surface accent secondary], "cta" => %w[accent secondary primary]
+      }
     }.freeze
     DEFAULT = "light"
-    # Papel cujo token a marca não tem: o próximo que ela tem.
-    FALLBACKS = {
-      "surface" => [],
-      "primary" => %w[accent secondary],
-      "accent" => %w[secondary primary],
-      "secondary" => %w[accent primary]
-    }.freeze
+    ROLES = %w[cover body highlight cta].freeze
 
     module_function
 
     # Os esquemas que a paleta da marca sustenta, já com o token de cada
-    # papel. Sem fundo claro na paleta, não há esquema claro.
+    # papel. Sem fundo claro na paleta, não há esquema claro. Capa, destaque
+    # e chamada preferem uma cor diferente da do miolo.
     def schemes(colors)
-      SCHEMES.each_with_object({}) do |(name, roles), found|
-        resolved = roles.transform_values { |token| available(token, colors) }
-        found[name] = resolved if resolved.values.all?
+      SCHEMES.each_with_object({}) do |(name, candidates), found|
+        body = candidates["body"].find { |token| PieceDocument.resolve_token(colors, token) }
+        next unless body
+
+        body_hex = PieceDocument.resolve_token(colors, body)["hex"]
+        found[name] = ROLES.to_h { |role|
+          next [ role, body ] if role == "body"
+
+          present = candidates[role].select { |token| PieceDocument.resolve_token(colors, token) }
+          [ role, present.find { |token| PieceDocument.resolve_token(colors, token)["hex"] != body_hex } || present.first || body ]
+        }
       end
     end
 
@@ -87,10 +99,6 @@ module PieceDocument
 
     def highlight?(raw_slide)
       raw_slide.is_a?(Hash) && [ true, "true" ].include?(raw_slide.stringify_keys["highlight"])
-    end
-
-    def available(token, colors)
-      [ token, *FALLBACKS.fetch(token, []) ].find { |candidate| PieceDocument.resolve_token(colors, candidate) }
     end
   end
 end

@@ -44,6 +44,8 @@ export type GeometryLayer = {
   when?: "image"
   from?: "top" | "bottom"
   opacity?: number
+  /** O expoente do degradê do `scrim` (padrão 1,4; menor escurece mais cedo). */
+  curve?: number
   height?: number
   size?: number
   text?: string

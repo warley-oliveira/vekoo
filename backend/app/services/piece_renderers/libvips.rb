@@ -110,7 +110,7 @@ module PieceRenderers
       y = box.y || (@h - layer.dig("box", "bottom").to_f - h)
       ramp = ::Vips::Image.xyz(w, h)[1] / [ h - 1, 1 ].max.to_f
       ramp = ramp * -1 + 1 if layer["from"] == "top"
-      alpha = (ramp**1.4) * (layer["opacity"].to_f * 255)
+      alpha = (ramp**(layer["curve"] || 1.4).to_f) * (layer["opacity"].to_f * 255)
       layer_image = ::Vips::Image.black(w, h, bands: 3).bandjoin(alpha).cast(:uchar).copy(interpretation: :srgb)
       composite(image, layer_image, box.x || 0, y)
     end

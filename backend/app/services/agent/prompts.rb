@@ -119,10 +119,12 @@ module Agent
         esquemas diferentes; dentro da peça, o esquema é um só.
       - O miolo é uma sequência: todas as lâminas com o mesmo fundo e o
         mesmo layout, `carousel-body`. Variação só com motivo:
-        - **destaque** — no máximo uma lâmina do miolo, a que carrega o
-          número, a frase-chave ou a virada, marcada com
+        - **destaque** — opcional, e no máximo uma lâmina do miolo: a que
+          carrega o número, a frase-chave ou a virada, marcada com
           `"highlight": true`; ela ganha a cor de destaque e pode usar um
           layout só de texto (`text-only-solid`, `text-only-accent-quote`).
+          Lista homogênea — itens numerados ou paralelos, nenhum maior que
+          os outros — fica **sem** destaque. Na dúvida, sem.
         - **foto** — a lâmina que fala do que uma foto da marca mostra usa
           um layout com foto.
       - Não mande `background` em lâmina de carrossel.

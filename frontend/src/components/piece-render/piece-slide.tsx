@@ -105,7 +105,7 @@ function Layer({ layer, context }: { layer: GeometryLayer; context: Context }) {
       return <ImageLayer layer={layer} box={box} context={context} />
     case "scrim":
       if (layer.when === "image" && !context.imagePresent) return null
-      return <div style={{ ...place(box), backgroundImage: scrimGradient(layer.from ?? "bottom", layer.opacity ?? 0.6), pointerEvents: "none" }} />
+      return <div style={{ ...place(box), backgroundImage: scrimGradient(layer.from ?? "bottom", layer.opacity ?? 0.6, layer.curve), pointerEvents: "none" }} />
     case "logo":
       return <LogoLayer layer={layer} context={context} />
     case "stack":
