@@ -151,6 +151,16 @@ RSpec.describe "Ritmo do carrossel" do
       expect(result.errors.join).to include("no máximo uma")
     end
 
+    it "lista numerada não leva destaque: o motor ignora e o plano volta com o erro" do
+      list = carousel(slide("carousel-body", title: "1. Faça as contas"), slide("text-only-solid", title: "2. Leia o contrato", highlight: true),
+        slide("carousel-body", title: "3. Ande pela rua"))
+
+      expect(tokens(build(list))).to eq(%w[primary surface surface surface primary])
+      result = plan(list)
+      expect(result.variations).to be_empty
+      expect(result.errors.join).to include("lista numerada").and include("lâmina 3")
+    end
+
     it "layout só de texto vale na lâmina de destaque" do
       result = plan(carousel(slide("carousel-body"), slide("text-only-solid", highlight: true)))
 

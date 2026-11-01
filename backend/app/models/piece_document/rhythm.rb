@@ -24,6 +24,10 @@ module PieceDocument
     }.freeze
     DEFAULT = "light"
     ROLES = %w[cover body highlight cta].freeze
+    # Título que começa com número ("1.", "2)", "3 –") — duas lâminas assim no
+    # miolo fazem uma lista, e lista não tem destaque: o item destacado
+    # quebrava a sequência.
+    NUMBERED = /\A\s*\d{1,2}\s*[.)º°:\-–]/
 
     module_function
 
@@ -70,7 +74,13 @@ module PieceDocument
     end
 
     def highlight_index(raw_slides)
+      return nil if numbered_list?(raw_slides)
+
       (1...(raw_slides.length - 1)).find { |index| highlight?(raw_slides[index]) }
+    end
+
+    def numbered_list?(raw_slides)
+      Array(raw_slides[1...-1]).count { |slide| slide.to_h.stringify_keys.dig("content", "title").to_s.match?(NUMBERED) } >= 2
     end
 
     # O que o plano do agente quebra no ritmo — volta a ele como erro, para a
@@ -80,11 +90,17 @@ module PieceDocument
       raw_slides = Array(raw_slides)
       problems = []
       marked = (1...(raw_slides.length - 1)).select { |index| highlight?(raw_slides[index]) }
-      problems << "marque `highlight` em no máximo uma lâmina do miolo (vieram #{marked.length})" if marked.length > 1
+      list = numbered_list?(raw_slides)
+      if list && marked.any?
+        problems << "o miolo é uma lista numerada: lista não leva destaque — tire o `highlight` e use `#{Fit::LAYOUT}` em todos os itens"
+      elsif marked.length > 1
+        problems << "marque `highlight` em no máximo uma lâmina do miolo (vieram #{marked.length})"
+      end
+      exempt = list ? nil : marked.first
       (1...(raw_slides.length - 1)).each do |index|
         slide = raw_slides[index].to_h.stringify_keys
         layout = slide["layout"].presence || slide["layoutId"]
-        next if layout.to_s == Fit::LAYOUT || index == marked.first || photo?(slide, layout)
+        next if layout.to_s == Fit::LAYOUT || index == exempt || photo?(slide, layout)
 
         problems << "lâmina #{index + 1}: o miolo usa `#{Fit::LAYOUT}`; `#{layout}` só na lâmina com foto ou na de destaque (`\"highlight\": true`)"
       end

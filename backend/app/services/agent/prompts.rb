@@ -124,7 +124,8 @@ module Agent
           `"highlight": true`; ela ganha a cor de destaque e pode usar um
           layout só de texto (`text-only-solid`, `text-only-accent-quote`).
           Lista homogênea — itens numerados ou paralelos, nenhum maior que
-          os outros — fica **sem** destaque. Na dúvida, sem.
+          os outros — fica **sem** destaque. Título numerado no miolo
+          ("1.", "2.") é lista: nunca leva destaque. Na dúvida, sem.
         - **foto** — a lâmina que fala do que uma foto da marca mostra usa
           um layout com foto.
       - Não mande `background` em lâmina de carrossel.
