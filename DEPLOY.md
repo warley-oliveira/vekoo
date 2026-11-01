@@ -13,7 +13,14 @@ Servidor montado do zero em 21/10/2026. O servidor antigo (`107.152.37.137`) nã
 
 ---
 
-## Produção — `3fa4f53` desde 2026-11-01 (tag `prod-3fa4f53`)
+## Produção — `3a0a0fa` desde 2026-11-01 (tag `prod-3a0a0fa`)
+
+Logo com símbolo no "cria pra mim" do onboarding (`Logos::Concepts`, `LogoConceptsJob`) e o
+vtracer 0.6.4 fixo na imagem. Sem janela (62 s; dump antes em
+`~/backups/vekoo/pre-deploy-2026-11-01-0207.dump`), sem migration. Conferido: vtracer nos dois
+containers, geração disponível no worker, vetorização e montagem de verdade com imagem sintética.
+
+### `3fa4f53` (tag `prod-3fa4f53`)
 
 Deploy pequeno sobre a `8d804fd` (sem janela: a API não caiu, 67 s; dump antes em
 `~/backups/vekoo/pre-deploy-2026-11-01-0056.dump`): degradê por lâmina no editor com aviso de
