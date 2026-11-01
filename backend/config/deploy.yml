@@ -80,12 +80,25 @@ env:
     CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2           # Rails.cache
     AGENT_MODEL: claude-sonnet-5-5
     AGENT_MONTHLY_COST_CENTS_CAP: 50000
+    # Vertex AI (imagens e embedding) — conta de serviço `vekoo-api-vertex` (DEPLOY.md §2)
+    GOOGLE_GENAI_USE_VERTEXAI: "True"
+    GOOGLE_CLOUD_PROJECT: logical-lock-512900-p7
+    GOOGLE_CLOUD_LOCATION: global          # Nano Banana
+    EMBEDDING_LOCATION: us-central1        # gemini-embedding-001
+    # Instagram (Business Discovery) — importação da curadoria
+    META_APP_ID: "2244673452932169"
+    META_IG_USER_ID: "17841434450042278"
+    META_GRAPH_VERSION: v26.0
+    REFERENCES_IN_GENERATION: "off"      # liga depois do teste lado a lado
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - DATABASE_URL
     - ANTHROPIC_API_KEY
     - SIGNUP_ALLOWLIST    # e-mails que podem criar conta; vazio = cadastro fechado
+    - GOOGLE_CREDENTIALS_BASE64
+    - META_ACCESS_TOKEN
+    - META_APP_SECRET
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro

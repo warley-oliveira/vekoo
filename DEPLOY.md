@@ -652,6 +652,9 @@ Restore **ainda não testado**.
   tela de criação mostra "a foto não saiu" só enquanto o pedido roda — quando as variações
   chegam, a faixa de fotos mostra só as que deram certo e a peça sai sem foto, em silêncio.
   Precisa de um aviso claro no resultado (qual foto faltou e o que fazer)
+- [ ] **Próximo deploy — controle do degradê no editor.** Por lâmina com foto: sem, leve
+  ou forte, com aviso quando o texto perde leitura. Hoje o degradê é o do layout (a capa
+  do carrossel ganhou um mais forte em 2026-11-01: 85%, 0,8, curva 0,9)
 - [ ] **Lançamento — abrir o cadastro.** Hoje produção é fechada por padrão
   (`config.x.signup_allowlist` no `production.rb`, de `SIGNUP_ALLOWLIST`). Abrir é tirar
   essa linha — ou trocar a lista por convite
