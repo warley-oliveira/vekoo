@@ -95,6 +95,8 @@ module Agent
       - `background` — `{"colorToken": "<token>"}` com um dos tokens de
         `tokensDeCor` da ficha da marca, ou `{"assetId": "<id de foto>"}` só
         se o layout aceitar fundo `image`. Omitido, vale o padrão do layout.
+        **Carrossel não leva `background`**: a cor de cada lâmina vem do
+        ritmo da marca (veja Carrossel).
       - `align` — `left` ou `center`, só se o layout listar em
         `alinhamentos`. Omitido, vale o padrão.
 
@@ -107,9 +109,23 @@ module Agent
       Use `carousel` quando o pedido falar de carrossel, passo a passo, lista,
       "x dicas" ou conteúdo que não cabe numa lâmina. De 3 a 8 lâminas: a
       primeira é `carousel-cover`, a última é `carousel-last-cta` e as do
-      meio são `carousel-body` (ou outro layout que aceite `carousel`, se
-      fizer sentido para aquela lâmina). Uma ideia por lâmina. A capa leva a
-      foto da marca que mostra o assunto, quando houver uma (veja Fotos).
+      meio são `carousel-body`. Uma ideia por lâmina. A capa leva a foto da
+      marca que mostra o assunto, quando houver uma (veja Fotos).
+
+      O carrossel tem **ritmo**, e a cor não é escolha sua lâmina a lâmina:
+      - Escolha o `scheme` da variação: `light` (miolo claro) ou `dark`
+        (miolo escuro). As cores de cada esquema nesta marca estão em
+        `ritmoDoCarrossel` na ficha. Variações diferentes podem usar
+        esquemas diferentes; dentro da peça, o esquema é um só.
+      - O miolo é uma sequência: todas as lâminas com o mesmo fundo e o
+        mesmo layout, `carousel-body`. Variação só com motivo:
+        - **destaque** — no máximo uma lâmina do miolo, a que carrega o
+          número, a frase-chave ou a virada, marcada com
+          `"highlight": true`; ela ganha a cor de destaque e pode usar um
+          layout só de texto (`text-only-solid`, `text-only-accent-quote`).
+        - **foto** — a lâmina que fala do que uma foto da marca mostra usa
+          um layout com foto.
+      - Não mande `background` em lâmina de carrossel.
 
       ## Legenda
 
@@ -127,12 +143,12 @@ module Agent
 
       Varie **a forma**, nunca **os fatos**: preço, data, número e nome do
       produto são idênticos em todas as variações. O que muda é a composição
-      — outro layout quando dois servem de verdade ao pedido, outro token de
-      fundo, outro recorte da mesma mensagem, título curto contra título
-      explicado.
+      — outro layout quando dois servem de verdade ao pedido, outro fundo
+      (no carrossel, o outro esquema), outra foto, outro recorte da mesma
+      mensagem, título curto contra título explicado.
 
-      Se só um layout serve, entregue o mesmo layout com fundos e recortes
-      diferentes. Não repita a mesma peça duas vezes com uma vírgula trocada.
+      Se só um layout serve, entregue o mesmo layout com recortes diferentes.
+      Não repita a mesma peça duas vezes com uma vírgula trocada.
     TEXT
 
     IMAGE_RULES = <<~TEXT.freeze
@@ -220,11 +236,13 @@ module Agent
         "variations": [
           {
             "format": "feed_portrait" | "feed_square" | "story" | "carousel",
+            "scheme": "light" | "dark",
             "title": "<nome curto da peça, só para a pessoa achar depois>",
             "slides": [
               {
                 "layout": "<id do layout>",
                 "background": { "colorToken": "primary" },
+                "highlight": true,
                 "align": "left",
                 "content": { "<id do slot>": "<texto>" | "<id da foto>" | true | false }
               }
@@ -237,6 +255,7 @@ module Agent
       }
 
       - Peça que não é carrossel tem **exatamente uma** lâmina em `slides`.
+      - `scheme` e `highlight` só em carrossel; `background` só fora dele.
       - `title` **não aparece na imagem**: é o nome na galeria.
       - `why` aparece embaixo de cada opção na tela. Escreva para a pessoa,
         não para outro programa: "fundo escuro, preço em destaque".
@@ -319,7 +338,8 @@ module Agent
         que ela não pediu para mudar** — a começar pelos fatos. Se o pedido
         for sobre aparência (fundo, layout, composição), a copy fica; se for
         sobre a copy, a aparência fica. Fonte e cor exata não mudam: vêm da
-        marca.
+        marca. No carrossel, "fundo escuro" ou "fundo claro" é trocar o
+        `scheme` da peça inteira, não o de uma lâmina.
 
         Entregue 1 variação.
       TEXT
@@ -335,9 +355,9 @@ module Agent
 
         #{JSON.pretty_generate(base)}
 
-        Mantenha os fatos e a mensagem. Mude a forma — outro fundo, outro
-        recorte, outro layout se houver um que sirva melhor. Não repita a
-        composição acima.
+        Mantenha os fatos e a mensagem. Mude a forma — outro fundo (no
+        carrossel, o outro `scheme`), outro recorte, outro layout se houver um
+        que sirva melhor. Não repita a composição acima.
 
         Entregue #{count} #{count == 1 ? 'variação' : 'variações'}.
       TEXT

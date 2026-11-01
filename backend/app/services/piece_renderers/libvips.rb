@@ -32,6 +32,16 @@ module PieceRenderers
       }
     end
 
+    # A altura que um texto ocupa nesta marca, nesta largura, e se passou de
+    # `max_lines` — o motor mede antes de desenhar para escolher o degrau da
+    # letra do carrossel (`PieceDocument::Fit`).
+    def text_height(text, role_key, size, width, max_lines)
+      role = @theme["roles"][role_key] || @theme["roles"]["body"]
+      text = role["transform"] == "uppercase" ? text.upcase : text
+      lines, cut = wrap(text, role, size, width, max_lines)
+      [ lines.length * size * role["lineHeight"], cut ]
+    end
+
     def render_slide(document, slide, index, total)
       canvas = document["canvas"]
       @w = canvas["width"].to_i

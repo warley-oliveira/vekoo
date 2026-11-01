@@ -31,6 +31,7 @@ module Agent
         "produtosEOfertas" => offers,
         "anotacoes" => @document["notes"]["text"].presence,
         "tokensDeCor" => color_tokens,
+        "ritmoDoCarrossel" => carousel_rhythm,
         "ativosDisponiveis" => assets
       }.compact
     end
@@ -93,6 +94,19 @@ module Agent
 
         [ token, { "cor" => color["name"].presence, "hex" => color["hex"] }.compact ]
       }.to_h
+    end
+
+    # O que cada esquema do carrossel (`PieceDocument::Rhythm`) pinta nesta
+    # marca — o agente escolhe o esquema e escreve o `why` com o nome das
+    # cores, sem decidir a cor de cada lâmina.
+    def carousel_rhythm
+      names = { "cover" => "capa", "body" => "miolo", "highlight" => "destaque", "cta" => "chamadaFinal" }
+      PieceDocument::Rhythm.schemes(@tokens.colors).transform_values { |roles|
+        roles.to_h { |role, token|
+          color = PieceDocument.resolve_token(@tokens.colors, token)
+          [ names.fetch(role), color["name"].presence || color["hex"] ]
+        }
+      }.presence
     end
 
     # As fotos que um slot `image` aceita. A logo não vai por id: o slot

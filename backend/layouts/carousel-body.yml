@@ -16,10 +16,13 @@ geometry:
   default:
     - { kind: fill, box: full }
     - { kind: slide_number, box: { left: 80, top: 88 }, size: 28 }
+    # O título começa na mesma altura em todas as lâminas do miolo (30%): ao
+    # arrastar, o olho ancora nele. Texto curto não sobe: a letra cresce
+    # (`PieceDocument::Fit`, um degrau só para o carrossel inteiro).
     - kind: stack
-      box: { left: 80, right: 80, top: 220, bottom: 160 }
+      box: { left: 80, right: 80, top: "30%", bottom: 160 }
       anchor: top
       gap: 32
       ink: background
-      items: [ { slot: title, size: 68 }, { slot: body, size: 40 } ]
+      items: [ { slot: title, size: 80 }, { slot: body, size: 44 } ]
     - { kind: logo, slot: logo, box: { right: 80, bottom: 80 }, height: 40 }

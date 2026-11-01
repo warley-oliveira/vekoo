@@ -81,6 +81,10 @@ module Agent
         result.errors.each { |path, code, detail| note(position, describe(document, path, code, detail)) }
         return nil
       end
+      if document["format"] == "carousel" && (problems = PieceDocument::Rhythm.problems(raw["slides"])).any?
+        problems.each { |problem| note(position, problem) }
+        return nil
+      end
 
       Variation.new(
         format: document["format"],
