@@ -14,9 +14,16 @@ module Ai
     # Nano Banana 2 — GA no Vertex desde 28/05/2026, disponível em `global`.
     DEFAULT_MODEL = "gemini-3.1-flash-image"
     TIMEOUT = 90
+    # O `global` devolve 429 (capacidade compartilhada esgotada) com frequência
+    # — 21 vezes em 30 fotos seguidas, em 2026-10-31 — e 503 de vez em quando;
+    # os dois passam em segundos. Mais espera que isso pesa no turno do agente.
+    RETRY_WAITS = [ 5, 15 ].freeze
+    RETRYABLE = %w[429 503].freeze
 
     MissingKey = Vertex::MissingKey
     class Failed < StandardError; end
+    # O Vertex não atendeu (429/503) nem depois das novas tentativas.
+    class Busy < Failed; end
     # O modelo respondeu, mas sem imagem — em geral, filtro de segurança.
     class Blocked < StandardError; end
 
@@ -77,6 +84,19 @@ module Ai
     private
 
     def post(body)
+      attempt = 0
+      begin
+        post_once(body)
+      rescue Busy => e
+        wait = RETRY_WAITS[attempt] or raise
+        attempt += 1
+        Rails.logger.info("[gemini-image] #{e.message.first(80)} — nova tentativa em #{wait} s")
+        sleep wait
+        retry
+      end
+    end
+
+    def post_once(body)
       uri = self.class.endpoint
       request = Net::HTTP::Post.new(uri, "Content-Type" => "application/json", "Authorization" => self.class.authorization)
       request.body = JSON.generate(body)
@@ -84,6 +104,7 @@ module Ai
       payload = JSON.parse(response.body.presence || "{}")
       unless response.is_a?(Net::HTTPSuccess)
         reason = payload.dig("error", "message").to_s.first(160)
+        raise Busy, "HTTP #{response.code}: #{reason}" if RETRYABLE.include?(response.code)
         raise Blocked, reason if reason.match?(/safety|blocked|policy/i)
 
         raise Failed, "HTTP #{response.code}: #{reason}"
@@ -91,9 +112,10 @@ module Ai
 
       payload
     rescue JSON::ParserError
-      raise Failed, "resposta não era JSON (HTTP #{response&.code})"
+      # O 503 do balanceador costuma vir em HTML: conta como ocupado também.
+      raise RETRYABLE.include?(response&.code) ? Busy : Failed, "resposta não era JSON (HTTP #{response&.code})"
     rescue Signet::AuthorizationError => e
-      Rails.logger.warn("[gemini-image] o Google recusou as credenciais (rode `gcloud auth application-default login`): #{e.message.squish.first(200)}")
+      Rails.logger.warn("[gemini-image] o Google recusou as credenciais (confira a chave do Vertex, DEPLOY.md §2): #{e.message.squish.first(200)}")
       self.class.forget_credentials!
       raise MissingKey, e.message.first(160)
     rescue Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED => e

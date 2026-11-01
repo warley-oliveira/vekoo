@@ -57,7 +57,7 @@ module Ai
     rescue JSON::ParserError
       raise Failed, "resposta não era JSON (HTTP #{response&.code})"
     rescue Signet::AuthorizationError => e
-      Rails.logger.warn("[embeddings] o Google recusou as credenciais (rode `gcloud auth application-default login`): #{e.message.squish.first(200)}")
+      Rails.logger.warn("[embeddings] o Google recusou as credenciais (confira a chave do Vertex, DEPLOY.md §2): #{e.message.squish.first(200)}")
       Vertex.forget_credentials!
       raise MissingKey, e.message.first(160)
     rescue Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED => e

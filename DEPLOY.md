@@ -603,7 +603,9 @@ Restore **ainda não testado**.
 - [ ] Formulário da landing grava em lugar nenhum (§4)
 - [ ] Firewall em modo `open`: a origem aceita tráfego que não vem da Cloudflare (§6)
 - [ ] Restore de backup testado uma vez
-- [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3
+- [ ] Vertex AI em produção: conta de serviço `vekoo-api-vertex` (§2) — antes do deploy da Fase 3.
+  Conta e as duas chaves criadas em 2026-10-31 (o dev já usa a dele); falta a de produção
+  como `GOOGLE_CREDENTIALS_BASE64` no Kamal
 - [ ] Instagram: app da Meta, usuário do sistema e token (§2), e o Passo 0 (`references:instagram_smoke`)
 - [ ] Conta de demonstração em produção: **existe**. Nasceu do seed antigo no primeiro
   `db:prepare` do servidor novo, em 2026-10-22 00:55 UTC (o `created_at` diz 22/09 porque
@@ -636,6 +638,16 @@ Restore **ainda não testado**.
   inteiro. Falta um teto que some todas as organizações (agente, onboarding e o que
   mais chamar modelo) e pare de chamar quando estourar. Até lá: limite de gasto no
   Console da Anthropic e alerta de orçamento no Google Cloud (o usuário configura)
+- [ ] **Lançamento — a foto do Nano Banana não é confiável no `global`.** Em 2026-10-31,
+  30 fotos seguidas no dev levaram 21 recusas 429 (capacidade compartilhada esgotada),
+  mesmo com 10 s entre chamadas. O `Ai::GeminiImage` agora tenta de novo duas vezes
+  (5 s e 15 s) em 429/503 e, se não der, levanta `Busy` (um `Failed`). Antes de lançar,
+  **avaliar** (sem implementar ainda): endpoint regional em vez do `global`; aumento de
+  cota ou capacidade reservada (Provisioned Throughput) no Vertex; um modelo de imagem de
+  reserva quando o principal recusar. E a falha tem que aparecer para o assinante: hoje a
+  tela de criação mostra "a foto não saiu" só enquanto o pedido roda — quando as variações
+  chegam, a faixa de fotos mostra só as que deram certo e a peça sai sem foto, em silêncio.
+  Precisa de um aviso claro no resultado (qual foto faltou e o que fazer)
 - [ ] **Lançamento — abrir o cadastro.** Hoje produção é fechada por padrão
   (`config.x.signup_allowlist` no `production.rb`, de `SIGNUP_ALLOWLIST`). Abrir é tirar
   essa linha — ou trocar a lista por convite

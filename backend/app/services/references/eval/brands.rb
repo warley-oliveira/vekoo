@@ -108,7 +108,7 @@ module References
         rescue Ai::Vertex::MissingKey => e
           # Credencial do Google vencida ou ausente: as outras fotos falhariam
           # igual. Para aqui; rodar de novo depois completa o que faltou.
-          @log.call("#{key}: sem credencial do Vertex (#{e.message.to_s.lines.first.to_s.strip.first(80)}) — rode `gcloud auth application-default login` e de novo esta tarefa")
+          @log.call("#{key}: sem credencial do Vertex (#{e.message.to_s.lines.first.to_s.strip.first(80)}) — confira a chave da conta de serviço (DEPLOY.md §2) e rode de novo esta tarefa")
           raise
         rescue StandardError => e
           @log.call("#{key}: foto não saiu — #{e.class}: #{e.message.to_s.first(120)}")
