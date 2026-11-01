@@ -17,11 +17,16 @@ import {
   type VoiceOption,
   type WordmarkOption,
 } from "@/lib/onboarding"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 type OptionPickerProps = {
   kind: SuggestKind
   items: SuggestOption[]
+  /** Logo: direções de símbolo ainda a caminho (cada uma vira dois arranjos). */
+  pending?: number
+  /** Logo: direções de símbolo que não saíram. */
+  failed?: number
   document: BrandDocument
   /** Os arquivos da marca — o logotipo proposto já é um deles. */
   assets: BrandAsset[]
@@ -39,52 +44,92 @@ type OptionPickerProps = {
  * não consegue imaginar o resultado a partir de um hex. A escolha é um clique,
  * e vira fala dela na conversa.
  */
-export function OptionPicker({ kind, items, document, assets, chosen, disabled, onChoose }: OptionPickerProps) {
+export function OptionPicker({ kind, items, pending = 0, failed = 0, document, assets, chosen, disabled, onChoose }: OptionPickerProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const settled = chosen !== null
   const fixed = kind === "fonts" ? fixedFontRole(items) : null
+  // O índice é o da lista inteira: é ele que vai na escolha.
+  const indexed = items.map((option, index) => ({ option, index }))
+  const concepts = indexed.filter(({ option }) => isWordmarkOption(option) && option.concept)
+
+  function renderOption({ option, index }: { option: SuggestOption; index: number }, position: number) {
+    const selected = chosen === index
+    return (
+      <motion.li
+        key={index}
+        initial={reduced ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: settled && !selected ? 0.45 : 1, y: 0 }}
+        transition={{ duration: 0.22, ease: "easeOut", delay: reduced || settled ? 0 : position * 0.06 }}
+      >
+        <button
+          type="button"
+          onClick={() => onChoose(index)}
+          disabled={disabled || settled}
+          aria-pressed={selected}
+          className={cn(
+            "relative flex h-full w-full flex-col gap-2 rounded-xl border bg-card p-1.5 text-left outline-none transition-[border-color,box-shadow]",
+            "focus-visible:ring-3 focus-visible:ring-ring/50 enabled:hover:border-primary/60 enabled:active:scale-[0.99]",
+            selected ? "border-primary ring-3 ring-ring/30" : "border-border"
+          )}
+        >
+          {selected && (
+            <span className="absolute top-3 right-3 z-10 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground">
+              <Check className="size-3" aria-hidden />
+            </span>
+          )}
+          {isWordmarkOption(option) ? (
+            <WordmarkCard option={option} assets={assets} />
+          ) : isPaletteOption(option) ? (
+            <PaletteCard option={option} document={document} />
+          ) : isFontsOption(option) ? (
+            <FontsCard option={option} document={document} fixed={fixed} />
+          ) : (
+            <VoiceCard option={option as VoiceOption} />
+          )}
+        </button>
+      </motion.li>
+    )
+  }
+
+  // A logo com símbolo chega depois do logotipo só com o nome: dois grupos,
+  // e o lugar de quem ainda está sendo desenhado.
+  if (kind === "wordmark" && (concepts.length > 0 || pending > 0 || failed > 0)) {
+    const nameOnly = indexed.filter(({ option }) => !(isWordmarkOption(option) && option.concept))
+    return (
+      <div className="space-y-4">
+        <section className="space-y-2" aria-busy={pending > 0}>
+          <h4 className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+            {t("onboarding.options.logoConcepts.title")}
+          </h4>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label={t("onboarding.options.logoConcepts.title")}>
+            {concepts.map(renderOption)}
+            {Array.from({ length: pending * 2 }, (_, slot) => (
+              <li key={`pending-${slot}`} className="flex flex-col gap-2 rounded-xl border border-dashed border-border p-1.5">
+                <Skeleton className="aspect-[3/2] w-full rounded-lg motion-reduce:animate-none" />
+                <p className="px-1.5 pb-1.5 text-xs text-muted-foreground">{t("onboarding.options.logoConcepts.drawing")}</p>
+              </li>
+            ))}
+          </ul>
+          {failed > 0 && pending === 0 && (
+            <p className="text-xs text-muted-foreground">{t("onboarding.options.logoConcepts.failed", { count: failed })}</p>
+          )}
+        </section>
+        <section className="space-y-2">
+          <h4 className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+            {t("onboarding.options.logoConcepts.nameOnly")}
+          </h4>
+          <ul className="grid gap-3 sm:grid-cols-3" aria-label={t("onboarding.options.logoConcepts.nameOnly")}>
+            {nameOnly.map(renderOption)}
+          </ul>
+        </section>
+      </div>
+    )
+  }
 
   return (
     <ul className="grid gap-3 sm:grid-cols-3" aria-label={t(`onboarding.options.${kind}`)}>
-      {items.map((option, index) => {
-        const selected = chosen === index
-        return (
-          <motion.li
-            key={index}
-            initial={reduced ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: settled && !selected ? 0.45 : 1, y: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut", delay: reduced || settled ? 0 : index * 0.06 }}
-          >
-            <button
-              type="button"
-              onClick={() => onChoose(index)}
-              disabled={disabled || settled}
-              aria-pressed={selected}
-              className={cn(
-                "relative flex h-full w-full flex-col gap-2 rounded-xl border bg-card p-1.5 text-left outline-none transition-[border-color,box-shadow]",
-                "focus-visible:ring-3 focus-visible:ring-ring/50 enabled:hover:border-primary/60 enabled:active:scale-[0.99]",
-                selected ? "border-primary ring-3 ring-ring/30" : "border-border"
-              )}
-            >
-              {selected && (
-                <span className="absolute top-3 right-3 z-10 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground">
-                  <Check className="size-3" aria-hidden />
-                </span>
-              )}
-              {isWordmarkOption(option) ? (
-                <WordmarkCard option={option} assets={assets} />
-              ) : isPaletteOption(option) ? (
-                <PaletteCard option={option} document={document} />
-              ) : isFontsOption(option) ? (
-                <FontsCard option={option} document={document} fixed={fixed} />
-              ) : (
-                <VoiceCard option={option as VoiceOption} />
-              )}
-            </button>
-          </motion.li>
-        )
-      })}
+      {indexed.map(renderOption)}
     </ul>
   )
 }
@@ -117,7 +162,17 @@ function WordmarkCard({ option, assets }: { option: WordmarkOption; assets: Bran
           <img src={dark.url} alt="" className="max-h-7 max-w-full object-contain" />
         </span>
       )}
-      {option.style && <Why title={t(`brand.logo.styles.${option.style}`)} why={null} />}
+      {option.concept ? (
+        <Why
+          title={t("onboarding.options.logoConcepts.label", {
+            direction: t(`onboarding.options.logoConcepts.directions.${option.concept.direction}`),
+            arrangement: t(`onboarding.options.logoConcepts.arrangements.${option.concept.arrangement}`),
+          })}
+          why={option.concept.arrangement === "horizontal" ? (option.concept.idea ?? null) : null}
+        />
+      ) : (
+        option.style && <Why title={t(`brand.logo.styles.${option.style}`)} why={null} />
+      )}
     </>
   )
 }

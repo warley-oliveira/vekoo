@@ -160,6 +160,8 @@ function ReplyPiece({ item, brandCore, showsSummary, chosen, locked, publishing,
           <OptionPicker
             kind={item.kind}
             items={item.items}
+            pending={item.pending ?? 0}
+            failed={item.failed ?? 0}
             document={brandCore.document}
             assets={brandCore.assets}
             chosen={chosen}

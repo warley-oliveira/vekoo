@@ -51,6 +51,8 @@ module Onboarding
         ))
       when "wordmark"
         brand_core.choose_logo(option["logoId"].to_s)
+        # Logo com símbolo: o símbolo vira o glifo da marca.
+        Logos::Concepts.adopt_symbol!(brand_core, option["logoId"].to_s) if option["concept"].present?
       when "voice"
         voice = document["voice"]
         banned = merge_banned(voice["bannedWords"], Array(option["bannedWords"]))

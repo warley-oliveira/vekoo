@@ -64,6 +64,7 @@ Aprendido na janela:
 | Chave SSH | `~/.ssh/vekoo_deploy` | autorizada para o usuário `deploy` do servidor. **Sem ela não há acesso: o servidor não aceita senha** |
 | Segredos | `.env.deploy` na raiz (gitignorado, `chmod 600`) | ver abaixo |
 | Login Cloudflare | `npx wrangler login` (conta **Vekoo**) | conferir com `npx wrangler whoami` |
+| `vtracer 0.6.4` (dev) | `~/.local/bin/vtracer` | vetoriza o símbolo das logos propostas. Na imagem de produção ele vem do estágio `vtracer` do `Dockerfile`; no dev, o mesmo binário, tirado de lá: `docker build --target vtracer -t vekoo-vtracer:0.6.4 backend && docker create --name vt vekoo-vtracer:0.6.4 && docker cp vt:/opt/vtracer/bin/vtracer ~/.local/bin/ && docker rm vt` (outro caminho: `VTRACER_PATH`). Sem ele, o "cria pra mim" da logo oferece só o logotipo com o nome |
 
 `.env.deploy` contém exatamente:
 
@@ -630,6 +631,13 @@ Restore **ainda não testado**.
 - [x] **Próximo deploy — controle do degradê no editor.** No ar em `3fa4f53`. Por lâmina com foto: sem, leve
   ou forte, com aviso quando o texto perde leitura. Hoje o degradê é o do layout (a capa
   do carrossel ganhou um mais forte em 2026-11-01: 85%, 0,8, curva 0,9)
+- [ ] **Próximo ciclo — logo com símbolo** (pedido do André em 2026-11-01, depois de aprovar o
+  fluxo): (1) no arranjo horizontal, o símbolo com mais ou menos a altura do bloco de texto
+  (hoje o nome tem ~40% da altura do símbolo, mas o símbolo parece pequeno ao lado do nome
+  inteiro); (2) testar cada símbolo em tamanho de foto de perfil (110 px) e evitar detalhe
+  fino que vira borrão (a ampulheta dentro do emblema); (3) evitar forma que leia como ícone
+  de interface (o corte em cruz do pão parece um "X"); (4) "outras opções" de símbolo (mais
+  uma rodada, ~US$ 0,31) e a logo inteira em SVG, com o nome em contorno
 - [ ] **Lançamento — abrir o cadastro.** Hoje produção é fechada por padrão
   (`config.x.signup_allowlist` no `production.rb`, de `SIGNUP_ALLOWLIST`). Abrir é tirar
   essa linha — ou trocar a lista por convite

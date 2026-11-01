@@ -113,10 +113,19 @@ export type VoiceOption = {
   bannedWords: string[]
 }
 
-/** Um dos três logotipos do resumo: a logo já está nos ativos da marca. */
+/** As quatro direções do símbolo que a Vekoo propõe, e os dois arranjos. */
+export type LogoDirection = "figurative" | "geometric" | "monogram" | "emblem"
+export type LogoArrangement = "horizontal" | "stacked"
+
+/**
+ * Uma logo do resumo — a logo já está nos ativos da marca. Sem `concept`, o
+ * logotipo só com o nome (grátis); com `concept`, símbolo + nome, que chega
+ * depois (`pending` no bloco de opções).
+ */
 export type WordmarkOption = {
   logoId: string
   style: LogoStyle | null
+  concept?: { direction: LogoDirection; arrangement: LogoArrangement; idea?: string } | null
 }
 
 export type SuggestOption = PaletteOption | FontsOption | VoiceOption | WordmarkOption
@@ -154,6 +163,10 @@ export type ReplyItem =
       kind: SuggestKind
       source: "ai" | "curated"
       items: SuggestOption[]
+      /** Logo: quantas direções de símbolo ainda estão sendo desenhadas. */
+      pending?: number
+      /** Logo: quantas direções de símbolo não saíram. */
+      failed?: number
     }
   | { type: "summary" }
 

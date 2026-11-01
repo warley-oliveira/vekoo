@@ -136,6 +136,24 @@
       "roles": {
         "display": "titles",
         "utility": "text"
+      },
+      "logoConcepts": {
+        "title": "Symbol + name",
+        "nameOnly": "Name only",
+        "drawing": "Drawing…",
+        "failed_one": "One of the symbol proposals didn't come out — the others are here.",
+        "failed_other": "{{count}} symbol proposals didn't come out — the others are here.",
+        "label": "{{direction}} · {{arrangement}}",
+        "directions": {
+          "figurative": "Figurative",
+          "geometric": "Geometric",
+          "monogram": "Monogram",
+          "emblem": "Emblem"
+        },
+        "arrangements": {
+          "horizontal": "beside the name",
+          "stacked": "above the name"
+        }
       }
     },
     "a11y": {

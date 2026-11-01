@@ -294,10 +294,17 @@ module Onboarding
 
       @brand.choose_logo(logo_ids.first)
       say("wordmarkReady")
-      @reply << {
+      options = {
         "type" => "options", "kind" => "wordmark", "source" => "curated",
         "items" => logo_ids.map { |id| { "logoId" => id, "style" => @brand.logos.find_logo(id)&.style } }
       }
+      # As logos com símbolo (`Logos::Concepts`) chegam depois, no mesmo
+      # bloco: o job sai quando o turno estiver gravado (`finish`).
+      if Logos::Concepts.available?
+        options["pending"] = Logos::Concepts::DIRECTIONS.size
+        @logo_concepts = true
+      end
+      @reply << options
     end
 
     # Ajustou nome, cor ou fonte depois do resumo: o logotipo nosso acompanha,
@@ -361,6 +368,7 @@ module Onboarding
       )
       @conversation.touch_turn!
       broadcast
+      LogoConceptsJob.perform_later(@turn.id) if @logo_concepts && status == "answered"
       @turn
     end
 

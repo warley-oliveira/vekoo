@@ -553,6 +553,46 @@ RSpec.describe "Onboarding por conversa", type: :request do
       expect(OnboardingEvent.ordered.last.brand_core_id).to be_nil
     end
   end
+  describe "a logo com símbolo" do
+    it "o resumo sai com o logotipo e avisa que as logos com símbolo vêm; escolher uma traz o símbolo como glifo" do
+      allow(Logos::Concepts).to receive(:available?).and_return(true)
+      reach("logo")
+      brand.assign_section("palette", "colors" => [])
+      brand.assign_section("typography", "display" => {}, "utility" => {})
+      brand.save!
+
+      message("suggest")
+      message("suggest")
+      message("choose", turnId: last_turn["id"], index: 0)
+      expect {
+        message("choose", turnId: last_turn["id"], index: 2)
+      }.to have_enqueued_job(LogoConceptsJob)
+
+      options = reply.find { |item| item["type"] == "options" }
+      expect(options).to include("kind" => "wordmark", "pending" => Logos::Concepts::DIRECTIONS.size)
+      expect(options["items"].size).to eq(3)
+
+      # O job (com o gerador de mentira) acrescenta uma logo com símbolo.
+      svg = %(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="10" height="10"><path d="M0 0H10V10H0Z" fill="#3B2A1A"/></svg>)
+      concept_logo = SecureRandom.uuid
+      create(:brand_asset, brand_core: brand.reload, kind: "logo", variant: "light", logo_id: concept_logo, generated: true,
+        meta: { "origin" => "onboarding", "symbolSvg" => svg,
+                "concept" => { "id" => "c", "direction" => "monogram", "arrangement" => "stacked", "idea" => "A letra" } })
+      allow(Logos::Concepts).to receive(:new) { |_brand, on_concept:, **|
+        double(call: (on_concept.call("monogram", [ concept_logo ]) || Logos::Concepts::Result.new(logo_ids: [ concept_logo ], failed: [], cost_micro_usd: 0)))
+      }
+      perform_enqueued_jobs(only: LogoConceptsJob)
+
+      summary_turn = last_turn
+      options = reply.find { |item| item["type"] == "options" }
+      expect(options).to include("pending" => 0, "failed" => 0)
+      expect(options["items"].last).to include("logoId" => concept_logo, "concept" => include("direction" => "monogram"))
+
+      message("choose", turnId: summary_turn["id"], index: 3)
+      expect(brand.reload.primary_logo.id).to eq(concept_logo)
+      expect(brand.assets.where(kind: "glyph").pluck(:variant)).to match_array(%w[light dark])
+    end
+  end
 end
 
 # As marcas que nasceram antes do onboarding existir.

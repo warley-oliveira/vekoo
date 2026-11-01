@@ -136,6 +136,24 @@
       "roles": {
         "display": "título",
         "utility": "texto"
+      },
+      "logoConcepts": {
+        "title": "Símbolo + nome",
+        "nameOnly": "Só o nome",
+        "drawing": "Desenhando…",
+        "failed_one": "Uma das propostas com símbolo não saiu — as outras estão aqui.",
+        "failed_other": "{{count}} propostas com símbolo não saíram — as outras estão aqui.",
+        "label": "{{direction}} · {{arrangement}}",
+        "directions": {
+          "figurative": "Figurativo",
+          "geometric": "Geométrico",
+          "monogram": "Monograma",
+          "emblem": "Emblema"
+        },
+        "arrangements": {
+          "horizontal": "ao lado do nome",
+          "stacked": "em cima do nome"
+        }
       }
     },
     "a11y": {

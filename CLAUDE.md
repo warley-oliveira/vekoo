@@ -152,8 +152,14 @@ dela no campo principal); falha do modelo vira `modelDown` com "tenta de novo"
 (`POST .../onboarding/retry`). **Não gasta crédito.** "Não sei — cria pra mim" (chip
 em tom, logo, paleta, fonte) usa `Onboarding::Suggest` — três opções validadas, nunca
 falha (curadas em `Onboarding::Fallbacks`); escolher paleta já abre as fontes; na logo
-ele só anota e o **logotipo tipográfico** (`RenderWordmark`, libvips) é desenhado ao
-chegar no resumo, com a fonte escolhida. Logo enviada passa por `PngInspector` e
+ele só anota e, ao chegar no resumo (com paleta e fonte), sai o **logotipo tipográfico**
+(`RenderWordmark`, libvips, grátis e reserva) e, em segundo plano (`LogoConceptsJob` →
+`Logos::Concepts`), as **logos com símbolo**: o Opus escreve a direção de arte de quatro
+símbolos (figurativo, geométrico, monograma, emblema — sem texto), o Nano Banana desenha,
+o **vtracer** vetoriza (ladrilho e branco viram fundo) e `Logos::Lockup` monta símbolo +
+nome na fonte da marca, ao lado e em cima, em claro e escuro (~US$ 0,31 por marca, no
+teto de OPEX). Elas chegam no mesmo bloco de opções (`pending`/`failed`); escolher uma
+leva o símbolo como **glifo** da marca. Logo enviada passa por `PngInspector` e
 alimenta a paleta (`DominantColors`). Fonte fora do catálogo não entra: o agente avisa
 e o "cria pra mim" propõe as que chegam perto. Depois do resumo, o que se escreve é
 ajuste (qualquer campo). `POST /onboarding/finish` publica a **versão 1** pelo

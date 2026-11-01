@@ -16,6 +16,8 @@ class BrandCore::Logos
     def source = generated? ? "generated" : "uploaded"
     def origin = meta["origin"].presence || (generated? ? "onboarding" : "upload")
     def style = meta["style"].presence
+    # A logo com símbolo do "cria pra mim": direção, arranjo e a ideia.
+    def concept = meta["concept"].presence
     def created_at = assets.map(&:created_at).min
     def svg? = assets.any? { |asset| asset.content_type == "image/svg+xml" }
 
