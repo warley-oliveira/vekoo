@@ -1,7 +1,14 @@
 import { mutate as globalMutate } from "swr"
 
 import { apiDelete, apiPatch, apiPost, apiUpload } from "@/lib/api"
-import { getChat, patchChat, publishChat, removeChat, storeChats } from "./chat-store"
+import {
+  getChat,
+  patchChat,
+  publishChat,
+  removeChat,
+  requestListResync,
+  storeChats,
+} from "./chat-store"
 import { applyDeleted, applyOwnReaction, patchMessage, useThreadStore } from "./thread-store"
 import type {
   BulkDeleteResponse,
@@ -113,8 +120,6 @@ export async function sendAudio(
   return message
 }
 
-export type FailedFile = { file?: string; name?: string; error?: string; message?: string }
-
 export async function sendFiles(
   chatId: string,
   files: File[],
@@ -143,6 +148,7 @@ export async function removeTagFromChat(chatId: string, tagId: string): Promise<
  */
 export function afterBulkAction(changedChats?: Chat[]): void {
   if (changedChats) storeChats(changedChats)
+  requestListResync()
   void globalMutate((key) => typeof key === "string" && key.startsWith("/unified-contacts"))
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react"
 import { useTranslation } from "react-i18next"
 import { Pencil } from "lucide-react"
 import { toast } from "sonner"
@@ -9,8 +9,21 @@ import type { Chat } from "@/lib/chat/types"
 
 const MAX_LENGTH = 120
 
-/** O nome do contato, editável ali mesmo. Enter e sair do campo salvam; Esc desiste. */
-export function EditableName({ chat, name }: { chat: Chat; name: string }) {
+export type EditableNameHandle = { edit: () => void }
+
+/**
+ * O nome do contato, editável ali mesmo. Enter e sair do campo salvam; Esc desiste. Com dedo não há
+ * lápis, para não roubar espaço do nome numa tela estreita: "Editar nome" fica no menu do cabeçalho.
+ */
+export function EditableName({
+  chat,
+  name,
+  ref,
+}: {
+  chat: Chat
+  name: string
+  ref?: Ref<EditableNameHandle>
+}) {
   const { t } = useTranslation()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState("")
@@ -27,6 +40,8 @@ export function EditableName({ chat, name }: { chat: Chat; name: string }) {
     setDraft(chat.displayName || chat.userName || "")
     setEditing(true)
   }
+
+  useImperativeHandle(ref, () => ({ edit: start }))
 
   const commit = () => {
     setEditing(false)
@@ -73,7 +88,7 @@ export function EditableName({ chat, name }: { chat: Chat; name: string }) {
         type="button"
         variant="ghost"
         size="icon-xs"
-        className="shrink-0 text-muted-foreground opacity-0 group-hover/name:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
+        className="shrink-0 text-muted-foreground opacity-0 group-hover/name:opacity-100 focus-visible:opacity-100 pointer-coarse:hidden"
         aria-label={t("chat.header.rename")}
         title={t("chat.header.rename")}
         onClick={start}

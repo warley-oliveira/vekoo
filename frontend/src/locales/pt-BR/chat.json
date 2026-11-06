@@ -2,7 +2,7 @@
   "chat": {
     "list": {
       "label": "Conversas",
-      "search": "Buscar por nome ou telefone",
+      "search": "Nome ou telefone",
       "status": "Situação das conversas",
       "statusFilter": {
         "all": "Todas",
@@ -314,6 +314,7 @@
     "composer": {
       "label": "Escrever mensagem",
       "placeholder": "Escreva, ou use / para mensagens rápidas",
+      "placeholderTouch": "Escreva uma mensagem",
       "send": "Enviar mensagem",
       "attach": "Anexar arquivo",
       "emoji": "Emojis",

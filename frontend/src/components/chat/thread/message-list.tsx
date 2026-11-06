@@ -169,9 +169,19 @@ export const MessageList = memo(function MessageList({
   const virtuoso = useRef<VirtuosoHandle>(null)
   const [atBottom, setAtBottom] = useState(true)
   const rowsRef = useRef(rows)
+  const atBottomRef = useRef(true)
   useLayoutEffect(() => {
     rowsRef.current = rows
+    atBottomRef.current = atBottom
   })
+
+  // `followOutput` só cuida de item novo. Quem está no fim também precisa continuar lá quando uma
+  // linha cresce: a foto que terminou de carregar, o motivo de uma falha, a reação que entrou.
+  const stayAtBottom = useCallback(() => {
+    if (atBottomRef.current) {
+      virtuoso.current?.scrollToIndex({ index: "LAST", align: "end", behavior: "auto" })
+    }
+  }, [])
 
   // Quantas chegaram desde que a pessoa saiu do fim da conversa.
   const [missed, setMissed] = useState(0)
@@ -291,6 +301,7 @@ export const MessageList = memo(function MessageList({
         followOutput={(isAtBottom) => (isAtBottom ? (reduced ? "auto" : "smooth") : false)}
         startReached={hasMore && !loadingOlder && !olderError ? loadOlderIfAny : undefined}
         atBottomStateChange={setAtBottom}
+        totalListHeightChanged={stayAtBottom}
         atBottomThreshold={80}
         increaseViewportBy={{ top: 600, bottom: 200 }}
         rangeChanged={onRange}

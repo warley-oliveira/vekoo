@@ -47,6 +47,7 @@ import { formatDuration } from "@/lib/file-utils"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
+import { cn } from "@/lib/utils"
 import { ComposerExtras, TemplateSender } from "../extension-points"
 import { QuotedMessage } from "../thread/message-parts"
 import { AttachmentDialog, type AttachmentDialogHandle } from "./attachment-dialog"
@@ -171,18 +172,29 @@ const AutomationHint = memo(function AutomationHint({ chat }: { chat: Chat }) {
   return null
 })
 
+/**
+ * A folga sob o composer soma a área segura do aparelho, mas não com o teclado aberto: aí quem fica
+ * embaixo é o teclado, e a folga viraria um buraco entre os dois.
+ */
+const BOTTOM_PADDING = "pb-[calc(0.75rem_+_max(0px,_var(--app-safe-bottom)_-_var(--kb-inset,_0px)))]"
+
+/** No lugar do composer, onde só dá para ler: a aba "Todos" de um contato. */
+export function ReadOnlyNotice() {
+  const { t } = useTranslation()
+
+  return (
+    <div className={cn("shrink-0 border-t px-4 pt-3 text-center text-sm text-muted-foreground", BOTTOM_PADDING)}>
+      {t("chat.composer.readOnly")}
+    </div>
+  )
+}
+
 /** Quando não dá para escrever: por quê, e o que resolve. */
 function ComposerNotice({ chat, mode }: { chat: Chat; mode: ComposerMode }) {
   const { t } = useTranslation()
   const canManage = useCan("core_settings")
 
-  if (mode === "read-only") {
-    return (
-      <div className="shrink-0 border-t px-4 py-3 text-center text-sm text-muted-foreground pb-safe">
-        {t("chat.composer.readOnly")}
-      </div>
-    )
-  }
+  if (mode === "read-only") return <ReadOnlyNotice />
 
   const platform = chat.audienceType === "instagram" ? "instagram" : "messenger"
   const title =
@@ -199,7 +211,7 @@ function ComposerNotice({ chat, mode }: { chat: Chat; mode: ComposerMode }) {
         : t("chat.composer.disconnected")
 
   return (
-    <div className="shrink-0 border-t px-3 pt-3 pb-3 md:px-5">
+    <div className={cn("shrink-0 border-t px-3 pt-3 md:px-5", BOTTOM_PADDING)}>
       <Callout
         tone={mode === "disconnected" ? "warning" : "neutral"}
         icon={<TriangleAlert className="size-4" />}
@@ -504,7 +516,7 @@ function ComposerBox({
   )
 
   return (
-    <div className="relative shrink-0 border-t px-3 pt-2 pb-3 pb-safe md:px-5">
+    <div className={cn("relative shrink-0 border-t px-3 pt-2 md:px-5", BOTTOM_PADDING)}>
       <AutomationHint chat={chat} />
       <ReplyBar chatId={chatId} contactName={contactName} />
 
@@ -599,13 +611,13 @@ function ComposerBox({
                 ref={textarea}
                 rows={1}
                 aria-label={t("chat.composer.label")}
-                placeholder={t("chat.composer.placeholder")}
+                placeholder={t(isTouch ? "chat.composer.placeholderTouch" : "chat.composer.placeholder")}
                 enterKeyHint={isTouch ? "enter" : "send"}
                 onInput={refreshFromInput}
                 onClick={refreshFromInput}
                 onKeyDown={onKeyDown}
                 onPaste={onPaste}
-                className="max-h-40 min-h-8 min-w-0 flex-1 resize-none bg-transparent px-1.5 py-1.5 text-base leading-5 outline-none placeholder:text-muted-foreground md:text-sm"
+                className="max-h-40 min-h-8 min-w-0 flex-1 resize-none bg-transparent px-1.5 py-1.5 text-base leading-5 outline-none placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-10 pointer-coarse:py-2.5"
               />
 
               {hasText ? (

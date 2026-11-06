@@ -311,7 +311,8 @@ const MessageBubble = memo(function MessageBubble({
 
           {failed && chatId ? (
             <div className="mt-1 flex max-w-full flex-wrap items-center justify-end gap-x-2 px-1 text-xs text-status-danger">
-              <span className="min-w-0">
+              {/* O motivo vem do provedor e às vezes é longo: duas linhas, e o resto em `title`. */}
+              <span className="line-clamp-2 min-w-0 text-right" title={message.statusMessage ?? undefined}>
                 {message.statusMessage
                   ? t("chat.message.failedWithReason", { reason: message.statusMessage })
                   : t("chat.message.failed")}

@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react"
+import { memo, useCallback, useRef } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   MoreVertical,
   PanelRight,
+  Pencil,
   RotateCcw,
   Trash2,
 } from "lucide-react"
@@ -35,7 +36,7 @@ import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { ChannelBadge } from "../channel-icon"
 import { HAS_DETAILS_PANEL, ThreadHeaderExtras, ThreadMenuExtras } from "../extension-points"
-import { EditableName } from "./editable-name"
+import { EditableName, type EditableNameHandle } from "./editable-name"
 
 /** Automação ligada ou pausada, e quando volta. Clicar alterna. */
 function AutomationButton({ chat }: { chat: Chat }) {
@@ -99,6 +100,7 @@ export const ThreadHeader = memo(function ThreadHeader({
   const navigate = useNavigate()
   const toggleDetails = useDetailsPanel((state) => state.toggle)
   const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
+  const nameField = useRef<EditableNameHandle>(null)
 
   const channel = channelKey(connector, chat.audienceType)
   const name = chatDisplayName(chat, {
@@ -161,7 +163,7 @@ export const ThreadHeader = memo(function ThreadHeader({
 
       <div className="flex min-w-0 flex-1 flex-col pl-1">
         {ready ? (
-          <EditableName chat={chat} name={name} />
+          <EditableName ref={nameField} chat={chat} name={name} />
         ) : (
           <h2 className="truncate font-heading text-base leading-6 font-semibold tracking-tight">{name}</h2>
         )}
@@ -228,8 +230,12 @@ export const ThreadHeader = memo(function ThreadHeader({
             >
               <MoreVertical />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-auto min-w-52">
+            <DropdownMenuContent align="end" className="w-auto min-w-52" finalFocus={false}>
               <ThreadMenuExtras chat={chat} />
+              <DropdownMenuItem className="pointer-fine:hidden" onClick={() => nameField.current?.edit()}>
+                <Pencil />
+                {t("chat.header.rename")}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleStatus}>
                 {closed ? <RotateCcw /> : <CheckCircle2 />}
                 {statusLabel}

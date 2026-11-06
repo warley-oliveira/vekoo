@@ -25,7 +25,7 @@ import { useChannel } from "@/hooks/use-channel"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 import { ApiError } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
-import { reactToMessage } from "@/lib/chat/actions"
+import { deleteMessages, reactToMessage } from "@/lib/chat/actions"
 import { channelKey, connectorNumber, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
 import { composerMode } from "@/lib/chat/composer-mode"
@@ -39,11 +39,11 @@ import {
   setOpenThread,
   useThreadStore,
 } from "@/lib/chat/thread-store"
-import type { Chat, ChatChannelMessage, ChatMessage, UnifiedContactChat } from "@/lib/chat/types"
+import type { ChatChannelMessage, ChatMessage, UnifiedContactChat } from "@/lib/chat/types"
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { ChannelIcon } from "../channel-icon"
-import { Composer, type ComposerHandle } from "../composer/composer"
+import { Composer, ReadOnlyNotice, type ComposerHandle } from "../composer/composer"
 import { MediaViewer } from "../media/media-viewer"
 import { DeleteMessagesDialog } from "./delete-messages-dialog"
 import { MessageList, type MessageListHandle } from "./message-list"
@@ -63,14 +63,12 @@ const Conversation = memo(function Conversation({
   contactName,
   contactPicture,
   mode,
-  capabilitiesConnector,
 }: {
   chatId: string
   connector: ChatConnector | undefined
   contactName: string
   contactPicture: string | null
   mode: ReturnType<typeof composerMode>
-  capabilitiesConnector: ChatConnector | undefined
 }) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
@@ -86,8 +84,8 @@ const Conversation = memo(function Conversation({
   const [dragging, setDragging] = useState(false)
 
   const capabilities = useMemo<MessageCapabilities>(
-    () => ({ connector: capabilitiesConnector ?? connector, provider }),
-    [capabilitiesConnector, connector, provider]
+    () => ({ connector, provider }),
+    [connector, provider]
   )
 
   const context = useMemo<ThreadContextValue>(
@@ -117,8 +115,14 @@ const Conversation = memo(function Conversation({
           text: message.content ?? "",
           replyToMessageId: message.replyToMessageId ?? null,
         }
-        if (message.id.startsWith("local-")) retryOutgoing(message.id, input)
-        else send(input)
+        if (message.id.startsWith("local-")) {
+          retryOutgoing(message.id, input)
+        } else {
+          // A tentativa nova toma o lugar da que falhou: sem isto, a conversa guardaria as duas, e
+          // a falha continuaria pedindo uma ação que já foi feita. Tirar é só para quem vê.
+          void deleteMessages(chatId, [message.id], "me").catch(() => {})
+          send(input)
+        }
         list.current?.scrollToBottom()
       },
       scrollToMessage: (id) => list.current?.scrollToMessage(id),
@@ -440,18 +444,21 @@ export default function ChatThread({
       ) : null}
 
       {showTimeline ? (
-        <TimelineBody
-          chat={chat}
-          chats={contactChats}
-          connectors={connectors}
-          contactName={contactName}
-        />
+        <>
+          <AllChannelsTimeline
+            externalId={chat.externalId}
+            chats={contactChats}
+            connectors={connectors}
+            contactName={contactName}
+            contactPicture={chat.profilePictureUrl}
+          />
+          <ReadOnlyNotice />
+        </>
       ) : (
         <Conversation
           key={chatId}
           chatId={chatId}
           connector={connector}
-          capabilitiesConnector={connector}
           contactName={contactName}
           contactPicture={chat.profilePictureUrl}
           mode={mode}
@@ -461,31 +468,3 @@ export default function ChatThread({
   )
 }
 
-function TimelineBody({
-  chat,
-  chats,
-  connectors,
-  contactName,
-}: {
-  chat: Chat
-  chats: UnifiedContactChat[]
-  connectors: Map<string, ChatConnector>
-  contactName: string
-}) {
-  const { t } = useTranslation()
-
-  return (
-    <>
-      <AllChannelsTimeline
-        externalId={chat.externalId}
-        chats={chats}
-        connectors={connectors}
-        contactName={contactName}
-        contactPicture={chat.profilePictureUrl}
-      />
-      <div className="shrink-0 border-t px-4 py-3 text-center text-sm text-muted-foreground pb-safe">
-        {t("chat.composer.readOnly")}
-      </div>
-    </>
-  )
-}

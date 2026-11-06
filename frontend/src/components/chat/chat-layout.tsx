@@ -64,7 +64,8 @@ export const ChatLayout = memo(function ChatLayout({
           singleColumn && chatId && "hidden"
         )}
       >
-        <ListPanel connected={connected} />
+        {/* Com uma conversa aberta, quem avisa da conexão é ela: duas faixas iguais só fariam barulho. */}
+        <ListPanel connected={connected || Boolean(chatId)} />
       </aside>
 
       <section
