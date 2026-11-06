@@ -11,8 +11,8 @@ module CustomDashboards
   # O escopo da fonte (organização e `Chat.visible_to`) é aplicado por último pelos construtores, numa
   # condição própria: nada do que o cliente manda alcança ou substitui essa chave.
   #
-  # O prazo é de verdade: `max_time_ms` em toda agregação, o que a origem declarava em `QUERY_TIMEOUT` e
-  # nunca usava.
+  # O prazo é de verdade: `max_time_ms` no Mongo e `statement_timeout` no Postgres, o que a origem declarava
+  # em `QUERY_TIMEOUT` e nunca usava.
   class QueryEngine
     MAX_ROWS = 10_000
     # Sem agrupar, cada linha é um documento: o teto padrão é menor, e quem precisa pede até `MAX_ROWS`.
@@ -33,6 +33,15 @@ module CustomDashboards
     # Etiqueta e presença em agendamento são pertença a um conjunto: "maior que" não quer dizer nada, e a
     # origem simplesmente ignorava o filtro, devolvendo tudo.
     SET_OPERATORS = %w[eq ne in nin].freeze
+    # Os únicos que recebem lista. Nos outros ela não quer dizer nada, e no Postgres seria erro de servidor.
+    LIST_OPERATORS = %w[in nin].freeze
+    COMPARISON_OPERATORS = %w[gt gte lt lte].freeze
+    PRESENCE_OPERATORS = %w[exists not_exists].freeze
+    # Procurar um trecho num número ou numa data: no Mongo não casa com nada, e no Postgres é erro de SQL.
+    NON_TEXT_TYPES = %w[number date boolean].freeze
+    # Além destes o BSON nem grava: inteiro acima de 64 bits, e milissegundos de um ano que não existe.
+    MAX_FILTER_NUMBER = 1e15
+    PLAUSIBLE_YEARS = (1900..2200)
     ALLOWED_GRANULARITIES = %w[day week month year].freeze
     ALLOWED_AGGREGATIONS = %w[count sum avg min max].freeze
     # `min` e `max` servem para data também; somar data não existe.
@@ -40,6 +49,9 @@ module CustomDashboards
     DATE_ONLY = /\A\d{4}-\d{2}-\d{2}\z/
 
     class Forbidden < StandardError; end
+
+    # O Postgres cortou pelo prazo. O corte do Mongo chega ao controller como `OperationFailure`.
+    class DeadlineExceeded < StandardError; end
 
     # Recusa com código de máquina: é o contrato, e a mensagem sai no idioma da requisição.
     class QueryError < StandardError
@@ -187,21 +199,29 @@ module CustomDashboards
 
         filters.each do |filter|
           name = filter["field"].to_s
+          operator = filter["operator"]
           raise QueryError.new("fieldNotAllowed", field: "filters", name: name) unless DataSourceRegistry.valid_filter_field?(source, name)
-          raise QueryError.new("operatorNotAllowed", field: "filters", name: filter["operator"].to_s) unless ALLOWED_OPERATORS.include?(filter["operator"])
+          raise QueryError.new("operatorNotAllowed", field: "filters", name: operator.to_s) unless operator_allowed?(source, name, operator)
 
           document_filter = DataSourceRegistry.document_id_filter(source, name)
           raise Forbidden if document_filter && document_filter[:permission] && !account.can?(document_filter[:permission])
 
-          if (document_filter || source.field(name)&.relationship) && SET_OPERATORS.exclude?(filter["operator"])
-            raise QueryError.new("operatorNotAllowed", field: "filters", name: filter["operator"].to_s)
-          end
-
-          validate_filter_value!(source, name, filter["value"])
+          validate_filter_value!(source, name, operator, filter["value"])
         end
       end
 
-      def validate_filter_value!(source, name, value)
+      def operator_allowed?(source, name, operator)
+        return false unless ALLOWED_OPERATORS.include?(operator)
+        return SET_OPERATORS.include?(operator) if set_filter?(source, name)
+
+        operator != "contains" || NON_TEXT_TYPES.exclude?(source.field(name)&.type)
+      end
+
+      def set_filter?(source, name)
+        DataSourceRegistry.document_id_filter(source, name).present? || source.field(name)&.relationship.present?
+      end
+
+      def validate_filter_value!(source, name, operator, value)
         if name == "custom_attributes"
           key = value.is_a?(Hash) ? value["key"].to_s : ""
           raise QueryError.new("fieldNotAllowed", field: "filters", name: "custom_attributes.#{key}") unless key.match?(DataSourceRegistry::CUSTOM_ATTR_KEY)
@@ -209,18 +229,57 @@ module CustomDashboards
           value = value["value"]
         end
 
-        raise QueryError.new("invalidFilterValue", field: "filters", name: name) if value.is_a?(Hash)
+        raise QueryError.new("invalidFilterValue", field: "filters", name: name) unless acceptable_filter_value?(source, name, operator, value)
+
+        Array(value).each { |item| parse_time(item, ActiveSupport::TimeZone["UTC"], name) } if source.field(name)&.date?
+      end
+
+      def acceptable_filter_value?(source, name, operator, value)
+        return false if value.is_a?(Hash)
 
         values = Array(value)
-        raise QueryError.new("invalidFilterValue", field: "filters", name: name) if values.size > MAX_FILTER_VALUES || values.any? { |item| item.to_s.length > MAX_FILTER_VALUE_LENGTH }
+        return false if values.size > MAX_FILTER_VALUES || values.any? { |item| item.to_s.length > MAX_FILTER_VALUE_LENGTH }
+        return false if value.is_a?(Array) && !accepts_list?(source, name, operator)
 
-        values.each { |item| parse_time(item, ActiveSupport::TimeZone["UTC"], name) } if source.field(name)&.date?
+        !numeric_filter?(source, name, operator) || values.all? { |item| acceptable_number?(item) }
+      end
+
+      # Etiqueta e presença são conjunto: "igual a" com vários valores quer dizer "um destes".
+      def accepts_list?(source, name, operator)
+        LIST_OPERATORS.include?(operator) || PRESENCE_OPERATORS.include?(operator) || set_filter?(source, name)
+      end
+
+      # Campo de número, e a comparação em campo personalizado, que compara como número. Em `exists` o valor
+      # não conta, e a tela deixa lá o que estava antes de trocar o operador.
+      def numeric_filter?(source, name, operator)
+        return false if PRESENCE_OPERATORS.include?(operator)
+
+        source.field(name)&.number? || (COMPARISON_OPERATORS.include?(operator) && custom_attribute_filter?(name))
+      end
+
+      def custom_attribute_filter?(name)
+        name == "custom_attributes" || name.match?(DataSourceRegistry::CUSTOM_ATTR_FIELD)
+      end
+
+      # Vazio passa: é o filtro que a pessoa acabou de acrescentar na tela, e que ela ainda vai preencher.
+      def acceptable_number?(item)
+        return true if item.blank?
+
+        number = Float(item.to_s, exception: false)
+        !number.nil? && number.abs <= MAX_FILTER_NUMBER
       end
 
       def parse_time(value, zone, name)
-        Agenda::TimeInput.parse(value, zone)
+        plausible_time(value, zone)
       rescue Agenda::TimeInput::Invalid
         raise QueryError.new("invalidFilterValue", field: "filters", name: name)
+      end
+
+      def plausible_time(value, zone)
+        time = Agenda::TimeInput.parse(value, zone)
+        raise Agenda::TimeInput::Invalid if time && !PLAUSIBLE_YEARS.cover?(time.year)
+
+        time
       end
 
       # Sem período, valem os últimos 90 dias: a tela também manda isso, mas o limite é daqui. Campo que
@@ -245,7 +304,7 @@ module CustomDashboards
       end
 
       def parse_range_edge(value, zone)
-        Agenda::TimeInput.parse(value, zone)
+        plausible_time(value, zone)
       rescue Agenda::TimeInput::Invalid
         raise QueryError.new("invalidTimeRange", field: "timeRange")
       end

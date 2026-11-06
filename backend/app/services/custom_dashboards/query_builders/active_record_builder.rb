@@ -24,14 +24,27 @@ module CustomDashboards
       end
 
       def execute
-        return build_raw_result if dimensions.empty? && metrics.empty?
-
-        build_aggregated_result
+        within_deadline { dimensions.empty? && metrics.empty? ? build_raw_result : build_aggregated_result }
+      rescue ActiveRecord::QueryCanceled
+        raise QueryEngine::DeadlineExceeded
+      rescue ActiveRecord::StatementInvalid => error
+        Rails.logger.error("[CustomDashboards] #{source.key}: #{error.class}: #{error.message}")
+        raise QueryEngine::QueryError.new("queryFailed")
       end
 
       private
 
       attr_reader :source, :account, :query, :time_range, :zone, :max_time_ms, :dimensions, :metrics
+
+      # O mesmo prazo do `max_time_ms` no Mongo. `SET LOCAL` vale só nesta transação: a conexão volta para o
+      # pool como estava.
+      def within_deadline
+        model.transaction do
+          connection.execute("SET LOCAL statement_timeout = #{max_time_ms.to_i}")
+
+          yield
+        end
+      end
 
       def model
         source.model

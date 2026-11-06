@@ -126,6 +126,44 @@ RSpec.describe CustomDashboards::QueryEngine do
       expect(names(field: "custom_attributes", operator: "not_exists", value: { key: "cidade" })).to contain_exactly("Bruno", "Carla")
     end
 
+    def refusal(filter)
+      names(filter)
+      nil
+    rescue described_class::QueryError => error
+      error.code
+    end
+
+    it "contains só em texto" do
+      expect(refusal(field: "unread_messages", operator: "contains", value: "5")).to eq("operatorNotAllowed")
+      expect(refusal(field: "created_at", operator: "contains", value: "2026-10-10")).to eq("operatorNotAllowed")
+      expect(refusal(field: "automation_enabled", operator: "contains", value: "true")).to eq("operatorNotAllowed")
+      expect(names(field: "custom_attributes", operator: "contains", value: { key: "cidade", value: "bh" })).to eq([ "Ana Maria" ])
+    end
+
+    it "lista só em in e nin, menos em etiqueta, que é conjunto" do
+      create(:chat_tag, name: "vip", organization_id: organization.id)
+
+      expect(refusal(field: "user_name", operator: "eq", value: %w[Bruno Carla])).to eq("invalidFilterValue")
+      expect(refusal(field: "unread_messages", operator: "gt", value: %w[1 2])).to eq("invalidFilterValue")
+      expect(refusal(field: "custom_attributes", operator: "gt", value: { key: "volume", value: %w[1 2] })).to eq("invalidFilterValue")
+      expect(refusal(field: "tags", operator: "eq", value: %w[vip])).to be_nil
+    end
+
+    it "número precisa ser número, e sem valor é o filtro que a tela ainda não preencheu" do
+      expect(refusal(field: "unread_messages", operator: "gt", value: "abc")).to eq("invalidFilterValue")
+      expect(refusal(field: "unread_messages", operator: "gt", value: "1e30")).to eq("invalidFilterValue")
+      expect(refusal(field: "custom_attributes", operator: "gt", value: { key: "volume", value: "muito" })).to eq("invalidFilterValue")
+
+      expect(names(field: "unread_messages", operator: "gt", value: "")).to contain_exactly("Ana Maria", "Carla")
+      expect(names(field: "unread_messages", operator: "exists", value: "abc")).to contain_exactly("Ana Maria", "Bruno", "Carla")
+    end
+
+    it "recusa a data que nem cabe no banco" do
+      expect(refusal(field: "created_at", operator: "gt", value: "9" * 25)).to eq("invalidFilterValue")
+      expect { execute("conversations", time_range: { start: "9" * 25, end: "9" * 25 }) }
+        .to raise_error(described_class::QueryError) { |error| expect(error.code).to eq("invalidTimeRange") }
+    end
+
     it "dois filtros no mesmo campo somam: um não substitui o outro" do
       rows = execute("conversations", filters: [
         { field: "unread_messages", operator: "gte", value: "2" },

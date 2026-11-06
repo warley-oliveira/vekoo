@@ -34,11 +34,15 @@ class CustomDashboardsController < PlatformController
     render_error(status: :unprocessable_content, code: error.code, field: "widgets", message: error.message, details: error.details)
   end
 
+  rescue_from CustomDashboards::QueryEngine::DeadlineExceeded do
+    render_query_timeout
+  end
+
   # O `max_time_ms` cortou: é recusa, e o que fazer é escolher menos. O resto é erro do Mongo com uma
   # consulta que passou pela validação: fica no log, e a tela recebe uma resposta que dá para mostrar.
   rescue_from Mongo::Error::OperationFailure do |error|
     if error.code == Insights::QueryTimeout::MAX_TIME_EXPIRED
-      render_error(status: :service_unavailable, code: "queryTimeout", message: t("insights.errors.query_timeout"))
+      render_query_timeout
     else
       Rails.logger.error("[CustomDashboardsController] #{error.class}: #{error.message}")
       render_error(status: :unprocessable_content, code: "queryFailed", message: t("insights.custom_dashboards.errors.query_failed"))
@@ -137,6 +141,10 @@ class CustomDashboardsController < PlatformController
 
   MAX_COMPOUND_STEPS = 10
 
+  def render_query_timeout
+    render_error(status: :service_unavailable, code: "queryTimeout", message: t("insights.errors.query_timeout"))
+  end
+
   def set_dashboard
     @dashboard = current_organization.custom_dashboards.where(id: params[:id]).take
     render_not_found unless @dashboard
@@ -208,8 +216,17 @@ class CustomDashboardsController < PlatformController
     raw_filters.filter_map do |raw|
       next unless raw.respond_to?(:permit) && raw[:field].present? && raw[:operator].present?
 
-      { "field" => raw[:field].to_s, "operator" => raw[:operator].to_s, "value" => normalize_filter_value(raw[:value]) }
+      value = normalize_filter_value(raw[:value])
+      next if unfilled_custom_attribute?(raw[:field], value)
+
+      { "field" => raw[:field].to_s, "operator" => raw[:operator].to_s, "value" => value }
     end
+  end
+
+  # A tela manda o filtro de campo personalizado com `key: ""` enquanto a pessoa não escolhe o campo. Fica de
+  # fora, como na origem, para o card não virar erro no meio da edição.
+  def unfilled_custom_attribute?(field, value)
+    field.to_s == "custom_attributes" && value.is_a?(Hash) && value["key"].blank?
   end
 
   # Valor sempre vira texto, lista de texto, ou `{ key, value }`: nada de mapa solto chega ao construtor.

@@ -669,6 +669,25 @@ RSpec.describe "Dashboards personalizados", type: :request do
       end
     end
 
+    it "responde 503 quando o Postgres corta por tempo" do
+      allow(CustomDashboards::QueryEngine).to receive(:execute).and_raise(CustomDashboards::QueryEngine::DeadlineExceeded)
+
+      query({ dataSource: "daily_stats" })
+
+      expect(response).to have_http_status(:service_unavailable)
+      expect(json.dig("error", "code")).to eq("queryTimeout")
+    end
+
+    # O editor manda assim enquanto a pessoa não escolhe o campo, e o card não pode virar erro nesse meio tempo.
+    it "deixa de fora o filtro de campo personalizado que ainda não tem o campo" do
+      create(:chat, organization: organization)
+
+      query({ dataSource: "conversations", metrics: [ { aggregation: "count", label: "Total" } ], filters: [ { field: "custom_attributes", operator: "eq", value: { key: "", value: "" } } ] })
+
+      expect(response).to have_http_status(:ok)
+      expect(json["rows"]).to eq([ { "Total" => 1 } ])
+    end
+
     it "responde 503 quando o Mongo corta por tempo, e 422 em outra falha dele" do
       collection = instance_double(Mongo::Collection)
       allow(Chat).to receive(:collection).and_return(collection)
