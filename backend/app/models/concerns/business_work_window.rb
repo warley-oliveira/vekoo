@@ -109,7 +109,7 @@ module BusinessWorkWindow
 
   def validate_business_work
     enabled_days = enabled_business_days
-    errors.add(:settings, I18n.t("connectors.business_work.no_days")) if business_work_enabled && enabled_days.empty?
+    errors.add(:base, I18n.t("connectors.business_work.no_days")) if business_work_enabled && enabled_days.empty?
 
     enabled_days.each { |day| validate_business_day(day) }
   end
@@ -129,7 +129,7 @@ module BusinessWorkWindow
         :overlap
       end
 
-    errors.add(:settings, "#{prefix}: #{I18n.t("connectors.business_work.#{problem}")}") if problem
+    errors.add(:base, "#{prefix}: #{I18n.t("connectors.business_work.#{problem}")}") if problem
   end
 
   def business_ranges_overlap?(ranges)

@@ -7,7 +7,7 @@ RSpec.describe "Configurações de automação", type: :request do
   let(:member) { create(:account, organization: organization, role: "member", access_role: create(:access_role, :member, organization: organization)) }
 
   let(:business_work) do
-    { days: [ { dayOfWeek: "ignorado", day_of_week: "1", enabled: "true", windows: [ { start: "09:00", end: "18:00" } ] } ] }
+    { days: [ { dayOfWeek: "1", enabled: "true", windows: [ { start: "09:00", end: "18:00" } ] } ] }
   end
 
   describe "GET /automation-settings" do
@@ -82,6 +82,7 @@ RSpec.describe "Configurações de automação", type: :request do
         [ { "day_of_week" => "1", "enabled" => "true", "windows" => [ { "start" => "09:00", "end" => "18:00" } ] } ]
       )
       expect(organization.business_work_enabled).to be(true)
+      expect(json.dig("automationSettings", "businessWork", "days", 0)).to include("dayOfWeek" => "1", "enabled" => "true")
     end
 
     it "recusa janela ligada sem nenhum dia" do
@@ -104,7 +105,7 @@ RSpec.describe "Configurações de automação", type: :request do
       patch "/automation-settings", params: { automationPausePeriod: "weeks" }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json.dig("error", "details", "settings")).to be_present
+      expect(json.dig("error", "message")).to start_with("Período de pausa")
     end
 
     it "não mistura organizações" do

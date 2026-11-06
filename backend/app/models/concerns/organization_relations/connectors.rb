@@ -79,7 +79,7 @@ module OrganizationRelations
     def automation_pause_period_is_known
       return if AUTOMATION_PAUSE_PERIODS.include?(automation_pause_period)
 
-      errors.add(:settings, I18n.t("connectors.automation.invalid_pause_period"))
+      errors.add(:base, I18n.t("connectors.automation.invalid_pause_period"))
     end
 
     def chat_setting(key, default:)

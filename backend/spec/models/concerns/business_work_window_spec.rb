@@ -326,7 +326,7 @@ RSpec.describe BusinessWorkWindow do
     def errors_for(days)
       organization.settings["business_work"] = { "days" => days }
       organization.valid?
-      organization.errors[:settings]
+      organization.errors[:base]
     end
 
     def day(windows, enabled: "true")
@@ -421,7 +421,7 @@ RSpec.describe BusinessWorkWindow do
       saved.settings = saved.settings.merge("business_work_enabled" => true)
 
       expect(saved).not_to be_valid
-      expect(saved.errors[:settings]).to include(a_string_matching(/habilite ao menos um dia/))
+      expect(saved.errors[:base]).to include(a_string_matching(/habilite ao menos um dia/))
     end
 
     it "sai no idioma pedido" do
@@ -430,7 +430,7 @@ RSpec.describe BusinessWorkWindow do
       I18n.with_locale(:en) do
         organization.valid?
 
-        expect(organization.errors[:settings]).to eq([ I18n.t("connectors.business_work.no_days", locale: :en) ])
+        expect(organization.errors[:base]).to eq([ I18n.t("connectors.business_work.no_days", locale: :en) ])
       end
     end
   end

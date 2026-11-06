@@ -3,8 +3,6 @@
 class AutomationSettingsController < PlatformController
   require_permission :core_settings, only: :update
 
-  self.opaque_params += %w[business_work]
-
   FIELDS = %i[
     automation_enabled default_automation_enabled automation_pause_period automation_pause_time_to
     business_work_enabled auto_clear_context_enabled auto_clear_context_interval
@@ -37,7 +35,7 @@ class AutomationSettingsController < PlatformController
         automationPausePeriod: organization.automation_pause_period,
         automationPauseTimeTo: organization.automation_pause_time_to,
         businessWorkEnabled: organization.business_work_enabled,
-        businessWork: organization.business_work,
+        businessWork: organization.business_work.to_h.deep_transform_keys { |key| key.to_s.camelize(:lower) },
         autoClearContextEnabled: organization.auto_clear_context_enabled,
         autoClearContextInterval: organization.auto_clear_context_interval,
         timezone: organization.timezone
