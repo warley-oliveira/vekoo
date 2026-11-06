@@ -1,4 +1,4 @@
-import { useMemo, useState, type ComponentProps } from "react"
+import { useMemo, useRef, useState, type ComponentProps } from "react"
 import { useTranslation } from "react-i18next"
 import { getDefaultClassNames } from "react-day-picker"
 
@@ -60,6 +60,17 @@ export function MiniMonth({ value, today, timeZone, onSelect, className }: MiniM
     )
   }, [counts, shownMonth])
 
+  // O componente do dia é estável: recriá-lo a cada render remontaria todos os botões do mês,
+  // e o foco de quem anda pelo teclado se perderia.
+  const countsRef = useRef(counts)
+  countsRef.current = counts
+  const components = useMemo(
+    () => ({
+      DayButton: (props: DayButtonProps) => <DayWithDots {...props} counts={countsRef.current} />,
+    }),
+    []
+  )
+
   const monthName = new Intl.DateTimeFormat(language, { month: "long", timeZone: "UTC" }).format(
     new Date(`${shownMonth}T12:00:00Z`)
   )
@@ -81,9 +92,9 @@ export function MiniMonth({ value, today, timeZone, onSelect, className }: MiniM
           setBrowsed(null)
           onSelect(dayKeyOfLocal(day))
         }}
-        components={{ DayButton: (props) => <DayWithDots {...props} counts={counts} /> }}
-        className="w-full p-0 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(8)]"
-        classNames={{ root: cn("w-full", getDefaultClassNames().root) }}
+        components={components}
+        className="w-full bg-transparent p-0 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(8)]"
+        classNames={{ root: cn("w-full", getDefaultClassNames().root), today: "" }}
       />
       <p className="mt-2 text-xs text-muted-foreground tabular-nums">
         {monthTotal === null

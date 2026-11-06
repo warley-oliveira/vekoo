@@ -18,18 +18,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { chatDisplayName, lookupChats } from "@/hooks/calendar/use-class-groups"
 import { useProfessionals, useServices } from "@/hooks/calendar/use-professionals"
 import type { AgendaCalendar, BookingEvent, ChatLookupItem } from "@/lib/calendar/types"
-import { formatPhone } from "@/lib/format-phone"
+import { contactLine } from "@/lib/calendar/contact"
 import { TimeZoneNote } from "../calendar-toolbar"
 import type { BookingFormValues } from "./booking-form"
 import { BookingWhen } from "./booking-when"
 
 /** Mais de 7 opções pedem busca. Poucas ficam num seletor simples, melhor no toque. */
 const SEARCH_THRESHOLD = 7
-
-export function contactLine(externalId: string | null | undefined): string | undefined {
-  if (!externalId) return undefined
-  return /^\d{10,15}$/.test(externalId) ? formatPhone(externalId) : externalId
-}
 
 function chatOption(chat: ChatLookupItem): SelectOption {
   return {

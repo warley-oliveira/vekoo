@@ -39,10 +39,13 @@ export function ViewSwitch({
   value,
   onChange,
   isPhone,
+  compact = false,
 }: {
   value: CalendarView
   onChange: (view: CalendarView) => void
   isPhone: boolean
+  /** Só os ícones, para caber no cabeçalho do celular. */
+  compact?: boolean
 }) {
   const { t } = useTranslation()
   const views = isPhone ? PHONE_VIEWS : CALENDAR_VIEWS
@@ -51,14 +54,11 @@ export function ViewSwitch({
       aria-label={t("calendar.toolbar.view")}
       value={value}
       onChange={onChange}
-      fullWidth={isPhone}
       options={views.map((view) => {
         const Icon = VIEW_ICON[view]
-        return {
-          value: view,
-          icon: <Icon />,
-          label: t(`calendar.views.${view}`),
-        }
+        return compact
+          ? { value: view, label: <Icon />, "aria-label": t(`calendar.views.${view}`) }
+          : { value: view, icon: <Icon />, label: t(`calendar.views.${view}`) }
       })}
     />
   )
@@ -70,14 +70,12 @@ export function ViewSwitch({
  */
 export function CalendarNavigator({
   title,
-  isToday,
   onToday,
   onPrevious,
   onNext,
   stepLabel,
 }: {
   title: string
-  isToday: boolean
   onToday: () => void
   onPrevious: () => void
   onNext: () => void
@@ -90,7 +88,6 @@ export function CalendarNavigator({
         type="button"
         variant="outline"
         size="sm"
-        disabled={isToday}
         className="pointer-coarse:h-10"
         onClick={onToday}
       >

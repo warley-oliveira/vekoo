@@ -32,9 +32,9 @@ import { useBookingPreviewMessages } from "@/hooks/calendar/use-attendance-seque
 import { ApiError, apiAssetUrl } from "@/lib/api"
 import { formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
 import type { BookingEvent, BookingHistoryEntry } from "@/lib/calendar/types"
+import { contactLine } from "@/lib/calendar/contact"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { contactLine } from "./booking-fields"
 
 /* ---------- contato ---------- */
 

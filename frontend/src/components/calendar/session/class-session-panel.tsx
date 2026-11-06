@@ -48,9 +48,9 @@ import type {
   ClassAttendance,
   ClassSessionEvent,
 } from "@/lib/calendar/types"
+import { contactLine } from "@/lib/calendar/contact"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { contactLine } from "../booking/booking-fields"
 import { EventSituationBadge, SessionOccupancy } from "../event-badges"
 import { TimeZoneNote } from "../calendar-toolbar"
 import { AddParticipantDialog } from "./add-participant-dialog"

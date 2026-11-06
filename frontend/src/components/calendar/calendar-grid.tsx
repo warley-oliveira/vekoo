@@ -79,10 +79,27 @@ function sourceOf(info: { event: { extendedProps: Record<string, unknown> } }): 
 }
 
 /** O bloco do evento. A cor é a do evento; o que muda por situação vem em ícone e texto. */
-function EventChip({ info, short }: { info: EventDisplayInfo; short: boolean }) {
+function EventChip({
+  info,
+  short,
+  bare,
+}: {
+  info: EventDisplayInfo
+  short: boolean
+  /** Mês no celular: não cabe texto, só a cor de que há algo naquele dia. */
+  bare: boolean
+}) {
   const { t } = useTranslation()
   const source = sourceOf(info)
   const { title, detail } = eventHeadline(source)
+
+  if (bare) {
+    return (
+      <span className="vk-event-bar">
+        <span className="sr-only">{title}</span>
+      </span>
+    )
+  }
 
   let mark = null
   if (source.type === "booking") {
@@ -150,12 +167,13 @@ function EventChip({ info, short }: { info: EventDisplayInfo; short: boolean }) 
     return (
       <div className="vk-event">
         <div className="vk-event-row">
-          {info.timeText ? <span className="vk-event-time">{info.timeText}</span> : null}
+          {info.timeText ? (
+            <span className="vk-event-time vk-event-time--whole">{info.timeText}</span>
+          ) : null}
           <span className="vk-event-title">{title}</span>
           {canceledLabel}
           {mark}
         </div>
-        {fill}
       </div>
     )
   }
@@ -173,7 +191,7 @@ function EventChip({ info, short }: { info: EventDisplayInfo; short: boolean }) 
     <div className="vk-event">
       <div className="vk-event-row">
         <span className="vk-event-time">{info.timeText}</span>
-        {mark}
+        {source.type === "booking" ? mark : null}
       </div>
       <span className="vk-event-title">{title}</span>
       {canceledLabel}
@@ -183,6 +201,7 @@ function EventChip({ info, short }: { info: EventDisplayInfo; short: boolean }) 
           {t("calendar.session.summaryShort", { show: summary.show, noShow: summary.noShow })}
         </span>
       ) : null}
+      {source.type === "class_session" ? <span className="vk-event-corner">{mark}</span> : null}
       {fill}
     </div>
   )
@@ -242,6 +261,9 @@ export default function CalendarGrid({
     [events, zoneFor]
   )
 
+  // A faixa de dia inteiro só ocupa espaço quando há o que mostrar nela.
+  const hasAllDay = useMemo(() => inputs.some((input) => input.allDay), [inputs])
+
   // A primeira hora visível nasce perto de agora: abrir o dia já mostra o que importa.
   const initialScroll = useRef(
     `${String(Math.max(new Date(gridDateOf(Date.now(), nowZone)).getUTCHours() - 1, 0)).padStart(2, "0")}:00:00`
@@ -279,12 +301,20 @@ export default function CalendarGrid({
     [pulseId]
   )
 
+  const bareMonth = isPhone && view === "month"
+
   const eventContent = useCallback(
     (info: EventDisplayInfo) => {
       const isTimeGrid = info.view.type.startsWith("timeGrid")
-      return <EventChip info={info} short={!isTimeGrid || info.isShort || info.event.allDay} />
+      return (
+        <EventChip
+          info={info}
+          bare={bareMonth}
+          short={!isTimeGrid || info.isShort || info.event.allDay}
+        />
+      )
     },
-    []
+    [bareMonth]
   )
 
   function handleMove(info: EventDropInfo | EventResizeDoneInfo) {
@@ -314,7 +344,7 @@ export default function CalendarGrid({
     headerToolbar: false,
     height: "100%",
     nowIndicator: true,
-    editable: true,
+    editable: !bareMonth,
     eventResizableFromStart: !isTouch,
     eventDurationEditable: !isTouch,
     // No toque, a seleção por arraste brigaria com a rolagem: tocar num horário basta.
@@ -332,9 +362,13 @@ export default function CalendarGrid({
     slotHeaderFormat: { hour: "2-digit", minute: "2-digit" },
     eventTimeFormat: { hour: "2-digit", minute: "2-digit" },
     expandRows: true,
+    allDaySlot: hasAllDay,
     allDayText: t("calendar.grid.allDay"),
     noEventsText: t("calendar.grid.noEvents"),
-    dayMaxEventRows: isPhone ? 2 : 3,
+    // O dia já está no título e na faixa da semana, no celular.
+    dayHeaders: !(isPhone && view === "day"),
+    eventDisplay: "block",
+    dayMaxEventRows: isPhone ? 4 : 3,
     moreLinkClick: isPhone ? "day" : "popover",
     moreLinkText: (count: number) => t("calendar.grid.more", { count }),
     rerenderDelay: 10,
@@ -348,6 +382,11 @@ export default function CalendarGrid({
     // Com mouse, `select` já cobre o clique. No toque, ele não está ligado.
     dateClick: isTouch
       ? (info: DateClickInfo) => {
+          // O mês do celular é mapa: tocar leva ao dia, onde dá para ver e marcar.
+          if (bareMonth) {
+            onOpenDay(dayKeyOfGrid(info.date))
+            return
+          }
           const start = info.date
           onSelectRange({
             start,
@@ -359,6 +398,11 @@ export default function CalendarGrid({
     eventClick: (info: EventClickInfo) => {
       info.jsEvent.preventDefault()
       onHoverEvent?.(null, null)
+      if (bareMonth) {
+        const source = sourceOf(info)
+        onOpenDay(dayKeyOfGrid(gridDateOf(source.start, zoneFor(source.calendarId))))
+        return
+      }
       onOpenEvent(sourceOf(info))
     },
     eventDragStart: () => onHoverEvent?.(null, null),

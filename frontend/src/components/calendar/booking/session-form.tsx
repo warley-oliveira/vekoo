@@ -1,11 +1,8 @@
 import { useEffect, useMemo } from "react"
-import { useForm, useWatch, type UseFormReturn } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useWatch, type UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { GraduationCap } from "lucide-react"
 import { Link } from "react-router"
-import { toast } from "sonner"
-import { z } from "zod"
 
 import {
   Callout,
@@ -13,101 +10,15 @@ import {
   SelectField,
   TextareaField,
   TextField,
-  useFormSubmit,
   type SelectOption,
 } from "@/components/shared"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useEventMutations } from "@/hooks/calendar/use-calendar-events"
 import { useClassGroups } from "@/hooks/calendar/use-class-groups"
-import { instantFromField, safeTimeZone } from "@/lib/calendar/timezone"
-import type { AgendaCalendar, ClassSessionEvent } from "@/lib/calendar/types"
+import type { AgendaCalendar } from "@/lib/calendar/types"
 import { TimeZoneNote } from "../calendar-toolbar"
-import type { BookingDraft } from "./booking-form"
+import type { SessionFormValues } from "./new-session-form"
 
 const DEFAULT_LENGTH = 60
-
-function buildSchema(t: (key: string) => string) {
-  return z
-    .object({
-      calendarId: z.string().nullable().refine(Boolean, t("calendar.booking.errors.calendarRequired")),
-      classGroupId: z.string().nullable().refine(Boolean, t("calendar.session.new.groupRequired")),
-      start: z.date({ error: t("calendar.booking.errors.startRequired") }).nullable(),
-      end: z.date({ error: t("calendar.booking.errors.endRequired") }).nullable(),
-      title: z.string().max(255, t("calendar.booking.errors.titleTooLong")),
-      notes: z.string().max(500, t("calendar.booking.errors.descriptionTooLong")),
-    })
-    .superRefine((values, context) => {
-      if (!values.start) {
-        context.addIssue({
-          code: "custom",
-          path: ["start"],
-          message: t("calendar.booking.errors.startRequired"),
-        })
-      }
-      if (!values.end) {
-        context.addIssue({
-          code: "custom",
-          path: ["end"],
-          message: t("calendar.booking.errors.endRequired"),
-        })
-      }
-      if (values.start && values.end && values.end <= values.start) {
-        context.addIssue({
-          code: "custom",
-          path: ["end"],
-          message: t("calendar.booking.errors.endBeforeStart"),
-        })
-      }
-    })
-}
-
-export type SessionFormValues = z.infer<ReturnType<typeof buildSchema>>
-
-/** Aula avulsa ou reposição, fora da grade da turma. */
-export function useNewSessionForm({
-  calendars,
-  draft,
-  onDone,
-}: {
-  calendars: AgendaCalendar[]
-  draft: BookingDraft | null
-  onDone: (saved: ClassSessionEvent) => void
-}) {
-  const { t } = useTranslation()
-  const { createSession } = useEventMutations()
-  const schema = useMemo(() => buildSchema(t), [t])
-
-  const form = useForm<SessionFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      calendarId:
-        calendars.find((calendar) => calendar.id === draft?.calendarId)?.id ??
-        calendars[0]?.id ??
-        null,
-      classGroupId: null,
-      start: draft?.start ?? null,
-      end: draft?.end ?? null,
-      title: "",
-      notes: "",
-    },
-    mode: "onBlur",
-  })
-
-  const submit = useFormSubmit(form, async (values) => {
-    const zone = safeTimeZone(calendars.find((item) => item.id === values.calendarId)?.timeZone)
-    const saved = await createSession(values.calendarId as string, values.classGroupId as string, {
-      start: instantFromField(values.start as Date, zone),
-      end: instantFromField(values.end as Date, zone),
-      title: values.title.trim() || null,
-      notes: values.notes.trim() || null,
-    })
-    form.reset(values)
-    toast.success(t("calendar.session.new.created"))
-    onDone(saved)
-  })
-
-  return { form, submit }
-}
 
 export function NewSessionFields({
   form,

@@ -92,7 +92,8 @@ export function AgendaList({
   }
 
   return (
-    <div className="pb-4">
+    // Folga no fim: o botão flutuante do celular não cobre a última linha.
+    <div className="pb-24 lg:pb-4">
       {groups.map(([dayKey, dayEvents]) => (
         <section key={dayKey} aria-labelledby={`agenda-day-${dayKey}`}>
           <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b bg-background/95 px-4 py-2 backdrop-blur-sm">
@@ -111,9 +112,11 @@ export function AgendaList({
             >
               {relativeDayLabel(dayKey, today, language, t)}
             </h3>
-            <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
-              {t("calendar.summary.events", { count: dayEvents.length, value: dayEvents.length })}
-            </span>
+            {dayEvents.length > 0 ? (
+              <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+                {t("calendar.summary.events", { count: dayEvents.length, value: dayEvents.length })}
+              </span>
+            ) : null}
           </header>
 
           {dayEvents.length === 0 ? (

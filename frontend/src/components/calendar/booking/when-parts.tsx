@@ -1,11 +1,9 @@
 import { useId } from "react"
 import type { Control, FieldPath, FieldValues } from "react-hook-form"
 
-import { Callout, DateField, DateTimeField as KitDateTimeField } from "@/components/shared"
+import { DateField, DateTimeField as KitDateTimeField } from "@/components/shared"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-
-export { Callout }
 
 /** Dia e hora, ou só o dia. Sempre "data de campo": a hora de parede no fuso do calendário. */
 export function DateTimeField<TValues extends FieldValues, TName extends FieldPath<TValues>>({

@@ -23,7 +23,8 @@ import { AttendanceSection } from "./attendance-section"
 import { useBookingForm, type BookingDraft } from "./booking-form"
 import { BookingFields } from "./booking-fields"
 import { BookingContactTab, BookingHistory, BookingMessagesTab } from "./booking-tabs"
-import { NewSessionFields, useNewSessionForm } from "./session-form"
+import { useNewSessionForm } from "./new-session-form"
+import { NewSessionFields } from "./session-form"
 
 type NewKind = "booking" | "session"
 

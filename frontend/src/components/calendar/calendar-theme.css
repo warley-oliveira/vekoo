@@ -71,9 +71,18 @@
 }
 
 .vk-event-time {
-  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
   font-variant-numeric: tabular-nums;
   opacity: 0.8;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* Numa linha só, o horário não encolhe: quem encolhe é o título. */
+.vk-event-time--whole {
+  flex-shrink: 0;
+  overflow: visible;
 }
 
 .vk-event-title {
@@ -123,6 +132,20 @@
 .vk-event-badge[data-tone="full"] {
   background-color: var(--status-danger-soft);
   color: var(--status-danger);
+}
+
+/* Nos blocos altos, as vagas ficam no canto de baixo, sem brigar com o horário. */
+.vk-event-corner {
+  position: absolute;
+  right: 0;
+  bottom: 0.3rem;
+  display: inline-flex;
+}
+
+.vk-event-bar {
+  display: block;
+  height: 0.25rem;
+  border-radius: 9999px;
 }
 
 .vk-event-fill {

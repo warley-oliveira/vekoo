@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { Ban, GraduationCap, ListChecks, MapPin, MessageCircle, User } from "lucide-react"
@@ -11,59 +10,6 @@ import { formatEventWhen, safeTimeZone } from "@/lib/calendar/timezone"
 import type { BookingEvent, CalendarEvent, ClassSessionEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
 import { AttendanceToggle, EventSituationBadge, MeetLink, SessionOccupancy } from "./event-badges"
-
-const OPEN_DELAY = 400
-const LEAVE_DELAY = 500
-const POPUP_LEAVE_DELAY = 300
-
-/**
- * Espiar um evento sem abrir nada. Só com mouse: com o dedo, tocar já abre o painel. Dá tempo de
- * levar o ponteiro até a prévia, que fica aberta enquanto ele estiver sobre ela.
- */
-export function useEventPreview() {
-  const [preview, setPreview] = useState<{ id: string; element: HTMLElement } | null>(null)
-  const openTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const onPopup = useRef(false)
-
-  const clearTimers = () => {
-    clearTimeout(openTimer.current)
-    clearTimeout(closeTimer.current)
-  }
-  useEffect(() => clearTimers, [])
-
-  const hover = useCallback((event: CalendarEvent | null, element: HTMLElement | null) => {
-    if (event && element) {
-      clearTimers()
-      openTimer.current = setTimeout(() => setPreview({ id: event.id, element }), OPEN_DELAY)
-      return
-    }
-    clearTimeout(openTimer.current)
-    clearTimeout(closeTimer.current)
-    closeTimer.current = setTimeout(() => {
-      if (!onPopup.current) setPreview(null)
-    }, LEAVE_DELAY)
-  }, [])
-
-  const close = useCallback(() => {
-    clearTimers()
-    onPopup.current = false
-    setPreview(null)
-  }, [])
-
-  const popupHandlers = {
-    onMouseEnter: () => {
-      onPopup.current = true
-      clearTimeout(closeTimer.current)
-    },
-    onMouseLeave: () => {
-      onPopup.current = false
-      closeTimer.current = setTimeout(() => setPreview(null), POPUP_LEAVE_DELAY)
-    },
-  }
-
-  return { preview, hover, close, popupHandlers }
-}
 
 export function EventPreview({
   event,

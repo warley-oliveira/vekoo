@@ -107,6 +107,7 @@
     },
     "summary": {
       "title": "Day summary",
+      "events_zero": "Nothing booked",
       "events_one": "{{value}} event",
       "events_other": "{{value}} events",
       "load": {

@@ -135,7 +135,7 @@ export function viewTitle(
     case "month":
       return capitalizeFirstLetter(
         formatDayKey(anchor, language, {
-          month: isPhone ? "short" : "long",
+          month: "long",
           ...(sameYear ? {} : { year: "numeric" as const }),
         })
       )

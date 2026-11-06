@@ -1,5 +1,6 @@
+import type { DaySummaryData } from "@/hooks/calendar/use-day-summary"
 import { CalendarList, type CalendarListProps } from "./calendar-list"
-import { DaySummary, type useDaySummary } from "./day-summary"
+import { DaySummary } from "./day-summary"
 import { MiniMonth } from "./mini-month"
 
 /** O mês, os calendários e o resumo do dia: inline no desktop, em painel no celular e no tablet. */
@@ -16,7 +17,7 @@ export function CalendarSidebar({
   today: string
   timeZone: string
   zones: Map<string, string>
-  summary: ReturnType<typeof useDaySummary>
+  summary: DaySummaryData
   onSelectDay: (dayKey: string) => void
   calendarList: CalendarListProps
 }) {

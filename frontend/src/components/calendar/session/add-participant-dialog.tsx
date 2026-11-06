@@ -13,8 +13,8 @@ import { apiAssetUrl } from "@/lib/api"
 import { eventErrorMessage } from "@/lib/calendar/event-error"
 import { formatDayKey, addDaysToKey } from "@/lib/calendar/timezone"
 import type { ChatLookupItem, ClassAttendance, ScheduleWindowOption } from "@/lib/calendar/types"
+import { contactLine } from "@/lib/calendar/contact"
 import { useLanguage } from "@/lib/i18n"
-import { contactLine } from "../booking/booking-fields"
 
 const MIN_QUERY = 2
 const SEARCH_DELAY = 400

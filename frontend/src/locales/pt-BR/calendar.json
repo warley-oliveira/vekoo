@@ -107,6 +107,7 @@
     },
     "summary": {
       "title": "Resumo do dia",
+      "events_zero": "Nada marcado",
       "events_one": "{{value}} compromisso",
       "events_other": "{{value}} compromissos",
       "load": {

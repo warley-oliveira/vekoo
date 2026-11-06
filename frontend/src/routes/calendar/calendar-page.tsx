@@ -25,9 +25,8 @@ import {
   ViewSwitch,
 } from "@/components/calendar/calendar-toolbar"
 import { CreateCalendarPanel } from "@/components/calendar/create-calendar-panel"
-import { useDaySummary } from "@/components/calendar/day-summary"
 import { EnrollSequenceDialog } from "@/components/calendar/enroll-sequence-dialog"
-import { EventPreview, useEventPreview } from "@/components/calendar/event-preview"
+import { EventPreview } from "@/components/calendar/event-preview"
 import { ClassSessionPanel } from "@/components/calendar/session/class-session-panel"
 import { WeekStrip } from "@/components/calendar/week-strip"
 import { EmptyState, ErrorState, SidePanel } from "@/components/shared"
@@ -37,6 +36,8 @@ import { useBookingActions } from "@/hooks/calendar/use-booking-actions"
 import { useCalendarEvents } from "@/hooks/calendar/use-calendar-events"
 import { useCalendarScreen } from "@/hooks/calendar/use-calendar-screen"
 import { useCalendarFilters, useCalendars } from "@/hooks/calendar/use-calendars"
+import { useDaySummary } from "@/hooks/calendar/use-day-summary"
+import { useEventPreview } from "@/hooks/calendar/use-event-preview"
 import { useFullBleed } from "@/hooks/use-app-shell"
 import { useHeaderSlot } from "@/hooks/use-header-slot"
 import { useIsTouch } from "@/hooks/use-media-query"
@@ -361,8 +362,14 @@ export default function CalendarPage() {
         {t("calendar.page.create")}
       </Button>
     ),
-    // No celular, o botão flutuante faz esse papel, sempre à mão.
-    { mobilePlacement: "hidden" }
+    // No celular, o botão flutuante faz esse papel, sempre à mão, e o cabeçalho fica com as
+    // visões em ícones: cada linha a menos é mais agenda na tela.
+    screen.isPhone && !noCalendars
+      ? {
+          mobilePlacement: "inline",
+          mobileNode: <ViewSwitch value={screen.view} onChange={screen.setView} isPhone compact />,
+        }
+      : { mobilePlacement: "hidden" }
   )
 
   /* ---------- estados da tela inteira ---------- */
@@ -519,7 +526,6 @@ export default function CalendarPage() {
             </div>
             <CalendarNavigator
               title={title}
-              isToday={screen.anchor === screen.today}
               onToday={screen.goToToday}
               onPrevious={() => step(-1)}
               onNext={() => step(1)}
@@ -535,11 +541,6 @@ export default function CalendarPage() {
               <ViewSwitch value={screen.view} onChange={screen.setView} isPhone={false} />
             </div>
           )}
-          {screen.isPhone ? (
-            <div className="w-full">
-              <ViewSwitch value={screen.view} onChange={screen.setView} isPhone />
-            </div>
-          ) : null}
           <TimeZoneNote zones={screen.selectedZones} className="w-full xl:hidden" />
         </div>
 
