@@ -9,6 +9,8 @@
 # inócua. O backoff é do próprio service, que reagenda com RETRY_DELAYS e para ao esgotar.
 class WabaStatusRetryJob < ApplicationJob
   queue_as :default
+  # Sem a nova tentativa nativa do Sidekiq: ligada, ela duplicaria as do service.
+  sidekiq_options retry: false
 
   def perform(connector_id, status, phone_number_id, attempt)
     connector = Connector::WhatsappCloud.where(id: connector_id).take
