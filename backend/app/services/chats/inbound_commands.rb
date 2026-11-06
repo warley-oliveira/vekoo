@@ -1,6 +1,7 @@
 module Chats
-  # Comandos que o próprio contato digita no canal, para quem está testando um número:
-  # limpar o contexto (`CCTX`) e religar a automação. Não viram mensagem no histórico.
+  # Comandos digitados no canal, pelo contato ou no nosso próprio aparelho, para quem está
+  # testando um número: limpar o contexto (`CCTX`) e religar a automação. Não viram mensagem
+  # no histórico.
   #
   # O `PFUP` da origem (depuração de follow-up do assistente) saiu com os follow-ups.
   module InboundCommands

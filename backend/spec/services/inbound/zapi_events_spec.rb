@@ -563,6 +563,25 @@ RSpec.describe Inbound::ZapiEvents do
       end
     end
 
+    describe "mídia que não baixa" do
+      before { stub_request(:get, "https://z/arquivo").to_return(status: 500) }
+
+      {
+        "imagem" => { image: { imageUrl: "https://z/arquivo", mimeType: "image/jpeg" } },
+        "documento" => { document: { documentUrl: "https://z/arquivo", mimeType: "application/pdf" } },
+        "vídeo" => { video: { videoUrl: "https://z/arquivo", mimeType: "video/mp4" } },
+        "áudio" => { audio: { audioUrl: "https://z/arquivo" } }
+      }.each do |name, content|
+        it "#{name} vira nota de erro na conversa depois das tentativas" do
+          perform_enqueued_jobs { receive_message(text: nil, **content) }
+
+          expect(a_request(:get, "https://z/arquivo")).to have_been_made.times(3)
+          expect(notes_of(chat_of, "error").pluck(:content)).to eq([ "Chegou uma mídia que não foi possível baixar." ])
+          expect(messages_of(chat_of).count).to eq(0)
+        end
+      end
+    end
+
     describe "tipo não suportado" do
       {
         "figurinha" => { sticker: { stickerUrl: "https://z/f.webp" } },

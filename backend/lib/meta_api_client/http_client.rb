@@ -62,30 +62,36 @@ class MetaApiClient
       HTTParty.post(url, body: body, timeout: timeout)
     end
 
-    # Streams a remote file into a Tempfile and returns the temp path.
-    # Returns +nil+ on failure and closes the temp file to avoid leaks.
+    # Streams a remote file into a temp file and returns its path. Returns +nil+ on failure,
+    # without leaving the file behind. On success, deleting the file is up to the caller.
+    #
+    # `Tempfile.create`, não `.new`: o objeto do `.new` morre ao sair daqui e leva o arquivo
+    # junto no primeiro GC do processo, antes de quem recebeu o caminho conseguir ler.
     #
     # @param url     [String]  URL of the file to download
     # @param timeout [Integer] Seconds before the request times out
     # @return [String, nil] Absolute path to the temp file, or nil on failure
     def self.stream_download(url, timeout: 60)
-      tmp_file = Tempfile.new(['meta_media_', '.bin'])
+      tmp_file = Tempfile.create(['meta_media_', '.bin'])
 
       response = HTTParty.get(url, stream_body: true, timeout: timeout) do |fragment|
         tmp_file.write(fragment)
       end
-      tmp_file.rewind
+      tmp_file.close
 
       unless response.success?
         Rails.logger.error "[MetaApiClient::HttpClient] stream_download failed (HTTP #{response.code})"
-        tmp_file.close
+        File.delete(tmp_file.path)
         return nil
       end
 
       tmp_file.path
     rescue StandardError => e
       Rails.logger.error "[MetaApiClient::HttpClient] stream_download error: #{e.message}"
-      tmp_file&.close
+      if tmp_file
+        tmp_file.close
+        File.delete(tmp_file.path) if File.exist?(tmp_file.path)
+      end
       nil
     end
   end

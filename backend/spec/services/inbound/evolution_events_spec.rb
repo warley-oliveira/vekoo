@@ -79,9 +79,13 @@ RSpec.describe Inbound::EvolutionEvents do
 
   describe "evento desconhecido" do
     it "só registra em debug" do
-      allow(Rails.logger).to receive(:debug)
+      logged = []
+      allow(Rails.logger).to receive(:debug) { |message = nil, &block| logged << (message || block&.call) }
 
       expect { handle("algo.diferente", {}) }.not_to have_broadcasted_to(connector.stream_name)
+
+      expect(logged).to include(a_string_including("Unhandled event: algo.diferente"))
+      expect(Chat.where(connector_id: connector.id).count).to eq(0)
     end
   end
 
@@ -177,6 +181,15 @@ RSpec.describe Inbound::EvolutionEvents do
 
       it "não derruba o webhook sem o serviço de avisos" do
         expect { handle("connection.update", data) }.not_to raise_error
+      end
+
+      # Na origem este aviso ia para o Slack, que saiu.
+      it "deixa o possível bloqueio no log" do
+        allow(Rails.logger).to receive(:warn)
+
+        handle("connection.update", data)
+
+        expect(Rails.logger).to have_received(:warn).with(a_string_including("Possível bloqueio"))
       end
     end
 
@@ -465,6 +478,25 @@ RSpec.describe Inbound::EvolutionEvents do
         audio = ChatMessage::Audio.where(chat_id: chat_of.id, message_id: message_id).take
         expect(audio).to have_attributes(role: "user", content: "-", audio_url: start_with("/rails/active_storage/blobs/proxy/"))
         expect(blob_of(audio).download).to eq("bytes-ogg")
+      end
+    end
+
+    describe "mídia que não baixa" do
+      before { stub_request(:get, "https://bucket.exemplo.com/arquivo").to_return(status: 500) }
+
+      {
+        "imagem" => { imageMessage: { url: "https://cdn/enc" }, mediaUrl: "https://bucket.exemplo.com/arquivo" },
+        "documento" => { documentMessage: { url: "https://cdn/enc", mimetype: "application/pdf" }, mediaUrl: "https://bucket.exemplo.com/arquivo" },
+        "vídeo" => { videoMessage: { url: "https://cdn/enc", mimetype: "video/mp4" }, mediaUrl: "https://bucket.exemplo.com/arquivo" },
+        "áudio" => { audioMessage: { url: "https://cdn/enc" }, mediaUrl: "https://bucket.exemplo.com/arquivo" }
+      }.each do |name, message|
+        it "#{name} vira nota de erro na conversa depois das tentativas" do
+          perform_enqueued_jobs { upsert(message: message) }
+
+          expect(a_request(:get, "https://bucket.exemplo.com/arquivo")).to have_been_made.times(3)
+          expect(notes_of(chat_of, "error").pluck(:content)).to eq([ "Chegou uma mídia que não foi possível baixar." ])
+          expect(messages_of(chat_of).count).to eq(0)
+        end
       end
     end
 
@@ -1016,6 +1048,14 @@ RSpec.describe Inbound::EvolutionEvents do
 
         expect(messages_of(chat_of).count).to eq(1)
         expect(message).to have_attributes(content: "Agora sim", missing_message: false)
+      end
+
+      it "ao preencher, transmite o conteúdo para quem está com a conversa aberta" do
+        absent
+
+        expect {
+          upsert(message: { conversation: "Agora sim" })
+        }.to have_broadcasted_to(ChatMessage::Base.stream_for(chat_of)).with(a_hash_including("content" => "Agora sim", "missingMessage" => false))
       end
 
       it "ao preencher, entrega aos fluxos como primeira mensagem" do

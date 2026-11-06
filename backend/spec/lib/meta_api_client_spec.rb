@@ -47,6 +47,8 @@ RSpec.describe MetaApiClient do
       path = client.download_media("https://cdn.exemplo.com/foto.jpg")
 
       expect(File.binread(path)).to eq("bytes")
+    ensure
+      File.delete(path) if path && File.exist?(path)
     end
 
     it "devolve nil em erro HTTP" do

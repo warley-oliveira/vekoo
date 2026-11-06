@@ -242,6 +242,46 @@ RSpec.describe Inbound::MediaDownload do
 
           expect(download.path).to be_nil
         end
+
+        # O caminho precisa valer até o job apagar o arquivo: um `Tempfile.new` que morre ao
+        # sair do método leva o arquivo junto no primeiro GC do processo, de qualquer thread.
+        it "o arquivo baixado sobrevive ao coletor de lixo" do
+          stub_request(:get, "https://lookaside.fbsbx.com/ig?asset=1").to_return(status: 200, body: "bytes")
+
+          path = download.path
+          Array.new(200_000) { Object.new }
+          GC.start
+
+          expect(File.binread(path)).to eq("bytes")
+        end
+
+        context "sem conseguir baixar" do
+          let(:created) { [] }
+
+          before do
+            allow(Tempfile).to receive(:create).and_wrap_original do |original, *args|
+              original.call(*args).tap { |file| created << file.path }
+            end
+          end
+
+          it "resposta de erro não deixa arquivo para trás" do
+            stub_request(:get, "https://lookaside.fbsbx.com/ig?asset=1").to_return(status: 500, body: "fora")
+
+            download
+
+            expect(created.size).to eq(1)
+            expect(File.exist?(created.first)).to be(false)
+          end
+
+          it "falha de rede não deixa arquivo para trás" do
+            stub_request(:get, "https://lookaside.fbsbx.com/ig?asset=1").to_timeout
+
+            expect(download.path).to be_nil
+
+            expect(created.size).to eq(1)
+            expect(File.exist?(created.first)).to be(false)
+          end
+        end
       end
     end
   end

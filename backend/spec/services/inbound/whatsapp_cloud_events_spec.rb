@@ -657,6 +657,27 @@ RSpec.describe Inbound::WhatsappCloudEvents do
     end
   end
 
+  describe "mídia que não baixa" do
+    before { stub_request(:get, "https://graph.facebook.com/M1").to_return(status: 400, headers: InboundHelpers::JSON_HEADERS, body: { error: { message: "nope", code: 100 } }.to_json) }
+
+    {
+      "imagem" => { type: "image", image: { id: "M1", mime_type: "image/jpeg" } },
+      "documento" => { type: "document", document: { id: "M1", filename: "a.pdf", mime_type: "application/pdf" } },
+      "áudio" => { type: "audio", audio: { id: "M1" } }
+    }.each do |name, content|
+      it "#{name} vira nota de erro na conversa depois das tentativas" do
+        with_fake_ffmpeg do
+          perform_enqueued_jobs { receive_webhook(webhook(messages: [ { from: from_number, id: "wamid.MIDIA", **content } ])) }
+        end
+
+        expect(a_request(:get, "https://graph.facebook.com/M1")).to have_been_made.times(3)
+        expect(notes_of(chat_of, "error").pluck(:content)).to eq([ "Chegou uma mídia que não foi possível baixar." ])
+        expect(messages_of(chat_of).count).to eq(0)
+        expect(Flows::InboundDispatcher).not_to have_received(:call)
+      end
+    end
+  end
+
   # Anúncio Click-to-WhatsApp: a Meta anexa um `referral` e a mensagem vira um cartão (nota
   # 'base') mais o texto do contato, sem interromper o caminho normal.
   describe "cartão de anúncio (CTWA)" do
