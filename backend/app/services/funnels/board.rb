@@ -27,8 +27,10 @@ module Funnels
     # @param pages [Hash] { "none" => 2, "<stage_id>" => 3 }
     # @param assigned_user [String, nil] `me`, `unassigned` ou o id da pessoa, como em `GET /chats`
     # @param tag_ids [Array<String>, nil] conversas com qualquer uma destas etiquetas, como em `GET /chats`
-    def initialize(funnel:, account:, date_field: nil, days: nil, per_column: nil, pages: {}, assigned_user: nil, tag_ids: nil)
+    # @param query [String, nil] nome, nome de exibição ou telefone, como o `q` de `GET /chats`
+    def initialize(funnel:, account:, date_field: nil, days: nil, per_column: nil, pages: {}, assigned_user: nil, tag_ids: nil, query: nil)
       @funnel = funnel
+      @query = query.is_a?(String) ? query.strip.presence : nil
       @account = account
       @date_field = DATE_FIELDS.include?(date_field.to_s) ? date_field.to_s : DATE_FIELDS.first
       @days = (days.presence || DEFAULT_DAYS).to_i.clamp(1, MAX_DAYS)
@@ -51,10 +53,10 @@ module Funnels
 
     private
 
-    attr_reader :funnel, :account, :date_field, :days, :per_column, :pages, :assigned_user, :tag_ids
+    attr_reader :funnel, :account, :date_field, :days, :per_column, :pages, :assigned_user, :tag_ids, :query
 
     def filters
-      { dateField: date_field, days: days, perColumn: per_column, assignedUser: assigned_user, tagIds: tag_ids.presence }.compact
+      { dateField: date_field, days: days, perColumn: per_column, assignedUser: assigned_user, tagIds: tag_ids.presence, q: query }.compact
     end
 
     def stages
@@ -78,9 +80,9 @@ module Funnels
       (pages[stage ? stage.id : NONE].presence || 1).to_i.clamp(1, MAX_PAGE)
     end
 
-    # O mesmo critério da lista de conversas: `visible_to` e os dois atalhos, com os mesmos valores.
+    # O mesmo critério da lista de conversas: `visible_to`, a busca e os atalhos, com os mesmos valores.
     def base_match
-      Chats::ListQuery.new(account: account, params: { assigned_user: assigned_user, tag_ids: tag_ids })
+      Chats::ListQuery.new(account: account, params: { q: query, assigned_user: assigned_user, tag_ids: tag_ids })
         .criteria
         .where(date_field.to_sym.gte => days.days.ago)
         .selector

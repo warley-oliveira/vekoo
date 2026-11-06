@@ -43,7 +43,7 @@ class FunnelsController < PlatformController
     head :no_content
   end
 
-  # GET /funnels/:id/board?dateField=&days=&perColumn=&assignedUser=&tagIds[]=&page[none]=&page[<stageId>]=
+  # GET /funnels/:id/board?dateField=&days=&perColumn=&q=&assignedUser=&tagIds[]=&page[none]=&page[<stageId>]=
   def board
     render json: Funnels::Board.new(
       funnel: @funnel,
@@ -53,7 +53,8 @@ class FunnelsController < PlatformController
       per_column: params[:per_column],
       pages: page_params,
       assigned_user: params[:assigned_user],
-      tag_ids: params[:tag_ids]
+      tag_ids: params[:tag_ids],
+      query: params[:q]
     ).call
   end
 

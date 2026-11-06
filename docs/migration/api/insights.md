@@ -287,6 +287,7 @@ O quadro: uma coluna por etapa, com "Sem etapa" primeiro. Uma agregação só tr
 | `dateField` | `last_message_at` (padrão) ou `created_at`. Outro valor vale o padrão. |
 | `days` | Quantos dias olhar para trás: padrão 30, até 365. |
 | `perColumn` | Conversas por coluna: padrão 20, até 50. A origem ia até 100: `$facet` devolve um documento só, com teto de 16 MB. |
+| `q` | Nome, nome de exibição ou telefone, como em `GET /chats`. Vale também para as contagens e `metrics`. |
 | `assignedUser` | `me`, `unassigned` ou o id da pessoa, como em `GET /chats`. Vale também para as contagens e `metrics`. |
 | `tagIds[]` | Conversas com qualquer uma destas etiquetas, como em `GET /chats`. Vale também para as contagens e `metrics`. |
 | `page[none]`, `page[<stageId>]` | A página de cada coluna. Para carregar mais de uma coluna, peça só ela e junte: as outras voltam na primeira página. |

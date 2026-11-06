@@ -403,6 +403,19 @@ RSpec.describe "Funis", type: :request do
       expect(json["metrics"]["total"]).to eq(2)
     end
 
+    it "busca por nome e telefone, como o q de GET /chats, inclusive nas contagens" do
+      place(chat_for(user_name: "Fernanda Lima", external_id: "5531971810932"), stages[0])
+      place(chat_for(user_name: "João Pedro", external_id: "5541988887766"), stages[1])
+
+      get "/funnels/#{funnel.id}/board", params: { q: "fernanda" }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["userName"] }).to eq([ "Fernanda Lima" ])
+      expect(json["metrics"]).to include("total" => 1, "perStageCounts" => [ 1, 0, 0, 0 ])
+      expect(json["filters"]).to include("q" => "fernanda")
+
+      get "/funnels/#{funnel.id}/board", params: { q: "(41) 98888-7766" }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["userName"] }).to eq([ "João Pedro" ])
+    end
+
     it "não deixa o filtro alcançar conversa que a pessoa não pode ver" do
       person = member_with(organization, funnel: "all", chat_list_to: "assigned")
       place(chat_for(assigned_account_id: account.id), stages[0])
