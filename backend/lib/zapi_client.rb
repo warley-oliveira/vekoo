@@ -115,16 +115,10 @@ class ZapiClient
   # Handles request errors with retry logic
   # @param error [StandardError] The caught error
   # @param tries [Integer] Current attempt number
-  # @raise [ZapiClient::Error] After max retries exceeded
-  def handle_request_error(error, tries)
-    tries += 1
-
-    if tries < MAX_RETRIES
-      log_warn("Attempt #{tries} failed: #{error.message}. Retrying...")
-      sleep(1)
-      raise error
-    end
-
+  # @raise [ZapiClient::Error] Sempre. Na origem o erro de rede subia cru (`request` nunca
+  #   repetia a chamada), escapava de todo `rescue ZapiClient::Error` e esperava 1s à toa.
+  #   Repetir de verdade duplicaria mensagem depois de um timeout de leitura, por isso não há.
+  def handle_request_error(error, _tries)
     log_error("Z-API connection error: #{error.message}")
     raise Error, "Z-API connection error: #{error.message}"
   end
