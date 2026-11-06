@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
-    # Comenta no card. Quem assina é o fluxo, porque o assistente não existe mais.
-    class PipelineAddComment < KanbanBase
+    # Comenta no card. Quem assina é a automação (`source: "flow"`), porque o assistente não existe mais.
+    class PipelineAddComment < PipelineBase
       protected
 
       def perform

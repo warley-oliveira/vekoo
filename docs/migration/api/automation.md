@@ -292,14 +292,14 @@ Resposta `422`:
 | `finalize_conversation` | `finalize_chat` |
 | `assign_agent` (`user_id`, `user_pool`) | `assign_agent` (`account_id`, `account_pool`) |
 | `kanban_*` (`column_id`, `link_conversation`) | `pipeline_*` (`stage_id`, `link_chat`) |
-| `create_deal` (`kanban_column_id`) | `create_deal` (`stage_id`) |
+| `create_deal`, `update_deal` (`kanban_column_id`) | `pipeline_create_deal`, `pipeline_update_deal` (`stage_id`) |
 | `card_source.type: "conversation"` | `card_source.type: "chat"` |
 | `{{conversation.*}}` | `{{chat.*}}` |
 | `provider`, `temperature` nos blocos de IA | Não existem. Os modelos atuais recusam `temperature`, e o provedor é um só |
 
 A API JS dos scripts (`kanban.*`, `appointment.*`) **não** mudou: é contrato de quem escreve script.
 
-Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e os de Pipelines também. O rótulo é sugestão, em pt-BR.
+Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e os de Pipelines também, fora os dois de negócio, que nunca param o fluxo. O rótulo é sugestão, em pt-BR.
 
 | Tipo | Categoria | Rótulo | `data` | Saídas |
 |---|---|---|---|---|
@@ -336,8 +336,8 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 | `pause_automation` | action | Pausar automação | `period?`: minutes, hours, days; `amount?`. Sem período, até alguém religar | `next` |
 | `resume_automation` | action | Retomar automação | | `next` |
 | `set_funnel_stage` | action | Mudar etapa do funil | `funnel_id`, `stage_id` (aceita variável). Por `Funnels::MoveChat`: confere funil e etapa, e não escreve se já está lá. Funil ou etapa apagados não derrubam o fluxo: o log registra `funnel_stage_not_found`, e a organização recebe o alerta `flow_funnel_stage_missing`. Não tira do funil | `next` |
-| `pipeline_create_card` | pipeline | Criar card | `board_id`, `stage_id`, `title`, `description`, `priority`, `deal_value`, `link_chat`, `reuse_existing` | `next`, `onError` |
-| `pipeline_move_card` | pipeline | Mover card | `card_source`, `stage_id`, `position`: top ou bottom | `next`, `onError` |
+| `pipeline_create_card` | pipeline | Criar card | `board_id`, `stage_id` (id ou nome), `title` (sem ele, o nome do contato), `description`, `priority`, `deal_value`, `link_chat`, `reuse_existing`. Guarda `pipeline_card_id` | `next`, `onError` |
+| `pipeline_move_card` | pipeline | Mover card | `card_source`, `stage_id` (id ou nome, do mesmo quadro), `position`: top ou bottom. Respeita as travas da etapa | `next`, `onError` |
 | `pipeline_update_card` | pipeline | Atualizar card | `card_source`, `title`, `description`, `priority`, `deal_value`, `deal_probability`, `company_name`, `contact_email`, `contact_phone`, `due_date`, `expected_close_date` | `next`, `onError` |
 | `pipeline_set_custom_field` | pipeline | Preencher campo | `card_source`, `field_key`, `value` | `next`, `onError` |
 | `pipeline_mark_won` | pipeline | Marcar como ganho | `card_source` | `next`, `onError` |
@@ -348,8 +348,8 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 | `pipeline_add_comment` | pipeline | Comentar no card | `card_source`, `body` | `next`, `onError` |
 | `pipeline_add_checklist` | pipeline | Adicionar checklist | `card_source`, `name`, `items[]` | `next`, `onError` |
 | `pipeline_archive_card` | pipeline | Arquivar card | `card_source` | `next`, `onError` |
-| `create_deal` | pipeline | Criar negócio (antigo) | `stage_id`, `title`, `description`, `deal_value`, `deal_probability`, `assigned_to_id` | `next`, `onError` |
-| `update_deal` | pipeline | Atualizar negócio (antigo) | `card_id?`, `stage_id`, `title`, `description`, `deal_value`, `deal_probability`, `assigned_to_id` | `next`, `onError` |
+| `pipeline_create_deal` | pipeline | Criar negócio | `stage_id`, `title`, `description`, `deal_value`, `deal_probability`, `assigned_to_id`. Guarda `last_deal_id` | `next` |
+| `pipeline_update_deal` | pipeline | Atualizar negócio | `card_id?` (sem ele, `last_deal_id`), `stage_id`, `title`, `description`, `deal_value`, `deal_probability`, `assigned_to_id` | `next` |
 | `http_request` | integration | Requisição HTTP | `url`, `method`, `headers[]: { key, value }`, `body`: texto ou mapa, `timeout` (até 30 s), `save_response_to?`. Grava `last_http_status` | `success`, `error`, `next` |
 | `execute_tool` | integration | Executar função | `tool_id`, `params`, `save_response_to?` | `success`, `error`, `next` |
 | `goto_flow` | integration | Subfluxo | `target_flow_id`, `merge_variables`. Não espera o outro terminar | `next` |
@@ -358,7 +358,14 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 
 **`card_source`:** `{ type: "node", node_id: "<bloco Criar card>" }` ou `{ type: "chat", board_id }`.
 
-**Blocos de Pipelines ainda não ligados.** Estão registrados, e todos respondem `Pipelines ainda não disponível`: a execução para com esse motivo, ou segue por `onError` com `{{vars.pipeline_error}}`. A lógica de cada um veio da origem e será ligada na integração: troque `FlowRuntime::KanbanGateway.available?`. O catálogo não muda.
+**Blocos de Pipelines.** Todos têm o prefixo `pipeline_`, e o público fala em etapa e conversa: `stage_id`, `link_chat`, e também no log de cada bloco, em `stage_id` e `chat_id`. Os ids são UUID em texto, e funil e pipeline são coisas diferentes: quem muda etapa de funil é `set_funnel_stage`.
+
+- **Passam por `FlowRuntime::KanbanGateway`, em cima de `Pipelines::Automation`:** é o mesmo código de `kanban.*`, com as mesmas regras. O que `pipeline_move_card` não pode fazer por trava de checklist ou de campo obrigatório, e `pipeline_mark_won` e `pipeline_mark_lost` por campo exigido no fechamento, vira erro, com o que falta em `pending_items` e `pending_fields` no log.
+- **Erro:** a execução para com o motivo, ou segue por `onError`, com o motivo em `{{vars.pipeline_error}}`. Quadro, etapa, card e etiqueta de outra organização são como se não existissem.
+- **`pipeline_create_card` não duplica:** rodar de novo na mesma conversa reaproveita o card em aberto daquele bloco, porque lembra dele entre execuções. `reuse_existing: false` cria sempre. Card ganho, perdido ou arquivado não é reaproveitado.
+- **Os dois de negócio** criam e atualizam direto, sem as travas, e **nunca param o fluxo**: etapa, card ou valor que não servem ficam no log, em `skipped`, e o fluxo segue. Etapa pode ser de qualquer quadro da organização. Valor que não é número fica de fora, em vez de virar zero.
+- **O que o fluxo muda dispara os gatilhos do quadro**, como na origem. Comentário sai assinado pela automação (`source: "flow"`).
+- **No teste do editor nada mexe em quadro:** o bloco registra `skipped: "playground"`, manda o evento `pipeline_skipped` e o fluxo segue. Para ver um card nascer, teste numa conversa de verdade.
 
 ### O texto que sai
 
@@ -1177,7 +1184,7 @@ Resposta `200`:
 | `node_completed` | `nodeId`, `nodeType`, `status`: success, suspended, error; `durationMs` ou `error` |
 | `text` | `body`, `sender` |
 | `media` | `attachmentId`, `url`, `caption` |
-| `event` | `name`: `template_sent`, `interactive_sent` ou `attachment_missing` (`payload.reasons`); `payload` |
+| `event` | `name`: `template_sent`, `interactive_sent`, `attachment_missing` (`payload.reasons`) ou `pipeline_skipped` (`payload.type`); `payload` |
 | `ai_decision` | `nodeId`, `decision` (o id da saída, ou `stay`), `label`, `reason`, `turn` |
 | `suspended` | `status`: waiting ou waiting_for_message; `currentNodeId` |
 | `completed` | |
@@ -1459,7 +1466,6 @@ Nomes de campo que mudaram: `integrationFilter` é `connectorFilter` (`integrati
 
 ## Limitações conhecidas
 
-- **Blocos de Pipelines** não ligados.
 - **`goto_flow` não espera** o outro fluxo terminar, como na origem: se ele parar numa pergunta, este segue.
 - **`send_interactive`** manda as opções como texto numerado: nenhum canal daqui tem botão nativo. Na origem, as opções se perdiam.
 - **Fluxos que casam disparam todos**, como na origem.

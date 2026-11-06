@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Marca o negócio como perdido, com motivo opcional.
-    class PipelineMarkLost < KanbanBase
+    class PipelineMarkLost < PipelineBase
       protected
 
       def perform

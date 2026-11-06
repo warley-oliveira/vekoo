@@ -26,7 +26,7 @@
           { "id": "falar_humano",  "label": "Falar humano", "when": "Cliente pediu atendente humano" }
         ]
       } },
-      { "id": "deal", "type": "create_deal", "position": { "x": 640, "y": -120 }, "data": {
+      { "id": "deal", "type": "pipeline_create_deal", "position": { "x": 640, "y": -120 }, "data": {
         "stage_id": "",
         "title": "Pedido — {{vars.produto}} x {{vars.quantidade}}",
         "deal_value": null

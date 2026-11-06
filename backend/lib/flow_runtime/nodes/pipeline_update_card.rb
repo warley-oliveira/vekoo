@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Atualiza campos do card: só os preenchidos no bloco são enviados.
-    class PipelineUpdateCard < KanbanBase
+    class PipelineUpdateCard < PipelineBase
       FIELDS = %w[title description priority deal_value deal_probability company_name
                   contact_email contact_phone due_date expected_close_date].freeze
 

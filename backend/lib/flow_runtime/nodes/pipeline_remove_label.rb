@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Remove uma etiqueta do card.
-    class PipelineRemoveLabel < KanbanBase
+    class PipelineRemoveLabel < PipelineBase
       protected
 
       def perform

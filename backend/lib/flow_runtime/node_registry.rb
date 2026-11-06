@@ -65,8 +65,8 @@ module FlowRuntime
         "pipeline_add_comment" => "PipelineAddComment",
         "pipeline_add_checklist" => "PipelineAddChecklist",
         "pipeline_archive_card" => "PipelineArchiveCard",
-        "create_deal" => "CreateDeal",
-        "update_deal" => "UpdateDeal"
+        "pipeline_create_deal" => "PipelineCreateDeal",
+        "pipeline_update_deal" => "PipelineUpdateDeal"
       },
       "integration" => {
         "http_request" => "HttpRequest",

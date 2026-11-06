@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Marca o negócio como ganho (confere os campos obrigatórios do quadro).
-    class PipelineMarkWon < KanbanBase
+    class PipelineMarkWon < PipelineBase
       protected
 
       def perform

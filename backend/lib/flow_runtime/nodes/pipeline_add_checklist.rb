@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Cria (ou reaproveita, pelo nome) um checklist no card e adiciona os itens.
-    class PipelineAddChecklist < KanbanBase
+    class PipelineAddChecklist < PipelineBase
       protected
 
       def perform

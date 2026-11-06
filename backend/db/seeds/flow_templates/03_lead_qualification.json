@@ -22,7 +22,7 @@
           { "name": "lead_company", "type": "string", "description": "Empresa" }
         ]
       } },
-      { "id": "deal", "type": "create_deal", "position": { "x": 1140, "y": 0 }, "data": {
+      { "id": "deal", "type": "pipeline_create_deal", "position": { "x": 1140, "y": 0 }, "data": {
         "stage_id": "",
         "title": "{{vars.lead_name}} — {{vars.lead_company}}",
         "description": "Email: {{vars.lead_email}}",

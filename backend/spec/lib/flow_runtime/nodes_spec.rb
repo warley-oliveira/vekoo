@@ -737,27 +737,4 @@ RSpec.describe "Blocos de fluxo" do
       expect(sent_texts).to be_empty
     end
   end
-
-  describe "blocos de Pipelines (ainda não ligados)" do
-    FlowRuntime::NodeRegistry::CATALOG["pipeline"].each_key do |type|
-      it "#{type} para a execução com um erro claro" do
-        execution = run_block(type, { title: "x" })
-
-        expect(execution).to have_attributes(status: "failed", error_message: "Pipelines ainda não disponível")
-      end
-
-      it "#{type} segue por onError, quando ligado" do
-        execution = run_block(type, { title: "x" }, handles: %w[onError])
-
-        expect(execution.status).to eq("completed")
-        expect(execution.variables).to include("saiu_por" => "onError", "pipeline_error" => "Pipelines ainda não disponível")
-      end
-    end
-
-    it "traduz o erro" do
-      I18n.with_locale(:en) do
-        expect(FlowRuntime::Nodes::KanbanBase.humanize_error(error: "pipelines_unavailable")).to eq("Pipelines not available yet")
-      end
-    end
-  end
 end

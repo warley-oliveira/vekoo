@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Reabre um negócio ganho ou perdido.
-    class PipelineReopenDeal < KanbanBase
+    class PipelineReopenDeal < PipelineBase
       protected
 
       def perform

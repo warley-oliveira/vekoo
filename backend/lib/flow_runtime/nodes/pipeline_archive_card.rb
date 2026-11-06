@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Arquiva o card.
-    class PipelineArchiveCard < KanbanBase
+    class PipelineArchiveCard < PipelineBase
       protected
 
       def perform

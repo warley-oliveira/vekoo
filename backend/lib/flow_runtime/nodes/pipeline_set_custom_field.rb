@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Preenche um campo personalizado do quadro (resolve nome, chave e opções de seleção).
-    class PipelineSetCustomField < KanbanBase
+    class PipelineSetCustomField < PipelineBase
       protected
 
       def perform

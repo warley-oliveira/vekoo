@@ -1,7 +1,7 @@
 module FlowRuntime
   module Nodes
     # Aplica uma etiqueta pelo nome (criada na organização se ainda não existir).
-    class PipelineAddLabel < KanbanBase
+    class PipelineAddLabel < PipelineBase
       protected
 
       def perform

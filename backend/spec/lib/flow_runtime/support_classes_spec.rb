@@ -251,11 +251,19 @@ RSpec.describe "O apoio do motor de fluxos" do
   end
 
   describe FlowRuntime::KanbanGateway do
-    it "responde indisponível enquanto o domínio pipelines não está ligado" do
+    it "sem conversa, não chega a chamar a operação" do
       context = instance_double(FlowRuntime::ExecutionContext, chat: nil, organization: organization)
+      allow(Pipelines::Automation).to receive(:call)
 
-      expect(described_class.available?).to be(false)
-      expect(described_class.new(context).call(:move_card, "x")).to eq(ok: false, error: "pipelines_unavailable")
+      expect(described_class.new(context).call(:move_card, "x")).to eq(ok: false, error: "no_chat")
+      expect(Pipelines::Automation).not_to have_received(:call)
+    end
+
+    it "chama a operação com a organização e a conversa do fluxo" do
+      chat = create(:chat, organization: organization)
+      context = instance_double(FlowRuntime::ExecutionContext, chat: chat, organization: organization)
+
+      expect(described_class.new(context).call(:get_card, SecureRandom.uuid)).to include(ok: false, error: a_string_starting_with("not_found: Card"))
     end
   end
 
