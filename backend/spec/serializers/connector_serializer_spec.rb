@@ -194,6 +194,10 @@ RSpec.describe ConnectorSerializer do
       expect(serialized.keys).not_to include(:publicToken, :installSnippet, :rateLimitPerMin)
     end
 
+    it "não acrescenta nada em tipo que ele não conhece" do
+      expect(described_class.details(Connector::Base.new)).to eq({})
+    end
+
     it "não traz credencial em tipo nenhum" do
       [
         create(:connector_whatsapp_cloud, organization: organization, user_access_token: "SEGREDO"),

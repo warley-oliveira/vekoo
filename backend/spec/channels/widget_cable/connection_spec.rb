@@ -148,5 +148,13 @@ RSpec.describe WidgetCable::Connection, type: :channel do
 
       expect(connection.visitor_id).to eq("visitor-1")
     end
+
+    it "deixa conectar quando o cache não conta" do
+      allow(Rails.cache).to receive(:increment).and_return(nil)
+
+      (described_class::CONNECT_LIMIT_PER_MINUTE + 1).times { connect_from("203.0.113.9") }
+
+      expect(connection.visitor_id).to eq("visitor-1")
+    end
   end
 end

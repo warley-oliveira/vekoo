@@ -261,6 +261,15 @@ RSpec.describe "Widget::V1 segurança", type: :request do
       expect_rate_limited
     end
 
+    # O Redis fora faz o `increment` devolver nil. O limite é defesa, não pode derrubar o chat.
+    it "deixa passar quando o cache não conta" do
+      allow(Rails.cache).to receive(:increment).and_return(nil)
+
+      31.times { post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-burst" }, as: :json }
+
+      expect(response).to have_http_status(:ok)
+    end
+
     it "libera de novo no minuto seguinte" do
       31.times { post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-burst" }, as: :json }
       expect(response).to have_http_status(:too_many_requests)
@@ -356,6 +365,18 @@ RSpec.describe "Widget::V1 segurança", type: :request do
 
         expect(response).to have_http_status(:created)
       end
+    end
+
+    it "conta a mensagem pela escrita quando o incremento do cache falha" do
+      connector.update!(daily_message_cap: 1, rate_limit_per_min: 100)
+      allow(Rails.cache).to receive(:increment).and_return(nil)
+
+      send_message("primeira")
+      expect(response).to have_http_status(:created)
+
+      send_message("segunda")
+
+      expect(response).to have_http_status(:too_many_requests)
     end
 
     it "não limita mensagens com cota zero" do

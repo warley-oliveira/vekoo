@@ -335,6 +335,26 @@ RSpec.describe "Widget::V1::Messages", type: :request do
           .with(a_hash_including("context" => a_hash_including("product" => a_hash_including("name" => "Tênis X"))))
       end
 
+      it "põe o cartão antes da abordagem proativa, e ela antes do visitante" do
+        send_message("quanto custa?", context: context_params, proactiveMessage: "Posso ajudar?")
+
+        expect(history.pluck(:role)).to eq(%w[system assistant user])
+      end
+
+      it "guarda na mensagem só a página e o produto, nunca a identidade" do
+        send_message("oi", context: { page: { title: "Home" }, visitor: { name: "Ana", email: "ana@ex.com" } })
+
+        message = history.where(role: "user").first
+        expect(message.context_message.keys).to eq(%w[page])
+        expect(visitor_chat.widget_context.dig("visitor", "name")).to eq("Ana")
+      end
+
+      it "não guarda contexto na mensagem quando só veio a identidade" do
+        send_message("oi", context: { visitor: { name: "Ana" } })
+
+        expect(history.where(role: "user").first.context_message).to be_nil
+      end
+
       it "descarta chaves fora da lista e as que começam com $" do
         send_message("oi", context: { product: { name: "X", "$where" => "sleep(1000)", evil: "sim" } })
 
