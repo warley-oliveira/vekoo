@@ -1,14 +1,9 @@
-# typed: false
-
-# Concern that provides a convenient DSL for raising and resolving
-# OrganizationAlerts from any model or service.
+# Atalho para levantar e resolver OrganizationAlerts de qualquer modelo ou serviço.
 #
-# Usage in a model:
 #   include Alertable
 #
-#   # Raise an alert
 #   raise_organization_alert!(
-#     organization: my_core_account,
+#     organization: organization,
 #     category:     'connectors',
 #     origin_type:  'Connector',
 #     origin_id:    connector.id,
@@ -17,19 +12,17 @@
 #     message:      'WhatsApp connection lost'
 #   )
 #
-#   # Resolve when the issue is fixed
 #   resolve_organization_alert!(
-#     organization: my_core_account,
+#     organization: organization,
 #     origin_type:  'Connector',
 #     origin_id:    connector.id,
 #     code:         'connector_disconnected'
 #   )
-#
 module Alertable
   extend ActiveSupport::Concern
 
-  def raise_organization_alert!(organization:, category:, origin_type:, origin_id:, code:, severity: 'error',
-                             message: nil, origin_name: nil, metadata: {})
+  def raise_organization_alert!(organization:, category:, origin_type:, origin_id:, code:, severity: "error",
+                                message: nil, origin_name: nil, metadata: {})
     OrganizationAlert.raise_alert!(
       organization,
       category: category,

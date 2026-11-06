@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next"
 import { Navigate, Outlet, useLocation, useSearchParams } from "react-router"
 import { RefreshCw } from "lucide-react"
 
-import { VekooMark } from "@/components/app-sidebar"
 import { Button } from "@/components/ui/button"
+import { VekooMark } from "@/components/vekoo-mark"
 import { useAuth } from "@/lib/auth"
 
 // Guardas de rota. Enquanto a sessão não foi resolvida não decidimos nada —
@@ -47,15 +47,20 @@ export function safeNext(raw: string | null): string | null {
  * biblioteca, como acontecia.
  */
 export function RedirectIfAuthenticated() {
-  const { session, ready } = useAuth()
+  const { session, ready, signingOut } = useAuth()
   const [searchParams] = useSearchParams()
 
   if (!ready) return <AuthSplash />
-  if (session) return <Navigate to={safeNext(searchParams.get("next")) ?? "/"} replace />
+  // Saindo, a tela já veio para o login, mas a sessão só cai quando as chamadas de saída
+  // terminam. Mandar de volta aqui remontaria a casca, que revincularia o push à conta
+  // que está saindo.
+  if (session && !signingOut) {
+    return <Navigate to={safeNext(searchParams.get("next")) ?? "/"} replace />
+  }
   return <Outlet />
 }
 
-function AuthSplash() {
+export function AuthSplash() {
   return (
     <div className="flex h-dvh items-center justify-center">
       <VekooMark className="animate-pulse text-xl" />

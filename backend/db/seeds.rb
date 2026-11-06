@@ -1010,4 +1010,10 @@ puts <<~REPORT
 REPORT
 
 # Cada domínio da plataforma de atendimento semeia os próprios dados de exemplo.
-Rails.root.glob("db/seeds/*.rb").sort.each { |file| load file }
+#
+# Fora de produção: `db:prepare` roda esta semente em banco vazio, e estes arquivos
+# criam pessoas com senha conhecida, algumas com acesso às configurações. Para
+# carregá-los num ambiente de produção de demonstração: SEED_DEMO_DATA=1.
+if !Rails.env.production? || ENV["SEED_DEMO_DATA"] == "1"
+  Rails.root.glob("db/seeds/*.rb").sort.each { |file| load file }
+end

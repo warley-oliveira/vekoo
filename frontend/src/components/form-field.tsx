@@ -74,7 +74,7 @@ export function PasswordInput({ className, ...props }: ComponentProps<"input">) 
       <Input
         {...props}
         type={visible ? "text" : "password"}
-        className={cn("pr-9", className)}
+        className={cn("pr-9 pointer-coarse:pr-10", className)}
       />
       <button
         type="button"
@@ -82,7 +82,7 @@ export function PasswordInput({ className, ...props }: ComponentProps<"input">) 
         aria-label={
           visible ? t("auth.fields.hidePassword") : t("auth.fields.showPassword")
         }
-        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center rounded-r-lg text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center rounded-r-lg pointer-coarse:w-10 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>

@@ -7,8 +7,12 @@ import ptBR from "@/locales/pt-BR.json"
 
 // i18n do app. pt-BR é o idioma de origem (é onde a copy nasce e é revisada);
 // en existe desde já para o texto nunca voltar a ser escrito solto no JSX.
-// Um único namespace: o app é pequeno e os bundles são estáticos — sem
-// carregamento por HTTP, sem estado de "traduções carregando" nas telas.
+// Um único namespace e bundles estáticos — sem carregamento por HTTP, sem estado
+// de "traduções carregando" nas telas.
+//
+// Cada domínio traz o seu arquivo em `locales/<lang>/<dominio>.json` (raiz do JSON
+// = nome do domínio) e entra aqui sozinho, pelo glob: ninguém disputa o mesmo
+// arquivo e ninguém precisa editar este módulo. `locales/<lang>.json` segue valendo.
 
 export const SUPPORTED_LANGUAGES = ["pt-BR", "en"] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
@@ -16,6 +20,35 @@ export type Language = (typeof SUPPORTED_LANGUAGES)[number]
 export const FALLBACK_LANGUAGE: Language = "pt-BR"
 
 const LANGUAGE_STORAGE_KEY = "vekoo.lang"
+
+type Bundle = Record<string, unknown>
+
+const domainFiles = import.meta.glob<Bundle>("../locales/*/*.json", {
+  eager: true,
+  import: "default",
+})
+
+function isBundle(value: unknown): value is Bundle {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+/** Funde por chave: dois arquivos podem contribuir para a mesma raiz. */
+function mergeBundles(base: Bundle, extra: Bundle): Bundle {
+  const merged: Bundle = { ...base }
+  for (const [key, value] of Object.entries(extra)) {
+    const current = merged[key]
+    merged[key] =
+      isBundle(current) && isBundle(value) ? mergeBundles(current, value) : value
+  }
+  return merged
+}
+
+function bundleFor(language: Language, base: Bundle): Bundle {
+  return Object.keys(domainFiles)
+    .filter((path) => path.split("/").at(-2) === language)
+    .sort()
+    .reduce((bundle, path) => mergeBundles(bundle, domainFiles[path]), base)
+}
 
 /**
  * Reduz o que o navegador informa a um idioma que o app realmente fala:
@@ -34,8 +67,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      "pt-BR": { translation: ptBR },
-      en: { translation: en },
+      "pt-BR": { translation: bundleFor("pt-BR", ptBR) },
+      en: { translation: bundleFor("en", en) },
     },
     supportedLngs: SUPPORTED_LANGUAGES,
     // Mapa explícito em vez de `nonExplicitSupportedLngs`: aquela opção resolve

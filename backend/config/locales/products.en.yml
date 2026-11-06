@@ -1,0 +1,101 @@
+# Catalog copy in English. Keep the same keys as products.pt-BR.yml (the source locale).
+en:
+  products:
+    conflict: "Someone else just created this record. Refresh the page and try again."
+    items:
+      too_many_ids: "Select at most %{max} items at a time."
+    imports:
+      already_started: "This import has already started."
+      in_progress: "This import is still running. Wait for it to finish before deleting it."
+      title_not_mapped: "Choose the title column: it is the only required field."
+      file_too_large: "The file is over the %{max} MB limit."
+      unreadable_file: "We couldn't read this file's header. Send a CSV or TSV."
+      failed: "We couldn't finish the import. Try again."
+      interrupted: "The import was interrupted. Send the file again to continue."
+      malformed_line: "The file has a problem on line %{line}. Fix it and send it again."
+      row_errors:
+        title_blank: "empty title"
+        unknown_field: "unknown custom field: %{key}"
+        custom_fields_too_large: "custom fields are too large"
+      targets:
+        title: "Title"
+        summary: "Summary"
+        description: "Description"
+        external_id: "Code (SKU)"
+        url: "Item link"
+        active: "Available"
+        categories: "Categories"
+        tags: "Tags"
+        images: "Images"
+
+  activerecord:
+    errors:
+      models:
+        products/item:
+          attributes:
+            tags:
+              too_many: "can have at most %{count} entries"
+            custom_fields:
+              too_large: "are too large"
+              uncastable: "have an invalid value in: %{fields}"
+            url:
+              invalid: "must start with http:// or https://"
+        products/category:
+          attributes:
+            name:
+              taken: "already exists at this level"
+              invalid: "must have at least one letter or number"
+            parent_id:
+              foreign: "was not found"
+              cycle: "can't be the category itself or one inside it"
+              too_deep: "goes over the limit of %{count} levels"
+        products/field_definition:
+          attributes:
+            name:
+              taken: "is already used by another field"
+            option_values:
+              list_without_options: "must have at least one option"
+        products/image:
+          attributes:
+            file:
+              unsupported_type: "must be a JPEG, PNG, WebP or GIF image"
+              too_large: "is over the %{max} MB limit"
+            source_url:
+              invalid: "must start with http:// or https://"
+    models:
+      products/item: "item"
+      products/category: "category"
+      products/field_definition: "custom field"
+      products/image: "image"
+      products/import: "import"
+    attributes:
+      products/item:
+        title: "title"
+        summary: "summary"
+        description: "description"
+        external_id: "code (SKU)"
+        url: "item link"
+        active: "available"
+        tags: "tags"
+        custom_fields: "custom fields"
+        organization: "organization"
+      products/category:
+        name: "name"
+        parent_id: "parent category"
+        position: "position"
+        organization: "organization"
+      products/field_definition:
+        name: "name"
+        key: "key"
+        value_type: "type"
+        option_values: "list options"
+        position: "position"
+        organization: "organization"
+      products/image:
+        file: "file"
+        source_url: "image address"
+        position: "position"
+        item: "item"
+      products/import:
+        status: "status"
+        organization: "organization"

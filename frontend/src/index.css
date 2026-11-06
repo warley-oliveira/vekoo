@@ -87,6 +87,140 @@
     --sidebar-accent-foreground: oklch(0.185 0.005 285);
     --sidebar-border: oklch(0.925 0.003 285);
     --sidebar-ring: oklch(0.6 0.2 292);
+
+    /*
+     * Cromo do celular. `env()` resolve para 0 até o `viewport-fit=cover` estar no meta
+     * viewport, então é inofensivo no desktop.
+     */
+    --app-safe-top: env(safe-area-inset-top, 0px);
+    --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --app-bottom-nav-h: 3.75rem;
+    /*
+     * Folga que o cromo tira do conteúdo. Zero por padrão: fora do shell móvel (desktop,
+     * telas de entrada, editor) não há barra. O shell móvel escreve o valor real em
+     * `<html>` enquanto estiver montado, e zera no modo imersivo.
+     */
+    --app-bottom-nav-total: 0px;
+    --app-header-total: 0px;
+}
+
+/* Áreas seguras: notch e barra de gestos, no PWA instalado e no navegador. */
+@utility pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+@utility pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@utility pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+@utility pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+/*
+ * Tons de status (StatusBadge, Timeline, variação de StatTile). Sóbrios de
+ * propósito: o violeta segue sendo a única cor saturada da interface. Cada texto
+ * passa de 4,5:1 sobre o próprio fundo suave e sobre o branco.
+ */
+@theme inline {
+    --color-status-neutral: var(--status-neutral);
+    --color-status-neutral-soft: var(--status-neutral-soft);
+    --color-status-success: var(--status-success);
+    --color-status-success-soft: var(--status-success-soft);
+    --color-status-warning: var(--status-warning);
+    --color-status-warning-soft: var(--status-warning-soft);
+    --color-status-danger: var(--status-danger);
+    --color-status-danger-soft: var(--status-danger-soft);
+    --color-status-info: var(--status-info);
+    --color-status-info-soft: var(--status-info-soft);
+    --color-status-accent: var(--status-accent);
+    --color-status-accent-soft: var(--status-accent-soft);
+}
+
+:root {
+    --status-neutral: oklch(0.44 0.008 285);
+    --status-neutral-soft: oklch(0.955 0.002 285);
+    --status-success: oklch(0.44 0.09 160);
+    --status-success-soft: oklch(0.955 0.022 160);
+    --status-warning: oklch(0.47 0.095 70);
+    --status-warning-soft: oklch(0.96 0.035 85);
+    --status-danger: oklch(0.48 0.15 27);
+    --status-danger-soft: oklch(0.955 0.02 25);
+    --status-info: oklch(0.45 0.09 245);
+    --status-info-soft: oklch(0.955 0.016 245);
+    --status-accent: var(--accent-foreground);
+    --status-accent-soft: var(--accent);
+}
+
+/*
+ * Alvo de toque de 40 px sem mexer nas primitivas nem no desenho do desktop. Só
+ * vale com dedo: botões ganham uma área invisível além da própria borda (o layout
+ * denso continua igual) e campos e itens de menu crescem de verdade. Fica em
+ * `base`, então qualquer utilitário de altura de um componente ainda vence.
+ *
+ * O seletor é `button[data-slot]`, e não `[data-slot="button"]`: um `Button` usado
+ * como gatilho (`render={<Button />}`) recebe o `data-slot` do gatilho.
+ */
+@layer base {
+  @media (pointer: coarse) {
+    :where(button[data-slot]:not([data-slot="switch"])) {
+      position: relative;
+    }
+    :where(button[data-slot]:not([data-slot="switch"]))::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      transform: translate(-50%, -50%);
+    }
+    /* Estes já têm área invisível, baixa demais: a altura mínima cresce para baixo e a
+       margem devolve metade para cima, para o controle ficar no centro da área. */
+    :where([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])::after {
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      margin-top: -0.25rem;
+    }
+    :where(
+      [data-slot="input"],
+      [data-slot="input-group"],
+      [data-slot="input-group-control"],
+      [data-slot="select-trigger"],
+      [data-slot="select-item"],
+      [data-slot="combobox-item"],
+      [data-slot="command-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"]
+    ) {
+      min-height: 2.5rem;
+    }
+  }
+}
+
+/*
+ * Quem pediu menos movimento no sistema não vê diálogo crescendo nem Sheet deslizando.
+ * `useMotionPreset` cuida do Motion; aqui fica o que as primitivas animam em CSS. O giro
+ * de carregamento fica: é o aviso de que algo está acontecendo, e não desloca nada.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-spin {
+    animation-duration: 1s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
 
 @layer base {
@@ -98,6 +232,7 @@
     }
   html {
     @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
     }
   ::selection {
     background: oklch(0.51 0.24 292 / 0.18);

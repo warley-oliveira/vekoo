@@ -3,8 +3,8 @@ import { Link } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 
-import { VekooMark } from "@/components/app-sidebar"
 import { CardArt } from "@/components/editor/card-art"
+import { VekooMark } from "@/components/vekoo-mark"
 import { SHOWCASE_CAROUSELS } from "@/lib/showcase"
 
 // Moldura das telas de entrada. Duas colunas: à esquerda o formulário, com o

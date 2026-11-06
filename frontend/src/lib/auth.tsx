@@ -19,6 +19,8 @@ import {
   apiPost,
   setUnauthorizedHandler,
 } from "@/lib/api"
+import { closeCable, openCable } from "@/lib/cable"
+import { unsubscribeDevice } from "@/lib/push"
 import { clearToken, getToken, setToken } from "@/lib/token"
 
 // A sessão de quem está usando, servida pelo Rails.
@@ -39,11 +41,37 @@ export type Organization = {
   name: string
   /** Código do plano; o rótulo visível vem de `plans.<plan>`. */
   plan: PlanCode
+  /** Fuso IANA da organização (`America/Sao_Paulo`). */
+  timezone: string
+  /** Liberações por organização: mapa livre, vem como está do servidor. */
+  features: Record<string, unknown>
+  /** Dados da empresa e preferências: mapa livre (`companyInfo`, `chatSettings`). */
+  settings: Record<string, unknown>
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  logoUrl: string | null
   createdAt: number
 }
 
 /** Papel dentro da organização. Existe já pensando em convidar pessoas. */
 export type MemberRole = "owner" | "member"
+
+/** As mesmas chaves de `AccessRole::KEYS`, no Rails. */
+export type PermissionKey =
+  | "dashboard"
+  | "custom_dashboards"
+  | "flows"
+  | "calendar"
+  | "pipelines"
+  | "chat"
+  | "chat_list_to"
+  | "contacts"
+  | "catalog"
+  | "funnel"
+  | "campaigns"
+  | "core_settings"
+
+/** `none` nega; qualquer outro nível dá acesso. Para decidir, use `useCan`. */
+export type PermissionLevel = "none" | "all" | (string & {})
 
 export type Account = {
   id: string
@@ -51,6 +79,14 @@ export type Account = {
   email: string
   organizationId: string
   role: MemberRole
+  phone: string | null
+  /** `pt-BR`, `en` ou nulo. */
+  locale: string | null
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  avatarUrl: string | null
+  accessRoleId: string | null
+  /** Sempre vem em `GET /me`. Chave ausente é tratada como `none`. */
+  permissions: Partial<Record<PermissionKey, PermissionLevel>>
   createdAt: number
 }
 
@@ -78,6 +114,7 @@ type SessionPayload = Session & { token?: string }
 export type AuthErrorCode =
   | "emailNotFound"
   | "wrongPassword"
+  | "accessRevoked"
   | "emailTaken"
   | "signInFailed"
   | "signUpFailed"
@@ -132,6 +169,7 @@ function toAuthError(error: unknown, fallback: AuthErrorCode): AuthError {
   // Códigos que a tela conhece pelo nome e trata no campo certo.
   if (error.code === "emailNotFound") return new AuthError("email", "emailNotFound")
   if (error.code === "wrongPassword") return new AuthError("password", "wrongPassword")
+  if (error.code === "accessRevoked") return new AuthError("form", "accessRevoked")
   if (error.code === "emailTaken") return new AuthError("email", "emailTaken")
 
   // Validação: o Rails já manda os campos em camelCase, iguais aos do
@@ -168,6 +206,11 @@ type AuthContextValue = {
    */
   bootError: boolean
   retryBoot: () => void
+  /**
+   * A saída começou: a tela já foi para o login, mas o token ainda vale até as chamadas
+   * de saída terminarem. Quem decide por "tem sessão?" ignora esta sessão nesse meio-tempo.
+   */
+  signingOut: boolean
   signIn: (email: string, password: string) => Promise<Session>
   signUp: (input: SignUpInput) => Promise<Session>
   signOut: () => Promise<void>
@@ -183,6 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [bootError, setBootError] = useState(false)
   const [bootAttempt, setBootAttempt] = useState(0)
+  const [signingOut, setSigningOut] = useState(false)
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
 
@@ -215,6 +259,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
     return () => setUnauthorizedHandler(null)
   }, [dropSession, navigate])
+
+  // O WebSocket acompanha a sessão: abre ao entrar, troca de token ao trocar de
+  // conta e fecha ao sair. É o único ponto que liga as duas coisas.
+  const cableToken = session ? getToken() : null
+  useEffect(() => {
+    if (cableToken) openCable(cableToken)
+    else closeCable()
+  }, [cableToken])
 
   // Abertura: quem já tem token continua de onde parou.
   useEffect(() => {
@@ -306,15 +358,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const signOut = useCallback(async () => {
+    setSigningOut(true)
     // Melhor esforço: o token já vai ser jogado fora de qualquer jeito, e
     // travar a saída porque a rede caiu seria pior do que uma sessão órfã que
     // vence em 30 dias.
+    try {
+      // Antes do logout, enquanto o token vale: aparelho desvinculado é o que impede
+      // a próxima pessoa neste navegador de receber os avisos desta conta.
+      await unsubscribeDevice()
+    } catch {
+      /* segue */
+    }
     try {
       await apiDelete("/logout")
     } catch {
       /* segue */
     }
     dropSession()
+    setSigningOut(false)
   }, [dropSession])
 
   const requestPasswordReset = useCallback(async (email: string) => {
@@ -338,6 +399,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       bootError,
       retryBoot,
+      signingOut,
       signIn,
       signUp,
       signOut,
@@ -349,6 +411,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       bootError,
       retryBoot,
+      signingOut,
       signIn,
       signUp,
       signOut,

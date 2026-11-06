@@ -136,6 +136,7 @@ Billing/planos/pacotes (`Stripe`, `Packages::`, `PlanLimitEnforcement`, `plan_ga
 
 - **Toda classe ou endpoint novo tem spec.** Recicle as specs da origem (`recycle.rb` também serve) quando fizer sentido; onde elas só testam dublês, reescreva contra o banco de verdade.
 - Request specs entram como a API manda: `headers: auth_headers(account)` e `as: :json`, sem stub de autenticação. Cubra: sessão ausente (401), permissão (403), isolamento entre organizações (404), validação (422).
+- Grupo sem nenhum acesso, para testar 403: `create(:access_role, organization:, permissions: AccessRole::BLANK_PERMISSIONS)`. Não monte o mapa à mão: os níveis são validados, e `chat_list_to` não aceita `none`.
 - `create` em documento Mongoid é permitido: o Mongo de teste é real e limpo a cada exemplo. Rede fechada por WebMock: stub explícito para cada provedor. Factories por domínio em `spec/factories/<dominio>.rb`.
 - Antes de encerrar: `cd backend && bundle exec rspec` **inteiro** verde no seu worktree. Não apague nem pule spec para passar.
 
@@ -161,7 +162,11 @@ Não copie o layout da origem por inércia: pergunte qual é a melhor forma de a
 
 ### Componentes
 
-Reutilize **antes de criar**: `@/components/shared/*` (ver `frontend/src/components/shared/README.md` depois da Fase 1): `PageHeader`, `PageBody`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `StatTile`, `StatusBadge`, `ConfirmDialog`, `UserAvatar`, `EmptyState`, `ErrorState`, `Field`… Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`.
+**Leia `frontend/src/components/shared/README.md` antes de escrever a primeira tela**, e reutilize antes de criar: importe de `@/components/shared` (`PageBody`, `PageHeader`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `SortMenu`, `StatTile`, `StatusBadge`, `TagChip`, `UserAvatar`, `ResponsiveDialog`, `SidePanel`, `useConfirm`, `Form` e os campos de formulário, os esqueletos…). A vitrine viva está em `/dev/kit`. Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`. Faltou algo genérico? Crie no seu domínio e cite no relatório; não edite `components/shared` nem `components/shell`.
+
+- **Cada tela tem um título só, na barra superior.** `RouteFrame` declara o título da rota; `PageHeader` leva título e ações para a barra e deixa no conteúdo só a descrição. Não ponha um título grande no conteúdo.
+- **Use `ResponsiveDialog` e `SidePanel`**, não `Dialog` ou `Sheet` direto: as primitivas têm "Close" fixo em inglês para leitor de tela, e o kit já resolve isso.
+- **Dois cortes de "celular":** layout de tela e sobreposição por `useIsMobile` (< 768 px); navegação da casca por `useMobileShell` (< 1024 px). Interação (hover, Enter envia) por `useIsTouch`.
 
 ### Matriz de estados (toda tela com dados)
 
@@ -183,6 +188,53 @@ Reutilize **antes de criar**: `@/components/shared/*` (ver `frontend/src/compone
 - Permissão: `useCan("chat")`, `<RequirePermission permission="chat">`. O menu já filtra.
 - Contrato da API: `docs/migration/api/<dominio>.md`. Back-end em `http://localhost:3040`, com a semente carregada. Tipos no próprio domínio. Datas chegam em milissegundos.
 
+### API da casca
+
+Está pronta e é o que as telas devem usar. Não recrie nada disto:
+
+```ts
+// Rota: src/routes/<dominio>/index.tsx fica pequeno; a página entra por lazy().
+// Não mexa em App.tsx: ele já importa o index.tsx de cada domínio.
+<RouteFrame title="chave.i18n" permission="chat"><Pagina /></RouteFrame>
+// routes/dev/<nome>.tsx com export default vira /dev/<nome>, só em desenvolvimento.
+
+// @/hooks/use-header-slot: ações da página na barra superior
+useHeaderSlot(node, { mobileNode?, mobilePlacement?: "overflow" | "inline" | "toolbar" | "hidden" })
+usePageTitle(title, { color?, backTo?, parentTitle? })   // barra superior e aba do navegador
+
+// @/components/app-shell
+useShell(): { openCreate, openSearch, scroller }
+
+// @/hooks/use-app-shell
+useImmersive(active)   // esconde topbar e barra inferior (conversa no celular)
+useFullBleed(active)   // sem padding do <main>; a tela reserva --app-bottom-nav-total no fim do que rola
+
+// @/hooks/use-channel: params por valor; mesmo canal e params dividem a assinatura
+useChannel<T>(nome | null, params?, onMessage?): { connected, perform(acao, dados?) => boolean }
+
+// @/hooks/use-can
+useCan(key?): boolean; useCanAccess(): (key?) => boolean; usePermissionLevel(key)
+<RequirePermission permission="chat" fallback?>   // sem fallback, redireciona e avisa
+
+// Dados
+useApi(path, config?)                      // @/hooks/use-api
+useOptionalApi(path, fallback, config?)    // 404 vira fallback (endpoint opcional)
+usePipelineBoards(): { boards, isLoading, error, reload }   // + PIPELINE_BOARDS_KEY
+useAlerts(): { badges, reload }
+useNotifications(tab?, perPage?); useNotificationMutations(): { readAll, read, dismiss }
+usePushNotifications(): { isSupported, isAvailable, permission, isSubscribed, isLoading, error, subscribe, unsubscribe, sendTest }
+useNotificationPermission()
+apiAssetUrl(path)                          // @/lib/api: avatarUrl, logoUrl
+
+// Viewport
+useMobileShell(): { isMobileShell, isCompactPhone, isKeyboardOpen }
+useIsTouch() /* @/hooks/use-media-query */; useVisualViewport(); useScrollDirection({ element, ... })
+```
+
+- CSS: `--app-bottom-nav-total`, `--app-header-total`, `--app-vh`, `--kb-inset`; utilitários `pb-safe`, `pt-safe`, `pl-safe`, `pr-safe`.
+- Folha de baixo: `BottomSheet` em `@/components/shell/bottom-sheet`. Telas sem `fullBleed` já recebem a folga da barra inferior do `<main>`.
+- Erros de domínio: `ApiError.code` passa direto (`error.code === "lastOwner"`).
+
 ### i18n (regra dura)
 
 **Nenhum texto visível literal em JSX.** Chaves em `frontend/src/locales/{pt-BR,en}/<dominio>.json`, as duas línguas no mesmo commit, chave raiz = domínio (`t("chat.list.empty")`). `{ count }` com `_one`/`_other` para plural; `<Trans>` quando houver marcação; datas e números por `Intl` com `useLanguage()` (`@/lib/format`). Vocabulário sem jargão: "carrossel", "card", "conversa", "contato", "fluxo", "pipeline" — botões com verbo, o mesmo verbo do início ao fim da ação.
@@ -195,7 +247,7 @@ Não dê tela por pronta sem olhar. Com `npx vite --port $VITE_PORT` rodando em 
 node docs/migration/tools/shot.mjs http://localhost:$VITE_PORT/rota ~/.cache/vekoo-shot/shots/<dominio>-rota.png [--mobile] [--full]
 ```
 
-Abra o PNG com a ferramenta Read e corrija o que estiver feio, desalinhado ou quebrado, em desktop **e** em `--mobile`. O script também lista erros de console e de rede: zero é a meta. Antes de encerrar: `npm run build` e `npm run lint` sem erros novos.
+Abra o PNG com a ferramenta Read e corrija o que estiver feio, desalinhado ou quebrado, em desktop **e** em `--mobile`. `--full` estica a janela até caber o que rola no `<main>`. O script também lista erros de console e de rede: zero é a meta. Antes de encerrar: `npm run build` e `npm run lint` sem erros novos.
 
 Teste de front: não há framework, por decisão do projeto. Não adicione.
 

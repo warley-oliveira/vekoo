@@ -8,7 +8,6 @@ import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, MoreHorizontal, Star } from "lucide-react"
 
-import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
 import { CardArt } from "@/components/editor/card-art"
 import { toast } from "sonner"
@@ -27,7 +26,7 @@ import { useLanguage } from "@/lib/i18n"
 import type { CarouselSummary } from "@/lib/types"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { cn } from "@/lib/utils"
-import type { SortOption } from "@/lib/view-prefs"
+import { CAROUSEL_DRAG_TYPE, type SortOption } from "@/lib/view-prefs"
 
 // A visão em lista de Meus carrosséis: mesmas informações da grade, em
 // colunas varríveis. A ordenação é a mesma da toolbar — clicar num cabeçalho

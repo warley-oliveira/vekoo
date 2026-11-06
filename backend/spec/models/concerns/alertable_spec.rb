@@ -1,52 +1,49 @@
 require "rails_helper"
 
-# `OrganizationAlert` é do domínio access: aqui só importa o que o concern pede a ele.
 RSpec.describe Alertable do
-  subject(:host) { Class.new { include Alertable }.new }
+  let(:organization) { create(:organization) }
+  let(:host) { Class.new { include Alertable }.new }
 
-  let(:organization) { build(:organization) }
-  let(:alerts) { spy("OrganizationAlert") }
+  it "levanta um alerta com tudo que foi pedido" do
+    alert = host.raise_organization_alert!(
+      organization: organization,
+      category: "connectors",
+      origin_type: "Connector",
+      origin_id: "abc",
+      origin_name: "WhatsApp da loja",
+      code: "connector_disconnected",
+      severity: "warning",
+      message: "Sessão caiu",
+      metadata: { motivo: "logout" }
+    )
 
-  before { stub_const("OrganizationAlert", alerts) }
-
-  describe "#raise_organization_alert!" do
-    it "repassa tudo ao modelo de avisos" do
-      host.raise_organization_alert!(
-        organization: organization, category: "connectors", origin_type: "Connector", origin_id: "C1", code: "connector_disconnected",
-        severity: "warning", message: "Caiu", origin_name: "Loja da Ana", metadata: { a: 1 }
-      )
-
-      expect(alerts).to have_received(:raise_alert!).with(
-        organization,
-        category: "connectors", origin_type: "Connector", origin_id: "C1", code: "connector_disconnected",
-        severity: "warning", message: "Caiu", origin_name: "Loja da Ana", metadata: { a: 1 }
-      )
-    end
-
-    it "é erro por padrão, sem mensagem nem metadados" do
-      host.raise_organization_alert!(organization: organization, category: "connectors", origin_type: "Connector", origin_id: "C1", code: "x")
-
-      expect(alerts).to have_received(:raise_alert!).with(organization, hash_including(severity: "error", message: nil, origin_name: nil, metadata: {}))
-    end
-
-    it "devolve o aviso" do
-      allow(alerts).to receive(:raise_alert!).and_return(:aviso)
-
-      expect(host.raise_organization_alert!(organization: organization, category: "c", origin_type: "t", origin_id: "i", code: "x")).to eq(:aviso)
-    end
+    expect(alert).to have_attributes(
+      organization: organization, category: "connectors", origin_type: "Connector", origin_id: "abc",
+      origin_name: "WhatsApp da loja", code: "connector_disconnected", severity: "warning", message: "Sessão caiu"
+    )
+    expect(alert.metadata).to eq("motivo" => "logout")
   end
 
-  describe "#resolve_organization_alert!" do
-    it "resolve pelo código" do
-      host.resolve_organization_alert!(organization: organization, origin_type: "Connector", origin_id: "C1", code: "connector_disconnected")
+  it "resolve o alerta" do
+    host.raise_organization_alert!(
+      organization: organization, category: "connectors", origin_type: "Connector", origin_id: "abc", code: "connector_disconnected"
+    )
 
-      expect(alerts).to have_received(:resolve!).with(organization, origin_type: "Connector", origin_id: "C1", code: "connector_disconnected")
+    count = host.resolve_organization_alert!(
+      organization: organization, origin_type: "Connector", origin_id: "abc", code: "connector_disconnected"
+    )
+
+    expect(count).to eq(1)
+    expect(OrganizationAlert.active.count).to eq(0)
+  end
+
+  it "sem código, resolve tudo da origem" do
+    %w[a b].each do |code|
+      host.raise_organization_alert!(
+        organization: organization, category: "connectors", origin_type: "Connector", origin_id: "abc", code: code
+      )
     end
 
-    it "resolve tudo da origem sem código" do
-      host.resolve_organization_alert!(organization: organization, origin_type: "Connector", origin_id: "C1")
-
-      expect(alerts).to have_received(:resolve!).with(organization, origin_type: "Connector", origin_id: "C1", code: nil)
-    end
+    expect(host.resolve_organization_alert!(organization: organization, origin_type: "Connector", origin_id: "abc")).to eq(2)
   end
 end

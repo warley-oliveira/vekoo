@@ -60,10 +60,10 @@ Mongo + pgvector no compose; Mongoid; `Current`; `PlatformController` (sessão, 
 | # | Frente | Domínio de arquivos | Status |
 |---|---|---|---|
 | 1 | **be-core**: conectores + chat base | `connectors` | 🔄 |
-| 2 | **be-access**: pessoas, avisos, push | `access` | 🔄 |
-| 3 | **be-products**: catálogo | `products` | 🔄 |
-| 4 | **fe-shell**: menu, rotas, mobile, PWA | casca | 🔄 |
-| 5 | **fe-kit**: componentes compartilhados | `components/shared` | 🔄 |
+| 2 | **be-access**: pessoas, avisos, push | `access` | ✅ |
+| 3 | **be-products**: catálogo | `products` | ✅ |
+| 4 | **fe-shell**: menu, rotas, mobile, PWA | casca | ✅ |
+| 5 | **fe-kit**: componentes compartilhados | `components/shared` | ✅ |
 
 ### 1. be-core (agente 1)
 
@@ -114,7 +114,7 @@ Sidebar agrupada conforme o "Menu final", recolhível, com sub-itens e badges de
 - **be-automation:** `platform/{flows,flows/*,flow_templates,workspace_tools,tool_catalog,webhooks,webhook_logs}`, `Flow*`, `Tool`, `ToolInstallation`, `FunctionAction::*`, `Webhook`, `WebhookAction::*`, `WebhookLog`, `lib/flow_runtime`, `lib/flow_engine`, `app/services/{flows,tools,webhooks}/`, `app/sidekiq/flows/`, `FlowPlaygroundChannel`, `FlowChatSandboxChannel`, `v1/webhook_controller`. `WebhookAction::AssignAutomation` vira "iniciar fluxo". Blocos de IA sobre `Ai::`.
 - **be-insights:** `platform/{dashboard,pipeline,custom_dashboards}`, `app/services/{metrics,rollups,custom_dashboards}/`, `conversation_{analytics,funnel,stats}`, `dashboard_backfill_job`, `CustomDashboard*`, `DataSource` só se for do dashboard; modelo novo `Funnel` (decisão 1), CRUD de funis e movimento de conversa entre etapas.
 
-## Fase 3 — Front-end, parte 1 (7 frentes)
+## Fase 3 — Front-end, parte 1 (8 frentes; 12 e 16 podem começar antes, porque o back-end delas já está pronto)
 
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
@@ -122,7 +122,8 @@ Sidebar agrupada conforme o "Menu final", recolhível, com sub-itens e badges de
 | 13 | **fe-settings-content**: mensagens rápidas, anexos, campos personalizados | `components/{chat-snippets,attachments,custom-fields,definitions}`, `pages/settings/{chat-snippets,attachments,custom-fields}` | ⬜ |
 | 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ⬜ |
 | 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | ⬜ |
-| 16 | **fe-contacts-catalog**: contatos + catálogo | `pages/contacts`, `components/contacts`, `pages/catalog`, `components/catalog`, `use-catalog-import` | ⬜ |
+| 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ⬜ |
+| 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ⬜ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | ⬜ |
 | 18 | **fe-automation**: fluxos, editor, playground, ferramentas, webhooks + logs | `pages/flows`, `components/{flow-builder,tools,webhooks,webhook-logs,code-editor}`, `pages/settings/webhooks` | ⬜ |
 

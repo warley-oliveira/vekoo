@@ -1,0 +1,83 @@
+// A camada de composição do app. Referência de uso em ./README.md e vitrine em /dev/kit.
+
+/* Página */
+export * from "./page-header"
+export * from "./page-body"
+export * from "./settings-section"
+export * from "./section-card"
+
+/* Coleções */
+export * from "./data-table"
+export * from "./data-table-types"
+export { DataTableColumnHeader, ColumnFilterControl } from "./data-table-column-header"
+export { DEFAULT_PER_PAGE_OPTIONS, columnLabel } from "./data-table-utils"
+export * from "./table-pagination"
+export * from "./actions-menu"
+export * from "./filter-bar"
+export * from "./filter-popover"
+export * from "./search-input"
+export * from "./faceted-filter"
+export * from "./sort-menu"
+export * from "./segmented-control"
+export * from "./infinite-list"
+export * from "./bulk-actions-bar"
+export * from "./filter-layout-context"
+
+/* Dados */
+export * from "./stat-tile"
+export * from "./status-badge"
+export * from "./tag-chip"
+export * from "./user-avatar"
+export * from "./avatar-stack"
+export * from "./relative-time"
+export * from "./money"
+export * from "./copy-button"
+export * from "./key-value-list"
+export * from "./timeline"
+export * from "./file-type-icon"
+
+/* Sobreposições */
+export * from "./responsive-dialog"
+export * from "./responsive-popover"
+export * from "./side-panel"
+export * from "./confirm-dialog"
+export * from "./use-confirm"
+export * from "./unsaved-changes-dialog"
+
+/* Formulário */
+export * from "./form"
+export * from "./form-field"
+export * from "./form-actions"
+export * from "./use-form-submit"
+export * from "./apply-server-errors"
+export * from "./text-field"
+export * from "./textarea-field"
+export * from "./select-field"
+export * from "./multi-select-field"
+export * from "./combobox-field"
+export * from "./switch-field"
+export * from "./checkbox-field"
+export * from "./radio-field"
+export * from "./date-field"
+export * from "./date-time-field"
+export * from "./date-range-picker"
+export * from "./date-range-presets"
+export * from "./calendar-config"
+export * from "./color-field"
+export * from "./phone-field"
+export * from "./number-field"
+export * from "./currency-field"
+export * from "./file-dropzone"
+
+/* Esqueletos */
+export * from "./list-skeleton"
+export * from "./table-skeleton"
+export * from "./card-grid-skeleton"
+export * from "./page-skeleton"
+export * from "./detail-skeleton"
+export * from "./loading-region"
+
+/* Já existiam fora desta pasta; aqui para ter um lugar só de onde importar. */
+export { EmptyState, type EmptyStateProps } from "@/components/empty-state"
+export { ErrorState, InlineError } from "@/components/error-state"
+export { Field, PasswordInput } from "@/components/form-field"

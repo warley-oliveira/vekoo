@@ -1,6 +1,6 @@
 import useSWR, { type SWRConfiguration } from "swr"
 
-import { apiGet } from "@/lib/api"
+import { ApiError, apiGet } from "@/lib/api"
 
 /**
  * Leitura de dados da API. A chave do SWR é o próprio caminho — string, não
@@ -12,4 +12,28 @@ import { apiGet } from "@/lib/api"
  */
 export function useApi<T>(path: string | null, config?: SWRConfiguration<T>) {
   return useSWR<T>(path, (key: string) => apiGet<T>(key), config)
+}
+
+/**
+ * Leitura de um endpoint que pode não existir neste servidor: 404 vira `fallback`,
+ * sem erro na tela e sem nova tentativa. É o caso da casca durante a migração, em
+ * que o menu chega antes das APIs de alertas e de quadros.
+ */
+export function useOptionalApi<T>(
+  path: string | null,
+  fallback: T,
+  config?: SWRConfiguration<T>
+) {
+  return useSWR<T>(
+    path,
+    async (key: string) => {
+      try {
+        return await apiGet<T>(key)
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 404) return fallback
+        throw error
+      }
+    },
+    config
+  )
 }

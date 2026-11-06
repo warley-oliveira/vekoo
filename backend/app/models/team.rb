@@ -8,4 +8,7 @@ class Team < ApplicationRecord
   normalizes :name, with: ->(name) { name.squish }
 
   validates :name, presence: true, length: { maximum: 60 }, uniqueness: { scope: :organization_id }
+  validates :active, inclusion: { in: [ true, false ] }
+
+  scope :active, -> { where(active: true) }
 end

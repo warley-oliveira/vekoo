@@ -1,0 +1,393 @@
+{
+  "kit": {
+    "loading": "Carregando…",
+    "noValue": "—",
+    "actions": {
+      "close": "Fechar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "clear": "Limpar",
+      "apply": "Aplicar",
+      "more": "Mais ações"
+    },
+    "page": {
+      "breadcrumb": "Caminho da página"
+    },
+    "tag": {
+      "remove": "Remover etiqueta"
+    },
+    "avatar": {
+      "unknown": "Pessoa sem nome",
+      "more": "+{{count}}",
+      "status": {
+        "online": "Disponível",
+        "away": "Ausente",
+        "offline": "Desconectada"
+      }
+    },
+    "copy": {
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "failed": "Não deu para copiar. Selecione o texto e copie à mão."
+    },
+    "stat": {
+      "trend": "Tendência de {{label}}: de {{first}} para {{last}}"
+    },
+    "confirm": {
+      "failed": "Não deu para concluir. Tente de novo.",
+      "typeToConfirm": "Digite {{text}} para confirmar"
+    },
+    "unsaved": {
+      "title": "Sair sem salvar?",
+      "description": "As alterações feitas aqui vão se perder.",
+      "leave": "Sair sem salvar",
+      "stay": "Continuar editando"
+    },
+    "form": {
+      "phonePlaceholder": "+55 11 91234-5678",
+      "optional": "opcional",
+      "selectPlaceholder": "Escolha uma opção",
+      "searchPlaceholder": "Digite para buscar",
+      "noOptions": "Nada encontrado.",
+      "searching": "Buscando…",
+      "searchFailed": "Não deu para buscar. Tente de novo.",
+      "clearSelection": "Limpar seleção",
+      "openOptions": "Ver opções",
+      "removeItem": "Remover {{label}}",
+      "decrease": "Diminuir",
+      "increase": "Aumentar",
+      "serverError": "Não deu para salvar. Tente de novo em instantes.",
+      "networkError": "Sem conexão com o servidor. Verifique sua internet e tente de novo."
+    },
+    "date": {
+      "pickDate": "Escolha uma data",
+      "pickRange": "Escolha um período",
+      "time": "Horário",
+      "presetsLabel": "Períodos prontos",
+      "rangeHint": "Marque o início e o fim",
+      "clearRange": "Limpar período",
+      "presets": {
+        "today": "Hoje",
+        "yesterday": "Ontem",
+        "last7": "Últimos 7 dias",
+        "last30": "Últimos 30 dias",
+        "thisMonth": "Este mês",
+        "lastMonth": "Mês passado"
+      }
+    },
+    "color": {
+      "pick": "Escolha uma cor",
+      "swatches": "Cores prontas",
+      "hex": "Código da cor em hexadecimal"
+    },
+    "dropzone": {
+      "choose": "Escolher arquivos",
+      "prompt": "Arraste arquivos ou clique para escolher",
+      "promptTouch": "Toque para escolher arquivos",
+      "dragActive": "Solte para adicionar",
+      "dragReject": "Esse tipo de arquivo não é aceito",
+      "full": "Limite de arquivos atingido",
+      "upTo": "até {{max}}",
+      "maxFiles_one": "{{count}} arquivo",
+      "maxFiles_other": "até {{count}} arquivos",
+      "tooLarge": "{{name}} passa de {{max}}.",
+      "invalidType": "{{name}} não é de um tipo aceito.",
+      "tooMany_one": "{{name}} ficou de fora: o limite é de {{count}} arquivo.",
+      "tooMany_other": "{{name}} ficou de fora: o limite é de {{count}} arquivos.",
+      "rejected": "{{name}} não pôde ser adicionado.",
+      "uploadFailed": "O envio falhou. Tente de novo.",
+      "uploading": "Enviando {{name}}",
+      "retry": "Enviar {{name}} de novo",
+      "cancel": "Cancelar o envio de {{name}}",
+      "remove": "Remover {{name}}",
+      "types": {
+        "image": "Imagem",
+        "video": "Vídeo",
+        "audio": "Áudio"
+      }
+    },
+    "search": {
+      "placeholder": "Buscar",
+      "clear": "Limpar busca"
+    },
+    "filters": {
+      "title": "Filtros",
+      "clear": "Limpar filtros",
+      "clearFilter": "Limpar este filtro",
+      "done": "Ver resultados",
+      "selected_one": "{{count}} selecionado",
+      "selected_other": "{{count}} selecionados",
+      "withCount_one": "Filtros, {{count}} ativo",
+      "withCount_other": "Filtros, {{count}} ativos",
+      "searchIn": "Buscar em {{title}}",
+      "noOptions": "Nada encontrado."
+    },
+    "sort": {
+      "title": "Ordenar por",
+      "current": "Ordenar por: {{label}}"
+    },
+    "bulk": {
+      "toolbar": "Ações nos itens selecionados",
+      "selected_one": "{{formatted}} selecionado",
+      "selected_other": "{{formatted}} selecionados",
+      "selectAll_one": "Selecionar o resultado",
+      "selectAll_other": "Selecionar todos os {{formatted}}",
+      "clear": "Limpar seleção"
+    },
+    "list": {
+      "emptyTitle": "Nada por aqui ainda",
+      "end": "Você chegou ao fim",
+      "loadMore": "Carregar mais"
+    },
+    "table": {
+      "sortBy": "Ordenar por {{column}}",
+      "filterBy": "Filtrar {{column}}",
+      "range": "{{from}}–{{to}} de {{total}}",
+      "perPage": "Linhas por página",
+      "pagination": "Páginas",
+      "previous": "Página anterior",
+      "next": "Próxima página",
+      "pageOf": "Página {{page}} de {{total}}",
+      "selectPage": "Selecionar todas as linhas da página",
+      "selectRow": "Selecionar linha",
+      "actions": "Ações",
+      "rowActions": "Ações da linha",
+      "compactDensity": "Tabela compacta",
+      "useComfortable": "Usar linhas espaçadas",
+      "useCompact": "Usar linhas compactas",
+      "emptyTitle": "Nada por aqui ainda",
+      "noResultsTitle": "Nenhum resultado com esses filtros",
+      "noResultsDescription": "Tente termos mais amplos ou limpe os filtros para ver tudo.",
+      "sortDesc": "{{column}}: decrescente",
+      "sortAsc": "{{column}}: crescente"
+    },
+    "showcase": {
+      "title": "Kit de componentes",
+      "description": "Tudo o que as telas têm para usar, em todos os estados. Só em desenvolvimento.",
+      "crumbs": {
+        "home": "Início",
+        "dev": "Desenvolvimento",
+        "kit": "Kit"
+      },
+      "sections": {
+        "page": "Página",
+        "data": "Dados",
+        "collections": "Coleções",
+        "overlays": "Sobreposições",
+        "forms": "Formulários",
+        "skeletons": "Esqueletos"
+      },
+      "actions": {
+        "create": "Criar contato",
+        "export": "Exportar",
+        "edit": "Editar",
+        "archive": "Arquivar",
+        "delete": "Excluir",
+        "assign": "Atribuir",
+        "reply": "Responder"
+      },
+      "page": {
+        "settingsTitle": "Notificações",
+        "settingsDescription": "Escolha o que chega por push e o que fica só dentro da plataforma.",
+        "pushLabel": "Avisar sobre novas conversas",
+        "pushHint": "Chega mesmo com o aplicativo fechado.",
+        "digestLabel": "Resumo diário por e-mail",
+        "cardTitle": "Plano de atendimento",
+        "cardDescription": "Um assunto dentro da página, quando só o espaçamento não basta.",
+        "cardBody": "O card agrupa, mas não grita: sem sombra pesada e sem cor própria.",
+        "cardFooter": "Atualizado há pouco"
+      },
+      "data": {
+        "stats": "Indicadores",
+        "statLoading": "Carregando",
+        "conversations": "Conversas abertas",
+        "revenue": "Receita no mês",
+        "responseTime": "Tempo de resposta",
+        "contacts": "Contatos na base",
+        "vsLastMonth": "vs. mês passado",
+        "vsLastWeek": "vs. semana passada",
+        "minutes": "{{value}} min",
+        "stable": "sem mudança",
+        "status": "Status",
+        "toneNeutral": "Rascunho",
+        "toneSuccess": "Conectado",
+        "toneWarning": "Aguardando",
+        "toneDanger": "Falhou",
+        "toneInfo": "Em andamento",
+        "toneAccent": "Destaque",
+        "toneNoDot": "Sem ponto",
+        "tags": "Etiquetas",
+        "tagNoColor": "Sem cor",
+        "people": "Pessoas",
+        "formats": "Tempo, dinheiro e cópia",
+        "copyLink": "Copiar link",
+        "keyValue": "Lista de detalhes",
+        "timeline": "Linha do tempo",
+        "fields": {
+          "name": "Nome",
+          "phone": "WhatsApp",
+          "email": "E-mail",
+          "owner": "Responsável",
+          "company": "Empresa"
+        },
+        "events": {
+          "created": "Contato criado",
+          "createdDetail": "Veio pelo formulário do site.",
+          "tagged": "Etiqueta adicionada",
+          "assigned": "Atribuído para Marina Duarte",
+          "failed": "Envio da campanha falhou",
+          "failedDetail": "O número não tem WhatsApp."
+        }
+      },
+      "collections": {
+        "dataTable": "Tabela completa",
+        "dataTableHint": "Busca, filtro por coluna, ordenação, seleção, ações por linha e densidade.",
+        "states": "Estados da tabela",
+        "stateReal": "Com dados",
+        "stateLoading": "Carregando",
+        "stateEmpty": "Vazia",
+        "stateError": "Erro",
+        "serverTable": "Paginação no servidor",
+        "serverHint": "A partir do meta da API: {page, perPage, total, totalPages, hasMore}.",
+        "searchLabel": "Buscar contatos",
+        "resultCount_one": "{{count}} contato",
+        "resultCount_other": "{{count}} contatos",
+        "emptyTitle": "Nenhum contato ainda",
+        "emptyDescription": "Importe uma planilha ou crie o primeiro contato à mão.",
+        "columns": {
+          "name": "Nome",
+          "stage": "Etapa",
+          "owner": "Responsável",
+          "value": "Valor",
+          "lastContact": "Último contato"
+        },
+        "stages": {
+          "new": "Novo",
+          "negotiating": "Em negociação",
+          "won": "Ganho",
+          "lost": "Perdido"
+        },
+        "sort": {
+          "recent": "Mais recentes",
+          "oldest": "Mais antigos",
+          "nameAsc": "Nome de A a Z"
+        },
+        "pieces": "Peças soltas",
+        "viewList": "Lista",
+        "viewBoard": "Quadro",
+        "viewOpen": "Abertas",
+        "viewClosed": "Encerradas",
+        "disabledSegment": "Arquivadas",
+        "gridView": "Ver em grade",
+        "listView": "Ver em lista",
+        "infinite": "Lista infinita",
+        "infiniteHint": "{{count}} itens virtualizados, carregando de 20 em 20.",
+        "reverse": "Rolagem reversa (conversa)",
+        "reverseHint": "Começa no fim; ao rolar para o topo, traz as antigas sem pular.",
+        "newMessage": "Receber mensagem",
+        "endLabel": "Todas as conversas foram carregadas",
+        "bulkDone_one": "{{count}} contato arquivado",
+        "bulkDone_other": "{{count}} contatos arquivados",
+        "filterBar": "Barra de filtros",
+        "filterBarHint": "Busca, filtros, ordenação e limpar. No celular, os filtros vão para uma Sheet."
+      },
+      "overlays": {
+        "openDialog": "Abrir diálogo responsivo",
+        "openPanel": "Abrir painel lateral",
+        "openConfirm": "Confirmar exclusão",
+        "openTyped": "Confirmar digitando",
+        "openFailing": "Confirmar com erro",
+        "openHook": "Perguntar com useConfirm",
+        "dialogTitle": "Renomear etiqueta",
+        "dialogDescription": "O novo nome vale para todas as conversas que usam esta etiqueta.",
+        "dialogField": "Nome da etiqueta",
+        "dialogSubmit": "Salvar nome",
+        "panelTitle": "Marina Duarte",
+        "panelDescription": "Cliente desde março de 2024",
+        "panelDelete": "Excluir este contato",
+        "panelBody": "O corpo rola entre o cabeçalho e o rodapé, que ficam sempre à vista.",
+        "deleteTitle": "Excluir este contato?",
+        "deleteDescription": "As conversas continuam no histórico, mas o contato some das listas.",
+        "deleteConfirm": "Excluir contato",
+        "typedTitle": "Excluir a organização?",
+        "typedDescription": "Isso apaga contatos, conversas e carrosséis. Não tem como desfazer.",
+        "typedConfirm": "Excluir para sempre",
+        "typedWord": "EXCLUIR",
+        "failingTitle": "Arquivar a campanha?",
+        "failingDescription": "Este exemplo falha de propósito, para mostrar o erro dentro do diálogo.",
+        "failingConfirm": "Arquivar campanha",
+        "hookTitle": "Publicar o fluxo agora?",
+        "hookDescription": "As próximas mensagens já passam por ele.",
+        "hookConfirm": "Publicar fluxo",
+        "confirmed": "Confirmado",
+        "declined": "Nada foi alterado"
+      },
+      "forms": {
+        "profile": "Formulário completo",
+        "profileHint": "Validação inline com zod e erro do servidor nos campos ao enviar.",
+        "name": "Nome completo",
+        "namePlaceholder": "Marina Duarte",
+        "nameRequired": "Diga o nome da pessoa.",
+        "email": "E-mail",
+        "emailInvalid": "Esse e-mail não parece certo.",
+        "emailHint": "Para onde vão os avisos importantes.",
+        "website": "Site",
+        "password": "Senha",
+        "passwordHint": "Pelo menos 8 caracteres.",
+        "passwordShort": "Use pelo menos 8 caracteres.",
+        "notes": "Observações",
+        "notesPlaceholder": "Prefere contato pela manhã…",
+        "phone": "WhatsApp",
+        "phoneInvalid": "Confira o DDD e o número.",
+        "stage": "Etapa do funil",
+        "stageRequired": "Escolha uma etapa.",
+        "owner": "Responsável",
+        "ownerHint": "Busca no servidor enquanto você digita.",
+        "city": "Cidade",
+        "tags": "Etiquetas",
+        "tagsPlaceholder": "Escolha as etiquetas",
+        "tagsRequired": "Escolha pelo menos uma etiqueta.",
+        "dealValue": "Valor do negócio",
+        "seats": "Quantidade de licenças",
+        "discount": "Desconto",
+        "birthday": "Aniversário",
+        "followUp": "Próximo contato",
+        "period": "Período da campanha",
+        "color": "Cor da etiqueta",
+        "channel": "Canal preferido",
+        "channelWhatsapp": "WhatsApp",
+        "channelWhatsappHint": "A pessoa responde mais rápido por aqui.",
+        "channelEmail": "E-mail",
+        "channelEmailHint": "Melhor para propostas e contratos.",
+        "priority": "Prioridade",
+        "priorityLow": "Baixa",
+        "priorityMedium": "Média",
+        "priorityHigh": "Alta",
+        "marketing": "Recebe campanhas de marketing",
+        "marketingHint": "Dá para desligar quando quiser.",
+        "terms": "Li e concordo com os termos de uso",
+        "termsRequired": "É preciso aceitar para continuar.",
+        "submit": "Salvar contato",
+        "cancel": "Descartar",
+        "saved": "Contato salvo",
+        "serverTrigger": "Simular recusa do servidor",
+        "serverFieldError": "Este e-mail já está em outro contato.",
+        "serverRootError": "Sua organização chegou ao limite de contatos.",
+        "disabled": "Desabilitado",
+        "states": "Estados dos campos",
+        "invalidField": "Com erro",
+        "invalidMessage": "Mensagem de erro no lugar da dica.",
+        "dropzone": "Envio de arquivos",
+        "dropzoneHint": "Com limite de tipo, tamanho e quantidade, explicados antes de dar erro.",
+        "dropzoneStates": "Estados de envio"
+      },
+      "skeletons": {
+        "list": "Lista",
+        "table": "Tabela",
+        "cards": "Grade de cards",
+        "detail": "Detalhe",
+        "page": "Página"
+      }
+    }
+  }
+}

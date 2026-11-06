@@ -19,27 +19,9 @@
     "free": "Plano Grátis"
   },
   "shell": {
-    "openMenu": "Abrir menu",
-    "collapseMenu": "Recolher menu",
-    "expandMenu": "Expandir menu",
-    "nav": {
-      "carousels": "Meus carrosséis",
-      "search": "Buscar",
-      "templates": "Modelos",
-      "brands": "Marcas",
-      "trash": "Lixeira"
-    },
     "createBlank": "Começar em branco",
     "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
-    "createCarousel": "Criar carrossel",
-    "notifications": {
-      "label": "Notificações",
-      "aria": "Notificações",
-      "ariaUnread": "Notificações ({{count}} não lidas)",
-      "markAllRead": "Marcar todas como lidas",
-      "empty": "Nenhuma notificação por aqui.",
-      "loadFailed": "Não deu para carregar os avisos."
-    }
+    "createCarousel": "Criar carrossel"
   },
   "notifications": {
     "templates": {
@@ -58,11 +40,7 @@
   "account": {
     "menuAria": "Menu da conta {{organization}}",
     "fallbackName": "Sua conta",
-    "settings": "Configurações",
-    "settingsToast": "As configurações chegam em breve.",
     "invite": "Convidar pessoas",
-    "inviteToast": "Convidar pessoas chega em uma próxima etapa.",
-    "inviteToastDescription": "Elas vão entrar em “{{organization}}” e ver os mesmos carrosséis.",
     "signOut": "Sair",
     "signOutToast": "Você saiu da sua conta."
   },
@@ -92,6 +70,8 @@
     "actionsAria": "Ações da pasta {{name}}",
     "newNameAria": "Novo nome da pasta",
     "deleteFolder": "Excluir pasta",
+    "deleteConfirmTitle": "Excluir a pasta “{{name}}”?",
+    "deleteConfirmDescription": "Os carrosséis dela não são apagados: voltam para Meus carrosséis.",
     "created": "Pasta “{{name}}” criada.",
     "renamed": "Pasta renomeada.",
     "deleted": "Pasta “{{name}}” excluída.",

@@ -48,6 +48,8 @@ pt-BR:
 
   activerecord:
     errors:
+      messages:
+        record_invalid: "Não foi possível salvar: %{errors}"
       models:
         account:
           attributes:

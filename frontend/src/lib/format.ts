@@ -5,7 +5,7 @@ const DAY = 24 * HOUR
 // Datas saem do `Intl` com o idioma ativo — nada de string de tempo escrita à
 // mão por locale. Quem chama passa o idioma (`useLanguage()`).
 
-/** "há 3 horas" / "ontem" / "12 de mai." — no idioma pedido. */
+/** "há 3 horas" / "ontem" / "em 2 dias" / "12 de mai." — no idioma pedido. */
 export function formatRelative(
   timestamp: number,
   language: string,
@@ -13,6 +13,19 @@ export function formatRelative(
 ): string {
   const diff = now - timestamp
   const relative = new Intl.RelativeTimeFormat(language, { numeric: "auto" })
+
+  // Futuro (agendamentos, prazos). Menos de um minuto à frente é relógio
+  // desacertado, não futuro, e segue o caminho do passado.
+  if (diff <= -MINUTE) {
+    const ahead = -diff
+    if (ahead < HOUR) return relative.format(Math.floor(ahead / MINUTE), "minute")
+    if (ahead < DAY) return relative.format(Math.floor(ahead / HOUR), "hour")
+    if (ahead < 30 * DAY) return relative.format(Math.floor(ahead / DAY), "day")
+    return new Intl.DateTimeFormat(language, {
+      day: "numeric",
+      month: "short",
+    }).format(timestamp)
+  }
 
   if (diff < HOUR) {
     return relative.format(-Math.max(1, Math.floor(diff / MINUTE)), "minute")

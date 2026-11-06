@@ -4,6 +4,9 @@ export type SortOption = "recent" | "oldest" | "name-asc" | "name-desc"
 export type ViewMode = "grid" | "list"
 export type FilterTab = "all" | "recent" | "favorites"
 
+/** Tipo do arraste de carrossel: das grades e tabelas para as pastas do menu. */
+export const CAROUSEL_DRAG_TYPE = "application/x-vekoo-carousel"
+
 /** Ordem de exibição do seletor; o rótulo vem de `carousels.sort.<option>`. */
 export const SORT_OPTIONS: readonly SortOption[] = [
   "recent",
@@ -40,14 +43,23 @@ export function usePersistentState<T extends string>(
   initial: T
 ): [T, (value: T) => void] {
   const [value, setValue] = useState<T>(() => {
-    const stored = localStorage.getItem(key)
-    return (stored as T) ?? initial
+    // Armazenamento bloqueado (janela anônima) não pode derrubar a tela: a
+    // preferência só deixa de durar até a próxima visita.
+    try {
+      return (localStorage.getItem(key) as T | null) ?? initial
+    } catch {
+      return initial
+    }
   })
   return [
     value,
     (next: T) => {
       setValue(next)
-      localStorage.setItem(key, next)
+      try {
+        localStorage.setItem(key, next)
+      } catch {
+        /* segue só em memória */
+      }
     },
   ]
 }

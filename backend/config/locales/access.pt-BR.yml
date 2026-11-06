@@ -1,0 +1,63 @@
+# Textos do domínio "access" (pessoas, organização, avisos, alertas e push). Mantenha as
+# mesmas chaves de access.en.yml.
+pt-BR:
+  errors:
+    last_owner: "A organização precisa de pelo menos um dono com acesso."
+    cannot_revoke_self: "Você não pode revogar o próprio acesso."
+    cannot_delete_self: "Você não pode excluir a própria conta por aqui."
+    own_password_in_profile: "Para trocar a própria senha, use o seu perfil: lá a senha atual é pedida."
+    invalid_team: "Um dos departamentos não existe nesta organização."
+    email_taken: "Esse e-mail já tem conta no Vekoo."
+    email_required: "Informe um e-mail."
+    default_access_role: "Os grupos padrão não podem ser excluídos."
+    no_push_devices: "Nenhum dispositivo está recebendo notificações nesta conta."
+    push_not_configured: "As notificações push não estão configuradas neste ambiente."
+
+  auth:
+    access_revoked: "Seu acesso a esta organização foi revogado. Fale com quem administra a conta."
+
+  push:
+    test_title: "Notificação de teste"
+    test_body: "Tudo certo: as notificações estão chegando neste dispositivo."
+    test_action: "Ver detalhes"
+
+  organization_alerts:
+    messages:
+      connector_disconnected: "A integração \"%{name}\" foi desconectada."
+      webhook_delivery_failed: "Falha na entrega do webhook \"%{name}\"."
+
+  activerecord:
+    errors:
+      models:
+        access_role:
+          attributes:
+            name:
+              default_role: "não pode ser alterado nos grupos padrão"
+            base:
+              default_role: "Os grupos padrão não podem ser excluídos."
+            permissions:
+              unknown_key: "traz um recurso que não existe: %{key}"
+              unknown_level: "traz um nível de acesso que não existe em %{key}"
+    models:
+      access_role: "grupo"
+      team: "departamento"
+      push_device: "dispositivo"
+    attributes:
+      account:
+        phone: "telefone"
+        locale: "idioma"
+        access_role_id: "grupo"
+        password_confirmation: "confirmação da senha"
+      access_role:
+        name: "nome"
+        permissions: "permissões"
+      team:
+        name: "nome"
+        active: "situação"
+      organization:
+        timezone: "fuso horário"
+        cnpj: "CNPJ"
+      push_device:
+        endpoint: "endereço da assinatura"
+        p256dh_key: "chave p256dh"
+        auth_key: "chave de autenticação"

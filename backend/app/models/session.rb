@@ -18,7 +18,9 @@ class Session < ApplicationRecord
   def self.authenticate(token)
     return nil if token.blank?
 
-    active.find_by(token_digest: digest(token))
+    # Revogar já apaga as sessões; o `merge` fecha a corrida com quem estava entrando
+    # naquele instante. Vale para a API e para o WebSocket, que passam os dois aqui.
+    active.joins(:account).merge(Account.active).find_by(token_digest: digest(token))
   end
 
   # Abre a sessão e devolve o registro já com o token cru em memória.

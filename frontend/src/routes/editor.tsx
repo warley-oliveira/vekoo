@@ -221,5 +221,5 @@ function MissingCarousel() {
     toast(t("editor.notFoundToast"))
   }, [t])
 
-  return <Navigate to="/" replace />
+  return <Navigate to="/carousels" replace />
 }

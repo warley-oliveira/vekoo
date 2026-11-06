@@ -20,6 +20,8 @@ class SignIn
     account = Account.find_by(email: @email)
     return failure("emailNotFound", "email") if account.nil?
     return failure("wrongPassword", "password") unless account.authenticate(@password)
+    # Depois da senha: só quem é a pessoa fica sabendo que o acesso foi cortado.
+    return failure("accessRevoked", "email") if account.revoked?
 
     # Entrar é o único momento garantido em que se toca nas sessões da conta:
     # aproveitamos para varrer as vencidas, em vez de deixá-las acumulando para

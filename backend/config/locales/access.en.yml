@@ -1,0 +1,63 @@
+# Copy for the "access" domain (people, organization, notices, alerts and push). Keep the
+# same keys as access.pt-BR.yml.
+en:
+  errors:
+    last_owner: "The organization needs at least one owner with access."
+    cannot_revoke_self: "You can't revoke your own access."
+    cannot_delete_self: "You can't delete your own account from here."
+    own_password_in_profile: "To change your own password, use your profile: it asks for the current one."
+    invalid_team: "One of the departments doesn't exist in this organization."
+    email_taken: "That email already has a Vekoo account."
+    email_required: "Enter an email."
+    default_access_role: "Default groups can't be deleted."
+    no_push_devices: "No device is receiving notifications on this account."
+    push_not_configured: "Push notifications aren't set up in this environment."
+
+  auth:
+    access_revoked: "Your access to this organization was revoked. Talk to whoever manages the account."
+
+  push:
+    test_title: "Test notification"
+    test_body: "All good: notifications are reaching this device."
+    test_action: "See details"
+
+  organization_alerts:
+    messages:
+      connector_disconnected: "The integration \"%{name}\" was disconnected."
+      webhook_delivery_failed: "Delivery failed for the webhook \"%{name}\"."
+
+  activerecord:
+    errors:
+      models:
+        access_role:
+          attributes:
+            name:
+              default_role: "can't be changed on default groups"
+            base:
+              default_role: "Default groups can't be deleted."
+            permissions:
+              unknown_key: "has a resource that doesn't exist: %{key}"
+              unknown_level: "has an access level that doesn't exist for %{key}"
+    models:
+      access_role: "group"
+      team: "department"
+      push_device: "device"
+    attributes:
+      account:
+        phone: "phone"
+        locale: "language"
+        access_role_id: "group"
+        password_confirmation: "password confirmation"
+      access_role:
+        name: "name"
+        permissions: "permissions"
+      team:
+        name: "name"
+        active: "status"
+      organization:
+        timezone: "time zone"
+        cnpj: "CNPJ"
+      push_device:
+        endpoint: "subscription address"
+        p256dh_key: "p256dh key"
+        auth_key: "auth key"
