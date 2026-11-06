@@ -61,7 +61,7 @@ module Agenda
     end
 
     def enroll_sequence
-      result = EnrollAttendanceSequenceService.new(@booking, params.require(:sequence_id)).call
+      result = EnrollAttendanceSequenceService.new(@booking, params.require(:sequence_id).to_s).call
       return render_error(status: :unprocessable_entity, code: result.code, message: result.message) unless result.success?
 
       render json: {
@@ -83,7 +83,7 @@ module Agenda
     private
 
     def set_booking
-      @booking = Booking.scoped(current_organization.id, params[:id] || params[:calendar_event_id])
+      @booking = Booking.scoped(current_organization.id, params[:id])
       render_not_found unless @booking
     end
 

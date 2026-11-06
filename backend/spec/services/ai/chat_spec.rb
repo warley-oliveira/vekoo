@@ -169,6 +169,82 @@ RSpec.describe Ai::Chat do
     end
   end
 
+  describe "#complete_with_tools" do
+    let(:messages) { double }
+    let(:client) { instance_double(Anthropic::Client).tap { |c| allow(c).to receive(:messages).and_return(messages) } }
+    let(:tools) { [ { name: "add_tag", description: "x", input_schema: { type: "object", properties: {} } } ] }
+
+    def text_block(text) = double(type: :text, text: text)
+    def tool_block(name, input) = double(type: :tool_use, id: "call-1", name: name, input: input)
+    def reply(stop_reason, *content) = double(stop_reason: stop_reason, content: content)
+
+    def run_chat(max_rounds: 4, &block)
+      described_class.new(client: client).complete_with_tools(system: "s", prompt: "p", tools: tools, max_rounds: max_rounds, &(block || ->(*) { {} }))
+    end
+
+    it "sem chamada de ferramenta, devolve o texto" do
+      allow(messages).to receive(:create).and_return(reply(:end_turn, text_block("Oi")))
+
+      expect(run_chat).to eq("Oi")
+    end
+
+    it "executa o que o modelo pedir e devolve a resposta na mesma rodada, com os blocos intactos" do
+      thinking = double(type: :thinking)
+      call = tool_block("add_tag", { name: "quente" })
+      sent = []
+      allow(messages).to receive(:create) do |params|
+        sent << params[:messages].dup
+        sent.size == 1 ? reply(:tool_use, thinking, call) : reply(:end_turn, text_block("Pronto"))
+      end
+
+      result = run_chat { |name, input| { name: name, got: input[:name] } }
+
+      expect(result).to eq("Pronto")
+      expect(sent.last[1]).to eq({ role: :assistant, content: [ thinking, call ] })
+      expect(sent.last[2][:content].first).to include(type: :tool_result, tool_use_id: "call-1", content: { name: "add_tag", got: "quente" }.to_json)
+    end
+
+    it "passou do limite de rodadas, proíbe novas chamadas em vez de perder a mensagem" do
+      choices = []
+      allow(messages).to receive(:create) do |params|
+        choices << params[:tool_choice][:type]
+        choices.last == "none" ? reply(:end_turn, text_block("Fim")) : reply(:tool_use, tool_block("add_tag", {}))
+      end
+
+      expect(run_chat(max_rounds: 2)).to eq("Fim")
+      expect(choices).to eq(%w[auto auto none])
+    end
+
+    it "ferramenta que falha volta como erro para o modelo" do
+      sent = []
+      allow(messages).to receive(:create) do |params|
+        sent << params[:messages].dup
+        sent.size == 1 ? reply(:tool_use, tool_block("add_tag", {})) : reply(:end_turn, text_block("Sem etiqueta"))
+      end
+
+      expect(run_chat { raise "boom" }).to eq("Sem etiqueta")
+      expect(sent.last[2][:content].first).to include(is_error: true)
+    end
+
+    it "recusa vira falha" do
+      allow(messages).to receive(:create).and_return(reply(:refusal))
+
+      expect { run_chat }.to raise_error(Ai::Chat::Failed, /refusal/)
+    end
+
+    it "erro do SDK vira falha" do
+      allow(messages).to receive(:create).and_raise(Anthropic::Errors::APIConnectionError.new(url: "http://x"))
+
+      expect { run_chat }.to raise_error(Ai::Chat::Failed)
+    end
+
+    it "sem chave, MissingKey" do
+      without_key
+
+      expect { described_class.new.complete_with_tools(system: "s", prompt: "p", tools: tools) { {} } }.to raise_error(Ai::Chat::MissingKey)
+    end
+  end
+
   describe "o que é mandado ao modelo" do
     it "usa Sonnet 5, pensamento adaptativo e marca o bloco estável para cache" do
       messages = double

@@ -69,8 +69,13 @@ module Agenda
       class_group.class_enrollments.active.for_slot(slot).enrolled_by(start_at)
     end
 
+    # Dois cliques ao mesmo tempo: quem perde a corrida fica com a aula do outro (índice único).
     def materialize!
       @session ||= class_group.class_sessions.create!(start: start_at, end: end_at)
+    rescue Mongo::Error::OperationFailure => e
+      raise unless e.code == 11_000
+
+      @session = class_group.class_sessions.where(start: start_at).take
     end
 
     # Os registros de presença, mais quem está inscrito e ainda não foi marcado.

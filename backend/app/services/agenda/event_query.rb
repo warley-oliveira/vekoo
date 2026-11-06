@@ -19,7 +19,7 @@ module Agenda
       bookings = BookingSerializer.many(bookings_scope.order_by(start: :asc))
       return bookings if chat_id
 
-      bookings + class_sessions
+      (bookings + class_sessions).sort_by { |event| event[:start] }
     end
 
     def range_start

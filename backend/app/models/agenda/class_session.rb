@@ -17,7 +17,8 @@ module Agenda
     belongs_to :calendar, class_name: "Agenda::Calendar", inverse_of: :class_sessions, optional: true
     has_many :class_attendances, class_name: "Agenda::ClassAttendance", inverse_of: :class_session, dependent: :destroy
 
-    index({ class_group_id: 1, start: 1 })
+    # Uma aula por horário na turma. Dois cliques em uma aula calculada materializam uma só.
+    index({ class_group_id: 1, start: 1 }, { unique: true })
     index({ organization_id: 1, start: 1 })
 
     before_validation :inherit_from_class_group

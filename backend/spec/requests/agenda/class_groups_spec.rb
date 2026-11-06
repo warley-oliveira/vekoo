@@ -377,6 +377,27 @@ RSpec.describe "Agenda: turmas", type: :request do
 
         expect(response).to have_http_status(:bad_request)
       end
+
+      it "operador do Mongo no lugar do id não vira consulta" do
+        chat
+
+        post base, params: { chatId: { "$ne" => "" } }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "dois cliques ao mesmo tempo: quem perde ouve 422, não 500" do
+        Agenda::ClassEnrollment.create_indexes
+        create(:agenda_class_enrollment, class_group: group, chat: chat)
+        allow_any_instance_of(Mongoid::Validatable::UniquenessValidator).to receive(:validate_each)
+
+        post base, params: { chatId: chat.id.to_s }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json.dig("error", "code")).to eq("conflict")
+      ensure
+        Agenda::ClassEnrollment.remove_indexes
+      end
     end
 
     describe "DELETE" do

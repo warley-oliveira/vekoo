@@ -26,7 +26,7 @@ module Agenda
     # `enrollAll: true` inscreve nos horários de `slots` (sem eles, no horário desta aula). Sem isso,
     # o contato entra como convidado só nesta aula.
     def create
-      chat = Chat.scoped(current_organization.id, params.require(:chat_id))
+      chat = Chat.scoped(current_organization.id, params.require(:chat_id).to_s)
       return render_not_found unless chat
 
       ActiveModel::Type::Boolean.new.cast(params[:enroll_all]) ? enroll(chat) : add_guest(chat)

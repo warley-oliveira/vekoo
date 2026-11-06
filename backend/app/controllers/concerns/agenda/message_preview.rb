@@ -16,7 +16,7 @@ module Agenda
     end
 
     def render_preview(tools:, message_ids: nil)
-      booking = @calendar.bookings.where(id: params.require(:booking_id)).take
+      booking = @calendar.bookings.where(id: params.require(:booking_id).to_s).take
       return render_not_found unless booking
 
       if booking.chat_id.blank?
@@ -25,8 +25,8 @@ module Agenda
 
       composer = MessageComposer.new(
         booking: booking,
-        message: params[:message],
-        ai_prompt: params[:ai_prompt],
+        message: params[:message].to_s,
+        ai_prompt: params[:ai_prompt].to_s,
         history: ChatHistory.for(booking.chat, message_ids: message_ids),
         tools: tools,
         preview: true

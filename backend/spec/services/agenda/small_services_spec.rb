@@ -263,6 +263,19 @@ RSpec.describe "Serviços pequenos da agenda" do
       expect { 2.times { slot.materialize! } }.to change { Agenda::ClassSession.count }.by(1)
     end
 
+    it "duas requisições ao mesmo tempo ficam com a mesma aula, pelo índice único" do
+      Agenda::ClassSession.create_indexes
+      first = described_class.resolve(organization.id, virtual_id)
+      second = described_class.resolve(organization.id, virtual_id)
+
+      session = first.materialize!
+
+      expect(second.materialize!).to eq(session)
+      expect(Agenda::ClassSession.count).to eq(1)
+    ensure
+      Agenda::ClassSession.remove_indexes
+    end
+
     it "não acha turma de outra organização, nem horário fora da grade" do
       expect(described_class.resolve(create(:organization).id, virtual_id)).to be_nil
       expect(described_class.resolve(organization.id, virtual_id("20300107", "0300"))).to be_nil
