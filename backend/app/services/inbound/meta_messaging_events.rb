@@ -78,7 +78,7 @@ module Inbound
       url = attachment_payload[:url]
 
       case type
-      when "image" then enqueue_media(chat, url, message_id, mimetype: "image")
+      when "image" then enqueue_media(chat, url, message_id, mimetype: "image", extension: "jpg")
       when "audio" then enqueue_audio(chat, url, message_id)
       when "video", "reel", "ig_reel" then enqueue_media(chat, url, message_id, mimetype: type, extension: "mp4", **media_info(attachment_payload))
       when "file" then enqueue_media(chat, url, message_id, mimetype: "file", extension: attachment_payload[:name]&.split(".")&.last || "bin", **media_info(attachment_payload))

@@ -16,10 +16,10 @@ module Inbound
         return
       end
 
-      message_cache_key = "id_performed.#{content_id}"
-      return if Rails.cache.read(message_cache_key)
+      @message_cache_key = "id_performed.#{content_id}"
+      return if Rails.cache.read(@message_cache_key)
 
-      Rails.cache.write(message_cache_key, true, expires_in: 15.minutes)
+      Rails.cache.write(@message_cache_key, true, expires_in: 15.minutes)
 
       chat = locate_chat(phone_number, contact, session)
       return if already_persisted?(chat, content_id)
@@ -30,6 +30,10 @@ module Inbound
       else
         Rails.logger.warn("[LeadChat] Unsupported type: #{payload.dig(:content, :type)}")
       end
+    rescue StandardError
+      # O job vai tentar de novo: a marca de processada não pode barrar a própria retentativa.
+      Rails.cache.delete(@message_cache_key) if @message_cache_key
+      raise
     end
 
     private
@@ -55,7 +59,12 @@ module Inbound
       number ? "55#{number}" : nil
     end
 
+    # Sem telefone, o contato vem pelo @ do Instagram ou pelo id dele, e o `Locator` só sabe
+    # procurar por dígitos: acharia nada e abriria uma conversa por mensagem.
     def locate_chat(phone_number, contact, session)
+      existing = Chat.where(connector_id: connector.id, external_id: phone_number).take
+      return existing if existing
+
       Chats::Locator.find_or_create(
         connector: connector,
         phone: phone_number,

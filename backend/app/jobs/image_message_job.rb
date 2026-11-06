@@ -57,9 +57,11 @@ class ImageMessageJob < ApplicationJob
   end
 
   def store(download, message_id, properties)
+    extension = properties[:extension].present? ? ".#{properties[:extension]}" : File.extname(download.path.to_s)
+
     Media::Storage.store_file(
       download.path,
-      filename: properties[:fileName].presence || "#{message_id || SecureRandom.hex(8)}#{File.extname(download.path.to_s)}",
+      filename: properties[:fileName].presence || "#{message_id || SecureRandom.hex(8)}#{extension}",
       content_type: download.content_type.presence || real_mime_type(properties)
     )
   end
