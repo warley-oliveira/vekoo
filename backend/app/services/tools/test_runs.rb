@@ -23,7 +23,8 @@ module Tools
     end
 
     def write(organization_id, tool_id, id, value)
-      Rails.cache.write(key(organization_id, tool_id, id), FlowRuntime::Limits.clip(value, MAX_BYTES), expires_in: TTL)
+      clipped = value.merge("response" => FlowRuntime::Limits.clip(value["response"], MAX_BYTES)).compact
+      Rails.cache.write(key(organization_id, tool_id, id), clipped, expires_in: TTL)
     end
     private_class_method :write
 

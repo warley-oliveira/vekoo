@@ -28,6 +28,11 @@ module Flows
       new(chat, text, event, message_id).call
     end
 
+    # Contato criado e transferência humana nascem na conversa, não no caminho da mensagem: quem entrega mensagem chama `call`.
+    def self.fire_event(chat:, event:)
+      new(chat, "", event, nil).call
+    end
+
     # Fim de uma rodada: o que chegou enquanto a execução rodava esperou na caixa, e sai agora.
     def self.flush(execution)
       return if execution.chat_id.blank?

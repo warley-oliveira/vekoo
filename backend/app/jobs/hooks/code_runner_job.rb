@@ -9,16 +9,16 @@ module Hooks
     end
 
     # @param clean [Boolean] nada falhou até aqui: se o script também der certo, a entrega resolve o alerta anterior
-    def perform(hook_id, organization_id, action_id, chat_id, capture, remaining_ids = [], log_id = nil, clean = true)
+    def perform(hook_id, organization_id, action_id, chat_id, capture_json, remaining_ids = [], log_id = nil, clean = true)
       hook = Hook.scoped(organization_id, hook_id)
       action = hook&.hook_actions&.find_by(id: action_id)
       return unless action
 
       chat = chat_id.present? ? Chat.scoped(organization_id, chat_id) : nil
-      clean &&= run_script(hook, action, chat, capture, log_id)
+      clean &&= run_script(hook, action, chat, JSON.parse(capture_json), log_id)
 
       # Com o resto ainda por vir, quem resolve é quem terminar.
-      return ContinueActionsJob.perform_later(hook_id, organization_id, chat_id, capture, remaining_ids, log_id, clean) if remaining_ids.any?
+      return ContinueActionsJob.perform_later(hook_id, organization_id, chat_id, capture_json, remaining_ids, log_id, clean) if remaining_ids.any?
 
       hook.resolve_failure_alert! if clean
     end

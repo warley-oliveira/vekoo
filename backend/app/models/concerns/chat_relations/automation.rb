@@ -24,8 +24,7 @@ module ChatRelations
       def pause_automation_for_human!
         handing_off = automation_enabled
         result = super
-        # A conversa de teste do editor não é um contato: nada dispara por ela.
-        Flows::InboundDispatcher.call(chat: self, text: "", event: "human_handoff") if handing_off && external_id != Chat::TEST_EXTERNAL_ID
+        fire_flow_event("human_handoff") if handing_off
         result
       end
 
@@ -39,15 +38,22 @@ module ChatRelations
 
     private
 
-    # A conversa de teste do editor não é um contato, e carga em lote (`ignore_events`) não dispara nada.
+    # Carga em lote (`ignore_events`) não dispara nada.
     def dispatch_contact_created
-      return if ignore_events || external_id == Chat::TEST_EXTERNAL_ID
+      return if ignore_events
       return unless automation_enabled && organization&.automation_enabled?
 
-      Flows::InboundDispatcher.call(chat: self, text: "", event: "contact_created")
+      fire_flow_event("contact_created")
+    end
+
+    # A conversa de teste do editor não é um contato: nada dispara por ela. E automação nunca derruba quem está criando o
+    # contato, nem quem está assumindo a conversa: o envio de quem atende passa por aqui antes de sair.
+    def fire_flow_event(event)
+      return if external_id == Chat::TEST_EXTERNAL_ID
+
+      Flows::InboundDispatcher.fire_event(chat: self, event: event)
     rescue StandardError => e
-      # Automação nunca derruba quem está criando o contato.
-      Rails.logger.error("[ChatRelations::Automation] #{e.class}: #{e.message}")
+      Rails.logger.error("[ChatRelations::Automation] #{event}: #{e.class}: #{e.message}")
     end
   end
 end

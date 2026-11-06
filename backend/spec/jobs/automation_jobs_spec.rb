@@ -245,6 +245,16 @@ RSpec.describe "Jobs de automação" do
       expect(run["durationMs"]).to be_a(Integer)
     end
 
+    it "um resultado enorme perde o corpo, mas não o status" do
+      id = Tools::TestRuns.start(organization.id.to_s, "t")
+
+      Tools::TestRuns.finish(organization.id.to_s, "t", id, { "status" => "done", "response" => "a" * (Tools::TestRuns::MAX_BYTES + 1) })
+
+      run = Tools::TestRuns.read(organization.id.to_s, "t", id)
+      expect(run["status"]).to eq("done")
+      expect(run["response"].bytesize).to be <= Tools::TestRuns::MAX_BYTES
+    end
+
     it "não alcança a conversa de outra organização" do
       tool = create(:tool_function, organization: organization, js_code: "return getContactInfo();")
       alheia = create(:chat, organization: create(:organization))

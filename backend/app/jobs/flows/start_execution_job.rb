@@ -8,7 +8,8 @@ module Flows
       Rails.logger.error("[Flows::StartExecutionJob] #{job.arguments.first} #{error.class}: #{error.message}")
     end
 
-    # @param options [Hash] "message", "variables", "event", "idempotency_key"
+    # @param options [Hash] "message", "variables_json", "event", "idempotency_key". As variáveis vêm de fora e viajam em JSON: não
+    #   podem depender do que o ActiveJob sabe serializar.
     def perform(flow_id, organization_id, chat_id, options = {})
       flow = Flow.scoped(organization_id, flow_id)
       return Rails.logger.warn("[Flows::StartExecutionJob] fluxo #{flow_id} não encontrado") unless flow
@@ -20,7 +21,7 @@ module Flows
         flow: flow,
         chat: chat,
         last_message: FlowRuntime::InboundMessage.from_h(options["message"]),
-        variables: options["variables"] || {},
+        variables: options["variables_json"].present? ? JSON.parse(options["variables_json"]) : {},
         event: options["event"],
         idempotency_key: options["idempotency_key"]
       )

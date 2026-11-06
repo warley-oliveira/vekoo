@@ -423,6 +423,14 @@ RSpec.describe Flows::InboundDispatcher do
 
       expect { perform_enqueued_jobs { chat.pause_automation_for_human! } }.not_to(change { FlowExecution.count })
     end
+
+    it "falha ao disparar não impede a pessoa de assumir nem o contato de nascer" do
+      allow(Flows::EventDispatchJob).to receive(:perform_later).and_raise(RedisClient::CannotConnectError)
+
+      expect { chat.pause_automation_for_human! }.not_to raise_error
+
+      expect(chat.reload.automation_enabled).to be(false)
+    end
   end
 
   describe "limpar o contexto" do

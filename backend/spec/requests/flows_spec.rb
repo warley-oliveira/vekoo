@@ -194,7 +194,9 @@ RSpec.describe "Fluxos", type: :request do
       flow = flow_with_draft
 
       put "/flows/#{flow.id}/definition", params: { definition: { nodes: "x" } }, headers: headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
 
+      put "/flows/#{flow.id}/definition", params: { definition: "x" }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
@@ -367,6 +369,14 @@ RSpec.describe "Fluxos", type: :request do
       post "/flows/#{flow.id}/executions", params: {}, headers: headers, as: :json
 
       expect(response).to have_http_status(:bad_request)
+    end
+
+    it "422 com variáveis demais" do
+      many = Array.new(20) { |index| [ "v#{index}", "a" * FlowRuntime::Limits::MAX_VARIABLE_BYTES ] }.to_h
+
+      post "/flows/#{flow.id}/executions", params: { chatId: chat.id.to_s, variables: many }, headers: headers, as: :json
+
+      expect(json["error"]["code"]).to eq("variablesTooLarge")
     end
   end
 

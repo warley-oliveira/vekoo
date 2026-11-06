@@ -33,6 +33,7 @@ en:
     invalid_definition: "This flow has problems and can't be published."
     flow_not_published: "Publish this flow before starting it in a chat."
     no_version: "This flow has nothing to test yet."
+    variables_too_large: "Too much data in the variables."
     not_waiting: "This test isn't waiting for a message."
     tool_locked: "This function came from an installed tool. Personalize it before editing."
     already_personalized: "This function is already personalized."

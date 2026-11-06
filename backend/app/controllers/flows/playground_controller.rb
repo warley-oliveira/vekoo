@@ -6,6 +6,10 @@ module Flows
 
     before_action :set_flow
 
+    rescue_from FlowRuntime::Limits::TooLarge do
+      render_error(status: :unprocessable_entity, code: "variablesTooLarge")
+    end
+
     # POST /flows/:flowId/playground { useDraft?, variables? }
     def start
       version = resolve_version
@@ -91,7 +95,7 @@ module Flows
 
     def initial_variables
       raw = params[:variables]
-      (raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : {}).transform_keys(&:to_s)
+      FlowRuntime::Limits.bound_variables((raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : {}).transform_keys(&:to_s))
     end
   end
 end

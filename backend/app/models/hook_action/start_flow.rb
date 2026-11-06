@@ -139,9 +139,11 @@ module HookAction
 
       flow = Flow.scoped(organization_id, flow_id)
       return report_error(I18n.t("automation.hooks.errors.flow_not_found")) unless flow&.published?
+      # O interruptor da organização desliga todo disparo de fluxo.
+      return unless organization.automation_enabled?
 
       variables = request.present? ? { "webhook" => request } : {}
-      Flows::StartExecutionJob.perform_later(flow.id, organization_id.to_s, @current_chat.id.to_s, { "variables" => variables, "event" => "webhook" })
+      Flows::StartExecutionJob.perform_later(flow.id, organization_id.to_s, @current_chat.id.to_s, { "variables_json" => variables.to_json, "event" => "webhook" })
     end
 
     # Falha de envio não derruba as ações seguintes. A pessoa fica sabendo pelo alerta do webhook.

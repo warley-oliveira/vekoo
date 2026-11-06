@@ -334,7 +334,7 @@ RSpec.describe "Webhooks", type: :request do
     it "413 em corpo grande demais" do
       deliver({ grande: "a" * Hooks::Capture::MAX_BODY_BYTES })
 
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
     end
 
     it "em teste, guarda o que chegou, com teto, e não executa" do
@@ -349,6 +349,15 @@ RSpec.describe "Webhooks", type: :request do
       expect(hook.last_payload_fields).to include("body.nome" => "n11")
       expect(Chat.where(organization_id: organization.id.to_s)).not_to exist
       expect(HookLog.for_hook(hook.id).count).to eq(Hook::MAX_STORED_PAYLOADS + 2)
+    end
+
+    it "aceita qualquer chave no corpo, inclusive as que o ActiveJob reserva" do
+      create(:hook_action_contact, hook: hook)
+
+      expect { perform_enqueued_jobs { deliver(body.merge(_aj_serialized: "x", "_aj_symbol_keys" => [ "y" ])) } }.not_to raise_error
+
+      expect(response).to have_http_status(:ok)
+      expect(Chat.where(organization_id: organization.id.to_s)).to exist
     end
 
     it "desligado, só registra" do
@@ -464,6 +473,25 @@ RSpec.describe "Webhooks", type: :request do
         expect(chat).to have_attributes(automation_enabled: true)
         expect(sent_texts).to eq([ "Oi Fernanda", "Pedido 42" ])
         expect(FlowExecution.for_chat(organization.id, chat.id).take.context["event"]).to eq("webhook")
+      end
+
+      it "o interruptor da organização não deixa começar o fluxo" do
+        flow = published_flow(organization, [ node("t", "trigger_webhook"), node("a", "send_text", text: "oi") ], [ edge("t", "a") ], trigger_type: "webhook")
+        create(:hook_action_start_flow, hook: hook, config: { "connector_id" => connector.id.to_s, "flow_id" => flow.id })
+        organization.update_automation_settings!(automation_enabled: false)
+
+        perform_enqueued_jobs { deliver }
+
+        expect(FlowExecution.where(flow: flow)).not_to exist
+      end
+
+      it "um corpo com chave reservada do ActiveJob chega ao fluxo" do
+        flow = published_flow(organization, [ node("t", "trigger_webhook"), node("a", "send_text", text: "{{vars.webhook.body._aj_globalid}}") ], [ edge("t", "a") ], trigger_type: "webhook")
+        create(:hook_action_start_flow, hook: hook, config: { "connector_id" => connector.id.to_s, "flow_id" => flow.id })
+
+        perform_enqueued_jobs { deliver(body.merge(_aj_globalid: "gid://x")) }
+
+        expect(sent_texts).to eq([ "gid://x" ])
       end
 
       it "manda os blocos do modo avançado" do

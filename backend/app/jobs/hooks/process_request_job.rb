@@ -5,10 +5,12 @@ module Hooks
   class ProcessRequestJob < ApplicationJob
     queue_as :default
 
-    # @param capture [Hash] o que veio de Hooks::Capture
-    def perform(hook_id, organization_id, capture)
+    # @param capture_json [String] o que veio de Hooks::Capture
+    def perform(hook_id, organization_id, capture_json)
       hook = Hook.scoped(organization_id, hook_id)
       return unless hook
+
+      capture = JSON.parse(capture_json)
 
       hook.count_request!
       started = Process.clock_gettime(Process::CLOCK_MONOTONIC)

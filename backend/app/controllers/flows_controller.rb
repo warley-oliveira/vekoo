@@ -52,7 +52,8 @@ class FlowsController < PlatformController
       definition: blank_definition(@flow.trigger_type),
       created_by_account_id: current_account.id
     )
-    draft.update!(definition: params.require(:definition))
+    definition = params.require(:definition)
+    draft.update!(definition: definition.respond_to?(:to_unsafe_h) ? definition.to_unsafe_h : definition)
 
     render json: { version: FlowSerializer.version(draft) }
   end

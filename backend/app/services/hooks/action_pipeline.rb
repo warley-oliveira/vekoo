@@ -56,7 +56,7 @@ module Hooks
     end
 
     def hand_over_to_scripts(action, chat, remaining, clean)
-      CodeRunnerJob.perform_later(hook.id, hook.organization_id, action.id, chat&.id&.to_s, capture, remaining.map(&:id), log_id, clean && !hook.alerted?)
+      CodeRunnerJob.perform_later(hook.id, hook.organization_id, action.id, chat&.id&.to_s, capture.to_json, remaining.map(&:id), log_id, clean && !hook.alerted?)
     end
   end
 end

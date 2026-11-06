@@ -8,6 +8,10 @@ module Flows
 
     before_action :set_flow
 
+    rescue_from FlowRuntime::Limits::TooLarge do
+      render_error(status: :unprocessable_entity, code: "variablesTooLarge")
+    end
+
     # GET /flows/:flowId/executions?status=&chatId=
     def index
       scope = @flow.executions.real_runs.order(created_at: :desc)
@@ -34,7 +38,7 @@ module Flows
 
       StartExecutionJob.perform_later(
         @flow.id, current_organization.id, chat.id.to_s,
-        { "variables" => variables_param, "event" => "manual" }
+        { "variables_json" => variables_param.to_json, "event" => "manual" }
       )
       render json: { queued: true }, status: :accepted
     end
@@ -47,7 +51,7 @@ module Flows
 
     def variables_param
       raw = params[:variables]
-      raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : {}
+      FlowRuntime::Limits.bound_variables(raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : {})
     end
   end
 end

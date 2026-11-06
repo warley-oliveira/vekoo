@@ -14,7 +14,8 @@ module Inbound
     before_action :verify_signature
 
     def receive
-      Hooks::ProcessRequestJob.perform_later(@hook.id, @hook.organization_id, Hooks::Capture.from_request(request))
+      # Em JSON, como os webhooks de provedor: o que vem de fora não pode depender do que o ActiveJob sabe serializar.
+      Hooks::ProcessRequestJob.perform_later(@hook.id, @hook.organization_id, Hooks::Capture.from_request(request).to_json)
       render json: { success: true }
     end
 
@@ -37,7 +38,7 @@ module Inbound
     def reject_large_body
       return if request.raw_post.bytesize <= Hooks::Capture::MAX_BODY_BYTES
 
-      render_error(status: :payload_too_large, code: "payloadTooLarge")
+      render_error(status: :content_too_large, code: "payloadTooLarge")
     end
 
     def verify_signature

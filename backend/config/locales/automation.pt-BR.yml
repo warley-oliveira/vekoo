@@ -33,6 +33,7 @@ pt-BR:
     invalid_definition: "O fluxo tem problemas e não pode ser publicado."
     flow_not_published: "Publique o fluxo antes de iniciá-lo em uma conversa."
     no_version: "Este fluxo ainda não tem nada para testar."
+    variables_too_large: "Dados demais nas variáveis."
     not_waiting: "Este teste não está esperando mensagem."
     tool_locked: "Esta função veio de uma ferramenta instalada. Personalize antes de editar."
     already_personalized: "Esta função já é personalizada."
