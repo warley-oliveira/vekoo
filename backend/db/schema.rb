@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_000203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
     t.string "phone"
     t.datetime "revoked_at"
     t.string "role", default: "member", null: false
+    t.boolean "setup_only", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["access_role_id"], name: "index_accounts_on_access_role_id"
     t.index ["email"], name: "index_accounts_on_email", unique: true
@@ -120,6 +121,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
   end
 
+  create_table "organization_alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.string "message"
+    t.jsonb "metadata", default: {}, null: false
+    t.uuid "organization_id", null: false
+    t.string "origin_id", null: false
+    t.string "origin_name"
+    t.string "origin_type", null: false
+    t.datetime "resolved_at"
+    t.string "severity", default: "error", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "category"], name: "index_organization_alerts_on_organization_id_and_category"
+    t.index ["organization_id", "origin_type", "origin_id", "code"], name: "idx_organization_alerts_one_active_per_origin", unique: true, where: "(resolved_at IS NULL)"
+    t.index ["organization_id", "resolved_at"], name: "index_organization_alerts_on_organization_id_and_resolved_at"
+  end
+
   create_table "organizations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "credits_total", default: 50, null: false
@@ -155,6 +174,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
     t.index ["token_digest"], name: "index_password_resets_on_token_digest", unique: true
   end
 
+  create_table "push_devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.text "auth_key", null: false
+    t.datetime "created_at", null: false
+    t.text "endpoint", null: false
+    t.uuid "organization_id", null: false
+    t.text "p256dh_key", null: false
+    t.datetime "updated_at", null: false
+    t.text "user_agent"
+    t.index ["account_id"], name: "index_push_devices_on_account_id"
+    t.index ["endpoint"], name: "index_push_devices_on_endpoint", unique: true
+    t.index ["organization_id"], name: "index_push_devices_on_organization_id"
+  end
+
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
@@ -179,6 +212,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
   end
 
   create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.uuid "organization_id", null: false
@@ -220,7 +254,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
   add_foreign_key "carousels", "organizations"
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
+  add_foreign_key "organization_alerts", "organizations", on_delete: :cascade
   add_foreign_key "password_resets", "accounts"
+  add_foreign_key "push_devices", "accounts", on_delete: :cascade
+  add_foreign_key "push_devices", "organizations", on_delete: :cascade
   add_foreign_key "sessions", "accounts"
   add_foreign_key "team_memberships", "accounts", on_delete: :cascade
   add_foreign_key "team_memberships", "teams", on_delete: :cascade
