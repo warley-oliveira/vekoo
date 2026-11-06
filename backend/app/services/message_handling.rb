@@ -56,7 +56,9 @@ class MessageHandling
       attachment_by_id_handling(trim_reference(match.remove("attachment_id_")))
     elsif match.start_with?("attachment_")
       attachment_handling(trim_reference(match.remove("attachment_")))
-    elsif match.start_with?("http")
+    elsif match.start_with?("http") && !match.match?(/\s/)
+      # Sem `split_links` a parte pode ser uma frase que só começa com um link: com a checagem
+      # de espaço ela segue como texto, em vez de virar uma imagem de URL quebrada.
       link_handling(match)
     elsif match.start_with?("<audio>")
       match.remove("<audio>", "</audio>")

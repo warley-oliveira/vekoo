@@ -53,6 +53,10 @@ module Chats
           chat.connector.send_media_message(chat.phone_number, media, chat)
         end
 
+      # O SDK da Meta não levanta: a recusa vem dentro da resposta.
+      error = response.try(:error)
+      return message.update(status: "failed", status_message: error.message) if error
+
       external_id = Connectors::ExternalId.from(response)
       message.update(message_id: external_id, status: "delivery_ack")
     rescue StandardError => e
