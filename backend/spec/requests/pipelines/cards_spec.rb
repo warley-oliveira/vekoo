@@ -103,6 +103,97 @@ RSpec.describe "Pipelines: cards", type: :request do
       end
     end
 
+    describe "ordem" do
+      let(:board_with_score) do
+        board.tap { |item| item.update_column(:lead_score_field_key, "pontos") }
+      end
+
+      def titles
+        json["cards"].map { |card| card["title"] }
+      end
+
+      it "ordena pela coluna pedida, nos dois sentidos, com vazio sempre no fim" do
+        create(:pipeline_card, stage: first_stage, title: "Sem valor", deal_value: nil)
+        create(:pipeline_card, stage: first_stage, title: "Barato", deal_value: 100)
+        create(:pipeline_card, stage: second_stage, title: "Caro", deal_value: 900)
+
+        get cards_path, params: { sort: "value", direction: "desc" }, headers: headers
+        expect(titles).to eq(%w[Caro Barato] + [ "Sem valor" ])
+
+        get cards_path, params: { sort: "value", direction: "asc" }, headers: headers
+        expect(titles).to eq(%w[Barato Caro] + [ "Sem valor" ])
+      end
+
+      it "ordena a prioridade pela importância, e não pelo texto" do
+        %w[low urgent medium high].each do |priority|
+          create(:pipeline_card, stage: first_stage, title: priority, priority: priority)
+        end
+
+        get cards_path, params: { sort: "priority", direction: "desc" }, headers: headers
+
+        expect(titles).to eq(%w[urgent high medium low])
+      end
+
+      it "ordena pela etapa, e dentro dela pela posição do quadro" do
+        third = create(:pipeline_card, stage: third_stage, title: "Terceira")
+        first = create(:pipeline_card, stage: first_stage, title: "Primeira A")
+        second = create(:pipeline_card, stage: first_stage, title: "Primeira B")
+
+        get cards_path, params: { sort: "stage" }, headers: headers
+        expect(json["cards"].map { |card| card["id"] }).to eq([ first.id, second.id, third.id ])
+
+        get cards_path, params: { sort: "stage", direction: "desc" }, headers: headers
+        expect(json["cards"].map { |card| card["id"] }).to eq([ third.id, first.id, second.id ])
+      end
+
+      it "ordena pelo nome do responsável, com quem não tem por último" do
+        ana = create(:account, organization: organization, name: "Ana")
+        zeca = create(:account, organization: organization, name: "Zeca")
+        create(:pipeline_card, stage: first_stage, title: "Do Zeca", assigned_to: zeca)
+        create(:pipeline_card, stage: first_stage, title: "Sem ninguém", assigned_to: nil)
+        create(:pipeline_card, stage: first_stage, title: "Da Ana", assigned_to: ana)
+
+        get cards_path, params: { sort: "assignee" }, headers: headers
+
+        expect(json["cards"].size).to eq(3)
+        expect(titles).to eq([ "Da Ana", "Do Zeca", "Sem ninguém" ])
+      end
+
+      it "ordena pela pontuação como número, ignorando o que não é número" do
+        board_with_score
+        create(:pipeline_card, stage: first_stage, title: "Nove", custom_field_values: { "pontos" => 9 })
+        create(:pipeline_card, stage: first_stage, title: "Texto", custom_field_values: { "pontos" => "muito" })
+        create(:pipeline_card, stage: first_stage, title: "Oitenta", custom_field_values: { "pontos" => 80 })
+
+        get cards_path, params: { sort: "leadScore", direction: "desc" }, headers: headers
+
+        expect(titles).to eq(%w[Oitenta Nove Texto])
+      end
+
+      it "ignora a pontuação em quadro sem o campo, e a ordem que não conhece" do
+        create_list(:pipeline_card, 2, stage: first_stage)
+
+        [ "leadScore", "id; DROP TABLE pipeline_cards" ].each do |sort|
+          get cards_path, params: { sort: sort }, headers: headers
+
+          expect(response).to have_http_status(:ok)
+          expect(json["cards"].size).to eq(2)
+        end
+      end
+
+      it "vale junto com o filtro e com a paginação" do
+        create(:pipeline_card, stage: first_stage, title: "A", deal_value: 100, priority: "high")
+        create(:pipeline_card, stage: first_stage, title: "B", deal_value: 300, priority: "high")
+        create(:pipeline_card, stage: first_stage, title: "C", deal_value: 200, priority: "low")
+        filter = { version: 1, all: [ { field: "priority", operator: "eq", value: "high" } ] }.to_json
+
+        get cards_path, params: { filter: filter, sort: "value", direction: "desc", perPage: 1 }, headers: headers
+
+        expect(titles).to eq(%w[B])
+        expect(json["meta"]).to include("total" => 2, "hasMore" => true)
+      end
+    end
+
     it "não confunde responsável inválido com card sem responsável" do
       create(:pipeline_card, stage: first_stage)
 
@@ -148,6 +239,22 @@ RSpec.describe "Pipelines: cards", type: :request do
       get cards_path, headers: auth_headers(member)
 
       expect(json["cards"].map { |card| card["id"] }).to eq([ mine.id ])
+    end
+  end
+
+  describe "GET cards/:id/activities" do
+    it "filtra por uma ação ou por várias, separadas por vírgula" do
+      card = create(:pipeline_card, stage: first_stage)
+      %w[deal_won deal_lost moved].each { |action| card.log_activity(action) }
+
+      get "#{card_path(card)}/activities", params: { type: "moved" }, headers: headers
+      expect(json["activities"].map { |activity| activity["action"] }).to eq(%w[moved])
+
+      get "#{card_path(card)}/activities", params: { type: "deal_won,deal_lost" }, headers: headers
+      expect(json["activities"].map { |activity| activity["action"] }).to contain_exactly("deal_won", "deal_lost")
+
+      get "#{card_path(card)}/activities", headers: headers
+      expect(json["activities"].map { |activity| activity["action"] }).to include("created", "moved", "deal_won", "deal_lost")
     end
   end
 

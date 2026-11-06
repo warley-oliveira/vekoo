@@ -18,7 +18,7 @@ module Pipelines
 
       return render json: { count: cards.count } if params[:count_only].present?
 
-      records, meta = paginate(cards)
+      records, meta = paginate(CardSort.call(cards, board: @board, sort: params[:sort], direction: params[:direction]))
       render json: { cards: CardSerializer.many(records, viewer: current_account, chat_summary: true), meta: meta }
     end
 

@@ -753,6 +753,7 @@ Paginado. A leitura principal do quadro é `GET /pipelines/boards/:id`: esta é 
 | `overdue` | `true`: prazo vencido e não concluído. |
 | `savedFilterId`, `presetKey`, `filter` | Filtro avançado, nessa ordem de precedência. `filter` é a [definição](#filtros) em JSON, como texto. |
 | `countOnly` | `1`: responde só `{ "count": N }`. É a prévia do construtor de filtro. |
+| `sort`, `direction` | `title`, `stage`, `assignee`, `priority`, `dueDate`, `value`, `probability`, `expectedClose`, `company`, `leadScore`, `createdAt`, `updatedAt`; `asc` (padrão) ou `desc`. Sem valor fica no fim nos dois sentidos, e a ordem do quadro desempata. `priority` vai pela importância; `leadScore`, pelo campo `leadScoreFieldKey`. Nome desconhecido não muda a ordem. |
 
 ```json
 {
@@ -930,7 +931,7 @@ Observar o card: sem corpo, responde `{ "watching": true }` ou `{ "watching": fa
 | Parâmetro | Descrição |
 |---|---|
 | `cursor` | `nextCursor` da página anterior. |
-| `type` | Só uma ação: `created`, `moved`, `updated`, `assigned`, `commented`, `archived`, `auto_archived`, `deal_won`, `deal_lost`, `deal_reopened`. Na origem, o filtro não funcionava (`params[:action]` é sempre o nome da ação do controlador). |
+| `type` | Uma ação, ou várias separadas por vírgula: `created`, `moved`, `updated`, `assigned`, `commented`, `label_added`, `label_removed`, `archived`, `auto_archived`, `deal_won`, `deal_lost`, `deal_reopened`. Na origem, o filtro não funcionava (`params[:action]` é sempre o nome da ação do controlador). |
 | `limit` | 1 a 100. Padrão 30. |
 
 ```json

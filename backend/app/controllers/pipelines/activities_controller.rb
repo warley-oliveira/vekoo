@@ -5,7 +5,7 @@ module Pipelines
     before_action :set_board
     before_action :set_card
 
-    # ?cursor=<nextCursor>&type=<ação>&limit=<1..100>
+    # ?cursor=<nextCursor>&type=<ação ou ações, separadas por vírgula>&limit=<1..100>
     #
     # O filtro é `type`, e não `action` como na origem: `params[:action]` é sempre o nome da ação do
     # controlador, e lá a consulta filtrava por `action = 'index'` e nunca devolvia nada.
@@ -13,7 +13,7 @@ module Pipelines
       limit = params.fetch(:limit, PER_PAGE).to_i.clamp(1, 100)
 
       scope = @card.activities.includes(user: PersonPayload.preload)
-      scope = scope.where(action: params[:type].to_s) if params[:type].present?
+      scope = scope.where(action: params[:type].to_s.split(",")) if params[:type].present?
       cursor = parse_cursor(params[:cursor])
       scope = scope.where("pipeline_card_activities.created_at < ?", cursor) if cursor
 
