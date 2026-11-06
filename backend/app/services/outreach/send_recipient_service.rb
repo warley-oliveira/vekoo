@@ -11,6 +11,8 @@ module Outreach
     MEDIA_UNSUPPORTED = "mediaUnsupported".freeze
     MEDIA_UNAVAILABLE = "mediaUnavailable".freeze
     TEMPLATE_UNAVAILABLE = "templateUnavailable".freeze
+    # `Chats::SendMedia` guarda a exceção do provedor como texto: é o único jeito de reconhecê-la.
+    NUMBER_NOT_FOUND_TEXT = /\ANumber not on WhatsApp|\A#{Regexp.escape(WhatsappNumberNotFoundError.new.message)}/
     # Quando não é para subir na lista, a conversa vai para o fim, como `send_text_message_without_event`.
     LOWERED_BY = 6.months
 
@@ -89,7 +91,8 @@ module Outreach
       dto = MediaMessageDto.new(campaign.media_kind, campaign.media_file_name, nil, campaign.attachment_id, caption, media_url: media_url)
       return unless begin_dispatch(chat)
 
-      finish_with(Chats::SendMedia.call(chat: chat, media: dto, sender_name: campaign.name, attributes: message_attributes))
+      # Sem o motivo: aqui ele é o corpo cru da resposta do provedor.
+      finish_with(Chats::SendMedia.call(chat: chat, media: dto, sender_name: campaign.name, attributes: message_attributes), show_reason: false)
       lower_in_list(chat)
     end
 
@@ -122,17 +125,14 @@ module Outreach
       recipient.mark_dispatched!(chat.id)
     end
 
-    def finish_with(message)
+    def finish_with(message, show_reason: true)
       return recipient.finish_sent!(message.message_id) if message.message_id.present?
 
       # 2xx sem id: a mensagem saiu, só não sabemos o id. A falha vem com `failed`.
       return recipient.finish_sent!(nil) if message.status != "failed"
+      return fail_recipient(NUMBER_NOT_FOUND) if message.status_message.to_s.match?(NUMBER_NOT_FOUND_TEXT)
 
-      if message.status_message == WhatsappNumberNotFoundError.new.message
-        fail_recipient(NUMBER_NOT_FOUND)
-      else
-        fail_recipient(WHATSAPP_ERROR, message.status_message)
-      end
+      fail_recipient(WHATSAPP_ERROR, show_reason ? message.status_message : nil)
     end
 
     def fail_recipient(code, detail = nil)
