@@ -33,7 +33,7 @@ Sempre `{ error: { code, field?, message, details? } }`.
 | 400 | `parameterMissing` | Faltou o envelope |
 | 422 | `unprocessable` | Validação. `field` e `details` por campo |
 | 422 | `invalidDefinition` | Publicar com problemas. Em `details.issues`, ver [Publicar](#post-flowsidpublish) |
-| 422 | `noDraftToPublish`, `flowNotPublished`, `noVersion`, `notWaiting` | Ver cada rota |
+| 422 | `noDraftToPublish`, `flowNotPublished`, `noVersion`, `notWaiting`, `variablesTooLarge` | Ver cada rota |
 | 422 | `alreadyPersonalized`, `missingCredentials`, `unknownActionType` | Ver cada rota |
 | 429 | `tooManyRequests` | `POST /tools/:id/test` (20 por minuto, por pessoa) e entrada do webhook (1.200 por minuto, por webhook) |
 | 400 | `invalidBody` | Entrada do webhook: o corpo diz ser JSON e não é |
@@ -54,7 +54,7 @@ Resposta `200`:
 {
   "flows": [
     {
-      "id": "4a7e0bb2-5ed0-403c-92d8-787e0505a540",
+      "id": "ff56b811-e3aa-468b-a269-27261d2342aa",
       "name": "E2E Quebrado",
       "description": null,
       "status": "draft",
@@ -63,11 +63,11 @@ Resposta `200`:
         "connectorIds": []
       },
       "published": false,
-      "updatedAt": 1793999072049,
-      "createdAt": 1793999072049
+      "updatedAt": 1794002146845,
+      "createdAt": 1794002146845
     },
     {
-      "id": "730cdbcc-4421-4d98-ab9a-f60d0180d4aa",
+      "id": "77dedc4a-7472-45f0-8e43-d034a11ab515",
       "name": "E2E Pedido",
       "description": null,
       "status": "published",
@@ -76,15 +76,15 @@ Resposta `200`:
         "connectorIds": []
       },
       "published": true,
-      "updatedAt": 1793999064088,
-      "createdAt": 1793999064003
+      "updatedAt": 1794002142974,
+      "createdAt": 1794002142898
     }
   ],
   "meta": {
     "page": 1,
     "perPage": 2,
-    "total": 5,
-    "totalPages": 3,
+    "total": 7,
+    "totalPages": 4,
     "hasMore": true
   }
 }
@@ -99,7 +99,7 @@ Resposta `200`:
 ```json
 {
   "flow": {
-    "id": "910b8b9c-8621-4fae-8b96-e68e696cf8ea",
+    "id": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
     "name": "E2E Atendimento",
     "description": "Verificação",
     "status": "published",
@@ -108,10 +108,10 @@ Resposta `200`:
       "connectorIds": []
     },
     "published": true,
-    "updatedAt": 1793998975378,
-    "createdAt": 1793998975246,
+    "updatedAt": 1794002022677,
+    "createdAt": 1794002022481,
     "draft": {
-      "id": "22438872-3fa9-4e86-ad6c-ca661d8dd4c4",
+      "id": "4b458551-2e96-41b7-b49b-964ef61c0b24",
       "versionNumber": 2,
       "definition": {
         "nodes": [
@@ -124,10 +124,10 @@ Resposta `200`:
         "base_prompt": "Você é a atendente da Doma Store. Responda em uma frase curta, em português."
       },
       "publishedAt": null,
-      "updatedAt": 1793998975385
+      "updatedAt": 1794002022714
     },
     "publishedVersion": {
-      "id": "419f309b-3648-437f-a796-e35e8a87c506",
+      "id": "9b5afda0-8fbb-476b-b7d4-955065749f58",
       "versionNumber": 1,
       "definition": {
         "nodes": [
@@ -139,8 +139,8 @@ Resposta `200`:
         "viewport": {},
         "base_prompt": "Você é a atendente da Doma Store. Responda em uma frase curta, em português."
       },
-      "publishedAt": 1793998975372,
-      "updatedAt": 1793998975373
+      "publishedAt": 1794002022674,
+      "updatedAt": 1794002022674
     }
   }
 }
@@ -155,7 +155,7 @@ Resposta `201`:
 ```json
 {
   "flow": {
-    "id": "910b8b9c-8621-4fae-8b96-e68e696cf8ea",
+    "id": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
     "name": "E2E Atendimento",
     "description": "Verificação",
     "status": "draft",
@@ -164,10 +164,10 @@ Resposta `201`:
       "connectorIds": []
     },
     "published": false,
-    "updatedAt": 1793998975246,
-    "createdAt": 1793998975246,
+    "updatedAt": 1794002022481,
+    "createdAt": 1794002022481,
     "draft": {
-      "id": "419f309b-3648-437f-a796-e35e8a87c506",
+      "id": "9b5afda0-8fbb-476b-b7d4-955065749f58",
       "versionNumber": 1,
       "definition": {
         "edges": [],
@@ -191,7 +191,7 @@ Resposta `201`:
         }
       },
       "publishedAt": null,
-      "updatedAt": 1793998975259
+      "updatedAt": 1794002022570
     },
     "publishedVersion": null
   }
@@ -335,7 +335,7 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 | `finalize_chat` | action | Finalizar atendimento | Fecha a conversa e termina o fluxo | |
 | `pause_automation` | action | Pausar automação | `period?`: minutes, hours, days; `amount?`. Sem período, até alguém religar | `next` |
 | `resume_automation` | action | Retomar automação | | `next` |
-| `set_funnel_stage` | action | Mudar etapa do funil | `funnel_id`, `stage_id` (aceita variável) | `next` |
+| `set_funnel_stage` | action | Mudar etapa do funil | `funnel_id`, `stage_id` (aceita variável). Por `Funnels::MoveChat`: confere funil e etapa, e não escreve se já está lá. Funil ou etapa apagados não derrubam o fluxo: o log registra `funnel_stage_not_found`, e a organização recebe o alerta `flow_funnel_stage_missing`. Não tira do funil | `next` |
 | `pipeline_create_card` | pipeline | Criar card | `board_id`, `stage_id`, `title`, `description`, `priority`, `deal_value`, `link_chat`, `reuse_existing` | `next`, `onError` |
 | `pipeline_move_card` | pipeline | Mover card | `card_source`, `stage_id`, `position`: top ou bottom | `next`, `onError` |
 | `pipeline_update_card` | pipeline | Atualizar card | `card_source`, `title`, `description`, `priority`, `deal_value`, `deal_probability`, `company_name`, `contact_email`, `contact_phone`, `due_date`, `expected_close_date` | `next`, `onError` |
@@ -360,6 +360,25 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 
 **Blocos de Pipelines ainda não ligados.** Estão registrados, e todos respondem `Pipelines ainda não disponível`: a execução para com esse motivo, ou segue por `onError` com `{{vars.pipeline_error}}`. A lógica de cada um veio da origem e será ligada na integração: troque `FlowRuntime::KanbanGateway.available?`. O catálogo não muda.
 
+### O texto que sai
+
+Vale para `send_text`, `ask_question`, `send_interactive` e `ai_assistant`, e para a mensagem da ação `start_flow` do webhook (`Flows::TextDelivery`). **O que alguém escreveu chega ao cliente como foi escrito.** Só a resposta do bloco `ai_assistant` passa pela limpeza de `MessageHandling`.
+
+| | Escrito por alguém no editor | Resposta do `ai_assistant` |
+|---|---|---|
+| Aspas, apóstrofo, til, crase, colchetes, `<>` | Ficam | Saem: `"sim"` vira `sim`, e `d'água` vira `dágua` |
+| `**forte**` e `[texto](link)` | Ficam | `*forte*` e o link puro |
+| Quebra em mensagens | Só com 10 quebras de linha seguidas, ou em volta de anexo citado | A cada parágrafo e a cada link |
+| `attachment_id_<id>` | Vira mídia, no lugar em que está | Vira mídia |
+| `attachment_<nome>` | É texto | Vira mídia, pelo nome mais parecido |
+| Parte que é só o link de uma imagem | Vira imagem | Vira imagem |
+
+O que decide é quem escreveu o bloco: `{{vars.x}}` num `send_text` entra como veio, mesmo que tenha saído de um bloco de IA.
+
+Com mais de uma parte, a conversa guarda a mensagem inteira (`hasSpan`, fora da lista, é o que o modelo lê na rodada seguinte) e cada parte (`isSpan`, que é o que a tela mostra).
+
+**Anexo citado que sumiu**, ou de outra organização: a citação sai, o resto segue, e o código nunca chega ao cliente. O log do bloco registra `missing_attachments`, e a organização recebe o alerta `flow_attachment_missing` (no teste do editor, o evento `attachment_missing`). Sem mais nada para enviar, o bloco não manda nada, e o fluxo segue. Mídia recusada pelo canal aparece em `failed_parts` no log do bloco, e o fluxo também segue.
+
 ---
 
 ## Execuções
@@ -376,21 +395,21 @@ Resposta `200`:
 {
   "executions": [
     {
-      "id": "2defe95d-bb0f-4f09-aa12-e54f5eb2486c",
-      "flowId": "910b8b9c-8621-4fae-8b96-e68e696cf8ea",
+      "id": "a7ee50f1-09df-423b-8607-02441fd09c56",
+      "flowId": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
       "status": "completed",
-      "chatId": "6aee40c9441698da239bfa3e",
-      "contactId": "5541999974140",
+      "chatId": "6aee4ccf1e211f534fe53c61",
+      "contactId": "5541999709372",
       "currentNodeId": "nao",
-      "startedAt": 1793999056587,
-      "completedAt": 1793999056730
+      "startedAt": 1794002133247,
+      "completedAt": 1794002133371
     }
   ],
   "meta": {
     "page": 1,
     "perPage": 1,
-    "total": 5,
-    "totalPages": 5,
+    "total": 7,
+    "totalPages": 7,
     "hasMore": true
   }
 }
@@ -405,13 +424,13 @@ Resposta `200`:
 ```json
 {
   "execution": {
-    "id": "0ad79082-dcd3-4d28-a658-ae117ab25b4f",
-    "flowId": "910b8b9c-8621-4fae-8b96-e68e696cf8ea",
+    "id": "8970191c-9085-44b8-9b65-4320d5a89207",
+    "flowId": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
     "status": "waiting_for_message",
-    "chatId": "6aee407f441698da239bfa24",
-    "contactId": "5541999792177",
+    "chatId": "6aee4c661e211f534fe53c33",
+    "contactId": "5541999311146",
     "currentNodeId": "ia",
-    "startedAt": 1793998988487,
+    "startedAt": 1794002043481,
     "completedAt": null,
     "context": {
       "depth": 0,
@@ -428,12 +447,12 @@ Resposta `200`:
       },
       "message_seq": 2,
       "consumed_seq": 2,
-      "last_message_id": "E2E-640695084082"
+      "last_message_id": "E2E-156119512434"
     },
     "errorMessage": null,
     "logs": [
       {
-        "id": "8d3ee383-0c5d-47a8-b3a5-59be351e50a3",
+        "id": "70eb21b8-a668-47c4-b1be-0090d012e94d",
         "nodeId": "cond",
         "nodeType": "condition",
         "status": "success",
@@ -461,11 +480,11 @@ Resposta `200`:
           ]
         },
         "durationMs": 0,
-        "executedAt": 1793998988506,
+        "executedAt": 1794002043496,
         "errorMessage": null
       },
       {
-        "id": "fc1264e2-82e4-4350-b42d-9cced0b4f417",
+        "id": "2b771dfb-b57b-41e0-9392-8cd01403a318",
         "nodeId": "nome",
         "nodeType": "ask_question",
         "status": "suspended",
@@ -476,12 +495,12 @@ Resposta `200`:
           "asked": "Claro! Qual é o seu nome?",
           "awaiting_reply": true
         },
-        "durationMs": 88,
-        "executedAt": 1793998988618,
+        "durationMs": 68,
+        "executedAt": 1794002043584,
         "errorMessage": null
       },
       {
-        "id": "6fd21fe0-63df-4c17-8ae2-884e91bdad4b",
+        "id": "a75d63a7-1cab-4cef-a90e-ed47be226585",
         "nodeId": "nome",
         "nodeType": "ask_question",
         "status": "success",
@@ -492,11 +511,11 @@ Resposta `200`:
           "answer": "Fernanda"
         },
         "durationMs": 8,
-        "executedAt": 1793998997048,
+        "executedAt": 1794002050393,
         "errorMessage": null
       },
       {
-        "id": "dc61debd-c036-4357-ab0b-743f40f78dbf",
+        "id": "d73d6d68-f3c8-45af-aaba-091923babc81",
         "nodeId": "ia",
         "nodeType": "ai_assistant",
         "status": "suspended",
@@ -505,12 +524,12 @@ Resposta `200`:
         },
         "output": {
           "turn": 1,
-          "reply": "Oi, Fernanda! Tudo bem? Obrigado por entrar em contato. Como posso te ajudar hoje?",
-          "reason": "A cliente ainda está em atendimento, pedindo ajuda e informando o nome; não há despedida nem indicação de que não precisa de mais nada.",
+          "reply": "Olá, Fernanda! Tudo bem? Que bom ter você por aqui. Como posso te ajudar hoje?",
+          "reason": "A cliente ainda está em atendimento, pedindo ajuda e informando o nome; não disse que não precisa de mais nada nem se despediu.",
           "decision": "stay"
         },
-        "durationMs": 2329,
-        "executedAt": 1793998999400,
+        "durationMs": 2449,
+        "executedAt": 1794002052867,
         "errorMessage": null
       }
     ]
@@ -538,10 +557,10 @@ Resposta `201`:
 
 ```json
 {
-  "executionId": "f89edf6f-ecc1-48c9-8ef2-6840225a9d8d",
+  "executionId": "4e87e44d-c930-45d1-98d2-57f7615a3241",
   "channel": "FlowPlaygroundChannel",
   "currentNodeId": "p",
-  "chatId": "6aee40d3ea6f0337ed1cdcc7"
+  "chatId": "6aee4cda34b5ceb704a43948"
 }
 ```
 
@@ -614,7 +633,7 @@ Resposta `200`:
 {
   "tools": [
     {
-      "id": "6aee40c8ea6f0337ed1cdcc5",
+      "id": "6aee4cce34b5ceb704a43946",
       "name": "e2e_frete",
       "description": "Calcula o frete para um CEP.",
       "jsCode": "console.log('calculando'); return { prazo_dias: params.cep.startsWith('8') ? 2 : 6, valor: 14.9 };",
@@ -630,8 +649,8 @@ Resposta `200`:
       "toolInstallationId": null,
       "locked": false,
       "tool": null,
-      "createdAt": 1793999048692,
-      "updatedAt": 1793999048692
+      "createdAt": 1794002126554,
+      "updatedAt": 1794002126554
     }
   ],
   "meta": {
@@ -650,7 +669,7 @@ Resposta `200`:
 {
   "tools": [
     {
-      "id": "6aee40c8ea6f0337ed1cdcc5",
+      "id": "6aee4cce34b5ceb704a43946",
       "name": "e2e_frete",
       "description": "Calcula o frete para um CEP.",
       "toolInstallationId": null,
@@ -678,7 +697,7 @@ Resposta `201`:
 ```json
 {
   "tool": {
-    "id": "6aee40c8ea6f0337ed1cdcc5",
+    "id": "6aee4cce34b5ceb704a43946",
     "name": "e2e_frete",
     "description": "Calcula o frete para um CEP.",
     "jsCode": "console.log('calculando'); return { prazo_dias: params.cep.startsWith('8') ? 2 : 6, valor: 14.9 };",
@@ -694,8 +713,8 @@ Resposta `201`:
     "toolInstallationId": null,
     "locked": false,
     "tool": null,
-    "createdAt": 1793999048692,
-    "updatedAt": 1793999048692
+    "createdAt": 1794002126555,
+    "updatedAt": 1794002126555
   }
 }
 ```
@@ -713,7 +732,7 @@ Resposta `202`:
 ```json
 {
   "testRun": {
-    "id": "109d7eb4-9706-45bb-b11a-e79ba431612f",
+    "id": "4326bdbb-1e94-46ae-a19d-d839e046c9e5",
     "status": "pending"
   }
 }
@@ -741,8 +760,8 @@ Resposta `200`:
         ]
       }
     ],
-    "durationMs": 14,
-    "id": "109d7eb4-9706-45bb-b11a-e79ba431612f"
+    "durationMs": 20,
+    "id": "4326bdbb-1e94-46ae-a19d-d839e046c9e5"
   }
 }
 ```
@@ -837,13 +856,13 @@ Resposta `200`:
 ```json
 {
   "webhook": {
-    "id": "4be43d3e-4c50-415a-94e2-11ee92ac6b79",
-    "uid": "ppbcVfmPTsVmCwyPhwiqCWoO",
+    "id": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
+    "uid": "ExjIoubuqji5vLba3PSK3pC6",
     "name": "E2E Pedido aprovado",
     "slug": "e2e-pedido-aprovado",
     "status": "test",
     "totalRequest": 1,
-    "url": "http://localhost:3110/inbound/webhooks/ppbcVfmPTsVmCwyPhwiqCWoO",
+    "url": "http://localhost:3110/inbound/webhooks/ExjIoubuqji5vLba3PSK3pC6",
     "receivedPayload": {
       "headers.Host": "127.0.0.1:3110",
       "headers.Accept": "*/*",
@@ -854,23 +873,23 @@ Resposta `200`:
       "headers.Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
       "body.nome": "Roberto",
       "body.pedido": "48213",
-      "body.telefone": "5541999144296"
+      "body.telefone": "5541999402549"
     },
     "signatureEnabled": false,
     "signingSecretHint": null,
     "signingSecretGeneratedAt": null,
     "webhookActions": [
       {
-        "id": "32d8f031-b526-4c7f-b3ea-4ff93e7810de",
+        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
         "type": "HookAction::ContactHandling",
         "static": true,
         "config": {},
-        "createdAt": 1793999063915,
-        "updatedAt": 1793999063915
+        "createdAt": 1794002142306,
+        "updatedAt": 1794002142306
       }
     ],
-    "createdAt": 1793999063911,
-    "updatedAt": 1793999063962
+    "createdAt": 1794002142303,
+    "updatedAt": 1794002142360
   }
 }
 ```
@@ -886,29 +905,29 @@ Resposta `201`:
 ```json
 {
   "webhook": {
-    "id": "4be43d3e-4c50-415a-94e2-11ee92ac6b79",
-    "uid": "ppbcVfmPTsVmCwyPhwiqCWoO",
+    "id": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
+    "uid": "ExjIoubuqji5vLba3PSK3pC6",
     "name": "E2E Pedido aprovado",
     "slug": "e2e-pedido-aprovado",
     "status": "test",
     "totalRequest": 0,
-    "url": "http://localhost:3110/inbound/webhooks/ppbcVfmPTsVmCwyPhwiqCWoO",
+    "url": "http://localhost:3110/inbound/webhooks/ExjIoubuqji5vLba3PSK3pC6",
     "receivedPayload": {},
     "signatureEnabled": false,
     "signingSecretHint": null,
     "signingSecretGeneratedAt": null,
     "webhookActions": [
       {
-        "id": "32d8f031-b526-4c7f-b3ea-4ff93e7810de",
+        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
         "type": "HookAction::ContactHandling",
         "static": true,
         "config": {},
-        "createdAt": 1793999063915,
-        "updatedAt": 1793999063915
+        "createdAt": 1794002142306,
+        "updatedAt": 1794002142306
       }
     ],
-    "createdAt": 1793999063911,
-    "updatedAt": 1793999063911
+    "createdAt": 1794002142303,
+    "updatedAt": 1794002142303
   }
 }
 ```
@@ -925,7 +944,7 @@ PATCH /webhooks/:id:
     "status": "active",
     "webhookActions": [
       {
-        "id": "32d8f031-b526-4c7f-b3ea-4ff93e7810de",
+        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
         "config": {
           "contactIdentifier": "{{body.telefone}}",
           "contactName": "{{body.nome}}"
@@ -934,8 +953,8 @@ PATCH /webhooks/:id:
       {
         "type": "HookAction::StartFlow",
         "config": {
-          "connectorId": "6aee407eb905d94158160e5b",
-          "flowId": "730cdbcc-4421-4d98-ab9a-f60d0180d4aa",
+          "connectorId": "6aee4c647740847120df94ec",
+          "flowId": "77dedc4a-7472-45f0-8e43-d034a11ab515",
           "messageText": "Oi {{body.nome}}, recebemos seu pedido."
         }
       },
@@ -1013,7 +1032,54 @@ Até 1 MB. O log guarda até 100 KB do corpo, e acima disso `{ "_truncated": tru
 
 ## Logs de webhook
 
-Ficam 90 dias (índice TTL), com no máximo 10 mil por webhook.
+Ficam 90 dias (índice TTL), com no máximo 10 mil por webhook. Para contar e agrupar, dashboards personalizados têm a fonte `hook_logs`, com a mesma permissão, `core_settings`: `status`, `status_code`, `processing_time_ms`, `hook_name`, `hook_status` e `created_at`. O que veio na requisição não sai. Ver [insights.md](insights.md).
+
+`POST /custom-dashboards/query` com `{ dataSource: "hook_logs", dimensions: [{ field: "status" }], metrics: [{ aggregation: "count", label: "Total" }] }`:
+
+Resposta `200`:
+
+```json
+{
+  "rows": [
+    {
+      "status": "error",
+      "Total": 1
+    },
+    {
+      "status": "success",
+      "Total": 2
+    }
+  ],
+  "columns": [
+    "status",
+    "Total"
+  ],
+  "labels": {
+    "status": {
+      "success": "Sucesso",
+      "error": "Erro",
+      "skipped": "Ignorado"
+    }
+  },
+  "fieldLabels": {
+    "status": "Situação",
+    "status_code": "Código HTTP",
+    "processing_time_ms": "Tempo de processamento (ms)",
+    "hook_name": "Webhook",
+    "hook_status": "Situação do webhook",
+    "created_at": "Data"
+  },
+  "meta": {
+    "total": 2,
+    "truncated": false,
+    "timeRange": {
+      "field": "created_at",
+      "from": 1786226146644,
+      "to": 1794002146644
+    }
+  }
+}
+```
 
 ### `GET /webhook-logs`
 
@@ -1025,9 +1091,9 @@ Resposta `200`:
 {
   "logs": [
     {
-      "id": "6aee40dfea6f0337ed1cdcc9",
-      "webhookId": "4be43d3e-4c50-415a-94e2-11ee92ac6b79",
-      "webhookUid": "ppbcVfmPTsVmCwyPhwiqCWoO",
+      "id": "6aee4ce234b5ceb704a4394a",
+      "webhookId": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
+      "webhookUid": "ExjIoubuqji5vLba3PSK3pC6",
       "webhookName": "E2E Pedido aprovado",
       "requestMethod": "POST",
       "requestHeaders": {
@@ -1035,13 +1101,13 @@ Resposta `200`:
         "Accept": "*/*",
         "User-Agent": "Ruby",
         "Content-Type": "application/json",
-        "X-Vekoo-Timestamp": "1793999071",
+        "X-Vekoo-Timestamp": "1794002146",
         "Connection": "close",
         "Host": "127.0.0.1:3110",
         "Content-Length": "62"
       },
       "requestBody": {
-        "telefone": "5541999144296",
+        "telefone": "5541999402549",
         "nome": "Roberto",
         "pedido": "48213"
       },
@@ -1052,7 +1118,7 @@ Resposta `200`:
       "errorMessage": "Assinatura rejeitada (invalidSignature): Assinatura não confere.",
       "processingTimeMs": null,
       "webhookStatus": "active",
-      "createdAt": 1793999071866
+      "createdAt": 1794002146702
     },
     "..."
   ],
@@ -1084,7 +1150,7 @@ Resposta `200`:
     "successCount": 2,
     "errorCount": 2,
     "skippedCount": 0,
-    "avgProcessingTimeMs": 78.54,
+    "avgProcessingTimeMs": 73.22,
     "dailyStats": {
       "2026-11-06": {
         "total": 4,
@@ -1111,7 +1177,7 @@ Resposta `200`:
 | `node_completed` | `nodeId`, `nodeType`, `status`: success, suspended, error; `durationMs` ou `error` |
 | `text` | `body`, `sender` |
 | `media` | `attachmentId`, `url`, `caption` |
-| `event` | `name`: `template_sent` ou `interactive_sent`; `payload` |
+| `event` | `name`: `template_sent`, `interactive_sent` ou `attachment_missing` (`payload.reasons`); `payload` |
 | `ai_decision` | `nodeId`, `decision` (o id da saída, ou `stay`), `label`, `reason`, `turn` |
 | `suspended` | `status`: waiting ou waiting_for_message; `currentNodeId` |
 | `completed` | |
@@ -1127,33 +1193,33 @@ Sequência real, numa pergunta seguida de IA:
     "kind": "node_entered",
     "nodeId": "p",
     "nodeType": "ask_question",
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:38Z"
   },
   {
     "kind": "text",
     "body": "Qual é o seu nome?",
     "sender": null,
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:38Z"
   },
   {
     "kind": "node_completed",
     "nodeId": "p",
     "nodeType": "ask_question",
     "status": "suspended",
-    "durationMs": 10,
-    "at": "2026-11-06T21:04:20Z"
+    "durationMs": 8,
+    "at": "2026-11-06T21:55:38Z"
   },
   {
     "kind": "suspended",
     "status": "waiting_for_message",
     "currentNodeId": "p",
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:38Z"
   },
   {
     "kind": "node_entered",
     "nodeId": "p",
     "nodeType": "ask_question",
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:39Z"
   },
   {
     "kind": "node_completed",
@@ -1161,46 +1227,46 @@ Sequência real, numa pergunta seguida de IA:
     "nodeType": "ask_question",
     "status": "success",
     "durationMs": 13,
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:39Z"
   },
   {
     "kind": "node_entered",
     "nodeId": "ia",
     "nodeType": "ai_assistant",
-    "at": "2026-11-06T21:04:20Z"
+    "at": "2026-11-06T21:55:39Z"
   },
   {
     "kind": "ai_decision",
     "nodeId": "ia",
     "decision": "stay",
     "label": null,
-    "reason": "O cliente apenas informou o nome, sem se despedir; a condição de saída não foi atendida.",
+    "reason": "O cliente apenas informou o nome; não houve despedida.",
     "turn": 1,
-    "at": "2026-11-06T21:04:22Z"
+    "at": "2026-11-06T21:55:40Z"
   },
   {
     "kind": "text",
-    "body": "Olá, Fernanda, tudo bem com você?",
+    "body": "Olá, Fernanda! Tudo bem com você?",
     "sender": null,
-    "at": "2026-11-06T21:04:22Z"
+    "at": "2026-11-06T21:55:41Z"
   },
   {
     "kind": "node_completed",
     "nodeId": "ia",
     "nodeType": "ai_assistant",
     "status": "suspended",
-    "durationMs": 1941,
-    "at": "2026-11-06T21:04:22Z"
+    "durationMs": 1919,
+    "at": "2026-11-06T21:55:41Z"
   },
   {
     "kind": "suspended",
     "status": "waiting_for_message",
     "currentNodeId": "ia",
-    "at": "2026-11-06T21:04:22Z"
+    "at": "2026-11-06T21:55:41Z"
   },
   {
     "kind": "stopped",
-    "at": "2026-11-06T21:04:23Z"
+    "at": "2026-11-06T21:55:41Z"
   }
 ]
 ```
@@ -1233,6 +1299,8 @@ Sequência real, numa pergunta seguida de IA:
 | `contact_created` | `contact_created`. Ao criar a conversa, fora de carga em lote e da conversa de teste, com a automação ligada |
 | `human_handoff` | `human_handoff`. Quando a automação vira de ligada para pausada por `pause_automation_for_human!` (a pessoa respondeu, mensagem enviada de fora, bloco `transfer_to_human`). Roda com a automação pausada, e só o interruptor da organização desliga |
 
+`contact_created` e `human_handoff` nascem na própria conversa e entram por `Flows::InboundDispatcher.fire_event(chat:, event:)`: `call` significa mensagem. Falha ao disparar não impede ninguém de criar o contato nem de assumir a conversa.
+
 Todos os que casam começam, como na origem. Um fluxo com a palavra `pix` e outro de "mensagem recebida" respondem os dois: separe na tela.
 
 **As garantias da execução:**
@@ -1241,7 +1309,7 @@ Todos os que casam começam, como na origem. Um fluxo com a palavra `pix` e outr
 - **Uma execução viva por fluxo e conversa**, garantida por índice único. A mesma mensagem nunca começa o mesmo fluxo duas vezes (`idempotency_key`).
 - **Mensagem que perde a corrida** volta para a caixa.
 - **Queda no meio de um bloco não repete:** o bloco pode já ter enviado a mensagem. `Flows::SweepStaleExecutionsJob` dá por `failed` depois de 15 minutos parada, com alerta, e entrega o que estava na caixa.
-- **Espera por tempo:** `set(wait:)`, com um token. Uma pessoa assumiu no meio? Cancela, em vez de falar por cima. Job que sumiu no Redis é reagendado.
+- **Espera por tempo:** `set(wait:)`, com um token. Uma pessoa assumiu no meio? Cancela, em vez de falar por cima. Job que sumiu no Redis é reagendado. Mensagem que chega nessa hora não retoma nem recomeça o fluxo, porque ele continua vivo.
 - **Script:** bloco que roda JavaScript (`execute_tool`, e `ai_assistant` com ferramenta) vai para a fila `scripts`, faz só aquele bloco e volta. Sem nova tentativa.
 - **Tetos:** 50 blocos por rodada sem esperar (o `loop` renova a cada volta), 2.000 por execução, variável de 64 KB e 512 KB no total, 5 níveis de subfluxo.
 
@@ -1259,9 +1327,24 @@ Todos os que casam começam, como na origem. Um fluxo com a palavra `pix` e outr
 | `ai_audio_transcription` com `audio_url` | 1 |
 | `ai_audio_transcription` da mensagem recebida | 0 |
 
-Falha do modelo devolve o crédito. Sem saldo, o modelo não é chamado, a execução para (ou segue por `onError`) e a organização recebe o alerta `flow_no_credits`. `aiCosts` em `/catalog` ainda não lista estes valores.
+Falha do modelo devolve o crédito daquela chamada (o juiz que já decidiu fica pago). Sem saldo, o modelo não é chamado, a execução para (ou segue por `onError`) e a organização recebe o alerta `flow_no_credits`. `aiCosts` em `/catalog` ainda não lista estes valores.
 
-Alertas (`category: "flows"`): `flow_execution_failed`, resolvido ao publicar, e `flow_no_credits`.
+Alertas (`category: "flows"`), todos resolvidos ao publicar: `flow_execution_failed`, `flow_no_credits`, `flow_attachment_missing` e `flow_funnel_stage_missing`.
+
+### O que a mensagem guarda
+
+Toda mensagem que um bloco envia sai com `role: "assistant"`, `message_origin: "platform"` e sem conta, que é o que separa automação de pessoa em `Insights::MessageAuthorship`, e com `flow_id`, em todas as partes e na original. A API de mensagens não expõe `flow_id`, e o ranking por fluxo ainda não existe.
+
+A resposta do `ai_assistant` guarda também os tokens, numa mensagem só: a original, se foi em partes, porque é ela que as métricas contam.
+
+| Campo | O que é |
+|---|---|
+| `usage_model` | O modelo que escreveu a resposta |
+| `usage_prompt_tokens` | O prompt inteiro, com o que veio do cache e o que foi para ele, somando as rodadas de ferramenta |
+| `usage_cached_tokens` | A parte do prompt que veio do cache |
+| `usage_completion_tokens` | O que o modelo escreveu, com o pensamento |
+
+**Só a resposta tem tokens.** O juiz de saída fica de fora, porque é outro modelo e `usage_model` só cabe um; e os blocos que não respondem ao contato (`ai_sentiment`, `ai_intent_classification`, `ai_parameter_extractor`, `ai_audio_transcription`, `ai_assistant` em `processing`) não têm mensagem onde gravar. Esses aparecem só nos créditos e no log `[FlowRuntime::Llm]`.
 
 ---
 
@@ -1364,18 +1447,19 @@ Nomes de campo que mudaram: `integrationFilter` é `connectorFilter` (`integrati
 
 ## Para o deploy
 
-- **Índices do Mongo:** `bin/rails db:mongoid:create_indexes` antes de receber tráfego. O TTL de `HookLog` depende disso.
+- **Índices do Mongo:** `bin/rails db:mongoid:create_indexes` antes de receber tráfego. O TTL de `HookLog` depende disso, e a fonte `hook_logs` é recusada sem o índice, porque o diz por `hint`.
 - **Processo de scripts:** `bundle exec sidekiq -C config/sidekiq_scripts.yml`. Sem ele, os blocos `execute_tool` e `ai_assistant` com ferramenta, e a ação de script do webhook, ficam parados. A concorrência é 2, e o bloco de IA com ferramenta segura uma thread dessas enquanto o modelo responde. Se isso virar gargalo, é ali que se mexe.
 - **Filas:** `default` (fluxos e webhooks), `scripts` (JavaScript de cliente), `low` (varredura e retenção).
 - **Recorrentes:** `config/schedule/automation.yml`. `Flows::SweepStaleExecutionsJob` (5 min), `Flows::PruneExecutionsJob` (04:17: execução de 30 dias, teste de 1 dia, pergunta sem resposta há 30 dias, versões antigas sem uso) e `Hooks::PruneLogsJob` (04:37).
 - **`ANTHROPIC_API_KEY`:** sem ela, os blocos de IA param a execução com o motivo (ou seguem por `onError`) e não cobram. **`BACKEND_URL`:** é de onde sai `webhook.url`. **`OPENAI_ACCESS_TOKEN`:** só para `ai_audio_transcription` com URL; sem ela, sai por `onError`.
-- **`config/routes/automation.rb`** usa `/inbound/webhooks/:uid`. Se houver regra de limite de corpo no proxy, deixe 1 MB passar.
+- **Corpo:** a entrada do webhook aceita até 1 MB. Se o proxy tiver limite menor, é ele quem responde primeiro.
+- **Debounce:** 3 s, como o `delay_response` padrão dos assistentes. Por organização em `settings["flow_debounce_seconds"]`, pelo console por enquanto.
 
 ---
 
 ## Limitações conhecidas
 
-- **Blocos de Pipelines** não ligados, e `set_funnel_stage` ainda não confere se funil e etapa são da organização: `Funnel` é de outra frente.
+- **Blocos de Pipelines** não ligados.
 - **`goto_flow` não espera** o outro fluxo terminar, como na origem: se ele parar numa pergunta, este segue.
 - **`send_interactive`** manda as opções como texto numerado: nenhum canal daqui tem botão nativo. Na origem, as opções se perdiam.
 - **Fluxos que casam disparam todos**, como na origem.
