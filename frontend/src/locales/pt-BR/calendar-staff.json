@@ -1,0 +1,152 @@
+{
+  "calendar": {
+    "schedule": {
+      "close": "Fechar",
+      "clearSearch": "Limpar busca",
+      "dayRange": "{{from}} a {{to}}",
+      "moreGroups_one": "e mais {{count}} variação",
+      "moreGroups_other": "e mais {{count}} variações",
+      "until": "até",
+      "addWindow": "Horário",
+      "addWindowOf": "Adicionar horário em {{day}}",
+      "removeWindow": "Remover o horário das {{time}} em {{day}}",
+      "startOf": "Início do horário em {{day}}",
+      "endOf": "Fim do horário em {{day}}",
+      "endsByDuration": "Termina às {{time}}, pela duração padrão.",
+      "off": {
+        "professional": "Não atende",
+        "classGroup": "Sem aula"
+      },
+      "copy": {
+        "short": "Copiar",
+        "action": "Copiar os horários de {{day}} para outros dias",
+        "title": "Copiar {{day}} para",
+        "all": "Marcar todos",
+        "none": "Desmarcar todos",
+        "workdays": "Só segunda a sexta",
+        "apply_one": "Copiar para {{count}} dia",
+        "apply_other": "Copiar para {{count}} dias"
+      },
+      "errors": {
+        "fix": "Confira os horários destacados.",
+        "noWindows": "Dia ligado precisa de pelo menos um horário.",
+        "invalidTime": "Preencha o horário de início e o de fim.",
+        "startAfterEnd": "O início precisa vir antes do fim.",
+        "overlap": "Os horários deste dia se sobrepõem.",
+        "server": "Os horários {{message}}"
+      },
+      "people": {
+        "loading": "Carregando pessoas…",
+        "empty": "Ninguém encontrado",
+        "failed": "Não conseguimos carregar as pessoas da organização."
+      },
+      "apiErrors": {
+        "generic": "Não deu certo agora. Tente de novo em instantes.",
+        "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+        "forbidden": "Você não tem permissão para mexer no calendário.",
+        "tooManyRequests": "Foram muitas tentativas em pouco tempo. Espere um minuto e tente de novo."
+      }
+    },
+    "collaborators": {
+      "description": "Quem atende neste calendário, com os horários de cada um.",
+      "search": "Buscar colaborador",
+      "count_one": "{{count}} colaborador",
+      "count_other": "{{count}} colaboradores",
+      "actionsOf": "Ações de {{name}}",
+      "noPhone": "Sem telefone: avisos da agenda só no app",
+      "noWeek": "Sem horários: não recebe agendamentos.",
+      "serviceCount_one": "{{count}} serviço",
+      "serviceCount_other": "{{count}} serviços",
+      "blockCount_one": "{{count}} bloqueio",
+      "blockCount_other": "{{count}} bloqueios",
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "servicesDesc": "Mais serviços"
+      },
+      "empty": {
+        "title": "Nenhum colaborador ainda",
+        "description": "Cadastre quem atende neste calendário. Os serviços só podem ser criados depois que houver alguém para atender."
+      },
+      "noResults": {
+        "title": "Ninguém com essa busca",
+        "description": "Tente outro nome, e-mail ou telefone."
+      },
+      "create": {
+        "action": "Criar colaborador",
+        "mobileAction": "Criar",
+        "title": "Novo colaborador",
+        "description": "Escolha uma pessoa da organização ou escreva o nome de quem atende.",
+        "submit": "Criar colaborador",
+        "done": "{{name}} agora faz parte deste calendário",
+        "doneHint": "Para receber agendamentos, inclua nos serviços.",
+        "openServices": "Ver serviços"
+      },
+      "edit": {
+        "action": "Editar",
+        "submit": "Salvar alterações",
+        "done": "{{name}} atualizado"
+      },
+      "delete": {
+        "action": "Excluir colaborador",
+        "title": "Excluir {{name}}?",
+        "description": "Os agendamentos ficam no calendário, sem colaborador. Não dá para desfazer.",
+        "descriptionWithServices_one": "Os agendamentos ficam no calendário, sem colaborador. A distribuição de {{services}} deixa de somar 100% e precisará ser refeita. Não dá para desfazer.",
+        "descriptionWithServices_other": "Os agendamentos ficam no calendário, sem colaborador. A distribuição de {{services}} deixa de somar 100% e precisará ser refeita. Não dá para desfazer.",
+        "confirm": "Excluir colaborador",
+        "done": "{{name}} excluído",
+        "doneHint_one": "Reparta de novo a distribuição do serviço em que ele atendia.",
+        "doneHint_other": "Reparta de novo a distribuição dos {{count}} serviços em que ele atendia.",
+        "openServices": "Ver serviços"
+      },
+      "fields": {
+        "account": "Conta ligada",
+        "accountHint": "Ligado a uma conta, o nome e o e-mail vêm dela, e a pessoa recebe os avisos da agenda no app.",
+        "accountPlaceholder": "Buscar pessoa da organização",
+        "accountTaken": "Já é colaborador neste calendário",
+        "fromAccount": "Vem da conta ligada.",
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Renata Vieira",
+        "nameRequired": "Escreva o nome de quem atende.",
+        "nameTooLong": "Use até 120 caracteres.",
+        "email": "E-mail",
+        "emailPlaceholder": "renata@exemplo.com.br",
+        "emailInvalid": "Esse e-mail não parece certo.",
+        "phone": "Telefone",
+        "phoneHint": "Usado para avisar o colaborador da agenda pelo WhatsApp. Sem telefone, ele recebe só a notificação no app.",
+        "phoneInvalid": "Informe DDD e número, como 31 98379-4137.",
+        "color": "Cor",
+        "colorHint": "É a cor dos agendamentos dele no calendário.",
+        "colorRequired": "Escolha uma cor.",
+        "externalId": "ID externo",
+        "externalIdHint": "Código deste colaborador em outro sistema."
+      },
+      "week": {
+        "title": "Horários da semana",
+        "description": "Só são oferecidos horários dentro destes, no fuso do calendário ({{zone}})."
+      },
+      "blocks": {
+        "title": "Bloqueios",
+        "description": "Períodos em que não atende, mesmo dentro dos horários da semana: férias, consulta, um dia de folga.",
+        "empty": "Nenhum bloqueio marcado.",
+        "add": "Adicionar bloqueio",
+        "remove": "Remover bloqueio",
+        "start": "Início",
+        "end": "Fim",
+        "past": "Já passou",
+        "errors": {
+          "incomplete": "Preencha o início e o fim.",
+          "startAfterEnd": "O fim precisa ser depois do início.",
+          "server": "Os bloqueios {{message}}"
+        }
+      },
+      "services": {
+        "title": "Serviços que atende",
+        "none": "Ainda não atende nenhum serviço. É na tela de serviços que se decide quem atende o quê.",
+        "share": "{{name}} ({{percent}}%)",
+        "open": "Ver serviços"
+      },
+      "serviceCount_zero": "Nenhum serviço"
+    }
+  }
+}

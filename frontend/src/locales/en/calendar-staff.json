@@ -1,0 +1,152 @@
+{
+  "calendar": {
+    "schedule": {
+      "close": "Close",
+      "clearSearch": "Clear search",
+      "dayRange": "{{from}} to {{to}}",
+      "moreGroups_one": "and {{count}} more variation",
+      "moreGroups_other": "and {{count}} more variations",
+      "until": "to",
+      "addWindow": "Time",
+      "addWindowOf": "Add a time on {{day}}",
+      "removeWindow": "Remove the {{time}} time on {{day}}",
+      "startOf": "Start time on {{day}}",
+      "endOf": "End time on {{day}}",
+      "endsByDuration": "Ends at {{time}}, from the default duration.",
+      "off": {
+        "professional": "Not working",
+        "classGroup": "No class"
+      },
+      "copy": {
+        "short": "Copy",
+        "action": "Copy the times from {{day}} to other days",
+        "title": "Copy {{day}} to",
+        "all": "Select all",
+        "none": "Clear all",
+        "workdays": "Monday to Friday only",
+        "apply_one": "Copy to {{count}} day",
+        "apply_other": "Copy to {{count}} days"
+      },
+      "errors": {
+        "fix": "Check the highlighted times.",
+        "noWindows": "A day that is on needs at least one time.",
+        "invalidTime": "Fill in the start and end times.",
+        "startAfterEnd": "The start must come before the end.",
+        "overlap": "The times on this day overlap.",
+        "server": "Times: {{message}}"
+      },
+      "people": {
+        "loading": "Loading people…",
+        "empty": "No one found",
+        "failed": "We could not load the people in your organization."
+      },
+      "apiErrors": {
+        "generic": "That didn't work. Try again in a moment.",
+        "network": "We can't reach the server. Check your connection.",
+        "forbidden": "You don't have permission to change the calendar.",
+        "tooManyRequests": "Too many attempts in a short time. Wait a minute and try again."
+      }
+    },
+    "collaborators": {
+      "description": "Who works on this calendar, and when.",
+      "search": "Search staff",
+      "count_one": "{{count}} staff member",
+      "count_other": "{{count}} staff members",
+      "actionsOf": "Actions for {{name}}",
+      "noPhone": "No phone: calendar notices only in the app",
+      "noWeek": "No working hours: won't receive bookings.",
+      "serviceCount_one": "{{count}} service",
+      "serviceCount_other": "{{count}} services",
+      "blockCount_one": "{{count}} time off",
+      "blockCount_other": "{{count}} time off",
+      "sort": {
+        "nameAsc": "Name A to Z",
+        "nameDesc": "Name Z to A",
+        "servicesDesc": "Most services"
+      },
+      "empty": {
+        "title": "No staff yet",
+        "description": "Add who works on this calendar. Services can only be created once there is someone to do them."
+      },
+      "noResults": {
+        "title": "No one matches that search",
+        "description": "Try another name, email or phone."
+      },
+      "create": {
+        "action": "Add staff member",
+        "mobileAction": "Add",
+        "title": "New staff member",
+        "description": "Pick someone from your organization or type the name of who works here.",
+        "submit": "Add staff member",
+        "done": "{{name}} is now on this calendar",
+        "doneHint": "To receive bookings, add them to the services.",
+        "openServices": "See services"
+      },
+      "edit": {
+        "action": "Edit",
+        "submit": "Save changes",
+        "done": "{{name}} updated"
+      },
+      "delete": {
+        "action": "Delete staff member",
+        "title": "Delete {{name}}?",
+        "description": "Bookings stay on the calendar, without a staff member. This can't be undone.",
+        "descriptionWithServices_one": "Bookings stay on the calendar, without a staff member. The split of {{services}} will no longer add up to 100% and will have to be redone. This can't be undone.",
+        "descriptionWithServices_other": "Bookings stay on the calendar, without a staff member. The split of {{services}} will no longer add up to 100% and will have to be redone. This can't be undone.",
+        "confirm": "Delete staff member",
+        "done": "{{name}} deleted",
+        "doneHint_one": "Split again the service they worked on.",
+        "doneHint_other": "Split again the {{count}} services they worked on.",
+        "openServices": "See services"
+      },
+      "fields": {
+        "account": "Linked account",
+        "accountHint": "When linked to an account, name and email come from it, and the person gets calendar notices in the app.",
+        "accountPlaceholder": "Search people in your organization",
+        "accountTaken": "Already on this calendar",
+        "fromAccount": "Comes from the linked account.",
+        "name": "Name",
+        "namePlaceholder": "E.g. Renata Vieira",
+        "nameRequired": "Type the name of who works here.",
+        "nameTooLong": "Use up to 120 characters.",
+        "email": "Email",
+        "emailPlaceholder": "renata@example.com",
+        "emailInvalid": "That email doesn't look right.",
+        "phone": "Phone",
+        "phoneHint": "Used to send calendar notices on WhatsApp. Without a phone, they only get the app notification.",
+        "phoneInvalid": "Enter the area code and number, like 31 98379-4137.",
+        "color": "Color",
+        "colorHint": "The color of their bookings on the calendar.",
+        "colorRequired": "Pick a color.",
+        "externalId": "External ID",
+        "externalIdHint": "This staff member's code in another system."
+      },
+      "week": {
+        "title": "Weekly hours",
+        "description": "Only times inside these are offered, in the calendar's time zone ({{zone}})."
+      },
+      "blocks": {
+        "title": "Time off",
+        "description": "Periods when they don't work, even within the weekly hours: vacation, an appointment, a day off.",
+        "empty": "No time off set.",
+        "add": "Add time off",
+        "remove": "Remove time off",
+        "start": "Start",
+        "end": "End",
+        "past": "Already over",
+        "errors": {
+          "incomplete": "Fill in the start and the end.",
+          "startAfterEnd": "The end must be after the start.",
+          "server": "Time off: {{message}}"
+        }
+      },
+      "services": {
+        "title": "Services they do",
+        "none": "Doesn't do any service yet. Who does what is decided on the services screen.",
+        "share": "{{name}} ({{percent}}%)",
+        "open": "See services"
+      },
+      "serviceCount_zero": "No services"
+    }
+  }
+}
