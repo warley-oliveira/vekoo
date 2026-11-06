@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button"
 import { useCustomFieldMutations } from "@/hooks/content/use-custom-fields"
 import { useGuardedClose } from "@/hooks/use-panel-session"
 import { contentErrorMessage } from "@/lib/content/error-message"
-import { deriveCustomFieldKey } from "@/lib/content/normalization"
+import { deriveCustomFieldKey, parseDay } from "@/lib/content/normalization"
 import {
   NORMALIZATION_STRATEGIES,
   VALUE_TYPES,
@@ -136,12 +136,6 @@ function buildPayload(values: CustomFieldValues, field: CustomField | null): Cus
   }
 }
 
-/** "1989-03-14" no fuso de quem digitou: o valor do campo é só o dia, sem hora. */
-function parseDay(value: string | null): Date | null {
-  const match = value ? /^(\d{4})-(\d{2})-(\d{2})/.exec(value) : null
-  return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null
-}
-
 /** Criar e editar um campo: nome, tipo, opções, valor padrão e normalização ao gravar. */
 export function CustomFieldPanel({
   field,
@@ -194,6 +188,9 @@ export function CustomFieldPanel({
 
   const isDirty = form.formState.isDirty
   const requestClose = useGuardedClose(isDirty, close)
+  const requestValues = useGuardedClose(isDirty, () => {
+    if (field) onOpenValues(field)
+  })
 
   const derivedKey = deriveCustomFieldKey(name ?? "")
   const managedLive = field?.valueType === "list" && valueType === "list"
@@ -348,7 +345,7 @@ export function CustomFieldPanel({
               variant="ghost"
               size="sm"
               className="-ml-2 text-muted-foreground pointer-coarse:h-10"
-              onClick={() => onOpenValues(field)}
+              onClick={() => void requestValues()}
             >
               <BarChart3 />
               {t("content.customFields.actions.values")}

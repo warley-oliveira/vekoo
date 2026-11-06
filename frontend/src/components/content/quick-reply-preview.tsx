@@ -133,7 +133,7 @@ function Part({
   if (part.kind === "imageLink") {
     return (
       <div className={`${BUBBLE} overflow-hidden p-1`}>
-        <img src={part.url} alt="" className="max-h-48 rounded-md object-cover" />
+        <img src={part.url} alt="" className="max-h-48 w-56 max-w-full rounded-md object-cover" />
       </div>
     )
   }
@@ -160,7 +160,7 @@ function Part({
             src={url}
             alt={attachment.name}
             loading="lazy"
-            className="max-h-48 rounded-md object-cover"
+            className="max-h-48 w-56 max-w-full rounded-md object-cover"
           />
         </div>
       )

@@ -34,7 +34,7 @@ import { Progress } from "@/components/ui/progress"
 import { useAttachmentMutations } from "@/hooks/content/use-attachments"
 import { attachmentKindOf } from "@/lib/content/attachment-file"
 import { contentErrorMessage } from "@/lib/content/error-message"
-import { visibleLength } from "@/lib/content/quick-reply-content"
+import { citedAttachmentIds, visibleLength } from "@/lib/content/quick-reply-content"
 import { ATTACHMENT_KINDS, type Attachment } from "@/lib/content/types"
 import { formatFileSize, getFileExtension } from "@/lib/file-utils"
 import { formatNumber } from "@/lib/format-number"
@@ -499,9 +499,10 @@ export function QuickReplyEditor({
       syncSlash(current)
     },
     onSelectionUpdate: ({ editor: current }) => syncSlash(current),
-    onBlur: () => {
+    onBlur: ({ event }) => {
       setSlash(null)
-      onBlur?.()
+      // Clicar na barra do próprio editor não é sair do campo: nada de "escreva a mensagem" ainda.
+      if (!frameRef.current?.contains(event.relatedTarget as globalThis.Node | null)) onBlur?.()
     },
   })
   editorInstance.current = editor
@@ -640,6 +641,7 @@ export function QuickReplyEditor({
   )
 
   const length = visibleLength(value)
+  const citedCount = citedAttachmentIds(value).length
   const uploading = uploads.length > 0
 
   return (
@@ -676,7 +678,14 @@ export function QuickReplyEditor({
             searchPlaceholder={t("content.quickReplies.editor.searchAttachment")}
             emptyLabel={t("content.quickReplies.editor.noAttachments")}
             trigger={
-              <Button type="button" variant="ghost" size="sm" disabled={disabled} className="text-muted-foreground">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={disabled}
+                title={t("content.quickReplies.editor.attachmentShortcut")}
+                className="text-muted-foreground"
+              >
                 <Paperclip />
                 {t("content.quickReplies.editor.attachment")}
                 {attachments.length > 0 ? (
@@ -782,17 +791,20 @@ export function QuickReplyEditor({
         </ul>
       ) : null}
 
-      <p
-        className={cn(
-          "self-end text-xs tabular-nums",
-          length > QUICK_REPLY_MAX_LENGTH
-            ? "text-destructive"
-            : length >= QUICK_REPLY_MAX_LENGTH * 0.9
-              ? "text-status-warning"
-              : "text-muted-foreground"
-        )}
-      >
-        {formatNumber(length, language)}/{formatNumber(QUICK_REPLY_MAX_LENGTH, language)}
+      <p className="flex justify-end gap-2 text-xs text-muted-foreground tabular-nums">
+        {citedCount > 0 ? (
+          <span>{t("content.quickReplies.editor.attachmentCount", { count: citedCount })}</span>
+        ) : null}
+        <span
+          className={cn(
+            length > QUICK_REPLY_MAX_LENGTH && "text-destructive",
+            length <= QUICK_REPLY_MAX_LENGTH &&
+              length >= QUICK_REPLY_MAX_LENGTH * 0.9 &&
+              "text-status-warning"
+          )}
+        >
+          {formatNumber(length, language)}/{formatNumber(QUICK_REPLY_MAX_LENGTH, language)}
+        </span>
       </p>
     </div>
   )

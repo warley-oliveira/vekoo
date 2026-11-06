@@ -49,7 +49,8 @@
         "nameAsc": "Name, A to Z",
         "nameDesc": "Name, Z to A",
         "recent": "Last changed",
-        "oldest": "Created first"
+        "oldest": "Created first",
+        "trigger": "Shortcut, A to Z"
       },
       "create": {
         "action": "Create quick reply",
@@ -83,7 +84,8 @@
         "content": "Message",
         "contentPlaceholder": "Write it the way you'd send it in a conversation",
         "contentRequired": "Write the message or insert an attachment.",
-        "contentTooLong": "The message is over {{max}} characters."
+        "contentTooLong": "The message is over {{max}} characters.",
+        "triggerFromName": "Generate from name"
       },
       "variables": {
         "nome": "Contact name",
@@ -111,7 +113,10 @@
           "contact": "From the contact",
           "team": "From the agent",
           "fields": "Custom fields"
-        }
+        },
+        "attachmentShortcut": "Insert attachment (Ctrl+Shift+A)",
+        "attachmentCount_one": "{{count}} attachment",
+        "attachmentCount_other": "{{count}} attachments"
       },
       "preview": {
         "title": "How it looks in the conversation",

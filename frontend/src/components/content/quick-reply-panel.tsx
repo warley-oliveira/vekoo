@@ -108,6 +108,8 @@ export default function QuickReplyPanel({
 
   // Enquanto a pessoa não escreve o próprio atalho, ele acompanha o nome.
   const [followName, setFollowName] = useState(!reply)
+  // Só para o botão "Gerar do nome" acompanhar o que está escrito.
+  useWatch({ control: form.control, name: "name" })
   const trigger = useWatch({ control: form.control, name: "trigger" })
   const content = useWatch({ control: form.control, name: "content" })
   const slug = slugifyTrigger(trigger ?? "")
@@ -115,7 +117,11 @@ export default function QuickReplyPanel({
   const close = useCallback(() => onOpenChange(false), [onOpenChange])
 
   const submit = useFormSubmit(form, async (values) => {
-    const input = { ...values, trigger: slugifyTrigger(values.trigger) }
+    const input = {
+      ...values,
+      trigger: slugifyTrigger(values.trigger),
+      content: values.content.trim(),
+    }
     const saved = reply
       ? await updateQuickReply(reply.id, input)
       : await createQuickReply(input)
@@ -248,6 +254,24 @@ export default function QuickReplyPanel({
             control={form.control}
             name="trigger"
             label={t("content.quickReplies.fields.trigger")}
+            action={
+              <Button
+                type="button"
+                variant="link"
+                size="xs"
+                className="h-auto p-0 text-xs leading-none"
+                disabled={!slugifyTrigger(form.getValues("name") ?? "")}
+                onClick={() => {
+                  form.setValue("trigger", slugifyTrigger(form.getValues("name")), {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                  setFollowName(!reply)
+                }}
+              >
+                {t("content.quickReplies.fields.triggerFromName")}
+              </Button>
+            }
             startAdornment="/"
             autoComplete="off"
             autoCapitalize="off"

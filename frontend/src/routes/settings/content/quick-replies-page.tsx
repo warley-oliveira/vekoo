@@ -35,12 +35,13 @@ import { useMotionPreset } from "@/lib/motion"
 import { matchesSearch } from "@/lib/search-text"
 
 // O editor pesa, e a lista não precisa dele até alguém abrir o painel.
-const QuickReplyPanel = lazy(() => import("@/components/content/quick-reply-panel"))
+const loadPanel = () => import("@/components/content/quick-reply-panel")
+const QuickReplyPanel = lazy(loadPanel)
 
-type SortOrder = "name-asc" | "name-desc" | "recent" | "oldest"
+type SortOrder = "name-asc" | "name-desc" | "trigger" | "recent" | "oldest"
 type ContentFilter = "attachment" | "variable" | "broken"
 
-const PAGE_SIZE = 25
+const DEFAULT_PER_PAGE = 25
 
 export default function QuickRepliesPage() {
   const { t } = useTranslation()
@@ -53,6 +54,11 @@ export default function QuickRepliesPage() {
   const { deleteQuickReply } = useQuickReplyMutations()
 
   /* ---------- painel ---------- */
+
+  // Baixa o editor com a lista já na tela, para o primeiro clique em "Criar" não ficar sem resposta.
+  useEffect(() => {
+    void loadPanel()
+  }, [])
 
   const panel = usePanelParam("reply")
   const selected = quickReplies?.find((reply) => reply.id === panel.selectedId) ?? null
@@ -73,6 +79,7 @@ export default function QuickRepliesPage() {
   const [contents, setContents] = useState<string[]>([])
   const [sort, setSort] = useState<SortOrder>("name-asc")
   const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE)
 
   const clearFilters = () => {
     setQuery("")
@@ -125,15 +132,17 @@ export default function QuickRepliesPage() {
           return a.createdAt - b.createdAt
         case "name-desc":
           return b.name.localeCompare(a.name, language)
+        case "trigger":
+          return a.trigger.localeCompare(b.trigger, language)
         default:
           return a.name.localeCompare(b.name, language)
       }
     })
   }, [contents, language, query, quickReplies, sort, traitsOf])
 
-  const totalPages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(visible.length / perPage))
   const currentPage = Math.min(page, totalPages)
-  const pageItems = visible.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const pageItems = visible.slice((currentPage - 1) * perPage, currentPage * perPage)
   const isFiltered = Boolean(query) || contents.length > 0
 
   const others = useMemo(
@@ -252,6 +261,7 @@ export default function QuickRepliesPage() {
                 options={[
                   { value: "name-asc", label: t("content.quickReplies.sort.nameAsc") },
                   { value: "name-desc", label: t("content.quickReplies.sort.nameDesc") },
+                  { value: "trigger", label: t("content.quickReplies.sort.trigger") },
                   { value: "recent", label: t("content.quickReplies.sort.recent") },
                   { value: "oldest", label: t("content.quickReplies.sort.oldest") },
                 ]}
@@ -334,13 +344,17 @@ export default function QuickRepliesPage() {
             </SectionCard>
           )}
 
-          {visible.length > PAGE_SIZE ? (
+          {visible.length > DEFAULT_PER_PAGE ? (
             <TablePagination
               page={currentPage}
               totalPages={totalPages}
               total={visible.length}
-              perPage={PAGE_SIZE}
+              perPage={perPage}
               onPageChange={setPage}
+              onPerPageChange={(next) => {
+                setPerPage(next)
+                setPage(1)
+              }}
             />
           ) : null}
         </div>

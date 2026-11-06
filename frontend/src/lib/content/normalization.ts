@@ -71,6 +71,12 @@ export function isNumericValue(value: string): boolean {
   return /^\d+(?:[.,]\d+)?$/.test(value.trim())
 }
 
+/** "1989-03-14" no fuso de quem digitou: o valor de um campo de data é só o dia, sem hora. */
+export function parseDay(value: string | null | undefined): Date | null {
+  const match = value ? /^(\d{4})-(\d{2})-(\d{2})/.exec(value) : null
+  return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null
+}
+
 /**
  * A chave que o nome daria, com a regra do back (`name.parameterize.underscore`): "Como
  * conheceu" vira "como_conheceu". Vazia quando o nome não tem letra nem número.

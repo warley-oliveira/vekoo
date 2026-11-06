@@ -29,7 +29,9 @@ import {
 } from "@/hooks/content/use-custom-fields"
 import { usePanelParam } from "@/hooks/content/use-panel-param"
 import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
+import { parseDay } from "@/lib/content/normalization"
 import { VALUE_TYPES, type CustomField } from "@/lib/content/types"
+import { formatDate } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
 import { matchesSearch } from "@/lib/search-text"
@@ -138,9 +140,11 @@ export default function CustomFieldsPage() {
 
   const formatDefault = (field: CustomField) => {
     if (!field.defaultValue) return null
-    return field.valueType === "checkbox"
-      ? t(`content.customFields.checkbox.${field.defaultValue === "true" ? "true" : "false"}`)
-      : field.defaultValue
+    if (field.valueType === "checkbox") {
+      return t(`content.customFields.checkbox.${field.defaultValue === "true" ? "true" : "false"}`)
+    }
+    const day = field.valueType === "date" ? parseDay(field.defaultValue) : null
+    return day ? formatDate(day, language) : field.defaultValue
   }
 
   function detailsOf(field: CustomField) {

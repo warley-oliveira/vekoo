@@ -116,8 +116,12 @@ export default function AttachmentsPage() {
 
   const panel = usePanelParam("attachment")
   const fromList = attachments?.find((item) => item.id === panel.selectedId) ?? null
-  // Aberto por link, ou fora da página atual: busca o próprio registro.
-  const direct = useAttachment(panel.selectedId && !fromList ? panel.selectedId : null)
+  const [removingId, setRemovingId] = useState<string | null>(null)
+  // Aberto por link, ou fora da página atual: busca o próprio registro. O que acabou de ser
+  // excluído não: a lista pode chegar sem ele antes de o endereço mudar, e daria 404 à toa.
+  const direct = useAttachment(
+    panel.selectedId && !fromList && panel.selectedId !== removingId ? panel.selectedId : null
+  )
   const selected = fromList ?? direct.attachment
   const panelOpen = Boolean(panel.selectedId && selected)
   const panelKey = useOpenCount(panelOpen)
@@ -187,9 +191,14 @@ export default function AttachmentsPage() {
       confirmLabel: t("content.attachments.delete.confirm"),
       destructive: true,
       onConfirm: async () => {
-        await deleteAttachment(attachment.id)
-        // Na mesma volta: quando a lista chegar sem ele, o painel já não o procura mais.
-        panel.close()
+        setRemovingId(attachment.id)
+        try {
+          await deleteAttachment(attachment.id)
+          panel.close()
+        } catch (cause) {
+          setRemovingId(null)
+          throw cause
+        }
       },
     })
     if (confirmed) toast.success(t("content.attachments.delete.done", { name: attachment.name }))

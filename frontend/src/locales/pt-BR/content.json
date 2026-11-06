@@ -49,7 +49,8 @@
         "nameAsc": "Nome de A a Z",
         "nameDesc": "Nome de Z a A",
         "recent": "Alteradas por último",
-        "oldest": "Criadas primeiro"
+        "oldest": "Criadas primeiro",
+        "trigger": "Atalho de A a Z"
       },
       "create": {
         "action": "Criar mensagem rápida",
@@ -83,7 +84,8 @@
         "content": "Mensagem",
         "contentPlaceholder": "Escreva como você mandaria na conversa",
         "contentRequired": "Escreva a mensagem ou insira um anexo.",
-        "contentTooLong": "A mensagem passou de {{max}} caracteres."
+        "contentTooLong": "A mensagem passou de {{max}} caracteres.",
+        "triggerFromName": "Gerar do nome"
       },
       "variables": {
         "nome": "Nome do contato",
@@ -111,7 +113,10 @@
           "contact": "Do contato",
           "team": "De quem atende",
           "fields": "Campos personalizados"
-        }
+        },
+        "attachmentShortcut": "Inserir anexo (Ctrl+Shift+A)",
+        "attachmentCount_one": "{{count}} anexo",
+        "attachmentCount_other": "{{count}} anexos"
       },
       "preview": {
         "title": "Como sai na conversa",
