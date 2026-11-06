@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 
 import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { parseDay } from "@/hooks/insights/use-dashboard-period"
-import { toDateInputValue } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
@@ -40,8 +39,6 @@ function buildGrid(report: DashboardReport, period: DashboardPeriod): HeatGrid {
     for (const cursor = new Date(first); cursor <= last; cursor.setDate(cursor.getDate() + 1)) {
       occurrences[cursor.getDay()] += 1
     }
-    // O dia de hoje conta mesmo sem mensagem ainda: é um dia que o período tem.
-    void toDateInputValue
   }
 
   const totals = Array.from({ length: 7 }, () => new Array<number>(24).fill(0))
