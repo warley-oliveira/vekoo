@@ -7,6 +7,8 @@ import { toast } from "sonner"
 
 import { CatalogMenu } from "@/components/products/catalog-menu"
 import { CategoryFilter } from "@/components/products/category-filter"
+import { ImportBanner } from "@/components/products/import/import-banner"
+import { ImportPanel, type ImportView } from "@/components/products/import/import-panel"
 import { ProductBulkActions } from "@/components/products/product-bulk-actions"
 import { ProductCard } from "@/components/products/product-card"
 import {
@@ -14,10 +16,10 @@ import {
   ProductGridSkeleton,
 } from "@/components/products/product-grid-skeleton"
 import { ProductTable } from "@/components/products/product-table"
-import { ProductsEmpty } from "@/components/products/products-empty"
+import { ProductsEmpty, ProductsNoResults } from "@/components/products/products-empty"
+import { SearchTestPanel } from "@/components/products/search-test-panel"
 import {
   BulkActionsBar,
-  EmptyState,
   ErrorState,
   FacetedFilter,
   FilterBar,
@@ -39,6 +41,7 @@ import {
   type CatalogSort,
 } from "@/hooks/products/use-catalog-filters"
 import { useItemActions } from "@/hooks/products/use-item-actions"
+import { useImportFeed } from "@/hooks/products/use-product-imports"
 import {
   BULK_DESTROY_LIMIT,
   fetchAllItemIds,
@@ -151,11 +154,37 @@ export default function CatalogPage() {
   const total = meta?.total ?? 0
   const canSelectAll = total <= BULK_DESTROY_LIMIT
 
-  /* ---------- importação (próxima etapa) ---------- */
+  /* ---------- importação e teste de busca ---------- */
 
-  const openImport = () => toast(t("products.list.import"))
-  const openHistory = () => toast(t("products.menu.imports"))
-  const openSearchTest = () => toast(t("products.menu.searchTest"))
+  const [importView, setImportView] = useState<ImportView | null>(null)
+  const [searchTestOpen, setSearchTestOpen] = useState(false)
+
+  const openImport = () => setImportView({ name: "upload" })
+  const openHistory = () => setImportView({ name: "history" })
+  const openSearchTest = () => setSearchTestOpen(true)
+
+  const feed = useImportFeed({
+    onFinished: (importId, live) => {
+      // Com o painel aberto, a pessoa já está vendo. Fechado, pode ser dela ou de um colega.
+      if (importView) return
+
+      const view = {
+        label: t("products.import.toast.view"),
+        onClick: () => setImportView({ name: "tracking", importId }),
+      }
+      if (live.kind === "completed") {
+        const counts = t("products.import.toast.counts", {
+          created: formatNumber(live.created, language),
+          updated: formatNumber(live.updated, language),
+          errors: formatNumber(live.errors, language),
+        })
+        const notify = live.errors > 0 ? toast.warning : toast.success
+        notify(t("products.import.toast.completed"), { description: counts, action: view })
+      } else if (live.kind === "error") {
+        toast.error(t("products.import.toast.failed"), { action: view })
+      }
+    },
+  })
 
   /* ---------- tela ---------- */
 
@@ -203,22 +232,42 @@ export default function CatalogPage() {
     />
   )
 
+  const panels = (
+    <>
+      <ImportPanel view={importView} onViewChange={setImportView} feed={feed} />
+      <SearchTestPanel
+        open={searchTestOpen}
+        onOpenChange={setSearchTestOpen}
+        initialQuery={filters.q}
+        priceKeys={priceKeys}
+      />
+    </>
+  )
+
   if (error && !items) {
     return (
       <PageBody variant="wide">
         {header}
         <ErrorState error={error} onRetry={() => void mutate()} />
+        {panels}
       </PageBody>
     )
   }
 
   // Catálogo vazio de verdade: filtros e ordem não têm sobre o que agir.
   const nothingYet = items?.length === 0 && !isFiltered && filters.page === 1
+  const noResults = items?.length === 0 && isFiltered
   const count = formatNumber(total, language)
 
   return (
     <PageBody variant="wide">
       {header}
+
+      <ImportBanner
+        feed={feed}
+        hidden={importView !== null}
+        onOpen={(importId) => setImportView({ name: "tracking", importId })}
+      />
 
       {nothingYet ? (
         <ProductsEmpty onImport={openImport} />
@@ -288,7 +337,13 @@ export default function CatalogPage() {
             </div>
           ) : null}
 
-          {view === "list" ? (
+          {noResults ? (
+            <ProductsNoResults
+              hasQuery={Boolean(filters.q)}
+              onClear={clear}
+              onSearchTest={openSearchTest}
+            />
+          ) : view === "list" ? (
             <ProductTable
               data={items ?? []}
               meta={meta}
@@ -325,12 +380,6 @@ export default function CatalogPage() {
             />
           ) : isLoading && !items ? (
             <ProductGridSkeleton />
-          ) : items?.length === 0 ? (
-            <EmptyState
-              title={t("products.list.noResults.title")}
-              description={t("products.list.noResults.description")}
-              action={{ label: t("kit.filters.clear"), onClick: clear }}
-            />
           ) : (
             <>
               <ul
@@ -389,6 +438,8 @@ export default function CatalogPage() {
           )}
         </>
       )}
+
+      {panels}
     </PageBody>
   )
 }
