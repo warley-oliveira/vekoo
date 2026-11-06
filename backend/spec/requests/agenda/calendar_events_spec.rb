@@ -450,6 +450,12 @@ RSpec.describe "Agenda: eventos do calendário", type: :request do
         expect(json["steps"].first["runAt"]).to be_a(Integer)
       end
 
+      it "o histórico diz quem inscreveu" do
+        post "/calendar-events/#{record.id}/sequence", params: { sequenceId: "seq-1" }, headers: headers, as: :json
+
+        expect(record.reload.event_history.last).to include("event_name" => "sequence_enrolled", "user_name" => "Marina Duarte", "by_user" => true)
+      end
+
       it "sequência que não existe é 422 com o motivo" do
         post "/calendar-events/#{record.id}/sequence", params: { sequenceId: "outra" }, headers: headers, as: :json
 

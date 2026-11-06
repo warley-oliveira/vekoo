@@ -81,7 +81,8 @@ module Agenda
       ChatMessage::Text.create(
         role: "base",
         content: step["name"].presence || step["message"].presence || step["ai_prompt"],
-        context_message: { sequence_name: @sequence["name"], step_index: step_index + 1, trigger: @sequence["trigger"] },
+        # A tela lê este mapa como está: em camelCase, como o resto da API.
+        context_message: { sequenceName: @sequence["name"], stepIndex: step_index + 1, trigger: @sequence["trigger"] },
         role_base_type: "sequence-notation",
         chat: @chat
       )

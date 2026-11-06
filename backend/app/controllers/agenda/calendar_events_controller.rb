@@ -61,6 +61,7 @@ module Agenda
     end
 
     def enroll_sequence
+      @booking.event_user_name = current_account.name
       result = EnrollAttendanceSequenceService.new(@booking, params.require(:sequence_id).to_s).call
       return render_error(status: :unprocessable_entity, code: result.code, message: result.message) unless result.success?
 

@@ -31,7 +31,7 @@ RSpec.describe Agenda::AttendanceSequenceJob do
 
     note = messages("base").first
     expect(note).to have_attributes(role_base_type: "sequence-notation", content: "Primeiro contato")
-    expect(note.context_message).to include("sequence_name" => "Recuperar", "step_index" => 1, "trigger" => "no_show")
+    expect(note.context_message).to include("sequenceName" => "Recuperar", "stepIndex" => 1, "trigger" => "no_show")
 
     sent = messages("assistant").first
     expect(sent.content).to eq("Sentimos sua falta, Maria")
