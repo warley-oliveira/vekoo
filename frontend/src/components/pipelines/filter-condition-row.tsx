@@ -13,6 +13,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { localDayKey, parseDayKey } from "@/lib/pipelines/card-meta"
 import {
   ME_VALUE,
@@ -101,13 +102,17 @@ function DateValue({
       />
       {mode === EXACT_DATE ? pick("value") : null}
       {row.token && PARAMETERIZED_TOKENS.includes(row.token) ? (
-        <NumberInput
-          aria-label={t("pipelines.filters.builder.amount")}
-          className="sm:w-20"
-          min={1}
-          value={row.tokenN ? Number(row.tokenN) : null}
-          onChange={(value) => onPatch({ tokenN: value === null ? "" : String(value) })}
-        />
+        <HiddenLabel text={t("pipelines.filters.builder.amount")}>
+          {(id) => (
+            <NumberInput
+              id={id}
+              className="sm:w-20"
+              min={1}
+              value={row.tokenN ? Number(row.tokenN) : null}
+              onChange={(value) => onPatch({ tokenN: value === null ? "" : String(value) })}
+            />
+          )}
+        </HiddenLabel>
       ) : null}
     </div>
   )
@@ -167,18 +172,26 @@ function ConditionValue({
   if (operator === "between") {
     return (
       <div className="grid grid-cols-2 gap-2">
-        <NumberInput
-          aria-label={t("pipelines.filters.builder.value")}
-          placeholder={t("pipelines.filters.min")}
-          value={row.value === "" ? null : Number(row.value)}
-          onChange={(value) => onPatch({ value: value === null ? "" : String(value) })}
-        />
-        <NumberInput
-          aria-label={t("pipelines.filters.builder.valueTo")}
-          placeholder={t("pipelines.filters.max")}
-          value={row.valueTo === "" ? null : Number(row.valueTo)}
-          onChange={(value) => onPatch({ valueTo: value === null ? "" : String(value) })}
-        />
+        <HiddenLabel text={t("pipelines.filters.builder.value")}>
+          {(id) => (
+            <NumberInput
+              id={id}
+              placeholder={t("pipelines.filters.min")}
+              value={row.value === "" ? null : Number(row.value)}
+              onChange={(value) => onPatch({ value: value === null ? "" : String(value) })}
+            />
+          )}
+        </HiddenLabel>
+        <HiddenLabel text={t("pipelines.filters.builder.valueTo")}>
+          {(id) => (
+            <NumberInput
+              id={id}
+              placeholder={t("pipelines.filters.max")}
+              value={row.valueTo === "" ? null : Number(row.valueTo)}
+              onChange={(value) => onPatch({ valueTo: value === null ? "" : String(value) })}
+            />
+          )}
+        </HiddenLabel>
       </div>
     )
   }
@@ -186,21 +199,29 @@ function ConditionValue({
   if (MULTI_OPERATORS.includes(operator)) {
     if (field.kind === "tags") {
       return (
-        <ChipsInput
-          aria-label={t("pipelines.filters.builder.value")}
-          value={row.list}
-          placeholder={t("pipelines.filters.builder.tagsPlaceholder")}
-          onChange={(list) => onPatch({ list })}
-        />
+        <HiddenLabel text={t("pipelines.filters.builder.value")}>
+          {(id) => (
+            <ChipsInput
+              id={id}
+              value={row.list}
+              placeholder={t("pipelines.filters.builder.tagsPlaceholder")}
+              onChange={(list) => onPatch({ list })}
+            />
+          )}
+        </HiddenLabel>
       )
     }
     return (
-      <MultiSelectInput
-        aria-label={t("pipelines.filters.builder.value")}
-        options={options}
-        value={row.list}
-        onChange={(list) => onPatch({ list })}
-      />
+      <HiddenLabel text={t("pipelines.filters.builder.value")}>
+        {(id) => (
+          <MultiSelectInput
+            id={id}
+            options={options}
+            value={row.list}
+            onChange={(list) => onPatch({ list })}
+          />
+        )}
+      </HiddenLabel>
     )
   }
 
@@ -210,22 +231,30 @@ function ConditionValue({
         ? [{ value: ME_VALUE, label: t("pipelines.filters.builder.me") }, ...options]
         : options
     return (
-      <SearchableSelect
-        aria-label={t("pipelines.filters.builder.value")}
-        options={single}
-        value={row.value || null}
-        onChange={(value) => onPatch({ value: value ?? "" })}
-      />
+      <HiddenLabel text={t("pipelines.filters.builder.value")}>
+        {(id) => (
+          <SearchableSelect
+            id={id}
+            options={single}
+            value={row.value || null}
+            onChange={(value) => onPatch({ value: value ?? "" })}
+          />
+        )}
+      </HiddenLabel>
     )
   }
 
   if (field.kind === "number") {
     return (
-      <NumberInput
-        aria-label={t("pipelines.filters.builder.value")}
-        value={row.value === "" ? null : Number(row.value)}
-        onChange={(value) => onPatch({ value: value === null ? "" : String(value) })}
-      />
+      <HiddenLabel text={t("pipelines.filters.builder.value")}>
+        {(id) => (
+          <NumberInput
+            id={id}
+            value={row.value === "" ? null : Number(row.value)}
+            onChange={(value) => onPatch({ value: value === null ? "" : String(value) })}
+          />
+        )}
+      </HiddenLabel>
     )
   }
 
@@ -283,25 +312,29 @@ export const FilterConditionRow = memo(function FilterConditionRow({
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 md:grid-cols-[minmax(0,12rem)_minmax(0,10rem)_minmax(0,1fr)_auto]">
-      <SearchableSelect
-        className="max-md:col-start-1"
-        aria-label={t("pipelines.filters.builder.field")}
-        placeholder={t("pipelines.filters.builder.field")}
-        options={fieldOptions}
-        value={row.field || null}
-        onChange={(value) => {
-          const next = context.catalog.find((candidate) => candidate.key === value)
-          patch({
-            field: value ?? "",
-            operator: next ? OPERATORS_BY_KIND[next.kind][0] : "",
-            value: "",
-            valueTo: "",
-            list: [],
-            token: "",
-            tokenN: "",
-          })
-        }}
-      />
+      <HiddenLabel text={t("pipelines.filters.builder.field")}>
+        {(id) => (
+          <SearchableSelect
+            id={id}
+            className="max-md:col-start-1"
+            placeholder={t("pipelines.filters.builder.field")}
+            options={fieldOptions}
+            value={row.field || null}
+            onChange={(value) => {
+              const next = context.catalog.find((candidate) => candidate.key === value)
+              patch({
+                field: value ?? "",
+                operator: next ? OPERATORS_BY_KIND[next.kind][0] : "",
+                value: "",
+                valueTo: "",
+                list: [],
+                token: "",
+                tokenN: "",
+              })
+            }}
+          />
+        )}
+      </HiddenLabel>
       <div className="max-md:col-start-1 max-md:row-start-2">
         <SelectInput
           aria-label={t("pipelines.filters.builder.operator")}

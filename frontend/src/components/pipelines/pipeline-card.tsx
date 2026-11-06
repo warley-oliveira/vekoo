@@ -96,7 +96,7 @@ function CardActionsBar({ card, isCrm }: { card: Card; isCrm: boolean }) {
 
   return (
     <div
-      className="absolute top-1.5 right-1.5 flex items-center gap-0.5 rounded-lg bg-card/95 opacity-0 transition-opacity group-hover/card:opacity-100 group-focus-within/card:opacity-100 pointer-coarse:opacity-100"
+      className="absolute top-1.5 right-1.5 flex items-center gap-0.5 rounded-lg bg-card/95 pointer-coarse:top-0 pointer-coarse:right-0 pointer-coarse:bg-transparent opacity-0 transition-opacity group-hover/card:opacity-100 group-focus-within/card:opacity-100 pointer-coarse:opacity-100"
       {...INNER_ACTION}
     >
       {isCrm && isOpen ? (
@@ -129,6 +129,7 @@ function CardActionsBar({ card, isCrm }: { card: Card; isCrm: boolean }) {
         type="button"
         variant="ghost"
         size="icon-xs"
+        className="pointer-coarse:size-10"
         title={t("pipelines.card.actions")}
         aria-label={t("pipelines.card.actionsOf", { title: card.title })}
         aria-haspopup="menu"
@@ -331,7 +332,7 @@ export const CardBody = memo(function CardBody({
       ) : null}
 
       {labels.length > 0 || status !== "open" ? (
-        <div className="flex min-w-0 flex-wrap items-center gap-1 pr-6">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 pr-6 pointer-coarse:pr-8">
           {status === "won" ? (
             <StatusBadge tone="success">{t("pipelines.deal.won")}</StatusBadge>
           ) : status === "lost" ? (
@@ -358,7 +359,7 @@ export const CardBody = memo(function CardBody({
         </div>
       ) : null}
 
-      <div className="flex min-w-0 items-start gap-1">
+      <div className="flex min-w-0 items-start gap-1 pointer-coarse:pr-6">
         <PriorityMark priority={card.priority} />
         <h4 className="line-clamp-2 min-w-0 flex-1 text-sm leading-snug font-medium text-pretty break-words">
           {card.title}

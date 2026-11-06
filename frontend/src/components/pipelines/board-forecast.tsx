@@ -98,7 +98,7 @@ export const BoardForecast = memo(function BoardForecast({ stages }: { stages: S
               <span className="text-xs text-muted-foreground">{t("pipelines.forecast.total")}</span>
               <Money value={bucket.total} className="font-medium" />
               <span className="text-xs text-muted-foreground">{t("pipelines.forecast.weighted")}</span>
-              <Money value={bucket.weighted} className="font-medium text-primary" />
+              <Money value={bucket.weighted} className="font-medium" />
             </p>
           </div>
 

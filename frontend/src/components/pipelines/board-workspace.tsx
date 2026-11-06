@@ -105,27 +105,25 @@ type BuilderState = {
   initial: { definition: FilterDefinition; name: string | null } | null
 }
 
-function CardPanelHost({ board }: { board: BoardDetail }) {
+function CardPanelHost({ board, onClose }: { board: BoardDetail; onClose: () => void }) {
   const [searchParams] = useSearchParams()
   const cardId = searchParams.get("card")
-  const navigate = useNavigate()
 
   // O painel fica montado depois de fechar, para a animação de saída ainda ter o que mostrar.
   const [retained, setRetained] = useState(cardId)
   if (cardId && cardId !== retained) setRetained(cardId)
 
-  const close = useCallback(() => {
-    const params = new URLSearchParams(window.location.search)
-    params.delete("card")
-    const search = params.toString()
-    navigate({ search: search ? `?${search}` : "" }, { replace: true })
-  }, [navigate])
-
   if (!retained) return null
 
   return (
     <Suspense fallback={null}>
-      <CardPanel key={retained} board={board} cardId={retained} open={Boolean(cardId)} onClose={close} />
+      <CardPanel
+        key={retained}
+        board={board}
+        cardId={retained}
+        open={Boolean(cardId)}
+        onClose={onClose}
+      />
     </Suspense>
   )
 }
@@ -190,21 +188,35 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
 
   /* ---------- abrir e fechar o card ---------- */
 
+  // Abrir entra no histórico, para o voltar do celular fechar o card. Fechar, então, volta um passo,
+  // e não deixa uma entrada a mais. Quem chegou por um link não tem de onde voltar: tira só o `card`.
+  const openedHere = useRef<string | null>(null)
+  const navigateRef = useRef(navigate)
+  navigateRef.current = navigate
+
   const navigation = useMemo(
     () => ({
       open: (cardId: string) => {
         const params = new URLSearchParams(window.location.search)
         params.set("card", cardId)
-        navigate({ search: `?${params}` })
+        openedHere.current = cardId
+        navigateRef.current({ search: `?${params}` })
       },
       close: () => {
         const params = new URLSearchParams(window.location.search)
+        const cardId = params.get("card")
+        if (!cardId) return
+        if (openedHere.current === cardId) {
+          openedHere.current = null
+          navigateRef.current(-1)
+          return
+        }
         params.delete("card")
         const search = params.toString()
-        navigate({ search: search ? `?${search}` : "" }, { replace: true })
+        navigateRef.current({ search: search ? `?${search}` : "" }, { replace: true })
       },
     }),
-    [navigate]
+    []
   )
 
   const actions = useCreateCardActions(handle, navigation)
@@ -298,8 +310,8 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
     [clearAll, filters, setFilters]
   )
   const chipsApi = useMemo(
-    () => ({ filters, advanced, setFilters, setAdvanced }),
-    [advanced, filters, setAdvanced, setFilters]
+    () => ({ filters, advanced, setFilters, setAdvanced, clearAll }),
+    [advanced, clearAll, filters, setAdvanced, setFilters]
   )
 
   /* ---------- barra superior ---------- */
@@ -354,7 +366,7 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
   const resultLabel =
     filtered && advanced === null
       ? t("pipelines.board.countFiltered", {
-          count: shownCount,
+          count: totalCount,
           shown: formatNumber(shownCount, language),
           total: formatNumber(totalCount, language),
         })
@@ -504,7 +516,7 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
               />
             </Suspense>
           ) : null}
-          <CardPanelHost board={board} />
+          <CardPanelHost board={board} onClose={navigation.close} />
         </div>
       </CardActionsProvider>
     </BoardHandleContext.Provider>

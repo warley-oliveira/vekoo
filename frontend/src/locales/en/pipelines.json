@@ -18,7 +18,9 @@
       "countFiltered_one": "{{shown}} of {{total}} card",
       "countFiltered_other": "{{shown}} of {{total}} cards",
       "noStagesTitle": "This pipeline has no stages yet",
-      "noStagesHint": "Stages are the path each card follows. Create the first one in the pipeline settings."
+      "noStagesHint": "Stages are the path each card follows. Create the first one in the pipeline settings.",
+      "count_zero": "No cards",
+      "countFiltered_zero": "No cards"
     },
     "boards": {
       "pageDescription": "Each pipeline is a path cards follow, from first contact to the end.",
@@ -76,7 +78,9 @@
       "emptyArchived": "No archived pipelines",
       "emptyArchivedHint": "What you archive is kept here.",
       "notFound": "Pipeline not found",
-      "notFoundHint": "It may have been deleted, or you don't have access to it."
+      "notFoundHint": "It may have been deleted, or you don't have access to it.",
+      "cardsCount_zero": "No cards",
+      "stagesCount_zero": "No stages"
     },
     "stage": {
       "selector": "Stages",
@@ -164,7 +168,7 @@
       "urgent": "Urgent"
     },
     "deal": {
-      "title": "Deal",
+      "title": "Sale",
       "value": "Value",
       "probability": "Probability (%)",
       "expectedClose": "Expected close",
@@ -182,17 +186,17 @@
       "markWonOf": "Mark {{title}} as won",
       "markLost": "Mark as lost",
       "markLostOf": "Mark {{title}} as lost",
-      "wonDone": "Deal marked as won",
-      "lostDone": "Deal marked as lost",
+      "wonDone": "Card marked as won",
+      "lostDone": "Card marked as lost",
       "reopen": "Reopen",
-      "reopened": "Deal reopened",
+      "reopened": "Card reopened",
       "lostTitle": "Mark as lost",
       "lostHint": "Knowing the reason helps understand what happens in sales.",
       "lostReason": "Reason for losing",
       "lostReasonPlaceholder": "Reason for losing (optional)",
       "requiredTitleWon": "Fill in to mark as won",
       "requiredTitleLost": "Fill in to mark as lost",
-      "requiredHint": "This pipeline requires these fields before closing the deal.",
+      "requiredHint": "This pipeline asks for these fields before a card is marked as won or lost.",
       "requiredConfirmWon": "Save and mark as won",
       "requiredConfirmLost": "Save and mark as lost",
       "requiredStillBlank": "Still missing: {{fields}}",
@@ -224,7 +228,8 @@
       "moveTo": "Move to {{name}}",
       "advance": "Advance to {{name}}",
       "daysHere_one": "{{count}} day in this stage",
-      "daysHere_other": "{{count}} days in this stage"
+      "daysHere_other": "{{count}} days in this stage",
+      "enteredToday": "Entered this stage today"
     },
     "move": {
       "action": "Move to…",
@@ -269,26 +274,26 @@
     "summary": {
       "title": "Pipeline summary",
       "open": "Open",
-      "openHint_one": "Total value of {{count}} open deal",
-      "openHint_other": "Total value of {{count}} open deals",
+      "openHint_one": "Total value of {{count}} open card",
+      "openHint_other": "Total value of {{count}} open cards",
       "weighted": "Weighted",
-      "weightedHint": "Sum of value × probability of open deals",
-      "average": "Average deal",
-      "averageHint": "Open value divided by open deals",
+      "weightedHint": "Sum of value × probability of open cards",
+      "average": "Average value",
+      "averageHint": "Open value divided by open cards",
       "conversion": "Conversion",
-      "conversionHint": "Won over all closed deals",
+      "conversionHint": "Won over all won and lost cards",
       "noConversion": "—",
       "won": "Won",
-      "wonHint": "Total value of won deals"
+      "wonHint": "Total value of won cards"
     },
     "forecast": {
-      "empty": "No open deals to forecast",
-      "emptyHint": "Open deals show here, by expected close month.",
+      "empty": "No open cards to forecast",
+      "emptyHint": "Open cards show here, by expected close month.",
       "noDate": "No forecast",
       "total": "Total",
       "weighted": "Weighted",
-      "count_one": "{{count}} deal",
-      "count_other": "{{count}} deals"
+      "count_one": "{{count}} card",
+      "count_other": "{{count}} cards"
     },
     "list": {
       "label": "Pipeline cards",
@@ -362,7 +367,7 @@
       "optionsPlaceholder": "Type and press Enter",
       "optionsRequired": "Include at least one option",
       "required": "Required",
-      "requiredHint": "Required to close the deal, if the pipeline asks for it.",
+      "requiredHint": "Required to mark as won or lost, if the pipeline asks for it.",
       "requiredToLeaveHint": "Required for the card to leave this stage.",
       "types": {
         "text": "Text",
@@ -464,7 +469,7 @@
       "groups": {
         "all": "All",
         "moves": "Moves",
-        "deals": "Deal",
+        "deals": "Won and lost",
         "updates": "Changes"
       },
       "actions": {
@@ -478,7 +483,9 @@
         "auto_archived": "{{who}} archived the card for being idle",
         "deal_won": "{{who}} marked it as won",
         "deal_lost": "{{who}} marked it as lost",
-        "deal_reopened": "{{who}} reopened the deal"
+        "deal_reopened": "{{who}} reopened the card",
+        "label_added": "{{who}} added a label",
+        "label_removed": "{{who}} removed a label"
       },
       "fields": {
         "title": "Title",
@@ -557,11 +564,11 @@
         "hotLeads": "Hottest"
       },
       "presets": {
-        "open_deals": "All open deals",
-        "won_deals": "All won deals",
-        "lost_deals": "All lost deals",
-        "rotten_deals": "Stalled deals",
-        "my_deals": "My deals",
+        "open_deals": "All open cards",
+        "won_deals": "All won cards",
+        "lost_deals": "All lost cards",
+        "rotten_deals": "Stalled cards",
+        "my_deals": "My cards",
         "won_this_week": "Won this week",
         "won_this_month": "Won this month",
         "won_this_year": "Won this year",
@@ -586,7 +593,7 @@
       },
       "groups": {
         "card": "Card",
-        "deal": "Deal",
+        "deal": "Sale",
         "dates": "Dates",
         "custom": "Fields"
       },
@@ -616,7 +623,7 @@
         "companyName": "Company",
         "contactEmail": "Contact email",
         "contactPhone": "Contact phone",
-        "isRotting": "Stalled deal"
+        "isRotting": "Stalled card"
       },
       "operators": {
         "eq": "is",
@@ -684,8 +691,10 @@
         "applyWithoutSaving": "Apply without saving",
         "save": "Save filter",
         "saveChanges": "Save changes",
-        "cancel": "Cancel"
-      }
+        "cancel": "Cancel",
+        "suggestionMore": "{{name}} and {{count}} more"
+      },
+      "clearAll": "Clear filters"
     }
   }
 }

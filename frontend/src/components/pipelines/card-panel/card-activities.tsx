@@ -9,6 +9,7 @@ import {
   Pencil,
   Plus,
   RotateCcw,
+  Tag,
   UserRoundPlus,
   X,
 } from "lucide-react"
@@ -37,6 +38,8 @@ const ACTION_LOOK: Record<string, { icon: React.ReactNode; tone: StatusTone }> =
   updated: { icon: <Pencil />, tone: "neutral" },
   assigned: { icon: <UserRoundPlus />, tone: "accent" },
   commented: { icon: <MessageSquareText />, tone: "neutral" },
+  label_added: { icon: <Tag />, tone: "neutral" },
+  label_removed: { icon: <Tag />, tone: "neutral" },
   archived: { icon: <Archive />, tone: "neutral" },
   auto_archived: { icon: <Archive />, tone: "neutral" },
   deal_won: { icon: <Check />, tone: "success" },
@@ -80,6 +83,9 @@ function describe(activity: CardActivity, t: TFunction, language: string): strin
     }
     case "commented":
       return text(value("body"))
+    case "label_added":
+    case "label_removed":
+      return text(value("label"))
     case "deal_lost":
       if (value("reason")) return t("pipelines.activity.lostReason", { reason: value("reason") })
       return money(value("dealValue")) ?? undefined

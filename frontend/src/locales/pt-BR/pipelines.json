@@ -18,7 +18,9 @@
       "countFiltered_one": "{{shown}} de {{total}} card",
       "countFiltered_other": "{{shown}} de {{total}} cards",
       "noStagesTitle": "Este pipeline ainda não tem etapas",
-      "noStagesHint": "As etapas são o caminho de cada card. Crie a primeira nos ajustes do pipeline."
+      "noStagesHint": "As etapas são o caminho de cada card. Crie a primeira nos ajustes do pipeline.",
+      "count_zero": "Nenhum card",
+      "countFiltered_zero": "Nenhum card"
     },
     "boards": {
       "pageDescription": "Cada pipeline é um caminho que os cards percorrem, do primeiro contato ao fim.",
@@ -76,7 +78,9 @@
       "emptyArchived": "Nenhum pipeline arquivado",
       "emptyArchivedHint": "O que você arquivar fica guardado aqui.",
       "notFound": "Pipeline não encontrado",
-      "notFoundHint": "Ele pode ter sido apagado, ou você não tem acesso a ele."
+      "notFoundHint": "Ele pode ter sido apagado, ou você não tem acesso a ele.",
+      "cardsCount_zero": "Nenhum card",
+      "stagesCount_zero": "Nenhuma etapa"
     },
     "stage": {
       "selector": "Etapas",
@@ -164,7 +168,7 @@
       "urgent": "Urgente"
     },
     "deal": {
-      "title": "Negócio",
+      "title": "Venda",
       "value": "Valor",
       "probability": "Probabilidade (%)",
       "expectedClose": "Fechamento previsto",
@@ -182,17 +186,17 @@
       "markWonOf": "Marcar {{title}} como ganho",
       "markLost": "Marcar como perdido",
       "markLostOf": "Marcar {{title}} como perdido",
-      "wonDone": "Negócio marcado como ganho",
-      "lostDone": "Negócio marcado como perdido",
+      "wonDone": "Card marcado como ganho",
+      "lostDone": "Card marcado como perdido",
       "reopen": "Reabrir",
-      "reopened": "Negócio reaberto",
+      "reopened": "Card reaberto",
       "lostTitle": "Marcar como perdido",
       "lostHint": "Saber o motivo ajuda a entender o que acontece nas vendas.",
       "lostReason": "Motivo da perda",
       "lostReasonPlaceholder": "Motivo da perda (opcional)",
       "requiredTitleWon": "Preencha para marcar como ganho",
       "requiredTitleLost": "Preencha para marcar como perdido",
-      "requiredHint": "Este pipeline exige estes campos antes de fechar o negócio.",
+      "requiredHint": "Este pipeline pede estes campos antes de marcar o card como ganho ou perdido.",
       "requiredConfirmWon": "Salvar e marcar como ganho",
       "requiredConfirmLost": "Salvar e marcar como perdido",
       "requiredStillBlank": "Ainda faltam: {{fields}}",
@@ -224,7 +228,8 @@
       "moveTo": "Mover para {{name}}",
       "advance": "Avançar para {{name}}",
       "daysHere_one": "Há {{count}} dia nesta etapa",
-      "daysHere_other": "Há {{count}} dias nesta etapa"
+      "daysHere_other": "Há {{count}} dias nesta etapa",
+      "enteredToday": "Entrou nesta etapa hoje"
     },
     "move": {
       "action": "Mover para…",
@@ -269,26 +274,26 @@
     "summary": {
       "title": "Resumo do pipeline",
       "open": "Em aberto",
-      "openHint_one": "Soma do valor de {{count}} negócio aberto",
-      "openHint_other": "Soma do valor de {{count}} negócios abertos",
+      "openHint_one": "Soma do valor de {{count}} card em aberto",
+      "openHint_other": "Soma do valor de {{count}} cards em aberto",
       "weighted": "Ponderado",
-      "weightedHint": "Soma de valor × probabilidade dos negócios abertos",
+      "weightedHint": "Soma de valor × probabilidade dos cards em aberto",
       "average": "Ticket médio",
-      "averageHint": "Valor em aberto dividido pelos negócios abertos",
+      "averageHint": "Valor em aberto dividido pelos cards em aberto",
       "conversion": "Conversão",
-      "conversionHint": "Ganhos sobre o total de negócios fechados",
+      "conversionHint": "Ganhos sobre o total de cards ganhos e perdidos",
       "noConversion": "—",
       "won": "Ganho",
-      "wonHint": "Soma do valor dos negócios ganhos"
+      "wonHint": "Soma do valor dos cards ganhos"
     },
     "forecast": {
-      "empty": "Nenhum negócio aberto para prever",
-      "emptyHint": "Os negócios abertos aparecem aqui, pelo mês de fechamento previsto.",
+      "empty": "Nenhum card em aberto para prever",
+      "emptyHint": "Os cards em aberto aparecem aqui, pelo mês de fechamento previsto.",
       "noDate": "Sem previsão",
       "total": "Total",
       "weighted": "Ponderado",
-      "count_one": "{{count}} negócio",
-      "count_other": "{{count}} negócios"
+      "count_one": "{{count}} card",
+      "count_other": "{{count}} cards"
     },
     "list": {
       "label": "Cards do pipeline",
@@ -362,7 +367,7 @@
       "optionsPlaceholder": "Digite e aperte Enter",
       "optionsRequired": "Inclua ao menos uma opção",
       "required": "Obrigatório",
-      "requiredHint": "Obrigatório para fechar o negócio, se o pipeline pedir.",
+      "requiredHint": "Obrigatório para marcar como ganho ou perdido, se o pipeline pedir.",
       "requiredToLeaveHint": "Obrigatório para o card sair desta etapa.",
       "types": {
         "text": "Texto",
@@ -464,7 +469,7 @@
       "groups": {
         "all": "Tudo",
         "moves": "Movimentos",
-        "deals": "Negócio",
+        "deals": "Ganhos e perdas",
         "updates": "Alterações"
       },
       "actions": {
@@ -478,7 +483,9 @@
         "auto_archived": "{{who}} arquivou o card por estar parado",
         "deal_won": "{{who}} marcou como ganho",
         "deal_lost": "{{who}} marcou como perdido",
-        "deal_reopened": "{{who}} reabriu o negócio"
+        "deal_reopened": "{{who}} reabriu o card",
+        "label_added": "{{who}} adicionou uma etiqueta",
+        "label_removed": "{{who}} tirou uma etiqueta"
       },
       "fields": {
         "title": "Título",
@@ -557,11 +564,11 @@
         "hotLeads": "Mais quentes"
       },
       "presets": {
-        "open_deals": "Todos os negócios abertos",
-        "won_deals": "Todos os negócios ganhos",
-        "lost_deals": "Todos os negócios perdidos",
-        "rotten_deals": "Negócios estagnados",
-        "my_deals": "Meus negócios",
+        "open_deals": "Todos os cards em aberto",
+        "won_deals": "Todos os cards ganhos",
+        "lost_deals": "Todos os cards perdidos",
+        "rotten_deals": "Cards parados",
+        "my_deals": "Meus cards",
         "won_this_week": "Ganhos esta semana",
         "won_this_month": "Ganhos este mês",
         "won_this_year": "Ganhos este ano",
@@ -586,7 +593,7 @@
       },
       "groups": {
         "card": "Card",
-        "deal": "Negócio",
+        "deal": "Venda",
         "dates": "Datas",
         "custom": "Campos"
       },
@@ -616,7 +623,7 @@
         "companyName": "Empresa",
         "contactEmail": "E-mail do contato",
         "contactPhone": "Telefone do contato",
-        "isRotting": "Negócio estagnado"
+        "isRotting": "Card parado"
       },
       "operators": {
         "eq": "é",
@@ -684,8 +691,10 @@
         "applyWithoutSaving": "Aplicar sem salvar",
         "save": "Salvar filtro",
         "saveChanges": "Salvar alterações",
-        "cancel": "Cancelar"
-      }
+        "cancel": "Cancelar",
+        "suggestionMore": "{{name}} e mais {{count}}"
+      },
+      "clearAll": "Limpar filtros"
     }
   }
 }

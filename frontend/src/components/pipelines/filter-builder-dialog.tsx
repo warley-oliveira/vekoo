@@ -25,10 +25,14 @@ import {
   emptyRow,
   fieldCatalog,
   isRowComplete,
+  ME_VALUE,
   rowsToDefinition,
+  VALUELESS_OPERATORS,
+  type CatalogField,
   type ConditionRow,
 } from "@/lib/pipelines/filter-catalog"
 import type { AdvancedFilter } from "@/lib/pipelines/filters"
+import { formatShortDay } from "@/lib/pipelines/format"
 import type {
   BoardDetail,
   FilterDefinition,
@@ -37,14 +41,52 @@ import type {
 } from "@/lib/pipelines/types"
 import { FilterConditionRow, type ConditionContext } from "./filter-condition-row"
 
+const NAME_MAX = 120
+
 function buildSchema(t: (key: string) => string) {
   return z.object({
-    name: z.string().trim().min(1, t("pipelines.filters.builder.nameRequired")).max(120),
+    name: z.string().trim().min(1, t("pipelines.filters.builder.nameRequired")).max(NAME_MAX),
     visibility: z.enum(["private", "shared"]),
   })
 }
 
 type GroupKey = "all" | "any"
+
+/** O valor de uma condição em palavras, para o nome sugerido: "Prioridade é Alta", e não o id. */
+function describeValue(
+  row: ConditionRow,
+  field: CatalogField,
+  context: ConditionContext,
+  t: (key: string) => string,
+  language: string
+): string {
+  if (row.operator && VALUELESS_OPERATORS.includes(row.operator)) return ""
+  if (row.token) return t(`pipelines.filters.relative.${row.token}`)
+
+  const one = (value: string) => {
+    if (field.key === "priority") return t(`pipelines.priority.${value}`)
+    if (field.key === "deal_status") return t(`pipelines.deal.status.${value}`)
+    if (field.key === "stage_id") {
+      return context.stages.find((stage) => stage.id === value)?.name ?? value
+    }
+    if (field.key === "label_ids") {
+      return context.labels.find((label) => label.id === value)?.name ?? value
+    }
+    if (field.kind === "user") {
+      return value === ME_VALUE
+        ? t("pipelines.filters.builder.me")
+        : (context.people.find((person) => person.id === value)?.name ?? value)
+    }
+    if (field.kind === "boolean" || field.kind === "virtual") {
+      return t(value === "true" ? "pipelines.filters.yes" : "pipelines.filters.no")
+    }
+    if (field.kind === "date") return formatShortDay(value, language)
+    return value
+  }
+
+  if (row.list.length > 0) return row.list.map(one).join(", ")
+  return row.valueTo ? `${one(row.value)} – ${one(row.valueTo)}` : one(row.value)
+}
 
 function ConditionGroup({
   title,
@@ -149,17 +191,31 @@ function FilterBuilderBody({ board, editing, initial, onApply, onClose }: Filter
   const lastSuggestion = useRef("")
   useEffect(() => {
     const kindOf = new Map(catalog.map((field) => [field.key, field.kind]))
-    const first = [...rows.all, ...rows.any].find((row) => isRowComplete(row, kindOf.get(row.field)))
-    if (!first) return
-    const field = catalog.find((candidate) => candidate.key === first.field)
-    const fieldLabel = field?.label ?? t(`pipelines.filters.fields.${field?.labelKey}`)
-    const suggestion = `${fieldLabel} ${t(`pipelines.filters.operators.${first.operator}`)}`
+    const complete = [...rows.all, ...rows.any].filter((row) =>
+      isRowComplete(row, kindOf.get(row.field))
+    )
+    const first = complete[0]
+    const field = catalog.find((candidate) => candidate.key === first?.field)
+    if (!first || !field) return
+    const fieldLabel = field.label ?? t(`pipelines.filters.fields.${field.labelKey}`)
+    const condition = [
+      fieldLabel,
+      t(`pipelines.filters.operators.${first.operator}`),
+      describeValue(first, field, context, t, language),
+    ]
+      .filter(Boolean)
+      .join(" ")
+    const suggestion = (
+      complete.length > 1
+        ? t("pipelines.filters.builder.suggestionMore", { name: condition, count: complete.length - 1 })
+        : condition
+    ).slice(0, NAME_MAX)
     const current = form.getValues("name")
     if (current === "" || current === lastSuggestion.current) {
       lastSuggestion.current = suggestion
       form.setValue("name", suggestion)
     }
-  }, [catalog, form, rows, t])
+  }, [catalog, context, form, language, rows, t])
 
   /* ---------- prévia ---------- */
 
@@ -267,7 +323,7 @@ function FilterBuilderBody({ board, editing, initial, onApply, onClose }: Filter
             control={form.control}
             name="name"
             label={t("pipelines.filters.builder.name")}
-            maxLength={120}
+            maxLength={NAME_MAX}
           />
           <RadioField
             control={form.control}

@@ -35,6 +35,7 @@ import {
 } from "@/lib/pipelines/types"
 import { cn } from "@/lib/utils"
 import { CustomFieldControl } from "./card-panel/custom-field-control"
+import { HiddenLabel } from "./hidden-label"
 
 /* ---------- mover ---------- */
 
@@ -306,8 +307,11 @@ export function DealRequiredFieldsDialog({ customFields }: { customFields: Custo
         ) : null}
         {fields.map((field) => (
           <div key={field.id} className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium">{field.name}</span>
+            <label htmlFor={`deal-field-${field.id}`} className="text-sm font-medium">
+              {field.name}
+            </label>
             <CustomFieldControl
+              id={`deal-field-${field.id}`}
               field={field}
               value={valueOf(field.key)}
               onChange={(value) => setDraft((current) => ({ ...current, [field.key]: value }))}
@@ -447,17 +451,22 @@ export function BulkFieldDialog() {
       }
     >
       {isAssign ? (
-        <SearchableSelect
-          clearable
-          placeholder={t("pipelines.card.noAssignee")}
-          value={value}
-          onChange={(next) => setValue(next)}
-          options={assignable.map((person) => ({
-            value: person.id,
-            label: person.name,
-            description: person.email ?? undefined,
-          }))}
-        />
+        <HiddenLabel text={t("pipelines.card.assignee")}>
+          {(id) => (
+            <SearchableSelect
+              id={id}
+              clearable
+              placeholder={t("pipelines.card.noAssignee")}
+              value={value}
+              onChange={(next) => setValue(next)}
+              options={assignable.map((person) => ({
+                value: person.id,
+                label: person.name,
+                description: person.email ?? undefined,
+              }))}
+            />
+          )}
+        </HiddenLabel>
       ) : (
         <div className="flex flex-col gap-0.5">
           {[...CARD_PRIORITIES, null].map((priority) => (

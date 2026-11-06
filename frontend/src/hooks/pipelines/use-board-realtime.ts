@@ -82,8 +82,28 @@ export function useBoardRealtime(handle: BoardHandle | null) {
         case "cards_reordered":
           break
 
+        case "comment_created":
+        case "comment_deleted":
+          // O detalhe do card aberto é outra leitura: a contagem da aba anda junto com a do quadro.
+          void mutate<CardDetail>(
+            cardPath(boardId, message.data.cardId),
+            (current) =>
+              current
+                ? {
+                    ...current,
+                    commentsCount: Math.max(
+                      0,
+                      current.commentsCount + (message.event === "comment_created" ? 1 : -1)
+                    ),
+                  }
+                : current,
+            { revalidate: false }
+          )
+          handle.mutateBoard((board) => applyBoardEvent(board, message))
+          return
+
         default:
-          // Etapas e comentários valem para a tela como ela está, com ou sem filtro.
+          // Etapas valem para a tela como ela está, com ou sem filtro.
           handle.mutateBoard((board) => applyBoardEvent(board, message))
           return
       }
@@ -128,7 +148,7 @@ export function useBoardRealtime(handle: BoardHandle | null) {
         message.event === "card_updated" && known && known.card.position !== message.data.position
       if (movedStage || repositioned) schedule(RECONCILE_MS)
     },
-    [handle, mergeDetail, reloadList, schedule]
+    [boardId, handle, mergeDetail, mutate, reloadList, schedule]
   )
 
   const { connected } = useChannel<BoardEvent>(handle ? CHANNEL : null, params, onMessage)

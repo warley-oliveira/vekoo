@@ -198,7 +198,7 @@ export const ACTIVITY_GROUPS = {
   all: null,
   moves: "moved",
   deals: "deal_won,deal_lost,deal_reopened",
-  updates: "updated,assigned,archived,auto_archived",
+  updates: "updated,assigned,label_added,label_removed,archived,auto_archived",
 } as const
 
 export type ActivityGroup = keyof typeof ACTIVITY_GROUPS

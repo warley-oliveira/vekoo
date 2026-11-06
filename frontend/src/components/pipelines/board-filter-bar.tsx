@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { BoardFiltersApi } from "@/hooks/pipelines/use-board-filters"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { useLabels } from "@/hooks/pipelines/use-labels"
 import { usePeopleOptions } from "@/hooks/pipelines/use-people-options"
 import { localDayKey, parseDayKey, type LeadScoreConfig } from "@/lib/pipelines/card-meta"
@@ -29,6 +30,7 @@ import {
 } from "@/lib/pipelines/filters"
 import { CARD_PRIORITIES, DEAL_STATUSES, type CustomField, type Stage } from "@/lib/pipelines/types"
 import { cn } from "@/lib/utils"
+import { HiddenLabel } from "./hidden-label"
 
 function colorDot(color: string | null | undefined) {
   return (
@@ -76,18 +78,26 @@ function NumberRange({
   return (
     <FilterField label={label}>
       <div className="grid grid-cols-2 gap-2">
-        <Control
-          aria-label={t("pipelines.filters.minOf", { label })}
-          placeholder={t("pipelines.filters.min")}
-          value={min}
-          onChange={(value) => onChange(value, max)}
-        />
-        <Control
-          aria-label={t("pipelines.filters.maxOf", { label })}
-          placeholder={t("pipelines.filters.max")}
-          value={max}
-          onChange={(value) => onChange(min, value)}
-        />
+        <HiddenLabel text={t("pipelines.filters.minOf", { label })}>
+          {(id) => (
+            <Control
+              id={id}
+              placeholder={t("pipelines.filters.min")}
+              value={min}
+              onChange={(value) => onChange(value, max)}
+            />
+          )}
+        </HiddenLabel>
+        <HiddenLabel text={t("pipelines.filters.maxOf", { label })}>
+          {(id) => (
+            <Control
+              id={id}
+              placeholder={t("pipelines.filters.max")}
+              value={max}
+              onChange={(value) => onChange(min, value)}
+            />
+          )}
+        </HiddenLabel>
       </div>
     </FilterField>
   )
@@ -264,6 +274,7 @@ export const BoardFilterBar = memo(function BoardFilterBar({
 }: BoardFilterBarProps) {
   const { t } = useTranslation()
   const { filters, setFilters, clearAll } = api
+  const isMobile = useIsMobile()
   const { labels } = useLabels()
   const { people } = usePeopleOptions()
 
@@ -348,10 +359,11 @@ export const BoardFilterBar = memo(function BoardFilterBar({
         placeholder: t("pipelines.filters.searchPlaceholder"),
         "aria-label": t("pipelines.filters.searchPlaceholder"),
         loading: searching,
-        className: "md:w-56",
+        className: "md:w-48",
       }}
       activeCount={activeCount}
-      onClear={activeCount > 0 || filters.q || hasAdvanced ? clearAll : undefined}
+      // No computador, limpar fica junto dos filtros ativos, e não empurra a barra para outra linha.
+      onClear={isMobile && (activeCount > 0 || filters.q || hasAdvanced) ? clearAll : undefined}
       resultLabel={resultLabel}
       actions={actions}
       filters={
@@ -390,7 +402,7 @@ export const BoardFilterBar = memo(function BoardFilterBar({
                 dueTo: range ? localDayKey(range.to) : null,
               })
             }
-            className="md:w-44"
+            className="md:w-auto"
           />
           {isCrm ? (
             <FacetedFilter

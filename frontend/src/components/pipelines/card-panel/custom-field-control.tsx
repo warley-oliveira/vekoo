@@ -12,7 +12,8 @@ type CustomFieldControlProps = {
   field: CustomField
   value: unknown
   onChange: (value: unknown) => void
-  id?: string
+  /** Quem desenha o campo liga o rótulo a este `id`. */
+  id: string
 }
 
 /** O controle de um campo personalizado, pelo tipo. Texto salva ao sair; o resto, ao escolher. */
@@ -34,7 +35,6 @@ export function CustomFieldControl({ field, value, onChange, id }: CustomFieldCo
       return (
         <NumberInput
           id={id}
-          aria-label={label}
           value={isBlankValue(value) ? null : Number(value)}
           onChange={(next) => onChange(next)}
         />
@@ -74,7 +74,6 @@ export function CustomFieldControl({ field, value, onChange, id }: CustomFieldCo
       return (
         <SearchableSelect
           id={id}
-          aria-label={label}
           clearable
           value={isBlankValue(value) ? null : String(value)}
           options={assignable.map((person) => ({ value: person.id, label: person.name }))}

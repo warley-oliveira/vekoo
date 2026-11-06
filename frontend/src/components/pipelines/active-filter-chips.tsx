@@ -52,7 +52,7 @@ function Pill({
 }
 
 type ActiveFilterChipsProps = {
-  api: Pick<BoardFiltersApi, "filters" | "advanced" | "setFilters" | "setAdvanced">
+  api: Pick<BoardFiltersApi, "filters" | "advanced" | "setFilters" | "setAdvanced" | "clearAll">
   stages: Stage[]
   customFields: CustomField[]
   savedFilters: SavedFilter[]
@@ -72,7 +72,7 @@ export const ActiveFilterChips = memo(function ActiveFilterChips({
 }: ActiveFilterChipsProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { filters, advanced, setFilters, setAdvanced } = api
+  const { filters, advanced, setFilters, setAdvanced, clearAll } = api
   const { labels } = useLabels()
   const { people } = usePeopleOptions()
 
@@ -285,6 +285,18 @@ export const ActiveFilterChips = memo(function ActiveFilterChips({
           {chip.label}
         </Pill>
       ))}
+
+      {chips.length + (advanced ? 1 : 0) > 1 ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-7 text-muted-foreground max-md:hidden"
+          onClick={clearAll}
+        >
+          {t("pipelines.filters.clearAll")}
+        </Button>
+      ) : null}
     </div>
   )
 })
