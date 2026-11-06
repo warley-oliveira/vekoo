@@ -159,12 +159,15 @@ RSpec.describe "Chat: mensagens", type: :request do
       before { chat.update(chat_tag_ids: [ tag.id ], custom_attributes: { "cidade" => "Curitiba" }, unread_messages: 3) }
 
       it "vêm na primeira carga" do
+        create(:custom_field, organization_id: organization.id, name: "Cidade")
+
         get "/chats/#{chat.id}/messages", headers: headers
 
         expect(json).to include(
           "assignedAccountId" => nil, "automationEnabled" => true, "tagIds" => [ tag.id.to_s ],
-          "customAttributes" => { "cidade" => "Curitiba" }, "unreadMessages" => 0
+          "customAttributes" => { "cidade" => "Curitiba" }, "unreadMessages" => 0, "connectorProvider" => "web_widget"
         )
+        expect(json["attributeList"].first).to include("key" => "cidade", "valueType" => "text")
       end
 
       it "não vêm com cursor" do

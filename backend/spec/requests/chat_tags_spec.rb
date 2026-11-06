@@ -30,16 +30,11 @@ RSpec.describe "Etiquetas", type: :request do
       expect(json["chatTags"].first.keys).to include("id", "name", "description", "color", "createdAt")
     end
 
-    it "abre a leitura a quem cuida de contatos" do
-      get "/chat-tags", headers: auth_headers(member_with(contacts: "all"))
+    # Campanhas, fluxos e pipelines filtram e marcam por etiqueta.
+    it "abre a leitura a qualquer sessão" do
+      get "/chat-tags", headers: auth_headers(member_with(campaigns: "all"))
 
       expect(response).to have_http_status(:ok)
-    end
-
-    it "recusa quem não tem chat nem contatos" do
-      get "/chat-tags", headers: auth_headers(member_with(catalog: "all"))
-
-      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -67,10 +62,12 @@ RSpec.describe "Etiquetas", type: :request do
       expect(json["error"]).to include("code" => "tagNameTaken", "field" => "name")
     end
 
-    it "exige a permissão de chat" do
+    it "exige a permissão de chat ou de campanhas" do
       post "/chat-tags", params: { chatTag: { name: "x", color: "#000000" } }, headers: auth_headers(member_with(contacts: "all")), as: :json
-
       expect(response).to have_http_status(:forbidden)
+
+      post "/chat-tags", params: { chatTag: { name: "y", color: "#000000" } }, headers: auth_headers(member_with(campaigns: "all")), as: :json
+      expect(response).to have_http_status(:created)
     end
   end
 
@@ -137,6 +134,12 @@ RSpec.describe "Etiquetas", type: :request do
       get "/chat-tags/#{tag_for(create(:organization)).id}/assigns", headers: headers
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "recusa quem não tem chat nem contatos" do
+      get "/chat-tags/#{tag_for.id}/assigns", headers: auth_headers(member_with(campaigns: "all"))
+
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

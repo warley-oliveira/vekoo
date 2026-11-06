@@ -125,7 +125,9 @@ class ChatMessagesController < PlatformController
       automationEnabled: @chat.automation_enabled,
       tagIds: Array(@chat.chat_tag_ids).map(&:to_s),
       customAttributes: @chat.custom_attributes,
-      unreadMessages: @chat.unread_messages
+      unreadMessages: @chat.unread_messages,
+      attributeList: Chats::Metadata.attribute_list(current_organization),
+      connectorProvider: Chats::Metadata.connector_provider(@chat)
     }
   end
 

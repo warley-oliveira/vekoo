@@ -61,8 +61,8 @@ class ChatsController < PlatformController
   def show
     render json: {
       chat: ChatSerializer.one(@chat),
-      attributeList: attribute_list,
-      connectorProvider: connector_provider(@chat)
+      attributeList: Chats::Metadata.attribute_list(current_organization),
+      connectorProvider: Chats::Metadata.connector_provider(@chat)
     }
   end
 
@@ -260,27 +260,6 @@ class ChatsController < PlatformController
       externalId: chat.external_id,
       profilePictureUrl: chat.profile_picture_url
     }
-  end
-
-  def attribute_list
-    current_organization.custom_fields.order_by(created_at: :asc).map do |field|
-      {
-        name: field.name,
-        key: field.key,
-        description: field.description,
-        valueType: field.value_type,
-        optionValues: field.option_values
-      }
-    end
-  end
-
-  # O que a tela usa para liberar recursos por provedor. `reactionsSupported` e
-  # `deleteForEveryoneSupported` vêm no próprio conector, em /chats/self-filter.
-  def connector_provider(chat)
-    connector = chat.connector
-    return nil if connector.blank?
-
-    connector.is_a?(Connector::WhatsappWeb) ? connector.provider_api.to_s : connector.connector_type
   end
 
   def chat_list_level

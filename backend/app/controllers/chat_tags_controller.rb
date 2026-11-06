@@ -1,12 +1,15 @@
 # Etiquetas: cadastro e aplicar ou remover de uma conversa. O modelo `ChatTag` é do núcleo.
 #
-# Quem atende cuida das etiquetas, porque é no chat que elas nascem. Contatos só lê (e aplica
-# em lote por /contacts/bulk-add-tags).
+# Ler é aberto a qualquer sessão: campanhas, fluxos e pipelines filtram e marcam por etiqueta, e o
+# nome de uma etiqueta não é dado de ninguém. Quem atende cuida do resto, porque é no chat que elas
+# nascem. Contar as conversas de uma etiqueta passa também por quem cuida de contatos.
 class ChatTagsController < PlatformController
   include InboxAccess
 
-  require_any_permission :chat, :contacts, only: %i[index show assigns]
-  require_permission :chat, except: %i[index show assigns]
+  require_any_permission :chat, :contacts, only: :assigns
+  # Campanhas criam etiqueta na hora de montar o público, como na origem.
+  require_any_permission :chat, :campaigns, only: :create
+  require_permission :chat, except: %i[index show assigns create]
 
   before_action :set_tag, except: %i[index create]
   before_action :set_chat, only: %i[apply remove]
