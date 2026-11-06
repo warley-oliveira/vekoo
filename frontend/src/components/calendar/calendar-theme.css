@@ -1,0 +1,221 @@
+/*
+ * Tema do FullCalendar: o `breezy` dá a estrutura, e esta paleta o liga aos tokens do Vekoo.
+ * Nada de hex aqui: a única cor solta que chega à grade é a que a pessoa escolheu para o evento,
+ * em `--fc-event-color`.
+ */
+:root {
+  --fc-breezy-primary: var(--primary);
+  --fc-breezy-primary-over: color-mix(in oklab, var(--primary) 88%, var(--background));
+  --fc-breezy-primary-foreground: var(--primary-foreground);
+
+  --fc-breezy-secondary: var(--background);
+  --fc-breezy-secondary-over: var(--muted);
+  --fc-breezy-secondary-border: var(--border);
+  --fc-breezy-secondary-foreground: var(--foreground);
+  --fc-breezy-secondary-icon: var(--muted-foreground);
+  --fc-breezy-secondary-icon-over: var(--foreground);
+
+  --fc-breezy-event: var(--primary);
+  --fc-breezy-event-contrast: var(--primary-foreground);
+  --fc-breezy-background-event: var(--primary);
+  --fc-breezy-highlight: color-mix(in oklab, var(--primary) 8%, transparent);
+  --fc-breezy-now: var(--primary);
+
+  --fc-breezy-selected: var(--accent);
+
+  --fc-breezy-popover: var(--popover);
+  --fc-breezy-popover-border: var(--border);
+
+  --fc-breezy-background: var(--background);
+  --fc-breezy-faint: color-mix(in oklab, var(--foreground) 2%, transparent);
+  --fc-breezy-muted: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --fc-breezy-strong: color-mix(in oklab, var(--foreground) 10%, transparent);
+  --fc-breezy-stronger: color-mix(in oklab, var(--foreground) 14%, transparent);
+  --fc-breezy-strongest: color-mix(in oklab, var(--foreground) 18%, transparent);
+
+  --fc-breezy-foreground: var(--foreground);
+  --fc-breezy-faint-foreground: color-mix(in oklab, var(--muted-foreground) 75%, transparent);
+  --fc-breezy-muted-foreground: var(--muted-foreground);
+  --fc-breezy-strong-foreground: var(--foreground);
+
+  --fc-breezy-border: var(--border);
+  --fc-breezy-muted-border: color-mix(in oklab, var(--border) 55%, transparent);
+  --fc-breezy-strong-border: var(--input);
+}
+
+.vk-calendar {
+  height: 100%;
+  font-family: var(--font-sans);
+  /* A grade é dona do próprio arraste: no toque, o dedo parado não pode rolar a página. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- blocos de evento ---------- */
+
+.vk-event {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.vk-event-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.vk-event-time {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.vk-event-title {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vk-event-detail {
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0.75;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vk-event-mark {
+  margin-left: auto;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.vk-event-mark svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.vk-event-badge {
+  border-radius: 0.25rem;
+  background-color: color-mix(in oklab, var(--fc-event-color, var(--primary)) 18%, transparent);
+  padding-inline: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1rem;
+}
+
+.vk-event-badge[data-tone="almost"] {
+  background-color: var(--status-warning-soft);
+  color: var(--status-warning);
+}
+
+.vk-event-badge[data-tone="full"] {
+  background-color: var(--status-danger-soft);
+  color: var(--status-danger);
+}
+
+.vk-event-fill {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+}
+
+.vk-event-fill > span {
+  display: block;
+  height: 100%;
+  background-color: var(--fc-event-color, var(--primary));
+  transition: width 200ms ease-out;
+}
+
+.vk-event-fill[data-tone="almost"] > span {
+  background-color: var(--status-warning);
+}
+
+.vk-event-fill[data-tone="full"] > span {
+  background-color: var(--status-danger);
+}
+
+/*
+ * Situação do evento. O risco e o tracejado dizem o que a cor sozinha não diria: quem não enxerga
+ * bem a cor ainda sabe que foi cancelado. A classe mora no contêiner que o FullCalendar desenha.
+ */
+.vk-fc-canceled {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in oklab, var(--fc-event-color, var(--muted-foreground)) 16%, transparent) 0 6px,
+    transparent 6px 12px
+  );
+  opacity: 0.75;
+}
+
+.vk-fc-canceled .vk-event-title {
+  text-decoration: line-through;
+}
+
+.vk-fc-no-show {
+  outline: 1px dashed color-mix(in oklab, var(--fc-event-color, var(--muted-foreground)) 60%, transparent);
+  outline-offset: -1px;
+  opacity: 0.7;
+}
+
+.vk-fc-past {
+  opacity: 0.85;
+}
+
+.vk-fc-canceled.vk-fc-past,
+.vk-fc-no-show.vk-fc-past {
+  opacity: 0.65;
+}
+
+/* Chegou agora, de outra pessoa ou da automação: um único pulso discreto. */
+@keyframes vk-event-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.vk-fc-pulse {
+  animation: vk-event-pulse 900ms ease-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-fc-pulse {
+    animation: none;
+    outline: 2px solid var(--ring);
+    outline-offset: 1px;
+  }
+
+  .vk-event-fill > span {
+    transition: none;
+  }
+}
+
+/* Foco visível também nos blocos, que o FullCalendar desenha como links. */
+.vk-calendar a:focus-visible,
+.vk-calendar [role="button"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+/* No toque, a alça de redimensionar some: remarcar é pelo arraste, depois de pressionar. */
+@media (pointer: coarse) {
+  .vk-calendar {
+    touch-action: pan-y;
+  }
+}

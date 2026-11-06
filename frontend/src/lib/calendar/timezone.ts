@@ -120,6 +120,17 @@ export function instantFromGrid(gridDate: Date, timeZone: string): number {
   )
 }
 
+/** Da grade para o campo: a hora de parede não muda, só onde ela está guardada. */
+export function fieldDateOfGrid(gridDate: Date): Date {
+  return new Date(
+    gridDate.getUTCFullYear(),
+    gridDate.getUTCMonth(),
+    gridDate.getUTCDate(),
+    gridDate.getUTCHours(),
+    gridDate.getUTCMinutes()
+  )
+}
+
 /* ---------- data de campo (DateTimeField e companhia) ---------- */
 
 export function fieldDateOf(instant: number, timeZone: string): Date {

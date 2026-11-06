@@ -14,6 +14,456 @@
         "description": "Ele pode ter sido removido, ou o endereço está errado.",
         "back": "Voltar para o calendário"
       }
+    },
+    "common": {
+      "retry": "Tentar de novo",
+      "close": "Fechar",
+      "back": "Voltar",
+      "cancel": "Cancelar"
+    },
+    "page": {
+      "create": "Criar agendamento",
+      "staleData": "Não deu para atualizar. Você está vendo a última versão que carregou."
+    },
+    "views": {
+      "agenda": "Agenda",
+      "day": "Dia",
+      "week": "Semana",
+      "month": "Mês"
+    },
+    "days": {
+      "today": "Hoje",
+      "tomorrow": "Amanhã",
+      "yesterday": "Ontem"
+    },
+    "toolbar": {
+      "view": "Como ver o calendário",
+      "week": "Dias da semana",
+      "openSidebar": "Abrir mês, calendários e resumo",
+      "previous": {
+        "agenda": "Período anterior",
+        "day": "Dia anterior",
+        "week": "Semana anterior",
+        "month": "Mês anterior"
+      },
+      "next": {
+        "agenda": "Próximo período",
+        "day": "Próximo dia",
+        "week": "Próxima semana",
+        "month": "Próximo mês"
+      }
+    },
+    "zone": {
+      "single": "Horários em {{zone}}",
+      "mixed": "Cada calendário no próprio fuso",
+      "tooltip": "{{zone}}: agora são {{time}}"
+    },
+    "filters": {
+      "title": "Filtros",
+      "situation": "Situação",
+      "professional": "Colaborador",
+      "service": "Serviço",
+      "tag": "Etiqueta",
+      "classesHint": "Colaborador, serviço e etiqueta valem só para agendamentos: com eles, as aulas saem da tela."
+    },
+    "situation": {
+      "all": "Todos",
+      "active": "Ativos",
+      "pending": "Pendentes",
+      "show": "Compareceu",
+      "no_show": "Faltou",
+      "canceled": "Cancelado"
+    },
+    "event": {
+      "untitled": "Sem título",
+      "needsAttendance": "Sem presença marcada",
+      "notFound": "Este agendamento não está neste período, ou não existe mais."
+    },
+    "grid": {
+      "allDay": "Dia inteiro",
+      "noEvents": "Nada marcado",
+      "more_one": "mais {{count}}",
+      "more_other": "mais {{count}}"
+    },
+    "agenda": {
+      "emptyDay": "Nada marcado neste dia.",
+      "schedule": "Marcar"
+    },
+    "mini": {
+      "monthTotal_one": "{{value}} compromisso em {{month}}",
+      "monthTotal_other": "{{value}} compromissos em {{month}}",
+      "dayWithCount_one": "{{date}}, {{count}} compromisso",
+      "dayWithCount_other": "{{date}}, {{count}} compromissos"
+    },
+    "sidebar": {
+      "title": "Mês, calendários e resumo",
+      "calendars": "Meus calendários",
+      "createCalendar": "Criar calendário",
+      "calendarsFailed": "Não deu para carregar os calendários.",
+      "settings": "Configurações do calendário",
+      "calendarSettings": "Configurações de {{name}}",
+      "typeClasses": "Calendário de turmas",
+      "typeStaff": "Calendário de colaboradores"
+    },
+    "summary": {
+      "title": "Resumo do dia",
+      "events_one": "{{value}} compromisso",
+      "events_other": "{{value}} compromissos",
+      "load": {
+        "light": "leve",
+        "moderate": "moderado",
+        "heavy": "pesado"
+      },
+      "attendance": "Presença",
+      "attendanceValue": "{{show}} vieram, {{noShow}} faltaram, {{pending}} pendentes",
+      "week": "Na semana",
+      "next": "Próximo"
+    },
+    "empty": {
+      "noCalendars": {
+        "title": "Crie seu primeiro calendário",
+        "description": "É nele que ficam os agendamentos, ou as turmas. Leva menos de um minuto.",
+        "action": "Criar calendário"
+      },
+      "noneSelected": {
+        "title": "Nenhum calendário marcado",
+        "description": "Marque ao menos um para ver a agenda.",
+        "action": "Marcar todos"
+      },
+      "period": {
+        "title": "Nada marcado neste período",
+        "description": "Quando alguém marcar, aparece aqui, na hora.",
+        "action": "Criar agendamento"
+      },
+      "filtered": {
+        "title": "Nada com estes filtros",
+        "description": "Tire algum filtro para ver mais.",
+        "action": "Limpar filtros"
+      }
+    },
+    "realtime": {
+      "newEvent": "Novo na agenda: {{title}}",
+      "open": "Abrir"
+    },
+    "move": {
+      "done": "Remarcado para {{when}}.",
+      "undo": "Desfazer",
+      "undone": "Voltou para o horário anterior."
+    },
+    "meet": {
+      "join": "Entrar no Google Meet",
+      "short": "Meet"
+    },
+    "preview": {
+      "openDetails": "Abrir detalhes",
+      "professional": "Com",
+      "contact": "Contato:",
+      "enrolled": "Inscrito em uma sequência",
+      "instructor": "Instrutor:",
+      "room": "Sala:"
+    },
+    "attendance": {
+      "title": "Comparecimento",
+      "show": "Compareceu",
+      "noShow": "Faltou",
+      "markedShow": "Marcado: compareceu.",
+      "markedNoShow": "Marcado: faltou.",
+      "cleared": "Marcação removida."
+    },
+    "booking": {
+      "new": {
+        "title": "Criar agendamento",
+        "submit": "Criar agendamento",
+        "kind": "O que marcar",
+        "kindBooking": "Agendamento",
+        "kindSession": "Aula avulsa"
+      },
+      "edit": {
+        "submit": "Salvar alterações",
+        "rescheduleHint": "Ao salvar, os lembretes são refeitos e o colaborador é avisado do novo horário."
+      },
+      "created": "Agendamento criado.",
+      "saved": "Agendamento salvo.",
+      "canceledNotice": "Este agendamento está cancelado. Para marcar de novo, crie outro.",
+      "conflict": "{{name}} já tem {{title}} das {{time}}. Dá para encaixar mesmo assim.",
+      "cancel": {
+        "action": "Cancelar agendamento",
+        "title": "Cancelar este agendamento?",
+        "description": "Os lembretes param, o colaborador é avisado e o evento sai do Google Agenda. Não dá para desfazer: para voltar, é preciso criar outro.",
+        "confirm": "Cancelar agendamento",
+        "back": "Voltar",
+        "done": "Agendamento cancelado."
+      },
+      "archive": {
+        "action": "Arquivar",
+        "title": "Arquivar este agendamento?",
+        "description": "Ele some da agenda e do Google Agenda. Fica guardado, com o histórico, mas não volta para a tela.",
+        "confirm": "Arquivar",
+        "back": "Voltar",
+        "done": "Agendamento arquivado."
+      },
+      "tabs": {
+        "details": "Detalhes",
+        "contact": "Contato",
+        "messages": "Mensagens",
+        "history": "Histórico"
+      },
+      "fields": {
+        "calendar": "Calendário",
+        "calendarPlaceholder": "Escolha um calendário",
+        "contact": "Contato",
+        "contactPlaceholder": "Busque por nome ou telefone",
+        "contactEmpty": "Nenhum contato encontrado",
+        "service": "Serviço",
+        "servicePlaceholder": "Escolha um serviço",
+        "noService": "Sem serviço",
+        "noServicesYet": "Este calendário ainda não tem serviços",
+        "professional": "Colaborador",
+        "professionalPlaceholder": "Escolha quem atende",
+        "professionalTurn": "Quem for o da vez",
+        "noProfessional": "Sem colaborador",
+        "noProfessionalsYet": "Este calendário ainda não tem colaboradores",
+        "start": "Início",
+        "end": "Fim",
+        "day": "Dia",
+        "duration": "Duração",
+        "durationOther": "Outra",
+        "allDay": "Dia inteiro",
+        "more": "Título, cor e descrição",
+        "title": "Título",
+        "titlePlaceholder": "Serviço, contato e colaborador, se ficar vazio",
+        "titleHint": "Em branco, a agenda monta o título sozinha.",
+        "color": "Cor",
+        "colorHint": "Sem escolher, vale a cor do colaborador.",
+        "description": "Descrição",
+        "descriptionPlaceholder": "Contexto, pauta ou algo importante"
+      },
+      "slots": {
+        "title": "Horários livres neste dia",
+        "turnOf": "Pela distribuição, é a vez de {{name}}",
+        "priority": "Pela distribuição, seria a vez de {{name}}.",
+        "someone": "quem atende",
+        "failed": "Não deu para ver os horários livres. Você ainda pode marcar à mão.",
+        "noneThisDay": "Sem horário livre neste dia.",
+        "noneAtAll": "Sem horário livre nos próximos 30 dias. Dá para encaixar à mão.",
+        "goTo": "Ir para {{date}}",
+        "outside": "Este horário não está entre os livres de {{name}} para {{duration}}. Dá para encaixar mesmo assim."
+      },
+      "contact": {
+        "fallback": "Contato",
+        "openChat": "Abrir conversa",
+        "attributes": "Dados do contato",
+        "noAttributes": "Nenhum dado preenchido.",
+        "none": {
+          "title": "Sem contato neste agendamento",
+          "description": "Escolha um contato em Detalhes para ligar a conversa e os lembretes."
+        }
+      },
+      "messages": {
+        "empty": {
+          "title": "Sem mensagens por aqui",
+          "description": "As mensagens de texto desta conversa aparecem nesta aba."
+        },
+        "outOfReach": {
+          "title": "Você não vê esta conversa",
+          "description": "Ela está fora do que o seu acesso ao chat alcança."
+        }
+      },
+      "errors": {
+        "calendarRequired": "Escolha um calendário.",
+        "startRequired": "Informe quando começa.",
+        "endRequired": "Informe quando termina.",
+        "endBeforeStart": "O fim precisa ser depois do início.",
+        "titleTooLong": "Use até 255 caracteres.",
+        "descriptionTooLong": "Use até 500 caracteres.",
+        "needsSomething": "Escolha um contato ou um serviço, ou escreva um título."
+      }
+    },
+    "history": {
+      "automation": "Automação",
+      "byAt": "{{author}} · {{when}}",
+      "createdOn": "Criado em {{date}}",
+      "empty": "Nada registrado ainda.",
+      "noTitle": "Sem título",
+      "events": {
+        "create": "Criado",
+        "canceled": "Cancelado",
+        "archived": "Arquivado",
+        "timeUpdate": "Remarcado",
+        "titleUpdate": "Título alterado",
+        "show": "Compareceu",
+        "noShow": "Faltou",
+        "attendanceCleared": "Marcação de presença removida",
+        "sequenceEnrolled": "Inscrito em uma sequência",
+        "sequenceUnenrolled": "Saiu da sequência",
+        "other": "Atualização"
+      }
+    },
+    "sequence": {
+      "enrolledIn": "Inscrito em {{name}}",
+      "fallbackName": "uma sequência",
+      "steps_one": "{{count}} passo",
+      "steps_other": "{{count}} passos",
+      "firstIn": "1º em {{delay}}",
+      "available_one": "{{count}} disponível",
+      "available_other": "{{count}} disponíveis",
+      "change": "Trocar",
+      "cancelEnrollment": "Cancelar inscrição",
+      "enrollCta": "Inscrever em uma sequência",
+      "enrollHint": "Mensagens automáticas para este contato.",
+      "needsChat": "Sem conversa neste agendamento, não dá para inscrever em sequência.",
+      "discover": {
+        "title": "Conheça as sequências de comparecimento",
+        "description": "Mensagens que seguem sozinhas para quem veio ou faltou.",
+        "action": "Saiba mais"
+      },
+      "enroll": {
+        "title": "Inscrever em uma sequência",
+        "descriptionShow": "Contato marcado como compareceu.",
+        "descriptionNoShow": "Contato marcado como faltou.",
+        "choose": "Escolha a sequência",
+        "automatic": "Automática",
+        "current": "Inscrito agora",
+        "submit": "Inscrever",
+        "notNow": "Agora não",
+        "done": "Contato inscrito na sequência.",
+        "empty": {
+          "title": "Nenhuma sequência disponível",
+          "description": "Crie sequências de mensagens para inscrever este contato.",
+          "action": "Ir para Sequências"
+        }
+      },
+      "unenroll": {
+        "title": "Cancelar a inscrição nesta sequência?",
+        "description": "O contato deixa de receber os passos que faltam.",
+        "confirm": "Cancelar inscrição",
+        "back": "Voltar",
+        "done": "Inscrição na sequência cancelada."
+      }
+    },
+    "session": {
+      "fallbackTitle": "Aula",
+      "occupancy": "Ocupação",
+      "occupancyLabel": "{{count}} de {{max}} vagas ocupadas",
+      "summaryShort": "{{show}} vieram, {{noShow}} faltaram",
+      "summaryLong": "{{show}} vieram, {{noShow}} faltaram, {{pending}} pendentes",
+      "canceledNotice": "Esta aula foi cancelada. A lista fica aqui só para consulta.",
+      "fields": {
+        "instructor": "Instrutor",
+        "room": "Sala",
+        "location": "Local"
+      },
+      "counts": {
+        "show_one": "{{count}} presente",
+        "show_other": "{{count}} presentes",
+        "noShow_one": "{{count}} ausente",
+        "noShow_other": "{{count}} ausentes",
+        "pending_one": "{{count}} pendente",
+        "pending_other": "{{count}} pendentes"
+      },
+      "mark": {
+        "show": "Marcar presente",
+        "clearShow": "Tirar presença",
+        "noShow": "Marcar ausente",
+        "clearNoShow": "Tirar ausência"
+      },
+      "bulk": {
+        "allShow": "Todos presentes",
+        "allNoShow": "Todos ausentes",
+        "markedShow": "Todos marcados como presentes.",
+        "markedNoShow": "Todos marcados como ausentes."
+      },
+      "participants": {
+        "title_one": "{{count}} participante",
+        "title_other": "{{count}} participantes",
+        "add": "Adicionar",
+        "addTitle": "Adicionar participante",
+        "addDescription": "Busque um contato e escolha se ele entra só nesta aula ou na turma.",
+        "guest": "Avulso",
+        "noName": "Sem nome",
+        "moreFor": "Mais opções para {{name}}",
+        "searchPlaceholder": "Buscar contato",
+        "searchFailed": "Não deu para buscar agora. Tente de novo.",
+        "typeMore_one": "Digite ao menos {{count}} letra para buscar.",
+        "typeMore_other": "Digite ao menos {{count}} letras para buscar.",
+        "noResults": "Nenhum contato encontrado",
+        "onlyThis": "Só nesta aula",
+        "onlyThisHint": "Entra como convidado, só nesta aula",
+        "wholeGroup": "Na turma",
+        "wholeGroupHint": "Inscreve nos horários da turma que você escolher",
+        "addedGuest": "Participante adicionado a esta aula.",
+        "chooseSlots": "Em quais horários inscrever {{name}}?",
+        "noSlots": "Esta turma não tem horários na grade.",
+        "thisClass": "esta aula",
+        "enrollInSlots_one": "Inscrever em {{count}} horário",
+        "enrollInSlots_other": "Inscrever em {{count}} horários",
+        "enrolled_one": "Participante inscrito em {{count}} horário.",
+        "enrolled_other": "Participante inscrito em {{count}} horários.",
+        "empty": {
+          "title": "Ninguém inscrito",
+          "description": "Adicione alguém só para esta aula, ou inscreva na turma."
+        }
+      },
+      "remove": {
+        "guestAction": "Remover desta aula",
+        "guestTitle": "Remover {{name}} desta aula?",
+        "guestConfirm": "Remover",
+        "guestDone": "{{name}} saiu desta aula.",
+        "enrolledAction": "Remover da turma",
+        "enrolledTitle": "Remover {{name}} da turma?",
+        "enrolledDescription": "Cancela todas as inscrições deste contato na turma. As presenças já marcadas ficam.",
+        "enrolledConfirm": "Remover da turma",
+        "enrolledDone": "{{name}} saiu da turma."
+      },
+      "cancel": {
+        "action": "Cancelar esta aula",
+        "title": "Cancelar esta aula?",
+        "description": "Só esta aula: a turma e as próximas aulas continuam iguais. Ela fica na agenda, marcada como cancelada.",
+        "confirm": "Cancelar aula",
+        "done": "Aula cancelada."
+      },
+      "edit": {
+        "toggle": "Remarcar esta aula",
+        "submit": "Salvar aula",
+        "done": "Aula salva."
+      },
+      "new": {
+        "panelTitle": "Criar aula avulsa",
+        "description": "Uma aula fora da grade da turma, como uma reposição. Quem está inscrito naquele horário entra junto.",
+        "submit": "Criar aula",
+        "created": "Aula criada.",
+        "group": "Turma",
+        "groupPlaceholder": "Escolha a turma",
+        "groupRequired": "Escolha a turma.",
+        "title": "Título",
+        "titlePlaceholder": "O nome da turma, se ficar vazio",
+        "notes": "Observação",
+        "notesPlaceholder": "Por exemplo: reposição da aula de terça",
+        "noGroups": {
+          "title": "Este calendário ainda não tem turmas ativas",
+          "description": "Crie a turma primeiro. Depois, as aulas aparecem aqui sozinhas.",
+          "action": "Ir para Turmas"
+        }
+      }
+    },
+    "errors": {
+      "generic": "Não deu para concluir. Tente de novo.",
+      "network": "Sem conexão com o servidor. Confira a internet e tente de novo.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "notFound": "Isto não existe mais. Atualize a agenda.",
+      "conflict": "Alguém acabou de marcar a mesma coisa. Atualize a agenda e confira.",
+      "invalidTime": "Não deu para entender este horário.",
+      "rangeTooLong": "Este período é longo demais. Escolha até 400 dias.",
+      "noAvailability": "Sem horário livre nos próximos 30 dias.",
+      "classGroupFull": "A turma está cheia.",
+      "alreadyInSession": "Este contato já está nesta aula.",
+      "invalidSlot": "Este horário não está na grade da turma.",
+      "bookingWithoutChat": "Este agendamento não tem conversa, então não dá para inscrever.",
+      "bookingNotActive": "Só dá para inscrever agendamento ativo.",
+      "sequenceNotFound": "Esta sequência não existe mais.",
+      "sequenceDisabled": "Esta sequência está desligada.",
+      "sequenceMismatch": "Esta sequência é de outro resultado.",
+      "sequenceWithoutSteps": "Esta sequência ainda não tem passos."
     }
   }
 }

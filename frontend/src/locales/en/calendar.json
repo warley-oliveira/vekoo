@@ -14,6 +14,456 @@
         "description": "It may have been removed, or the address is wrong.",
         "back": "Back to the calendar"
       }
+    },
+    "common": {
+      "retry": "Try again",
+      "close": "Close",
+      "back": "Back",
+      "cancel": "Cancel"
+    },
+    "page": {
+      "create": "Create booking",
+      "staleData": "Couldn't refresh. You're seeing the last version that loaded."
+    },
+    "views": {
+      "agenda": "Agenda",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "days": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "yesterday": "Yesterday"
+    },
+    "toolbar": {
+      "view": "How to view the calendar",
+      "week": "Days of the week",
+      "openSidebar": "Open month, calendars and summary",
+      "previous": {
+        "agenda": "Previous period",
+        "day": "Previous day",
+        "week": "Previous week",
+        "month": "Previous month"
+      },
+      "next": {
+        "agenda": "Next period",
+        "day": "Next day",
+        "week": "Next week",
+        "month": "Next month"
+      }
+    },
+    "zone": {
+      "single": "Times in {{zone}}",
+      "mixed": "Each calendar in its own time zone",
+      "tooltip": "{{zone}}: it's {{time}} now"
+    },
+    "filters": {
+      "title": "Filters",
+      "situation": "Status",
+      "professional": "Staff member",
+      "service": "Service",
+      "tag": "Tag",
+      "classesHint": "Staff member, service and tag only apply to bookings: with them, classes leave the screen."
+    },
+    "situation": {
+      "all": "All",
+      "active": "Active",
+      "pending": "Pending",
+      "show": "Showed up",
+      "no_show": "No-show",
+      "canceled": "Canceled"
+    },
+    "event": {
+      "untitled": "Untitled",
+      "needsAttendance": "Attendance not marked",
+      "notFound": "This booking isn't in this period, or no longer exists."
+    },
+    "grid": {
+      "allDay": "All day",
+      "noEvents": "Nothing booked",
+      "more_one": "{{count}} more",
+      "more_other": "{{count}} more"
+    },
+    "agenda": {
+      "emptyDay": "Nothing booked on this day.",
+      "schedule": "Book"
+    },
+    "mini": {
+      "monthTotal_one": "{{value}} event in {{month}}",
+      "monthTotal_other": "{{value}} events in {{month}}",
+      "dayWithCount_one": "{{date}}, {{count}} event",
+      "dayWithCount_other": "{{date}}, {{count}} events"
+    },
+    "sidebar": {
+      "title": "Month, calendars and summary",
+      "calendars": "My calendars",
+      "createCalendar": "Create calendar",
+      "calendarsFailed": "Couldn't load the calendars.",
+      "settings": "Calendar settings",
+      "calendarSettings": "Settings for {{name}}",
+      "typeClasses": "Classes calendar",
+      "typeStaff": "Staff calendar"
+    },
+    "summary": {
+      "title": "Day summary",
+      "events_one": "{{value}} event",
+      "events_other": "{{value}} events",
+      "load": {
+        "light": "light",
+        "moderate": "moderate",
+        "heavy": "heavy"
+      },
+      "attendance": "Attendance",
+      "attendanceValue": "{{show}} came, {{noShow}} missed, {{pending}} pending",
+      "week": "This week",
+      "next": "Next"
+    },
+    "empty": {
+      "noCalendars": {
+        "title": "Create your first calendar",
+        "description": "It's where bookings or classes live. It takes less than a minute.",
+        "action": "Create calendar"
+      },
+      "noneSelected": {
+        "title": "No calendar selected",
+        "description": "Select at least one to see the agenda.",
+        "action": "Select all"
+      },
+      "period": {
+        "title": "Nothing booked in this period",
+        "description": "When someone books, it shows up here right away.",
+        "action": "Create booking"
+      },
+      "filtered": {
+        "title": "Nothing with these filters",
+        "description": "Remove a filter to see more.",
+        "action": "Clear filters"
+      }
+    },
+    "realtime": {
+      "newEvent": "New on the agenda: {{title}}",
+      "open": "Open"
+    },
+    "move": {
+      "done": "Rescheduled to {{when}}.",
+      "undo": "Undo",
+      "undone": "Back to the previous time."
+    },
+    "meet": {
+      "join": "Join Google Meet",
+      "short": "Meet"
+    },
+    "preview": {
+      "openDetails": "Open details",
+      "professional": "With",
+      "contact": "Contact:",
+      "enrolled": "Enrolled in a sequence",
+      "instructor": "Instructor:",
+      "room": "Room:"
+    },
+    "attendance": {
+      "title": "Attendance",
+      "show": "Showed up",
+      "noShow": "No-show",
+      "markedShow": "Marked: showed up.",
+      "markedNoShow": "Marked: no-show.",
+      "cleared": "Mark removed."
+    },
+    "booking": {
+      "new": {
+        "title": "Create booking",
+        "submit": "Create booking",
+        "kind": "What to schedule",
+        "kindBooking": "Booking",
+        "kindSession": "One-off class"
+      },
+      "edit": {
+        "submit": "Save changes",
+        "rescheduleHint": "When you save, reminders are rebuilt and the staff member is told about the new time."
+      },
+      "created": "Booking created.",
+      "saved": "Booking saved.",
+      "canceledNotice": "This booking is canceled. To book again, create another one.",
+      "conflict": "{{name}} already has {{title}} at {{time}}. You can still fit this in.",
+      "cancel": {
+        "action": "Cancel booking",
+        "title": "Cancel this booking?",
+        "description": "Reminders stop, the staff member is told and the event leaves Google Calendar. This can't be undone: to go back, create another one.",
+        "confirm": "Cancel booking",
+        "back": "Back",
+        "done": "Booking canceled."
+      },
+      "archive": {
+        "action": "Archive",
+        "title": "Archive this booking?",
+        "description": "It leaves the agenda and Google Calendar. It stays stored, with its history, but doesn't come back to the screen.",
+        "confirm": "Archive",
+        "back": "Back",
+        "done": "Booking archived."
+      },
+      "tabs": {
+        "details": "Details",
+        "contact": "Contact",
+        "messages": "Messages",
+        "history": "History"
+      },
+      "fields": {
+        "calendar": "Calendar",
+        "calendarPlaceholder": "Choose a calendar",
+        "contact": "Contact",
+        "contactPlaceholder": "Search by name or phone",
+        "contactEmpty": "No contact found",
+        "service": "Service",
+        "servicePlaceholder": "Choose a service",
+        "noService": "No service",
+        "noServicesYet": "This calendar has no services yet",
+        "professional": "Staff member",
+        "professionalPlaceholder": "Choose who attends",
+        "professionalTurn": "Whoever is next",
+        "noProfessional": "No staff member",
+        "noProfessionalsYet": "This calendar has no staff yet",
+        "start": "Start",
+        "end": "End",
+        "day": "Day",
+        "duration": "Duration",
+        "durationOther": "Other",
+        "allDay": "All day",
+        "more": "Title, color and description",
+        "title": "Title",
+        "titlePlaceholder": "Service, contact and staff member, if left empty",
+        "titleHint": "Left blank, the agenda builds the title on its own.",
+        "color": "Color",
+        "colorHint": "If you don't pick one, the staff member's color applies.",
+        "description": "Description",
+        "descriptionPlaceholder": "Context, agenda or something important"
+      },
+      "slots": {
+        "title": "Free times on this day",
+        "turnOf": "By distribution, it's {{name}}'s turn",
+        "priority": "By distribution, it would be {{name}}'s turn.",
+        "someone": "the staff member",
+        "failed": "Couldn't check the free times. You can still book by hand.",
+        "noneThisDay": "No free time on this day.",
+        "noneAtAll": "No free time in the next 30 days. You can fit it in by hand.",
+        "goTo": "Go to {{date}}",
+        "outside": "This time isn't among {{name}}'s free times for {{duration}}. You can still fit it in."
+      },
+      "contact": {
+        "fallback": "Contact",
+        "openChat": "Open conversation",
+        "attributes": "Contact details",
+        "noAttributes": "No details filled in.",
+        "none": {
+          "title": "No contact on this booking",
+          "description": "Choose a contact in Details to link the conversation and reminders."
+        }
+      },
+      "messages": {
+        "empty": {
+          "title": "No messages here",
+          "description": "Text messages from this conversation show up in this tab."
+        },
+        "outOfReach": {
+          "title": "You can't see this conversation",
+          "description": "It's outside what your chat access reaches."
+        }
+      },
+      "errors": {
+        "calendarRequired": "Choose a calendar.",
+        "startRequired": "Say when it starts.",
+        "endRequired": "Say when it ends.",
+        "endBeforeStart": "The end must be after the start.",
+        "titleTooLong": "Use up to 255 characters.",
+        "descriptionTooLong": "Use up to 500 characters.",
+        "needsSomething": "Choose a contact or a service, or write a title."
+      }
+    },
+    "history": {
+      "automation": "Automation",
+      "byAt": "{{author}} · {{when}}",
+      "createdOn": "Created on {{date}}",
+      "empty": "Nothing recorded yet.",
+      "noTitle": "Untitled",
+      "events": {
+        "create": "Created",
+        "canceled": "Canceled",
+        "archived": "Archived",
+        "timeUpdate": "Rescheduled",
+        "titleUpdate": "Title changed",
+        "show": "Showed up",
+        "noShow": "No-show",
+        "attendanceCleared": "Attendance mark removed",
+        "sequenceEnrolled": "Enrolled in a sequence",
+        "sequenceUnenrolled": "Left the sequence",
+        "other": "Update"
+      }
+    },
+    "sequence": {
+      "enrolledIn": "Enrolled in {{name}}",
+      "fallbackName": "a sequence",
+      "steps_one": "{{count}} step",
+      "steps_other": "{{count}} steps",
+      "firstIn": "1st in {{delay}}",
+      "available_one": "{{count}} available",
+      "available_other": "{{count}} available",
+      "change": "Change",
+      "cancelEnrollment": "Cancel enrollment",
+      "enrollCta": "Enroll in a sequence",
+      "enrollHint": "Automatic messages for this contact.",
+      "needsChat": "Without a conversation on this booking, it can't be enrolled in a sequence.",
+      "discover": {
+        "title": "Meet attendance sequences",
+        "description": "Messages that go out on their own to whoever came or missed.",
+        "action": "Learn more"
+      },
+      "enroll": {
+        "title": "Enroll in a sequence",
+        "descriptionShow": "Contact marked as showed up.",
+        "descriptionNoShow": "Contact marked as no-show.",
+        "choose": "Choose the sequence",
+        "automatic": "Automatic",
+        "current": "Enrolled now",
+        "submit": "Enroll",
+        "notNow": "Not now",
+        "done": "Contact enrolled in the sequence.",
+        "empty": {
+          "title": "No sequence available",
+          "description": "Create message sequences to enroll this contact.",
+          "action": "Go to Sequences"
+        }
+      },
+      "unenroll": {
+        "title": "Cancel enrollment in this sequence?",
+        "description": "The contact stops receiving the remaining steps.",
+        "confirm": "Cancel enrollment",
+        "back": "Back",
+        "done": "Sequence enrollment canceled."
+      }
+    },
+    "session": {
+      "fallbackTitle": "Class",
+      "occupancy": "Occupancy",
+      "occupancyLabel": "{{count}} of {{max}} spots taken",
+      "summaryShort": "{{show}} came, {{noShow}} missed",
+      "summaryLong": "{{show}} came, {{noShow}} missed, {{pending}} pending",
+      "canceledNotice": "This class was canceled. The list stays here for reference.",
+      "fields": {
+        "instructor": "Instructor",
+        "room": "Room",
+        "location": "Location"
+      },
+      "counts": {
+        "show_one": "{{count}} present",
+        "show_other": "{{count}} present",
+        "noShow_one": "{{count}} absent",
+        "noShow_other": "{{count}} absent",
+        "pending_one": "{{count}} pending",
+        "pending_other": "{{count}} pending"
+      },
+      "mark": {
+        "show": "Mark present",
+        "clearShow": "Remove present mark",
+        "noShow": "Mark absent",
+        "clearNoShow": "Remove absent mark"
+      },
+      "bulk": {
+        "allShow": "All present",
+        "allNoShow": "All absent",
+        "markedShow": "Everyone marked present.",
+        "markedNoShow": "Everyone marked absent."
+      },
+      "participants": {
+        "title_one": "{{count}} participant",
+        "title_other": "{{count}} participants",
+        "add": "Add",
+        "addTitle": "Add participant",
+        "addDescription": "Search for a contact and choose whether they join only this class or the group.",
+        "guest": "Drop-in",
+        "noName": "No name",
+        "moreFor": "More options for {{name}}",
+        "searchPlaceholder": "Search for a contact",
+        "searchFailed": "Couldn't search right now. Try again.",
+        "typeMore_one": "Type at least {{count}} letter to search.",
+        "typeMore_other": "Type at least {{count}} letters to search.",
+        "noResults": "No contact found",
+        "onlyThis": "This class only",
+        "onlyThisHint": "Joins as a guest, in this class only",
+        "wholeGroup": "The group",
+        "wholeGroupHint": "Enrolls in the group's times you choose",
+        "addedGuest": "Participant added to this class.",
+        "chooseSlots": "Which times should {{name}} join?",
+        "noSlots": "This group has no times on its schedule.",
+        "thisClass": "this class",
+        "enrollInSlots_one": "Enroll in {{count}} time",
+        "enrollInSlots_other": "Enroll in {{count}} times",
+        "enrolled_one": "Participant enrolled in {{count}} time.",
+        "enrolled_other": "Participant enrolled in {{count}} times.",
+        "empty": {
+          "title": "No one enrolled",
+          "description": "Add someone to this class only, or enroll them in the group."
+        }
+      },
+      "remove": {
+        "guestAction": "Remove from this class",
+        "guestTitle": "Remove {{name}} from this class?",
+        "guestConfirm": "Remove",
+        "guestDone": "{{name}} left this class.",
+        "enrolledAction": "Remove from the group",
+        "enrolledTitle": "Remove {{name}} from the group?",
+        "enrolledDescription": "Cancels all of this contact's enrollments in the group. Attendance already marked stays.",
+        "enrolledConfirm": "Remove from the group",
+        "enrolledDone": "{{name}} left the group."
+      },
+      "cancel": {
+        "action": "Cancel this class",
+        "title": "Cancel this class?",
+        "description": "Only this class: the group and the next classes stay the same. It stays on the agenda, marked as canceled.",
+        "confirm": "Cancel class",
+        "done": "Class canceled."
+      },
+      "edit": {
+        "toggle": "Reschedule this class",
+        "submit": "Save class",
+        "done": "Class saved."
+      },
+      "new": {
+        "panelTitle": "Create one-off class",
+        "description": "A class outside the group's schedule, like a make-up class. Whoever is enrolled at that time joins too.",
+        "submit": "Create class",
+        "created": "Class created.",
+        "group": "Group",
+        "groupPlaceholder": "Choose the group",
+        "groupRequired": "Choose the group.",
+        "title": "Title",
+        "titlePlaceholder": "The group's name, if left empty",
+        "notes": "Note",
+        "notesPlaceholder": "For example: make-up for Tuesday's class",
+        "noGroups": {
+          "title": "This calendar has no active groups yet",
+          "description": "Create the group first. Then its classes show up here on their own.",
+          "action": "Go to Classes"
+        }
+      }
+    },
+    "errors": {
+      "generic": "Couldn't finish. Try again.",
+      "network": "No connection to the server. Check your internet and try again.",
+      "forbidden": "You don't have permission to do this.",
+      "notFound": "This no longer exists. Refresh the agenda.",
+      "conflict": "Someone just booked the same thing. Refresh the agenda and check.",
+      "invalidTime": "Couldn't understand this time.",
+      "rangeTooLong": "This period is too long. Choose up to 400 days.",
+      "noAvailability": "No free time in the next 30 days.",
+      "classGroupFull": "The group is full.",
+      "alreadyInSession": "This contact is already in this class.",
+      "invalidSlot": "This time isn't on the group's schedule.",
+      "bookingWithoutChat": "This booking has no conversation, so it can't be enrolled.",
+      "bookingNotActive": "Only active bookings can be enrolled.",
+      "sequenceNotFound": "This sequence no longer exists.",
+      "sequenceDisabled": "This sequence is turned off.",
+      "sequenceMismatch": "This sequence is for another outcome.",
+      "sequenceWithoutSteps": "This sequence has no steps yet."
     }
   }
 }

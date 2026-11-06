@@ -1,0 +1,227 @@
+import { useEffect, useMemo } from "react"
+import { useForm, useWatch, type UseFormReturn } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslation } from "react-i18next"
+import { GraduationCap } from "lucide-react"
+import { Link } from "react-router"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import {
+  Callout,
+  DateTimeField,
+  SelectField,
+  TextareaField,
+  TextField,
+  useFormSubmit,
+  type SelectOption,
+} from "@/components/shared"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useEventMutations } from "@/hooks/calendar/use-calendar-events"
+import { useClassGroups } from "@/hooks/calendar/use-class-groups"
+import { instantFromField, safeTimeZone } from "@/lib/calendar/timezone"
+import type { AgendaCalendar, ClassSessionEvent } from "@/lib/calendar/types"
+import { TimeZoneNote } from "../calendar-toolbar"
+import type { BookingDraft } from "./booking-form"
+
+const DEFAULT_LENGTH = 60
+
+function buildSchema(t: (key: string) => string) {
+  return z
+    .object({
+      calendarId: z.string().nullable().refine(Boolean, t("calendar.booking.errors.calendarRequired")),
+      classGroupId: z.string().nullable().refine(Boolean, t("calendar.session.new.groupRequired")),
+      start: z.date({ error: t("calendar.booking.errors.startRequired") }).nullable(),
+      end: z.date({ error: t("calendar.booking.errors.endRequired") }).nullable(),
+      title: z.string().max(255, t("calendar.booking.errors.titleTooLong")),
+      notes: z.string().max(500, t("calendar.booking.errors.descriptionTooLong")),
+    })
+    .superRefine((values, context) => {
+      if (!values.start) {
+        context.addIssue({
+          code: "custom",
+          path: ["start"],
+          message: t("calendar.booking.errors.startRequired"),
+        })
+      }
+      if (!values.end) {
+        context.addIssue({
+          code: "custom",
+          path: ["end"],
+          message: t("calendar.booking.errors.endRequired"),
+        })
+      }
+      if (values.start && values.end && values.end <= values.start) {
+        context.addIssue({
+          code: "custom",
+          path: ["end"],
+          message: t("calendar.booking.errors.endBeforeStart"),
+        })
+      }
+    })
+}
+
+export type SessionFormValues = z.infer<ReturnType<typeof buildSchema>>
+
+/** Aula avulsa ou reposição, fora da grade da turma. */
+export function useNewSessionForm({
+  calendars,
+  draft,
+  onDone,
+}: {
+  calendars: AgendaCalendar[]
+  draft: BookingDraft | null
+  onDone: (saved: ClassSessionEvent) => void
+}) {
+  const { t } = useTranslation()
+  const { createSession } = useEventMutations()
+  const schema = useMemo(() => buildSchema(t), [t])
+
+  const form = useForm<SessionFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      calendarId:
+        calendars.find((calendar) => calendar.id === draft?.calendarId)?.id ??
+        calendars[0]?.id ??
+        null,
+      classGroupId: null,
+      start: draft?.start ?? null,
+      end: draft?.end ?? null,
+      title: "",
+      notes: "",
+    },
+    mode: "onBlur",
+  })
+
+  const submit = useFormSubmit(form, async (values) => {
+    const zone = safeTimeZone(calendars.find((item) => item.id === values.calendarId)?.timeZone)
+    const saved = await createSession(values.calendarId as string, values.classGroupId as string, {
+      start: instantFromField(values.start as Date, zone),
+      end: instantFromField(values.end as Date, zone),
+      title: values.title.trim() || null,
+      notes: values.notes.trim() || null,
+    })
+    form.reset(values)
+    toast.success(t("calendar.session.new.created"))
+    onDone(saved)
+  })
+
+  return { form, submit }
+}
+
+export function NewSessionFields({
+  form,
+  calendars,
+}: {
+  form: UseFormReturn<SessionFormValues>
+  calendars: AgendaCalendar[]
+}) {
+  const { t } = useTranslation()
+  const calendarId = useWatch({ control: form.control, name: "calendarId" })
+  const classGroupId = useWatch({ control: form.control, name: "classGroupId" })
+  const start = useWatch({ control: form.control, name: "start" })
+  const calendar = calendars.find((item) => item.id === calendarId) ?? null
+  const { classGroups, isLoading } = useClassGroups(calendarId)
+
+  const groups = useMemo(
+    () => (classGroups ?? []).filter((group) => group.active),
+    [classGroups]
+  )
+  const groupOptions = useMemo<SelectOption[]>(
+    () => groups.map((group) => ({ value: group.id, label: group.name })),
+    [groups]
+  )
+  const calendarOptions = useMemo<SelectOption[]>(
+    () => calendars.map((item) => ({ value: item.id, label: item.name })),
+    [calendars]
+  )
+  const group = groups.find((item) => item.id === classGroupId)
+
+  // Escolheu a turma: a aula nasce com a duração dela.
+  useEffect(() => {
+    if (!group) return
+    const current = form.getValues("start")
+    if (current) {
+      const minutes = group.defaultDurationMinutes ?? DEFAULT_LENGTH
+      form.setValue("end", new Date(current.getTime() + minutes * 60_000), { shouldDirty: true })
+    }
+    // Só quando troca a turma: a pessoa pode ter ajustado o fim depois.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [group?.id])
+
+  const noGroups = !isLoading && classGroups && groups.length === 0
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-pretty text-muted-foreground">
+        {t("calendar.session.new.description")}
+      </p>
+
+      {calendars.length > 1 ? (
+        <SelectField
+          control={form.control}
+          name="calendarId"
+          label={t("calendar.booking.fields.calendar")}
+          options={calendarOptions}
+          placeholder={t("calendar.booking.fields.calendarPlaceholder")}
+        />
+      ) : null}
+
+      {isLoading && !classGroups ? (
+        <div aria-hidden className="space-y-2">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-9 w-full" />
+        </div>
+      ) : noGroups ? (
+        <Callout
+          icon={<GraduationCap aria-hidden className="size-4" />}
+          title={t("calendar.session.new.noGroups.title")}
+          action={
+            <Link
+              to={`/calendar/${calendarId}/class-groups`}
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              {t("calendar.session.new.noGroups.action")}
+            </Link>
+          }
+        >
+          {t("calendar.session.new.noGroups.description")}
+        </Callout>
+      ) : (
+        <SelectField
+          control={form.control}
+          name="classGroupId"
+          label={t("calendar.session.new.group")}
+          options={groupOptions}
+          placeholder={t("calendar.session.new.groupPlaceholder")}
+        />
+      )}
+
+      <DateTimeField control={form.control} name="start" label={t("calendar.booking.fields.start")} />
+      <DateTimeField
+        control={form.control}
+        name="end"
+        label={t("calendar.booking.fields.end")}
+        min={start ?? undefined}
+      />
+      {calendar ? <TimeZoneNote zones={[calendar.timeZone]} /> : null}
+
+      <TextField
+        control={form.control}
+        name="title"
+        label={t("calendar.session.new.title")}
+        optional
+        placeholder={group?.name ?? t("calendar.session.new.titlePlaceholder")}
+        autoComplete="off"
+      />
+      <TextareaField
+        control={form.control}
+        name="notes"
+        label={t("calendar.session.new.notes")}
+        optional
+        placeholder={t("calendar.session.new.notesPlaceholder")}
+        rows={2}
+      />
+    </div>
+  )
+}
