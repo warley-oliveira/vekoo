@@ -20,6 +20,7 @@ import { flowsRoutes } from "@/routes/flows"
 import { funnelsRoutes } from "@/routes/funnels"
 import { pipelinesRoutes } from "@/routes/pipelines"
 import { settingsRoutes } from "@/routes/settings"
+import { instagramCallbackRoute } from "@/routes/settings/integrations"
 
 // As rotas da plataforma moram em `routes/<dominio>/index.tsx`, cada uma um fragmento
 // de `<Route>`, com a página em `lazy()`. Quem traz uma tela nova mexe no arquivo do
@@ -96,6 +97,9 @@ export default function App() {
           }
         />
       </Route>
+
+      {/* Janela de passagem do login do Instagram: sem guarda, para não perder o código. */}
+      {instagramCallbackRoute}
 
       {/* Dentro da sessão */}
       <Route element={<RequireAuth />}>

@@ -1,0 +1,882 @@
+{
+  "connectors": {
+    "page": {
+      "description": "The channels your conversations come through. Each one shows what's going on and what to do when something needs you.",
+      "add": "Add channel",
+      "refresh": "Refresh channels",
+      "loadError": "We couldn't load your channels",
+      "emptyTitle": "No channels connected yet",
+      "emptyDescription": "Connect your WhatsApp, Instagram, Messenger or website chat to start receiving conversations here.",
+      "search": "Search channels",
+      "noResults": "No channels with that name.",
+      "showAll": "See all channels",
+      "empty": {
+        "all": "No channels here.",
+        "attention": "Nothing needs your attention right now.",
+        "connected": "No channels connected right now.",
+        "off": "No channels paused or turned off."
+      }
+    },
+    "filter": {
+      "label": "Filter channels by status",
+      "all": "All",
+      "attention": "Attention",
+      "connected": "Connected",
+      "off": "Off"
+    },
+    "groups": {
+      "attention": "Need your attention",
+      "connected": "Connected",
+      "off": "Paused and turned off"
+    },
+    "alerts": {
+      "count_one": "{{count}} alert",
+      "count_other": "{{count}} alerts",
+      "dismiss": "Dismiss",
+      "dismissTitle": "Dismiss this alert?",
+      "dismissDescription": "Everyone in the organization stops seeing this alert, and the number in the menu goes down. Dismissing doesn't reconnect the channel: if the problem persists, it stays here.",
+      "dismissed": "Alert dismissed"
+    },
+    "types": {
+      "whatsapp_web": "WhatsApp on your phone",
+      "whatsapp_web_zapi": "WhatsApp on your phone, via Z-API",
+      "zapi": "WhatsApp on your phone, via Z-API",
+      "whatsapp_cloud": "Official WhatsApp",
+      "instagram_direct": "Instagram",
+      "facebook_messenger": "Messenger",
+      "lead_chat": "LeadChat",
+      "web_widget": "Website chat"
+    },
+    "name": {
+      "waiting": "{{type}}, waiting to connect"
+    },
+    "status": {
+      "active": {
+        "label": "Connected",
+        "hint": "Sending and receiving messages normally."
+      },
+      "pending": {
+        "label": "Waiting",
+        "hint": "Scan the code on your phone to finish connecting."
+      },
+      "paused": {
+        "label": "Paused",
+        "hint": "Automation is stopped. Resume whenever you like.",
+        "hintDiscards": "Automation is stopped, and whatever arrives while the channel is paused is discarded."
+      },
+      "failed": {
+        "label": "Failed",
+        "hint": "The connection didn't work. Try again."
+      },
+      "closed": {
+        "label": "Disconnected",
+        "hint": "Messages aren't coming through. Connect again to keep answering here."
+      },
+      "reject": {
+        "label": "Blocked",
+        "hint": "WhatsApp blocked this number, and it won't come back on its own. Check the number on your phone before connecting again."
+      },
+      "inactive": {
+        "label": "Off",
+        "hint": "This channel doesn't send or receive messages while it's off."
+      }
+    },
+    "main": {
+      "resume": "Resume",
+      "continue": "Continue connecting",
+      "connect": "Connect",
+      "reconnect": "Connect again",
+      "turnOn": "Turn on"
+    },
+    "row": {
+      "manage": "See details",
+      "moreNumbers_one": "{{count}} more number",
+      "moreNumbers_other": "{{count}} more numbers",
+      "created": "Created",
+      "actionsOf": "Actions for {{name}}"
+    },
+    "resume": {
+      "done": "{{name}} is working again",
+      "failed": "We couldn't resume the channel"
+    },
+    "pause": {
+      "action": "Pause",
+      "summary": "Stops automation until you resume. The connection itself stays up.",
+      "title": "Pause {{name}}?",
+      "discards": "Automation stops answering and, on this connection, everything that arrives during the pause is discarded and doesn't come back. Those messages won't show up in your conversations. To keep receiving them, leave the channel on.",
+      "keeps": "Automation stops answering until you resume. Messages keep arriving in your conversations.",
+      "confirm": "Pause",
+      "confirmDiscards": "Pause and discard what arrives",
+      "done": "{{name}} is paused"
+    },
+    "reload": {
+      "action": "Reload connection",
+      "summary": "Restarts the link with WhatsApp without scanning the code again. Helps when messages stop coming in.",
+      "title": "Reload the connection for {{name}}?",
+      "description": "The link with WhatsApp restarts and comes back in a few seconds. You don't need to scan the code again.",
+      "confirm": "Reload connection",
+      "done": "Connection reloaded"
+    },
+    "shutdown": {
+      "action": "Turn off",
+      "summary": "Ends the connection. To come back, you have to connect again.",
+      "title": "Turn off {{name}}?",
+      "description": "The channel stops sending and receiving messages right now, and the organization gets an alert. Conversations are kept. To come back, you have to connect again.",
+      "confirm": "Turn off",
+      "done": "{{name}} was turned off"
+    },
+    "disconnect": {
+      "action": "Disconnect",
+      "summary": "Ends the connection with the account. To come back, you have to connect again.",
+      "summaryInstagram": "Removes Vekoo's access to your Instagram account. To come back, you have to sign in again.",
+      "title": "Disconnect {{name}}?",
+      "description": "The channel stops sending and receiving messages right now, and the organization gets an alert. Conversations are kept. To come back, you have to connect again.",
+      "instagram": "Direct messages stop coming in, Vekoo loses access to your Instagram account and the organization gets an alert. Conversations are kept. To come back, you have to sign in with the account again.",
+      "confirm": "Disconnect",
+      "done": "{{name}} was disconnected"
+    },
+    "connect": {
+      "title": "Connect channel",
+      "failed": "We couldn't connect",
+      "done": "{{name}} is connected",
+      "detail": "Detail:",
+      "close": "Close",
+      "retry": "Try again",
+      "back": "Back",
+      "cancel": "Cancel",
+      "step": "Step {{current}} of {{total}}"
+    },
+    "errors": {
+      "generic": "Something went wrong on our side. Try again in a moment.",
+      "network": "We can't reach the server. Check your internet and try again.",
+      "forbidden": "Your permission group doesn't allow this. Talk to whoever manages the organization.",
+      "actionFailed": "The service behind this channel didn't respond. Try again in a moment.",
+      "typeMismatch": "This kind of channel doesn't have this action."
+    },
+    "choose": {
+      "title": "Where do your conversations come from?",
+      "unavailable": "This connection hasn't been set up in this environment yet.",
+      "widgetCreated": "Website chat created. Customize it and turn it on when you're ready.",
+      "widgetFailed": "We couldn't create the website chat",
+      "options": {
+        "whatsapp": {
+          "title": "WhatsApp on your phone",
+          "description": "Use the number you already have, like WhatsApp Web. You scan a QR code or type a code on your phone."
+        },
+        "whatsapp_zapi": {
+          "title": "WhatsApp on your phone, via Z-API",
+          "description": "The same way to connect, with more media and template features. Requires scanning a QR code."
+        },
+        "whatsapp_cloud": {
+          "title": "Official WhatsApp",
+          "description": "Meta's official connection, for businesses with a business account. Lets you send approved message templates."
+        },
+        "instagram": {
+          "title": "Instagram",
+          "description": "Receive Direct messages from a professional account. No Facebook page needed."
+        },
+        "messenger": {
+          "title": "Messenger",
+          "description": "Receive messages from your Facebook page. If it has a professional Instagram, that comes along too."
+        },
+        "widget": {
+          "title": "Website chat",
+          "description": "A chat button on your website or online store. You customize it and paste a code on the page."
+        }
+      }
+    },
+    "method": {
+      "title": "How do you want to connect?",
+      "titleReconnect": "How do you want to connect again?",
+      "label": "Way to connect",
+      "qr": "Scan a QR code",
+      "qrHint": "You point your phone's camera at this screen.",
+      "qrHintMobile": "Needs another screen: a phone can't scan a code shown on itself. Open this page on a computer.",
+      "code": "Type a code on your phone",
+      "codeHint": "Enter the number and type the 8-letter code in WhatsApp. Good if you're on that phone right now.",
+      "phone": "WhatsApp number",
+      "phoneHint": "With area code. Outside Brazil, start with + and the country code.",
+      "phoneInvalid": "Check the number: some digits are missing.",
+      "need": "Keep your phone nearby, with WhatsApp open and online. It takes less than a minute.",
+      "zapi": "On this connection you scan a QR code: point your phone's camera at this screen.",
+      "zapiMobile": "On this connection you scan a QR code, and a phone can't scan a code shown on itself. Open this page on a computer to show the code.",
+      "submitQr": "Generate QR code",
+      "submitCode": "Generate code"
+    },
+    "live": {
+      "title": "Connect your WhatsApp",
+      "qrLead": "Follow the steps on your phone. As soon as you scan the code, this screen lets you know.",
+      "codeLead": "Type this code in WhatsApp on your phone. As soon as it connects, this screen lets you know.",
+      "connectedTitle": "All set",
+      "failedTitle": "The connection didn't finish",
+      "expiredTitle": "Time ran out",
+      "leftWaiting": "The channel is still waiting. To finish, come back here and tap Continue connecting.",
+      "connectedHeading": "WhatsApp connected",
+      "connectedWithNumber": "The number {{number}} is already sending and receiving messages.",
+      "connectedHint": "The device is linked and already sending and receiving messages.",
+      "failedHeading": "We couldn't connect",
+      "failedHint": "It may be a temporary problem with the WhatsApp service. Try again; if it persists, contact support and show the detail below.",
+      "blockedHeading": "WhatsApp blocked this number",
+      "blockedHint": "Open WhatsApp on your phone and see what it says. Once that's sorted out, try connecting again.",
+      "expiredHeading": "Time to scan the code ran out",
+      "expiredHint": "For security, the code is only valid for a short time. Generate another one when you have your phone in hand.",
+      "useQr": "I'd rather scan the QR code",
+      "useCode": "I'd rather type a code",
+      "platform": "Phone model",
+      "android": "Android",
+      "iphone": "iPhone",
+      "openChannel": "See the channel",
+      "finish": "Finish",
+      "newCode": "Generate new code",
+      "closeWaiting": "Close and continue later",
+      "qrAlt": "QR code to connect WhatsApp",
+      "copyCode": "Copy code",
+      "codeAlt": "Pairing code: {{code}}",
+      "starting": "Asking WhatsApp for a new code…",
+      "waitingQr": "Generating the QR code. It usually takes a few seconds.",
+      "waitingCode": "Asking WhatsApp for the code. It usually takes a few seconds.",
+      "slow": "This is taking longer than usual. You can wait a bit more or generate a new code.",
+      "waitingScan": "Waiting for the scan. If the code changes, just scan the new one.",
+      "waitingEntry": "Waiting for you to type the code on your phone.",
+      "polling": "No real-time connection right now. We keep checking every few seconds.",
+      "steps": {
+        "qr": {
+          "android": [
+            "Open WhatsApp on your phone.",
+            "Tap the menu (⋮) and Linked devices.",
+            "Tap Link a device.",
+            "Point the camera at the QR code."
+          ],
+          "iphone": [
+            "Open WhatsApp on your iPhone.",
+            "Go to Settings and Linked Devices.",
+            "Tap Link a Device.",
+            "Point the camera at the QR code."
+          ]
+        },
+        "code": {
+          "android": [
+            "Copy the code and open WhatsApp.",
+            "Tap the menu (⋮) and Linked devices.",
+            "Tap Link a device, then Link with phone number instead.",
+            "Type the code."
+          ],
+          "iphone": [
+            "Copy the code and open WhatsApp.",
+            "Go to Settings and Linked Devices.",
+            "Tap Link a Device, then Link with phone number instead.",
+            "Type the code."
+          ]
+        }
+      }
+    },
+    "tips": {
+      "title": "To keep the connection up",
+      "description": "WhatsApp may disconnect the number if these are missing.",
+      "internet": "Keep your phone connected to the internet at all times.",
+      "weeklyOpen": "Open WhatsApp on your phone at least once a week.",
+      "autoUpdate": "Keep automatic updates for WhatsApp on in your app store.",
+      "battery": "Keep your phone charged: battery saver can drop the connection.",
+      "linkedDevices": "Don't remove this device from WhatsApp's Linked Devices list.",
+      "sectionTitle": "How to stay connected",
+      "sectionDescription": "This connection depends on your phone."
+    },
+    "webhook": {
+      "title": "Last step: paste these in the Meta dashboard",
+      "description": "Under Webhook configuration, in the app dashboard. Copy them now: they only show up here.",
+      "url": "Callback URL",
+      "token": "Verify token"
+    },
+    "meta": {
+      "failedTitle": "The connection didn't finish",
+      "providerRefused": "Meta didn't accept the connection",
+      "providerRefusedHint": "Check that the account has access to the number and try again. If it persists, contact support and show the detail below.",
+      "cancelled": "The window was closed before finishing",
+      "cancelledHint": "Nothing was connected. Try again and go all the way through in the Meta window.",
+      "stoppedAt": "stopped at step {{step}}",
+      "incomplete": "Meta didn't send back all the data",
+      "incompleteHint": "Authorization finished, but the number's data was missing. Try again.",
+      "saveFailed": "We couldn't finish from here",
+      "unconfigured": "This connection hasn't been set up yet",
+      "unconfiguredHint": "This environment doesn't have the Meta app details yet. Talk to whoever manages the platform.",
+      "noInstagram": "The page has no professional Instagram linked, so Direct wasn't added. Link one in Meta Business Suite and connect again to receive messages from there.",
+      "authorizing": "Continue in the Meta window. This screen waits for you to finish.",
+      "saving": "Finishing the connection…",
+      "loading": "Getting the Meta window ready…",
+      "loadFailed": "We couldn't open the connection with Meta. An ad blocker may be preventing it; turn it off on this page and try again.",
+      "whatsapp": {
+        "title": "Connect official WhatsApp",
+        "titleReconnect": "Connect again through Meta",
+        "doneTitle": "All set",
+        "doneHeading": "Official WhatsApp connected",
+        "doneHint": "The channel is already sending and receiving messages.",
+        "connect": "Continue with Meta",
+        "steps": [
+          "A Meta window will open. If it doesn't, allow pop-ups for this site in your browser.",
+          "Sign in with the Facebook account that manages the business.",
+          "Choose the WhatsApp account and the number that will answer.",
+          "When you're done, the window closes and the connection finishes here."
+        ]
+      },
+      "messenger": {
+        "title": "Connect Messenger",
+        "titleReconnect": "Connect again through Facebook",
+        "doneTitle": "All set",
+        "doneHeading": "Messenger connected",
+        "doneHint": "The page is already sending and receiving messages.",
+        "connect": "Continue with Facebook",
+        "steps": [
+          "A Facebook window will open. If it doesn't, allow pop-ups for this site in your browser.",
+          "Sign in with the account that manages the page.",
+          "Authorize access to the page's messages.",
+          "When you're done, the window closes and the connection finishes here."
+        ]
+      }
+    },
+    "instagram": {
+      "title": "Connect Instagram",
+      "titleReconnect": "Connect again through Instagram",
+      "doneTitle": "All set",
+      "doneHeading": "Instagram connected",
+      "doneHint": "Direct messages now arrive here.",
+      "closed": "The window was closed before finishing",
+      "closedHint": "Nothing was connected. Try again and go all the way through in the Instagram window.",
+      "refused": "Instagram didn't accept the connection",
+      "refusedHint": "The account needs to be professional (business or creator). Check that in the app and try again.",
+      "authorizing": "Continue in the Instagram window. This screen waits for you to finish.",
+      "connect": "Continue with Instagram",
+      "steps": [
+        "An Instagram window will open. If it doesn't, the whole page goes there and comes back afterwards.",
+        "Sign in with the business's professional account.",
+        "Authorize access to messages.",
+        "When you're done, the connection finishes here."
+      ],
+      "profile": {
+        "title": "Profile",
+        "description": "The account's public details, as they appear on Instagram.",
+        "business": "Business account",
+        "accountTypes": {
+          "BUSINESS": "Business account",
+          "CREATOR": "Creator",
+          "MEDIA_CREATOR": "Creator",
+          "PERSONAL": "Personal account"
+        },
+        "followers": "Followers",
+        "follows": "Following",
+        "media": "Posts",
+        "accountId": "Account ID:",
+        "stale": "We couldn't refresh right now. Showing the last saved details.",
+        "refresh": "Refresh profile"
+      }
+    },
+    "callback": {
+      "processing": "Finishing authorization…",
+      "doneTitle": "Authorization complete",
+      "doneHint": "You can close this window and go back to Vekoo. If the connection doesn't finish on its own, use the button below.",
+      "back": "Back to channels"
+    },
+    "signature": {
+      "label": "Sign with the name of whoever answered",
+      "hint": "Messages sent by your team go out with the person's name, so the contact knows who they're talking to.",
+      "on": "Messages now go out signed",
+      "off": "Messages now go out unsigned",
+      "failed": "We couldn't change the signature"
+    },
+    "facts": {
+      "createdAt": "Created on",
+      "number": "Number",
+      "profileName": "Name on WhatsApp",
+      "provider": "Connection",
+      "providerDefault": "Vekoo default",
+      "providerZapi": "Z-API",
+      "instance": "Instance",
+      "numberId": "Number ID",
+      "page": "Page",
+      "pageId": "Page ID",
+      "pageUrl": "Page address",
+      "linkedInstagram": "Linked Instagram",
+      "openInstagram": "Open the Instagram channel",
+      "quality": "Number quality",
+      "metaStatus": "Status at Meta",
+      "wabaId": "WhatsApp account ID",
+      "businessId": "Business ID"
+    },
+    "detail": {
+      "notFound": "This channel no longer exists",
+      "notFoundHint": "It may have been removed, or the link is wrong.",
+      "backToList": "Back to channels",
+      "loadError": "We couldn't load this channel",
+      "generalTitle": "General",
+      "generalDescription": "How the channel behaves in conversations.",
+      "actionsTitle": "Connection",
+      "actionsDescription": "What you can do with this channel right now."
+    },
+    "waba": {
+      "tabs": {
+        "profile": "Profile",
+        "numbers": "Numbers",
+        "templates": "Templates",
+        "account": "Account"
+      },
+      "quality": {
+        "GREEN": "High",
+        "YELLOW": "Medium",
+        "RED": "Low",
+        "UNKNOWN": "Unknown"
+      },
+      "phoneStatus": {
+        "CONNECTED": "Connected",
+        "DISCONNECTED": "Disconnected",
+        "PENDING": "Pending",
+        "VERIFIED": "Verified",
+        "NOT_VERIFIED": "Not verified"
+      },
+      "accountMode": {
+        "LIVE": "Live",
+        "SANDBOX": "Testing"
+      },
+      "nameStatus": {
+        "APPROVED": "Approved",
+        "AVAILABLE_WITHOUT_REVIEW": "Available without review",
+        "DECLINED": "Declined",
+        "EXPIRED": "Expired",
+        "PENDING_REVIEW": "Under review",
+        "NONE": "No name"
+      },
+      "searchVisibility": {
+        "VISIBLE": "Visible",
+        "NON_VISIBLE": "Not visible",
+        "ELIGIBLE": "Eligible",
+        "NOT_ELIGIBLE": "Not eligible"
+      },
+      "verticals": {
+        "UNDEFINED": "Not set",
+        "OTHER": "Other",
+        "AUTO": "Automotive",
+        "BEAUTY": "Beauty",
+        "APPAREL": "Apparel",
+        "EDU": "Education",
+        "ENTERTAIN": "Entertainment",
+        "EVENT_PLAN": "Event planning",
+        "FINANCE": "Finance",
+        "GROCERY": "Grocery",
+        "GOVT": "Government",
+        "HOTEL": "Hotel",
+        "HEALTH": "Health",
+        "NONPROFIT": "Nonprofit",
+        "PROF_SERVICES": "Professional services",
+        "RETAIL": "Retail",
+        "TRAVEL": "Travel",
+        "RESTAURANT": "Restaurant",
+        "NOT_A_BIZ": "Not a business"
+      },
+      "numbers": {
+        "description": "The numbers registered on this account. The primary one is used by default to send messages.",
+        "refresh": "Refresh numbers",
+        "refreshed": "Numbers refreshed",
+        "refreshFailed": "We couldn't fetch the numbers from Meta",
+        "empty": "No numbers found",
+        "emptyHint": "Refresh to fetch this account's numbers from Meta.",
+        "primary": "Primary",
+        "qualityLabel": "{{value}} quality",
+        "accountMode": "Account mode",
+        "nameStatus": "Name status",
+        "pin": "PIN on",
+        "official": "Official account",
+        "searchVisibility": "Search visibility",
+        "globalSearch": "Global search",
+        "yes": "Yes",
+        "no": "No",
+        "id": "ID:"
+      },
+      "profile": {
+        "number": "Number",
+        "primaryNumber": "{{number}} · {{name}} (primary)",
+        "loadError": "We couldn't read the profile from Meta",
+        "loadErrorHint": "The profile doesn't open unless the Meta connection is working. If the channel is disconnected, connect it again first.",
+        "pictureTitle": "Photo",
+        "pictureHint": "JPEG or PNG, up to 5 MB. Shown to anyone chatting with this number.",
+        "pictureChange": "Change photo",
+        "pictureType": "Use a JPEG or PNG image.",
+        "pictureSize": "The image is over 5 MB. Try a smaller one.",
+        "pictureSaved": "Photo updated",
+        "pictureFailed": "We couldn't change the photo",
+        "title": "Business profile",
+        "description": "What contacts see when they open your profile on WhatsApp.",
+        "about": "About",
+        "aboutPlaceholder": "Open Monday to Friday, 9am to 6pm",
+        "aboutHint": "The short line under the name.",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Say in a few lines what the business does",
+        "email": "Email",
+        "emailPlaceholder": "contact@yourbusiness.com",
+        "vertical": "Industry",
+        "address": "Address",
+        "addressPlaceholder": "Street, number, city and state",
+        "website": "Website {{number}}",
+        "websitePlaceholder": "https://www.yourbusiness.com",
+        "save": "Save profile",
+        "saved": "Profile updated at Meta",
+        "tooLong": "Use up to {{max}} characters.",
+        "emailInvalid": "Check the email.",
+        "urlInvalid": "Use a full address, starting with https://."
+      }
+    },
+    "templates": {
+      "description": "The ready-made messages official WhatsApp lets you send outside the 24-hour window. Meta approves each one, and only approved ones can be sent.",
+      "create": "Create template",
+      "refresh": "Refresh",
+      "search": "Search templates",
+      "statusFilter": "Status",
+      "category": "Category",
+      "language": "Language",
+      "count_one": "{{count}} template",
+      "count_other": "{{count}} templates",
+      "empty": "No templates yet",
+      "emptyHint": "Create the first one to reach contacts outside the 24-hour window.",
+      "noResults": "No templates match these filters.",
+      "clearFilters": "Clear filters",
+      "loadError": "We couldn't load the templates",
+      "actionsOf": "Actions for {{name}}",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDescription": "The template leaves your WhatsApp account at Meta, and this can't be undone. Campaigns using this template can no longer send it.",
+      "deleted": "Template deleted",
+      "created": "Template sent to Meta for approval",
+      "updated": "Template updated",
+      "rejectedReason": "Reason for rejection: {{reason}}",
+      "categoryChanged": "Meta considers this template to be in the {{category}} category.",
+      "stats": {
+        "approved": "Approved",
+        "pending": "Under review",
+        "rejected": "Rejected"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Under review",
+        "rejected": "Rejected",
+        "paused": "Paused",
+        "disabled": "Disabled",
+        "in_appeal": "Under appeal",
+        "limit_exceeded": "Limit exceeded",
+        "archived": "Archived",
+        "pending_deletion": "Leaving the account",
+        "deleted": "Deleted",
+        "removed": "Removed"
+      },
+      "categories": {
+        "UTILITY": "Utility",
+        "MARKETING": "Marketing",
+        "AUTHENTICATION": "Authentication"
+      },
+      "languages": {
+        "pt_BR": "Portuguese (Brazil)",
+        "en_US": "English (United States)"
+      },
+      "createTitle": "Create template",
+      "editTitle": "Edit template",
+      "save": "Save template",
+      "viewLabel": "Edit or see the preview",
+      "viewEdit": "Edit",
+      "viewPreview": "Preview",
+      "serverErrors": "Meta didn't accept this template. Review and try again:",
+      "name": "Name",
+      "namePlaceholder": "customer_welcome",
+      "nameHint": "Just for you to identify it. Contacts don't see it.",
+      "nameNormalized": "It will be saved as {{name}}",
+      "lockedHint": "Meta doesn't let you change the name, category and language after creating.",
+      "removePart": "Remove",
+      "maxChars": "Up to {{max}} characters.",
+      "header": {
+        "title": "Header",
+        "add": "Add header",
+        "hint": "Text, image, video, document or location, above the message.",
+        "format": "Type",
+        "formats": {
+          "TEXT": "Text",
+          "IMAGE": "Image",
+          "VIDEO": "Video",
+          "DOCUMENT": "Document",
+          "LOCATION": "Location"
+        },
+        "text": "Header text",
+        "mediaUrl": "File address",
+        "mediaPlaceholder": "https://",
+        "mediaHint": {
+          "IMAGE": "A public link to a JPEG or PNG image, up to 5 MB. Meta uses it as a sample for review.",
+          "VIDEO": "A public link to an MP4 or 3GPP video, up to 16 MB. Meta uses it as a sample for review.",
+          "DOCUMENT": "A public link to a PDF, Word, Excel or PowerPoint file, up to 100 MB. Meta uses it as a sample for review."
+        },
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "placeName": "Place name",
+        "address": "Address"
+      },
+      "body": {
+        "title": "Message",
+        "placeholder": "Hi, Maria! Your order is out for delivery.",
+        "hint": "To personalize, write {{first}} and {{second}} where the name or other data goes.",
+        "addVariable": "Insert variable",
+        "examplesHint": "Meta asks for a sample of each variable to review the template. Contacts don't see these samples.",
+        "exampleOf": "Sample for {{variable}}",
+        "examplePlaceholder": "Maria"
+      },
+      "footer": {
+        "title": "Footer",
+        "add": "Add footer",
+        "hint": "A smaller line at the end, like the store name.",
+        "text": "Footer text"
+      },
+      "buttons": {
+        "title": "Buttons",
+        "add": "Add buttons",
+        "hint": "Up to 3 buttons under the message.",
+        "types": {
+          "QUICK_REPLY": "Quick reply",
+          "URL": "Link",
+          "PHONE_NUMBER": "Call",
+          "COPY_CODE": "Copy code"
+        },
+        "remove": "Remove button {{number}}",
+        "text": "Button text",
+        "url": "Link address",
+        "urlPlaceholder": "https://yourbusiness.com/order",
+        "urlHint": "For a link that changes per contact, end it with {{variable}}.",
+        "phone": "Number to call",
+        "phonePlaceholder": "+5541999999999",
+        "phoneHint": "With the country code.",
+        "rules": "{{count}} of {{max}} buttons. At most 1 call and 2 links, and quick replies stay together."
+      },
+      "preview": {
+        "title": "Preview",
+        "hint": "What the contact sees, with samples in place of variables.",
+        "empty": "The preview shows up here as you write.",
+        "button": "Button {{number}}",
+        "image": "Header image",
+        "imageUnavailable": "We couldn't open this image",
+        "video": "Header video",
+        "document": "Attached document",
+        "location": "Location"
+      },
+      "validation": {
+        "nameRequired": "Give the template a name.",
+        "headerText": "Write the header text.",
+        "mediaUrl": "Use a full address, starting with https://.",
+        "coordinate": "Use a number, like -23.55.",
+        "bodyText": "Write the message.",
+        "footerText": "Write the footer text.",
+        "tooLong": "Use up to {{max}} characters.",
+        "mixedVariables": "Use only numbers or only names for variables, without mixing.",
+        "variableGap": "Variables must be in sequence, starting at 1, without skipping.",
+        "variableName": "Variable names use only lowercase letters, numbers and underscores.",
+        "example": "Give a sample for this variable.",
+        "buttonsRequired": "Add at least one button, or remove this part.",
+        "tooManyPhones": "Only 1 call button fits.",
+        "tooManyUrls": "Only 2 link buttons fit.",
+        "buttonText": "Write the button text.",
+        "buttonUrl": "Use a full address, starting with https://.",
+        "buttonPhone": "Use the number with the country code, like +5541999999999."
+      }
+    },
+    "widget": {
+      "loadError": "We couldn't load the chat settings",
+      "activeLabel": "Show the chat on the website",
+      "activeOn": "The chat button is showing to website visitors.",
+      "activeOff": "The chat is off. Even with the code installed, the button doesn't show.",
+      "turnedOn": "Chat turned on",
+      "turnedOff": "Chat turned off",
+      "turnOnFailed": "We couldn't turn on the chat",
+      "turnOffTitle": "Turn off the website chat?",
+      "turnOffDescription": "Visitors stop seeing the button and can't send messages until you turn it back on. Conversations are kept.",
+      "turnOffConfirm": "Turn off the chat",
+      "saved": "Chat settings saved",
+      "unsaved": "Unsaved changes",
+      "discard": "Discard",
+      "save": "Save changes",
+      "tabs": {
+        "appearance": "Appearance",
+        "security": "Security and limits",
+        "install": "Installation"
+      },
+      "errors": {
+        "color": "Use a color in #RRGGBB format.",
+        "range": "Use a number from {{min}} to {{max}}.",
+        "tooLong": "Use up to {{max}} characters.",
+        "pinnedVersion": "Choose the version to pin."
+      },
+      "basics": {
+        "title": "The essentials",
+        "description": "What visitors see first.",
+        "name": "Name in the chat",
+        "color": "Main color",
+        "welcome": "Welcome message",
+        "position": "Button position",
+        "bottomRight": "Bottom right corner",
+        "bottomLeft": "Bottom left corner",
+        "locale": "Chat language",
+        "localePt": "Portuguese (Brazil)",
+        "localeEn": "English (United States)",
+        "preChat": "What to ask before the conversation",
+        "preChatHint": "Visitors fill this in before sending their first message.",
+        "preChatOptions": {
+          "off": "Nothing, visitors write right away",
+          "name": "Name",
+          "name_phone": "Name and phone",
+          "name_phone_email": "Name, phone and email"
+        }
+      },
+      "preview": {
+        "title": "Preview",
+        "hint": "Changes as you edit, before saving.",
+        "show": "See preview",
+        "label": "Preview of the chat as it appears on the website",
+        "botFallback": "Support",
+        "welcomeFallback": "Hi! How can I help?",
+        "userSample": "I have a question"
+      },
+      "presets": {
+        "title": "Ready-made styles",
+        "description": "A starting point: colors and shape change all at once, and you adjust what you like.",
+        "light": "Light blue",
+        "midnight": "Midnight",
+        "minimal": "Minimal",
+        "violetLight": "Light violet",
+        "violetDark": "Dark violet",
+        "emerald": "Emerald"
+      },
+      "images": {
+        "title": "Images",
+        "description": "They apply as soon as you upload.",
+        "launcher": "Button image",
+        "launcherHint": "Square, shown as a circle. JPEG, PNG, WebP or GIF, up to 2 MB.",
+        "avatar": "Support photo",
+        "avatarHint": "Shown at the top of the chat. JPEG, PNG, WebP or GIF, up to 2 MB.",
+        "upload": "Upload image",
+        "replace": "Change image",
+        "remove": "Remove",
+        "uploaded": "Image uploaded",
+        "removed": "Image removed",
+        "failed": "We couldn't upload the image",
+        "removeFailed": "We couldn't remove the image",
+        "invalidType": "Use a JPEG, PNG, WebP or GIF image.",
+        "tooLarge": "The image is over 2 MB. Try a smaller one."
+      },
+      "colors": {
+        "title": "Colors",
+        "description": "With no choice, each part uses the main color or the chat default.",
+        "default": "Default color",
+        "useDefault": "Use default",
+        "headerBgColor": "Header background",
+        "headerTextColor": "Header text",
+        "userBubbleColor": "Visitor bubble",
+        "userBubbleTextColor": "Visitor bubble text",
+        "assistantBubbleColor": "Support bubble",
+        "assistantBubbleTextColor": "Support bubble text",
+        "messageAreaBg": "Messages background"
+      },
+      "shape": {
+        "title": "Shape and font",
+        "launcherSize": "Button size",
+        "bubbleRadius": "Bubble corners",
+        "panelRadius": "Panel corners",
+        "range": "From {{min}} to {{max}} pixels.",
+        "font": "Font",
+        "fonts": {
+          "system": "Device default",
+          "inter": "Inter",
+          "roboto": "Roboto",
+          "georgia": "Georgia",
+          "rounded": "Rounded",
+          "mono": "Monospace"
+        }
+      },
+      "css": {
+        "title": "Custom CSS",
+        "description": "For a tweak the fields above don't cover. It only applies inside the chat, without affecting the website.",
+        "guide": "How to use",
+        "label": "CSS code"
+      },
+      "origins": {
+        "title": "Allowed websites",
+        "description": "Which addresses the chat can work on.",
+        "emptyWarning": "With no websites on the list, the chat works on any address, including that of anyone who copies your code. For your real website, it's better to list it.",
+        "placeholder": "https://www.yourstore.com",
+        "add": "Add",
+        "invalid": "Use an address like https://www.yourstore.com.",
+        "remove": "Remove {{origin}}"
+      },
+      "limits": {
+        "title": "Limits",
+        "description": "They protect against abuse from website visitors. In daily limits, 0 means no limit.",
+        "perMinute": "Messages per minute",
+        "perMinuteHint": "Per visitor.",
+        "dailyMessages": "Messages per day",
+        "dailyMessagesHint": "In total. Once the limit is reached, new messages are refused until the next day.",
+        "dailyVisitors": "New visitors per day",
+        "dailyVisitorsHint": "People who already chatted aren't affected."
+      },
+      "install": {
+        "title": "Installation code",
+        "description": "Paste it on every page of the website, before </head>. After that, just turn on the chat.",
+        "guide": "See the guide",
+        "copy": "Copy code",
+        "notReady": "The code shows up here as soon as the chat has a key.",
+        "regenerate": "Change the key",
+        "regenerateHint": "You only need to change the key if the code leaked. Visitors drop off until the new code is in.",
+        "regenerateTitle": "Change the chat key?",
+        "regenerateDescription": "The installed code stops working now, and visitors drop off until you paste the new code. Only do this if the key leaked.",
+        "regenerated": "Key changed. Paste the new code on the website."
+      },
+      "delivery": {
+        "title": "Chat updates",
+        "description": "For security teams that review the code before it goes on the website.",
+        "label": "Chat version",
+        "rolling": "Automatic",
+        "rollingHint": "Always the latest version, and fixes arrive on their own.",
+        "pinned": "Pinned version",
+        "pinnedHint": "Freezes on one version, with an integrity check. Nothing changes without review. Colors and texts keep coming from here.",
+        "version": "Version",
+        "pendingSave": "Save to generate the code for this version. Changing a pinned version requires pasting the code on the website again.",
+        "sri": "Integrity hash",
+        "csp": "Suggested security policy for your website"
+      },
+      "guide": {
+        "title": "Website chat guide",
+        "description": "For whoever takes care of the website.",
+        "installTitle": "Install",
+        "installSteps": [
+          "Copy the code on the Installation tab.",
+          "Paste it before </head> on every page of the website.",
+          "Under Security and limits, list the website's addresses.",
+          "Turn on the chat. The button shows up for visitors."
+        ],
+        "cssTitle": "Custom CSS",
+        "cssIntro": "The CSS goes inside the chat, without affecting the website. Rules with @import, expression(), behavior: and javascript: are blocked, and the limit is 8 KB. Prefer these variables, which don't change between versions:",
+        "variables": {
+          "primary": "Main color",
+          "headerBg": "Header background",
+          "headerText": "Header text",
+          "userBubble": "Visitor bubble",
+          "userText": "Visitor text",
+          "assistantBubble": "Support bubble",
+          "assistantText": "Support text",
+          "messageBg": "Messages background",
+          "bubbleRadius": "Bubble corners",
+          "panelRadius": "Panel corners",
+          "launcherSize": "Button size",
+          "font": "Font"
+        },
+        "cssExample": ":host {\n  --aiva-user-bubble: #111827;\n  --aiva-bubble-radius: 4px;\n}",
+        "pinnedTitle": "Pinned version and security",
+        "pinnedText": "A pinned version always loads the same file, checked by the integrity hash: nothing changes without review. Changing versions requires pasting the code again. The suggested security policy lists what your website needs to allow for the chat to work.",
+        "limitsTitle": "Limits and privacy",
+        "limits": [
+          "Messages can have up to 4,000 characters.",
+          "The limits on this screen apply to everyone visiting the website.",
+          "With context capture on, the page address and title go along with the conversation. If your addresses contain personal data, talk to support before turning on the chat."
+        ]
+      }
+    }
+  }
+}

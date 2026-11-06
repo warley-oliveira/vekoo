@@ -1,0 +1,882 @@
+{
+  "connectors": {
+    "page": {
+      "description": "Os canais por onde as conversas chegam. Cada um mostra o que está acontecendo e o que fazer, quando algo precisa de você.",
+      "add": "Adicionar canal",
+      "refresh": "Atualizar canais",
+      "loadError": "Não deu para carregar os canais",
+      "emptyTitle": "Nenhum canal conectado ainda",
+      "emptyDescription": "Conecte seu WhatsApp, Instagram, Messenger ou o chat do site para começar a receber conversas aqui.",
+      "search": "Buscar canal",
+      "noResults": "Nenhum canal com esse nome.",
+      "showAll": "Ver todos os canais",
+      "empty": {
+        "all": "Nenhum canal por aqui.",
+        "attention": "Nada precisa da sua atenção agora.",
+        "connected": "Nenhum canal conectado agora.",
+        "off": "Nenhum canal pausado ou desligado."
+      }
+    },
+    "filter": {
+      "label": "Filtrar canais por situação",
+      "all": "Todos",
+      "attention": "Atenção",
+      "connected": "Conectados",
+      "off": "Desligados"
+    },
+    "groups": {
+      "attention": "Precisam de atenção",
+      "connected": "Conectados",
+      "off": "Pausados e desligados"
+    },
+    "alerts": {
+      "count_one": "{{count}} aviso",
+      "count_other": "{{count}} avisos",
+      "dismiss": "Dispensar",
+      "dismissTitle": "Dispensar este aviso?",
+      "dismissDescription": "Todas as pessoas da organização deixam de ver o aviso, e o número do menu diminui. Dispensar não conecta o canal de novo: se o problema continuar, ele continua aqui.",
+      "dismissed": "Aviso dispensado"
+    },
+    "types": {
+      "whatsapp_web": "WhatsApp do celular",
+      "whatsapp_web_zapi": "WhatsApp do celular, pela Z-API",
+      "zapi": "WhatsApp do celular, pela Z-API",
+      "whatsapp_cloud": "WhatsApp oficial",
+      "instagram_direct": "Instagram",
+      "facebook_messenger": "Messenger",
+      "lead_chat": "LeadChat",
+      "web_widget": "Chat do site"
+    },
+    "name": {
+      "waiting": "{{type}}, aguardando conexão"
+    },
+    "status": {
+      "active": {
+        "label": "Conectado",
+        "hint": "Recebendo e enviando mensagens normalmente."
+      },
+      "pending": {
+        "label": "Aguardando",
+        "hint": "Falta ler o código no celular para terminar a conexão."
+      },
+      "paused": {
+        "label": "Pausado",
+        "hint": "A automação está parada. Retome quando quiser.",
+        "hintDiscards": "A automação está parada, e o que chega enquanto o canal está pausado é descartado."
+      },
+      "failed": {
+        "label": "Com falha",
+        "hint": "A conexão não deu certo. Tente de novo."
+      },
+      "closed": {
+        "label": "Desconectado",
+        "hint": "As mensagens não estão chegando. Conecte de novo para voltar a atender por aqui."
+      },
+      "reject": {
+        "label": "Bloqueado",
+        "hint": "O WhatsApp bloqueou este número, e ele não volta sozinho. Confira o número no celular antes de conectar de novo."
+      },
+      "inactive": {
+        "label": "Desligado",
+        "hint": "Este canal não recebe nem envia mensagens enquanto estiver desligado."
+      }
+    },
+    "main": {
+      "resume": "Retomar",
+      "continue": "Continuar conexão",
+      "connect": "Conectar",
+      "reconnect": "Conectar de novo",
+      "turnOn": "Ligar"
+    },
+    "row": {
+      "manage": "Ver detalhes",
+      "moreNumbers_one": "mais {{count}} número",
+      "moreNumbers_other": "mais {{count}} números",
+      "created": "Criado",
+      "actionsOf": "Ações de {{name}}"
+    },
+    "resume": {
+      "done": "{{name}} voltou a funcionar",
+      "failed": "Não deu para retomar o canal"
+    },
+    "pause": {
+      "action": "Pausar",
+      "summary": "Para a automação até você retomar. A conexão com o canal continua de pé.",
+      "title": "Pausar {{name}}?",
+      "discards": "A automação para de responder e, nesta conexão, tudo o que chegar durante a pausa é descartado e não volta. Essas mensagens não vão aparecer nas conversas. Se quiser continuar recebendo, deixe o canal ligado.",
+      "keeps": "A automação para de responder até você retomar. As mensagens continuam chegando nas conversas.",
+      "confirm": "Pausar",
+      "confirmDiscards": "Pausar e descartar o que chegar",
+      "done": "{{name}} está pausado"
+    },
+    "reload": {
+      "action": "Recarregar conexão",
+      "summary": "Reinicia a ligação com o WhatsApp sem precisar ler o código de novo. Ajuda quando as mensagens param de chegar.",
+      "title": "Recarregar a conexão de {{name}}?",
+      "description": "A ligação com o WhatsApp reinicia e volta em alguns segundos. Você não precisa ler o código de novo.",
+      "confirm": "Recarregar conexão",
+      "done": "Conexão recarregada"
+    },
+    "shutdown": {
+      "action": "Desligar",
+      "summary": "Encerra a conexão. Para voltar, você precisa conectar de novo.",
+      "title": "Desligar {{name}}?",
+      "description": "O canal para de receber e enviar mensagens agora, e a organização recebe um aviso. As conversas ficam guardadas. Para voltar, você precisa conectar de novo.",
+      "confirm": "Desligar",
+      "done": "{{name}} foi desligado"
+    },
+    "disconnect": {
+      "action": "Desconectar",
+      "summary": "Encerra a conexão com a conta. Para voltar, você precisa conectar de novo.",
+      "summaryInstagram": "Remove o acesso do Vekoo à sua conta do Instagram. Para voltar, você precisa entrar de novo.",
+      "title": "Desconectar {{name}}?",
+      "description": "O canal para de receber e enviar mensagens agora, e a organização recebe um aviso. As conversas ficam guardadas. Para voltar, você precisa conectar de novo.",
+      "instagram": "As mensagens do Direct param de chegar, o Vekoo perde o acesso à sua conta do Instagram e a organização recebe um aviso. As conversas ficam guardadas. Para voltar, você precisa entrar de novo com a conta.",
+      "confirm": "Desconectar",
+      "done": "{{name}} foi desconectado"
+    },
+    "connect": {
+      "title": "Conectar canal",
+      "failed": "Não deu para conectar",
+      "done": "{{name}} foi conectado",
+      "detail": "Detalhe:",
+      "close": "Fechar",
+      "retry": "Tentar de novo",
+      "back": "Voltar",
+      "cancel": "Cancelar",
+      "step": "Passo {{current}} de {{total}}"
+    },
+    "errors": {
+      "generic": "Algo deu errado do nosso lado. Tente de novo em instantes.",
+      "network": "Não conseguimos falar com o servidor. Verifique sua internet e tente de novo.",
+      "forbidden": "Seu grupo de permissões não libera esta ação. Fale com quem administra a organização.",
+      "actionFailed": "O serviço que conecta este canal não respondeu. Tente de novo em instantes.",
+      "typeMismatch": "Este tipo de canal não tem esta ação."
+    },
+    "choose": {
+      "title": "Por onde chegam as conversas?",
+      "unavailable": "Esta conexão ainda não foi configurada neste ambiente.",
+      "widgetCreated": "Chat do site criado. Personalize e ligue quando estiver pronto.",
+      "widgetFailed": "Não deu para criar o chat do site",
+      "options": {
+        "whatsapp": {
+          "title": "WhatsApp do celular",
+          "description": "Use o número que você já tem, como no WhatsApp Web. Você lê um QR code ou digita um código no celular."
+        },
+        "whatsapp_zapi": {
+          "title": "WhatsApp do celular, pela Z-API",
+          "description": "O mesmo jeito de conectar, com mais recursos de mídia e modelos. Precisa ler um QR code."
+        },
+        "whatsapp_cloud": {
+          "title": "WhatsApp oficial",
+          "description": "A conexão oficial da Meta, para quem tem conta comercial. Permite enviar modelos de mensagem aprovados."
+        },
+        "instagram": {
+          "title": "Instagram",
+          "description": "Receba as mensagens do Direct de uma conta profissional. Não precisa de página no Facebook."
+        },
+        "messenger": {
+          "title": "Messenger",
+          "description": "Receba as mensagens da sua página no Facebook. Se ela tiver um Instagram profissional, ele entra junto."
+        },
+        "widget": {
+          "title": "Chat do site",
+          "description": "Um botão de conversa no seu site ou loja virtual. Você personaliza e cola um código na página."
+        }
+      }
+    },
+    "method": {
+      "title": "Como você quer conectar?",
+      "titleReconnect": "Como você quer conectar de novo?",
+      "label": "Jeito de conectar",
+      "qr": "Ler um QR code",
+      "qrHint": "Você aponta a câmera do celular para esta tela.",
+      "qrHintMobile": "Precisa de outra tela: o celular não lê um código que está nele mesmo. Abra esta página no computador.",
+      "code": "Digitar um código no celular",
+      "codeHint": "Informe o número e digite o código de 8 letras no WhatsApp. Bom para quem está no próprio celular.",
+      "phone": "Número do WhatsApp",
+      "phoneHint": "Com DDD. Se for de fora do Brasil, comece com + e o código do país.",
+      "phoneInvalid": "Confira o número: faltam dígitos.",
+      "need": "Deixe o celular por perto, com o WhatsApp aberto e com internet. Leva menos de um minuto.",
+      "zapi": "Nesta conexão você lê um QR code: aponte a câmera do celular para esta tela.",
+      "zapiMobile": "Nesta conexão você lê um QR code, e o celular não lê um código que está nele mesmo. Abra esta página no computador para mostrar o código.",
+      "submitQr": "Gerar QR code",
+      "submitCode": "Gerar código"
+    },
+    "live": {
+      "title": "Conecte seu WhatsApp",
+      "qrLead": "Siga os passos no celular. Assim que você ler o código, esta tela avisa.",
+      "codeLead": "Digite este código no WhatsApp do celular. Assim que conectar, esta tela avisa.",
+      "connectedTitle": "Tudo certo",
+      "failedTitle": "A conexão não terminou",
+      "expiredTitle": "O tempo acabou",
+      "leftWaiting": "O canal ficou aguardando. Para terminar, volte aqui e toque em Continuar conexão.",
+      "connectedHeading": "WhatsApp conectado",
+      "connectedWithNumber": "O número {{number}} já está recebendo e enviando mensagens.",
+      "connectedHint": "O aparelho foi conectado e já está recebendo e enviando mensagens.",
+      "failedHeading": "Não conseguimos conectar",
+      "failedHint": "Pode ser algo passageiro no serviço do WhatsApp. Tente de novo; se continuar, fale com o suporte e mostre o detalhe abaixo.",
+      "blockedHeading": "O WhatsApp bloqueou este número",
+      "blockedHint": "Abra o WhatsApp no celular e veja o que ele informa. Depois de resolver lá, tente conectar de novo.",
+      "expiredHeading": "O tempo para ler o código acabou",
+      "expiredHint": "Por segurança, o código vale por pouco tempo. Gere outro quando estiver com o celular na mão.",
+      "useQr": "Prefiro ler o QR code",
+      "useCode": "Prefiro digitar um código",
+      "platform": "Modelo do celular",
+      "android": "Android",
+      "iphone": "iPhone",
+      "openChannel": "Ver o canal",
+      "finish": "Concluir",
+      "newCode": "Gerar novo código",
+      "closeWaiting": "Fechar e continuar depois",
+      "qrAlt": "QR code para conectar o WhatsApp",
+      "copyCode": "Copiar código",
+      "codeAlt": "Código de pareamento: {{code}}",
+      "starting": "Pedindo um código novo ao WhatsApp…",
+      "waitingQr": "Gerando o QR code. Costuma levar poucos segundos.",
+      "waitingCode": "Pedindo o código ao WhatsApp. Costuma levar poucos segundos.",
+      "slow": "Está demorando mais que o normal. Você pode esperar mais um pouco ou gerar um novo código.",
+      "waitingScan": "Aguardando a leitura. Se o código mudar, é só ler o novo.",
+      "waitingEntry": "Aguardando você digitar o código no celular.",
+      "polling": "Sem conexão em tempo real agora. Seguimos conferindo a cada poucos segundos.",
+      "steps": {
+        "qr": {
+          "android": [
+            "Abra o WhatsApp no celular.",
+            "Toque no menu (⋮) e em Aparelhos conectados.",
+            "Toque em Conectar um aparelho.",
+            "Aponte a câmera para o QR code."
+          ],
+          "iphone": [
+            "Abra o WhatsApp no iPhone.",
+            "Vá em Configurações e em Aparelhos conectados.",
+            "Toque em Conectar um aparelho.",
+            "Aponte a câmera para o QR code."
+          ]
+        },
+        "code": {
+          "android": [
+            "Copie o código e abra o WhatsApp.",
+            "Toque no menu (⋮) e em Aparelhos conectados.",
+            "Toque em Conectar um aparelho e em Conectar com número de telefone.",
+            "Digite o código."
+          ],
+          "iphone": [
+            "Copie o código e abra o WhatsApp.",
+            "Vá em Configurações e em Aparelhos conectados.",
+            "Toque em Conectar um aparelho e em Conectar com número de telefone.",
+            "Digite o código."
+          ]
+        }
+      }
+    },
+    "tips": {
+      "title": "Para a conexão não cair",
+      "description": "O WhatsApp pode desconectar o número se estes cuidados faltarem.",
+      "internet": "Mantenha o celular conectado à internet o tempo todo.",
+      "weeklyOpen": "Abra o WhatsApp no celular pelo menos uma vez por semana.",
+      "autoUpdate": "Deixe as atualizações automáticas do WhatsApp ligadas na loja de aplicativos.",
+      "battery": "Mantenha o celular carregado: a economia de bateria pode derrubar a conexão.",
+      "linkedDevices": "Não remova este aparelho da lista de Aparelhos conectados do WhatsApp.",
+      "sectionTitle": "Como manter conectado",
+      "sectionDescription": "Esta conexão depende do seu celular."
+    },
+    "webhook": {
+      "title": "Último passo: cole estes dados no painel da Meta",
+      "description": "Em Configuração do webhook, no painel do aplicativo. Copie agora: estes dados aparecem só aqui.",
+      "url": "URL de retorno",
+      "token": "Token de verificação"
+    },
+    "meta": {
+      "failedTitle": "A conexão não terminou",
+      "providerRefused": "A Meta não aceitou a conexão",
+      "providerRefusedHint": "Confira se a conta tem permissão sobre o número e tente de novo. Se continuar, fale com o suporte e mostre o detalhe abaixo.",
+      "cancelled": "A janela foi fechada antes de terminar",
+      "cancelledHint": "Nada foi conectado. Tente de novo e vá até o fim na janela da Meta.",
+      "stoppedAt": "parou na etapa {{step}}",
+      "incomplete": "A Meta não devolveu todos os dados",
+      "incompleteHint": "A autorização terminou, mas faltaram os dados do número. Tente de novo.",
+      "saveFailed": "Não deu para concluir por aqui",
+      "unconfigured": "Esta conexão ainda não foi configurada",
+      "unconfiguredHint": "Este ambiente ainda não tem os dados do aplicativo da Meta. Fale com quem administra a plataforma.",
+      "noInstagram": "A página não tem um Instagram profissional vinculado, então o Direct não entrou. Vincule no Meta Business Suite e conecte de novo para receber as mensagens de lá.",
+      "authorizing": "Continue na janela da Meta. Esta tela espera você terminar.",
+      "saving": "Terminando a conexão…",
+      "loading": "Preparando a janela da Meta…",
+      "loadFailed": "Não conseguimos abrir a conexão com a Meta. Um bloqueador de anúncios pode estar impedindo; desligue-o nesta página e tente de novo.",
+      "whatsapp": {
+        "title": "Conectar o WhatsApp oficial",
+        "titleReconnect": "Conectar de novo pela Meta",
+        "doneTitle": "Tudo certo",
+        "doneHeading": "WhatsApp oficial conectado",
+        "doneHint": "O canal já está recebendo e enviando mensagens.",
+        "connect": "Continuar com a Meta",
+        "steps": [
+          "Uma janela da Meta vai abrir. Se não abrir, libere as janelas deste site no navegador.",
+          "Entre com a conta do Facebook que administra a empresa.",
+          "Escolha a conta do WhatsApp e o número que vão atender.",
+          "Quando terminar, a janela fecha e a conexão termina aqui."
+        ]
+      },
+      "messenger": {
+        "title": "Conectar o Messenger",
+        "titleReconnect": "Conectar de novo pelo Facebook",
+        "doneTitle": "Tudo certo",
+        "doneHeading": "Messenger conectado",
+        "doneHint": "A página já está recebendo e enviando mensagens.",
+        "connect": "Continuar com o Facebook",
+        "steps": [
+          "Uma janela do Facebook vai abrir. Se não abrir, libere as janelas deste site no navegador.",
+          "Entre com a conta que administra a página.",
+          "Autorize o acesso às mensagens da página.",
+          "Quando terminar, a janela fecha e a conexão termina aqui."
+        ]
+      }
+    },
+    "instagram": {
+      "title": "Conectar o Instagram",
+      "titleReconnect": "Conectar de novo pelo Instagram",
+      "doneTitle": "Tudo certo",
+      "doneHeading": "Instagram conectado",
+      "doneHint": "As mensagens do Direct já chegam aqui.",
+      "closed": "A janela foi fechada antes de terminar",
+      "closedHint": "Nada foi conectado. Tente de novo e vá até o fim na janela do Instagram.",
+      "refused": "O Instagram não aceitou a conexão",
+      "refusedHint": "A conta precisa ser profissional (empresa ou criador de conteúdo). Confira isso no aplicativo e tente de novo.",
+      "authorizing": "Continue na janela do Instagram. Esta tela espera você terminar.",
+      "connect": "Continuar com o Instagram",
+      "steps": [
+        "Uma janela do Instagram vai abrir. Se não abrir, a página inteira vai até lá e volta para cá depois.",
+        "Entre com a conta profissional da empresa.",
+        "Autorize o acesso às mensagens.",
+        "Quando terminar, a conexão termina aqui."
+      ],
+      "profile": {
+        "title": "Perfil",
+        "description": "Os dados públicos da conta, como aparecem no Instagram.",
+        "business": "Conta comercial",
+        "accountTypes": {
+          "BUSINESS": "Conta comercial",
+          "CREATOR": "Criador de conteúdo",
+          "MEDIA_CREATOR": "Criador de conteúdo",
+          "PERSONAL": "Conta pessoal"
+        },
+        "followers": "Seguidores",
+        "follows": "Seguindo",
+        "media": "Publicações",
+        "accountId": "ID da conta:",
+        "stale": "Não deu para atualizar agora. Mostrando os últimos dados guardados.",
+        "refresh": "Atualizar perfil"
+      }
+    },
+    "callback": {
+      "processing": "Terminando a autorização…",
+      "doneTitle": "Autorização concluída",
+      "doneHint": "Pode fechar esta janela e voltar para o Vekoo. Se a conexão não terminar sozinha, use o botão abaixo.",
+      "back": "Voltar para os canais"
+    },
+    "signature": {
+      "label": "Assinar com o nome de quem atendeu",
+      "hint": "As mensagens enviadas pela equipe saem com o nome da pessoa, para o contato saber com quem está falando.",
+      "on": "As mensagens agora saem assinadas",
+      "off": "As mensagens agora saem sem assinatura",
+      "failed": "Não deu para mudar a assinatura"
+    },
+    "facts": {
+      "createdAt": "Criado em",
+      "number": "Número",
+      "profileName": "Nome no WhatsApp",
+      "provider": "Conexão",
+      "providerDefault": "Padrão do Vekoo",
+      "providerZapi": "Z-API",
+      "instance": "Instância",
+      "numberId": "ID do número",
+      "page": "Página",
+      "pageId": "ID da página",
+      "pageUrl": "Endereço da página",
+      "linkedInstagram": "Instagram vinculado",
+      "openInstagram": "Abrir o canal do Instagram",
+      "quality": "Qualidade do número",
+      "metaStatus": "Situação na Meta",
+      "wabaId": "ID da conta do WhatsApp",
+      "businessId": "ID da empresa"
+    },
+    "detail": {
+      "notFound": "Este canal não existe mais",
+      "notFoundHint": "Ele pode ter sido removido, ou o link está errado.",
+      "backToList": "Voltar para os canais",
+      "loadError": "Não deu para carregar este canal",
+      "generalTitle": "Geral",
+      "generalDescription": "Como o canal se comporta nas conversas.",
+      "actionsTitle": "Conexão",
+      "actionsDescription": "O que dá para fazer com este canal agora."
+    },
+    "waba": {
+      "tabs": {
+        "profile": "Perfil",
+        "numbers": "Números",
+        "templates": "Modelos",
+        "account": "Conta"
+      },
+      "quality": {
+        "GREEN": "Alta",
+        "YELLOW": "Média",
+        "RED": "Baixa",
+        "UNKNOWN": "Desconhecida"
+      },
+      "phoneStatus": {
+        "CONNECTED": "Conectado",
+        "DISCONNECTED": "Desconectado",
+        "PENDING": "Pendente",
+        "VERIFIED": "Verificado",
+        "NOT_VERIFIED": "Não verificado"
+      },
+      "accountMode": {
+        "LIVE": "Em produção",
+        "SANDBOX": "Em testes"
+      },
+      "nameStatus": {
+        "APPROVED": "Aprovado",
+        "AVAILABLE_WITHOUT_REVIEW": "Liberado sem revisão",
+        "DECLINED": "Recusado",
+        "EXPIRED": "Vencido",
+        "PENDING_REVIEW": "Em revisão",
+        "NONE": "Sem nome"
+      },
+      "searchVisibility": {
+        "VISIBLE": "Visível",
+        "NON_VISIBLE": "Não visível",
+        "ELIGIBLE": "Elegível",
+        "NOT_ELIGIBLE": "Não elegível"
+      },
+      "verticals": {
+        "UNDEFINED": "Não definido",
+        "OTHER": "Outro",
+        "AUTO": "Automotivo",
+        "BEAUTY": "Beleza",
+        "APPAREL": "Vestuário",
+        "EDU": "Educação",
+        "ENTERTAIN": "Entretenimento",
+        "EVENT_PLAN": "Planejamento de eventos",
+        "FINANCE": "Finanças",
+        "GROCERY": "Mercearia",
+        "GOVT": "Governo",
+        "HOTEL": "Hotel",
+        "HEALTH": "Saúde",
+        "NONPROFIT": "Sem fins lucrativos",
+        "PROF_SERVICES": "Serviços profissionais",
+        "RETAIL": "Varejo",
+        "TRAVEL": "Viagens",
+        "RESTAURANT": "Restaurante",
+        "NOT_A_BIZ": "Não é um negócio"
+      },
+      "numbers": {
+        "description": "Os números registrados nesta conta. O principal é o usado por padrão para enviar mensagens.",
+        "refresh": "Atualizar números",
+        "refreshed": "Números atualizados",
+        "refreshFailed": "Não deu para buscar os números na Meta",
+        "empty": "Nenhum número encontrado",
+        "emptyHint": "Atualize para buscar os números desta conta na Meta.",
+        "primary": "Principal",
+        "qualityLabel": "Qualidade {{value}}",
+        "accountMode": "Modo da conta",
+        "nameStatus": "Situação do nome",
+        "pin": "PIN ligado",
+        "official": "Conta oficial",
+        "searchVisibility": "Visibilidade na busca",
+        "globalSearch": "Busca global",
+        "yes": "Sim",
+        "no": "Não",
+        "id": "ID:"
+      },
+      "profile": {
+        "number": "Número",
+        "primaryNumber": "{{number}} · {{name}} (principal)",
+        "loadError": "Não deu para ler o perfil na Meta",
+        "loadErrorHint": "Sem a conexão com a Meta funcionando, o perfil não abre. Se o canal estiver desconectado, conecte de novo primeiro.",
+        "pictureTitle": "Foto",
+        "pictureHint": "JPEG ou PNG, até 5 MB. Aparece para quem conversa com este número.",
+        "pictureChange": "Trocar foto",
+        "pictureType": "Use uma imagem JPEG ou PNG.",
+        "pictureSize": "A imagem passa de 5 MB. Tente uma menor.",
+        "pictureSaved": "Foto atualizada",
+        "pictureFailed": "Não deu para trocar a foto",
+        "title": "Perfil da empresa",
+        "description": "O que o contato vê ao abrir o perfil no WhatsApp.",
+        "about": "Recado",
+        "aboutPlaceholder": "Atendimento de segunda a sexta, das 9h às 18h",
+        "aboutHint": "A frase curta embaixo do nome.",
+        "descriptionLabel": "Descrição",
+        "descriptionPlaceholder": "Conte em poucas linhas o que a empresa faz",
+        "email": "E-mail",
+        "emailPlaceholder": "contato@suaempresa.com.br",
+        "vertical": "Setor",
+        "address": "Endereço",
+        "addressPlaceholder": "Rua, número, cidade e estado",
+        "website": "Site {{number}}",
+        "websitePlaceholder": "https://www.suaempresa.com.br",
+        "save": "Salvar perfil",
+        "saved": "Perfil atualizado na Meta",
+        "tooLong": "Use até {{max}} caracteres.",
+        "emailInvalid": "Confira o e-mail.",
+        "urlInvalid": "Use um endereço completo, começando com https://."
+      }
+    },
+    "templates": {
+      "description": "As mensagens prontas que o WhatsApp oficial deixa enviar fora da janela de 24 horas. A Meta aprova cada uma, e só as aprovadas podem ser enviadas.",
+      "create": "Criar modelo",
+      "refresh": "Atualizar",
+      "search": "Buscar modelo",
+      "statusFilter": "Situação",
+      "category": "Categoria",
+      "language": "Idioma",
+      "count_one": "{{count}} modelo",
+      "count_other": "{{count}} modelos",
+      "empty": "Nenhum modelo ainda",
+      "emptyHint": "Crie o primeiro para poder falar com contatos fora da janela de 24 horas.",
+      "noResults": "Nenhum modelo com esses filtros.",
+      "clearFilters": "Limpar filtros",
+      "loadError": "Não deu para carregar os modelos",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir {{name}}?",
+      "deleteDescription": "O modelo sai da sua conta do WhatsApp na Meta, e isso não tem volta. Campanhas que usam este modelo deixam de poder enviá-lo.",
+      "deleted": "Modelo excluído",
+      "created": "Modelo enviado para a Meta aprovar",
+      "updated": "Modelo atualizado",
+      "rejectedReason": "Motivo da recusa: {{reason}}",
+      "categoryChanged": "A Meta entendeu que este modelo é da categoria {{category}}.",
+      "stats": {
+        "approved": "Aprovados",
+        "pending": "Em análise",
+        "rejected": "Recusados"
+      },
+      "status": {
+        "approved": "Aprovado",
+        "pending": "Em análise",
+        "rejected": "Recusado",
+        "paused": "Pausado",
+        "disabled": "Desativado",
+        "in_appeal": "Em recurso",
+        "limit_exceeded": "Limite excedido",
+        "archived": "Arquivado",
+        "pending_deletion": "Saindo da conta",
+        "deleted": "Excluído",
+        "removed": "Removido"
+      },
+      "categories": {
+        "UTILITY": "Utilidade",
+        "MARKETING": "Marketing",
+        "AUTHENTICATION": "Autenticação"
+      },
+      "languages": {
+        "pt_BR": "Português (Brasil)",
+        "en_US": "Inglês (Estados Unidos)"
+      },
+      "createTitle": "Criar modelo",
+      "editTitle": "Editar modelo",
+      "save": "Salvar modelo",
+      "viewLabel": "Editar ou ver a prévia",
+      "viewEdit": "Editar",
+      "viewPreview": "Prévia",
+      "serverErrors": "A Meta não aceitou este modelo. Revise e tente de novo:",
+      "name": "Nome",
+      "namePlaceholder": "boas_vindas_cliente",
+      "nameHint": "Só para você identificar. O contato não vê.",
+      "nameNormalized": "Vai ser salvo como {{name}}",
+      "lockedHint": "A Meta não deixa mudar nome, categoria e idioma depois de criar.",
+      "removePart": "Remover",
+      "maxChars": "Até {{max}} caracteres.",
+      "header": {
+        "title": "Cabeçalho",
+        "add": "Adicionar cabeçalho",
+        "hint": "Texto, imagem, vídeo, documento ou localização, acima da mensagem.",
+        "format": "Tipo",
+        "formats": {
+          "TEXT": "Texto",
+          "IMAGE": "Imagem",
+          "VIDEO": "Vídeo",
+          "DOCUMENT": "Documento",
+          "LOCATION": "Localização"
+        },
+        "text": "Texto do cabeçalho",
+        "mediaUrl": "Endereço do arquivo",
+        "mediaPlaceholder": "https://",
+        "mediaHint": {
+          "IMAGE": "Um link público para uma imagem JPEG ou PNG, até 5 MB. A Meta usa como exemplo na análise.",
+          "VIDEO": "Um link público para um vídeo MP4 ou 3GPP, até 16 MB. A Meta usa como exemplo na análise.",
+          "DOCUMENT": "Um link público para PDF, Word, Excel ou PowerPoint, até 100 MB. A Meta usa como exemplo na análise."
+        },
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "placeName": "Nome do local",
+        "address": "Endereço"
+      },
+      "body": {
+        "title": "Mensagem",
+        "placeholder": "Olá, Maria! Seu pedido saiu para entrega.",
+        "hint": "Para personalizar, escreva {{first}} e {{second}} onde entra o nome ou outro dado.",
+        "addVariable": "Inserir variável",
+        "examplesHint": "A Meta pede um exemplo de cada variável para analisar o modelo. O contato não vê estes exemplos.",
+        "exampleOf": "Exemplo de {{variable}}",
+        "examplePlaceholder": "Maria"
+      },
+      "footer": {
+        "title": "Rodapé",
+        "add": "Adicionar rodapé",
+        "hint": "Uma linha menor no fim, como o nome da loja.",
+        "text": "Texto do rodapé"
+      },
+      "buttons": {
+        "title": "Botões",
+        "add": "Adicionar botões",
+        "hint": "Até 3 botões embaixo da mensagem.",
+        "types": {
+          "QUICK_REPLY": "Resposta rápida",
+          "URL": "Link",
+          "PHONE_NUMBER": "Ligação",
+          "COPY_CODE": "Copiar código"
+        },
+        "remove": "Remover botão {{number}}",
+        "text": "Texto do botão",
+        "url": "Endereço do link",
+        "urlPlaceholder": "https://suaempresa.com.br/pedido",
+        "urlHint": "Para um link que muda por contato, termine com {{variable}}.",
+        "phone": "Número para ligar",
+        "phonePlaceholder": "+5541999999999",
+        "phoneHint": "Com o código do país.",
+        "rules": "{{count}} de {{max}} botões. No máximo 1 de ligação e 2 de link, e as respostas rápidas ficam juntas."
+      },
+      "preview": {
+        "title": "Prévia",
+        "hint": "Como o contato vê, com os exemplos no lugar das variáveis.",
+        "empty": "A prévia aparece aqui conforme você escreve.",
+        "button": "Botão {{number}}",
+        "image": "Imagem do cabeçalho",
+        "imageUnavailable": "Não deu para abrir esta imagem",
+        "video": "Vídeo do cabeçalho",
+        "document": "Documento anexado",
+        "location": "Localização"
+      },
+      "validation": {
+        "nameRequired": "Dê um nome ao modelo.",
+        "headerText": "Escreva o texto do cabeçalho.",
+        "mediaUrl": "Use um endereço completo, começando com https://.",
+        "coordinate": "Use um número, como -23.55.",
+        "bodyText": "Escreva a mensagem.",
+        "footerText": "Escreva o texto do rodapé.",
+        "tooLong": "Use até {{max}} caracteres.",
+        "mixedVariables": "Use só números ou só nomes nas variáveis, sem misturar.",
+        "variableGap": "As variáveis precisam estar em sequência, começando em 1, sem pular número.",
+        "variableName": "Nomes de variável usam só letras minúsculas, números e sublinhado.",
+        "example": "Dê um exemplo para esta variável.",
+        "buttonsRequired": "Adicione pelo menos um botão, ou remova esta parte.",
+        "tooManyPhones": "Só cabe 1 botão de ligação.",
+        "tooManyUrls": "Só cabem 2 botões de link.",
+        "buttonText": "Escreva o texto do botão.",
+        "buttonUrl": "Use um endereço completo, começando com https://.",
+        "buttonPhone": "Use o número com o código do país, como +5541999999999."
+      }
+    },
+    "widget": {
+      "loadError": "Não deu para carregar a configuração do chat",
+      "activeLabel": "Mostrar o chat no site",
+      "activeOn": "O botão de conversa está aparecendo para quem visita o site.",
+      "activeOff": "O chat está desligado. Mesmo com o código instalado, o botão não aparece.",
+      "turnedOn": "Chat ligado no site",
+      "turnedOff": "Chat desligado no site",
+      "turnOnFailed": "Não deu para ligar o chat",
+      "turnOffTitle": "Desligar o chat do site?",
+      "turnOffDescription": "Quem está no site deixa de ver o botão e não consegue mandar mensagem até você ligar de novo. As conversas ficam guardadas.",
+      "turnOffConfirm": "Desligar o chat",
+      "saved": "Configuração do chat salva",
+      "unsaved": "Alterações ainda não salvas",
+      "discard": "Descartar",
+      "save": "Salvar alterações",
+      "tabs": {
+        "appearance": "Aparência",
+        "security": "Segurança e limites",
+        "install": "Instalação"
+      },
+      "errors": {
+        "color": "Use uma cor no formato #RRGGBB.",
+        "range": "Use um número de {{min}} a {{max}}.",
+        "tooLong": "Use até {{max}} caracteres.",
+        "pinnedVersion": "Escolha a versão a fixar."
+      },
+      "basics": {
+        "title": "O essencial",
+        "description": "O que o visitante vê primeiro.",
+        "name": "Nome no chat",
+        "color": "Cor principal",
+        "welcome": "Mensagem de boas-vindas",
+        "position": "Posição do botão",
+        "bottomRight": "Canto inferior direito",
+        "bottomLeft": "Canto inferior esquerdo",
+        "locale": "Idioma do chat",
+        "localePt": "Português (Brasil)",
+        "localeEn": "Inglês (Estados Unidos)",
+        "preChat": "O que pedir antes da conversa",
+        "preChatHint": "O visitante preenche antes de mandar a primeira mensagem.",
+        "preChatOptions": {
+          "off": "Nada, o visitante escreve direto",
+          "name": "Nome",
+          "name_phone": "Nome e telefone",
+          "name_phone_email": "Nome, telefone e e-mail"
+        }
+      },
+      "preview": {
+        "title": "Prévia",
+        "hint": "Muda enquanto você edita, antes de salvar.",
+        "show": "Ver prévia",
+        "label": "Prévia do chat como aparece no site",
+        "botFallback": "Atendimento",
+        "welcomeFallback": "Olá! Como posso ajudar?",
+        "userSample": "Tenho uma dúvida"
+      },
+      "presets": {
+        "title": "Modelos prontos",
+        "description": "Um ponto de partida: as cores e o formato mudam de uma vez, e você ajusta o que quiser.",
+        "light": "Azul claro",
+        "midnight": "Meia-noite",
+        "minimal": "Minimalista",
+        "violetLight": "Violeta claro",
+        "violetDark": "Violeta escuro",
+        "emerald": "Esmeralda"
+      },
+      "images": {
+        "title": "Imagens",
+        "description": "Valem assim que você envia.",
+        "launcher": "Imagem do botão",
+        "launcherHint": "Quadrada, aparece em círculo. JPEG, PNG, WebP ou GIF, até 2 MB.",
+        "avatar": "Foto do atendimento",
+        "avatarHint": "Aparece no topo do chat. JPEG, PNG, WebP ou GIF, até 2 MB.",
+        "upload": "Enviar imagem",
+        "replace": "Trocar imagem",
+        "remove": "Remover",
+        "uploaded": "Imagem enviada",
+        "removed": "Imagem removida",
+        "failed": "Não deu para enviar a imagem",
+        "removeFailed": "Não deu para remover a imagem",
+        "invalidType": "Use uma imagem JPEG, PNG, WebP ou GIF.",
+        "tooLarge": "A imagem passa de 2 MB. Tente uma menor."
+      },
+      "colors": {
+        "title": "Cores",
+        "description": "Sem escolha, cada parte usa a cor principal ou o padrão do chat.",
+        "default": "Cor padrão",
+        "useDefault": "Usar padrão",
+        "headerBgColor": "Fundo do cabeçalho",
+        "headerTextColor": "Texto do cabeçalho",
+        "userBubbleColor": "Balão do visitante",
+        "userBubbleTextColor": "Texto do balão do visitante",
+        "assistantBubbleColor": "Balão do atendimento",
+        "assistantBubbleTextColor": "Texto do balão do atendimento",
+        "messageAreaBg": "Fundo das mensagens"
+      },
+      "shape": {
+        "title": "Formato e fonte",
+        "launcherSize": "Tamanho do botão",
+        "bubbleRadius": "Canto dos balões",
+        "panelRadius": "Canto do painel",
+        "range": "De {{min}} a {{max}} pixels.",
+        "font": "Fonte",
+        "fonts": {
+          "system": "Padrão do aparelho",
+          "inter": "Inter",
+          "roboto": "Roboto",
+          "georgia": "Georgia",
+          "rounded": "Arredondada",
+          "mono": "Monoespaçada"
+        }
+      },
+      "css": {
+        "title": "CSS personalizado",
+        "description": "Para quem precisa de um ajuste que os campos acima não cobrem. Vale só dentro do chat, sem afetar o site.",
+        "guide": "Como usar",
+        "label": "Código CSS"
+      },
+      "origins": {
+        "title": "Sites autorizados",
+        "description": "Em quais endereços o chat pode funcionar.",
+        "emptyWarning": "Sem nenhum site na lista, o chat funciona em qualquer endereço, inclusive no de quem copiar o seu código. Para o site de verdade, é melhor listar.",
+        "placeholder": "https://www.sualoja.com.br",
+        "add": "Adicionar",
+        "invalid": "Use um endereço como https://www.sualoja.com.br.",
+        "remove": "Remover {{origin}}"
+      },
+      "limits": {
+        "title": "Limites",
+        "description": "Protegem contra abuso de quem visita o site. Nos limites diários, 0 quer dizer sem limite.",
+        "perMinute": "Mensagens por minuto",
+        "perMinuteHint": "Por visitante.",
+        "dailyMessages": "Mensagens por dia",
+        "dailyMessagesHint": "No total. Ao chegar no limite, novas mensagens são recusadas até o dia seguinte.",
+        "dailyVisitors": "Visitantes novos por dia",
+        "dailyVisitorsHint": "Quem já conversou não é afetado."
+      },
+      "install": {
+        "title": "Código de instalação",
+        "description": "Cole em todas as páginas do site, antes de </head>. Depois disso, é só ligar o chat.",
+        "guide": "Ver o guia",
+        "copy": "Copiar código",
+        "notReady": "O código aparece aqui assim que o chat tiver uma chave.",
+        "regenerate": "Trocar a chave",
+        "regenerateHint": "Trocar a chave só é preciso se o código vazou. Quem está no site cai até o código novo entrar.",
+        "regenerateTitle": "Trocar a chave do chat?",
+        "regenerateDescription": "O código instalado para de funcionar agora, e quem está no site cai até você colar o código novo. Faça isso só se a chave vazou.",
+        "regenerated": "Chave trocada. Cole o código novo no site."
+      },
+      "delivery": {
+        "title": "Atualizações do chat",
+        "description": "Para equipes de segurança que revisam o código antes de ele entrar no site.",
+        "label": "Versão do chat",
+        "rolling": "Automática",
+        "rollingHint": "Sempre a última versão, e as correções chegam sozinhas.",
+        "pinned": "Versão fixa",
+        "pinnedHint": "Congela numa versão, com verificação de integridade. Nada muda sem revisão. Cores e textos continuam vindo daqui.",
+        "version": "Versão",
+        "pendingSave": "Salve para gerar o código desta versão. Trocar de versão fixa exige colar o código de novo no site.",
+        "sri": "Hash de integridade",
+        "csp": "Política de segurança sugerida para o seu site"
+      },
+      "guide": {
+        "title": "Guia do chat do site",
+        "description": "Para quem cuida do site.",
+        "installTitle": "Instalar",
+        "installSteps": [
+          "Copie o código na aba Instalação.",
+          "Cole antes de </head> em todas as páginas do site.",
+          "Em Segurança e limites, liste os endereços do site.",
+          "Ligue o chat. O botão aparece para quem visita."
+        ],
+        "cssTitle": "CSS personalizado",
+        "cssIntro": "O CSS entra dentro do chat, sem afetar o site. Regras com @import, expression(), behavior: e javascript: são bloqueadas, e o limite é de 8 KB. Prefira estas variáveis, que não mudam entre versões:",
+        "variables": {
+          "primary": "Cor principal",
+          "headerBg": "Fundo do cabeçalho",
+          "headerText": "Texto do cabeçalho",
+          "userBubble": "Balão do visitante",
+          "userText": "Texto do visitante",
+          "assistantBubble": "Balão do atendimento",
+          "assistantText": "Texto do atendimento",
+          "messageBg": "Fundo das mensagens",
+          "bubbleRadius": "Canto dos balões",
+          "panelRadius": "Canto do painel",
+          "launcherSize": "Tamanho do botão",
+          "font": "Fonte"
+        },
+        "cssExample": ":host {\n  --aiva-user-bubble: #111827;\n  --aiva-bubble-radius: 4px;\n}",
+        "pinnedTitle": "Versão fixa e segurança",
+        "pinnedText": "A versão fixa carrega sempre o mesmo arquivo, conferido pelo hash de integridade: nada muda sem revisão. Trocar de versão exige colar o código de novo. A política de segurança sugerida lista o que o seu site precisa liberar para o chat funcionar.",
+        "limitsTitle": "Limites e privacidade",
+        "limits": [
+          "Mensagens têm até 4.000 caracteres.",
+          "Os limites desta tela valem para todo mundo que visita o site.",
+          "Com a captura de contexto ligada, o endereço e o título da página vão junto com a conversa. Se os seus endereços têm dados pessoais, fale com o suporte antes de ligar o chat."
+        ]
+      }
+    }
+  }
+}
