@@ -200,13 +200,17 @@ module Pipelines
       self.description = extract_text_from_tiptap(description_json)
     end
 
+    # Texto solto é uma linha só: negrito, por exemplo, parte a frase em vários nós. O resto são
+    # blocos, cada um na sua linha.
     def extract_text_from_tiptap(node)
       return "" unless node.is_a?(Hash)
+      return "\n" if node["type"] == "hardBreak"
+      return node["text"].to_s if node.key?("text")
 
-      text = node["text"].to_s
-      children = Array(node["content"]).map { |child| extract_text_from_tiptap(child) }
-      parts = [ text, *children ].reject(&:blank?)
-      parts.join(node["type"] == "paragraph" ? "\n" : "")
+      content = Array(node["content"])
+      parts = content.map { |child| extract_text_from_tiptap(child) }.reject(&:empty?)
+      inline = content.any? { |child| child.is_a?(Hash) && (child.key?("text") || child["type"] == "hardBreak") }
+      parts.join(inline ? "" : "\n")
     end
 
     # O que mudou é lido aqui, onde o dirty tracking ainda vale, e o gatilho é avaliado depois do

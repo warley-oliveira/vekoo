@@ -226,6 +226,47 @@ RSpec.describe Pipelines::Card, type: :model do
     end
   end
 
+  describe "texto da descrição" do
+    def text_of(*blocks)
+      card = create(:pipeline_card, stage: stage, description_json: { "type" => "doc", "content" => blocks })
+      card.description
+    end
+
+    def paragraph(*nodes)
+      { "type" => "paragraph", "content" => nodes }
+    end
+
+    def text(value, **extra)
+      { "type" => "text", "text" => value }.merge(extra.stringify_keys)
+    end
+
+    it "não parte a frase onde muda a formatação" do
+      result = text_of(paragraph(text("Entrega toda "), text("segunda-feira", marks: [ { "type" => "bold" } ])))
+
+      expect(result).to eq("Entrega toda segunda-feira")
+    end
+
+    it "põe cada bloco na sua linha" do
+      expect(text_of(paragraph(text("Um")), paragraph(text("Dois")))).to eq("Um\nDois")
+    end
+
+    it "desce pelas listas, sem linha em branco no lugar de parágrafo vazio" do
+      list = {
+        "type" => "bulletList",
+        "content" => [
+          { "type" => "listItem", "content" => [ paragraph(text("Item A")) ] },
+          { "type" => "listItem", "content" => [ paragraph(text("Item B")) ] }
+        ]
+      }
+
+      expect(text_of(paragraph(text("Lista:")), { "type" => "paragraph" }, list)).to eq("Lista:\nItem A\nItem B")
+    end
+
+    it "respeita a quebra de linha dentro do parágrafo" do
+      expect(text_of(paragraph(text("Um"), { "type" => "hardBreak" }, text("Dois")))).to eq("Um\nDois")
+    end
+  end
+
   describe "#checklist_progress" do
     it "conta os itens de todos os checklists" do
       card = create(:pipeline_card, stage: stage)
