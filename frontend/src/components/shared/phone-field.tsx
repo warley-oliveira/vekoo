@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type Ref } from "react"
+import { useLayoutEffect, useRef, useState, type Ref } from "react"
 import type { FieldPath, FieldValues } from "react-hook-form"
 
 import { Input } from "@/components/ui/input"
@@ -45,7 +45,11 @@ export function PhoneInput({
 }: PhoneInputProps) {
   const local = useRef<HTMLInputElement | null>(null)
   const caret = useRef<number | null>(null)
-  const display = formatPhoneInput(onlyDigits(value))
+  // Um "+" sozinho ainda não tem dígito nenhum para guardar no valor, mas é o começo de
+  // um número internacional: precisa continuar na tela até o primeiro dígito chegar.
+  const [typingPlus, setTypingPlus] = useState(false)
+  const digits = onlyDigits(value)
+  const display = digits ? formatPhoneInput(digits) : typingPlus ? "+" : ""
 
   useLayoutEffect(() => {
     if (caret.current === null || !local.current) return
@@ -71,6 +75,7 @@ export function PhoneInput({
       onChange={(event) => {
         const text = event.target.value
         const next = parsePhoneInput(text, defaultCountry)
+        setTypingPlus(text.trim() === "+")
         const before = onlyDigits(text.slice(0, event.target.selectionStart ?? text.length))
         // O país entra sozinho no primeiro dígito digitado sem "+".
         const added = next.length - onlyDigits(text).length
