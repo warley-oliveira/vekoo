@@ -61,6 +61,10 @@ class Connector::WhatsappWeb
       # ---- shared helpers ------------------------------------------------------
 
       # Erros em que repetir a chamada não muda o resultado.
+      # Sem resposta nenhuma: não dá para saber se a mensagem saiu. Resposta de erro do provedor é
+      # outra coisa (recusa clara, como a instância reconectando), e essa continua sendo repetida.
+      AMBIGUOUS_ERRORS = [ Net::ReadTimeout, Net::WriteTimeout, Errno::ECONNRESET, Errno::EPIPE, EOFError ].freeze
+
       PERMANENT_ERRORS = [WhatsappNumberNotFoundError].freeze
 
       # Wraps a provider HTTP call in the retry pattern the legacy code used:
@@ -68,7 +72,9 @@ class Connector::WhatsappWeb
       # then re-raise the last exception. State is kept in a local counter so
       # multiple calls don't share retry budget. PERMANENT_ERRORS propagate
       # immediately.
-      def with_retry(label:, wait_seconds: 1, max_retries: 2)
+      # `idempotent: false` nos envios: sem resposta, repetir o POST pode mandar a mesma mensagem
+      # duas vezes para a mesma pessoa (ver AMBIGUOUS_ERRORS).
+      def with_retry(label:, wait_seconds: 1, max_retries: 2, idempotent: true)
         tries = 0
         begin
           yield
@@ -76,6 +82,7 @@ class Connector::WhatsappWeb
           raise
         rescue StandardError => e
           raise if Thread.current[:connector_send_once]
+          raise if !idempotent && AMBIGUOUS_ERRORS.any? { |kind| e.is_a?(kind) }
 
           sleep(wait_seconds)
           tries += 1
@@ -85,8 +92,8 @@ class Connector::WhatsappWeb
         end
       end
 
-      # Dentro do bloco, nenhuma chamada se repete. Quem pede são as campanhas: um timeout de leitura
-      # não diz se a mensagem saiu, e repetir o POST mandaria duas vezes para a mesma pessoa.
+      # Dentro do bloco, nenhuma chamada se repete, nem as de conexão recusada. Quem pede são as
+      # campanhas, que têm a própria recuperação e não podem ficar presas no meio do lote.
       def send_once
         previous = Thread.current[:connector_send_once]
         Thread.current[:connector_send_once] = true

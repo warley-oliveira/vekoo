@@ -43,7 +43,7 @@ class Connector::WhatsappWeb
         payload = { number: to, text: message, delay: 0, presence: 'available' }
         payload[:quoted] = quoted_payload(reply_to_external_id, to) if reply_to_external_id.present?
 
-        Base.with_retry(label: 'Send Text Message') do
+        Base.with_retry(label: 'Send Text Message', idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendText/#{connector.instance_name}",
             body: payload.to_json,
@@ -69,7 +69,7 @@ class Connector::WhatsappWeb
 
         sent_after = Time.current.to_i - SENT_MESSAGE_CLOCK_SKEW
 
-        Base.with_retry(label: 'Send Media Message') do
+        Base.with_retry(label: 'Send Media Message', idempotent: false) do
           payload = {
             number: to,
             mediatype: media_dto.media_type || 'image',
@@ -119,7 +119,7 @@ class Connector::WhatsappWeb
       def send_audio_message_by_url(connector, to, audio_url)
         payload = { number: to, audio: audio_url, encoding: true }
 
-        Base.with_retry(label: 'Send Audio') do
+        Base.with_retry(label: 'Send Audio', idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendWhatsAppAudio/#{connector.instance_name}",
             body: payload.to_json,
@@ -190,7 +190,7 @@ class Connector::WhatsappWeb
           reaction: emoji.to_s
         }
 
-        Base.with_retry(label: 'Send Reaction') do
+        Base.with_retry(label: 'Send Reaction', idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendReaction/#{connector.instance_name}",
             body: payload.to_json,

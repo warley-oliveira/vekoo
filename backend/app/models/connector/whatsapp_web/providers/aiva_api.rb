@@ -21,7 +21,7 @@ class Connector::WhatsappWeb
           options: { delay: 0, presence: 'available' }
         }
 
-        Base.with_retry(label: 'Send Text Message') do
+        Base.with_retry(label: 'Send Text Message', idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendText/#{connector.instance_name}",
             body: payload.to_json,
@@ -39,7 +39,7 @@ class Connector::WhatsappWeb
       def send_media_message(connector, to, media_dto)
         file_name = (media_dto.file_name || 'image.jpg').unicode_normalize(:nfkd).gsub(/[^\x00-\x7F]/, '')
 
-        Base.with_retry(label: 'Send Media Message') do
+        Base.with_retry(label: 'Send Media Message', idempotent: false) do
           if media_dto.attachment.present?
             send_local_attachment(connector, to, media_dto, file_name)
           else
@@ -55,7 +55,7 @@ class Connector::WhatsappWeb
           options: { delay: 0 }
         }
 
-        Base.with_retry(label: 'Send Audio') do
+        Base.with_retry(label: 'Send Audio', idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendWhatsAppAudio/#{connector.instance_name}",
             body: payload.to_json,
