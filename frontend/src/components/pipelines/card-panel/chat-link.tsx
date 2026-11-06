@@ -79,52 +79,54 @@ export function ChatLink({ card, onLink }: ChatLinkProps) {
   const name = summary.contactName || summary.contactPhone || t("pipelines.chat.noName")
 
   return (
-    <div className="flex items-center gap-2.5 rounded-lg bg-muted/50 p-2">
-      <UserAvatar
-        name={name}
-        src={summary.profilePictureUrl ? apiAssetUrl(summary.profilePictureUrl) : null}
-      />
-      <div className="min-w-0 flex-1">
-        <p className="flex items-center gap-1.5 text-sm font-medium">
-          <span className="truncate">{name}</span>
-          {summary.status ? (
-            <StatusBadge tone={summary.status === "open" ? "info" : "neutral"}>
-              {t(`pipelines.chat.status.${summary.status === "open" ? "open" : "closed"}`)}
-            </StatusBadge>
-          ) : null}
-        </p>
-        <p className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
-          {summary.contactPhone ? (
-            <span>{formatPhone(summary.contactPhone.split("@")[0] ?? "")}</span>
-          ) : null}
-          {summary.lastMessageAt ? (
-            <RelativeTime value={summary.lastMessageAt} />
-          ) : null}
-        </p>
+    <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted/50 p-2">
+      <div className="flex min-w-48 flex-1 items-center gap-2.5">
+        <UserAvatar
+          name={name}
+          src={summary.profilePictureUrl ? apiAssetUrl(summary.profilePictureUrl) : null}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1.5 text-sm font-medium">
+            <span className="truncate">{name}</span>
+            {summary.status ? (
+              <StatusBadge tone={summary.status === "open" ? "info" : "neutral"}>
+                {t(`pipelines.chat.status.${summary.status === "open" ? "open" : "closed"}`)}
+              </StatusBadge>
+            ) : null}
+          </p>
+          <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
+            {summary.contactPhone ? (
+              <span>{formatPhone(summary.contactPhone.split("@")[0] ?? "")}</span>
+            ) : null}
+            {summary.lastMessageAt ? <RelativeTime value={summary.lastMessageAt} /> : null}
+          </p>
+        </div>
       </div>
-      {canOpenChat ? (
+      <div className="ml-auto flex items-center gap-1">
+        {canOpenChat ? (
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            className="shrink-0 pointer-coarse:h-10"
+            render={<Link to={`/chat/${summary.id}`} />}
+          >
+            <ExternalLink />
+            {t("pipelines.chat.open")}
+          </Button>
+        ) : null}
         <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          className="shrink-0 pointer-coarse:h-10"
-          render={<Link to={`/chat/${summary.id}`} />}
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0 text-muted-foreground pointer-coarse:size-10"
+          aria-label={t("pipelines.chat.unlink")}
+          title={t("pipelines.chat.unlink")}
+          onClick={() => onLink(null)}
         >
-          <ExternalLink />
-          {t("pipelines.chat.open")}
+          <Unlink />
         </Button>
-      ) : null}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-sm"
-        className="shrink-0 text-muted-foreground pointer-coarse:size-10"
-        aria-label={t("pipelines.chat.unlink")}
-        title={t("pipelines.chat.unlink")}
-        onClick={() => onLink(null)}
-      >
-        <Unlink />
-      </Button>
+      </div>
     </div>
   )
 }

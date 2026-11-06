@@ -113,18 +113,24 @@ function ColumnOption({
 }
 
 /** Cada um compara o que interessa: a escolha de colunas fica neste navegador. */
-function ColumnPicker({
-  visible,
-  onChange,
-  columns,
+export const ListColumnPicker = memo(function ListColumnPicker({
+  isCrm,
+  hasLeadScore,
   customFields,
 }: {
-  visible: string[]
-  onChange: (next: string[]) => void
-  columns: readonly BaseColumn[]
+  isCrm: boolean
+  hasLeadScore: boolean
   customFields: CustomField[]
 }) {
   const { t } = useTranslation()
+  const [visible, onChange] = useLocalStorage<string[]>(COLUMNS_KEY, DEFAULT_COLUMNS)
+  const columns = useMemo(
+    () =>
+      BASE_COLUMNS.filter(
+        (id) => (isCrm || !STANDARD_HIDDEN.has(id)) && (id !== "leadScore" || hasLeadScore)
+      ),
+    [hasLeadScore, isCrm]
+  )
   const toggle = (id: string) =>
     onChange(visible.includes(id) ? visible.filter((item) => item !== id) : [...visible, id])
 
@@ -192,7 +198,7 @@ function ColumnPicker({
       </div>
     </ResponsivePopover>
   )
-}
+})
 
 function customValueText(field: CustomField, value: unknown, language: string, yes: string, no: string) {
   if (value === null || value === undefined || value === "") return null
@@ -221,6 +227,7 @@ function useListColumns({
     const available: Record<BaseColumn, ColumnDef<Card, unknown>> = {
       stage: {
         id: "stage",
+        accessorFn: (card) => card.stageId,
         header: t("pipelines.list.column.stage"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.stage"), mobile: "secondary", className: "w-44" },
@@ -240,6 +247,7 @@ function useListColumns({
       },
       assignee: {
         id: "assignee",
+        accessorFn: (card) => card.assignedTo?.name ?? "",
         header: t("pipelines.list.column.assignee"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.assignee"), className: "w-44" },
@@ -261,6 +269,7 @@ function useListColumns({
       },
       priority: {
         id: "priority",
+        accessorFn: (card) => card.priority ?? "",
         header: t("pipelines.list.column.priority"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.priority"), className: "w-28" },
@@ -281,9 +290,9 @@ function useListColumns({
         enableSorting: false,
         meta: { label: t("pipelines.list.column.labels"), className: "w-52" },
         cell: ({ row }) => (
-          <span className="flex max-w-52 flex-wrap gap-1">
+          <span className="flex max-w-52 gap-1 overflow-hidden">
             {row.original.labels.slice(0, 2).map((label) => (
-              <TagChip key={label.id} color={label.color} className="h-5 max-w-24 px-1.5 text-[0.6875rem]">
+              <TagChip key={label.id} color={label.color} className="h-5 max-w-20 px-1.5 text-[0.6875rem]">
                 {label.name}
               </TagChip>
             ))}
@@ -295,6 +304,7 @@ function useListColumns({
       },
       dueDate: {
         id: "dueDate",
+        accessorFn: (card) => card.dueDate ?? 0,
         header: t("pipelines.list.column.dueDate"),
         enableSorting: true,
         meta: {
@@ -313,6 +323,7 @@ function useListColumns({
       },
       value: {
         id: "value",
+        accessorFn: (card) => card.dealValue ?? 0,
         header: t("pipelines.list.column.value"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.value"), align: "right", className: "w-32" },
@@ -334,6 +345,7 @@ function useListColumns({
       },
       probability: {
         id: "probability",
+        accessorFn: (card) => card.dealProbability ?? 0,
         header: t("pipelines.list.column.probability"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.probability"), align: "right", className: "w-24" },
@@ -346,6 +358,7 @@ function useListColumns({
       },
       expectedClose: {
         id: "expectedClose",
+        accessorFn: (card) => card.expectedCloseDate ?? "",
         header: t("pipelines.list.column.expectedClose"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.expectedClose"), className: "w-32" },
@@ -360,6 +373,7 @@ function useListColumns({
       },
       company: {
         id: "company",
+        accessorFn: (card) => card.companyName ?? "",
         header: t("pipelines.list.column.company"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.company"), className: "w-44" },
@@ -371,6 +385,7 @@ function useListColumns({
       },
       leadScore: {
         id: "leadScore",
+        accessorFn: (card) => leadScoreOf(card, leadScore) ?? 0,
         header: t("pipelines.list.column.leadScore"),
         enableSorting: true,
         meta: { label: t("pipelines.list.column.leadScore"), align: "right", className: "w-24" },
@@ -385,6 +400,7 @@ function useListColumns({
       },
       createdAt: {
         id: "createdAt",
+        accessorFn: (card) => card.createdAt,
         header: t("pipelines.list.column.createdAt"),
         enableSorting: true,
         meta: {
@@ -396,6 +412,7 @@ function useListColumns({
       },
       updatedAt: {
         id: "updatedAt",
+        accessorFn: (card) => card.updatedAt,
         header: t("pipelines.list.column.updatedAt"),
         enableSorting: true,
         meta: {
@@ -489,15 +506,8 @@ export const BoardList = memo(function BoardList({
   const requestLost = useBoardUi((state) => state.requestLost)
 
   const isCrm = board.boardType === "crm"
-  const columnChoices = useMemo(
-    () =>
-      BASE_COLUMNS.filter(
-        (id) => (isCrm || !STANDARD_HIDDEN.has(id)) && (id !== "leadScore" || context.leadScore)
-      ),
-    [context.leadScore, isCrm]
-  )
 
-  const [visible, setVisible] = useLocalStorage<string[]>(COLUMNS_KEY, DEFAULT_COLUMNS)
+  const [visible] = useLocalStorage<string[]>(COLUMNS_KEY, DEFAULT_COLUMNS)
   const columns = useListColumns({
     visible,
     stages: board.stages,
@@ -601,21 +611,12 @@ export const BoardList = memo(function BoardList({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 pb-[calc(1rem+var(--app-bottom-nav-total))] md:px-6">
-      <div className="flex justify-end">
-        <ColumnPicker
-          visible={visible}
-          onChange={setVisible}
-          columns={columnChoices}
-          customFields={board.customFields}
-        />
-      </div>
-
       <DataTable
         aria-label={t("pipelines.list.label")}
         columns={columns}
         data={rows}
         meta={meta}
-        maxHeight="calc(100dvh - 20rem)"
+        maxHeight="calc(100dvh - 15rem)"
         isLoading={firstLoad}
         isFetching={isValidating && !firstLoad}
         error={error}

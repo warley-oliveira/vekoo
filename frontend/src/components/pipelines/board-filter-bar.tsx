@@ -224,7 +224,6 @@ function PresetChip({
   return (
     <Button
       type="button"
-      size="sm"
       variant={active ? "secondary" : "outline"}
       aria-pressed={active}
       className={cn("pointer-coarse:h-10", active && "bg-accent text-accent-foreground")}

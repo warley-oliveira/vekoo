@@ -147,8 +147,6 @@
         "expectedClose": "Expected close",
         "days_one": "{{count}} d",
         "days_other": "{{count}} d",
-        "aging_one": "{{count}} day in this stage",
-        "aging_other": "{{count}} days in this stage",
         "rotting_one": "Stuck for {{count}} day in this stage",
         "rotting_other": "Stuck for {{count}} days in this stage",
         "checklist": "{{completed}} of {{total}} items checked",

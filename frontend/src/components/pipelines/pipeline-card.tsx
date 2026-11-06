@@ -209,10 +209,6 @@ function CardMeta({ card, meta }: { card: Card; meta: BoardMeta }) {
             <Flame className="size-3" aria-hidden />
             {t("pipelines.card.meta.days", { count: days })}
           </span>
-        ) : days > 0 ? (
-          <span title={t("pipelines.card.meta.aging", { count: days })}>
-            {t("pipelines.card.meta.days", { count: days })}
-          </span>
         ) : null}
 
         {checks.total > 0 ? (
@@ -311,21 +307,6 @@ export const CardBody = memo(function CardBody({
         ? card.description
         : null
 
-  if (ghost) {
-    return (
-      <div
-        aria-hidden
-        className="rounded-xl bg-foreground/5 ring-1 ring-foreground/10 ring-inset"
-      >
-        <div className="invisible p-3">
-          <p className="line-clamp-2 text-sm font-medium">{card.title}</p>
-          {subtitle ? <p className="mt-1 line-clamp-1 text-xs">{subtitle}</p> : null}
-          <div className="mt-2 h-5" />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div
       className={cn(
@@ -334,8 +315,12 @@ export const CardBody = memo(function CardBody({
         overlay && "shadow-lg ring-foreground/15",
         selected && "ring-2 ring-primary",
         blocked && "ring-status-warning",
-        status === "lost" && "bg-card/70"
+        status === "lost" && "bg-card/70",
+        // O lugar do card no ar: a mesma altura, sem o conteúdo. Mudar a altura aqui deslocaria a
+        // lista bem debaixo do ponteiro.
+        ghost && "bg-foreground/5 shadow-none ring-foreground/10 ring-inset [&>*]:invisible"
       )}
+      aria-hidden={ghost || undefined}
     >
       {card.colorLabel ? (
         <span
@@ -408,7 +393,7 @@ export const CardBody = memo(function CardBody({
         >
           {selected ? <Check className="size-3" /> : null}
         </span>
-      ) : overlay ? null : (
+      ) : overlay || ghost ? null : (
         <CardActionsBar card={card} isCrm={meta.isCrm} />
       )}
     </div>

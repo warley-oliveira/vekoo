@@ -68,8 +68,9 @@ function StageHeader({
   const overLimit = stage.wipLimit !== null && totals.count >= stage.wipLimit
 
   return (
-    <header className="flex flex-col gap-0.5 px-3 pt-3 pb-2">
-      <div className="flex min-w-0 items-center gap-2">
+    <header className="flex flex-col gap-0.5 px-3 pt-2 pb-2 md:pt-3">
+      {/* No celular, o nome e a contagem já estão na aba da etapa. */}
+      <div className="hidden min-w-0 items-center gap-2 md:flex">
         <span
           aria-hidden
           className="size-2 shrink-0 rounded-full bg-muted-foreground/40"
@@ -93,8 +94,13 @@ function StageHeader({
         </span>
       </div>
 
-      {totals.withValue > 0 || stage.slaHours ? (
-        <div className="flex items-center gap-2 pl-4 text-xs text-muted-foreground tabular-nums">
+      {totals.withValue > 0 || stage.slaHours || stage.wipLimit !== null ? (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums md:pl-4">
+          {stage.wipLimit !== null ? (
+            <span className={cn("md:hidden", overLimit && "font-medium text-status-warning")}>
+              {totals.count}/{stage.wipLimit}
+            </span>
+          ) : null}
           {totals.withValue > 0 ? (
             <span
               title={t("pipelines.stage.totalsHint", {
@@ -205,6 +211,18 @@ function StageQuickAdd({
   )
 }
 
+/** Some durante o arraste: senão o aviso sai de baixo do ponteiro bem na hora de soltar. */
+function StageEmptyHint({ filtered }: { filtered: boolean }) {
+  const { t } = useTranslation()
+  const dragging = useBoardDrag((state) => state.activeId !== null)
+  if (dragging) return null
+  return (
+    <p className="px-2 py-6 text-center text-xs text-pretty text-muted-foreground">
+      {filtered ? t("pipelines.stage.emptyFiltered") : t("pipelines.stage.empty")}
+    </p>
+  )
+}
+
 type StageColumnProps = {
   stage: StageWithCards
   meta: BoardMeta
@@ -224,10 +242,8 @@ export const StageColumn = memo(function StageColumn({
   filtered,
   totalCount,
 }: StageColumnProps) {
-  const { t } = useTranslation()
-  const dragCards = useBoardDrag((state) => state.columns?.[stage.id])
-  const dragging = useBoardDrag((state) => state.activeId !== null)
-  const cards = dragCards ?? stage.cards
+  // Sem arraste, ou no começo dele, a lista é a mesma: a etapa não redesenha por isso.
+  const cards = useBoardDrag((state) => state.columns?.[stage.id] ?? stage.cards)
   const ids = useMemo(() => cards.map((card) => card.id), [cards])
 
   const [adding, setAdding] = useState(false)
@@ -251,11 +267,7 @@ export const StageColumn = memo(function StageColumn({
           <StageCardList cards={cards} stageId={stage.id} meta={meta} root={scroller} />
         </SortableContext>
 
-        {cards.length === 0 && !dragging && !adding ? (
-          <p className="px-2 py-6 text-center text-xs text-pretty text-muted-foreground">
-            {filtered ? t("pipelines.stage.emptyFiltered") : t("pipelines.stage.empty")}
-          </p>
-        ) : null}
+        {cards.length === 0 && !adding ? <StageEmptyHint filtered={filtered} /> : null}
       </div>
 
       <StageQuickAdd stageId={stage.id} adding={adding} onAddingChange={setAdding} />

@@ -7,6 +7,7 @@ import { ResponsivePopover, SearchInput, SegmentedControl, useConfirm } from "@/
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useSavedFilterMutations, useSavedFilters } from "@/hooks/pipelines/use-saved-filters"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { pipelineErrorText } from "@/lib/pipelines/errors"
 import type { AdvancedFilter } from "@/lib/pipelines/filters"
 import type { PresetFilter, SavedFilter } from "@/lib/pipelines/types"
@@ -86,6 +87,7 @@ export const SavedFiltersMenu = memo(function SavedFiltersMenu({
   const { presets, filters, favorites, isLoading } = useSavedFilters(boardId)
   const { toggleFavorite, deleteFilter } = useSavedFilterMutations(boardId)
 
+  const isMobile = useIsMobile()
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<Tab>("all")
   const [query, setQuery] = useState("")
@@ -195,11 +197,16 @@ export const SavedFiltersMenu = memo(function SavedFiltersMenu({
       trigger={
         <Button
           type="button"
+          size={isMobile ? "icon" : "default"}
           variant={advanced ? "secondary" : "outline"}
-          className={cn("pointer-coarse:h-10", advanced && "bg-accent text-accent-foreground")}
+          aria-label={isMobile ? t("pipelines.savedFilters.trigger") : undefined}
+          className={cn(
+            "pointer-coarse:h-10 pointer-coarse:min-w-10",
+            advanced && "bg-accent text-accent-foreground"
+          )}
         >
           <Bookmark />
-          {t("pipelines.savedFilters.trigger")}
+          {isMobile ? null : t("pipelines.savedFilters.trigger")}
         </Button>
       }
     >

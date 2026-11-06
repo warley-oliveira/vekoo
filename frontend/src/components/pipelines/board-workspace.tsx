@@ -52,8 +52,8 @@ import {
 } from "./board-dialogs"
 import { BoardFilterBar } from "./board-filter-bar"
 import { BoardForecast } from "./board-forecast"
-import { BoardHeaderActions, BoardMenu, BoardViewToggle } from "./board-header-actions"
-import { BoardList } from "./board-list"
+import { BoardHeaderActions, BoardViewToggle } from "./board-header-actions"
+import { BoardList, ListColumnPicker } from "./board-list"
 import { BoardSkeleton } from "./board-skeleton"
 import { BoardSummaryStrip } from "./board-summary"
 import { CardMenu } from "./card-menu"
@@ -316,10 +316,7 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
         onRename={openRename}
       />
     ) : null,
-    {
-      mobilePlacement: "inline",
-      mobileNode: board ? <BoardMenu board={board} onRename={openRename} /> : null,
-    }
+    { mobilePlacement: "inline" }
   )
 
   /* ---------- estados ---------- */
@@ -381,11 +378,18 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
               leadScore={leadScore}
               hasAdvanced={advanced !== null}
               searching={isValidating && Boolean(advancedQuery(advanced))}
-              resultLabel={view === "list" ? null : resultLabel}
+              resultLabel={view === "list" || isMobile ? null : resultLabel}
               actions={
                 <>
                   {isMobile ? (
                     <BoardViewToggle boardId={board.id} view={view} isCrm={meta.isCrm} iconsOnly />
+                  ) : null}
+                  {view === "list" ? (
+                    <ListColumnPicker
+                      isCrm={meta.isCrm}
+                      hasLeadScore={Boolean(leadScore)}
+                      customFields={board.customFields}
+                    />
                   ) : null}
                   <SavedFiltersMenu
                     boardId={board.id}

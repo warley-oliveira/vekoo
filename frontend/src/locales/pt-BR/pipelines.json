@@ -147,8 +147,6 @@
         "expectedClose": "Fechamento previsto",
         "days_one": "{{count}} d",
         "days_other": "{{count}} d",
-        "aging_one": "Há {{count}} dia nesta etapa",
-        "aging_other": "Há {{count}} dias nesta etapa",
         "rotting_one": "Parado há {{count}} dia nesta etapa",
         "rotting_other": "Parado há {{count}} dias nesta etapa",
         "checklist": "{{completed}} de {{total}} itens marcados",

@@ -36,14 +36,18 @@ import { cn } from "@/lib/utils"
 import { CardBody, type BoardMeta } from "./pipeline-card"
 import { StageColumn } from "./stage-column"
 
-const MOUSE_DISTANCE_PX = 6
-const TOUCH_DELAY_MS = 250
-const TOUCH_TOLERANCE_PX = 8
-/** Enter abre o card: com o card no ar, Enter e Espaço soltam. */
-const KEYBOARD_CODES = {
-  start: ["Space"],
-  cancel: ["Escape"],
-  end: ["Space", "Enter", "NumpadEnter"],
+// Fora do componente, de propósito: `useSensor` memoriza pela identidade das opções, e um sensor novo
+// a cada render trocaria o contexto do dnd-kit e redesenharia todos os cards do quadro.
+const MOUSE_OPTIONS = { activationConstraint: { distance: 6 } }
+const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 8 } }
+const KEYBOARD_OPTIONS = {
+  coordinateGetter: boardKeyboardCoordinates,
+  /** Enter abre o card: com o card no ar, Enter e Espaço soltam. */
+  keyboardCodes: {
+    start: ["Space"],
+    cancel: ["Escape"],
+    end: ["Space", "Enter", "NumpadEnter"],
+  },
 }
 
 const DROP_ANIMATION: DropAnimation = {
@@ -191,14 +195,9 @@ export const BoardCanvas = memo(function BoardCanvas({
   stagesRef.current = stages
 
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: MOUSE_DISTANCE_PX } }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: TOUCH_DELAY_MS, tolerance: TOUCH_TOLERANCE_PX },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: boardKeyboardCoordinates,
-      keyboardCodes: KEYBOARD_CODES,
-    })
+    useSensor(MouseSensor, MOUSE_OPTIONS),
+    useSensor(TouchSensor, TOUCH_OPTIONS),
+    useSensor(KeyboardSensor, KEYBOARD_OPTIONS)
   )
 
   /* ---------- colisão ---------- */

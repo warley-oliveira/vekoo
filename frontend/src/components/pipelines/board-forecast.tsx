@@ -84,7 +84,7 @@ export const BoardForecast = memo(function BoardForecast({ stages }: { stages: S
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-[calc(1.5rem+var(--app-bottom-nav-total))] md:px-6">
+    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pt-1 pb-[calc(1.5rem+var(--app-bottom-nav-total))] md:px-6">
       {buckets.map((bucket) => (
         <section key={bucket.key} aria-label={bucket.label} className="flex max-w-4xl flex-col gap-2">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">

@@ -6,10 +6,8 @@ import {
   Bell,
   BellOff,
   Check,
-  Mail,
   MessageCircle,
   MoreHorizontal,
-  Phone,
   RotateCcw,
   Trash2,
   X,
@@ -233,54 +231,6 @@ function CommitText({
   )
 }
 
-/** Quem é o contato, com o que dá para fazer com o dado: copiar e abrir o WhatsApp. */
-function ContactLinks({ card }: { card: CardDetail }) {
-  const { t } = useTranslation()
-  const phone = contactPhoneOf(card)
-  const email = card.contactEmail
-
-  if (!phone && !email) return null
-
-  return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      {phone ? (
-        <>
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <Phone className="size-3" aria-hidden />
-            {phone}
-          </span>
-          <CopyButton value={phone} size="icon-xs" aria-label={t("pipelines.contact.copyPhone")} />
-          <Button
-            variant="outline"
-            size="xs"
-            nativeButton={false}
-            className="pointer-coarse:h-9"
-            render={
-              <a
-                href={`https://wa.me/${phone.replace(/\D/g, "")}`}
-                target="_blank"
-                rel="noreferrer"
-              />
-            }
-          >
-            <MessageCircle />
-            {t("pipelines.contact.whatsapp")}
-          </Button>
-        </>
-      ) : null}
-      {email ? (
-        <>
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <Mail className="size-3" aria-hidden />
-            {email}
-          </span>
-          <CopyButton value={email} size="icon-xs" aria-label={t("pipelines.contact.copyEmail")} />
-        </>
-      ) : null}
-    </div>
-  )
-}
-
 const CardDetails = memo(function CardDetails({
   card,
   board,
@@ -337,6 +287,7 @@ const CardDetails = memo(function CardDetails({
     [t]
   )
 
+  const phone = contactPhoneOf(card)
   const weighted =
     card.dealValue && card.dealProbability ? (card.dealValue * card.dealProbability) / 100 : null
 
@@ -514,21 +465,61 @@ const CardDetails = memo(function CardDetails({
             />
           </PropertyRow>
           <PropertyRow label={t("pipelines.contact.email")}>
-            <CommitText
-              type="email"
-              label={t("pipelines.contact.email")}
-              value={card.contactEmail}
-              onCommit={(contactEmail) => void save({ contactEmail }, { contactEmail })}
-            />
+            <div className="flex items-center gap-1">
+              <CommitText
+                type="email"
+                label={t("pipelines.contact.email")}
+                value={card.contactEmail}
+                onCommit={(contactEmail) => void save({ contactEmail }, { contactEmail })}
+              />
+              {card.contactEmail ? (
+                <CopyButton
+                  value={card.contactEmail}
+                  size="icon"
+                  variant="ghost"
+                  className="shrink-0 text-muted-foreground pointer-coarse:size-10"
+                  aria-label={t("pipelines.contact.copyEmail")}
+                />
+              ) : null}
+            </div>
           </PropertyRow>
           <PropertyRow label={t("pipelines.contact.phone")}>
-            <CommitText
-              label={t("pipelines.contact.phone")}
-              value={card.contactPhone}
-              onCommit={(contactPhone) => void save({ contactPhone }, { contactPhone })}
-            />
+            <div className="flex items-center gap-1">
+              <CommitText
+                label={t("pipelines.contact.phone")}
+                value={card.contactPhone}
+                onCommit={(contactPhone) => void save({ contactPhone }, { contactPhone })}
+              />
+              {phone ? (
+                <>
+                  <CopyButton
+                    value={phone}
+                    size="icon"
+                    variant="ghost"
+                    className="shrink-0 text-muted-foreground pointer-coarse:size-10"
+                    aria-label={t("pipelines.contact.copyPhone")}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    nativeButton={false}
+                    className="shrink-0 text-muted-foreground pointer-coarse:size-10"
+                    aria-label={t("pipelines.contact.whatsapp")}
+                    title={t("pipelines.contact.whatsapp")}
+                    render={
+                      <a
+                        href={`https://wa.me/${phone.replace(/\D/g, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      />
+                    }
+                  >
+                    <MessageCircle />
+                  </Button>
+                </>
+              ) : null}
+            </div>
           </PropertyRow>
-          <ContactLinks card={card} />
         </section>
       ) : null}
 

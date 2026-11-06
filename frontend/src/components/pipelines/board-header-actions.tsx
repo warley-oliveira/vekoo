@@ -172,7 +172,8 @@ export function BoardHeaderActions({
       )}
       <Button
         type="button"
-        className="pointer-coarse:h-10"
+        size={isMobile ? "icon" : "default"}
+        className="pointer-coarse:h-10 pointer-coarse:min-w-10"
         aria-label={isMobile ? t("pipelines.card.new") : undefined}
         onClick={onCreateCard}
       >
