@@ -324,7 +324,6 @@
         "targetSame": "Neste mesmo campo (substitui o valor)",
         "targetHint": "Escolha outro campo numérico para preservar o que foi digitado.",
         "defaultValue": "Valor padrão",
-        "defaultValueHint": "Usado quando a conversa ainda não tem valor neste campo.",
         "defaultNeedsOptions": "Adicione opções para escolher um valor padrão.",
         "noDefaultValue": "Sem valor padrão"
       },

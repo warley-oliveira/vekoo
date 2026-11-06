@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "react-router"
@@ -77,6 +77,25 @@ export function AttachmentPanel({
   const [replacement, setReplacement] = useState<DropzoneFile[]>([])
   const close = () => onOpenChange(false)
 
+  // Em lista controlada, a prévia `blob:` do arquivo escolhido é de quem controla.
+  const replacementRef = useRef(replacement)
+  replacementRef.current = replacement
+  useEffect(
+    () => () => {
+      replacementRef.current.forEach((item) => {
+        if (item.previewUrl?.startsWith("blob:")) URL.revokeObjectURL(item.previewUrl)
+      })
+    },
+    []
+  )
+
+  function clearReplacement() {
+    replacementRef.current.forEach((item) => {
+      if (item.previewUrl?.startsWith("blob:")) URL.revokeObjectURL(item.previewUrl)
+    })
+    setReplacement([])
+  }
+
   function setReplacementProgress(progress: number) {
     setReplacement((current) =>
       current.map((item) => ({ ...item, status: "uploading", progress }))
@@ -94,7 +113,7 @@ export function AttachmentPanel({
         },
         { onProgress: setReplacementProgress }
       )
-      setReplacement([])
+      clearReplacement()
       form.reset({ name: saved.name, description: saved.description ?? "", file: null })
       toast.success(t("content.attachments.saved", { name: saved.name }))
       close()

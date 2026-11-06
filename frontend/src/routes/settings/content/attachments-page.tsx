@@ -142,6 +142,16 @@ export default function AttachmentsPage() {
   const uploadsRef = useRef(uploads)
   const finishedInBatch = useRef(0)
 
+  // Em lista controlada, as prévias `blob:` são de quem controla.
+  useEffect(
+    () => () => {
+      uploadsRef.current.forEach((item) => {
+        if (item.previewUrl?.startsWith("blob:")) URL.revokeObjectURL(item.previewUrl)
+      })
+    },
+    []
+  )
+
   const uploading = uploads.some((item) => item.status === "uploading")
   const leaveGuard = useUnsavedChanges(uploading)
 

@@ -324,7 +324,6 @@
         "targetSame": "This same field (replaces the value)",
         "targetHint": "Choose another number field to keep what was typed.",
         "defaultValue": "Default value",
-        "defaultValueHint": "Used when the conversation has no value in this field yet.",
         "defaultNeedsOptions": "Add options to choose a default value.",
         "noDefaultValue": "No default value"
       },

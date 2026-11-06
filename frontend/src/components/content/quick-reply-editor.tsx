@@ -257,6 +257,11 @@ const EDITOR_CLASS =
 type SlashState = { query: string; from: number; to: number; top: number; left: number }
 type SlashItem = { id: string; insert: () => void; leading: ReactNode; label: string; description?: string }
 
+/** Sem resultado e com um espaço no meio, é texto comum, e não mais uma busca. */
+function isSlashVisible(slash: SlashState, items: SlashItem[]) {
+  return items.length > 0 || !slash.query.includes(" ")
+}
+
 /**
  * O campo de texto da mensagem rápida. Anexos e variáveis são blocos que não se quebram:
  * inserem-se pela barra, por `/` no meio do texto, colando ou arrastando um arquivo, e saem
@@ -328,7 +333,8 @@ export function QuickReplyEditor({
 
   const insertAttachment = useCallback((attachment: Attachment) => {
     const editor = editorInstance.current
-    if (!editor) return
+    // Fechou o painel com o arquivo subindo: ele fica na biblioteca, e não há onde inserir.
+    if (!editor || editor.isDestroyed) return
     editor
       .chain()
       .focus()
@@ -440,7 +446,7 @@ export function QuickReplyEditor({
 
         const items = latest.current.slashItems
         const menu = slashRef.current
-        if (!menu) return false
+        if (!menu || !isSlashVisible(menu, items)) return false
 
         if (event.key === "Escape") {
           // Fecha só a lista, não o painel em volta.
@@ -609,8 +615,7 @@ export function QuickReplyEditor({
       ?.scrollIntoView({ block: "nearest" })
   }, [highlight])
 
-  // Uma lista sem resultado e um espaço no meio é texto comum, não mais uma busca.
-  const showSlash = slash && (slashItems.length > 0 || !slash.query.includes(" "))
+  const showSlash = slash && isSlashVisible(slash, slashItems)
 
   const variableGroups = useMemo<PickerGroup[]>(() => {
     const toItem = (option: VariableOption) => ({

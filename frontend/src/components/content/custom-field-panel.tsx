@@ -381,7 +381,6 @@ function DefaultValueField({
 }) {
   const { t } = useTranslation()
   const label = t("content.customFields.fields.defaultValue")
-  const hint = t("content.customFields.fields.defaultValueHint")
   const none = t("content.customFields.fields.noDefaultValue")
 
   switch (valueType) {
@@ -391,7 +390,7 @@ function DefaultValueField({
           control={control}
           name="defaultValue"
           label={label}
-          hint={options.length > 0 ? hint : t("content.customFields.fields.defaultNeedsOptions")}
+          hint={options.length > 0 ? undefined : t("content.customFields.fields.defaultNeedsOptions")}
           optional
           disabled={options.length === 0}
           options={options.map((option) => ({ value: option, label: option }))}
@@ -405,7 +404,6 @@ function DefaultValueField({
           control={control}
           name="defaultValue"
           label={label}
-          hint={hint}
           optional
           options={[
             { value: "true", label: t("content.customFields.checkbox.true") },
@@ -417,7 +415,7 @@ function DefaultValueField({
       )
     case "number":
       return (
-        <FormField control={control} name="defaultValue" label={label} hint={hint} optional>
+        <FormField control={control} name="defaultValue" label={label} optional>
           {({ field, controlProps }) => (
             <NumberInput
               {...controlProps}
@@ -432,7 +430,7 @@ function DefaultValueField({
       )
     case "date":
       return (
-        <FormField control={control} name="defaultValue" label={label} hint={hint} optional>
+        <FormField control={control} name="defaultValue" label={label} optional>
           {({ field, controlProps }) => (
             <DatePicker
               {...controlProps}
@@ -453,7 +451,6 @@ function DefaultValueField({
           control={control}
           name="defaultValue"
           label={label}
-          hint={hint}
           optional
           autoComplete="off"
           placeholder={none}

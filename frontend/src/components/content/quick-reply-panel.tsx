@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
@@ -37,7 +37,6 @@ import { QuickReplyPreview } from "./quick-reply-preview"
 import {
   QUICK_REPLY_MAX_LENGTH,
   QuickReplyEditor,
-  type QuickReplyEditorHandle,
   type VariableOption,
 } from "./quick-reply-editor"
 import type { ContentResolvers } from "./quick-reply-doc"
@@ -215,8 +214,6 @@ export default function QuickReplyPanel({
     [account.name, t]
   )
 
-  const editorHandle = useRef<QuickReplyEditorHandle | null>(null)
-
   return (
     <SidePanel
       open={open}
@@ -307,11 +304,8 @@ export default function QuickReplyPanel({
             {({ field, controlProps }) => (
               <QuickReplyEditor
                 {...controlProps}
-                editorRef={(handle) => {
-                  editorHandle.current = handle
-                  // O formulário foca o primeiro campo com erro por esta referência.
-                  field.ref(handle)
-                }}
+                // O formulário foca o primeiro campo com erro por esta referência.
+                editorRef={field.ref}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
