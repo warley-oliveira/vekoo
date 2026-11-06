@@ -3,7 +3,6 @@ import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { MoreHorizontal, Star } from "lucide-react"
 
-import { CAROUSEL_DRAG_TYPE } from "@/components/app-sidebar"
 import { CarouselActionsMenu } from "@/components/carousel-actions"
 import { CardArt } from "@/components/editor/card-art"
 import { toast } from "sonner"
@@ -14,6 +13,7 @@ import { useLanguage } from "@/lib/i18n"
 import type { CarouselSummary } from "@/lib/types"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { cn } from "@/lib/utils"
+import { CAROUSEL_DRAG_TYPE } from "@/lib/view-prefs"
 
 type CarouselGridCardProps = {
   carousel: CarouselSummary

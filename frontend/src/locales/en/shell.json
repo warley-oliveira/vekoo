@@ -1,0 +1,118 @@
+{
+  "navigation": {
+    "aria": "Main navigation",
+    "home": "Home",
+    "search": "Search",
+    "more": "More",
+    "moreAria": "Open the full menu",
+    "moreTitle": "Full menu",
+    "boardsAria": "Choose a pipeline board",
+    "allBoards": "All boards",
+    "account": "Account",
+    "expand": "Expand {{name}}",
+    "collapse": "Collapse {{name}}",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "alerts_one": "{{count}} alert",
+    "alerts_other": "{{count}} alerts",
+    "forbidden": "You don't have access to that area. If you need it, ask whoever manages the account.",
+    "pageActions": "Page actions",
+    "documentTitle": "{{title}} · Vekoo",
+    "groups": {
+      "home": "Home",
+      "ai": "Artificial Intelligence",
+      "productivity": "Productivity",
+      "service": "Customer service",
+      "creation": "Creation",
+      "system": "System"
+    },
+    "dashboard": "Dashboard",
+    "flows": "Flows",
+    "calendar": "Calendar",
+    "pipelines": "Pipelines",
+    "chat": "Chat",
+    "contacts": "Contacts",
+    "catalog": "Catalog",
+    "funnels": "Funnels",
+    "campaigns": "Campaigns",
+    "carousels": "Carousels",
+    "templates": "Templates",
+    "brands": "Brands",
+    "trash": "Trash",
+    "settings": "Settings",
+    "users": "Users",
+    "integrations": "Integrations",
+    "webhooks": "Webhooks",
+    "quickReplies": "Quick replies",
+    "attachments": "Attachments",
+    "customFields": "Custom fields",
+    "routes": {
+      "flow": "Flow",
+      "tools": "Tools",
+      "googleCallback": "Connect Google Calendar",
+      "catalogCategories": "Catalog categories",
+      "catalogFields": "Catalog fields",
+      "catalogItem": "Catalog item",
+      "campaignNew": "New campaign",
+      "campaign": "Campaign",
+      "teams": "Departments",
+      "accessRoles": "Permission groups",
+      "profile": "My profile",
+      "notificationSettings": "Notification preferences",
+      "connector": "Integration",
+      "dev": "Development"
+    },
+    "placeholder": {
+      "description": "This area is on its way to Vekoo. Meanwhile, the rest of the platform works as usual."
+    },
+    "error": {
+      "title": "This screen didn't open",
+      "description": "Something went wrong on our side. Try again; the rest of Vekoo keeps working.",
+      "staleTitle": "A new version of Vekoo is out",
+      "staleDescription": "Reload the page to pick up where you left off."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "ariaUnread_one": "Notifications: {{count}} unread",
+      "ariaUnread_other": "Notifications: {{count}} unread",
+      "markAllRead": "Mark all as read",
+      "unread": "Unread",
+      "tabs": {
+        "all": "All",
+        "unread": "Unread",
+        "read": "Read"
+      },
+      "empty": {
+        "all": "No notifications here.",
+        "unread": "All read. Nothing new for now.",
+        "read": "No read notifications yet."
+      },
+      "categories": {
+        "chat": "Chat",
+        "calendar": "Calendar",
+        "system": "System",
+        "general": "News"
+      }
+    },
+    "push": {
+      "title": "Get alerts with Vekoo closed",
+      "description": "Messages and bookings reach this device, even with the screen closed.",
+      "enable": "Turn on alerts",
+      "notNow": "Not now",
+      "enabledToast": "Alerts turned on for this device.",
+      "failedToast": "Couldn't turn on alerts. Check your browser's permission."
+    },
+    "languageShort": {
+      "pt-BR": "PT",
+      "en": "EN"
+    },
+    "pwa": {
+      "updateTitle": "New version of Vekoo",
+      "updateDescription": "Update whenever you like. It only takes a moment.",
+      "update": "Update now",
+      "dismiss": "Dismiss",
+      "applying": "Updating…",
+      "applyingDescription": "The page will reload by itself in a moment."
+    }
+  }
+}

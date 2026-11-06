@@ -41,11 +41,28 @@ export type Folder = {
 /** Chave de tradução da notificação (`notifications.<key>.title|body`). */
 export type NotificationKey = "templates" | "folders" | "welcome"
 
+/**
+ * Duas famílias na mesma lista de `GET /notifications`:
+ *
+ * - aviso de produto (`key`): o texto nasce na tela, em `notifications.<key>.*`;
+ * - aviso de atendimento: já vem do servidor com `title`, `description`, `url` e
+ *   `category`.
+ *
+ * Por isso quase tudo é opcional aqui. Para ler, use `isNotificationRead` e os
+ * helpers de `components/shell/notification-center.tsx`.
+ */
 export type AppNotification = {
   id: string
-  key: NotificationKey
-  at: number
-  read: boolean
+  key?: NotificationKey
+  at?: number
+  createdAt?: number
+  read?: boolean
+  readAt?: number | null
+  title?: string
+  description?: string
+  /** Caminho interno (`/chat/123`) ou endereço externo. */
+  url?: string
+  category?: string
 }
 
 export type Credits = {

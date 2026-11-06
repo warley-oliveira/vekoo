@@ -87,6 +87,35 @@
     --sidebar-accent-foreground: oklch(0.185 0.005 285);
     --sidebar-border: oklch(0.925 0.003 285);
     --sidebar-ring: oklch(0.6 0.2 292);
+
+    /*
+     * Cromo do celular. `env()` resolve para 0 até o `viewport-fit=cover` estar no meta
+     * viewport, então é inofensivo no desktop.
+     */
+    --app-safe-top: env(safe-area-inset-top, 0px);
+    --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --app-bottom-nav-h: 3.75rem;
+    /*
+     * Folga que o cromo tira do conteúdo. Zero por padrão: fora do shell móvel (desktop,
+     * telas de entrada, editor) não há barra. O shell móvel escreve o valor real em
+     * `<html>` enquanto estiver montado, e zera no modo imersivo.
+     */
+    --app-bottom-nav-total: 0px;
+    --app-header-total: 0px;
+}
+
+/* Áreas seguras: notch e barra de gestos, no PWA instalado e no navegador. */
+@utility pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+@utility pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@utility pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+@utility pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
 }
 
 @layer base {
@@ -98,6 +127,7 @@
     }
   html {
     @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
     }
   ::selection {
     background: oklch(0.51 0.24 292 / 0.18);

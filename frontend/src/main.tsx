@@ -23,7 +23,14 @@ createRoot(document.getElementById('root')!).render(
           <AuthProvider>
             <TooltipProvider>
               <App />
-              <Toaster position="bottom-right" />
+              {/* Os avisos sobem junto com a barra inferior, em vez de cobri-la. */}
+              <Toaster
+                position="bottom-right"
+                offset={{ bottom: "calc(var(--app-bottom-nav-total) + 1rem)" }}
+                mobileOffset={{
+                  bottom: "calc(var(--app-bottom-nav-total) + 0.75rem)",
+                }}
+              />
             </TooltipProvider>
           </AuthProvider>
         </CatalogProvider>

@@ -100,7 +100,9 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
 
   function openCarousel(carousel: CarouselSummary) {
     onOpenChange(false)
-    const destination = carousel.folderId ? `/folders/${carousel.folderId}` : "/"
+    const destination = carousel.folderId
+      ? `/folders/${carousel.folderId}`
+      : "/carousels"
     navigate(destination, { state: { highlight: carousel.id } })
   }
 

@@ -31,7 +31,7 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
   const [previewing, setPreviewing] = useState(false)
   const [exporting, setExporting] = useState(false)
 
-  const backTo = folderId ? `/folders/${folderId}` : "/"
+  const backTo = folderId ? `/folders/${folderId}` : "/carousels"
   const active = activeCard(state)
   const activeIndex = active ? state.doc.cards.indexOf(active) : 0
   const hasCards = state.doc.cards.length > 0

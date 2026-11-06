@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next"
 import { Navigate, Outlet, useLocation, useSearchParams } from "react-router"
 import { RefreshCw } from "lucide-react"
 
-import { VekooMark } from "@/components/app-sidebar"
 import { Button } from "@/components/ui/button"
+import { VekooMark } from "@/components/vekoo-mark"
 import { useAuth } from "@/lib/auth"
 
 // Guardas de rota. Enquanto a sessão não foi resolvida não decidimos nada —
@@ -55,7 +55,7 @@ export function RedirectIfAuthenticated() {
   return <Outlet />
 }
 
-function AuthSplash() {
+export function AuthSplash() {
   return (
     <div className="flex h-dvh items-center justify-center">
       <VekooMark className="animate-pulse text-xl" />

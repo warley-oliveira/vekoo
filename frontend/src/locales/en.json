@@ -19,27 +19,9 @@
     "free": "Free plan"
   },
   "shell": {
-    "openMenu": "Open menu",
-    "collapseMenu": "Collapse menu",
-    "expandMenu": "Expand menu",
-    "nav": {
-      "carousels": "My carousels",
-      "search": "Search",
-      "templates": "Templates",
-      "brands": "Brands",
-      "trash": "Trash"
-    },
     "createBlank": "Start from scratch",
     "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
-    "createCarousel": "Create carousel",
-    "notifications": {
-      "label": "Notifications",
-      "aria": "Notifications",
-      "ariaUnread": "Notifications ({{count}} unread)",
-      "markAllRead": "Mark all as read",
-      "empty": "No notifications here.",
-      "loadFailed": "We couldn't load your notifications."
-    }
+    "createCarousel": "Create carousel"
   },
   "notifications": {
     "templates": {
@@ -58,11 +40,7 @@
   "account": {
     "menuAria": "{{organization}} account menu",
     "fallbackName": "Your account",
-    "settings": "Settings",
-    "settingsToast": "Settings are coming soon.",
     "invite": "Invite people",
-    "inviteToast": "Inviting people arrives in a next stage.",
-    "inviteToastDescription": "They'll join “{{organization}}” and see the same carousels.",
     "signOut": "Sign out",
     "signOutToast": "You've signed out."
   },

@@ -8,10 +8,14 @@ import {
   LayoutGrid,
   List,
   Loader2,
+  Plus,
   Sparkles,
+  SquarePen,
   Star,
 } from "lucide-react"
+import { toast } from "sonner"
 
+import { useShell } from "@/components/app-shell"
 import { CarouselGridCard } from "@/components/carousel-grid-card"
 import {
   CarouselGridSkeleton,
@@ -36,6 +40,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useCarousels } from "@/hooks/use-carousels"
 import { useFolders } from "@/hooks/use-folders"
+import { useHeaderSlot, usePageTitle } from "@/hooks/use-header-slot"
 import { useLanguage } from "@/lib/i18n"
 import {
   SORT_OPTIONS,
@@ -47,6 +52,44 @@ import {
 } from "@/lib/view-prefs"
 
 const RECENT_WINDOW = 7 * 24 * 3_600_000
+
+/** As ações de criar, na barra superior. */
+function CreateActions() {
+  const { t } = useTranslation()
+  const { openCreate } = useShell()
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        className="hidden sm:inline-flex"
+        onClick={() => toast(t("shell.createBlankToast"))}
+      >
+        <SquarePen /> {t("shell.createBlank")}
+      </Button>
+      <Button onClick={openCreate}>
+        <Plus /> {t("shell.createCarousel")}
+      </Button>
+    </>
+  )
+}
+
+/** No celular, só a ação principal: o cabeçalho não tem espaço para os dois textos. */
+function CreateActionMobile() {
+  const { t } = useTranslation()
+  const { openCreate } = useShell()
+
+  return (
+    <Button
+      size="icon"
+      className="size-10"
+      onClick={openCreate}
+      aria-label={t("shell.createCarousel")}
+    >
+      <Plus className="size-5" />
+    </Button>
+  )
+}
 
 // Meus carrosséis — e também a tela de uma pasta aberta (mesma tela, filtrada).
 export function MyCarouselsPage() {
@@ -77,6 +120,12 @@ export function MyCarouselsPage() {
     ? folders?.find((f) => f.id === params.folderId)
     : undefined
 
+  usePageTitle(folder?.name, { color: folder?.color })
+  useHeaderSlot(<CreateActions />, {
+    mobileNode: <CreateActionMobile />,
+    mobilePlacement: "inline",
+  })
+
   // O servidor devolve a pasta já filtrada; abas e ordenação ficam no cliente,
   // que é onde elas são instantâneas.
   const { carousels, isLoading, error, reload } = useCarousels({
@@ -98,7 +147,7 @@ export function MyCarouselsPage() {
   // Pasta apagada / URL inválida → volta para a tela principal. Só depois de a
   // lista de pastas chegar: antes disso, "não achei" quer dizer "ainda não sei".
   if (params.folderId && !loadingFolders && folders && !folder) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/carousels" replace />
   }
 
   if (error) {

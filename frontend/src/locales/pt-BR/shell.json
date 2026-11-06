@@ -1,0 +1,118 @@
+{
+  "navigation": {
+    "aria": "Navegação principal",
+    "home": "Início",
+    "search": "Buscar",
+    "more": "Mais",
+    "moreAria": "Abrir o menu completo",
+    "moreTitle": "Menu completo",
+    "boardsAria": "Escolher quadro de pipeline",
+    "allBoards": "Todos os quadros",
+    "account": "Conta",
+    "expand": "Expandir {{name}}",
+    "collapse": "Recolher {{name}}",
+    "collapseMenu": "Recolher menu",
+    "expandMenu": "Expandir menu",
+    "alerts_one": "{{count}} alerta",
+    "alerts_other": "{{count}} alertas",
+    "forbidden": "Você não tem acesso a essa área. Se precisar, peça a quem administra a conta.",
+    "pageActions": "Ações da página",
+    "documentTitle": "{{title}} · Vekoo",
+    "groups": {
+      "home": "Início",
+      "ai": "Inteligência Artificial",
+      "productivity": "Produtividade",
+      "service": "Atendimento",
+      "creation": "Criação",
+      "system": "Sistema"
+    },
+    "dashboard": "Dashboard",
+    "flows": "Fluxos",
+    "calendar": "Calendário",
+    "pipelines": "Pipelines",
+    "chat": "Chat",
+    "contacts": "Contatos",
+    "catalog": "Catálogo",
+    "funnels": "Funis",
+    "campaigns": "Campanhas",
+    "carousels": "Carrosséis",
+    "templates": "Modelos",
+    "brands": "Marcas",
+    "trash": "Lixeira",
+    "settings": "Configurações",
+    "users": "Usuários",
+    "integrations": "Integrações",
+    "webhooks": "Webhooks",
+    "quickReplies": "Mensagens rápidas",
+    "attachments": "Anexos",
+    "customFields": "Campos personalizados",
+    "routes": {
+      "flow": "Fluxo",
+      "tools": "Ferramentas",
+      "googleCallback": "Conectar Google Agenda",
+      "catalogCategories": "Categorias do catálogo",
+      "catalogFields": "Campos do catálogo",
+      "catalogItem": "Item do catálogo",
+      "campaignNew": "Nova campanha",
+      "campaign": "Campanha",
+      "teams": "Departamentos",
+      "accessRoles": "Grupos de permissão",
+      "profile": "Meu perfil",
+      "notificationSettings": "Preferências de notificação",
+      "connector": "Integração",
+      "dev": "Desenvolvimento"
+    },
+    "placeholder": {
+      "description": "Esta área está chegando ao Vekoo. Enquanto isso, o resto da plataforma já funciona normalmente."
+    },
+    "error": {
+      "title": "Esta tela não abriu",
+      "description": "Algo deu errado do nosso lado. Tente de novo; o resto do Vekoo continua funcionando.",
+      "staleTitle": "Saiu uma versão nova do Vekoo",
+      "staleDescription": "Recarregue a página para continuar de onde parou."
+    },
+    "notifications": {
+      "title": "Notificações",
+      "ariaUnread_one": "Notificações: {{count}} não lida",
+      "ariaUnread_other": "Notificações: {{count}} não lidas",
+      "markAllRead": "Marcar todas como lidas",
+      "unread": "Não lida",
+      "tabs": {
+        "all": "Todas",
+        "unread": "Não lidas",
+        "read": "Lidas"
+      },
+      "empty": {
+        "all": "Nenhuma notificação por aqui.",
+        "unread": "Tudo lido. Nada novo por enquanto.",
+        "read": "Nenhuma notificação lida ainda."
+      },
+      "categories": {
+        "chat": "Chat",
+        "calendar": "Calendário",
+        "system": "Sistema",
+        "general": "Novidades"
+      }
+    },
+    "push": {
+      "title": "Receba avisos com o Vekoo fechado",
+      "description": "Mensagens e agendamentos chegam neste aparelho, mesmo sem a tela aberta.",
+      "enable": "Ativar avisos",
+      "notNow": "Agora não",
+      "enabledToast": "Avisos ativados neste aparelho.",
+      "failedToast": "Não deu para ativar os avisos. Confira a permissão do navegador."
+    },
+    "languageShort": {
+      "pt-BR": "PT",
+      "en": "EN"
+    },
+    "pwa": {
+      "updateTitle": "Nova versão do Vekoo",
+      "updateDescription": "Atualize quando quiser. Leva só um instante.",
+      "update": "Atualizar agora",
+      "dismiss": "Dispensar",
+      "applying": "Atualizando…",
+      "applyingDescription": "A página recarrega sozinha em um instante."
+    }
+  }
+}

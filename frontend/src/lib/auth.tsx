@@ -19,6 +19,8 @@ import {
   apiPost,
   setUnauthorizedHandler,
 } from "@/lib/api"
+import { closeCable, openCable } from "@/lib/cable"
+import { unsubscribeDevice } from "@/lib/push"
 import { clearToken, getToken, setToken } from "@/lib/token"
 
 // A sessão de quem está usando, servida pelo Rails.
@@ -39,11 +41,33 @@ export type Organization = {
   name: string
   /** Código do plano; o rótulo visível vem de `plans.<plan>`. */
   plan: PlanCode
+  /** Fuso IANA da organização (`America/Sao_Paulo`). */
+  timezone: string
+  /** Liberações por organização: mapa livre, vem como está do servidor. */
+  features: Record<string, unknown>
   createdAt: number
 }
 
 /** Papel dentro da organização. Existe já pensando em convidar pessoas. */
 export type MemberRole = "owner" | "member"
+
+/** As mesmas chaves de `AccessRole::KEYS`, no Rails. */
+export type PermissionKey =
+  | "dashboard"
+  | "custom_dashboards"
+  | "flows"
+  | "calendar"
+  | "pipelines"
+  | "chat"
+  | "chat_list_to"
+  | "contacts"
+  | "catalog"
+  | "funnel"
+  | "campaigns"
+  | "core_settings"
+
+/** `none` nega; qualquer outro nível dá acesso. Para decidir, use `useCan`. */
+export type PermissionLevel = "none" | "all" | (string & {})
 
 export type Account = {
   id: string
@@ -51,6 +75,10 @@ export type Account = {
   email: string
   organizationId: string
   role: MemberRole
+  phone: string | null
+  accessRoleId: string | null
+  /** Sempre vem em `GET /me`. Chave ausente é tratada como `none`. */
+  permissions: Partial<Record<PermissionKey, PermissionLevel>>
   createdAt: number
 }
 
@@ -216,6 +244,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setUnauthorizedHandler(null)
   }, [dropSession, navigate])
 
+  // O WebSocket acompanha a sessão: abre ao entrar, troca de token ao trocar de
+  // conta e fecha ao sair. É o único ponto que liga as duas coisas.
+  const cableToken = session ? getToken() : null
+  useEffect(() => {
+    if (cableToken) openCable(cableToken)
+    else closeCable()
+  }, [cableToken])
+
   // Abertura: quem já tem token continua de onde parou.
   useEffect(() => {
     const token = getToken()
@@ -309,6 +345,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Melhor esforço: o token já vai ser jogado fora de qualquer jeito, e
     // travar a saída porque a rede caiu seria pior do que uma sessão órfã que
     // vence em 30 dias.
+    try {
+      // Antes do logout, enquanto o token vale: aparelho desvinculado é o que impede
+      // a próxima pessoa neste navegador de receber os avisos desta conta.
+      await unsubscribeDevice()
+    } catch {
+      /* segue */
+    }
     try {
       await apiDelete("/logout")
     } catch {

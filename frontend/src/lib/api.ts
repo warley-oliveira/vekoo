@@ -9,7 +9,9 @@ import { clearToken, getToken } from "@/lib/token"
 // `message` já vem no idioma da requisição, como rede de segurança para
 // códigos que a tela não enumerou.
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
+/** Origem da API. O WebSocket parte dela também (ver `lib/cable.ts`). */
+export const API_URL: string =
+  import.meta.env.VITE_API_URL ?? "http://localhost:3040"
 
 /**
  * Códigos que a API pode devolver, mais dois sintéticos do cliente
@@ -17,6 +19,7 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
  */
 export type ApiErrorCode =
   | "unauthorized"
+  | "forbidden"
   | "notFound"
   | "unprocessable"
   | "parameterMissing"
@@ -88,6 +91,7 @@ export type ApiInit = RequestInit & {
 function knownCode(code: string | undefined, status: number): ApiErrorCode {
   const codes: ApiErrorCode[] = [
     "unauthorized",
+    "forbidden",
     "notFound",
     "unprocessable",
     "parameterMissing",
@@ -99,6 +103,7 @@ function knownCode(code: string | undefined, status: number): ApiErrorCode {
   ]
   if (code && (codes as string[]).includes(code)) return code as ApiErrorCode
   if (status === 401) return "unauthorized"
+  if (status === 403) return "forbidden"
   if (status === 404) return "notFound"
   return "unknown"
 }
@@ -119,7 +124,7 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
 
   let res: Response
   try {
-    res = await fetch(`${BASE_URL}${path}`, { ...rest, headers: merged })
+    res = await fetch(`${API_URL}${path}`, { ...rest, headers: merged })
   } catch {
     throw new ApiError({ status: 0, code: "network" })
   }
