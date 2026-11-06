@@ -4,11 +4,7 @@ import { useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 import { ChevronUp, Menu, type LucideIcon } from "lucide-react"
 
-import {
-  CHROME_SPRING,
-  INDICATOR_SPRING,
-  useOffscreenAfterExit,
-} from "@/components/shell/motion"
+import { useOffscreenAfterExit } from "@/components/shell/motion"
 import { useAppShell } from "@/hooks/use-app-shell"
 import { useMobileNav } from "@/hooks/use-mobile-nav"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
@@ -19,6 +15,7 @@ import {
   type NavEntry,
 } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
+import { spring } from "@/lib/motion"
 
 const INDICATOR_LAYOUT_ID = "mobile-nav-indicator"
 const MAX_VISIBLE_BADGE = 99
@@ -74,7 +71,7 @@ export function MobileBottomNav() {
       // remonta, e não pode nascer em cena para só então descer.
       initial={{ y: immersive ? "110%" : 0 }}
       animate={{ y: immersive ? "110%" : 0 }}
-      transition={reducedMotion ? { duration: 0 } : CHROME_SPRING}
+      transition={reducedMotion ? { duration: 0 } : spring}
       onAnimationStart={onAnimationStart}
       onAnimationComplete={onAnimationComplete}
       style={{
@@ -195,7 +192,7 @@ function TabContent({
         {active && (
           <motion.span
             layoutId={INDICATOR_LAYOUT_ID}
-            transition={reducedMotion ? { duration: 0 } : INDICATOR_SPRING}
+            transition={reducedMotion ? { duration: 0 } : spring}
             className="absolute inset-0 rounded-full bg-accent"
           />
         )}

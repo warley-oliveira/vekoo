@@ -240,7 +240,7 @@ export function apiUpload<T>(
     signal?.addEventListener("abort", abort, { once: true })
     const settle = () => signal?.removeEventListener("abort", abort)
 
-    xhr.open(method, `${BASE_URL}${path}`)
+    xhr.open(method, `${API_URL}${path}`)
     // Sem Content-Type: é o navegador quem escreve o `boundary` do multipart.
     xhr.setRequestHeader("Accept-Language", currentLanguage())
     const token = getToken()

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react"
 import { toast } from "sonner"
 
+import { useConfirm } from "@/components/shared"
 import { FolderListSkeleton } from "@/components/carousel-skeletons"
 import { InlineError } from "@/components/error-state"
 import { Button } from "@/components/ui/button"
@@ -175,6 +176,7 @@ function FolderRow({
   const { t } = useTranslation()
   const { pathname } = useLocation()
   const { renameFolder, deleteFolder } = useFolderMutations()
+  const confirm = useConfirm()
   const { move } = useCarouselMutations()
   const navigate = useNavigate()
   const [renaming, setRenaming] = useState(false)
@@ -259,14 +261,19 @@ function FolderRow({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"
-                  onClick={() => {
-                    deleteFolder(folder.id)
-                      .then(() =>
-                        toast(t("folders.deleted", { name: folder.name }), {
-                          description: t("folders.deletedDescription"),
-                        })
-                      )
-                      .catch(() => toast.error(t("folders.deleteFailed")))
+                  onClick={async () => {
+                    const confirmed = await confirm({
+                      title: t("folders.deleteConfirmTitle", { name: folder.name }),
+                      description: t("folders.deleteConfirmDescription"),
+                      confirmLabel: t("folders.deleteFolder"),
+                      destructive: true,
+                      onConfirm: () => deleteFolder(folder.id),
+                    })
+                    if (!confirmed) return
+
+                    toast(t("folders.deleted", { name: folder.name }), {
+                      description: t("folders.deletedDescription"),
+                    })
                     navigate("/carousels")
                   }}
                 >

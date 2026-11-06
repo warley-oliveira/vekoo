@@ -2,6 +2,8 @@ import { useLayoutEffect, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { create } from "zustand"
 
+import { useDocumentTitle } from "@/hooks/use-document-title"
+
 // O que a página põe na barra superior. A barra e a página são irmãs (o `Outlet` não
 // é ancestral do cabeçalho), então o caminho é um store: a página escreve ao montar e
 // limpa ao desmontar. Só as folhas que desenham o cabeçalho assinam, nenhuma re-render
@@ -81,7 +83,8 @@ export function useHeaderSlot(node: ReactNode, options?: HeaderSlotOptions): voi
 
 /**
  * Troca o título que a rota declarou por um que só a página conhece (nome da pasta,
- * do fluxo, do contato). `null`/vazio devolve o título da rota.
+ * do fluxo, do contato), na barra superior e na aba do navegador. `null`/vazio devolve
+ * o título da rota.
  */
 export function usePageTitle(
   title: string | null | undefined,
@@ -90,6 +93,8 @@ export function usePageTitle(
   const color = options?.color
   const backTo = options?.backTo
   const parentTitle = options?.parentTitle
+
+  useDocumentTitle(title)
 
   // Antes da pintura: o título da rota não pisca antes do nome da pasta.
   useLayoutEffect(() => {

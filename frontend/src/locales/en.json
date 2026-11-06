@@ -70,6 +70,8 @@
     "actionsAria": "Actions for folder {{name}}",
     "newNameAria": "New folder name",
     "deleteFolder": "Delete folder",
+    "deleteConfirmTitle": "Delete the folder “{{name}}”?",
+    "deleteConfirmDescription": "Its carousels are not deleted: they go back to My carousels.",
     "created": "Folder “{{name}}” created.",
     "renamed": "Folder renamed.",
     "deleted": "Folder “{{name}}” deleted.",

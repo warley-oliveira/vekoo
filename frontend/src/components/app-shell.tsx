@@ -115,7 +115,7 @@ export function AppShell() {
             <main
               ref={setScroller}
               className={cn(
-                "min-h-0 flex-1 overscroll-contain",
+                "relative min-h-0 flex-1 overscroll-contain",
                 fullBleed ? "overflow-hidden" : "overflow-y-auto",
                 isMobileShell && "pt-(--app-header-total)",
                 // A tela dona da própria rolagem reserva a folga no fim do que rola.

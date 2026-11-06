@@ -35,19 +35,25 @@ Antes de criar um componente, procure aqui. Se faltar algo genérico, é melhor 
 
 ### `PageBody` e `PageHeader`
 
-Toda rota começa assim. `PageBody` dá largura e respiro (`default`, `wide`, `full`) e impede a rolagem dupla na página. O `PageHeader` empilha as ações no celular.
+Toda rota começa assim. `PageBody` dá largura e respiro (`default`, `wide`, `full`) e impede a rolagem dupla na página.
+
+**Cada tela tem um título só, e ele mora na barra superior.** `RouteFrame` já declara o título da rota: não repita um título grande no conteúdo. O `PageHeader` leva título e ações para a barra superior e deixa no conteúdo só a descrição e o breadcrumb, quando houver. Sem nada disso, ele não desenha nada.
 
 ```tsx
 <PageBody variant="wide">
   <PageHeader
-    title={t("contacts.title")}
     description={t("contacts.description")}
-    breadcrumb={[{ label: t("nav.home"), to: "/" }, { label: t("contacts.title") }]}
     actions={<Button onClick={create.onTrue}><Plus />{t("contacts.create")}</Button>}
+    mobilePlacement="inline" // uma ação principal curta; o padrão é uma folha com tudo empilhado
   />
   {/* conteúdo */}
 </PageBody>
+
+// Subpágina, com título que só a página conhece e botão de voltar:
+<PageHeader title={contact.name} backTo="/contacts" parentTitle={t("navigation.contacts")} />
 ```
+
+Filtros que precisam ficar visíveis no celular não vão aqui: use `FilterBar` no conteúdo, ou `useHeaderSlot(<Filtros />, { mobilePlacement: "toolbar" })`.
 
 ### `SettingsSection`
 
@@ -685,7 +691,7 @@ Presets: `fade`, `slideUp`, `listItem`, `stagger` com `staggerItem`. Transiçõe
 | `useIsTouch()` | Dedo: decisões de **interação** (hover, área de toque). Um iPad Pro é largo e de toque |
 | `useLongPress(fn, { delay })` | `{ handlers, didFire }`: pressionar e segurar. Espalhe `handlers` e cheque `didFire()` no clique |
 | `useUnsavedChanges(when)` | `{ blocked, proceed, reset }`, sob `BrowserRouter` e data router |
-| `usePageTitle(title)` | Título da aba: "Contatos · Vekoo" |
+| `usePageTitle(title)` (de `@/hooks/use-header-slot`) | Título da página na barra superior e na aba: "Contatos · Vekoo". `RouteFrame` já cuida do título da rota; só chame para um título que a página conhece, como o nome do contato |
 
 ## Utilitários: `@/lib/*`
 

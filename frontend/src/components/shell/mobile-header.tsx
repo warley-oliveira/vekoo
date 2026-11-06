@@ -4,10 +4,7 @@ import { useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 import { ArrowLeft, SlidersHorizontal } from "lucide-react"
 
-import {
-  CHROME_SPRING,
-  useOffscreenAfterExit,
-} from "@/components/shell/motion"
+import { useOffscreenAfterExit } from "@/components/shell/motion"
 import { NotificationCenter } from "@/components/shell/notification-center"
 import { Button } from "@/components/ui/button"
 import { VekooGlyph } from "@/components/vekoo-mark"
@@ -17,6 +14,7 @@ import { useMobileNav } from "@/hooks/use-mobile-nav"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
 import { useScrollDirection } from "@/hooks/use-scroll-direction"
 import { cn } from "@/lib/utils"
+import { spring } from "@/lib/motion"
 
 const HEADER_TOTAL_VAR = "--app-header-total"
 
@@ -85,7 +83,7 @@ export function MobileHeader({ scroller }: { scroller: HTMLElement | null }) {
       aria-hidden={immersive || undefined}
       initial={false}
       animate={{ y: hidden ? "-110%" : 0 }}
-      transition={reducedMotion ? { duration: 0 } : CHROME_SPRING}
+      transition={reducedMotion ? { duration: 0 } : spring}
       onAnimationStart={onAnimationStart}
       onAnimationComplete={onAnimationComplete}
       style={{

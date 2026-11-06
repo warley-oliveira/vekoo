@@ -70,6 +70,8 @@
     "actionsAria": "Ações da pasta {{name}}",
     "newNameAria": "Novo nome da pasta",
     "deleteFolder": "Excluir pasta",
+    "deleteConfirmTitle": "Excluir a pasta “{{name}}”?",
+    "deleteConfirmDescription": "Os carrosséis dela não são apagados: voltam para Meus carrosséis.",
     "created": "Pasta “{{name}}” criada.",
     "renamed": "Pasta renomeada.",
     "deleted": "Pasta “{{name}}” excluída.",

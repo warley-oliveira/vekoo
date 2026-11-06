@@ -1,5 +1,5 @@
 import { useVisualViewport } from "@/hooks/use-visual-viewport"
-import { useMatchMedia } from "@/lib/match-media"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 /** O mesmo corte do `lg` do Tailwind: abaixo de 1024 px, a casca é a do celular. */
 const MOBILE_SHELL_QUERY = "(max-width: 1023.98px)"
@@ -16,8 +16,8 @@ export type MobileShellState = {
 
 /** O único portão da casca móvel: decisão de layout, por largura, não por toque. */
 export function useMobileShell(): MobileShellState {
-  const isMobileShell = useMatchMedia(MOBILE_SHELL_QUERY)
-  const isCompactPhone = useMatchMedia(COMPACT_PHONE_QUERY)
+  const isMobileShell = useMediaQuery(MOBILE_SHELL_QUERY)
+  const isCompactPhone = useMediaQuery(COMPACT_PHONE_QUERY)
   const { isKeyboardOpen } = useVisualViewport()
 
   return { isMobileShell, isCompactPhone, isKeyboardOpen }

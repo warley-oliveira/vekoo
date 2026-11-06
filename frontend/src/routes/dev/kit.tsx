@@ -85,7 +85,6 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useBoolean } from "@/hooks/use-boolean"
-import { usePageTitle } from "@/hooks/use-page-title"
 import { ApiError, type PaginationMeta } from "@/lib/api"
 import { isValidPhone } from "@/lib/format-phone"
 import { matchesSearch } from "@/lib/search-text"
@@ -197,8 +196,6 @@ function Example({
 
 export default function KitPage() {
   const { t } = useTranslation()
-  usePageTitle(t("kit.showcase.title"))
-
   return (
     <PageBody variant="wide" className="gap-10 md:gap-12">
       <PageHeader

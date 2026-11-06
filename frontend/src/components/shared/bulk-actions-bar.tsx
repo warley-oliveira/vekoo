@@ -45,7 +45,7 @@ export function BulkActionsBar({
           {...preset.slideUp}
           data-slot="bulk-actions-bar"
           // Acima da navegação inferior do celular, que publica a própria altura.
-          className="pointer-events-none fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom)+var(--mobile-nav-height,0px))] z-40 flex justify-center px-4"
+          className="pointer-events-none fixed inset-x-0 bottom-[calc(max(var(--app-bottom-nav-total),var(--app-safe-bottom))+1rem)] z-40 flex justify-center px-4"
         >
           <div
             role="toolbar"
