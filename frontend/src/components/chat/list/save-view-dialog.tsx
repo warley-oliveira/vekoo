@@ -17,9 +17,7 @@ import { apiPatch, apiPost } from "@/lib/api"
 import { useListFilters } from "@/lib/chat/stores"
 import type { ChatView, FilterCondition } from "@/lib/chat/types"
 
-export type SaveViewState =
-  | { mode: "create"; personal: boolean }
-  | { mode: "rename"; view: ChatView }
+export type SaveViewState = { mode: "create" } | { mode: "rename"; view: ChatView }
 
 type Values = { name: string; scope: "personal" | "shared" }
 
@@ -51,7 +49,7 @@ export function SaveViewDialog({
     defaultValues:
       state.mode === "rename"
         ? { name: state.view.name, scope: state.view.personal ? "personal" : "shared" }
-        : { name: "", scope: state.personal ? "personal" : "shared" },
+        : { name: "", scope: "personal" },
     mode: "onBlur",
   })
 

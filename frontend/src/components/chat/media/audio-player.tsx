@@ -21,7 +21,7 @@ import {
   withWaveformSlot,
   writeWaveform,
 } from "@/lib/chat/audio/waveform"
-import { mediaSource } from "@/lib/chat/media"
+import { fetchMediaBytes, mediaSource } from "@/lib/chat/media"
 
 /** O que o player precisa do `<audio>` e do motor de Opus. Os dois têm a mesma cara. */
 type PlayableElement = HTMLAudioElement | OpusAudioElement
@@ -206,14 +206,14 @@ export default function AudioPlayer({ source, mediaId, hintedDuration }: AudioPl
       await withWaveformSlot(async () => {
         if (cancelled) return
         try {
-          const raw = await (await fetch(url)).arrayBuffer()
+          const raw = await fetchMediaBytes(url)
           if (cancelled) return
 
           const container = sniffContainer(new Uint8Array(raw, 0, Math.min(16, raw.byteLength)))
           if (needsOpusFallback(container)) setNeedsFallback(true)
 
-          // `decodeAudioData` neutraliza o buffer que recebe: passa uma cópia.
-          const audio = await createDecodingContext().decodeAudioData(raw.slice(0))
+          // Daqui em diante `raw` é de `decodeAudioData`, que neutraliza o buffer que recebe.
+          const audio = await createDecodingContext().decodeAudioData(raw)
           if (cancelled) return
 
           const data = computePeaks(audio.getChannelData(0), WAVEFORM_SAMPLES)

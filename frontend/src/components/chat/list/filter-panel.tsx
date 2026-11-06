@@ -29,7 +29,7 @@ import type { ChatView, FilterCondition, QueryOperator } from "@/lib/chat/types"
 import { toDateInputValue } from "@/lib/date-format"
 import { matchesSearch } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
-import { SaveViewDialog } from "./save-view-dialog"
+import { SaveViewDialog, type SaveViewState } from "./save-view-dialog"
 
 /** Campo digitado não vira uma requisição por tecla. */
 const APPLY_DEBOUNCE_MS = 400
@@ -217,7 +217,7 @@ const ViewsSection = memo(function ViewsSection({
   onApply,
 }: {
   canSave: boolean
-  onSave: (personal: boolean) => void
+  onSave: () => void
   onRename: (view: ChatView) => void
   onApply: (view: ChatView) => void
 }) {
@@ -248,26 +248,11 @@ const ViewsSection = memo(function ViewsSection({
     if (confirmed) toast.success(t("chat.views.deleted"))
   }
 
-  const renderGroup = (title: string, items: ChatView[], isPersonal: boolean) => (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-xs font-medium text-muted-foreground">{title}</h3>
-        <Button
-          type="button"
-          variant="ghost"
-          size="xs"
-          disabled={!canSave}
-          title={canSave ? undefined : t("chat.views.needsFilter")}
-          onClick={() => onSave(isPersonal)}
-        >
-          <Plus />
-          {t("chat.views.save")}
-        </Button>
-      </div>
-      {items.length === 0 ? (
-        <p className="py-1 text-sm text-muted-foreground">{t("chat.views.empty")}</p>
-      ) : (
-        items.map((view) => (
+  const renderGroup = (title: string, items: ChatView[]) =>
+    items.length === 0 ? null : (
+      <div className="flex flex-col gap-0.5">
+        <h3 className="py-1 text-xs font-medium text-muted-foreground">{title}</h3>
+        {items.map((view) => (
           <div
             key={view.id}
             className={cn(
@@ -279,7 +264,7 @@ const ViewsSection = memo(function ViewsSection({
               type="button"
               aria-current={view.id === activeViewId ? "true" : undefined}
               onClick={() => onApply(view)}
-              className="flex min-h-9 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="flex min-h-9 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:min-h-10"
             >
               <Bookmark aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
               <span className="truncate">{view.name}</span>
@@ -297,14 +282,26 @@ const ViewsSection = memo(function ViewsSection({
               ]}
             />
           </div>
-        ))
-      )}
-    </div>
-  )
+        ))}
+      </div>
+    )
 
   return (
     <section aria-label={t("chat.views.title")} className="flex flex-col gap-3">
-      <h2 className="text-sm font-medium">{t("chat.views.title")}</h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-medium">{t("chat.views.title")}</h2>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={!canSave}
+          title={canSave ? undefined : t("chat.views.needsFilter")}
+          onClick={onSave}
+        >
+          <Plus />
+          {t("chat.views.save")}
+        </Button>
+      </div>
       {views.length > 5 ? (
         <SearchInput
           value={search}
@@ -319,10 +316,12 @@ const ViewsSection = memo(function ViewsSection({
           <Skeleton className="h-8" />
           <Skeleton className="h-8" />
         </div>
+      ) : visible.length === 0 ? (
+        <p className="py-1 text-sm text-muted-foreground">{t("chat.views.empty")}</p>
       ) : (
         <>
-          {renderGroup(t("chat.views.personal"), personal, true)}
-          {renderGroup(t("chat.views.shared"), shared, false)}
+          {renderGroup(t("chat.views.personal"), personal)}
+          {renderGroup(t("chat.views.shared"), shared)}
         </>
       )}
     </section>
@@ -399,9 +398,7 @@ export default function FilterPanel({
     change(draft.map((item, position) => (position === index ? { ...item, queryOperator } : item)))
   }
 
-  const [saving, setSaving] = useState<
-    { mode: "create"; personal: boolean } | { mode: "rename"; view: ChatView } | null
-  >(null)
+  const [saving, setSaving] = useState<SaveViewState | null>(null)
 
   const completeConditions = useMemo(() => toQueryConditions(draft), [draft])
 
@@ -485,7 +482,7 @@ export default function FilterPanel({
 
           <ViewsSection
             canSave={completeConditions.length > 0 && draft.every(isCompleteCondition)}
-            onSave={(personal) => setSaving({ mode: "create", personal })}
+            onSave={() => setSaving({ mode: "create" })}
             onRename={(view) => setSaving({ mode: "rename", view })}
             onApply={(view) => {
               debouncedWrite.cancel()

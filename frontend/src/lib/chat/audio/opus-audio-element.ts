@@ -1,4 +1,6 @@
-import { decodeOggOpus, fetchAudioBytes } from "./decode-ogg-opus"
+import { fetchMediaBytes } from "@/lib/chat/media"
+
+import { decodeOggOpus } from "./decode-ogg-opus"
 import { getCachedBuffer, setCachedBuffer } from "./opus-buffer-cache"
 import { acquireAudioContext } from "./shared-audio-context"
 
@@ -195,8 +197,8 @@ export class OpusAudioElement extends EventTarget {
     if (this.loading) return this.loading
 
     this.abort = new AbortController()
-    this.loading = fetchAudioBytes(this.url, this.abort.signal)
-      .then((bytes) => decodeOggOpus(bytes, context))
+    this.loading = fetchMediaBytes(this.url, this.abort.signal)
+      .then((bytes) => decodeOggOpus(new Uint8Array(bytes), context))
       .then((buffer) => {
         setCachedBuffer(this.mediaId, buffer)
         return buffer

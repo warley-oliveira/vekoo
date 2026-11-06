@@ -8,18 +8,17 @@ export function mediaSource(path: string | null | undefined): string | null {
   return path ? apiAssetUrl(path) : null
 }
 
-/**
- * O arquivo pelo proxy autenticado (`GET /media/download`), que entrega o nome original e
- * alcança CDN sem CORS. Passa em `downloadFile({ fetchBlob })`.
- */
-const fetchThroughProxy: BlobFetcher = async (url) => {
+/** O proxy autenticado (`GET /media/download`): entrega o nome original e alcança CDN sem CORS. */
+function fetchFromProxy(url: string, signal?: AbortSignal): Promise<Response> {
   const headers = new Headers({ "Accept-Language": currentLanguage() })
   const token = getToken()
   if (token) headers.set("Authorization", `Bearer ${token}`)
 
-  const response = await fetch(`${API_URL}/media/download?url=${encodeURIComponent(url)}`, {
-    headers,
-  })
+  return fetch(`${API_URL}/media/download?url=${encodeURIComponent(url)}`, { headers, signal })
+}
+
+const fetchThroughProxy: BlobFetcher = async (url) => {
+  const response = await fetchFromProxy(url)
   if (!response.ok) throw new Error(`download ${response.status}`)
 
   return {
@@ -31,4 +30,15 @@ const fetchThroughProxy: BlobFetcher = async (url) => {
 /** Baixa a mídia da mensagem. Sem conseguir, abre numa aba nova em vez de falhar calado. */
 export function downloadMedia(path: string, fileName?: string | null): Promise<void> {
   return downloadFile(path, { fileName, fetchBlob: fetchThroughProxy })
+}
+
+/**
+ * Os bytes da mídia, para desenhar a onda e decodificar Opus. Da API vêm direto, pela URL assinada.
+ * De fora, só pelo proxy: o `connect-src` da CSP não deixa o `fetch` sair para um CDN qualquer, e
+ * esse CDN nem sempre responde com CORS. O `<audio>` não tem esse problema, porque vale `media-src`.
+ */
+export async function fetchMediaBytes(url: string, signal?: AbortSignal): Promise<ArrayBuffer> {
+  const response = url.startsWith(API_URL) ? await fetch(url, { signal }) : await fetchFromProxy(url, signal)
+  if (!response.ok) throw new Error(`download ${response.status}`)
+  return response.arrayBuffer()
 }
