@@ -8,6 +8,10 @@ class Account < ApplicationRecord
   EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\.[^@\s]+\z/
 
   belongs_to :organization
+  belongs_to :access_role, optional: true
+
+  has_many :team_memberships, dependent: :destroy
+  has_many :teams, through: :team_memberships
 
   has_many :sessions, dependent: :destroy
   has_many :password_resets, dependent: :destroy
@@ -25,7 +29,25 @@ class Account < ApplicationRecord
   validates :password, length: { minimum: MINIMUM_PASSWORD_LENGTH }, allow_nil: true
   validates :role, inclusion: { in: ROLES }
 
+  scope :active, -> { where(revoked_at: nil) }
+
   def owner?
     role == "owner"
+  end
+
+  # Dono vê tudo; os demais valem pelo grupo de permissões. Sem grupo, valem os
+  # defaults de membro.
+  def permission_level(key)
+    return "all" if owner?
+
+    (access_role&.permissions || AccessRole::MEMBER_PERMISSIONS)[key.to_s].presence || "none"
+  end
+
+  def can?(key)
+    permission_level(key) != "none"
+  end
+
+  def permission_map
+    AccessRole::KEYS.index_with { |key| permission_level(key) }
   end
 end

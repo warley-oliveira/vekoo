@@ -49,6 +49,12 @@ Rails.application.routes.draw do
   # --- acervo da ferramenta -------------------------------------------------
   get "catalog" => "catalog#show"
 
+  # --- plataforma de atendimento ---------------------------------------------
+  # Um arquivo por domínio em config/routes/ — ver docs/migration/CONVENTIONS.md.
+  %i[access connectors inbox pipelines agenda products insights outreach automation].each do |domain|
+    draw domain
+  end
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check

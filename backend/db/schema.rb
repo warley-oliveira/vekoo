@@ -10,18 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "access_roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.jsonb "permissions", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_access_roles_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_access_roles_on_organization_id"
+  end
+
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "access_role_id"
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.datetime "last_seen_at"
+    t.string "locale"
     t.string "name", null: false
     t.uuid "organization_id", null: false
     t.string "password_digest", null: false
+    t.string "phone"
+    t.datetime "revoked_at"
     t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
+    t.index ["access_role_id"], name: "index_accounts_on_access_role_id"
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["organization_id"], name: "index_accounts_on_organization_id"
   end
@@ -108,8 +124,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
     t.datetime "created_at", null: false
     t.integer "credits_total", default: 50, null: false
     t.integer "credits_used", default: 0, null: false
+    t.jsonb "features", default: {}, null: false
     t.string "name", null: false
     t.string "plan", default: "free", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.string "timezone", default: "America/Sao_Paulo", null: false
     t.datetime "updated_at", null: false
     t.check_constraint "credits_used >= 0 AND credits_used <= credits_total", name: "organizations_credits_within_total"
   end
@@ -149,6 +168,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
     t.index ["token_digest"], name: "index_sessions_on_token_digest", unique: true
   end
 
+  create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "team_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_team_memberships_on_account_id"
+    t.index ["team_id", "account_id"], name: "index_team_memberships_on_team_id_and_account_id", unique: true
+    t.index ["team_id"], name: "index_team_memberships_on_team_id"
+  end
+
+  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_teams_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_teams_on_organization_id"
+  end
+
   create_table "theme_presets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "key", null: false
@@ -173,6 +211,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
     t.index ["organization_id"], name: "index_uploads_on_organization_id"
   end
 
+  add_foreign_key "access_roles", "organizations", on_delete: :cascade
+  add_foreign_key "accounts", "access_roles", on_delete: :nullify
   add_foreign_key "accounts", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
@@ -182,6 +222,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_190200) do
   add_foreign_key "notifications", "organizations"
   add_foreign_key "password_resets", "accounts"
   add_foreign_key "sessions", "accounts"
+  add_foreign_key "team_memberships", "accounts", on_delete: :cascade
+  add_foreign_key "team_memberships", "teams", on_delete: :cascade
+  add_foreign_key "teams", "organizations", on_delete: :cascade
   add_foreign_key "uploads", "accounts", on_delete: :nullify
   add_foreign_key "uploads", "organizations"
 end

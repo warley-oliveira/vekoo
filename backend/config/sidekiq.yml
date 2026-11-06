@@ -1,4 +1,9 @@
 :concurrency: 5
+# `critical` é o caminho quente das mensagens; `low` é o que pode esperar
+# (reconciliações, varreduras de SLA, exportações).
 :queues:
-  - default
-  - mailers
+  - [critical, 4]
+  - [default, 2]
+  - [campaigns, 2]
+  - [mailers, 1]
+  - [low, 1]

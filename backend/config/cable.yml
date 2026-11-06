@@ -1,5 +1,9 @@
+# Redis também em desenvolvimento: quem transmite quase sempre é o Sidekiq, outro
+# processo — o adaptador `async` só alcança quem está no mesmo processo do Puma.
 development:
-  adapter: async
+  adapter: redis
+  url: <%= ENV.fetch("CABLE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/0").sub(%r{/\d+\z}, "/1") } %>
+  channel_prefix: vekoo_development
 
 test:
   adapter: test

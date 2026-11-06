@@ -6,6 +6,8 @@ class OrganizationSerializer < ApplicationSerializer
       id: organization.id,
       name: organization.name,
       plan: organization.plan,
+      timezone: organization.timezone,
+      features: organization.features,
       createdAt: epoch_ms(organization.created_at)
     }
   end

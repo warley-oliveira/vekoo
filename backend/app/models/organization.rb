@@ -12,6 +12,19 @@ class Organization < ApplicationRecord
   has_many :carousels, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :uploads, dependent: :destroy
+  has_many :access_roles, dependent: :destroy
+  has_many :teams, dependent: :destroy
+
+  # Cada domínio da plataforma declara as próprias associações.
+  include OrganizationRelations::Access
+  include OrganizationRelations::Connectors
+  include OrganizationRelations::Inbox
+  include OrganizationRelations::Pipelines
+  include OrganizationRelations::Agenda
+  include OrganizationRelations::Products
+  include OrganizationRelations::Insights
+  include OrganizationRelations::Outreach
+  include OrganizationRelations::Automation
 
   normalizes :name, with: ->(name) { name.squish }
 
@@ -23,6 +36,9 @@ class Organization < ApplicationRecord
       greater_than_or_equal_to: 0,
       less_than_or_equal_to: ->(org) { org.credits_total }
     }
+
+  # Toda organização nasce com os dois grupos de permissão padrão.
+  after_create { AccessRole.seed_defaults_for(self) }
 
   def owner
     accounts.find_by(role: "owner")

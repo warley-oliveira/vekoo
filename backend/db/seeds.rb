@@ -1008,3 +1008,6 @@ puts <<~REPORT
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
 REPORT
+
+# Cada domínio da plataforma de atendimento semeia os próprios dados de exemplo.
+Rails.root.glob("db/seeds/*.rb").sort.each { |file| load file }

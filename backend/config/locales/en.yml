@@ -1,6 +1,7 @@
 # English copy for the API. Keep the same keys as pt-BR.yml (the source locale).
 en:
   errors:
+    forbidden: "You do not have permission to do that."
     not_found: "Not found."
     unauthorized: "You need to sign in to continue."
     too_many_requests: "Too many attempts. Wait a few minutes and try again."

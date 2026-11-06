@@ -8,6 +8,9 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     ENV.fetch("FRONTEND_ORIGIN", "http://localhost:#{ENV.fetch('VITE_PORT', 5173)}")
   }.split(",").map(&:strip).reject(&:empty?)
 
+  # O WebSocket não passa pelo CORS; a mesma lista protege o /cable.
+  Rails.application.config.action_cable.allowed_request_origins = allowed
+
   allow do
     origins(*allowed)
 

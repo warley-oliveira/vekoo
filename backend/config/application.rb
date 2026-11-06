@@ -41,6 +41,10 @@ module Backend
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # WebSocket do painel (chat, pipelines, avisos, progresso de campanha).
+    # A origem é conferida contra a mesma lista do CORS — ver cors.rb.
+    config.action_cable.mount_path = "/cable"
+
     # Todo id do projeto é UUID (`gen_random_uuid()`). Dizer isto aqui faz os
     # geradores — inclusive o do Active Storage — produzirem tabelas coerentes
     # com o resto do banco, em vez de bigint solto no meio de tudo.

@@ -13,6 +13,8 @@ module ErrorRendering
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
     rescue_from ActiveRecord::RecordInvalid, with: :render_record_invalid
     rescue_from ActionController::ParameterMissing, with: :render_parameter_missing
+    rescue_from Mongoid::Errors::DocumentNotFound, with: :render_not_found
+    rescue_from Mongoid::Errors::Validations, with: :render_document_invalid
   end
 
   private
@@ -36,6 +38,15 @@ module ErrorRendering
 
   def render_record_invalid(exception)
     render_invalid(exception.record)
+  end
+
+  def render_document_invalid(exception)
+    render_invalid(exception.document)
+  end
+
+  # Tem sessão, mas o grupo de permissões não libera este recurso.
+  def render_forbidden
+    render_error(status: :forbidden, code: "forbidden", message: t("errors.forbidden"))
   end
 
   # Erros de validação viram um mapa campo → mensagens, com o primeiro campo
