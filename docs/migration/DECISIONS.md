@@ -211,6 +211,32 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acréscimos na API:** `lastMessageType` em `/unified-contacts`; mudar só `status_message` agora é transmitido; dividida em partes, o aviso de anexo citado vai na última parte; o aviso é uma frase (`connectors.messages.cited_attachment_missing`), com o id só no log.
 - **Acréscimos do integrador:** falha de rede no envio mostra "O canal não respondeu. Tente de novo em instantes." (`Connectors::SendFailure`), em vez do erro cru em inglês; recusa do provedor continua como veio. `presence.update` da Evolution agora chega a `ChatChannel`, e é o único provedor que informa "digitando".
 
+### Dashboard e funis: tela (fe-dashboard-funnels)
+
+- **Comparação com o período anterior:** um segundo `GET /dashboard` dá a variação e a linha cinza. Some em "Hoje" e quando o período anterior está incompleto. Não existe na origem; se a chamada extra incomodar, sai sem afetar o resto.
+- **Mapa de calor** é média por dia da semana e hora. A origem tinha uma linha por data, o que daria 90 linhas em 90 dias.
+- **Tendência** agrupa por semana acima de 45 dias (31 no celular) e por mês acima de 180. Períodos de 180 e 365 dias foram somados aos da origem.
+- **Gráficos:** canais e ranking em barras ranqueadas, no lugar de rosca; autonomia e cancelamento como medidor; comparecimento em cinza e um vermelho, porque verde e vermelho não passam como par para quem não distingue cores. O violeta só aparece na tendência, no medidor de autonomia, no pico das colunas e no mapa de calor.
+- **Etapa excluída no painel de edição:** o aviso vem ao salvar, com "Desfazer". No menu da coluna, a confirmação é imediata.
+- **Busca no quadro do funil** é acréscimo, pela regra do Charter para coleções. Funil não se reordena, porque a API ordena por nome; só etapas.
+- **Painel da conversa no funil** é mais simples que o da origem: histórico só leitura, com mídia como rótulo e "Abrir conversa" para o resto; agendamentos só como lista. O quadro não tem tempo real, como na origem: há um botão "Atualizar".
+- **Fora:** ranking de assistentes, follow-ups, tokens, créditos, custo médio e a alternância "Avançado". "Resolução autônoma" se junta a Autonomia, porque é o mesmo número.
+- **Acréscimo na API:** `GET /funnels/:id/board` com `q`, `assignedUser` e `tagIds[]`, pelo critério de `GET /chats`.
+
+### Fluxos, ferramentas e webhooks: API (be-automation)
+
+- **Modelos e crédito:** `main` é Opus 5.5 e `fast` é Haiku 5.5, sem `temperature`. Crédito: main 2, fast 1, juiz incluído na rodada que responde, saída sem resposta 1, transcrição por URL 1. Falha devolve o crédito daquela chamada.
+- **Execução:** bloco interrompido no meio não repete, vira `failed` com alerta. Debounce de 3 s, segurando até 30 s enquanto o contato digita (a origem não tinha teto). Uma execução viva por fluxo e conversa: mensagem durante espera por tempo não retoma nem recomeça. Pessoa assumindo cancela espera por tempo. Todos os fluxos que casam disparam, como na origem.
+- **Texto da IA:** quebra por parágrafo e link; anexo inventado pelo modelo sai do texto. O integrador manteve o apóstrofo dentro da palavra na limpeza: `d'água` virava `dágua`.
+- **Métricas:** tokens só na resposta (juiz e blocos sem mensagem ficam de fora); `usage_prompt_tokens` inclui o cache; `flow_id` não sai na API.
+- **Pipelines e funil:** no teste do editor, os blocos de Pipelines não mexem em quadro: registram `skipped` e avisam `pipeline_skipped`. Blocos de negócio nunca param o fluxo. `pipeline_update_deal` pode mudar para etapa de outro quadro da organização, sem travas. `set_funnel_stage` não tira do funil.
+- **Nomes públicos:** blocos com prefixo `pipeline_`, `stage_id`, `link_chat`, `card_source.type: "chat"`, `assign_team`, `finalize_chat`, `{{chat.*}}`. A API JS (`kanban.*`, `appointment.*`) não mudou. Cabeçalhos `X-Vekoo-*` no lugar de `X-Aiva-*`.
+- **API:** `human_handoff` dispara em `pause_automation_for_human!`, e não em `PATCH /chats`. `tool_ids` vazio é nenhuma ferramenta (na origem, todas). `http_request` com status ≥ 400 sai por `error`. Hook nasce em `test`. Entrada de webhook: 1 MB e 1200 por minuto.
+- **Novos:** `HookAction::HttpRequest`, `POST /flows/:id/executions`, blocos `catalog_search` e `set_funnel_stage`, alertas `flow_attachment_missing` e `flow_funnel_stage_missing`.
+- **Retenção:** execução 30 dias, teste 1 dia, pergunta parada 30 dias, 10 mil logs por hook. `hook_logs` exige `core_settings`.
+- **Fora da origem:** `lib/flow_engine`, `FlowChatSandboxChannel`, `FlowChat`, `DecisionToolBuilder`, `useAdminToolCatalog` e o CRUD de admin, `setup_follow_ups`, `next_commercial_time`, bypass de `super_user` e `partner`, `PlanLimitEnforcement`.
+- **Defeitos da origem corrigidos:** `ask_question`, `wait_for_message` e `send_interactive` repetiam para sempre ao retomar; `first_message` disparava em toda mensagem, e `keyword` não conferia a palavra; `loop` não iterava; `tool_ids` em branco dava todas as ferramentas; IDORs no canal de teste, etiquetas, anexos, departamentos, contas e etapa de `create_deal`; SSRF em `http_request`; `/tools/:id/test` rodava no Puma.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -240,6 +266,10 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION, pareamento na Z-API (`zapi_get_phone_code` existe, mas nenhum fluxo chama).
 - Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
 - `MEDIA_PROXY_ALLOWED_HOSTS` em produção precisa listar o CDN de mídia: host fora da lista dá erro no player de áudio do Safari, e só nele.
+- Dashboard: faceta por `flow_id` em `MessageVolumeDaily`, `flow_id` em `MessageAuthorship.projection` e o card de ranking por fluxo, agora que a mensagem guarda o fluxo. A fonte `messages` não expõe `usage_*`. `aiCosts` em `/catalog` ainda não lista os créditos dos blocos.
+- Processo de scripts com concorrência 2 pode virar gargalo em IA com ferramenta.
+- Brakeman: os 69 avisos de `pipelines/card_query.rb` são falsos positivos (coluna vem de `FieldRegistry`, chave de campo passa por `CUSTOM_KEY_FORMAT`, valor vai como bind): registrar em `config/brakeman.ignore` com o motivo.
+- Não exercitado de ponta a ponta: `send_template`, `catalog_search`, `goto_flow` e `send_media` em fluxo (só specs), transcrição Whisper, `PruneExecutionsJob` e `PruneLogsJob` no cron, 429 da entrada de webhook, volume.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -251,23 +281,21 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
+- Kit: `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
+- `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
+- `fe-automation`: montar a partir de `docs/migration/api/automation.md`, inclusive os eventos `attachment_missing` e `pipeline_skipped`, e `flow_debounce_seconds` em `/automation-settings`.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)
 
 - `be-inbox`: `chat_list_to` usa `team` (não `department`), e a atribuição de conversa deve filtrar pessoas `setupOnly`. API de lista de conversas e mensagens, apagar e reagir por REST, `Attachment` conforme `Media::AttachmentLookup`, `import_contacts*` e `normalize_custom_attributes`.
-- `be-automation`: substituir o stub `Flows::InboundDispatcher`; debounce; eventos `human_handoff` e `contact_created`; leitor de presença (`presence.<chatId>`), para a automação esperar a pessoa terminar de digitar (a transmissão para a tela já existe); alertas por hook.
 - `be-pipelines` e `be-agenda`: mapeamento em `ConnectorEventService` (usa `model.service` e `model.professional`), `ChatRelations::*`, `BackfillSystemTagsService`.
 - `be-outreach`: `Outreach::Recipient` hoje é guardado por `defined?`; remover a guarda. `ChatMessage#campaign_id` já existe.
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
-- `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
-- `be-automation`: gravar `flow_id` na mensagem (para o ranking por fluxo) e tokens em `usage_*`; IA de fluxo grava `role assistant`, origem `platform`, sem conta; bloco que usa `Funnels::MoveChat`; registrar a fonte `hook_logs` em dashboards personalizados ("Fonte nova" em `docs/migration/api/insights.md`).
 - `fe-custom-dashboards`: registrar a fonte `pipelines` e os filtros `pipeline_status` e `pipeline_stage` em dashboards personalizados, pelos passos de "Fonte nova" em `docs/migration/api/insights.md`, respeitando `Pipelines::CardVisibility`.
-- `be-automation`: bloco `send_text` com texto escrito à mão usa `MessageHandling` com `verbatim: true`; só o que vem de LLM passa pela limpeza.
-- `be-automation`: `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id`, conferindo a organização, e preencher `Outreach::AvailableFlows.for`. Mídia de campanha usa `Attachment`: já existe, conferir com um envio real.
 
 ## 3. Achados na origem (`ancient-app`), que continuam lá
 
