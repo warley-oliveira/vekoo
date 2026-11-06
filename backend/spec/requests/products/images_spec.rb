@@ -126,6 +126,13 @@ RSpec.describe "Products: imagens", type: :request do
       expect(json).to include("position" => 3, "alt" => "Camiseta azul", "url" => "https://ex.com/a.png", "hosted" => false)
     end
 
+    it "422, e não 500, para posição que não cabe na coluna" do
+      patch "/products/images/#{image.id}", params: { image: { position: 99_999_999_999 } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json.dig("error", "field")).to eq("position")
+    end
+
     it "não muda o endereço de origem" do
       patch "/products/images/#{image.id}", params: { image: { sourceUrl: "https://mal.com/x.png" } }, headers: headers, as: :json
 

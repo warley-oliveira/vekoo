@@ -104,6 +104,13 @@ RSpec.describe Products::Category do
       expect(moda.errors[:parent_id]).to be_present
     end
 
+    it "recusa posição que não cabe na coluna, em vez de estourar no banco" do
+      invalid = build(:product_category, organization: organization, position: 99_999_999_999)
+
+      expect(invalid).not_to be_valid
+      expect(invalid.errors[:position]).to be_present
+    end
+
     it "recusa passar do limite de profundidade" do
       parent = category("Nível 0")
       (1...described_class::MAX_DEPTH).each { |level| parent = category("Nível #{level}", parent: parent) }
@@ -112,6 +119,15 @@ RSpec.describe Products::Category do
 
       expect(too_deep).not_to be_valid
       expect(too_deep.errors[:parent_id]).to be_present
+    end
+  end
+
+  describe ".roots" do
+    it "traz só quem não tem pai" do
+      moda = category("Moda")
+      category("Camisetas", parent: moda)
+
+      expect(described_class.for_organization(organization.id).roots).to contain_exactly(moda)
     end
   end
 

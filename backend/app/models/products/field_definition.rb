@@ -14,6 +14,7 @@ module Products
     validates :name, presence: true, length: { maximum: 200 }
     validates :key, presence: true
     validates :value_type, inclusion: { in: VALUE_TYPES }
+    validates :position, numericality: Products::POSITION_RANGE
     validate :key_available
     validate :list_requires_options
 

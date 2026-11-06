@@ -17,17 +17,40 @@ RSpec.describe "configuração do catálogo" do
       expect(flat_keys(en)).to match_array(flat_keys(pt_br))
     end
 
-    it "toda mensagem de erro de modelo tem tradução nas duas línguas" do
-      {
-        Products::Item => %i[url custom_fields tags],
-        Products::Category => %i[name parent_id],
-        Products::FieldDefinition => %i[name option_values],
-        Products::Image => %i[file source_url]
-      }.each do |model, attributes|
-        attributes.each do |attribute|
-          %i[pt-BR en].each do |locale|
-            expect(I18n.t(attribute, scope: [ :activerecord, :attributes, model.model_name.i18n_key ], locale: locale, default: nil))
-              .to be_present, "faltou #{model}##{attribute} em #{locale}"
+    # O projeto não usa rails-i18n: uma chave esquecida sairia como "Translation missing"
+    # na cara de quem preenche o formulário.
+    {
+      [ Products::Item, :tags, :too_many, { count: 50 } ] => /50/,
+      [ Products::Item, :custom_fields, :too_large, {} ] => nil,
+      [ Products::Item, :custom_fields, :uncastable, { fields: "Preço" } ] => /Preço/,
+      [ Products::Item, :url, :invalid, {} ] => nil,
+      [ Products::Item, :title, :blank, {} ] => nil,
+      [ Products::Item, :external_id, :taken, {} ] => nil,
+      [ Products::Category, :name, :taken, {} ] => nil,
+      [ Products::Category, :name, :invalid, {} ] => nil,
+      [ Products::Category, :parent_id, :foreign, {} ] => nil,
+      [ Products::Category, :parent_id, :cycle, {} ] => nil,
+      [ Products::Category, :parent_id, :too_deep, { count: 6 } ] => /6/,
+      [ Products::Category, :position, :not_a_number, {} ] => nil,
+      [ Products::FieldDefinition, :name, :taken, {} ] => nil,
+      [ Products::FieldDefinition, :option_values, :list_without_options, {} ] => nil,
+      [ Products::FieldDefinition, :value_type, :inclusion, {} ] => nil,
+      [ Products::Image, :file, :unsupported_type, {} ] => nil,
+      [ Products::Image, :file, :too_large, { max: 10 } ] => /10/,
+      [ Products::Image, :source_url, :invalid, {} ] => nil,
+      [ Products::Image, :position, :less_than_or_equal_to, { count: 1 } ] => nil
+    }.each do |(model, attribute, type, options), expected|
+      %i[pt-BR en].each do |locale|
+        it "#{model}##{attribute} #{type} tem mensagem e nome de campo em #{locale}" do
+          I18n.with_locale(locale) do
+            errors = model.new.errors
+            errors.add(attribute, type, **options)
+            message = errors.full_messages_for(attribute).first
+
+            expect(message).not_to match(/translation missing/i)
+            # Sem tradução do atributo, a frase sairia com "Parent" ou "Option values".
+            expect(I18n.exists?("activerecord.attributes.#{model.model_name.i18n_key}.#{attribute}")).to be(true)
+            expect(message).to match(expected) if expected
           end
         end
       end

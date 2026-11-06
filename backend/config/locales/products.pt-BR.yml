@@ -83,16 +83,19 @@ pt-BR:
       products/category:
         name: "nome"
         parent_id: "categoria pai"
+        position: "posição"
         organization: "organização"
       products/field_definition:
         name: "nome"
         key: "chave"
         value_type: "tipo"
         option_values: "opções da lista"
+        position: "posição"
         organization: "organização"
       products/image:
         file: "arquivo"
         source_url: "endereço da imagem"
+        position: "posição"
         item: "item"
       products/import:
         status: "situação"

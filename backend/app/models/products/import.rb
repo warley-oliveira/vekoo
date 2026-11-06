@@ -13,6 +13,8 @@ module Products
     # Sem avanço por este tempo, a importação morreu com o processo. Cada lote toca
     # `updated_at`, então uma importação viva nunca chega perto disto.
     STALE_AFTER = 30.minutes
+    # Quem fecha a tela de mapeamento sem importar deixa para trás um arquivo de até 50 MB.
+    ABANDONED_AFTER = 7.days
 
     has_one_attached :file
 
@@ -27,6 +29,7 @@ module Products
     scope :for_organization, ->(organization_id) { where(organization_id: organization_id) }
     scope :recent, -> { order(created_at: :desc, id: :desc) }
     scope :stale, -> { where(status: "processing").where(updated_at: ...STALE_AFTER.ago) }
+    scope :abandoned, -> { where(status: "ready").where(updated_at: ...ABANDONED_AFTER.ago) }
 
     STATUSES.each do |state|
       define_method("#{state}?") { status == state }

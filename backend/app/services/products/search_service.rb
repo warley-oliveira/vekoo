@@ -28,6 +28,9 @@ module Products
     RRF_K = 60
     # Número puro. O `~` protege o cast: sem ele, um "azul" no campo derrubaria a busca.
     NUMERIC_TEXT = "^-?[0-9]+(\\.[0-9]+)?$"
+    # CASE e não dois WHEREs: o SQL não garante que a regex rode antes do cast.
+    NUMERIC_FIELD = "CASE WHEN product_items.custom_fields ->> ? ~ ? " \
+                    "THEN (product_items.custom_fields ->> ?)::numeric END"
 
     Result = Struct.new(:items, :total, :strategy, keyword_init: true)
 
@@ -165,16 +168,13 @@ module Products
       end
     end
 
-    # SQL montado sem bind de propósito: `?` e `:nome` no texto (a regex tem `?`; a chave
-    # do campo vem do cliente) confundiriam a substituição do `where`. Os limites passam
-    # por `to_f` e a chave por `quote`.
+    # A regex e a chave do campo (que vem do cliente) entram como valores: os `?` que elas
+    # têm por dentro não se confundem com os da instrução, que é fixa.
     def apply_numeric_range(relation, key, bounds)
-      field = "product_items.custom_fields ->> #{quote(key.to_s)}"
-      # CASE e não dois WHEREs: o SQL não garante que a regex rode antes do cast.
-      expression = "CASE WHEN #{field} ~ #{quote(NUMERIC_TEXT)} THEN (#{field})::numeric END"
+      binds = [ key.to_s, NUMERIC_TEXT, key.to_s ]
 
-      relation = relation.where(Arel.sql("#{expression} >= #{bounds[:min].to_f}")) if bounds[:min].present?
-      relation = relation.where(Arel.sql("#{expression} <= #{bounds[:max].to_f}")) if bounds[:max].present?
+      relation = relation.where("#{NUMERIC_FIELD} >= ?", *binds, bounds[:min].to_f) if bounds[:min].present?
+      relation = relation.where("#{NUMERIC_FIELD} <= ?", *binds, bounds[:max].to_f) if bounds[:max].present?
       relation
     end
 

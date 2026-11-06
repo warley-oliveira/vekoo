@@ -149,6 +149,37 @@ RSpec.describe Products::Item do
     end
   end
 
+  describe "atalhos de leitura" do
+    let(:item) { create(:product_item, organization: organization, tags: %w[promo], custom_fields: { "cor" => "Azul" }) }
+
+    it "#primary_image é a primeira na ordem das posições" do
+      create(:product_image, item: item, position: 2)
+      cover = create(:product_image, item: item, position: 1)
+
+      expect(item.reload.primary_image).to eq(cover)
+    end
+
+    it "#custom_field lê pela chave, em texto ou símbolo" do
+      expect(item.custom_field("cor")).to eq("Azul")
+      expect(item.custom_field(:cor)).to eq("Azul")
+      expect(item.custom_field("nada")).to be_nil
+    end
+
+    it ".active_only deixa os inativos de fora" do
+      inactive = create(:product_item, organization: organization, active: false)
+
+      expect(described_class.active_only).to include(item)
+      expect(described_class.active_only).not_to include(inactive)
+    end
+
+    it ".by_tag filtra pela tag, e sem tag não filtra" do
+      other = create(:product_item, organization: organization)
+
+      expect(described_class.by_tag("promo")).to contain_exactly(item)
+      expect(described_class.by_tag(nil)).to include(item, other)
+    end
+  end
+
   describe ".listable" do
     it "deixa de fora as colunas pesadas de índice" do
       create(:product_item, organization: organization)

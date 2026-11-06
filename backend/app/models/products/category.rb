@@ -19,6 +19,7 @@ module Products
     has_many :items, through: :item_categories, source: :item
 
     validates :name, presence: true, length: { maximum: 200 }
+    validates :position, numericality: Products::POSITION_RANGE
     validate :name_produces_slug
     validate :path_available
     validate :parent_belongs_to_same_organization

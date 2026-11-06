@@ -57,6 +57,13 @@ RSpec.describe Products::FieldDefinition do
     end
   end
 
+  describe "#numeric?" do
+    it "só o tipo número" do
+      expect(definition("number")).to be_numeric
+      expect(definition("text")).not_to be_numeric
+    end
+  end
+
   describe "#cast" do
     it "número aceita o formato de planilha brasileira" do
       field = definition("number")

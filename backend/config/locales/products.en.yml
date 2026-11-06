@@ -82,16 +82,19 @@ en:
       products/category:
         name: "name"
         parent_id: "parent category"
+        position: "position"
         organization: "organization"
       products/field_definition:
         name: "name"
         key: "key"
         value_type: "type"
         option_values: "list options"
+        position: "position"
         organization: "organization"
       products/image:
         file: "file"
         source_url: "image address"
+        position: "position"
         item: "item"
       products/import:
         status: "status"

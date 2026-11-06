@@ -28,6 +28,7 @@ module Products
     end
 
     validates :source_url, presence: true, unless: :hosted?
+    validates :position, numericality: Products::POSITION_RANGE
     validate :source_url_is_web
     validate :file_acceptable, if: :hosted?
 

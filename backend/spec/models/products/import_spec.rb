@@ -87,6 +87,36 @@ RSpec.describe Products::Import do
     end
   end
 
+  describe ".abandoned" do
+    it "acha só a que nunca começou e está parada há dias" do
+      left = create(:product_import, status: "ready")
+      left.update_columns(updated_at: 8.days.ago)
+      recent = create(:product_import, status: "ready")
+      failed = create(:product_import, status: "failed")
+      failed.update_columns(updated_at: 8.days.ago)
+
+      expect(described_class.abandoned).to contain_exactly(left)
+      expect(described_class.abandoned).not_to include(recent)
+    end
+  end
+
+  describe ".recent" do
+    it "traz as mais novas primeiro" do
+      old = create(:product_import, created_at: 2.days.ago)
+      new_one = create(:product_import, created_at: 1.day.ago)
+
+      expect(described_class.recent).to eq([ new_one, old ])
+    end
+  end
+
+  describe "ao apagar" do
+    it "leva as linhas de erro" do
+      Products::ImportRow.create!(import: import, line_number: 2, error_message: "título vazio")
+
+      expect { import.destroy! }.to change(Products::ImportRow, :count).by(-1)
+    end
+  end
+
   describe "#mark_failed!" do
     it "registra o motivo na amostra e encerra" do
       import.mark_failed!("deu ruim")
