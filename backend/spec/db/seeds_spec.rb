@@ -29,6 +29,33 @@ RSpec.describe "db/seeds.rb" do
 
   def silence_stream(&) = self.class.silence_stream(&)
 
+  describe "semente de exemplo dos domínios" do
+    # Só o trecho final do arquivo interessa: `db:prepare` roda a semente em banco
+    # vazio em produção, e os domínios criam pessoas com senha conhecida.
+    def domain_seeds_loaded_in(environment, env_flag: nil)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::EnvironmentInquirer.new(environment))
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("SEED_DEMO_DATA").and_return(env_flag)
+      loaded = []
+      allow(Rails.root).to receive(:glob).and_call_original
+      allow(Rails.root).to receive(:glob).with("db/seeds/*.rb") { loaded << :glob; [] }
+      silence_stream { load Rails.root.join("db/seeds.rb") }
+      loaded.any?
+    end
+
+    it "não carrega em produção" do
+      expect(domain_seeds_loaded_in("production")).to be(false)
+    end
+
+    it "carrega em produção só com SEED_DEMO_DATA=1" do
+      expect(domain_seeds_loaded_in("production", env_flag: "1")).to be(true)
+    end
+
+    it "carrega em desenvolvimento" do
+      expect(domain_seeds_loaded_in("development")).to be(true)
+    end
+  end
+
   let(:organization) { Organization.first }
 
   it "traz o acervo da ferramenta inteiro" do
