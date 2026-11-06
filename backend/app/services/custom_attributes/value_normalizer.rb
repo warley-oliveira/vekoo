@@ -17,10 +17,10 @@ module CustomAttributes
       return nil if numbers.empty?
 
       value = case strategy
-              when "max" then numbers.max
-              when "avg" then (numbers.min + numbers.max) / 2.0
-              else numbers.min
-              end
+      when "max" then numbers.max
+      when "avg" then (numbers.min + numbers.max) / 2.0
+      else numbers.min
+      end
       canonical(value)
     end
 
@@ -31,9 +31,9 @@ module CustomAttributes
     def parse_locale_number(str)
       normalized = if str.match?(/\d\.\d{3}(?:\D|$)/) || (str.include?(".") && str.include?(","))
                      str.delete(".").tr(",", ".")
-                   else
+      else
                      str.tr(",", ".")
-                   end
+      end
       Float(normalized)
     rescue ArgumentError
       nil
