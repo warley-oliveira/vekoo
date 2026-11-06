@@ -42,7 +42,7 @@ RSpec.describe "Contatos unificados", type: :request do
       connector_a = connector
       connector_b = connector
       older = chat_for(connector: connector_a, external_id: phone, user_name: "Fernanda", unread_messages: 1, last_message_at: 2.hours.ago, last_message_content: "antiga", last_message_by: "user")
-      newer = chat_for(connector: connector_b, external_id: phone, user_name: "Fernanda Lima", display_name: "Fê", unread_messages: 2, last_message_at: 1.hour.ago, last_message_content: "nova", last_message_by: "assistant", profile_picture_url: "https://cdn.exemplo.com/f.jpg")
+      newer = chat_for(connector: connector_b, external_id: phone, user_name: "Fernanda Lima", display_name: "Fê", unread_messages: 2, last_message_at: 1.hour.ago, last_message_content: "nova", last_message_by: "assistant", last_message_type: "audio", profile_picture_url: "https://cdn.exemplo.com/f.jpg")
 
       get "/unified-contacts", headers: headers
 
@@ -51,7 +51,7 @@ RSpec.describe "Contatos unificados", type: :request do
       contact = json["contacts"].first
       expect(contact).to include(
         "externalId" => phone, "name" => "Fê", "totalUnread" => 3, "lastMessageContent" => "nova", "lastMessageBy" => "assistant",
-        "profilePictureUrl" => "https://cdn.exemplo.com/f.jpg"
+        "lastMessageType" => "audio", "profilePictureUrl" => "https://cdn.exemplo.com/f.jpg"
       )
       expect(contact["lastMessageAt"]).to be_a(Integer)
       expect(contact["audienceId"]).to eq(older.reload.audience_id.to_s)

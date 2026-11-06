@@ -11,6 +11,7 @@ class UnifiedContactSerializer < ApplicationSerializer
       lastMessageAt: epoch_ms(row["last_message_at"]),
       lastMessageContent: row["last_message_content"],
       lastMessageBy: row["last_message_by"],
+      lastMessageType: row["last_message_type"],
       chats: chats(row["chats"])
     }
   end
