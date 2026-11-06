@@ -9,8 +9,14 @@ module Inbound
     private
 
     def enqueue(provider, connector_id = nil, event = nil)
-      ProcessWebhookJob.perform_later(provider, request.raw_post, connector_id&.to_s, event)
+      ProcessWebhookJob.perform_later(provider, utf8_body, connector_id&.to_s, event)
       head :ok
+    end
+
+    # `raw_post` vem como BINARY, e o argumento do job vira JSON no Sidekiq: acento passa com
+    # um aviso (e será erro no json 3.0), e byte inválido levanta, o que seria 500 ao provedor.
+    def utf8_body
+      request.raw_post.dup.force_encoding(Encoding::UTF_8).scrub
     end
 
     # Verificação do webhook pela Meta: devolve o desafio cru.
