@@ -20,8 +20,9 @@ RSpec.describe "Connectors", type: :request do
     let(:connector) { create(:connector_whatsapp_cloud, organization: organization) }
     let(:foreign) { create(:connector_whatsapp_cloud, organization: create(:organization)) }
 
-    [
-      [ :get, "" ],
+    # Listar e ver valem para qualquer conta da organização: o chat e as campanhas precisam
+    # saber os canais. Todo o resto é configuração.
+    settings_routes = [
       [ :patch, "" ],
       [ :post, "/activate" ],
       [ :post, "/reload" ],
@@ -34,7 +35,9 @@ RSpec.describe "Connectors", type: :request do
       [ :get, "/phone-numbers" ],
       [ :post, "/phone-numbers/refresh" ],
       [ :get, "/instagram-profile" ]
-    ].each do |verb, suffix|
+    ]
+
+    [ [ :get, "" ], *settings_routes ].each do |verb, suffix|
       describe "#{verb.upcase} /connectors/:id#{suffix}" do
         it "responde 401 sem sessão" do
           request_as_json(verb, "/connectors/#{connector.id}#{suffix}")
@@ -65,22 +68,7 @@ RSpec.describe "Connectors", type: :request do
       end
     end
 
-    # Listar e ver valem para qualquer conta da organização: o chat e as campanhas precisam
-    # saber os canais. Todo o resto é configuração.
-    [
-      [ :patch, "" ],
-      [ :post, "/activate" ],
-      [ :post, "/reload" ],
-      [ :post, "/shutdown" ],
-      [ :post, "/pause" ],
-      [ :post, "/disconnect" ],
-      [ :get, "/business-profile" ],
-      [ :patch, "/business-profile" ],
-      [ :post, "/business-profile/picture" ],
-      [ :get, "/phone-numbers" ],
-      [ :post, "/phone-numbers/refresh" ],
-      [ :get, "/instagram-profile" ]
-    ].each do |verb, suffix|
+    settings_routes.each do |verb, suffix|
       it "#{verb.upcase} /connectors/:id#{suffix} responde 403 sem core_settings, sem tocar no conector" do
         request_as_json(verb, "/connectors/#{connector.id}#{suffix}", headers: auth_headers(member))
 
