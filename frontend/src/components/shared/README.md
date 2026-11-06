@@ -236,6 +236,8 @@ Vários filtros atrás de um botão com a contagem de ativos, quando a linha nã
 </FilterPopover>
 ```
 
+Filtro próprio da tela: `useFilterLayout()` diz se ele está em linha ou empilhado num painel.
+
 ### `SortMenu`
 
 Ordem de coleção que não é tabela. O rótulo já diz o sentido.
