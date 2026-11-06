@@ -5,14 +5,17 @@ import { SWRConfig } from 'swr'
 import { Toaster } from 'sonner'
 import './index.css'
 import App from './App.tsx'
+import { PwaUpdatePrompt } from '@/components/shell/pwa-update-prompt'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
 import { CatalogProvider } from '@/lib/catalog'
+import { startPwa } from '@/lib/pwa'
 import { swrConfig } from '@/lib/swr-config'
 import { dropLegacyStorage } from '@/lib/token'
 
 dropLegacyStorage()
+startPwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -26,11 +29,12 @@ createRoot(document.getElementById('root')!).render(
               {/* Os avisos sobem junto com a barra inferior, em vez de cobri-la. */}
               <Toaster
                 position="bottom-right"
-                offset={{ bottom: "calc(var(--app-bottom-nav-total) + 1rem)" }}
+                offset={{ bottom: 'calc(var(--app-bottom-nav-total) + 1rem)' }}
                 mobileOffset={{
-                  bottom: "calc(var(--app-bottom-nav-total) + 0.75rem)",
+                  bottom: 'calc(var(--app-bottom-nav-total) + 0.75rem)',
                 }}
               />
+              <PwaUpdatePrompt />
             </TooltipProvider>
           </AuthProvider>
         </CatalogProvider>

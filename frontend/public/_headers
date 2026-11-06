@@ -9,10 +9,17 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
-  # connect-src libera só a API do Vekoo. Se aparecer erro de CSP no console ao
-  # integrar algo novo (analytics, fonte externa), é aqui que se ajusta.
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://syco.vekoo.app; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+  # O microfone é do próprio app: o chat grava áudio.
+  Permissions-Policy: camera=(), microphone=(self), geolocation=(), interest-cohort=()
+  # connect-src libera só a API do Vekoo, em HTTP e no WebSocket do ActionCable. Se
+  # aparecer erro de CSP no console ao integrar algo novo (analytics, fonte externa), é
+  # aqui que se ajusta.
+  #
+  # Atenção ao ligar o decoder Opus do chat (áudio no Safari/iOS): ele compila WASM e
+  # sobe um worker de blob, então vai precisar de 'wasm-unsafe-eval' em script-src e de
+  # blob: em worker-src. Sem isso, falha só aqui em produção: em desenvolvimento não há
+  # CSP.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' https: blob:; connect-src 'self' https://syco.vekoo.app wss://syco.vekoo.app; worker-src 'self'; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # Arquivos com hash no nome — imutáveis por definição.
 /assets/*
@@ -21,4 +28,15 @@
 # O HTML nunca pode ser cacheado, senão um deploy novo continua servindo o
 # index.html velho, que aponta para bundles que não existem mais.
 /index.html
+  Cache-Control: no-cache
+
+# Idem para o service worker e o manifesto: é por eles que o navegador descobre que
+# saiu uma versão nova.
+/sw.js
+  Cache-Control: no-cache
+
+/sw-push.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
   Cache-Control: no-cache

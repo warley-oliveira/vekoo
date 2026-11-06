@@ -22,6 +22,7 @@ import {
   VisualViewportBridge,
 } from "@/components/shell/viewport"
 import { useAppShell } from "@/hooks/use-app-shell"
+import { useLaunchQueue } from "@/hooks/use-launch-queue"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
 import { usePushSessionSync } from "@/hooks/use-push-notifications"
 import { cn } from "@/lib/utils"
@@ -57,6 +58,7 @@ export function AppShell() {
   const [scroller, setScroller] = useState<HTMLElement | null>(null)
 
   usePushSessionSync()
+  useLaunchQueue()
 
   // ⌘K / Ctrl+K abre a busca de qualquer lugar do app
   useEffect(() => {
