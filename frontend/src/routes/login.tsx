@@ -10,6 +10,7 @@ import { z } from "zod"
 import { safeNext } from "@/components/auth-guard"
 import { AuthLayout } from "@/components/auth-layout"
 import { Field, PasswordInput } from "@/components/form-field"
+import { SignedOutNotice } from "@/components/people/signed-out-notice"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AuthError, DEMO_CREDENTIALS, useAuth } from "@/lib/auth"
@@ -98,13 +99,15 @@ export function LoginPage() {
       }
     >
       <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {errors.root && (
+        {errors.root ? (
           <p
             role="alert"
             className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
           >
             {errors.root.message}
           </p>
+        ) : (
+          <SignedOutNotice />
         )}
 
         <Field label={t("auth.fields.email")} error={errors.email?.message}>

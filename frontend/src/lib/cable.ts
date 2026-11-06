@@ -45,6 +45,24 @@ type Entry = {
 const entries = new Map<string, Entry>()
 let consumer: Consumer | null = null
 let currentToken: string | null = null
+let onClosedByServer: (() => void) | null = null
+let closedByServerNotified = false
+
+/**
+ * O servidor fechou a conexão pedindo para não voltar: acontece quando a pessoa perde o
+ * acesso ou tem a senha trocada por outra pessoa. É a sessão que acabou, e `auth.tsx`
+ * decide o que dizer. Registrado de fora porque este módulo não sabe de sessão.
+ */
+export function setClosedByServerHandler(handler: (() => void) | null): void {
+  onClosedByServer = handler
+}
+
+function notifyClosedByServer() {
+  // Cada assinatura ouve o mesmo fechamento: uma reação só.
+  if (closedByServerNotified) return
+  closedByServerNotified = true
+  onClosedByServer?.()
+}
 
 function cableUrl(token: string): string {
   const base = API_URL.replace(/^http/, "ws").replace(/\/+$/, "")
@@ -64,14 +82,20 @@ function clearConfirmTimer(entry: Entry) {
 
 function attach(entry: Entry) {
   if (!consumer || entry.subscription) return
-  entry.subscription = consumer.subscriptions.create(
+  const subscription: Subscription = consumer.subscriptions.create(
     { channel: entry.channel, ...entry.params },
     {
       connected: () => {
         clearConfirmTimer(entry)
         setStatus(entry, true)
       },
-      disconnected: () => setStatus(entry, false),
+      disconnected: ({ willAttemptReconnect }: { willAttemptReconnect?: boolean }) => {
+        setStatus(entry, false)
+        // Assinatura que já saiu não conta: é a nossa própria saída, em `closeCable`.
+        if (willAttemptReconnect === false && entry.subscription === subscription) {
+          notifyClosedByServer()
+        }
+      },
       // Recusa é resposta: o servidor sabe quem é a pessoa e disse não. Não insiste.
       rejected: () => {
         clearConfirmTimer(entry)
@@ -82,6 +106,7 @@ function attach(entry: Entry) {
       },
     }
   )
+  entry.subscription = subscription
   entry.confirmTimer = setTimeout(() => giveUpForNow(entry), CONFIRM_TIMEOUT_MS)
 }
 
@@ -111,6 +136,7 @@ export function openCable(token: string): void {
   if (token === currentToken && consumer) return
   closeCable()
   currentToken = token
+  closedByServerNotified = false
   consumer = createConsumer(cableUrl(token))
   for (const entry of entries.values()) attach(entry)
 }

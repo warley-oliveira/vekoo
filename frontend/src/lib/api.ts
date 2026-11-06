@@ -94,8 +94,9 @@ export class ApiError extends Error {
 /* ---------- 401 global ---------- */
 
 // `api.ts` não pode importar `auth.tsx` (o contrário é que acontece), então a
-// reação ao 401 é registrada de fora.
-type UnauthorizedHandler = () => void
+// reação ao 401 é registrada de fora. O código diz por que a sessão acabou: acesso
+// revogado e sessão vencida pedem recados diferentes.
+type UnauthorizedHandler = (code: ApiErrorCode) => void
 let onUnauthorized: UnauthorizedHandler | null = null
 
 export function setUnauthorizedHandler(handler: UnauthorizedHandler | null) {
@@ -164,7 +165,7 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
 
     if (res.status === 401 && !skipAuthHandler) {
       clearToken()
-      onUnauthorized?.()
+      onUnauthorized?.(error.code)
     }
 
     throw error
@@ -266,11 +267,12 @@ export function apiUpload<T>(
         return
       }
 
+      const error = toApiError(xhr.status, body as ErrorEnvelope | undefined)
       if (xhr.status === 401 && !skipAuthHandler) {
         clearToken()
-        onUnauthorized?.()
+        onUnauthorized?.(error.code)
       }
-      reject(toApiError(xhr.status, body as ErrorEnvelope | undefined))
+      reject(error)
     }
     xhr.onerror = () => {
       settle()

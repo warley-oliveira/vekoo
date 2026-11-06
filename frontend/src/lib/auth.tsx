@@ -19,7 +19,14 @@ import {
   apiPost,
   setUnauthorizedHandler,
 } from "@/lib/api"
-import { closeCable, openCable } from "@/lib/cable"
+import { closeCable, openCable, setClosedByServerHandler } from "@/lib/cable"
+import i18n, { currentLanguage } from "@/lib/i18n"
+import {
+  forgetPendingLanguage,
+  pendingLanguage,
+  rememberPendingLanguage,
+  supportedLanguage,
+} from "@/lib/people/account-language"
 import { unsubscribeDevice } from "@/lib/push"
 import { clearToken, getToken, setToken } from "@/lib/token"
 
@@ -120,6 +127,9 @@ export type AuthErrorCode =
   | "signUpFailed"
   | "network"
 
+/** Por que a sessão acabou sem a pessoa pedir. A tela de entrada explica. */
+export type SignedOutReason = "accessRevoked" | "sessionExpired"
+
 export class AuthError extends Error {
   field: "name" | "email" | "password" | "organizationName" | "form"
   code: AuthErrorCode
@@ -211,6 +221,15 @@ type AuthContextValue = {
    * de saída terminarem. Quem decide por "tem sessão?" ignora esta sessão nesse meio-tempo.
    */
   signingOut: boolean
+  /** A sessão acabou sem a pessoa pedir (acesso revogado, por exemplo), e por quê. */
+  signedOutReason: SignedOutReason | null
+  /**
+   * Troca a conta ou a organização da sessão pelo que a API acabou de devolver: `/profile`
+   * e `/organization` respondem no mesmo formato de `/me`. Sem nova requisição.
+   */
+  updateSession: (changes: Partial<Pick<Session, "account" | "organization">>) => void
+  /** Lê `/me` de novo: as permissões da pessoa podem ter mudado. */
+  refreshSession: () => Promise<void>
   signIn: (email: string, password: string) => Promise<Session>
   signUp: (input: SignUpInput) => Promise<Session>
   signOut: () => Promise<void>
@@ -227,15 +246,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [bootError, setBootError] = useState(false)
   const [bootAttempt, setBootAttempt] = useState(0)
   const [signingOut, setSigningOut] = useState(false)
+  const [signedOutReason, setSignedOutReason] = useState<SignedOutReason | null>(null)
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
 
   // Cinco requisições paralelas tomando 401 não podem virar cinco navegações.
   const expiring = useRef(false)
+  // Sair de propósito não é sessão que acabou, mesmo que o `/logout` responda 401.
+  const leaving = useRef(false)
+  // A conta de agora, para quem ouve a troca de idioma, que acontece fora do React.
+  const accountRef = useRef<Account | null>(null)
 
   /** Apaga tudo que era da conta anterior — cache do SWR inclusive. */
   const dropSession = useCallback(() => {
     clearToken()
+    accountRef.current = null
     setSession(null)
     // Sem isto, quem entrar em seguida vê por um instante os carrosséis de quem
     // saiu: as chaves do SWR são globais e não sabem de quem é o dado.
@@ -245,12 +270,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Reação ao 401 vindo de qualquer requisição. Registrada de fora porque
   // `api.ts` não pode importar este módulo.
   useEffect(() => {
-    setUnauthorizedHandler(() => {
+    setUnauthorizedHandler((code) => {
       if (expiring.current) return
       expiring.current = true
+      const revoked = code === "accessRevoked"
+      if (!leaving.current) setSignedOutReason(revoked ? "accessRevoked" : "sessionExpired")
       dropSession()
       const target = `${window.location.pathname}${window.location.search}`
-      const next = target === "/" ? "" : `?next=${encodeURIComponent(target)}`
+      // Quem perdeu o acesso não tem para onde voltar.
+      const next = target === "/" || revoked ? "" : `?next=${encodeURIComponent(target)}`
       navigate(`/login${next}`, { replace: true })
       // Solta a trava no próximo tick, quando a rajada de 401 já passou.
       setTimeout(() => {
@@ -268,6 +296,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     else closeCable()
   }, [cableToken])
 
+  // O servidor derrubou o WebSocket de propósito: a sessão acabou. Sem isto, quem está
+  // parado numa tela só descobriria no próximo clique. Quem diz o motivo é a API: o 401
+  // desta leitura cai no tratamento de sempre, acima.
+  useEffect(() => {
+    setClosedByServerHandler(() => {
+      apiGet("/me").catch(() => {
+        /* o 401 já foi tratado; sem rede, a próxima requisição resolve */
+      })
+    })
+    return () => setClosedByServerHandler(null)
+  }, [])
+
+  /* ---------- idioma da pessoa ---------- */
+
+  const saveLanguage = useCallback((accountId: string, language: string) => {
+    apiPatch<Account>("/profile", { profile: { locale: language } })
+      .then((account) => {
+        forgetPendingLanguage()
+        setSession((current) =>
+          current?.account.id === account.id ? { ...current, account } : current
+        )
+      })
+      .catch(() => {
+        // A escolha continua valendo neste aparelho e vai para o servidor na próxima sessão.
+        rememberPendingLanguage(accountId, language)
+      })
+  }, [])
+
+  /** Ao começar a sessão, vale o idioma da conta, exceto escolha local ainda não gravada. */
+  const adoptAccountLanguage = useCallback(
+    (account: Account) => {
+      const pending = pendingLanguage(account.id)
+      if (pending && pending !== account.locale) saveLanguage(account.id, pending)
+      if (pending && pending === account.locale) forgetPendingLanguage()
+
+      const language = pending ?? supportedLanguage(account.locale)
+      // Antes de trocar o idioma, para quem ouve a troca não achar que a pessoa escolheu.
+      accountRef.current = language ? { ...account, locale: language } : account
+      if (language && language !== currentLanguage()) void i18n.changeLanguage(language)
+    },
+    [saveLanguage]
+  )
+
+  // Vale para os dois menus e para o perfil: todos trocam o idioma do mesmo jeito. Com a
+  // sessão aberta, o idioma só muda por escolha da pessoa.
+  const accountId = session?.account.id
+  useEffect(() => {
+    if (!accountId) return
+
+    function onLanguageChanged(language: string) {
+      const account = accountRef.current
+      if (!account || account.locale === language) return
+
+      accountRef.current = { ...account, locale: language }
+      saveLanguage(account.id, language)
+    }
+
+    i18n.on("languageChanged", onLanguageChanged)
+    return () => i18n.off("languageChanged", onLanguageChanged)
+  }, [accountId, saveLanguage])
+
   // Abertura: quem já tem token continua de onde parou.
   useEffect(() => {
     const token = getToken()
@@ -282,13 +371,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // que expirou no meio do uso — não deve redirecionar nem tocar no cache.
     apiGet<SessionPayload>("/me", { skipAuthHandler: true })
       .then((payload) => {
-        if (!cancelled) setSession(payload)
+        if (cancelled) return
+        adoptAccountLanguage(payload.account)
+        setSession(payload)
       })
       .catch((error: unknown) => {
         if (cancelled) return
         if (error instanceof ApiError && error.code === "network") {
           setBootError(true)
         } else {
+          if (error instanceof ApiError && error.code === "accessRevoked") {
+            setSignedOutReason("accessRevoked")
+          }
           clearToken()
         }
       })
@@ -299,23 +393,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [bootAttempt])
+  }, [bootAttempt, adoptAccountLanguage])
 
   const retryBoot = useCallback(() => {
     setReady(false)
     setBootAttempt((n) => n + 1)
   }, [])
 
-  const start = useCallback((payload: SessionPayload): Session => {
-    if (payload.token) setToken(payload.token)
-    const next: Session = {
-      account: payload.account,
-      organization: payload.organization,
-      credits: payload.credits,
-      expiresAt: payload.expiresAt,
-    }
-    setSession(next)
-    return next
+  const start = useCallback(
+    (payload: SessionPayload): Session => {
+      if (payload.token) setToken(payload.token)
+      const next: Session = {
+        account: payload.account,
+        organization: payload.organization,
+        credits: payload.credits,
+        expiresAt: payload.expiresAt,
+      }
+      setSignedOutReason(null)
+      adoptAccountLanguage(next.account)
+      setSession(next)
+      return next
+    },
+    [adoptAccountLanguage]
+  )
+
+  const updateSession = useCallback(
+    (changes: Partial<Pick<Session, "account" | "organization">>) => {
+      if (changes.account) accountRef.current = changes.account
+      setSession((current) => (current ? { ...current, ...changes } : current))
+    },
+    []
+  )
+
+  const refreshSession = useCallback(async () => {
+    const { account, organization, credits, expiresAt } =
+      await apiGet<SessionPayload>("/me")
+    // Um idioma recém-escolhido pode estar a caminho: a escolha é mais nova que esta leitura.
+    const merged = { ...account, locale: accountRef.current?.locale ?? account.locale }
+    accountRef.current = merged
+    setSession({ account: merged, organization, credits, expiresAt })
   }, [])
 
   const signIn = useCallback(
@@ -358,6 +474,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const signOut = useCallback(async () => {
+    leaving.current = true
+    setSignedOutReason(null)
     setSigningOut(true)
     // Melhor esforço: o token já vai ser jogado fora de qualquer jeito, e
     // travar a saída porque a rede caiu seria pior do que uma sessão órfã que
@@ -376,6 +494,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     dropSession()
     setSigningOut(false)
+    leaving.current = false
   }, [dropSession])
 
   const requestPasswordReset = useCallback(async (email: string) => {
@@ -400,6 +519,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       bootError,
       retryBoot,
       signingOut,
+      signedOutReason,
+      updateSession,
+      refreshSession,
       signIn,
       signUp,
       signOut,
@@ -412,6 +534,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       bootError,
       retryBoot,
       signingOut,
+      signedOutReason,
+      updateSession,
+      refreshSession,
       signIn,
       signUp,
       signOut,
