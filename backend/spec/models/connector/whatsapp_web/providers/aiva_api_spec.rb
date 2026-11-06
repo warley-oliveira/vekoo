@@ -233,6 +233,42 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
         expect(a_request(:post, url)).not_to have_been_made
       end
+
+      context "com o arquivo temporário" do
+        let(:created_dirs) { [] }
+        let(:written_paths) { [] }
+
+        before do
+          stub_request(:get, remote).to_return(status: 200, body: "BYTES-DA-FOTO")
+          stub_request(:post, url).to_return(json_reply({ key: { id: "MED2" } }))
+          allow(Dir).to receive(:mktmpdir).and_wrap_original { |original, *args| original.call(*args).tap { |dir| created_dirs << dir } }
+          allow(File).to receive(:write).and_wrap_original do |original, path, *args, **options|
+            written_paths << path
+            original.call(path, *args, **options)
+          end
+        end
+
+        it "não deixa nada para trás" do
+          connector.send_media_message("55119", media_dto("image", "foto.jpg", url: remote))
+
+          expect(created_dirs.size).to eq(1)
+          expect(Dir.exist?(created_dirs.first)).to be(false)
+        end
+
+        it "limpa também quando o provedor recusa" do
+          stub_request(:post, url).to_return(status: 500, body: "boom")
+
+          expect { connector.send_media_message("55119", media_dto("image", "foto.jpg", url: remote)) }.to raise_error(/Failed to send message/)
+
+          expect(created_dirs).to all(satisfy { |dir| !Dir.exist?(dir) })
+        end
+
+        it "não deixa o nome do arquivo escolher onde ele cai" do
+          connector.send_media_message("55119", media_dto("image", "../../fora.jpg", url: remote))
+
+          expect(written_paths).to eq([ File.join(created_dirs.first, "fora.jpg") ])
+        end
+      end
     end
   end
 

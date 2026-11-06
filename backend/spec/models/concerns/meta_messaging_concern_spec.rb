@@ -192,7 +192,11 @@ RSpec.describe MetaMessagingConcern do
     it "baixa para um arquivo temporário" do
       stub_request(:get, "https://cdn.exemplo.com/foto.jpg").to_return(status: 200, body: "BYTES")
 
-      expect(File.binread(messenger.download_media("https://cdn.exemplo.com/foto.jpg"))).to eq("BYTES")
+      path = messenger.download_media("https://cdn.exemplo.com/foto.jpg")
+
+      expect(File.binread(path)).to eq("BYTES")
+    ensure
+      remove_file(path)
     end
 
     it "devolve nil em erro" do

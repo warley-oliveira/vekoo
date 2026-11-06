@@ -283,7 +283,8 @@ class Connector::WhatsappWeb
         return Rails.logger.warn("Failed to fetch remote media: HTTP #{response.code}") unless response.code == 200
 
         dir = Dir.mktmpdir
-        tempfile_path = File.join(dir, file_name || 'image.jpg')
+        # `basename`: o nome vem de quem subiu o anexo e não pode escolher onde o arquivo cai.
+        tempfile_path = File.join(dir, File.basename(file_name || 'image.jpg'))
         File.write(tempfile_path, response.body, mode: 'wb')
 
         begin
@@ -303,7 +304,7 @@ class Connector::WhatsappWeb
             response
           end
         ensure
-          File.delete(tempfile_path) if File.exist?(tempfile_path)
+          FileUtils.remove_entry(dir)
         end
       end
       private_class_method :send_remote_media

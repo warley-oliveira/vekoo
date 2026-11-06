@@ -155,6 +155,17 @@ RSpec.describe Connector::InstagramDirect do
       expect(connector.reload).to be_active
     end
 
+    it "não escreve token nem segredo no log" do
+      stub_oauth
+      stub_me
+      stub_subscription(json_reply({ error: { message: "sem permissão" } }, status: 403))
+
+      log = captured_log { connector.activate_via_instagram(code: "CODIGO", redirect_uri: redirect_uri) }
+
+      expect(log).to include("Short-lived token obtained")
+      expect(log).not_to include("curto", "tok-abc", "IG-SEGREDO")
+    end
+
     it "#activate com código usa este caminho" do
       stub_oauth
       stub_me

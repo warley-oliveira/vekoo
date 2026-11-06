@@ -56,6 +56,7 @@ class Connector::DisconnectionLog
 
     create!(
       connector_id: connector.id.to_s,
+      connector_type: connector.connector_type,
       instance_name: connector.instance_name,
       instance_id: connector.try(:zapi_instance_id) || connector.try(:instance_id) || connector.id.to_s,
       phone_number: connector.try(:number_id) || connector.try(:phone_number_pairing) || connector.try(:phone_number),

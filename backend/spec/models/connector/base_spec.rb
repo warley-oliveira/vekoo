@@ -53,6 +53,10 @@ RSpec.describe Connector::Base do
     it "devolve nil para id que não existe" do
       expect(described_class.scoped(organization.id, BSON::ObjectId.new)).to be_nil
     end
+
+    it "devolve nil para o que nem é um id, sem levantar" do
+      expect(described_class.scoped(organization.id, "nao-e-um-id")).to be_nil
+    end
   end
 
   describe "contrato de ciclo de vida" do

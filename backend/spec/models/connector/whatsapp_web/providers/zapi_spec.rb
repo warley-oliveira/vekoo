@@ -320,6 +320,46 @@ RSpec.describe Connector::WhatsappWeb::Providers::Zapi do
     end
   end
 
+  describe "credenciais no log" do
+    around { |example| with_env("ZAPI_ACCOUNT_TOKEN" => "CONTA", "ZAPI_CLIENT_TOKEN" => "CLIENTE") { example.run } }
+
+    it "o token da instância, que vai na URL, não aparece nem em erro" do
+      stub_request(:post, "#{base}/send-text").to_return(status: 500, body: "boom")
+      stub_request(:post, "#{base}/send-image").to_timeout
+      stub_request(:post, "#{base}/read-message").to_return(status: 500, body: "boom")
+
+      log = captured_log do
+        expect { connector.send_text_message("55119", "oi") }.to raise_error(ZapiClient::Error)
+        expect { connector.send_media_message("55119", media_dto) }.to raise_error(ZapiClient::Error)
+        connector.mark_read_message("55119", "M1")
+      end
+
+      expect(log).to include("Failed to send text")
+      expect(log).not_to include("TOKABC", "CONTA", "CLIENTE")
+    end
+
+    it "criar a instância não escreve o token novo" do
+      fresh = create(:connector_whatsapp_web, :zapi, organization: organization, zapi_instance_id: nil, zapi_token: nil, status: :inactive)
+      stub_request(:post, "https://api.z-api.io/instances/integrator/on-demand").to_return(json_reply({ id: "NEW-INST", token: "NEW-TOK" }))
+      stub_request(:put, "https://api.z-api.io/instances/NEW-INST/token/NEW-TOK/update-notify-sent-by-me").to_return(json_reply({}))
+
+      log = captured_log { fresh.activate }
+
+      expect(log).to include("Instance created successfully")
+      expect(log).not_to include("NEW-TOK", "CONTA")
+    end
+
+    it "guarda o token novo cifrado" do
+      fresh = create(:connector_whatsapp_web, :zapi, organization: organization, zapi_instance_id: nil, zapi_token: nil, status: :inactive)
+      stub_request(:post, "https://api.z-api.io/instances/integrator/on-demand").to_return(json_reply({ id: "NEW-INST", token: "NEW-TOK" }))
+      stub_request(:put, "https://api.z-api.io/instances/NEW-INST/token/NEW-TOK/update-notify-sent-by-me").to_return(json_reply({}))
+
+      fresh.activate
+
+      expect(stored_document(fresh).to_json).not_to include("NEW-TOK")
+    end
+  end
+
   describe "ciclo de vida sem equivalente" do
     it "#setup_webhook! não faz nada: os callbacks vão na criação" do
       expect(connector.setup_webhook!).to be(true)

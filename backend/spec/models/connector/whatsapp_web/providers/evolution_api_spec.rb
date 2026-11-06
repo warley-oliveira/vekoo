@@ -69,6 +69,18 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
       expect(connector.send_text_message("55119", "oi")).to be_nil
       expect(request).to have_been_made.once
     end
+
+    it "não escreve a chave do provedor no log, nem em erro" do
+      stub_request(:post, url).to_return(json_reply({ key: { id: "OUT" } }), { status: 500, body: "boom" })
+
+      log = captured_log do
+        connector.send_text_message("55119", "oi")
+        expect { connector.send_text_message("55119", "oi") }.to raise_error(/Failed to send message/)
+      end
+
+      expect(log).to include("HTTParty Response")
+      expect(log).not_to include("chave-evolution")
+    end
   end
 
   describe "número que não existe no WhatsApp" do

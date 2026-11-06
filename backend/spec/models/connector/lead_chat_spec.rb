@@ -27,6 +27,19 @@ RSpec.describe Connector::LeadChat do
     it "devolve o valor original ao ler do banco" do
       expect(Connector::Base.find(connector.id).access_token).to eq("lead-token")
     end
+
+    it "não escreve a chave no log, nem em erro" do
+      stub_request(:post, "#{api}/core/v1/webhook/subscription").to_return(status: 401, body: { error: { code: 401, message: "chave inválida" } }.to_json)
+      stub_request(:post, session_url).to_return(status: 200, body: { id: "L1" }.to_json)
+
+      log = captured_log do
+        connector.activate
+        connector.send_text_message("x", "oi", chat)
+      end
+
+      expect(log).to include("chave inválida")
+      expect(log).not_to include("lead-token")
+    end
   end
 
   describe "#instance_name" do
@@ -179,6 +192,12 @@ RSpec.describe Connector::LeadChat do
       expect(path.to_s).to end_with(".mp3")
     ensure
       remove_file(path)
+    end
+
+    it "levanta em vez de guardar a página de erro como se fosse o áudio" do
+      stub_request(:get, "https://arquivos.leadchat.app/a.mp3").to_return(status: 404, body: "<html>não achei</html>")
+
+      expect { connector.retrieve_audio_message("https://arquivos.leadchat.app/a.mp3") }.to raise_error(/LeadChat audio download failed \(HTTP 404\)/)
     end
   end
 

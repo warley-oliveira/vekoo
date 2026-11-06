@@ -49,6 +49,11 @@ RSpec.describe Connector::DisconnectionLog do
       expect(record(zapi)).to have_attributes(instance_id: "ZINST", phone_number: "553199999999", profile_name: "Padaria")
     end
 
+    it "diz de que tipo é o conector" do
+      expect(record.connector_type).to eq("whatsapp_web")
+      expect(record(create(:connector_zapi, organization: organization)).connector_type).to eq("zapi")
+    end
+
     it "cai no número de pareamento sem número conectado" do
       pairing = create(:connector_whatsapp_web, organization: organization, number_id: nil, phone_number_pairing: "5531888888888")
 

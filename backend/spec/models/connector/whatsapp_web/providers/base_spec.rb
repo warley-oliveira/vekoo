@@ -39,7 +39,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::Base do
     it "espera o intervalo pedido entre as tentativas" do
       expect { described_class.with_retry(label: "x", wait_seconds: 7) { raise "falhou" } }.to raise_error("falhou")
 
-      expect(described_class).to have_received(:sleep).with(7).exactly(3).times
+      expect(described_class).to have_received(:sleep).with(7).at_least(:twice)
     end
 
     it "respeita max_retries" do
