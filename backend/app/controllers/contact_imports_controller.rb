@@ -78,7 +78,12 @@ class ContactImportsController < PlatformController
 
   def set_connector
     @connector = Connector::Base.scoped(current_organization.id, params[:connector_id])
-    render_error(status: :unprocessable_content, code: "invalidConnector", field: "connectorId") unless @connector
+    return render_error(status: :unprocessable_content, code: "invalidConnector", field: "connectorId") unless @connector
+
+    # Planilha traz telefone: num canal que não começa conversa por número, viraria conversa morta.
+    return if ChatsController::PHONE_CONNECTOR_TYPES.include?(@connector._type)
+
+    render_error(status: :unprocessable_content, code: "connectorTypeMismatch", field: "connectorId")
   end
 
   def contacts_param

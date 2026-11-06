@@ -2049,7 +2049,7 @@ As linhas viram conversas em segundo plano, no canal escolhido: `ProcessContactI
 
 ### `POST /contact-imports`
 
-`connectorId`, `contacts` (até 1000), `includeCountryCode` (acrescenta o 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
+`connectorId` (só canal que começa conversa por número: WhatsApp e Z-API; nos outros, `connectorTypeMismatch`), `contacts` (até 1000), `includeCountryCode` (acrescenta o 55 a quem não tem, sem confundir com o DDD 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
 
 `POST /contact-imports`:
 
