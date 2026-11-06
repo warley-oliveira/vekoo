@@ -904,35 +904,65 @@ function CollectionsSection() {
   )
 }
 
-/** A API de verdade é simulada: mesma forma de resposta, com atraso. */
-function ServerTableExample({ columns }: { columns: ColumnDef<Contact, any>[] }) {
-  const { t } = useTranslation()
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(5)
-  const [fetching, setFetching] = useState(false)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+type ServerQuery = {
+  page: number
+  perPage: number
+  sorting: { id: string; desc: boolean }[]
+  filters: { id: string; value: unknown }[]
+}
 
-  const [shown, setShown] = useState({ page: 1, perPage: 5 })
+/**
+ * Simula `GET /contacts?page=&perPage=&sort=&direction=&stage=`: mesma forma de resposta,
+ * com atraso. Numa tela de verdade, tudo isto é uma chamada a `useApi`.
+ */
+function fetchContacts({ page, perPage, sorting, filters }: ServerQuery) {
+  const stages = filters.find((filter) => filter.id === "stage")?.value as string[] | undefined
+  const found = CONTACTS.filter((contact) => !stages || stages.includes(contact.stage))
 
-  function load(nextPage: number, nextPerPage: number) {
-    setPage(nextPage)
-    setPerPage(nextPerPage)
-    setFetching(true)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => {
-      setShown({ page: nextPage, perPage: nextPerPage })
-      setFetching(false)
-    }, 500)
+  const [sort] = sorting
+  if (sort) {
+    const key = sort.id as keyof Contact
+    found.sort((a, b) => {
+      const order =
+        typeof a[key] === "number"
+          ? (a[key] as number) - (b[key] as number)
+          : String(a[key]).localeCompare(String(b[key]), "pt-BR")
+      return sort.desc ? -order : order
+    })
   }
 
   const meta: PaginationMeta = {
-    page: shown.page,
-    perPage: shown.perPage,
-    total: CONTACTS.length,
-    totalPages: Math.ceil(CONTACTS.length / shown.perPage),
-    hasMore: shown.page * shown.perPage < CONTACTS.length,
+    page,
+    perPage,
+    total: found.length,
+    totalPages: Math.max(1, Math.ceil(found.length / perPage)),
+    hasMore: page * perPage < found.length,
   }
-  const rows = CONTACTS.slice((shown.page - 1) * shown.perPage, shown.page * shown.perPage)
+  return { contacts: found.slice((page - 1) * perPage, page * perPage), meta }
+}
+
+function ServerTableExample({ columns }: { columns: ColumnDef<Contact, any>[] }) {
+  const { t } = useTranslation()
+  const [query, setQuery] = useState<ServerQuery>({
+    page: 1,
+    perPage: 5,
+    sorting: [],
+    filters: [],
+  })
+  const [response, setResponse] = useState(() => fetchContacts(query))
+  const [fetching, setFetching] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  function load(changes: Partial<ServerQuery>) {
+    const next = { ...query, ...changes }
+    setQuery(next)
+    setFetching(true)
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => {
+      setResponse(fetchContacts(next))
+      setFetching(false)
+    }, 500)
+  }
 
   return (
     <Example
@@ -942,12 +972,16 @@ function ServerTableExample({ columns }: { columns: ColumnDef<Contact, any>[] })
       <DataTable
         aria-label={t("kit.showcase.collections.serverTable")}
         columns={columns}
-        data={rows}
-        meta={meta}
+        data={response.contacts}
+        meta={response.meta}
         isFetching={fetching}
-        onPageChange={(next) => load(next, perPage)}
-        onPerPageChange={(next) => load(page, next)}
+        onPageChange={(page) => load({ page })}
+        onPerPageChange={(perPage) => load({ perPage, page: 1 })}
         perPageOptions={[5, 10]}
+        sorting={query.sorting}
+        onSortingChange={(sorting) => load({ sorting, page: 1 })}
+        columnFilters={query.filters}
+        onColumnFiltersChange={(filters) => load({ filters, page: 1 })}
         selectable
         selectAllMatching
         bulkActions={({ allMatching, ids, clear }) => (
@@ -957,7 +991,7 @@ function ServerTableExample({ columns }: { columns: ColumnDef<Contact, any>[] })
             onClick={() => {
               toast.success(
                 t("kit.showcase.collections.bulkDone", {
-                  count: allMatching ? CONTACTS.length : ids.length,
+                  count: allMatching ? response.meta.total : ids.length,
                 })
               )
               clear()

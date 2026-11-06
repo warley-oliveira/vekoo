@@ -23,9 +23,9 @@ export function ListSkeleton({
   className,
 }: ListSkeletonProps) {
   return (
-    <LoadingRegion className={cn("flex flex-col divide-y", className)}>
+    <LoadingRegion className={cn("flex flex-col", className)}>
       {Array.from({ length: rows }, (_, index) => (
-        <div key={index} className="flex items-center gap-3 py-3">
+        <div key={index} className="flex items-center gap-3 border-b py-3 last:border-b-0">
           {avatar && <Skeleton className="size-8 shrink-0 rounded-full" />}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <Skeleton className={cn("h-3.5", TITLE_WIDTHS[index % TITLE_WIDTHS.length])} />

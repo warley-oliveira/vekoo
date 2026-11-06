@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import {
   flexRender,
   getCoreRowModel,
@@ -180,13 +180,24 @@ export function DataTable<TData>({
   )
   const [allMatching, setAllMatching] = useState(false)
 
+  // Na API, a volta à página 1 espera o commit. Chamar `onPageChange` junto com
+  // `onSortingChange` entrega à tela dois callbacks do mesmo render: quem guarda a
+  // consulta num objeto só sobrescreveria a ordem nova com o estado antigo, sem erro.
+  const firstPagePending = useRef(false)
+  useLayoutEffect(() => {
+    if (!firstPagePending.current) return
+
+    firstPagePending.current = false
+    if ((meta?.page ?? 1) !== 1) onPageChange?.(1)
+  })
+
   const goToFirstPage = useCallback(() => {
     if (isServer) {
-      if ((meta?.page ?? 1) !== 1) onPageChange?.(1)
+      firstPagePending.current = true
     } else {
       setLocalPagination((current) => ({ ...current, pageIndex: 0 }))
     }
-  }, [isServer, meta?.page, onPageChange])
+  }, [isServer])
 
   // Mudar a ordem ou um filtro sempre volta à primeira página; as linhas de "agora" não
   // têm nada a ver com a página em que a pessoa estava.
@@ -423,8 +434,8 @@ export function DataTable<TData>({
           isServer
             ? onPerPageChange
               ? (next) => {
+                  goToFirstPage()
                   onPerPageChange(next)
-                  onPageChange?.(1)
                 }
               : undefined
             : (next) => setLocalPagination({ pageIndex: 0, pageSize: next })
