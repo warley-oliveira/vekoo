@@ -60,22 +60,17 @@ export function useContactImports() {
 /** Os lotes de um mesmo arquivo, vistos como uma coisa só. */
 export type ImportGroup = {
   key: string
-  ids: string[]
   fileName: string | null
   connectorId: string
   createdAt: number
-  completedAt: number | null
   status: "running" | "completed" | "failed"
   /** Linhas enviadas. */
   total: number
   imported: number
-  errors: number
   batches: number
   finishedBatches: number
   /** Quantos lotes o envio anunciou. Enquanto não chegaram todos, ainda pode vir mais. */
   expectedBatches: number
-  /** Quando o lote mais novo foi criado. */
-  latestAt: number
 }
 
 /**
@@ -100,34 +95,25 @@ export function groupImports(imports: ContactImport[]): ImportGroup[] {
     if (!continues || !current) {
       current = {
         key: entry.id,
-        ids: [],
         fileName: entry.fileName,
         connectorId: entry.connectorId,
         createdAt: entry.createdAt,
-        completedAt: entry.completedAt,
         status: "completed",
         total: 0,
         imported: 0,
-        errors: 0,
         batches: 0,
         finishedBatches: 0,
         expectedBatches: entry.totalBatches ?? 1,
-        latestAt: entry.createdAt,
       }
       groups.push(current)
     }
 
     current.key = entry.id
-    current.ids.push(entry.id)
     current.total += entry.totalContacts
     current.imported += entry.importedContactsCount
-    current.errors += entry.errorsCount
     current.batches += 1
     if (!isImportRunning(entry)) current.finishedBatches += 1
     current.createdAt = Math.min(current.createdAt, entry.createdAt)
-    if (entry.completedAt && current.completedAt) {
-      current.completedAt = Math.max(current.completedAt, entry.completedAt)
-    }
 
     if (entry.status === "failed") current.status = "failed"
     else if (isImportRunning(entry) && current.status !== "failed") current.status = "running"

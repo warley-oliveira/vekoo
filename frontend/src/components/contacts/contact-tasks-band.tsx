@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import type { useContactsExport } from "@/hooks/contacts/use-contacts-export"
 import type { ImportGroup } from "@/hooks/contacts/use-contact-imports"
+import type { ExportPhase } from "@/lib/contacts/export-tracker"
 import { formatTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
@@ -22,8 +23,13 @@ export type ContactTasksBandProps = {
   onOpenImports: () => void
 }
 
-function bandClass() {
-  return "flex flex-col gap-2 rounded-lg bg-muted/50 px-3 py-2.5 sm:flex-row sm:items-center sm:gap-4"
+const BAND_CLASS =
+  "flex flex-col gap-2 rounded-lg bg-muted/50 px-3 py-2.5 sm:flex-row sm:items-center sm:gap-4"
+
+const PROBLEM_KEYS: Partial<Record<ExportPhase, string>> = {
+  expired: "contacts.tasks.expired",
+  failed: "contacts.tasks.failed",
+  empty: "contacts.tasks.empty",
 }
 
 /**
@@ -48,11 +54,7 @@ export function ContactTasksBand({
   const exportPercentage = state.total > 0 ? Math.round((state.processed / state.total) * 100) : 0
   const showExport = !exportOpen && state.phase !== "idle"
   const showImport = !importOpen && Boolean(runningImport)
-  const problemKey = {
-    expired: "contacts.tasks.expired",
-    failed: "contacts.tasks.failed",
-    empty: "contacts.tasks.empty",
-  }[state.phase as string]
+  const problemKey = PROBLEM_KEYS[state.phase]
 
   const dismissButton = (
     <Button
@@ -74,7 +76,7 @@ export function ContactTasksBand({
   return (
     <AnimatePresence initial={false}>
       {showImport && runningImport ? (
-        <motion.div key="import" {...preset.slideUp} role="status" className={bandClass()}>
+        <motion.div key="import" {...preset.slideUp} role="status" className={BAND_CLASS}>
           <div className="flex min-w-0 flex-1 items-center gap-2 text-sm">
             <Loader2 aria-hidden className="size-4 shrink-0 animate-spin text-muted-foreground" />
             <span className="truncate">
@@ -105,7 +107,7 @@ export function ContactTasksBand({
       ) : null}
 
       {showExport && exporting ? (
-        <motion.div key="exporting" {...preset.slideUp} role="status" className={bandClass()}>
+        <motion.div key="exporting" {...preset.slideUp} role="status" className={BAND_CLASS}>
           <div className="flex min-w-0 flex-1 items-center gap-2 text-sm tabular-nums">
             <Loader2 aria-hidden className="size-4 shrink-0 animate-spin text-muted-foreground" />
             <span className="truncate">
@@ -137,7 +139,7 @@ export function ContactTasksBand({
       ) : null}
 
       {showExport && state.phase === "ready" ? (
-        <motion.div key="ready" {...preset.slideUp} role="status" className={bandClass()}>
+        <motion.div key="ready" {...preset.slideUp} role="status" className={BAND_CLASS}>
           <div className="flex min-w-0 flex-1 items-start gap-2 text-sm">
             <CircleCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-status-success" />
             <span className="min-w-0 text-pretty">
@@ -165,7 +167,7 @@ export function ContactTasksBand({
       ) : null}
 
       {showExport && problemKey ? (
-        <motion.div key="problem" {...preset.slideUp} role="alert" className={bandClass()}>
+        <motion.div key="problem" {...preset.slideUp} role="alert" className={BAND_CLASS}>
           <div className="flex min-w-0 flex-1 items-start gap-2 text-sm">
             <TriangleAlert aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <span className="min-w-0 text-pretty">{t(problemKey)}</span>
