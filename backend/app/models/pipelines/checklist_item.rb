@@ -8,7 +8,7 @@ module Pipelines
     ordered_within :pipeline_checklist_id
 
     validates :title, presence: true, length: { maximum: 500 }
-    validates :position, numericality: Pipelines::INTEGER_RANGE, allow_nil: true
+    validates :position, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
     validate :assigned_to_belongs_to_organization, if: :assigned_to_id_changed?
 
     after_commit :broadcast_card_progress

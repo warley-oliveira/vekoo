@@ -93,6 +93,7 @@ pt-BR:
     attributes:
       pipelines/board:
         name: "Nome"
+        organization: "Organização"
         board_type: "Tipo do quadro"
         deal_close_behavior: "Comportamento ao fechar negócio"
         card_visibility: "Visibilidade dos cards"
@@ -162,6 +163,14 @@ pt-BR:
         actions: "Ações"
         stage_id: "Etapa"
     errors:
+      # O que falta nas mensagens gerais de pt-BR.yml e os modelos daqui usam.
+      messages:
+        greater_than: "deve ser maior que %{count}"
+        less_than: "deve ser menor que %{count}"
+        not_an_integer: "deve ser um número inteiro"
+        in: "deve estar entre %{count}"
+        present: "não pode ser preenchido aqui"
+        required: "é obrigatório"
       models:
         pipelines/board:
           attributes:

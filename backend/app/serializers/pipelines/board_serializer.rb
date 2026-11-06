@@ -47,7 +47,7 @@ module Pipelines
         leadScoreLow: board.lead_score_low,
         leadScoreHigh: board.lead_score_high,
         cardVisibility: board.card_visibility,
-        cardVisibilityBypassRoleIds: board.live_bypass_role_ids,
+        cardVisibilityBypassRoleIds: board.card_visibility_bypass_role_ids,
         createdAt: epoch_ms(board.created_at),
         updatedAt: epoch_ms(board.updated_at)
       }

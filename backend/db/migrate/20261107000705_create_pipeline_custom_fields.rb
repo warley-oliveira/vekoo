@@ -12,7 +12,7 @@ class CreatePipelineCustomFields < ActiveRecord::Migration[8.1]
       t.string :key, null: false
       t.string :field_type, null: false
       t.string :scope, null: false, default: "board"
-      t.integer :position, null: false, default: 0
+      t.integer :position
       t.boolean :required, null: false, default: false
       t.boolean :required_to_leave_stage, null: false, default: false
       t.jsonb :options

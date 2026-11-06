@@ -202,15 +202,17 @@ module Pipelines
       CardSerializer.one(card, batch: CardBatch.new([ card ], viewer: current_account), chat_summary: true, description_json: true)
     end
 
-    # O índice que chega é na lista que a pessoa enxerga. Para quem está restrito, a posição de verdade
-    # também conta os cards ocultos.
+    # O índice que chega é na lista que a pessoa enxerga. A posição de verdade também conta os cards que
+    # não aparecem: os de outras pessoas, em quadro restrito, e os arquivados, que continuam na lista. Na
+    # origem, só o primeiro caso era tratado, e soltar um card ao lado de outro numa etapa com arquivados
+    # o deixava fora do lugar.
     def real_position(view_position, stage)
-      return view_position if view_position.nil? || visibility_for(@board).unrestricted?
+      return nil if view_position.nil?
 
       siblings = visible_cards.active.where(stage_id: stage.id).where.not(id: @card.id).to_a
       return view_position if siblings.empty?
 
-      target = siblings[view_position - 1]
+      target = siblings[[ view_position, 1 ].max - 1]
       position = target ? target.position : siblings.last.position + 1
       moving_down = @card.stage_id == stage.id && @card.position < position
       moving_down ? position - 1 : position

@@ -71,15 +71,15 @@ module Pipelines
       super(Array(ids).map(&:to_s).uniq.sort)
     end
 
-    # Os grupos liberados que ainda existem. A lista não tem chave estrangeira (é um array), e o
-    # grupo apagado continua nela até a próxima alteração da regra: não atrapalha ninguém, porque
-    # não há mais quem tenha aquele grupo, mas não deve aparecer na tela. Ver `AccessRole` em
-    # "Pendências" do contrato.
-    def live_bypass_role_ids
-      ids = card_visibility_bypass_role_ids
-      return ids if ids.empty?
-
-      AccessRole.where(organization_id: organization_id, id: ids).order(:id).pluck(:id)
+    # Chamado quando um grupo é apagado: ver config/initializers/pipelines_access_roles.rb. Sem validar,
+    # porque pode ter sido o último da lista. A regra muda, e quem está no quadro é avisado pelo callback.
+    def self.forget_access_role(role)
+      where(organization_id: role.organization_id)
+        .where("? = ANY(card_visibility_bypass_role_ids)", role.id)
+        .find_each do |board|
+        board.card_visibility_bypass_role_ids = board.card_visibility_bypass_role_ids - [ role.id ]
+        board.save!(validate: false)
+      end
     end
 
     private
@@ -87,12 +87,8 @@ module Pipelines
     def card_visibility_roles_are_valid
       ids = card_visibility_bypass_role_ids
       errors.add(:card_visibility_bypass_role_ids, :blank_roles) if card_visibility_restricted? && ids.empty?
-
-      # Só o que entrou agora: um grupo apagado depois de configurado não pode travar a edição do quadro.
-      added = ids - Array(card_visibility_bypass_role_ids_was)
-      return if added.empty?
-      return if added.all? { |id| Pipelines.uuid?(id) } &&
-        AccessRole.where(organization_id: organization_id, id: added).count == added.size
+      return if ids.empty?
+      return if ids.all? { |id| Pipelines.uuid?(id) } && AccessRole.where(organization_id: organization_id, id: ids).count == ids.size
 
       errors.add(:card_visibility_bypass_role_ids, :invalid_roles)
     end

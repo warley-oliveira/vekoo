@@ -19,7 +19,7 @@ module Pipelines
     validates :options, presence: true, if: :select?
     validates :stage_id, presence: true, if: :stage_scope?
     validates :stage_id, absence: true, if: :board_scope?
-    validates :position, numericality: Pipelines::INTEGER_RANGE, allow_nil: true
+    validates :position, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
     validate :stage_belongs_to_board, if: -> { stage_scope? && stage_id.present? }
 
     # Só ao nascer. Na origem a chave era recalculada a cada save: renomear o campo deixava para trás,
@@ -44,10 +44,12 @@ module Pipelines
       errors.add(:stage_id, :invalid) unless stage&.board_id == board_id
     end
 
+    # Sem o quadro, foi ele que se apagou, e não há mais ninguém para avisar.
     def broadcast_custom_fields_changed
-      return if destroyed_by_association
+      current_board = board
+      return unless current_board
 
-      PipelineBoardChannel.broadcast_board_event(board, event: "custom_fields_changed", data: { boardId: board_id })
+      PipelineBoardChannel.broadcast_board_event(current_board, event: "custom_fields_changed", data: { boardId: board_id })
     end
   end
 end

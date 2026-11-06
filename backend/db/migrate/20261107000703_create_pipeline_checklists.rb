@@ -28,7 +28,7 @@ class CreatePipelineChecklists < ActiveRecord::Migration[8.1]
       t.references :stage, null: false, type: :uuid, index: true,
         foreign_key: { to_table: :pipeline_stages, on_delete: :cascade }
       t.string :title, null: false
-      t.integer :position, null: false, default: 0
+      t.integer :position
       t.boolean :required, null: false, default: true
 
       t.timestamps

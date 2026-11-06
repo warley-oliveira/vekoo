@@ -29,9 +29,11 @@ module Pipelines
     private
 
     # Antes do save, enquanto o dirty tracking é confiável. Um segundo save na mesma transação (o
-    # `insert_at` depois da troca de etapa) não pode apagar a mudança de etapa já vista.
+    # `insert_at` depois da troca de etapa) não pode apagar a mudança de etapa já vista. Nascer numa
+    # etapa não é mudar de etapa: sem o `persisted?`, a primeira edição depois de criar o card, na mesma
+    # instância, sairia como `card_moved`.
     def capture_broadcast_context
-      if will_save_change_to_stage_id?
+      if persisted? && will_save_change_to_stage_id?
         @broadcast_stage_moved = true
         @broadcast_prev_stage_id = stage_id_in_database
       else

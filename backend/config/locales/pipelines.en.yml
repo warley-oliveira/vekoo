@@ -93,6 +93,7 @@ en:
     attributes:
       pipelines/board:
         name: "Name"
+        organization: "Organization"
         board_type: "Board type"
         deal_close_behavior: "Deal closing behavior"
         card_visibility: "Card visibility"
@@ -162,6 +163,14 @@ en:
         actions: "Actions"
         stage_id: "Stage"
     errors:
+      # What's missing from the general messages in pt-BR.yml and the models here use.
+      messages:
+        greater_than: "must be greater than %{count}"
+        less_than: "must be less than %{count}"
+        not_an_integer: "must be an integer"
+        in: "must be in %{count}"
+        present: "must be blank"
+        required: "must exist"
       models:
         pipelines/board:
           attributes:

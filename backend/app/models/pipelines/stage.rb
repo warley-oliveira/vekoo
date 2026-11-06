@@ -17,7 +17,7 @@ module Pipelines
     normalizes :name, with: ->(name) { name.squish }
 
     validates :name, presence: true, length: { maximum: 120 }
-    validates :position, numericality: Pipelines::INTEGER_RANGE, allow_nil: true
+    validates :position, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
     validates :wip_limit, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
     validates :sla_hours, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
 

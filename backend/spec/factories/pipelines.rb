@@ -17,6 +17,10 @@ FactoryBot.define do
   factory :pipeline_card, class: "Pipelines::Card" do
     association :stage, factory: :pipeline_stage
     sequence(:title) { |n| "Negócio #{n}" }
+
+    trait :won do
+      won_at { Time.current }
+    end
   end
 
   factory :pipeline_label, class: "Pipelines::Label" do
@@ -65,6 +69,11 @@ FactoryBot.define do
     scope { "funnel" }
     period_month { Date.current.beginning_of_month }
     target_value { 10_000 }
+
+    trait :user do
+      scope { "user" }
+      assigned_account { association(:account, organization: board.organization, role: "member") }
+    end
   end
 
   factory :pipeline_saved_filter, class: "Pipelines::SavedFilter" do
@@ -74,5 +83,20 @@ FactoryBot.define do
     sequence(:name) { |n| "Filtro #{n}" }
     visibility { "private" }
     definition { { "version" => 1, "all" => [ { "field" => "priority", "operator" => "eq", "value" => "high" } ], "any" => [] } }
+
+    trait :shared do
+      visibility { "shared" }
+    end
+  end
+
+  factory :pipeline_saved_filter_favorite, class: "Pipelines::SavedFilterFavorite" do
+    association :board, factory: :pipeline_board
+    user { association(:account, organization: board.organization) }
+    saved_filter { association(:pipeline_saved_filter, board: board) }
+
+    trait :preset do
+      saved_filter { nil }
+      preset_key { "open_deals" }
+    end
   end
 end

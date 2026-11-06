@@ -9,7 +9,7 @@ module Pipelines
     ordered_within :card_id
 
     validates :name, presence: true, length: { maximum: 255 }
-    validates :position, numericality: Pipelines::INTEGER_RANGE, allow_nil: true
+    validates :position, numericality: Pipelines::POSITIVE_INTEGER, allow_nil: true
 
     # Depois de qualquer mudança no checklist, o quadro precisa do progresso novo do card.
     after_commit :broadcast_card_progress

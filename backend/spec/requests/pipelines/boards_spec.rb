@@ -378,9 +378,10 @@ RSpec.describe "Pipelines: quadros", type: :request do
         expect(json).to include("viewerCanViewAllCards" => true)
       end
 
-      it "um grupo apagado depois não trava a edição do quadro e some da resposta" do
+      it "um grupo apagado sai da lista e não trava a edição do quadro" do
         board.update!(card_visibility: "assigned", card_visibility_bypass_role_ids: [ role.id ])
-        role.destroy!
+        delete "/access-roles/#{role.id}", headers: headers
+        expect(response).to have_http_status(:no_content)
 
         patch board_path(board), params: { board: { name: "Outro nome" } }, headers: headers, as: :json
 

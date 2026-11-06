@@ -75,12 +75,14 @@ module Pipelines
       month_or_nil(value) || Date.current.beginning_of_month
     end
 
+    # Só 'YYYY-MM' e 'YYYY-MM-DD'. O `Date.parse` sozinho é generoso demais: "novembro" vira um
+    # novembro qualquer.
     def month_or_nil(value)
       text = value.to_s
-      # 'YYYY-MM' não é data para o `Date.parse`.
-      text = "#{text}-01" if text.match?(/\A\d{4}-\d{2}\z/)
-      Date.parse(text).beginning_of_month
-    rescue Date::Error, TypeError
+      return nil unless text.match?(/\A\d{4}-\d{2}(-\d{2})?\z/)
+
+      Date.parse(text.length == 7 ? "#{text}-01" : text).beginning_of_month
+    rescue Date::Error
       nil
     end
   end
