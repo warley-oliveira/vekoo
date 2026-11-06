@@ -59,7 +59,7 @@ Mongo + pgvector no compose; Mongoid; `Current`; `PlatformController` (sessão, 
 
 | # | Frente | Domínio de arquivos | Status |
 |---|---|---|---|
-| 1 | **be-core**: conectores + chat base | `connectors` | 🔄 |
+| 1 | **be-core**: conectores + chat base | `connectors` | ✅ |
 | 2 | **be-access**: pessoas, avisos, push | `access` | ✅ |
 | 3 | **be-products**: catálogo | `products` | ✅ |
 | 4 | **fe-shell**: menu, rotas, mobile, PWA | casca | ✅ |
@@ -96,33 +96,40 @@ Sidebar agrupada conforme o "Menu final", recolhível, com sub-itens e badges de
 
 ---
 
-## Fase 2 — Back-end dos domínios (6 frentes)
+## Fase 2 — Back-end dos domínios
 
-| # | Frente | Domínio | Status |
-|---|---|---|---|
-| 6 | **be-inbox**: API do chat, contatos, etiquetas, visões, mensagens rápidas, anexos, campos, importação, copiloto | `inbox` | ⬜ |
-| 7 | **be-pipelines**: quadros, cards, gatilhos, metas, filtros | `pipelines` | ⬜ |
-| 8 | **be-agenda**: calendários, agendamentos, turmas, sequências, Google | `agenda` | ⬜ |
-| 9 | **be-outreach**: campanhas, Apify, Sheets | `outreach` | ⬜ |
-| 10 | **be-automation**: fluxos, runtime, ferramentas, webhooks de saída | `automation` | ⬜ |
-| 11 | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | ⬜ |
+Dividida em duas levas, para cada frente poder testar de verdade o que usa, em vez de programar contra código que não existe no worktree dela:
 
-- **be-inbox:** `v1/conversations_controller` (→ `/chats`), `v2/conversations`, `v2/unified_contacts`, `v1/contacts` (→ `/contacts`, filtros, exportação, ações em lote), `platform/{conversations,scheduled_automations,chat_snippets,chat_filters,attachments,definitions}`, `ContactsExportJob`, `ProcessContactImportJob`, `ImportedContact`, `ContactImportBatch`, `ChatAttachment`, `AudioAttachment`, `ChatFilter`, `ChatSnippet`, `InstanceVariable::*`, `ScheduledAutomation`, `app/services/{custom_attributes,scheduled_automations}/`, `Aiva::ChatAssistant` + `ChatAssistantChannel` + `ChatAssistantConversation` + `ChatAssistantJob` (Copiloto), `ContactsExportChannel`.
-- **be-pipelines:** `platform/kanban/*`, `platform/kanban_controller`, `Kanban*`, `app/services/kanban/`, `app/jobs/kanban/`, `concerns/kanban/`, `KanbanBoardChannel`, code runner dos gatilhos (`triggers/code_runner_job`, `lib/mini_racer_engine`).
-- **be-agenda:** `platform/{calendar,calendars,collaborators,services,class_groups,class_sessions,class_enrollments,class_attendances,attendance_sequences,contact_notification_previews}`, `Scheduling::*`, `app/services/scheduling/`, `appointment_service`, `app/sidekiq/{scheduling/*,notification_*,google_calendar_*,active_google_event_job}`, `Integration::GoogleCalendar`, `v1/google_calendar`, `CalendarChannel`.
+- **2a (paralelo):** o que só depende do núcleo já integrado.
+- **2b (depois da 2a):** quem depende do motor de scripts ou lê dados de vários domínios.
+
+| # | Leva | Frente | Domínio | Status |
+|---|---|---|---|---|
+| 6 | 2a | **be-inbox**: API do chat, contatos, etiquetas, visões, mensagens rápidas, anexos, campos, importação, copiloto | `inbox` | ⬜ |
+| 8 | 2a | **be-agenda**: calendários, agendamentos, turmas, sequências, Google, ações agendadas da conversa | `agenda` | ⬜ |
+| 9 | 2a | **be-outreach**: campanhas, Apify, Sheets | `outreach` | ⬜ |
+| 28 | 2a | **be-engine**: motor de scripts (núcleo e extensões genéricas) | `lib/mini_racer_engine` | ⬜ |
+| 7 | 2b | **be-pipelines**: quadros, cards, gatilhos, metas, filtros, extensão `kanban` do motor | `pipelines` | ⬜ |
+| 10 | 2b | **be-automation**: fluxos, runtime, ferramentas, webhooks de saída, extensões `scheduling` do motor | `automation` | ⬜ |
+| 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | ⬜ |
+
+- **be-inbox:** `v1/conversations_controller` (→ `/chats`), `v2/conversations`, `v2/unified_contacts`, `v1/contacts` (→ `/contacts`, filtros, exportação, ações em lote), `platform/{conversations,chat_snippets,chat_filters,attachments,definitions}`, `ContactsExportJob`, `ProcessContactImportJob`, `ImportedContact`, `ContactImportBatch`, `ChatAttachment`, `AudioAttachment`, `ChatFilter`, `ChatSnippet`, `InstanceVariable::*`, `app/services/custom_attributes/`, `Aiva::ChatAssistant` + `ChatAssistantChannel` + `ChatAssistantConversation` + `ChatAssistantJob` (Copiloto), `ContactsExportChannel`.
+- **be-pipelines:** `platform/kanban/*`, `platform/kanban_controller`, `Kanban*`, `app/services/kanban/`, `app/jobs/kanban/`, `concerns/kanban/`, `KanbanBoardChannel`, code runner dos gatilhos (`triggers/code_runner_job`), extensão `kanban` do motor (`lib/mini_racer_engine/workers/kanban.rb`).
+- **be-agenda:** `platform/{calendar,calendars,collaborators,services,class_groups,class_sessions,class_enrollments,class_attendances,attendance_sequences,contact_notification_previews}`, `Scheduling::*`, `app/services/scheduling/`, `appointment_service`, `app/sidekiq/{scheduling/*,notification_*,google_calendar_*,active_google_event_job}`, `Integration::GoogleCalendar`, `v1/google_calendar`, `CalendarChannel`, `ScheduledAutomation` + `platform/scheduled_automations` + `app/services/scheduled_automations/` (sem follow-up de assistente, só o que sobra sem ele), `calendar_stats` do `dashboard_controller`.
 - **be-outreach:** `platform/{campaigns,apify_extractions}`, `Campaign::*`, `Apify::Extraction`, `app/services/campaigns/`, `app/sidekiq/{campaign_*,apify_extraction_job}`, `ApifyExtractionChannel`.
-- **be-automation:** `platform/{flows,flows/*,flow_templates,workspace_tools,tool_catalog,webhooks,webhook_logs}`, `Flow*`, `Tool`, `ToolInstallation`, `FunctionAction::*`, `Webhook`, `WebhookAction::*`, `WebhookLog`, `lib/flow_runtime`, `lib/flow_engine`, `app/services/{flows,tools,webhooks}/`, `app/sidekiq/flows/`, `FlowPlaygroundChannel`, `FlowChatSandboxChannel`, `v1/webhook_controller`. `WebhookAction::AssignAutomation` vira "iniciar fluxo". Blocos de IA sobre `Ai::`.
+- **be-automation:** `platform/{flows,flows/*,flow_templates,workspace_tools,tool_catalog,webhooks,webhook_logs}`, `Flow*`, `Tool`, `ToolInstallation`, `FunctionAction::*`, `Webhook`, `WebhookAction::*`, `WebhookLog`, `lib/flow_runtime`, `lib/flow_engine`, `app/services/{flows,tools,webhooks}/`, `app/sidekiq/flows/`, `FlowPlaygroundChannel`, `FlowChatSandboxChannel`, `v1/webhook_controller`, extensões `scheduling` e `class_group_scheduling` do motor. `WebhookAction::AssignAutomation` vira "iniciar fluxo". Blocos de IA sobre `Ai::`.
+- **be-engine:** `lib/mini_racer_engine` (núcleo, `console`, `fetch`, `web_apis`, `contact`, `contact_storage`, `tag`, `maps`, `dynamic_table`, `catalog`), `app/services/mini_racer_service.rb`, `DynamicTable`, `DynamicRecord`. Fora: `register_follow_up` e `semantic_search`, presos a assistente.
 - **be-insights:** `platform/{dashboard,pipeline,custom_dashboards}`, `app/services/{metrics,rollups,custom_dashboards}/`, `conversation_{analytics,funnel,stats}`, `dashboard_backfill_job`, `CustomDashboard*`, `DataSource` só se for do dashboard; modelo novo `Funnel` (decisão 1), CRUD de funis e movimento de conversa entre etapas.
 
-## Fase 3 — Front-end, parte 1 (8 frentes; 12 e 16 podem começar antes, porque o back-end delas já está pronto)
+## Fase 3 — Front-end, parte 1 (cada frente começa assim que o back-end dela estiver integrado)
 
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
-| 12 | **fe-settings-people**: usuários, departamentos, grupos, perfil, notificações | `components/{users,departments,authorization-roles,profile}`, `pages/settings/*`, `NotificationSettingsPage`, `PushNotificationSettings`, `Profile/*` | ⬜ |
+| 12 | **fe-settings-people**: usuários, departamentos, grupos, perfil, notificações | `components/{users,departments,authorization-roles,profile}`, `pages/settings/*`, `NotificationSettingsPage`, `PushNotificationSettings`, `Profile/*` | 🔄 |
 | 13 | **fe-settings-content**: mensagens rápidas, anexos, campos personalizados | `components/{chat-snippets,attachments,custom-fields,definitions}`, `pages/settings/{chat-snippets,attachments,custom-fields}` | ⬜ |
-| 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ⬜ |
+| 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | 🔄 |
 | 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | ⬜ |
-| 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ⬜ |
+| 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | 🔄 |
 | 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ⬜ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | ⬜ |
 | 18 | **fe-automation**: fluxos, editor, playground, ferramentas, webhooks + logs | `pages/flows`, `components/{flow-builder,tools,webhooks,webhook-logs,code-editor}`, `pages/settings/webhooks` | ⬜ |

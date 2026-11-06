@@ -57,6 +57,20 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Densidade do `DataTable`:** é uma preferência única por navegador, não por tabela.
 - **"Excluir pasta" agora pede confirmação (integrador):** antes apagava direto. O Charter exige, e os carrosséis não se perdem.
 
+### Núcleo do atendimento (be-core)
+
+- **Configurações que moravam no assistente** foram para `organization.settings` (`automation_*`, `business_work*`, `auto_clear_context_*`), com um endpoint novo: `/automation-settings`.
+- **Removidos por dependerem do LLM ou da automação:** `tag_name_stop_phrase`, `stop_automation_phases`, `delay_response` e o debounce de `last.message`.
+- **Transcrição de áudio (Whisper) mantida:** exige `OPENAI_ACCESS_TOKEN`, automação ligada e créditos acima de 0, e **não debita créditos**.
+- **Pausa de canal:** na Evolution e na AIVA, o que chega durante a pausa é descartado, como na origem. A tela precisa avisar ao pedir confirmação.
+- **Modelagem:** `Contact` é um objeto sobre `Chat`, sem coleção própria; `chat_tags` guarda a relação de um lado só; há uma única stream por conversa.
+- **Webhooks** vão para job com o corpo cru e 3 tentativas. AIVA e Evolution ficam unificados em `/inbound/evolution/:codename`, sem RabbitMQ. A assinatura da Meta é conferida quando os segredos existem.
+- **Mídia de contato com advertência agora é gravada** (a origem descartava).
+- **Segurança:** tokens cifrados em repouso; credenciais fixas viraram ENV; o QR code exige `core_settings`; `/connectors` em leitura é aberto a qualquer conta, porque o chat precisa da lista de canais.
+- **Criação e ativação:** `POST /connectors` com ativação falha responde `201` com `status: failed`, e `activate` também responde `200` quando o provedor recusa. Reativar pela tela continua respondendo `422`.
+- **Entrada de `/connectors` é corpo solto**, sem envelope, diferente do domínio de pessoas. Documentado no contrato.
+- **Widget:** o contrato passa a camelCase e milissegundos, então o bundle embutível precisa se adaptar. `window.aiva` foi mantido no snippet, com padrão `https://widget.vekoo.app`.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -68,6 +82,10 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
 - Revisão de segurança: `Products::RemoteImage` pode servir a outros downloads de URL vinda do cliente.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
+- Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
+- Revisão de segurança: `/media` não confere a organização (o acesso é por chave ou id assinado); `has_one :proxy` tem `destroy` em instância em memória.
+- Não confirmados com a Meta: textos do `WabaErrorHandler` para 132005, 132007, 132015 e 132016. Nenhum provedor real foi exercitado, por falta de credenciais.
+- Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -82,7 +100,11 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 ### Back (Fase 2)
 
-- `be-inbox`: `chat_list_to` usa `team` (não `department`), e a atribuição de conversa deve filtrar pessoas `setupOnly`.
+- `be-inbox`: `chat_list_to` usa `team` (não `department`), e a atribuição de conversa deve filtrar pessoas `setupOnly`. API de lista de conversas e mensagens, apagar e reagir por REST, `Attachment` conforme `Media::AttachmentLookup`, `import_contacts*` e `normalize_custom_attributes`.
+- `be-automation`: substituir o stub `Flows::InboundDispatcher`; debounce; eventos `human_handoff` e `contact_created`; leitor de presença (`presence.<chatId>`), para "digitando" chegar à tela; alertas por hook.
+- `be-pipelines` e `be-agenda`: mapeamento em `ConnectorEventService` (usa `model.service` e `model.professional`), `ChatRelations::*`, `BackfillSystemTagsService`.
+- `be-outreach`: `Outreach::Recipient` hoje é guardado por `defined?`; remover a guarda. `ChatMessage#campaign_id` já existe.
+- `be-insights`: calculadores de `DailyChatStat`, que a semente não preenche.
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
