@@ -449,7 +449,8 @@ module Inbound
       return unless chat
 
       # `presences` é chaveado pelo JID completo: a chave original só serve para o lookup.
-      Chats::Presence.update(chat, data&.dig(:presences, raw_jid, :lastKnownPresence))
+      presence = data&.dig(:presences, raw_jid, :lastKnownPresence)
+      Rails.cache.write("presence.#{chat.id}", presence, expires_in: 10.seconds)
     end
 
     # ========================================================================

@@ -57,21 +57,4 @@ RSpec.describe FlowPlaygroundChannel, type: :channel do
 
     expect { perform(:speak, text: " ") }.not_to have_enqueued_job
   end
-
-  describe "ChatChannel, ao abrir com o contato digitando" do
-    let(:chat) { create(:chat, organization: organization) }
-
-    it "manda o estado atual, porque o aviso anterior não volta" do
-      Chats::Presence.update(chat, "composing")
-      channel = ChatChannel.allocate
-
-      stub_connection current_account: account
-      subscription = ChatChannel.new(connection, "x", { chatId: chat.id.to_s })
-      allow(subscription).to receive(:transmit)
-      subscription.subscribe_to_channel
-
-      expect(subscription).to have_received(:transmit).with(a_hash_including(event: "contact_presence", presence: "composing"))
-      expect(channel).to be_present
-    end
-  end
 end

@@ -81,17 +81,62 @@ RSpec.describe Flows::InboundDispatcher do
       end
     end
 
-    it "espera o contato parar de digitar, com teto" do
-      say("oi")
-      travel 4.seconds
-      allow(Chats::Presence).to receive(:typing?).and_return(true)
+    describe "com o contato digitando" do
+      include InboundHelpers
 
-      expect { run_debounce }.to have_enqueued_job(Flows::DebouncedDispatchJob)
-      expect(chat.reload.flow_inbox.length).to eq(1)
+      def contact_is(presence)
+        Inbound::EvolutionEvents.new(
+          webhook_payload(event: "presence.update", data: { id: "#{chat.external_id}@s.whatsapp.net", presences: { "#{chat.external_id}@s.whatsapp.net" => { lastKnownPresence: presence } } }),
+          connector: connector
+        ).call
+      end
 
-      travel Flows::DebouncedDispatchJob::MAX_HOLD + 1.second
-      perform_enqueued_jobs { run_debounce }
-      expect(sent_texts).to eq([ "respondi" ])
+      %w[composing recording].each do |presence|
+        it "#{presence} segura a resposta: o que a Evolution avisou é o que o debounce lê" do
+          say("oi")
+          travel 4.seconds
+          contact_is(presence)
+
+          expect { run_debounce }.to have_enqueued_job(Flows::DebouncedDispatchJob)
+          expect(chat.reload.flow_inbox.length).to eq(1)
+          expect(sent_texts).to be_empty
+        end
+      end
+
+      %w[paused available].each do |presence|
+        it "#{presence} não segura" do
+          say("oi")
+          travel 4.seconds
+          contact_is(presence)
+
+          perform_enqueued_jobs { run_debounce }
+
+          expect(sent_texts).to eq([ "respondi" ])
+        end
+      end
+
+      it "digitando sem parar ainda tem resposta, porque a espera tem teto" do
+        say("oi")
+        travel 4.seconds
+        contact_is("composing")
+        run_debounce
+
+        travel Flows::DebouncedDispatchJob::MAX_HOLD + 1.second
+        contact_is("composing")
+        perform_enqueued_jobs { run_debounce }
+
+        expect(sent_texts).to eq([ "respondi" ])
+      end
+
+      it "o aviso que venceu não segura: o de parou pode nunca chegar" do
+        say("oi")
+        contact_is("composing")
+        travel 11.seconds
+
+        perform_enqueued_jobs { run_debounce }
+
+        expect(sent_texts).to eq([ "respondi" ])
+      end
     end
 
     it "duas mensagens simultâneas: nenhuma se perde" do

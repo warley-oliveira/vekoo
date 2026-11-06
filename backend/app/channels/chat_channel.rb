@@ -6,10 +6,6 @@ class ChatChannel < ApplicationCable::Channel
     return reject unless chat && current_account.can?(:chat)
 
     stream_from ChatMessage::Base.stream_for(chat)
-
-    # Quem abre a conversa com o contato digitando já vê o "digitando": o aviso anterior não volta.
-    presence = Chats::Presence.read(chat.id)
-    transmit(Chats::Presence.payload(chat.id, presence)) if Chats::Presence::TYPING.include?(presence)
   rescue StandardError => e
     Rails.logger.error(e.full_message)
     reject

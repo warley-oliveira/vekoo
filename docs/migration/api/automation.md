@@ -1278,16 +1278,6 @@ Sequência real, numa pergunta seguida de IA:
 ]
 ```
 
-### `ChatChannel`, evento novo: `contact_presence`
-
-"Digitando" do contato. **Só a Evolution manda presença.** Sai quando o estado muda, e ao assinar, se o contato já estiver digitando.
-
-```json
-{ "event": "contact_presence", "chatId": "6aee407f441698da239bfa24", "presence": "composing", "expiresInMs": 10000 }
-```
-
-`presence`: `composing` e `recording` são "digitando"; `paused` e os outros, parou. **O aviso de "parou" pode não chegar:** apague sozinho depois de `expiresInMs`, e quando a mensagem chegar.
-
 ---
 
 ## Como uma mensagem vira execução
@@ -1295,7 +1285,7 @@ Sequência real, numa pergunta seguida de IA:
 `Chats::InboundFlow` chama `Flows::InboundDispatcher.call(chat:, text:, event:, message_id:)` quando a automação pode rodar.
 
 1. **Caminho rápido.** Organização sem fluxo de mensagem, sem execução viva na conversa e sem fluxo de campanha não paga nada.
-2. **Debounce.** A mensagem entra numa caixa dentro do documento da conversa (`$push` atômico), e só a primeira agenda um job, com 3 s por padrão (`organization.settings["flow_debounce_seconds"]`, de 0 a 60). As seguintes empurram o prazo: é **um job agendado por conversa**, e não um por mensagem. Enquanto o contato digita, espera mais, até 30 s.
+2. **Debounce.** A mensagem entra numa caixa dentro do documento da conversa (`$push` atômico), e só a primeira agenda um job, com 3 s por padrão (`organization.settings["flow_debounce_seconds"]`, de 0 a 60). As seguintes empurram o prazo: é **um job agendado por conversa**, e não um por mensagem. Enquanto o contato digita (`composing` ou `recording` em `presence.<chatId>`, que `Inbound::EvolutionEvents` grava e vale 10 s), espera mais, até 30 s. Só a Evolution manda presença: nos outros canais, vale só o prazo.
 3. **Execução rodando na conversa:** a caixa espera, e o fim da rodada a entrega. É o que impede o mesmo bloco de rodar duas vezes.
 4. **`Flows::Dispatch`:** retoma quem está em `waiting_for_message`. Se ninguém esperava, começa os fluxos: o da campanha (`chat.outreach_flow_id`, conferindo a organização e que está publicado), ou então os publicados cujo gatilho casa.
 

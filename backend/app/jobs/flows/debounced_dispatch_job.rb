@@ -10,6 +10,7 @@ module Flows
     # Digitando sem parar ainda tem resposta: a origem esperava sem teto.
     MAX_HOLD = 30.seconds
     HOLD_STEP = 3.seconds
+    TYPING = %w[composing recording].freeze
 
     retry_on StandardError, wait: :polynomially_longer, attempts: 3 do |job, error|
       Rails.logger.error("[Flows::DebouncedDispatchJob] #{job.arguments.first} #{error.class}: #{error.message}")
@@ -42,8 +43,10 @@ module Flows
       chat.automation_enabled && chat.organization&.automation_enabled?
     end
 
+    # Quem grava `presence.<chatId>` é `Inbound::EvolutionEvents`, e só a Evolution manda presença. Vale 10 s, e o provedor repete
+    # enquanto a pessoa digita: sem aviso de que parou, a espera acaba sozinha.
     def hold_while_typing?(chat)
-      return false unless Chats::Presence.typing?(chat.id)
+      return false unless TYPING.include?(Rails.cache.read("presence.#{chat.id}"))
 
       first_at = Array(chat.flow_inbox).filter_map { |item| item["at"] }.min
       first_at.present? && Time.current.to_f - first_at < MAX_HOLD
