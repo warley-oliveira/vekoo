@@ -39,17 +39,21 @@ module Ai
     # o controlador ainda poder responder com status HTTP de verdade.
     def call
       claim_slot!
-      @organization.reserve_credits!(@cost)
-      @charged = true
 
+      # Fora do `begin`: quem ouviu `Busy` não pegou a vaga, e soltá-la liberaria a geração de outro.
       begin
-        yield self
-      rescue StandardError
-        refund_unless_delivered
-        raise
+        @organization.reserve_credits!(@cost)
+        @charged = true
+
+        begin
+          yield self
+        rescue StandardError
+          refund_unless_delivered
+          raise
+        end
+      ensure
+        release_slot
       end
-    ensure
-      release_slot
     end
 
     def refund_unless_delivered
