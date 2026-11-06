@@ -164,10 +164,14 @@
  */
 @layer base {
   @media (pointer: coarse) {
-    :where(button[data-slot]:not([data-slot="switch"])) {
+    /* A aba já usa o ::after para o sublinhado da variante `line`: ela cresce de verdade. */
+    :where([data-slot="tabs-trigger"]) {
+      min-height: 40px;
+    }
+    :where(button[data-slot]:not([data-slot="switch"], [data-slot="tabs-trigger"])) {
       position: relative;
     }
-    :where(button[data-slot]:not([data-slot="switch"]))::after {
+    :where(button[data-slot]:not([data-slot="switch"], [data-slot="tabs-trigger"]))::after {
       content: "";
       position: absolute;
       top: 50%;

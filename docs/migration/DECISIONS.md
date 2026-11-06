@@ -95,6 +95,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Idioma anda com a conta:** a escolha grava em `PATCH /profile`. Ao abrir a sessão vale o da conta; conta sem idioma mantém a escolha local.
 - **Acréscimo na API:** token de quem foi revogado responde `401 accessRevoked`, em vez de `unauthorized`, para a tela explicar o motivo. A pessoa sai sozinha cerca de 250 ms depois da revogação.
 
+### Integrações: tela (fe-connectors)
+
+- **Conexão:** no celular, o código de pareamento é o padrão, e não o QR. O diálogo pode ser fechado durante a espera, com aviso; só fica travado enquanto há pedido em andamento.
+- **Linguagem:** "Z-API" saiu da escolha e da etiqueta do canal, e fica só em "Conexão", nos dados. `IWA-...` é trocado na tela pelo nome do tipo, inclusive nos avisos da API.
+- **Ações por tipo:** widget só tem ligar e desligar, porque o site exige `active`; Z-API direta só oferece "Desconectar". Canal sem provedor gravado também avisa do descarte na pausa, porque o back-end usa AIVA nesse caso.
+- **Messenger foi ligado** (estava comentado na origem) e usa `VITE_FB_APP_ID`, porque o back troca o código com `META_APP_ID`.
+- **Criar Z-API direta e LeadChat não é oferecido**, como na origem; os que já existem funcionam.
+- **Modelos:** variáveis detectadas do texto; máximo de 3 botões, sendo 1 de telefone e 2 de URL; URL dinâmica pede exemplo. A mídia do cabeçalho é um campo de URL pública por enquanto.
+- **De fora:** histórico de desconexão (a API não expõe), importar contatos (o endpoint ainda não existe), e a documentação completa do widget virou um guia resumido, porque depende do bundle.
+- **CSP:** `connect.facebook.net` em `script-src`; `www.facebook.com` e `web.facebook.com` em `connect-src` e `frame-src`. O `frame-src` é precaução: nenhum frame foi observado em teste.
+- **Acréscimo na API:** o código de pareamento se perdia (o canal não o reenviava a quem assinava depois, o `GET` não o trazia, e o `activate` não aceitava `phoneNumberPairing`). Corrigido, com 10 specs. A chave `pairingCode` vem do conhecimento da Evolution v2, sem confirmação em instância real.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -110,6 +122,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
 - Revisão de segurança: `/media` não confere a organização (o acesso é por chave ou id assinado); `has_one :proxy` tem `destroy` em instância em memória.
 - Não confirmados com a Meta: textos do `WabaErrorHandler` para 132005, 132007, 132015 e 132016. Nenhum provedor real foi exercitado, por falta de credenciais.
+- Front em produção: `VITE_FB_APP_ID`, `VITE_FB_CONFIG_ID`, `VITE_FB_META_CONFIG_ID`, `VITE_FB_SDK_VERSION`, `VITE_IG_APP_ID` e `VITE_IG_REDIRECT_URI` (sem elas, as opções da Meta aparecem desabilitadas, com aviso), e registrar `https://<front>/auth/instagram/callback` na Meta.
+- Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION, pareamento na Z-API (`zapi_get_phone_code` existe, mas nenhum fluxo chama).
 - Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
@@ -117,6 +131,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
+- `fe-contacts`: ligar a ação "Importar contatos" na tela do canal quando `import-contacts` existir. Seletor de anexos no cabeçalho do modelo, quando a API de anexos existir.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.

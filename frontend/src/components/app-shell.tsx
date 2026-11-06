@@ -98,7 +98,7 @@ export function AppShell() {
           {!isMobileShell && (
             <aside
               className={cn(
-                "shrink-0 overflow-hidden border-r border-sidebar-border transition-[width] duration-200 motion-reduce:transition-none",
+                "relative shrink-0 overflow-hidden border-r border-sidebar-border transition-[width] duration-200 motion-reduce:transition-none",
                 collapsed ? "w-[3.75rem]" : "w-64"
               )}
             >
