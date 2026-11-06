@@ -70,6 +70,22 @@ RSpec.describe CustomDashboards::QueryEngine do
 
       expect(execute("conversations", query)[:rows].map { |row| row["custom_attributes.origem_campanha"] }).to include("__invalid__")
     end
+
+    it "texto vazio é valor próprio, e não o balde de vazio" do
+      create(:chat, organization: organization, custom_attributes: { "origem_campanha" => "" })
+
+      expect(execute("conversations", query)[:rows].map { |row| row["custom_attributes.origem_campanha"] }).to include("", "__empty__")
+    end
+
+    it "dá nome ao campo só com o que é da organização, e ignora o que foi apagado" do
+      create(:custom_field, organization_id: organization.id, name: "Origem Campanha")
+      create(:custom_field, organization_id: other_organization.id, name: "Cidade")
+
+      labels = execute("conversations", dimensions: [ { field: "custom_attributes.origem_campanha" }, { field: "custom_attributes.cidade" } ], metrics: [ count_metric ])[:field_labels]
+
+      expect(labels).to include("custom_attributes.origem_campanha" => "Origem Campanha")
+      expect(labels).not_to have_key("custom_attributes.cidade")
+    end
   end
 
   describe "operadores de filtro" do
@@ -180,6 +196,68 @@ RSpec.describe CustomDashboards::QueryEngine do
       %w[eq ne in nin contains].each do |operator|
         expect { execute("conversations", metrics: [ count_metric("c", filters: [ { field: "user_name", operator: operator, value: "$$ROOT" } ]) ]) }.not_to raise_error
       end
+    end
+
+    it "condiciona pelo valor de campo personalizado, inclusive como número" do
+      create(:chat, organization: organization, custom_attributes: { "status_venda" => "ganho", "volume" => "30" })
+      create(:chat, organization: organization, custom_attributes: { "status_venda" => "perdido", "volume" => "20 a 40/dia" })
+      create(:chat, organization: organization, custom_attributes: { "volume" => "sem número" })
+
+      rows = metric_rows(
+        count_metric("Ganho", filters: [ { field: "custom_attributes", operator: "eq", value: { key: "status_venda", value: "ganho" } } ]),
+        count_metric("Em lista", filters: [ { field: "custom_attributes", operator: "in", value: { key: "status_venda", value: %w[ganho perdido] } } ]),
+        count_metric("Tem", filters: [ { field: "custom_attributes", operator: "exists", value: { key: "status_venda" } } ]),
+        count_metric("Não tem", filters: [ { field: "custom_attributes", operator: "not_exists", value: { key: "status_venda" } } ]),
+        count_metric("Contém", filters: [ { field: "custom_attributes", operator: "contains", value: { key: "status_venda", value: "GAN" } } ]),
+        count_metric("Volume alto", filters: [ { field: "custom_attributes", operator: "gte", value: { key: "volume", value: "25" } } ]),
+        count_metric("Volume baixo", filters: [ { field: "custom_attributes", operator: "lt", value: { key: "volume", value: "25" } } ])
+      )
+
+      # As duas conversas do `before` não têm o campo.
+      expect(rows).to eq("Ganho" => 1, "Em lista" => 2, "Tem" => 2, "Não tem" => 3, "Contém" => 1, "Volume alto" => 1, "Volume baixo" => 1)
+    end
+
+    it "monta as colunas de um funil: reunião qualificada e venda" do
+      calendar = create(:agenda_calendar, organization: organization)
+      converted = create(:chat_tag, name: "convertido", organization_id: organization.id)
+      qualified = create(:chat, organization: organization, custom_attributes: { "volume" => "30" })
+      unqualified = create(:chat, organization: organization, custom_attributes: { "volume" => "10" })
+      create(:chat, organization: organization, chat_tag_ids: [ converted.id ])
+      create(:agenda_booking, calendar: calendar, chat: qualified, attendance_status: "show")
+      create(:agenda_booking, calendar: calendar, chat: unqualified, attendance_status: "show")
+
+      rows = metric_rows(
+        count_metric("Reuniões qualificadas", filters: [
+          { field: "booking_attendance", operator: "eq", value: "show" },
+          { field: "custom_attributes", operator: "gte", value: { key: "volume", value: "20" } }
+        ]),
+        count_metric("Vendas", filters_operator: "or", filters: [
+          { field: "tags", operator: "in", value: [ "convertido" ] },
+          { field: "booking_attendance", operator: "eq", value: "no_show" }
+        ])
+      )
+
+      expect(rows).to eq("Reuniões qualificadas" => 1, "Vendas" => 1)
+    end
+
+    it "condiciona por etiqueta também depois de agrupar por etiqueta, com o campo já achatado" do
+      vip = create(:chat_tag, name: "vip", organization_id: organization.id)
+      atacado = create(:chat_tag, name: "atacado", organization_id: organization.id)
+      create(:chat, organization: organization, chat_tag_ids: [ vip.id, atacado.id ])
+
+      rows = execute("conversations", dimensions: [ { field: "chat_tag_name" } ], metrics: [ count_metric("Só vip", filters: [ { field: "tags", operator: "in", value: [ "vip" ] } ]) ])[:rows]
+
+      expect(rows).to contain_exactly({ "chat_tag_name" => "vip", "Só vip" => 1 }, { "chat_tag_name" => "atacado", "Só vip" => 0 })
+    end
+
+    it "duas colunas com o mesmo filtro por etiqueta fazem uma consulta só" do
+      create(:chat_tag, name: "vip", organization_id: organization.id)
+      filters = [ { field: "tags", operator: "in", value: [ "vip" ] } ]
+      allow(ChatTag).to receive(:where).and_call_original
+
+      metric_rows(count_metric("a", filters: filters), count_metric("b", filters: filters))
+
+      expect(ChatTag).to have_received(:where).with(hash_including(organization_id: organization.id.to_s)).once
     end
 
     it "nomes repetidos de coluna ganham sufixo, em vez de se sobrescreverem" do
