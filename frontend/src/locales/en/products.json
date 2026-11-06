@@ -1,0 +1,102 @@
+{
+  "products": {
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "menu": {
+      "label": "More catalog options",
+      "categories": "Categories",
+      "categoriesCount_one": "{{count}} set up",
+      "categoriesCount_other": "{{count}} set up",
+      "fields": "Custom fields",
+      "fieldsCount_one": "{{count}} set up",
+      "fieldsCount_other": "{{count}} set up",
+      "imports": "Import history",
+      "searchTest": "Test search",
+      "refresh": "Refresh"
+    },
+    "list": {
+      "search": "Search by name, code or description",
+      "count_one": "{{formatted}} item",
+      "count_other": "{{formatted}} items",
+      "create": "Add item",
+      "import": "Import spreadsheet",
+      "edit": "Edit",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "activated": "“{{title}}” activated",
+      "deactivated": "“{{title}}” deactivated",
+      "statusFailed": "Couldn't change the item's status. Try again.",
+      "openLink": "Open item link",
+      "select": "Select",
+      "selectItem": "Select {{title}}",
+      "actionsOf": "Actions for {{title}}",
+      "delete": "Delete item",
+      "deleted": "“{{title}}” deleted",
+      "deleteTitle": "Delete “{{title}}”?",
+      "deleteHint": "The item leaves the catalog along with its photos. This can't be undone.",
+      "noSummary": "No summary",
+      "noSku": "No code",
+      "moreTags": "+{{count}}",
+      "previousPrice": "Previous price:",
+      "photos_one": "{{formatted}} photo",
+      "photos_other": "{{formatted}} photos",
+      "tableLabel": "Catalog items",
+      "columns": {
+        "item": "Item",
+        "price": "Price",
+        "sku": "Code",
+        "tags": "Tags",
+        "status": "Status",
+        "updatedAt": "Updated"
+      },
+      "filters": {
+        "category": "Category",
+        "status": "Status",
+        "manageCategories": "Manage categories",
+        "noCategories": "No categories yet."
+      },
+      "sort": {
+        "recent": "Most recent",
+        "newest": "Last added",
+        "oldest": "Oldest first",
+        "titleAsc": "Name, A to Z",
+        "titleDesc": "Name, Z to A",
+        "sku": "Code (SKU)"
+      },
+      "view": {
+        "label": "How to view items",
+        "grid": "View as grid",
+        "list": "View as list"
+      },
+      "empty": {
+        "title": "Your catalog is still empty",
+        "description": "Add the products or services you sell, one at a time or all at once with a spreadsheet."
+      },
+      "noResults": {
+        "title": "No items found",
+        "description": "Try another term or remove a filter."
+      }
+    },
+    "bulk": {
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "deleteShort": "Delete",
+      "activated_one": "{{formatted}} item activated",
+      "activated_other": "{{formatted}} items activated",
+      "deactivated_one": "{{formatted}} item deactivated",
+      "deactivated_other": "{{formatted}} items deactivated",
+      "partial_one": "{{done}} changed, but {{formatted}} item wasn't. Try again with what's still selected.",
+      "partial_other": "{{done}} changed, but {{formatted}} items weren't. Try again with what's still selected.",
+      "failed": "Couldn't finish the action. Try again.",
+      "deleteTitle_one": "Delete {{formatted}} item?",
+      "deleteTitle_other": "Delete {{formatted}} items?",
+      "deleteHint": "They leave the catalog along with their photos. This can't be undone.",
+      "delete_one": "Delete {{formatted}} item",
+      "delete_other": "Delete {{formatted}} items",
+      "deleted_one": "{{formatted}} item deleted",
+      "deleted_other": "{{formatted}} items deleted"
+    }
+  }
+}

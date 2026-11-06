@@ -1,0 +1,102 @@
+{
+  "products": {
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "menu": {
+      "label": "Mais opções do catálogo",
+      "categories": "Categorias",
+      "categoriesCount_one": "{{count}} cadastrada",
+      "categoriesCount_other": "{{count}} cadastradas",
+      "fields": "Campos personalizados",
+      "fieldsCount_one": "{{count}} cadastrado",
+      "fieldsCount_other": "{{count}} cadastrados",
+      "imports": "Histórico de importações",
+      "searchTest": "Testar busca",
+      "refresh": "Atualizar"
+    },
+    "list": {
+      "search": "Buscar por nome, código ou descrição",
+      "count_one": "{{formatted}} item",
+      "count_other": "{{formatted}} itens",
+      "create": "Cadastrar item",
+      "import": "Importar planilha",
+      "edit": "Editar",
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "activated": "“{{title}}” ativado",
+      "deactivated": "“{{title}}” desativado",
+      "statusFailed": "Não foi possível mudar a situação do item. Tente de novo.",
+      "openLink": "Abrir link do item",
+      "select": "Selecionar",
+      "selectItem": "Selecionar {{title}}",
+      "actionsOf": "Ações de {{title}}",
+      "delete": "Excluir item",
+      "deleted": "“{{title}}” excluído",
+      "deleteTitle": "Excluir “{{title}}”?",
+      "deleteHint": "O item sai do catálogo junto com as fotos. Não dá para desfazer.",
+      "noSummary": "Sem resumo",
+      "noSku": "Sem código",
+      "moreTags": "+{{count}}",
+      "previousPrice": "Preço anterior:",
+      "photos_one": "{{formatted}} foto",
+      "photos_other": "{{formatted}} fotos",
+      "tableLabel": "Itens do catálogo",
+      "columns": {
+        "item": "Item",
+        "price": "Preço",
+        "sku": "Código",
+        "tags": "Tags",
+        "status": "Situação",
+        "updatedAt": "Atualizado"
+      },
+      "filters": {
+        "category": "Categoria",
+        "status": "Situação",
+        "manageCategories": "Gerenciar categorias",
+        "noCategories": "Nenhuma categoria cadastrada ainda."
+      },
+      "sort": {
+        "recent": "Mais recentes",
+        "newest": "Últimos cadastrados",
+        "oldest": "Mais antigos",
+        "titleAsc": "Nome de A a Z",
+        "titleDesc": "Nome de Z a A",
+        "sku": "Código (SKU)"
+      },
+      "view": {
+        "label": "Forma de ver os itens",
+        "grid": "Ver em grade",
+        "list": "Ver em lista"
+      },
+      "empty": {
+        "title": "Seu catálogo ainda está vazio",
+        "description": "Cadastre os produtos ou serviços que você vende, um a um ou de uma vez com uma planilha."
+      },
+      "noResults": {
+        "title": "Nenhum item encontrado",
+        "description": "Tente outro termo ou tire um dos filtros."
+      }
+    },
+    "bulk": {
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "deleteShort": "Excluir",
+      "activated_one": "{{formatted}} item ativado",
+      "activated_other": "{{formatted}} itens ativados",
+      "deactivated_one": "{{formatted}} item desativado",
+      "deactivated_other": "{{formatted}} itens desativados",
+      "partial_one": "{{done}} alterados, mas {{formatted}} item não foi. Tente de novo com o que ficou selecionado.",
+      "partial_other": "{{done}} alterados, mas {{formatted}} itens não foram. Tente de novo com o que ficou selecionado.",
+      "failed": "Não foi possível concluir a ação. Tente de novo.",
+      "deleteTitle_one": "Excluir {{formatted}} item?",
+      "deleteTitle_other": "Excluir {{formatted}} itens?",
+      "deleteHint": "Eles saem do catálogo junto com as fotos. Não dá para desfazer.",
+      "delete_one": "Excluir {{formatted}} item",
+      "delete_other": "Excluir {{formatted}} itens",
+      "deleted_one": "{{formatted}} item excluído",
+      "deleted_other": "{{formatted}} itens excluídos"
+    }
+  }
+}

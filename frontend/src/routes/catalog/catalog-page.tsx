@@ -1,0 +1,394 @@
+import { useEffect, useMemo, useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
+import { useTranslation } from "react-i18next"
+import { Link } from "react-router"
+import { LayoutGrid, List, Plus, Upload } from "lucide-react"
+import { toast } from "sonner"
+
+import { CatalogMenu } from "@/components/products/catalog-menu"
+import { CategoryFilter } from "@/components/products/category-filter"
+import { ProductBulkActions } from "@/components/products/product-bulk-actions"
+import { ProductCard } from "@/components/products/product-card"
+import {
+  PRODUCT_GRID_CLASS,
+  ProductGridSkeleton,
+} from "@/components/products/product-grid-skeleton"
+import { ProductTable } from "@/components/products/product-table"
+import { ProductsEmpty } from "@/components/products/products-empty"
+import {
+  BulkActionsBar,
+  EmptyState,
+  ErrorState,
+  FacetedFilter,
+  FilterBar,
+  InlineError,
+  PageBody,
+  PageHeader,
+  SegmentedControl,
+  SortMenu,
+  TablePagination,
+} from "@/components/shared"
+import { Button } from "@/components/ui/button"
+import {
+  CATALOG_PER_PAGE_OPTIONS,
+  CATALOG_SORTS,
+  itemsListPath,
+  sortAsColumn,
+  sortFromColumn,
+  useCatalogFilters,
+  type CatalogSort,
+} from "@/hooks/products/use-catalog-filters"
+import { useItemActions } from "@/hooks/products/use-item-actions"
+import {
+  BULK_DESTROY_LIMIT,
+  fetchAllItemIds,
+  useProductCategories,
+  useProductFields,
+  useProductItems,
+} from "@/hooks/products/use-products"
+import { useLocalStorage } from "@/hooks/use-local-storage"
+import { formatNumber } from "@/lib/format-number"
+import { useLanguage } from "@/lib/i18n"
+import { useMotionPreset } from "@/lib/motion"
+import { findPriceKeys } from "@/lib/products/pricing"
+import type { ProductItem } from "@/lib/products/types"
+import { cn } from "@/lib/utils"
+
+type CatalogView = "grid" | "list"
+
+const VIEW_KEY = "vekoo.products.view"
+/** As colunas que a API sabe ordenar: "Criados" não tem coluna na tabela. */
+const SORTABLE_COLUMNS = new Set(["title", "externalId", "updatedAt"])
+
+export default function CatalogPage() {
+  const { t } = useTranslation()
+  const language = useLanguage()
+  const preset = useMotionPreset()
+
+  const {
+    filters,
+    search,
+    isFiltered,
+    activeCount,
+    setQuery,
+    setCategories,
+    setStatuses,
+    setSort,
+    setPage,
+    setPerPage,
+    clear,
+  } = useCatalogFilters()
+  const [view, setView] = useLocalStorage<CatalogView>(VIEW_KEY, "grid")
+
+  const listPath = itemsListPath(filters)
+  const { items, meta, error, isLoading, isValidating, mutate } = useProductItems(listPath)
+  const { categories } = useProductCategories()
+  const { fields } = useProductFields()
+  const priceKeys = useMemo(() => findPriceKeys(fields ?? []), [fields])
+
+  /* ---------- seleção ---------- */
+
+  const [selection, setSelection] = useState<Record<string, boolean>>({})
+  const selectedIds = Object.keys(selection).filter((id) => selection[id])
+  const selecting = selectedIds.length > 0
+
+  // Mudou o que se está procurando: o que estava marcado pode nem estar mais à vista, e uma
+  // ação em lote não pode alcançar o que a pessoa já não enxerga.
+  const scope = JSON.stringify([filters.q, filters.categories, filters.statuses])
+  const [lastScope, setLastScope] = useState(scope)
+  if (scope !== lastScope) {
+    setLastScope(scope)
+    setSelection({})
+  }
+
+  function toggleSelected(item: Pick<ProductItem, "id">) {
+    setSelection((current) => {
+      const next = { ...current }
+      if (next[item.id]) delete next[item.id]
+      else next[item.id] = true
+      return next
+    })
+  }
+
+  async function selectAllResults() {
+    try {
+      const ids = await fetchAllItemIds(listPath)
+      setSelection(Object.fromEntries(ids.map((id) => [id, true])))
+    } catch {
+      toast.error(t("products.bulk.failed"))
+    }
+  }
+
+  const linkState = useMemo(() => ({ from: search ? `?${search}` : "" }), [search])
+  const { actionsFor } = useItemActions({
+    from: linkState.from,
+    onSelect: toggleSelected,
+  })
+
+  /* ---------- paginação ---------- */
+
+  // A última página pode esvaziar: excluiu tudo o que havia nela, ou o link era antigo.
+  const emptiedPage = items?.length === 0 && filters.page > 1
+  const lastPage = Math.max(1, meta?.totalPages ?? 1)
+  useEffect(() => {
+    if (emptiedPage) setPage(lastPage)
+  }, [emptiedPage, lastPage, setPage])
+
+  /* ---------- opções ---------- */
+
+  const statusOptions = useMemo(
+    () => [
+      { value: "active", label: t("products.status.active") },
+      { value: "inactive", label: t("products.status.inactive") },
+    ],
+    [t]
+  )
+  const sortOptions = useMemo(
+    () => CATALOG_SORTS.map((value) => ({ value, label: t(`products.list.sort.${value}`) })),
+    [t]
+  )
+  const columnSort = sortAsColumn(filters.sort)
+  const total = meta?.total ?? 0
+  const canSelectAll = total <= BULK_DESTROY_LIMIT
+
+  /* ---------- importação (próxima etapa) ---------- */
+
+  const openImport = () => toast(t("products.list.import"))
+  const openHistory = () => toast(t("products.menu.imports"))
+  const openSearchTest = () => toast(t("products.menu.searchTest"))
+
+  /* ---------- tela ---------- */
+
+  const menu = (mobile: boolean) => (
+    <CatalogMenu
+      categoriesCount={categories?.length}
+      fieldsCount={fields?.length}
+      onImport={mobile ? openImport : undefined}
+      onHistory={openHistory}
+      onSearchTest={openSearchTest}
+      onRefresh={() => void mutate()}
+    />
+  )
+
+  const header = (
+    <PageHeader
+      actions={
+        <>
+          <Button variant="outline" onClick={openImport}>
+            <Upload />
+            {t("products.list.import")}
+          </Button>
+          <Button nativeButton={false} render={<Link to="/catalog/new" state={linkState} />}>
+            <Plus />
+            {t("products.list.create")}
+          </Button>
+          {menu(false)}
+        </>
+      }
+      mobileActions={
+        <>
+          <Button
+            nativeButton={false}
+            size="icon"
+            className="size-10"
+            aria-label={t("products.list.create")}
+            render={<Link to="/catalog/new" state={linkState} />}
+          >
+            <Plus className="size-5" />
+          </Button>
+          {menu(true)}
+        </>
+      }
+      mobilePlacement="inline"
+    />
+  )
+
+  if (error && !items) {
+    return (
+      <PageBody variant="wide">
+        {header}
+        <ErrorState error={error} onRetry={() => void mutate()} />
+      </PageBody>
+    )
+  }
+
+  // Catálogo vazio de verdade: filtros e ordem não têm sobre o que agir.
+  const nothingYet = items?.length === 0 && !isFiltered && filters.page === 1
+  const count = formatNumber(total, language)
+
+  return (
+    <PageBody variant="wide">
+      {header}
+
+      {nothingYet ? (
+        <ProductsEmpty onImport={openImport} />
+      ) : (
+        <>
+          <FilterBar
+            search={{
+              value: filters.q,
+              onChange: setQuery,
+              placeholder: t("products.list.search"),
+              loading: isValidating && Boolean(filters.q),
+              className: "md:w-80",
+            }}
+            activeCount={activeCount}
+            onClear={clear}
+            resultLabel={
+              items ? t("products.list.count", { count: total, formatted: count }) : undefined
+            }
+            filters={
+              <>
+                <CategoryFilter
+                  categories={categories ?? []}
+                  value={filters.categories}
+                  onChange={setCategories}
+                />
+                {/* Na folha do celular vem antes: é curto, e a árvore empurraria para fora. */}
+                <FacetedFilter
+                  title={t("products.list.filters.status")}
+                  options={statusOptions}
+                  value={filters.statuses}
+                  onChange={setStatuses}
+                  className="max-md:order-first"
+                />
+              </>
+            }
+            sort={
+              <SortMenu<CatalogSort>
+                options={sortOptions}
+                value={filters.sort}
+                onChange={setSort}
+              />
+            }
+            actions={
+              <SegmentedControl<CatalogView>
+                aria-label={t("products.list.view.label")}
+                value={view}
+                onChange={setView}
+                options={[
+                  {
+                    value: "grid",
+                    label: <LayoutGrid />,
+                    "aria-label": t("products.list.view.grid"),
+                  },
+                  {
+                    value: "list",
+                    label: <List />,
+                    "aria-label": t("products.list.view.list"),
+                  },
+                ]}
+              />
+            }
+          />
+
+          {error ? (
+            <div className="rounded-lg border border-dashed">
+              <InlineError onRetry={() => void mutate()} />
+            </div>
+          ) : null}
+
+          {view === "list" ? (
+            <ProductTable
+              data={items ?? []}
+              meta={meta}
+              priceKeys={priceKeys}
+              isLoading={isLoading && !items}
+              isFetching={isValidating}
+              error={error}
+              onRetry={() => void mutate()}
+              isFiltered={isFiltered}
+              onClearFilters={clear}
+              onPageChange={setPage}
+              onPerPageChange={setPerPage}
+              perPageOptions={CATALOG_PER_PAGE_OPTIONS}
+              sorting={SORTABLE_COLUMNS.has(columnSort.id) ? [columnSort] : []}
+              onSortingChange={(next) => {
+                const sort = next[0] ? sortFromColumn(next[0].id, next[0].desc) : null
+                setSort(sort ?? "recent")
+              }}
+              selectable
+              rowSelection={selection}
+              onRowSelectionChange={setSelection}
+              selectAllMatching={canSelectAll}
+              bulkActions={({ ids, allMatching, clear: clearSelection }) => (
+                <ProductBulkActions
+                  ids={ids}
+                  allMatching={allMatching}
+                  count={allMatching ? total : ids.length}
+                  listPath={listPath}
+                  onDone={clearSelection}
+                />
+              )}
+              rowActions={actionsFor}
+              onRowClick={(item) => actionsFor(item)[0]?.onSelect()}
+            />
+          ) : isLoading && !items ? (
+            <ProductGridSkeleton />
+          ) : items?.length === 0 ? (
+            <EmptyState
+              title={t("products.list.noResults.title")}
+              description={t("products.list.noResults.description")}
+              action={{ label: t("kit.filters.clear"), onClick: clear }}
+            />
+          ) : (
+            <>
+              <ul
+                className={cn(
+                  PRODUCT_GRID_CLASS,
+                  isValidating && "opacity-60 transition-opacity"
+                )}
+              >
+                <AnimatePresence initial={false} mode="popLayout">
+                  {(items ?? []).map((item) => (
+                    <motion.li
+                      key={item.id}
+                      layout={!preset.reduced}
+                      {...preset.listItem}
+                      className="min-w-0"
+                    >
+                      <ProductCard
+                        item={item}
+                        priceKeys={priceKeys}
+                        actions={actionsFor(item)}
+                        selected={Boolean(selection[item.id])}
+                        selecting={selecting}
+                        onToggleSelect={toggleSelected}
+                        linkState={linkState}
+                      />
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
+              </ul>
+              {meta ? (
+                <TablePagination
+                  page={meta.page}
+                  totalPages={meta.totalPages}
+                  total={meta.total}
+                  perPage={meta.perPage}
+                  perPageOptions={CATALOG_PER_PAGE_OPTIONS}
+                  onPageChange={setPage}
+                  onPerPageChange={setPerPage}
+                />
+              ) : null}
+              <BulkActionsBar
+                count={selectedIds.length}
+                onClear={() => setSelection({})}
+                selectAll={
+                  canSelectAll ? { total, onSelect: () => void selectAllResults() } : undefined
+                }
+              >
+                <ProductBulkActions
+                  ids={selectedIds}
+                  count={selectedIds.length}
+                  listPath={listPath}
+                  onDone={() => setSelection({})}
+                />
+              </BulkActionsBar>
+            </>
+          )}
+        </>
+      )}
+    </PageBody>
+  )
+}
