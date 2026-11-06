@@ -47,11 +47,16 @@ export function safeNext(raw: string | null): string | null {
  * biblioteca, como acontecia.
  */
 export function RedirectIfAuthenticated() {
-  const { session, ready } = useAuth()
+  const { session, ready, signingOut } = useAuth()
   const [searchParams] = useSearchParams()
 
   if (!ready) return <AuthSplash />
-  if (session) return <Navigate to={safeNext(searchParams.get("next")) ?? "/"} replace />
+  // Saindo, a tela já veio para o login, mas a sessão só cai quando as chamadas de saída
+  // terminam. Mandar de volta aqui remontaria a casca, que revincularia o push à conta
+  // que está saindo.
+  if (session && !signingOut) {
+    return <Navigate to={safeNext(searchParams.get("next")) ?? "/"} replace />
+  }
   return <Outlet />
 }
 

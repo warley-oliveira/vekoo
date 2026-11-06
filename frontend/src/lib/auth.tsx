@@ -206,6 +206,11 @@ type AuthContextValue = {
    */
   bootError: boolean
   retryBoot: () => void
+  /**
+   * A saída começou: a tela já foi para o login, mas o token ainda vale até as chamadas
+   * de saída terminarem. Quem decide por "tem sessão?" ignora esta sessão nesse meio-tempo.
+   */
+  signingOut: boolean
   signIn: (email: string, password: string) => Promise<Session>
   signUp: (input: SignUpInput) => Promise<Session>
   signOut: () => Promise<void>
@@ -221,6 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [bootError, setBootError] = useState(false)
   const [bootAttempt, setBootAttempt] = useState(0)
+  const [signingOut, setSigningOut] = useState(false)
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
 
@@ -352,6 +358,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const signOut = useCallback(async () => {
+    setSigningOut(true)
     // Melhor esforço: o token já vai ser jogado fora de qualquer jeito, e
     // travar a saída porque a rede caiu seria pior do que uma sessão órfã que
     // vence em 30 dias.
@@ -368,6 +375,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       /* segue */
     }
     dropSession()
+    setSigningOut(false)
   }, [dropSession])
 
   const requestPasswordReset = useCallback(async (email: string) => {
@@ -391,6 +399,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       bootError,
       retryBoot,
+      signingOut,
       signIn,
       signUp,
       signOut,
@@ -402,6 +411,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       bootError,
       retryBoot,
+      signingOut,
       signIn,
       signUp,
       signOut,
