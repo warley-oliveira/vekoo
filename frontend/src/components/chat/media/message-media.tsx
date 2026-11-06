@@ -31,7 +31,7 @@ function boxOf(message: ChatMessage): { width: number; aspectRatio: string } {
   }
 }
 
-export function openViewer(threadKey: string, messageId: string) {
+function openViewer(threadKey: string, messageId: string) {
   useThreadUi.setState({ viewer: { threadKey, messageId } })
 }
 

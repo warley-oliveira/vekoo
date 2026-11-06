@@ -17,6 +17,7 @@ import { Virtuoso, type Components, type VirtuosoHandle } from "react-virtuoso"
 
 import { ErrorState, InlineError } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useDayLabel } from "@/hooks/chat/use-day-label"
 import { useMotionPreset } from "@/lib/motion"
 import { useThreadUi } from "@/lib/chat/stores"
 import { getThreadMessages, loadOlder, useThreadStore } from "@/lib/chat/thread-store"
@@ -31,7 +32,6 @@ import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { MessageRow } from "./message-row"
 import { MessagesSkeleton } from "./thread-skeleton"
-import { useDayLabel } from "./message-parts"
 
 /**
  * O Virtuoso exige que o índice do primeiro item diminua quando itens entram no topo: é o que mantém

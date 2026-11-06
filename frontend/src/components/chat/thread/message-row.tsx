@@ -6,6 +6,7 @@ import { AlertTriangle, ArrowRightLeft, Bot, RefreshCw, TriangleAlert, UserPlus 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useRowEngaged } from "@/hooks/chat/use-row-engaged"
 import { useLongPress } from "@/hooks/use-long-press"
 import { useMotionPreset } from "@/lib/motion"
 import { bubbleText, meaningfulContent, messageKind } from "@/lib/chat/message-rules"
@@ -16,7 +17,7 @@ import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
 import { FileCard } from "../media/file-card"
 import { MediaGrid, MessageMedia, StickerImage } from "../media/message-media"
-import { ActionsSentinel, MessageActions, useRowEngaged } from "./message-actions"
+import { ActionsSentinel, MessageActions } from "./message-actions"
 import {
   DaySeparator,
   DeletedText,

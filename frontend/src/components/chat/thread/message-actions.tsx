@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useCallback, useState } from "react"
+import { lazy, memo, Suspense, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { CheckSquare, Copy, MoreHorizontal, Plus, Reply, SmilePlus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -164,18 +164,6 @@ function MoreMenu({
   )
 }
 
-/**
- * As ações de uma mensagem. Aparecem ao passar o mouse ou ao focar; no toque, ao segurar a bolha,
- * que é quando `visible` vem ligado. Só são montadas quando a linha é usada (`useRowEngaged`): cada
- * bolha na tela teria um menu e um popover, e rolar uma conversa longa montaria dezenas por segundo
- * sem ninguém abrir nenhum.
- */
-export function useRowEngaged() {
-  const [engaged, setEngaged] = useState(false)
-  const engage = useCallback(() => setEngaged(true), [])
-  return { engaged, engage }
-}
-
 /** Sem isto, quem navega por teclado não alcançaria as ações, que ainda nem existem. */
 export function ActionsSentinel({ onFocus }: { onFocus: () => void }) {
   const { t } = useTranslation()
@@ -189,6 +177,10 @@ export function ActionsSentinel({ onFocus }: { onFocus: () => void }) {
   )
 }
 
+/**
+ * As ações de uma mensagem. Aparecem ao passar o mouse ou ao focar; no toque, ao segurar a bolha,
+ * que é quando `visible` vem ligado. Só são montadas quando a linha é usada (`useRowEngaged`).
+ */
 export const MessageActions = memo(function MessageActions({
   message,
   own,

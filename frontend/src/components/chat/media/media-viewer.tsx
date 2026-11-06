@@ -69,15 +69,6 @@ function ViewerContent({
     setCurrentId(items[next].id)
   }
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") go(1)
-      if (event.key === "ArrowLeft") go(-1)
-    }
-    window.addEventListener("keydown", onKeyDown)
-    return () => window.removeEventListener("keydown", onKeyDown)
-  })
-
   // Sumiu (foi apagada enquanto estava aberta): nada a mostrar.
   useEffect(() => {
     if (!current) onClose()
@@ -105,6 +96,10 @@ function ViewerContent({
     <DialogPrimitive.Popup
       aria-label={t("chat.media.viewer")}
       className="fixed inset-0 z-50 flex flex-col bg-foreground pt-safe pb-safe outline-none"
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") go(1)
+        if (event.key === "ArrowLeft") go(-1)
+      }}
     >
       <DialogPrimitive.Title className="sr-only">{t("chat.media.viewer")}</DialogPrimitive.Title>
 

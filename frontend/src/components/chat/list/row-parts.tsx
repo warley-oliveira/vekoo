@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 const DAY_MS = 24 * 60 * 60 * 1000
 
 /** "14:32" hoje, "ontem", o dia da semana até uma semana atrás, e depois a data. */
-export function useListTime(at: number | null | undefined): string {
+function useListTime(at: number | null | undefined): string {
   const { t } = useTranslation()
   const language = useLanguage()
   if (!at) return ""
