@@ -118,6 +118,81 @@
     padding-right: env(safe-area-inset-right, 0px);
 }
 
+/*
+ * Tons de status (StatusBadge, Timeline, variação de StatTile). Sóbrios de
+ * propósito: o violeta segue sendo a única cor saturada da interface. Cada texto
+ * passa de 4,5:1 sobre o próprio fundo suave e sobre o branco.
+ */
+@theme inline {
+    --color-status-neutral: var(--status-neutral);
+    --color-status-neutral-soft: var(--status-neutral-soft);
+    --color-status-success: var(--status-success);
+    --color-status-success-soft: var(--status-success-soft);
+    --color-status-warning: var(--status-warning);
+    --color-status-warning-soft: var(--status-warning-soft);
+    --color-status-danger: var(--status-danger);
+    --color-status-danger-soft: var(--status-danger-soft);
+    --color-status-info: var(--status-info);
+    --color-status-info-soft: var(--status-info-soft);
+    --color-status-accent: var(--status-accent);
+    --color-status-accent-soft: var(--status-accent-soft);
+}
+
+:root {
+    --status-neutral: oklch(0.44 0.008 285);
+    --status-neutral-soft: oklch(0.955 0.002 285);
+    --status-success: oklch(0.44 0.09 160);
+    --status-success-soft: oklch(0.955 0.022 160);
+    --status-warning: oklch(0.47 0.095 70);
+    --status-warning-soft: oklch(0.96 0.035 85);
+    --status-danger: oklch(0.48 0.15 27);
+    --status-danger-soft: oklch(0.955 0.02 25);
+    --status-info: oklch(0.45 0.09 245);
+    --status-info-soft: oklch(0.955 0.016 245);
+    --status-accent: var(--accent-foreground);
+    --status-accent-soft: var(--accent);
+}
+
+/*
+ * Alvo de toque de 40 px sem mexer nas primitivas nem no desenho do desktop. Só
+ * vale com dedo: botões ganham uma área invisível além da própria borda (o layout
+ * denso continua igual) e campos e itens de menu crescem de verdade. Fica em
+ * `base`, então qualquer utilitário de altura de um componente ainda vence.
+ */
+@layer base {
+  @media (pointer: coarse) {
+    :where([data-slot="button"]) {
+      position: relative;
+    }
+    :where([data-slot="button"])::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      transform: translate(-50%, -50%);
+    }
+    :where(
+      [data-slot="input"],
+      [data-slot="input-group"],
+      [data-slot="input-group-control"],
+      [data-slot="select-trigger"],
+      [data-slot="select-item"],
+      [data-slot="combobox-item"],
+      [data-slot="command-item"],
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"]
+    ) {
+      min-height: 2.5rem;
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
