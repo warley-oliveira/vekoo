@@ -132,13 +132,14 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |
 | 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ✅ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | ✅ |
-| 18 | **fe-automation**: fluxos, editor, playground, ferramentas, webhooks + logs | `pages/flows`, `components/{flow-builder,tools,webhooks,webhook-logs,code-editor}`, `pages/settings/webhooks` | ⬜ |
+| 18 | **fe-flows**: lista de fluxos, editor, teste no editor, execuções, modelos, editor de código | `pages/flows/{FlowsListPage,FlowEditorPage}`, `components/{flow-builder,code-editor}` | 🔄 |
+| 28 | **fe-tools-webhooks**: ferramentas, catálogo, webhooks e logs | `pages/flows/WorkspaceToolsPage`, `components/{tools,webhooks,webhook-logs}`, `pages/settings/webhooks` | ⬜ |
 
 ## Fase 4 — Front-end, parte 2 (8 frentes)
 
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
-| 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | 🔄 |
+| 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | ✅ |
 | 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | ⬜ |
 | 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar, filtros e filtros salvos | `components/kanban-v2/{board,column,card,filter}`, `pages/apps/kanban-v2` | 🔄 |
 | 22 | **fe-pipelines-admin**: gatilhos, metas, campos, etiquetas, ajustes do quadro, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals}`, `use-kanban-*` | 🔄 |

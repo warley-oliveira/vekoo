@@ -285,7 +285,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
-- `fe-automation`: montar a partir de `docs/migration/api/automation.md`, inclusive os eventos `attachment_missing` e `pipeline_skipped`, e `flow_debounce_seconds` em `/automation-settings`.
+- `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)
