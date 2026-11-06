@@ -10,13 +10,14 @@ import {
 } from "react"
 import { useTranslation } from "react-i18next"
 import { Paperclip } from "lucide-react"
+import { useSWRConfig } from "swr"
 
 import { QuickReplyPreview } from "@/components/content/quick-reply-preview"
 import { InlineError } from "@/components/shared"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Kbd } from "@/components/ui/kbd"
-import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
-import { useQuickReplies } from "@/hooks/content/use-quick-replies"
+import { ATTACHMENT_LIBRARY_KEY, useAttachmentLibrary } from "@/hooks/content/use-attachments"
+import { QUICK_REPLIES_KEY, useQuickReplies } from "@/hooks/content/use-quick-replies"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { meaningfulContent } from "@/lib/chat/message-rules"
 import {
@@ -74,6 +75,13 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
   const { t } = useTranslation()
   const isTouch = useIsTouch()
   const { quickReplies = NO_REPLIES, isLoading, error, reload } = useQuickReplies()
+
+  // Abriu: mostra o que já tem, e confere por trás se alguém mudou alguma coisa.
+  const { mutate } = useSWRConfig()
+  useEffect(() => {
+    void mutate(QUICK_REPLIES_KEY)
+    void mutate(ATTACHMENT_LIBRARY_KEY)
+  }, [mutate])
 
   const items = useMemo(
     () =>

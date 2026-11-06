@@ -13,6 +13,7 @@ import {
   type Ref,
 } from "react"
 import { Link } from "react-router"
+import { SWRConfig } from "swr"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
@@ -32,6 +33,7 @@ import { Callout, ResponsivePopover } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { REFERENCE_DATA } from "@/hooks/chat/use-chat-refs"
 import { useChatRecorder } from "@/hooks/chat/use-chat-recorder"
 import { useSendMessage } from "@/hooks/chat/use-send-message"
 import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
@@ -276,14 +278,18 @@ export const Composer = memo(function Composer({
   if (!chat) return null
   if (mode !== "compose") return <ComposerNotice chat={chat} mode={mode} />
 
+  // A caixa nasce de novo a cada conversa aberta: sem isto, cada troca de conversa buscaria outra vez
+  // mensagens rápidas e anexos. Quem as atualiza é o menu, quando abre.
   return (
-    <ComposerBox
-      chatId={chatId}
-      chat={chat}
-      contactName={contactName}
-      onSent={onSent}
-      ref={ref}
-    />
+    <SWRConfig value={REFERENCE_DATA}>
+      <ComposerBox
+        chatId={chatId}
+        chat={chat}
+        contactName={contactName}
+        onSent={onSent}
+        ref={ref}
+      />
+    </SWRConfig>
   )
 })
 

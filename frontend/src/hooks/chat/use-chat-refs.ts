@@ -18,7 +18,7 @@ import type {
 // revalidar ao focar a janela: é o que permite um `useChatConnectors()` em cada linha da lista sem
 // custar uma requisição a mais. Mensagens rápidas e anexos vêm de `@/hooks/content`.
 
-const REFERENCE_DATA: SWRConfiguration = {
+export const REFERENCE_DATA: SWRConfiguration = {
   revalidateOnFocus: false,
   revalidateOnReconnect: false,
   revalidateIfStale: false,
