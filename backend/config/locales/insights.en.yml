@@ -1,0 +1,20 @@
+# Copy for the "insights" domain in English. Same keys as insights.pt-BR.yml.
+en:
+  activerecord:
+    attributes:
+      funnel:
+        name: "Name"
+        description: "Description"
+      funnel_stage:
+        name: "Stage name"
+  insights:
+    errors:
+      query_timeout: "This query took too long. Choose a shorter period or fewer columns."
+    funnels:
+      no_stage: "No stage"
+      errors:
+        too_many_funnels: "This organization already has the maximum of %{count} funnels."
+        stages_required: "A funnel needs at least one stage."
+        too_many_stages: "A funnel can have up to %{count} stages."
+        duplicate_stage_name: "Two stages have the same name."
+        invalid_stage: "This stage is not part of this funnel."

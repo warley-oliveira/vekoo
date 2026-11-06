@@ -1,0 +1,20 @@
+# Textos do domínio "insights" em português. As mesmas chaves em insights.en.yml.
+pt-BR:
+  activerecord:
+    attributes:
+      funnel:
+        name: "Nome"
+        description: "Descrição"
+      funnel_stage:
+        name: "Nome da etapa"
+  insights:
+    errors:
+      query_timeout: "Esta consulta demorou demais. Escolha um período menor ou menos colunas."
+    funnels:
+      no_stage: "Sem etapa"
+      errors:
+        too_many_funnels: "Esta organização já tem o máximo de %{count} funis."
+        stages_required: "Um funil precisa de pelo menos uma etapa."
+        too_many_stages: "Um funil pode ter até %{count} etapas."
+        duplicate_stage_name: "Duas etapas estão com o mesmo nome."
+        invalid_stage: "Esta etapa não é deste funil."
