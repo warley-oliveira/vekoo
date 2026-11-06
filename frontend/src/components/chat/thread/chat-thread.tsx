@@ -278,7 +278,7 @@ const AllChannelsTimeline = memo(function AllChannelsTimeline({
     setOpenThread(threadKey)
     const thread = useThreadStore.getState().threads[threadKey]
     if (!thread || thread.status === "error") void loadThread(threadKey)
-    else void resyncThread(threadKey)
+    else if (thread.status === "ready") void resyncThread(threadKey)
     return () => setOpenThread(null)
   }, [threadKey])
 
