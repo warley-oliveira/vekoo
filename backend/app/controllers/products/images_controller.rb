@@ -5,11 +5,14 @@ module Products
 
     # POST /products/items/:item_id/images
     # Multipart: o formato e o tamanho quem confere é o modelo, pelo conteúdo do arquivo.
+    # JSON com `{ image: { sourceUrl } }`: a foto que já está na internet.
     def create
+      return create_from_url if params[:file].blank? && params[:image].present?
+
       file = params.require(:file)
       return render_missing_file unless file.respond_to?(:tempfile)
 
-      image = @item.images.new(position: @item.images.maximum(:position).to_i + 1)
+      image = @item.images.new(position: next_position)
       image.file.attach(
         io: file.tempfile,
         filename: Image.filename_for(@item.id, file.content_type),
@@ -37,6 +40,24 @@ module Products
     end
 
     private
+
+    # A mesma regra da importação: guarda o endereço na hora e copia para o nosso storage em
+    # segundo plano. A cópia pode falhar à vontade (link quebrado, formato estranho): a
+    # imagem só continua externa. É o job que passa pelas travas de `RemoteImage` (SSRF).
+    def create_from_url
+      image = @item.images.new(envelope(:image).permit(:source_url, :alt).merge(position: next_position))
+
+      if image.save
+        MirrorImageJob.perform_later(image.id)
+        render json: ImageSerializer.one(image), status: :created
+      else
+        render_invalid(image)
+      end
+    end
+
+    def next_position
+      @item.images.maximum(:position).to_i + 1
+    end
 
     def set_item
       @item = current_organization.product_items.find(params[:item_id])

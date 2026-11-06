@@ -9,6 +9,53 @@ RSpec.describe "Products: imagens", type: :request do
   def png = fixture_file_upload("foto.png", "image/png")
 
   describe "POST /products/items/:item_id/images" do
+    context "com uma URL, sem arquivo" do
+      let(:photo) { "https://loja.exemplo.com.br/fotos/vestido.jpg" }
+
+      it "guarda como externa, depois das que já existem, e agenda a cópia" do
+        create(:product_image, item: item, position: 5)
+
+        expect {
+          post "/products/items/#{item.id}/images",
+            params: { image: { sourceUrl: photo, alt: "Vestido" } }, headers: headers, as: :json
+        }.to change(Products::Image, :count).by(1)
+          .and have_enqueued_job(Products::MirrorImageJob)
+
+        expect(response).to have_http_status(:created)
+        expect(json).to include(
+          "hosted" => false, "url" => photo, "thumbUrl" => photo, "alt" => "Vestido", "position" => 6
+        )
+      end
+
+      it "recusa o que não é http(s), apontando o campo" do
+        expect {
+          post "/products/items/#{item.id}/images",
+            params: { image: { sourceUrl: "javascript:alert(1)" } }, headers: headers, as: :json
+        }.not_to have_enqueued_job(Products::MirrorImageJob)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json["error"]).to include("code" => "unprocessable", "field" => "sourceUrl")
+        expect(json.dig("error", "details", "sourceUrl")).to be_present
+      end
+
+      it "recusa o endereço em branco" do
+        post "/products/items/#{item.id}/images",
+          params: { image: { sourceUrl: "  ", alt: "Sem foto" } }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json.dig("error", "field")).to eq("sourceUrl")
+      end
+
+      it "não aceita item de outra organização" do
+        other = create(:product_item, organization: create(:organization))
+
+        post "/products/items/#{other.id}/images",
+          params: { image: { sourceUrl: photo } }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
     it "hospeda a imagem e devolve o que a tela precisa" do
       expect {
         post "/products/items/#{item.id}/images", params: { file: png }, headers: headers

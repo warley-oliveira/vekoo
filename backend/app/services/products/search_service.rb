@@ -105,12 +105,19 @@ module Products
     # como sub-select `filtered` da fusão — assim é impossível os dois divergirem.
     def scoped
       @scoped ||= begin
-        relation = Item.for_organization(organization_id)
-        relation = relation.where(active: true) unless filters[:include_inactive]
+        relation = apply_status(Item.for_organization(organization_id))
         relation = apply_tags(relation)
         relation = apply_categories(relation)
         apply_custom_fields(relation)
       end
+    end
+
+    # `active` escolhe a situação; sem ele, vale o padrão de só mostrar os ativos, a menos
+    # que `include_inactive` peça todos. É o filtro "Situação" da grade de gestão.
+    def apply_status(relation)
+      return relation.where(active: filters[:active]) unless filters[:active].nil?
+
+      filters[:include_inactive] ? relation : relation.where(active: true)
     end
 
     def apply_tags(relation)

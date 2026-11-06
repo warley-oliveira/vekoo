@@ -226,6 +226,8 @@ RSpec.describe Products::SearchService do
 
       expect(search("cadeira").items).to be_empty
       expect(search("cadeira", filters: { include_inactive: true }).items).to eq([ chair ])
+      expect(search("cadeira", filters: { active: false }).items).to eq([ chair ])
+      expect(search("cadeira", filters: { active: true }).items).to eq([])
     end
 
     it "não carrega as colunas pesadas de índice" do

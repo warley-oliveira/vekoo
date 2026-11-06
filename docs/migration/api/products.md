@@ -29,6 +29,7 @@ A grade da tela: filtra, ordena e pagina. Não usa embeddings, então não tem c
 | `custom[<chave>]` | Igualdade em campo personalizado. O valor é convertido para o tipo do campo. |
 | `custom[<chave>][min]`, `[max]` | Faixa numérica. Valores que não são número ficam de fora. |
 | `includeInactive` | `true` traz também os inativos. **Padrão: só ativos.** |
+| `active` | `true` ou `false`: só essa situação, e vale mais que `includeInactive`. É o filtro "Situação" da grade. |
 | `sortBy` | `title`, `createdAt`, `updatedAt` (padrão), `externalId`, também em snake_case. Fora disso, cai no padrão. |
 | `sortOrder` | `asc`, `desc` (padrão). |
 | `page`, `perPage` | Padrão 24 por página, máximo 100. |
@@ -168,6 +169,16 @@ Multipart, campo `file`. JPEG, PNG, WebP ou GIF, até 10 MB. O tipo é conferido
   "createdAt": 1793979954518
 }
 ```
+
+### `POST /products/items/:itemId/images`, com uma URL
+
+Para a foto que já está na internet: JSON, sem `file`.
+
+```json
+{ "image": { "sourceUrl": "https://loja.exemplo.com.br/fotos/vestido.jpg", "alt": "Vestido" } }
+```
+
+Responde `201` com a imagem, ainda `hosted: false`, e agenda a cópia para o nosso storage (`Products::MirrorImageJob`, fila `low`), a mesma da importação. A cópia pode falhar sem erro: a imagem só continua externa. `422` em `sourceUrl`: em branco ou sem http(s).
 
 ### `PATCH /products/images/:id`
 

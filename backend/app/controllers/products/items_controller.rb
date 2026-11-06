@@ -93,7 +93,8 @@ module Products
         tags: params[:tags],
         categories: params[:categories],
         custom: custom_filter,
-        include_inactive: ActiveModel::Type::Boolean.new.cast(params[:include_inactive])
+        include_inactive: ActiveModel::Type::Boolean.new.cast(params[:include_inactive]),
+        active: ActiveModel::Type::Boolean.new.cast(params[:active])
       }
     end
 

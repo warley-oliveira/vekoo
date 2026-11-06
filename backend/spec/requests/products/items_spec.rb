@@ -210,6 +210,21 @@ RSpec.describe "Products: itens", type: :request do
         get "/products/items", params: { includeInactive: "true" }, headers: headers
         expect(json["items"].first).to include("title" => "Inativo", "active" => false)
       end
+
+      it "active escolhe a situação, com ou sem includeInactive" do
+        create(:product_item, organization: organization, title: "Inativo", active: false)
+        create(:product_item, organization: organization, title: "Ativo", active: true)
+
+        titles = ->(params) {
+          get "/products/items", params: params, headers: headers
+          json["items"].map { |item| item["title"] }
+        }
+
+        expect(titles.call(active: "false")).to contain_exactly("Inativo")
+        expect(titles.call(active: "false", includeInactive: "true")).to contain_exactly("Inativo")
+        expect(titles.call(active: "true", includeInactive: "true")).to contain_exactly("Ativo")
+        expect(titles.call(active: "")).to contain_exactly("Ativo")
+      end
     end
   end
 
