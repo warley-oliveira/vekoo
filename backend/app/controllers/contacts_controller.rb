@@ -14,8 +14,8 @@ class ContactsController < PlatformController
 
   require_permission :contacts, except: :download_export
 
-  # GET /contacts?q=&tagIds[]=&connectorIds[]=&assignedUser=&status=&automationEnabled=&hasSession=
-  #               &dateFrom=&dateTo=&sortBy=&sortDir=&page=&perPage=
+  # GET /contacts?q=&tagIds[]=&connectorIds[]=&teamIds[]=&assignedUser[]=&status=&automationEnabled=
+  #               &hasSession=&dateFrom=&dateTo=&conditions[]=&sortBy=&sortDir=&page=&perPage=
   def index
     records, meta = paginate(
       Contacts::Query.new(account: current_account, filters: params, time_zone: organization_time_zone)
@@ -37,7 +37,7 @@ class ContactsController < PlatformController
         Connector::Base.where(organization_id: current_organization.id.to_s, :_type.in => ChatsController::CHAT_CONNECTOR_TYPES).order_by(created_at: :asc)
       ),
       tags: ChatTagSerializer.many(ChatTag.where(organization_id: current_organization.id.to_s).order_by(name: :asc)),
-      users: current_organization.accounts.active.order(:name, :id).pluck(:id, :name).map { |id, name| { id: id, name: name } },
+      users: filter_users,
       teams: current_organization.teams.order(:name, :id).pluck(:id, :name).map { |id, name| { id: id, name: name } }
     }
   end
@@ -123,6 +123,16 @@ class ContactsController < PlatformController
   end
 
   private
+
+  # Todos entram no filtro, porque quem virou `setupOnly` pode continuar com conversas. Mas só quem
+  # recebe atendimento pode ser escolhido em `bulk-assign-user`, que recusaria os outros.
+  def filter_users
+    assignable = Chats::Assignment.assignable_accounts(current_organization).pluck(:id).to_set
+
+    current_organization.accounts.active.order(:name, :id).pluck(:id, :name).map do |id, name|
+      { id: id, name: name, assignable: assignable.include?(id) }
+    end
+  end
 
   def sort_column
     SORTABLE.include?(params[:sort_by].to_s) ? params[:sort_by].to_s : "last_message_at"

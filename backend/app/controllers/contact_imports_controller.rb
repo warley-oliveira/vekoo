@@ -25,13 +25,15 @@ class ContactImportsController < PlatformController
 
   # POST /contact-imports
   # { connectorId, contacts: [{ externalId, userName, assignedUserName?, departmentName? }],
-  #   includeCountryCode?, batchIndex?, totalBatches? }
+  #   includeCountryCode?, batchIndex?, totalBatches?, fileName? }
   def create
     contacts = contacts_param
     return render_error(status: :unprocessable_content, code: "noContactsProvided", field: "contacts") if contacts.empty?
     return render_error(status: :unprocessable_content, code: "tooManyContacts", field: "contacts") if contacts.size > BATCH_SIZE
 
-    result = creator(contacts, batch_index: params[:batch_index], total_batches: params[:total_batches])
+    # O nome do arquivo vem da tela, que leu a planilha: é por ele que a pessoa reconhece a
+    # importação no histórico.
+    result = creator(contacts, batch_index: params[:batch_index], total_batches: params[:total_batches], file_name: params[:file_name].to_s.first(255).presence)
     return render_no_valid_contacts if result.contact_import.nil?
 
     ProcessContactImportJob.perform_later([ result.contact_import.id ], current_organization.id)

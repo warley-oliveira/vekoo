@@ -1779,11 +1779,13 @@ Contato aqui é a conversa, então vale a mesma visibilidade de `chat_list_to`.
 |---|---|
 | `q` | Nome ou telefone. |
 | `tagIds[]`, `connectorIds[]` | Etiquetas e canais. |
-| `assignedUser` | `me`, `unassigned` ou o id da pessoa. |
+| `teamIds[]` | Departamentos. `none` traz quem está sem departamento, e pode vir junto de ids. |
+| `assignedUser` ou `assignedUser[]` | Um ou vários de: `me`, `unassigned` ou o id da pessoa. |
 | `status` | `open` ou `closed`. |
 | `automationEnabled` | `true` ou `false`. |
 | `hasSession` | `true`: só quem está na janela de 24 horas. `false` não filtra, como na origem. |
 | `dateFrom`, `dateTo` | Data de criação, no fuso da organização. |
+| `conditions` | Condições sobre campos personalizados e afins, no formato de [Filtros avançados](#filtros-avançados): `conditions[0][attributeKey]=custom_attributes.cidade&conditions[0][filterOperator]=equal_to&conditions[0][values][]=Curitiba`. Na ação em lote e na exportação pelo canal, vai dentro de `filters`. Campos são texto: número só compara com `valueType: "number"`. |
 | `sortBy` | `last_message_at` (padrão), `created_at`, `user_name`, `status`, `unread_messages`. |
 | `sortDir` | `asc` ou `desc` (padrão). |
 
@@ -1819,7 +1821,10 @@ Resposta `200`:
       "activeSession": false,
       "createdAt": 1792768320000,
       "unreadMessages": 0,
-      "notes": null
+      "notes": null,
+      "customAttributes": {
+        "cidade": "Curitiba"
+      }
     }
   ],
   "meta": {
@@ -1834,7 +1839,7 @@ Resposta `200`:
 
 ### `GET /contacts/filters`
 
-As opções dos filtros da tela: `connectors` no formato de `ConnectorSerializer`, `tags`, `users` e `teams`.
+As opções dos filtros da tela: `connectors` no formato de `ConnectorSerializer`, `tags`, `users` e `teams`. Em `users`, `assignable: false` é quem está em `setupOnly`: entra no filtro, porque pode ter conversas, mas `bulk-assign-user` recusaria.
 
 Resposta `200`:
 
@@ -1872,7 +1877,8 @@ Resposta `200`:
   "users": [
     {
       "id": "31e43b45-d378-4fed-a0f9-41c73e5ea0b5",
-      "name": "Beatriz Lima"
+      "name": "Beatriz Lima",
+      "assignable": true
     }
   ],
   "teams": [
@@ -2043,7 +2049,7 @@ As linhas viram conversas em segundo plano, no canal escolhido: `ProcessContactI
 
 ### `POST /contact-imports`
 
-`connectorId`, `contacts` (até 1000), `includeCountryCode` (acrescenta o 55), `batchIndex`, `totalBatches`. Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
+`connectorId`, `contacts` (até 1000), `includeCountryCode` (acrescenta o 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
 
 `POST /contact-imports`:
 

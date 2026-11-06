@@ -57,6 +57,12 @@ RSpec.describe "Importação de contatos", type: :request do
       expect(row.additional_data).to include("assigned_user_name" => "Marina Duarte")
     end
 
+    it "guarda o nome do arquivo que a tela leu, para o histórico" do
+      post "/contact-imports", params: { connectorId: connector.id.to_s, contacts: contacts, fileName: "clientes.csv" }, headers: headers, as: :json
+
+      expect(json["contactImport"]).to include("fileName" => "clientes.csv")
+    end
+
     it "acrescenta o DDI quando pedido" do
       post "/contact-imports",
            params: { connectorId: connector.id.to_s, contacts: [ { externalId: "31971810932", userName: "Fernanda" }, { externalId: "5541999990000", userName: "Roberto" } ], includeCountryCode: true },
