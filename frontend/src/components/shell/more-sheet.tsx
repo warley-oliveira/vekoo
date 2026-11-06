@@ -3,6 +3,7 @@ import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
   Bell,
+  Building2,
   ChevronDown,
   LogOut,
   Search,
@@ -270,12 +271,20 @@ function AccountSection() {
           onClick={closeSheet}
         />
         {canInvite && (
-          <AccountLink
-            to="/settings/users"
-            icon={UserPlus}
-            label={t("account.invite")}
-            onClick={closeSheet}
-          />
+          <>
+            <AccountLink
+              to="/settings/organization"
+              icon={Building2}
+              label={t("people.organization.title")}
+              onClick={closeSheet}
+            />
+            <AccountLink
+              to="/settings/users?new=1"
+              icon={UserPlus}
+              label={t("account.invite")}
+              onClick={closeSheet}
+            />
+          </>
         )}
 
         <div className="flex h-11 items-center justify-between gap-3 px-3">

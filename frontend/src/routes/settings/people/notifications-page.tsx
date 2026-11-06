@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner"
 
 import { AccountAreaNav } from "@/components/people/area-nav"
-import { Callout } from "@/components/people/callout"
+import { Callout } from "@/components/shared/callout"
 import {
   ErrorState,
   InlineError,

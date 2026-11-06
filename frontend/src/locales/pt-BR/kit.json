@@ -401,6 +401,12 @@
     },
     "creatable": {
       "create": "Cadastrar “{{value}}”"
+    },
+    "imagePicker": {
+      "hint": "JPG, PNG ou WebP, até 2 MB. Pode arrastar para cá.",
+      "tooLarge": "Essa imagem passa de 2 MB. Escolha uma menor.",
+      "wrongType": "Use uma imagem JPG, PNG ou WebP.",
+      "oneAtATime": "Envie uma imagem por vez."
     }
   }
 }

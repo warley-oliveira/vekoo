@@ -61,7 +61,7 @@ Ele reescreve os nomes e aponta o que exige decisão. **Não renomeie à mão de
 Você recebe um worktree só seu e um **número de agente**. Antes de tudo:
 
 ```bash
-bash docs/migration/tools/worktree-setup.sh <numero>   # uma vez, na raiz do worktree
+bash /home/warley/workspace/vekoo/docs/migration/tools/worktree-setup.sh <numero>   # uma vez, na raiz do worktree
 ```
 
 Isso dá banco de teste, Mongo e portas exclusivos; rspec e Vite rodam sem interferir nos outros.
@@ -163,7 +163,7 @@ Não copie o layout da origem por inércia: pergunte qual é a melhor forma de a
 
 ### Componentes
 
-**Leia `frontend/src/components/shared/README.md` antes de escrever a primeira tela**, e reutilize antes de criar: importe de `@/components/shared` (`PageBody`, `PageHeader`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `SortMenu`, `StatTile`, `StatusBadge`, `TagChip`, `UserAvatar`, `ResponsiveDialog`, `SidePanel`, `useConfirm`, `Form` e os campos de formulário, `SortableArea`, `ChipsInput`, `CreatableSelect`, os esqueletos…). A vitrine viva está em `/dev/kit`. Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`. Faltou algo genérico? Crie no seu domínio e cite no relatório; não edite `components/shared` nem `components/shell`.
+**Leia `frontend/src/components/shared/README.md` antes de escrever a primeira tela**, e reutilize antes de criar: importe de `@/components/shared` (`PageBody`, `PageHeader`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `SortMenu`, `StatTile`, `StatusBadge`, `TagChip`, `UserAvatar`, `ResponsiveDialog`, `SidePanel`, `useConfirm`, `Form` e os campos de formulário, `SortableArea`, `ChipsInput`, `CreatableSelect`, `AreaNav`, `EntityCard`, `Callout`, `ImagePicker`, os esqueletos…). A vitrine viva está em `/dev/kit`. Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`. Faltou algo genérico? Crie no seu domínio e cite no relatório; não edite `components/shared` nem `components/shell`.
 
 - **Cada tela tem um título só, na barra superior.** `RouteFrame` declara o título da rota; `PageHeader` leva título e ações para a barra e deixa no conteúdo só a descrição. Não ponha um título grande no conteúdo.
 - **Use `ResponsiveDialog` e `SidePanel`**, não `Dialog` ou `Sheet` direto: as primitivas têm "Close" fixo em inglês para leitor de tela, e o kit já resolve isso.

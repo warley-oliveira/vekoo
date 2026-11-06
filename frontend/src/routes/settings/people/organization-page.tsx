@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { PeopleAreaNav } from "@/components/people/area-nav"
-import { ImagePicker } from "@/components/people/image-picker"
+import { ImagePicker } from "@/components/shared/image-picker"
 import {
   ComboboxField,
   Form,

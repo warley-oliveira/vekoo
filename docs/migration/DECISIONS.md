@@ -83,6 +83,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acréscimo na API:** `POST /products/items/:id/images` aceita `image.sourceUrl`, e `GET /products/items` aceita `active=true|false`.
 - **De fora:** botões de primeira e última página (o kit só tem anterior e próxima) e modelo de planilha, que a origem também não tem.
 
+### Pessoas: tela (fe-settings-people)
+
+- **Padrão das telas de configuração, seguido pelas próximas:** `AreaNav` no topo, `SettingsSection` com salvar por seção, interruptor que vale na hora, edição em `SidePanel`.
+- **Excluir pessoa fica no fim da ficha:** não aparece no menu da linha, explica o efeito e exige digitar EXCLUIR. "Revogar" é o caminho normal.
+- **Campo único "Grupo de permissão"** inclui "Dono", visível só para quem é dono, com confirmação ao promover. Novo cadastro já vem no grupo "Usuário".
+- **Nível `own` não é oferecido:** nenhum controlador o distingue de `all`, então dar a opção enganaria quem configura. Se vier da API, é preservado e aparece com um selo.
+- **Confirmações acrescentadas:** trocar a senha de outra pessoa e perder o próprio acesso. Fechar painel com alteração pendente também pede confirmação.
+- **Lista inteira no navegador:** a tela percorre todas as páginas de `/users`, porque a API não ordena e só filtra por um valor em cada filtro. Isso pesa em organização muito grande.
+- **Tela nova, `/settings/organization`:** logo, nome, fuso, razão social, CNPJ e preferências do chat, sem item no menu lateral. Entra pela aba da área de usuários e pelo menu da conta.
+- **Idioma anda com a conta:** a escolha grava em `PATCH /profile`. Ao abrir a sessão vale o da conta; conta sem idioma mantém a escolha local.
+- **Acréscimo na API:** token de quem foi revogado responde `401 accessRevoked`, em vez de `unauthorized`, para a tela explicar o motivo. A pessoa sai sozinha cerca de 250 ms depois da revogação.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -103,10 +115,10 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 ### Front (fases 3 e 4)
 
-- `lib/api.ts` e `AuthErrorCode` não conhecem `accessRevoked` nem os códigos novos do domínio de pessoas (fe-settings-people).
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
-- `fe-settings-people`: `account.locale` chega em `/me`, mas nada o aplica, e o idioma escolhido no menu não grava em `PATCH /profile`.
+- `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
+- Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 

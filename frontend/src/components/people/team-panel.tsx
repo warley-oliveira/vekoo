@@ -15,7 +15,7 @@ import {
   useFormSubmit,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { useGuardedClose } from "@/hooks/people/use-panel-session"
+import { useGuardedClose } from "@/hooks/use-panel-session"
 import { useTeamMutations } from "@/hooks/people/use-teams"
 import type { Team } from "@/lib/people/types"
 import { TeamMembers } from "./team-members"

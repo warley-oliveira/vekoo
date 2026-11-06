@@ -5,7 +5,7 @@ import { toast } from "sonner"
 
 import { AccessRolePanel } from "@/components/people/access-role-panel"
 import { PeopleAreaNav } from "@/components/people/area-nav"
-import { EntityCard } from "@/components/people/entity-card"
+import { EntityCard } from "@/components/shared/entity-card"
 import {
   CardGridSkeleton,
   EmptyState,
@@ -25,7 +25,7 @@ import {
   useRoleName,
 } from "@/hooks/people/use-access-roles"
 import { usePeople } from "@/hooks/people/use-people"
-import { useOpenCount, useRetained } from "@/hooks/people/use-panel-session"
+import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
 import { apiAssetUrl } from "@/lib/api"
 import { useLanguage } from "@/lib/i18n"
 import {

@@ -4,7 +4,7 @@ import { Building2, Pencil, Plus, Power, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { PeopleAreaNav } from "@/components/people/area-nav"
-import { EntityCard } from "@/components/people/entity-card"
+import { EntityCard } from "@/components/shared/entity-card"
 import { TeamPanel } from "@/components/people/team-panel"
 import {
   CardGridSkeleton,
@@ -21,7 +21,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { usePeople } from "@/hooks/people/use-people"
-import { useOpenCount, useRetained } from "@/hooks/people/use-panel-session"
+import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
 import { useTeamMutations, useTeams } from "@/hooks/people/use-teams"
 import { apiAssetUrl } from "@/lib/api"
 import { useLanguage } from "@/lib/i18n"

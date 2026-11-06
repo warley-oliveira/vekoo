@@ -19,7 +19,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useAccessRoles, useRoleName } from "@/hooks/people/use-access-roles"
-import { useGuardedClose } from "@/hooks/people/use-panel-session"
+import { useGuardedClose } from "@/hooks/use-panel-session"
 import { usePersonMutations } from "@/hooks/people/use-people"
 import { usePersonActions } from "@/hooks/people/use-person-actions"
 import { useTeams } from "@/hooks/people/use-teams"
@@ -28,7 +28,7 @@ import { useMotionPreset } from "@/lib/motion"
 import { errorMessage } from "@/lib/people/error-message"
 import { firstName } from "@/lib/people/person-rules"
 import type { Person } from "@/lib/people/types"
-import { Callout } from "./callout"
+import { Callout } from "@/components/shared/callout"
 import {
   accessOptions,
   accessToInput,

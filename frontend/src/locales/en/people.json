@@ -389,12 +389,6 @@
         "empty": "Nobody in this group yet."
       }
     },
-    "image": {
-      "hint": "JPG, PNG or WebP, up to 2 MB. You can drag it here.",
-      "tooLarge": "That image is over 2 MB. Choose a smaller one.",
-      "wrongType": "Use a JPG, PNG or WebP image.",
-      "oneAtATime": "Send one image at a time."
-    },
     "profile": {
       "photo": {
         "title": "Photo",

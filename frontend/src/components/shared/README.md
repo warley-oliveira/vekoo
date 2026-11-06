@@ -80,6 +80,17 @@ Agrupa um assunto quando só o espaçamento não basta. `flush` encosta o conte�
 
 ---
 
+### `AreaNav`, `EntityCard`, `Callout`, `ImagePicker` e os hooks de painel
+
+O padrão das telas de configuração, nascido em Pessoas: `AreaNav` no topo quando a área tem mais de uma rota (o endereço diz onde se está, e o botão voltar funciona), `SettingsSection` com salvar por seção, interruptor que vale na hora e edição em `SidePanel`.
+
+- `AreaNav`: abas com rota, rolando de lado em tela estreita.
+- `EntityCard`: card de uma coisa nomeada (departamento, grupo) com menu de ações e rodapé.
+- `Callout`: recado no meio do conteúdo, para o que a pessoa precisa saber antes de agir.
+- `ImagePicker`: foto ou logo, com enviar, trocar, remover e validação de tipo e tamanho.
+- Em `@/hooks/use-panel-session`, para painéis de edição: `useGuardedClose(isDirty, close)` pede confirmação ao fechar com alteração pendente (X, Esc e clique fora; Cancelar fecha direto), `useRetained(value)` mantém o conteúdo na tela durante a animação de saída, e `useOpenCount(open)` serve de `key` para o painel reabrir limpo.
+- Painel aberto na URL (`?person=<id>`, `?new=1`) deixa a tela compartilhável e faz o voltar funcionar.
+
 ### `SortableArea`, `DragHandle` e `useSortableEntry`
 
 Lista que a pessoa ordena arrastando, em toque, mouse e teclado, com anúncio para leitor de tela. `layout` é `list` ou `grid`.

@@ -19,7 +19,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useAccessRoleMutations, useRoleName } from "@/hooks/people/use-access-roles"
-import { useGuardedClose } from "@/hooks/people/use-panel-session"
+import { useGuardedClose } from "@/hooks/use-panel-session"
 import { usePeople } from "@/hooks/people/use-people"
 import { useSession } from "@/lib/auth"
 import {

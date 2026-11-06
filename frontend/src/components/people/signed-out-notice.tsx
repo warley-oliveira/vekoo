@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
 import { useAuth } from "@/lib/auth"
-import { Callout } from "./callout"
+import { Callout } from "@/components/shared/callout"
 
 /**
  * Na tela de entrada, diz por que a pessoa foi parar ali quando não foi ela quem saiu.

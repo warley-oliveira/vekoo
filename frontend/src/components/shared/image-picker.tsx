@@ -73,10 +73,10 @@ export function ImagePicker({
       const code = rejections[0]?.errors[0]?.code
       setError(
         code === "file-too-large"
-          ? t("people.image.tooLarge")
+          ? t("kit.imagePicker.tooLarge")
           : code === "too-many-files"
-            ? t("people.image.oneAtATime")
-            : t("people.image.wrongType")
+            ? t("kit.imagePicker.oneAtATime")
+            : t("kit.imagePicker.wrongType")
       )
     },
     [t]
@@ -149,7 +149,7 @@ export function ImagePicker({
                 </Button>
               ) : null}
             </div>
-            <p className="text-xs text-muted-foreground">{t("people.image.hint")}</p>
+            <p className="text-xs text-muted-foreground">{t("kit.imagePicker.hint")}</p>
           </div>
         </div>
       </div>
