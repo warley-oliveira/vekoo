@@ -259,7 +259,7 @@ export default function UsersPage() {
                   <Crown className="mr-1.5 inline size-3.5 align-[-2px] text-muted-foreground" />
                 ) : null}
                 {/* Sem nome: a lista de grupos ainda não chegou. */}
-                {getValue<string>() || "—"}
+                {getValue<string>() || t("kit.noValue")}
               </p>
               {person.setupOnly ? (
                 <p className="text-xs text-muted-foreground">{t("people.users.setupOnlyShort")}</p>
@@ -281,7 +281,7 @@ export default function UsersPage() {
           // departamento" seria mentira.
           return row.original.teamIds.length > 0 ? (
             <span aria-hidden className="text-muted-foreground">
-              —
+              {t("kit.noValue")}
             </span>
           ) : (
             <span className="text-muted-foreground">{t("people.users.noTeams")}</span>

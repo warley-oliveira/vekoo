@@ -428,8 +428,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshSession = useCallback(async () => {
     const { account, organization, credits, expiresAt } =
       await apiGet<SessionPayload>("/me")
+    // Saiu enquanto a leitura vinha: esta resposta não pode ressuscitar a sessão.
+    if (accountRef.current?.id !== account.id) return
     // Um idioma recém-escolhido pode estar a caminho: a escolha é mais nova que esta leitura.
-    const merged = { ...account, locale: accountRef.current?.locale ?? account.locale }
+    const merged = { ...account, locale: accountRef.current.locale }
     accountRef.current = merged
     setSession({ account: merged, organization, credits, expiresAt })
   }, [])

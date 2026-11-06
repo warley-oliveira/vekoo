@@ -1,19 +1,25 @@
 import type { SelectOption } from "@/components/shared"
 
 function zoneLabel(zone: string, language: string): { label: string; offset: number } {
-  const parts = new Intl.DateTimeFormat(language, {
-    timeZone: zone,
-    timeZoneName: "longOffset",
-  }).formatToParts(new Date())
-  // "GMT-03:00"; no meridiano, só "GMT".
-  const name = parts.find((part) => part.type === "timeZoneName")?.value ?? "GMT"
-  const match = name.match(/([+-])(\d{2}):(\d{2})/)
-  const offset = match
-    ? (match[1] === "-" ? -1 : 1) * (Number(match[2]) * 60 + Number(match[3]))
-    : 0
   const city = zone.split("/").slice(1).join(" / ").replaceAll("_", " ") || zone
 
-  return { label: `(${name}) ${city}`, offset }
+  try {
+    const parts = new Intl.DateTimeFormat(language, {
+      timeZone: zone,
+      timeZoneName: "longOffset",
+    }).formatToParts(new Date())
+    // "GMT-03:00"; no meridiano, só "GMT".
+    const name = parts.find((part) => part.type === "timeZoneName")?.value ?? "GMT"
+    const match = name.match(/([+-])(\d{2}):(\d{2})/)
+    const offset = match
+      ? (match[1] === "-" ? -1 : 1) * (Number(match[2]) * 60 + Number(match[3]))
+      : 0
+
+    return { label: `(${name}) ${city}`, offset }
+  } catch {
+    // Navegador antigo, sem `longOffset`, ou fuso que ele não conhece: fica só o nome.
+    return { label: city, offset: 0 }
+  }
 }
 
 /**
@@ -22,7 +28,8 @@ function zoneLabel(zone: string, language: string): { label: string; offset: num
  * que o navegador não o liste, para o campo nunca aparecer vazio.
  */
 export function timezoneOptions(language: string, current: string | null | undefined): SelectOption[] {
-  const known = Intl.supportedValuesOf("timeZone")
+  // Sem a lista (navegador antigo), o campo oferece ao menos o fuso que já está gravado.
+  const known = typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("timeZone") : []
   const zones = current && !known.includes(current) ? [current, ...known] : known
 
   return zones
