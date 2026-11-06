@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
 import { CalendarPlus, EyeOff, FlaskConical, Loader2 } from "lucide-react"
@@ -112,6 +112,12 @@ function TestDialog({
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const inFlight = useRef(false)
 
+  // Com o histórico aberto, a resposta nasce abaixo da dobra: leva o olhar até ela.
+  const outcomeRegion = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (running || outcome) outcomeRegion.current?.scrollIntoView({ block: "nearest" })
+  }, [outcome, running])
+
   const options = useMemo<SelectOption[]>(
     () =>
       (bookings ?? []).map((item) => ({
@@ -191,16 +197,19 @@ function TestDialog({
           <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={close}>
             {t("calendar.reminders.test.close")}
           </Button>
-          <Button
-            type="button"
-            disabled={!bookingId}
-            aria-busy={running}
-            className={cn("pointer-coarse:h-10", running && "pointer-events-none opacity-80")}
-            onClick={() => void run()}
-          >
-            {running ? <Loader2 className="animate-spin" /> : <FlaskConical />}
-            {t(usesAi ? "calendar.reminders.test.runWithAi" : "calendar.reminders.test.run")}
-          </Button>
+          {/* Sem agendamento para escolher, não há o que gerar: nada de botão morto. */}
+          {hasBookings ? (
+            <Button
+              type="button"
+              disabled={!bookingId}
+              aria-busy={running}
+              className={cn("pointer-coarse:h-10", running && "pointer-events-none opacity-80")}
+              onClick={() => void run()}
+            >
+              {running ? <Loader2 className="animate-spin" /> : <FlaskConical />}
+              {t(usesAi ? "calendar.reminders.test.runWithAi" : "calendar.reminders.test.run")}
+            </Button>
+          ) : null}
         </>
       }
     >
@@ -270,7 +279,7 @@ function TestDialog({
           />
         ) : null}
 
-        <div aria-live="polite" className="empty:hidden">
+        <div ref={outcomeRegion} aria-live="polite" className="empty:hidden">
           {running ? (
             <div className="space-y-2" aria-label={t("calendar.reminders.test.running")}>
               <p className="text-sm text-muted-foreground">{t("calendar.reminders.test.running")}</p>

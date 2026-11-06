@@ -213,19 +213,6 @@ export function SequencePanel({
           submitLabel={t(snapshot ? "calendar.sequences.panel.submit" : "calendar.sequences.panel.create")}
           onCancel={close}
           requireChanges={Boolean(snapshot)}
-          secondary={
-            snapshot ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-destructive pointer-coarse:h-10"
-                onClick={() => onDelete(snapshot)}
-              >
-                <Trash2 />
-                {t("calendar.sequences.delete.action")}
-              </Button>
-            ) : undefined
-          }
         />
       }
     >
@@ -366,6 +353,21 @@ export function SequencePanel({
             hint={t("calendar.sequences.options.ignoreAutomationPaused.hint")}
           />
         </section>
+
+        {snapshot ? (
+          <div className="border-t pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="-ml-2 text-muted-foreground hover:text-destructive pointer-coarse:h-10"
+              onClick={() => onDelete(snapshot)}
+            >
+              <Trash2 />
+              {t("calendar.sequences.delete.action")}
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <MessageTestDialog

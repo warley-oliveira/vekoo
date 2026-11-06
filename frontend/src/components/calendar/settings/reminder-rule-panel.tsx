@@ -127,19 +127,6 @@ export function ReminderRulePanel({ calendar, rule, open, onOpenChange, onDelete
           submitLabel={t(rule ? "calendar.reminders.panel.submit" : "calendar.reminders.panel.create")}
           onCancel={close}
           requireChanges={Boolean(rule)}
-          secondary={
-            rule ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-destructive pointer-coarse:h-10"
-                onClick={() => onDelete(rule)}
-              >
-                <Trash2 />
-                {t("calendar.reminders.delete.action")}
-              </Button>
-            ) : undefined
-          }
         />
       }
     >
@@ -163,6 +150,21 @@ export function ReminderRulePanel({ calendar, rule, open, onOpenChange, onDelete
         </div>
 
         <MessageRuleField control={form.control} kind="reminder" onTest={test} />
+
+        {rule ? (
+          <div className="border-t pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="-ml-2 text-muted-foreground hover:text-destructive pointer-coarse:h-10"
+              onClick={() => onDelete(rule)}
+            >
+              <Trash2 />
+              {t("calendar.reminders.delete.action")}
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <MessageTestDialog

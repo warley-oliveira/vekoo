@@ -22,6 +22,7 @@ import { calendarKey, useCalendarMutations } from "@/hooks/calendar/use-calendar
 import { useGuardedClose } from "@/hooks/use-panel-session"
 import { apiGet } from "@/lib/api"
 import type { AgendaCalendar, ProfessionalReminderRule, ReminderPeriod } from "@/lib/calendar/types"
+import { InstantSwitch } from "./instant-switch"
 import { MESSAGE_TOKENS } from "./message-rule"
 import { beforeLabel, COLLABORATOR_INTERVAL_MAX, periodOptions, replaceRule } from "./rule-helpers"
 import { VariableTextarea } from "./variable-textarea"
@@ -141,19 +142,6 @@ export function CollaboratorReminderPanel({
           )}
           onCancel={close}
           requireChanges={Boolean(rule)}
-          secondary={
-            rule ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-muted-foreground hover:text-destructive pointer-coarse:h-10"
-                onClick={() => onDelete(rule)}
-              >
-                <Trash2 />
-                {t("calendar.settings.notices.reminder.delete.action")}
-              </Button>
-            ) : undefined
-          }
         />
       }
     >
@@ -182,17 +170,23 @@ export function CollaboratorReminderPanel({
             label={t("calendar.settings.notices.channels.push")}
             hint={t("calendar.settings.notices.channels.pushHint")}
           />
-          <SwitchField
-            control={form.control}
-            name="whatsapp"
-            label={t("calendar.settings.notices.channels.whatsapp")}
-            hint={
-              whatsappAvailable
-                ? t("calendar.settings.notices.channels.whatsappHint")
-                : t("calendar.settings.notices.channels.whatsappUnavailable")
-            }
-            disabled={!whatsappAvailable}
-          />
+          {whatsappAvailable ? (
+            <SwitchField
+              control={form.control}
+              name="whatsapp"
+              label={t("calendar.settings.notices.channels.whatsapp")}
+              hint={t("calendar.settings.notices.channels.whatsappHint")}
+            />
+          ) : (
+            // Sem canal, aparece desligado, e a escolha guardada volta a valer quando houver um.
+            <InstantSwitch
+              label={t("calendar.settings.notices.channels.whatsapp")}
+              hint={t("calendar.settings.notices.channels.whatsappUnavailable")}
+              checked={false}
+              disabled
+              onCheckedChange={() => undefined}
+            />
+          )}
         </div>
         {silent ? <Callout tone="warning">{t("calendar.settings.notices.reminder.silent")}</Callout> : null}
         <VariableTextarea
@@ -203,6 +197,21 @@ export function CollaboratorReminderPanel({
           maxLength={NOTICE_MESSAGE_MAX}
           showCount
         />
+
+        {rule ? (
+          <div className="border-t pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="-ml-2 text-muted-foreground hover:text-destructive pointer-coarse:h-10"
+              onClick={() => onDelete(rule)}
+            >
+              <Trash2 />
+              {t("calendar.settings.notices.reminder.delete.action")}
+            </Button>
+          </div>
+        ) : null}
       </div>
     </SidePanel>
   )

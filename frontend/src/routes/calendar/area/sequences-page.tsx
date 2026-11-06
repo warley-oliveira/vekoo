@@ -21,11 +21,12 @@ import {
   Callout,
   EmptyState,
   ErrorState,
-  ListSkeleton,
+  LoadingRegion,
   SettingsSection,
   useConfirm,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useAttendanceSequences } from "@/hooks/calendar/use-attendance-sequences"
 import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
 import type { AttendanceSequence, SequenceTrigger } from "@/lib/calendar/types"
@@ -216,7 +217,12 @@ export default function SequencesPage() {
                 description={t(`calendar.sequences.triggerDescription.${trigger}`)}
               >
                 {isLoading && !sequences ? (
-                  <ListSkeleton rows={2} />
+                  <LoadingRegion>
+                    <div className="flex flex-col gap-2 rounded-xl p-4 ring-1 ring-foreground/10">
+                      <Skeleton className="h-5 w-1/2" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  </LoadingRegion>
                 ) : items.length === 0 ? (
                   <EmptyState
                     icon={<ListChecks className="size-5" />}

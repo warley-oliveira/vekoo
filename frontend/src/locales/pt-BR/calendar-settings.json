@@ -188,7 +188,7 @@
       "panel": {
         "createTitle": "Novo lembrete",
         "description": "Sai na conversa do contato, pelo canal dela.",
-        "interval": "Quanto tempo antes",
+        "interval": "Antecedência",
         "period": "Unidade",
         "intervalRequired": "Diga quanto tempo antes.",
         "intervalInvalid": "Use um número inteiro, a partir de 1.",

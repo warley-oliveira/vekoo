@@ -188,7 +188,7 @@
       "panel": {
         "createTitle": "New reminder",
         "description": "Goes out in the contact's conversation, through its channel.",
-        "interval": "How long before",
+        "interval": "Time before",
         "period": "Unit",
         "intervalRequired": "Say how long before.",
         "intervalInvalid": "Use a whole number, starting at 1.",
