@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, type ReactNode } from "react"
+import { useLayoutEffect, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { create } from "zustand"
 
@@ -91,7 +91,8 @@ export function usePageTitle(
   const backTo = options?.backTo
   const parentTitle = options?.parentTitle
 
-  useEffect(() => {
+  // Antes da pintura: o título da rota não pisca antes do nome da pasta.
+  useLayoutEffect(() => {
     useHeaderStore.setState({
       page: title ? { title, color, backTo, parentTitle } : null,
     })

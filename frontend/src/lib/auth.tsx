@@ -45,6 +45,10 @@ export type Organization = {
   timezone: string
   /** Liberações por organização: mapa livre, vem como está do servidor. */
   features: Record<string, unknown>
+  /** Dados da empresa e preferências: mapa livre (`companyInfo`, `chatSettings`). */
+  settings: Record<string, unknown>
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  logoUrl: string | null
   createdAt: number
 }
 
@@ -76,6 +80,10 @@ export type Account = {
   organizationId: string
   role: MemberRole
   phone: string | null
+  /** `pt-BR`, `en` ou nulo. */
+  locale: string | null
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  avatarUrl: string | null
   accessRoleId: string | null
   /** Sempre vem em `GET /me`. Chave ausente é tratada como `none`. */
   permissions: Partial<Record<PermissionKey, PermissionLevel>>
@@ -106,6 +114,7 @@ type SessionPayload = Session & { token?: string }
 export type AuthErrorCode =
   | "emailNotFound"
   | "wrongPassword"
+  | "accessRevoked"
   | "emailTaken"
   | "signInFailed"
   | "signUpFailed"
@@ -160,6 +169,7 @@ function toAuthError(error: unknown, fallback: AuthErrorCode): AuthError {
   // Códigos que a tela conhece pelo nome e trata no campo certo.
   if (error.code === "emailNotFound") return new AuthError("email", "emailNotFound")
   if (error.code === "wrongPassword") return new AuthError("password", "wrongPassword")
+  if (error.code === "accessRevoked") return new AuthError("form", "accessRevoked")
   if (error.code === "emailTaken") return new AuthError("email", "emailTaken")
 
   // Validação: o Rails já manda os campos em camelCase, iguais aos do

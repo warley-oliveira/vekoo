@@ -13,12 +13,21 @@ import { clearToken, getToken } from "@/lib/token"
 export const API_URL: string =
   import.meta.env.VITE_API_URL ?? "http://localhost:3040"
 
+/** Imagem servida pela API (`avatarUrl`, `logoUrl`): o caminho vem relativo a ela. */
+export function apiAssetUrl(path: string): string {
+  return /^https?:/.test(path) ? path : `${API_URL}${path}`
+}
+
 /**
  * Códigos que a API pode devolver, mais dois sintéticos do cliente
  * (`network` e `unknown`) — para a tela ter um só vocabulário de erro.
+ *
+ * A lista é só a dos comuns: o código de cada domínio passa direto, e a tela compara
+ * com o que estiver em `docs/migration/api/<dominio>.md` (`error.code === "lastOwner"`).
  */
 export type ApiErrorCode =
   | "unauthorized"
+  | "accessRevoked"
   | "forbidden"
   | "notFound"
   | "unprocessable"
@@ -28,8 +37,10 @@ export type ApiErrorCode =
   | "emailTaken"
   | "resetTokenInvalid"
   | "noCredits"
+  | "tooManyRequests"
   | "network"
   | "unknown"
+  | (string & {})
 
 type ErrorEnvelope = {
   error?: {
@@ -88,20 +99,9 @@ export type ApiInit = RequestInit & {
   skipAuthHandler?: boolean
 }
 
-function knownCode(code: string | undefined, status: number): ApiErrorCode {
-  const codes: ApiErrorCode[] = [
-    "unauthorized",
-    "forbidden",
-    "notFound",
-    "unprocessable",
-    "parameterMissing",
-    "emailNotFound",
-    "wrongPassword",
-    "emailTaken",
-    "resetTokenInvalid",
-    "noCredits",
-  ]
-  if (code && (codes as string[]).includes(code)) return code as ApiErrorCode
+/** O código que veio do servidor; sem ele (502 de proxy, por exemplo), pelo status. */
+function codeOf(code: string | undefined, status: number): ApiErrorCode {
+  if (code) return code
   if (status === 401) return "unauthorized"
   if (status === 403) return "forbidden"
   if (status === 404) return "notFound"
@@ -139,7 +139,7 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
 
     const error = new ApiError({
       status: res.status,
-      code: knownCode(envelope?.error?.code, res.status),
+      code: codeOf(envelope?.error?.code, res.status),
       field: envelope?.error?.field,
       details: envelope?.error?.details,
       serverMessage: envelope?.error?.message,

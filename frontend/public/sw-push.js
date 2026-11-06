@@ -15,6 +15,7 @@ self.addEventListener('push', (event) => {
   }
 
   const isMobile = /Android|iPhone|iPad|iPod/i.test(self.navigator.userAgent || '')
+  const actions = data.actions || []
 
   event.waitUntil(
     self.registration.showNotification(data.title || 'Vekoo', {
@@ -23,8 +24,15 @@ self.addEventListener('push', (event) => {
       badge: data.badge || '/pwa-badge-96x96.png',
       image: data.image,
       tag: data.tag || 'vekoo',
-      data: { url: HOME, timestamp: Date.now(), ...data.data },
-      actions: data.actions || [],
+      data: {
+        url: HOME,
+        timestamp: Date.now(),
+        ...data.data,
+        // O navegador só guarda `action` e `title` dos botões: o destino de cada um
+        // precisa viajar em `data` para chegar ao clique.
+        actionUrls: Object.fromEntries(actions.map((item) => [item.action, item.urlPath])),
+      },
+      actions,
       requireInteraction: data.requireInteraction || false,
       silent: data.silent || false,
       vibrate: data.vibrate || (isMobile ? [300, 100, 300] : [200, 100, 200]),
@@ -53,8 +61,9 @@ async function openTarget(target) {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  if (event.action === 'close') return
+  if (event.action === 'close' || event.action === 'dismiss') return
 
-  const url = event.notification.data?.url || HOME
+  const data = event.notification.data || {}
+  const url = data.actionUrls?.[event.action] || data.url || HOME
   event.waitUntil(openTarget(new URL(url, self.location.origin).href))
 })

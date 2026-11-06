@@ -12,8 +12,14 @@ import {
   useReducedMotion,
   type PanInfo,
 } from "motion/react"
+import { useTranslation } from "react-i18next"
 
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
 /** Puxar além disto (ou rápido assim) dispensa a folha. */
@@ -93,6 +99,7 @@ export function BottomSheet({
   bodyClassName,
   children,
 }: BottomSheetProps) {
+  const { t } = useTranslation()
   const reducedMotion = useReducedMotion()
   const dragControls = useDragControls()
   const y = useMotionValue(0)
@@ -178,8 +185,10 @@ export function BottomSheet({
       <SheetContent
         side="bottom"
         showCloseButton={false}
+        // A área larga do popup é transparente e deixa o toque passar para o fundo: no
+        // tablet o papel fica estreito e centralizado, e tocar ao lado continua fechando.
         className={cn(
-          "gap-0 bg-transparent shadow-none data-[side=bottom]:border-t-0",
+          "pointer-events-none gap-0 bg-transparent shadow-none data-[side=bottom]:border-t-0",
           reducedMotion && "transition-none"
         )}
         style={{ maxHeight }}
@@ -195,7 +204,7 @@ export function BottomSheet({
           style={{ y, maxHeight }}
           onDragEnd={handleDragEnd}
           onPointerDown={handleBodyPointerDown}
-          className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-2xl bg-popover shadow-xl ring-1 ring-foreground/5"
+          className="pointer-events-auto mx-auto flex min-h-0 w-full max-w-lg flex-1 flex-col overflow-hidden rounded-t-2xl bg-popover shadow-xl ring-1 ring-foreground/5"
         >
           <div
             aria-hidden
@@ -224,6 +233,10 @@ export function BottomSheet({
             )}
           >
             {children}
+            {/* Arrastar e tocar fora não existem para quem navega por leitor de tela. */}
+            <SheetClose className="sr-only focus-visible:not-sr-only focus-visible:mb-3 focus-visible:block focus-visible:rounded-lg focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:ring-3 focus-visible:ring-ring/50">
+              {t("navigation.closePanel")}
+            </SheetClose>
           </div>
         </motion.div>
       </SheetContent>

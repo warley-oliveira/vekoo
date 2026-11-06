@@ -109,7 +109,11 @@ function AccountHeader() {
   return (
     <div className="rounded-xl border p-3">
       <div className="mb-3 flex items-center gap-2.5">
-        <OrganizationBadge name={organizationName} className="size-9 text-sm" />
+        <OrganizationBadge
+          name={organizationName}
+          logoUrl={session?.organization.logoUrl}
+          className="size-9 text-sm"
+        />
         <div className="min-w-0 flex-1 leading-tight">
           <p className="truncate text-sm font-medium">{organizationName}</p>
           <p className="truncate text-xs text-muted-foreground">

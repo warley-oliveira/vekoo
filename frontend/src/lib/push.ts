@@ -1,4 +1,4 @@
-import { ApiError, apiFetch, apiGet, apiPost } from "@/lib/api"
+import { ApiError, apiDelete, apiGet, apiPost } from "@/lib/api"
 
 // Notificação push deste aparelho, fora do React: `lib/auth.tsx` também precisa, para
 // desvincular o aparelho ao sair. Em tela, use `usePushNotifications`.
@@ -48,7 +48,7 @@ function sameKey(current: ArrayBuffer | null, expected: Uint8Array): boolean {
   return bytes.every((byte, index) => byte === expected[index])
 }
 
-/** `null`: este servidor não expõe push (rota ausente, ou sem chaves VAPID). */
+/** `null`: este servidor não oferece push (sem chaves VAPID, ou sem a rota). */
 async function fetchVapidKey(): Promise<string | null> {
   try {
     const { publicKey } = await apiGet<{ publicKey?: string }>(VAPID_KEY_PATH)
@@ -102,10 +102,20 @@ export async function unsubscribeDevice(): Promise<void> {
 
   const { endpoint } = subscription
   await subscription.unsubscribe()
-  await apiFetch(DEVICES_PATH, {
-    method: "DELETE",
-    body: JSON.stringify({ endpoint }),
-  })
+  // Sempre com o endpoint: sem ele, a rota remove os aparelhos todos da pessoa.
+  await apiDelete(`${DEVICES_PATH}?endpoint=${encodeURIComponent(endpoint)}`)
+}
+
+/**
+ * Pede ao servidor uma notificação de teste, para a tela de preferências. Quem chama trata
+ * os erros: `noPushDevices` (sem aparelho) e `pushNotConfigured` (servidor sem VAPID).
+ */
+export function sendTestPush(message?: {
+  title?: string
+  body?: string
+  url?: string
+}): Promise<{ enqueued: number }> {
+  return apiPost(`${DEVICES_PATH}/test`, message ?? {})
 }
 
 /**

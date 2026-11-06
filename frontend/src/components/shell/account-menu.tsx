@@ -26,18 +26,31 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCan } from "@/hooks/use-can"
 import { useSignOut } from "@/hooks/use-sign-out"
+import { apiAssetUrl } from "@/lib/api"
 import { initials, useAuth } from "@/lib/auth"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
-/** Quadrado com as iniciais da organização: a identidade da conta na casca. */
+/** O logo da organização ou, sem ele, as iniciais: a identidade da conta na casca. */
 export function OrganizationBadge({
   name,
+  logoUrl,
   className,
 }: {
   name: string
+  logoUrl?: string | null
   className?: string
 }) {
+  if (logoUrl) {
+    return (
+      <img
+        src={apiAssetUrl(logoUrl)}
+        alt=""
+        className={cn("size-7 shrink-0 rounded-lg object-cover", className)}
+      />
+    )
+  }
+
   return (
     <span
       aria-hidden
@@ -77,7 +90,10 @@ export function AccountMenu({ collapsed }: { collapsed: boolean }) {
           />
         }
       >
-        <OrganizationBadge name={organizationName} />
+        <OrganizationBadge
+          name={organizationName}
+          logoUrl={session?.organization.logoUrl}
+        />
         {!collapsed && (
           <>
             <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">

@@ -10,13 +10,14 @@ import {
   isPushSupported,
   pushPermission,
   relinkDevice,
+  sendTestPush,
   subscribeDevice,
   unsubscribeDevice,
   type PushFailure,
   type PushPermission,
 } from "@/lib/push"
 
-const NO_KEY: { publicKey?: string } = {}
+const NO_KEY: { publicKey?: string | null } = {}
 
 function failureOf(error: unknown): PushFailure {
   return error instanceof PushError ? error.code : "failed"
@@ -27,7 +28,8 @@ function failureOf(error: unknown): PushFailure {
  * ser chamado por um gesto da pessoa, num momento em que o pedido faz sentido.
  *
  * `isAvailable` diz se dá para oferecer a opção agora: navegador com suporte, service
- * worker registrado e servidor com a rota de push (404 vale como "ainda não").
+ * worker registrado e servidor com chaves VAPID (sem elas, `publicKey` vem nulo e a
+ * opção fica escondida).
  */
 export function usePushNotifications() {
   const isSupported = isPushSupported()
@@ -97,6 +99,8 @@ export function usePushNotifications() {
     error,
     subscribe,
     unsubscribe,
+    /** Lança `ApiError` (`noPushDevices`, `pushNotConfigured`): quem chama trata. */
+    sendTest: sendTestPush,
   }
 }
 

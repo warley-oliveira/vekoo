@@ -200,7 +200,7 @@ export const NAV_GROUPS: NavGroup[] = [
             id: "settings.integrations",
             titleKey: "navigation.integrations",
             to: "/settings/integrations",
-            alertKey: "integrations",
+            alertKey: "connectors",
           },
           {
             id: "settings.webhooks",

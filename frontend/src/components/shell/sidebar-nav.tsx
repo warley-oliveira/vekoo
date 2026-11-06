@@ -255,8 +255,10 @@ function ExpandableEntry({ entry }: { entry: NavEntry }) {
         </CollapsibleTrigger>
       )}
 
-      <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-ending-style:h-0 data-starting-style:h-0 motion-reduce:transition-none">
-        <ul className="mt-0.5 ml-[1.0625rem] flex flex-col gap-0.5 border-l border-sidebar-border pb-0.5 pl-2">
+      {/* A folga em volta (-mx-1 px-1) é para o anel de foco não ser cortado pelo
+          `overflow-hidden`, que a animação de altura exige. */}
+      <CollapsibleContent className="-mx-1 h-(--collapsible-panel-height) overflow-hidden px-1 transition-[height] duration-200 ease-out data-ending-style:h-0 data-starting-style:h-0 motion-reduce:transition-none">
+        <ul className="ml-[1.0625rem] flex flex-col gap-0.5 border-l border-sidebar-border py-1 pl-2">
           {children.map((child) => (
             <li key={child.id}>
               <ChildLink child={child} />

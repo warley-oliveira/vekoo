@@ -41,28 +41,34 @@ export type Folder = {
 /** Chave de tradução da notificação (`notifications.<key>.title|body`). */
 export type NotificationKey = "templates" | "folders" | "welcome"
 
+/** Botão de um aviso. `dismiss` apaga o aviso; os outros levam a `urlPath`. */
+export type NotificationAction = {
+  action: "open_chat" | "open_calendar" | "navigate" | "external_link" | "dismiss"
+  title: string
+  urlPath?: string
+}
+
 /**
- * Duas famílias na mesma lista de `GET /notifications`:
+ * Duas famílias na mesma lista de `GET /notifications`
+ * (contrato em `docs/migration/api/access.md`):
  *
- * - aviso de produto (`key`): o texto nasce na tela, em `notifications.<key>.*`;
- * - aviso de atendimento: já vem do servidor com `title`, `description`, `url` e
- *   `category`.
- *
- * Por isso quase tudo é opcional aqui. Para ler, use `isNotificationRead` e os
- * helpers de `components/shell/notification-center.tsx`.
+ * - aviso do produto (`key` preenchido): da organização, com o texto na tela, em
+ *   `notifications.<key>.*`. Traz só os quatro primeiros campos;
+ * - aviso da pessoa (`key: null`): já vem pronto do servidor, com o resto dos campos.
  */
 export type AppNotification = {
   id: string
-  key?: NotificationKey
-  at?: number
-  createdAt?: number
-  read?: boolean
-  readAt?: number | null
+  key: NotificationKey | null
+  at: number
+  read: boolean
   title?: string
-  description?: string
+  description?: string | null
   /** Caminho interno (`/chat/123`) ou endereço externo. */
-  url?: string
+  url?: string | null
   category?: string
+  actions?: NotificationAction[]
+  readAt?: number | null
+  archivedAt?: number | null
 }
 
 export type Credits = {

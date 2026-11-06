@@ -9,6 +9,7 @@ import {
   Gift,
   MessageCircle,
   Settings2,
+  SlidersHorizontal,
   type LucideIcon,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -26,19 +27,19 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useMobileNav } from "@/hooks/use-mobile-nav"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
 import {
-  isNotificationRead,
+  NOTIFICATIONS_MAX_PER_PAGE,
+  NOTIFICATIONS_PAGE_SIZE,
   useNotificationMutations,
   useNotifications,
   useNotificationsChannel,
+  type NotificationsTab,
 } from "@/hooks/use-notifications"
 import { usePushNotifications } from "@/hooks/use-push-notifications"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
-import type { AppNotification } from "@/lib/types"
+import type { AppNotification, NotificationAction } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { usePersistentState } from "@/lib/view-prefs"
-
-type InboxTab = "all" | "unread" | "read"
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   chat: MessageCircle,
@@ -47,12 +48,10 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   general: Gift,
 }
 
-const KNOWN_CATEGORIES = Object.keys(CATEGORY_ICONS)
-
-/** Aviso de produto (só `key`) é "geral"; categoria desconhecida também. */
+/** Como na API: aviso do produto conta como `system`. Desconhecida vira `general`. */
 function categoryOf(notification: AppNotification): string {
-  const category = notification.category
-  return category && KNOWN_CATEGORIES.includes(category) ? category : "general"
+  const category = notification.category ?? (notification.key ? "system" : "general")
+  return category in CATEGORY_ICONS ? category : "general"
 }
 
 function isExternalUrl(url: string): boolean {
@@ -151,17 +150,16 @@ function NotificationPanel({
   onDone: () => void
 }) {
   const { t } = useTranslation()
-  const { notifications, unread, isLoading, error, reload } = useNotifications()
+  const [tab, setTab] = useState<NotificationsTab>("all")
+  const [perPage, setPerPage] = useState(NOTIFICATIONS_PAGE_SIZE)
+  const { notifications, unread, hasMore, isLoading, error, reload } =
+    useNotifications(tab, perPage)
   const { readAll } = useNotificationMutations()
-  const [tab, setTab] = useState<InboxTab>("all")
 
-  const list = notifications ?? []
-  const visible = list.filter((notification) => {
-    if (tab === "all") return true
-    return tab === "read"
-      ? isNotificationRead(notification)
-      : !isNotificationRead(notification)
-  })
+  // Lida ao clicar sai da aba "Não lidas" na hora, sem esperar a nova leitura.
+  const visible = (notifications ?? []).filter(
+    (notification) => tab !== "unread" || !notification.read
+  )
 
   return (
     <div className="flex flex-col">
@@ -175,7 +173,7 @@ function NotificationPanel({
             size="sm"
             className="text-muted-foreground pointer-coarse:h-10"
             disabled={unread === 0}
-            onClick={() => void readAll()}
+            onClick={() => void readAll().catch(() => {})}
           >
             <CheckCheck /> {t("navigation.notifications.markAllRead")}
           </Button>
@@ -192,14 +190,17 @@ function NotificationPanel({
               />
             }
           >
-            <Settings2 />
+            <SlidersHorizontal />
           </Button>
         </div>
       </div>
 
       <Tabs
         value={tab}
-        onValueChange={(value) => setTab(value as InboxTab)}
+        onValueChange={(value) => {
+          setTab(value as NotificationsTab)
+          setPerPage(NOTIFICATIONS_PAGE_SIZE)
+        }}
         className="border-b px-3"
       >
         <TabsList variant="line" className="h-9 w-full justify-start gap-1">
@@ -214,8 +215,8 @@ function NotificationPanel({
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="read" className="flex-none px-1.5">
-            {t("navigation.notifications.tabs.read")}
+          <TabsTrigger value="archived" className="flex-none px-1.5">
+            {t("navigation.notifications.tabs.archived")}
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -235,15 +236,29 @@ function NotificationPanel({
         ) : visible.length === 0 ? (
           <EmptyInbox tab={tab} />
         ) : (
-          <ul>
-            {visible.map((notification) => (
-              <NotificationRow
-                key={notification.id}
-                notification={notification}
-                onDone={onDone}
-              />
-            ))}
-          </ul>
+          <>
+            <ul>
+              {visible.map((notification) => (
+                <NotificationRow
+                  key={notification.id}
+                  notification={notification}
+                  onDone={onDone}
+                />
+              ))}
+            </ul>
+            {hasMore && perPage < NOTIFICATIONS_MAX_PER_PAGE && (
+              <div className="border-t p-1.5">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-muted-foreground pointer-coarse:h-10"
+                  onClick={() => setPerPage(NOTIFICATIONS_MAX_PER_PAGE)}
+                >
+                  {t("navigation.notifications.loadMore")}
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -262,30 +277,46 @@ function NotificationRow({
   const { t } = useTranslation()
   const language = useLanguage()
   const navigate = useNavigate()
-  const { read: markRead } = useNotificationMutations()
+  const { read: markRead, dismiss } = useNotificationMutations()
 
-  const isRead = isNotificationRead(notification)
   const category = categoryOf(notification)
   const Icon = CATEGORY_ICONS[category]
-  const when = notification.at ?? notification.createdAt
   const title =
     notification.title ??
     (notification.key ? t(`notifications.${notification.key}.title`) : "")
   const description =
     notification.description ??
     (notification.key ? t(`notifications.${notification.key}.body`) : "")
+  // Arquivar de novo o que já está arquivado não existe.
+  const actions = (notification.actions ?? []).filter(
+    (action) => action.action !== "dismiss" || !notification.archivedAt
+  )
 
-  function handleClick() {
-    if (!isRead) void markRead(notification.id)
+  function markAsRead() {
+    if (!notification.read) void markRead(notification.id).catch(() => {})
+  }
 
-    const url = notification.url
-    if (!url) return
+  function openUrl(url: string) {
     onDone()
     if (isExternalUrl(url)) {
       window.open(url, "_blank", "noopener,noreferrer")
     } else {
       navigate(url)
     }
+  }
+
+  function handleClick() {
+    markAsRead()
+    if (notification.url) openUrl(notification.url)
+  }
+
+  function handleAction(action: NotificationAction) {
+    if (action.action === "dismiss") {
+      void dismiss(notification).catch(() => {})
+      return
+    }
+    markAsRead()
+    if (action.urlPath) openUrl(action.urlPath)
   }
 
   return (
@@ -302,7 +333,9 @@ function NotificationRow({
           <span
             className={cn(
               "block text-sm leading-snug",
-              isRead ? "text-muted-foreground" : "font-medium text-foreground"
+              notification.read
+                ? "text-muted-foreground"
+                : "font-medium text-foreground"
             )}
           >
             {title}
@@ -313,11 +346,12 @@ function NotificationRow({
             </span>
           )}
           <span className="mt-1 block text-xs text-muted-foreground/80">
-            {when ? `${formatRelative(when, language)} · ` : null}
+            {formatRelative(notification.at, language)}
+            {" · "}
             {t(`navigation.notifications.categories.${category}`)}
           </span>
         </span>
-        {!isRead && (
+        {!notification.read && (
           <>
             <span
               aria-hidden
@@ -327,6 +361,26 @@ function NotificationRow({
           </>
         )}
       </button>
+      {/* Fora do botão da linha: botão dentro de botão não existe em HTML. Alinhado ao
+          texto, depois do ícone (px-4 + size-8 + gap-3). */}
+      {actions.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pr-4 pb-3 pl-15">
+          {actions.map((action) => (
+            <Button
+              key={`${action.action}-${action.title}`}
+              size="sm"
+              variant={action.action === "dismiss" ? "ghost" : "outline"}
+              className={cn(
+                "pointer-coarse:h-10",
+                action.action === "dismiss" && "text-muted-foreground"
+              )}
+              onClick={() => handleAction(action)}
+            >
+              {action.title}
+            </Button>
+          ))}
+        </div>
+      )}
     </li>
   )
 }
@@ -348,7 +402,7 @@ function NotificationsSkeleton() {
   )
 }
 
-function EmptyInbox({ tab }: { tab: InboxTab }) {
+function EmptyInbox({ tab }: { tab: NotificationsTab }) {
   const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center justify-center gap-2.5 px-6 py-10 text-center">

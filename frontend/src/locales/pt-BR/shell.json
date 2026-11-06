@@ -1,4 +1,9 @@
 {
+  "auth": {
+    "errors": {
+      "accessRevoked": "O acesso desta conta foi encerrado. Fale com quem administra a organização."
+    }
+  },
   "navigation": {
     "aria": "Navegação principal",
     "home": "Início",
@@ -17,6 +22,7 @@
     "alerts_other": "{{count}} alertas",
     "forbidden": "Você não tem acesso a essa área. Se precisar, peça a quem administra a conta.",
     "pageActions": "Ações da página",
+    "closePanel": "Fechar painel",
     "documentTitle": "{{title}} · Vekoo",
     "groups": {
       "home": "Início",
@@ -77,15 +83,16 @@
       "ariaUnread_other": "Notificações: {{count}} não lidas",
       "markAllRead": "Marcar todas como lidas",
       "unread": "Não lida",
+      "loadMore": "Ver mais",
       "tabs": {
         "all": "Todas",
         "unread": "Não lidas",
-        "read": "Lidas"
+        "archived": "Arquivadas"
       },
       "empty": {
         "all": "Nenhuma notificação por aqui.",
         "unread": "Tudo lido. Nada novo por enquanto.",
-        "read": "Nenhuma notificação lida ainda."
+        "archived": "O que você dispensar fica guardado aqui."
       },
       "categories": {
         "chat": "Chat",
