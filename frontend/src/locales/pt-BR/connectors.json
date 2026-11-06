@@ -39,8 +39,8 @@
     },
     "types": {
       "whatsapp_web": "WhatsApp do celular",
-      "whatsapp_web_zapi": "WhatsApp do celular, pela Z-API",
-      "zapi": "WhatsApp do celular, pela Z-API",
+      "whatsapp_web_zapi": "WhatsApp do celular, com mais recursos",
+      "zapi": "WhatsApp do celular, com mais recursos",
       "whatsapp_cloud": "WhatsApp oficial",
       "instagram_direct": "Instagram",
       "facebook_messenger": "Messenger",
@@ -165,7 +165,7 @@
         },
         "whatsapp_zapi": {
           "title": "WhatsApp do celular, com mais recursos",
-          "description": "O mesmo jeito de conectar, com mais recursos de mídia e modelos. Funciona pela Z-API e precisa ler um QR code."
+          "description": "O mesmo jeito de conectar, com mais recursos de mídia e modelos. Aqui a conexão é só por QR code."
         },
         "whatsapp_cloud": {
           "title": "WhatsApp oficial",
@@ -760,9 +760,10 @@
         "replace": "Trocar imagem",
         "remove": "Remover",
         "uploaded": "Imagem enviada",
+        "removeTitle": "Remover esta imagem?",
+        "removeDescription": "Ela sai do chat no site na hora. Para usar de novo, você precisa enviar outra vez.",
         "removed": "Imagem removida",
         "failed": "Não deu para enviar a imagem",
-        "removeFailed": "Não deu para remover a imagem",
         "invalidType": "Use uma imagem JPEG, PNG, WebP ou GIF.",
         "tooLarge": "A imagem passa de 2 MB. Tente uma menor."
       },

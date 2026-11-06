@@ -590,6 +590,7 @@ function ImageSlot({
   url: string | null
 }) {
   const { t } = useTranslation()
+  const confirm = useConfirm()
   const input = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const key = connectorWidgetKey(connector.id)
@@ -626,22 +627,22 @@ function ImageSlot({
     }
   }
 
+  // Vale na hora, no site de quem instalou, e o arquivo não fica guardado para desfazer.
   async function remove() {
-    setBusy(true)
-    try {
-      const { widget } = await apiPatch<{ widget: WidgetConfig }>(
-        `/connectors/${connector.id}/widget`,
-        slot === "launcher" ? { launcherImageUrl: null } : { botAvatarUrl: null }
-      )
-      await globalMutate(key, { widget }, { revalidate: false })
-      toast.success(t("connectors.widget.images.removed"))
-    } catch (error) {
-      toast.error(t("connectors.widget.images.removeFailed"), {
-        description: connectorErrorMessage(error, t),
-      })
-    } finally {
-      setBusy(false)
-    }
+    const confirmed = await confirm({
+      title: t("connectors.widget.images.removeTitle"),
+      description: t("connectors.widget.images.removeDescription"),
+      confirmLabel: t("connectors.widget.images.remove"),
+      destructive: true,
+      onConfirm: async () => {
+        const { widget } = await apiPatch<{ widget: WidgetConfig }>(
+          `/connectors/${connector.id}/widget`,
+          slot === "launcher" ? { launcherImageUrl: null } : { botAvatarUrl: null }
+        )
+        await globalMutate(key, { widget }, { revalidate: false })
+      },
+    })
+    if (confirmed) toast.success(t("connectors.widget.images.removed"))
   }
 
   return (
