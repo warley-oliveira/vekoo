@@ -254,15 +254,16 @@ module Inbound
         return
       end
 
-      # `message` nulo é o "Message absent from node": a mensagem ainda vai chegar. Com
-      # outro conteúdo (tipo que não entendemos), não há o que guardar.
-      if message.eql?(MISSING_MESSAGE) && (from_me || message_data.present?)
-        return Rails.logger.warn("No valid message for #{chat.phone_number}")
-      end
-
       missing_message = message.eql?(MISSING_MESSAGE)
       # O conteúdo chega depois, com este mesmo id: a marca de processada não pode barrá-lo.
       Rails.cache.delete(@message_cache_key) if missing_message
+
+      # `message` nulo é o "Message absent from node": a mensagem ainda vai chegar. Com
+      # outro conteúdo (tipo que não entendemos), não há o que guardar.
+      if missing_message && (from_me || message_data.present?)
+        return Rails.logger.warn("No valid message for #{chat.phone_number}")
+      end
+
       # Aviso repetido: continua aguardando, sem tocar no marcador.
       return if existing && missing_message
 
@@ -272,13 +273,14 @@ module Inbound
 
       first_message = existing ? !ChatMessage::Base.where(chat_id: chat.id, :id.ne => existing.id).exists? : first_message?(chat)
 
-      existing&.update(content: message, missing_message: false)
+      reply_to_message_id = resolve_reply_to(chat, context_message[:stanzaId])
+      existing&.update(content: message, missing_message: false, context_message: context_message, reply_to_message_id: reply_to_message_id)
       history = existing || create_text_message(
         chat, message,
         message_id: message_id,
         from_me: from_me,
         context_message: context_message,
-        reply_to_message_id: resolve_reply_to(chat, context_message[:stanzaId]),
+        reply_to_message_id: reply_to_message_id,
         missing_message: missing_message || nil,
         created_at: created_at
       )

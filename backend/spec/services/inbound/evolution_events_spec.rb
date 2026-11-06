@@ -1110,6 +1110,36 @@ RSpec.describe Inbound::EvolutionEvents do
         expect(messages_of(chat_of).count).to eq(0)
       end
 
+      it "mensagem nossa que estava ausente entra quando o conteúdo chega, e pausa a automação" do
+        absent(from_me: true)
+
+        upsert(from_me: true, message: { conversation: "Já te atendo" })
+
+        expect(messages_of(chat_of).pluck(:content)).to eq([ "Já te atendo" ])
+        expect(chat_of.automation_enabled).to be(false)
+      end
+
+      it "evento sem conteúdo que entendemos não barra o que chega depois com o mesmo id" do
+        upsert(message: { messageContextInfo: { deviceListMetadata: {} } })
+
+        upsert(message: { conversation: "Agora sim" })
+
+        expect(messages_of(chat_of).pluck(:content)).to eq([ "Agora sim" ])
+      end
+
+      it "o conteúdo que preenche pode ser uma resposta citada" do
+        absent
+        quoted = create(:chat_text_message, chat: chat_of, role: "assistant", message_id: "CITADA")
+
+        upsert(message: { extendedTextMessage: { text: "Quero esse", contextInfo: { stanzaId: "CITADA" } } })
+
+        expect(message).to have_attributes(
+          content: "Quero esse",
+          reply_to_message_id: quoted.id.to_s,
+          context_message: include("stanzaId" => "CITADA")
+        )
+      end
+
       # O job não grava por cima de um id que já existe: sem tirar o marcador, a mídia sumiria.
       context "quando o conteúdo não é texto" do
         it "a imagem entra no lugar do marcador" do
