@@ -64,8 +64,12 @@ module Products
 
     # Aceita categorias injetadas (o importador já as tem em mão) para evitar N+1.
     # Formato: array de [path, name].
+    #
+    # Ordenado porque o banco não promete ordem nenhuma aqui: o mesmo item daria textos
+    # diferentes de uma leitura para outra, e o `source_hash` mudaria com eles, pagando a
+    # OpenAI de novo por um item que não mudou.
     def categories
-      @categories ||= item.persisted? ? item.categories.pluck(:path, :name) : []
+      @sorted_categories ||= (@categories || (item.persisted? ? item.categories.pluck(:path, :name) : [])).sort
     end
 
     def category_paths
@@ -87,7 +91,7 @@ module Products
       fields = item.custom_fields || {}
       return [] if fields.empty?
 
-      field_definitions.filter_map { |key| fields[key].presence }.map(&:to_s)
+      field_definitions.sort.filter_map { |key| fields[key].presence }.map(&:to_s)
     end
   end
 end

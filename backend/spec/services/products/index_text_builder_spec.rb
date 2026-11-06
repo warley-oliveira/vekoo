@@ -72,6 +72,30 @@ RSpec.describe Products::IndexTextBuilder do
     end
   end
 
+  # O banco não promete ordem, e o `source_hash` sai deste texto: se ele variasse entre
+  # leituras, o item seria reenviado à OpenAI sem ter mudado.
+  describe "ordem estável" do
+    let(:item) do
+      build(:product_item, organization: organization, title: "Caneca", custom_fields: { "cor" => "Azul", "material" => "Barro" })
+    end
+
+    it "não depende da ordem das categorias" do
+      one = described_class.new(item, field_definitions: [], categories: [ [ "casa", "Casa" ], [ "presentes", "Presentes" ] ])
+      other = described_class.new(item, field_definitions: [], categories: [ [ "presentes", "Presentes" ], [ "casa", "Casa" ] ])
+
+      expect(one.secondary).to eq(other.secondary)
+      expect(one.embedding_text).to eq(other.embedding_text)
+    end
+
+    it "não depende da ordem dos campos" do
+      one = described_class.new(item, field_definitions: %w[cor material], categories: [])
+      other = described_class.new(item, field_definitions: %w[material cor], categories: [])
+
+      expect(one.secondary).to eq(other.secondary)
+      expect(one.embedding_text).to eq(other.embedding_text)
+    end
+  end
+
   describe "categorias" do
     it "lê do banco quando o item já existe" do
       item = create(:product_item, organization: organization, title: "Cadeira")
