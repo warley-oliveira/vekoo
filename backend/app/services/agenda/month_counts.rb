@@ -1,7 +1,7 @@
 module Agenda
-  # Quantos eventos há em cada dia, para os pontinhos do mini calendário. Conta no banco, sem
-  # carregar documento nenhum, e no fuso do calendário: às 22h de um dia em São Paulo, já é o dia
-  # seguinte em UTC.
+  # Quantos eventos há em cada dia, para os pontinhos do mini calendário. Os agendamentos, contados
+  # no banco, no fuso da organização: às 22h de um dia em São Paulo, já é o dia seguinte em UTC. As
+  # aulas, calculadas, no fuso do calendário da turma, que é o dia em que a aula acontece.
   class MonthCounts
     PAST_TTL = 24.hours
     CURRENT_TTL = 2.minutes
@@ -13,7 +13,10 @@ module Agenda
     end
 
     # @return [Hash] { "2026-02-01" => 3 }
+    # @raise [EventQuery::RangeTooLong] as aulas são calculadas dia a dia, e aqui também
     def call
+      raise EventQuery::RangeTooLong if range_end - range_start > EventQuery::MAX_RANGE
+
       Rails.cache.fetch(cache_key, expires_in: ttl) do
         bookings.merge(class_sessions) { |_day, booked, classes| booked + classes }
       end

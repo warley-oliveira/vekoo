@@ -29,7 +29,7 @@ module Agenda
       start_at = SessionGeneratorService.virtual_start(group, parsed)
       return nil unless start_at
 
-      new(group, session: group.class_sessions.where(start: start_at).take, virtual_start: start_at, virtual_id: id)
+      new(group, session: group.class_sessions.where(slot_start: start_at).take, virtual_start: start_at, virtual_id: id)
     end
     private_class_method :resolve_virtual
 
@@ -61,6 +61,8 @@ module Agenda
     end
 
     def slot
+      return session.schedule_slot if session
+
       { day_of_week: start_at.wday, window_start: start_at.strftime("%H:%M") }
     end
 

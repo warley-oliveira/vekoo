@@ -136,7 +136,8 @@ module Agenda
       slots = params[:slots]
       return [ @slot.slot ] unless slots.is_a?(Array) && slots.any?
 
-      slots.map { |slot| { day_of_week: slot[:day_of_week].to_i, window_start: slot[:window_start].to_s } }
+      # O que não for um objeto vira um horário que a grade não tem, e cai no 422 de quem chamou.
+      slots.map { |slot| slot.respond_to?(:permit) ? { day_of_week: slot[:day_of_week].to_i, window_start: slot[:window_start].to_s } : {} }
     end
   end
 end

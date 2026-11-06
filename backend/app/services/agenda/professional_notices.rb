@@ -25,6 +25,12 @@ module Agenda
       end
     end
 
+    def rescheduled(booking)
+      deliver(booking, title: "agenda.notices.rescheduled_title") do |at|
+        I18n.t("agenda.notices.rescheduled", contact: booking.user_name.to_s, at: at)
+      end
+    end
+
     def reminder(booking, message)
       deliver(booking, title: "agenda.notices.reminder_title") { message }
     end

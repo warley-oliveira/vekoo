@@ -1,6 +1,7 @@
 module Agenda
   # As aulas de uma turma em um período, calculadas da grade, sem gravar nada. Só as exceções
-  # (cancelada, com observação, com presença) têm documento, e entram no lugar da aula calculada.
+  # (cancelada, com observação, com presença, movida, avulsa) têm documento: entram na lista, e o
+  # horário da grade que ocupam deixa de ser calculado.
   #
   #   Agenda::SessionGeneratorService.new(class_group, from_date, to_date).call
   #
@@ -48,28 +49,49 @@ module Agenda
     # @return [Array<Hash>] no mesmo formato de `ClassSessionSerializer.one`: chaves em camelCase
     #   e datas em milissegundos.
     def call
-      return [] unless @class_group.active && @class_group.schedule.present?
+      return [] unless @class_group.active
+
+      preload_enrollments
+      recorded = load_recorded
+      taken = recorded.to_set { |session| session.slot_start.to_i }
+      events = recorded.select { |session| in_period?(session.start) }.map { |session| ClassSessionSerializer.one(session) }
 
       first_day = [ @from_date, @class_group.start_date ].compact.max
       last_day = [ @to_date, @class_group.end_date ].compact.min
-      return [] if first_day > last_day
-
-      preload_enrollments
-      overrides = load_overrides(first_day, last_day)
-      events = []
 
       each_occurrence(last_day) do |date, window|
         next if date < first_day
 
         start_at = local_time(date, window["start"])
-        override = overrides[start_at.to_i]
-        events << (override ? ClassSessionSerializer.one(override) : virtual_event(start_at, end_at(date, window, start_at)))
+        events << virtual_event(start_at, end_at(date, window, start_at)) unless taken.include?(start_at.to_i)
       end
 
-      events
+      events.sort_by { |event| event[:start] }
     end
 
     private
+
+    # As aulas gravadas que caem no período, ou cujo horário da grade cai nele. A origem só as via
+    # quando coincidiam com a grade: a aula avulsa nunca aparecia no calendário, e a aula movida
+    # sumia, com o horário antigo voltando como se nada tivesse mudado.
+    def load_recorded
+      @class_group.class_sessions.any_of(
+        { :start.gte => period_start, :start.lt => period_end },
+        { :slot_start.gte => period_start, :slot_start.lt => period_end }
+      ).to_a
+    end
+
+    def period_start
+      @period_start ||= @zone.local(@from_date.year, @from_date.month, @from_date.day)
+    end
+
+    def period_end
+      @period_end ||= @zone.local(@to_date.year, @to_date.month, @to_date.day) + 1.day
+    end
+
+    def in_period?(time)
+      time >= period_start && time < period_end
+    end
 
     # A recorrência conta a partir de uma âncora fixa: o início da turma, ou a data em que ela foi
     # criada. A origem contava a partir do início do período pedido, e o resultado mudava conforme
@@ -126,13 +148,6 @@ module Agenda
       return local_time(date, window["end"]) if window["end"].present?
 
       start_at + (@class_group.default_duration_minutes || 60).minutes
-    end
-
-    def load_overrides(first_day, last_day)
-      @class_group.class_sessions
-                  .where(:start.gte => @zone.local(first_day.year, first_day.month, first_day.day),
-                         :start.lt => @zone.local(last_day.year, last_day.month, last_day.day) + 1.day)
-                  .index_by { |session| session.start.to_i }
     end
 
     def virtual_event(start_at, finish_at)

@@ -261,6 +261,39 @@ RSpec.describe Agenda::Booking do
       expect { booking }.not_to raise_error
     end
 
+    describe "aviso de remarcação" do
+      let(:record) { booking(chat: chat, professional: professional) }
+
+      before { record && AccountNotice.where(account_id: account.id).destroy_all }
+
+      it "nasce desligado, como na origem" do
+        record.update!(start: starts + 1.day, end: starts + 1.day + 1.hour)
+
+        expect(AccountNotice.where(account_id: account.id)).to be_empty
+      end
+
+      it "ligado no calendário, avisa no idioma da pessoa. A origem guardava a opção e não fazia nada" do
+        account.update!(locale: "en")
+        calendar.update!(professional_event_notifications: [ { "event" => "rescheduled", "push" => true } ])
+
+        Agenda::Booking.find(record.id).update!(start: starts + 1.day, end: starts + 1.day + 1.hour)
+
+        notice = AccountNotice.where(account_id: account.id).sole
+        expect(notice.title).to eq("Booking rescheduled")
+        expect(notice.description).to include("Maria Souza")
+      end
+
+      it "`skip_professional_notifications` também cala este aviso" do
+        calendar.update!(professional_event_notifications: [ { "event" => "rescheduled", "push" => true } ])
+        loaded = Agenda::Booking.find(record.id)
+        loaded.skip_professional_notifications = true
+
+        loaded.update!(start: starts + 1.day, end: starts + 1.day + 1.hour)
+
+        expect(AccountNotice.where(account_id: account.id)).to be_empty
+      end
+    end
+
     it "enfileira o WhatsApp na criação, no cancelamento e na remarcação" do
       record = nil
 

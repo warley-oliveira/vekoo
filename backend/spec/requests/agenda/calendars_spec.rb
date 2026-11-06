@@ -409,6 +409,15 @@ RSpec.describe "Agenda: calendários", type: :request do
         expect(calendar.reload.attendance_sequences).to eq([])
       end
 
+      it "sem o campo é 400, e não apaga nada" do
+        calendar.update!(attendance_sequences: [ { "id" => "velha", "name" => "Velha", "trigger" => "show" } ])
+
+        put "/calendars/#{calendar.id}/attendance-sequences", params: {}, headers: headers, as: :json
+
+        expect(response).to have_http_status(:bad_request)
+        expect(calendar.reload.attendance_sequences.map { |item| item["id"] }).to eq([ "velha" ])
+      end
+
       it "sequência inválida é 422" do
         put "/calendars/#{calendar.id}/attendance-sequences", params: { attendanceSequences: [ sequence.merge(trigger: "talvez") ] }, headers: headers, as: :json
 

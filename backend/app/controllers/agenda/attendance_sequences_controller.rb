@@ -10,7 +10,10 @@ module Agenda
       render json: { attendanceSequences: CalendarSerializer.sequences(@calendar) }
     end
 
+    # Sem o campo é erro de quem chamou: tomar a falta dele por lista vazia apagaria tudo.
     def update
+      raise ActionController::ParameterMissing.new(:attendance_sequences) unless params.key?(:attendance_sequences)
+
       if @calendar.update(attendance_sequences: normalized_sequences)
         render json: { attendanceSequences: CalendarSerializer.sequences(@calendar) }
       else

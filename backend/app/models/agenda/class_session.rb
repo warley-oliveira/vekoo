@@ -12,6 +12,9 @@ module Agenda
     field :title, type: String
     field :notes, type: String
     field :color, type: String
+    # O horário da grade que esta aula ocupa. Mover a aula não muda isto: é o que impede o horário
+    # antigo de voltar como aula calculada, e o que mantém nela os inscritos daquele horário.
+    field :slot_start, type: Time
 
     belongs_to :class_group, class_name: "Agenda::ClassGroup", inverse_of: :class_sessions
     belongs_to :calendar, class_name: "Agenda::Calendar", inverse_of: :class_sessions, optional: true
@@ -19,9 +22,11 @@ module Agenda
 
     # Uma aula por horário na turma. Dois cliques em uma aula calculada materializam uma só.
     index({ class_group_id: 1, start: 1 }, { unique: true })
+    index({ class_group_id: 1, slot_start: 1 })
     index({ organization_id: 1, start: 1 })
 
     before_validation :inherit_from_class_group
+    before_validation { self.slot_start ||= start }
 
     validates :organization_id, presence: true
     validates :start, :end, presence: true
@@ -60,8 +65,13 @@ module Agenda
       start&.in_time_zone(zone)
     end
 
+    def moved?
+      slot_start != start
+    end
+
+    # O horário da grade, e não o de agora: os inscritos e o tempo real são por este.
     def schedule_slot
-      local = local_start
+      local = slot_start.in_time_zone(zone)
       { day_of_week: local.wday, window_start: local.strftime("%H:%M") }
     end
 

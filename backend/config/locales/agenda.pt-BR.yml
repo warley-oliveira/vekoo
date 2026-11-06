@@ -154,6 +154,8 @@ pt-BR:
       created_with_service: "Você tem um novo agendamento de %{service} com %{contact} em %{at}."
       canceled_title: "Agendamento cancelado"
       canceled: "O agendamento com %{contact} em %{at} foi cancelado."
+      rescheduled_title: "Agendamento remarcado"
+      rescheduled: "O agendamento com %{contact} mudou de horário: agora é em %{at}."
       reminder_title: "Lembrete de agendamento"
       reminder_default: "Você tem um agendamento com {{nome}} em {{data}} às {{hora}}."
       open_calendar: "Abrir agenda"

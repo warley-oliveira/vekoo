@@ -342,6 +342,7 @@ module Agenda
         cancel_contact_reminders
         cancel_professional_reminders
         schedule_professional_reminders
+        ProfessionalNotices.rescheduled(self) if professional_push_enabled?("rescheduled")
         notify_professional_whatsapp("rescheduled")
         cancel_fallback_enroll
         schedule_fallback_enroll
@@ -374,7 +375,7 @@ module Agenda
     end
 
     def professional_push_enabled?(event)
-      calendar.professional_event_rule(event)["push"]
+      !skip_professional_notifications && calendar.professional_event_rule(event)["push"]
     end
 
     # O Google é um espelho, feito em job. Fora do ar, ou sem credencial, a agenda segue igual.

@@ -4,10 +4,12 @@ module Agenda
   class CalendarEventsController < BaseController
     before_action :set_booking, only: %i[update destroy enroll_sequence unenroll_sequence]
 
+    rescue_from EventQuery::RangeTooLong do
+      render_error(status: :unprocessable_entity, code: "rangeTooLong", message: t("agenda.errors.range_too_long"))
+    end
+
     def index
       render json: { events: EventQuery.new(current_organization, event_filters).call }
-    rescue EventQuery::RangeTooLong
-      render_error(status: :unprocessable_entity, code: "rangeTooLong", message: t("agenda.errors.range_too_long"))
     end
 
     # Os dias com evento, para o mini calendário.

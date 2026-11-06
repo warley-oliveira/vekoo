@@ -260,6 +260,15 @@ RSpec.describe "Agenda: turmas", type: :request do
         expect(json["error"]["field"]).to eq("start")
       end
 
+      it "a aula avulsa aparece no calendário" do
+        post base, params: { classSession: { start: "2030-01-09 18:00", end: "2030-01-09 19:00", title: "Aula extra" } }, headers: headers, as: :json
+        created = json["id"]
+
+        get "/calendar-events", params: { start: "2030-01-09", end: "2030-01-09 23:59" }, headers: headers
+
+        expect(json["events"].map { |event| event["id"] }).to include(created)
+      end
+
       it "fim antes do início é 422" do
         post base, params: { classSession: { start: "2030-01-09 18:00", end: "2030-01-09 17:00" } }, headers: headers, as: :json
 
@@ -290,6 +299,22 @@ RSpec.describe "Agenda: turmas", type: :request do
         expect {
           patch "#{base}/#{virtual_id}", params: { classSession: { notes: "1" } }, headers: headers, as: :json
         }.to have_broadcasted_to(AgendaChannel.organization_stream(organization.id, "agenda")).at_least(:once).with(hash_including(type: "class_session"))
+      end
+
+      it "mover a aula: o calendário mostra uma só, no horário novo, e ela leva os inscritos" do
+        create(:agenda_class_enrollment, class_group: group, chat: chat, schedule_day_of_week: 1, schedule_window_start: "08:00")
+
+        patch "#{base}/#{virtual_id}", params: { classSession: { start: "2030-01-07 16:00", end: "2030-01-07 17:00" } }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:ok)
+        moved = json["id"]
+        expect(json).to include("scheduleDayOfWeek" => 1, "scheduleWindowStart" => "08:00", "enrollmentCount" => 1)
+
+        get "/calendar-events", params: { start: "2030-01-07", end: "2030-01-07 23:59" }, headers: headers
+        expect(json["events"].sole).to include("id" => moved, "start" => Time.utc(2030, 1, 7, 19, 0).to_i * 1000)
+
+        get "/class-sessions/#{moved}/attendances", headers: headers, as: :json
+        expect(json["attendances"].sole).to include("chatId" => chat.id.to_s)
       end
     end
 
@@ -530,6 +555,13 @@ RSpec.describe "Agenda: turmas", type: :request do
 
       it "horário fora da grade é 422" do
         post base, params: { chatId: guest_chat.id.to_s, enrollAll: true, slots: [ { dayOfWeek: 2, windowStart: "03:00" } ] }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json.dig("error", "code")).to eq("invalidSlot")
+      end
+
+      it "horário que nem é um objeto é 422, e não 500" do
+        post base, params: { chatId: guest_chat.id.to_s, enrollAll: true, slots: [ "qualquer" ] }, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json.dig("error", "code")).to eq("invalidSlot")

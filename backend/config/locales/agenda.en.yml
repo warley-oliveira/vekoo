@@ -136,6 +136,8 @@ en:
       created_with_service: "You have a new %{service} booking with %{contact} on %{at}."
       canceled_title: "Booking canceled"
       canceled: "The booking with %{contact} on %{at} was canceled."
+      rescheduled_title: "Booking rescheduled"
+      rescheduled: "The booking with %{contact} was moved to %{at}."
       reminder_title: "Booking reminder"
       reminder_default: "You have a booking with {{nome}} on {{data}} at {{hora}}."
       open_calendar: "Open calendar"

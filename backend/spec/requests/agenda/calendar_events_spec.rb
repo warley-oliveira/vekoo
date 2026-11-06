@@ -522,6 +522,13 @@ RSpec.describe "Agenda: eventos do calendário", type: :request do
 
       expect(json).to eq({})
     end
+
+    it "intervalo longo demais é 422, porque as aulas são calculadas dia a dia" do
+      get "/calendar-events/month-counts", params: { start: "2020-01-01", end: "2030-01-01" }, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json.dig("error", "code")).to eq("rangeTooLong")
+    end
   end
 
   describe "GET /calendar-events/filters" do

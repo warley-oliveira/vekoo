@@ -23,14 +23,15 @@ module Agenda
 
     def move_future_sessions(mapping)
       @class_group.class_sessions.where(:start.gt => Time.current).each do |session|
-        local = session.start.in_time_zone(@zone)
+        local = session.slot_start.in_time_zone(@zone)
         window = mapping.dig(local.wday, local.strftime("%H:%M"))
         next unless window
 
         new_start = at(local, window["start"])
         new_end = window["end"].present? ? at(local, window["end"]) : new_start + (@class_group.default_duration_minutes || 60).minutes
 
-        session.update(start: new_start, end: new_end)
+        # A aula movida à mão fica onde a pessoa pôs: muda só o horário da grade que ela ocupa.
+        session.update(session.moved? ? { slot_start: new_start } : { slot_start: new_start, start: new_start, end: new_end })
       end
     end
 

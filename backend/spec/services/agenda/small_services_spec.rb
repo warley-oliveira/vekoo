@@ -229,6 +229,26 @@ RSpec.describe "Serviços pequenos da agenda" do
 
       expect { described_class.new(group, old_schedule).call }.not_to(change { session.reload.updated_at })
     end
+
+    it "a aula movida à mão fica onde está, e passa a ocupar o horário novo da grade" do
+      future = calendar.zone.local(2030, 1, 7, 8, 0)
+      moved_to = calendar.zone.local(2030, 1, 8, 15, 0)
+      session = create(:agenda_class_session, class_group: group, start: future, end: future + 1.hour)
+      session.update!(start: moved_to, end: moved_to + 1.hour)
+
+      reschedule("10:00")
+
+      expect(session.reload).to have_attributes(start: moved_to, end: moved_to + 1.hour, slot_start: calendar.zone.local(2030, 1, 7, 10, 0))
+    end
+
+    it "a aula avulsa fora da grade não se mexe" do
+      extra = calendar.zone.local(2030, 1, 8, 15, 0)
+      session = create(:agenda_class_session, class_group: group, start: extra, end: extra + 1.hour)
+
+      reschedule("10:00")
+
+      expect(session.reload).to have_attributes(start: extra, slot_start: extra)
+    end
   end
 
   describe Agenda::SessionSlot do
@@ -274,6 +294,21 @@ RSpec.describe "Serviços pequenos da agenda" do
       expect(Agenda::ClassSession.count).to eq(1)
     ensure
       Agenda::ClassSession.remove_indexes
+    end
+
+    it "a aula movida continua achada pelo id calculado, e com os inscritos do horário da grade" do
+      enrollment = create(:agenda_class_enrollment, class_group: group, schedule_day_of_week: 1, schedule_window_start: "08:00")
+      session = described_class.resolve(organization.id, virtual_id).materialize!
+      moved_to = calendar.zone.local(2030, 1, 8, 15, 0)
+      session.update!(start: moved_to, end: moved_to + 1.hour)
+
+      slot = described_class.resolve(organization.id, virtual_id)
+
+      expect(slot.session).to eq(session)
+      expect(slot.slot).to eq(day_of_week: 1, window_start: "08:00")
+      expect(slot.enrollments.to_a).to eq([ enrollment ])
+      expect { slot.materialize! }.not_to(change { Agenda::ClassSession.count })
+      expect(session.reload.enrollment_count).to eq(1)
     end
 
     it "não acha turma de outra organização, nem horário fora da grade" do

@@ -76,6 +76,56 @@ RSpec.describe Agenda::SessionGeneratorService do
       expect(events.first).to include(virtual: false, status: "canceled")
     end
 
+    describe "aula gravada fora da grade" do
+      let(:monday) { calendar.zone.local(2030, 1, 7, 19, 0) }
+
+      it "a aula avulsa aparece, junto das calculadas e em ordem. A origem nunca a mostrava" do
+        extra_start = calendar.zone.local(2030, 1, 8, 10, 0)
+        extra = create(:agenda_class_session, class_group: group, start: extra_start, end: extra_start + 1.hour)
+
+        events = generate(Date.new(2030, 1, 7), Date.new(2030, 1, 13))
+
+        expect(events.map { |event| event[:id] }).to eq([ "vcs_#{group.id}_20300107_1900", extra.id.to_s, "vcs_#{group.id}_20300109_1900" ])
+      end
+
+      it "a aula movida aparece no horário novo, e o antigo não volta como calculada" do
+        session = create(:agenda_class_session, class_group: group, start: monday, end: monday + 1.hour)
+        session.update!(start: monday + 2.hours, end: monday + 3.hours)
+
+        events = generate(Date.new(2030, 1, 7), Date.new(2030, 1, 7))
+
+        expect(events.map { |event| event[:id] }).to eq([ session.id.to_s ])
+        expect(Time.at(events.first[:start] / 1000).utc).to eq((monday + 2.hours).utc)
+        expect(events.first).to include(scheduleDayOfWeek: 1, scheduleWindowStart: "19:00")
+      end
+
+      it "a aula movida para outra semana sai desta e entra na de lá" do
+        session = create(:agenda_class_session, class_group: group, start: monday, end: monday + 1.hour)
+        session.update!(start: monday + 8.days, end: monday + 8.days + 1.hour)
+
+        this_week = generate(Date.new(2030, 1, 7), Date.new(2030, 1, 7))
+        that_day = generate(Date.new(2030, 1, 15), Date.new(2030, 1, 15))
+
+        expect(this_week).to be_empty
+        expect(that_day.map { |event| event[:id] }).to eq([ session.id.to_s ])
+      end
+
+      it "a reposição depois do fim da turma continua aparecendo" do
+        group.update!(end_date: Date.new(2030, 1, 9))
+        extra_start = calendar.zone.local(2030, 1, 20, 10, 0)
+        extra = create(:agenda_class_session, class_group: group, start: extra_start, end: extra_start + 1.hour)
+
+        expect(generate(Date.new(2030, 1, 20), Date.new(2030, 1, 20)).map { |event| event[:id] }).to eq([ extra.id.to_s ])
+      end
+
+      it "turma inativa esconde também o que foi gravado" do
+        create(:agenda_class_session, class_group: group, start: monday, end: monday + 1.hour)
+        group.update!(active: false)
+
+        expect(generate(Date.new(2030, 1, 7), Date.new(2030, 1, 7))).to be_empty
+      end
+    end
+
     describe "contagem de inscritos" do
       def enroll(**attributes)
         create(:agenda_class_enrollment, { class_group: group }.merge(attributes))
