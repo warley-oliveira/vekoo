@@ -1,0 +1,464 @@
+{
+  "pipelinesAdmin": {
+    "routes": {
+      "settings": "Ajustes do quadro",
+      "triggers": "Gatilhos",
+      "goals": "Metas",
+      "fields": "Campos",
+      "labels": "Etiquetas",
+      "metrics": "Métricas",
+      "archived": "Arquivados"
+    },
+    "nav": {
+      "aria": "Administração de {{name}}",
+      "settings": "Ajustes",
+      "triggers": "Gatilhos",
+      "goals": "Metas",
+      "fields": "Campos",
+      "labels": "Etiquetas",
+      "metrics": "Métricas",
+      "archived": "Arquivados"
+    },
+    "common": {
+      "new": "Novo",
+      "close": "Fechar",
+      "clearSearch": "Limpar a busca",
+      "any": "qualquer"
+    },
+    "errors": {
+      "generic": "Não deu certo. Tente de novo em instantes.",
+      "forbidden": "Você não tem permissão para fazer isso neste quadro.",
+      "network": "Sem conexão com o servidor. Confira a internet e tente de novo."
+    },
+    "boardTypes": {
+      "standard": "Quadro padrão",
+      "crm": "Quadro de vendas"
+    },
+    "frame": {
+      "notFound": {
+        "title": "Quadro não encontrado",
+        "description": "Ele pode ter sido excluído, ou o endereço está errado.",
+        "action": "Ver quadros"
+      },
+      "archived": {
+        "title": "Este quadro está arquivado",
+        "description": "Ele saiu do menu, e os gatilhos e o auto-arquivamento não rodam em quadro arquivado."
+      }
+    },
+    "icons": {
+      "kanban": "Quadro",
+      "hand-coins": "Dinheiro na mão",
+      "trending-up": "Crescimento",
+      "target": "Alvo",
+      "trophy": "Troféu",
+      "handshake": "Aperto de mão",
+      "wallet": "Carteira",
+      "receipt": "Recibo",
+      "shopping-bag": "Sacola",
+      "store": "Loja",
+      "package-check": "Pacote",
+      "truck": "Entrega",
+      "headset": "Atendimento",
+      "message-circle": "Mensagem",
+      "phone": "Telefone",
+      "mail": "E-mail",
+      "megaphone": "Megafone",
+      "user-plus": "Nova pessoa",
+      "calendar-check": "Agenda",
+      "clipboard-list": "Prancheta",
+      "list-checks": "Lista de tarefas",
+      "briefcase-business": "Maleta",
+      "star": "Estrela",
+      "heart": "Coração",
+      "rocket": "Foguete",
+      "wrench": "Ferramenta",
+      "scissors": "Tesoura",
+      "shirt": "Roupa",
+      "utensils": "Talheres",
+      "stethoscope": "Saúde",
+      "graduation-cap": "Educação",
+      "house": "Casa"
+    },
+    "settings": {
+      "pageDescription": "O que este quadro é e como ele funciona. Cada assunto salva sozinho.",
+      "identity": {
+        "title": "Identidade",
+        "description": "Como o quadro aparece no menu e nas listas.",
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Vendas no atacado",
+        "nameRequired": "Dê um nome ao quadro.",
+        "nameTooLong": "Use até 120 caracteres.",
+        "noName": "Sem nome",
+        "descriptionLabel": "Descrição",
+        "descriptionPlaceholder": "Para que serve este quadro?",
+        "color": "Cor",
+        "noColor": "Sem cor",
+        "clearColor": "Tirar a cor",
+        "icon": "Ícone",
+        "submit": "Salvar identidade",
+        "saved": "Identidade do quadro salva."
+      },
+      "deals": {
+        "title": "Pontuação e negócios",
+        "description": "O que chama a atenção no card: o negócio que esfriou e a pontuação de cada contato.",
+        "rotting": "Negócio esfria depois de quantos dias?",
+        "rottingHint": "Tempo parado na mesma etapa, sem negócio fechado. Vazio: nunca esfria.",
+        "wholeDays": "Use um número inteiro de dias.",
+        "scoreField": "Campo da pontuação",
+        "scoreHint": "Um campo de número do quadro. O card mostra uma marca com a faixa em que ele está.",
+        "scoreNoFields": "Crie um campo de número em Campos para usar a pontuação.",
+        "scoreOff": "Sem pontuação",
+        "scoreLow": "Até aqui é frio",
+        "scoreHigh": "A partir daqui é quente",
+        "scoreOrder": "Precisa ser maior que o limite de frio.",
+        "scorePreview": "Abaixo de {{low}}: frio. De {{low}} a {{high}}: morno. Acima de {{high}}: quente.",
+        "submit": "Salvar pontuação",
+        "saved": "Pontuação e negócios salvos."
+      },
+      "visibility": {
+        "title": "Quem vê os cards",
+        "description": "Vale para o quadro, a lista, as métricas e os gatilhos. A dona da organização sempre vê tudo.",
+        "mode": "Neste quadro",
+        "modeAll": "Todo mundo vê todos os cards",
+        "modeAllHint": "Quem tem acesso a pipelines vê o quadro inteiro.",
+        "modeAssigned": "Cada pessoa vê só os cards dela",
+        "modeAssignedHint": "Só os grupos liberados abaixo continuam vendo tudo.",
+        "roles": "Grupos que continuam vendo tudo",
+        "rolesHint": "Inclua o seu grupo: só quem vê todos os cards pode mudar esta regra.",
+        "rolesPlaceholder": "Escolha os grupos",
+        "rolesRequired": "Escolha ao menos um grupo.",
+        "unassignedNotice": "Cards sem responsável aparecem só para os grupos liberados. Quem está restrito passa a ser o responsável pelo card que cria sem atribuir.",
+        "noRolesLeft": "O último grupo liberado foi apagado. O quadro continua restrito, e só a dona da organização vê tudo. Escolha um grupo para liberar outras pessoas.",
+        "restrictedViewer": "Neste quadro, você vê só os cards atribuídos a você. Quem vê todos os cards é que pode mudar esta regra.",
+        "needsSettings": "Para mudar esta regra, é preciso ter acesso às configurações da organização: é lá que os grupos moram.",
+        "submit": "Salvar visibilidade",
+        "saved": "Visibilidade salva."
+      },
+      "archive": {
+        "title": "Arquivamento automático",
+        "description": "O que sai do quadro sozinho. Nada é apagado: fica em Arquivados, e dá para restaurar.",
+        "staleLabel": "Arquivar card parado há quantos dias?",
+        "staleHint": "Conta da última alteração no card. Vazio: nunca arquiva sozinho.",
+        "never": "Nunca",
+        "stalePreview_one": "Hoje, {{count}} card passaria dessa regra e seria arquivado na próxima varredura.",
+        "stalePreview_other": "Hoje, {{count}} cards passariam dessa regra e seriam arquivados na próxima varredura.",
+        "daysRange": "Use um número inteiro de 1 a {{max}}.",
+        "dealLabel": "Ao marcar um negócio como ganho ou perdido",
+        "deal": {
+          "manual": {
+            "label": "Deixar no quadro",
+            "hint": "O card continua à vista até alguém arquivar."
+          },
+          "immediate": {
+            "label": "Arquivar na hora",
+            "hint": "O card sai do quadro assim que o negócio fecha."
+          },
+          "auto_archive_days": {
+            "label": "Arquivar depois de alguns dias",
+            "hint": "O card fica à vista por um tempo e depois sai sozinho."
+          }
+        },
+        "dealDays": "Arquivar depois de quantos dias?",
+        "dealDaysRequired": "Diga depois de quantos dias.",
+        "submit": "Salvar arquivamento",
+        "saved": "Arquivamento salvo."
+      },
+      "danger": {
+        "title": "Tirar o quadro de cena",
+        "description": "Arquivar tem volta. Excluir, não.",
+        "archive": "Arquivar quadro",
+        "archiveHint": "Sai do menu e para de rodar gatilhos. Nada se perde.",
+        "archiveTitle": "Arquivar {{name}}?",
+        "archiveDescription": "O quadro sai do menu e os gatilhos param de rodar. Os cards ficam guardados, e dá para tirar do arquivo quando quiser.",
+        "archived": "{{name}} foi para o arquivo.",
+        "unarchive": "Tirar do arquivo",
+        "unarchiveHint": "O quadro volta para o menu, com tudo como estava.",
+        "unarchiveTitle": "Tirar {{name}} do arquivo?",
+        "unarchiveDescription": "O quadro volta para o menu e os gatilhos voltam a rodar.",
+        "unarchived": "{{name}} voltou para o menu.",
+        "delete": "Excluir quadro",
+        "deleteHint": "Leva etapas, cards, gatilhos, metas e filtros. Não tem volta.",
+        "deleteTitle": "Excluir {{name}}?",
+        "deleteDescription": "Vão junto {{stages}}, {{cards}}, os gatilhos, as metas e os filtros salvos. Isso não tem volta.",
+        "stagesCount_one": "{{count}} etapa",
+        "stagesCount_other": "{{count}} etapas",
+        "cardsCount_one": "{{count}} card",
+        "cardsCount_other": "{{count}} cards",
+        "deleteWord": "EXCLUIR",
+        "deleted": "{{name}} foi excluído."
+      }
+    },
+    "stages": {
+      "title": "Etapas",
+      "description": "O caminho que um card percorre. Arraste para mudar a ordem.",
+      "create": "Criar etapa",
+      "createTitle": "Nova etapa",
+      "createDescription": "Depois de criar, você já pode montar o checklist dela.",
+      "submitCreate": "Criar etapa",
+      "submitEdit": "Salvar etapa",
+      "created": "Etapa {{name}} criada.",
+      "saved": "Etapa {{name}} salva.",
+      "edit": "Editar",
+      "drag": "Mudar a posição de {{name}}",
+      "actionsOf": "Ações de {{name}}",
+      "empty": {
+        "title": "Este quadro ainda não tem etapas",
+        "description": "Etapas são os passos do trabalho: por exemplo, Novo, Em andamento e Concluído."
+      },
+      "row": {
+        "cards_one": "{{count}} card",
+        "cards_other": "{{count}} cards",
+        "sla_one": "até {{count}} hora na etapa",
+        "sla_other": "até {{count}} horas na etapa",
+        "wip_one": "limite de {{count}} card",
+        "wip_other": "limite de {{count}} cards",
+        "checklist_one": "{{count}} item obrigatório",
+        "checklist_other": "{{count}} itens obrigatórios"
+      },
+      "fields": {
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Proposta enviada",
+        "nameRequired": "Dê um nome à etapa.",
+        "nameTooLong": "Use até 120 caracteres.",
+        "color": "Cor",
+        "noColor": "Sem cor",
+        "clearColor": "Tirar a cor",
+        "slaHours": "Tempo máximo na etapa, em horas",
+        "slaHoursHint": "Passou disso sem sair da etapa, o responsável é avisado e os gatilhos de tempo esgotado rodam.",
+        "wipLimit": "Limite de cards",
+        "wipLimitHint": "É só um aviso no quadro: a etapa não recusa card além disso.",
+        "noLimit": "Sem limite",
+        "wholeNumber": "Use um número inteiro maior que zero."
+      },
+      "delete": {
+        "action": "Excluir etapa",
+        "title": "Excluir a etapa {{name}}?",
+        "confirm": "Excluir etapa",
+        "noImpact": "A etapa está vazia. Nada mais é afetado.",
+        "impactCards_one": "{{count}} card desta etapa será excluído junto. Para guardá-lo, mova para outra etapa antes.",
+        "impactCards_other": "{{count}} cards desta etapa serão excluídos junto. Para guardá-los, mova para outra etapa antes.",
+        "impactFields_one": "{{count}} campo só desta etapa também vai embora.",
+        "impactFields_other": "{{count}} campos só desta etapa também vão embora.",
+        "impactTriggers_one": "{{count}} gatilho só desta etapa também vai embora.",
+        "impactTriggers_other": "{{count}} gatilhos só desta etapa também vão embora.",
+        "impactMoving_one": "{{count}} gatilho que move cards para cá vai começar a falhar.",
+        "impactMoving_other": "{{count}} gatilhos que movem cards para cá vão começar a falhar.",
+        "done": "Etapa {{name}} excluída."
+      },
+      "checklist": {
+        "title": "Checklist da etapa",
+        "hint": "O que precisa estar marcado para o card avançar. Voltar de etapa não exige nada.",
+        "empty": "Nada a marcar: qualquer card sai daqui sem conferência.",
+        "addPlaceholder": "Ex.: Confirmar quantidade de peças",
+        "add": "Adicionar",
+        "itemTitle": "Texto do item",
+        "required": "Obrigatório",
+        "dragItem": "Mudar a posição de {{title}}",
+        "deleteItem": "Excluir {{title}}",
+        "delete": {
+          "title": "Excluir este item?",
+          "description": "\"{{title}}\" sai do checklist desta etapa.",
+          "confirm": "Excluir item",
+          "done": "Item excluído."
+        }
+      }
+    },
+    "fields": {
+      "description": "O que cada card deste quadro guarda além do básico. Arraste para mudar a ordem.",
+      "create": "Criar campo",
+      "search": "Buscar campo",
+      "count_one": "{{count}} campo",
+      "count_other": "{{count}} campos",
+      "drag": "Mudar a posição de {{name}}",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Editar",
+      "saved": "Campo {{name}} salvo.",
+      "created": "Campo {{name}} criado.",
+      "empty": {
+        "title": "Nenhum campo personalizado",
+        "description": "Guarde no card o que importa para o seu negócio: origem do contato, forma de pagamento, validade da proposta."
+      },
+      "noResults": {
+        "title": "Nenhum campo com esse nome",
+        "description": "Confira a escrita ou limpe a busca."
+      },
+      "groups": {
+        "board": "Em todo o quadro",
+        "stage": "Só na etapa {{name}}"
+      },
+      "badges": {
+        "score": "Pontuação",
+        "required": "Obrigatório ao fechar",
+        "requiredToLeave": "Trava a etapa"
+      },
+      "types": {
+        "text": "Texto",
+        "number": "Número",
+        "date": "Data",
+        "select": "Lista de opções",
+        "checkbox": "Sim ou não",
+        "url": "Link",
+        "user": "Pessoa"
+      },
+      "form": {
+        "createTitle": "Novo campo",
+        "createDescription": "Ele aparece em cada card deste quadro.",
+        "submitCreate": "Criar campo",
+        "submitEdit": "Salvar campo",
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Forma de pagamento",
+        "nameRequired": "Dê um nome ao campo.",
+        "nameTooLong": "Use até 120 caracteres.",
+        "type": "Tipo",
+        "typeLocked": "O tipo não muda depois de criado: os valores nos cards deixariam de servir.",
+        "options": "Opções",
+        "optionsHint": "Separe por vírgula ou aperte Enter.",
+        "optionsPlaceholder": "Ex.: Pix, Boleto, Cartão",
+        "optionsRequired": "Inclua ao menos uma opção.",
+        "scope": "Onde aparece",
+        "scopeBoard": "Em todo o quadro",
+        "scopeBoardHint": "Vale para qualquer card, em qualquer etapa.",
+        "scopeStage": "Só em uma etapa",
+        "scopeStageHint": "Aparece quando o card está nessa etapa.",
+        "stage": "Etapa",
+        "stagePlaceholder": "Escolha a etapa",
+        "stageRequired": "Escolha a etapa.",
+        "requiredToLeave": "Precisa estar preenchido para avançar",
+        "requiredToLeaveHint": "O card não sai desta etapa para a frente com o campo vazio.",
+        "required": "Obrigatório ao fechar negócio",
+        "requiredHint": "Exigido ao marcar como ganho ou perdido, se o quadro pedir (veja acima).",
+        "preview": "Como aparece no card",
+        "previewName": "Nome do campo",
+        "previewOption": "Primeira opção",
+        "previewUrl": "exemplo.com.br",
+        "previewPerson": "Marina Duarte",
+        "previewNumber": "120",
+        "previewText": "Texto livre"
+      },
+      "delete": {
+        "action": "Excluir campo",
+        "title": "Excluir o campo {{name}}?",
+        "description": "Ele some de todos os cards, e os valores preenchidos deixam de aparecer.",
+        "descriptionScore": "Ele some de todos os cards, e os valores preenchidos deixam de aparecer. A pontuação do quadro usa este campo e será desligada.",
+        "confirm": "Excluir campo",
+        "done": "Campo {{name}} excluído."
+      },
+      "dealClose": {
+        "title": "Ao fechar um negócio",
+        "description": "Exigir os campos obrigatórios antes de marcar o negócio. Vale na hora.",
+        "won": "Exigir ao marcar como ganho",
+        "lost": "Exigir ao marcar como perdido",
+        "affected": "Campos que serão exigidos",
+        "noneRequired": "Nenhum campo está marcado como obrigatório: ligar isto ainda não tem efeito.",
+        "saved": "Regra de fechamento salva."
+      }
+    },
+    "labels": {
+      "description": "Marcam os cards para achar e filtrar. Valem para todos os quadros da organização.",
+      "create": "Criar etiqueta",
+      "search": "Buscar etiqueta",
+      "count_one": "{{count}} etiqueta",
+      "count_other": "{{count}} etiquetas",
+      "edit": "Editar",
+      "editNamed": "Editar {{name}}",
+      "actionsOf": "Ações de {{name}}",
+      "created": "Etiqueta {{name}} criada.",
+      "saved": "Etiqueta {{name}} salva.",
+      "alreadyExists": "A etiqueta {{name}} já existia, e foi mantida como estava.",
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "recent": "Mais recentes"
+      },
+      "empty": {
+        "title": "Nenhuma etiqueta ainda",
+        "description": "Crie as que fazem sentido para você: Quente, Indicação, Retorno, Urgente."
+      },
+      "noResults": {
+        "title": "Nenhuma etiqueta com esse nome",
+        "description": "Confira a escrita ou limpe a busca."
+      },
+      "form": {
+        "createTitle": "Nova etiqueta",
+        "editTitle": "Editar etiqueta",
+        "hint": "Vale para todos os quadros da organização.",
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Quente",
+        "nameRequired": "Dê um nome à etiqueta.",
+        "nameTooLong": "Use até 100 caracteres.",
+        "color": "Cor",
+        "colorRequired": "Escolha uma cor.",
+        "preview": "Como fica",
+        "previewName": "Etiqueta",
+        "submitCreate": "Criar etiqueta",
+        "submitEdit": "Salvar etiqueta"
+      },
+      "delete": {
+        "action": "Excluir etiqueta",
+        "title": "Excluir a etiqueta {{name}}?",
+        "description": "Ela sai de todos os cards, em todos os quadros.",
+        "confirm": "Excluir etiqueta",
+        "done": "Etiqueta {{name}} excluída."
+      }
+    },
+    "archived": {
+      "description": "Cards fora do quadro: os arquivados e os negócios fechados.",
+      "search": "Buscar pelo título",
+      "tableLabel": "Cards arquivados",
+      "filterStatus": "Situação",
+      "count_one": "{{count}} card",
+      "count_other": "{{count}} cards",
+      "open": "Abrir card",
+      "restore": "Restaurar",
+      "restored": "{{title}} voltou para o quadro.",
+      "seeOnBoard": "Ver no quadro",
+      "filters": {
+        "all": "Todos",
+        "archived": "Arquivados",
+        "won": "Ganhos",
+        "lost": "Perdidos"
+      },
+      "status": {
+        "archived": "Arquivado",
+        "won": "Ganho",
+        "lost": "Perdido"
+      },
+      "columns": {
+        "title": "Card",
+        "stage": "Etapa",
+        "status": "Situação",
+        "value": "Valor",
+        "assignedTo": "Responsável",
+        "date": "Quando"
+      },
+      "empty": {
+        "title": "Nada arquivado por aqui",
+        "description": "Quando um card for arquivado ou um negócio fechar, ele aparece nesta lista e dá para restaurar."
+      },
+      "reopen": {
+        "action": "Reabrir negócio",
+        "title": "Reabrir o negócio {{title}}?",
+        "description": "Ele deixa de ser ganho ou perdido, volta para o quadro e a etiqueta sai da conversa.",
+        "confirm": "Reabrir negócio",
+        "done": "{{title}} foi reaberto."
+      },
+      "delete": {
+        "action": "Excluir",
+        "title": "Excluir {{title}}?",
+        "description": "O card é apagado de vez, com comentários, anexos e histórico. Isso não tem volta.",
+        "confirm": "Excluir de vez",
+        "done": "{{title}} foi excluído."
+      },
+      "bulk": {
+        "restored_one": "{{count}} card voltou para o quadro.",
+        "restored_other": "{{count}} cards voltaram para o quadro.",
+        "deleteTitle_one": "Excluir {{count}} card?",
+        "deleteTitle_other": "Excluir {{count}} cards?",
+        "deleted_one": "{{count}} card excluído.",
+        "deleted_other": "{{count}} cards excluídos.",
+        "deleteFailed_one": "{{count}} card não pôde ser excluído.",
+        "deleteFailed_other": "{{count}} cards não puderam ser excluídos."
+      }
+    }
+  }
+}
