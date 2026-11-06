@@ -377,15 +377,17 @@ class Chat
   end
 
   def simple_time_ago(from_time)
-    seconds = Time.current - from_time
+    # A diferença é fracionária (59.5 caía fora de 0..59 e virava "0m"). Com o relógio do
+    # provedor adiantado ela pode ser negativa.
+    seconds = [ Time.current - from_time, 0 ].max
     case seconds
-    when 0..59
+    when 0...60
       "#{seconds.to_i}s"
-    when 60..3599
+    when 60...3600
       "#{(seconds / 60).to_i}min"
-    when 3600..86_399
+    when 3600...86_400
       "#{(seconds / 3600).to_i}h"
-    when 86_400..2_591_999
+    when 86_400...2_592_000
       "#{(seconds / 86_400).to_i}d"
     else
       months = (Time.current.year * 12 + Time.current.month) - (from_time.year * 12 + from_time.month)
