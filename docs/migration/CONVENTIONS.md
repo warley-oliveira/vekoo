@@ -82,7 +82,8 @@ Isso dá banco de teste, Mongo e portas exclusivos; rspec e Vite rodam sem inter
    - Front: `frontend/src/routes/<dominio>/`, `frontend/src/components/<dominio>/`, `frontend/src/hooks/<dominio>/`, `frontend/src/lib/<dominio>/`
 6. Comite no seu branch do worktree **cedo e com frequência**, em commits pequenos e descritivos (mensagens em português, no estilo do `git log`), a cada parte que funciona: a máquina pode reiniciar e o trabalho precisa estar salvo. Termine com a árvore limpa (fora `schema.rb`). **Não faça push nem merge.** Não toque no `main`.
    Nada que precise durar vai para `/tmp`: ele some ao reiniciar.
-7. `CLAUDE.md` e `DEPLOY.md` são do integrador: não edite. O que precisar constar neles vai no relatório.
+7. **Memória é recurso compartilhado:** a máquina tem 16 GB para o editor, os outros agentes e todos os serviços, e cada Vite ocioso ocupa mais de 1 GB. Suba Vite, Rails e Sidekiq só enquanto estiver verificando, e derrube em seguida, sem deixar processo para trás ao encerrar. Não rode a suíte inteira do rspec a cada alteração: rode as specs do que mudou, e a suíte inteira antes de encerrar.
+8. `CLAUDE.md` e `DEPLOY.md` são do integrador: não edite. O que precisar constar neles vai no relatório.
 
 ---
 
