@@ -51,6 +51,15 @@ type ErrorEnvelope = {
   }
 }
 
+/** O `meta` das listagens paginadas: `{ <recurso>: [...], meta }`. */
+export type PaginationMeta = {
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+  hasMore: boolean
+}
+
 export class ApiError extends Error {
   /** 0 quando a requisição nem chegou ao servidor. */
   readonly status: number
@@ -105,7 +114,18 @@ function codeOf(code: string | undefined, status: number): ApiErrorCode {
   if (status === 401) return "unauthorized"
   if (status === 403) return "forbidden"
   if (status === 404) return "notFound"
+  if (status === 429) return "tooManyRequests"
   return "unknown"
+}
+
+function toApiError(status: number, envelope: ErrorEnvelope | undefined) {
+  return new ApiError({
+    status,
+    code: codeOf(envelope?.error?.code, status),
+    field: envelope?.error?.field,
+    details: envelope?.error?.details,
+    serverMessage: envelope?.error?.message,
+  })
 }
 
 export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
@@ -137,13 +157,7 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
       /* corpo não-JSON (502 de proxy, por exemplo) */
     }
 
-    const error = new ApiError({
-      status: res.status,
-      code: codeOf(envelope?.error?.code, res.status),
-      field: envelope?.error?.field,
-      details: envelope?.error?.details,
-      serverMessage: envelope?.error?.message,
-    })
+    const error = toApiError(res.status, envelope)
 
     if (res.status === 401 && !skipAuthHandler) {
       clearToken()
@@ -179,6 +193,91 @@ export function apiPatch<T>(path: string, body?: unknown, init?: ApiInit): Promi
   })
 }
 
+export function apiPut<T>(path: string, body?: unknown, init?: ApiInit): Promise<T> {
+  return apiFetch<T>(path, {
+    ...init,
+    method: "PUT",
+    body: body === undefined ? undefined : JSON.stringify(body),
+  })
+}
+
 export function apiDelete<T>(path: string, init?: ApiInit): Promise<T> {
   return apiFetch<T>(path, { ...init, method: "DELETE" })
+}
+
+/* ---------- envio de arquivo ---------- */
+
+export type ApiUploadOptions = {
+  /** Fração já enviada, de 0 a 1. */
+  onProgress?: (fraction: number) => void
+  /** Cancela o envio; a promessa rejeita com `AbortError`. */
+  signal?: AbortSignal
+  method?: "POST" | "PUT" | "PATCH"
+  skipAuthHandler?: boolean
+}
+
+/**
+ * Envio com progresso. Por `XMLHttpRequest` porque `fetch` não informa quanto do
+ * corpo já subiu. Mesmo contrato de `apiFetch`: resolve com o JSON e rejeita com
+ * `ApiError`.
+ */
+export function apiUpload<T>(
+  path: string,
+  formData: FormData,
+  { onProgress, signal, method = "POST", skipAuthHandler }: ApiUploadOptions = {}
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException("Aborted", "AbortError"))
+      return
+    }
+
+    const xhr = new XMLHttpRequest()
+    const abort = () => xhr.abort()
+    signal?.addEventListener("abort", abort, { once: true })
+    const settle = () => signal?.removeEventListener("abort", abort)
+
+    xhr.open(method, `${BASE_URL}${path}`)
+    // Sem Content-Type: é o navegador quem escreve o `boundary` do multipart.
+    xhr.setRequestHeader("Accept-Language", currentLanguage())
+    const token = getToken()
+    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`)
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable && event.total > 0) {
+        onProgress?.(event.loaded / event.total)
+      }
+    }
+
+    xhr.onload = () => {
+      settle()
+      let body: unknown
+      try {
+        body = xhr.responseText ? JSON.parse(xhr.responseText) : undefined
+      } catch {
+        /* corpo não-JSON (502 de proxy, por exemplo) */
+      }
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(body as T)
+        return
+      }
+
+      if (xhr.status === 401 && !skipAuthHandler) {
+        clearToken()
+        onUnauthorized?.()
+      }
+      reject(toApiError(xhr.status, body as ErrorEnvelope | undefined))
+    }
+    xhr.onerror = () => {
+      settle()
+      reject(new ApiError({ status: 0, code: "network" }))
+    }
+    xhr.onabort = () => {
+      settle()
+      reject(new DOMException("Aborted", "AbortError"))
+    }
+
+    xhr.send(formData)
+  })
 }
