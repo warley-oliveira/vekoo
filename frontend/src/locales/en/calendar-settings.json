@@ -3,7 +3,418 @@
     "settings": {
       "errors": {
         "generic": "That didn't work. Please try again.",
-        "network": "Can't reach the server. Check your connection and try again."
+        "network": "Can't reach the server. Check your connection and try again.",
+        "forbidden": "You don't have permission to do this.",
+        "notFound": "This calendar no longer exists."
+      },
+      "details": {
+        "title": "Calendar details",
+        "description": "How this calendar appears on the platform, and which time zone its times follow.",
+        "name": "Name",
+        "nameTooShort": "Use at least 2 characters.",
+        "nameTooLong": "Use at most 120 characters.",
+        "descriptionField": "Description",
+        "descriptionPlaceholder": "What this calendar is for",
+        "descriptionTooLong": "Use at most 2,000 characters.",
+        "color": "Color",
+        "type": "Type",
+        "typeHint": "The type can't be changed after it's created.",
+        "timeZone": "Time zone",
+        "timeZoneHint": "Sending windows, classes and reminders follow this zone's clock, wherever the person is.",
+        "timeZoneEmpty": "No time zone found.",
+        "timeZoneRequired": "Choose a time zone.",
+        "timeZoneChanged": "Working hours, classes and sending windows will follow the new zone's clock. Bookings already made stay at the same moment.",
+        "rebalancing": "How to distribute bookings",
+        "rebalancingOptions": {
+          "day": "By day",
+          "week": "By week",
+          "month": "By month"
+        },
+        "rebalancingHints": {
+          "day": "Upcoming bookings go first to whoever had the fewest today.",
+          "week": "Upcoming bookings go first to whoever had the fewest this week.",
+          "month": "Upcoming bookings go first to whoever had the fewest this month."
+        },
+        "submit": "Save details",
+        "saved": "Calendar details saved"
+      },
+      "notices": {
+        "title": "Team member notices",
+        "description": "What each team member receives when their schedule changes and before each booking. In-app notifications and WhatsApp messages are independent.",
+        "messageTooLong": "Use at most {{max}} characters.",
+        "noChannel": {
+          "title": "No connected WhatsApp can send these notices",
+          "description": "They need a connected phone WhatsApp. The official API doesn't work here: it only accepts free-form messages up to 24 hours after the recipient writes, and team members never write first. Until then, only in-app notifications go out.",
+          "action": "Connect a channel"
+        },
+        "missingPhone_one": "{{count}} team member has no phone number and only gets the in-app notification.",
+        "missingPhone_other": "{{count}} team members have no phone number and only get the in-app notification.",
+        "missingPhoneAction": "See team members",
+        "channel": {
+          "label": "WhatsApp that sends the notices",
+          "inherit": "Use the channel of the booking's conversation",
+          "hint": "Only a phone WhatsApp delivers these notices: the official API refuses free-form messages to anyone who hasn't written in the last 24 hours, and team members never write first. With nothing chosen, the notice goes through the channel of the booking's conversation, if it qualifies.",
+          "goneHint": "The chosen channel is disconnected. In the meantime, the notice tries the channel of the booking's conversation.",
+          "disconnected": "{{name}} (disconnected)",
+          "unnamed": "Unnamed WhatsApp",
+          "saved": "Notice channel saved"
+        },
+        "channels": {
+          "push": "In the app",
+          "pushHint": "App notification and bell.",
+          "pushShort": "App",
+          "whatsapp": "On WhatsApp",
+          "whatsappHint": "Only reaches people with a phone number on file.",
+          "whatsappShort": "WhatsApp",
+          "whatsappUnavailable": "Needs a connected phone WhatsApp."
+        },
+        "events": {
+          "title": "When a booking changes",
+          "hint": "These notices go out right away. The switches apply as soon as you flip them.",
+          "created": {
+            "title": "New booking",
+            "description": "As soon as the booking is created.",
+            "saved": "New booking notice saved"
+          },
+          "canceled": {
+            "title": "Cancellation",
+            "description": "When the booking is canceled.",
+            "saved": "Cancellation notice saved"
+          },
+          "rescheduled": {
+            "title": "Reschedule",
+            "description": "When the booking time changes.",
+            "saved": "Reschedule notice saved"
+          }
+        },
+        "eventMessage": {
+          "label": "WhatsApp message",
+          "hint": "Leave blank to use the default text. The in-app notification has its own wording.",
+          "submit": "Save message",
+          "edit": "Edit",
+          "editOf": "Edit the {{event}} message"
+        },
+        "reminder": {
+          "title": "Before the booking",
+          "hint": "Scheduled reminders, so the team member can get ready.",
+          "createTitle": "New team member reminder",
+          "description": "Goes out before each of this team member's bookings.",
+          "add": "Create reminder",
+          "create": "Create reminder",
+          "submit": "Save reminder",
+          "created": "Reminder created",
+          "saved": "Reminder saved",
+          "edit": "Edit",
+          "actionsOf": "Actions for the {{when}} reminder",
+          "limit": "Each calendar has up to {{max}} reminders.",
+          "message": "Message",
+          "messageHint": "The same text is used for the in-app notification and for WhatsApp.",
+          "messageRequired": "Write the message.",
+          "defaultMessage": "Reminder: you have a booking with {{nome}} shortly, at {{hora}}.",
+          "silent": "With both channels off, this reminder doesn't notify anyone.",
+          "empty": {
+            "title": "No team member reminders",
+            "description": "Create a reminder to notify the team member before each booking."
+          },
+          "delete": {
+            "action": "Delete reminder",
+            "title": "Delete the {{when}} reminder?",
+            "description": "Upcoming bookings won't get this reminder anymore. Anything already queued still goes out.",
+            "confirm": "Delete reminder",
+            "done": "Reminder deleted"
+          }
+        }
+      }
+    },
+    "reminders": {
+      "title": "Contact reminders",
+      "description": "Messages in the contact's conversation, before each booking. Ready-made text is free; the AI costs 1 credit per send.",
+      "enabled": {
+        "label": "Send reminders",
+        "hint": "When off, nothing goes out, not even what was already scheduled. The rules are kept.",
+        "on": "Reminders on",
+        "off": "Reminders paused"
+      },
+      "paused": "Reminders are paused. The rules below are kept and apply again when you turn them back on.",
+      "classGroupNote": "Reminders apply to bookings with a conversation. Classes don't get reminders.",
+      "empty": {
+        "title": "No reminders yet",
+        "description": "Create a reminder to notify the contact before each booking: fewer no-shows, with nobody having to remember."
+      },
+      "create": "Create reminder",
+      "edit": "Edit",
+      "actionsOf": "Actions for the {{when}} reminder",
+      "limit": "Each calendar has up to {{max}} reminders.",
+      "before": {
+        "minutes_one": "{{count}} minute before",
+        "minutes_other": "{{count}} minutes before",
+        "hours_one": "{{count}} hour before",
+        "hours_other": "{{count}} hours before",
+        "days_one": "{{count}} day before",
+        "days_other": "{{count}} days before"
+      },
+      "units": {
+        "minutes_one": "minute",
+        "minutes_other": "minutes",
+        "hours_one": "hour",
+        "hours_other": "hours",
+        "days_one": "day",
+        "days_other": "days"
+      },
+      "badges": {
+        "text": "Ready-made text",
+        "ai": "AI · 1 credit"
+      },
+      "automation": {
+        "title": "When automation is off",
+        "description": "By default, the reminder only goes out with automation on for both the organization and the conversation: a conversation someone has taken over doesn't get messages on its own.",
+        "reactivate": {
+          "label": "Turn automation back on when sending",
+          "hint": "Automation is turned back on in the conversation before the reminder goes out, and flows start replying again."
+        },
+        "ignore": {
+          "label": "Send even with automation off",
+          "hint": "The reminder goes out anyway, without turning anything back on."
+        },
+        "saved": "Preference saved"
+      },
+      "delete": {
+        "action": "Delete reminder",
+        "title": "Delete the {{when}} reminder?",
+        "description": "It stops going out right away, including for bookings already queued.",
+        "confirm": "Delete reminder",
+        "done": "Reminder deleted"
+      },
+      "panel": {
+        "createTitle": "New reminder",
+        "description": "Goes out in the contact's conversation, through its channel.",
+        "interval": "How long before",
+        "period": "Unit",
+        "intervalRequired": "Say how long before.",
+        "intervalInvalid": "Use a whole number, starting at 1.",
+        "intervalTooBig": "The maximum for this unit is {{max}}.",
+        "create": "Create reminder",
+        "submit": "Save reminder",
+        "created": "Reminder created",
+        "saved": "Reminder saved"
+      },
+      "rule": {
+        "mode": "How the message is written",
+        "modes": {
+          "text": {
+            "label": "Ready-made text",
+            "description": "Free. Whatever you write goes out, with the variables filled in."
+          },
+          "ai": {
+            "label": "The AI writes it",
+            "description": "1 credit per send. The AI writes it on the spot, from your instruction and the conversation."
+          }
+        },
+        "message": "Message",
+        "messageHint": "Variables are filled in with the booking's data, in the calendar's time zone.",
+        "messageRequired": "Write the message.",
+        "messagePlaceholder": {
+          "reminder": "E.g. Hi, {{nome}}! Just a reminder of your {{servico}} on {{data}}, at {{hora}}.",
+          "step": "E.g. Hi, {{nome}}! We missed you today. Would you like to book another time?"
+        },
+        "aiPrompt": "Instruction for the AI",
+        "aiPromptRequired": "Write the instruction for the AI.",
+        "aiPromptHint": {
+          "reminder": "The AI also reads the conversation with the contact, to get the tone right.",
+          "step": "The AI also reads the conversation and can use tools, if the instruction names them."
+        },
+        "aiPromptPlaceholder": {
+          "reminder": "E.g. Remind {{nome}} of the {{servico}} on {{data}}, at {{hora}}, in one short, friendly sentence.",
+          "step": "E.g. Ask {{nome}} how the {{servico}} went and thank them for coming."
+        },
+        "fallback": "Backup text",
+        "fallbackPlaceholder": {
+          "reminder": "E.g. Hi, {{nome}}! Your appointment is on {{data}}, at {{hora}}.",
+          "step": "E.g. Hi, {{nome}}! How did it go?"
+        },
+        "ifAiFails": {
+          "reminder": "If the AI can't write it (no credits, or it's down), a default reminder goes out. To send your own words instead, fill in the backup text.",
+          "step": "If the AI can't write it (no credits, or it's down), this step sends nothing. Fill in the backup text so it isn't lost.",
+          "withFallback": "If the AI can't write it (no credits, or it's down), the backup text goes out, for free."
+        },
+        "tooLong": "Use at most 4,000 characters."
+      },
+      "variables": {
+        "group": "Variables to insert in the message",
+        "insert": "Insert:",
+        "labels": {
+          "nome": "Name",
+          "telefone": "Phone",
+          "servico": "Service",
+          "colaborador": "Team member",
+          "titulo": "Title",
+          "data": "Date",
+          "hora": "Time",
+          "link_reuniao": "Meeting link"
+        },
+        "hints": {
+          "nome": "Insert {{token}}: the contact's name",
+          "telefone": "Insert {{token}}: the contact's phone",
+          "servico": "Insert {{token}}: the booked service",
+          "colaborador": "Insert {{token}}: the team member's name",
+          "titulo": "Insert {{token}}: the booking's title",
+          "data": "Insert {{token}}: the booking's date",
+          "hora": "Insert {{token}}: the booking's time",
+          "link_reuniao": "Insert {{token}}: the Google Meet link, when there is one"
+        }
+      },
+      "test": {
+        "trigger": {
+          "reminder": "Test reminder",
+          "step": "Test step"
+        },
+        "title": {
+          "reminder": "Test reminder",
+          "step": "Test step"
+        },
+        "notice": {
+          "text": "Nothing is sent or saved, and this test is free.",
+          "ai": {
+            "reminder": "Nothing is sent or saved, but generating the preview uses 1 credit. If the AI fails, the credit comes back.",
+            "step": "Nothing is sent or saved, but generating the preview uses 1 credit. If the AI fails, the credit comes back. Tools only simulate: no field or tag changes."
+          }
+        },
+        "booking": "Booking",
+        "bookingPlaceholder": "Search by contact, service or team member",
+        "bookingEmpty": "No booking found.",
+        "bookingHint": "The latest bookings in this calendar that have a conversation, with times in the calendar's time zone.",
+        "unnamed": "Unnamed",
+        "empty": {
+          "title": "No bookings with a conversation",
+          "description": "The test uses a real booking. When this calendar has a booking linked to a conversation, it shows up here.",
+          "action": "Go to the calendar"
+        },
+        "history": {
+          "title": "Messages the AI reads",
+          "hint": "The AI writes from the messages checked here.",
+          "count": "{{selected}} of {{total}} checked. The AI reads up to the 30 most recent.",
+          "selectAll": "Check all",
+          "clear": "Uncheck all",
+          "empty": "This conversation has no messages to use."
+        },
+        "run": "Generate preview",
+        "runWithAi": "Generate preview (1 credit)",
+        "running": "Generating the preview…",
+        "close": "Close",
+        "result": {
+          "title": "Message preview",
+          "titleFor": "Preview for {{name}}",
+          "empty": "The message came out empty after filling in the variables.",
+          "note": "Nothing was sent."
+        },
+        "errors": {
+          "noCredits": {
+            "title": "No credits to use the AI",
+            "description": "This organization is out of credits. Ready-made text is still free."
+          },
+          "busy": {
+            "title": "Another generation in progress",
+            "description": "This organization already has an AI generation in progress. Wait a few seconds and try again. No credit was used."
+          },
+          "failed": {
+            "title": "The AI couldn't write it right now",
+            "description": "The credit came back. Try again in a moment."
+          },
+          "notFound": {
+            "title": "Conversation out of your reach",
+            "description": "This booking no longer exists, or its conversation isn't one you can see."
+          },
+          "bookingWithoutChat": {
+            "title": "Booking without a conversation",
+            "description": "Choose another booking."
+          }
+        }
+      }
+    },
+    "google": {
+      "title": "Google Calendar",
+      "description": "This calendar's bookings also appear in a dedicated calendar on your Google account, and what changes there comes back here.",
+      "notConnected": "Choose a Google account. We create the \"Vekoo Agendamento\" calendar on it, without touching your personal calendar.",
+      "connect": "Connect with Google",
+      "reconnect": "Connect again",
+      "connected": "Connected",
+      "unknownAccount": "Google account",
+      "connectedAt": "Connected since {{date}}",
+      "failed": "The connection stopped working",
+      "failedHint": "Google refused access. Connect the account again.",
+      "failedUnavailable": "To connect again, this server needs the Google credentials.",
+      "unavailable": {
+        "title": "Google Calendar isn't available here",
+        "description": "The Google credentials still need to be set up on this server, which is up to whoever runs the installation. The rest of the calendar works normally."
+      },
+      "disconnect": {
+        "action": "Disconnect",
+        "title": "Disconnect Google Calendar?",
+        "description": "Bookings stay here. Changes stop going back and forth between the two.",
+        "confirm": "Disconnect",
+        "done": "Google Calendar disconnected"
+      },
+      "sync": {
+        "toGoogle": "From here to Google: creating, rescheduling, changing the title or description, and canceling. The Meet link shows up on the booking shortly after.",
+        "fromGoogle": "From Google to here: a new event becomes a booking, without notifying anyone. Changing or deleting a booking there is like rescheduling or canceling here.",
+        "scope": "We only read the calendar we create on your account, never your personal one."
+      },
+      "callback": {
+        "working": {
+          "title": "Connecting to Google Calendar",
+          "description": "Just a moment, we're checking the authorization."
+        },
+        "connectedAs": "Google Calendar connected to {{email}}",
+        "done": "Google Calendar connected",
+        "backToSettings": "Back to settings",
+        "backToCalendar": "Back to the calendar",
+        "retry": "Try again",
+        "errors": {
+          "denied": {
+            "title": "You didn't authorize access",
+            "description": "The connection only works with your authorization on Google. If that was by accident, start again from the calendar settings."
+          },
+          "missingParams": {
+            "title": "This address is incomplete",
+            "description": "The data Google sends back is missing. Start the connection again from the calendar settings."
+          },
+          "invalidState": {
+            "title": "This authorization is no longer valid",
+            "description": "It's valid for 15 minutes, and only for whoever started the connection. Start again from the calendar settings."
+          },
+          "googleNotStarted": {
+            "title": "The connection wasn't started",
+            "description": "We couldn't find the start of this connection. Start again from the calendar settings."
+          },
+          "googleAuthorizationFailed": {
+            "title": "Google didn't accept the authorization",
+            "description": "This usually happens when the link was already used or has expired. Start again from the calendar settings."
+          },
+          "googleConnectionFailed": {
+            "title": "We couldn't reach Google",
+            "description": "The authorization arrived, but the connection didn't finish. Try again in a moment, from the calendar settings."
+          },
+          "googleNotConfigured": {
+            "title": "Google Calendar isn't available here",
+            "description": "The Google credentials still need to be set up on this server. The rest of the calendar works normally."
+          },
+          "notFound": {
+            "title": "This calendar wasn't found",
+            "description": "It doesn't exist in this organization. Check that you're signed in with the right account."
+          },
+          "interrupted": {
+            "title": "The connection was interrupted",
+            "description": "The page reloaded before it finished. Start again from the calendar settings."
+          },
+          "network": {
+            "title": "Can't reach the server",
+            "description": "Check your connection and try again. Google's authorization stays valid for a few minutes."
+          },
+          "generic": {
+            "title": "We couldn't connect",
+            "description": "Something went wrong along the way. Start again from the calendar settings."
+          }
+        }
       }
     },
     "create": {
@@ -38,9 +449,247 @@
       "done": "{{name}} created"
     },
     "sequences": {
+      "description": "After marking who attended or missed, the conversation gets a series of messages, each at its own time. Ready-made text is free; the AI costs 1 credit per message sent.",
+      "howItWorks": "How it works",
+      "notFound": "This sequence no longer exists.",
+      "create": "Create sequence",
+      "useTemplate": "Use a template",
+      "stepsCount_one": "{{count}} step",
+      "stepsCount_other": "{{count}} steps",
+      "autoEnrollOnlyFirst": "More than one sequence here has automatic enrollment. Only the first in the list applies, \"{{name}}\". The others remain available to enroll by hand.",
       "trigger": {
         "show": "Attended",
         "no_show": "Missed"
+      },
+      "triggerDescription": {
+        "show": "Goes out after marking that the person attended: say thanks, ask for feedback, suggest the next step.",
+        "no_show": "Goes out after marking the no-show: ask if everything is okay and offer another time."
+      },
+      "empty": {
+        "show": {
+          "title": "No sequences for those who attended",
+          "description": "Start with a template or create your own."
+        },
+        "no_show": {
+          "title": "No sequences for those who missed",
+          "description": "Start with a template or create your own."
+        }
+      },
+      "manual": {
+        "title": "Enroll someone by hand",
+        "description": "Without automatic enrollment, enrolling is manual: in the calendar, open the booking and mark attendance. The booking panel offers the sequences for that outcome.",
+        "action": "Open the calendar"
+      },
+      "card": {
+        "firstMessage": "first message {{delay}} after enrollment",
+        "edit": "Edit",
+        "actionsOf": "Actions for sequence {{name}}",
+        "turnOn": "Turn on {{name}}",
+        "turnOff": "Turn off {{name}}",
+        "turnedOn": "{{name}} on",
+        "turnedOff": "{{name}} off"
+      },
+      "badges": {
+        "off": "Off",
+        "autoEnroll": "Automatic enrollment",
+        "stopOnReply": "Stops on reply",
+        "ai_one": "AI in {{count}} step",
+        "ai_other": "AI in {{count}} steps"
+      },
+      "defaults": {
+        "sequence": "New sequence",
+        "step": "New step"
+      },
+      "delete": {
+        "action": "Delete sequence",
+        "title": "Delete \"{{name}}\"?",
+        "description": "Anyone enrolled stops getting the next steps. This can't be undone.",
+        "confirm": "Delete sequence",
+        "done": "{{name}} deleted"
+      },
+      "conflict": {
+        "changed": {
+          "title": "Someone changed \"{{name}}\" while you were editing",
+          "description": "If you save, what the other person did in this sequence is lost. Other sequences don't change.",
+          "confirm": "Save over it",
+          "cancel": "Keep editing"
+        },
+        "deleted": {
+          "title": "Someone deleted \"{{name}}\" while you were editing",
+          "description": "Saving creates this sequence again, with what's on the screen. Anyone who was enrolled doesn't come back.",
+          "confirm": "Create again"
+        }
+      },
+      "panel": {
+        "createTitle": "New sequence",
+        "description": {
+          "show": "For those who attended. Goes out after marking that the person came.",
+          "no_show": "For those who missed. Goes out after marking the no-show."
+        },
+        "name": "Sequence name",
+        "steps": "Messages",
+        "stepsHint": "Each step goes out some time after the previous one. The first one counts from enrollment.",
+        "addStep": "Add step",
+        "enrollment": "How people enter",
+        "enrollmentHint": "Without automatic enrollment, enrolling is manual, in the booking panel.",
+        "rules": "Rules",
+        "create": "Create sequence",
+        "submit": "Save sequence",
+        "created": "{{name}} created",
+        "saved": "{{name}} saved"
+      },
+      "options": {
+        "autoEnroll": {
+          "label": "Enroll automatically",
+          "hint": {
+            "show": "Once marked as attended, the person enters this sequence without anyone having to choose.",
+            "no_show": "The person enters this sequence without anyone having to choose."
+          }
+        },
+        "enabled": {
+          "label": "Sequence on",
+          "hint": "When off, nobody new enters. Anyone already enrolled continues to the end."
+        },
+        "stopOnReply": {
+          "label": "Stop if the person replies",
+          "hint": "The remaining steps don't go out if the contact replies after enrollment."
+        },
+        "reactivateAutomation": {
+          "label": "Turn automation back on at each step",
+          "hint": "Automation is turned back on in the conversation before each message, and flows handle the reply."
+        },
+        "ignoreAutomationPaused": {
+          "label": "Send even with automation off",
+          "hint": "By default, a step only goes out with automation on for both the organization and the conversation. With this option it goes out anyway, without turning anything back on."
+        }
+      },
+      "anchors": {
+        "label": "When to enroll",
+        "attendance_mark": {
+          "label": "When marking the no-show",
+          "hint": "The moment someone marks that the person missed."
+        },
+        "after_event_end": {
+          "label": "After the booking ends",
+          "hint": "If nobody marks anything by then, the system marks the no-show and enrolls."
+        },
+        "delay": {
+          "label": "How long after the end",
+          "hint": "This delay only decides when the person is enrolled. Each step's time counts from there: with 5 minutes here and 1 hour on the first step, the first message goes out about 1h05 after the end."
+        }
+      },
+      "delay": {
+        "custom": "Other",
+        "amount": "Amount",
+        "unit": "Unit",
+        "preset": {
+          "minutes_one": "{{count}} min",
+          "minutes_other": "{{count}} min",
+          "hours_one": "{{count}} h",
+          "hours_other": "{{count}} h",
+          "days_one": "{{count}} day",
+          "days_other": "{{count}} days"
+        },
+        "long": {
+          "minutes_one": "{{count}} minute",
+          "minutes_other": "{{count}} minutes",
+          "hours_one": "{{count}} hour",
+          "hours_other": "{{count}} hours",
+          "days_one": "{{count}} day",
+          "days_other": "{{count}} days"
+        }
+      },
+      "step": {
+        "unnamed": "Step {{number}}",
+        "name": "Step name",
+        "afterEnrollment": "{{delay}} after enrollment",
+        "afterPrevious": "{{delay}} after the previous step",
+        "hasError": "Something to fix in this step",
+        "remove": "Remove step {{number}}",
+        "removeTitle": "Remove \"{{name}}\"?",
+        "removeDescription": "This step's message is lost when you save the sequence.",
+        "removeConfirm": "Remove step",
+        "testLabel": "Step {{number}}: {{name}}",
+        "delayFirst": "How long after enrollment to send",
+        "delayNext": "How long after the previous step to send",
+        "allDay": "Send at any time",
+        "allDayHint": "No window: it goes out as soon as the time is up, even in the middle of the night.",
+        "from": "From (hour)",
+        "to": "To (hour)",
+        "windowHint": "In {{zone}}. Left blank, it's from 8 to 17. Outside the window, the message waits for the next opening."
+      },
+      "validation": {
+        "nameRequired": "Give the sequence a name.",
+        "nameTooLong": "Use at most 120 characters.",
+        "stepNameRequired": "Give the step a name.",
+        "stepsRequired": "Add at least one step.",
+        "delayRequired": "Say how long to wait.",
+        "delayInvalid": "Use a whole number, starting at 1.",
+        "windowBoth": "Fill in both hours, or leave both blank.",
+        "windowFrom": "Use an hour from 0 to 23.",
+        "windowTo": "Use an hour from 1 to 24.",
+        "windowOrder": "The end hour must come after the start."
+      },
+      "templates": {
+        "title": "Templates",
+        "description": {
+          "show": "For those who attended. Pick one and adjust it before creating.",
+          "no_show": "For those who missed. Pick one and adjust it before creating."
+        },
+        "aiNotice": "Templates use the AI: each message sent costs 1 credit. If you prefer, switch each step to ready-made text.",
+        "firstAfter": "1st message in {{delay}}",
+        "use": "Use template",
+        "useNamed": "Use the {{name}} template"
+      },
+      "tools": {
+        "trigger": "What the AI can do",
+        "title": "What the AI can do",
+        "description": "While writing a step's message, the AI can use these tools. It only uses what the instruction asks for, citing the exact name.",
+        "example": "Example:",
+        "footer": "Tools work on every sequence, with nothing to turn on. In a test they only simulate: no field or tag changes.",
+        "close": "Got it",
+        "groups": {
+          "schedule": "Schedule",
+          "contact": "Contact fields",
+          "tags": "Tags"
+        },
+        "items": {
+          "checkAvailability": {
+            "name": "See open times",
+            "description": "Checks the schedule and returns some open times to offer the contact.",
+            "example": "Use the check_availability tool to see open times and offer the contact 3 options."
+          },
+          "listContactFields": {
+            "name": "Read fields",
+            "description": "Reads the contact's custom fields, with their current values.",
+            "example": "Use the list_contact_fields tool to read the contact's fields before writing the message."
+          },
+          "setContactField": {
+            "name": "Save field",
+            "description": "Creates or updates a custom field on the contact.",
+            "example": "Use the set_contact_field tool to save the reason for missing in the \"missed_reason\" field."
+          },
+          "removeContactField": {
+            "name": "Delete field",
+            "description": "Deletes a custom field from the contact.",
+            "example": "Use the remove_contact_field tool to delete the \"time_preference\" field."
+          },
+          "listTags": {
+            "name": "Read tags",
+            "description": "Reads the conversation's current tags.",
+            "example": "Use the list_tags tool to see the conversation's tags before setting the tone."
+          },
+          "addTag": {
+            "name": "Add tag",
+            "description": "Tags the conversation.",
+            "example": "Use the add_tag tool to add the \"wants-to-rebook\" tag to the conversation."
+          },
+          "removeTag": {
+            "name": "Remove tag",
+            "description": "Removes a tag from the conversation.",
+            "example": "Use the remove_tag tool to remove the \"awaiting-rebooking\" tag from the conversation."
+          }
+        }
       },
       "showcase": {
         "title": "Attendance sequences",
