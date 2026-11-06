@@ -52,7 +52,7 @@ class ConnectorsController < PlatformController
 
   def activate
     if @connector.paused?
-      @connector.update(status: :active)
+      return render_invalid(@connector) unless @connector.update(status: :active)
     elsif !@connector.active?
       activate_connector
     end
@@ -83,7 +83,8 @@ class ConnectorsController < PlatformController
   end
 
   def pause
-    @connector.update(status: :paused)
+    return render_invalid(@connector) unless @connector.update(status: :paused)
+
     render_connector
   end
 
@@ -91,6 +92,8 @@ class ConnectorsController < PlatformController
     @connector.deactivate
     Connectors::Alerts.disconnected(@connector, message: t("connectors.disconnection.manual_disconnect", name: @connector.display_name))
     render_connector
+  rescue NotImplementedError # não é StandardError: o canal não tem como desconectar
+    render_type_mismatch
   rescue StandardError => e
     render_action_failure("disconnect", e)
   end
@@ -121,7 +124,7 @@ class ConnectorsController < PlatformController
       phone_number_id: selected_phone_number_id,
       params: params.permit(:about, :address, :description, :email, :vertical, websites: []).to_h.symbolize_keys
     )
-    return render_error(status: :unprocessable_entity, code: "connectorProviderError") unless result
+    return render_provider_refusal(result) if result.error?
 
     @connector.refresh_details(selected_phone_number_id)
     @connector.save!
@@ -145,10 +148,11 @@ class ConnectorsController < PlatformController
     )
     return render_error(status: :unprocessable_entity, code: "connectorProviderError") unless upload&.data&.id
 
-    business_profile_api.update(
+    result = business_profile_api.update(
       phone_number_id: selected_phone_number_id.to_i,
       params: { profile_picture_handle: upload.data.id }
     )
+    return render_provider_refusal(result) if result.error?
 
     render json: { mediaId: upload.data.id }
   rescue StandardError => e
@@ -205,6 +209,11 @@ class ConnectorsController < PlatformController
   def render_action_failure(action, error)
     Rails.logger.error("[ConnectorsController##{action}] #{error.class}: #{error.message}")
     render_error(status: :unprocessable_entity, code: "connectorActionFailed")
+  end
+
+  # O SDK da Meta não levanta exceção quando ela recusa: o erro vem na resposta.
+  def render_provider_refusal(response)
+    render_error(status: :unprocessable_entity, code: "connectorProviderError", message: response.error.message)
   end
 
   def render_phone_numbers
