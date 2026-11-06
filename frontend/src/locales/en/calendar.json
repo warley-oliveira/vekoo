@@ -1,0 +1,19 @@
+{
+  "calendar": {
+    "area": {
+      "nav": {
+        "aria": "Calendar areas",
+        "settings": "Settings",
+        "collaborators": "Staff",
+        "classGroups": "Classes",
+        "services": "Services",
+        "sequences": "Sequences"
+      },
+      "notFound": {
+        "title": "This calendar no longer exists",
+        "description": "It may have been removed, or the address is wrong.",
+        "back": "Back to the calendar"
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "calendar": {
+    "area": {
+      "nav": {
+        "aria": "Áreas do calendário",
+        "settings": "Configurações",
+        "collaborators": "Colaboradores",
+        "classGroups": "Turmas",
+        "services": "Serviços",
+        "sequences": "Sequências"
+      },
+      "notFound": {
+        "title": "Este calendário não existe mais",
+        "description": "Ele pode ter sido removido, ou o endereço está errado.",
+        "back": "Voltar para o calendário"
+      }
+    }
+  }
+}
