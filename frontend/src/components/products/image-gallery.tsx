@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import type { useImageQueue } from "@/hooks/products/use-image-queue"
 import { useImageMutations } from "@/hooks/products/use-products"
+import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
 import { formatFileSize } from "@/lib/file-utils"
 import { useLanguage } from "@/lib/i18n"
 import {
@@ -32,7 +33,7 @@ import type { ProductImage } from "@/lib/products/types"
 import { isWebUrl, normalizeWebUrl } from "@/lib/products/url"
 import { cn } from "@/lib/utils"
 import { ProductThumb } from "./product-thumb"
-import { SortableArea, useSortableEntry } from "./sortable"
+import { SortableArea } from "./sortable"
 
 const GRID_CLASS = "grid grid-cols-3 gap-2 sm:grid-cols-4 md:gap-3 lg:grid-cols-5"
 
@@ -210,10 +211,11 @@ function SavedTile({
     >
       <div
         {...handleProps}
-        // A linha do tempo do toque: segurar pega a foto, e deslizar sem segurar rola a página.
+        // No toque, segurar pega a foto, e deslizar sem segurar rola a página. O `touch-callout`
+        // impede o menu de "salvar imagem" do iOS de roubar o gesto.
         aria-label={t("products.images.reorder", { position: index + 1, total: images.length })}
         className={cn(
-          "aspect-square cursor-grab overflow-hidden rounded-lg bg-muted ring-1 ring-foreground/5 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 active:cursor-grabbing",
+          "aspect-square cursor-grab overflow-hidden rounded-lg bg-muted ring-1 ring-foreground/5 outline-none select-none [-webkit-touch-callout:none] focus-visible:ring-3 focus-visible:ring-ring/50 active:cursor-grabbing",
           isDragging && "shadow-lg"
         )}
       >

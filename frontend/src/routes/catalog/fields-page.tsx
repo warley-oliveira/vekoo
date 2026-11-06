@@ -18,11 +18,7 @@ import {
 import { toast } from "sonner"
 
 import { FieldFormPanel } from "@/components/products/field-form-panel"
-import {
-  DragHandle,
-  SortableArea,
-  useSortableEntry,
-} from "@/components/products/sortable"
+import { DragHandle, SortableArea } from "@/components/products/sortable"
 import {
   ActionsMenu,
   EmptyState,
@@ -37,7 +33,9 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useFieldMutations, useProductFields } from "@/hooks/products/use-products"
+import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
 import { useMotionPreset } from "@/lib/motion"
+import { nextPosition } from "@/lib/products/reorder"
 import type { FieldValueType, ProductField } from "@/lib/products/types"
 import { matchesSearch } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
@@ -162,7 +160,7 @@ export default function FieldsPage() {
         title={t("navigation.routes.catalogFields")}
         backTo="/catalog"
         parentTitle={t("navigation.catalog")}
-        description={t("products.fields.description")}
+        description={t("products.fields.pageDescription")}
         actions={
           <Button onClick={create}>
             <Plus />
@@ -188,7 +186,7 @@ export default function FieldsPage() {
           if (!open) setPanel(null)
         }}
         field={panel?.field}
-        nextPosition={list.length}
+        nextPosition={nextPosition(list)}
       />
     </PageBody>
   )

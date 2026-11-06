@@ -1,3 +1,4 @@
+import { nextPosition } from "./reorder"
 import type { ProductCategory } from "./types"
 
 // A API entrega a árvore plana, com cada filho logo depois do pai.
@@ -67,8 +68,5 @@ export function nextSiblingPosition(
   categories: readonly ProductCategory[],
   parentId: string | null
 ): number {
-  const positions = categories
-    .filter((category) => category.parentId === parentId)
-    .map((category) => category.position)
-  return positions.length > 0 ? Math.max(...positions) + 1 : 0
+  return nextPosition(categories.filter((category) => category.parentId === parentId))
 }

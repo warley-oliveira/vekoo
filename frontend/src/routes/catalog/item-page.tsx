@@ -54,6 +54,7 @@ import {
   toFieldValue,
   type ItemFormValues,
 } from "@/lib/products/item-form"
+import { nextPosition } from "@/lib/products/reorder"
 import type { ProductCategory, ProductField, ProductItemDetail } from "@/lib/products/types"
 
 type RouteState = { from?: string } | null
@@ -437,7 +438,7 @@ function ItemForm({ item, fields, categories, queue, backTo, routeState }: ItemF
       <FieldFormPanel
         open={fieldPanelOpen}
         onOpenChange={setFieldPanelOpen}
-        nextPosition={fields.length}
+        nextPosition={nextPosition(fields)}
         onSaved={(field) =>
           form.resetField(`customFields.${field.key}`, {
             defaultValue: toFieldValue(field.valueType, field.defaultValue),

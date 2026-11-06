@@ -267,7 +267,8 @@
       }
     },
     "fields": {
-      "description": "Informações próprias do seu catálogo, como preço, cor ou metragem. Aparecem na tela de cada item.",
+      "pageDescription": "Informações próprias do seu catálogo, como preço, cor ou metragem. Aparecem na tela de cada item.",
+      "description": "Descrição",
       "create": "Cadastrar campo",
       "createTitle": "Cadastrar campo",
       "editTitle": "Editar campo",

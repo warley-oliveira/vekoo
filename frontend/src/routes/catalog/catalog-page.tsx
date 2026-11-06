@@ -284,7 +284,8 @@ export default function CatalogPage() {
             activeCount={activeCount}
             onClear={clear}
             resultLabel={
-              items ? t("products.list.count", { count: total, formatted: count }) : undefined
+              // Sem resultado, quem fala é o estado vazio. "0 item" não ajuda ninguém.
+              total > 0 ? t("products.list.count", { count: total, formatted: count }) : undefined
             }
             filters={
               <>
@@ -438,6 +439,9 @@ export default function CatalogPage() {
           )}
         </>
       )}
+
+      {/* A barra de lote flutua: sem esta folga, cobriria a paginação no fim da página. */}
+      {selecting ? <div aria-hidden className="h-12" /> : null}
 
       {panels}
     </PageBody>

@@ -57,6 +57,16 @@ export function CatalogMenu({
         <MoreHorizontal />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-auto min-w-60">
+        {onImport ? (
+          <>
+            <MenuEntry
+              icon={<Upload />}
+              label={t("products.list.import")}
+              onClick={onImport}
+            />
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
         <MenuEntry
           icon={<FolderTree />}
           label={t("products.menu.categories")}
@@ -78,13 +88,6 @@ export function CatalogMenu({
           onClick={() => navigate("/catalog/fields")}
         />
         <DropdownMenuSeparator />
-        {onImport ? (
-          <MenuEntry
-            icon={<Upload />}
-            label={t("products.list.import")}
-            onClick={onImport}
-          />
-        ) : null}
         <MenuEntry
           icon={<History />}
           label={t("products.menu.imports")}

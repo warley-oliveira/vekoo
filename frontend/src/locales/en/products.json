@@ -267,7 +267,8 @@
       }
     },
     "fields": {
-      "description": "Information specific to your catalog, like price, color or size. They show up on each item.",
+      "pageDescription": "Information specific to your catalog, like price, color or size. They show up on each item.",
+      "description": "Description",
       "create": "Add field",
       "createTitle": "Add field",
       "editTitle": "Edit field",

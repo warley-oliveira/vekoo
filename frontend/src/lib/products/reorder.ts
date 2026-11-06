@@ -16,6 +16,11 @@ export function withPositions<T extends Positioned>(ordered: readonly T[]): T[] 
   return ordered.map((entry, index) => ({ ...entry, position: index }))
 }
 
+/** A posição que põe um registro novo depois de todos: pode haver buraco depois de excluir. */
+export function nextPosition(entries: readonly Pick<Positioned, "position">[]): number {
+  return entries.reduce((next, entry) => Math.max(next, entry.position + 1), 0)
+}
+
 /** Roda `task` em todos, com no máximo `limit` ao mesmo tempo. */
 export async function runPool<T>(
   values: readonly T[],

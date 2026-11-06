@@ -18,6 +18,8 @@ import type {
 const IMPORTS_PREFIX = "/products/imports"
 const isImportKey = (key: Arguments) =>
   typeof key === "string" && key.startsWith(IMPORTS_PREFIX)
+const isImportListKey = (key: Arguments) =>
+  typeof key === "string" && key.startsWith(`${IMPORTS_PREFIX}?`)
 const isCatalogDataKey = (key: Arguments) =>
   typeof key === "string" &&
   (key.startsWith("/products/items") || key.startsWith("/products/categories"))
@@ -93,7 +95,8 @@ export function useImportMutations() {
   const deleteImport = useCallback(
     async (id: string) => {
       await apiDelete(`${IMPORTS_PREFIX}/${id}`)
-      void mutate(isImportKey)
+      // Só as listas: reler o detalhe de quem acabou de sair daria 404.
+      void mutate(isImportListKey)
     },
     [mutate]
   )

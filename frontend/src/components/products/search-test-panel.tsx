@@ -105,12 +105,14 @@ export function SearchTestPanel({
                   {t(`products.searchTest.strategy.${strategy}`)}
                 </StatusBadge>
               ) : null}
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {t("products.searchTest.count", { count: data.meta.total })}
-                {data.meta.total > items.length
-                  ? ` · ${t("products.searchTest.limited", { shown: items.length })}`
-                  : null}
-              </span>
+              {data.meta.total > 0 ? (
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t("products.searchTest.count", { count: data.meta.total })}
+                  {data.meta.total > items.length
+                    ? ` · ${t("products.searchTest.limited", { shown: items.length })}`
+                    : null}
+                </span>
+              ) : null}
             </div>
 
             {strategy && NO_MEANING.includes(strategy) ? (

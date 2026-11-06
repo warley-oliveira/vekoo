@@ -16,11 +16,7 @@ import {
 import { toast } from "sonner"
 
 import { CategoryFormDialog } from "@/components/products/category-form-dialog"
-import {
-  DragHandle,
-  SortableArea,
-  useSortableEntry,
-} from "@/components/products/sortable"
+import { DragHandle, SortableArea } from "@/components/products/sortable"
 import {
   ActionsMenu,
   EmptyState,
@@ -34,6 +30,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useCategoryMutations, useProductCategories } from "@/hooks/products/use-products"
+import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
@@ -324,7 +321,9 @@ function CategoryRow({
               aria-label={t(expanded ? "products.categories.collapse" : "products.categories.expand", {
                 name: category.name,
               })}
-              className="text-muted-foreground"
+              // O ghost pinta o botão aberto, como o de um menu. Aqui aberto é o estado comum,
+              // e a árvore ficaria cheia de botões parecendo pressionados.
+              className="text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground aria-expanded:hover:bg-muted"
               onClick={() => context.toggle(category.id)}
             >
               <ChevronRight
