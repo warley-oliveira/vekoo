@@ -12,8 +12,8 @@ import {
   RadioField,
   SelectField,
   SidePanel,
-  StatusBadge,
   SwitchField,
+  TagChip,
   TextField,
   UnsavedChangesDialog,
   UserAvatar,
@@ -275,9 +275,7 @@ function FieldPreview({
     <div className="flex flex-col gap-1">
       <span className="text-xs text-muted-foreground">{label}</span>
       {type === "select" ? (
-        <StatusBadge tone="neutral" className="self-start">
-          {options[0] ?? t("pipelinesAdmin.fields.form.previewOption")}
-        </StatusBadge>
+        <TagChip className="self-start">{options[0] ?? t("pipelinesAdmin.fields.form.previewOption")}</TagChip>
       ) : type === "date" ? (
         <span className="flex items-center gap-1.5 text-sm tabular-nums">
           <CalendarDays aria-hidden className="size-3.5 text-muted-foreground" />

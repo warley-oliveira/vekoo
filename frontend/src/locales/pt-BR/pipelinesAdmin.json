@@ -174,8 +174,6 @@
         "archived": "{{name}} foi para o arquivo.",
         "unarchive": "Tirar do arquivo",
         "unarchiveHint": "O quadro volta para o menu, com tudo como estava.",
-        "unarchiveTitle": "Tirar {{name}} do arquivo?",
-        "unarchiveDescription": "O quadro volta para o menu e os gatilhos voltam a rodar.",
         "unarchived": "{{name}} voltou para o menu.",
         "delete": "Excluir quadro",
         "deleteHint": "Leva etapas, cards, gatilhos, metas e filtros. Não tem volta.",
@@ -186,7 +184,8 @@
         "cardsCount_one": "{{count}} card",
         "cardsCount_other": "{{count}} cards",
         "deleteWord": "EXCLUIR",
-        "deleted": "{{name}} foi excluído."
+        "deleted": "{{name}} foi excluído.",
+        "cardsCount_zero": "nenhum card"
       }
     },
     "stages": {
@@ -214,7 +213,8 @@
         "wip_one": "limite de {{count}} card",
         "wip_other": "limite de {{count}} cards",
         "checklist_one": "{{count}} item obrigatório",
-        "checklist_other": "{{count}} itens obrigatórios"
+        "checklist_other": "{{count}} itens obrigatórios",
+        "cards_zero": "Nenhum card"
       },
       "fields": {
         "name": "Nome",
@@ -352,7 +352,8 @@
         "affected": "Campos que serão exigidos",
         "noneRequired": "Nenhum campo está marcado como obrigatório: ligar isto ainda não tem efeito.",
         "saved": "Regra de fechamento salva."
-      }
+      },
+      "count_zero": "Nenhum campo"
     },
     "labels": {
       "description": "Marcam os cards para achar e filtrar. Valem para todos os quadros da organização.",
@@ -400,7 +401,8 @@
         "description": "Ela sai de todos os cards, em todos os quadros.",
         "confirm": "Excluir etiqueta",
         "done": "Etiqueta {{name}} excluída."
-      }
+      },
+      "count_zero": "Nenhuma etiqueta"
     },
     "archived": {
       "description": "Cards fora do quadro: os arquivados e os negócios fechados.",
@@ -459,7 +461,8 @@
         "deleted_other": "{{count}} cards excluídos.",
         "deleteFailed_one": "{{count}} card não pôde ser excluído.",
         "deleteFailed_other": "{{count}} cards não puderam ser excluídos."
-      }
+      },
+      "count_zero": "Nenhum card"
     },
     "priorities": {
       "low": "Baixa",
@@ -485,8 +488,8 @@
       "viewList": "Gatilhos",
       "viewHistory": "Histórico",
       "search": "Buscar gatilho",
-      "activeCount_one": "{{active}} ligado de {{count}}",
-      "activeCount_other": "{{active}} ligados de {{count}}",
+      "activeCount_one": "{{active}} de {{count}} ligado",
+      "activeCount_other": "{{active}} de {{count}} ligados",
       "filterStatus": "Situação",
       "filters": {
         "all": "Todos",
@@ -792,7 +795,6 @@
         "ifHint": "Opcional. Todas precisam bater.",
         "then": "Então",
         "thenHint": "Na ordem da lista. Uma falha não impede as seguintes.",
-        "whenWord": "Quando",
         "event": "O que acontece",
         "stage": "Em qual etapa",
         "anyStage": "qualquer etapa",
@@ -946,7 +948,7 @@
         "status": {
           "all": "Todas",
           "failure": "Com falha",
-          "success": "Certas",
+          "success": "Com sucesso",
           "skipped": "Ignorada"
         },
         "refresh": "Atualizar",
@@ -972,8 +974,10 @@
           "assigned": "Ficou com {{name}}.",
           "someone": "uma pessoa",
           "statusCode": "Respondeu {{code}}.",
-          "cardCreated": "Card criado."
-        }
+          "cardCreated": "Card criado.",
+          "notified_zero": "Ninguém foi avisado."
+        },
+        "count_zero": "Nenhuma execução"
       }
     },
     "code": {
@@ -1070,7 +1074,8 @@
       "seconds_one": "{{count}} segundo",
       "seconds_other": "{{count}} segundos",
       "twoExecutions": "Este gatilho aparece duas vezes no histórico: ao entrar na fila e com o resultado. Uma falha vira alerta no menu, até uma execução dar certo.",
-      "starter": "// O card que disparou o gatilho está em params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Olá, ' + params.card.title);\n\nreturn { evento: params.event.event_type };\n"
+      "starter": "// O card que disparou o gatilho está em params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Olá, ' + params.card.title);\n\nreturn { evento: params.event.event_type };\n",
+      "linesCount_zero": "Vazio"
     },
     "goals": {
       "description": "Quanto se quer vender por mês. O realizado é a soma dos negócios ganhos no mês.",
@@ -1157,7 +1162,8 @@
         "totalValue": "Valor no quadro",
         "weighted": "Valor ponderado",
         "weightedHint": "Valor em aberto vezes a probabilidade",
-        "overdue": "Atrasados"
+        "overdue": "Atrasados",
+        "deals_zero": "Nenhum negócio"
       },
       "series": {
         "createdCount": "Novos cards",
@@ -1171,6 +1177,11 @@
           "day": "Dia a dia",
           "week": "Semana a semana",
           "month": "Mês a mês"
+        },
+        "options": {
+          "createdCount": "Novos cards",
+          "wonCount": "Ganhos",
+          "wonValue": "Receita"
         }
       },
       "conversion": {
@@ -1187,7 +1198,8 @@
         "description": "Conta as passagens que terminaram no período e, se ele chega até hoje, os cards que ainda estão lá.",
         "empty": "Nenhuma passagem neste período.",
         "passages_one": "{{count}} passagem",
-        "passages_other": "{{count}} passagens"
+        "passages_other": "{{count}} passagens",
+        "passages_zero": "Nenhuma passagem"
       },
       "ranking": {
         "title": "Quem mais fechou",
@@ -1197,7 +1209,9 @@
         "won_one": "{{count}} ganho",
         "won_other": "{{count}} ganhos",
         "lost_one": "{{count}} perdido",
-        "lost_other": "{{count}} perdidos"
+        "lost_other": "{{count}} perdidos",
+        "won_zero": "nenhum ganho",
+        "lost_zero": "nenhum perdido"
       },
       "goal": {
         "section": "Meta",

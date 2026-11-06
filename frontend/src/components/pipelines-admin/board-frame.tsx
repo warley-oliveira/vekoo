@@ -108,6 +108,7 @@ export function BoardFrame({ area, variant, skeleton, header, children }: BoardF
 
   return (
     <PageBody variant={variant}>
+      <BoardAreaNav board={board} />
       <PageHeader
         title={board.name}
         backTo={`/pipelines/${board.id}`}
@@ -115,7 +116,6 @@ export function BoardFrame({ area, variant, skeleton, header, children }: BoardF
         {...headerProps}
       />
       <AreaTitle area={area} boardName={board.name} />
-      <BoardAreaNav board={board} />
       {board.archived ? <ArchivedNotice board={board} /> : null}
       {children(board)}
     </PageBody>

@@ -24,7 +24,7 @@ type ChartFrameProps = {
   legend?: ReactNode
   /** O gêmeo em tabela: tudo o que o gráfico mostra, para quem não enxerga cor nem mira no mouse. */
   table: ChartTableData
-  /** Fica à direita do título, ao lado do botão da tabela. */
+  /** Logo abaixo do título: o seletor de indicador, por exemplo. */
   actions?: ReactNode
   children: ReactNode
 }
@@ -43,21 +43,20 @@ export function ChartFrame({ title, description, legend, table, actions, childre
             <p className="text-xs text-pretty text-muted-foreground">{description}</p>
           ) : null}
         </figcaption>
-        <div className="flex items-center gap-2">
-          {actions}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            aria-pressed={asTable}
-            className="text-muted-foreground pointer-coarse:h-10"
-            onClick={() => setAsTable((current) => !current)}
-          >
-            {asTable ? <BarChart3 /> : <Table2 />}
-            {asTable ? t("pipelinesAdmin.charts.showChart") : t("pipelinesAdmin.charts.showTable")}
-          </Button>
-        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          aria-pressed={asTable}
+          className="shrink-0 text-muted-foreground pointer-coarse:h-10"
+          onClick={() => setAsTable((current) => !current)}
+        >
+          {asTable ? <BarChart3 /> : <Table2 />}
+          {asTable ? t("pipelinesAdmin.charts.showChart") : t("pipelinesAdmin.charts.showTable")}
+        </Button>
       </div>
+
+      {actions}
 
       {asTable ? (
         <div className="overflow-x-auto">

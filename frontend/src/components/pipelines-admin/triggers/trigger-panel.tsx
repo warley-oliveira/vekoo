@@ -127,10 +127,9 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
   const nameTouched = useRef(Boolean(trigger))
   const suggested = useMemo(
     () =>
-      plainSentence(parts, (key, values) => t(key, values as Record<string, string>), lookups).slice(
-        0,
-        SUGGESTED_NAME_MAX
-      ),
+      plainSentence(parts, (key, values) => t(key, values as Record<string, string>), lookups)
+        .replace(/\.$/, "")
+        .slice(0, SUGGESTED_NAME_MAX),
     [lookups, parts, t]
   )
   useEffect(() => {
@@ -201,7 +200,7 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
               control={form.control}
               name="name"
               label={t("pipelinesAdmin.triggers.editor.name")}
-              hint={t("pipelinesAdmin.triggers.editor.nameHint")}
+              hint={trigger ? undefined : t("pipelinesAdmin.triggers.editor.nameHint")}
               autoComplete="off"
               maxLength={255}
               onInput={() => {
@@ -271,7 +270,6 @@ function WhenFields() {
 
   return (
     <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 text-sm">
-      <span>{t("pipelinesAdmin.triggers.editor.whenWord")}</span>
       <PhrasePicker
         label={t("pipelinesAdmin.triggers.editor.event")}
         value={eventType}
@@ -455,7 +453,6 @@ function ActionCard({
 
   const options = useActionOptions(canUseCode)
   const currentType = (useWatch({ control, name: `actions.${index}.type` }) ?? type) as TriggerActionType
-  const Icon = ACTION_ICONS[currentType]
 
   // Código sem permissão não some da lista: a pessoa vê que existe, e o servidor recusaria mudá-lo.
   const typeOptions =
@@ -481,9 +478,6 @@ function ActionCard({
           label={t("pipelinesAdmin.triggers.editor.dragAction")}
           className="-ml-1.5"
         />
-        <span className="flex size-6 shrink-0 items-center justify-center text-muted-foreground">
-          <Icon aria-hidden className="size-4" />
-        </span>
         <PhrasePicker
           label={t("pipelinesAdmin.triggers.editor.actionType")}
           value={currentType}

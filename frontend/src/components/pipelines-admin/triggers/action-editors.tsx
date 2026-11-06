@@ -25,6 +25,7 @@ import {
 } from "@/lib/pipelines-admin/trigger-catalog"
 import type { ActionDraft, TriggerDraft } from "@/lib/pipelines-admin/trigger-form"
 import type { WhatsappTemplate } from "@/lib/connectors/types"
+import { PhrasePicker } from "./phrase-picker"
 import { TokenField } from "./token-field"
 
 type EditorProps = { index: number }
@@ -50,15 +51,19 @@ export function NotifyEditor({ index }: EditorProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <SegmentedControl
-        aria-label={t("pipelinesAdmin.triggers.actionForm.notify.audience")}
-        value={audience}
-        onChange={(value) => set("audience", value)}
-        options={[
-          { value: "default", label: t("pipelinesAdmin.triggers.actionForm.notify.audienceDefault") },
-          { value: "people", label: t("pipelinesAdmin.triggers.actionForm.notify.audiencePeople") },
-        ]}
-      />
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">{t("pipelinesAdmin.triggers.actionForm.notify.audience")}</span>
+        <PhrasePicker
+          label={t("pipelinesAdmin.triggers.actionForm.notify.audience")}
+          value={audience}
+          className="self-start"
+          onChange={(value) => set("audience", value)}
+          options={[
+            { value: "default", label: t("pipelinesAdmin.triggers.actionForm.notify.audienceDefault") },
+            { value: "people", label: t("pipelinesAdmin.triggers.actionForm.notify.audiencePeople") },
+          ]}
+        />
+      </div>
       {audience === "people" ? (
         <MultiSelectField
           control={control}
@@ -232,6 +237,7 @@ function NoConnectorNotice() {
       icon={<Info />}
       action={
         <Button
+          nativeButton={false}
           variant="outline"
           size="sm"
           className="pointer-coarse:h-10"

@@ -253,6 +253,7 @@ function MetricsContent({ board }: { board: Board }) {
               {t("pipelinesAdmin.metrics.goal.title", { month: formatMonth(goalMonth, language) })}
             </h2>
             <Button
+              nativeButton={false}
               variant="link"
               size="sm"
               className="h-auto p-0 pointer-coarse:h-10"

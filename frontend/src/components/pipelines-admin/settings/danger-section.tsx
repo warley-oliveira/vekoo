@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { SettingsSection, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useBoardMutations } from "@/hooks/pipelines-admin/use-board"
+import { adminErrorMessage } from "@/lib/pipelines-admin/error-message"
 import type { Board } from "@/lib/pipelines-admin/types"
 
 /** Tirar o quadro de cena, com volta, ou de vez. */
@@ -18,14 +19,14 @@ export function DangerSection({ board }: { board: Board }) {
   const cards = board.stages.reduce((total, stage) => total + stage.cards.length, 0)
 
   async function toggleArchive() {
+    // Voltar não tem nada a perder: faz na hora, como o recado do topo da tela.
     if (board.archived) {
-      const confirmed = await confirm({
-        title: t("pipelinesAdmin.settings.danger.unarchiveTitle", { name: board.name }),
-        description: t("pipelinesAdmin.settings.danger.unarchiveDescription"),
-        confirmLabel: t("pipelinesAdmin.settings.danger.unarchive"),
-        onConfirm: () => archiveBoard(true),
-      })
-      if (confirmed) toast.success(t("pipelinesAdmin.settings.danger.unarchived", { name: board.name }))
+      try {
+        await archiveBoard(true)
+        toast.success(t("pipelinesAdmin.settings.danger.unarchived", { name: board.name }))
+      } catch (cause) {
+        toast.error(adminErrorMessage(t, cause))
+      }
       return
     }
 

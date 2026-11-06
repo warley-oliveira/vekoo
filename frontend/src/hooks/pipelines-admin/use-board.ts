@@ -57,7 +57,8 @@ export function useRevalidateBoard(boardId: string) {
           typeof key === "string" &&
           (key === PIPELINE_BOARDS_KEY ||
             key.startsWith(`${PIPELINE_BOARDS_KEY}?`) ||
-            key.startsWith(boardKey(boardId)))
+            // O checklist cuida de si: reler o de uma etapa que acabou de ser apagada daria 404.
+            (key.startsWith(boardKey(boardId)) && !key.includes("/checklist-items")))
       ),
     [boardId, mutate]
   )

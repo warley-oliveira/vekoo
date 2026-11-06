@@ -134,6 +134,11 @@ function TriggersContent({
   const editing = useMemo(() => triggers?.find((trigger) => trigger.id === shown) ?? null, [shown, triggers])
   const lastEditing = useRetained(editing)
   const shownTrigger = shown === NEW_TRIGGER ? null : lastEditing
+  // Pelo endereço, a lista pode ainda estar a caminho: o formulário nasce com o que tiver, então espera.
+  // Gatilho com código, sem a permissão `flows`, não abre: a API recusaria gravar.
+  const canShowPanel =
+    shown === NEW_TRIGGER ||
+    (shownTrigger !== null && (context.canUseCode || !runsCode(shownTrigger)))
 
   const seed = useMemo(
     () =>
@@ -181,7 +186,7 @@ function TriggersContent({
           />
         )}
 
-        {shown ? (
+        {shown && canShowPanel ? (
           <TriggerPanel
             key={panelKey}
             trigger={shownTrigger}
@@ -386,7 +391,7 @@ function TriggerList({
             ]}
           />
         }
-        actions={
+        filters={
           <SegmentedControl<StatusFilter>
             aria-label={t("pipelinesAdmin.triggers.filterStatus")}
             value={status}

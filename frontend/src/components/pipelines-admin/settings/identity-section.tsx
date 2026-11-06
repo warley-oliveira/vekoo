@@ -10,7 +10,7 @@ import {
   Form,
   FormActions,
   SettingsSection,
-  StatusBadge,
+  TagChip,
   TextField,
   TextareaField,
 } from "@/components/shared"
@@ -97,9 +97,7 @@ export function IdentitySection({ board, onDirtyChange }: SectionProps) {
             <p className="truncate font-heading text-base leading-snug font-medium">
               {name.trim() || t("pipelinesAdmin.settings.identity.noName")}
             </p>
-            <StatusBadge tone="neutral" className="mt-1">
-              {t(`pipelinesAdmin.boardTypes.${board.boardType}`)}
-            </StatusBadge>
+            <TagChip className="mt-1">{t(`pipelinesAdmin.boardTypes.${board.boardType}`)}</TagChip>
           </div>
         </div>
 
@@ -121,7 +119,7 @@ export function IdentitySection({ board, onDirtyChange }: SectionProps) {
           maxLength={DESCRIPTION_MAX}
           rows={3}
         />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid items-end gap-4 sm:grid-cols-2">
           <ColorField
             control={form.control}
             name="color"

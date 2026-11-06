@@ -174,8 +174,6 @@
         "archived": "{{name}} was archived.",
         "unarchive": "Unarchive",
         "unarchiveHint": "The board returns to the menu, with everything as it was.",
-        "unarchiveTitle": "Unarchive {{name}}?",
-        "unarchiveDescription": "The board returns to the menu and triggers run again.",
         "unarchived": "{{name}} is back in the menu.",
         "delete": "Delete board",
         "deleteHint": "Takes stages, cards, triggers, goals and filters with it. There is no way back.",
@@ -186,7 +184,8 @@
         "cardsCount_one": "{{count}} card",
         "cardsCount_other": "{{count}} cards",
         "deleteWord": "DELETE",
-        "deleted": "{{name}} was deleted."
+        "deleted": "{{name}} was deleted.",
+        "cardsCount_zero": "no cards"
       }
     },
     "stages": {
@@ -214,7 +213,8 @@
         "wip_one": "limit of {{count}} card",
         "wip_other": "limit of {{count}} cards",
         "checklist_one": "{{count}} required item",
-        "checklist_other": "{{count}} required items"
+        "checklist_other": "{{count}} required items",
+        "cards_zero": "No cards"
       },
       "fields": {
         "name": "Name",
@@ -352,7 +352,8 @@
         "affected": "Fields that will be required",
         "noneRequired": "No field is marked as required: turning this on has no effect yet.",
         "saved": "Closing rule saved."
-      }
+      },
+      "count_zero": "No fields"
     },
     "labels": {
       "description": "They mark cards so you can find and filter them. They apply to every board in the organization.",
@@ -400,7 +401,8 @@
         "description": "It comes off every card, on every board.",
         "confirm": "Delete label",
         "done": "Label {{name}} deleted."
-      }
+      },
+      "count_zero": "No labels"
     },
     "archived": {
       "description": "Cards off the board: the archived ones and closed deals.",
@@ -459,7 +461,8 @@
         "deleted_other": "{{count}} cards deleted.",
         "deleteFailed_one": "{{count}} card could not be deleted.",
         "deleteFailed_other": "{{count}} cards could not be deleted."
-      }
+      },
+      "count_zero": "No cards"
     },
     "priorities": {
       "low": "Low",
@@ -485,8 +488,8 @@
       "viewList": "Triggers",
       "viewHistory": "History",
       "search": "Search triggers",
-      "activeCount_one": "{{active}} on out of {{count}}",
-      "activeCount_other": "{{active}} on out of {{count}}",
+      "activeCount_one": "{{active}} of {{count}} on",
+      "activeCount_other": "{{active}} of {{count}} on",
       "filterStatus": "Status",
       "filters": {
         "all": "All",
@@ -792,7 +795,6 @@
         "ifHint": "Optional. All of them must match.",
         "then": "Then",
         "thenHint": "In list order. A failure doesn't stop the next ones.",
-        "whenWord": "When",
         "event": "What happens",
         "stage": "On which stage",
         "anyStage": "any stage",
@@ -972,8 +974,10 @@
           "assigned": "Assigned to {{name}}.",
           "someone": "someone",
           "statusCode": "Responded {{code}}.",
-          "cardCreated": "Card created."
-        }
+          "cardCreated": "Card created.",
+          "notified_zero": "Nobody was told."
+        },
+        "count_zero": "No runs"
       }
     },
     "code": {
@@ -1070,7 +1074,8 @@
       "seconds_one": "{{count}} second",
       "seconds_other": "{{count}} seconds",
       "twoExecutions": "This trigger shows up twice in the history: when it enters the queue and with the result. A failure becomes an alert in the menu until a run succeeds.",
-      "starter": "// The card that fired the trigger is in params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Hello, ' + params.card.title);\n\nreturn { event: params.event.event_type };\n"
+      "starter": "// The card that fired the trigger is in params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Hello, ' + params.card.title);\n\nreturn { event: params.event.event_type };\n",
+      "linesCount_zero": "Empty"
     },
     "goals": {
       "description": "How much you want to sell each month. Actual is the sum of the deals won that month.",
@@ -1157,7 +1162,8 @@
         "totalValue": "Value on the board",
         "weighted": "Weighted value",
         "weightedHint": "Open value times the probability",
-        "overdue": "Overdue"
+        "overdue": "Overdue",
+        "deals_zero": "No deals"
       },
       "series": {
         "createdCount": "New cards",
@@ -1171,6 +1177,11 @@
           "day": "Day by day",
           "week": "Week by week",
           "month": "Month by month"
+        },
+        "options": {
+          "createdCount": "New cards",
+          "wonCount": "Won",
+          "wonValue": "Revenue"
         }
       },
       "conversion": {
@@ -1187,7 +1198,8 @@
         "description": "Counts the visits that ended in the period and, if it reaches today, the cards still there.",
         "empty": "No visits in this period.",
         "passages_one": "{{count}} visit",
-        "passages_other": "{{count}} visits"
+        "passages_other": "{{count}} visits",
+        "passages_zero": "No visits"
       },
       "ranking": {
         "title": "Who closed the most",
@@ -1197,7 +1209,9 @@
         "won_one": "{{count}} won",
         "won_other": "{{count}} won",
         "lost_one": "{{count}} lost",
-        "lost_other": "{{count}} lost"
+        "lost_other": "{{count}} lost",
+        "won_zero": "none won",
+        "lost_zero": "none lost"
       },
       "goal": {
         "section": "Goal",

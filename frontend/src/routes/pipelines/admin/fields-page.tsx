@@ -15,6 +15,7 @@ import {
   SettingsSection,
   SortableArea,
   StatusBadge,
+  TagChip,
   useConfirm,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -245,7 +246,7 @@ function FieldsContent({
         </div>
       )}
 
-      {shown ? (
+      {shown && (shown === NEW_FIELD || shownField) ? (
         <FieldPanel
           key={panelKey}
           board={board}
@@ -451,9 +452,7 @@ function DealCloseSection({
           <span className="text-xs text-muted-foreground">{t("pipelinesAdmin.fields.dealClose.affected")}</span>
           <div className="flex flex-wrap gap-1.5">
             {required.map((field) => (
-              <StatusBadge key={field.id} tone="neutral">
-                {field.name}
-              </StatusBadge>
+              <TagChip key={field.id}>{field.name}</TagChip>
             ))}
           </div>
         </div>

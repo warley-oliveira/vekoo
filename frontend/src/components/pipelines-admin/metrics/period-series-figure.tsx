@@ -61,10 +61,11 @@ export function PeriodSeriesFigure({ period, isCrm }: { period: PeriodMetrics; i
             aria-label={t("pipelinesAdmin.metrics.trend.measure")}
             value={measure}
             onChange={setMeasure}
+            className="self-start"
             options={[
-              { value: "createdCount", label: t("pipelinesAdmin.metrics.series.createdCount") },
-              { value: "wonCount", label: t("pipelinesAdmin.metrics.series.wonCount") },
-              { value: "wonValue", label: t("pipelinesAdmin.metrics.series.wonValue") },
+              { value: "createdCount", label: t("pipelinesAdmin.metrics.trend.options.createdCount") },
+              { value: "wonCount", label: t("pipelinesAdmin.metrics.trend.options.wonCount") },
+              { value: "wonValue", label: t("pipelinesAdmin.metrics.trend.options.wonValue") },
             ]}
           />
         ) : undefined

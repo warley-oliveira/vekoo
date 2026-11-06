@@ -96,21 +96,19 @@ export function ExecutionsView({
         onClear={clearFilters}
         resultLabel={meta ? t("pipelinesAdmin.triggers.history.count", { count: meta.total }) : undefined}
         filters={
-          <SelectInput
-            aria-label={t("pipelinesAdmin.triggers.history.filterTrigger")}
-            options={triggerOptions}
-            value={triggerId}
-            placeholder={t("pipelinesAdmin.triggers.history.allTriggers")}
-            clearLabel={t("pipelinesAdmin.triggers.history.allTriggers")}
-            className="md:w-64"
-            onChange={(value) => {
-              onTriggerChange(value)
-              setPage(1)
-            }}
-          />
-        }
-        actions={
-          <div className="flex items-center gap-2">
+          <>
+            <SelectInput
+              aria-label={t("pipelinesAdmin.triggers.history.filterTrigger")}
+              options={triggerOptions}
+              value={triggerId}
+              placeholder={t("pipelinesAdmin.triggers.history.allTriggers")}
+              clearLabel={t("pipelinesAdmin.triggers.history.allTriggers")}
+              className="md:w-64"
+              onChange={(value) => {
+                onTriggerChange(value)
+                setPage(1)
+              }}
+            />
             <SegmentedControl<StatusFilter>
               aria-label={t("pipelinesAdmin.triggers.history.filterStatus")}
               value={status}
@@ -124,17 +122,19 @@ export function ExecutionsView({
                 { value: "success", label: t("pipelinesAdmin.triggers.history.status.success") },
               ]}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("pipelinesAdmin.triggers.history.refresh")}
-              className="text-muted-foreground pointer-coarse:size-10"
-              onClick={() => void reload()}
-            >
-              <RefreshCw className={cn(isValidating && "animate-spin motion-reduce:animate-none")} />
-            </Button>
-          </div>
+          </>
+        }
+        actions={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("pipelinesAdmin.triggers.history.refresh")}
+            className="text-muted-foreground pointer-coarse:size-10"
+            onClick={() => void reload()}
+          >
+            <RefreshCw className={cn(isValidating && "animate-spin motion-reduce:animate-none")} />
+          </Button>
         }
       />
 
@@ -211,6 +211,7 @@ function ExecutionRow({ execution }: { execution: TriggerExecution }) {
               {execution.cardTitle ?? t("pipelinesAdmin.triggers.history.deletedCard")}
               {execution.errorMessage ? ` · ${execution.errorMessage}` : ""}
             </span>
+            <RelativeTime value={execution.executedAt} className="block text-xs text-muted-foreground sm:hidden" />
           </span>
           <RelativeTime value={execution.executedAt} className="hidden shrink-0 text-xs text-muted-foreground sm:block" />
           <ChevronDown
