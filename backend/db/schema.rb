@@ -91,6 +91,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
     t.index ["organization_id"], name: "index_carousels_on_organization_id"
   end
 
+  create_table "daily_chat_stats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "day", null: false
+    t.jsonb "hourly_breakdown", default: {}, null: false
+    t.jsonb "metrics", default: {}, null: false
+    t.uuid "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["metrics"], name: "index_daily_chat_stats_on_metrics", using: :gin
+    t.index ["organization_id", "day"], name: "index_daily_chat_stats_on_organization_id_and_day", unique: true
+  end
+
   create_table "folders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "color", null: false
     t.datetime "created_at", null: false
@@ -120,6 +131,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "notified_at"], name: "index_notifications_on_organization_id_and_notified_at"
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
+  end
+
+  create_table "oauth_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "client_id", null: false
+    t.text "client_secret", null: false
+    t.datetime "created_at", null: false
+    t.string "endpoint", null: false
+    t.datetime "expires_at"
+    t.string "key_name", null: false
+    t.uuid "organization_id", null: false
+    t.text "token_data"
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "key_name"], name: "index_oauth_credentials_on_organization_id_and_key_name", unique: true
   end
 
   create_table "organization_alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -373,8 +397,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "carousels", "folders", on_delete: :nullify
   add_foreign_key "carousels", "organizations"
+  add_foreign_key "daily_chat_stats", "organizations", on_delete: :cascade
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
+  add_foreign_key "oauth_credentials", "organizations", on_delete: :cascade
   add_foreign_key "organization_alerts", "organizations", on_delete: :cascade
   add_foreign_key "password_resets", "accounts"
   add_foreign_key "product_categories", "organizations", on_delete: :cascade
