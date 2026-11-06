@@ -57,6 +57,8 @@ RSpec.describe Pipelines::BoardTemplate, type: :model do
 
   describe ".ensure_defaults!" do
     it "cria só quando falta, sem depender da semente, que em produção não roda" do
+      described_class.delete_all
+
       expect { described_class.ensure_defaults! }.to change(described_class, :count).by(4)
 
       expect(described_class).not_to receive(:seed_defaults!)

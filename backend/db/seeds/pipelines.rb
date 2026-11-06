@@ -12,6 +12,10 @@
 # Idempotente: o quadro é achado pelo nome. O que já existe fica como está, então rodar de novo não
 # duplica e não desfaz o que a pessoa fez.
 #
+# Os modelos de quadro não entram aqui: nascem no primeiro uso (`BoardTemplate.ensure_defaults!`), porque
+# em produção a semente não roda. Gravá-los também sujava a tabela, que é global: `spec/db/seeds_spec.rb`
+# roda fora de transação e só limpa o que é da organização, e a linha que sobrava derrubava outra spec.
+#
 #   bin/rails runner 'load "db/seeds/pipelines.rb"'
 
 Object.send(:remove_const, :VekooPipelinesSeeds) if defined?(VekooPipelinesSeeds)
@@ -160,7 +164,6 @@ module VekooPipelinesSeeds
     load Rails.root.join("db/seeds/access.rb") unless organization.accounts.where(email: "juliana.ferreira@exemplo.com.br").exists?
     load Rails.root.join("db/seeds/connectors.rb") unless organization.chats.exists?
 
-    Pipelines::BoardTemplate.seed_defaults!
     @organization = organization
     @owner = owner
     @labels = seed_labels

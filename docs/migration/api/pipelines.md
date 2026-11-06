@@ -474,7 +474,7 @@ Cards fora do quadro: arquivados, ganhos ou perdidos. Parâmetros: `status` (`ar
 
 ### `GET /pipelines/templates`
 
-Os modelos de quadro. `templateKey` é o que vai em `POST /pipelines/boards`. `icon` é nome de ícone do lucide.
+Os modelos de quadro, globais e em pt-BR. Nascem no primeiro uso, sem depender da semente. `templateKey` é o que vai em `POST /pipelines/boards`. `icon` é nome de ícone do lucide.
 
 ```json
 {

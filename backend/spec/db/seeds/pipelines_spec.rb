@@ -28,8 +28,12 @@ RSpec.describe "db/seeds/pipelines.rb" do
     expect(after_sales.stages.count).to eq(5)
   end
 
-  it "traz os modelos de quadro" do
-    expect(Pipelines::BoardTemplate.count).to eq(4)
+  # A tabela é global, e `spec/db/seeds_spec.rb` roda fora de transação: o que a semente gravasse aqui
+  # ficaria no banco de teste, e derrubaria quem conta com ela vazia.
+  it "não grava os modelos de quadro, que nascem no primeiro uso" do
+    Pipelines::BoardTemplate.delete_all
+
+    expect { seed }.not_to change(Pipelines::BoardTemplate, :count)
   end
 
   it "os cards apontam para as conversas da semente, dentro da organização" do
