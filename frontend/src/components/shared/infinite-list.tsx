@@ -144,7 +144,11 @@ export function InfiniteList<T>({
   return (
     <Virtuoso<T, SlotContext>
       aria-label={ariaLabel}
-      className={className}
+      // A lista rola pelo teclado, então recebe foco e precisa mostrar.
+      className={cn(
+        "outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset",
+        className
+      )}
       style={scrollParent ? style : { height: "100%", minHeight: "16rem", ...style }}
       customScrollParent={scrollParent ?? undefined}
       data={items}

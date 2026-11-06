@@ -52,6 +52,9 @@ export function NumberInput({
 
   return (
     <NumberFieldPrimitive.Root
+      // No `Root`, e não no `Input`: é daqui que saem o id do campo e o `aria-controls`
+      // dos botões de menos e mais.
+      id={id}
       value={value ?? null}
       min={min}
       max={max}
@@ -77,7 +80,6 @@ export function NumberInput({
           </NumberFieldPrimitive.Decrement>
         ) : null}
         <NumberFieldPrimitive.Input
-          id={id}
           ref={inputRef}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
