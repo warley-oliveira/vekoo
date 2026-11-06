@@ -217,9 +217,13 @@ RSpec.describe "Contrato de Connector#send_text_message" do
       Connector::InstagramDirect, Connector::LeadChat, Connector::WebWidget
     ]
 
+    # O Google Agenda também é um conector, mas não conversa com ninguém: não entra no contrato.
+    not_channels = [ Connector::GoogleCalendar ]
+
     # `name`: outras specs podem ter criado subclasses anônimas, que também ficam na lista.
-    expect(Connector::Base.descendants.select(&:name)).to match_array(known)
+    expect(Connector::Base.descendants.select(&:name) - not_channels).to match_array(known)
     expect(known).to all(satisfy { |klass| klass.method_defined?(:send_text_message) })
+    expect(not_channels).to all(satisfy { |klass| !klass.method_defined?(:send_text_message) })
   end
 
   # O id precisa caber no campo: é o que os webhooks de status procuram depois.

@@ -1169,7 +1169,7 @@ No Google Cloud Console: Calendar API ligada, escopos `calendar.app.created`, `o
 
 - **Provedores:** o WhatsApp do profissional e o Google só foram exercitados com a rede fechada, contra stubs. Não há credenciais em desenvolvimento.
 - **Job cancelado continua na fila** até a hora marcada, e aí não faz nada. É o preço de cancelar sem `Sidekiq::Status`.
-- **Regra editada não muda lembrete já agendado.** Vale para agendamento novo ou remarcado, como na origem. O que muda na hora: desligar os lembretes, e apagar a regra.
+- **Regra editada e lembrete já agendado.** O lembrete ao contato sai com o texto atual da regra, e só pode atrasar: a hora que já está na fila não adianta. Desligar os lembretes e apagar a regra valem na hora. O lembrete ao profissional leva a regra com ele, como na origem: vale o que estava configurado quando foi agendado. Regra nova vale para agendamento novo ou remarcado.
 - **`POST` em turma cheia pela presença** (`enrollAll`) não confere a lotação, como na origem.
 - **A soma da distribuição** deixa de dar 100 quando um profissional sai. O serviço não salva até alguém repartir de novo.
 - `pending` no dashboard conta cancelado, como na origem.
