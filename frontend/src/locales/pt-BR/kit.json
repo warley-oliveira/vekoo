@@ -44,6 +44,7 @@
       "stay": "Continuar editando"
     },
     "form": {
+      "phonePlaceholder": "+55 11 91234-5678",
       "optional": "opcional",
       "selectPlaceholder": "Escolha uma opção",
       "searchPlaceholder": "Digite para buscar",
@@ -163,7 +164,11 @@
     "showcase": {
       "title": "Kit de componentes",
       "description": "Tudo o que as telas têm para usar, em todos os estados. Só em desenvolvimento.",
-      "crumbs": { "home": "Início", "dev": "Desenvolvimento", "kit": "Kit" },
+      "crumbs": {
+        "home": "Início",
+        "dev": "Desenvolvimento",
+        "kit": "Kit"
+      },
       "sections": {
         "page": "Página",
         "data": "Dados",
@@ -212,11 +217,9 @@
         "toneAccent": "Destaque",
         "toneNoDot": "Sem ponto",
         "tags": "Etiquetas",
+        "tagNoColor": "Sem cor",
         "people": "Pessoas",
         "formats": "Tempo, dinheiro e cópia",
-        "justNow": "Agora há pouco",
-        "yesterday": "Ontem",
-        "scheduled": "Agendado",
         "copyLink": "Copiar link",
         "keyValue": "Lista de detalhes",
         "timeline": "Linha do tempo",
@@ -286,8 +289,7 @@
         "bulkDone_one": "{{count}} contato arquivado",
         "bulkDone_other": "{{count}} contatos arquivados",
         "filterBar": "Barra de filtros",
-        "filterBarHint": "Busca, filtros, ordenação e limpar. No celular, os filtros vão para uma Sheet.",
-        "filterPopover": "Filtros em popover"
+        "filterBarHint": "Busca, filtros, ordenação e limpar. No celular, os filtros vão para uma Sheet."
       },
       "overlays": {
         "openDialog": "Abrir diálogo responsivo",
@@ -340,7 +342,6 @@
         "stage": "Etapa do funil",
         "stageRequired": "Escolha uma etapa.",
         "owner": "Responsável",
-        "ownerSearch": "Busca assíncrona",
         "ownerHint": "Busca no servidor enquanto você digita.",
         "city": "Cidade",
         "tags": "Etiquetas",
@@ -358,8 +359,6 @@
         "channelWhatsappHint": "A pessoa responde mais rápido por aqui.",
         "channelEmail": "E-mail",
         "channelEmailHint": "Melhor para propostas e contratos.",
-        "channelPhone": "Telefone",
-        "channelPhoneHint": "Só em horário comercial.",
         "priority": "Prioridade",
         "priorityLow": "Baixa",
         "priorityMedium": "Média",
@@ -378,11 +377,9 @@
         "states": "Estados dos campos",
         "invalidField": "Com erro",
         "invalidMessage": "Mensagem de erro no lugar da dica.",
-        "unsaved": "Formulário sujo avisa ao sair da página",
         "dropzone": "Envio de arquivos",
         "dropzoneHint": "Com limite de tipo, tamanho e quantidade, explicados antes de dar erro.",
-        "dropzoneStates": "Estados de envio",
-        "attachments": "Anexos do contrato"
+        "dropzoneStates": "Estados de envio"
       },
       "skeletons": {
         "list": "Lista",

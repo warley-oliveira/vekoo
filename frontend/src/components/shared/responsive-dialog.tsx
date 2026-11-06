@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { cn } from "@/lib/utils"
+import { useSheetFocus } from "./use-sheet-focus"
 
 const SIZES = {
   sm: "sm:max-w-sm",
@@ -69,13 +70,17 @@ export function ResponsiveDialog({
   const { t } = useTranslation()
   const isMobile = useIsMobile()
 
+  const { popupRef, initialFocus } = useSheetFocus()
+
+  // Vem depois do conteúdo no DOM, embora apareça no topo: o teclado começa no primeiro
+  // campo, e não no fechar.
   const closeButton = (
     <Button
       type="button"
       variant="ghost"
       size="icon-sm"
       aria-label={t("kit.actions.close")}
-      className="-mt-1 -mr-1 shrink-0"
+      className="absolute top-3 right-3"
     />
   )
 
@@ -109,20 +114,20 @@ export function ResponsiveDialog({
       >
         {trigger ? <SheetTrigger render={trigger} /> : null}
         <SheetContent
+          ref={popupRef}
+          initialFocus={initialFocus}
           side="bottom"
           showCloseButton={false}
-          className={cn("max-h-[90dvh] gap-0 rounded-t-2xl", className)}
+          className={cn("max-h-[90dvh] gap-0 rounded-t-2xl outline-none", className)}
         >
-          <div className="flex items-start gap-4 p-4 pb-3">
-            <div className="min-w-0 flex-1 space-y-1">
-              <SheetTitle>{title}</SheetTitle>
-              {description ? <SheetDescription>{description}</SheetDescription> : null}
-            </div>
-            <SheetClose render={closeButton}>
-              <X />
-            </SheetClose>
+          <div className="space-y-1 p-4 pr-12 pb-3">
+            <SheetTitle>{title}</SheetTitle>
+            {description ? <SheetDescription>{description}</SheetDescription> : null}
           </div>
           {body}
+          <SheetClose render={closeButton}>
+            <X />
+          </SheetClose>
         </SheetContent>
       </Sheet>
     )
@@ -143,16 +148,14 @@ export function ResponsiveDialog({
           className
         )}
       >
-        <div className="flex items-start gap-4 p-4 pb-3">
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <DialogTitle>{title}</DialogTitle>
-            {description ? <DialogDescription>{description}</DialogDescription> : null}
-          </div>
-          <DialogClose render={closeButton}>
-            <X />
-          </DialogClose>
+        <div className="space-y-1.5 p-4 pr-12 pb-3">
+          <DialogTitle>{title}</DialogTitle>
+          {description ? <DialogDescription>{description}</DialogDescription> : null}
         </div>
         {body}
+        <DialogClose render={closeButton}>
+          <X />
+        </DialogClose>
       </DialogContent>
     </Dialog>
   )

@@ -44,6 +44,7 @@
       "stay": "Keep editing"
     },
     "form": {
+      "phonePlaceholder": "+55 11 91234-5678",
       "optional": "optional",
       "selectPlaceholder": "Choose an option",
       "searchPlaceholder": "Type to search",
@@ -163,7 +164,11 @@
     "showcase": {
       "title": "Component kit",
       "description": "Everything the screens have to work with, in every state. Development only.",
-      "crumbs": { "home": "Home", "dev": "Development", "kit": "Kit" },
+      "crumbs": {
+        "home": "Home",
+        "dev": "Development",
+        "kit": "Kit"
+      },
       "sections": {
         "page": "Page",
         "data": "Data",
@@ -212,11 +217,9 @@
         "toneAccent": "Highlight",
         "toneNoDot": "No dot",
         "tags": "Tags",
+        "tagNoColor": "No color",
         "people": "People",
         "formats": "Time, money and copy",
-        "justNow": "Just now",
-        "yesterday": "Yesterday",
-        "scheduled": "Scheduled",
         "copyLink": "Copy link",
         "keyValue": "Details list",
         "timeline": "Timeline",
@@ -286,8 +289,7 @@
         "bulkDone_one": "{{count}} contact archived",
         "bulkDone_other": "{{count}} contacts archived",
         "filterBar": "Filter bar",
-        "filterBarHint": "Search, filters, sorting and clear. On mobile, filters move to a Sheet.",
-        "filterPopover": "Filters in a popover"
+        "filterBarHint": "Search, filters, sorting and clear. On mobile, filters move to a Sheet."
       },
       "overlays": {
         "openDialog": "Open responsive dialog",
@@ -340,7 +342,6 @@
         "stage": "Funnel stage",
         "stageRequired": "Choose a stage.",
         "owner": "Owner",
-        "ownerSearch": "Async search",
         "ownerHint": "Searches the server while you type.",
         "city": "City",
         "tags": "Tags",
@@ -358,8 +359,6 @@
         "channelWhatsappHint": "This person answers faster here.",
         "channelEmail": "Email",
         "channelEmailHint": "Better for proposals and contracts.",
-        "channelPhone": "Phone",
-        "channelPhoneHint": "Business hours only.",
         "priority": "Priority",
         "priorityLow": "Low",
         "priorityMedium": "Medium",
@@ -378,11 +377,9 @@
         "states": "Field states",
         "invalidField": "With error",
         "invalidMessage": "Error message in place of the hint.",
-        "unsaved": "A dirty form warns before leaving the page",
         "dropzone": "File upload",
         "dropzoneHint": "With type, size and count limits, explained before any error.",
-        "dropzoneStates": "Upload states",
-        "attachments": "Contract attachments"
+        "dropzoneStates": "Upload states"
       },
       "skeletons": {
         "list": "List",

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type Ref } from "react"
 import type { FieldPath, FieldValues } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { Input } from "@/components/ui/input"
 import { formatPhoneInput, onlyDigits, parsePhoneInput } from "@/lib/format-phone"
@@ -39,11 +40,12 @@ export function PhoneInput({
   onChange,
   onBlur,
   defaultCountry,
-  placeholder = "+55 11 91234-5678",
+  placeholder,
   inputRef,
   className,
   ...aria
 }: PhoneInputProps) {
+  const { t } = useTranslation()
   const local = useRef<HTMLInputElement | null>(null)
   const caret = useRef<number | null>(null)
   // Um "+" sozinho ainda não tem dígito nenhum para guardar no valor, mas é o começo de
@@ -71,7 +73,7 @@ export function PhoneInput({
       inputMode="tel"
       autoComplete="tel"
       value={display}
-      placeholder={placeholder}
+      placeholder={placeholder ?? t("kit.form.phonePlaceholder")}
       className={className}
       onChange={(event) => {
         const text = event.target.value

@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { useSheetFocus } from "./use-sheet-focus"
 
 const SIZES = {
   md: "data-[side=right]:sm:max-w-md",
@@ -58,6 +59,7 @@ export function SidePanel({
   bodyClassName,
 }: SidePanelProps) {
   const { t } = useTranslation()
+  const { popupRef, initialFocus } = useSheetFocus()
 
   const content = (
     <>
@@ -80,36 +82,26 @@ export function SidePanel({
     >
       {trigger ? <SheetTrigger render={trigger} /> : null}
       <SheetContent
+        ref={popupRef}
+        initialFocus={initialFocus}
         side="right"
         showCloseButton={false}
         className={cn(
-          "gap-0 data-[side=right]:w-full",
+          "gap-0 outline-none data-[side=right]:w-full",
           SIZES[size],
           className
         )}
       >
-        <div className="flex shrink-0 items-start gap-3 border-b px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <div className="flex shrink-0 items-start gap-3 border-b py-3 pr-12 pl-4 pt-[max(0.75rem,env(safe-area-inset-top))]">
           <div className="min-w-0 flex-1 space-y-0.5">
             <SheetTitle className="truncate">{title}</SheetTitle>
             {description ? (
               <SheetDescription className="text-pretty">{description}</SheetDescription>
             ) : null}
           </div>
-          <div className="-mr-1 flex shrink-0 items-center gap-1">
-            {headerActions}
-            <SheetClose
-              render={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t("kit.actions.close")}
-                />
-              }
-            >
-              <X />
-            </SheetClose>
-          </div>
+          {headerActions ? (
+            <div className="flex shrink-0 items-center gap-1">{headerActions}</div>
+          ) : null}
         </div>
         {onSubmit ? (
           <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
@@ -118,6 +110,20 @@ export function SidePanel({
         ) : (
           content
         )}
+        {/* Depois do conteúdo no DOM, embora apareça no topo: o teclado começa nos campos. */}
+        <SheetClose
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={t("kit.actions.close")}
+              className="absolute top-[max(0.625rem,env(safe-area-inset-top))] right-3"
+            />
+          }
+        >
+          <X />
+        </SheetClose>
       </SheetContent>
     </Sheet>
   )

@@ -143,6 +143,23 @@ const TAG_OPTIONS: SelectOption[] = [
   "Cliente VIP", "Indicação", "Retorno", "Atacado", "Pós-venda", "Inadimplente",
 ].map((tag) => ({ value: tag, label: tag }))
 
+// Conteúdo de exemplo de etiquetas e pessoas, como o que a pessoa cadastraria.
+const SAMPLE = {
+  vip: "Cliente VIP",
+  referral: "Indicação",
+  returning: "Retorno",
+  wholesale: "Atacado",
+  marina: "Marina Duarte",
+  joao: "João Pedro Almeida",
+  agata: "Ágata",
+  bruno: "Bruno Sá",
+  rafael: "Rafael Nunes",
+  phone: "+55 31 98379-4137",
+  phoneDigits: "5531983794137",
+  email: "marina.duarte@exemplo.com.br",
+  inviteLink: "https://vekoo.app/convite/9f3a",
+}
+
 const SECTIONS = ["page", "data", "collections", "overlays", "forms", "skeletons"] as const
 
 /* ---------- moldura ---------- */
@@ -211,7 +228,7 @@ export default function KitPage() {
           <a
             key={section}
             href={`#${section}`}
-            className="rounded text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="rounded text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:py-2.5"
           >
             {t(`kit.showcase.sections.${section}`)}
           </a>
@@ -276,10 +293,10 @@ function PageSection() {
 function DataSection() {
   const { t } = useTranslation()
   const [tags, setTags] = useState([
-    { label: "Cliente VIP", color: "#7c3aed" },
-    { label: "Retorno", color: "#ffee00" },
-    { label: "Indicação", color: "#059669" },
-    { label: "Atacado", color: "#dc2626" },
+    { label: SAMPLE.vip, color: "#7c3aed" },
+    { label: SAMPLE.returning, color: "#ffee00" },
+    { label: SAMPLE.referral, color: "#059669" },
+    { label: SAMPLE.wholesale, color: "#dc2626" },
   ])
 
   const people = OWNERS.map((name) => ({ name }))
@@ -344,18 +361,18 @@ function DataSection() {
                 {tag.label}
               </TagChip>
             ))}
-            <TagChip color="#ffee00" variant="solid">Retorno</TagChip>
-            <TagChip color="#1e3a8a" variant="solid">Atacado</TagChip>
-            <TagChip icon={<Tag />}>Sem cor</TagChip>
+            <TagChip color="#ffee00" variant="solid">{SAMPLE.returning}</TagChip>
+            <TagChip color="#1e3a8a" variant="solid">{SAMPLE.wholesale}</TagChip>
+            <TagChip icon={<Tag />}>{t("kit.showcase.data.tagNoColor")}</TagChip>
           </div>
         </Example>
 
         <Example title={t("kit.showcase.data.people")}>
           <div className="flex flex-wrap items-center gap-3">
-            <UserAvatar name="Marina Duarte" size="sm" />
-            <UserAvatar name="João Pedro Almeida" status="online" />
-            <UserAvatar name="Ágata" size="lg" status="away" />
-            <UserAvatar name="Bruno Sá" src="/favicon.svg" size="lg" status="offline" />
+            <UserAvatar name={SAMPLE.marina} size="sm" />
+            <UserAvatar name={SAMPLE.joao} status="online" />
+            <UserAvatar name={SAMPLE.agata} size="lg" status="away" />
+            <UserAvatar name={SAMPLE.bruno} src="/favicon.svg" size="lg" status="offline" />
             <UserAvatar />
             <AvatarStack users={people} />
             <AvatarStack users={people.slice(0, 2)} size="default" />
@@ -375,9 +392,9 @@ function DataSection() {
             <Money value={48250.9} compact />
             <Money value="5000.0" currency="USD" />
             <Money value={null} className="text-muted-foreground" />
-            <CopyButton value="https://vekoo.app/convite/9f3a" />
+            <CopyButton value={SAMPLE.inviteLink} />
             <CopyButton
-              value="https://vekoo.app/convite/9f3a"
+              value={SAMPLE.inviteLink}
               label={t("kit.showcase.data.copyLink")}
               variant="outline"
               size="sm"
@@ -393,23 +410,23 @@ function DataSection() {
           <KeyValueList
             className="max-w-md"
             items={[
-              { label: t("kit.showcase.data.fields.name"), value: "Marina Duarte" },
+              { label: t("kit.showcase.data.fields.name"), value: SAMPLE.marina },
               {
                 label: t("kit.showcase.data.fields.phone"),
-                value: "+55 31 98379-4137",
-                copyValue: "5531983794137",
+                value: SAMPLE.phone,
+                copyValue: SAMPLE.phoneDigits,
               },
               {
                 label: t("kit.showcase.data.fields.email"),
-                value: "marina.duarte@exemplo.com.br",
-                copyValue: "marina.duarte@exemplo.com.br",
+                value: SAMPLE.email,
+                copyValue: SAMPLE.email,
               },
               {
                 label: t("kit.showcase.data.fields.owner"),
                 value: (
                   <span className="inline-flex items-center gap-2">
-                    <UserAvatar name="Rafael Nunes" size="sm" />
-                    Rafael Nunes
+                    <UserAvatar name={SAMPLE.rafael} size="sm" />
+                    {SAMPLE.rafael}
                   </span>
                 ),
               },
@@ -439,7 +456,7 @@ function DataSection() {
                 id: "tagged",
                 icon: <Tag />,
                 title: t("kit.showcase.data.events.tagged"),
-                content: <TagChip color="#7c3aed">Cliente VIP</TagChip>,
+                content: <TagChip color="#7c3aed">{SAMPLE.vip}</TagChip>,
                 time: NOW - 2 * DAY,
               },
               {
@@ -1195,7 +1212,7 @@ function OverlaysSection() {
         onOpenChange={panel.setValue}
         title={t("kit.showcase.overlays.panelTitle")}
         description={t("kit.showcase.overlays.panelDescription")}
-        headerActions={<CopyButton value="marina.duarte@exemplo.com.br" />}
+        headerActions={<CopyButton value={SAMPLE.email} />}
         footer={
           <>
             <Button
@@ -1217,9 +1234,9 @@ function OverlaysSection() {
           <p className="text-sm text-muted-foreground">{t("kit.showcase.overlays.panelBody")}</p>
           <KeyValueList
             items={[
-              { label: t("kit.showcase.data.fields.name"), value: "Marina Duarte" },
-              { label: t("kit.showcase.data.fields.phone"), value: "+55 31 98379-4137" },
-              { label: t("kit.showcase.data.fields.email"), value: "marina.duarte@exemplo.com.br" },
+              { label: t("kit.showcase.data.fields.name"), value: SAMPLE.marina },
+              { label: t("kit.showcase.data.fields.phone"), value: SAMPLE.phone },
+              { label: t("kit.showcase.data.fields.email"), value: SAMPLE.email },
             ]}
           />
           <DetailSkeleton />

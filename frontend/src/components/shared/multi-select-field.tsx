@@ -70,7 +70,15 @@ export function MultiSelectInput({
         if (!open) onBlur?.()
       }}
     >
-      <ComboboxChips ref={anchor} className={cn("w-full pointer-coarse:min-h-10", className)}>
+      <ComboboxChips
+        ref={anchor}
+        className={cn("w-full pointer-coarse:min-h-10", className)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            event.currentTarget.querySelector("input")?.focus()
+          }
+        }}
+      >
         <ComboboxValue>
           {(current: SelectOption[]) => (
             <>
@@ -97,7 +105,7 @@ export function MultiSelectInput({
                     ? undefined
                     : (placeholder ?? t("kit.form.selectPlaceholder"))
                 }
-                className="bg-transparent text-base placeholder:text-muted-foreground md:text-sm"
+                className="bg-transparent text-base placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-8"
               />
             </>
           )}

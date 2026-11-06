@@ -158,13 +158,16 @@
  * vale com dedo: botões ganham uma área invisível além da própria borda (o layout
  * denso continua igual) e campos e itens de menu crescem de verdade. Fica em
  * `base`, então qualquer utilitário de altura de um componente ainda vence.
+ *
+ * O seletor é `button[data-slot]`, e não `[data-slot="button"]`: um `Button` usado
+ * como gatilho (`render={<Button />}`) recebe o `data-slot` do gatilho.
  */
 @layer base {
   @media (pointer: coarse) {
-    :where([data-slot="button"]) {
+    :where(button[data-slot]:not([data-slot="switch"])) {
       position: relative;
     }
-    :where([data-slot="button"])::after {
+    :where(button[data-slot]:not([data-slot="switch"]))::after {
       content: "";
       position: absolute;
       top: 50%;
@@ -174,6 +177,13 @@
       min-width: 2.5rem;
       min-height: 2.5rem;
       transform: translate(-50%, -50%);
+    }
+    /* Estes já têm área invisível, baixa demais: a altura mínima cresce para baixo e a
+       margem devolve metade para cima, para o controle ficar no centro da área. */
+    :where([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])::after {
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      margin-top: -0.25rem;
     }
     :where(
       [data-slot="input"],

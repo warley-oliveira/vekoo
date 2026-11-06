@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { cn } from "@/lib/utils"
+import { useSheetFocus } from "./use-sheet-focus"
 
 export type ResponsivePopoverProps = {
   open?: boolean
@@ -46,14 +47,17 @@ export function ResponsivePopover({
   showTitle = false,
 }: ResponsivePopoverProps) {
   const isMobile = useIsMobile()
+  const { popupRef, initialFocus } = useSheetFocus()
 
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={(next) => onOpenChange?.(next)}>
         <SheetTrigger render={trigger} />
         <SheetContent
+          ref={popupRef}
+          initialFocus={initialFocus}
           side="bottom"
-          className="max-h-[90dvh] gap-0 rounded-t-2xl"
+          className="max-h-[90dvh] gap-0 rounded-t-2xl outline-none"
           showCloseButton={false}
         >
           <SheetTitle className="px-4 pt-4 pb-2">{title}</SheetTitle>

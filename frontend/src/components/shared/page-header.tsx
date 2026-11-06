@@ -47,7 +47,10 @@ export function PageHeader({
                 {index > 0 && <BreadcrumbSeparator />}
                 <BreadcrumbItem>
                   {entry.to ? (
-                    <BreadcrumbLink render={<Link to={entry.to} />}>
+                    <BreadcrumbLink
+                      className="relative rounded outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:after:absolute pointer-coarse:after:-inset-x-1 pointer-coarse:after:-inset-y-2.5"
+                      render={<Link to={entry.to} />}
+                    >
                       {entry.label}
                     </BreadcrumbLink>
                   ) : (
