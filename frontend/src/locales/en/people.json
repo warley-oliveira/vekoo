@@ -1,0 +1,564 @@
+{
+  "people": {
+    "nav": {
+      "aria": "People and organization areas",
+      "users": "Users",
+      "teams": "Departments",
+      "accessRoles": "Groups",
+      "organization": "Organization",
+      "accountAria": "Your account areas",
+      "profile": "My profile",
+      "notifications": "Notifications"
+    },
+    "common": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "loading": "Loading…",
+      "clearFilters": "Clear filters",
+      "clearSearch": "Clear search"
+    },
+    "errors": {
+      "generic": "That didn't work just now. Try again in a moment.",
+      "network": "We couldn't reach the server. Check your connection.",
+      "forbidden": "You don't have permission to do that. Only an owner can change another owner.",
+      "lastOwner": "The organization needs at least one owner with access.",
+      "cannotRevokeSelf": "You can't revoke your own access.",
+      "cannotDeleteSelf": "You can't delete your own account here.",
+      "ownPasswordInProfile": "Your password is changed in your profile, where your current password is required.",
+      "invalidTeam": "One of the departments no longer exists. Reload the page and try again.",
+      "defaultAccessRole": "Default groups can't be deleted.",
+      "tooManyRequests": "Too many attempts in a short time. Wait a minute and try again.",
+      "noPushDevices": "No device is receiving alerts on this account.",
+      "pushNotConfigured": "The server in this environment isn't set up to send alerts."
+    },
+    "users": {
+      "tableLabel": "People in the organization",
+      "search": "Search by name or email",
+      "you": "You",
+      "noTeams": "No department",
+      "setupOnlyShort": "Doesn't receive conversations",
+      "locked": "Only an owner can change another owner. You can only view this here.",
+      "columns": {
+        "person": "Person",
+        "access": "Group",
+        "teams": "Departments",
+        "joined": "Joined",
+        "revoked": "Revoked"
+      },
+      "sort": {
+        "nameAsc": "Name from A to Z",
+        "nameDesc": "Name from Z to A",
+        "joinedAsc": "Here the longest",
+        "joinedDesc": "Most recently joined",
+        "revokedAsc": "Revoked the longest ago",
+        "revokedDesc": "Most recently revoked"
+      },
+      "filters": {
+        "group": "Group",
+        "team": "Department",
+        "noTeam": "No department",
+        "status": "Access status",
+        "active": "Active",
+        "revoked": "Revoked"
+      },
+      "empty": {
+        "title": "Nobody here yet",
+        "description": "Add the first person on your team to share the workload."
+      },
+      "emptyRevoked": {
+        "title": "Nobody with revoked access",
+        "description": "When you revoke someone's access, they show up here with everything kept, and you can restore them whenever you want.",
+        "action": "See who's active"
+      },
+      "actions": {
+        "edit": "Edit",
+        "view": "View details"
+      },
+      "access": {
+        "owner": "Owner",
+        "none": "No group"
+      },
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "E.g. Larissa Prado",
+        "nameRequired": "Enter the full name.",
+        "nameTooLong": "That name is too long.",
+        "email": "Email",
+        "emailPlaceholder": "person@company.com",
+        "emailRequired": "Enter the email.",
+        "emailInvalid": "That email doesn't look complete.",
+        "phone": "WhatsApp",
+        "phoneInvalid": "That number doesn't look complete.",
+        "access": "Permission group",
+        "accessHint": "Sets what this person can see and do. With no group, the User defaults apply.",
+        "accessFailed": "We couldn't load the groups. Reload the page.",
+        "accessLastOwner": "This is the only owner: the organization needs at least one with access.",
+        "teams": "Departments",
+        "teamsPlaceholder": "Choose departments",
+        "teamsEmpty": "No department found.",
+        "setupOnly": "Don't assign conversations",
+        "setupOnlyHint": "Admin only: this person won't appear in the chat assignment lists.",
+        "password": "Password",
+        "passwordConfirmation": "Confirm password",
+        "newPassword": "New password",
+        "newPasswordConfirmation": "Confirm new password",
+        "passwordHint": "At least 8 characters.",
+        "passwordTooShort": "Use at least 8 characters.",
+        "passwordMismatch": "The passwords don't match."
+      },
+      "create": {
+        "action": "Add person",
+        "title": "New person",
+        "emailStep": "Start with the email: we'll check whether it's already on Vekoo.",
+        "detailsStep": "This email is available. Now, the person's details and what they can do.",
+        "continue": "Continue",
+        "submit": "Add person",
+        "changeEmail": "Change",
+        "done": "{{name}} is now part of the organization.",
+        "doneHint": "Share the password you set: that's what they'll sign in with.",
+        "hereTitle": "This person is already in the organization",
+        "hereDescription": "To change what they can do, open their details.",
+        "openPerson": "Open details",
+        "revokedTitle": "This person is here, with revoked access",
+        "revokedDescription": "Restore their access and they come back with the same history.",
+        "elsewhereTitle": "This email already has an account in another organization",
+        "elsewhereDescription": "On Vekoo, each account belongs to a single organization. Ask this person for another email."
+      },
+      "edit": {
+        "submit": "Save changes",
+        "done": "{{name}}'s details saved."
+      },
+      "revoked": {
+        "title": "Access revoked on {{date}}",
+        "description": "{{name}} can't sign in. Their data and history are still kept."
+      },
+      "revoke": {
+        "action": "Revoke access",
+        "sectionTitle": "Access",
+        "title": "Revoke {{name}}'s access?",
+        "description": "{{name}} is signed out of every device right away and can't sign in anymore. Conversations, cards and history stay as they are, and you can restore access whenever you want.",
+        "confirm": "Revoke access",
+        "done": "{{name}}'s access revoked.",
+        "hint": "{{name}} is signed out right away and can't come back. Nothing is lost, and you can restore access later.",
+        "notSelf": "You can't revoke your own access.",
+        "lastOwner": "This is the only owner, so the access can't be revoked and the account can't be deleted: the organization would be left with nobody to manage it."
+      },
+      "restore": {
+        "action": "Restore access",
+        "done": "{{name}} has access again."
+      },
+      "delete": {
+        "action": "Delete for good",
+        "title": "Delete {{name}} for good?",
+        "description": "This can't be undone. Conversations and cards assigned to {{name}} are left without an owner, and the name disappears from history. To just cut off access, cancel and use Revoke access.",
+        "confirm": "Delete for good",
+        "word": "DELETE",
+        "done": "{{name}}'s account deleted."
+      },
+      "password": {
+        "title": "Password",
+        "hint": "For when {{name}} forgets the password or can't sign in.",
+        "action": "Change password",
+        "keep": "Keep the current password",
+        "effect": "When you save, {{name}} is signed out of every device and signs in again with the new password.",
+        "confirmTitle": "Change {{name}}'s password?",
+        "confirm": "Change password",
+        "done": "{{name}}'s password changed. They need to sign in again.",
+        "ownInProfile": "Your password is changed in <profile>your profile</profile>, where your current password is required."
+      },
+      "selfLockout": {
+        "title": "You'll lose access to this area",
+        "description": "With this change, you can no longer see the people settings. To get back in, someone with access has to give it back.",
+        "confirm": "Save anyway"
+      },
+      "promote": {
+        "title": "Make {{name}} an owner?",
+        "description": "Owners can do anything in the organization, including changing other owners.",
+        "confirm": "Make owner"
+      }
+    },
+    "teams": {
+      "description": "Departments organize who handles what: conversations are transferred to them, and the calendar filters by them.",
+      "search": "Search departments",
+      "memberCount_one": "{{count}} person",
+      "memberCount_other": "{{count}} people",
+      "noMembers": "Nobody yet",
+      "moreMembers_one": "{{count}} more person",
+      "moreMembers_other": "{{count}} more people",
+      "inactive": "Inactive",
+      "activated": "{{name}} department reactivated.",
+      "deactivated": "{{name}} department deactivated.",
+      "actionsOf": "Actions for {{name}}",
+      "sort": {
+        "nameAsc": "Name from A to Z",
+        "nameDesc": "Name from Z to A",
+        "peopleDesc": "Most people first"
+      },
+      "filters": {
+        "status": "Department status",
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "activate": "Reactivate",
+        "deactivate": "Deactivate"
+      },
+      "empty": {
+        "title": "No departments yet",
+        "description": "Create the first one to group people who work together: sales, support, after-sales."
+      },
+      "noResults": {
+        "title": "No department found",
+        "description": "Try another name or clear the filters."
+      },
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "E.g. Finance",
+        "nameRequired": "Give the department a name.",
+        "nameTooLong": "That name is too long.",
+        "active": "Active department",
+        "activeHint": "When inactive, it disappears from transfer and filter options, but stays here."
+      },
+      "create": {
+        "action": "Create department",
+        "mobileAction": "Create",
+        "title": "New department",
+        "description": "After creating it, you can choose who's in it.",
+        "submit": "Create department",
+        "done": "{{name}} department created. Now choose who's in it."
+      },
+      "edit": {
+        "submit": "Save changes",
+        "done": "{{name}} department saved."
+      },
+      "delete": {
+        "action": "Delete department",
+        "title": "Delete {{name}}?",
+        "description_zero": "Nobody is in it right now, so nothing changes for anyone.",
+        "description_one": "The person in this department stays in the organization and just leaves the department.",
+        "description_other": "The {{count}} people in this department stay in the organization and just leave the department.",
+        "confirm": "Delete department",
+        "done": "{{name}} department deleted."
+      },
+      "members": {
+        "title": "Who's in it",
+        "hint": "Each change here takes effect right away.",
+        "add": "Add a person to the department",
+        "noCandidates": "Nobody found.",
+        "empty": "Nobody in this department yet.",
+        "added": "{{name}} joined {{team}}.",
+        "removed": "{{name}} left {{team}}.",
+        "remove": "Remove {{name}} from the department"
+      }
+    },
+    "roles": {
+      "description": "A group sets what its people can see and do. Owners can do anything, in any group.",
+      "search": "Search groups or areas",
+      "defaultBadge": "Default",
+      "memberCount_one": "{{count}} person",
+      "memberCount_other": "{{count}} people",
+      "noMembers": "Nobody yet",
+      "actionsOf": "Actions for {{name}}",
+      "defaults": {
+        "manager": "Manager",
+        "member": "User"
+      },
+      "sort": {
+        "nameAsc": "Name from A to Z",
+        "peopleDesc": "Most people first"
+      },
+      "actions": {
+        "edit": "Edit"
+      },
+      "empty": {
+        "title": "No groups yet",
+        "description": "Create a group to set what several people can do all at once."
+      },
+      "noResults": {
+        "title": "No group found",
+        "description": "Try another name, or the name of an area, like Chat."
+      },
+      "summary": {
+        "none": "No areas allowed",
+        "all": "All areas",
+        "chat": {
+          "team": "Chat (department only)",
+          "assigned": "Chat (assigned only)"
+        }
+      },
+      "fields": {
+        "name": "Group name",
+        "namePlaceholder": "E.g. Night shift",
+        "nameRequired": "Give the group a name.",
+        "nameTooLong": "That name is too long.",
+        "nameFixed": "Default groups keep their name. Their permissions can change."
+      },
+      "editor": {
+        "title": "What this group allows",
+        "grantAll": "Allow everything",
+        "revokeAll": "Remove everything",
+        "ownLevel": "Only what's theirs"
+      },
+      "resources": {
+        "dashboard": {
+          "label": "Dashboard",
+          "description": "See the overall numbers for the operation."
+        },
+        "custom_dashboards": {
+          "label": "Custom dashboards",
+          "description": "Build and check their own dashboards."
+        },
+        "flows": {
+          "label": "Flows",
+          "description": "Create and edit service automations."
+        },
+        "calendar": {
+          "label": "Calendar",
+          "description": "See and schedule appointments."
+        },
+        "pipelines": {
+          "label": "Pipelines",
+          "description": "Follow and move cards on the boards."
+        },
+        "chat": {
+          "label": "Chat",
+          "description": "Handle and reply to conversations."
+        },
+        "contacts": {
+          "label": "Contacts",
+          "description": "See and edit the contact base."
+        },
+        "catalog": {
+          "label": "Catalog",
+          "description": "Manage products and services."
+        },
+        "funnel": {
+          "label": "Funnels",
+          "description": "Follow which stage each conversation is in."
+        },
+        "campaigns": {
+          "label": "Campaigns",
+          "description": "Create and send campaigns."
+        },
+        "core_settings": {
+          "label": "Settings",
+          "description": "Manage people, groups, integrations and the rest of this area."
+        }
+      },
+      "chatList": {
+        "title": "Which conversations these people can see",
+        "all": {
+          "label": "All conversations",
+          "description": "From the whole organization."
+        },
+        "team": {
+          "label": "Their department's only",
+          "description": "Those assigned to each person's departments."
+        },
+        "assigned": {
+          "label": "Assigned to them only",
+          "description": "Nothing beyond what's with the person themselves."
+        }
+      },
+      "create": {
+        "action": "Create group",
+        "title": "New group",
+        "description": "Starts with nothing allowed. Check what this group can do.",
+        "submit": "Create group",
+        "done": "{{name}} group created."
+      },
+      "edit": {
+        "submit": "Save changes",
+        "done": "{{name}} group saved."
+      },
+      "delete": {
+        "action": "Delete group",
+        "title": "Delete {{name}}?",
+        "description_zero": "Nobody is in this group, so nothing changes for anyone.",
+        "description_one": "The person in this group ends up with no group, and the User defaults apply to them.",
+        "description_other": "The {{count}} people in this group end up with no group, and the User defaults apply to them.",
+        "confirm": "Delete group",
+        "done": "{{name}} group deleted."
+      },
+      "members": {
+        "title": "Who's in this group",
+        "hint": "To move someone to another group, open their details.",
+        "empty": "Nobody in this group yet."
+      }
+    },
+    "image": {
+      "hint": "JPG, PNG or WebP, up to 2 MB. You can drag it here.",
+      "tooLarge": "That image is over 2 MB. Choose a smaller one.",
+      "wrongType": "Use a JPG, PNG or WebP image.",
+      "oneAtATime": "Send one image at a time."
+    },
+    "profile": {
+      "photo": {
+        "title": "Photo",
+        "description": "Your team sees it in conversations and assignments.",
+        "upload": "Upload photo",
+        "replace": "Change photo",
+        "remove": "Remove",
+        "removeTitle": "Remove your photo?",
+        "removeDescription": "Your initials will appear in its place.",
+        "uploaded": "Photo updated.",
+        "removed": "Photo removed."
+      },
+      "details": {
+        "title": "Your details",
+        "description": "This is how your team sees you.",
+        "submit": "Save changes",
+        "saved": "Details saved."
+      },
+      "fields": {
+        "name": "Name",
+        "nameRequired": "Enter your full name.",
+        "nameTooLong": "That name is too long.",
+        "email": "Email",
+        "emailHint": "Whoever manages the organization can change your email.",
+        "phone": "WhatsApp",
+        "phoneInvalid": "That number doesn't look complete."
+      },
+      "language": {
+        "title": "Language",
+        "description": "Takes effect right away and follows you on any device."
+      },
+      "password": {
+        "title": "Password",
+        "description": "When you change it, you're signed out of your other devices. This one stays connected.",
+        "current": "Current password",
+        "currentRequired": "Enter your current password.",
+        "new": "New password",
+        "confirmation": "Confirm new password",
+        "hint": "At least 8 characters.",
+        "tooShort": "Use at least 8 characters.",
+        "mismatch": "The passwords don't match.",
+        "submit": "Change password",
+        "saved": "Password changed. Your other devices need to sign in again."
+      }
+    },
+    "notifications": {
+      "device": {
+        "title": "On this device",
+        "description": "Get messages and appointments even with Vekoo closed."
+      },
+      "state": {
+        "on": "Alerts are on for this device",
+        "onHint": "They arrive here even with the Vekoo screen closed.",
+        "off": "Alerts are off for this device",
+        "offHint": "Turn them on to get messages and appointments with Vekoo closed.",
+        "offAskHint": "When you turn them on, your browser will ask for permission. Choose Allow."
+      },
+      "enable": "Turn on alerts",
+      "disable": "Turn off",
+      "test": "Send a test",
+      "enabled": "Alerts turned on for this device.",
+      "disabled": "Alerts turned off for this device.",
+      "testSent": "Test sent. It should arrive in a few seconds.",
+      "unsupported": {
+        "title": "This browser can't receive alerts",
+        "description": "Update your browser, or use a recent version of Chrome, Edge, Firefox or Safari.",
+        "ios": "On iPhone and iPad, alerts only work with Vekoo on the Home Screen, from iOS 16.4 on. In Safari, tap Share and then Add to Home Screen."
+      },
+      "unavailable": {
+        "title": "Alerts aren't available here yet",
+        "description": "The server in this environment isn't set up to send alerts. If you need them, talk to whoever manages Vekoo."
+      },
+      "blocked": {
+        "title": "Your browser is blocking alerts",
+        "description": "Once blocked, Vekoo can't ask again. You have to allow them yourself, in your browser settings.",
+        "howTo": "How to allow them",
+        "steps": {
+          "chromium": "Click the icon next to the site address, open Site settings, choose Allow under Notifications and reload the page.",
+          "firefox": "Click the lock next to the address, remove the block on Notifications and reload the page.",
+          "safari": "Open Safari, Settings, Websites, Notifications, choose Allow for this site and reload the page.",
+          "ios": "Open the device Settings, Notifications, Vekoo, and turn on Allow Notifications.",
+          "android": "Tap the icon next to the address, open Permissions or Site settings, turn on Notifications and reload the page."
+        },
+        "recheck": "I've allowed them, check again",
+        "stillBlocked": "Still blocked in your browser."
+      },
+      "failure": {
+        "dismissed": "The browser didn't get an answer. Tap Turn on alerts again and choose Allow.",
+        "unsupported": "This browser can't receive alerts.",
+        "unavailable": "We couldn't turn them on right now: the alert service isn't available.",
+        "failed": "We couldn't turn on alerts. Try again in a moment."
+      },
+      "devices": {
+        "title": "Your devices",
+        "description": "Where your alerts arrive. If you lost a device, remove it from here.",
+        "empty": "No device is receiving alerts yet.",
+        "label": "{{browser}} on {{system}}",
+        "unknown": "Unknown device",
+        "thisOne": "This device",
+        "since": "Turned on",
+        "remove": "Stop sending",
+        "removeAria": "Stop sending alerts to {{name}}",
+        "removeTitle": "Stop sending alerts to {{name}}?",
+        "removeDescription": "That device stops receiving them. To come back, just turn them on again there.",
+        "removed": "{{name}} no longer receives alerts."
+      },
+      "about": {
+        "title": "How it works",
+        "description": "It applies to each device separately.",
+        "closed": "Alerts arrive even with the browser closed.",
+        "click": "Tapping an alert opens Vekoo right at the conversation or appointment.",
+        "signOut": "When you sign out, the device stops receiving them. When you sign back in, it resumes on its own.",
+        "pwa": "On a phone, it works best with Vekoo installed. On iPhone and iPad, that's required."
+      }
+    },
+    "organization": {
+      "title": "Organization",
+      "logo": {
+        "title": "Logo",
+        "description": "It appears in the menu, for the whole team.",
+        "upload": "Upload logo",
+        "replace": "Change logo",
+        "remove": "Remove",
+        "removeTitle": "Remove the logo?",
+        "removeDescription": "The organization's initials will appear in its place.",
+        "uploaded": "Logo updated.",
+        "removed": "Logo removed."
+      },
+      "identity": {
+        "title": "Name and time zone",
+        "description": "The name appears in the menu, and the time zone applies to the calendar and times across the whole organization.",
+        "name": "Organization name",
+        "nameRequired": "Give the organization a name.",
+        "nameTooLong": "That name is too long.",
+        "timezone": "Time zone",
+        "timezoneHint": "Type the name of a city, like São Paulo.",
+        "timezoneRequired": "Choose a time zone.",
+        "timezoneEmpty": "No time zone found.",
+        "submit": "Save changes",
+        "saved": "Name and time zone saved."
+      },
+      "company": {
+        "title": "Company details",
+        "description": "Legal name and CNPJ. Fill these in if there's billing or invoicing in the company's name.",
+        "businessName": "Legal name",
+        "businessNamePlaceholder": "E.g. Doma Store Comércio Ltda",
+        "cnpj": "CNPJ",
+        "cnpjPlaceholder": "00.000.000/0000-00",
+        "cnpjInvalid": "That CNPJ isn't valid. Check the numbers.",
+        "submit": "Save changes",
+        "saved": "Company details saved."
+      },
+      "chat": {
+        "title": "Chat preferences",
+        "description": "They take effect right away, for the whole organization.",
+        "saved": "Preference saved.",
+        "autoRemoveWaitingOperatorTag": {
+          "label": "Remove the \"aguardando-operador\" tag when replying",
+          "hint": "When someone replies to the conversation, the tag comes off on its own."
+        },
+        "reopenConversationOnInboundEnabled": {
+          "label": "Reopen the conversation when the contact writes",
+          "hint": "A closed conversation goes back to Open as soon as a new message arrives."
+        }
+      }
+    }
+  }
+}

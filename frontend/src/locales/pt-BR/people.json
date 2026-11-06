@@ -1,0 +1,564 @@
+{
+  "people": {
+    "nav": {
+      "aria": "Áreas de pessoas e organização",
+      "users": "Usuários",
+      "teams": "Departamentos",
+      "accessRoles": "Grupos",
+      "organization": "Organização",
+      "accountAria": "Áreas da sua conta",
+      "profile": "Meu perfil",
+      "notifications": "Notificações"
+    },
+    "common": {
+      "close": "Fechar",
+      "cancel": "Cancelar",
+      "loading": "Carregando…",
+      "clearFilters": "Limpar filtros",
+      "clearSearch": "Limpar busca"
+    },
+    "errors": {
+      "generic": "Não deu certo agora. Tente de novo em instantes.",
+      "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+      "forbidden": "Você não tem permissão para fazer isso. Só quem é dono altera outro dono.",
+      "lastOwner": "A organização precisa de pelo menos uma pessoa dona com acesso.",
+      "cannotRevokeSelf": "Você não pode revogar o próprio acesso.",
+      "cannotDeleteSelf": "Você não pode excluir a própria conta por aqui.",
+      "ownPasswordInProfile": "A sua senha muda no seu perfil, onde a senha atual é pedida.",
+      "invalidTeam": "Um dos departamentos não existe mais. Recarregue a página e tente de novo.",
+      "defaultAccessRole": "Os grupos padrão não podem ser excluídos.",
+      "tooManyRequests": "Foram muitas tentativas em pouco tempo. Espere um minuto e tente de novo.",
+      "noPushDevices": "Nenhum aparelho está recebendo avisos nesta conta.",
+      "pushNotConfigured": "O servidor deste ambiente não está preparado para enviar avisos."
+    },
+    "users": {
+      "tableLabel": "Pessoas da organização",
+      "search": "Buscar por nome ou e-mail",
+      "you": "Você",
+      "noTeams": "Sem departamento",
+      "setupOnlyShort": "Não recebe atendimentos",
+      "locked": "Só quem é dono pode alterar outro dono. Aqui você só consulta.",
+      "columns": {
+        "person": "Pessoa",
+        "access": "Grupo",
+        "teams": "Departamentos",
+        "joined": "Entrou",
+        "revoked": "Revogado"
+      },
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "joinedAsc": "Há mais tempo aqui",
+        "joinedDesc": "Chegaram por último",
+        "revokedAsc": "Revogados há mais tempo",
+        "revokedDesc": "Revogados por último"
+      },
+      "filters": {
+        "group": "Grupo",
+        "team": "Departamento",
+        "noTeam": "Sem departamento",
+        "status": "Situação do acesso",
+        "active": "Ativos",
+        "revoked": "Revogados"
+      },
+      "empty": {
+        "title": "Ninguém por aqui ainda",
+        "description": "Adicione a primeira pessoa da equipe para dividir o atendimento."
+      },
+      "emptyRevoked": {
+        "title": "Ninguém com o acesso revogado",
+        "description": "Quando você revogar o acesso de alguém, a pessoa aparece aqui, com tudo guardado, e dá para restaurar quando quiser.",
+        "action": "Ver quem está ativo"
+      },
+      "actions": {
+        "edit": "Editar",
+        "view": "Ver ficha"
+      },
+      "access": {
+        "owner": "Dono",
+        "none": "Sem grupo"
+      },
+      "fields": {
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Larissa Prado",
+        "nameRequired": "Escreva o nome completo.",
+        "nameTooLong": "Nome muito longo.",
+        "email": "E-mail",
+        "emailPlaceholder": "pessoa@empresa.com.br",
+        "emailRequired": "Informe o e-mail.",
+        "emailInvalid": "Esse e-mail não parece completo.",
+        "phone": "WhatsApp",
+        "phoneInvalid": "Esse número não parece completo.",
+        "access": "Grupo de permissão",
+        "accessHint": "Define o que a pessoa pode ver e fazer. Sem grupo, valem os padrões de Usuário.",
+        "accessFailed": "Não deu para carregar os grupos. Recarregue a página.",
+        "accessLastOwner": "É a única pessoa dona: a organização precisa de pelo menos uma com acesso.",
+        "teams": "Departamentos",
+        "teamsPlaceholder": "Escolha os departamentos",
+        "teamsEmpty": "Nenhum departamento encontrado.",
+        "setupOnly": "Não atribuir atendimentos",
+        "setupOnlyHint": "Só administra: a pessoa não aparece nas listas de atribuição do chat.",
+        "password": "Senha",
+        "passwordConfirmation": "Confirmar senha",
+        "newPassword": "Nova senha",
+        "newPasswordConfirmation": "Confirmar nova senha",
+        "passwordHint": "Pelo menos 8 caracteres.",
+        "passwordTooShort": "Use pelo menos 8 caracteres.",
+        "passwordMismatch": "As senhas não são iguais."
+      },
+      "create": {
+        "action": "Adicionar pessoa",
+        "title": "Nova pessoa",
+        "emailStep": "Comece pelo e-mail: vamos conferir se ele já está no Vekoo.",
+        "detailsStep": "Este e-mail está livre. Agora, os dados da pessoa e o que ela pode fazer.",
+        "continue": "Continuar",
+        "submit": "Adicionar pessoa",
+        "changeEmail": "Trocar",
+        "done": "{{name}} agora faz parte da organização.",
+        "doneHint": "Passe a senha que você definiu: é com ela que a pessoa entra.",
+        "hereTitle": "Essa pessoa já está na organização",
+        "hereDescription": "Para mudar o que ela pode fazer, abra a ficha.",
+        "openPerson": "Abrir ficha",
+        "revokedTitle": "Essa pessoa está aqui, com o acesso revogado",
+        "revokedDescription": "Restaure o acesso para ela voltar com o mesmo histórico.",
+        "elsewhereTitle": "Esse e-mail já tem conta em outra organização",
+        "elsewhereDescription": "No Vekoo, cada conta pertence a uma organização só. Peça outro e-mail a essa pessoa."
+      },
+      "edit": {
+        "submit": "Salvar alterações",
+        "done": "Dados de {{name}} salvos."
+      },
+      "revoked": {
+        "title": "Acesso revogado em {{date}}",
+        "description": "{{name}} não consegue entrar. Os dados e o histórico continuam guardados."
+      },
+      "revoke": {
+        "action": "Revogar acesso",
+        "sectionTitle": "Acesso",
+        "title": "Revogar o acesso de {{name}}?",
+        "description": "{{name}} sai na hora de todos os aparelhos e não consegue mais entrar. Conversas, cards e histórico continuam como estão, e dá para restaurar quando quiser.",
+        "confirm": "Revogar acesso",
+        "done": "Acesso de {{name}} revogado.",
+        "hint": "{{name}} sai na hora e não entra mais. Nada se perde, e dá para restaurar depois.",
+        "notSelf": "Você não pode revogar o próprio acesso.",
+        "lastOwner": "É a única pessoa dona, então o acesso não pode ser revogado nem a conta excluída: a organização ficaria sem ninguém para administrar."
+      },
+      "restore": {
+        "action": "Restaurar acesso",
+        "done": "{{name}} voltou a ter acesso."
+      },
+      "delete": {
+        "action": "Excluir de vez",
+        "title": "Excluir {{name}} de vez?",
+        "description": "Isso não tem volta. As conversas e os cards que estão com {{name}} ficam sem responsável, e o nome some do histórico. Para só cortar o acesso, cancele e use Revogar acesso.",
+        "confirm": "Excluir de vez",
+        "word": "EXCLUIR",
+        "done": "Conta de {{name}} excluída."
+      },
+      "password": {
+        "title": "Senha",
+        "hint": "Para quando {{name}} esquecer a senha ou não conseguir entrar.",
+        "action": "Trocar senha",
+        "keep": "Manter a senha atual",
+        "effect": "Ao salvar, {{name}} sai de todos os aparelhos e entra de novo com a senha nova.",
+        "confirmTitle": "Trocar a senha de {{name}}?",
+        "confirm": "Trocar senha",
+        "done": "Senha de {{name}} trocada. A pessoa precisa entrar de novo.",
+        "ownInProfile": "A sua senha muda no <profile>seu perfil</profile>, onde a senha atual é pedida."
+      },
+      "selfLockout": {
+        "title": "Você vai perder o acesso a esta área",
+        "description": "Com essa mudança, você deixa de ver as configurações de pessoas. Para voltar, alguém com acesso precisa devolver.",
+        "confirm": "Salvar mesmo assim"
+      },
+      "promote": {
+        "title": "Tornar {{name}} dono?",
+        "description": "Quem é dono pode tudo na organização, inclusive alterar outros donos.",
+        "confirm": "Tornar dono"
+      }
+    },
+    "teams": {
+      "description": "Departamentos organizam quem atende o quê: as conversas são transferidas para eles, e a agenda filtra por eles.",
+      "search": "Buscar departamento",
+      "memberCount_one": "{{count}} pessoa",
+      "memberCount_other": "{{count}} pessoas",
+      "noMembers": "Ninguém ainda",
+      "moreMembers_one": "mais {{count}} pessoa",
+      "moreMembers_other": "mais {{count}} pessoas",
+      "inactive": "Inativo",
+      "activated": "Departamento {{name}} reativado.",
+      "deactivated": "Departamento {{name}} desativado.",
+      "actionsOf": "Ações de {{name}}",
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "peopleDesc": "Mais pessoas primeiro"
+      },
+      "filters": {
+        "status": "Situação do departamento",
+        "all": "Todos",
+        "active": "Ativos",
+        "inactive": "Inativos"
+      },
+      "actions": {
+        "edit": "Editar",
+        "activate": "Reativar",
+        "deactivate": "Desativar"
+      },
+      "empty": {
+        "title": "Nenhum departamento ainda",
+        "description": "Crie o primeiro para agrupar quem atende junto: comercial, suporte, pós-venda."
+      },
+      "noResults": {
+        "title": "Nenhum departamento encontrado",
+        "description": "Tente outro nome ou limpe os filtros."
+      },
+      "fields": {
+        "name": "Nome",
+        "namePlaceholder": "Ex.: Financeiro",
+        "nameRequired": "Dê um nome ao departamento.",
+        "nameTooLong": "Nome muito longo.",
+        "active": "Departamento ativo",
+        "activeHint": "Inativo, ele some das opções de transferência e de filtro, mas continua aqui."
+      },
+      "create": {
+        "action": "Criar departamento",
+        "mobileAction": "Criar",
+        "title": "Novo departamento",
+        "description": "Depois de criar, você já escolhe quem faz parte.",
+        "submit": "Criar departamento",
+        "done": "Departamento {{name}} criado. Agora escolha quem faz parte."
+      },
+      "edit": {
+        "submit": "Salvar alterações",
+        "done": "Departamento {{name}} salvo."
+      },
+      "delete": {
+        "action": "Excluir departamento",
+        "title": "Excluir {{name}}?",
+        "description_zero": "Ninguém está nele agora, então nada muda para as pessoas.",
+        "description_one": "A pessoa deste departamento continua na organização, só sai dele.",
+        "description_other": "As {{count}} pessoas deste departamento continuam na organização, só saem dele.",
+        "confirm": "Excluir departamento",
+        "done": "Departamento {{name}} excluído."
+      },
+      "members": {
+        "title": "Quem faz parte",
+        "hint": "Cada mudança aqui vale na hora.",
+        "add": "Adicionar pessoa ao departamento",
+        "noCandidates": "Ninguém encontrado.",
+        "empty": "Ninguém neste departamento ainda.",
+        "added": "{{name}} entrou em {{team}}.",
+        "removed": "{{name}} saiu de {{team}}.",
+        "remove": "Tirar {{name}} do departamento"
+      }
+    },
+    "roles": {
+      "description": "Um grupo diz o que as pessoas dele podem ver e fazer. Quem é dono pode tudo, em qualquer grupo.",
+      "search": "Buscar grupo ou área",
+      "defaultBadge": "Padrão",
+      "memberCount_one": "{{count}} pessoa",
+      "memberCount_other": "{{count}} pessoas",
+      "noMembers": "Ninguém ainda",
+      "actionsOf": "Ações de {{name}}",
+      "defaults": {
+        "manager": "Gerente",
+        "member": "Usuário"
+      },
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "peopleDesc": "Mais pessoas primeiro"
+      },
+      "actions": {
+        "edit": "Editar"
+      },
+      "empty": {
+        "title": "Nenhum grupo ainda",
+        "description": "Crie um grupo para definir de uma vez o que várias pessoas podem fazer."
+      },
+      "noResults": {
+        "title": "Nenhum grupo encontrado",
+        "description": "Tente outro nome ou o nome de uma área, como Chat."
+      },
+      "summary": {
+        "none": "Nenhuma área liberada",
+        "all": "Todas as áreas",
+        "chat": {
+          "team": "Chat (só do departamento)",
+          "assigned": "Chat (só as atribuídas)"
+        }
+      },
+      "fields": {
+        "name": "Nome do grupo",
+        "namePlaceholder": "Ex.: Atendimento noturno",
+        "nameRequired": "Dê um nome ao grupo.",
+        "nameTooLong": "Nome muito longo.",
+        "nameFixed": "Os grupos padrão mantêm o nome. As permissões podem mudar."
+      },
+      "editor": {
+        "title": "O que este grupo libera",
+        "grantAll": "Liberar tudo",
+        "revokeAll": "Tirar tudo",
+        "ownLevel": "Só o que é da pessoa"
+      },
+      "resources": {
+        "dashboard": {
+          "label": "Dashboard",
+          "description": "Ver os números gerais da operação."
+        },
+        "custom_dashboards": {
+          "label": "Dashboards personalizados",
+          "description": "Montar e consultar painéis próprios."
+        },
+        "flows": {
+          "label": "Fluxos",
+          "description": "Criar e editar as automações de atendimento."
+        },
+        "calendar": {
+          "label": "Calendário",
+          "description": "Ver e marcar agendamentos."
+        },
+        "pipelines": {
+          "label": "Pipelines",
+          "description": "Acompanhar e mover cards nos quadros."
+        },
+        "chat": {
+          "label": "Chat",
+          "description": "Atender e responder conversas."
+        },
+        "contacts": {
+          "label": "Contatos",
+          "description": "Ver e editar a base de contatos."
+        },
+        "catalog": {
+          "label": "Catálogo",
+          "description": "Gerenciar produtos e serviços."
+        },
+        "funnel": {
+          "label": "Funis",
+          "description": "Acompanhar em que etapa cada conversa está."
+        },
+        "campaigns": {
+          "label": "Campanhas",
+          "description": "Criar e disparar campanhas."
+        },
+        "core_settings": {
+          "label": "Configurações",
+          "description": "Gerenciar pessoas, grupos, integrações e o resto desta área."
+        }
+      },
+      "chatList": {
+        "title": "Quais conversas essas pessoas enxergam",
+        "all": {
+          "label": "Todas as conversas",
+          "description": "Da organização inteira."
+        },
+        "team": {
+          "label": "Só as do departamento",
+          "description": "As atribuídas aos departamentos de cada pessoa."
+        },
+        "assigned": {
+          "label": "Só as atribuídas a ela",
+          "description": "Nada além do que estiver com a própria pessoa."
+        }
+      },
+      "create": {
+        "action": "Criar grupo",
+        "title": "Novo grupo",
+        "description": "Começa sem nada liberado. Marque o que este grupo pode fazer.",
+        "submit": "Criar grupo",
+        "done": "Grupo {{name}} criado."
+      },
+      "edit": {
+        "submit": "Salvar alterações",
+        "done": "Grupo {{name}} salvo."
+      },
+      "delete": {
+        "action": "Excluir grupo",
+        "title": "Excluir {{name}}?",
+        "description_zero": "Ninguém está neste grupo, então nada muda para as pessoas.",
+        "description_one": "A pessoa deste grupo fica sem grupo e passa a valer pelos padrões de Usuário.",
+        "description_other": "As {{count}} pessoas deste grupo ficam sem grupo e passam a valer pelos padrões de Usuário.",
+        "confirm": "Excluir grupo",
+        "done": "Grupo {{name}} excluído."
+      },
+      "members": {
+        "title": "Quem está neste grupo",
+        "hint": "Para trocar alguém de grupo, abra a ficha da pessoa.",
+        "empty": "Ninguém neste grupo ainda."
+      }
+    },
+    "image": {
+      "hint": "JPG, PNG ou WebP, até 2 MB. Pode arrastar para cá.",
+      "tooLarge": "Essa imagem passa de 2 MB. Escolha uma menor.",
+      "wrongType": "Use uma imagem JPG, PNG ou WebP.",
+      "oneAtATime": "Envie uma imagem por vez."
+    },
+    "profile": {
+      "photo": {
+        "title": "Foto",
+        "description": "Aparece para a equipe nas conversas e atribuições.",
+        "upload": "Enviar foto",
+        "replace": "Trocar foto",
+        "remove": "Remover",
+        "removeTitle": "Remover a sua foto?",
+        "removeDescription": "No lugar dela aparecem as suas iniciais.",
+        "uploaded": "Foto atualizada.",
+        "removed": "Foto removida."
+      },
+      "details": {
+        "title": "Seus dados",
+        "description": "É assim que a equipe vê você.",
+        "submit": "Salvar alterações",
+        "saved": "Dados salvos."
+      },
+      "fields": {
+        "name": "Nome",
+        "nameRequired": "Escreva o seu nome completo.",
+        "nameTooLong": "Nome muito longo.",
+        "email": "E-mail",
+        "emailHint": "Quem administra a organização pode trocar o seu e-mail.",
+        "phone": "WhatsApp",
+        "phoneInvalid": "Esse número não parece completo."
+      },
+      "language": {
+        "title": "Idioma",
+        "description": "Vale na hora e acompanha você em qualquer aparelho."
+      },
+      "password": {
+        "title": "Senha",
+        "description": "Ao trocar, você sai dos outros aparelhos. Este continua conectado.",
+        "current": "Senha atual",
+        "currentRequired": "Informe a sua senha atual.",
+        "new": "Nova senha",
+        "confirmation": "Confirmar nova senha",
+        "hint": "Pelo menos 8 caracteres.",
+        "tooShort": "Use pelo menos 8 caracteres.",
+        "mismatch": "As senhas não são iguais.",
+        "submit": "Trocar senha",
+        "saved": "Senha trocada. Os outros aparelhos precisam entrar de novo."
+      }
+    },
+    "notifications": {
+      "device": {
+        "title": "Neste aparelho",
+        "description": "Receba mensagens e agendamentos mesmo com o Vekoo fechado."
+      },
+      "state": {
+        "on": "Os avisos estão ativos neste aparelho",
+        "onHint": "Eles chegam aqui mesmo com a tela do Vekoo fechada.",
+        "off": "Os avisos estão desativados neste aparelho",
+        "offHint": "Ative para receber mensagens e agendamentos com o Vekoo fechado.",
+        "offAskHint": "Ao ativar, o navegador vai pedir sua permissão. Escolha Permitir."
+      },
+      "enable": "Ativar avisos",
+      "disable": "Desativar",
+      "test": "Enviar teste",
+      "enabled": "Avisos ativados neste aparelho.",
+      "disabled": "Avisos desativados neste aparelho.",
+      "testSent": "Teste enviado. Deve chegar em alguns segundos.",
+      "unsupported": {
+        "title": "Este navegador não recebe avisos",
+        "description": "Atualize o navegador ou use Chrome, Edge, Firefox ou Safari em versão recente.",
+        "ios": "No iPhone e no iPad, os avisos só funcionam com o Vekoo na Tela de Início, a partir do iOS 16.4. No Safari, toque em Compartilhar e depois em Adicionar à Tela de Início."
+      },
+      "unavailable": {
+        "title": "Os avisos ainda não estão disponíveis aqui",
+        "description": "O servidor deste ambiente não está preparado para enviar avisos. Se precisar, fale com quem administra o Vekoo."
+      },
+      "blocked": {
+        "title": "O navegador está bloqueando os avisos",
+        "description": "Depois de bloqueado, o Vekoo não pode mais perguntar. A liberação é feita por você, nas configurações do navegador.",
+        "howTo": "Como liberar",
+        "steps": {
+          "chromium": "Clique no ícone ao lado do endereço do site, abra Configurações do site, escolha Permitir em Notificações e recarregue a página.",
+          "firefox": "Clique no cadeado ao lado do endereço, tire o bloqueio de Notificações e recarregue a página.",
+          "safari": "Abra Safari, Ajustes, Sites, Notificações, escolha Permitir para este site e recarregue a página.",
+          "ios": "Abra os Ajustes do aparelho, Notificações, Vekoo, e ative Permitir Notificações.",
+          "android": "Toque no ícone ao lado do endereço, abra Permissões ou Configurações do site, ative Notificações e recarregue a página."
+        },
+        "recheck": "Já liberei, conferir de novo",
+        "stillBlocked": "Continua bloqueado no navegador."
+      },
+      "failure": {
+        "dismissed": "O navegador não recebeu uma resposta. Toque em Ativar avisos de novo e escolha Permitir.",
+        "unsupported": "Este navegador não recebe avisos.",
+        "unavailable": "Não deu para ativar agora: o serviço de avisos não está disponível.",
+        "failed": "Não deu para ativar os avisos. Tente de novo em instantes."
+      },
+      "devices": {
+        "title": "Seus aparelhos",
+        "description": "Onde os seus avisos chegam. Se perdeu um aparelho, tire ele daqui.",
+        "empty": "Nenhum aparelho recebendo avisos ainda.",
+        "label": "{{browser}} no {{system}}",
+        "unknown": "Aparelho desconhecido",
+        "thisOne": "Este aparelho",
+        "since": "Ativado",
+        "remove": "Parar de enviar",
+        "removeAria": "Parar de enviar avisos para {{name}}",
+        "removeTitle": "Parar de enviar avisos para {{name}}?",
+        "removeDescription": "Esse aparelho deixa de receber. Para voltar, é só ativar de novo nele.",
+        "removed": "{{name}} não recebe mais avisos."
+      },
+      "about": {
+        "title": "Como funciona",
+        "description": "Vale para cada aparelho, separadamente.",
+        "closed": "Os avisos chegam mesmo com o navegador fechado.",
+        "click": "Tocar no aviso abre o Vekoo direto na conversa ou no agendamento.",
+        "signOut": "Ao sair da conta, o aparelho para de receber. Ao entrar de novo, volta sozinho.",
+        "pwa": "No celular, funciona melhor com o Vekoo instalado. No iPhone e no iPad, é obrigatório."
+      }
+    },
+    "organization": {
+      "title": "Organização",
+      "logo": {
+        "title": "Logo",
+        "description": "Aparece no menu, para toda a equipe.",
+        "upload": "Enviar logo",
+        "replace": "Trocar logo",
+        "remove": "Remover",
+        "removeTitle": "Remover o logo?",
+        "removeDescription": "No lugar dele aparecem as iniciais da organização.",
+        "uploaded": "Logo atualizado.",
+        "removed": "Logo removido."
+      },
+      "identity": {
+        "title": "Nome e fuso",
+        "description": "O nome aparece no menu, e o fuso vale para a agenda e os horários da organização inteira.",
+        "name": "Nome da organização",
+        "nameRequired": "Dê um nome à organização.",
+        "nameTooLong": "Nome muito longo.",
+        "timezone": "Fuso horário",
+        "timezoneHint": "Digite o nome de uma cidade, como São Paulo.",
+        "timezoneRequired": "Escolha um fuso horário.",
+        "timezoneEmpty": "Nenhum fuso encontrado.",
+        "submit": "Salvar alterações",
+        "saved": "Nome e fuso salvos."
+      },
+      "company": {
+        "title": "Dados da empresa",
+        "description": "Razão social e CNPJ. Preencha se houver cobrança ou nota em nome da empresa.",
+        "businessName": "Razão social",
+        "businessNamePlaceholder": "Ex.: Doma Store Comércio Ltda",
+        "cnpj": "CNPJ",
+        "cnpjPlaceholder": "00.000.000/0000-00",
+        "cnpjInvalid": "Esse CNPJ não é válido. Confira os números.",
+        "submit": "Salvar alterações",
+        "saved": "Dados da empresa salvos."
+      },
+      "chat": {
+        "title": "Preferências do chat",
+        "description": "Valem na hora, para a organização inteira.",
+        "saved": "Preferência salva.",
+        "autoRemoveWaitingOperatorTag": {
+          "label": "Tirar a etiqueta \"aguardando-operador\" ao responder",
+          "hint": "Quando alguém responde a conversa, a etiqueta sai sozinha."
+        },
+        "reopenConversationOnInboundEnabled": {
+          "label": "Reabrir a conversa quando o contato escrever",
+          "hint": "Conversa fechada volta para Aberta assim que chega mensagem nova."
+        }
+      }
+    }
+  }
+}

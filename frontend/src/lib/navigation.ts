@@ -194,6 +194,7 @@ export const NAV_GROUPS: NavGroup[] = [
               "/settings/users",
               "/settings/teams",
               "/settings/access-roles",
+              "/settings/organization",
             ],
           },
           {

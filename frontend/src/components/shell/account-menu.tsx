@@ -2,6 +2,7 @@ import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
   Bell,
+  Building2,
   ChevronsUpDown,
   Languages,
   LogOut,
@@ -127,9 +128,14 @@ export function AccountMenu({ collapsed }: { collapsed: boolean }) {
           <Bell /> {t("navigation.routes.notificationSettings")}
         </DropdownMenuItem>
         {canInvite && (
-          <DropdownMenuItem render={<Link to="/settings/users" />}>
-            <UserPlus /> {t("account.invite")}
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem render={<Link to="/settings/organization" />}>
+              <Building2 /> {t("people.organization.title")}
+            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link to="/settings/users?new=1" />}>
+              <UserPlus /> {t("account.invite")}
+            </DropdownMenuItem>
+          </>
         )}
         <LanguageSubmenu />
         <DropdownMenuSeparator />
