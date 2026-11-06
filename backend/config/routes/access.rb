@@ -15,3 +15,15 @@ end
 
 resources :teams, only: %i[index show create update destroy]
 resources :access_roles, path: "access-roles", only: %i[index show create update destroy]
+
+# --- perfil e organização (singulares: valem para a sessão) --------------------
+resource :profile, only: %i[show update], controller: "profile" do
+  post :avatar, action: :upload_avatar
+  delete :avatar, action: :destroy_avatar
+end
+
+resource :organization, only: %i[show update], controller: "organization" do
+  patch "chat-settings", action: :update_chat_settings
+  post :logo, action: :upload_logo
+  delete :logo, action: :destroy_logo
+end
