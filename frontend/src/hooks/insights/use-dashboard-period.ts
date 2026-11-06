@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
 import { endOfDay, startOfDay, toDateInputValue } from "@/lib/date-format"
@@ -157,6 +157,16 @@ export function useDashboardPeriod() {
   )
 
   return { period, setPreset, setRange }
+}
+
+/**
+ * O período dos números que estão na tela. Na troca, o quadro anterior fica até o novo chegar, e a frase
+ * "nos últimos 15 dias" não pode aparecer ao lado do total de 7.
+ */
+export function useShownPeriod(period: DashboardPeriod, isLoading: boolean): DashboardPeriod {
+  const [shown, setShown] = useState(period)
+  if (!isLoading && shown !== period) setShown(period)
+  return isLoading ? shown : period
 }
 
 export function rangeDays(range: { from: Date; to: Date }): number {

@@ -14,7 +14,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useCalendarStats } from "@/hooks/insights/use-dashboard"
-import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
+import { useShownPeriod, type DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { formatTime } from "@/lib/date-format"
 import { formatNumber, formatPercent } from "@/lib/format-number"
@@ -36,10 +36,11 @@ const PROFESSIONALS_VISIBLE = 8
 const BEST_PROFESSIONAL_MIN = 2
 const DAILY_KEYS = ["show", "noShow"] as const
 
-export function AgendaTab({ period }: { period: DashboardPeriod }) {
+export function AgendaTab({ period: requestedPeriod }: { period: DashboardPeriod }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { stats, error, isLoading, reload } = useCalendarStats(period, true)
+  const { stats, error, isLoading, reload } = useCalendarStats(requestedPeriod, true)
+  const period = useShownPeriod(requestedPeriod, isLoading)
 
   if (error && !stats) return <ErrorState error={error} onRetry={reload} />
   if (!stats) return <AgendaSkeleton />

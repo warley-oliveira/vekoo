@@ -23,6 +23,8 @@ export function comparableReport(
   period: DashboardPeriod
 ): DashboardReport | null {
   if (!previous?.hasData || !period.previous) return null
+  // Enquanto o outro período não chega, a resposta na mão ainda é a de antes.
+  if (previous.period.dateStart !== period.previous.dateStart) return null
   return previous.newChats.length >= period.previous.days ? previous : null
 }
 

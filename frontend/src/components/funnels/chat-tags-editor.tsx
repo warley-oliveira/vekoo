@@ -30,8 +30,11 @@ import type { ChatTag } from "./types"
 type ChatTagsEditorProps = {
   chatId: string
   tagIds: string[]
-  /** As etiquetas da conversa mudaram: o cartão acompanha. */
-  onChange: (tagIds: string[]) => void
+  /**
+   * As etiquetas da conversa mudaram: o cartão acompanha. A recém-criada vem junto, porque o cadastro de
+   * quem chama ainda é o de antes dela.
+   */
+  onChange: (tagIds: string[], created?: ChatTag) => void
   /** Uma etiqueta mudou de nome ou de cor, ou saiu: outros cartões do quadro podem usá-la. */
   onCatalogChange: () => void
 }
@@ -80,7 +83,7 @@ export function ChatTagsEditor({ chatId, tagIds, onChange, onCatalogChange }: Ch
         // Uma cor para começar, em ordem. Dá para trocar depois, em "Editar".
         color: COLOR_SWATCHES[catalog.length % COLOR_SWATCHES.length],
       })
-      onChange(await applyTag(tag.id))
+      onChange(await applyTag(tag.id), tag)
       setQuery("")
       toast.success(t("funnels.tags.created", { name: tag.name }))
     } catch (cause) {

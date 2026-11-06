@@ -22,8 +22,9 @@
    * o autor: filtro nenhum repinta.
    *   violeta, verde-azulado, terracota: passa em todas as portas (CVD pior par 10,6; visão
    *   normal 21,2; contraste >= 3:1).
-   *   "Recebidas" fica em --viz-context: é o papel de contexto, fora da paleta. O validador acusa só
-   *   croma e faixa de luz desse cinza, como esperado; o par com o violeta passa em CVD (> 20).
+   *   "Recebidas" fica em --viz-context: é o papel de contexto, fora da paleta. O validador acusa o
+   *   croma desse cinza, como esperado, e pede o alívio de contraste, que a legenda com os totais e a
+   *   tabela dão. CVD e visão normal passam com ele na pilha.
    */
   --viz-series-inbound: var(--viz-context);
   --viz-series-automation: var(--primary);

@@ -309,9 +309,9 @@ function PanelBody({
             chatId={chatId}
             tagIds={tagIds}
             onCatalogChange={onCatalogChange}
-            onChange={(next) => {
+            onChange={(next, created) => {
               onPatch(chatId, {
-                chatTags: (tags ?? [])
+                chatTags: [...(tags ?? []), ...(created ? [created] : [])]
                   .filter((tag) => next.includes(tag.id))
                   .map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
               })

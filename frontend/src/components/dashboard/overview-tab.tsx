@@ -6,7 +6,7 @@ import { AlertTriangle, MessagesSquare, RefreshCw } from "lucide-react"
 import { Callout, EmptyState, ErrorState } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useAnyDashboardData, useDashboardReport } from "@/hooks/insights/use-dashboard"
-import { type DashboardPeriod, type PeriodPreset } from "@/hooks/insights/use-dashboard-period"
+import { useShownPeriod, type DashboardPeriod, type PeriodPreset } from "@/hooks/insights/use-dashboard-period"
 import { useCan } from "@/hooks/use-can"
 import { ApiError } from "@/lib/api"
 import { formatNumber, formatPercent } from "@/lib/format-number"
@@ -35,11 +35,12 @@ type OverviewTabProps = {
   onPreset: (preset: PeriodPreset) => void
 }
 
-export function OverviewTab({ period, onPreset }: OverviewTabProps) {
+export function OverviewTab({ period: requestedPeriod, onPreset }: OverviewTabProps) {
   const { t } = useTranslation()
-  const { report, error, isLoading, reload } = useDashboardReport(period)
+  const { report, error, isLoading, reload } = useDashboardReport(requestedPeriod)
+  const period = useShownPeriod(requestedPeriod, isLoading)
   // O período anterior só dá contexto. Se falhar, os números continuam, sem a variação.
-  const { report: previousReport } = useDashboardReport(period.previous)
+  const { report: previousReport } = useDashboardReport(requestedPeriod.previous)
   const previous = comparableReport(previousReport, period)
   const [metric, setMetric] = useState<TrendMetric>("newChats")
 

@@ -19,7 +19,6 @@ import {
   Callout,
   EmptyState,
   ErrorState,
-  ListSkeleton,
   PageBody,
   PageHeader,
   useConfirm,
@@ -104,7 +103,7 @@ export default function FunnelsPage() {
       {error && !funnels ? (
         <ErrorState error={error} onRetry={reload} />
       ) : isLoading && !funnels ? (
-        <ListSkeleton rows={4} />
+        <BoardSkeleton />
       ) : !funnelId ? (
         <FirstFunnel onCreate={openNew} />
       ) : (
