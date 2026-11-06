@@ -8,6 +8,8 @@ import { useLiveSyncGuard } from "./use-live-sync-guard"
 
 /** Sem resposta do `request_recent` nesse prazo, o socket está mudo: confere por HTTP. */
 const RECENT_TIMEOUT_MS = 6_000
+/** Sem socket, quanto esperar ele voltar antes de conferir por HTTP. */
+const RECONNECT_TIMEOUT_MS = 15_000
 /** Foco, rede e relógio chegam juntos; um pedido basta. */
 const RECENT_MIN_INTERVAL_MS = 10_000
 const GUARD_POLL_MS = 60_000
@@ -46,16 +48,18 @@ export function useChatListRealtime(): { connected: boolean } {
       if (!force && now - lastRequestAt.current < RECENT_MIN_INTERVAL_MS) return
       lastRequestAt.current = now
 
-      if (!perform("request_recent")) {
-        requestListResync()
-        return
-      }
+      // Socket ainda voltando (a rede volta antes dele): ao conectar, ele mesmo pede. O prazo maior
+      // é só para o caso de ele não voltar, e a conferência sair por HTTP.
+      const sent = perform("request_recent")
 
       if (recentTimer.current) clearTimeout(recentTimer.current)
-      recentTimer.current = setTimeout(() => {
-        recentTimer.current = null
-        requestListResync()
-      }, RECENT_TIMEOUT_MS)
+      recentTimer.current = setTimeout(
+        () => {
+          recentTimer.current = null
+          requestListResync()
+        },
+        sent ? RECENT_TIMEOUT_MS : RECONNECT_TIMEOUT_MS
+      )
     },
     [perform]
   )
