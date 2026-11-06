@@ -107,6 +107,36 @@ RSpec.describe Inbound::EvolutionEvents do
       expect(message.reload.status).to eq("read")
     end
 
+    describe "destinatário de campanha" do
+      let(:campaign) { create(:outreach_campaign, :running, organization: organization, sent_count: 1) }
+      let!(:recipient) { create(:outreach_recipient, campaign: campaign, status_cd: "sent", whatsapp_message_id: "SENT-1") }
+
+      it "a mensagem de campanha faz o destinatário avançar" do
+        message.set(campaign_id: campaign.id.to_s, status: "pending")
+
+        update_status("DELIVERY_ACK")
+
+        expect(recipient.reload.status_cd).to eq("delivered")
+        expect(campaign.reload.delivered_count).to eq(1)
+      end
+
+      it "áudio ouvido conta como leitura" do
+        message.set(campaign_id: campaign.id.to_s)
+
+        update_status("PLAYED")
+
+        expect(recipient.reload.status_cd).to eq("read")
+      end
+
+      it "mensagem fora de campanha não procura destinatário: este é o caminho de maior volume" do
+        allow(Outreach::RecipientStatus).to receive(:apply)
+
+        update_status("READ")
+
+        expect(Outreach::RecipientStatus).not_to have_received(:apply)
+      end
+    end
+
     it "acha a conversa pela variante do 9º dígito" do
       handle("messages.update", { keyId: "SENT-1", remoteJid: "553171810932@s.whatsapp.net", status: "READ" })
 

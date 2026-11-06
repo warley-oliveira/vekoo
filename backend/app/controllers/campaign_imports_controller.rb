@@ -8,7 +8,7 @@ class CampaignImportsController < PlatformController
   before_action :set_importable_campaign, only: %i[contacts csv_contacts]
 
   rescue_from Outreach::RefusedError do |error|
-    render_error(status: :unprocessable_entity, code: error.code, field: error.field, details: error.details)
+    render_error(status: :unprocessable_content, code: error.code, field: error.field, details: error.details)
   end
 
   # POST /campaigns/:id/import-contacts
@@ -25,7 +25,7 @@ class CampaignImportsController < PlatformController
   # POST /campaigns/:id/import-csv-contacts
   def csv_contacts
     rows = Array(params[:contacts])
-    return render_error(status: :unprocessable_entity, code: "contactsRequired", field: "contacts") if rows.empty?
+    return render_error(status: :unprocessable_content, code: "contactsRequired", field: "contacts") if rows.empty?
     return render_too_many if rows.size > MAX_CONTACTS_PER_IMPORT
 
     result = Outreach::RecipientImporter.new(@campaign).import(rows.filter_map { |row| csv_row(row) })
@@ -50,7 +50,7 @@ class CampaignImportsController < PlatformController
   # Síncrona, sem nada guardado: a tela de campanhas usa `/place-extractions`.
   def apify_places_search
     query = params[:search_query].to_s.strip
-    return render_error(status: :unprocessable_entity, code: "searchQueryRequired", field: "searchQuery") if query.blank?
+    return render_error(status: :unprocessable_content, code: "searchQueryRequired", field: "searchQuery") if query.blank?
 
     results = Outreach::ApifyPlacesSearchService.new(
       search_query: query,
@@ -63,7 +63,7 @@ class CampaignImportsController < PlatformController
 
     render json: { results: Outreach::PlaceResultSerializer.many(results), totalCount: results.size }
   rescue Outreach::ApifyPlacesSearchService::ApifyAuthError => e
-    render_error(status: :unprocessable_entity, code: e.code)
+    render_error(status: :unprocessable_content, code: e.code)
   rescue Outreach::ApifyPlacesSearchService::ApifyQuotaError => e
     render_error(status: :payment_required, code: e.code)
   rescue Outreach::ApifyPlacesSearchService::ApifyError => e
@@ -81,7 +81,7 @@ class CampaignImportsController < PlatformController
     return render_not_found unless @campaign
     return if @campaign.draft? || @campaign.scheduled?
 
-    render_error(status: :unprocessable_entity, code: "campaignNotImportable")
+    render_error(status: :unprocessable_content, code: "campaignNotImportable")
   end
 
   def chat_audience
@@ -90,7 +90,7 @@ class CampaignImportsController < PlatformController
     end
 
     ids = Array(params[:contact_ids]).map(&:to_s).uniq
-    return render_error(status: :unprocessable_entity, code: "contactsRequired", field: "contactIds") if ids.empty?
+    return render_error(status: :unprocessable_content, code: "contactsRequired", field: "contactIds") if ids.empty?
     return render_too_many if ids.size > MAX_CONTACTS_PER_IMPORT
 
     Outreach::ChatAudience.by_ids(current_organization, ids)
@@ -127,7 +127,7 @@ class CampaignImportsController < PlatformController
 
   def render_too_many
     render_error(
-      status: :unprocessable_entity,
+      status: :unprocessable_content,
       code: "tooManyContacts",
       details: { max: MAX_CONTACTS_PER_IMPORT }
     )

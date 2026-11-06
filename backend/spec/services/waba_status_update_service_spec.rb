@@ -467,46 +467,27 @@ RSpec.describe WabaStatusUpdateService do
     end
   end
 
-  # `Outreach::Recipient` é do domínio de campanhas, que ainda não está aqui. O dublê segue a
-  # interface que o serviço usa; a regra testada é a de progressão e de contagem.
+  # A regra de progressão e de contagem mora em `Outreach::RecipientStatus`, com a spec dela. Aqui
+  # interessa a ligação: o que o webhook da Meta faz chegar ao destinatário.
   describe "destinatário de campanha" do
-    let(:campaign) { spy("Outreach::Campaign") }
-    let(:recipient) { spy("Outreach::Recipient", status_cd: recipient_status, campaign: campaign) }
+    let(:campaign) { create(:outreach_campaign, :running, organization: organization, sent_count: 1) }
+    let!(:recipient) { create(:outreach_recipient, campaign: campaign, status_cd: recipient_status, whatsapp_message_id: wamid) }
     let(:recipient_status) { "sent" }
-
-    before { stub_const("Outreach::Recipient", double(where: double(take: recipient))) }
-
-    it "busca pelo wamid" do
-      service.call
-
-      expect(Outreach::Recipient).to have_received(:where).with(whatsapp_message_id: wamid)
-    end
 
     it "avança para entregue" do
       status["status"] = "delivered"
 
       service.call
 
-      expect(recipient).to have_received(:update).with(hash_including(status: :delivered, delivered_at: kind_of(ActiveSupport::TimeWithZone)))
-      expect(campaign).to have_received(:inc).with(delivered_count: 1)
+      expect(recipient.reload).to have_attributes(status_cd: "delivered", delivered_at: be_present)
+      expect(campaign.reload.delivered_count).to eq(1)
     end
 
     it "conta a entrega também ao pular de enviado direto para lido" do
       service.call
 
-      expect(recipient).to have_received(:update).with(hash_including(status: :read, delivered_at: anything, read_at: anything))
-      expect(campaign).to have_received(:inc).with(delivered_count: 1, read_count: 1)
-    end
-
-    context "com o destinatário já entregue" do
-      let(:recipient_status) { "delivered" }
-
-      it "conta só a leitura" do
-        service.call
-
-        expect(recipient).to have_received(:update).with(hash_including(status: :read, read_at: anything))
-        expect(campaign).to have_received(:inc).with(read_count: 1)
-      end
+      expect(recipient.reload).to have_attributes(status_cd: "read", delivered_at: be_present, read_at: be_present)
+      expect(campaign.reload).to have_attributes(delivered_count: 1, read_count: 1)
     end
 
     context "com o destinatário já lido" do
@@ -517,8 +498,8 @@ RSpec.describe WabaStatusUpdateService do
 
         service.call
 
-        expect(recipient).not_to have_received(:update)
-        expect(campaign).not_to have_received(:inc)
+        expect(recipient.reload.status_cd).to eq("read")
+        expect(campaign.reload.delivered_count).to eq(0)
       end
     end
 
@@ -528,8 +509,8 @@ RSpec.describe WabaStatusUpdateService do
       it "marca como falho com o motivo traduzido" do
         service.call
 
-        expect(recipient).to have_received(:update).with(hash_including(status: :failed, error_message: a_string_including("Mensagem não entregue")))
-        expect(campaign).to have_received(:inc).with(failed_count: 1)
+        expect(recipient.reload).to have_attributes(status_cd: "failed", error_message: a_string_including("Mensagem não entregue"))
+        expect(campaign.reload.failed_count).to eq(1)
       end
 
       context "com o destinatário já falho" do
@@ -538,46 +519,38 @@ RSpec.describe WabaStatusUpdateService do
         it "não conta duas vezes" do
           service.call
 
-          expect(campaign).not_to have_received(:inc)
+          expect(campaign.reload.failed_count).to eq(0)
         end
       end
     end
 
     it "atualiza o destinatário mesmo sem a mensagem" do
-      status["id"] = "wamid.sumiu"
+      message.delete
 
       service.call
 
-      expect(recipient).to have_received(:update)
+      expect(recipient.reload.status_cd).to eq("read")
     end
 
     it "um erro no destinatário não derruba o status da mensagem" do
-      allow(recipient).to receive(:update).and_raise(StandardError, "boom")
+      allow(Outreach::RecipientStatus).to receive(:apply).and_raise(StandardError, "boom")
 
       expect(service.call.code).to eq(:updated)
       expect(stored_status).to eq("read")
     end
 
     it "sem destinatário segue normalmente" do
-      stub_const("Outreach::Recipient", double(where: double(take: nil)))
+      recipient.delete
 
       expect(service.call.code).to eq(:updated)
     end
 
     # O mesmo motivo do lookup da mensagem: `first` injetaria uma ordenação por _id.
-    it "busca com take, nunca first" do
-      criteria = double("Busca do destinatário", take: nil)
-      stub_const("Outreach::Recipient", double(where: criteria))
+    it "busca o destinatário sem ordenação" do
+      finds = mongo_finds { service.call }.select { |command| command["find"] == Outreach::Recipient.collection.name }
 
-      service.call
-
-      expect(criteria).to have_received(:take)
-    end
-
-    it "sem o domínio de campanhas, segue normalmente" do
-      hide_const("Outreach::Recipient")
-
-      expect(service.call.code).to eq(:updated)
+      expect(finds).not_to be_empty
+      expect(finds).to all(satisfy { |command| !command.key?("sort") })
     end
   end
 

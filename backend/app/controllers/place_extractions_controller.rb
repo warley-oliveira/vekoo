@@ -42,8 +42,8 @@ class PlaceExtractionsController < PlatformController
   end
 
   def create
-    return render_error(status: :unprocessable_entity, code: "apifyNotConfigured") unless Outreach::Capabilities.apify?
-    return render_error(status: :unprocessable_entity, code: "tooManyExtractions") if too_many_in_progress?
+    return render_error(status: :unprocessable_content, code: "apifyNotConfigured") unless Outreach::Capabilities.apify?
+    return render_error(status: :unprocessable_content, code: "tooManyExtractions") if too_many_in_progress?
 
     extraction = current_organization.place_extractions.new(extraction_attributes)
     return render_invalid(extraction) unless extraction.save

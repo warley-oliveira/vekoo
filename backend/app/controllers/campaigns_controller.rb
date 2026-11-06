@@ -11,7 +11,7 @@ class CampaignsController < PlatformController
   before_action :set_campaign, except: %i[index create summary]
 
   rescue_from Outreach::RefusedError do |error|
-    render_error(status: :unprocessable_entity, code: error.code, field: error.field, details: error.details)
+    render_error(status: :unprocessable_content, code: error.code, field: error.field, details: error.details)
   end
 
   def index
@@ -45,7 +45,7 @@ class CampaignsController < PlatformController
   end
 
   def update
-    return render_error(status: :unprocessable_entity, code: "campaignNotEditable") unless @campaign.draft?
+    return render_error(status: :unprocessable_content, code: "campaignNotEditable") unless @campaign.draft?
 
     @campaign.assign_attributes(campaign_attributes)
     return unless hydrate_media(@campaign)
@@ -55,7 +55,7 @@ class CampaignsController < PlatformController
   end
 
   def destroy
-    return render_error(status: :unprocessable_entity, code: "campaignNotDeletable") unless @campaign.draft?
+    return render_error(status: :unprocessable_content, code: "campaignNotDeletable") unless @campaign.draft?
 
     @campaign.destroy
     head :no_content
@@ -173,7 +173,7 @@ class CampaignsController < PlatformController
 
     attachment = Media::AttachmentLookup.find(campaign.attachment_id, organization_id: current_organization.id)
     unless attachment
-      render_error(status: :unprocessable_entity, code: "mediaNotFound", field: "attachmentId")
+      render_error(status: :unprocessable_content, code: "mediaNotFound", field: "attachmentId")
       return false
     end
 
@@ -200,9 +200,11 @@ class CampaignsController < PlatformController
     return nil if raw.blank?
 
     time = raw.is_a?(Numeric) ? Time.zone.at(raw / 1000.0) : campaign.time_zone.parse(raw.to_s)
-    time if time&.future?
+    raise ArgumentError, "data ilegível" if time.nil?
+
+    time if time.future?
   rescue ArgumentError
-    render_error(status: :unprocessable_entity, code: "invalidScheduledAt", field: "scheduledAt")
+    render_error(status: :unprocessable_content, code: "invalidScheduledAt", field: "scheduledAt")
     nil
   end
 

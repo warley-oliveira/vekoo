@@ -79,7 +79,15 @@ module OutreachHelpers
 end
 
 RSpec.configure do |config|
-  config.include OutreachHelpers
-  config.include ActiveJob::TestHelper
-  config.include ActiveSupport::Testing::TimeHelpers
+  specs = %r{/spec/(?:(?:models|services|jobs)/outreach|channels/(?:campaign|place_extraction)|requests/(?:campaign|place_extraction)|db/seeds/outreach)}
+  config.define_derived_metadata(file_path: specs) { |metadata| metadata[:outreach] = true }
+
+  [ OutreachHelpers, ActiveJob::TestHelper, ActiveSupport::Testing::TimeHelpers ].each do |helper|
+    config.include helper, :outreach
+  end
+
+  # Spec de serviço não tem o ciclo de vida do Rails: sem isto, o relógio e a fila vazariam para o
+  # exemplo seguinte.
+  config.before(:each, :outreach) { clear_enqueued_jobs }
+  config.after(:each, :outreach) { travel_back }
 end

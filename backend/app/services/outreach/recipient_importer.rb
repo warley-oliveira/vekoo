@@ -78,7 +78,7 @@ module Outreach
       errors = Array(result["writeErrors"])
       raise unless errors.all? { |error| error["code"] == DUPLICATE_KEY }
 
-      @imported += result["nInserted"].to_i
+      @imported += result["n_inserted"].to_i
       @skipped += errors.size
     end
   end
