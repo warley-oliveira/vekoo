@@ -69,6 +69,56 @@ RSpec.describe "Anexos", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    context "filtrando por tipo" do
+      def attachment_of(name, content_type, filename)
+        create(
+          :attachment,
+          organization: organization,
+          name: name,
+          file: { io: StringIO.new("conteúdo"), filename: filename, content_type: content_type }
+        )
+      end
+
+      before do
+        attachment_of("Foto", "image/png", "foto.png")
+        attachment_of("Vídeo", "video/mp4", "video.mp4")
+        attachment_of("Áudio", "audio/mpeg", "audio.mp3")
+        attachment_of("Contrato", "application/pdf", "contrato.pdf")
+        attachment_of("Planilha", "text/csv", "planilha.csv")
+      end
+
+      def names_for(kind)
+        get "/attachments", params: { kind: kind, sortBy: "name", sortOrder: "asc" }, headers: headers
+        json["attachments"].map { |attachment| attachment["name"] }
+      end
+
+      it "devolve só o tipo pedido" do
+        expect(names_for("image")).to eq(%w[Foto])
+        expect(names_for("video")).to eq(%w[Vídeo])
+        expect(names_for("audio")).to eq(%w[Áudio])
+      end
+
+      it "conta como documento tudo que não é imagem, vídeo nem áudio" do
+        expect(names_for("document")).to contain_exactly("Contrato", "Planilha")
+      end
+
+      it "aceita mais de um tipo, e a contagem acompanha" do
+        expect(names_for("image, document")).to contain_exactly("Foto", "Contrato", "Planilha")
+        expect(json["meta"]).to include("total" => 3)
+      end
+
+      it "ignora tipo que não existe, sem deixar passar SQL" do
+        expect(names_for("x'; DROP TABLE attachments; --").size).to eq(5)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "combina com a busca" do
+        get "/attachments", params: { kind: "document", search: "contrato" }, headers: headers
+
+        expect(json["attachments"].map { |attachment| attachment["name"] }).to eq(%w[Contrato])
+      end
+    end
+
     it "pagina" do
       create_list(:attachment, 3, organization: organization)
 

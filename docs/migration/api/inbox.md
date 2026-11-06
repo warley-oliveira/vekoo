@@ -1411,7 +1411,7 @@ Resposta `422`:
 
 Biblioteca de arquivos da organização, que o composer do chat, as campanhas e os fluxos escolhem. Na origem pertencia a um assistente, e aqui é da organização. Até 100 MB por arquivo.
 
-`GET /attachments`: `search` (em nome, descrição e nome do arquivo), `sortBy` (`name`, `created_at`, `updated_at`), `sortOrder` (`asc`, `desc`), `page`, `perPage` (padrão 20). Só a galeria: o que foi enviado pelo chat fica de fora.
+`GET /attachments`: `search` (em nome, descrição e nome do arquivo), `kind` (um ou mais de `image`, `video`, `audio`, `document`, separados por vírgula; `document` é tudo que não é os outros três), `sortBy` (`name`, `created_at`, `updated_at`), `sortOrder` (`asc`, `desc`), `page`, `perPage` (padrão 20). Só a galeria: o que foi enviado pelo chat fica de fora.
 
 `GET /attachments?perPage=2&sortBy=name&sortOrder=asc`
 
