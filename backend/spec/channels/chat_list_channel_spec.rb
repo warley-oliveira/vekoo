@@ -72,10 +72,11 @@ RSpec.describe ChatListChannel, type: :channel do
           listen_as(member)
         end
 
-        it "escuta os próprios departamentos e as sem dono" do
+        it "escuta os próprios departamentos e as sem departamento" do
           expect(subscription).to have_stream_from(stream("chat-list-team-#{team.id}"))
           expect(subscription).to have_stream_from(stream("chat-list-team-#{second_team.id}"))
-          expect(subscription).to have_stream_from(stream("chat-list-unassigned"))
+          expect(subscription).to have_stream_from(stream("chat-list-no-team"))
+          expect(subscription).not_to have_stream_from(stream("chat-list-unassigned"))
           expect(subscription).not_to have_stream_from(stream("chat-list"))
         end
 
@@ -249,6 +250,54 @@ RSpec.describe ChatListChannel, type: :channel do
 
         expect(recent_ids).to be_empty
       end
+    end
+  end
+  # A lista em tempo real e a API REST precisam concordar: `Chat.visible_to` mostra a quem vê
+  # por departamento a conversa sem departamento, mesmo já tendo dono.
+  describe "o que cada nível recebe, igual à API REST" do
+    let(:connector) { create(:connector_whatsapp_web, organization: organization) }
+    let(:team) { create(:team, organization: organization) }
+    let(:someone) { create(:account, organization: organization) }
+
+    def chat_with(**attributes)
+      create(:chat, connector: connector, external_id: "55119#{rand(10_000_000..99_999_999)}@s.whatsapp.net", **attributes)
+    end
+
+    it "quem vê por departamento recebe conversa sem departamento que já tem dono" do
+      member = member_with("team")
+      create(:team_membership, team: team, account: member)
+      chat = chat_with(assigned_account_id: someone.id.to_s, team_id: nil)
+
+      stub_connection current_account: member
+      subscribe
+
+      expect(Chat.visible_to(member).where(id: chat.id).take).to eq(chat)
+      expect(chat.list_streams.map { |name| stream(name) } & subscription.streams).not_to be_empty
+    end
+
+    it "quem só vê o que é seu não recebe conversa sem departamento de outra pessoa" do
+      member = member_with("assigned")
+      chat = chat_with(assigned_account_id: someone.id.to_s, team_id: nil)
+
+      stub_connection current_account: member
+      subscribe
+
+      expect(Chat.visible_to(member).where(id: chat.id).take).to be_nil
+      expect(chat.list_streams.map { |name| stream(name) } & subscription.streams).to be_empty
+    end
+
+    it "as conversas recentes obedecem o mesmo critério" do
+      member = member_with("assigned")
+      foreign = chat_with(assigned_account_id: someone.id.to_s, team_id: nil)
+      mine = chat_with(assigned_account_id: member.id.to_s, team_id: nil)
+
+      stub_connection current_account: member
+      subscribe
+      perform :request_recent
+
+      ids = transmissions.last["events"].map { |event| event["id"] }
+      expect(ids).to include(mine.id.to_s)
+      expect(ids).not_to include(foreign.id.to_s)
     end
   end
 end

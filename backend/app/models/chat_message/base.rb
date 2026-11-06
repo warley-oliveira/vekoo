@@ -96,7 +96,9 @@ module ChatMessage
     index({ created_at: 1 })
     index({ campaign_id: 1 }, { sparse: true })
     # Composto: histórico da conversa em ordem.
-    index({ chat_id: 1, created_at: -1 })
+    # Inclui `_id` porque o histórico pagina por cursor (`created_at`, `_id`): sem ele, o Mongo
+    # ordenaria em memória as mensagens criadas no mesmo instante.
+    index({ chat_id: 1, created_at: -1, _id: -1 })
     # Esparso: só mensagem de operador tem account_id. Serve "mensagens do operador X no
     # período" sem passar pelo join com chats.
     index({ account_id: 1, created_at: -1 }, { sparse: true })

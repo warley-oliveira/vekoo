@@ -19,34 +19,34 @@ module WidgetCable
       throttle_connection!
 
       token = request.params[:token].to_s
-      reject!('missing token') if token.blank?
+      reject!("missing token") if token.blank?
 
       payload = peek_jwt(token)
-      reject!('malformed jwt') unless payload
+      reject!("malformed jwt") unless payload
 
       # O id vem de um token ainda não verificado: `to_s` para nunca chegar operador do Mongo.
-      connector = Connector::WebWidget.where(id: payload['connector_id'].to_s).take
+      connector = Connector::WebWidget.where(id: payload["connector_id"].to_s).take
       reject!("connector not found (id=#{payload['connector_id']})") unless connector
       reject!("connector inactive (id=#{connector.id})") unless connector.active?
 
       verified = connector.decode_visitor_jwt(token)
       reject!("jwt verification failed (id=#{connector.id})") unless verified
-      reject!("missing visitor_id (id=#{connector.id})") unless verified['visitor_id'].present?
-      reject!('visitor_id format invalid') unless VISITOR_ID_REGEX.match?(verified['visitor_id'])
+      reject!("missing visitor_id (id=#{connector.id})") unless verified["visitor_id"].present?
+      reject!("visitor_id format invalid") unless VISITOR_ID_REGEX.match?(verified["visitor_id"])
 
       if connector.allowed_origins.present?
-        origin = request.env['HTTP_ORIGIN']
+        origin = request.env["HTTP_ORIGIN"]
         reject!("origin not allowed: #{origin.inspect}") unless connector.origin_allowed?(origin)
       end
 
-      self.visitor_id = verified['visitor_id']
+      self.visitor_id = verified["visitor_id"]
       self.web_widget_connector_id = connector.id.to_s
     end
 
     private
 
     def throttle_connection!
-      return if Rails.env.test? && !ENV['WIDGET_THROTTLE_TESTS']
+      return if Rails.env.test? && !ENV["WIDGET_THROTTLE_TESTS"]
 
       ip = client_ip
       return if ip.blank?

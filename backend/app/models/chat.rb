@@ -416,6 +416,8 @@ class Chat
   def list_streams
     streams = [ "chat-list" ]
     streams << "chat-list-unassigned" if assigned_account_id.nil? && team_id.nil?
+    # Quem vê por departamento também enxerga a conversa sem departamento que já tem dono.
+    streams << "chat-list-no-team" if team_id.nil?
     streams << "chat-list-team-#{team_id}" if team_id.present?
     streams << "chat-list-account-#{assigned_account_id}" if assigned_account_id.present?
     streams

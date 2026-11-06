@@ -1,6 +1,7 @@
-# Tempo real da lista de conversas: quem vê o quê sai da permissão `chat_list_to`. Quem vê
-# tudo escuta a stream principal; os demais, só a do departamento (ou a própria) mais a das
-# conversas sem dono. As streams são as de `Chat#list_streams`.
+# Tempo real da lista de conversas: quem vê o quê sai da permissão `chat_list_to`, com o mesmo
+# critério de `Chat.visible_to`, o da API REST. Quem vê tudo escuta a stream principal; quem vê
+# por departamento, os seus e os sem departamento; quem só vê o que é seu, a própria e as sem
+# dono nem departamento. As streams são as de `Chat#list_streams`.
 class ChatListChannel < ApplicationCable::Channel
   RECENT_LIMIT = 30
 
@@ -10,7 +11,7 @@ class ChatListChannel < ApplicationCable::Channel
     case chat_list_permission
     when "team"
       current_account.team_ids.each { |id| stream_from organization_stream("chat-list-team-#{id}") }
-      stream_from organization_stream("chat-list-unassigned")
+      stream_from organization_stream("chat-list-no-team")
     when "assigned"
       stream_from organization_stream("chat-list-account-#{current_account.id}")
       stream_from organization_stream("chat-list-unassigned")
@@ -40,24 +41,6 @@ class ChatListChannel < ApplicationCable::Channel
   end
 
   def recent_chats
-    scope = Chat.where(organization_id: current_organization.id).valid_records.order_by(last_message_at: :desc)
-
-    case chat_list_permission
-    when "team"
-      scope = scope.where(:team_id.in => current_account.team_ids + [ nil ])
-    when "assigned"
-      scope = scope.where(
-        "$or" => [
-          { assigned_account_id: current_account.id },
-          { assigned_account_id: nil, team_id: nil }
-        ]
-      )
-    when "all"
-      # tudo
-    else
-      return []
-    end
-
-    scope.limit(RECENT_LIMIT).to_a
+    Chat.visible_to(current_account).valid_records.order_by(last_message_at: :desc).limit(RECENT_LIMIT).to_a
   end
 end

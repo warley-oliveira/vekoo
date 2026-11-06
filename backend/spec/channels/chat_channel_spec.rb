@@ -57,6 +57,41 @@ RSpec.describe ChatChannel, type: :channel do
     create(:account, organization: organization, role: "member", access_role: role)
   end
 
+  # O mesmo critério da API REST: quem não enxerga a conversa pela lista também não a
+  # alcança pelo WebSocket, nem para ler, nem para enviar.
+  describe "visibilidade por chat_list_to" do
+    let(:other_person) { create(:account, organization: organization) }
+    let(:restricted) { member_with("chat" => "all", "chat_list_to" => "assigned") }
+    let(:foreign_chat) do
+      create(:chat, connector: connector, external_id: "5511888888888@s.whatsapp.net", assigned_account_id: other_person.id.to_s)
+    end
+
+    before { stub_connection current_account: restricted }
+
+    it "recusa assinar a conversa atribuída a outra pessoa" do
+      subscribe(chatId: foreign_chat.id.to_s)
+
+      expect(subscription).to be_rejected
+    end
+
+    it "aceita assinar a conversa da própria pessoa" do
+      mine = create(:chat, connector: connector, external_id: "5511777777777@s.whatsapp.net", assigned_account_id: restricted.id.to_s)
+
+      subscribe(chatId: mine.id.to_s)
+
+      expect(subscription).to be_confirmed
+    end
+
+    it "não envia para a conversa atribuída a outra pessoa, mesmo com a assinatura aberta noutra" do
+      mine = create(:chat, connector: connector, external_id: "5511777777777@s.whatsapp.net", assigned_account_id: restricted.id.to_s)
+      subscribe(chatId: mine.id.to_s)
+
+      expect(Chats::SendOperatorMessage).not_to receive(:call)
+
+      perform :send_message, { "chatId" => foreign_chat.id.to_s, "message" => "oi" }
+    end
+  end
+
   describe "#subscribed" do
     it "escuta a stream da conversa, escopada pela organização" do
       subscribe_to_chat

@@ -75,10 +75,12 @@ class ChatChannel < ApplicationCable::Channel
     find_chat(data["chatId"] || data["chat_id"])
   end
 
+  # O mesmo critério da API REST: quem não enxerga a conversa pela lista (`chat_list_to`)
+  # também não a alcança pelo WebSocket, nem para ler, nem para enviar.
   def find_chat(id)
     return nil if id.blank?
 
-    Chat.scoped(current_organization.id, id.to_s)
+    Chat.visible_to(current_account).where(id: id.to_s).take
   end
 
   # Manda o estado atual das reações junto com o erro: a tela reverte sem refazer a lista.
