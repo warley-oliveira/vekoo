@@ -73,7 +73,7 @@ const templateShape = z.object({
     placeName: z.string(),
     address: z.string(),
   }),
-  body: z.object({ text: z.string(), examples: z.record(z.string(), z.string()) }),
+  body: z.object({ text: z.string(), examples: z.record(z.string(), z.string().optional()) }),
   footer: z.object({ enabled: z.boolean(), text: z.string() }),
   buttons: z.object({
     enabled: z.boolean(),
@@ -269,7 +269,7 @@ export function formToComponents(
 }
 
 /** O texto com os exemplos no lugar das variáveis, como o contato vai ler. */
-export function fillVariables(text: string, examples: Record<string, string>): string {
+export function fillVariables(text: string, examples: Record<string, string | undefined>): string {
   return text.replace(VARIABLE, (whole, name: string) => examples[exampleKey(name)]?.trim() || whole)
 }
 
