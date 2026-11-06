@@ -54,7 +54,7 @@ Resposta `200`:
 {
   "flows": [
     {
-      "id": "ff56b811-e3aa-468b-a269-27261d2342aa",
+      "id": "0210c760-dfd5-4da9-b629-40ff6a716a3a",
       "name": "E2E Quebrado",
       "description": null,
       "status": "draft",
@@ -63,11 +63,11 @@ Resposta `200`:
         "connectorIds": []
       },
       "published": false,
-      "updatedAt": 1794002146845,
-      "createdAt": 1794002146845
+      "updatedAt": 1794003962049,
+      "createdAt": 1794003962049
     },
     {
-      "id": "77dedc4a-7472-45f0-8e43-d034a11ab515",
+      "id": "a1306362-0e8d-48d2-99ff-d547a016dbea",
       "name": "E2E Pedido",
       "description": null,
       "status": "published",
@@ -76,14 +76,14 @@ Resposta `200`:
         "connectorIds": []
       },
       "published": true,
-      "updatedAt": 1794002142974,
-      "createdAt": 1794002142898
+      "updatedAt": 1794003950726,
+      "createdAt": 1794003950664
     }
   ],
   "meta": {
     "page": 1,
     "perPage": 2,
-    "total": 7,
+    "total": 8,
     "totalPages": 4,
     "hasMore": true
   }
@@ -99,7 +99,7 @@ Resposta `200`:
 ```json
 {
   "flow": {
-    "id": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
+    "id": "59184661-53b8-44b7-9225-9fc270bce663",
     "name": "E2E Atendimento",
     "description": "Verificação",
     "status": "published",
@@ -108,10 +108,10 @@ Resposta `200`:
       "connectorIds": []
     },
     "published": true,
-    "updatedAt": 1794002022677,
-    "createdAt": 1794002022481,
+    "updatedAt": 1794003829586,
+    "createdAt": 1794003829348,
     "draft": {
-      "id": "4b458551-2e96-41b7-b49b-964ef61c0b24",
+      "id": "92dff3e8-aeb2-4e85-86ed-227fdffe1b83",
       "versionNumber": 2,
       "definition": {
         "nodes": [
@@ -124,10 +124,10 @@ Resposta `200`:
         "base_prompt": "Você é a atendente da Doma Store. Responda em uma frase curta, em português."
       },
       "publishedAt": null,
-      "updatedAt": 1794002022714
+      "updatedAt": 1794003829592
     },
     "publishedVersion": {
-      "id": "9b5afda0-8fbb-476b-b7d4-955065749f58",
+      "id": "8e92517c-2bcf-4aa5-9cf4-e22e2cc31606",
       "versionNumber": 1,
       "definition": {
         "nodes": [
@@ -139,8 +139,8 @@ Resposta `200`:
         "viewport": {},
         "base_prompt": "Você é a atendente da Doma Store. Responda em uma frase curta, em português."
       },
-      "publishedAt": 1794002022674,
-      "updatedAt": 1794002022674
+      "publishedAt": 1794003829583,
+      "updatedAt": 1794003829584
     }
   }
 }
@@ -155,7 +155,7 @@ Resposta `201`:
 ```json
 {
   "flow": {
-    "id": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
+    "id": "59184661-53b8-44b7-9225-9fc270bce663",
     "name": "E2E Atendimento",
     "description": "Verificação",
     "status": "draft",
@@ -164,10 +164,10 @@ Resposta `201`:
       "connectorIds": []
     },
     "published": false,
-    "updatedAt": 1794002022481,
-    "createdAt": 1794002022481,
+    "updatedAt": 1794003829348,
+    "createdAt": 1794003829348,
     "draft": {
-      "id": "9b5afda0-8fbb-476b-b7d4-955065749f58",
+      "id": "8e92517c-2bcf-4aa5-9cf4-e22e2cc31606",
       "versionNumber": 1,
       "definition": {
         "edges": [],
@@ -191,7 +191,7 @@ Resposta `201`:
         }
       },
       "publishedAt": null,
-      "updatedAt": 1794002022570
+      "updatedAt": 1794003829452
     },
     "publishedVersion": null
   }
@@ -402,21 +402,21 @@ Resposta `200`:
 {
   "executions": [
     {
-      "id": "a7ee50f1-09df-423b-8607-02441fd09c56",
-      "flowId": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
+      "id": "612d1ed7-d3b0-4afc-a756-6124bf24e0ca",
+      "flowId": "59184661-53b8-44b7-9225-9fc270bce663",
       "status": "completed",
-      "chatId": "6aee4ccf1e211f534fe53c61",
-      "contactId": "5541999709372",
+      "chatId": "6aee53dc7ae2f1e9b02cfe69",
+      "contactId": "5541999862851",
       "currentNodeId": "nao",
-      "startedAt": 1794002133247,
-      "completedAt": 1794002133371
+      "startedAt": 1794003942730,
+      "completedAt": 1794003942852
     }
   ],
   "meta": {
     "page": 1,
     "perPage": 1,
-    "total": 7,
-    "totalPages": 7,
+    "total": 8,
+    "totalPages": 8,
     "hasMore": true
   }
 }
@@ -431,13 +431,13 @@ Resposta `200`:
 ```json
 {
   "execution": {
-    "id": "8970191c-9085-44b8-9b65-4320d5a89207",
-    "flowId": "e50e3ccd-fb11-421a-b6b8-92d5629e9dfe",
+    "id": "467f00f7-b4f9-4b68-aa44-76909dc2734c",
+    "flowId": "59184661-53b8-44b7-9225-9fc270bce663",
     "status": "waiting_for_message",
-    "chatId": "6aee4c661e211f534fe53c33",
-    "contactId": "5541999311146",
+    "chatId": "6aee53757ae2f1e9b02cfe33",
+    "contactId": "5541999551159",
     "currentNodeId": "ia",
-    "startedAt": 1794002043481,
+    "startedAt": 1794003844611,
     "completedAt": null,
     "context": {
       "depth": 0,
@@ -454,12 +454,12 @@ Resposta `200`:
       },
       "message_seq": 2,
       "consumed_seq": 2,
-      "last_message_id": "E2E-156119512434"
+      "last_message_id": "E2E-106669268899"
     },
     "errorMessage": null,
     "logs": [
       {
-        "id": "70eb21b8-a668-47c4-b1be-0090d012e94d",
+        "id": "1e859ab8-6e06-4d2c-85ef-04a210b58666",
         "nodeId": "cond",
         "nodeType": "condition",
         "status": "success",
@@ -487,11 +487,11 @@ Resposta `200`:
           ]
         },
         "durationMs": 0,
-        "executedAt": 1794002043496,
+        "executedAt": 1794003844627,
         "errorMessage": null
       },
       {
-        "id": "2b771dfb-b57b-41e0-9392-8cd01403a318",
+        "id": "4621edda-d524-4528-ad4f-21123ea0e625",
         "nodeId": "nome",
         "nodeType": "ask_question",
         "status": "suspended",
@@ -502,12 +502,12 @@ Resposta `200`:
           "asked": "Claro! Qual é o seu nome?",
           "awaiting_reply": true
         },
-        "durationMs": 68,
-        "executedAt": 1794002043584,
+        "durationMs": 90,
+        "executedAt": 1794003844752,
         "errorMessage": null
       },
       {
-        "id": "a75d63a7-1cab-4cef-a90e-ed47be226585",
+        "id": "60d5b0c6-3f71-40bc-80a6-4ebef8812ef6",
         "nodeId": "nome",
         "nodeType": "ask_question",
         "status": "success",
@@ -517,12 +517,12 @@ Resposta `200`:
         "output": {
           "answer": "Fernanda"
         },
-        "durationMs": 8,
-        "executedAt": 1794002050393,
+        "durationMs": 10,
+        "executedAt": 1794003850235,
         "errorMessage": null
       },
       {
-        "id": "d73d6d68-f3c8-45af-aaba-091923babc81",
+        "id": "09ac3713-590c-446a-b123-42df0f81d295",
         "nodeId": "ia",
         "nodeType": "ai_assistant",
         "status": "suspended",
@@ -531,12 +531,12 @@ Resposta `200`:
         },
         "output": {
           "turn": 1,
-          "reply": "Olá, Fernanda! Tudo bem? Que bom ter você por aqui. Como posso te ajudar hoje?",
+          "reply": "Olá, Fernanda! Tudo bem? Sou o assistente de atendimento e vou ajudar você. Como posso te ajudar hoje? Pode me contar o motivo do seu contato.",
           "reason": "A cliente ainda está em atendimento, pedindo ajuda e informando o nome; não disse que não precisa de mais nada nem se despediu.",
           "decision": "stay"
         },
-        "durationMs": 2449,
-        "executedAt": 1794002052867,
+        "durationMs": 2753,
+        "executedAt": 1794003853027,
         "errorMessage": null
       }
     ]
@@ -564,10 +564,10 @@ Resposta `201`:
 
 ```json
 {
-  "executionId": "4e87e44d-c930-45d1-98d2-57f7615a3241",
+  "executionId": "bdf46f08-fd98-40f0-994d-efe5376091d6",
   "channel": "FlowPlaygroundChannel",
   "currentNodeId": "p",
-  "chatId": "6aee4cda34b5ceb704a43948"
+  "chatId": "6aee53e9e4ab28904236bedc"
 }
 ```
 
@@ -640,7 +640,7 @@ Resposta `200`:
 {
   "tools": [
     {
-      "id": "6aee4cce34b5ceb704a43946",
+      "id": "6aee53dce4ab28904236beda",
       "name": "e2e_frete",
       "description": "Calcula o frete para um CEP.",
       "jsCode": "console.log('calculando'); return { prazo_dias: params.cep.startsWith('8') ? 2 : 6, valor: 14.9 };",
@@ -656,8 +656,8 @@ Resposta `200`:
       "toolInstallationId": null,
       "locked": false,
       "tool": null,
-      "createdAt": 1794002126554,
-      "updatedAt": 1794002126554
+      "createdAt": 1794003932015,
+      "updatedAt": 1794003932015
     }
   ],
   "meta": {
@@ -676,7 +676,7 @@ Resposta `200`:
 {
   "tools": [
     {
-      "id": "6aee4cce34b5ceb704a43946",
+      "id": "6aee53dce4ab28904236beda",
       "name": "e2e_frete",
       "description": "Calcula o frete para um CEP.",
       "toolInstallationId": null,
@@ -704,7 +704,7 @@ Resposta `201`:
 ```json
 {
   "tool": {
-    "id": "6aee4cce34b5ceb704a43946",
+    "id": "6aee53dce4ab28904236beda",
     "name": "e2e_frete",
     "description": "Calcula o frete para um CEP.",
     "jsCode": "console.log('calculando'); return { prazo_dias: params.cep.startsWith('8') ? 2 : 6, valor: 14.9 };",
@@ -720,8 +720,8 @@ Resposta `201`:
     "toolInstallationId": null,
     "locked": false,
     "tool": null,
-    "createdAt": 1794002126555,
-    "updatedAt": 1794002126555
+    "createdAt": 1794003932016,
+    "updatedAt": 1794003932016
   }
 }
 ```
@@ -739,7 +739,7 @@ Resposta `202`:
 ```json
 {
   "testRun": {
-    "id": "4326bdbb-1e94-46ae-a19d-d839e046c9e5",
+    "id": "9c7757b3-b8dd-4d62-82cc-769741f8ddf2",
     "status": "pending"
   }
 }
@@ -767,8 +767,8 @@ Resposta `200`:
         ]
       }
     ],
-    "durationMs": 20,
-    "id": "4326bdbb-1e94-46ae-a19d-d839e046c9e5"
+    "durationMs": 16,
+    "id": "9c7757b3-b8dd-4d62-82cc-769741f8ddf2"
   }
 }
 ```
@@ -863,13 +863,13 @@ Resposta `200`:
 ```json
 {
   "webhook": {
-    "id": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
-    "uid": "ExjIoubuqji5vLba3PSK3pC6",
+    "id": "f6ac23f1-9519-433f-8cbf-5b7d06a04b35",
+    "uid": "hro1wmiZDScc8cqUd4uHdvDu",
     "name": "E2E Pedido aprovado",
     "slug": "e2e-pedido-aprovado",
     "status": "test",
     "totalRequest": 1,
-    "url": "http://localhost:3110/inbound/webhooks/ExjIoubuqji5vLba3PSK3pC6",
+    "url": "http://localhost:3110/inbound/webhooks/hro1wmiZDScc8cqUd4uHdvDu",
     "receivedPayload": {
       "headers.Host": "127.0.0.1:3110",
       "headers.Accept": "*/*",
@@ -880,23 +880,23 @@ Resposta `200`:
       "headers.Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
       "body.nome": "Roberto",
       "body.pedido": "48213",
-      "body.telefone": "5541999402549"
+      "body.telefone": "5541999401860"
     },
     "signatureEnabled": false,
     "signingSecretHint": null,
     "signingSecretGeneratedAt": null,
     "webhookActions": [
       {
-        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
+        "id": "48c477a9-a7e3-4b98-80e3-21ca5664b3d2",
         "type": "HookAction::ContactHandling",
         "static": true,
         "config": {},
-        "createdAt": 1794002142306,
-        "updatedAt": 1794002142306
+        "createdAt": 1794003950087,
+        "updatedAt": 1794003950087
       }
     ],
-    "createdAt": 1794002142303,
-    "updatedAt": 1794002142360
+    "createdAt": 1794003950085,
+    "updatedAt": 1794003950130
   }
 }
 ```
@@ -912,29 +912,29 @@ Resposta `201`:
 ```json
 {
   "webhook": {
-    "id": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
-    "uid": "ExjIoubuqji5vLba3PSK3pC6",
+    "id": "f6ac23f1-9519-433f-8cbf-5b7d06a04b35",
+    "uid": "hro1wmiZDScc8cqUd4uHdvDu",
     "name": "E2E Pedido aprovado",
     "slug": "e2e-pedido-aprovado",
     "status": "test",
     "totalRequest": 0,
-    "url": "http://localhost:3110/inbound/webhooks/ExjIoubuqji5vLba3PSK3pC6",
+    "url": "http://localhost:3110/inbound/webhooks/hro1wmiZDScc8cqUd4uHdvDu",
     "receivedPayload": {},
     "signatureEnabled": false,
     "signingSecretHint": null,
     "signingSecretGeneratedAt": null,
     "webhookActions": [
       {
-        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
+        "id": "48c477a9-a7e3-4b98-80e3-21ca5664b3d2",
         "type": "HookAction::ContactHandling",
         "static": true,
         "config": {},
-        "createdAt": 1794002142306,
-        "updatedAt": 1794002142306
+        "createdAt": 1794003950087,
+        "updatedAt": 1794003950087
       }
     ],
-    "createdAt": 1794002142303,
-    "updatedAt": 1794002142303
+    "createdAt": 1794003950085,
+    "updatedAt": 1794003950085
   }
 }
 ```
@@ -951,7 +951,7 @@ PATCH /webhooks/:id:
     "status": "active",
     "webhookActions": [
       {
-        "id": "d729cacf-74a5-42ec-9173-f8d0ef2f16fa",
+        "id": "48c477a9-a7e3-4b98-80e3-21ca5664b3d2",
         "config": {
           "contactIdentifier": "{{body.telefone}}",
           "contactName": "{{body.nome}}"
@@ -960,8 +960,8 @@ PATCH /webhooks/:id:
       {
         "type": "HookAction::StartFlow",
         "config": {
-          "connectorId": "6aee4c647740847120df94ec",
-          "flowId": "77dedc4a-7472-45f0-8e43-d034a11ab515",
+          "connectorId": "6aee536f43046d32c8d0737f",
+          "flowId": "a1306362-0e8d-48d2-99ff-d547a016dbea",
           "messageText": "Oi {{body.nome}}, recebemos seu pedido."
         }
       },
@@ -1081,8 +1081,8 @@ Resposta `200`:
     "truncated": false,
     "timeRange": {
       "field": "created_at",
-      "from": 1786226146644,
-      "to": 1794002146644
+      "from": 1786227961842,
+      "to": 1794003961842
     }
   }
 }
@@ -1098,9 +1098,9 @@ Resposta `200`:
 {
   "logs": [
     {
-      "id": "6aee4ce234b5ceb704a4394a",
-      "webhookId": "61077439-e7af-4c03-8fcf-ad42f9330eb4",
-      "webhookUid": "ExjIoubuqji5vLba3PSK3pC6",
+      "id": "6aee53f9e4ab28904236bede",
+      "webhookId": "f6ac23f1-9519-433f-8cbf-5b7d06a04b35",
+      "webhookUid": "hro1wmiZDScc8cqUd4uHdvDu",
       "webhookName": "E2E Pedido aprovado",
       "requestMethod": "POST",
       "requestHeaders": {
@@ -1108,13 +1108,13 @@ Resposta `200`:
         "Accept": "*/*",
         "User-Agent": "Ruby",
         "Content-Type": "application/json",
-        "X-Vekoo-Timestamp": "1794002146",
+        "X-Vekoo-Timestamp": "1794003961",
         "Connection": "close",
         "Host": "127.0.0.1:3110",
         "Content-Length": "62"
       },
       "requestBody": {
-        "telefone": "5541999402549",
+        "telefone": "5541999401860",
         "nome": "Roberto",
         "pedido": "48213"
       },
@@ -1125,7 +1125,7 @@ Resposta `200`:
       "errorMessage": "Assinatura rejeitada (invalidSignature): Assinatura não confere.",
       "processingTimeMs": null,
       "webhookStatus": "active",
-      "createdAt": 1794002146702
+      "createdAt": 1794003961899
     },
     "..."
   ],
@@ -1157,7 +1157,7 @@ Resposta `200`:
     "successCount": 2,
     "errorCount": 2,
     "skippedCount": 0,
-    "avgProcessingTimeMs": 73.22,
+    "avgProcessingTimeMs": 67.57,
     "dailyStats": {
       "2026-11-06": {
         "total": 4,
@@ -1200,80 +1200,80 @@ Sequência real, numa pergunta seguida de IA:
     "kind": "node_entered",
     "nodeId": "p",
     "nodeType": "ask_question",
-    "at": "2026-11-06T21:55:38Z"
+    "at": "2026-11-06T22:25:46Z"
   },
   {
     "kind": "text",
     "body": "Qual é o seu nome?",
     "sender": null,
-    "at": "2026-11-06T21:55:38Z"
+    "at": "2026-11-06T22:25:46Z"
   },
   {
     "kind": "node_completed",
     "nodeId": "p",
     "nodeType": "ask_question",
     "status": "suspended",
-    "durationMs": 8,
-    "at": "2026-11-06T21:55:38Z"
+    "durationMs": 7,
+    "at": "2026-11-06T22:25:46Z"
   },
   {
     "kind": "suspended",
     "status": "waiting_for_message",
     "currentNodeId": "p",
-    "at": "2026-11-06T21:55:38Z"
+    "at": "2026-11-06T22:25:46Z"
   },
   {
     "kind": "node_entered",
     "nodeId": "p",
     "nodeType": "ask_question",
-    "at": "2026-11-06T21:55:39Z"
+    "at": "2026-11-06T22:25:47Z"
   },
   {
     "kind": "node_completed",
     "nodeId": "p",
     "nodeType": "ask_question",
     "status": "success",
-    "durationMs": 13,
-    "at": "2026-11-06T21:55:39Z"
+    "durationMs": 7,
+    "at": "2026-11-06T22:25:47Z"
   },
   {
     "kind": "node_entered",
     "nodeId": "ia",
     "nodeType": "ai_assistant",
-    "at": "2026-11-06T21:55:39Z"
+    "at": "2026-11-06T22:25:47Z"
   },
   {
     "kind": "ai_decision",
     "nodeId": "ia",
     "decision": "stay",
     "label": null,
-    "reason": "O cliente apenas informou o nome; não houve despedida.",
+    "reason": "O cliente apenas informou o nome; não há despedida, então não há saída atendida.",
     "turn": 1,
-    "at": "2026-11-06T21:55:40Z"
+    "at": "2026-11-06T22:25:48Z"
   },
   {
     "kind": "text",
     "body": "Olá, Fernanda! Tudo bem com você?",
     "sender": null,
-    "at": "2026-11-06T21:55:41Z"
+    "at": "2026-11-06T22:25:49Z"
   },
   {
     "kind": "node_completed",
     "nodeId": "ia",
     "nodeType": "ai_assistant",
     "status": "suspended",
-    "durationMs": 1919,
-    "at": "2026-11-06T21:55:41Z"
+    "durationMs": 2140,
+    "at": "2026-11-06T22:25:49Z"
   },
   {
     "kind": "suspended",
     "status": "waiting_for_message",
     "currentNodeId": "ia",
-    "at": "2026-11-06T21:55:41Z"
+    "at": "2026-11-06T22:25:49Z"
   },
   {
     "kind": "stopped",
-    "at": "2026-11-06T21:55:41Z"
+    "at": "2026-11-06T22:25:49Z"
   }
 ]
 ```
