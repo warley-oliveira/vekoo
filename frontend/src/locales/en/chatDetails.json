@@ -23,7 +23,7 @@
       "closed": "Closed",
       "sessionHint": "On Meta channels, 24 hours after the contact's last message you can only write with an approved template, or wait for them to reply.",
       "sessionOpen": "Window closes",
-      "sessionExpired": "24-hour window ended",
+      "sessionExpired": "Window ended",
       "openWhatsapp": "Open in WhatsApp, in another tab",
       "whatsapp": "WhatsApp",
       "copyVisitor": "Copy the visitor code"
@@ -317,7 +317,7 @@
       "saved": "Preference saved",
       "failed": "Couldn't save. Try again.",
       "listGroup": "Conversation list",
-      "listGroupHint": "On this device only.",
+      "listGroupHint": "On this device only, in each channel tab.",
       "showTags": "Show tags",
       "showTagsHint": "Each conversation's tags, on its own row.",
       "showPhone": "Show phone number",

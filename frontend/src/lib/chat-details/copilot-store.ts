@@ -365,6 +365,8 @@ function receive(event: CopilotBroadcast) {
 
     case "error":
       failLive({ code: event.data.code, message: event.data.error })
+      // A recusa antes de enfileirar não traz `credits_updated`: o saldo real trava a caixa.
+      if (event.data.code === "noCredits") void globalMutate("/credits")
       break
 
     case "history_cleared":

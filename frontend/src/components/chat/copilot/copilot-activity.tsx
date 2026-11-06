@@ -29,6 +29,7 @@ import {
 } from "lucide-react"
 
 import type { CopilotActivity } from "@/lib/chat-details/copilot-types"
+import { formatPhone } from "@/lib/format-phone"
 import { cn } from "@/lib/utils"
 
 // O servidor diz o nome; o desenho é daqui. Nome desconhecido não quebra.
@@ -57,8 +58,9 @@ const ICONS: Record<string, LucideIcon> = {
 
 function contactLabel(activity: CopilotActivity): string | null {
   const { userName, phoneNumber } = activity.contact ?? {}
-  if (userName && phoneNumber) return `${userName} (${phoneNumber})`
-  return userName || phoneNumber || null
+  const phone = phoneNumber ? formatPhone(phoneNumber) : null
+  if (userName && phone) return `${userName} (${phone})`
+  return userName || phone || null
 }
 
 function toJson(value: unknown): string {

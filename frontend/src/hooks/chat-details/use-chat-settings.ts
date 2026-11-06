@@ -41,9 +41,5 @@ export function useChatSettings() {
     [t, updateSession]
   )
 
-  return {
-    settings: { ...saved, ...pending },
-    busy: Object.keys(pending).length > 0,
-    update,
-  }
+  return { settings: { ...saved, ...pending }, update }
 }

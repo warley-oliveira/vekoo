@@ -25,7 +25,13 @@ export const ListActions = memo(function ListActions() {
   const [preferencesOpen, setPreferencesOpen] = useState(false)
   const [preferencesEverOpen, setPreferencesEverOpen] = useState(false)
 
-  useEffect(() => disconnectCopilot, [])
+  useEffect(
+    () => () => {
+      disconnectCopilot()
+      useChatSelection.getState().exit()
+    },
+    []
+  )
 
   return (
     <>

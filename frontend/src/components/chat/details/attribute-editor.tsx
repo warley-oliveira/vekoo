@@ -1,4 +1,4 @@
-import { useMemo, useRef, type KeyboardEvent } from "react"
+import { useMemo, type KeyboardEvent } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -197,7 +197,6 @@ function ListEditor(props: EditorProps) {
   const save = useSave(props)
   const clear = useClear(props)
   const onKeyDown = useEscape(props.onDone)
-  const created = useRef(new Set<string>())
 
   const form = useForm<{ value: string | null }>({ defaultValues: { value: props.value } })
   const fieldId = props.field.id
@@ -234,7 +233,6 @@ function ListEditor(props: EditorProps) {
                   ? async (option) => {
                       try {
                         await addFieldOption(fieldId, option)
-                        created.current.add(option)
                       } catch (error) {
                         toast.error(
                           error instanceof ApiError && error.serverMessage

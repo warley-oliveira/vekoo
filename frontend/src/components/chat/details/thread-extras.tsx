@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useCallback } from "react"
+import { lazy, memo, Suspense, useCallback, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { FileText, Sparkles } from "lucide-react"
 
@@ -22,6 +22,9 @@ export const TemplateDialogHost = memo(function TemplateDialogHost({ chatId }: {
   const openFor = useTemplateSender((state) => state.chatId)
   const chat = useChat(chatId)
   const close = useCallback(() => closeTemplateSender(), [])
+
+  // Sair da conversa fecha: voltar a ela não pode reabrir um diálogo que ninguém pediu.
+  useEffect(() => closeTemplateSender, [chatId])
 
   if (openFor !== chatId || !chat) return null
 

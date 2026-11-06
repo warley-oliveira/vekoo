@@ -17,10 +17,12 @@ import { Callout, ListSkeleton, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useChatFields } from "@/hooks/chat-details/use-chat-fields"
 import { useCan } from "@/hooks/use-can"
+import { useCredits } from "@/hooks/use-credits"
 import { useAuth } from "@/lib/auth"
 import { chatDisplayName } from "@/lib/chat/chat-store"
 import {
   connectCopilot,
+  COPILOT_MESSAGE_COST,
   dismissCopilotError,
   retryCopilot,
   sendCopilotMessage,
@@ -48,6 +50,8 @@ function Welcome({ chatId }: { chatId: string | null }) {
   const canCalendar = useCan("calendar")
   const chat = useChatFields(chatId ?? "", NAME_FIELDS)
   const connected = useCopilotStore((state) => state.connected)
+  const { credits } = useCredits()
+  const canAsk = connected && (credits === undefined || credits.left >= COPILOT_MESSAGE_COST)
 
   const name = chat
     ? chatDisplayName(chat, {
@@ -87,7 +91,7 @@ function Welcome({ chatId }: { chatId: string | null }) {
             <Button
               type="button"
               variant="outline"
-              disabled={!connected}
+              disabled={!canAsk}
               className="h-auto min-h-8 w-full justify-start py-1.5 text-left font-normal whitespace-normal pointer-coarse:min-h-10"
               onClick={() => sendCopilotMessage(text)}
             >

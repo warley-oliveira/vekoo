@@ -108,7 +108,7 @@ export const ChatLayout = memo(function ChatLayout({
           <motion.aside
             key="details"
             {...panelMotion}
-            className="min-h-0 w-full shrink-0 border-l bg-background max-md:absolute max-md:inset-0 max-md:z-20 md:w-[22rem] @max-[72rem]/chat:absolute @max-[72rem]/chat:inset-y-0 @max-[72rem]/chat:right-0 @max-[72rem]/chat:z-20 @max-[72rem]/chat:shadow-lg"
+            className="min-h-0 w-full shrink-0 border-l bg-background max-md:absolute max-md:inset-0 max-md:z-20 md:w-[22rem] @max-[62rem]/chat:absolute @max-[62rem]/chat:inset-y-0 @max-[62rem]/chat:right-0 @max-[62rem]/chat:z-20 @max-[62rem]/chat:shadow-lg"
           >
             <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
           </motion.aside>

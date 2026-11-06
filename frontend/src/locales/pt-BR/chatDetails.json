@@ -23,7 +23,7 @@
       "closed": "Fechada",
       "sessionHint": "Nos canais da Meta, passadas 24 horas da última mensagem do contato, só dá para escrever com modelo aprovado, ou esperar ele responder.",
       "sessionOpen": "Janela fecha",
-      "sessionExpired": "Janela de 24 horas encerrada",
+      "sessionExpired": "Janela encerrada",
       "openWhatsapp": "Abrir no WhatsApp, em outra aba",
       "whatsapp": "WhatsApp",
       "copyVisitor": "Copiar o código do visitante"
@@ -317,7 +317,7 @@
       "saved": "Preferência salva",
       "failed": "Não foi possível salvar. Tente de novo.",
       "listGroup": "Lista de conversas",
-      "listGroupHint": "Só neste aparelho.",
+      "listGroupHint": "Só neste aparelho, nas abas de cada canal.",
       "showTags": "Mostrar etiquetas",
       "showTagsHint": "As etiquetas de cada conversa, na própria linha.",
       "showPhone": "Mostrar telefone",

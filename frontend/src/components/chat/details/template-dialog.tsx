@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useState } from "react"
 import { useForm, useWatch, type UseFormReturn } from "react-hook-form"
 import type { TFunction } from "i18next"
 import { Link } from "react-router"
@@ -357,12 +357,6 @@ export default function TemplateDialog({ chat, onClose }: { chat: Chat; onClose:
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [template, setTemplate] = useState<WhatsappTemplate | null>(null)
-
-  // A conversa saiu da tela: o diálogo não pode continuar aberto com outro contato atrás.
-  const opened = useRef(chat.id)
-  useEffect(() => {
-    if (opened.current !== chat.id) onClose()
-  }, [chat.id, onClose])
 
   return (
     <ResponsiveDialog

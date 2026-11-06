@@ -1893,7 +1893,7 @@ Resposta `200`:
 
 ### Ações em lote
 
-`POST /contacts/bulk-add-tags`, `/bulk-remove-tags`, `/bulk-assign-user`, `/bulk-update-status`, `/bulk-toggle-automation`.
+`POST /contacts/bulk-add-tags`, `/bulk-remove-tags`, `/bulk-assign-user`, `/bulk-update-status`, `/bulk-toggle-automation`. Exigem `chat` **ou** `contacts`: a lista do chat também seleciona, e cada ação é o que quem tem `chat` já faz numa conversa por vez.
 
 A seleção é uma de duas: `chatIds` (os marcados, até 5000), ou `selectAll: true` com `filters` (um objeto com os mesmos parâmetros de `GET /contacts`) e `excludedIds` (os desmarcados). Sempre dentro do que a pessoa pode ver: id de outra organização, ou de conversa que ela não vê, simplesmente não conta.
 

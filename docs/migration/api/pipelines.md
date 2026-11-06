@@ -665,6 +665,30 @@ O que precisa ser feito antes de sair dela. **Trava só para a frente**: voltar 
 - `descriptionJson`, `watchers`, `attachments` e `activities` só vêm no detalhe (`GET .../cards/:id` e as respostas de escrita).
 - Tetos: 50 tags, 500 caracteres de título, 64 KB em `customFieldValues`, 256 KB em `descriptionJson`.
 
+### `GET /pipelines/cards?chatId=`
+
+Os cards de uma conversa, em todos os quadros: é o painel do contato, no chat. Sem esta rota, a tela faria uma requisição por quadro a cada conversa aberta. Conversa que a pessoa não enxerga (`Chat.visible_to`) responde `404`. Ficam de fora o card arquivado, o de quadro arquivado e, em quadro restrito, o que não é da pessoa. Até 50, do mais recente para o mais antigo. Mesmo formato de card, com o nome da etapa e do quadro, porque aqui não há um quadro aberto.
+
+```json
+{
+  "cards": [
+    {
+      "id": "1e51dadb-…",
+      "title": "Carlos Eduardo Santos",
+      "priority": "high",
+      "dealValue": 3200.0,
+      "wonAt": null,
+      "lostAt": null,
+      "chatId": "6aee0e5817c01071cdba2bda",
+      "stageId": "95af78…",
+      "stage": { "id": "95af78…", "name": "Qualificação" },
+      "board": { "id": "48014125-…", "name": "Vendas no atacado", "color": "#7C3AED" },
+      "…": "…"
+    }
+  ]
+}
+```
+
 ### `GET /pipelines/boards/:boardId/cards`
 
 Paginado. A leitura principal do quadro é `GET /pipelines/boards/:id`: esta é para listas e buscas.

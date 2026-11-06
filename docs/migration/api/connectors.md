@@ -1489,6 +1489,8 @@ Reação recusada, para reverter a atualização otimista. É o único evento co
 | `send_reaction` | `{ chatId, messageId, emoji }` | Emoji vazio remove. Só Evolution (`reactionsSupported`). Sucesso volta como mensagem com `reactions`. Falha, como `message_reaction_failed`. |
 | `send_template_message` | `{ chatId, templateId, components }` | `templateId` é o `templateId` da Meta. Pausa a automação e envia o modelo. |
 
+`components` vai no formato da Meta. Variável com nome leva `parameter_name`: `{ "type": "body", "parameters": [{ "type": "text", "parameter_name": "nome", "text": "Ana" }] }`. Cabeçalho de texto com variável é `{ "type": "header", "parameters": [...] }`, botão de link dinâmico é `{ "type": "button", "sub_type": "url", "index": "0", "parameters": [...] }`, e cabeçalho de mídia o servidor preenche sozinho.
+
 Falha no envio de texto ou de modelo volta na própria mensagem, com `status: "failed"` e o motivo em `statusMessage`.
 
 Uma mensagem longa pode sair em partes: a original (`hasSpan: true`) não é transmitida, e cada parte chega com `isSpan: true`.

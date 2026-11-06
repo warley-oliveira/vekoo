@@ -32,7 +32,7 @@ export default function DetailsPanel({
       role="region"
       aria-label={t("chatDetails.panelLabel")}
       // Por cima da conversa, o painel ocupa também a folga que a tela reserva para a barra e o teclado.
-      className="flex h-full min-h-0 flex-col bg-background @max-[72rem]/chat:pb-[max(var(--app-bottom-nav-total,0px),var(--kb-inset,0px))]"
+      className="flex h-full min-h-0 flex-col bg-background @max-[62rem]/chat:pb-[max(var(--app-bottom-nav-total,0px),var(--kb-inset,0px))]"
     >
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3">
         {chatId ? (

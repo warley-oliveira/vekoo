@@ -95,9 +95,14 @@ export const AssignmentRows = memo(function AssignmentRows({ chatId }: { chatId:
   const assigned = chat.assignedAccountId ? peopleById.get(chat.assignedAccountId) : undefined
   // Quem foi atribuído e depois saiu da lista (virou `setupOnly`, foi revogado) continua na conversa.
   const assignedOption =
-    chat.assignedAccountId && !assigned
+    chat.assignedAccountId && !assigned && people.length > 0
       ? { value: chat.assignedAccountId, label: t("chatDetails.assignment.unknownPerson") }
       : undefined
+  // Enquanto a lista não chega, "ninguém" seria uma afirmação falsa sobre quem cuida da conversa.
+  const personPlaceholder = chat.assignedAccountId
+    ? t("chatDetails.loading")
+    : t("chatDetails.assignment.noPerson")
+  const teamPlaceholder = chat.teamId ? t("chatDetails.loading") : t("chatDetails.assignment.noTeam")
 
   return (
     <div className="border-t border-border/70 px-4 py-1.5">
@@ -110,7 +115,7 @@ export const AssignmentRows = memo(function AssignmentRows({ chatId }: { chatId:
             selectedOption={assignedOption}
             value={chat.assignedAccountId}
             onChange={(value) => save({ assignedAccountId: value })}
-            placeholder={t("chatDetails.assignment.noPerson")}
+            placeholder={personPlaceholder}
             emptyLabel={t("chatDetails.assignment.noMatch")}
             clearable
             className={QUIET_FIELD}
@@ -135,7 +140,7 @@ export const AssignmentRows = memo(function AssignmentRows({ chatId }: { chatId:
           options={teamOptions}
           value={chat.teamId}
           onChange={(value) => save({ teamId: value })}
-          placeholder={t("chatDetails.assignment.noTeam")}
+          placeholder={teamPlaceholder}
           emptyLabel={t("chatDetails.assignment.noMatch")}
           clearable
           className={QUIET_FIELD}

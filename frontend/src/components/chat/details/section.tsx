@@ -43,32 +43,34 @@ export function DetailsSection({
   return (
     <section className="border-t border-border/70 px-4 py-2.5">
       <div className="flex min-h-8 items-center gap-1 pointer-coarse:min-h-10">
-        <button
-          type="button"
-          aria-expanded={!collapsed}
-          aria-controls={bodyId}
-          onClick={() => toggle(id)}
-          className="group/section flex min-w-0 flex-1 items-center gap-1 self-stretch rounded-md text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          <ChevronRight
-            aria-hidden
-            className={cn(
-              "-ml-0.5 size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 group-hover/section:text-foreground",
-              !collapsed && "rotate-90"
-            )}
-          />
-          <span className="truncate text-[0.8125rem] font-medium">{title}</span>
-          {count ? (
-            <span className="text-xs text-muted-foreground tabular-nums">
-              {formatNumber(count, language)}
-            </span>
-          ) : null}
-          {summary ? (
-            <span className="ml-auto min-w-0 truncate pl-2 text-xs text-muted-foreground">
-              {summary}
-            </span>
-          ) : null}
-        </button>
+        <h3 className="flex min-w-0 flex-1 self-stretch">
+          <button
+            type="button"
+            aria-expanded={!collapsed}
+            aria-controls={bodyId}
+            onClick={() => toggle(id)}
+            className="group/section flex min-w-0 flex-1 items-center gap-1 rounded-md text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <ChevronRight
+              aria-hidden
+              className={cn(
+                "-ml-0.5 size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 group-hover/section:text-foreground",
+                !collapsed && "rotate-90"
+              )}
+            />
+            <span className="truncate text-[0.8125rem] font-medium">{title}</span>
+            {count ? (
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {formatNumber(count, language)}
+              </span>
+            ) : null}
+            {summary ? (
+              <span className="ml-auto min-w-0 truncate pl-2 text-xs font-normal text-muted-foreground">
+                {summary}
+              </span>
+            ) : null}
+          </button>
+        </h3>
         {action ? <span className="flex shrink-0 items-center">{action}</span> : null}
       </div>
 
