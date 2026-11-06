@@ -17,7 +17,12 @@ module Chats
     def initialize(chat, template, components, account, sender_name, attributes)
       @chat = chat
       @template = template
-      @components = Array(components).map { |component| component.respond_to?(:to_unsafe_h) ? component.to_unsafe_h : component }
+      # Quem chama de Ruby manda símbolo; o que vem do canal já é string. Com símbolo, o texto
+      # guardado no histórico ficaria com `{{1}}` no lugar dos parâmetros.
+      @components = Array(components).map do |component|
+        component = component.to_unsafe_h if component.respond_to?(:to_unsafe_h)
+        component.respond_to?(:deep_stringify_keys) ? component.deep_stringify_keys : component
+      end
       @account = account
       @sender_name = sender_name
       @attributes = attributes

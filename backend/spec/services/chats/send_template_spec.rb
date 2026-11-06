@@ -83,6 +83,16 @@ RSpec.describe Chats::SendTemplate do
       expect(message.content).to eq("Olá Maria")
     end
 
+    # É como os outros domínios chamam, de Ruby.
+    it "aceita parâmetros com chave em símbolo, e o histórico guarda o texto preenchido" do
+      params = [ { type: "body", parameters: [ { type: "text", text: "Maria" } ] } ]
+
+      message = described_class.call(chat: chat, template: template, components: params, account: account)
+
+      expect(message.content).to eq("Olá Maria")
+      expect(a_request(:post, graph_url).with { |request| request.body.include?("Maria") }).to have_been_made
+    end
+
     it "sem parâmetros, vale o texto do modelo" do
       expect(described_class.call(chat: chat, template: template, account: account).content).to eq("Olá {{1}}")
     end
