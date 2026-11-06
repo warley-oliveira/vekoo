@@ -38,9 +38,17 @@ class Connector::WhatsappWeb < Connector::Base
 
   before_update do
     if status_cd_changed? && active? && !zapi_provider?
-      fetch_current_information
+      refresh_profile
       migrate_chats
     end
+  end
+
+  # O perfil é um complemento. Se o provedor falhar agora, o canal que já conectou precisa ficar
+  # como conectado: sem isto, a tela do QR code espera para sempre.
+  def refresh_profile
+    fetch_current_information(ignore_migration: true)
+  rescue StandardError => e
+    Rails.logger.warn("[Connector::WhatsappWeb] Perfil não atualizado (#{id}): #{e.class}: #{e.message}")
   end
 
   # ============================================================================

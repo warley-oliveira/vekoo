@@ -160,10 +160,10 @@ module VekooConnectorSeeds
       widget: Connector::WebWidget.where(scope).take || Connector::WebWidget.create!(
         **scope, status: :active, bot_display_name: "Site da Doma Store", welcome_message: "Olá! Como podemos ajudar?"
       ),
-      whatsapp_web: Connector::WhatsappWeb.where(**scope, instance_name: "IWA-demonstracao").take || Connector::WhatsappWeb.create!(
-        **scope, status: :closed, provider_api: "evolution_api", instance_name: "IWA-demonstracao", base_url: "http://evolution.invalid",
+      whatsapp_web: Connector::WhatsappWeb.where(**scope, number_id: "5541930001234").take || Connector::WhatsappWeb.new(
+        **scope, status: :closed, provider_api: "evolution_api", base_url: "http://evolution.invalid",
         number_id: "5541930001234", profile_name: "Doma Store"
-      ),
+      ).tap { |connector| connector.update!(instance_name: "#{Connector::WhatsappWeb::PREFIX_INSTANCE}#{connector.id}") },
       whatsapp_cloud: Connector::WhatsappCloud.where(**scope, phone_number_id: 100_000_000_001).take || Connector::WhatsappCloud.create!(
         **scope, status: :inactive, phone_number_id: 100_000_000_001, waba_id: 200_000_000_001, business_id: 300_000_000_001,
         verified_name: "Doma Store", display_phone_number: "+55 41 3000-1234", quality_rating: "GREEN", fb_status: "CONNECTED"

@@ -335,6 +335,16 @@ RSpec.describe Inbound::EvolutionEvents do
 
         expect(service).to have_received(:connector_reconnected).with(organization, connector)
       end
+
+      # Visto em execução real: o job levantava, gastava as tentativas e o canal, já conectado,
+      # ficava como aguardando o QR code.
+      it "conecta mesmo com o provedor sem responder o perfil" do
+        stub_request(:get, "http://evolution.test/instance/fetchInstances?instanceName=#{connector.instance_name}").to_timeout
+
+        expect { handle("connection.update", data) }.to have_broadcasted_to(connector.stream_name).with(status: "success_scan", base64: "")
+
+        expect(connector.reload.status).to eq(:active)
+      end
     end
 
     context "200 com o conector recusado" do

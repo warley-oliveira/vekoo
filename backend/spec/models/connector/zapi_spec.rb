@@ -145,6 +145,14 @@ RSpec.describe Connector::Zapi do
 
       expect(a_request(:get, "#{base}/device")).not_to have_been_made
     end
+
+    it "fica ativo mesmo se a Z-API não devolver o perfil agora" do
+      stub_request(:get, "#{base}/device").to_timeout
+
+      connector.update!(status: :active)
+
+      expect(connector.reload.status).to eq(:active)
+    end
   end
 
   describe "#send_text_message" do

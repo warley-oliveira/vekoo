@@ -24,7 +24,15 @@ class Connector::Zapi < Connector::Base
   # ============================================================================
 
   before_update do
-    fetch_current_information if status_cd_changed? && active?
+    refresh_profile if status_cd_changed? && active?
+  end
+
+  # O perfil é um complemento. Se o provedor falhar agora, o canal que já conectou precisa ficar
+  # como conectado: sem isto, a tela do QR code espera para sempre.
+  def refresh_profile
+    fetch_current_information
+  rescue StandardError => e
+    Rails.logger.warn("[Connector::Zapi] Perfil não atualizado (#{id}): #{e.class}: #{e.message}")
   end
 
   def instance_name

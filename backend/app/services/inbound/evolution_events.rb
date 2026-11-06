@@ -84,7 +84,7 @@ module Inbound
         end
 
         connector.status = :active
-        connector.fetch_current_information(ignore_migration: true)
+        connector.refresh_profile
         connector.save
         connector.broadcast_connection(status: :success_scan, base64: "")
         Connectors::Alerts.reconnected(connector)
