@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useState } from "react"
+import { lazy, memo, Suspense, useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { CheckSquare, Copy, MoreHorizontal, Plus, Reply, SmilePlus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -27,10 +27,7 @@ const QUICK_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"]
 
 const actionButton = "size-7 text-muted-foreground pointer-coarse:size-9"
 
-/**
- * Reagir. O popover só existe depois do primeiro clique: cada bolha na tela teria um, e rolar uma
- * conversa longa montaria dezenas a cada segundo sem ninguém abrir nenhum.
- */
+/** Reagir: as seis rápidas e, no "+", o seletor completo. */
 function ReactionPicker({
   current,
   onSelect,
@@ -40,27 +37,7 @@ function ReactionPicker({
 }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
-  const [armed, setArmed] = useState(false)
   const [showAll, setShowAll] = useState(false)
-
-  const trigger = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      className={actionButton}
-      aria-label={t("chat.message.react")}
-      title={t("chat.message.react")}
-      onClick={armed ? undefined : () => {
-        setArmed(true)
-        setOpen(true)
-      }}
-    >
-      <SmilePlus className="size-4" />
-    </Button>
-  )
-
-  if (!armed) return trigger
 
   const pick = (emoji: string) => {
     // Reagir de novo com o mesmo emoji tira a reação.
@@ -76,7 +53,18 @@ function ReactionPicker({
         setOpen(next)
         if (!next) setShowAll(false)
       }}
-      trigger={trigger}
+      trigger={
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className={actionButton}
+          aria-label={t("chat.message.react")}
+          title={t("chat.message.react")}
+        >
+          <SmilePlus className="size-4" />
+        </Button>
+      }
       title={t("chat.message.react")}
       className="w-auto gap-1 p-1"
     >
@@ -125,29 +113,24 @@ function MoreMenu({
 }) {
   const { t } = useTranslation()
   const { requestDelete } = useThreadContext()
-  const [armed, setArmed] = useState(false)
-
-  const trigger = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      className={actionButton}
-      aria-label={t("chat.message.more")}
-      title={t("chat.message.more")}
-      onClick={armed ? undefined : () => setArmed(true)}
-    >
-      <MoreHorizontal className="size-4" />
-    </Button>
-  )
-
-  if (!armed) return trigger
-
   const text = meaningfulContent(message.caption ?? message.content)
 
   return (
-    <DropdownMenu defaultOpen>
-      <DropdownMenuTrigger render={trigger} />
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className={actionButton}
+            aria-label={t("chat.message.more")}
+            title={t("chat.message.more")}
+          />
+        }
+      >
+        <MoreHorizontal className="size-4" />
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-auto min-w-44">
         <DropdownMenuItem onClick={onReply}>
           <Reply />
@@ -182,8 +165,29 @@ function MoreMenu({
 
 /**
  * As ações de uma mensagem. Aparecem ao passar o mouse ou ao focar; no toque, ao segurar a bolha,
- * que é quando `visible` vem ligado.
+ * que é quando `visible` vem ligado. Só são montadas quando a linha é usada (`useRowEngaged`): cada
+ * bolha na tela teria um menu e um popover, e rolar uma conversa longa montaria dezenas por segundo
+ * sem ninguém abrir nenhum.
  */
+export function useRowEngaged() {
+  const [engaged, setEngaged] = useState(false)
+  const engage = useCallback(() => setEngaged(true), [])
+  return { engaged, engage }
+}
+
+/** Sem isto, quem navega por teclado não alcançaria as ações, que ainda nem existem. */
+export function ActionsSentinel({ onFocus }: { onFocus: () => void }) {
+  const { t } = useTranslation()
+  return (
+    <button
+      type="button"
+      aria-label={t("chat.message.more")}
+      onFocus={onFocus}
+      className="sr-only"
+    />
+  )
+}
+
 export const MessageActions = memo(function MessageActions({
   message,
   own,

@@ -76,36 +76,23 @@ function slashAtCaret(value: string, caret: number): SlashState | null {
   return { query: match[2], start: before.length - match[2].length - 1 }
 }
 
-function EmojiButton({ disabled, onPick }: { disabled: boolean; onPick: (emoji: string) => void }) {
+function EmojiButton({ onPick }: { onPick: (emoji: string) => void }) {
   const { t } = useTranslation()
-  const [open, setOpen] = useState(false)
-  const [armed, setArmed] = useState(false)
-
-  const trigger = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      disabled={disabled}
-      className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
-      aria-label={t("chat.composer.emoji")}
-      title={t("chat.composer.emoji")}
-      onClick={armed ? undefined : () => {
-        setArmed(true)
-        setOpen(true)
-      }}
-    >
-      <Smile />
-    </Button>
-  )
-
-  if (!armed) return trigger
 
   return (
     <ResponsivePopover
-      open={open}
-      onOpenChange={setOpen}
-      trigger={trigger}
+      trigger={
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
+          aria-label={t("chat.composer.emoji")}
+          title={t("chat.composer.emoji")}
+        >
+          <Smile />
+        </Button>
+      }
       title={t("chat.composer.emoji")}
       className="w-80 p-0"
       sheetClassName="px-0"
@@ -592,9 +579,9 @@ function ComposerBox({
             <motion.div
               key="text"
               {...preset.fade}
-              className="flex items-end gap-0.5 rounded-2xl border bg-background px-1.5 py-1 transition-shadow focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30"
+              className="flex items-end gap-0.5 rounded-2xl border bg-background px-1.5 py-1 transition-colors focus-within:border-ring/70"
             >
-              <EmojiButton disabled={false} onPick={insertText} />
+              <EmojiButton onPick={insertText} />
               <Button
                 type="button"
                 variant="ghost"

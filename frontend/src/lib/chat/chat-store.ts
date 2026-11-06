@@ -48,24 +48,36 @@ export function useChat(id: string | null | undefined): Chat | undefined {
   return useChatStore((state) => (id ? state.byId[id] : undefined))
 }
 
+const LAST_MESSAGE_FIELDS = [
+  "lastMessageAt",
+  "lastMessageFrom",
+  "lastMessageType",
+  "lastMessageBy",
+  "lastMessageContent",
+] as const
+
 /**
- * Funde o que veio sobre o que já se sabe. Resposta atrasada não desfaz evento mais novo:
- * `updatedAt` manda. Sem mudança nenhuma, a referência fica, e ninguém se desenha.
+ * Funde o que veio sobre o que já se sabe. A última mensagem só anda para a frente, como no
+ * servidor: um evento atrasado de outro processo não devolve a linha para trás. Sem mudança
+ * nenhuma, a referência fica, e ninguém se desenha.
  */
 function merge(current: Chat | undefined, incoming: Partial<Chat> & { id: string }): Chat {
   if (!current) return incoming as Chat
-  if (
-    !current.partial &&
-    incoming.updatedAt &&
-    current.updatedAt &&
-    incoming.updatedAt < current.updatedAt
-  ) {
-    return current
-  }
 
   const next = { ...current, ...incoming } as Chat
   // Registro inteiro chegou (só ele traz `updatedAt`): deixa de ser a versão provisória.
   if (next.partial && incoming.updatedAt) delete next.partial
+
+  if (
+    !current.partial &&
+    incoming.lastMessageAt != null &&
+    current.lastMessageAt != null &&
+    incoming.lastMessageAt < current.lastMessageAt
+  ) {
+    for (const field of LAST_MESSAGE_FIELDS) {
+      ;(next as Record<string, unknown>)[field] = current[field]
+    }
+  }
 
   const keys = Object.keys(next) as (keyof Chat)[]
   const changed =
@@ -73,6 +85,18 @@ function merge(current: Chat | undefined, incoming: Partial<Chat> & { id: string
     keys.some((key) => next[key] !== current[key] && !sameJson(next[key], current[key]))
 
   return changed ? next : current
+}
+
+/**
+ * Uma página da lista pode ter saído do servidor antes de um evento que já chegou. `updatedAt`
+ * não serve para decidir o evento, porque o servidor grava a última mensagem sem mexer nele; serve
+ * para decidir a página, que é uma foto.
+ */
+function isOlderSnapshot(current: Chat | undefined, incoming: Chat): boolean {
+  if (!current || current.partial) return false
+  return Boolean(
+    incoming.updatedAt && current.updatedAt && incoming.updatedAt < current.updatedAt
+  )
 }
 
 function sameJson(a: unknown, b: unknown): boolean {
@@ -87,6 +111,7 @@ export function storeChats(chats: Chat[]): void {
   useChatStore.setState((state) => {
     let byId = state.byId
     for (const chat of chats) {
+      if (isOlderSnapshot(byId[chat.id], chat)) continue
       const next = merge(byId[chat.id], chat)
       if (next === byId[chat.id]) continue
       if (byId === state.byId) byId = { ...state.byId }

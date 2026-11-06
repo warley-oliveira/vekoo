@@ -1,4 +1,13 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react"
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type KeyboardEvent,
+} from "react"
 import { useNavigate, useSearchParams } from "react-router"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -120,6 +129,15 @@ const Conversation = memo(function Conversation({
   // Quem envia quer ver o que enviou, mesmo tendo rolado para cima.
   const onSent = useCallback(() => list.current?.scrollToBottom(), [])
 
+  // Quem começa a digitar com o foco no histórico quer escrever: a tecla vai para a caixa de texto.
+  const onKeyDown = (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement
+    if (mode !== "compose" || event.metaKey || event.ctrlKey || event.altKey) return
+    if (event.key.length !== 1 || target.closest("input, textarea, [contenteditable='true']")) return
+    if (target.closest("button, a, [role='slider'], [role='menu'], [role='dialog']")) return
+    composer.current?.focus()
+  }
+
   const onDragOver = (event: DragEvent) => {
     if (mode !== "compose" || !event.dataTransfer.types.includes("Files")) return
     event.preventDefault()
@@ -136,6 +154,7 @@ const Conversation = memo(function Conversation({
     <ThreadContext.Provider value={context}>
       <div
         className="relative flex min-h-0 flex-1 flex-col"
+        onKeyDown={onKeyDown}
         onDragOver={onDragOver}
         onDragLeave={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false)

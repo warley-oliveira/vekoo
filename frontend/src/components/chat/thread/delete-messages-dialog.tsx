@@ -72,7 +72,9 @@ export function DeleteMessagesDialog({
       }}
       size="sm"
       title={t("chat.delete.title", { count })}
-      description={canEveryone ? t("chat.delete.hintEveryone") : t("chat.delete.hintMe")}
+      description={
+        canEveryone ? t("chat.delete.hintEveryone", { count }) : t("chat.delete.hintMe", { count })
+      }
       footer={
         <div className="flex w-full flex-wrap justify-end gap-2">
           <Button type="button" variant="ghost" disabled={Boolean(pending)} onClick={onClose}>

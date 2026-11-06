@@ -255,8 +255,10 @@
     "delete": {
       "title_one": "Excluir esta mensagem?",
       "title_other": "Excluir estas {{count}} mensagens?",
-      "hintEveryone": "Para todos, ela também some do WhatsApp do contato. Só vale para o que foi enviado há menos de 60 horas.",
-      "hintMe": "Elas saem só desta conversa. Quem recebeu continua vendo.",
+      "hintEveryone_one": "Para todos, ela também some do WhatsApp do contato. Só vale para o que foi enviado há menos de 60 horas.",
+      "hintEveryone_other": "Para todos, elas também somem do WhatsApp do contato. Só vale para o que foi enviado há menos de 60 horas.",
+      "hintMe_one": "Ela sai só desta conversa. Quem recebeu continua vendo.",
+      "hintMe_other": "Elas saem só desta conversa. Quem recebeu continua vendo.",
       "forMe": "Excluir para mim",
       "forEveryone": "Excluir para todos",
       "cancel": "Cancelar",

@@ -104,7 +104,7 @@ function ViewerContent({
   return (
     <DialogPrimitive.Popup
       aria-label={t("chat.media.viewer")}
-      className="fixed inset-0 z-50 flex flex-col bg-foreground/95 pt-safe pb-safe outline-none"
+      className="fixed inset-0 z-50 flex flex-col bg-foreground pt-safe pb-safe outline-none"
     >
       <DialogPrimitive.Title className="sr-only">{t("chat.media.viewer")}</DialogPrimitive.Title>
 

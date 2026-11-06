@@ -16,7 +16,7 @@ import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
 import { FileCard } from "../media/file-card"
 import { MediaGrid, MessageMedia, StickerImage } from "../media/message-media"
-import { MessageActions } from "./message-actions"
+import { ActionsSentinel, MessageActions, useRowEngaged } from "./message-actions"
 import {
   DaySeparator,
   DeletedText,
@@ -53,6 +53,7 @@ function FreshEntry({
   className?: string
   children: React.ReactNode
   "data-message-id"?: string
+  onPointerEnter?: () => void
 }) {
   const fresh = useIsFresh(createdAt)
   const preset = useMotionPreset()
@@ -209,6 +210,8 @@ const MessageBubble = memo(function MessageBubble({
 
   const { selecting, selected, onClickCapture } = useRowSelection(message.id)
   const touch = useTouchActions(message.id)
+  const { engaged, engage } = useRowEngaged()
+  const showActions = engaged || touch.active
   const flash = useThreadUi((state) => state.flashId === message.id)
 
   const kind = messageKind(message)
@@ -226,20 +229,21 @@ const MessageBubble = memo(function MessageBubble({
       data-message-id={message.id}
       className={cn(
         "group/message flex items-end gap-1 px-3 md:px-5",
-        own ? "justify-end" : "justify-start",
         startsGroup ? "pt-3" : "pt-0.5",
         hasReactions && "pb-2.5",
         selecting && "cursor-pointer",
         selected && "bg-accent/60"
       )}
     >
+      {selecting ? <SelectionCheckbox id={message.id} /> : null}
       <div
         className={cn("flex min-w-0 flex-1 items-end gap-1", own ? "justify-end" : "justify-start")}
         onClickCapture={onClickCapture}
+        onPointerEnter={engage}
         {...(selecting ? {} : touch.handlers)}
       >
-        {selecting ? <SelectionCheckbox id={message.id} /> : null}
-        {own ? <MessageActions message={message} own visible={touch.active} /> : null}
+        {!showActions && chatId && !selecting ? <ActionsSentinel onFocus={engage} /> : null}
+        {own && showActions ? <MessageActions message={message} own visible={touch.active} /> : null}
 
         <div
           className={cn(
@@ -328,7 +332,9 @@ const MessageBubble = memo(function MessageBubble({
           ) : null}
         </div>
 
-        {!own ? <MessageActions message={message} own={false} visible={touch.active} /> : null}
+        {!own && showActions ? (
+          <MessageActions message={message} own={false} visible={touch.active} />
+        ) : null}
       </div>
     </FreshEntry>
   )
@@ -344,6 +350,7 @@ const MediaGroupRow = memo(function MediaGroupRow({
   const last = row.messages[row.messages.length - 1]
   const own = first.role === "assistant"
   const selecting = useMessageSelection((state) => state.active)
+  const { engaged, engage } = useRowEngaged()
 
   return (
     <FreshEntry
@@ -354,8 +361,10 @@ const MediaGroupRow = memo(function MediaGroupRow({
         own ? "justify-end" : "justify-start",
         row.startsGroup ? "pt-3" : "pt-0.5"
       )}
+      onPointerEnter={engage}
     >
-      {own ? <MessageActions message={last} own visible={false} /> : null}
+      {!engaged && !selecting ? <ActionsSentinel onFocus={engage} /> : null}
+      {own && engaged ? <MessageActions message={last} own visible={false} /> : null}
       <div
         className={cn(
           "flex w-[min(20rem,82%)] flex-col",
@@ -375,7 +384,7 @@ const MediaGroupRow = memo(function MediaGroupRow({
           </div>
         </div>
       </div>
-      {!own ? <MessageActions message={last} own={false} visible={false} /> : null}
+      {!own && engaged ? <MessageActions message={last} own={false} visible={false} /> : null}
     </FreshEntry>
   )
 })
