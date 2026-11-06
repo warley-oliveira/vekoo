@@ -60,11 +60,11 @@ class Connector::WhatsappWeb
 
       # ---- shared helpers ------------------------------------------------------
 
-      # Erros em que repetir a chamada não muda o resultado.
       # Sem resposta nenhuma: não dá para saber se a mensagem saiu. Resposta de erro do provedor é
       # outra coisa (recusa clara, como a instância reconectando), e essa continua sendo repetida.
       AMBIGUOUS_ERRORS = [ Net::ReadTimeout, Net::WriteTimeout, Errno::ECONNRESET, Errno::EPIPE, EOFError ].freeze
 
+      # Erros em que repetir a chamada não muda o resultado.
       PERMANENT_ERRORS = [WhatsappNumberNotFoundError].freeze
 
       # Wraps a provider HTTP call in the retry pattern the legacy code used:

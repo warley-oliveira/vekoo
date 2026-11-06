@@ -137,6 +137,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Mantidos como na origem:** `enrollAll` não confere lotação, `create_booking` não confere a janela, lembrete ao profissional exige conversa.
 - **Defeitos da origem corrigidos** (cada um com spec): recorrência e fim de aula errados, aula avulsa que nunca aparecia, IDORs em turmas e distribuição, horários oferecidos fora da janela e nas folgas, conflito contando outras organizações, lembrete em agendamento arquivado, entre outros.
 
+### Campanhas: API (be-outreach)
+
+- **No máximo uma vez:** queda no meio de um envio, ou recusa por erro passageiro, fica `failed` e não é tentada de novo. Na dúvida, o código é `interrupted`. Duplicar pareceu pior do que perder. Testado com `kill -9` no worker: ninguém recebeu duas vezes.
+- **Um job por canal, em vez de um por destinatário:** cada execução envia uma mensagem e agenda a seguinte. Com 50 mil destinatários, a fila agendada do Redis ficou com 3 jobs.
+- **Limite diário é do canal**, somando todas as campanhas, no fuso de Brasília. Na origem era por campanha.
+- **Pausa automática:** a campanha pausa sem gastar ninguém e avisa quem a criou, quando nenhum canal consegue enviar (`noActiveConnectors`) ou depois de 5 falhas seguidas (`channelFailing`; esse canal só volta quando uma pessoa retoma).
+- **`flowId`:** conversa nova com fluxo nasce com automação ligada; sem fluxo, herda o padrão da organização. A origem sempre ligava.
+- **Tetos novos:** 2 buscas simultâneas na plataforma e 5 em andamento por organização; 10 por minuto nas rotas síncronas; 16 KB de variáveis por pessoa; 50 mil destinatários por importação.
+- **Duas formas do 9º dígito contam como uma pessoa**, com índice único em `phone_key`. Rodízio de mensagens por posição no canal. Cancelar campanha agendada agora é permitido.
+- **Defeitos da origem corrigidos:** `Integration::Base.where(:_id.in => ids)` sem escopo deixava disparar pelo canal de outra conta; canal desconectado queimava a lista inteira; retomar zerava o limite diário; a recuperação reenviava mensagem que já tinha saído; `send_days` vazio prendia a thread para sempre; `PATCH` parcial limpava a mídia.
+- **Envio sem resposta do provedor não se repete (integrador):** vale para todo envio, inclusive o humano pelo chat. Um timeout de leitura não diz se a mensagem saiu. Resposta de erro do provedor continua sendo repetida, como na origem.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -149,6 +161,10 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Rodar o processo de scripts em produção (`config/sidekiq_scripts.yml`) como papel próprio no `deploy.yml`.
 - ENV novas: `GOOGLE_MAPS_API_KEY`, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`. `ffmpeg` na imagem.
 - Decisão de produto: excluir calendário.
+- ENV novas: `APIFY_API_TOKEN`, `GOOGLE_SHEETS_CLIENT_ID`, `GOOGLE_SHEETS_API_KEY`, `GOOGLE_SHEETS_APP_ID`.
+- `Inbound::ZapiEvents` não trata status, então o destinatário de campanha pela Z-API fica em `sent`.
+- Rubocop: os arquivos reciclados do `be-core` têm ofensas de estilo (aspas simples); rodar `rubocop -a` no back-end inteiro ao final.
+- Copiloto: seis rodadas de verificação usaram a chave real da Anthropic do `.env`, sem medir o gasto de tokens (be-inbox e be-agenda).
 - Semente do catálogo usa fotos genéricas de paisagem em itens de roupa: só afeta a demonstração.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
 - Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
@@ -165,6 +181,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
 - `fe-contacts`: ligar a ação "Importar contatos" na tela do canal quando `import-contacts` existir. Seletor de anexos no cabeçalho do modelo, quando a API de anexos existir.
 - `fe-chat-core`: `connectorProvider` agora é `zapi` (a origem compara com `z_api`); ações em lote não avisam o tempo real, então a tela recarrega a lista; a regra de auto-remover `aguardando-operador` fica na tela, lendo `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`; eventos `bookings_changed` e `scheduled_actions_changed`; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
+- `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
@@ -183,6 +200,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
 - `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
 - `be-pipelines`: somar `:deal` em `Chats::BackfillSystemTagsService`.
+- `be-automation`: `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id`, conferindo a organização, e preencher `Outreach::AvailableFlows.for`. Mídia de campanha usa `Attachment`: já existe, conferir com um envio real.
 - `be-insights`: ferramentas de agenda e de funil no copiloto (`list_appointments`, `get_appointment_details`, `cancel_appointment`, `reschedule_appointment`, `qualify_appointments`, `get_appointment_stats`, `get_chat_funnel`), contexto `booking_qualification`, conversão no ranking da equipe, fonte `agenda_bookings` e `contactNotificationPreview`, que lê mensagens e hoje exigiria `chat`.
 
 ## 3. Achados na origem (`ancient-app`), que continuam lá

@@ -107,11 +107,11 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 |---|---|---|---|---|
 | 6 | 2a | **be-inbox**: API do chat, contatos, etiquetas, visões, mensagens rápidas, anexos, campos, importação, copiloto | `inbox` | ✅ |
 | 8 | 2a | **be-agenda**: calendários, agendamentos, turmas, sequências, Google, ações agendadas da conversa | `agenda` | ✅ |
-| 9 | 2a | **be-outreach**: campanhas, Apify, Sheets | `outreach` | 🔄 |
+| 9 | 2a | **be-outreach**: campanhas, Apify, Sheets | `outreach` | ✅ |
 | 28 | 2a | **be-engine**: motor de scripts (núcleo e extensões genéricas) | `lib/mini_racer_engine` | ✅ |
 | 7 | 2b | **be-pipelines**: quadros, cards, gatilhos, metas, filtros, extensão `kanban` do motor | `pipelines` | 🔄 |
 | 10 | 2b | **be-automation**: fluxos, runtime, ferramentas, webhooks de saída, extensões `scheduling` do motor | `automation` | 🔄 |
-| 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | ⬜ |
+| 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | 🔄 |
 
 - **be-inbox:** `v1/conversations_controller` (→ `/chats`), `v2/conversations`, `v2/unified_contacts`, `v1/contacts` (→ `/contacts`, filtros, exportação, ações em lote), `platform/{conversations,chat_snippets,chat_filters,attachments,definitions}`, `ContactsExportJob`, `ProcessContactImportJob`, `ImportedContact`, `ContactImportBatch`, `ChatAttachment`, `AudioAttachment`, `ChatFilter`, `ChatSnippet`, `InstanceVariable::*`, `app/services/custom_attributes/`, `Aiva::ChatAssistant` + `ChatAssistantChannel` + `ChatAssistantConversation` + `ChatAssistantJob` (Copiloto), `ContactsExportChannel`.
 - **be-pipelines:** `platform/kanban/*`, `platform/kanban_controller`, `Kanban*`, `app/services/kanban/`, `app/jobs/kanban/`, `concerns/kanban/`, `KanbanBoardChannel`, code runner dos gatilhos (`triggers/code_runner_job`), extensão `kanban` do motor (`lib/mini_racer_engine/workers/kanban.rb`).
