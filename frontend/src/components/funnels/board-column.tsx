@@ -10,7 +10,7 @@ import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { formatRate } from "@/components/dashboard/format"
-import { columnKey, remainingIn } from "./board-state"
+import { columnKey, MAX_STAGES, remainingIn } from "./board-state"
 import { ChatCard } from "./chat-card"
 import type { BoardChat, BoardColumn as BoardColumnData } from "./types"
 
@@ -120,7 +120,7 @@ export function BoardColumn({
               {
                 label: t("funnels.stage.addAfter"),
                 icon: <Plus />,
-                disabled: stageCount >= 30,
+                disabled: stageCount >= MAX_STAGES,
                 onSelect: () => stageActions.addAfter(column),
               },
               {
@@ -164,7 +164,7 @@ export function BoardColumn({
           <ul className="flex flex-col gap-2">
             <AnimatePresence initial={false}>
               {column.chats.map((chat) => (
-                <motion.li key={chat.id} {...preset.listItem} layout="position">
+                <motion.li key={chat.id} {...preset.listItem} layout={preset.reduced ? false : "position"}>
                   <ChatCard
                     chat={chat}
                     draggable={draggable}

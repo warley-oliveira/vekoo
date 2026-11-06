@@ -25,7 +25,7 @@ import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { BoardColumn, type StageActions } from "./board-column"
-import { columnKey } from "./board-state"
+import { columnKey, MAX_STAGES } from "./board-state"
 import { ChatCardPreview } from "./chat-card"
 import { chatName } from "./chat-format"
 import type { BoardChat, BoardColumn as BoardColumnData, FunnelBoard } from "./types"
@@ -260,7 +260,7 @@ export function FunnelBoardView({
             className="w-72 shrink-0"
           />
         ))}
-        {stageColumns.length < 30 ? (
+        {stageColumns.length < MAX_STAGES ? (
           <div className="w-44 shrink-0">
             <Button
               type="button"

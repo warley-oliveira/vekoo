@@ -4,9 +4,30 @@ import type { BoardChat, BoardColumn, BoardMetrics, DateField, FunnelBoard } fro
 // O quadro é um documento só no cache do SWR, e mexer nele à mão precisa manter as contagens e as
 // métricas de pé. Tudo puro, para o otimista e a volta atrás usarem o mesmo caminho.
 
+/** `Funnel::MAX_STAGES`. */
+export const MAX_STAGES = 30
+
 /** Como a página entra na URL, e como a tela identifica a coluna. */
 export function columnKey(stageId: string | null): string {
   return stageId ?? "none"
+}
+
+/**
+ * O cartão diz o que a coluna diz. A etapa apagada continua gravada na conversa até o job passar, e o
+ * servidor já a põe em "Sem etapa": sem isto, o cartão ali dentro acharia que está em outro lugar.
+ */
+export function normalizeBoard(board: FunnelBoard): FunnelBoard {
+  const needsFix = board.columns.some((column) => column.chats.some((chat) => chat.stageId !== column.stageId))
+  if (!needsFix) return board
+  return {
+    ...board,
+    columns: board.columns.map((column) => ({
+      ...column,
+      chats: column.chats.map((chat) =>
+        chat.stageId === column.stageId ? chat : { ...chat, stageId: column.stageId }
+      ),
+    })),
+  }
 }
 
 /** A mesma conta de `ChatFunnel`: quem está numa etapa passou pelas anteriores. */

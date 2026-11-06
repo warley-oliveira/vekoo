@@ -56,6 +56,8 @@ export function OverviewTab({ period, onPreset }: OverviewTabProps) {
   if (!report) return <OverviewSkeleton />
   if (!report.hasData) return <NoData period={period} onPreset={onPreset} />
 
+  const guard = { resetKey: report, onRetry: reload }
+
   return (
     <div
       aria-busy={isLoading}
@@ -78,17 +80,17 @@ export function OverviewTab({ period, onPreset }: OverviewTabProps) {
       ) : null}
 
       <div className="flex flex-col gap-4">
-        <CardBoundary title={t("dashboard.summary.title")} resetKey={report}>
+        <CardBoundary title={t("dashboard.summary.title")} {...guard}>
           <Summary report={report} previous={previous} period={period} />
         </CardBoundary>
-        <CardBoundary title={t("dashboard.kpi.label")} resetKey={report}>
+        <CardBoundary title={t("dashboard.kpi.label")} {...guard}>
           <KpiRow report={report} previous={previous} metric={metric} onMetric={setMetric} />
         </CardBoundary>
         <div className="grid gap-4 lg:grid-cols-12">
-          <CardBoundary title={t("dashboard.trend.title")} resetKey={report} className="lg:col-span-8">
+          <CardBoundary title={t("dashboard.trend.title")} {...guard} className="lg:col-span-8">
             <TrendCard report={report} previous={previous} metric={metric} className="lg:col-span-8" />
           </CardBoundary>
-          <CardBoundary title={t("dashboard.responseTime.title")} resetKey={report} className="lg:col-span-4">
+          <CardBoundary title={t("dashboard.responseTime.title")} {...guard} className="lg:col-span-4">
             <ResponseTimeCard report={report} className="lg:col-span-4" />
           </CardBoundary>
         </div>
@@ -96,10 +98,10 @@ export function OverviewTab({ period, onPreset }: OverviewTabProps) {
 
       <Section title={t("dashboard.sections.messages")}>
         <div className="grid gap-4 lg:grid-cols-12">
-          <CardBoundary title={t("dashboard.volume.title")} resetKey={report} className="lg:col-span-8">
+          <CardBoundary title={t("dashboard.volume.title")} {...guard} className="lg:col-span-8">
             <MessageVolumeCard report={report} className="lg:col-span-8" />
           </CardBoundary>
-          <CardBoundary title={t("dashboard.channels.title")} resetKey={report} className="lg:col-span-4">
+          <CardBoundary title={t("dashboard.channels.title")} {...guard} className="lg:col-span-4">
             <ChannelMixCard report={report} className="lg:col-span-4" />
           </CardBoundary>
         </div>
@@ -107,10 +109,10 @@ export function OverviewTab({ period, onPreset }: OverviewTabProps) {
 
       <Section title={t("dashboard.sections.automation")}>
         <div className="grid gap-4 lg:grid-cols-12">
-          <CardBoundary title={t("dashboard.autonomy.title")} resetKey={report} className="lg:col-span-4">
+          <CardBoundary title={t("dashboard.autonomy.title")} {...guard} className="lg:col-span-4">
             <AutonomyCard report={report} className="lg:col-span-4" />
           </CardBoundary>
-          <CardBoundary title={t("dashboard.sections.automation")} resetKey={report} className="lg:col-span-8">
+          <CardBoundary title={t("dashboard.sections.automation")} {...guard} className="lg:col-span-8">
             <AutomationTiles report={report} className="lg:col-span-8" />
           </CardBoundary>
         </div>
@@ -118,17 +120,17 @@ export function OverviewTab({ period, onPreset }: OverviewTabProps) {
 
       <Section title={t("dashboard.sections.team")}>
         <div className="grid gap-4 lg:grid-cols-12">
-          <CardBoundary title={t("dashboard.team.title")} resetKey={report} className="lg:col-span-5">
+          <CardBoundary title={t("dashboard.team.title")} {...guard} className="lg:col-span-5">
             <TeamRankingCard report={report} className="lg:col-span-5" />
           </CardBoundary>
-          <CardBoundary title={t("dashboard.heat.title")} resetKey={report} className="lg:col-span-7">
+          <CardBoundary title={t("dashboard.heat.title")} {...guard} className="lg:col-span-7">
             <HeatMapCard report={report} period={period} className="lg:col-span-7" />
           </CardBoundary>
         </div>
       </Section>
 
       <Section title={t("dashboard.sections.funnels")}>
-        <CardBoundary title={t("dashboard.sections.funnels")} resetKey={report}>
+        <CardBoundary title={t("dashboard.sections.funnels")} {...guard}>
           <FunnelsSection funnels={report.funnels} />
         </CardBoundary>
       </Section>
@@ -168,11 +170,10 @@ function Summary({
     return t("dashboard.summary.when.range")
   }, [period.days, period.preset, t])
 
-  const lead = t("dashboard.summary.newChats", {
-    count: total,
-    value: formatNumber(total, language),
-    when,
-  })
+  const lead =
+    total > 0
+      ? t("dashboard.summary.newChats", { count: total, value: formatNumber(total, language), when })
+      : t("dashboard.summary.noNewChats", { when })
 
   const comparison =
     change === null

@@ -1,7 +1,13 @@
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useSWRConfig, type Arguments } from "swr"
 
-import { columnKey, mergePage, moveInBoard, patchChatInBoard } from "@/components/funnels/board-state"
+import {
+  columnKey,
+  mergePage,
+  moveInBoard,
+  normalizeBoard,
+  patchChatInBoard,
+} from "@/components/funnels/board-state"
 import type {
   BoardChat,
   BoardColumn,
@@ -158,8 +164,10 @@ export function useFunnelBoard(funnelId: string, filters: BoardFilters) {
     [mutate]
   )
 
+  const board = useMemo(() => (data ? normalizeBoard(data) : undefined), [data])
+
   return {
-    board: data,
+    board,
     error,
     isLoading,
     isValidating,

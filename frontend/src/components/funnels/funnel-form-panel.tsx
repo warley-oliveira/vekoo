@@ -24,10 +24,10 @@ import { useGuardedClose } from "@/hooks/use-panel-session"
 import { useSortableEntry } from "@/hooks/use-sortable-entry"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { MAX_STAGES } from "./board-state"
 import type { Funnel } from "./types"
 
-/** `Funnel::MAX_STAGES` e os limites de `Funnel` e `FunnelStage`. */
-const MAX_STAGES = 30
+/** Os limites de `Funnel` e `FunnelStage`. */
 const MAX_NAME = 80
 const MAX_DESCRIPTION = 500
 const MAX_STAGE_NAME = 60

@@ -897,7 +897,7 @@ Ficou de fora, ou só em spec:
 - **O ranking da equipe com o modelo:** `get_team_ranking` passou pelo modelo antes de a conversão contar conversas distintas. A conta corrigida só foi exercitada em spec, sem nova rodada com o modelo.
 - **Google e provedores de mensagem:** remarcar e cancelar pelo copiloto passaram pelo serviço da agenda, sem agenda do Google conectada e sem envio de verdade.
 - **A fonte `pipelines`:** o caminho acima não foi exercitado. Nada está registrado neste branch.
-- **A tela.** Não há front neste domínio ainda.
+- **A tela dos dashboards personalizados.** O Dashboard e os Funis já têm front (`routes/dashboard`, `routes/funnels`); os personalizados, não.
 
 ---
 

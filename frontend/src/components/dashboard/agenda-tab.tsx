@@ -55,6 +55,8 @@ export function AgendaTab({ period }: { period: DashboardPeriod }) {
     )
   }
 
+  const guard = { resetKey: stats, onRetry: reload }
+
   return (
     <div
       aria-busy={isLoading}
@@ -77,36 +79,36 @@ export function AgendaTab({ period }: { period: DashboardPeriod }) {
 
       <AgendaTiles stats={stats} />
 
-      <CardBoundary title={t("dashboard.agenda.daily.title")} resetKey={stats}>
+      <CardBoundary title={t("dashboard.agenda.daily.title")} {...guard}>
         <DailyCard stats={stats} period={period} />
       </CardBoundary>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <CardBoundary title={t("dashboard.agenda.attendance.title")} resetKey={stats}>
+        <CardBoundary title={t("dashboard.agenda.attendance.title")} {...guard}>
           <AttendanceCard stats={stats} />
         </CardBoundary>
-        <CardBoundary title={t("dashboard.agenda.cancellation.title")} resetKey={stats}>
+        <CardBoundary title={t("dashboard.agenda.cancellation.title")} {...guard}>
           <CancellationCard stats={stats} />
         </CardBoundary>
-        <CardBoundary title={t("dashboard.agenda.highlights.title")} resetKey={stats}>
+        <CardBoundary title={t("dashboard.agenda.highlights.title")} {...guard}>
           <HighlightsCard stats={stats} />
         </CardBoundary>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-12">
-        <CardBoundary title={t("dashboard.agenda.professionals.title")} resetKey={stats} className="lg:col-span-7">
+        <CardBoundary title={t("dashboard.agenda.professionals.title")} {...guard} className="lg:col-span-7">
           <ProfessionalsCard stats={stats} className="lg:col-span-7" />
         </CardBoundary>
-        <CardBoundary title={t("dashboard.agenda.upcoming.title")} resetKey={stats} className="lg:col-span-5">
+        <CardBoundary title={t("dashboard.agenda.upcoming.title")} {...guard} className="lg:col-span-5">
           <UpcomingCard upcoming={stats.upcoming} className="lg:col-span-5" />
         </CardBoundary>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <CardBoundary title={t("dashboard.agenda.hours.title")} resetKey={stats}>
+        <CardBoundary title={t("dashboard.agenda.hours.title")} {...guard}>
           <HoursCard stats={stats} />
         </CardBoundary>
-        <CardBoundary title={t("dashboard.agenda.weekdays.title")} resetKey={stats}>
+        <CardBoundary title={t("dashboard.agenda.weekdays.title")} {...guard}>
           <WeekdaysCard stats={stats} />
         </CardBoundary>
       </div>

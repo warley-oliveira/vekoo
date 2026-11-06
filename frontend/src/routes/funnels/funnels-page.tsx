@@ -305,14 +305,14 @@ function BoardArea({ funnelId, funnels, state, onCountsChange, onEdit, onDelete 
   const submitStageDialog = useCallback(
     async (name: string) => {
       if (!stageDialog) return
-      const stages = currentStages()
+      const stages: { id?: string; name: string }[] = currentStages()
       if (stageDialog.mode === "rename") {
         await saveStages(
           stages.map((stage) => (stage.id === stageDialog.column.stageId ? { ...stage, name } : stage)),
           t("funnels.stage.renamed", { name })
         )
       } else {
-        stages.splice(stageDialog.index, 0, { name } as { id: string; name: string })
+        stages.splice(stageDialog.index, 0, { name })
         await saveStages(stages, t("funnels.stage.created", { name }))
       }
     },

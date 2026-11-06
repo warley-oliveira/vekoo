@@ -72,7 +72,7 @@ export function ChartCard({
 
   return (
     <SectionCard
-      title={title}
+      title={<h3>{title}</h3>}
       description={description}
       actions={cardActions}
       className={cn("h-full", className)}

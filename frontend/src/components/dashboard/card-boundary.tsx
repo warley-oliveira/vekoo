@@ -41,12 +41,14 @@ type CardBoundaryProps = {
   /** O nome do card, para a pessoa saber o que faltou. */
   title: string
   resetKey?: unknown
+  /** O "tentar de novo" também busca o dado: o que quebrou o card pode ter vindo errado. */
+  onRetry?: () => void
   className?: string
   children: ReactNode
 }
 
 /** Um card que quebra fica no lugar dele, com "tentar de novo", e o resto do Dashboard segue. */
-export function CardBoundary({ title, resetKey, className, children }: CardBoundaryProps) {
+export function CardBoundary({ title, resetKey, onRetry, className, children }: CardBoundaryProps) {
   const { t } = useTranslation()
 
   return (
@@ -55,7 +57,12 @@ export function CardBoundary({ title, resetKey, className, children }: CardBound
       fallback={(retry) => (
         <SectionCard title={title} className={className}>
           <p className="sr-only">{t("dashboard.card.failed")}</p>
-          <InlineError onRetry={retry} />
+          <InlineError
+            onRetry={() => {
+              onRetry?.()
+              retry()
+            }}
+          />
         </SectionCard>
       )}
     >
