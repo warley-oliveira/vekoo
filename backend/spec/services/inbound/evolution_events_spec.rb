@@ -31,7 +31,7 @@ RSpec.describe Inbound::EvolutionEvents do
       pushName: push_name,
       messageTimestamp: timestamp,
       **data
-    }.compact_blank.merge(message: message)
+    }.compact.merge(message: message)
   end
 
   def upsert(**options)
@@ -48,9 +48,7 @@ RSpec.describe Inbound::EvolutionEvents do
   end
 
   def alert_service
-    instance_double("OrganizationAlertServiceDouble").tap do |service|
-      allow(service).to receive(:connector_disconnected)
-      allow(service).to receive(:connector_reconnected)
+    double("OrganizationAlertService", connector_disconnected: nil, connector_reconnected: nil).tap do |service|
       stub_const("OrganizationAlertService", service)
     end
   end

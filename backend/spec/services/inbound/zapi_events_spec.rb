@@ -36,9 +36,7 @@ RSpec.describe Inbound::ZapiEvents do
   end
 
   def alert_service
-    instance_double("OrganizationAlertServiceDouble").tap do |service|
-      allow(service).to receive(:connector_disconnected)
-      allow(service).to receive(:connector_reconnected)
+    double("OrganizationAlertService", connector_disconnected: nil, connector_reconnected: nil).tap do |service|
       stub_const("OrganizationAlertService", service)
     end
   end
@@ -210,9 +208,9 @@ RSpec.describe Inbound::ZapiEvents do
       end
 
       it "normaliza o nome, tirando caractere de controle" do
-        receive_message(senderName: "Ana\u0000 Lima​")
+        receive_message(senderName: "Ana\u0000 Lima\u0007")
 
-        expect(chat.reload.user_name).to start_with("Ana Lima")
+        expect(chat.reload.user_name).to eq("Ana Lima")
       end
 
       it "limpa o contexto por inatividade, com a opção ligada" do
