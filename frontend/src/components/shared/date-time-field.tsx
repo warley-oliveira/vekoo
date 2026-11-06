@@ -53,7 +53,8 @@ export function DateTimePicker({
         aria-invalid={pickerProps["aria-invalid"]}
         disabled={disabled}
         value={value ? toTimeInputValue(value) : ""}
-        className="w-28 shrink-0 tabular-nums"
+        // Largura que cabe "02:30 PM" com o ícone, no navegador em inglês.
+        className="w-32 shrink-0 tabular-nums"
         onBlur={onBlur}
         onChange={(event) => {
           if (event.target.value) {

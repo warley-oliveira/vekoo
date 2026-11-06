@@ -16,8 +16,11 @@ export function applyServerErrors<TValues extends FieldValues>(
   {
     fields,
   }: {
-    /** Campos que existem na tela. Erro de outro campo vai para `root`, senão ninguém o veria. */
-    fields?: readonly FieldPath<TValues>[]
+    /**
+     * Campos que existem na tela. Erro de outro campo vai para `root`, senão ninguém o
+     * veria. `endereco.cidade` e `itens.0.nome` contam como `endereco` e `itens`.
+     */
+    fields?: readonly string[]
   } = {}
 ): boolean {
   const setRoot = (message: string) =>
@@ -34,7 +37,7 @@ export function applyServerErrors<TValues extends FieldValues>(
   }
 
   const known = details.filter(
-    ([name]) => !fields || fields.includes(name as FieldPath<TValues>)
+    ([name]) => !fields || fields.includes(name) || fields.includes(name.split(".")[0])
   )
 
   known.forEach(([name, messages], index) => {

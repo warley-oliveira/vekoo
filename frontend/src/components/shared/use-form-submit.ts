@@ -29,7 +29,8 @@ export function useFormSubmit<TValues extends FieldValues, TContext, TTransforme
     try {
       await onSubmit(values)
     } catch (error) {
-      applyServerErrors(error, form.setError)
+      // Só os campos desta tela: o resto vira erro geral, que alguém consegue ver.
+      applyServerErrors(error, form.setError, { fields: Object.keys(form.getValues()) })
     } finally {
       inFlight.current = false
     }

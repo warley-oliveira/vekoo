@@ -122,6 +122,10 @@ export function ColorPicker({
           spellCheck={false}
           autoComplete="off"
           className="tabular-nums"
+          // Quase sempre se cola um código inteiro no lugar do atual.
+          onFocus={(event) => event.target.select()}
+          // Código pela metade não fica na tela contradizendo a cor escolhida.
+          onBlur={() => setDraft(null)}
           onChange={(event) => {
             const text = event.target.value
             setDraft(text)

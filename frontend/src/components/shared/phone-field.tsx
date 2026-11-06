@@ -19,7 +19,8 @@ export type PhoneInputProps = Partial<FieldControlProps> & {
 
 /** Posição logo depois do enésimo dígito do texto mascarado. */
 function caretAfterDigits(text: string, digits: number) {
-  if (digits === 0) return 0
+  // Antes do primeiro dígito, mas nunca antes do "+": dali o backspace não o alcança.
+  if (digits === 0) return text.startsWith("+") ? 1 : 0
 
   let seen = 0
   for (let index = 0; index < text.length; index++) {

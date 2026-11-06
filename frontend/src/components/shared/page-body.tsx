@@ -23,8 +23,10 @@ export function PageBody({ variant = "default", className, ...props }: PageBodyP
   return (
     <div
       data-slot="page-body"
+      // `relative` segura os `sr-only`: sem um ancestral posicionado, eles escapam do
+      // rolável da página e esticam o documento, criando uma segunda barra de rolagem.
       className={cn(
-        "mx-auto flex w-full flex-col gap-6 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:gap-8 md:px-6",
+        "relative mx-auto flex w-full flex-col gap-6 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:gap-8 md:px-6",
         VARIANTS[variant],
         className
       )}
