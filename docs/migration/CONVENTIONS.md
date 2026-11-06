@@ -116,6 +116,7 @@ end
 ```
 
 - Herdam de `PlatformController` (sessão, `Current`, `@organization`, `paginate`, `require_permission`, e a entrada camelCase → snake_case; mapas livres passam intactos, ver `CamelParams::DEFAULT_OPAQUE`).
+- **Entrada com envelope explícito:** o front manda `{ quickReply: { name: "x" } }` e o controlador lê `params.require(:quick_reply).permit(:name)`. `PlatformController` desliga o `wrap_parameters` do Rails, porque ele conflita com o camelCase. Controlador que hoje aceita corpo solto lê os campos soltos (`params[:name]`), sem `require`.
 - **Saída:** serializer explícito (`app/serializers/`, herda `ApplicationSerializer`): chaves em **camelCase**, datas em **milissegundos** (`epoch_ms`), ids como string. Mapas livres (atributos personalizados, definição de fluxo) saem como estão.
 - **Erro:** sempre `render_error` / `render_invalid` / `render_forbidden` (`{ error: { code, field?, message, details? } }`). `code` em camelCase é contrato de máquina; `message` vem de `config/locales`.
 - **Webhook de entrada** (provedores) herda de `ApplicationController`, sem sessão, em `/inbound/...`.
