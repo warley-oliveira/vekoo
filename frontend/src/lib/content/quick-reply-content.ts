@@ -93,39 +93,21 @@ export type MessagePart =
 
 const IMAGE_LINK = /^https?:\/\/\S+\.(?:jpe?g|gif|png|bmp|tiff?|svg|webp)$/i
 
-/** O que o envio tira do texto (`MessageHandling#handle_part`), para a tela avisar. */
-const STRIPPED_CHARACTERS = /[[\]<>`"'~]/g
-
-export function hasStrippedCharacters(content: string): boolean {
-  return new RegExp(STRIPPED_CHARACTERS.source).test(content)
-}
-
-// A mesma limpeza de `MessageHandling#clean_message!`, no caminho de quem escreve na tela.
-function cleanMessage(text: string): string {
-  return text
-    .replace(/\[(https?:\/\/\S+)\]/g, "$1")
-    .replaceAll("![", "[")
-    .replaceAll("**", "*")
-    .replace(/\[score:.*?\]/g, "")
-    .replace(/\[.*?\]\((.*?)\)/g, "$1")
-    .replaceAll("\r", "")
-}
-
 /**
  * As partes que vão para o canal, na ordem, como `Chats::SendOperatorMessage` as monta: cada
- * anexo é uma mensagem, e só 10 quebras de linha seguidas separam texto de texto. O envio tira
- * colchetes, sinais de maior e menor, crases, aspas e til do texto, e descarta parte repetida:
- * a prévia mostra o mesmo, porque é o que o contato recebe.
+ * anexo é uma mensagem, e só 10 quebras de linha seguidas separam texto de texto. O texto vai
+ * como foi escrito, e o envio descarta parte repetida: a prévia mostra o mesmo, porque é o que
+ * o contato recebe.
  */
 export function splitMessageParts(content: string): MessagePart[] {
   const pattern = new RegExp(`${CITATION_SOURCE}|\\n{10,}`, "g")
-  const cleaned = cleanMessage(content)
+  const cleaned = content.replaceAll("\r", "")
   const parts: MessagePart[] = []
   const seenTexts = new Set<string>()
 
   const pushText = (raw: string) => {
-    const text = raw.trim().replace(STRIPPED_CHARACTERS, "")
-    if (!text.trim() || seenTexts.has(text)) return
+    const text = raw.trim()
+    if (!text || seenTexts.has(text)) return
     seenTexts.add(text)
     parts.push(IMAGE_LINK.test(text) ? { kind: "imageLink", url: text } : { kind: "text", text })
   }

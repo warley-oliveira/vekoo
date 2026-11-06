@@ -27,7 +27,6 @@ import {
   canonicalVariableKey,
   citedAttachmentIds,
   hasMeaningfulContent,
-  hasStrippedCharacters,
   slugifyTrigger,
   usedVariableKeys,
   visibleLength,
@@ -351,11 +350,6 @@ export default function QuickReplyPanel({
           {usedVariableKeys(content ?? "").length > 0 ? (
             <p className="text-xs text-pretty text-muted-foreground">
               {t("content.quickReplies.preview.variablesHint")}
-            </p>
-          ) : null}
-          {hasStrippedCharacters(content ?? "") ? (
-            <p className="text-xs text-pretty text-muted-foreground">
-              {t("content.quickReplies.preview.strippedHint")}
             </p>
           ) : null}
         </section>

@@ -124,8 +124,7 @@
         "missing": "Deleted attachment: a code goes out instead of the file.",
         "sampleName": "Ana Beatriz Moura",
         "samplePhone": "(41) 99911-0001",
-        "variablesHint": "Example with made-up data. Variables are filled in when the message is inserted into the conversation, and whatever the contact doesn't have stays in the text to complete by hand.",
-        "strippedHint": "Sending removes quotes, brackets, backticks, tildes and greater-than and less-than signs, as shown above."
+        "variablesHint": "Example with made-up data. Variables are filled in when the message is inserted into the conversation, and whatever the contact doesn't have stays in the text to complete by hand."
       }
     },
     "attachments": {

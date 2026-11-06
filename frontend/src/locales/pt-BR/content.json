@@ -124,8 +124,7 @@
         "missing": "Anexo excluído: sai um código no lugar do arquivo.",
         "sampleName": "Ana Beatriz Moura",
         "samplePhone": "(41) 99911-0001",
-        "variablesHint": "Exemplo com dados fictícios. As variáveis são preenchidas ao inserir a mensagem na conversa, e o que o contato não tiver fica no texto para completar à mão.",
-        "strippedHint": "O envio retira aspas, colchetes, crases, til e os sinais de maior e menor, como aparece acima."
+        "variablesHint": "Exemplo com dados fictícios. As variáveis são preenchidas ao inserir a mensagem na conversa, e o que o contato não tiver fica no texto para completar à mão."
       }
     },
     "attachments": {

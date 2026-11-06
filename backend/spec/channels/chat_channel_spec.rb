@@ -343,12 +343,12 @@ RSpec.describe ChatChannel, type: :channel do
     end
 
     describe "citando um anexo que não existe" do
-      it "manda o texto como veio" do
+      it "manda o resto do texto, sem o código" do
         stub_provider("OUT-1")
 
         perform_send("Hello attachment_id_999")
 
-        expect(@sent.map { |body| body["text"] }).to eq([ "Hello attachment_id_999" ])
+        expect(@sent.map { |body| body["text"] }).to eq([ "Hello" ])
       end
     end
 

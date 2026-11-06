@@ -39,6 +39,7 @@ module Chats
       )
 
       parts.each { |part| part.is_a?(MediaMessageDto) ? send_media(part) : send_text(part.to_s) }
+      flag_missing_attachments(parts)
 
       chat.last_message_at = Time.now
       chat.update_last_message
@@ -58,11 +59,21 @@ module Chats
       { chat: chat, sender_name: account.name, account_id: account.id, message_origin: "frontend" }
     end
 
+    # `verbatim`: o que a pessoa escreveu chega ao cliente como foi escrito.
     def handled_parts
-      MessageHandling.new(chat.organization, min_line_breaks: 10, split_links: false).perform(text)
-    rescue AttachmentNotFoundException => e
-      Rails.logger.error("[Chats::SendOperatorMessage] #{e.message}")
-      [ text ]
+      handling = MessageHandling.new(chat.organization, min_line_breaks: 10, split_links: false, verbatim: true)
+      parts = handling.perform(text)
+      @missing_attachments = handling.missing_attachments
+      parts
+    end
+
+    # O anexo citado sumiu: o resto da mensagem segue, e a pessoa fica sabendo do que não foi.
+    # Sem nada para enviar, a mensagem é uma falha.
+    def flag_missing_attachments(parts)
+      return if @missing_attachments.blank?
+
+      Rails.logger.warn("[Chats::SendOperatorMessage] #{@missing_attachments.join('; ')}")
+      @message.update(status_message: @missing_attachments.first, **(parts.empty? ? { status: "failed" } : {}))
     end
 
     def send_media(dto)

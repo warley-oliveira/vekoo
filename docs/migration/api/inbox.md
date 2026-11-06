@@ -497,7 +497,7 @@ Apaga de verdade, com as mensagens e a mídia. `204`, sem corpo. A lista conecta
 
 ### `PUT /chats/:id/attributes`
 
-Substitui o mapa inteiro de campos personalizados. Número e booleano viram texto. Campo com `autoNormalize` passa pela normalização ao gravar: abaixo, `"R$ 300 a R$ 500"` num campo de estratégia `avg` virou `"400"`.
+**Soma** ao mapa de campos personalizados que já existe: o que não veio no pedido fica como está, e `null` tira a chave. Número e booleano viram texto. Campo com `autoNormalize` passa pela normalização ao gravar: abaixo, `"R$ 300 a R$ 500"` num campo de estratégia `avg` virou `"400"`.
 
 `PUT /chats/:id/attributes`:
 
