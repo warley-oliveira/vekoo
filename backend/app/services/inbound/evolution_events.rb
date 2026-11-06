@@ -136,11 +136,13 @@ module Inbound
         }
       )
 
-      message_cache_key = "id_performed.#{chat.id}.#{message_id}"
-      return if Rails.cache.read(message_cache_key)
+      @message_cache_key = "id_performed.#{chat.id}.#{message_id}"
+      return if Rails.cache.read(@message_cache_key)
 
       Rails.cache.delete("presence.#{chat.id}")
-      Rails.cache.write(message_cache_key, true, expires_in: 15.minutes)
+      Rails.cache.write(@message_cache_key, true, expires_in: 15.minutes)
+
+      discard_placeholder(chat, message_id) if message_data.present? && text_from(message_data).eql?(MISSING_MESSAGE)
 
       # Reação e figurinha saem antes de qualquer coisa que dependa de texto ou mídia.
       if message_data&.dig(:reactionMessage).present?
@@ -175,6 +177,16 @@ module Inbound
       end
 
       process_text(chat, text_from(message_data), message_data, message_id, from_me, push_name, context_message, message_created_at, existing)
+    rescue StandardError
+      # O job vai tentar de novo: a marca de processada não pode barrar a própria retentativa.
+      Rails.cache.delete(@message_cache_key) if @message_cache_key
+      raise
+    end
+
+    # O conteúdo da mensagem ausente chegou e não é texto, então não há o que preencher: a
+    # mídia quem grava é o job, que não escreve por cima de um id que já existe.
+    def discard_placeholder(chat, message_id)
+      ChatMessage::Base.where(chat_id: chat.id, message_id: message_id, missing_message: true).take&.destroy
     end
 
     def invalid_protocol_message?(message_data, remote_jid)
@@ -249,6 +261,11 @@ module Inbound
       end
 
       missing_message = message.eql?(MISSING_MESSAGE)
+      # O conteúdo chega depois, com este mesmo id: a marca de processada não pode barrá-lo.
+      Rails.cache.delete(@message_cache_key) if missing_message
+      # Aviso repetido: continua aguardando, sem tocar no marcador.
+      return if existing && missing_message
+
       message = "." if missing_message
 
       chat.update(user_name: push_name) if !from_me && push_name.present? && chat.user_name != push_name

@@ -73,13 +73,13 @@ module Chats
     end
 
     def deliver_to_flows
-      delay = nil
-      if chat.connector.try(:zapi_provider?)
-        limiter = InboundThrottle.new(chat)
-        return if limiter.red_flagged?
+      connector = chat.connector
+      limiter = InboundThrottle.new(chat)
+      # Advertências valem para o WhatsApp Web em qualquer provedor; a contagem por período,
+      # que é o que gera advertência, só na Z-API. Os dois como na origem.
+      return if connector.respond_to?(:zapi_provider?) && limiter.red_flagged?
 
-        delay = limiter.delay
-      end
+      delay = limiter.delay if connector.try(:zapi_provider?)
 
       return defer_outside_window if outside_window?
       return schedule(wait: delay) if delay
