@@ -18,6 +18,7 @@ en:
     boards:
       visibility_lockout: "Include your own permission group: without it you would lose access to these cards."
       invalid_lead_score_field: "The score must use a number field from this board."
+      invalid_period: "Choose a valid period, of up to three years."
     cards:
       unnamed_contact: "Unnamed contact"
       checklist_incomplete: "Finish this stage's checklist to move the card forward."

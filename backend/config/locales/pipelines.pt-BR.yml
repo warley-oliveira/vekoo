@@ -18,6 +18,7 @@ pt-BR:
     boards:
       visibility_lockout: "Inclua o seu grupo de permissão: sem ele, você perderia o acesso a estes cards."
       invalid_lead_score_field: "A pontuação precisa usar um campo de número deste quadro."
+      invalid_period: "Escolha um período válido, de até três anos."
     cards:
       unnamed_contact: "Contato sem nome"
       checklist_incomplete: "Conclua o checklist da etapa para avançar este card."

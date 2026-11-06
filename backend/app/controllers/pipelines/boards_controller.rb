@@ -3,6 +3,7 @@ module Pipelines
     include FilterableByQuery
 
     ARCHIVED_PER_PAGE = 50
+    MAX_PERIOD_DAYS = 1_100
 
     before_action :set_board_from_id, only: %i[show update destroy archive metrics archived_cards]
     before_action :require_full_card_access!, only: :destroy
@@ -83,8 +84,15 @@ module Pipelines
       render json: BoardSerializer.one(@board, viewer: current_account)
     end
 
+    # ?from=YYYY-MM-DD&to=YYYY-MM-DD acrescenta `period`: o que aconteceu entre as duas datas.
     def metrics
-      render json: BoardMetrics.call(@board, cards: visible_cards)
+      period = requested_period
+      return if performed?
+
+      json = BoardMetrics.call(@board, cards: visible_cards)
+      json = json.merge(period: BoardPeriodMetrics.call(@board, **period, cards: visible_cards)) if period
+
+      render json: json
     end
 
     def archived_cards
@@ -108,6 +116,24 @@ module Pipelines
 
     def set_board_from_id
       @board = current_organization.pipeline_boards.find(params[:id])
+    end
+
+    # Sem datas, nenhum período. Só uma delas, ou data que não existe, é erro de quem chamou.
+    def requested_period
+      return nil if params[:from].blank? && params[:to].blank?
+
+      from = Date.iso8601(params[:from].to_s)
+      to = Date.iso8601(params[:to].to_s)
+      return { from: from, to: to } if from <= to && (to - from) <= MAX_PERIOD_DAYS
+
+      render_invalid_period
+    rescue Date::Error
+      render_invalid_period
+    end
+
+    def render_invalid_period
+      render_error(status: :unprocessable_content, code: "invalidPeriod", message: t("pipelines.boards.invalid_period"))
+      nil
     end
 
     def filtered_card_ids

@@ -416,6 +416,56 @@ Respeita a visibilidade: quem está restrito só conta os próprios cards.
 }
 ```
 
+#### Com período: `?from=YYYY-MM-DD&to=YYYY-MM-DD`
+
+Sem as datas, a resposta é a de cima. Com elas, vem também `period`, com o que aconteceu entre as duas datas, inclusive, no fuso da organização. Até três anos; fora disso, ou com uma data só, `422 invalidPeriod`. O resto da resposta continua sendo a fotografia de agora.
+
+- `previous` é o período imediatamente anterior, do mesmo tamanho, para comparar. `conversionRate` é `null` quando nada fechou.
+- `series`: um ponto por dia até 31 dias, por semana (segunda-feira) até 183, por mês depois disso. `bucket` diz qual, e a lista não tem buracos.
+- `stageConversion`: dos cards **criados no período** (`cohort`), quantos chegaram a cada etapa ou além (`reached`). Vale o ponto mais avançado por onde o card passou: voltar uma etapa não apaga o que ele alcançou, e pular uma conta como ter passado por ela. `won` é quantos desses foram ganhos.
+- `avgTimePerStage`: a mesma conta de cima, só com as passagens que terminaram no período, mais as que seguem em aberto se o período chega até hoje. `passages` é quantas entraram na conta; sem nenhuma, `avgHours` é `null`.
+- `ranking`: quem fechou mais no período, até 20 pessoas, pelo valor ganho. Card sem responsável não entra.
+
+```json
+{
+  "cardsPerStage": [ "…" ],
+  "period": {
+    "from": "2026-10-08",
+    "to": "2026-11-06",
+    "previousFrom": "2026-09-08",
+    "previousTo": "2026-10-07",
+    "bucket": "day",
+    "summary": { "createdCount": 6, "wonCount": 2, "wonValue": 8650, "lostCount": 1, "lostValue": 1200, "conversionRate": 66.7 },
+    "previous": { "createdCount": 4, "wonCount": 1, "wonValue": 2750, "lostCount": 0, "lostValue": 0, "conversionRate": 100 },
+    "series": [
+      { "date": "2026-10-08", "createdCount": 0, "wonCount": 0, "wonValue": 0, "lostCount": 0 },
+      "…"
+    ],
+    "stageConversion": {
+      "cohort": 6,
+      "won": 2,
+      "stages": [
+        { "stageId": "44238844-…", "stageName": "Novos contatos", "color": "#90CAF9", "position": 1, "reached": 6 },
+        "…"
+      ]
+    },
+    "avgTimePerStage": [
+      { "stageId": "44238844-…", "stageName": "Novos contatos", "color": "#90CAF9", "avgHours": 70.6, "passages": 8 },
+      "…"
+    ],
+    "ranking": [
+      {
+        "user": { "id": "1ceab622-…", "name": "Juliana Ferreira", "avatarUrl": null },
+        "wonCount": 2,
+        "wonValue": 8650,
+        "lostCount": 1,
+        "conversionRate": 66.7
+      }
+    ]
+  }
+}
+```
+
 ### `GET /pipelines/boards/:id/archived-cards`
 
 Cards fora do quadro: arquivados, ganhos ou perdidos. Parâmetros: `status` (`archived`, `won`, `lost`; sem ele, todos), `search` (no título), `page`, `perPage` (padrão 50).
@@ -1222,7 +1272,7 @@ Com anexo:
 | `PATCH …/triggers/:id` | O mesmo | `200` |
 | `DELETE …/triggers/:id` | Resolve o alerta do gatilho. | `204` |
 | `POST …/triggers/:id/toggle` | | `200` |
-| `GET /pipelines/boards/:boardId/trigger-executions` | `?page`, `?perPage` (padrão 50). Guardadas por 90 dias. | `{ "executions": [...], "meta": {...} }` |
+| `GET /pipelines/boards/:boardId/trigger-executions` | `?page`, `?perPage` (padrão 50), `?status` (`success`, `failure`, `skipped`), `?triggerId`. Guardadas por 90 dias. | `{ "executions": [...], "meta": {...} }` |
 
 Ação com `run_code` exige também a permissão `flows`: é a mesma pessoa que escreve script nos fluxos. Sem ela, `403`.
 
@@ -1722,6 +1772,7 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`.
 | `422` | `visibilityLockout` | A regra trancaria quem está salvando. | |
 | `422` | `invalidLeadScoreField` | `leadScoreFieldKey` não é um campo `number` do quadro. | |
 | `422` | `invalidFilter` | Definição de filtro inválida. | |
+| `422` | `invalidPeriod` | Período das métricas inválido. | |
 
 ```json
 {
