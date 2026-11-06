@@ -18,6 +18,11 @@ RSpec.describe PlatformController, type: :request do
         }
       end
 
+      # Nome de duas palavras: é o caso em que o ParamsWrapper do Rails atrapalhava.
+      def envelope
+        render json: params.require(:foundation_probe).permit(:some_field).to_h
+      end
+
       def context
         render json: { organizationId: Current.organization.id, accountId: Current.account.id, same: @organization == current_organization }
       end
@@ -38,6 +43,7 @@ RSpec.describe PlatformController, type: :request do
     with_routing do |routes|
       routes.draw do
         post "probe/echo" => "foundation_probe#echo"
+        post "probe/envelope" => "foundation_probe#envelope"
         get "probe/context" => "foundation_probe#context"
         get "probe/restricted" => "foundation_probe#restricted"
         get "probe/paged" => "foundation_probe#paged"
@@ -78,6 +84,22 @@ RSpec.describe PlatformController, type: :request do
       "opaque" => { "campoDoUsuario" => "c" },
       "freeMap" => { "outraChave" => "d" }
     )
+  end
+
+  it "aceita envelope camelCase de duas palavras, sem o wrapper do Rails sobrescrever" do
+    post "/probe/envelope",
+      params: { foundationProbe: { someField: "a" } },
+      headers: auth_headers(owner),
+      as: :json
+
+    expect(json).to eq("some_field" => "a")
+  end
+
+  it "não inventa envelope para JSON sem envelope" do
+    post "/probe/envelope", params: { someField: "a" }, headers: auth_headers(owner), as: :json
+
+    expect(response).to have_http_status(:bad_request)
+    expect(json["error"]["code"]).to eq("parameterMissing")
   end
 
   describe "permissões" do

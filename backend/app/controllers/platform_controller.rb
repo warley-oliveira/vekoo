@@ -8,6 +8,13 @@ class PlatformController < AuthenticatedController
   include CamelParams
   include Permissioned
 
+  # O ParamsWrapper procura a chave `quick_reply` antes de o CamelParams rodar.
+  # Como o front manda `quickReply`, ele não a acha e injeta um `quick_reply`
+  # vazio, que sobrescreveria o conteúdo. Ele também filtra pelos atributos do
+  # modelo, em snake_case, então nunca serviu para corpo em camelCase. Regra daqui:
+  # quem espera envelope recebe envelope explícito, como no resto da API.
+  wrap_parameters false
+
   before_action :set_current_context
 
   private

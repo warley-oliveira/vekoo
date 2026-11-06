@@ -70,7 +70,7 @@ Isso dá banco de teste, Mongo e portas exclusivos; rspec e Vite rodam sem inter
 
 1. Mexa só nos arquivos do seu domínio (seção no MANIFEST). Precisou de algo de outro domínio? Se já existe, use; se não existe, **não crie** — anote em "Pendências" no relatório final.
 2. **Não comite `backend/db/schema.rb`.** Rode as migrations à vontade; antes de comitar: `git checkout -- backend/db/schema.rb`. O integrador regenera o schema ao juntar.
-3. Versão de migration: `20261110` + número do agente com 2 dígitos + sequência de 4 dígitos. Agente 7, primeira migration: `20261110070001_create_...rb`. Assim nunca há colisão.
+3. Versão de migration: `20261107` + `00` + número do agente com 2 dígitos + sequência de 2 dígitos. Agente 7, primeira migration: `20261107000701_create_...rb`. Assim nunca há colisão, todas rodam depois da fundação (`20261106120001`) e na ordem das fases, e o Rails aceita: ele recusa versão mais de um dia à frente do relógio, proteção que não deve ser desligada.
 4. Não instale dependência: `node_modules` e gems são compartilhados e já contêm o necessário. Se faltar algo indispensável, adicione a linha no `Gemfile`/`package.json`, explique no relatório e siga sem depender dela para os testes, se possível.
 5. Arquivos por domínio, para ninguém disputar o mesmo arquivo:
    - Rotas: `backend/config/routes/<dominio>.rb`
@@ -116,6 +116,7 @@ end
 ```
 
 - Herdam de `PlatformController` (sessão, `Current`, `@organization`, `paginate`, `require_permission`, e a entrada camelCase → snake_case; mapas livres passam intactos, ver `CamelParams::DEFAULT_OPAQUE`).
+- **Entrada com envelope explícito:** o front manda `{ quickReply: { name: "x" } }` e o controlador lê `params.require(:quick_reply).permit(:name)`. `PlatformController` desliga o `wrap_parameters` do Rails, porque ele conflita com o camelCase. Controlador que hoje aceita corpo solto lê os campos soltos (`params[:name]`), sem `require`.
 - **Saída:** serializer explícito (`app/serializers/`, herda `ApplicationSerializer`): chaves em **camelCase**, datas em **milissegundos** (`epoch_ms`), ids como string. Mapas livres (atributos personalizados, definição de fluxo) saem como estão.
 - **Erro:** sempre `render_error` / `render_invalid` / `render_forbidden` (`{ error: { code, field?, message, details? } }`). `code` em camelCase é contrato de máquina; `message` vem de `config/locales`.
 - **Webhook de entrada** (provedores) herda de `ApplicationController`, sem sessão, em `/inbound/...`.
