@@ -13,6 +13,7 @@ import {
   SettingsSection,
   StatusBadge,
   useConfirm,
+  UserAvatar,
   type SelectOption,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -31,7 +32,7 @@ import type {
   ProfessionalEventRule,
   ProfessionalReminderRule,
 } from "@/lib/calendar/types"
-import { connectorHandle, hasRealName } from "@/lib/connectors/channels"
+import { connectorHandle, connectorPicture, hasRealName } from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 import { CollaboratorReminderPanel } from "./collaborator-reminder-panel"
 import { calendarErrorMessage } from "./error-message"
@@ -77,11 +78,24 @@ export function CollaboratorNoticesSection({ calendar }: { calendar: AgendaCalen
   const chosenIsGone = Boolean(selectedChannel && connectors && (!chosen || !isDeliverable(chosen)))
 
   const channelOptions = useMemo<SelectOption[]>(() => {
-    const options = channels.map((connector) => ({ value: connector.id, label: channelLabel(connector, t) }))
+    // A foto ajuda a reconhecer a conta quando a organização tem mais de um número. Sem foto, nada:
+    // as iniciais só repetiriam o nome ao lado, e atrapalhariam quem digita para achar a opção.
+    const icon = (connector: Connector) => {
+      const picture = connectorPicture(connector)
+      return picture ? (
+        <UserAvatar name={channelLabel(connector, t)} src={picture} size="sm" className="shrink-0" />
+      ) : undefined
+    }
+    const options: SelectOption[] = channels.map((connector) => ({
+      value: connector.id,
+      label: channelLabel(connector, t),
+      icon: icon(connector),
+    }))
     if (chosen && !isDeliverable(chosen)) {
       options.push({
         value: chosen.id,
         label: t("calendar.settings.notices.channel.disconnected", { name: channelLabel(chosen, t) }),
+        icon: icon(chosen),
       })
     }
     return options
