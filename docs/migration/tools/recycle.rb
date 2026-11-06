@@ -49,6 +49,8 @@ RENAMES = [
   [/workspace_alerts/, 'organization_alerts'],
   [/workspace_alert/, 'organization_alert'],
   [/PushNotificationService/, 'Push::Delivery'],
+  # O `Notification` da origem é o aviso por pessoa. O do Vekoo é outra coisa.
+  [/\bNotification\b/, 'AccountNotice'],
   [/PushSubscription/, 'PushDevice'],
   [/push_subscriptions/, 'push_devices'],
   [/push_subscription/, 'push_device'],
