@@ -7,14 +7,6 @@ RSpec.describe Connectors::Creator do
     described_class.call(organization: organization, params: ActionController::Parameters.new(params))
   end
 
-  def with_env(values)
-    saved = values.keys.to_h { |name| [ name, ENV[name] ] }
-    values.each { |name, value| ENV[name] = value }
-    yield
-  ensure
-    saved.each { |name, value| value ? ENV[name] = value : ENV.delete(name) }
-  end
-
   describe "tipo" do
     it "levanta UnknownType com tipo desconhecido, sem criar nada" do
       expect { create_connector(connector_type: "telegram") }.to raise_error(described_class::UnknownType)
@@ -167,6 +159,11 @@ RSpec.describe Connectors::Creator do
       connector = create_connector(connector_type: "whatsapp_web", provider_api: "evolution_api").connector
 
       expect(connector.provider_api).to eq("evolution_api")
+    end
+
+    it "recusa provider desconhecido, sem criar nem chamar ninguém" do
+      expect { create_connector(connector_type: "whatsapp_web", provider_api: "provedor_novo") }.to raise_error(Mongoid::Errors::Validations)
+      expect(Connector::WhatsappWeb.where(organization_id: organization.id).count).to eq(0)
     end
 
     it "propaga a falha da Evolution, sem marcar como pendente" do

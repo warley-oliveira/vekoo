@@ -6,7 +6,9 @@ module WidgetCable
     @server ||= begin
       cfg = ActionCable::Server::Configuration.new
       cfg.connection_class = -> { WidgetCable::Connection }
-      cfg.cable = Rails.application.config_for(:cable).deep_stringify_keys
+      # Como o engine faz no servidor principal. `config_for` devolve OrderedOptions, que guarda
+      # as chaves como símbolo, e o `fetch("adapter")` do ActionCable cairia sempre no redis.
+      cfg.cable = Rails.application.config_for(:cable).to_h.with_indifferent_access
       cfg.logger = Rails.logger
       cfg.allow_same_origin_as_host = true
       cfg.disable_request_forgery_protection = true

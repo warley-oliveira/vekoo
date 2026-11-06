@@ -162,6 +162,12 @@ RSpec.describe "Connectors", type: :request do
       expect(json["meta"]).to include("perPage" => 100)
     end
 
+    it "não passa de 100 por página" do
+      get "/connectors", params: { perPage: 1000 }, headers: headers
+
+      expect(json["meta"]).to include("perPage" => 100)
+    end
+
     it "fica vazio sem canais" do
       get "/connectors", headers: headers
 
@@ -303,16 +309,36 @@ RSpec.describe "Connectors", type: :request do
       end
 
       it "aceita a Z-API como provider" do
-        ENV["ZAPI_ACCOUNT_TOKEN"] = "conta-integradora"
         stub_zapi_on_demand
 
-        create_connector(connectorType: "whatsapp_web", providerApi: "zapi")
+        with_env("ZAPI_ACCOUNT_TOKEN" => "conta-integradora") do
+          create_connector(connectorType: "whatsapp_web", providerApi: "zapi")
+        end
 
         expect(response).to have_http_status(:created)
         expect(json["connector"]).to include("providerApi" => "zapi", "status" => "pending", "deleteForEveryoneSupported" => true, "reactionsSupported" => false)
         expect(response.body).not_to include("TOKEN-NOVO", "conta-integradora")
-      ensure
-        ENV.delete("ZAPI_ACCOUNT_TOKEN")
+      end
+
+      it "usa a Z-API quando a organização tem a flag e a tela não escolheu" do
+        organization.update!(features: { "zapi" => true })
+        stub_zapi_on_demand
+
+        with_env("ZAPI_ACCOUNT_TOKEN" => "conta-integradora") do
+          create_connector(connectorType: "whatsapp_web")
+        end
+
+        expect(response).to have_http_status(:created)
+        expect(json.dig("connector", "providerApi")).to eq("zapi")
+      end
+
+      it "a escolha da tela vale mais que a flag da organização" do
+        organization.update!(features: { "zapi" => true })
+
+        create_connector(connectorType: "whatsapp_web", providerApi: "aiva_api")
+
+        expect(response).to have_http_status(:created)
+        expect(json.dig("connector", "providerApi")).to eq("evolution_api")
       end
 
       it "responde 422 sem detalhes do provedor quando a Evolution falha" do
@@ -326,10 +352,20 @@ RSpec.describe "Connectors", type: :request do
       end
 
       it "responde 422 quando falta a conta integradora da Z-API" do
-        create_connector(connectorType: "whatsapp_web", providerApi: "zapi")
+        with_env("ZAPI_ACCOUNT_TOKEN" => nil) do
+          create_connector(connectorType: "whatsapp_web", providerApi: "zapi")
+        end
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("connectorActionFailed")
+      end
+
+      it "responde 422 com provider desconhecido, sem criar nem chamar ninguém" do
+        create_connector(connectorType: "whatsapp_web", providerApi: "provedor_novo")
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json["error"]).to include("code" => "unprocessable", "field" => "providerApi")
+        expect(Connector::WhatsappWeb.where(organization_id: organization.id).count).to eq(0)
       end
     end
 
@@ -647,6 +683,32 @@ RSpec.describe "Connectors", type: :request do
         expect(connector.reload.status).to eq(:active)
       end
 
+      it "liga pelo provedor AIVA, criando a instância, o webhook e a conexão" do
+        connector = create(:connector_whatsapp_web, :aiva, organization: organization, status: :inactive)
+        create_instance = stub_request(:post, "http://aiva.test/instance/create").to_return(provider_json({ hash: { apikey: "chave" } }, status: 201))
+        webhook = stub_request(:post, "http://aiva.test/webhook/set/#{connector.instance_name}").to_return(provider_json({}, status: 201))
+        connect = stub_request(:get, "http://aiva.test/instance/connect/#{connector.instance_name}").to_return(provider_json({}))
+
+        act(connector, :activate)
+
+        expect(response).to have_http_status(:ok)
+        expect(create_instance).to have_been_requested
+        expect(webhook).to have_been_requested
+        expect(connect).to have_been_requested
+        expect(json.dig("connector", "status")).to eq("pending")
+      end
+
+      it "responde com o conector failed e o motivo, sem avisar a volta, quando a Meta recusa sem exceção" do
+        connector = create(:connector_whatsapp_cloud, organization: organization, status: :inactive, phone_number_id: 123, waba_id: 456)
+        stub_cloud_phone_number_error(123, message: "Número não encontrado")
+
+        act(connector, :activate)
+
+        expect(response).to have_http_status(:ok)
+        expect(json["connector"]).to include("status" => "failed", "errorMessage" => "Número não encontrado")
+        expect(alerts).not_to have_received(:connector_reconnected)
+      end
+
       it "não chama o provedor se já está ativo, mas resolve os avisos" do
         connector = create(:connector_whatsapp_web, organization: organization)
 
@@ -731,10 +793,13 @@ RSpec.describe "Connectors", type: :request do
         expect(json.dig("error", "code")).to eq("connectorActionFailed")
       end
 
-      it "não faz nada no widget" do
-        act(create(:connector_web_widget, organization: organization), :reload)
+      [ :connector_web_widget, :connector_zapi, :connector_lead_chat ].each do |factory|
+        it "não faz nada em #{factory}, que não tem instância para recarregar" do
+          act(create(factory, organization: organization), :reload)
 
-        expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:ok)
+          expect(json.dig("connector", "status")).to eq("active")
+        end
       end
     end
 

@@ -362,6 +362,30 @@ RSpec.describe "ConnectorWidgets", type: :request do
     end
   end
 
+  # Do painel ao site: nasce desligado, a pessoa personaliza, liga, e o visitante entra.
+  it "funciona de ponta a ponta" do
+    post "/connectors", params: { connectorType: "web_widget" }, headers: headers, as: :json
+    id = json.dig("connector", "id")
+
+    get widget_path(id), headers: headers
+    pk = json.dig("widget", "publicToken")
+    expect(json.dig("widget", "active")).to be(false)
+
+    get "/widget/v1/config", params: { pk: pk }
+    expect(response).to have_http_status(:forbidden)
+
+    patch widget_path(id), params: { active: true, primaryColor: "#FF00AA" }, headers: headers, as: :json
+    expect(json.dig("widget", "active")).to be(true)
+
+    post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-ponta" }, as: :json
+    expect(response).to have_http_status(:ok)
+    expect(json.dig("config", "primaryColor")).to eq("#FF00AA")
+
+    post "/widget/v1/messages", params: { content: "Oi!" }, headers: { "Authorization" => "Bearer #{json['visitorJwt']}" }, as: :json
+    expect(response).to have_http_status(:created)
+    expect(Chat.where(connector_id: id, organization_id: organization.id).count).to eq(1)
+  end
+
   describe "DELETE /connectors/:id/widget" do
     it "fecha o widget, sem apagar a configuração" do
       connector.update!(primary_color: "#000000")

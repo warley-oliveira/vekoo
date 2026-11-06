@@ -114,6 +114,17 @@ RSpec.describe "Widget::V1::Messages", type: :request do
         expect(visitor_chat.automation_enabled).to be(false)
       end
 
+      it "aceita a mensagem de conector cuja organização sumiu, sem chamar o dispatcher" do
+        connector
+        Organization.where(id: organization.id).delete_all
+
+        send_message
+
+        expect(response).to have_http_status(:created)
+        expect(visitor_chat.automation_enabled).to be(true)
+        expect(Flows::InboundDispatcher).not_to have_received(:call)
+      end
+
       it "grava a mensagem do visitante" do
         send_message("mensagem do visitante")
 

@@ -3,6 +3,10 @@ require "rails_helper"
 # As defesas da API pública do widget. Os limites por minuto só valem em teste com
 # WIDGET_THROTTLE_TESTS; o cache de teste é de memória, então os contadores são de verdade.
 RSpec.describe "Widget::V1 segurança", type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
+  after { travel_back }
+
   let(:connector) { create(:connector_web_widget, pre_chat_fields: "name") }
   let(:pk) { connector.public_token }
 
@@ -256,6 +260,25 @@ RSpec.describe "Widget::V1 segurança", type: :request do
 
       expect_rate_limited
     end
+
+    it "libera de novo no minuto seguinte" do
+      31.times { post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-burst" }, as: :json }
+      expect(response).to have_http_status(:too_many_requests)
+
+      travel 61.seconds
+
+      post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-burst" }, as: :json
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "não vale sem a chave de teste, para o resto das specs não dependerem do relógio" do
+      with_env("WIDGET_THROTTLE_TESTS" => nil) do
+        31.times { post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-burst" }, as: :json }
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "campos grandes" do
@@ -322,6 +345,17 @@ RSpec.describe "Widget::V1 segurança", type: :request do
 
         expect(response).to have_http_status(:ok)
       end
+
+      it "libera no dia seguinte" do
+        3.times { |i| send_message("msg #{i}") }
+        expect(response).to have_http_status(:too_many_requests)
+
+        travel 1.day + 1.minute
+
+        send_message("novo dia")
+
+        expect(response).to have_http_status(:created)
+      end
     end
 
     it "não limita mensagens com cota zero" do
@@ -369,6 +403,16 @@ RSpec.describe "Widget::V1 segurança", type: :request do
         post "/widget/v1/visitor", params: { name: "Maria" }, headers: jwt_headers("visitor-cap-A"), as: :json
 
         send_message("oi", headers: jwt_headers("visitor-cap-A"))
+
+        expect(response).to have_http_status(:created)
+      end
+
+      it "libera no dia seguinte" do
+        send_message("oi", headers: jwt_headers("visitor-cap-A"))
+
+        travel 1.day + 1.minute
+
+        send_message("oi", headers: jwt_headers("visitor-cap-B"))
 
         expect(response).to have_http_status(:created)
       end

@@ -25,6 +25,10 @@ class Connector::WhatsappWeb < Connector::Base
     'evolution_api' => Providers::EvolutionApi
   }.freeze
 
+  # Sem isto, um provider desconhecido cairia no AIVA sem `base_url`, e a ativação sairia para
+  # `http://:80` levando a chave no cabeçalho.
+  validates :provider_api, inclusion: { in: PROVIDERS.keys }, allow_nil: true
+
   before_create do
     # When the caller (frontend) passes `provider_api` explicitly, the organization's
     # `zapi` feature flag must NOT silently overwrite it.

@@ -65,4 +65,34 @@ RSpec.describe Widget::ChatChannel, type: :channel do
 
     expect(subscription.streams).to be_empty
   end
+
+  it "não entrega nada a quem entrou pela plataforma" do
+    stub_connection current_account: create(:account)
+
+    expect { subscribe }.to raise_error(NameError)
+    expect(subscription.streams).to be_empty
+  end
+end
+
+# O ActionCable aceita qualquer nome de canal no `subscribe`, nos dois servidores. O que separa
+# as duas pontas é a identidade da conexão: o visitante não tem `current_account`, e quem entrou
+# na plataforma não tem conector de widget.
+[ ChatChannel, ChatListChannel, ConnectorsChannel ].each do |platform_channel|
+  RSpec.describe platform_channel, type: :channel do
+    let(:connector) { create(:connector_whatsapp_web) }
+    let(:chat) { create(:chat, connector: connector) }
+
+    before { stub_connection visitor_id: "visitor-uuid-abc", web_widget_connector_id: create(:connector_web_widget).id.to_s }
+
+    it "não entrega nada ao visitante do widget" do
+      begin
+        subscribe(chatId: chat.id.to_s, connectorId: connector.id.to_s)
+      rescue NameError
+        # Em produção o ActionCable registra o erro e não confirma a inscrição.
+        nil
+      end
+
+      expect(subscription.streams).to be_empty
+    end
+  end
 end

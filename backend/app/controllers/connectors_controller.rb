@@ -57,7 +57,8 @@ class ConnectorsController < PlatformController
       activate_connector
     end
 
-    Connectors::Alerts.reconnected(@connector)
+    # O provedor pode recusar sem levantar exceção (o conector fica `failed`, com o motivo).
+    Connectors::Alerts.reconnected(@connector) unless @connector.failed?
     render_connector
   rescue StandardError => e
     render_action_failure("activate", e)

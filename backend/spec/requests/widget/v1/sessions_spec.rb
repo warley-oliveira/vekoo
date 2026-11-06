@@ -71,9 +71,49 @@ RSpec.describe "Widget::V1::Sessions", type: :request do
     end
 
     it "responde 400 com visitante curto demais" do
-      post "/widget/v1/session", params: { pk: pk, visitorId: "abc" }, as: :json
+      post "/widget/v1/session", params: { pk: pk, visitorId: "a" * 7 }, as: :json
 
       expect(response).to have_http_status(:bad_request)
+    end
+
+    it "responde 400 com visitante longo demais" do
+      post "/widget/v1/session", params: { pk: pk, visitorId: "a" * 65 }, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it "aceita os tamanhos no limite" do
+      [ 8, 64 ].each do |size|
+        post "/widget/v1/session", params: { pk: pk, visitorId: "a" * size }, as: :json
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "aceita o uuid que o widget gera" do
+      post "/widget/v1/session", params: { pk: pk, visitorId: SecureRandom.uuid }, as: :json
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "confere o visitante antes do token, sem dizer se o token existe" do
+      post "/widget/v1/session", params: { pk: "pk_widget_unknown_xyz", visitorId: "x" }, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it "responde 401 com token público curto demais" do
+      post "/widget/v1/session", params: { pk: "pk_widget_abc", visitorId: "visitor-spec-1" }, as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "responde 403 com o conector pausado" do
+      connector.set(status_cd: "paused")
+
+      post "/widget/v1/session", params: { pk: pk, visitorId: "visitor-spec-1" }, as: :json
+
+      expect(response).to have_http_status(:forbidden)
     end
 
     it "responde 403 com o conector desligado" do

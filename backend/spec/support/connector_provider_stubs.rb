@@ -14,6 +14,15 @@ module ConnectorProviderStubs
     { status: status, body: body.to_json, headers: { "Content-Type" => "application/json" } }
   end
 
+  # Credenciais de provedor vêm do ambiente. `nil` tira a variável durante o bloco.
+  def with_env(values)
+    saved = values.keys.to_h { |name| [ name, ENV[name] ] }
+    values.each { |name, value| ENV[name] = value }
+    yield
+  ensure
+    saved.each { |name, value| ENV[name] = value }
+  end
+
   def meta_error(message = "Erro da Meta", status: 400, code: 100)
     provider_json({ error: { message: message, type: "OAuthException", code: code, fbtrace_id: "abc" } }, status: status)
   end

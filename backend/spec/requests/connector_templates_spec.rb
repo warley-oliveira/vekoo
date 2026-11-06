@@ -141,6 +141,16 @@ RSpec.describe "ConnectorTemplates", type: :request do
       end
     end
 
+    it "não derruba a tela quando o conector não tem WABA nem business_id" do
+      connector.set(waba_id: nil, business_id: nil)
+      create(:whatsapp_template, connector: connector, name: "guardado")
+
+      get templates_path, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(json["templates"].map { |template| template["name"] }).to eq(%w[guardado])
+    end
+
     it "não mostra o modelo de outro conector da organização" do
       other = create(:connector_whatsapp_cloud, organization: organization)
       create(:whatsapp_template, connector: other, name: "do_outro")
