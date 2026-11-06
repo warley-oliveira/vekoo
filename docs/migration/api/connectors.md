@@ -1699,7 +1699,8 @@ message = chat.send_text_message("Seu horário é amanhã às 9h", "Agenda", { c
 ```
 
 - Assinatura: `send_text_message(text, sender_name = nil, attributes = {})`. Sem `sender_name`, vale o nome da organização.
-- **Levanta quando o canal levanta** (Evolution, por exemplo): a mensagem fica `failed` com a causa e a exceção segue, para você decidir sobre nova tentativa. A recusa da Meta não levanta: fica `failed` com o motivo em `status_message`. Olhe `message.status` nos dois casos.
+- **Levanta quando o canal levanta** (Evolution, por exemplo): a mensagem já está gravada como `failed`, com a causa, e a exceção segue para você decidir sobre nova tentativa.
+- **A recusa da Meta não levanta:** a mensagem volta `failed`, com o motivo em `status_message`. Olhe `message.status` no retorno.
 - Atualiza a prévia e sobe a conversa na lista. Não mexe na automação.
 
 Quando não deve subir na lista nem levantar (lembrete, por exemplo):
