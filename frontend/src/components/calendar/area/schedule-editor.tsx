@@ -131,13 +131,13 @@ export function ScheduleEditor({
             key={dayOfWeek}
             role="group"
             aria-label={dayName}
-            className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-2 py-2.5 first:pt-0 last:pb-0 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto]"
+            className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-2 py-2.5 first:pt-0 last:pb-0 sm:grid-cols-[9.5rem_minmax(0,1fr)_auto]"
             onBlur={(event) => {
               if (event.currentTarget.contains(event.relatedTarget)) return
               setTouched((current) => new Set(current).add(dayOfWeek))
             }}
           >
-            <label className="flex min-h-8 min-w-0 cursor-pointer items-center gap-3 pointer-coarse:min-h-10">
+            <label className="flex min-h-8 min-w-0 cursor-pointer items-center gap-3 self-start pointer-coarse:min-h-10">
               <Switch
                 checked={day.enabled}
                 onCheckedChange={(checked) => toggleDay(dayOfWeek, checked)}

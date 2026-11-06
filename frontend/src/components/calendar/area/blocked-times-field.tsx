@@ -50,62 +50,62 @@ export function BlockedTimesField<TValues extends FieldValues, TName extends Fie
                 <motion.li
                   key={index}
                   {...preset.listItem}
-                  className="flex items-start gap-2 rounded-lg p-3 ring-1 ring-foreground/10"
+                  className="grid gap-3 rounded-lg p-3 ring-1 ring-foreground/10 sm:grid-cols-2"
                 >
-                  <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
-                    <Field
-                      label={t("calendar.collaborators.blocks.start")}
-                      action={
-                        past ? (
-                          <StatusBadge tone="neutral" dot={false}>
-                            {t("calendar.collaborators.blocks.past")}
-                          </StatusBadge>
-                        ) : undefined
-                      }
-                    >
-                      {(controlProps) => (
-                        <DateTimePicker
-                          {...controlProps}
-                          label={t("calendar.collaborators.blocks.start")}
-                          value={parseWall(block.start)}
-                          defaultTime="09:00"
-                          onChange={(next) => {
-                            if (next) update(index, withStart(block, next))
-                          }}
-                        />
-                      )}
-                    </Field>
-                    <Field
-                      label={t("calendar.collaborators.blocks.end")}
-                      error={
-                        problem ? t(`calendar.collaborators.blocks.errors.${problem}`) : undefined
-                      }
-                    >
-                      {(controlProps) => (
-                        <DateTimePicker
-                          {...controlProps}
-                          label={t("calendar.collaborators.blocks.end")}
-                          value={parseWall(block.end)}
-                          defaultTime="18:00"
-                          onChange={(next) => {
-                            if (next) update(index, { ...block, end: formatWall(next) })
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={t("calendar.collaborators.blocks.remove")}
-                    className="mt-6 shrink-0 text-muted-foreground hover:text-destructive"
-                    onClick={() =>
-                      field.onChange(blocks.filter((_, position) => position !== index))
+                  <Field
+                    label={t("calendar.collaborators.blocks.start")}
+                    action={
+                      past ? (
+                        <StatusBadge tone="neutral" dot={false}>
+                          {t("calendar.collaborators.blocks.past")}
+                        </StatusBadge>
+                      ) : undefined
                     }
                   >
-                    <Trash2 />
-                  </Button>
+                    {(controlProps) => (
+                      <DateTimePicker
+                        {...controlProps}
+                        label={t("calendar.collaborators.blocks.start")}
+                        value={parseWall(block.start)}
+                        defaultTime="09:00"
+                        onChange={(next) => {
+                          if (next) update(index, withStart(block, next))
+                        }}
+                      />
+                    )}
+                  </Field>
+                  <Field
+                    label={t("calendar.collaborators.blocks.end")}
+                    error={
+                      problem ? t(`calendar.collaborators.blocks.errors.${problem}`) : undefined
+                    }
+                    action={
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        aria-label={t("calendar.collaborators.blocks.remove")}
+                        className="-my-1 text-muted-foreground hover:text-destructive"
+                        onClick={() =>
+                          field.onChange(blocks.filter((_, position) => position !== index))
+                        }
+                      >
+                        <Trash2 />
+                      </Button>
+                    }
+                  >
+                    {(controlProps) => (
+                      <DateTimePicker
+                        {...controlProps}
+                        label={t("calendar.collaborators.blocks.end")}
+                        value={parseWall(block.end)}
+                        defaultTime="18:00"
+                        onChange={(next) => {
+                          if (next) update(index, { ...block, end: formatWall(next) })
+                        }}
+                      />
+                    )}
+                  </Field>
                 </motion.li>
               )
             })}
