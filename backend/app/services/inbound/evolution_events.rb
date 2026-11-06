@@ -451,6 +451,7 @@ module Inbound
       # `presences` é chaveado pelo JID completo: a chave original só serve para o lookup.
       presence = data&.dig(:presences, raw_jid, :lastKnownPresence)
       Rails.cache.write("presence.#{chat.id}", presence, expires_in: 10.seconds)
+      ActionCable.server.broadcast(ChatMessage::Base.stream_for(chat), { event: "presence", value: presence })
     end
 
     # ========================================================================

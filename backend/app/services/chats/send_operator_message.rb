@@ -109,7 +109,7 @@ module Chats
         end
       rescue StandardError => e
         Rails.logger.error("[Chats::SendOperatorMessage] media dispatch failed: #{e.message}")
-        part.update(status: "failed", status_message: e.message)
+        part.update(status: "failed", status_message: Connectors::SendFailure.reason(e))
       end
 
       sleep(1) if @has_span
@@ -123,7 +123,7 @@ module Chats
         connector.send_text_message(chat.phone_number, with_collaborator_prefix(piece), chat, reply_to_external_id: next_reply_external_id)
       rescue StandardError => e
         Rails.logger.error("[Chats::SendOperatorMessage] text dispatch failed: #{e.message}")
-        send_error = e.message
+        send_error = Connectors::SendFailure.reason(e)
         nil
       end
       send_error ||= connector.try(:last_send_error) unless external_id

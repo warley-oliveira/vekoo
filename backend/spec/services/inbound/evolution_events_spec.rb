@@ -1384,6 +1384,11 @@ RSpec.describe Inbound::EvolutionEvents do
       expect(Rails.cache.read("presence.#{chat.id}")).to eq("composing")
     end
 
+    it "avisa a conversa aberta, para a tela mostrar que o contato está digitando" do
+      expect { handle("presence.update", presence_data(phoneNumber: phone)) }
+        .to have_broadcasted_to(ChatMessage::Base.stream_for(chat)).with("event" => "presence", "value" => "composing")
+    end
+
     it "tira o sufixo do id quando não há phoneNumber" do
       handle("presence.update", presence_data(presence: "paused"))
 

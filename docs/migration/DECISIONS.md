@@ -196,6 +196,21 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Tetos:** 50 tags, 64 KB de valores de campo, 256 KB de descrição, 20 mil caracteres por comentário, 10 arquivos, 25 MB.
 - **Defeitos da origem corrigidos:** IDORs entre organizações em `column_checks#toggle`, `Conversation.find`, `kanban_column_id`, `parent_id` e responsável; SSRF e escape de JSON no webhook; injeção de tokens nas mensagens; `deal_reopened` nunca disparava; reordenar pulava as travas; os jobs de SLA e prazo nunca estavam agendados; corrida no rodízio.
 
+### Chat: tela (fe-chat-core)
+
+- **"Todos" são contatos unificados**, sem etiquetas nem responsável na linha, porque a API não manda esses dados. Aba de canal é a lista clássica.
+- **Caixa de texto simples**, com linhas `📎 Nome` para anexos citados, em vez de editor rico. Colar e soltar arquivo passam pelo diálogo de anexos. Gravação de áudio limitada a 15 minutos.
+- **Variável sem valor** em mensagem rápida continua à vista, com aviso: o primeiro Enter seleciona a variável, e o segundo envia assim mesmo.
+- **"Tentar de novo"** apaga a bolha que falhou (para mim) e reenvia. Envio otimista desiste em 20 s. Reação vai por REST. Excluir uma mensagem usa `bulk-delete`.
+- **Conversa aberta marca como lida.** O visualizador percorre toda a mídia carregada.
+- **Rolagem:** o histórico não desenha nada acima da tela; as antigas descem 20 linhas antes do topo. A rolagem automática é instantânea e a animação fica na bolha, porque com rolagem animada a posição saltava cerca de 700 px.
+- **Reconexão:** pede `request_recent`, com conferência por HTTP se não houver resposta em 6 s, ou em 15 s com o socket fora.
+- **Áudio de CDN externo** passa por `/media/download`, porque `connect-src` bloquearia o `fetch`. Depende de `MEDIA_PROXY_ALLOWED_HOSTS`.
+- **Com dedo não há lápis:** "Editar nome" fica no menu. A prévia do menu `/` reusa `QuickReplyPreview`, com a bolha verde-suave de lá.
+- **Fora, por não existir aqui:** modo depuração (`context-clear`, `context-fup`: sem `super_user`) e filtros por etapa do funil e por assistente (`Chats::Filters` não os conhece).
+- **Acréscimos na API:** `lastMessageType` em `/unified-contacts`; mudar só `status_message` agora é transmitido; dividida em partes, o aviso de anexo citado vai na última parte; o aviso é uma frase (`connectors.messages.cited_attachment_missing`), com o id só no log.
+- **Acréscimos do integrador:** falha de rede no envio mostra "O canal não respondeu. Tente de novo em instantes." (`Connectors::SendFailure`), em vez do erro cru em inglês; recusa do provedor continua como veio. `presence.update` da Evolution agora chega a `ChatChannel`, e é o único provedor que informa "digitando".
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -224,17 +239,16 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Front em produção: `VITE_FB_APP_ID`, `VITE_FB_CONFIG_ID`, `VITE_FB_META_CONFIG_ID`, `VITE_FB_SDK_VERSION`, `VITE_IG_APP_ID` e `VITE_IG_REDIRECT_URI` (sem elas, as opções da Meta aparecem desabilitadas, com aviso), e registrar `https://<front>/auth/instagram/callback` na Meta.
 - Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION, pareamento na Z-API (`zapi_get_phone_code` existe, mas nenhum fluxo chama).
 - Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
+- `MEDIA_PROXY_ALLOWED_HOSTS` em produção precisa listar o CDN de mídia: host fora da lista dá erro no player de áudio do Safari, e só nele.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
 
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
-- `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
 - `fe-connectors` (já integrado): seletor de anexos no cabeçalho do modelo de WhatsApp, agora que a API de anexos existe. Hoje é um campo de URL pública.
-- `fe-chat-core`: `connectorProvider` agora é `zapi` (a origem compara com `z_api`); ações em lote não avisam o tempo real, então a tela recarrega a lista; a regra de auto-remover `aguardando-operador` fica na tela, lendo `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`; eventos `bookings_changed` e `scheduled_actions_changed`; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
+- `fe-chat-details`: ações em lote não avisam o tempo real, então chamar `afterBulkAction` depois delas; eventos `bookings_changed` e `scheduled_actions_changed` chegam por `ChatChannel` e `applyChannelMessage` os ignora: o painel que precisar deles escuta por conta própria; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
 - `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
-- `fe-chat-core` e `fe-chat-mobile`: **ao inserir mensagem rápida, chamar `fillQuickReply(reply.content, { contactName, phone, agentName, customAttributes })`** de `lib/content/quick-reply-content.ts`. Sem isso, `{{nome}}` chega literal ao contato.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
@@ -244,7 +258,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 ### Back (Fase 2)
 
 - `be-inbox`: `chat_list_to` usa `team` (não `department`), e a atribuição de conversa deve filtrar pessoas `setupOnly`. API de lista de conversas e mensagens, apagar e reagir por REST, `Attachment` conforme `Media::AttachmentLookup`, `import_contacts*` e `normalize_custom_attributes`.
-- `be-automation`: substituir o stub `Flows::InboundDispatcher`; debounce; eventos `human_handoff` e `contact_created`; leitor de presença (`presence.<chatId>`), para "digitando" chegar à tela; alertas por hook.
+- `be-automation`: substituir o stub `Flows::InboundDispatcher`; debounce; eventos `human_handoff` e `contact_created`; leitor de presença (`presence.<chatId>`), para a automação esperar a pessoa terminar de digitar (a transmissão para a tela já existe); alertas por hook.
 - `be-pipelines` e `be-agenda`: mapeamento em `ConnectorEventService` (usa `model.service` e `model.professional`), `ChatRelations::*`, `BackfillSystemTagsService`.
 - `be-outreach`: `Outreach::Recipient` hoje é guardado por `defined?`; remover a guarda. `ChatMessage#campaign_id` já existe.
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.

@@ -592,7 +592,7 @@ RSpec.describe Chat do
       it "marca como failed com a causa e deixa o erro seguir" do
         expect { chat.send_text_message("olá") }.to raise_error(Net::OpenTimeout)
 
-        expect(sent_message).to have_attributes(status: "failed", status_message: "execution expired")
+        expect(sent_message).to have_attributes(status: "failed", status_message: I18n.t("connectors.messages.channel_unreachable"))
       end
 
       it "mantém a tentativa visível no chat" do
@@ -685,7 +685,7 @@ RSpec.describe Chat do
       stub_request(:post, send_url).to_timeout
 
       expect(chat.send_text_message_without_event("olá", "Fluxo", true)).to be_nil
-      expect(sent_message).to have_attributes(message_id: nil, status: "failed", status_message: "execution expired")
+      expect(sent_message).to have_attributes(message_id: nil, status: "failed", status_message: I18n.t("connectors.messages.channel_unreachable"))
     end
   end
 

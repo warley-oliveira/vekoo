@@ -1855,7 +1855,7 @@ A semente não preenche `DailyChatStat`: o formato de `metrics` é do domínio i
 
 ## Limitações conhecidas
 
-- **`presence.update`** da Evolution é guardado em cache, em `presence.<chatId>`, mas ainda não há quem leia. "Digitando" do contato não chega à tela.
+- **`presence.update`** da Evolution vai para `ChatChannel` como `{ event: "presence", value }` (`composing`, `recording`, `paused`, `available`) e fica 10 s em cache, em `presence.<chatId>`, para a automação. É o único provedor que informa "digitando": nos outros, a tela só não mostra.
 - **Mídia sem id do provedor:** o LeadChat devolve `nil` no tempo esgotado ignorado, e a mensagem fica `delivery_ack`.
 - **`/media/*` não confere a organização:** o acesso é por chave ou id assinado, como capacidade.
 - **Vídeo e figurinha recebidos na WABA** não viram mensagem, como na origem.

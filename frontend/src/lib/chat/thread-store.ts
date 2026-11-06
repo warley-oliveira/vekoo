@@ -233,7 +233,7 @@ const typingTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
 /**
  * "Digitando". Sem evento de fim garantido, então expira sozinho, no mesmo prazo que o servidor
- * guarda a presença. Hoje nenhum canal transmite: o leitor de presença é de `be-automation`.
+ * guarda a presença. Só a Evolution informa: nos outros canais o aviso simplesmente não aparece.
  */
 function setTyping(key: string, typing: boolean) {
   const timer = typingTimers.get(key)

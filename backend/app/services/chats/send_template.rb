@@ -55,7 +55,7 @@ module Chats
       end
     rescue StandardError => e
       Rails.logger.error("[Chats::SendTemplate] #{e.class}: #{e.message}")
-      message.update(status: "failed", status_message: e.message)
+      message.update(status: "failed", status_message: Connectors::SendFailure.reason(e))
     end
 
     def base_attributes

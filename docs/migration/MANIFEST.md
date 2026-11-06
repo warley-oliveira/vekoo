@@ -128,7 +128,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 12 | **fe-settings-people**: usuários, departamentos, grupos, perfil, notificações | `components/{users,departments,authorization-roles,profile}`, `pages/settings/*`, `NotificationSettingsPage`, `PushNotificationSettings`, `Profile/*` | ✅ |
 | 13 | **fe-settings-content**: mensagens rápidas, anexos, campos personalizados | `components/{chat-snippets,attachments,custom-fields,definitions}`, `pages/settings/{chat-snippets,attachments,custom-fields}` | ✅ |
 | 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ✅ |
-| 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | 🔄 |
+| 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | ✅ |
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |
 | 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ✅ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | 🔄 |
@@ -138,8 +138,8 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
-| 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | ⬜ |
-| 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | ⬜ |
+| 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | 🔄 |
+| 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | 🔄 |
 | 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar, filtros e filtros salvos | `components/kanban-v2/{board,column,card,filter}`, `pages/apps/kanban-v2` | 🔄 |
 | 22 | **fe-pipelines-admin**: gatilhos, metas, campos, etiquetas, ajustes do quadro, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals}`, `use-kanban-*` | 🔄 |
 | 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | 🔄 |

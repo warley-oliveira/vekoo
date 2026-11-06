@@ -362,7 +362,7 @@ RSpec.describe Chats::SendOperatorMessage do
       chat
 
       expect { send_message("Olá") }.to have_broadcasted_to(message_stream).with(
-        a_hash_including("status" => "failed", "statusMessage" => "execution expired")
+        a_hash_including("status" => "failed", "statusMessage" => I18n.t("connectors.messages.channel_unreachable"))
       )
     end
 
@@ -463,7 +463,7 @@ RSpec.describe Chats::SendOperatorMessage do
       chat
 
       expect { send_message("attachment_id_#{attachment.id}") }.to have_broadcasted_to(message_stream).with(
-        a_hash_including("typeElement" => "media", "status" => "failed", "statusMessage" => "execution expired")
+        a_hash_including("typeElement" => "media", "status" => "failed", "statusMessage" => I18n.t("connectors.messages.channel_unreachable"))
       )
     end
 

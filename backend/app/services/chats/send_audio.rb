@@ -70,7 +70,7 @@ module Chats
       message.update(message_id: Connectors::ExternalId.from(response), status: "delivery_ack")
     rescue StandardError => e
       Rails.logger.error("[Chats::SendAudio] #{e.class}: #{e.message}")
-      message.update(status: "failed", status_message: e.message)
+      message.update(status: "failed", status_message: Connectors::SendFailure.reason(e))
     end
 
     # A API oficial aceita mp3; os outros canais tocam como áudio gravado em ogg/opus.

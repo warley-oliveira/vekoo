@@ -388,7 +388,7 @@ RSpec.describe ChatChannel, type: :channel do
 
         perform_send("Hello")
 
-        expect(parent_message).to have_attributes(status: "failed", status_message: "execution expired")
+        expect(parent_message).to have_attributes(status: "failed", status_message: I18n.t("connectors.messages.channel_unreachable"))
       end
     end
 

@@ -10,7 +10,7 @@ RSpec.describe ZapiClient, "erro de rede" do
   it "vira ZapiClient::Error com a causa" do
     stub_request(:post, url).to_timeout
 
-    expect { client.send_text("5511999999999", "Oi") }.to raise_error(ZapiClient::Error, /Z-API connection error: execution expired/)
+    expect { client.send_text("5511999999999", "Oi") }.to raise_error(ZapiClient::ConnectionError, /Z-API connection error: execution expired/)
   end
 
   it "não espera" do

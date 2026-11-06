@@ -66,7 +66,7 @@ class ZapiClient
       end
 
       log_error("Z-API connection error: #{error.message}")
-      raise ZapiClient::Error, "Z-API connection error: #{error.message}"
+      raise ZapiClient::ConnectionError, "Z-API connection error: #{error.message}"
     end
     private_class_method :handle_error
 

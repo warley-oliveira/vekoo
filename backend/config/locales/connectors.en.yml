@@ -62,6 +62,7 @@ en:
       reaction_failed: "The reaction could not be sent on the channel."
       attachment_not_found: "Attachment %{name} not found."
       attachment_blank: "Attachment %{name} is blank."
+      channel_unreachable: "The channel did not respond. Try again in a moment."
       cited_attachment_missing: "A cited attachment no longer exists and was not sent."
       template_failed: "The message template could not be sent."
       template_fallback: "Template: %{name}"

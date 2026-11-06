@@ -252,7 +252,7 @@ class Chat
     text_message_id = begin
       connector.send_text_message(phone_number, message, self)
     rescue StandardError => e
-      history.update(status: "failed", status_message: e.message)
+      history.update(status: "failed", status_message: Connectors::SendFailure.reason(e))
       raise
     end
 
@@ -277,7 +277,7 @@ class Chat
       connector.send_text_message(phone_number, message, self)
     rescue StandardError => e
       Rails.logger.error("Failed to send text message: #{e.message}")
-      send_error = e.message
+      send_error = Connectors::SendFailure.reason(e)
       nil
     end
     send_error ||= connector.try(:last_send_error) unless text_message_id

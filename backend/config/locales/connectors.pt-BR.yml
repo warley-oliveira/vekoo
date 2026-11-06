@@ -62,6 +62,7 @@ pt-BR:
       reaction_failed: "Não foi possível enviar a reação no canal."
       attachment_not_found: "Anexo %{name} não encontrado."
       attachment_blank: "Anexo %{name} está em branco."
+      channel_unreachable: "O canal não respondeu. Tente de novo em instantes."
       cited_attachment_missing: "Um anexo citado não existe mais e não foi enviado."
       template_failed: "Não foi possível enviar o modelo de mensagem."
       template_fallback: "Modelo: %{name}"

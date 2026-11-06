@@ -184,7 +184,7 @@ RSpec.describe Chats::SendMedia do
     it "fica failed com a rede fora" do
       stub_request(:post, evolution_media_url).to_timeout
 
-      expect(send_media.reload).to have_attributes(status: "failed", status_message: "execution expired")
+      expect(send_media.reload).to have_attributes(status: "failed", status_message: I18n.t("connectors.messages.channel_unreachable"))
     end
 
     it "transmite o status failed para a tela" do

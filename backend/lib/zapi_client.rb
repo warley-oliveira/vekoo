@@ -120,7 +120,7 @@ class ZapiClient
   #   Repetir de verdade duplicaria mensagem depois de um timeout de leitura, por isso não há.
   def handle_request_error(error, _tries)
     log_error("Z-API connection error: #{error.message}")
-    raise Error, "Z-API connection error: #{error.message}"
+    raise ConnectionError, "Z-API connection error: #{error.message}"
   end
 
   # Logs a warning message

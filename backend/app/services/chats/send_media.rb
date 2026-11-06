@@ -61,7 +61,7 @@ module Chats
       message.update(message_id: external_id, status: "delivery_ack")
     rescue StandardError => e
       Rails.logger.error("[Chats::SendMedia] #{e.class}: #{e.message}")
-      message.update(status: "failed", status_message: e.message)
+      message.update(status: "failed", status_message: Connectors::SendFailure.reason(e))
     end
   end
 end
