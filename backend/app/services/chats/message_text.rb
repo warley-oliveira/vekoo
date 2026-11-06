@@ -14,8 +14,11 @@ module Chats
       labeled(message.content, message.type_element)[0, limit]
     end
 
-    # Para a prévia que fica na conversa (`last_message_content`, `last_message_type`).
+    # Para a prévia que fica na conversa (`last_message_content`, `last_message_type`). Sem os dois,
+    # a conversa ainda não tem mensagem, como a recém-importada: nil, e não um rótulo de mensagem.
     def preview(content, type, limit: 200)
+      return nil if content.nil? && type.nil?
+
       labeled(content, type)[0, limit]
     end
 

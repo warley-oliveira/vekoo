@@ -358,6 +358,17 @@ RSpec.describe "Contatos", type: :request do
       CSV.parse(response.body)
     end
 
+    it "não repete nem perde ninguém entre os lotes, mesmo com a mesma data de criação" do
+      stub_const("Contacts::CsvExport::BATCH_SIZE", 2)
+      moment = Time.utc(2026, 9, 1, 10, 30)
+      names = %w[Ana Bia Caio Dani Elis]
+      names.each { |name| chat_for(user_name: name, created_at: moment) }
+
+      get "/contacts/export", headers: headers
+
+      expect(rows.drop(1).map(&:first)).to match_array(names)
+    end
+
     it "gera o CSV, com o fuso da organização e os campos personalizados" do
       create(:custom_field, organization_id: organization.id, name: "Cidade")
       connector = create(:connector_whatsapp_web, organization: organization, profile_name: "Doma Store")

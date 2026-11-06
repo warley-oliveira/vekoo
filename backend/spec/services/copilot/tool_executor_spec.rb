@@ -75,6 +75,14 @@ RSpec.describe Copilot::ToolExecutor do
       expect(list[:chats].first[:last_message_from]).to eq("atendente")
     end
 
+    it "não atribui mensagem a ninguém na conversa que ainda não tem nenhuma" do
+      chat_for(user_name: "Helena Martins", last_message_content: nil, last_message_type: nil, last_message_by: nil)
+
+      entry = executor.execute("search_chats", { "query" => "Helena" })[:chats].first
+
+      expect(entry).to include(last_message_content: nil, last_message_from: nil)
+    end
+
     it "corta o que guarda, porque mora num documento só" do
       chat = chat_for
       create(:chat_text_message, chat: chat, content: "x" * 390)

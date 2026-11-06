@@ -30,7 +30,9 @@ module Contacts
     def each_batch
       offset = 0
       loop do
-        records = scope.only(*FIELDS).order_by(created_at: :asc).skip(offset).limit(BATCH_SIZE).to_a
+        # Com o id desempatando: importação cria muitas conversas no mesmo instante, e sem ordem
+        # total o Mongo pode repetir uma linha entre um lote e outro e perder outra.
+        records = scope.only(*FIELDS).order_by(created_at: :asc, _id: :asc).skip(offset).limit(BATCH_SIZE).to_a
         break if records.empty?
 
         yield records.map { |chat| row(chat, lookups_for(records)) }

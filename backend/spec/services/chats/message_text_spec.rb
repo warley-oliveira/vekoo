@@ -52,6 +52,10 @@ RSpec.describe Chats::MessageText do
       expect(described_class.preview("Oi", nil)).to eq("Oi")
     end
 
+    it "não inventa mensagem na conversa que ainda não tem nenhuma" do
+      expect(described_class.preview(nil, nil)).to be_nil
+    end
+
     it "limita a prévia" do
       expect(described_class.preview("x" * 300, "text").size).to eq(200)
     end

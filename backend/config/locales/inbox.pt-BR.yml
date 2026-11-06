@@ -48,7 +48,6 @@ pt-BR:
         content: "conteúdo"
       chat_view:
         name: "nome"
-        account: "conta"
       attachment:
         name: "nome"
         file: "arquivo"

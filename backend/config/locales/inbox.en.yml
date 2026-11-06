@@ -47,7 +47,6 @@ en:
         content: "Content"
       chat_view:
         name: "Name"
-        account: "Account"
       attachment:
         name: "Name"
         file: "File"
