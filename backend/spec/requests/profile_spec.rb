@@ -32,7 +32,7 @@ RSpec.describe "Perfil", type: :request do
 
   describe "PATCH /profile" do
     it "edita nome, telefone e idioma" do
-      patch "/profile", params: { name: "Marina D.", phone: "5511987654321", locale: "en" }, headers: headers, as: :json
+      patch "/profile", params: { profile: { name: "Marina D.", phone: "5511987654321", locale: "en" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json).to include("name" => "Marina D.", "phone" => "5511987654321", "locale" => "en")
@@ -41,7 +41,7 @@ RSpec.describe "Perfil", type: :request do
     it "funciona para quem não tem permissão nenhuma de administração" do
       member = create(:account, organization: account.organization, role: "member")
 
-      patch "/profile", params: { name: "Outro Nome" }, headers: auth_headers(member), as: :json
+      patch "/profile", params: { profile: { name: "Outro Nome" } }, headers: auth_headers(member), as: :json
 
       expect(response).to have_http_status(:ok)
       expect(member.reload.name).to eq("Outro Nome")
@@ -52,24 +52,41 @@ RSpec.describe "Perfil", type: :request do
       role = account.organization.access_roles.find_by!(name: "Gerente")
 
       patch "/profile",
-        params: { email: "outro@exemplo.com.br", role: "owner", accessRoleId: role.id },
+        params: { profile: { name: "Camila R.", email: "outro@exemplo.com.br", role: "owner", accessRoleId: role.id } },
         headers: auth_headers(member), as: :json
 
+      expect(response).to have_http_status(:ok)
       member.reload
+      expect(member.name).to eq("Camila R.")
       expect(member.email).to eq("camila@exemplo.com.br")
       expect(member).not_to be_owner
       expect(member.access_role_id).to be_nil
     end
 
+    it "exige o envelope: corpo solto responde 400 e não grava" do
+      patch "/profile", params: { name: "Outro Nome" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "code")).to eq("parameterMissing")
+      expect(json.dig("error", "field")).to eq("profile")
+      expect(account.reload.name).to eq("Marina Duarte")
+    end
+
+    it "não troca o idioma da resposta: `locale` no envelope é dado do perfil" do
+      patch "/profile", params: { profile: { locale: "en", name: "" } }, headers: headers, as: :json
+
+      expect(json.dig("error", "message")).to start_with("nome")
+    end
+
     it "responde 422 com os campos inválidos" do
-      patch "/profile", params: { name: "" }, headers: headers, as: :json
+      patch "/profile", params: { profile: { name: "" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("name")
     end
 
     it "recusa idioma que o produto não fala" do
-      patch "/profile", params: { locale: "fr" }, headers: headers, as: :json
+      patch "/profile", params: { profile: { locale: "fr" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("locale")
@@ -78,7 +95,7 @@ RSpec.describe "Perfil", type: :request do
     it "limpa telefone e idioma com vazio" do
       account.update!(phone: "5511987654321", locale: "en")
 
-      patch "/profile", params: { phone: "", locale: "" }, headers: headers, as: :json
+      patch "/profile", params: { profile: { phone: "", locale: "" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json).to include("phone" => nil, "locale" => nil)
@@ -90,7 +107,7 @@ RSpec.describe "Perfil", type: :request do
         current = headers
 
         patch "/profile",
-          params: { currentPassword: "carrossel123", password: "nova-senha-boa", passwordConfirmation: "nova-senha-boa" },
+          params: { profile: { currentPassword: "carrossel123", password: "nova-senha-boa", passwordConfirmation: "nova-senha-boa" } },
           headers: current, as: :json
 
         expect(response).to have_http_status(:ok)
@@ -102,13 +119,13 @@ RSpec.describe "Perfil", type: :request do
       end
 
       it "aceita sem a confirmação" do
-        patch "/profile", params: { currentPassword: "carrossel123", password: "nova-senha-boa" }, headers: headers, as: :json
+        patch "/profile", params: { profile: { currentPassword: "carrossel123", password: "nova-senha-boa" } }, headers: headers, as: :json
 
         expect(response).to have_http_status(:ok)
       end
 
       it "exige a senha atual" do
-        patch "/profile", params: { password: "nova-senha-boa" }, headers: headers, as: :json
+        patch "/profile", params: { profile: { password: "nova-senha-boa" } }, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("wrongPassword")
@@ -118,7 +135,7 @@ RSpec.describe "Perfil", type: :request do
 
       it "recusa a senha atual errada, sem gravar mais nada do pedido" do
         patch "/profile",
-          params: { name: "Outro Nome", currentPassword: "errada", password: "nova-senha-boa" },
+          params: { profile: { name: "Outro Nome", currentPassword: "errada", password: "nova-senha-boa" } },
           headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -128,7 +145,7 @@ RSpec.describe "Perfil", type: :request do
 
       it "recusa confirmação diferente" do
         patch "/profile",
-          params: { currentPassword: "carrossel123", password: "nova-senha-boa", passwordConfirmation: "outra" },
+          params: { profile: { currentPassword: "carrossel123", password: "nova-senha-boa", passwordConfirmation: "outra" } },
           headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -136,14 +153,14 @@ RSpec.describe "Perfil", type: :request do
       end
 
       it "recusa senha curta" do
-        patch "/profile", params: { currentPassword: "carrossel123", password: "curta" }, headers: headers, as: :json
+        patch "/profile", params: { profile: { currentPassword: "carrossel123", password: "curta" } }, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "field")).to eq("password")
       end
 
       it "ignora senha em branco" do
-        patch "/profile", params: { name: "Outro Nome", password: "" }, headers: headers, as: :json
+        patch "/profile", params: { profile: { name: "Outro Nome", password: "" } }, headers: headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(account.reload.authenticate("carrossel123")).to be_truthy

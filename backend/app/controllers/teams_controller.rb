@@ -59,6 +59,6 @@ class TeamsController < PlatformController
   end
 
   def team_params
-    params.permit(:name, :active)
+    params.expect(team: %i[name active])
   end
 end

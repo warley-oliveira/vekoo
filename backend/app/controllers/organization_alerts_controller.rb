@@ -19,13 +19,16 @@ class OrganizationAlertsController < PlatformController
     render json: { alerts: OrganizationAlertSerializer.many(records), meta: meta }
   end
 
-  # POST /alerts/resolve { originType, originId, code? } — sem `code`, resolve tudo que
-  # vier daquela origem.
+  # POST /alerts/resolve { originType, originId, code? } — corpo solto, porque é uma ação e
+  # não um recurso. Sem `code`, resolve tudo que vier daquela origem.
   def resolve
+    missing = %i[origin_type origin_id].find { |key| params[key].blank? }
+    return render_missing(missing) if missing
+
     resolved = OrganizationAlert.resolve!(
       current_organization,
-      origin_type: params.require(:origin_type).to_s,
-      origin_id: params.require(:origin_id).to_s,
+      origin_type: params[:origin_type].to_s,
+      origin_id: params[:origin_id].to_s,
       code: params[:code].presence&.to_s
     )
 
@@ -33,6 +36,12 @@ class OrganizationAlertsController < PlatformController
   end
 
   private
+
+  def render_missing(key)
+    field = camelize(key)
+
+    render_error(status: :bad_request, code: "parameterMissing", field: field, message: t("errors.parameter_missing", param: field))
+  end
 
   def badges
     OrganizationAlert.active_counts_by_category(current_organization)

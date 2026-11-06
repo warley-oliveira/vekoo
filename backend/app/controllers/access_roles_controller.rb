@@ -23,7 +23,7 @@ class AccessRolesController < PlatformController
   end
 
   def create
-    role = current_organization.access_roles.new(role_name)
+    role = current_organization.access_roles.new(role_params.slice(:name))
     role.permissions = AccessRole::BLANK_PERMISSIONS.merge(given_permissions)
 
     save(role, status: :created)
@@ -31,7 +31,7 @@ class AccessRolesController < PlatformController
 
   # Mescla com o que já existe: quem manda só uma chave não apaga as outras.
   def update
-    @role.assign_attributes(role_name)
+    @role.assign_attributes(role_params.slice(:name))
     @role.permissions = @role.permissions.merge(given_permissions)
 
     save(@role, status: :ok)
@@ -63,11 +63,11 @@ class AccessRolesController < PlatformController
     render_invalid(role)
   end
 
-  def role_name
-    params.permit(:name)
+  def role_params
+    @role_params ||= params.expect(access_role: [ :name, { permissions: {} } ])
   end
 
   def given_permissions
-    params.permit(permissions: {})[:permissions]&.to_h || {}
+    role_params[:permissions]&.to_h || {}
   end
 end

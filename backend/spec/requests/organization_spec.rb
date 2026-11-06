@@ -61,11 +61,11 @@ RSpec.describe "Organização", type: :request do
   describe "PATCH /organization" do
     it "edita nome, fuso e dados da empresa" do
       patch "/organization",
-        params: {
+        params: { organization: {
           name: "Marina Conteúdo",
           timezone: "America/Manaus",
           settings: { companyInfo: { businessName: "Marina Duarte Conteúdo Ltda", cnpj: "11.222.333/0001-81" } }
-        },
+        } },
         headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:ok)
@@ -80,7 +80,7 @@ RSpec.describe "Organização", type: :request do
     end
 
     it "formata o CNPJ que vem só com dígitos" do
-      patch "/organization", params: { settings: { companyInfo: { cnpj: "11222333000181" } } }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { settings: { companyInfo: { cnpj: "11222333000181" } } } }, headers: auth_headers(owner), as: :json
 
       expect(json.dig("settings", "companyInfo", "formattedCnpj")).to eq("11.222.333/0001-81")
     end
@@ -92,7 +92,7 @@ RSpec.describe "Organização", type: :request do
       )
 
       patch "/organization",
-        params: { settings: { companyInfo: { businessName: "Outra Razão" }, chatSettings: { reopenConversationOnInboundEnabled: true } } },
+        params: { organization: { settings: { companyInfo: { businessName: "Outra Razão" }, chatSettings: { reopenConversationOnInboundEnabled: true } } } },
         headers: auth_headers(owner), as: :json
 
       expect(json.dig("settings", "companyInfo")).to include("businessName" => "Outra Razão", "cnpj" => "11222333000181")
@@ -104,7 +104,7 @@ RSpec.describe "Organização", type: :request do
     it "mexe só no nome, sem tocar em settings" do
       organization.update_with_settings!(company_info: { business_name: "Razão Social" })
 
-      patch "/organization", params: { name: "Novo Nome" }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { name: "Novo Nome" } }, headers: auth_headers(owner), as: :json
 
       expect(json["name"]).to eq("Novo Nome")
       expect(json.dig("settings", "companyInfo", "businessName")).to eq("Razão Social")
@@ -115,32 +115,41 @@ RSpec.describe "Organização", type: :request do
       organization.update!(features: { "campaigns_enabled" => false })
 
       patch "/organization",
-        params: { features: { campaigns_enabled: true }, plan: "pro", creditsTotal: 9999 },
+        params: { organization: { name: "Novo Nome", features: { campaigns_enabled: true }, plan: "pro", creditsTotal: 9999 } },
         headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:ok)
       organization.reload
+      expect(organization.name).to eq("Novo Nome")
       expect(organization.features).to eq("campaigns_enabled" => false)
       expect(organization.plan).to eq("free")
       expect(organization.credits_total).to eq(50)
     end
 
+    it "exige o envelope: corpo solto responde 400 e não grava" do
+      patch "/organization", params: { name: "Novo Nome" }, headers: auth_headers(owner), as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "field")).to eq("organization")
+      expect(organization.reload.name).to eq("Marina Duarte Conteúdo")
+    end
+
     it "exige core_settings" do
-      patch "/organization", params: { name: "Invadido" }, headers: auth_headers(attendant), as: :json
+      patch "/organization", params: { organization: { name: "Invadido" } }, headers: auth_headers(attendant), as: :json
 
       expect(response).to have_http_status(:forbidden)
       expect(organization.reload.name).to eq("Marina Duarte Conteúdo")
     end
 
     it "responde 422 com nome inválido" do
-      patch "/organization", params: { name: "" }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { name: "" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("name")
     end
 
     it "responde 422 com fuso que não existe" do
-      patch "/organization", params: { timezone: "America/Atlantida" }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { timezone: "America/Atlantida" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("timezone")
@@ -148,13 +157,13 @@ RSpec.describe "Organização", type: :request do
     end
 
     it "responde 422 com CNPJ incompleto e deixa limpar com vazio" do
-      patch "/organization", params: { settings: { companyInfo: { cnpj: "1234" } } }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { settings: { companyInfo: { cnpj: "1234" } } } }, headers: auth_headers(owner), as: :json
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("cnpj")
 
       organization.update_with_settings!(company_info: { cnpj: "11222333000181" })
 
-      patch "/organization", params: { settings: { companyInfo: { cnpj: "" } } }, headers: auth_headers(owner), as: :json
+      patch "/organization", params: { organization: { settings: { companyInfo: { cnpj: "" } } } }, headers: auth_headers(owner), as: :json
       expect(response).to have_http_status(:ok)
       expect(json.dig("settings", "companyInfo", "cnpj")).to be_nil
     end
@@ -163,14 +172,14 @@ RSpec.describe "Organização", type: :request do
   describe "PATCH /organization/chat-settings" do
     # Da origem: as preferências ficam na tela do chat, ao alcance de quem atende.
     it "deixa quem atende mudar, sem core_settings" do
-      patch "/organization/chat-settings", params: { autoRemoveWaitingOperatorTag: true }, headers: auth_headers(attendant), as: :json
+      patch "/organization/chat-settings", params: { chatSettings: { autoRemoveWaitingOperatorTag: true } }, headers: auth_headers(attendant), as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json.dig("settings", "chatSettings", "autoRemoveWaitingOperatorTag")).to be(true)
     end
 
     it "exige a permissão de chat" do
-      patch "/organization/chat-settings", params: { autoRemoveWaitingOperatorTag: true }, headers: auth_headers(no_chat), as: :json
+      patch "/organization/chat-settings", params: { chatSettings: { autoRemoveWaitingOperatorTag: true } }, headers: auth_headers(no_chat), as: :json
 
       expect(response).to have_http_status(:forbidden)
     end
@@ -178,16 +187,28 @@ RSpec.describe "Organização", type: :request do
     it "salva uma preferência sem apagar a outra" do
       organization.update_with_settings!(chat_settings: { auto_remove_waiting_operator_tag: true })
 
-      patch "/organization/chat-settings", params: { reopenConversationOnInboundEnabled: true }, headers: auth_headers(attendant), as: :json
+      patch "/organization/chat-settings", params: { chatSettings: { reopenConversationOnInboundEnabled: true } }, headers: auth_headers(attendant), as: :json
 
       expect(json.dig("settings", "chatSettings")).to eq(
         "autoRemoveWaitingOperatorTag" => true, "reopenConversationOnInboundEnabled" => true
       )
     end
 
-    it "não muda mais nada por aqui" do
-      patch "/organization/chat-settings", params: { name: "Invadido", timezone: "UTC" }, headers: auth_headers(attendant), as: :json
+    # Nome de duas palavras: o caso em que o wrapper do Rails esvaziava o envelope.
+    it "exige o envelope em camelCase" do
+      patch "/organization/chat-settings", params: { autoRemoveWaitingOperatorTag: true }, headers: auth_headers(attendant), as: :json
 
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "field")).to eq("chatSettings")
+      expect(organization.reload.auto_remove_waiting_operator_tag).to be(false)
+    end
+
+    it "não muda mais nada por aqui" do
+      patch "/organization/chat-settings",
+        params: { chatSettings: { autoRemoveWaitingOperatorTag: true, name: "Invadido", timezone: "UTC" } },
+        headers: auth_headers(attendant), as: :json
+
+      expect(response).to have_http_status(:ok)
       expect(organization.reload.name).to eq("Marina Duarte Conteúdo")
       expect(organization.timezone).to eq("America/Sao_Paulo")
     end
@@ -196,7 +217,7 @@ RSpec.describe "Organização", type: :request do
     it "faz o flag de reabertura valer na hora, sem esperar o cache" do
       expect(Organization.reopen_on_inbound_enabled?(organization.id)).to be(false)
 
-      patch "/organization/chat-settings", params: { reopenConversationOnInboundEnabled: true }, headers: auth_headers(attendant), as: :json
+      patch "/organization/chat-settings", params: { chatSettings: { reopenConversationOnInboundEnabled: true } }, headers: auth_headers(attendant), as: :json
 
       expect(Organization.reopen_on_inbound_enabled?(organization.id)).to be(true)
     end

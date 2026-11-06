@@ -47,13 +47,13 @@ class UsersController < PlatformController
   end
 
   def create
-    account = manager.create(person_params, team_ids: team_ids_param)
+    account = manager.create(person_attributes, team_ids: team_ids_param)
 
     render json: PersonSerializer.one(account), status: :created
   end
 
   def update
-    render json: PersonSerializer.one(manager.update(@person, person_params, team_ids: team_ids_param))
+    render json: PersonSerializer.one(manager.update(@person, person_attributes, team_ids: team_ids_param))
   end
 
   def destroy
@@ -132,14 +132,23 @@ class UsersController < PlatformController
     manages_people? ? PersonSerializer.one(account) : PersonSerializer.directory_entry(account)
   end
 
+  # { user: { … } }. `expect`, e não `require(...).permit`: um envelope que não é objeto vira
+  # 400 em vez de estourar em `permit`.
   def person_params
-    params.permit(:name, :email, :phone, :password, :password_confirmation, :role, :access_role_id, :setup_only)
+    @person_params ||= params.expect(
+      user: [ :name, :email, :phone, :password, :password_confirmation, :role, :access_role_id, :setup_only,
+              { team_ids: [] } ]
+    )
+  end
+
+  def person_attributes
+    person_params.except(:team_ids)
   end
 
   # `nil` quando a chave não veio (não mexe nos departamentos); `[]` limpa todos.
   def team_ids_param
-    return nil unless params.key?(:team_ids)
+    return nil unless person_params.key?(:team_ids)
 
-    Array(params[:team_ids]).compact_blank
+    person_params[:team_ids].compact_blank
   end
 end

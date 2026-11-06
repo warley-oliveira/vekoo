@@ -226,9 +226,27 @@ RSpec.describe "Pessoas da organização", type: :request do
         phone: "5511912345678", setupOnly: true }
     end
 
+    it "exige o envelope: corpo solto responde 400 e não cria ninguém" do
+      headers = auth_headers(owner)
+
+      expect {
+        post "/users", params: valid, headers: headers, as: :json
+      }.not_to change(Account, :count)
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "code")).to eq("parameterMissing")
+      expect(json.dig("error", "field")).to eq("user")
+    end
+
+    it "responde 400, e não 500, se o envelope não for um objeto" do
+      post "/users", params: { user: "texto" }, headers: auth_headers(owner), as: :json
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
     it "cria a pessoa na organização, com senha e sem poder de dono" do
       expect {
-        post "/users", params: valid, headers: auth_headers(owner), as: :json
+        post "/users", params: { user: valid }, headers: auth_headers(owner), as: :json
       }.to change { organization.accounts.count }.by(1)
 
       expect(response).to have_http_status(:created)
@@ -249,7 +267,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       team = create(:team, organization: organization)
 
       post "/users",
-        params: valid.merge(accessRoleId: manager_role.id, teamIds: [ team.id ]),
+        params: { user: valid.merge(accessRoleId: manager_role.id, teamIds: [ team.id ]) },
         headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:created)
@@ -261,7 +279,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       headers = auth_headers(attendant)
 
       expect {
-        post "/users", params: valid, headers: headers, as: :json
+        post "/users", params: { user: valid }, headers: headers, as: :json
       }.not_to change(Account, :count)
 
       expect(response).to have_http_status(:forbidden)
@@ -269,7 +287,7 @@ RSpec.describe "Pessoas da organização", type: :request do
     end
 
     it "deixa quem tem core_settings criar pessoas, mesmo sem ser dono" do
-      post "/users", params: valid, headers: auth_headers(manager), as: :json
+      post "/users", params: { user: valid }, headers: auth_headers(manager), as: :json
 
       expect(response).to have_http_status(:created)
     end
@@ -278,21 +296,21 @@ RSpec.describe "Pessoas da organização", type: :request do
       headers = auth_headers(manager)
 
       expect {
-        post "/users", params: valid.merge(role: "owner"), headers: headers, as: :json
+        post "/users", params: { user: valid.merge(role: "owner") }, headers: headers, as: :json
       }.not_to change(Account, :count)
 
       expect(response).to have_http_status(:forbidden)
     end
 
     it "deixa o dono criar outro dono" do
-      post "/users", params: valid.merge(role: "owner"), headers: auth_headers(owner), as: :json
+      post "/users", params: { user: valid.merge(role: "owner") }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:created)
       expect(json["role"]).to eq("owner")
     end
 
     it "responde 422 com os campos inválidos" do
-      post "/users", params: { name: "", email: "sem-arroba", password: "curta" }, headers: auth_headers(owner), as: :json
+      post "/users", params: { user: { name: "", email: "sem-arroba", password: "curta" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("unprocessable")
@@ -300,21 +318,21 @@ RSpec.describe "Pessoas da organização", type: :request do
     end
 
     it "exige senha" do
-      post "/users", params: valid.except(:password), headers: auth_headers(owner), as: :json
+      post "/users", params: { user: valid.except(:password) }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "details")).to have_key("password")
     end
 
     it "confere a confirmação da senha, quando vem" do
-      post "/users", params: valid.merge(passwordConfirmation: "outra-coisa"), headers: auth_headers(owner), as: :json
+      post "/users", params: { user: valid.merge(passwordConfirmation: "outra-coisa") }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("passwordConfirmation")
     end
 
     it "recusa e-mail em uso, aqui ou em outra organização, com código próprio" do
-      post "/users", params: valid.merge(email: stranger.email), headers: auth_headers(owner), as: :json
+      post "/users", params: { user: valid.merge(email: stranger.email) }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("emailTaken")
@@ -324,7 +342,7 @@ RSpec.describe "Pessoas da organização", type: :request do
     it "não aceita grupo de outra organização" do
       foreign_role = other_organization.access_roles.first
 
-      post "/users", params: valid.merge(accessRoleId: foreign_role.id), headers: auth_headers(owner), as: :json
+      post "/users", params: { user: valid.merge(accessRoleId: foreign_role.id) }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("accessRoleId")
@@ -334,7 +352,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       foreign_team = create(:team, organization: other_organization)
 
       expect {
-        post "/users", params: valid.merge(teamIds: [ foreign_team.id ]), headers: auth_headers(owner), as: :json
+        post "/users", params: { user: valid.merge(teamIds: [ foreign_team.id ]) }, headers: auth_headers(owner), as: :json
       }.not_to change(Account, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
@@ -348,8 +366,8 @@ RSpec.describe "Pessoas da organização", type: :request do
       team = create(:team, organization: organization)
 
       patch "/users/#{attendant.id}",
-        params: { name: "Camila R.", phone: "5511900000000", accessRoleId: manager_role.id,
-                  teamIds: [ team.id ], setupOnly: true },
+        params: { user: { name: "Camila R.", phone: "5511900000000", accessRoleId: manager_role.id,
+                  teamIds: [ team.id ], setupOnly: true } },
         headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:ok)
@@ -364,7 +382,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       new_team = create(:team, organization: organization)
       create(:team_membership, team: old_team, account: attendant)
 
-      patch "/users/#{attendant.id}", params: { teamIds: [ new_team.id ] }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { teamIds: [ new_team.id ] } }, headers: auth_headers(owner), as: :json
 
       expect(json["teamIds"]).to eq([ new_team.id ])
       expect(attendant.reload.teams).to contain_exactly(new_team)
@@ -374,31 +392,31 @@ RSpec.describe "Pessoas da organização", type: :request do
       team = create(:team, organization: organization)
       create(:team_membership, team: team, account: attendant)
 
-      patch "/users/#{attendant.id}", params: { name: "Camila R." }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { name: "Camila R." } }, headers: auth_headers(owner), as: :json
       expect(json["teamIds"]).to eq([ team.id ])
 
-      patch "/users/#{attendant.id}", params: { teamIds: [] }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { teamIds: [] } }, headers: auth_headers(owner), as: :json
       expect(json["teamIds"]).to eq([])
     end
 
     it "tira a pessoa do grupo com null" do
-      patch "/users/#{attendant.id}", params: { accessRoleId: nil }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { accessRoleId: nil } }, headers: auth_headers(owner), as: :json
 
       expect(json["accessRoleId"]).to be_nil
       expect(attendant.reload.access_role).to be_nil
     end
 
     it "promove a dono e o dono pode deixar de ser dono, se sobrar outro" do
-      patch "/users/#{attendant.id}", params: { role: "owner" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { role: "owner" } }, headers: auth_headers(owner), as: :json
       expect(json["role"]).to eq("owner")
 
-      patch "/users/#{owner.id}", params: { role: "member" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{owner.id}", params: { user: { role: "member" } }, headers: auth_headers(owner), as: :json
       expect(response).to have_http_status(:ok)
       expect(json["role"]).to eq("member")
     end
 
     it "não deixa a organização sem dono" do
-      patch "/users/#{owner.id}", params: { role: "member" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{owner.id}", params: { user: { role: "member" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("lastOwner")
@@ -409,40 +427,40 @@ RSpec.describe "Pessoas da organização", type: :request do
       other_owner = create(:account, organization: organization, role: "owner")
       other_owner.revoke!
 
-      patch "/users/#{owner.id}", params: { role: "member" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{owner.id}", params: { user: { role: "member" } }, headers: auth_headers(owner), as: :json
 
       expect(json.dig("error", "code")).to eq("lastOwner")
     end
 
     it "quem não é dono não mexe no dono" do
-      patch "/users/#{owner.id}", params: { name: "Outro Nome" }, headers: auth_headers(manager), as: :json
+      patch "/users/#{owner.id}", params: { user: { name: "Outro Nome" } }, headers: auth_headers(manager), as: :json
 
       expect(response).to have_http_status(:forbidden)
       expect(owner.reload.name).to eq("Marina Duarte")
     end
 
     it "quem não é dono não promove ninguém a dono" do
-      patch "/users/#{attendant.id}", params: { role: "owner" }, headers: auth_headers(manager), as: :json
+      patch "/users/#{attendant.id}", params: { user: { role: "owner" } }, headers: auth_headers(manager), as: :json
 
       expect(response).to have_http_status(:forbidden)
       expect(attendant.reload).not_to be_owner
     end
 
     it "exige core_settings" do
-      patch "/users/#{manager.id}", params: { name: "Outro Nome" }, headers: auth_headers(attendant), as: :json
+      patch "/users/#{manager.id}", params: { user: { name: "Outro Nome" } }, headers: auth_headers(attendant), as: :json
 
       expect(response).to have_http_status(:forbidden)
     end
 
     it "responde 404 para gente de outra organização" do
-      patch "/users/#{stranger.id}", params: { name: "Invadido" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{stranger.id}", params: { user: { name: "Invadido" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:not_found)
       expect(stranger.reload.name).to eq("Pessoa de Fora")
     end
 
     it "responde 422 com o campo inválido e não grava" do
-      patch "/users/#{attendant.id}", params: { name: "" }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { name: "" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("name")
@@ -450,7 +468,7 @@ RSpec.describe "Pessoas da organização", type: :request do
     end
 
     it "recusa e-mail em uso com código próprio" do
-      patch "/users/#{attendant.id}", params: { email: stranger.email }, headers: auth_headers(owner), as: :json
+      patch "/users/#{attendant.id}", params: { user: { email: stranger.email } }, headers: auth_headers(owner), as: :json
 
       expect(json.dig("error", "code")).to eq("emailTaken")
     end
@@ -459,7 +477,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       it "troca a senha de outra pessoa e derruba as sessões dela" do
         session = Session.start!(attendant)
 
-        patch "/users/#{attendant.id}", params: { password: "outra-senha-boa" }, headers: auth_headers(owner), as: :json
+        patch "/users/#{attendant.id}", params: { user: { password: "outra-senha-boa" } }, headers: auth_headers(owner), as: :json
 
         expect(response).to have_http_status(:ok)
         expect(attendant.reload.authenticate("outra-senha-boa")).to be_truthy
@@ -470,7 +488,7 @@ RSpec.describe "Pessoas da organização", type: :request do
         session = Session.start!(attendant)
 
         patch "/users/#{attendant.id}",
-          params: { name: "Camila R.", password: "", passwordConfirmation: "" },
+          params: { user: { name: "Camila R.", password: "", passwordConfirmation: "" } },
           headers: auth_headers(owner), as: :json
 
         expect(response).to have_http_status(:ok)
@@ -479,7 +497,7 @@ RSpec.describe "Pessoas da organização", type: :request do
       end
 
       it "não troca a própria senha por aqui: em /profile a senha atual é exigida" do
-        patch "/users/#{owner.id}", params: { password: "outra-senha-boa" }, headers: auth_headers(owner), as: :json
+        patch "/users/#{owner.id}", params: { user: { password: "outra-senha-boa" } }, headers: auth_headers(owner), as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("ownPasswordInProfile")
@@ -668,7 +686,7 @@ RSpec.describe "Pessoas da organização", type: :request do
   end
 
   it "responde no idioma da requisição" do
-    patch "/users/#{owner.id}", params: { role: "member" },
+    patch "/users/#{owner.id}", params: { user: { role: "member" } },
       headers: auth_headers(owner).merge("Accept-Language" => "en"), as: :json
 
     expect(json.dig("error", "message")).to eq("The organization needs at least one owner with access.")

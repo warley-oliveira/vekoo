@@ -77,8 +77,15 @@ RSpec.describe "Departamentos", type: :request do
   end
 
   describe "POST /teams" do
+    it "exige o envelope: corpo solto responde 400" do
+      post "/teams", params: { name: "Pós-venda" }, headers: auth_headers(owner), as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "field")).to eq("team")
+    end
+
     it "cria ativo por padrão" do
-      post "/teams", params: { name: " Pós-venda " }, headers: auth_headers(owner), as: :json
+      post "/teams", params: { team: { name: " Pós-venda " } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:created)
       expect(json).to include("name" => "Pós-venda", "active" => true)
@@ -86,19 +93,19 @@ RSpec.describe "Departamentos", type: :request do
     end
 
     it "cria inativo se pedido" do
-      post "/teams", params: { name: "Pós-venda", active: false }, headers: auth_headers(owner), as: :json
+      post "/teams", params: { team: { name: "Pós-venda", active: false } }, headers: auth_headers(owner), as: :json
 
       expect(json["active"]).to be(false)
     end
 
     it "exige core_settings" do
-      post "/teams", params: { name: "Pós-venda" }, headers: auth_headers(attendant), as: :json
+      post "/teams", params: { team: { name: "Pós-venda" } }, headers: auth_headers(attendant), as: :json
 
       expect(response).to have_http_status(:forbidden)
     end
 
     it "responde 422 sem nome" do
-      post "/teams", params: { name: " " }, headers: auth_headers(owner), as: :json
+      post "/teams", params: { team: { name: " " } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "field")).to eq("name")
@@ -107,7 +114,7 @@ RSpec.describe "Departamentos", type: :request do
     it "responde 422 com nome repetido na mesma organização" do
       create(:team, organization: organization, name: "Vendas")
 
-      post "/teams", params: { name: "Vendas" }, headers: auth_headers(owner), as: :json
+      post "/teams", params: { team: { name: "Vendas" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
     end
@@ -115,7 +122,7 @@ RSpec.describe "Departamentos", type: :request do
     it "aceita o mesmo nome em outra organização" do
       create(:team, organization: create(:organization), name: "Vendas")
 
-      post "/teams", params: { name: "Vendas" }, headers: auth_headers(owner), as: :json
+      post "/teams", params: { team: { name: "Vendas" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:created)
     end
@@ -125,26 +132,26 @@ RSpec.describe "Departamentos", type: :request do
     let(:team) { create(:team, organization: organization) }
 
     it "renomeia e desativa" do
-      patch "/teams/#{team.id}", params: { name: "Novo nome", active: false }, headers: auth_headers(owner), as: :json
+      patch "/teams/#{team.id}", params: { team: { name: "Novo nome", active: false } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json).to include("name" => "Novo nome", "active" => false)
     end
 
     it "exige core_settings" do
-      patch "/teams/#{team.id}", params: { name: "Novo nome" }, headers: auth_headers(attendant), as: :json
+      patch "/teams/#{team.id}", params: { team: { name: "Novo nome" } }, headers: auth_headers(attendant), as: :json
 
       expect(response).to have_http_status(:forbidden)
     end
 
     it "responde 422 com nome vazio" do
-      patch "/teams/#{team.id}", params: { name: "" }, headers: auth_headers(owner), as: :json
+      patch "/teams/#{team.id}", params: { team: { name: "" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "responde 404 para outra organização" do
-      patch "/teams/#{foreign_team.id}", params: { name: "Invadido" }, headers: auth_headers(owner), as: :json
+      patch "/teams/#{foreign_team.id}", params: { team: { name: "Invadido" } }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:not_found)
     end

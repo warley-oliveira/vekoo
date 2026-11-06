@@ -67,7 +67,6 @@ class PushDevicesController < PlatformController
   private
 
   def subscription
-    @subscription ||= params.permit(subscription: [ :endpoint, { keys: %i[p256dh auth] } ])[:subscription] ||
-      raise(ActionController::ParameterMissing.new(:subscription))
+    @subscription ||= params.expect(subscription: [ :endpoint, { keys: %i[p256dh auth] } ])
   end
 end

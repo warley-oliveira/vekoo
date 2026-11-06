@@ -13,8 +13,9 @@ module ImageUploadable
 
   # Devolve true se anexou. Se recusou, a resposta de erro já foi renderizada.
   def attach_image(attachment)
-    file = params.require(:file)
+    file = params[:file]
 
+    return render_missing_file if file.blank?
     return render_image_refusal(t("uploads.unsupported_type")) unless real_image?(file)
     return render_image_refusal(t("uploads.too_large", max: IMAGE_MAX_LABEL)) if file.size > IMAGE_MAX_BYTES
 
@@ -26,6 +27,11 @@ module ImageUploadable
     return false unless file.respond_to?(:tempfile)
 
     IMAGE_CONTENT_TYPES.include?(Marcel::MimeType.for(file.tempfile))
+  end
+
+  def render_missing_file
+    render_error(status: :bad_request, code: "parameterMissing", field: "file", message: t("errors.parameter_missing", param: "file"))
+    false
   end
 
   def render_image_refusal(message)

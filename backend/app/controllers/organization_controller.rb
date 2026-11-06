@@ -5,6 +5,8 @@
 class OrganizationController < PlatformController
   include ImageUploadable
 
+  CHAT_SETTINGS = OrganizationRelations::Access::CHAT_SETTINGS_DEFAULTS.keys.freeze
+
   require_permission :core_settings, only: %i[update upload_logo destroy_logo]
   require_permission :chat, only: :update_chat_settings
 
@@ -12,19 +14,25 @@ class OrganizationController < PlatformController
     render_organization
   end
 
+  # { organization: { name, timezone, settings: { companyInfo, chatSettings } } }
   def update
+    fields = params.expect(
+      organization: [ :name, :timezone, { settings: { company_info: %i[business_name cnpj], chat_settings: CHAT_SETTINGS } } ]
+    )
+
     current_organization.update_with_settings!(
-      params.permit(:name, :timezone),
-      company_info: settings_params[:company_info],
-      chat_settings: settings_params[:chat_settings]
+      fields.slice(:name, :timezone),
+      company_info: fields.dig(:settings, :company_info),
+      chat_settings: fields.dig(:settings, :chat_settings)
     )
     render_organization
   rescue ActiveRecord::RecordInvalid => invalid
     render_invalid(invalid.record)
   end
 
+  # { chatSettings: { autoRemoveWaitingOperatorTag, reopenConversationOnInboundEnabled } }
   def update_chat_settings
-    current_organization.update_with_settings!(chat_settings: chat_settings_params)
+    current_organization.update_with_settings!(chat_settings: params.expect(chat_settings: CHAT_SETTINGS))
     render_organization
   rescue ActiveRecord::RecordInvalid => invalid
     render_invalid(invalid.record)
@@ -43,16 +51,5 @@ class OrganizationController < PlatformController
 
   def render_organization
     render json: OrganizationSerializer.one(current_organization)
-  end
-
-  def settings_params
-    @settings_params ||= params.fetch(:settings, {}).permit(
-      company_info: %i[business_name cnpj],
-      chat_settings: OrganizationRelations::Access::CHAT_SETTINGS_DEFAULTS.keys
-    )
-  end
-
-  def chat_settings_params
-    params.permit(*OrganizationRelations::Access::CHAT_SETTINGS_DEFAULTS.keys)
   end
 end

@@ -8,16 +8,14 @@ class ProfileController < PlatformController
   end
 
   def update
-    attributes = params.permit(:name, :phone, :locale)
-    changing_password = params[:password].present?
+    fields = params.expect(profile: %i[name phone locale current_password password password_confirmation])
+    attributes = fields.slice(:name, :phone, :locale)
+    changing_password = fields[:password].present?
 
     if changing_password
-      return render_wrong_current_password unless current_account.authenticate(params[:current_password].to_s)
+      return render_wrong_current_password unless current_account.authenticate(fields[:current_password].to_s)
 
-      attributes = attributes.merge(
-        password: params[:password],
-        password_confirmation: params[:password_confirmation]
-      )
+      attributes = attributes.merge(fields.slice(:password, :password_confirmation))
     end
 
     return render_invalid(current_account) unless current_account.update(attributes)
