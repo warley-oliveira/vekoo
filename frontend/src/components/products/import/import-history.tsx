@@ -12,11 +12,7 @@ import {
   TablePagination,
   useConfirm,
 } from "@/components/shared"
-import {
-  isImportRunning,
-  useImportMutations,
-  useProductImports,
-} from "@/hooks/products/use-product-imports"
+import { useImportMutations, useProductImports } from "@/hooks/products/use-product-imports"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import type { ProductImport } from "@/lib/products/types"
@@ -96,8 +92,9 @@ export function ImportHistory({ onOpen, onNew }: ImportHistoryProps) {
                   label: t("products.import.history.delete"),
                   icon: <Trash2 />,
                   destructive: true,
-                  // A API recusa enquanto roda: a opção nem aparece.
-                  hidden: isImportRunning(entry),
+                  // A API recusa enquanto processa: a opção nem aparece. Na fila pode: o job que
+                  // chegar depois não acha nada, e é a única saída se ele nunca chegar.
+                  hidden: entry.status === "processing",
                   onSelect: () => void remove(entry),
                 },
               ]}

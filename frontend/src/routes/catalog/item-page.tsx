@@ -38,6 +38,7 @@ import {
   useProductFields,
   useProductItem,
 } from "@/hooks/products/use-products"
+import { useIsTouch } from "@/hooks/use-media-query"
 import { ApiError } from "@/lib/api"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
@@ -141,6 +142,7 @@ function ItemForm({ item, fields, categories, queue, backTo, routeState }: ItemF
   const { saveItem } = useItemMutations()
   const { saveField } = useFieldMutations()
   const { remove } = useItemActions()
+  const isTouch = useIsTouch()
 
   const schema = useMemo(() => buildItemSchema(t, fields), [fields, t])
   const form = useForm<ItemFormValues>({
@@ -281,7 +283,8 @@ function ItemForm({ item, fields, categories, queue, backTo, routeState }: ItemF
                   control={form.control}
                   name="title"
                   label={t("products.item.title")}
-                  autoFocus={!item}
+                  // No toque, o teclado subiria ao abrir a página e empurraria a tela.
+                  autoFocus={!item && !isTouch}
                   maxLength={ITEM_TITLE_MAX}
                   action={<LengthCounter control={form.control} name="title" max={ITEM_TITLE_MAX} />}
                 />

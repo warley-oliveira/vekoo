@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { LayoutGrid, List, Plus, Upload } from "lucide-react"
 import { toast } from "sonner"
 
@@ -66,6 +66,7 @@ const SORTABLE_COLUMNS = new Set(["title", "externalId", "updatedAt"])
 export default function CatalogPage() {
   const { t } = useTranslation()
   const language = useLanguage()
+  const navigate = useNavigate()
   const preset = useMotionPreset()
 
   const {
@@ -377,7 +378,7 @@ export default function CatalogPage() {
                 />
               )}
               rowActions={actionsFor}
-              onRowClick={(item) => actionsFor(item)[0]?.onSelect()}
+              onRowClick={(item) => navigate(`/catalog/${item.id}`, { state: linkState })}
             />
           ) : isLoading && !items ? (
             <ProductGridSkeleton />

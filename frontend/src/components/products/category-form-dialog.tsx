@@ -110,7 +110,7 @@ export function CategoryFormDialog({
           control={form.control}
           name="name"
           label={t("products.categories.name")}
-          autoFocus
+          autoFocus={!category}
           maxLength={200}
         />
         <ComboboxField

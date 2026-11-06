@@ -193,7 +193,9 @@ export function FieldFormPanel({
           control={form.control}
           name="name"
           label={t("products.fields.name")}
-          autoFocus
+          // Ao cadastrar, digitar é o primeiro gesto. Ao editar, subir o teclado no celular
+          // atrapalharia quem só quer virar uma chave.
+          autoFocus={!field}
           maxLength={200}
           placeholder={t("products.fields.namePlaceholder")}
         />

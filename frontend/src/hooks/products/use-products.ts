@@ -171,9 +171,12 @@ export function useItemMutations() {
   const deleteItem = useCallback(
     async (id: string) => {
       await apiDelete(itemPath(id))
-      refreshItems()
+      // Só as listas: a tela do item pode estar aberta, e reler quem acabou de sair daria 404,
+      // com um lampejo de "não está mais aqui" antes de voltar à grade.
+      void mutate(isItemListKey)
+      void mutate(PRODUCT_CATEGORIES_KEY)
     },
-    [refreshItems]
+    [mutate]
   )
 
   const deleteItems = useCallback(
