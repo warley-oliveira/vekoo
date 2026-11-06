@@ -34,6 +34,7 @@ module CustomDashboards
     ALLOWED_AGGREGATIONS = %w[count sum avg min max].freeze
     # `min` e `max` servem para data também; somar data não existe.
     NUMBER_ONLY_AGGREGATIONS = %w[sum avg].freeze
+    DATE_ONLY = /\A\d{4}-\d{2}-\d{2}\z/
 
     class Forbidden < StandardError; end
 
@@ -223,6 +224,8 @@ module CustomDashboards
         field_name = field&.date? ? field.key : source.default_time_field
 
         to = parse_range_edge(raw["end"], zone) || zone.now
+        # Só a data, como vem do filtro da tela: "até dia 6" inclui o dia 6.
+        to = to.end_of_day if raw["end"].to_s.match?(DATE_ONLY)
         from = parse_range_edge(raw["start"], zone) || (to - DEFAULT_RANGE_DAYS.days)
 
         raise QueryError.new("invalidTimeRange", field: "timeRange") if to < from

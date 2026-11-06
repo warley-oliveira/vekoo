@@ -233,6 +233,24 @@ RSpec.describe CustomDashboards::QueryEngine do
       expect(result[:meta][:timeRange][:field]).to eq("created_at")
     end
 
+    it "só com a data, o último dia entra inteiro" do
+      day = zone.today - 3.days
+      create(:chat, organization: organization, created_at: zone.local(day.year, day.month, day.day, 22))
+
+      rows = execute("conversations", metrics: [ count_metric ], time_range: { start: (day - 1.day).iso8601, end: day.iso8601 })[:rows]
+
+      expect(rows).to eq([ { "Total" => 1 } ])
+    end
+
+    it "com a hora, vale a hora" do
+      day = zone.today - 3.days
+      create(:chat, organization: organization, created_at: zone.local(day.year, day.month, day.day, 22))
+
+      rows = execute("conversations", metrics: [ count_metric ], time_range: { start: (day - 1.day).iso8601, end: "#{day.iso8601} 21:00" })[:rows]
+
+      expect(rows).to eq([])
+    end
+
     it "aceita o campo de data escolhido" do
       create(:chat, organization: organization, user_name: "Falou", created_at: 100.days.ago, last_message_at: 1.day.ago)
 

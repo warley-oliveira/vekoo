@@ -194,8 +194,9 @@ RSpec.describe "Dashboards personalizados", type: :request do
       post "/custom-dashboards", params: { customDashboard: { name: "X", widgets: [ widget.merge(widgetType: "pizza") ] } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json.dig("error", "field")).to eq("widgets")
-      expect(json.dig("error", "details", "widgets").first).to start_with("Card 1")
+      expect(json["error"]).to include("code" => "invalidWidget", "field" => "widgets", "message" => "Card 1: Tipo não está na lista")
+      expect(json.dig("error", "details")).to include("position" => 0)
+      expect(json.dig("error", "details", "errors")).to have_key("widgetType")
     end
 
     it "responde 422 com widget de fonte que não existe" do
@@ -220,6 +221,7 @@ RSpec.describe "Dashboards personalizados", type: :request do
       stub_const("CustomDashboard::MAX_WIDGETS", 1)
       post "/custom-dashboards", params: { customDashboard: { name: "X", widgets: [ widget, widget ] } }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("tooManyWidgets")
 
       stub_const("CustomDashboard::MAX_PER_ORGANIZATION", 1)
       dashboard_for

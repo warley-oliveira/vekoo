@@ -30,6 +30,10 @@ class CustomDashboardsController < PlatformController
     render_forbidden
   end
 
+  rescue_from CustomDashboards::Save::InvalidWidgets do |error|
+    render_error(status: :unprocessable_content, code: error.code, field: "widgets", message: error.message, details: error.details)
+  end
+
   # O `max_time_ms` cortou: é recusa, e o que fazer é escolher menos. O resto é erro do Mongo com uma
   # consulta que passou pela validação: fica no log, e a tela recebe uma resposta que dá para mostrar.
   rescue_from Mongo::Error::OperationFailure do |error|
