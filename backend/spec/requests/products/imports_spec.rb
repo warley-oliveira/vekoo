@@ -27,7 +27,7 @@ RSpec.describe "Products: importação", type: :request do
       end
 
       it "#{verb.upcase} #{path} exige o recurso catalog" do
-        role = create(:access_role, organization: organization, permissions: AccessRole::KEYS.index_with("none"))
+        role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
         member = create(:account, organization: organization, role: "member", access_role: role)
 
         public_send(verb, path, headers: auth_headers(member), as: :json)

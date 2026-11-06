@@ -8,7 +8,7 @@ RSpec.describe "Products: itens", type: :request do
   let(:other_organization) { create(:organization) }
 
   def no_catalog_headers
-    role = create(:access_role, organization: organization, permissions: AccessRole::KEYS.index_with("none"))
+    role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
     auth_headers(create(:account, organization: organization, role: "member", access_role: role))
   end
 

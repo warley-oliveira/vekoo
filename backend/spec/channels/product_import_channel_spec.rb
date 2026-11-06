@@ -26,7 +26,7 @@ RSpec.describe ProductImportChannel, type: :channel do
   end
 
   it "recusa quem não tem o recurso catalog" do
-    role = create(:access_role, organization: organization, permissions: AccessRole::KEYS.index_with("none"))
+    role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
     stub_connection current_account: create(:account, organization: organization, role: "member", access_role: role)
 
     subscribe

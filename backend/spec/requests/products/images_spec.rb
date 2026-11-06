@@ -97,7 +97,7 @@ RSpec.describe "Products: imagens", type: :request do
     end
 
     it "403 sem o recurso catalog" do
-      role = create(:access_role, organization: organization, permissions: AccessRole::KEYS.index_with("none"))
+      role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
       member = create(:account, organization: organization, role: "member", access_role: role)
 
       post "/products/items/#{item.id}/images", params: { file: png }, headers: auth_headers(member)

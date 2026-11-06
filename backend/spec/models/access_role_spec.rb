@@ -7,6 +7,11 @@ RSpec.describe AccessRole do
     expect(organization.access_roles.pluck(:name)).to contain_exactly("Gerente", "Usuário")
   end
 
+  it "diz o motivo ao recusar um grupo inválido, em vez de uma tradução faltando" do
+    expect { create(:access_role, name: "") }
+      .to raise_error(ActiveRecord::RecordInvalid, /Não foi possível salvar/)
+  end
+
   it "resolve o nível de acesso da pessoa pelo grupo" do
     organization = create(:organization)
     role = create(:access_role, organization: organization, permissions: { "chat" => "own" })
