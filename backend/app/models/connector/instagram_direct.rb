@@ -17,7 +17,7 @@ class Connector::InstagramDirect < Connector::Base
     return account_name if account_name.present?
     return page_name if page_name.present?
 
-    super
+    "Instagram #{id}"
   end
 
   # Activate via Facebook Login (Page-linked)

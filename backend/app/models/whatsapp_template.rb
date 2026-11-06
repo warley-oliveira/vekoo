@@ -92,6 +92,9 @@ class WhatsappTemplate
 
   validate on: :create do
     self.name = name.to_s.parameterize.underscore
+    # Quem reclama da falta do conector é o `belongs_to`.
+    next if connector.nil?
+
     original_status = status.clone
     bid = connector.waba_id.present? ? connector.waba_id : connector.business_id
     self.status = :pending unless original_status
@@ -128,7 +131,7 @@ class WhatsappTemplate
     )
   end
 
-  # Aplica o payload cru do endpoint /{waba-id}/whatsapp_templates.
+  # Aplica o payload cru do endpoint /{waba-id}/message_templates.
   # A Meta é a fonte da verdade: todos os campos que ela devolve são espelhados
   # aqui, e não só nome/idioma/categoria/status/componentes como antes.
   #

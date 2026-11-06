@@ -269,7 +269,7 @@ class Connector::WhatsappCloud < Connector::Base
     bid = waba_id.present? ? waba_id : business_id
     raise 'WABA/business id ausente na integração' if bid.blank?
 
-    url = "https://graph.facebook.com/#{TEMPLATES_API_VERSION}/#{bid}/whatsapp_templates"
+    url = "https://graph.facebook.com/#{TEMPLATES_API_VERSION}/#{bid}/message_templates"
     query = {
       access_token: retrieve_current_token,
       limit: TEMPLATES_PAGE_SIZE,
