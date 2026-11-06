@@ -100,6 +100,18 @@ await page.goto(url, { waitUntil: 'networkidle2', timeout: 45000 }).catch((e) =>
 const click = opt('selector', null)
 if (click) await page.click(click).catch((e) => problems.push(`click: ${e.message}`))
 await new Promise((r) => setTimeout(r, Number(opt('wait', 800))))
-await page.screenshot({ path: out, fullPage: Boolean(opt('full', false)) })
+// O <main> do app rola por dentro, então "página inteira" do navegador captura só a
+// primeira tela. Estica a janela até caber o conteúdo que rola.
+if (opt('full', false)) {
+  const height = await page.evaluate(() => {
+    const main = document.querySelector('main')
+    const content = main ? main.getBoundingClientRect().top + main.scrollHeight : 0
+    return Math.ceil(Math.max(content, document.documentElement.scrollHeight))
+  })
+  const viewport = page.viewport()
+  await page.setViewport({ ...viewport, height: Math.min(height, 12000) })
+  await new Promise((r) => setTimeout(r, 300))
+}
+await page.screenshot({ path: out })
 await browser.close()
 console.log(problems.length ? [...new Set(problems)].join('\n') : 'sem erros de console/rede')

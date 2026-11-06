@@ -46,6 +46,17 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Atualização do PWA** é aplicada ao clicar. A origem também aplicava ao navegar.
 - **De fora, por escolha:** `window-controls-overlay` (cobriria as ações do topo), a tela pré-React "Atualizando…" (script inline, bloqueado pela CSP), e animações só decorativas da barra móvel.
 
+### Kit de componentes (fe-kit)
+
+- **Uma tela, um título (integrador):** o título mora só na barra superior. `PageHeader` não desenha um segundo título grande: leva título e ações para a barra e deixa a descrição no conteúdo.
+- **Alvo de toque global:** em aparelho de toque (`pointer: coarse`), botões ganham área invisível de 40 px, e campos e itens de menu crescem de verdade. Vale também para as telas atuais, inclusive o editor de carrossel.
+- **Movimento reduzido global:** com `prefers-reduced-motion`, as animações CSS das primitivas são cortadas, e só o giro de carregamento continua.
+- **`FacetedFilter` com checkboxes, sem cmdk:** no cmdk sem campo de busca, o teclado não conseguia marcar opções. Perde-se a navegação por setas.
+- **`lib/api.ts` carrega `navigation-guard` por efeito colateral:** é o que protege o botão voltar nas telas com alterações não salvas, porque precisa ouvir o `popstate` antes do roteador. Se `auth.tsx` deixar de ser carregado de imediato, essa proteção se perde sem aviso.
+- **`PhoneField`:** quem digita sem "+" está digitando número nacional, com país 55.
+- **Densidade do `DataTable`:** é uma preferência única por navegador, não por tabela.
+- **"Excluir pasta" agora pede confirmação (integrador):** antes apagava direto. O Charter exige, e os carrosséis não se perdem.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -56,7 +67,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `OPENAI_API_KEY` em `.env.example`, `.env.deploy.example`, `deploy.yml` e `DEPLOY.md`.
 - `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
 - Revisão de segurança: `Products::RemoteImage` pode servir a outros downloads de URL vinda do cliente.
-- Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
+- Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -66,7 +77,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-contacts-catalog`: ler a seção "Para a tela" de `docs/migration/api/products.md`; a grade de gestão manda `includeInactive=true`.
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
 - `fe-settings-people`: `account.locale` chega em `/me`, mas nada o aplica, e o idioma escolhido no menu não grava em `PATCH /profile`.
-- Ao integrar o `fe-kit`: unificar `components/shell/motion.ts` e `lib/match-media.ts` com os do kit, e pôr `ConfirmDialog` em "Excluir pasta", que nunca teve confirmação (o Charter exige).
+- Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)

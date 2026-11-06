@@ -162,7 +162,11 @@ Não copie o layout da origem por inércia: pergunte qual é a melhor forma de a
 
 ### Componentes
 
-Reutilize **antes de criar**: `@/components/shared/*` (ver `frontend/src/components/shared/README.md` depois da Fase 1): `PageHeader`, `PageBody`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `StatTile`, `StatusBadge`, `ConfirmDialog`, `UserAvatar`, `EmptyState`, `ErrorState`, `Field`… Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`.
+**Leia `frontend/src/components/shared/README.md` antes de escrever a primeira tela**, e reutilize antes de criar: importe de `@/components/shared` (`PageBody`, `PageHeader`, `DataTable`, `FilterBar`, `SearchInput`, `FacetedFilter`, `SortMenu`, `StatTile`, `StatusBadge`, `TagChip`, `UserAvatar`, `ResponsiveDialog`, `SidePanel`, `useConfirm`, `Form` e os campos de formulário, os esqueletos…). A vitrine viva está em `/dev/kit`. Primitivas shadcn ficam intactas em `@/components/ui`. Componente de domínio em `@/components/<dominio>/`. Faltou algo genérico? Crie no seu domínio e cite no relatório; não edite `components/shared` nem `components/shell`.
+
+- **Cada tela tem um título só, na barra superior.** `RouteFrame` declara o título da rota; `PageHeader` leva título e ações para a barra e deixa no conteúdo só a descrição. Não ponha um título grande no conteúdo.
+- **Use `ResponsiveDialog` e `SidePanel`**, não `Dialog` ou `Sheet` direto: as primitivas têm "Close" fixo em inglês para leitor de tela, e o kit já resolve isso.
+- **Dois cortes de "celular":** layout de tela e sobreposição por `useIsMobile` (< 768 px); navegação da casca por `useMobileShell` (< 1024 px). Interação (hover, Enter envia) por `useIsTouch`.
 
 ### Matriz de estados (toda tela com dados)
 
@@ -196,7 +200,7 @@ Está pronta e é o que as telas devem usar. Não recrie nada disto:
 
 // @/hooks/use-header-slot: ações da página na barra superior
 useHeaderSlot(node, { mobileNode?, mobilePlacement?: "overflow" | "inline" | "toolbar" | "hidden" })
-usePageTitle(title, { color?, backTo?, parentTitle? })
+usePageTitle(title, { color?, backTo?, parentTitle? })   // barra superior e aba do navegador
 
 // @/components/app-shell
 useShell(): { openCreate, openSearch, scroller }
@@ -224,7 +228,7 @@ apiAssetUrl(path)                          // @/lib/api: avatarUrl, logoUrl
 
 // Viewport
 useMobileShell(): { isMobileShell, isCompactPhone, isKeyboardOpen }
-useTouchDevice(); useVisualViewport(); useScrollDirection({ element, ... })
+useIsTouch() /* @/hooks/use-media-query */; useVisualViewport(); useScrollDirection({ element, ... })
 ```
 
 - CSS: `--app-bottom-nav-total`, `--app-header-total`, `--app-vh`, `--kb-inset`; utilitários `pb-safe`, `pt-safe`, `pl-safe`, `pr-safe`.
@@ -243,7 +247,7 @@ Não dê tela por pronta sem olhar. Com `npx vite --port $VITE_PORT` rodando em 
 node docs/migration/tools/shot.mjs http://localhost:$VITE_PORT/rota ~/.cache/vekoo-shot/shots/<dominio>-rota.png [--mobile] [--full]
 ```
 
-Abra o PNG com a ferramenta Read e corrija o que estiver feio, desalinhado ou quebrado, em desktop **e** em `--mobile`. O script também lista erros de console e de rede: zero é a meta. Antes de encerrar: `npm run build` e `npm run lint` sem erros novos.
+Abra o PNG com a ferramenta Read e corrija o que estiver feio, desalinhado ou quebrado, em desktop **e** em `--mobile`. `--full` estica a janela até caber o que rola no `<main>`. O script também lista erros de console e de rede: zero é a meta. Antes de encerrar: `npm run build` e `npm run lint` sem erros novos.
 
 Teste de front: não há framework, por decisão do projeto. Não adicione.
 
