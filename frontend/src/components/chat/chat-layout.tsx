@@ -1,11 +1,13 @@
 import { lazy, memo, Suspense, useCallback, useLayoutEffect } from "react"
 import { useNavigate } from "react-router"
+import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { MessagesSquare } from "lucide-react"
 
-import { useIsMobile } from "@/hooks/use-is-mobile"
+import { MOBILE_QUERY, useIsMobile } from "@/hooks/use-is-mobile"
 import { useDetailsPanel } from "@/lib/chat/stores"
 import { useDetailsPrefs } from "@/lib/chat-details/panel-store"
+import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { ChatDetailsPanel, HAS_DETAILS_PANEL } from "./extension-points"
 import { ListPanel } from "./list/list-panel"
@@ -55,16 +57,26 @@ export const ChatLayout = memo(function ChatLayout({
   const goToList = useCallback(() => navigate("/chat"), [navigate])
 
   // No celular o painel cobre a conversa: cada conversa abre nela, mesmo que ele tenha ficado aberto
-  // da última vez. Antes de pintar, para não piscar.
+  // da última vez. Antes de pintar, para não piscar. Só ao abrir: estreitar a janela não fecha nada.
   useLayoutEffect(() => {
-    if (singleColumn) setDetailsOpen(false)
-  }, [chatId, setDetailsOpen, singleColumn])
+    if (window.matchMedia(MOBILE_QUERY).matches) setDetailsOpen(false)
+  }, [chatId, setDetailsOpen])
 
   const showDetails = HAS_DETAILS_PANEL && detailsOpen && (Boolean(chatId) || showsCopilot)
 
+  const preset = useMotionPreset()
+  const panelMotion = preset.reduced
+    ? preset.fade
+    : {
+        initial: { opacity: 0, x: 24 },
+        animate: { opacity: 1, x: 0 },
+        exit: { opacity: 0, x: 24 },
+        transition: preset.spring,
+      }
+
   return (
     <div
-      className="flex h-full min-h-0 [contain:layout_paint_style]"
+      className="@container/chat flex h-full min-h-0 [contain:layout_paint_style]"
       style={{ paddingBottom: "max(var(--app-bottom-nav-total, 0px), var(--kb-inset, 0px))" }}
     >
       <aside
@@ -89,11 +101,19 @@ export const ChatLayout = memo(function ChatLayout({
         )}
       </section>
 
-      {showDetails ? (
-        <aside className="min-h-0 w-full shrink-0 border-l max-md:absolute max-md:inset-0 max-md:z-20 max-md:bg-background md:w-[22rem]">
-          <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
-        </aside>
-      ) : null}
+      {/* Terceira coluna só onde a conversa continua legível ao lado dela: em tela mais estreita, o
+          painel entra por cima, para não deixar o histórico com a largura de um rodapé. */}
+      <AnimatePresence initial={false}>
+        {showDetails ? (
+          <motion.aside
+            key="details"
+            {...panelMotion}
+            className="min-h-0 w-full shrink-0 border-l bg-background max-md:absolute max-md:inset-0 max-md:z-20 md:w-[22rem] @max-[72rem]/chat:absolute @max-[72rem]/chat:inset-y-0 @max-[72rem]/chat:right-0 @max-[72rem]/chat:z-20 @max-[72rem]/chat:shadow-lg"
+          >
+            <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
+          </motion.aside>
+        ) : null}
+      </AnimatePresence>
     </div>
   )
 })

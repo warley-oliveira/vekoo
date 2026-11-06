@@ -23,7 +23,7 @@ const FIELDS = [
 
 function RowsSkeleton() {
   return (
-    <div aria-hidden className="flex flex-col gap-1 border-t px-4 py-2">
+    <div aria-hidden className="flex flex-col gap-1 border-t border-border/70 px-4 py-2">
       {["w-2/5", "w-1/2", "w-1/4"].map((width) => (
         <div key={width} className="grid h-9 grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-2">
           <Skeleton className="h-3 w-16" />
@@ -100,37 +100,33 @@ export const AssignmentRows = memo(function AssignmentRows({ chatId }: { chatId:
       : undefined
 
   return (
-    <div className="border-t px-4 py-1.5">
+    <div className="border-t border-border/70 px-4 py-1.5">
       <PropertyRow label={t("chatDetails.assignment.person")} htmlFor={personField}>
-        {assigned ? (
-          <UserAvatar
-            name={assigned.name}
-            src={assigned.avatarUrl ? apiAssetUrl(assigned.avatarUrl) : null}
-            className="size-5 shrink-0 [&_[data-slot=avatar-fallback]]:text-[0.5625rem]"
+        {/* "Assumir" fica sobre o campo: ao lado, encolheria também a lista que abre dele. */}
+        <div className="group/person relative min-w-0 flex-1">
+          <SearchableSelect
+            id={personField}
+            options={personOptions}
+            selectedOption={assignedOption}
+            value={chat.assignedAccountId}
+            onChange={(value) => save({ assignedAccountId: value })}
+            placeholder={t("chatDetails.assignment.noPerson")}
+            emptyLabel={t("chatDetails.assignment.noMatch")}
+            clearable
+            className={QUIET_FIELD}
           />
-        ) : null}
-        <SearchableSelect
-          id={personField}
-          options={personOptions}
-          selectedOption={assignedOption}
-          value={chat.assignedAccountId}
-          onChange={(value) => save({ assignedAccountId: value })}
-          placeholder={t("chatDetails.assignment.noPerson")}
-          emptyLabel={t("chatDetails.assignment.noMatch")}
-          clearable
-          className={QUIET_FIELD}
-        />
-        {!chat.assignedAccountId && accountId ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="shrink-0 text-primary pointer-coarse:h-10"
-            onClick={() => save({ assignedAccountId: accountId })}
-          >
-            {t("chatDetails.assignment.takeOver")}
-          </Button>
-        ) : null}
+          {!chat.assignedAccountId && accountId ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              className="absolute top-1/2 right-8 -translate-y-1/2 text-primary group-focus-within/person:hidden pointer-coarse:h-8"
+              onClick={() => save({ assignedAccountId: accountId })}
+            >
+              {t("chatDetails.assignment.takeOver")}
+            </Button>
+          ) : null}
+        </div>
       </PropertyRow>
 
       <PropertyRow label={t("chatDetails.assignment.team")} htmlFor={teamField}>

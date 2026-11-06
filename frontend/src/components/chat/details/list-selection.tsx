@@ -165,7 +165,6 @@ export const ListSelectionStrip = memo(function ListSelectionStrip() {
         <label className="flex min-h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 pl-2.5 pointer-coarse:min-h-10">
           <Checkbox
             checked={allChecked}
-            indeterminate={count > 0 && !allChecked}
             disabled={loadedCount === 0}
             onCheckedChange={(checked) => (checked ? selectLoaded() : clear())}
           />

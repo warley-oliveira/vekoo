@@ -91,6 +91,8 @@ function NotesEditor({
         control={form.control}
         name="notes"
         label={t("chatDetails.notes.label")}
+        // A seção já diz o que é: o rótulo fica para quem usa leitor de tela.
+        className="[&_[data-slot=label]]:sr-only [&_label]:sr-only"
         hint={isTouch ? undefined : t("chatDetails.notes.shortcut")}
         placeholder={t("chatDetails.notes.placeholder")}
         rows={4}

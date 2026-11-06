@@ -41,7 +41,7 @@ export function DetailsSection({
   const toggle = useDetailsPrefs((state) => state.toggleSection)
 
   return (
-    <section className="border-t px-4 py-2.5">
+    <section className="border-t border-border/70 px-4 py-2.5">
       <div className="flex min-h-8 items-center gap-1 pointer-coarse:min-h-10">
         <button
           type="button"

@@ -355,7 +355,7 @@ function ThreadNotFound({ onBack }: { onBack: () => void }) {
  * A conversa aberta. Vive em um chunk próprio e recebe só o id: lê a conversa do store, e nada aqui
  * se desenha quando outra conversa da lista muda.
  */
-export default function ChatThread({
+export default memo(function ChatThread({
   chatId,
   singleColumn,
   onBack,
@@ -466,5 +466,5 @@ export default function ChatThread({
       )}
     </div>
   )
-}
+})
 

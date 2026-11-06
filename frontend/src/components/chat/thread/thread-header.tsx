@@ -29,7 +29,7 @@ import { apiAssetUrl } from "@/lib/api"
 import { deleteChat, updateChat } from "@/lib/chat/actions"
 import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
-import { useDetailsPanel } from "@/lib/chat/stores"
+import { toggleContactDetails } from "@/lib/chat-details/panel-store"
 import { useThreadStore } from "@/lib/chat/thread-store"
 import type { Chat } from "@/lib/chat/types"
 import { formatRelative } from "@/lib/format"
@@ -99,7 +99,6 @@ export const ThreadHeader = memo(function ThreadHeader({
   const { t } = useTranslation()
   const confirm = useConfirm()
   const navigate = useNavigate()
-  const toggleDetails = useDetailsPanel((state) => state.toggle)
   const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
   const nameField = useRef<EditableNameHandle>(null)
   const isTouch = useIsTouch()
@@ -208,7 +207,7 @@ export const ThreadHeader = memo(function ThreadHeader({
                     size="icon"
                     aria-label={t("chat.header.details")}
                     className="pointer-coarse:size-10"
-                    onClick={toggleDetails}
+                    onClick={toggleContactDetails}
                   />
                 }
               >

@@ -53,8 +53,24 @@ export function openCopilot(): void {
   useDetailsPanel.getState().setOpen(true)
 }
 
-/** Abre o painel no contato: é o que o botão do cabeçalho e o toque no nome pedem. */
-export function openContactDetails(): void {
-  useDetailsPrefs.getState().setTab("contact")
-  useDetailsPanel.getState().setOpen(true)
+/** O botão de cada assunto: abre nele e, se ele já está à vista, fecha. O outro assunto só troca. */
+function toggleTab(tab: DetailsTab): void {
+  const panel = useDetailsPanel.getState()
+  const prefs = useDetailsPrefs.getState()
+
+  if (panel.open && prefs.tab === tab) {
+    panel.setOpen(false)
+    return
+  }
+  prefs.setTab(tab)
+  panel.setOpen(true)
+}
+
+export function toggleCopilot(): void {
+  toggleTab("copilot")
+}
+
+/** "Detalhes do contato", no cabeçalho da conversa. */
+export function toggleContactDetails(): void {
+  toggleTab("contact")
 }

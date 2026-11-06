@@ -139,7 +139,7 @@ export const ContactHero = memo(function ContactHero({ chatId }: { chatId: strin
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="shrink-0 text-muted-foreground pointer-fine:hidden pointer-coarse:size-10"
+                  className="hidden shrink-0 text-muted-foreground pointer-coarse:inline-flex pointer-coarse:size-10"
                   aria-label={t("chat.header.rename")}
                   onClick={() => nameField.current?.edit()}
                 >
@@ -162,7 +162,15 @@ export const ContactHero = memo(function ContactHero({ chatId }: { chatId: strin
               ) : null}
             </div>
           ) : channel === "web" ? (
-            <p className="text-[0.8125rem] text-muted-foreground">{t("chat.contact.visitor")}</p>
+            <div className="flex min-w-0 items-center gap-0.5 text-[0.8125rem] text-muted-foreground">
+              <span className="truncate">{t("chat.contact.visitor")}</span>
+              <CopyButton
+                value={chat.externalId}
+                size="icon-xs"
+                aria-label={t("chatDetails.hero.copyVisitor")}
+                className="shrink-0"
+              />
+            </div>
           ) : null}
 
           <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
@@ -216,15 +224,6 @@ export const ContactHero = memo(function ContactHero({ chatId }: { chatId: strin
                 <ExternalLink />
                 {t("chatDetails.hero.whatsapp")}
               </Button>
-            ) : null}
-
-            {channel === "web" ? (
-              <CopyButton
-                value={chat.externalId}
-                label={t("chatDetails.hero.copyVisitor")}
-                size="sm"
-                className="text-muted-foreground"
-              />
             ) : null}
 
             <Button

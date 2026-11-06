@@ -90,7 +90,7 @@ export function ListRow({
             <span
               aria-hidden
               className={cn(
-                "flex size-5 items-center justify-center rounded-md border transition-colors",
+                "flex size-[1.125rem] items-center justify-center rounded-[4px] border transition-colors",
                 selection.checked
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-input bg-background"

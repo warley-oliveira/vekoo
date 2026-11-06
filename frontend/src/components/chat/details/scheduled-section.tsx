@@ -14,7 +14,6 @@ import {
 import { apiDelete } from "@/lib/api"
 import { formatBookingDate } from "@/lib/chat-details/bookings"
 import type { ScheduledAction } from "@/lib/chat-details/types"
-import { formatDateTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { DetailsSection, SectionError, ShowMoreButton } from "./section"
 
@@ -101,7 +100,7 @@ export const ScheduledSection = memo(function ScheduledSection({ chatId }: { cha
       title: t("chatDetails.scheduled.cancelTitle"),
       description: t("chatDetails.scheduled.cancelHint", {
         name: action.name,
-        when: formatDateTime(action.scheduledAt, language),
+        when: formatBookingDate(action.scheduledAt, language, timeZoneOf(calendarOf(action))),
       }),
       confirmLabel: t("chatDetails.scheduled.cancelConfirm"),
       cancelLabel: t("chatDetails.scheduled.keep"),

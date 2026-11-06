@@ -343,7 +343,7 @@ function TemplateForm({
         submitLabel={t("chatDetails.template.send")}
         onCancel={onBack}
         cancelLabel={t("chatDetails.template.back")}
-        className="sticky -bottom-4 -mx-4 -mb-4 border-t bg-popover px-4 py-3"
+        className="sticky -bottom-4 -mx-4 -mb-4 w-auto border-t bg-popover px-4 py-3"
       />
     </form>
   )

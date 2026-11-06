@@ -12,6 +12,7 @@ import {
   FormActions,
   NumberField,
   TextField,
+  useConfirm,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useIsTouch } from "@/hooks/use-media-query"
@@ -65,29 +66,30 @@ type EditorProps = {
   onDone: () => void
 }
 
+/** O valor na linha é o retorno: um toast a cada campo só faria barulho. O erro fica no formulário. */
 function useSave({ chatId, field, onDone }: EditorProps) {
-  const { t } = useTranslation()
-
   return async (next: string | null) => {
     await saveAttribute(chatId, field.key, next)
-    toast.success(t("chatDetails.fields.saved", { name: field.name }))
     onDone()
   }
 }
 
+/** Tira o valor da conversa (`null` na API). O que um fluxo gravou não volta sozinho: confirma. */
 function useClear(props: EditorProps) {
   const { t } = useTranslation()
+  const confirm = useConfirm()
   const save = useSave(props)
+  const { name } = props.field
 
   return props.value
     ? () => {
-        save(null).catch((error: unknown) =>
-          toast.error(
-            error instanceof ApiError && error.serverMessage
-              ? error.serverMessage
-              : t("chatDetails.fields.failed")
-          )
-        )
+        void confirm({
+          title: t("chatDetails.fields.clearTitle", { name }),
+          description: t("chatDetails.fields.clearHint", { value: props.value }),
+          confirmLabel: t("chatDetails.fields.clearConfirm"),
+          destructive: true,
+          onConfirm: () => save(null),
+        })
       }
     : undefined
 }

@@ -26,11 +26,11 @@
       "sessionExpired": "Janela de 24 horas encerrada",
       "openWhatsapp": "Abrir no WhatsApp, em outra aba",
       "whatsapp": "WhatsApp",
-      "copyVisitor": "Copiar código"
+      "copyVisitor": "Copiar o código do visitante"
     },
     "assignment": {
       "person": "Responsável",
-      "noPerson": "Sem responsável",
+      "noPerson": "Ninguém",
       "unknownPerson": "Pessoa fora da lista",
       "takeOver": "Assumir",
       "team": "Departamento",
@@ -99,7 +99,9 @@
       "edit": "Editar {{name}}",
       "save": "Salvar",
       "clear": "Limpar",
-      "saved": "{{name}} salvo",
+      "clearTitle": "Limpar {{name}}?",
+      "clearHint": "O valor “{{value}}” sai desta conversa.",
+      "clearConfirm": "Limpar campo",
       "failed": "Não foi possível salvar o campo. Tente de novo.",
       "optionFailed": "Não foi possível criar a opção. Tente de novo.",
       "tooLong": "Use até {{max}} caracteres.",

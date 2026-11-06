@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { disconnectCopilot } from "@/lib/chat-details/copilot-store"
-import { openCopilot } from "@/lib/chat-details/panel-store"
+import { toggleCopilot } from "@/lib/chat-details/panel-store"
 import { useChatSelection } from "@/lib/chat-details/selection"
 
 const ChatPreferences = lazy(() => import("./chat-preferences"))
@@ -36,7 +36,7 @@ export const ListActions = memo(function ListActions() {
         aria-label={t("chatDetails.copilot.open")}
         title={t("chatDetails.copilot.open")}
         className="shrink-0 pointer-coarse:size-10"
-        onClick={openCopilot}
+        onClick={toggleCopilot}
       >
         <Sparkles />
       </Button>

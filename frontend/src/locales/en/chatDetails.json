@@ -26,11 +26,11 @@
       "sessionExpired": "24-hour window ended",
       "openWhatsapp": "Open in WhatsApp, in another tab",
       "whatsapp": "WhatsApp",
-      "copyVisitor": "Copy code"
+      "copyVisitor": "Copy the visitor code"
     },
     "assignment": {
       "person": "Assignee",
-      "noPerson": "No assignee",
+      "noPerson": "No one",
       "unknownPerson": "Person not on the list",
       "takeOver": "Take over",
       "team": "Department",
@@ -99,7 +99,9 @@
       "edit": "Edit {{name}}",
       "save": "Save",
       "clear": "Clear",
-      "saved": "{{name}} saved",
+      "clearTitle": "Clear {{name}}?",
+      "clearHint": "The value “{{value}}” comes off this conversation.",
+      "clearConfirm": "Clear field",
       "failed": "Couldn't save the field. Try again.",
       "optionFailed": "Couldn't create the option. Try again.",
       "tooLong": "Use up to {{max}} characters.",

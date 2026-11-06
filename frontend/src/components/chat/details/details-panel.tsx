@@ -31,7 +31,8 @@ export default function DetailsPanel({
     <div
       role="region"
       aria-label={t("chatDetails.panelLabel")}
-      className="flex h-full min-h-0 flex-col bg-background max-md:pb-[max(var(--app-bottom-nav-total,0px),var(--kb-inset,0px))]"
+      // Por cima da conversa, o painel ocupa também a folga que a tela reserva para a barra e o teclado.
+      className="flex h-full min-h-0 flex-col bg-background @max-[72rem]/chat:pb-[max(var(--app-bottom-nav-total,0px),var(--kb-inset,0px))]"
     >
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3">
         {chatId ? (
