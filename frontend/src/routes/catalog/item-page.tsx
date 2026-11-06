@@ -7,7 +7,7 @@ import { ExternalLink, Loader2, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { CategoryFormDialog } from "@/components/products/category-form-dialog"
-import { ChipsField } from "@/components/products/chips-input"
+import { ChipsField } from "@/components/shared/chips-input"
 import { CustomFieldControl } from "@/components/products/custom-field-control"
 import { FieldFormPanel } from "@/components/products/field-form-panel"
 import { ImageGallery } from "@/components/products/image-gallery"

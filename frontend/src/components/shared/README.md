@@ -23,6 +23,9 @@ Antes de criar um componente, procure aqui. Se faltar algo genérico, é melhor 
 | Filtro ligado a uma coluna específica | `meta.filter` na coluna |
 | Detalhe ou edição sem sair da lista | `SidePanel` |
 | Tarefa curta sobre a tela | `ResponsiveDialog` |
+| Lista que a pessoa ordena arrastando | `SortableArea`, `DragHandle`, `useSortableEntry` |
+| Digitar várias palavras livres | `ChipsInput` |
+| Escolher uma opção ou criar outra | `CreatableSelect` |
 | Confirmar ação destrutiva | `useConfirm` |
 | Estado do sistema (ativo, falhou) | `StatusBadge` |
 | Rótulo com cor da pessoa | `TagChip` |
@@ -76,6 +79,25 @@ Agrupa um assunto quando só o espaçamento não basta. `flush` encosta o conte�
 ```
 
 ---
+
+### `SortableArea`, `DragHandle` e `useSortableEntry`
+
+Lista que a pessoa ordena arrastando, em toque, mouse e teclado, com anúncio para leitor de tela. `layout` é `list` ou `grid`.
+
+```tsx
+<SortableArea items={fields} nameOf={(field) => field.name} onReorder={(ordered) => void reorder(ordered)}>
+  <ul>{fields.map((field) => <FieldRow key={field.id} field={field} />)}</ul>
+</SortableArea>
+
+function FieldRow({ field }: { field: Field }) {
+  const { setNodeRef, style, handleProps } = useSortableEntry(field.id)
+  return <li ref={setNodeRef} style={style}><DragHandle {...handleProps} /> {field.name}</li>
+}
+```
+
+### `ChipsInput`, `ChipsField` e `CreatableSelect`
+
+`ChipsInput` para várias palavras livres (tags), separadas por vírgula ou Enter; `ChipsField` é a versão ligada ao formulário. `CreatableSelect` para escolher uma opção ou criar outra na hora.
 
 ## Coleções
 

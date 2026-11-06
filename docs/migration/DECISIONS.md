@@ -71,6 +71,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Entrada de `/connectors` é corpo solto**, sem envelope, diferente do domínio de pessoas. Documentado no contrato.
 - **Widget:** o contrato passa a camelCase e milissegundos, então o bundle embutível precisa se adaptar. `window.aiva` foi mantido no snippet, com padrão `https://widget.vekoo.app`.
 
+### Catálogo: tela (fe-catalog)
+
+- **Preço é campo personalizado na API.** A tela o reconhece pela chave (`preco`, `preco_*`, `price`, `price_*`, `valor`) para usar máscara de moeda, mostrar na grade e riscar o preço anterior em promoção.
+- **`required` e `defaultValue`** são editáveis no formulário do campo e aplicados só na tela do item. Os textos dizem que a importação não confere.
+- **Fotos em item novo** ficam numa fila e sobem ao cadastrar. A origem mandava salvar primeiro. Foto por link é sempre copiada, sem opção.
+- **Campo excluído:** o valor é preservado ao salvar o item, como a confirmação promete. A origem o apagava.
+- **Importação em painel, sem rota:** fechar não cancela, e uma faixa na grade mostra o andamento. Depois de recarregar, não dá para voltar à tela de colunas.
+- **Lote:** ativar e desativar são um PATCH por item, 5 de cada vez, porque não há rota de lote. "Selecionar todos" só aparece até 500 resultados.
+- **"Testar busca" foi mantido** do `CatalogSearchProbe` da origem, porque é a mesma busca que o bloco de fluxo vai usar. A grade não usa embeddings. Se o bloco não existir, basta tirar do menu.
+- **Acréscimo na API:** `POST /products/items/:id/images` aceita `image.sourceUrl`, e `GET /products/items` aceita `active=true|false`.
+- **De fora:** botões de primeira e última página (o kit só tem anterior e próxima) e modelo de planilha, que a origem também não tem.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -81,6 +93,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `OPENAI_API_KEY` em `.env.example`, `.env.deploy.example`, `deploy.yml` e `DEPLOY.md`.
 - `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
 - Revisão de segurança: `Products::RemoteImage` pode servir a outros downloads de URL vinda do cliente.
+- Semente do catálogo usa fotos genéricas de paisagem em itens de roupa: só afeta a demonstração.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
 - Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
 - Revisão de segurança: `/media` não confere a organização (o acesso é por chave ou id assinado); `has_one :proxy` tem `destroy` em instância em memória.
@@ -92,7 +105,6 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - `lib/api.ts` e `AuthErrorCode` não conhecem `accessRevoked` nem os códigos novos do domínio de pessoas (fe-settings-people).
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
-- `fe-contacts-catalog`: ler a seção "Para a tela" de `docs/migration/api/products.md`; a grade de gestão manda `includeInactive=true`.
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
 - `fe-settings-people`: `account.locale` chega em `/me`, mas nada o aplica, e o idioma escolhido no menu não grava em `PATCH /profile`.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.

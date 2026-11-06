@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import type { useImageQueue } from "@/hooks/products/use-image-queue"
 import { useImageMutations } from "@/hooks/products/use-products"
-import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
+import { useSortableEntry } from "@/hooks/use-sortable-entry"
 import { formatFileSize } from "@/lib/file-utils"
 import { useLanguage } from "@/lib/i18n"
 import {
@@ -33,7 +33,7 @@ import type { ProductImage } from "@/lib/products/types"
 import { isWebUrl, normalizeWebUrl } from "@/lib/products/url"
 import { cn } from "@/lib/utils"
 import { ProductThumb } from "./product-thumb"
-import { SortableArea } from "./sortable"
+import { SortableArea } from "@/components/shared/sortable"
 
 const GRID_CLASS = "grid grid-cols-3 gap-2 sm:grid-cols-4 md:gap-3 lg:grid-cols-5"
 

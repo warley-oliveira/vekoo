@@ -143,7 +143,7 @@ export function CreatableSelect({
                 <>
                   <Plus aria-hidden className="size-3.5" />
                   <span className="min-w-0 flex-1 truncate">
-                    {t("products.fieldControl.createOption", { value: option.label })}
+                    {t("kit.creatable.create", { value: option.label })}
                   </span>
                 </>
               ) : (

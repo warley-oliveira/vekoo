@@ -12,7 +12,7 @@ import {
 import type { ItemFormValues } from "@/lib/products/item-form"
 import { isPriceField } from "@/lib/products/pricing"
 import type { ProductField } from "@/lib/products/types"
-import { CreatableSelect } from "./creatable-select"
+import { CreatableSelect } from "@/components/shared/creatable-select"
 
 type CustomFieldControlProps = {
   control: Control<ItemFormValues, unknown, ItemFormValues>

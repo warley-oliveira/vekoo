@@ -388,6 +388,19 @@
         "detail": "Detail",
         "page": "Page"
       }
+    },
+    "sortable": {
+      "instructions": "Press Space to pick up. Use the arrow keys to move, Space to drop and Esc to cancel.",
+      "picked": "Picked up {{name}}, position {{position}} of {{total}}.",
+      "over": "{{name}} at position {{position}} of {{total}}.",
+      "dropped": "Dropped {{name}} at position {{position}} of {{total}}.",
+      "cancelled": "{{name}} went back to its place."
+    },
+    "chips": {
+      "remove": "Remove {{name}}"
+    },
+    "creatable": {
+      "create": "Add “{{value}}”"
     }
   }
 }

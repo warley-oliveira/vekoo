@@ -28,7 +28,7 @@ import {
   type ProductField,
 } from "@/lib/products/types"
 import { isWebUrl, normalizeWebUrl } from "@/lib/products/url"
-import { ChipsField } from "./chips-input"
+import { ChipsField } from "@/components/shared/chips-input"
 
 function buildSchema(t: (key: string) => string) {
   return z

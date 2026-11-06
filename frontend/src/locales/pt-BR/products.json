@@ -129,16 +129,6 @@
       "noResults": "Os fluxos não encontrariam nada com esse texto. Experimente ajustar o título, o resumo ou as tags dos itens.",
       "inactiveNote": "Itens inativos ficam de fora desta busca."
     },
-    "sortable": {
-      "instructions": "Pressione Espaço para pegar. Use as setas para mudar de lugar, Espaço para soltar e Esc para cancelar.",
-      "picked": "{{name}} pega, na posição {{position}} de {{total}}.",
-      "over": "{{name}} na posição {{position}} de {{total}}.",
-      "dropped": "{{name}} solta na posição {{position}} de {{total}}.",
-      "cancelled": "{{name}} voltou para o lugar."
-    },
-    "chips": {
-      "remove": "Tirar {{name}}"
-    },
     "item": {
       "newTitle": "Novo item",
       "untitled": "Item sem título",
@@ -222,7 +212,6 @@
       "required": "obrigatório",
       "urlPlaceholder": "https://",
       "listPlaceholder": "Escolha ou digite",
-      "createOption": "Cadastrar “{{value}}”",
       "optionCreated": "Opção “{{option}}” cadastrada",
       "optionFailed": "Não foi possível cadastrar a opção. Tente de novo."
     },

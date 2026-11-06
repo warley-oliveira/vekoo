@@ -388,6 +388,19 @@
         "detail": "Detalhe",
         "page": "Página"
       }
+    },
+    "sortable": {
+      "instructions": "Pressione Espaço para pegar. Use as setas para mudar de lugar, Espaço para soltar e Esc para cancelar.",
+      "picked": "{{name}} pega, na posição {{position}} de {{total}}.",
+      "over": "{{name}} na posição {{position}} de {{total}}.",
+      "dropped": "{{name}} solta na posição {{position}} de {{total}}.",
+      "cancelled": "{{name}} voltou para o lugar."
+    },
+    "chips": {
+      "remove": "Tirar {{name}}"
+    },
+    "creatable": {
+      "create": "Cadastrar “{{value}}”"
     }
   }
 }

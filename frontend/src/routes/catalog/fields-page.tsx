@@ -18,7 +18,7 @@ import {
 import { toast } from "sonner"
 
 import { FieldFormPanel } from "@/components/products/field-form-panel"
-import { DragHandle, SortableArea } from "@/components/products/sortable"
+import { DragHandle, SortableArea } from "@/components/shared/sortable"
 import {
   ActionsMenu,
   EmptyState,
@@ -33,7 +33,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useFieldMutations, useProductFields } from "@/hooks/products/use-products"
-import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
+import { useSortableEntry } from "@/hooks/use-sortable-entry"
 import { useMotionPreset } from "@/lib/motion"
 import { nextPosition } from "@/lib/products/reorder"
 import type { FieldValueType, ProductField } from "@/lib/products/types"

@@ -129,16 +129,6 @@
       "noResults": "Flows wouldn't find anything with this text. Try adjusting the items' title, summary or tags.",
       "inactiveNote": "Inactive items are left out of this search."
     },
-    "sortable": {
-      "instructions": "Press Space to pick up. Use the arrow keys to move, Space to drop and Esc to cancel.",
-      "picked": "Picked up {{name}}, position {{position}} of {{total}}.",
-      "over": "{{name}} at position {{position}} of {{total}}.",
-      "dropped": "Dropped {{name}} at position {{position}} of {{total}}.",
-      "cancelled": "{{name}} went back to its place."
-    },
-    "chips": {
-      "remove": "Remove {{name}}"
-    },
     "item": {
       "newTitle": "New item",
       "untitled": "Untitled item",
@@ -222,7 +212,6 @@
       "required": "required",
       "urlPlaceholder": "https://",
       "listPlaceholder": "Choose or type",
-      "createOption": "Add “{{value}}”",
       "optionCreated": "Option “{{option}}” added",
       "optionFailed": "Couldn't add the option. Try again."
     },

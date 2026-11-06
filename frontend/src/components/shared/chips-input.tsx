@@ -96,7 +96,7 @@ export function ChipsInput({
         <TagChip
           key={chip}
           onRemove={disabled ? undefined : () => onChange(chips.filter((item) => item !== chip))}
-          removeLabel={t("products.chips.remove", { name: chip })}
+          removeLabel={t("kit.chips.remove", { name: chip })}
         >
           {chip}
         </TagChip>

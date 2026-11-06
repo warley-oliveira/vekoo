@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner"
 
 import { CategoryFormDialog } from "@/components/products/category-form-dialog"
-import { DragHandle, SortableArea } from "@/components/products/sortable"
+import { DragHandle, SortableArea } from "@/components/shared/sortable"
 import {
   ActionsMenu,
   EmptyState,
@@ -30,7 +30,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useCategoryMutations, useProductCategories } from "@/hooks/products/use-products"
-import { useSortableEntry } from "@/hooks/products/use-sortable-entry"
+import { useSortableEntry } from "@/hooks/use-sortable-entry"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"

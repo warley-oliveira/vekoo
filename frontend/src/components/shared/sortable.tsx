@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 // Arrastar para reordenar, em toque, mouse e teclado. Serve às fotos, às categorias e aos
-// campos. O kit ainda não tem isto; é genérico o bastante para subir para lá depois.
+// campos, e a qualquer lista que a pessoa ordena.
 
 const TOUCH_DELAY_MS = 180
 const TOUCH_TOLERANCE_PX = 8
@@ -71,19 +71,19 @@ export function SortableArea<T extends { id: string }>({
 
     const announcements: Announcements = {
       onDragStart: ({ active }) =>
-        t("products.sortable.picked", { name: name(active.id), position: position(active.id), total: items.length }),
+        t("kit.sortable.picked", { name: name(active.id), position: position(active.id), total: items.length }),
       onDragOver: ({ active, over }) =>
         over
-          ? t("products.sortable.over", { name: name(active.id), position: position(over.id), total: items.length })
+          ? t("kit.sortable.over", { name: name(active.id), position: position(over.id), total: items.length })
           : undefined,
       onDragEnd: ({ active, over }) =>
-        t("products.sortable.dropped", { name: name(active.id), position: position(over?.id ?? active.id), total: items.length }),
-      onDragCancel: ({ active }) => t("products.sortable.cancelled", { name: name(active.id) }),
+        t("kit.sortable.dropped", { name: name(active.id), position: position(over?.id ?? active.id), total: items.length }),
+      onDragCancel: ({ active }) => t("kit.sortable.cancelled", { name: name(active.id) }),
     }
 
     return {
       announcements,
-      screenReaderInstructions: { draggable: t("products.sortable.instructions") },
+      screenReaderInstructions: { draggable: t("kit.sortable.instructions") },
     }
   }, [items, nameOf, t])
 
