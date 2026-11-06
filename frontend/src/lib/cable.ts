@@ -15,6 +15,14 @@ import { API_URL } from "@/lib/api"
 // - **Sobreviver à troca de sessão.** O token vai na URL, então trocar de conta é
 //   trocar de consumer. Quem já estava ouvindo continua ouvindo: as assinaturas são
 //   refeitas aqui, sem o componente perceber.
+// - **Não insistir em canal que não responde.** Um canal sem classe no servidor (o
+//   front chegou antes do back) nunca é confirmado nem recusado, e o mesmo guardião
+//   reenviaria o `subscribe` duas vezes por segundo, de cada aba aberta, para sempre.
+//   Sem confirmação no prazo, a assinatura sai e volta a tentar bem depois.
+
+/** Num servidor saudável, a confirmação chega em bem menos que isso. */
+const CONFIRM_TIMEOUT_MS = 10_000
+const RETRY_UNCONFIRMED_MS = 60_000
 
 export type ChannelParams = Record<string, unknown>
 
@@ -30,6 +38,8 @@ type Entry = {
   connected: boolean
   subscription: Subscription | null
   pendingRemoval: ReturnType<typeof setTimeout> | null
+  /** O prazo da confirmação ou, depois de desistir, a próxima tentativa. */
+  confirmTimer: ReturnType<typeof setTimeout> | null
 }
 
 const entries = new Map<string, Entry>()
@@ -47,19 +57,41 @@ function setStatus(entry: Entry, connected: boolean) {
   for (const listener of entry.listeners) listener.onStatus(connected)
 }
 
+function clearConfirmTimer(entry: Entry) {
+  if (entry.confirmTimer) clearTimeout(entry.confirmTimer)
+  entry.confirmTimer = null
+}
+
 function attach(entry: Entry) {
   if (!consumer || entry.subscription) return
   entry.subscription = consumer.subscriptions.create(
     { channel: entry.channel, ...entry.params },
     {
-      connected: () => setStatus(entry, true),
+      connected: () => {
+        clearConfirmTimer(entry)
+        setStatus(entry, true)
+      },
       disconnected: () => setStatus(entry, false),
-      rejected: () => setStatus(entry, false),
+      // Recusa é resposta: o servidor sabe quem é a pessoa e disse não. Não insiste.
+      rejected: () => {
+        clearConfirmTimer(entry)
+        setStatus(entry, false)
+      },
       received: (message: unknown) => {
         for (const listener of entry.listeners) listener.onMessage(message)
       },
     }
   )
+  entry.confirmTimer = setTimeout(() => giveUpForNow(entry), CONFIRM_TIMEOUT_MS)
+}
+
+function giveUpForNow(entry: Entry) {
+  entry.subscription?.unsubscribe()
+  entry.subscription = null
+  entry.confirmTimer = setTimeout(() => {
+    entry.confirmTimer = null
+    attach(entry)
+  }, RETRY_UNCONFIRMED_MS)
 }
 
 /** Fecha o WebSocket. Os ouvintes ficam registrados para a próxima sessão. */
@@ -68,6 +100,7 @@ export function closeCable(): void {
   consumer = null
   currentToken = null
   for (const entry of entries.values()) {
+    clearConfirmTimer(entry)
     entry.subscription = null
     setStatus(entry, false)
   }
@@ -105,6 +138,7 @@ export function joinChannel(
       connected: false,
       subscription: null,
       pendingRemoval: null,
+      confirmTimer: null,
     }
     entries.set(key, entry)
     attach(entry)
@@ -124,6 +158,7 @@ export function joinChannel(
     // por que mandar `unsubscribe` + `subscribe` ao servidor nesses casos.
     joined.pendingRemoval = setTimeout(() => {
       if (joined.listeners.size > 0) return
+      clearConfirmTimer(joined)
       joined.subscription?.unsubscribe()
       entries.delete(key)
     }, 0)
