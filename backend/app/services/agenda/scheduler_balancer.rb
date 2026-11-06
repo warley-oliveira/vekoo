@@ -26,17 +26,21 @@ module Agenda
       return nil if @distribution.blank?
 
       chosen = choose(@assignments.values.sum)
+      return nil unless chosen
+
       @assignments[chosen] += 1
       chosen
     end
 
     private
 
+    # Porcentagem zero é quem saiu do serviço. Sem este filtro, ele ganharia no empate de quem já
+    # cumpriu a própria parte, e o calendário ofereceria os horários de quem não atende mais.
     def choose(total)
-      @distribution.max_by do |professional, percentage|
+      @distribution.select { |_professional, percentage| percentage.to_i.positive? }.max_by do |professional, percentage|
         share = @assignments[professional].to_f / total
         percentage - (share.nan? ? 0 : share) * 100
-      end.first
+      end&.first
     end
 
     def rebalance

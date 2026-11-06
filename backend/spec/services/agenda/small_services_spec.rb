@@ -110,6 +110,16 @@ RSpec.describe "Serviços pequenos da agenda" do
     it "sem distribuição, ninguém" do
       expect(described_class.new({}).professional_to_assign).to be_nil
     end
+
+    it "quem tem zero saiu do serviço, e não volta nem no empate" do
+      balancer = described_class.new({ "a" => 0, "b" => 100 }, nil, Hash.new(0).merge("b" => 3))
+
+      expect(balancer.professional_to_assign).to eq("b")
+    end
+
+    it "todos com zero, ninguém" do
+      expect(described_class.new({ "a" => 0, "b" => 0 }).professional_to_assign).to be_nil
+    end
   end
 
   describe Agenda::BookingPlaceholders do

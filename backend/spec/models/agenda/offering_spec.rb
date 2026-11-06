@@ -101,5 +101,12 @@ RSpec.describe Agenda::Offering do
 
       expect(record.scheduler_balancer).to be_nil
     end
+
+    it "quem foi tirado do serviço com zero não volta a ser o da vez" do
+      record.update!(distribution: { bia.id.to_s => 0, ana.id.to_s => 100 })
+      book(ana)
+
+      expect(record.scheduler_balancer).to eq(ana.id.to_s)
+    end
   end
 end
