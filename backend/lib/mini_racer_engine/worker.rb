@@ -91,11 +91,13 @@ module MiniRacerEngine
       })();
     JS
 
-    # Roda o script e devolve o desfecho a `__racerFinish`, um callback que o script não
-    # alcança depois daqui. `then`, `JSON.stringify` e companhia são capturados antes do
-    # script rodar, para ele não conseguir trocá-los por baixo do motor.
+    # Prepara o desfecho do script: `__racerFinish` (o callback Ruby) fica guardado aqui e
+    # sai do global num `eval` ANTERIOR ao do script. Se isto rodasse no mesmo `eval`, um
+    # script que escapa da função com `}` chamaria o callback antes dele sumir, forjando o
+    # resultado ou entregando ao `JSON.parse` do Ruby um texto de 512 MB. `then`,
+    # `JSON.stringify` e companhia são capturados pelo mesmo motivo.
     #
-    # O resultado sai em JSON, e AQUI DENTRO, por dois motivos:
+    # O resultado sai em JSON, e dentro do `eval` do script, por dois motivos:
     #
     #  - tudo que o script pode rodar (`toJSON`, getter, laço depois de um `await`) fica
     #    debaixo de um único `timeout`. Lido num segundo `eval`, como na origem, um getter
@@ -103,7 +105,7 @@ module MiniRacerEngine
     #  - o que chega ao Ruby é sempre dado puro, sem Hash cíclico, `ScriptError` no meio do
     #    resultado ou texto em bytes UTF-16, que explodiriam depois em quem grava.
     RUNNER_JS = <<~'JS'.freeze
-      (function (params, maxResultChars) {
+      (function (maxResultChars) {
         'use strict';
 
         const finish = globalThis.__racerFinish;
@@ -151,7 +153,10 @@ module MiniRacerEngine
           }
         }
 
-        apply(then, onMessage(params), [succeed, fail]);
+        globalThis.__racerStart = function (params) {
+          delete globalThis.__racerStart;
+          apply(then, onMessage(params), [succeed, fail]);
+        };
       })
     JS
 
@@ -180,6 +185,7 @@ module MiniRacerEngine
           outcome ||= [ ok, payload ]
           nil
         })
+        internal_eval(context, "#{RUNNER_JS}(#{Limits::MAX_RESULT_BYTES});")
         context.eval(script_source(code, params), filename: USER_FILE)
 
         finish(outcome)
@@ -234,7 +240,7 @@ module MiniRacerEngine
     def script_source(code, params)
       params_json = Values.to_js(params || {}).to_json
 
-      "async function onMessage(params) {#{code}\n}\n;#{RUNNER_JS}(#{params_json}, #{Limits::MAX_RESULT_BYTES});"
+      "async function onMessage(params) {#{code}\n}\n;__racerStart(#{params_json});"
     end
 
     # As microtasks drenam antes do `eval` voltar. Sem desfecho a essa altura, nada mais vai

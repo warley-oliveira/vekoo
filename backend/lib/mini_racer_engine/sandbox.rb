@@ -10,9 +10,9 @@ module MiniRacerEngine
   # Alguns builtins em C++ varrem a entrada inteira sem voltar ao JS, então nem o GC nem o
   # timeout os alcançam. Com entrada gigante, ou o V8 aborta o PROCESSO (`s.match(/x/g)`,
   # `JSON.parse`, `new Array(2**29).fill(0)`: `Fatal JavaScript invalid size error`), ou a
-  # thread fica presa muito além do prazo (`a.length = 2**29; a.sort()`). Daí o teto
-  # `MAX_COLLECTION_ITEMS` na entrada desses métodos: nada desse tamanho caberia no limite de
-  # memória de qualquer forma.
+  # thread fica presa muito além do prazo (`a.length = 2**29; a.sort()`). Daí os tetos
+  # `MAX_COLLECTION_ITEMS` e `MAX_TEXT_CHARS` na entrada desses métodos: nada desse tamanho
+  # caberia no limite de memória de qualquer forma.
   #
   # Isto fecha o que dá para esbarrar sem querer e todo vetor que a spec cobre, não é uma
   # fronteira contra quem procura de propósito: pode haver outro builtin. Contra isso a
@@ -26,7 +26,7 @@ module MiniRacerEngine
     JITLESS_CHECK_JS = "typeof WebAssembly === 'undefined'".freeze
 
     SOURCE = <<~'JS'.freeze
-      (function (maxBinaryBytes, maxItems, maxIntlObjects) {
+      (function (maxBinaryBytes, maxItems, maxChars, maxIntlObjects) {
         'use strict';
 
         // Tudo que os guardas usam em tempo de chamada é capturado aqui, antes do script
@@ -53,27 +53,26 @@ module MiniRacerEngine
         const toSize = (value) => max(trunc(toNumber(value)) || 0, 0);
 
         // ── Coleções gigantes ───────────────────────────────────────────
-        function refuseHuge(size) {
-          if (toNumber(size) > maxItems) {
+        function refuseHuge(size, limit = maxItems) {
+          if (toNumber(size) > limit) {
             throw new RangeError('Script exceeded the collection size limit');
           }
         }
 
         // Troca o método por um que confere o tamanho da entrada antes de chegar ao nativo.
-        function guardMethods(target, names, sizeOf) {
+        function guardMethods(target, names, sizeOf, limit) {
           for (const name of names) {
             const native = target[name];
             if (typeof native !== 'function') continue;
             define(target, name, function (...args) {
-              refuseHuge(sizeOf(this, args));
+              refuseHuge(sizeOf(this, args), limit);
               return apply(native, this, args);
             });
           }
         }
 
-        const lengthOf = (self) => (self === null || self === undefined ? 0 : self.length);
-        const textLengthOf = (self) => (self === null || self === undefined ? 0 : toText(self).length);
-        const firstArgumentLength = (self, args) => textLengthOf(args[0]);
+        const lengthOf = (value) => (value === null || value === undefined ? 0 : value.length);
+        const textLengthOf = (value) => (value === null || value === undefined ? 0 : toText(value).length);
 
         // Ficam de fora os que não varrem o array, para não pesar em `push` num laço.
         guardMethods(Array.prototype, [
@@ -81,30 +80,39 @@ module MiniRacerEngine
           'findLastIndex', 'flat', 'flatMap', 'forEach', 'includes', 'indexOf', 'join',
           'lastIndexOf', 'map', 'reduce', 'reduceRight', 'reverse', 'slice', 'some', 'sort',
           'splice', 'toLocaleString', 'toReversed', 'toSorted', 'toSpliced', 'toString', 'with'
-        ], lengthOf);
+        ], lengthOf, maxItems);
+
+        guardMethods(Object, [
+          'keys', 'values', 'entries', 'getOwnPropertyNames', 'getOwnPropertyDescriptors'
+        ], (self, args) => lengthOf(args[0]), maxItems);
+        guardMethods(Object, ['assign'], (self, args) => lengthOf(args[1]), maxItems);
+        guardMethods(Reflect, ['ownKeys'], (self, args) => lengthOf(args[0]), maxItems);
 
         guardMethods(String.prototype, [
           'match', 'matchAll', 'normalize', 'replace', 'replaceAll', 'search', 'split',
           'toLowerCase', 'toUpperCase', 'toLocaleLowerCase', 'toLocaleUpperCase'
-        ], textLengthOf);
+        ], textLengthOf, maxChars);
 
         // O mesmo caminho, chamado direto: `/x/g[Symbol.match](s)`.
         guardMethods(RegExp.prototype, [
           Symbol.match, Symbol.matchAll, Symbol.replace, Symbol.search, Symbol.split
-        ], firstArgumentLength);
+        ], (self, args) => textLengthOf(args[0]), maxChars);
 
-        guardMethods(JSON, ['parse'], firstArgumentLength);
+        guardMethods(JSON, ['parse'], (self, args) => textLengthOf(args[0]), maxChars);
 
         // Array-like tem o `length` lido uma vez e os itens copiados em JS, onde o timeout
         // alcança: um getter responderia pequeno aqui e gigante para o nativo.
         const NativeArrayFrom = Array.from;
         function materialize(items) {
-          if (items === null || typeof items !== 'object' || items[iterator] != null) return items;
+          if (typeof items === 'string') refuseHuge(items.length, maxChars);
+          if (items === null || typeof items !== 'object') return items;
 
           const size = toSize(items.length);
           refuseHuge(size);
+          if (items[iterator] != null) return items;
+
           const copy = [];
-          for (let i = 0; i < size; i++) copy.push(items[i]);
+          for (let i = 0; i < size; i++) copy[i] = items[i];
           return copy;
         }
 
@@ -256,7 +264,7 @@ module MiniRacerEngine
     JS
 
     def self.source
-      "#{SOURCE}(#{Limits::MAX_BINARY_BYTES}, #{Limits::MAX_COLLECTION_ITEMS}, #{Limits::MAX_INTL_OBJECTS});"
+      "#{SOURCE}(#{Limits::MAX_BINARY_BYTES}, #{Limits::MAX_COLLECTION_ITEMS}, #{Limits::MAX_TEXT_CHARS}, #{Limits::MAX_INTL_OBJECTS});"
     end
   end
 end

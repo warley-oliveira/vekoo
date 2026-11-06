@@ -290,10 +290,25 @@ RSpec.describe MiniRacerEngine::Worker do
       expect(result).to be true
     end
 
-    it "o script não alcança o callback de desfecho nem forja o resultado depois" do
-      result = worker.perform("return typeof __racerFinish;").result
+    it "o script não alcança o callback de desfecho" do
+      expect(worker.perform("return [typeof __racerFinish, typeof __racerStart];").result).to all(eq("undefined"))
+    end
 
-      expect(result).to eq("undefined")
+    # Código que escapa da função com `}` roda antes do início normal do script.
+    it "nem escapando da função" do
+      expect { worker.perform("} __racerFinish(true, '\"forjado\"'); async function x() {") }
+        .to raise_error(MiniRacer::RuntimeError, /__racerFinish is not defined/)
+    end
+
+    it "escapar da função não ganha nada além do que o script já tem" do
+      result = worker.perform("} globalThis.escapou = typeof tag.add; async function onMessage(params) { return globalThis.escapou;")
+
+      expect(result.result).to eq("function")
+    end
+
+    it "quem troca o início fica sem resultado, não com um forjado" do
+      expect { worker.perform("} globalThis.__racerStart = () => {}; async function x() {") }
+        .to raise_error(MiniRacer::RuntimeError, /Promise pendente/)
     end
 
     it "conta a cota de cada execução do zero" do

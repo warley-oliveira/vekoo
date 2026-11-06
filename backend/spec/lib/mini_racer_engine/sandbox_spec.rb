@@ -374,6 +374,21 @@ RSpec.describe "MiniRacerEngine: limites e isolamento" do
       )
     end
 
+    # O teto de texto fica acima do que um `fetch` traz, e o de coleção, acima do que cabe no
+    # heap padrão. Cada um numa execução: juntos, passariam do limite de memória.
+    {
+      "split de uma resposta de 5 MB" => [ "return 'a,'.repeat(5 * 512 * 1024).split(',').length;", (5 * 512 * 1024) + 1 ],
+      "replaceAll em 5 MB de texto" => [ "return 'abcdefghij'.repeat(512 * 1024).replaceAll('a', 'z').length;", 5 * 1024 * 1024 ],
+      "JSON.parse de 5 MB" => [ "return JSON.parse(JSON.stringify({ a: 'y'.repeat(5 * 1024 * 1024) })).a.length;", 5.megabytes ],
+      "map em 1 milhão" => [ "return new Array(1000000).fill(1).map(n => n + 1).length;", 1_000_000 ],
+      "Array.from de 1 milhão" => [ "return Array.from({ length: 1000000 }).length;", 1_000_000 ],
+      "Object.keys de 1 milhão" => [ "return Object.keys(new Array(1000000).fill(1)).length;", 1_000_000 ]
+    }.each do |label, (code, expected)|
+      it "o que um script usa de verdade passa: #{label}" do
+        expect(run(code)).to eq(expected)
+      end
+    end
+
     # Estes não abortam, mas sem o teto prendiam a thread muito além do prazo: o builtin
     # varre 2^29 posições sem voltar ao JS.
     {
@@ -404,8 +419,51 @@ RSpec.describe "MiniRacerEngine: limites e isolamento" do
       results = output.lines.grep(/\Avector /).to_h { |line| line.split(" ", 3).drop(1) }
       unexpected = results.reject { |_name, outcome| outcome.start_with?("MiniRacer::", "ok") }
       expect(unexpected).to be_empty
-      expect(results.size).to be > 30
+      expect(results.size).to be > 50
       expect(output).to include("fork ok")
+    end
+  end
+
+  # Estas funções são puras e não passam por `attach_method`. O limite do V8 não alcança o que
+  # elas fazem no Ruby: `new URLSearchParams('a=1&'.repeat(2 ** 26))` chegava a 4,8 GB.
+  describe "funções nativas das Web APIs" do
+    {
+      "URLSearchParams" => "new URLSearchParams('a=1&'.repeat(2 ** 19));",
+      "URL" => "new URL('http://a.b/?' + 'a=1&'.repeat(2 ** 19));",
+      "direto" => "__nativeQueryDecode('&'.repeat(2 ** 21));",
+      "btoa" => "btoa('x'.repeat(2 ** 25));",
+      "atob" => "atob('eHh4'.repeat(2 ** 23));",
+      "TextEncoder" => "new TextEncoder().encode('x'.repeat(2 ** 25));",
+      "createHash" => "crypto.createHash('md5').update('x'.repeat(2 ** 25)).digest('hex');",
+      "createHmac" => "crypto.createHmac('md5', 'k').update('x'.repeat(2 ** 25)).digest('hex');"
+    }.each do |label, code|
+      it "recusa argumento gigante: #{label}" do
+        elapsed = elapsed_seconds do
+          expect { run(code, timeout_ms: 5_000) }.to raise_error(MiniRacer::RuntimeError, /too large/)
+        end
+
+        expect(elapsed).to be < 2
+      end
+    end
+
+    it "recusa lista cíclica, em vez de estourar a pilha" do
+      expect { run("const a = []; a[0] = a; __nativeTextDecode(a);") }.to raise_error(MiniRacer::RuntimeError, /too large/)
+    end
+
+    it "uso normal continua igual" do
+      result = run(<<~JS)
+        return [
+          new URLSearchParams('a=1&b=2').get('b'),
+          new URL('https://a.com/b?c=1').searchParams.get('c'),
+          new URLSearchParams({ a: 'x y' }).toString(),
+          btoa('x'.repeat(1000000)).length,
+          atob(btoa('x'.repeat(1000000))).length,
+          new TextDecoder().decode(new TextEncoder().encode('x'.repeat(1000000))).length,
+          crypto.createHash('md5').update('x'.repeat(1000000)).digest('hex').length
+        ];
+      JS
+
+      expect(result).to eq([ "2", "1", "a=x+y", 1_333_336, 1_000_000, 1_000_000, 32 ])
     end
   end
 

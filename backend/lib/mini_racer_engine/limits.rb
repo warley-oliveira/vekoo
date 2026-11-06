@@ -16,8 +16,13 @@ module MiniRacerEngine
     # Soma do que o script aloca em ArrayBuffer e typed arrays, que moram fora do heap e o
     # `max_memory` não enxerga. É acumulado, não o pico: o GC não devolve cota.
     MAX_BINARY_BYTES = 128.megabytes
-    # Maior coleção que um único builtin pode montar. Ver `Sandbox`.
-    MAX_COLLECTION_ITEMS = 2**24
+    # O que um builtin aceita varrer de uma vez, sem voltar ao JS. Ver `Sandbox`. Nada maior
+    # que isto cabe no heap padrão: 2^22 itens são 32 MB só de ponteiros, e com 2^24 o
+    # `Object.entries` abortava o processo.
+    MAX_COLLECTION_ITEMS = 2**22
+    # Texto tem teto próprio, acima do tamanho de uma resposta de `fetch`, para o
+    # `JSON.parse(await res.text())` funcionar.
+    MAX_TEXT_CHARS = 2**24
     # Objetos `Intl` por execução: também ficam fora do heap, até uns 27 KB cada.
     MAX_INTL_OBJECTS = 5_000
 

@@ -224,7 +224,10 @@ Todos valem sempre e moram em `MiniRacerEngine::Limits`. Na origem, o tempo era 
 | Heap do V8 | 64 MB; de 8 a 256 MB, se pedido | `MiniRacer::V8OutOfMemoryError`. O script não consegue capturar. |
 | Memória binária (`ArrayBuffer`, typed arrays), somada | 128 MB | `RangeError` no script |
 | Objetos `Intl` criados | 5.000 por execução | `RangeError` no script |
-| Tamanho de coleção num builtin (`sort`, `map`, `split`, `JSON.parse`…) | 2^24 itens ou caracteres | `RangeError` no script |
+| Coleção num builtin (`sort`, `map`, `fill`, `Array.from`, `Object.entries`…) | 2^22 itens (4,2 milhões) | `RangeError` no script |
+| Texto num builtin (`split`, `replace`, `match`, `JSON.parse`…) | 2^24 caracteres (16,7 milhões) | `RangeError` no script |
+| Argumento das Web APIs (`btoa`, `atob`, `TextEncoder`, `crypto.createHash`…) | 16 MB | Erro no script |
+| Argumento de `URL` e `URLSearchParams` | 1 MB | Erro no script |
 | Resultado do script | 5 MB de JSON, 100 níveis | `MiniRacer::RuntimeError` |
 | Chamadas a extensões | 5.000 por execução | Erro no script, que não ganha mais cota mesmo capturando |
 | Chamadas de rede (`fetch`, `request`, `downloadFile`, `maps.*`, `catalog.Search`) | 50 por execução | Idem |
@@ -243,7 +246,7 @@ Todos valem sempre e moram em `MiniRacerEngine::Limits`. Na origem, o tempo era 
 | `sleep` | 30 s, e nunca além do prazo | Dorme menos |
 | `console.*` | 500 linhas de até 2.000 caracteres | Some em silêncio |
 
-Cada execução roda num contexto V8 novo, com tudo carregado, o que custa cerca de 7 ms: nada sobrevive entre execuções. O prazo é um só para a execução inteira, inclusive `toJSON` e getter do resultado.
+Cada execução roda num contexto V8 novo, com tudo carregado, o que custa cerca de 8 ms: nada sobrevive entre execuções. O prazo é um só para a execução inteira, inclusive `toJSON` e getter do resultado.
 
 ## Erros
 
@@ -434,13 +437,32 @@ Somente leitura, com a mesma busca da tela (`Products::SearchService`). Devolve 
 
 **Um script mal-intencionado ainda pode derrubar o processo.** Este motor roda V8 dentro do processo Ruby, e alguns builtins do V8 abortam o processo inteiro em vez de levantar um erro. O `Sandbox` fecha todos os vetores conhecidos, cobertos em `spec/fixtures/files/script_engine_vectors.rb`, mas é uma lista: não prova que não exista outro. **Recomendação ao integrador: rodar os jobs de script numa fila própria, em um processo Sidekiq separado**, para o pior caso matar só esse processo, e não o de mensagens. Isolamento de verdade, com um processo por execução, ficou fora: seria outro projeto.
 
-**Pico de memória além do limite.** Alguns builtins só param ao terminar. `new RegExp` com um padrão de centenas de MB chegou a 870 MB antes do `V8OutOfMemoryError`, e `Function.prototype.apply` com um array enorme a 2 GB. É transitório, mas com vários scripts ao mesmo tempo soma.
+**Pico de memória além do limite.** Alguns builtins só param ao terminar. `new RegExp` com um padrão de centenas de MB chegou a 870 MB antes do `V8OutOfMemoryError`, e `Function.prototype.apply` com um array enorme a 2 GB. Uma string de 512 MB passada a uma função nativa também é copiada até o Ruby antes de ser recusada, perto de 1 GB. É transitório, mas com vários scripts ao mesmo tempo soma.
 
 **Sem cota por organização.** Os limites são por execução. Nada impede que um script rodando em laço, execução após execução, encha `collection.*` no Mongo.
 
 **`$regex` em `collection.*`** roda no Mongo, com a expressão que o script mandar. A proteção é a do próprio banco contra expressão catastrófica.
 
 ## O que mudou em relação à origem
+
+### A gem: de `mini_racer` 0.12 para 0.22
+
+Conferido com scripts rodando em V8 de verdade. `lib/mini_racer/shared.rb` é só o caminho do TruffleRuby: o que vale está na extensão em C/C++.
+
+| | Comportamento na 0.22 | O que o motor faz |
+|---|---|---|
+| `attach("a.b", proc)` | Igual: cria o namespace, e `console.log` entra no `console` que o V8 já tem. | Nada. |
+| `Context.new(timeout:)` | Por `eval`, em relógio de parede. Alcança laço, microtask, regex, getter, `try/finally`. **Não interrompe um callback Ruby**: um `sleep` de 1 s sob timeout de 200 ms durou 1 s. | Script e leitura do resultado no mesmo `eval`; quem bloqueia usa `budget.remaining_seconds`. |
+| `Context.new(max_memory:)` | Callback pós-GC sobre o heap. **Não conta `ArrayBuffer` nem objetos ICU**, e não fixa limite no V8. | `Sandbox`. |
+| JIT | Em laço que aloca, otimizado pelo TurboFan, nem `timeout` nem `max_memory` param: o V8 aborta o **processo** ao chegar a 1,4 GB, em menos de 1 s, mesmo com `max_memory` de 64 MB. | `--jitless`. |
+| Exceção em callback | O JS agora captura, com a mensagem em Latin-1. Se ninguém capturar no topo do `eval`, a classe Ruby original sobe. | Só `MiniRacerEngine::Error` leva a mensagem; o sentinela de `web_apis` continua, por causa do Latin-1. |
+| Ruby para JS | `BigDecimal`, `Date` e `Proc` viram a string `"Undefined Conversion"`. Objeto comum levanta `MiniRacer::InternalError`. Texto binário vira UTF-8, com U+FFFD no que for inválido. | `Values.to_js`. |
+| JS para Ruby | Função no topo vira `MiniRacer::JavaScriptFunction`, e aninhada some. `Error` vira `MiniRacer::ScriptError`. Ciclo vira Hash recursivo. Surrogate solto vira bytes crus. `Date` inválida levanta `RangeError`. | O resultado sai em JSON; argumentos passam por `Values.from_js`. |
+| Microtasks | Drenam antes do `eval` voltar, então o `timeout` as cobre. | O desfecho do script volta por callback, dentro do `eval`. |
+| `eval_await` | Novo. Com promise que nunca termina, espera até o timeout. | Não usa: a origem responde na hora com um erro claro, e isso continua. |
+| `dispose` | Libera o V8, mas a thread nativa só termina quando o GC do Ruby finaliza o objeto: 200 execuções sem GC, 217 threads. | GC menor a cada 32 execuções, que custa 5 ms. |
+| Fork | O V8 só sobe no primeiro contexto, e `set_flags!` só guarda o flag. | Conferido em spec. |
+| Custo | 2 a 3 ms por contexto; 8 ms com tudo carregado. | Nada. |
 
 ### Buracos que a origem tinha
 

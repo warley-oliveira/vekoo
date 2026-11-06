@@ -21,6 +21,10 @@ module MiniRacerEngine::Workers
     # bloquear a thread do worker JS. 30s é folgado pra retries com backoff.
     MAX_SLEEP_SECONDS = MiniRacerEngine::Limits::MAX_SLEEP_SECONDS
 
+    # O que uma função destas aceita. URL menor: `split` e `URI.parse` multiplicam o tamanho.
+    MAX_ARGUMENT_BYTES = MiniRacerEngine::Values::MAX_STRING_BYTES
+    MAX_URL_BYTES = 1.megabyte
+
     # Bootstrap das Web APIs ausentes no V8 puro. As funções `__nativeXxx` são providas por
     # `register`.
     WEB_APIS_BOOTSTRAP_JS = <<~'JS'.freeze
@@ -247,31 +251,31 @@ module MiniRacerEngine::Workers
       @worker = worker
 
       # ── Base64 ────────────────────────────────────────────────────
-      context.attach("__nativeBase64Encode", proc { |str| base64_encode(str) })
-      context.attach("__nativeBase64EncodeBytes", proc { |bytes| base64_encode_bytes(bytes) })
-      context.attach("__nativeBase64Decode", proc { |str| base64_decode(str) })
+      native(context, "__nativeBase64Encode") { |str| base64_encode(str) }
+      native(context, "__nativeBase64EncodeBytes") { |bytes| base64_encode_bytes(bytes) }
+      native(context, "__nativeBase64Decode") { |str| base64_decode(str) }
 
       # ── UTF-8 (TextEncoder/TextDecoder) ───────────────────────────
-      context.attach("__nativeTextEncode", proc { |str| text_encode(str) })
-      context.attach("__nativeTextDecode", proc { |bytes| text_decode(bytes) })
+      native(context, "__nativeTextEncode") { |str| text_encode(str) }
+      native(context, "__nativeTextDecode") { |bytes| text_decode(bytes) }
 
       # ── URL / URLSearchParams ─────────────────────────────────────
-      context.attach("__nativeUrlParse", proc { |args| url_parse(args) })
-      context.attach("__nativeUrlBuild", proc { |args| url_build(args) })
-      context.attach("__nativeQueryEncode", proc { |pairs| query_encode(pairs) })
-      context.attach("__nativeQueryDecode", proc { |str| query_decode(str) })
+      native(context, "__nativeUrlParse", limit: MAX_URL_BYTES) { |args| url_parse(args) }
+      native(context, "__nativeUrlBuild", limit: MAX_URL_BYTES) { |args| url_build(args) }
+      native(context, "__nativeQueryEncode", limit: MAX_URL_BYTES) { |pairs| query_encode(pairs) }
+      native(context, "__nativeQueryDecode", limit: MAX_URL_BYTES) { |str| query_decode(str) }
 
       # ── Crypto ────────────────────────────────────────────────────
-      context.attach("__nativeUuid", proc { SecureRandom.uuid })
-      context.attach("__nativeRandomBytes", proc { |n| random_bytes(n) })
-      context.attach("__nativeHash", proc { |args| compute_hash(args) })
-      context.attach("__nativeHmac", proc { |args| compute_hmac(args) })
+      native(context, "__nativeUuid") { SecureRandom.uuid }
+      native(context, "__nativeRandomBytes") { |n| random_bytes(n) }
+      native(context, "__nativeHash") { |args| compute_hash(args) }
+      native(context, "__nativeHmac") { |args| compute_hmac(args) }
 
       # ── Sleep ─────────────────────────────────────────────────────
-      context.attach("__nativeSleep", proc { |ms|
-                                        sleep_ms(ms)
-                                        nil
-                                      })
+      native(context, "__nativeSleep") do |ms|
+        sleep_ms(ms)
+        nil
+      end
     end
 
     def bootstrap_js
@@ -279,6 +283,33 @@ module MiniRacerEngine::Workers
     end
 
     private
+
+    # O teto do argumento mora aqui, e não no JS: o script chama `__nativeQueryDecode` direto
+    # se quiser. Sem ele, o limite do V8 não alcança o que acontece no Ruby:
+    # `new URLSearchParams('a=1&'.repeat(2 ** 26))` chegava a 4,8 GB e 13 s, com o prazo em 3 s.
+    def native(context, name, limit: MAX_ARGUMENT_BYTES, &handler)
+      context.attach(name, proc { |*args|
+        raise MiniRacerEngine::Error, "Arguments too large" if argument_size(args) > limit
+
+        handler.call(*args)
+      })
+    end
+
+    # As funções recebem no máximo uma lista de pares de texto. Mais fundo que isso só um
+    # script chamando direto, e um array cíclico nunca terminaria.
+    def argument_size(value, depth = 0)
+      return Float::INFINITY if depth > 4
+
+      case value
+      when String then value.bytesize
+      when Array
+        return value.size if value.size > MAX_ARGUMENT_BYTES
+
+        value.sum(value.size) { |item| item.is_a?(Numeric) ? 0 : argument_size(item, depth + 1) }
+      when Hash then value.sum { |key, item| key.to_s.bytesize + argument_size(item, depth + 1) }
+      else 0
+      end
+    end
 
     # ── Base64 ──────────────────────────────────────────────────────
 
