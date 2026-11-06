@@ -3,7 +3,9 @@
 development:
   adapter: redis
   url: <%= ENV.fetch("CABLE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/0").sub(%r{/\d+\z}, "/1") } %>
-  channel_prefix: vekoo_development
+  # Pub/sub do Redis ignora o número do banco. Com o prefixo por banco, dois
+  # back-ends na mesma máquina não recebem os eventos um do outro.
+  channel_prefix: <%= ENV.fetch("POSTGRES_DB", "vekoo_development") %>
 
 test:
   adapter: test
