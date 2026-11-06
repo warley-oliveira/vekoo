@@ -1,10 +1,11 @@
-import { lazy, memo, Suspense, useCallback } from "react"
+import { lazy, memo, Suspense, useCallback, useLayoutEffect } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import { MessagesSquare } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { useDetailsPanel } from "@/lib/chat/stores"
+import { useDetailsPrefs } from "@/lib/chat-details/panel-store"
 import { cn } from "@/lib/utils"
 import { ChatDetailsPanel, HAS_DETAILS_PANEL } from "./extension-points"
 import { ListPanel } from "./list/list-panel"
@@ -47,11 +48,19 @@ export const ChatLayout = memo(function ChatLayout({
   const singleColumn = useIsMobile()
   const detailsOpen = useDetailsPanel((state) => state.open)
   const setDetailsOpen = useDetailsPanel((state) => state.setOpen)
+  // O copiloto é o único assunto do painel que não precisa de conversa aberta.
+  const showsCopilot = useDetailsPrefs((state) => state.tab === "copilot")
 
   const closeDetails = useCallback(() => setDetailsOpen(false), [setDetailsOpen])
   const goToList = useCallback(() => navigate("/chat"), [navigate])
 
-  const showDetails = HAS_DETAILS_PANEL && detailsOpen && Boolean(chatId)
+  // No celular o painel cobre a conversa: cada conversa abre nela, mesmo que ele tenha ficado aberto
+  // da última vez. Antes de pintar, para não piscar.
+  useLayoutEffect(() => {
+    if (singleColumn) setDetailsOpen(false)
+  }, [chatId, setDetailsOpen, singleColumn])
+
+  const showDetails = HAS_DETAILS_PANEL && detailsOpen && (Boolean(chatId) || showsCopilot)
 
   return (
     <div
@@ -80,7 +89,7 @@ export const ChatLayout = memo(function ChatLayout({
         )}
       </section>
 
-      {showDetails && chatId ? (
+      {showDetails ? (
         <aside className="min-h-0 w-full shrink-0 border-l max-md:absolute max-md:inset-0 max-md:z-20 max-md:bg-background md:w-[22rem]">
           <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
         </aside>

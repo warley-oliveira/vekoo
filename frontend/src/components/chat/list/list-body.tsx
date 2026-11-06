@@ -16,6 +16,7 @@ import { toQueryConditions } from "@/lib/chat/filters"
 import { resolveInitialChat, type ChatListQuery } from "@/lib/chat/list-query"
 import { useLastChannel, useListFilters, useOpenChatStore } from "@/lib/chat/stores"
 import type { Chat, UnifiedContact } from "@/lib/chat/types"
+import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
 import { ChatRow } from "./chat-row"
 import { ChatListSkeleton } from "./row-parts"
 import { UnifiedRow } from "./unified-row"
@@ -99,6 +100,10 @@ const ChannelChats = memo(function ChannelChats({
   const openChat = useOpenChat()
   const empty = useEmptyState(query, onCreate)
 
+  useEffect(() => {
+    useChatSelection.getState().setLoaded(list.items)
+  }, [list.items])
+
   return (
     <InfiniteList
       aria-label={t("chat.list.label")}
@@ -174,6 +179,12 @@ const AllContacts = memo(function AllContacts({
   const { byId: connectors } = useChatConnectors()
   const openChat = useOpenChat()
   const empty = useEmptyState(query, onCreate)
+
+  useEffect(() => {
+    useChatSelection
+      .getState()
+      .setLoaded(list.items.flatMap((contact) => selectableChatIds(contact.chats)))
+  }, [list.items])
 
   const openContact = useCallback(
     (contact: UnifiedContact) => {

@@ -20,7 +20,7 @@ export function EditableName({
   name,
   ref,
 }: {
-  chat: Chat
+  chat: Pick<Chat, "id" | "displayName" | "userName">
   name: string
   ref?: Ref<EditableNameHandle>
 }) {

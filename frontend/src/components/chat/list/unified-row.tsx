@@ -11,6 +11,7 @@ import {
 } from "@/lib/chat/channel"
 import { useOpenChatStore } from "@/lib/chat/stores"
 import type { UnifiedContact } from "@/lib/chat/types"
+import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
 import { cn } from "@/lib/utils"
 import { ChannelBadge, ChannelIcon } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
@@ -28,6 +29,12 @@ export type UnifiedRowProps = {
 export const UnifiedRow = memo(function UnifiedRow({ contact, connectors, onOpen }: UnifiedRowProps) {
   const { t } = useTranslation()
   const selected = useOpenChatStore((state) => state.externalId === contact.externalId)
+  const selecting = useChatSelection((state) => state.active)
+  // Uma linha de contato pode ser várias conversas: marcar marca as que casaram com o filtro.
+  const chatIds = selectableChatIds(contact.chats)
+  const checked = useChatSelection(
+    (state) => chatIds.length > 0 && chatIds.every((id) => state.ids.has(id))
+  )
 
   const main = contact.chats[0]
   const mainConnector = main?.connectorId ? connectors.get(main.connectorId) : undefined
@@ -48,6 +55,15 @@ export const UnifiedRow = memo(function UnifiedRow({ contact, connectors, onOpen
       href={main ? `/chat/${main.chatId}` : "/chat"}
       selected={selected}
       onOpen={() => onOpen(contact)}
+      selection={
+        selecting
+          ? {
+              checked,
+              label: t("chatDetails.bulk.selectRow", { name }),
+              onToggle: () => useChatSelection.getState().toggle(chatIds),
+            }
+          : undefined
+      }
       avatar={
         <>
           <UserAvatar

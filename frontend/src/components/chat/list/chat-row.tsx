@@ -8,6 +8,8 @@ import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channe
 import { chatDisplayName, useChat } from "@/lib/chat/chat-store"
 import { useOpenChatStore } from "@/lib/chat/stores"
 import type { ChatPerson, ChatTag } from "@/lib/chat/types"
+import { useChatListPrefs } from "@/lib/chat-details/list-prefs"
+import { useChatSelection } from "@/lib/chat-details/selection"
 import { ChannelBadge } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
 
@@ -35,6 +37,10 @@ export const ChatRow = memo(function ChatRow({
   const { t } = useTranslation()
   const chat = useChat(chatId)
   const selected = useOpenChatStore((state) => state.chatId === chatId)
+  const selecting = useChatSelection((state) => state.active)
+  const checked = useChatSelection((state) => state.ids.has(chatId))
+  const showTags = useChatListPrefs((state) => state.showTags)
+  const showPhone = useChatListPrefs((state) => state.showPhone)
 
   if (!chat) return null
 
@@ -57,6 +63,15 @@ export const ChatRow = memo(function ChatRow({
       href={`/chat/${chat.id}`}
       selected={selected}
       onOpen={() => onOpen(chat.id)}
+      selection={
+        selecting
+          ? {
+              checked,
+              label: t("chatDetails.bulk.selectRow", { name }),
+              onToggle: () => useChatSelection.getState().toggle([chatId]),
+            }
+          : undefined
+      }
       avatar={
         <>
           <UserAvatar
@@ -103,9 +118,11 @@ export const ChatRow = memo(function ChatRow({
         </span>
       </span>
 
-      {handle ? <span className="truncate text-xs text-muted-foreground">{handle}</span> : null}
+      {handle && showPhone ? (
+        <span className="truncate text-xs text-muted-foreground">{handle}</span>
+      ) : null}
 
-      {chatTags.length > 0 ? (
+      {chatTags.length > 0 && showTags ? (
         <span className="mt-0.5 flex min-w-0 items-center gap-1 overflow-hidden">
           {chatTags.slice(0, MAX_TAGS).map((tag) => (
             <TagChip key={tag.id} color={tag.color} className="h-[1.125rem] px-1 text-[0.6875rem]">

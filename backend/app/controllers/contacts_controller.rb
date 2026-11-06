@@ -12,7 +12,12 @@ class ContactsController < PlatformController
   skip_before_action :require_session, only: :download_export
   skip_before_action :set_current_context, only: :download_export
 
-  require_permission :contacts, except: :download_export
+  BULK_ACTIONS = %i[bulk_add_tags bulk_remove_tags bulk_assign_user bulk_update_status bulk_toggle_automation].freeze
+
+  require_permission :contacts, except: [ :download_export, *BULK_ACTIONS ]
+  # O lote também parte da lista do chat: cada ação é o que quem tem `chat` já faz numa conversa por
+  # vez, e a seleção continua presa a `chat_list_to`.
+  require_any_permission :chat, :contacts, only: BULK_ACTIONS
 
   # GET /contacts?q=&tagIds[]=&connectorIds[]=&teamIds[]=&assignedUser[]=&status=&automationEnabled=
   #               &hasSession=&dateFrom=&dateTo=&conditions[]=&sortBy=&sortDir=&page=&perPage=

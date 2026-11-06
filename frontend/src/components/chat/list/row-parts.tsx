@@ -1,6 +1,7 @@
 import { memo, type MouseEvent, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import {
+  Check,
   CheckCheck,
   FileText,
   Image as ImageIcon,
@@ -51,6 +52,7 @@ export function ListRow({
   meta,
   children,
   "aria-label": ariaLabel,
+  selection,
 }: {
   href: string
   selected: boolean
@@ -60,12 +62,53 @@ export function ListRow({
   meta: ReactNode
   children: ReactNode
   "aria-label"?: string
+  /** Escolhendo conversas: a linha deixa de abrir, e tocar nela marca. */
+  selection?: { checked: boolean; onToggle: () => void; label: string }
 }) {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0) return
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
     event.preventDefault()
     onOpen()
+  }
+
+  if (selection) {
+    return (
+      <div className="px-1.5 py-px">
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={selection.checked}
+          aria-label={selection.label}
+          onClick={selection.onToggle}
+          className={cn(
+            "flex min-h-[3.75rem] w-full items-start gap-3 rounded-lg px-2.5 py-2 text-left transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+            selection.checked ? "bg-accent text-accent-foreground" : "hover:bg-muted/70"
+          )}
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center">
+            <span
+              aria-hidden
+              className={cn(
+                "flex size-5 items-center justify-center rounded-md border transition-colors",
+                selection.checked
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-input bg-background"
+              )}
+            >
+              {selection.checked ? <Check className="size-3.5" /> : null}
+            </span>
+          </span>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="flex items-baseline justify-between gap-2">
+              {title}
+              <span className="flex shrink-0 items-center gap-1">{meta}</span>
+            </span>
+            {children}
+          </span>
+        </button>
+      </div>
+    )
   }
 
   return (

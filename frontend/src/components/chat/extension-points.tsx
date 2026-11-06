@@ -1,63 +1,92 @@
-import type { ReactNode } from "react"
+import { lazy, Suspense, type ReactNode } from "react"
 
 import type { ComposerMode } from "@/lib/chat/composer-mode"
 import type { Chat } from "@/lib/chat/types"
+import { ComposerActions } from "./details/composer-extras"
+import { DetailsSkeleton } from "./details/details-skeleton"
+import { ListActions } from "./details/list-extras"
+import { ListSelectionStrip } from "./details/list-selection"
+import {
+  TemplateDialogHost,
+  TemplateNoticeButton,
+  ThreadMenuItems,
+} from "./details/thread-extras"
 
-// Os pontos de encaixe do chat. As próximas frentes (`fe-chat-details`, `fe-chat-mobile`) escrevem
-// aqui, sem mexer na lista, no histórico nem no composer. Cada função já está no lugar certo da
-// tela e recebe o que precisa. Hoje não desenham nada, a não ser quando dito.
+// Os pontos de encaixe do chat: o que fica ao redor da lista, da conversa e do composer, sem mexer
+// neles. Cada função já está no lugar certo da tela e recebe o que precisa. O que pesa entra por
+// `lazy`: este arquivo carrega junto com a lista, e quase ninguém abre tudo o que está aqui.
 //
 // Para gravar qualquer coisa da conversa, use `updateChat` de `@/lib/chat/actions` (é otimista e
 // reflete em lista, cabeçalho e painel). Para ler a conversa, `useChat(chatId)` de
-// `@/lib/chat/chat-store`. Campos personalizados e provedor: `threadMetadata(chatId)`.
+// `@/lib/chat/chat-store`, ou só os campos que importam, com `useChatFields`.
+
+const DetailsPanel = lazy(() => import("./details/details-panel"))
+
+/** Enquanto não existia, escondia o botão do cabeçalho. */
+export const HAS_DETAILS_PANEL = true
 
 /**
- * O painel lateral: contato, atribuição, etiquetas, notas, atributos, ações agendadas, copiloto.
- *
- * Mora na terceira coluna em tela larga; `ChatLayout` já cuida da largura e de abrir e fechar, e o
- * botão do cabeçalho já alterna `useDetailsPanel`. Em tela estreita, ele aparece por cima da
- * conversa: o conteúdo é o mesmo, então um componente só basta.
- *
- * Enquanto não existe, `HAS_DETAILS_PANEL` esconde o botão.
+ * O painel lateral: o contato e o copiloto. Mora na terceira coluna em tela larga; `ChatLayout` cuida
+ * da largura e de abrir e fechar. Em tela estreita, aparece por cima da conversa. Sem conversa aberta,
+ * só o copiloto faz sentido.
  */
-export const HAS_DETAILS_PANEL = false
-
-export function ChatDetailsPanel(_props: { chatId: string; onClose: () => void }): ReactNode {
-  return null
+export function ChatDetailsPanel({
+  chatId,
+  onClose,
+}: {
+  chatId: string | null
+  onClose: () => void
+}): ReactNode {
+  return (
+    <Suspense fallback={<DetailsSkeleton withHeader />}>
+      <DetailsPanel chatId={chatId} onClose={onClose} />
+    </Suspense>
+  )
 }
 
-/** Ações a mais no cabeçalho da conversa, antes do menu "...". */
-export function ThreadHeaderExtras(_props: { chat: Chat }): ReactNode {
-  return null
+/**
+ * Ações a mais no cabeçalho da conversa, antes do menu "...". Hoje não desenha botão: é o lugar do
+ * diálogo de modelo, que precisa estar montado em todo modo do composer.
+ */
+export function ThreadHeaderExtras({ chat }: { chat: Chat }): ReactNode {
+  return <TemplateDialogHost chatId={chat.id} />
 }
 
-/** Itens a mais no menu "..." do cabeçalho (use `DropdownMenuItem`). */
-export function ThreadMenuExtras(_props: { chat: Chat }): ReactNode {
-  return null
+/** Itens a mais no menu "..." do cabeçalho. */
+export function ThreadMenuExtras({ chat }: { chat: Chat }): ReactNode {
+  return <ThreadMenuItems chat={chat} />
 }
 
-/** Ações na linha de cima da lista, ao lado de "Nova conversa": preferências, ações em lote. */
+/** Ações na linha de cima da lista, ao lado de "Nova conversa": copiloto, preferências, ações em lote. */
 export function ListHeaderExtras(): ReactNode {
-  return null
+  return <ListActions />
+}
+
+/** A faixa de quem está escolhendo conversas, logo abaixo das abas da lista. */
+export function ListSelection(): ReactNode {
+  return <ListSelectionStrip />
 }
 
 /**
  * Botões a mais no composer, ao lado de anexar e emoji: resposta sugerida, modelo.
- * `insertText` escreve na posição do cursor; é o que a sugestão de resposta deve usar.
+ * `insertText` escreve na posição do cursor; é o que a sugestão de resposta usa.
  */
-export function ComposerExtras(_props: {
+export function ComposerExtras({
+  chat,
+  insertText,
+  disabled,
+}: {
   chat: Chat
   insertText: (text: string) => void
   disabled: boolean
 }): ReactNode {
-  return null
+  return <ComposerActions chatId={chat.id} insertText={insertText} disabled={disabled} />
 }
 
 /**
- * O aviso do composer quando só cabe modelo (WABA fora da janela de 24 horas), logo abaixo do
- * texto que explica: é aqui que entra o envio de modelo. Depois de enviar um modelo, chame
- * `removeWaitingTagIfNeeded`, de `useAutoRemoveWaitingTag`.
+ * O aviso do composer quando só cabe modelo (WABA fora da janela de 24 horas), logo abaixo do texto
+ * que explica: é aqui que entra o envio de modelo.
  */
-export function TemplateSender(_props: { chat: Chat; mode: ComposerMode }): ReactNode {
-  return null
+export function TemplateSender({ chat, mode }: { chat: Chat; mode: ComposerMode }): ReactNode {
+  return mode === "waba-expired" ? <TemplateNoticeButton chatId={chat.id} /> : null
 }

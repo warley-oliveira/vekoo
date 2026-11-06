@@ -37,9 +37,36 @@ RSpec.describe "Contatos", type: :request do
         get path, headers: headers
         expect(response).to have_http_status(:forbidden)
       end
+    end
 
-      post "/contacts/bulk-update-status", params: { status: "open", chatIds: [ "x" ] }, headers: headers, as: :json
+    it "deixa quem tem chat agir em lote, porque a lista do chat também seleciona" do
+      chat = chat_for
+      member = member_with(chat: "all", chat_list_to: "all")
+
+      post "/contacts/bulk-update-status", params: { status: "closed", chatIds: [ chat.id.to_s ] }, headers: auth_headers(member), as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json["updatedCount"]).to eq(1)
+      expect(chat.reload.status).to eq("closed")
+    end
+
+    it "recusa o lote a quem não tem chat nem contatos" do
+      member = member_with(calendar: "all")
+
+      post "/contacts/bulk-update-status", params: { status: "open", chatIds: [ "x" ] }, headers: auth_headers(member), as: :json
+
       expect(response).to have_http_status(:forbidden)
+    end
+
+    it "o lote de quem só tem chat continua preso ao que a pessoa enxerga" do
+      other = create(:account, organization: organization)
+      hidden = chat_for(assigned_account_id: other.id)
+      member = member_with(chat: "all", chat_list_to: "assigned")
+
+      post "/contacts/bulk-update-status", params: { status: "closed", chatIds: [ hidden.id.to_s ] }, headers: auth_headers(member), as: :json
+
+      expect(json["updatedCount"]).to eq(0)
+      expect(hidden.reload.status).to eq("open")
     end
   end
 

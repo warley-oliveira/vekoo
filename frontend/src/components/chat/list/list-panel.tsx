@@ -8,7 +8,7 @@ import { toQueryConditions } from "@/lib/chat/filters"
 import type { StatusFilter } from "@/lib/chat/list-query"
 import { useListFilters } from "@/lib/chat/stores"
 import { cn } from "@/lib/utils"
-import { ListHeaderExtras } from "../extension-points"
+import { ListHeaderExtras, ListSelection } from "../extension-points"
 import { ActiveFilters } from "./active-filters"
 import { ChannelTabs } from "./channel-tabs"
 import { ListBody } from "./list-body"
@@ -117,6 +117,7 @@ export const ListPanel = memo(function ListPanel({ connected }: { connected: boo
       <div className="h-px shrink-0 bg-border" />
 
       <ActiveFilters />
+      <ListSelection />
 
       {offline ? (
         <p
