@@ -291,7 +291,7 @@ module MiniRacerEngine::Workers
       context.attach(name, proc { |*args|
         raise MiniRacerEngine::Error, "Arguments too large" if argument_size(args) > limit
 
-        handler.call(*args)
+        guarded(name) { handler.call(*args) }
       })
     end
 

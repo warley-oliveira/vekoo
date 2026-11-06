@@ -49,15 +49,16 @@ RSpec.describe "MiniRacerEngine: limites e isolamento" do
         .to raise_error(MiniRacer::RuntimeError, /limit of 100 calls/)
     end
 
-    # Lido num segundo `eval`, como na origem, cada etapa ganharia um prazo inteiro.
+    # Lido num segundo `eval`, como na origem, cada etapa ganharia um prazo inteiro: gastar 90%
+    # do prazo no corpo e o resto num getter daria 1,9 s. Um prazo só dá 1 s.
     it "é um prazo só para a execução inteira" do
-      code = "const fim = Date.now() + 100; while (Date.now() < fim) {} return { get g() { while (true) {} } };"
+      code = "const fim = Date.now() + 900; while (Date.now() < fim) {} return { get g() { while (true) {} } };"
 
       elapsed = elapsed_seconds do
-        expect { run(code, timeout_ms: 200) }.to raise_error(MiniRacer::ScriptTerminatedError)
+        expect { run(code, timeout_ms: 1_000) }.to raise_error(MiniRacer::ScriptTerminatedError)
       end
 
-      expect(elapsed).to be < 0.45
+      expect(elapsed).to be < 1.5
     end
 
     it "sleep não passa do prazo, mesmo com o timeout do V8 sem alcançar o Ruby" do
@@ -448,6 +449,15 @@ RSpec.describe "MiniRacerEngine: limites e isolamento" do
 
     it "recusa lista cíclica, em vez de estourar a pilha" do
       expect { run("const a = []; a[0] = a; __nativeTextDecode(a);") }.to raise_error(MiniRacer::RuntimeError, /too large/)
+    end
+
+    it "uma falha interna não conta detalhe do Ruby ao script" do
+      allow(Rails.logger).to receive(:error)
+
+      message = run("try { __nativeRandomBytes({}); } catch (e) { return e.message; }")
+
+      expect(message).to eq("Internal error in __nativeRandomBytes")
+      expect(Rails.logger).to have_received(:error).with(/NoMethodError/)
     end
 
     it "uso normal continua igual" do

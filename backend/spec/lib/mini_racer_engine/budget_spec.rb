@@ -15,12 +15,12 @@ RSpec.describe MiniRacerEngine::Budget do
     end
 
     it "conta o que falta e não fica negativo" do
-      budget = described_class.new(timeout_ms: 20)
+      budget = described_class.new(timeout_ms: 500)
 
-      expect(budget.remaining_seconds).to be_between(0, 0.02)
+      expect(budget.remaining_seconds).to be_between(0, 0.5)
       expect(budget).not_to be_expired
 
-      sleep 0.03
+      sleep 0.55
 
       expect(budget.remaining_seconds).to eq(0)
       expect(budget).to be_expired

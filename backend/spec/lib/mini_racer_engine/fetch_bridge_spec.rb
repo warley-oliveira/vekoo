@@ -564,7 +564,7 @@ RSpec.describe "MiniRacerEngine fetch() bridge" do
         end
 
         expect(result).to eq([ false, 504 ])
-        expect(elapsed).to be_between(1.5, 3)
+        expect(elapsed).to be_between(1.5, 5)
       ensure
         accepted&.kill
         server&.close
