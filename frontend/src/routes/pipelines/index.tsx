@@ -1,14 +1,23 @@
+import { lazy } from "react"
 import { Route } from "react-router"
 
-import { placeholderRoute } from "@/routes/placeholder"
+import { RouteFrame } from "@/components/shell/route-frame"
+
+const PipelinesPage = lazy(() => import("./pipelines-page"))
 
 // Filhos sem `element`: existem só para `/pipelines/:boardId/:view` ser uma rota
-// válida. A página é a do pai, então trocar de quadro ou de visão não a remonta, e
-// `useParams()` nela enxerga `boardId` e `view`.
+// válida. A página é a do pai, então trocar de visão não a remonta, e `useParams()`
+// nela enxerga `boardId` e `view`.
+//
+// Os endereços estáticos do pipeline (`settings/*`, `metrics`, `archived`) vencem `:view`.
 export const pipelinesRoutes = (
   <Route
     path="/pipelines"
-    element={placeholderRoute("navigation.pipelines", "pipelines")}
+    element={
+      <RouteFrame title="navigation.pipelines" permission="pipelines">
+        <PipelinesPage />
+      </RouteFrame>
+    }
   >
     <Route path=":boardId">
       <Route path=":view" />
