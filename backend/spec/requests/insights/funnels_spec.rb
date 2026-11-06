@@ -369,6 +369,61 @@ RSpec.describe "Funis", type: :request do
       expect(json["columns"][1]["chats"].map { |chat| chat["userName"] }).to eq([ "Parada" ])
     end
 
+    it "filtra pelo responsável, com os mesmos valores de GET /chats" do
+      person = create(:account, organization: organization)
+      mine = place(chat_for(user_name: "Minha", assigned_account_id: account.id), stages[0])
+      theirs = place(chat_for(user_name: "Dela", assigned_account_id: person.id), stages[1])
+      free = place(chat_for(user_name: "Livre", assigned_account_id: nil), stages[0])
+
+      get "/funnels/#{funnel.id}/board", params: { assignedUser: "me" }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["id"] }).to eq([ mine.id.to_s ])
+      expect(json["metrics"]).to include("total" => 1, "perStageCounts" => [ 1, 0, 0, 0 ])
+      expect(json["filters"]).to include("assignedUser" => "me")
+
+      get "/funnels/#{funnel.id}/board", params: { assignedUser: "unassigned" }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["id"] }).to eq([ free.id.to_s ])
+
+      get "/funnels/#{funnel.id}/board", params: { assignedUser: person.id }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["id"] }).to eq([ theirs.id.to_s ])
+    end
+
+    it "filtra por etiqueta, com qualquer uma das escolhidas, inclusive nas contagens" do
+      vip = create(:chat_tag, organization_id: organization.id.to_s, name: "vip")
+      retorno = create(:chat_tag, organization_id: organization.id.to_s, name: "retorno")
+      place(chat_for(user_name: "Com vip", chat_tag_ids: [ vip.id ]), stages[0])
+      place(chat_for(user_name: "Com retorno", chat_tag_ids: [ retorno.id ]), stages[1])
+      place(chat_for(user_name: "Sem etiqueta"), stages[1])
+
+      get "/funnels/#{funnel.id}/board", params: { tagIds: [ vip.id.to_s ] }, headers: headers
+      expect(json["columns"].flat_map { |column| column["chats"] }.map { |chat| chat["userName"] }).to eq([ "Com vip" ])
+      expect(json["metrics"]).to include("total" => 1, "perStageCounts" => [ 1, 0, 0, 0 ])
+      expect(json["filters"]).to include("tagIds" => [ vip.id.to_s ])
+
+      get "/funnels/#{funnel.id}/board", params: { tagIds: [ vip.id.to_s, retorno.id.to_s ] }, headers: headers
+      expect(json["metrics"]["total"]).to eq(2)
+    end
+
+    it "não deixa o filtro alcançar conversa que a pessoa não pode ver" do
+      person = member_with(organization, funnel: "all", chat_list_to: "assigned")
+      place(chat_for(assigned_account_id: account.id), stages[0])
+
+      get "/funnels/#{funnel.id}/board", params: { assignedUser: account.id }, headers: auth_headers(person)
+
+      expect(json["metrics"]["total"]).to eq(0)
+    end
+
+    it "ignora filtro de etiqueta que não é lista de textos e operador disfarçado" do
+      place(chat_for, stages[0])
+
+      get "/funnels/#{funnel.id}/board", params: { tagIds: { "$ne" => "x" } }, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(json["metrics"]["total"]).to eq(1)
+
+      get "/funnels/#{funnel.id}/board", params: { assignedUser: { "$ne" => "x" } }, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(json["metrics"]["total"]).to eq(0)
+    end
+
     it "ignora campo de data fora da lista e segura os limites" do
       get "/funnels/#{funnel.id}/board", params: { dateField: "$where", days: 100_000, perColumn: 100_000 }, headers: headers
 

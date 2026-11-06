@@ -25,13 +25,17 @@ module Funnels
 
     # @param account [Account] quem olha: só entra o que `Chat.visible_to` deixa
     # @param pages [Hash] { "none" => 2, "<stage_id>" => 3 }
-    def initialize(funnel:, account:, date_field: nil, days: nil, per_column: nil, pages: {})
+    # @param assigned_user [String, nil] `me`, `unassigned` ou o id da pessoa, como em `GET /chats`
+    # @param tag_ids [Array<String>, nil] conversas com qualquer uma destas etiquetas, como em `GET /chats`
+    def initialize(funnel:, account:, date_field: nil, days: nil, per_column: nil, pages: {}, assigned_user: nil, tag_ids: nil)
       @funnel = funnel
       @account = account
       @date_field = DATE_FIELDS.include?(date_field.to_s) ? date_field.to_s : DATE_FIELDS.first
       @days = (days.presence || DEFAULT_DAYS).to_i.clamp(1, MAX_DAYS)
       @per_column = (per_column.presence || DEFAULT_PER_COLUMN).to_i.clamp(1, MAX_PER_COLUMN)
       @pages = pages.to_h
+      @assigned_user = assigned_user.presence&.to_s
+      @tag_ids = Array(tag_ids).grep(String).compact_blank
     end
 
     def call
@@ -39,7 +43,7 @@ module Funnels
 
       {
         funnel: FunnelSerializer.one(funnel),
-        filters: { dateField: date_field, days: days, perColumn: per_column },
+        filters: filters,
         columns: serialize_columns(rows),
         metrics: metrics(rows)
       }
@@ -47,7 +51,11 @@ module Funnels
 
     private
 
-    attr_reader :funnel, :account, :date_field, :days, :per_column, :pages
+    attr_reader :funnel, :account, :date_field, :days, :per_column, :pages, :assigned_user, :tag_ids
+
+    def filters
+      { dateField: date_field, days: days, perColumn: per_column, assignedUser: assigned_user, tagIds: tag_ids.presence }.compact
+    end
 
     def stages
       @stages ||= funnel.stages.to_a
@@ -70,8 +78,12 @@ module Funnels
       (pages[stage ? stage.id : NONE].presence || 1).to_i.clamp(1, MAX_PAGE)
     end
 
+    # O mesmo critério da lista de conversas: `visible_to` e os dois atalhos, com os mesmos valores.
     def base_match
-      Chat.visible_to(account).valid_records.where(date_field.to_sym.gte => days.days.ago).selector
+      Chats::ListQuery.new(account: account, params: { assigned_user: assigned_user, tag_ids: tag_ids })
+        .criteria
+        .where(date_field.to_sym.gte => days.days.ago)
+        .selector
     end
 
     def projection
