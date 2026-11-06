@@ -4,14 +4,14 @@
 module Localizable
   extend ActiveSupport::Concern
 
-  included do
-    around_action :switch_locale
-  end
-
   private
 
-  def switch_locale(&)
-    I18n.with_locale(requested_locale, &)
+  # Em volta de `process_action`, e não num `around_action`: o `rescue_from` roda
+  # depois de os callbacks terminarem, e num `around_action` o idioma já teria sido
+  # desfeito quando a mensagem de erro fosse montada. Privado para não virar ação
+  # roteável.
+  def process_action(*)
+    I18n.with_locale(requested_locale) { super }
   end
 
   def requested_locale
