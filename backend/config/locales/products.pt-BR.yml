@@ -1,0 +1,99 @@
+# Textos do catálogo em pt-BR (idioma padrão). Mantenha as mesmas chaves de products.en.yml.
+pt-BR:
+  products:
+    conflict: "Esse registro acabou de ser criado por outra pessoa. Atualize a tela e tente de novo."
+    items:
+      too_many_ids: "Selecione no máximo %{max} itens por vez."
+    imports:
+      already_started: "Essa importação já foi iniciada."
+      in_progress: "A importação ainda está em andamento. Espere terminar para excluir."
+      title_not_mapped: "Escolha a coluna do título: é o único campo obrigatório."
+      file_too_large: "O arquivo passa do tamanho máximo de %{max} MB."
+      unreadable_file: "Não conseguimos ler o cabeçalho desse arquivo. Envie um CSV ou TSV."
+      failed: "Não foi possível terminar a importação. Tente de novo."
+      interrupted: "A importação foi interrompida. Envie o arquivo de novo para continuar."
+      malformed_line: "O arquivo tem um problema na linha %{line}. Corrija e envie de novo."
+      row_errors:
+        title_blank: "título vazio"
+        unknown_field: "campo personalizado desconhecido: %{key}"
+        custom_fields_too_large: "campos personalizados grandes demais"
+      targets:
+        title: "Título"
+        summary: "Resumo"
+        description: "Descrição"
+        external_id: "Código (SKU)"
+        url: "Link do item"
+        active: "Disponível"
+        categories: "Categorias"
+        tags: "Tags"
+        images: "Imagens"
+
+  activerecord:
+    errors:
+      models:
+        products/item:
+          attributes:
+            tags:
+              too_many: "pode ter no máximo %{count} entradas"
+            custom_fields:
+              too_large: "são grandes demais"
+              uncastable: "têm valor inválido em: %{fields}"
+            url:
+              invalid: "precisa começar com http:// ou https://"
+        products/category:
+          attributes:
+            # "categoria" é feminino, e o nome já existente é da irmã dela no mesmo nível.
+            name:
+              taken: "já existe neste nível"
+              invalid: "precisa ter ao menos uma letra ou número"
+            parent_id:
+              foreign: "não foi encontrada"
+              cycle: "não pode ser a própria categoria nem uma categoria dentro dela"
+              too_deep: "passa do limite de %{count} níveis"
+        products/field_definition:
+          attributes:
+            name:
+              taken: "já está em uso em outro campo"
+            option_values:
+              list_without_options: "precisam ter ao menos uma opção"
+        products/image:
+          attributes:
+            file:
+              unsupported_type: "precisa ser uma imagem JPEG, PNG, WebP ou GIF"
+              too_large: "passa do tamanho máximo de %{max} MB"
+            source_url:
+              invalid: "precisa começar com http:// ou https://"
+    models:
+      products/item: "item"
+      products/category: "categoria"
+      products/field_definition: "campo personalizado"
+      products/image: "imagem"
+      products/import: "importação"
+    attributes:
+      products/item:
+        title: "título"
+        summary: "resumo"
+        description: "descrição"
+        external_id: "código (SKU)"
+        url: "link do item"
+        active: "disponível"
+        tags: "tags"
+        custom_fields: "campos personalizados"
+        organization: "organização"
+      products/category:
+        name: "nome"
+        parent_id: "categoria pai"
+        organization: "organização"
+      products/field_definition:
+        name: "nome"
+        key: "chave"
+        value_type: "tipo"
+        option_values: "opções da lista"
+        organization: "organização"
+      products/image:
+        file: "arquivo"
+        source_url: "endereço da imagem"
+        item: "item"
+      products/import:
+        status: "situação"
+        organization: "organização"
