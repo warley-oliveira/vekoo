@@ -142,7 +142,13 @@ class MessageHandling
     raise AttachmentNotFoundException, I18n.t("connectors.messages.attachment_not_found", name: attach_id) unless record
     raise AttachmentNotFoundException, I18n.t("connectors.messages.attachment_blank", name: attach_id) if record.file.blank?
 
-    attachment_record_only ? MediaMessageDto.new(nil, nil, nil, record.id) : build_attachment_dto(record, "attachment_id_#{attach_id}")
+    attachment_record_only ? MediaMessageDto.new(nil, nil, nil, record.id) : build_attachment_dto(record, delivery_name(record))
+  end
+
+  # O nome que o contato vê no documento: o do arquivo, com a extensão, sem a qual o celular não
+  # sabe abrir.
+  def delivery_name(attachment)
+    attachment.try(:file_name).presence || attachment.file.blob.filename.to_s.presence || attachment.name
   end
 
   def attachment_file_name(attachment)

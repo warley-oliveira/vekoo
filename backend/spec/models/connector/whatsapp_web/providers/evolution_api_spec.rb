@@ -174,6 +174,20 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
       expect(a_request(:post, url).with(body: hash_including("fileName" => "relatorio-marco.pdf"))).to have_been_made
     end
 
+    it "manda o tipo do arquivo pelo nome, e o do mediatype quando o nome não diz" do
+      stub_request(:post, url).to_return(json_reply({ key: { id: "X" } }, status: 201))
+
+      connector.send_media_message("55119", media_dto("document", "tabela.pdf"))
+      connector.send_media_message("55119", media_dto("image", "foto.png"))
+      connector.send_media_message("55119", media_dto("image", "sem-extensao"))
+      connector.send_media_message("55119", media_dto("document", "sem-extensao"))
+
+      expect(a_request(:post, url).with(body: hash_including("mimetype" => "application/pdf"))).to have_been_made
+      expect(a_request(:post, url).with(body: hash_including("mimetype" => "image/png"))).to have_been_made
+      expect(a_request(:post, url).with(body: hash_including("mimetype" => "image/jpeg"))).to have_been_made
+      expect(a_request(:post, url).with(body: hash_including("mimetype" => "application/octet-stream"))).to have_been_made
+    end
+
     it "só manda legenda quando há legenda" do
       request = stub_request(:post, url).with { |req| !JSON.parse(req.body).key?("caption") }.to_return(json_reply({ key: { id: "X" } }, status: 201))
 

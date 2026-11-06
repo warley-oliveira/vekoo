@@ -45,6 +45,8 @@ module Chats
       chat.update_last_message
       chat.save
       @message
+    ensure
+      Array(parts).grep(MediaMessageDto).each(&:discard_download)
     end
 
     private

@@ -104,21 +104,12 @@ module Flows
     def send_part(chat, part, name, attributes)
       return chat.send_text_message(part.to_s, name, { message_origin: "platform", **attributes }) unless part.is_a?(MediaMessageDto)
 
-      Chats::SendMedia.call(chat: chat, media: with_real_name(part), sender_name: name, attributes: attributes)
-    end
-
-    # `MessageHandling` nomeia o anexo citado pelo id com o próprio código, e é esse nome que o contato veria no documento.
-    def with_real_name(media)
-      return media unless media.file_name.to_s.start_with?("attachment_id_")
-
-      attachment = Media::AttachmentLookup.find(media.attachment_id, organization_id: organization.id)
-      media.file_name = attachment.try(:file_name).presence || attachment.name if attachment
-      media
+      Chats::SendMedia.call(chat: chat, media: part, sender_name: name, attributes: attributes)
     end
 
     # `MessageHandling` baixa o anexo para um temporário, e depois do envio ninguém mais precisa dele.
     def discard_downloads
-      Array(@parts).grep(MediaMessageDto).each { |media| FileUtils.rm_f(media.attachment) if media.attachment }
+      Array(@parts).grep(MediaMessageDto).each(&:discard_download)
     end
   end
 end

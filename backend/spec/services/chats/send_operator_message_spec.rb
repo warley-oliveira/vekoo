@@ -411,6 +411,13 @@ RSpec.describe Chats::SendOperatorMessage do
       expect(a_request(:post, send_url)).not_to have_been_made
     end
 
+    it "apaga o arquivo temporário do anexo depois do envio" do
+      stub_request(:post, media_url).to_return(sent_ok)
+      temporaries = -> { Dir[Rails.root.join("tmp", "*-cardapio-pdf").to_s].size }
+
+      expect { send_message("attachment_id_#{attachment.id}") }.not_to(change { temporaries.call })
+    end
+
     it "grava a parte de mídia com quem enviou" do
       stub_request(:post, media_url).to_return(sent_ok)
 

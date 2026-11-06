@@ -13,6 +13,12 @@ class MediaMessageDto
     @media_url = media_url
   end
 
+  # `MessageHandling` baixa o anexo para um temporário, para quem manda multipart. Depois do envio
+  # ninguém mais precisa dele.
+  def discard_download
+    FileUtils.rm_f(attachment) if attachment
+  end
+
   def as_json(_options = {})
     {
       mediatype: @media_type,

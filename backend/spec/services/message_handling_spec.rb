@@ -156,6 +156,10 @@ RSpec.describe MessageHandling do
         expect(part).to have_attributes(media_type: "document", attachment_id: attachment.id, media_url: "https://cdn.exemplo.com/cardapio.pdf")
       end
 
+      it "leva o nome do arquivo, porque é o que o contato vê no documento" do
+        expect(perform("attachment_id_#{attachment.id}").first.file_name).to eq("cardapio.pdf")
+      end
+
       it "separa do texto em volta" do
         parts = perform("Segue o cardápio attachment_id_#{attachment.id} bom apetite")
 

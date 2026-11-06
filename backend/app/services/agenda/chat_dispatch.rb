@@ -30,6 +30,8 @@ module Agenda
 
       chat.update_last_message
       chat.save
+    ensure
+      Array(parts).grep(MediaMessageDto).each(&:discard_download)
     end
 
     private

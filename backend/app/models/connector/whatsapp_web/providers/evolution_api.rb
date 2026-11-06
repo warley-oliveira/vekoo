@@ -457,7 +457,11 @@ class Connector::WhatsappWeb
       end
       private_class_method :fetch_media_from_url
 
+      # Pelo nome do arquivo, quando diz: PDF marcado como `octet-stream` não abre em todo celular.
       def mimetype_for(media_dto)
+        by_name = Marcel::MimeType.for(name: media_dto.file_name.to_s)
+        return by_name unless by_name == Marcel::MimeType::BINARY
+
         case media_dto.media_type.to_s.downcase
         when 'image' then 'image/jpeg'
         when 'video' then 'video/mp4'
