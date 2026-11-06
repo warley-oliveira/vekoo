@@ -10,8 +10,7 @@ module Pipelines
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   # O que cabe numa coluna `integer`. Passar disso seria um 500 no INSERT, e não um 422.
-  INTEGER_RANGE = { greater_than_or_equal_to: -2_147_483_648, less_than_or_equal_to: 2_147_483_647 }.freeze
-  POSITIVE_INTEGER = { only_integer: true, greater_than: 0, less_than_or_equal_to: 2_147_483_647 }.freeze
+  POSITIVE_INTEGER ={ only_integer: true, greater_than: 0, less_than_or_equal_to: 2_147_483_647 }.freeze
 
   # Arquivo anexado a comentário ou card. É bem menor que o teto dos anexos do chat (100 MB): aqui
   # o arquivo não vai para nenhum provedor, é só apoio ao trabalho do time.

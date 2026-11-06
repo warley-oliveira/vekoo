@@ -129,6 +129,44 @@ RSpec.describe Pipelines::Trigger, type: :model do
     end
   end
 
+  describe "alerta de falha" do
+    let(:stage) { create(:pipeline_stage, board: board) }
+    let(:card) { create(:pipeline_card, stage: stage) }
+
+    def active_alerts(trigger)
+      board.organization.organization_alerts.active.for_origin(described_class::ALERT_ORIGIN, trigger.id)
+    end
+
+    it "apagar o gatilho resolve o alerta, que nenhuma execução boa resolveria depois" do
+      trigger = create(:pipeline_trigger, board: board)
+      trigger.raise_failure_alert!(card)
+
+      expect { trigger.destroy! }.to change { active_alerts(trigger).count }.from(1).to(0)
+    end
+
+    it "apagar a etapa do gatilho também resolve" do
+      trigger = create(:pipeline_trigger, board: board, stage: stage)
+      trigger.raise_failure_alert!(card)
+
+      expect { stage.destroy! }.to change { active_alerts(trigger).count }.from(1).to(0)
+    end
+
+    it "apagar o quadro também resolve" do
+      trigger = create(:pipeline_trigger, board: board)
+      trigger.raise_failure_alert!(card)
+
+      expect { board.destroy! }.to change { active_alerts(trigger).count }.from(1).to(0)
+    end
+
+    it "um erro ao resolver não impede de apagar" do
+      trigger = create(:pipeline_trigger, board: board)
+      allow(OrganizationAlert).to receive(:resolve!).and_raise(StandardError, "fora do ar")
+
+      expect { trigger.destroy! }.not_to raise_error
+      expect(described_class.exists?(trigger.id)).to be(false)
+    end
+  end
+
   describe "#next_round_robin_index" do
     it "anda sem ler antes de escrever, e duas chamadas iguais não saem do cache de consultas" do
       trigger = create(:pipeline_trigger, board: board)

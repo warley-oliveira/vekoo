@@ -5,8 +5,6 @@ module Pipelines
   # fica registrado na execução. Na origem, cada ação engolia o próprio erro, e a execução aparecia como
   # sucesso mesmo com a mensagem que não saiu: aqui cada ação diz como terminou.
   class TriggerJob < ApplicationJob
-    include Alertable
-
     queue_as :default
     sidekiq_options retry: false
 
@@ -14,7 +12,6 @@ module Pipelines
     class ActionFailed < StandardError; end
 
     CARD_MODIFYING_ACTIONS = %w[move_card assign_user].freeze
-    ALERT_CODE = "pipeline_trigger_failed".freeze
     MAX_STORED_ERROR = 500
 
     def perform(trigger_id, card_id, event_context_json)
@@ -426,24 +423,13 @@ module Pipelines
       Rails.logger.error("[Pipelines::TriggerJob] registro da execução: #{e.class}: #{e.message}")
     end
 
-    # Falhou: fica um alerta no menu, um por gatilho, até uma execução dar certo. Sem isso, o erro só
-    # apareceria para quem abrisse o histórico do quadro.
+    # Com código, quem resolve é `CodeRunnerJob`, que sabe como o script terminou: sem esta guarda, cada
+    # execução de um script quebrado resolvia o alerta aqui, e o levantava de novo logo depois.
     def report_alert(trigger, card, failures)
-      organization = trigger.board.organization
-
       if failures.any?
-        raise_organization_alert!(
-          organization: organization,
-          category: "pipelines",
-          origin_type: "PipelineTrigger",
-          origin_id: trigger.id,
-          origin_name: trigger.name,
-          code: ALERT_CODE,
-          severity: "warning",
-          metadata: { board_id: trigger.board_id, card_id: card.id }
-        )
-      else
-        resolve_organization_alert!(organization: organization, origin_type: "PipelineTrigger", origin_id: trigger.id, code: ALERT_CODE)
+        trigger.raise_failure_alert!(card)
+      elsif !trigger.runs_code?
+        trigger.resolve_failure_alert!
       end
     rescue StandardError => e
       Rails.logger.error("[Pipelines::TriggerJob] alerta: #{e.class}: #{e.message}")

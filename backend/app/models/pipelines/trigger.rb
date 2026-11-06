@@ -1,5 +1,10 @@
 module Pipelines
   class Trigger < ApplicationRecord
+    include Alertable
+
+    ALERT_ORIGIN = "PipelineTrigger".freeze
+    ALERT_CODE = "pipeline_trigger_failed".freeze
+
     EVENT_TYPES = %w[
       card_moved card_created card_updated due_date_passed sla_breached
       deal_won deal_lost deal_reopened
@@ -35,6 +40,10 @@ module Pipelines
     validate :crm_event_requires_crm_board
     validate :stage_belongs_to_board, if: :stage_id_changed?
 
+    # O alerta de um gatilho apagado nunca mais seria resolvido: nenhuma execução boa viria depois.
+    before_destroy { @organization_for_alert = board&.organization }
+    after_destroy_commit :resolve_alert_of_destroyed
+
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
     scope :for_event, ->(event) { active.where(event_type: event) }
@@ -57,6 +66,25 @@ module Pipelines
 
     def runs_code?
       Array(actions).any? { |action| action.is_a?(Hash) && (action["type"] || action[:type]).to_s == "run_code" }
+    end
+
+    # Falhou: fica um alerta no menu, um por gatilho, até uma execução dar certo. Sem isso, o erro só
+    # apareceria para quem abrisse o histórico do quadro.
+    def raise_failure_alert!(card)
+      raise_organization_alert!(
+        organization: board.organization,
+        category: "pipelines",
+        origin_type: ALERT_ORIGIN,
+        origin_id: id,
+        origin_name: name,
+        code: ALERT_CODE,
+        severity: "warning",
+        metadata: { board_id: board_id, card_id: card.id }
+      )
+    end
+
+    def resolve_failure_alert!
+      resolve_organization_alert!(organization: board.organization, origin_type: ALERT_ORIGIN, origin_id: id, code: ALERT_CODE)
     end
 
     # Verifica se as condições do gatilho são atendidas pelo contexto.
@@ -87,6 +115,14 @@ module Pipelines
     end
 
     private
+
+    def resolve_alert_of_destroyed
+      return unless @organization_for_alert
+
+      resolve_organization_alert!(organization: @organization_for_alert, origin_type: ALERT_ORIGIN, origin_id: id)
+    rescue StandardError => e
+      Rails.logger.error("[Pipelines::Trigger] alerta do gatilho apagado: #{e.class}: #{e.message}")
+    end
 
     def validate_actions_shape
       return errors.add(:actions, :blank) if actions.blank?

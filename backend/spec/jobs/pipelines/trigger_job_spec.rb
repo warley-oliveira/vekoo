@@ -492,6 +492,15 @@ RSpec.describe Pipelines::TriggerJob do
 
       expect(organization.organization_alerts.active.for_origin("PipelineTrigger", failing.id)).to be_empty
     end
+
+    it "com código, enfileirar não resolve o alerta: quem sabe como o script terminou é o outro job" do
+      with_code = trigger_with({ "type" => "run_code", "code" => "throw new Error('quebrado');" })
+      with_code.raise_failure_alert!(card)
+
+      perform(with_code)
+
+      expect(organization.organization_alerts.active.for_origin("PipelineTrigger", with_code.id).count).to eq(1)
+    end
   end
 
   describe "avaliação do evento" do

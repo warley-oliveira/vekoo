@@ -58,14 +58,14 @@ RSpec.describe Pipelines::DealCloseGate do
       result = described_class.new(card, :won).call
 
       expect(result).not_to be_allowed
-      expect(result.pending_fields).to eq(['Origem'])
-      expect(result.pending_field_keys).to eq(['origem'])
+      expect(result.pending_fields).to eq([ 'Origem' ])
+      expect(result.pending_field_keys).to eq([ 'origem' ])
     end
 
     it 'bloqueia por campo column-scoped obrigatório da coluna atual' do
       column_field('Proposta enviada')
 
-      expect(described_class.new(card, :won).call.pending_fields).to eq(['Proposta enviada'])
+      expect(described_class.new(card, :won).call.pending_fields).to eq([ 'Proposta enviada' ])
     end
 
     it 'ignora campo column-scoped obrigatório de outra coluna' do

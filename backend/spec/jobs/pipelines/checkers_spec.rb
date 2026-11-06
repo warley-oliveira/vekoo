@@ -138,7 +138,7 @@ RSpec.describe "Pipelines: jobs recorrentes" do
       end
 
       expect { described_class.perform_now }.not_to raise_error
-      expect(AccountNotice.where(:description => /#{fine.title}/).count).to eq(1)
+      expect(AccountNotice.where(description: /#{fine.title}/).count).to eq(1)
     end
   end
 

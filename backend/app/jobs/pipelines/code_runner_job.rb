@@ -9,8 +9,6 @@ module Pipelines
   # extensões de contato. O que ele muda não dispara outro gatilho, como vale para as outras ações:
   # sem isso, um gatilho de "card movido" cujo código move o card rodaria para sempre.
   class CodeRunnerJob < ApplicationJob
-    include Alertable
-
     queue_as :scripts
     sidekiq_options retry: false
     # Qualquer erro já foi tratado em `perform`. Isto é a garantia: nada volta para a fila.
@@ -18,7 +16,6 @@ module Pipelines
 
     MAX_ERROR_LENGTH = 300
     MAX_RESULT_LENGTH = 2_000
-    ALERT_CODE = "pipeline_trigger_failed".freeze
 
     def perform(trigger_id, action_index, card_id, organization_id, event_context_json = "{}")
       organization = Organization.find_by(id: organization_id)
@@ -78,9 +75,7 @@ module Pipelines
 
     def succeed(trigger, card, result)
       log_execution(trigger, card, "success", { type: "run_code", status: "success", result: result.to_json.truncate(MAX_RESULT_LENGTH) })
-      resolve_organization_alert!(
-        organization: trigger.board.organization, origin_type: "PipelineTrigger", origin_id: trigger.id, code: ALERT_CODE
-      )
+      trigger.resolve_failure_alert!
     rescue StandardError => e
       Rails.logger.error("[Pipelines::CodeRunnerJob] registro: #{e.class}: #{e.message}")
     end
@@ -91,16 +86,7 @@ module Pipelines
 
       log_execution(trigger, card, "failure", { type: "run_code", status: "failure", error: text }, text)
       note_in_chat(chat, text)
-      raise_organization_alert!(
-        organization: trigger.board.organization,
-        category: "pipelines",
-        origin_type: "PipelineTrigger",
-        origin_id: trigger.id,
-        origin_name: trigger.name,
-        code: ALERT_CODE,
-        severity: "warning",
-        metadata: { board_id: trigger.board_id, card_id: card.id }
-      )
+      trigger.raise_failure_alert!(card)
     rescue StandardError => e
       Rails.logger.error("[Pipelines::CodeRunnerJob] registro da falha: #{e.class}: #{e.message}")
     end
