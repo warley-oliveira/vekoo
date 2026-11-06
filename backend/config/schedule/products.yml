@@ -1,0 +1,10 @@
+# Jobs recorrentes do catálogo (sidekiq-scheduler).
+products_backfill_embeddings:
+  cron: "23 * * * *"
+  class: Products::BackfillEmbeddingsJob
+  queue: low
+
+products_sweep_stale_imports:
+  cron: "*/15 * * * *"
+  class: Products::SweepStaleImportsJob
+  queue: low
