@@ -86,7 +86,7 @@ Sempre `{ "error": { "code", "message", "field?", "details?" } }`. `code` é o c
 | `GET /calendars/:calendarId/availability` | Horários livres de um serviço. |
 | `GET` `PUT /calendars/:calendarId/attendance-sequences` | Sequências de comparecimento. |
 | `GET .../attendance-sequences/bookings`, `POST .../attendance-sequences/preview` | Testar um passo. |
-| `GET .../contact-notification-preview/bookings`, `POST .../contact-notification-preview` | Testar um lembrete. |
+| `GET .../contact-notification-preview/bookings`, `GET .../contact-notification-preview/messages`, `POST .../contact-notification-preview` | Testar um lembrete. |
 | `GET` `POST /calendars/:calendarId/professionals`, `GET` `PATCH` `DELETE .../:id` | Profissionais. |
 | `GET /professionals` | Os de todos os calendários da organização. |
 | `GET` `POST /calendars/:calendarId/services`, `GET` `PATCH` `DELETE .../:id` | Serviços. |
@@ -586,6 +586,21 @@ Os últimos 50 agendamentos do calendário que têm conversa.
 }
 ```
 
+### `GET .../contact-notification-preview/messages?bookingId=&limit=`
+
+As mensagens que a pessoa escolhe para o histórico da simulação, da mais antiga para a mais nova: só as que entrariam de verdade no pedido ao modelo, com texto, de contato e de atendente. Até 50, o padrão e o teto.
+
+Exige `calendar`, e não `chat`: quem só configura a agenda também testa um lembrete. A conversa precisa estar ao alcance da pessoa (`chat_list_to`), senão `404`, aqui e no `POST` abaixo. E não zera as não lidas, como `GET /chats/:id/messages` faria na primeira página.
+
+```json
+{
+  "messages": [
+    { "id": "6aee3cab5d4d5c0eb9961be7", "role": "user", "content": "Boa tarde. Vocês fazem camiseta para empresa? Somos 40 pessoas.", "createdAt": 1793902020000 },
+    { "id": "6aee3cab5d4d5c0eb9961be8", "role": "assistant", "content": "Boa tarde, Carlos! Fazemos sim, com desconto a partir de 20 peças. Vou te mandar a tabela.", "createdAt": 1793902380000 }
+  ]
+}
+```
+
 ### `POST .../contact-notification-preview`
 
 Campos soltos: `bookingId`, `message`, `aiPrompt`, `messageIds?`. Os `messageIds` escolhem o histórico que entra: sem o campo, as últimas 30 mensagens; com `[]`, nenhuma.
@@ -607,7 +622,7 @@ Campos soltos: `bookingId`, `message`, `aiPrompt`. O modelo pode usar as ferrame
 { "message": "Oi, Carlos! Ficamos no aguardo do retorno da diretoria. Se quiser já ir garantindo um horário, tenho vaga hoje às 16h, viu?" }
 ```
 
-As mensagens do histórico da conversa vêm de `GET /chats/:id/messages`, do domínio inbox.
+O histórico vem da conversa do agendamento, e a mesma regra de visão vale aqui: conversa fora do `chat_list_to` de quem testa responde `404`.
 
 ---
 
@@ -1126,7 +1141,7 @@ Todo hook de `aiva-frontend/src/api` e o que ele chama aqui.
 | **`contactNotificationPreview.ts`** | | |
 | `listNotificationAppointments` | `GET .../contact_notification_preview/appointments` | `GET .../contact-notification-preview/bookings` |
 | `previewContactNotification` | `POST .../contact_notification_preview/preview` | `POST .../contact-notification-preview`. `systemPrompt` é `aiPrompt`. |
-| `listConversationMessages` | `GET /api/v1/conversations/...` | Domínio inbox. |
+| `listConversationMessages` | `GET /api/v1/conversations/...` | `GET .../contact-notification-preview/messages?bookingId=`, com `calendar`. |
 | **`sequencePreview.ts`** | | |
 | `listPreviewAppointments` | `GET .../attendance_sequences/appointments` | `GET .../attendance-sequences/bookings` |
 | `previewSequenceStep` | `POST .../attendance_sequences/preview` | `POST .../attendance-sequences/preview`. `systemPrompt` é `aiPrompt`. |
