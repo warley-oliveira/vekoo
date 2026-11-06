@@ -38,13 +38,12 @@ class Connector::WhatsappWeb < Connector::Base
 
   before_update do
     if status_cd_changed? && active? && !zapi_provider?
-      refresh_profile
+      tolerate_profile_failure ? refresh_profile : fetch_current_information
       migrate_chats
     end
   end
 
-  # O perfil é um complemento. Se o provedor falhar agora, o canal que já conectou precisa ficar
-  # como conectado: sem isto, a tela do QR code espera para sempre.
+  # Busca o perfil sem deixar a falha subir. Ver `tolerate_profile_failure`.
   def refresh_profile
     fetch_current_information(ignore_migration: true)
   rescue StandardError => e

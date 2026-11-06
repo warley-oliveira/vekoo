@@ -84,6 +84,7 @@ module Inbound
         end
 
         connector.status = :active
+        connector.tolerate_profile_failure = true
         connector.refresh_profile
         connector.save
         connector.broadcast_connection(status: :success_scan, base64: "")

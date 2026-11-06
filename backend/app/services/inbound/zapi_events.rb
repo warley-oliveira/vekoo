@@ -31,6 +31,7 @@ module Inbound
       if connector.pending?
         connector.broadcast_connection(status: :success_scan, base64: "")
         connector.status = :active
+        connector.tolerate_profile_failure = true
         connector.number_id = payload[:phone] if payload[:phone].present?
         connector.save!
         sign_instance

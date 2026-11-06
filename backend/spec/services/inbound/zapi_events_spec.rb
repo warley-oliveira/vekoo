@@ -908,6 +908,17 @@ RSpec.describe Inbound::ZapiEvents do
       expect(connector.reload).to have_attributes(status: :active, phone_number: "5531988887777", profile_name: "Padaria", profile_picture_url: "https://img/p.png")
     end
 
+    # Visto em execução real na Evolution: o job levantava, gastava as tentativas e o canal, já
+    # conectado, ficava esperando o QR code.
+    it "conecta mesmo com a Z-API sem responder o perfil" do
+      connector.set(status_cd: "pending")
+      stub_request(:get, "#{zapi_url}/device").to_timeout
+
+      expect { events({ connected: true, phone: "5531988887777" }).on_whatsapp_connected }.not_to raise_error
+
+      expect(connector.reload.status).to eq(:active)
+    end
+
     it "fecha ao desconectar" do
       events({ error: "algo" }).on_whatsapp_disconnected
 

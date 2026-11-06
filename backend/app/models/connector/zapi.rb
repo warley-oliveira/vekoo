@@ -24,11 +24,12 @@ class Connector::Zapi < Connector::Base
   # ============================================================================
 
   before_update do
-    refresh_profile if status_cd_changed? && active?
+    next unless status_cd_changed? && active?
+
+    tolerate_profile_failure ? refresh_profile : fetch_current_information
   end
 
-  # O perfil é um complemento. Se o provedor falhar agora, o canal que já conectou precisa ficar
-  # como conectado: sem isto, a tela do QR code espera para sempre.
+  # Busca o perfil sem deixar a falha subir. Ver `tolerate_profile_failure`.
   def refresh_profile
     fetch_current_information
   rescue StandardError => e

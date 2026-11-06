@@ -146,12 +146,21 @@ RSpec.describe Connector::Zapi do
       expect(a_request(:get, "#{base}/device")).not_to have_been_made
     end
 
-    it "fica ativo mesmo se a Z-API não devolver o perfil agora" do
+    it "quem já sabe que conectou fica ativo mesmo se a Z-API não devolver o perfil agora" do
       stub_request(:get, "#{base}/device").to_timeout
+      connector.tolerate_profile_failure = true
 
       connector.update!(status: :active)
 
       expect(connector.reload.status).to eq(:active)
+    end
+
+    it "sem isso, a falha sobe e nada muda" do
+      stub_request(:get, "#{base}/device").to_timeout
+
+      expect { connector.update!(status: :active) }.to raise_error(StandardError)
+
+      expect(connector.reload.status).to eq(:pending)
     end
   end
 

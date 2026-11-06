@@ -24,6 +24,11 @@ class Connector::Base
 
   index({ organization_id: 1, status_cd: 1 })
 
+  # Ligado por quem já sabe que o canal conectou (o webhook do provedor). Aí o perfil é um
+  # complemento, e a falha ao buscá-lo não pode deixar como desconectado um canal que conectou.
+  # Reativar pela tela não liga: lá a falha do provedor precisa chegar à pessoa.
+  attr_accessor :tolerate_profile_failure
+
   validates :organization_id, presence: true
 
   has_many :chats, class_name: "Chat", inverse_of: :connector, dependent: :destroy
