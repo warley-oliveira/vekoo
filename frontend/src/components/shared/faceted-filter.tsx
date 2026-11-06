@@ -4,19 +4,11 @@ import { useTranslation } from "react-i18next"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
-import { matchesSearch, normalizeSearchText } from "@/lib/search-text"
+import { matchesSearch } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
 import { useFilterLayout } from "./filter-layout-context"
 import { ResponsivePopover } from "./responsive-popover"
@@ -59,49 +51,31 @@ export function FacetedFilter({
   icon,
   className,
 }: FacetedFilterProps) {
-  const layout = useFilterLayout()
-
-  return layout === "stacked" ? (
-    <StackedFacet
-      title={title}
-      options={options}
-      value={value}
-      onChange={onChange}
-      className={className}
-    />
-  ) : (
-    <PopoverFacet
-      title={title}
-      options={options}
-      value={value}
-      onChange={onChange}
-      icon={icon}
-      className={className}
-    />
-  )
-}
-
-function PopoverFacet({
-  title,
-  options,
-  value,
-  onChange,
-  icon,
-  className,
-}: FacetedFilterProps) {
   const { t } = useTranslation()
-  const language = useLanguage()
+  const layout = useFilterLayout()
+  const titleId = useId()
 
   const selected = useMemo(
     () => options.filter((option) => value.includes(option.value)),
     [options, value]
   )
 
+  if (layout === "stacked") {
+    return (
+      <div role="group" aria-labelledby={titleId} className={cn("flex flex-col gap-1.5", className)}>
+        <span id={titleId} className="text-sm font-medium">
+          {title}
+        </span>
+        <FacetOptions title={title} options={options} value={value} onChange={onChange} />
+      </div>
+    )
+  }
+
   return (
     <ResponsivePopover
       title={title}
       className="w-64 gap-0 overflow-hidden p-0"
-      sheetClassName="px-0 pb-0"
+      sheetClassName="px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       trigger={
         <Button
           type="button"
@@ -133,48 +107,16 @@ function PopoverFacet({
         </Button>
       }
     >
-      <Command
-        // Busca sem acento e sem caixa; o padrão do cmdk é aproximado e sensível a acento.
-        filter={(itemValue, search) => (matchesSearch(itemValue, search) ? 1 : 0)}
-        className="rounded-none!"
-      >
-        {options.length >= SEARCH_THRESHOLD ? (
-          <CommandInput placeholder={t("kit.filters.searchIn", { title })} />
-        ) : null}
-        <CommandList>
-          <CommandEmpty>{t("kit.filters.noOptions")}</CommandEmpty>
-          <CommandGroup>
-            {options.map((option) => {
-              const checked = value.includes(option.value)
-              return (
-                <CommandItem
-                  key={option.value}
-                  // O cmdk filtra por `value`, e dois rótulos iguais não podem colidir.
-                  value={`${option.label} ${option.value}`}
-                  disabled={option.disabled}
-                  data-checked={checked}
-                  onSelect={() => onChange(toggle(value, option.value))}
-                >
-                  {option.icon}
-                  <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                  {option.count !== undefined ? (
-                    <span className="text-xs text-muted-foreground tabular-nums">
-                      {formatNumber(option.count, language)}
-                    </span>
-                  ) : null}
-                </CommandItem>
-              )
-            })}
-          </CommandGroup>
-        </CommandList>
-      </Command>
+      <div role="group" aria-label={title} className="flex flex-col gap-1.5 md:p-2">
+        <FacetOptions title={title} options={options} value={value} onChange={onChange} />
+      </div>
       {value.length > 0 ? (
-        <div className="border-t p-1">
+        <div className="border-t pt-1 md:p-1">
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="w-full"
+            className="w-full pointer-coarse:h-10"
             onClick={() => onChange([])}
           >
             {t("kit.filters.clearFilter")}
@@ -185,24 +127,27 @@ function PopoverFacet({
   )
 }
 
-function StackedFacet({ title, options, value, onChange, className }: FacetedFilterProps) {
+/**
+ * A lista em si: checkboxes de verdade, que o teclado alcança com Tab e marca com Espaço,
+ * mesmo sem campo de busca. A busca ignora acento e caixa.
+ */
+function FacetOptions({
+  title,
+  options,
+  value,
+  onChange,
+}: Pick<FacetedFilterProps, "title" | "options" | "value" | "onChange">) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const titleId = useId()
   const [query, setQuery] = useState("")
 
-  const visible = useMemo(() => {
-    const normalized = normalizeSearchText(query)
-    return normalized
-      ? options.filter((option) => matchesSearch(option.label, normalized))
-      : options
-  }, [options, query])
+  const visible = useMemo(
+    () => (query ? options.filter((option) => matchesSearch(option.label, query)) : options),
+    [options, query]
+  )
 
   return (
-    <div role="group" aria-labelledby={titleId} className={cn("flex flex-col gap-1.5", className)}>
-      <span id={titleId} className="text-sm font-medium">
-        {title}
-      </span>
+    <>
       {options.length >= SEARCH_THRESHOLD ? (
         <Input
           aria-label={t("kit.filters.searchIn", { title })}
@@ -239,6 +184,6 @@ function StackedFacet({ title, options, value, onChange, className }: FacetedFil
           <p className="py-2 text-sm text-muted-foreground">{t("kit.filters.noOptions")}</p>
         ) : null}
       </div>
-    </div>
+    </>
   )
 }
