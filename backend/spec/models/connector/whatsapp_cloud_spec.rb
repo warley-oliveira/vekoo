@@ -101,6 +101,16 @@ RSpec.describe Connector::WhatsappCloud do
 
       expect(connector.send_text_message("5511999999999", "oi")).to be_nil
     end
+
+    it "guarda o motivo da recusa, e o esquece quando o envio seguinte dá certo" do
+      stub_request(:post, messages_url).to_return(json_reply({ error: { code: 131_047, message: "fora da janela" } }, status: 400))
+      connector.send_text_message("5511999999999", "oi")
+      expect(connector.last_send_error).to include("Fora da janela de 24 horas")
+
+      stub_request(:post, messages_url).to_return(json_reply({ messages: [ { id: "wamid.OUT-2" } ] }))
+      connector.send_text_message("5511999999999", "oi")
+      expect(connector.last_send_error).to be_nil
+    end
   end
 
   describe "#send_media_message" do

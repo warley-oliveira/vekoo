@@ -264,7 +264,8 @@ class Chat
 
     history.update(
       message_id: text_message_id,
-      status: text_message_id ? "pending" : "failed"
+      status: text_message_id ? "pending" : "failed",
+      status_message: text_message_id ? nil : connector.try(:last_send_error)
     )
     history
   end
@@ -278,6 +279,7 @@ class Chat
       send_error = e.message
       nil
     end
+    send_error ||= connector.try(:last_send_error) unless text_message_id
 
     new_last_message_at = update_event ? Time.now : Time.now - 6.months
     update(

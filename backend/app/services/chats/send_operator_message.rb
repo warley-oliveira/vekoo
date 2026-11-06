@@ -111,6 +111,7 @@ module Chats
         send_error = e.message
         nil
       end
+      send_error ||= connector.try(:last_send_error) unless external_id
 
       status = external_id ? "delivery_ack" : "failed"
 

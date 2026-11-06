@@ -327,10 +327,14 @@ RSpec.describe Chats::SendOperatorMessage do
       expect(send_text).to have_been_requested
     end
 
-    it "recusa da Meta, sem exceção, fica failed" do
+    it "recusa da Meta, sem exceção, fica failed com o motivo para a pessoa" do
       stub_request(:post, graph_url).to_return(status: 400, body: { error: { code: 131_047, message: "Fora da janela" } }.to_json)
 
-      expect(send_message("Olá").reload).to have_attributes(message_id: nil, status: "failed")
+      expect(send_message("Olá").reload).to have_attributes(
+        message_id: nil,
+        status: "failed",
+        status_message: a_string_including("Fora da janela de 24 horas")
+      )
     end
   end
 

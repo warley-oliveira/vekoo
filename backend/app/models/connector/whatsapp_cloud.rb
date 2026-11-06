@@ -165,6 +165,10 @@ class Connector::WhatsappCloud < Connector::Base
     raise 'Not implemented'
   end
 
+  # O SDK não levanta quando a Meta recusa: a recusa vem na resposta, e aqui o retorno é nil como
+  # em todo conector sem id. O motivo fica em `last_send_error`, para o histórico guardar.
+  attr_reader :last_send_error
+
   def send_text_message(recipient_number, message, chat = nil, reply_to_external_id: nil)
     Rails.logger.info "Sending message: `#{message}` (reply_to=#{reply_to_external_id.inspect})"
     @messages_sdk ||= WhatsappSdk::Api::Messages.new(whatsapp_client)
@@ -175,6 +179,8 @@ class Connector::WhatsappCloud < Connector::Base
       message_id: reply_to_external_id.presence
     )
     Rails.logger.info "[send_text_message] Response: #{response}"
+    error = response.try(:error)
+    @last_send_error = error && WabaErrorHandler.humanize(error.code, error.message)
     extract_wamid(response)
   end
 

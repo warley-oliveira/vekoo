@@ -610,6 +610,33 @@ RSpec.describe Chat do
       end
     end
 
+    context "quando a Meta recusa" do
+      let(:cloud) { create(:connector_whatsapp_cloud, organization: organization) }
+      let(:cloud_chat) { create(:chat, connector: cloud, external_id: "5531971810932") }
+
+      before do
+        stub_request(:post, "https://graph.facebook.com/v19.0/#{cloud.phone_number_id}/messages")
+          .to_return(status: 400, body: { error: { code: 131_047, message: "Fora da janela" } }.to_json)
+      end
+
+      it "guarda o motivo, sem levantar" do
+        expect(cloud_chat.send_text_message("olá").reload).to have_attributes(
+          message_id: nil,
+          status: "failed",
+          status_message: a_string_including("Fora da janela de 24 horas")
+        )
+      end
+
+      it "guarda o motivo também sem subir a conversa" do
+        expect(cloud_chat.send_text_message_without_event("olá", "Fluxo", false)).to be_nil
+
+        expect(ChatMessage::Text.unscoped.where(chat_id: cloud_chat.id).take).to have_attributes(
+          status: "failed",
+          status_message: a_string_including("Fora da janela de 24 horas")
+        )
+      end
+    end
+
     context "com o conector fechado" do
       it "não chama o provedor e marca como failed" do
         connector.set(status_cd: "closed")
