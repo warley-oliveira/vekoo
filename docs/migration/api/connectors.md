@@ -202,7 +202,7 @@ Enquanto não há perfil, `name` no WhatsApp Web é o nome interno da instância
 
 ### `GET /connectors/:id`
 
-`extras.qrCode` é o QR code guardado, para a tela abrir já com ele, e só sai para quem tem `core_settings`.
+`extras.qrCode` é o QR code guardado, para a tela abrir já com ele, e `extras.pairCode` é o código de pareamento, quando a conexão pediu um. Os dois só saem para quem tem `core_settings`.
 
 Resposta `200`:
 
@@ -445,7 +445,7 @@ Resposta `200`:
 
 ### `POST /connectors/:id/activate`
 
-Liga, religa ou tira da pausa. Corpo opcional: `code` e `redirectUri`, nos canais da Meta.
+Liga, religa ou tira da pausa. Corpo opcional: `code` e `redirectUri`, nos canais da Meta; `phoneNumberPairing`, no WhatsApp Web, para reconectar por código de pareamento naquele número. Mandar `phoneNumberPairing: null` volta ao QR code; sem a chave, vale o número que já estava gravado.
 
 **A resposta é `200` mesmo quando o provedor recusa:** olhe `status` e `errorMessage`.
 
@@ -1549,11 +1549,11 @@ A lista de conversas. Sem params. Exige `chat`. `chat_list_to` decide o que cheg
 
 ### `ConnectorsChannel`
 
-A conexão de um canal. Params: `{ "connectorId" }`. Exige `core_settings`, porque com o QR code qualquer um conecta o próprio WhatsApp ao canal. Ao assinar, já recebe o QR code guardado, se houver.
+A conexão de um canal. Params: `{ "connectorId" }`. Exige `core_settings`, porque com o QR code qualquer um conecta o próprio WhatsApp ao canal. Ao assinar, já recebe o QR code guardado, se houver, com o código de pareamento junto: quem assina depois do webhook não fica sem ele.
 
 | `status` | Payload | Significa |
 |---|---|---|
-| `qr_updated` | `{ status, base64, pairCode }` | QR code novo. |
+| `qr_updated` | `{ status, base64, pairCode }` | QR code novo. `pairCode` só vem quando a conexão pediu código de pareamento. Na Evolution ele chega como `qrcode.pairingCode`, tanto na resposta de criar a instância quanto no webhook. |
 | `success_scan` | `{ status, base64: "" }` | Leu e conectou. Releia o conector. |
 | `qr_timeout` | `{ status, base64: "" }` | Expirou. O conector fica `failed`. |
 | `qr_error` | `{ status, error }` | Z-API recusou gerar o QR code. |
