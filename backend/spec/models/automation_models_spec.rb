@@ -37,6 +37,15 @@ RSpec.describe "Modelos de automação" do
       expect(flow.draft_version).to have_attributes(version_number: 2, definition: version.definition)
     end
 
+    it "publicar duas vezes a mesma versão não abre dois rascunhos" do
+      flow = create(:flow, organization: organization)
+      version = flow.versions.create!(version_number: 1, definition: { "nodes" => [ { "id" => "t", "type" => "trigger_manual" } ] })
+
+      2.times { flow.publish!(version: version) }
+
+      expect(flow.versions.count).to eq(2)
+    end
+
     it "serve um canal conforme o filtro" do
       expect(build(:flow)).to be_serves_connector("qualquer")
       expect(build(:flow, connector_filter: { "connector_ids" => [ "a" ] })).to be_serves_connector("a")

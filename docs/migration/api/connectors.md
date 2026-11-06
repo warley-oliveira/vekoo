@@ -1786,7 +1786,7 @@ Todo canal termina em `Chats::InboundFlow`, que chama:
 Flows::InboundDispatcher.call(chat: chat, text: "Quero marcar", event: "first_message", message_id: "EXT-1")
 ```
 
-- **É um stub no-op.** O domínio automation substitui o corpo, mantendo a assinatura. Em `event`: `first_message` ou `message_received`.
+- O corpo é do domínio automation (`docs/migration/api/automation.md`), com debounce. Em `event`: `first_message`, `message_received`, e também `human_handoff` e `contact_created`, que nascem na própria conversa.
 - `text` é a legenda ou a transcrição, nas mídias.
 - Só chega quando pode rodar: automação ligada na conversa e na organização, conector `active`, contato sem bloqueio por excesso de mensagens e dentro da janela de atendimento. Fora dela, `Chats::DispatchInboundJob` adia para a próxima abertura.
 - A mensagem já está gravada e transmitida quando ele é chamado.
@@ -1855,7 +1855,7 @@ A semente não preenche `DailyChatStat`: o formato de `metrics` é do domínio i
 
 ## Limitações conhecidas
 
-- **`presence.update`** da Evolution é guardado em cache, em `presence.<chatId>`, mas ainda não há quem leia. "Digitando" do contato não chega à tela.
+- **Presença:** só a Evolution manda `presence.update`. Chega à tela como `contact_presence` em `ChatChannel` (`docs/migration/api/automation.md`).
 - **Mídia sem id do provedor:** o LeadChat devolve `nil` no tempo esgotado ignorado, e a mensagem fica `delivery_ack`.
 - **`/media/*` não confere a organização:** o acesso é por chave ou id assinado, como capacidade.
 - **Vídeo e figurinha recebidos na WABA** não viram mensagem, como na origem.

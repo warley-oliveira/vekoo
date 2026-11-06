@@ -60,7 +60,10 @@ class Flow < ApplicationRecord
   #
   # @return [FlowVersion] a versão publicada
   def publish!(version: draft_version, account: nil)
-    transaction do
+    # Dois cliques em "publicar": o segundo espera a linha e encontra a versão já publicada.
+    with_lock do
+      next if version.reload.published?
+
       version.update!(published_at: Time.current)
       update!(
         status: "published",

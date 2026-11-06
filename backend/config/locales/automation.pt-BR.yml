@@ -1,4 +1,33 @@
 pt-BR:
+  activerecord:
+    attributes:
+      flow:
+        name: "Nome"
+        description: "Descrição"
+        status: "Situação"
+        trigger_type: "Gatilho"
+        connector_filter: "Canais"
+      flow_version:
+        definition: "Definição"
+      hook:
+        name: "Nome"
+        status: "Situação"
+      hook_action/http_request:
+        url: "URL"
+        http_method: "Método"
+    errors:
+      models:
+        flow_version:
+          attributes:
+            definition:
+              invalid: "não está no formato esperado"
+              too_large: "é grande demais"
+  mongoid:
+    attributes:
+      tool_function/mini_racer:
+        name: "Nome"
+        description: "Descrição"
+        js_code: "Código"
   errors:
     no_draft_to_publish: "Este fluxo não tem rascunho para publicar."
     invalid_definition: "O fluxo tem problemas e não pode ser publicado."

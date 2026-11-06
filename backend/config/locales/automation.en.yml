@@ -1,4 +1,33 @@
 en:
+  activerecord:
+    attributes:
+      flow:
+        name: "Name"
+        description: "Description"
+        status: "Status"
+        trigger_type: "Trigger"
+        connector_filter: "Channels"
+      flow_version:
+        definition: "Definition"
+      hook:
+        name: "Name"
+        status: "Status"
+      hook_action/http_request:
+        url: "URL"
+        http_method: "Method"
+    errors:
+      models:
+        flow_version:
+          attributes:
+            definition:
+              invalid: "isn't in the expected format"
+              too_large: "is too large"
+  mongoid:
+    attributes:
+      tool_function/mini_racer:
+        name: "Name"
+        description: "Description"
+        js_code: "Code"
   errors:
     no_draft_to_publish: "This flow has no draft to publish."
     invalid_definition: "This flow has problems and can't be published."

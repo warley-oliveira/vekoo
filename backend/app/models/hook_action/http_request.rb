@@ -5,6 +5,7 @@ module HookAction
   # Falha vira alerta na organização (`webhook_delivery_failed`), que a próxima entrega resolve.
   class HttpRequest < Base
     METHODS = %w[GET POST PUT PATCH DELETE].freeze
+    PORTS = [ 80, 443, 8080, 8443 ].freeze
     MAX_RESPONSE_BYTES = 1.megabyte
     TOTAL_TIMEOUT = 20
 
@@ -21,10 +22,11 @@ module HookAction
         headers: rendered_headers(payload),
         body: rendered_body(payload),
         max_bytes: MAX_RESPONSE_BYTES,
+        ports: PORTS,
         total_timeout: TOTAL_TIMEOUT
       )
 
-      return hook.resolve_failure_alert! if response.success?
+      return @current_chat if response.success?
 
       raise Hooks::ActionFailed, I18n.t("automation.hooks.errors.http_status", status: response.status)
     rescue SafeHttp::DestinationRefused

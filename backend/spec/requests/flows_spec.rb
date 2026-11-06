@@ -116,7 +116,7 @@ RSpec.describe "Fluxos", type: :request do
     it "422 sem nome e com gatilho desconhecido" do
       post "/flows", params: { flow: { name: "" } }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json["error"]).to include("code" => "unprocessable", "field" => "name")
+      expect(json["error"]).to include("code" => "unprocessable", "field" => "name", "message" => "Nome não pode ficar em branco")
 
       post "/flows", params: { flow: { name: "x", triggerType: "inventado" } }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
