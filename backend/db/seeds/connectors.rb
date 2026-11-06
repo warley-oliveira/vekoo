@@ -1,6 +1,6 @@
 # Semente do domínio "connectors": canais e conversas na organização da conta de
-# demonstração. É obra do usuário fictício, não interface: fica em pt-BR mesmo quando a API
-# responde em inglês.
+# demonstração, com a Doma Store, a mesma loja do catálogo e dos carrosséis. É obra do usuário
+# fictício, não interface: fica em pt-BR mesmo quando a API responde em inglês.
 #
 # Nenhuma credencial de verdade. Quem funciona de ponta a ponta é o widget do site, que não fala
 # com provedor nenhum: dá para responder às conversas dele na tela. Os canais de WhatsApp e
@@ -17,7 +17,7 @@ module VekooConnectorSeeds
   TAGS = {
     "cliente-novo" => [ "#7c3aed", "Primeiro contato" ],
     "orcamento" => [ "#2563eb", "Pediu orçamento" ],
-    "agendado" => [ "#059669", "Tem horário marcado" ],
+    "troca" => [ "#059669", "Troca ou devolução" ],
     "retorno" => [ "#d97706", "Precisa de retorno" ],
     "urgente" => [ "#dc2626", "Responder primeiro" ],
     "vip" => [ "#db2777", "Cliente de sempre" ],
@@ -30,49 +30,49 @@ module VekooConnectorSeeds
     {
       key: "ana-beatriz", channel: :widget, name: "Ana Beatriz Moura", days_ago: 0, status: "open", unread: 2,
       tags: %w[cliente-novo orcamento], team: "Comercial", messages: [
-        [ :contact, :text, "Oi! Vi o anúncio de vocês no Instagram. Quanto fica a limpeza de pele?", 0 ],
-        [ :us, :text, "Oi, Ana! Que bom ter você aqui. A limpeza de pele completa sai por R$ 180 e leva uma hora.", 3, { sender: "Camila Rocha" } ],
-        [ :contact, :text, "Vocês atendem sábado de manhã?", 6 ],
-        [ :contact, :text, "Se tiver horário, já queria marcar", 7 ]
+        [ :contact, :text, "Oi! Vi o carrossel de vocês no Instagram. O vestido midi de linho ainda tem no M?", 0 ],
+        [ :us, :text, "Oi, Ana! Que bom ter você aqui. Temos sim, na cor terracota, por R$ 289,90.", 3, { sender: "Camila Rocha" } ],
+        [ :contact, :text, "Vocês entregam em Londrina?", 6 ],
+        [ :contact, :text, "Se chegar até sexta, já quero fechar", 7 ]
       ]
     },
     {
       key: "joao-pedro", channel: :widget, name: "João Pedro Almeida", days_ago: 0, status: "open", unread: 0,
-      assigned: "camila.rocha@exemplo.com.br", team: "Atendimento", tags: %w[agendado], messages: [
-        [ :contact, :text, "Bom dia, preciso remarcar meu horário de quinta", 0 ],
+      assigned: "camila.rocha@exemplo.com.br", team: "Atendimento", tags: %w[troca], messages: [
+        [ :contact, :text, "Bom dia, comprei a camiseta pima no G e ficou grande. Consigo trocar pela M?", 0 ],
         [ :note, "assigned-user-notation", "Camila Rocha assumiu esta conversa para si.", 2 ],
-        [ :us, :text, "Bom dia, João! Claro. Tenho sexta às 10h ou às 15h30, qual fica melhor?", 4, { sender: "Camila Rocha", status: "read" } ],
-        [ :contact, :text, "Sexta às 15h30, por favor", 9, { reaction: "👍" } ],
-        [ :us, :text, "Pronto, remarcado para sexta às 15h30. Até lá!", 11, { sender: "Camila Rocha", status: "delivery_ack" } ]
+        [ :us, :text, "Bom dia, João! Consegue sim. Tenho a M em preto, separo para você?", 4, { sender: "Camila Rocha", status: "read" } ],
+        [ :contact, :text, "Pode separar, por favor", 9, { reaction: "👍" } ],
+        [ :us, :text, "Pronto, separada. Pode trazer a outra na loja até sexta ou pedir a coleta pelos Correios.", 11, { sender: "Camila Rocha", status: "delivery_ack" } ]
       ]
     },
     {
       key: "fernanda-lima", channel: :whatsapp_web, phone: "5531971810932", name: "Fernanda Lima", days_ago: 1, status: "open", unread: 1,
       tags: %w[vip retorno], team: "Pós-venda", messages: [
-        [ :contact, :text, "Oi, tudo bem? O creme que comprei acabou, vocês têm ainda?", 0 ],
-        [ :us, :text, "Oi, Fernanda! Temos sim, chegou lote novo esta semana.", 5, { sender: "Thiago Almeida", status: "read" } ],
-        [ :contact, :image, "Esse aqui, da foto", 8, { file: 0 } ],
-        [ :us, :text, "Esse mesmo. Separo um para você?", 12, { sender: "Thiago Almeida", status: "read", quote: 2 } ],
+        [ :contact, :text, "Oi, tudo bem? A bolsa de palha voltou ao estoque?", 0 ],
+        [ :us, :text, "Oi, Fernanda! Voltou sim, chegou lote novo do Maranhão esta semana.", 5, { sender: "Thiago Almeida", status: "read" } ],
+        [ :contact, :image, "É essa aqui, da foto", 8, { file: 0 } ],
+        [ :us, :text, "Essa mesma. Separo uma para você?", 12, { sender: "Thiago Almeida", status: "read", quote: 2 } ],
         [ :contact, :audio, "-", 20 ]
       ]
     },
     {
       key: "carlos-eduardo", channel: :whatsapp_web, phone: "5511987651234", name: "Carlos Eduardo Santos", days_ago: 1, status: "open", unread: 0,
       assigned: "juliana.ferreira@exemplo.com.br", team: "Comercial", tags: %w[orcamento], messages: [
-        [ :contact, :text, "Boa tarde. Vocês fazem pacote para empresa? Somos 12 pessoas.", 0 ],
-        [ :us, :text, "Boa tarde, Carlos! Fazemos sim. Vou te mandar a tabela de pacotes corporativos.", 6, { sender: "Juliana Ferreira", status: "read" } ],
-        [ :us, :media, "Tabela de pacotes corporativos", 7, { sender: "Juliana Ferreira", status: "read", file_name: "pacotes-corporativos.pdf", media_type: "application/pdf" } ],
+        [ :contact, :text, "Boa tarde. Vocês fazem camiseta para empresa? Somos 40 pessoas.", 0 ],
+        [ :us, :text, "Boa tarde, Carlos! Fazemos sim, com desconto a partir de 20 peças. Vou te mandar a tabela.", 6, { sender: "Juliana Ferreira", status: "read" } ],
+        [ :us, :media, "Tabela de atacado", 7, { sender: "Juliana Ferreira", status: "read", file_name: "tabela-atacado.pdf", media_type: "application/pdf" } ],
         [ :contact, :text, "Recebi, obrigado. Vou levar para a diretoria e te retorno.", 40 ]
       ]
     },
     {
       key: "marcia-regina", channel: :whatsapp_web, phone: "5521998761234", name: "Márcia Regina Costa", days_ago: 2, status: "open", unread: 3,
-      tags: %w[urgente retorno], messages: [
+      tags: %w[urgente troca], messages: [
         [ :contact, :text, "Bom dia!", 0 ],
-        [ :contact, :text, "Fiz o procedimento ontem e a pele ficou bem vermelha", 1 ],
-        [ :contact, :image, "Olha como está", 2, { file: 1 } ],
+        [ :contact, :text, "O vestido chemise chegou sem o cinto", 1 ],
+        [ :contact, :image, "Olha como veio a embalagem", 2, { file: 1 } ],
         [ :contact, :image, "", 2, { file: 2 } ],
-        [ :contact, :text, "Isso é normal? Estou preocupada", 3 ]
+        [ :contact, :text, "Preciso dele para sábado, estou preocupada", 3 ]
       ]
     },
     {
@@ -90,19 +90,21 @@ module VekooConnectorSeeds
       ]
     },
     {
+      # O contato respondeu e a pessoa só voltou dois dias depois: a Meta recusa por estar fora da
+      # janela de 24 horas, com o mesmo texto de `WabaErrorHandler`.
       key: "roberto-nascimento", channel: :whatsapp_cloud, phone: "5571999990000", name: "Roberto Nascimento", days_ago: 4, status: "open", unread: 0,
-      tags: %w[agendado], messages: [
-        [ :us, :text, "Olá, Roberto! Sua avaliação é amanhã às 9h. Podemos confirmar?", 0, { sender: "Clínica Bem-Estar", status: "read", template: true } ],
-        [ :contact, :text, "Confirmar", 25 ],
-        [ :us, :text, "Confirmado. Até amanhã!", 27, { sender: "Rafael Nunes", status: "failed", status_message: "Fora da janela de 24 horas. Para iniciar ou retomar a conversa, você deve enviar um Template aprovado." } ]
+      tags: %w[pos-venda retorno], messages: [
+        [ :us, :text, "Olá, Roberto! Seu pedido 48213 saiu para entrega. Alguém recebe amanhã à tarde?", 0, { sender: "Doma Store", status: "read", automated: true } ],
+        [ :contact, :text, "Sim, pode entregar", 25 ],
+        [ :us, :text, "Roberto, a transportadora confirmou a entrega. Deu tudo certo?", 2_905, { sender: "Rafael Nunes", status: "failed", status_message: "Fora da janela de 24 horas. Para iniciar ou retomar a conversa, você deve enviar um Template aprovado." } ]
       ]
     },
     {
       key: "camila-ferraz", channel: :instagram, external_id: "178410000000042", name: "Camila Ferraz", username: "camila.ferraz", days_ago: 5, status: "open", unread: 0,
       tags: %w[cliente-novo], messages: [
-        [ :contact, :text, "Oi! Vocês têm horário para o fim do mês?", 0 ],
-        [ :us, :text, "Oi, Camila! Temos sim. Prefere manhã ou tarde?", 15, { sender: "Camila Rocha", status: "read" } ],
-        [ :contact, :text, "Tarde!", 18 ]
+        [ :contact, :text, "Oi! Esse vestido do último post tem no GG?", 0 ],
+        [ :us, :text, "Oi, Camila! Tem sim, o midi de linho vai do P ao GG.", 15, { sender: "Camila Rocha", status: "read" } ],
+        [ :contact, :text, "Ótimo, vou pedir pelo site!", 18 ]
       ]
     },
     {
@@ -124,15 +126,15 @@ module VekooConnectorSeeds
   ].freeze
 
   HISTORY_SCRIPTS = [
-    [ "Boa tarde, vocês abrem no feriado?", "Boa tarde! Abrimos sim, das 9h às 14h." ],
-    [ "Qual o valor da avaliação?", "A avaliação é gratuita. Quer marcar um horário?" ],
+    [ "Boa tarde, a loja abre no feriado?", "Boa tarde! Abrimos sim, das 10h às 16h." ],
+    [ "Qual o prazo de entrega para Curitiba?", "Para Curitiba, chega em até 2 dias úteis." ],
     [ "Vocês parcelam no cartão?", "Parcelamos em até 6 vezes sem juros." ],
-    [ "Onde vocês ficam?", "Estamos na Rua das Flores, 120, no Centro." ],
-    [ "Preciso cancelar meu horário de amanhã", "Certo, já cancelei. Quando quiser, é só remarcar." ]
+    [ "Onde fica a loja física?", "Estamos na Rua das Flores, 120, no Centro de Curitiba." ],
+    [ "Preciso cancelar meu pedido de ontem", "Certo, já cancelei. O estorno cai em até 5 dias úteis." ]
   ].freeze
 
-  # Cinza discreto, cor de pele, um tom de cada: só para as bolhas terem imagem de verdade.
-  IMAGE_COLORS = [ [ 201, 176, 158 ], [ 214, 162, 150 ], [ 186, 196, 208 ] ].freeze
+  # Terracota, areia e azul-marinho, cores do catálogo: só para as bolhas terem imagem de verdade.
+  IMAGE_COLORS = [ [ 176, 96, 70 ], [ 214, 196, 168 ], [ 44, 62, 96 ] ].freeze
 
   module_function
 
@@ -156,19 +158,19 @@ module VekooConnectorSeeds
 
     {
       widget: Connector::WebWidget.where(scope).take || Connector::WebWidget.create!(
-        **scope, status: :active, bot_display_name: "Site da Clínica", welcome_message: "Olá! Como podemos ajudar?"
+        **scope, status: :active, bot_display_name: "Site da Doma Store", welcome_message: "Olá! Como podemos ajudar?"
       ),
       whatsapp_web: Connector::WhatsappWeb.where(**scope, instance_name: "IWA-demonstracao").take || Connector::WhatsappWeb.create!(
         **scope, status: :closed, provider_api: "evolution_api", instance_name: "IWA-demonstracao", base_url: "http://evolution.invalid",
-        number_id: "5531930001234", profile_name: "Clínica Bem-Estar"
+        number_id: "5541930001234", profile_name: "Doma Store"
       ),
       whatsapp_cloud: Connector::WhatsappCloud.where(**scope, phone_number_id: 100_000_000_001).take || Connector::WhatsappCloud.create!(
         **scope, status: :inactive, phone_number_id: 100_000_000_001, waba_id: 200_000_000_001, business_id: 300_000_000_001,
-        verified_name: "Clínica Bem-Estar Oficial", display_phone_number: "+55 31 3000-1234", quality_rating: "GREEN", fb_status: "CONNECTED"
+        verified_name: "Doma Store", display_phone_number: "+55 41 3000-1234", quality_rating: "GREEN", fb_status: "CONNECTED"
       ),
       instagram: Connector::InstagramDirect.where(**scope, instagram_account_id: "178410000000001").take || Connector::InstagramDirect.create!(
         **scope, status: :inactive, auth_provider: "instagram_login", instagram_account_id: "178410000000001",
-        instagram_username: "clinicabemestar", account_name: "Clínica Bem-Estar", followers_count: 12_480, follows_count: 320, media_count: 412
+        instagram_username: "domastore", account_name: "Doma Store", followers_count: 12_480, follows_count: 320, media_count: 412
       )
     }
   end
@@ -188,15 +190,15 @@ module VekooConnectorSeeds
   # Com `status` preenchido e sem validar, nada chama a Meta.
   def seed_templates(connector)
     [
-      { template_id: "seed-confirmacao", name: "confirmacao_avaliacao", category: "UTILITY", status: :approved,
-        components: [ { "type" => "BODY", "text" => "Olá, {{1}}! Sua avaliação é {{2}}. Podemos confirmar?" },
-                      { "type" => "BUTTONS", "buttons" => [ { "type" => "QUICK_REPLY", "text" => "Confirmar" }, { "type" => "QUICK_REPLY", "text" => "Remarcar" } ] } ] },
+      { template_id: "seed-entrega", name: "pedido_saiu_para_entrega", category: "UTILITY", status: :approved,
+        components: [ { "type" => "BODY", "text" => "Olá, {{1}}! Seu pedido {{2}} saiu para entrega. Alguém recebe amanhã à tarde?" },
+                      { "type" => "BUTTONS", "buttons" => [ { "type" => "QUICK_REPLY", "text" => "Sim, pode entregar" }, { "type" => "QUICK_REPLY", "text" => "Quero remarcar" } ] } ] },
       { template_id: "seed-promocao", name: "promocao_mes", category: "MARKETING", status: :approved,
         components: [ { "type" => "HEADER", "format" => "TEXT", "text" => "Novidade do mês" },
-                      { "type" => "BODY", "text" => "{{1}}, neste mês a limpeza de pele sai com 20% de desconto." },
-                      { "type" => "FOOTER", "text" => "Clínica Bem-Estar" } ] },
-      { template_id: "seed-pendente", name: "lembrete_retorno", category: "UTILITY", status: :pending,
-        components: [ { "type" => "BODY", "text" => "{{1}}, está na hora do seu retorno. Vamos marcar?" } ] },
+                      { "type" => "BODY", "text" => "{{1}}, neste mês o vestido chemise sai com 20% de desconto." },
+                      { "type" => "FOOTER", "text" => "Doma Store" } ] },
+      { template_id: "seed-pendente", name: "lembrete_carrinho", category: "MARKETING", status: :pending,
+        components: [ { "type" => "BODY", "text" => "{{1}}, as peças que você escolheu ainda estão esperando. Vamos fechar?" } ] },
       { template_id: "seed-removido", name: "campanha_antiga", category: "MARKETING", status: :removed, removed_at: 10.days.ago,
         components: [ { "type" => "BODY", "text" => "Oferta encerrada." } ] }
     ].each do |attributes|
@@ -289,10 +291,12 @@ module VekooConnectorSeeds
       created_at: started_at - 1.second,
       ignore_events: true,
       external_ad_reply: {
-        title: "Limpeza de pele com 20% de desconto",
-        body: "Só neste mês, na Clínica Bem-Estar.",
+        title: "Vestido chemise com 20% de desconto",
+        body: "Só neste mês, na Doma Store.",
         source_type: "ad",
-        source_app: "instagram",
+        source_id: "seed-anuncio-chemise",
+        source_url: "https://domastore.exemplo.com.br/vestido-chemise-listrado",
+        ctwa_clid: "seed-clique-patricia",
         greeting_message_body: "Olá! Que bom falar com você. Como podemos ajudar?"
       }
     )
@@ -307,8 +311,9 @@ module VekooConnectorSeeds
       chat: chat,
       content: content.to_s,
       message_id: "seed-#{key}-#{index}",
-      message_origin: from_contact ? "platform" : "frontend",
+      message_origin: from_contact || extras[:automated] ? "platform" : "frontend",
       sender_name: from_contact ? chat.user_name : extras[:sender],
+      account_id: operator_id(chat, who, extras),
       status: from_contact ? nil : extras[:status],
       status_message: extras[:status_message],
       created_at: at,
@@ -328,6 +333,13 @@ module VekooConnectorSeeds
         media_properties: { "fileName" => extras[:file_name], "mimeType" => extras[:media_type] }
       )
     end
+  end
+
+  # Os painéis somam por quem atendeu. Sem a pessoa (semente de acesso não rodou), fica só o nome.
+  def operator_id(chat, who, extras)
+    return if who == :contact || extras[:automated]
+
+    Account.find_by(organization_id: chat.organization_id, name: extras[:sender])&.id
   end
 
   def build_note(chat, role_base_type, content, at)
