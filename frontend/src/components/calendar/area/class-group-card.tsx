@@ -30,7 +30,7 @@ export function ClassGroupCard({
   const max = classGroup.maxStudents
   const seats = max
     ? t("calendar.classGroups.seats.count", { count: max, active })
-    : t("calendar.classGroups.seats.undefined", { count: active })
+    : t("calendar.classGroups.seats.unset", { count: active })
 
   const place = [classGroup.room, classGroup.location].filter(Boolean).join(", ")
   const details = [classGroup.instructorName, place].filter(Boolean).join(" · ")

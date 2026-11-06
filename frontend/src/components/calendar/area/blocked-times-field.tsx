@@ -40,6 +40,12 @@ export function BlockedTimesField<TValues extends FieldValues, TName extends Fie
 
   return (
     <div ref={field.ref} tabIndex={-1} className="flex flex-col gap-3 rounded-lg outline-none">
+      {serverError ? (
+        <p role="alert" className="text-xs leading-snug text-destructive">
+          {t("calendar.collaborators.blocks.errors.server", { message: serverError })}
+        </p>
+      ) : null}
+
       {blocks.length > 0 ? (
         <ul className="flex flex-col gap-3">
           <AnimatePresence initial={false} mode="popLayout">
@@ -127,12 +133,6 @@ export function BlockedTimesField<TValues extends FieldValues, TName extends Fie
           {t("calendar.collaborators.blocks.add")}
         </Button>
       </div>
-
-      {serverError ? (
-        <p role="alert" className="text-xs leading-snug text-destructive">
-          {t("calendar.collaborators.blocks.errors.server", { message: serverError })}
-        </p>
-      ) : null}
     </div>
   )
 }

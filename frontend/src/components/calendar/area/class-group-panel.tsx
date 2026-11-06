@@ -38,7 +38,7 @@ import type {
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
 import type { Person } from "@/lib/people/types"
-import { contrastRatio, getReadableTextColor } from "@/lib/tag-color"
+import { COLOR_SWATCHES, contrastRatio, getReadableTextColor } from "@/lib/tag-color"
 import { AccountField } from "./account-field"
 import { FormSection } from "./form-section"
 import { ScheduleField } from "./schedule-editor"
@@ -47,7 +47,12 @@ import { emptyWeek, normalizeWeek, weekForApi, weekHasProblems } from "./week-sc
 const WHOLE = { maximumFractionDigits: 0 }
 /** Abaixo disto, o nome da turma fica difícil de ler na grade do calendário. */
 const MIN_READABLE_CONTRAST = 3
-const DEFAULT_COLOR = "#7c3aed"
+const DEFAULT_COLOR = COLOR_SWATCHES[0]
+/** Os dois que `getReadableTextColor` escolhe: é o que costuma servir. */
+const TEXT_SWATCHES = ["#ffffff", "#18181b"]
+/** Os mesmos padrões da API para turma nova. */
+const DEFAULT_MIN_STUDENTS = 1
+const DEFAULT_MAX_STUDENTS = 30
 const DEFAULT_DURATION = 60
 
 function buildSchema(t: (key: string) => string) {
@@ -164,8 +169,8 @@ function valuesOf(classGroup: ClassGroup | null): ClassGroupValues {
     tags: classGroup?.tags ?? [],
     color,
     textColor: classGroup?.textColor ?? getReadableTextColor(color),
-    minStudents: classGroup ? classGroup.minStudents : 1,
-    maxStudents: classGroup ? classGroup.maxStudents : 10,
+    minStudents: classGroup ? classGroup.minStudents : DEFAULT_MIN_STUDENTS,
+    maxStudents: classGroup ? classGroup.maxStudents : DEFAULT_MAX_STUDENTS,
     defaultDurationMinutes: classGroup ? classGroup.defaultDurationMinutes : DEFAULT_DURATION,
     // Dias puros: viram `Date` local só para o campo, sem passar por instante nem por fuso.
     startDate: classGroup?.startDate ? localDateOfDayKey(classGroup.startDate) : null,
@@ -287,7 +292,9 @@ export function ClassGroupPanel({
   const maxStudents = useWatch({ control, name: "maxStudents" })
   const defaultDuration = useWatch({ control, name: "defaultDurationMinutes" })
   const instructorAccountId = useWatch({ control, name: "instructorAccountId" })
+  const schedule = useWatch({ control, name: "schedule" })
 
+  const noDays = !schedule.some((day) => day.enabled)
   const lowContrast =
     Boolean(color && textColor) && contrastRatio(color, textColor) < MIN_READABLE_CONTRAST
 
@@ -385,6 +392,7 @@ export function ClassGroupPanel({
               control={control}
               name="textColor"
               label={t("calendar.classGroups.fields.textColor")}
+              swatches={TEXT_SWATCHES}
             />
             <div className="space-y-1.5">
               <span className="block text-sm leading-none font-medium">
@@ -451,7 +459,7 @@ export function ClassGroupPanel({
                       count: classGroup.maxStudents,
                       active: enrolled,
                     })
-                  : t("calendar.classGroups.seats.undefined", { count: enrolled })}
+                  : t("calendar.classGroups.seats.unset", { count: enrolled })}
               </span>
               <Button
                 type="button"
@@ -553,6 +561,11 @@ export function ClassGroupPanel({
               variant="classGroup"
               defaultDuration={defaultDuration}
             />
+            {noDays ? (
+              <p role="status" className="text-xs leading-snug text-status-warning">
+                {t("calendar.classGroups.when.noDays")}
+              </p>
+            ) : null}
           </div>
 
           <AnimatePresence initial={false}>

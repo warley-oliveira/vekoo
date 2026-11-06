@@ -7,7 +7,8 @@ import { useLanguage } from "@/lib/i18n"
 import { AreaCard } from "./area-card"
 import { FULL, sharesOf } from "./distribution"
 
-const NO_COLOR = "#71717a"
+/** Sem cor gravada, o cinza do tema. */
+const NO_COLOR = "var(--muted-foreground)"
 
 /** Um serviço: o que é, quanto tempo leva e quem atende. */
 export function ServiceCard({

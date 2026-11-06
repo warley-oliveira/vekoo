@@ -116,7 +116,7 @@ export function ScheduleEditor({
     }))
 
   return (
-    <ul className="flex flex-col divide-y">
+    <div className="flex flex-col divide-y">
       {WEEK_ORDER.map((dayOfWeek) => {
         const day = value.find((item) => item.dayOfWeek === dayOfWeek)
         if (!day) return null
@@ -127,7 +127,7 @@ export function ScheduleEditor({
 
         return (
           // No celular, dia e ações numa linha e os horários embaixo; a partir de `sm`, um dia por linha.
-          <li
+          <div
             key={dayOfWeek}
             role="group"
             aria-label={dayName}
@@ -258,10 +258,10 @@ export function ScheduleEditor({
                 />
               </div>
             ) : null}
-          </li>
+          </div>
         )
       })}
-    </ul>
+    </div>
   )
 }
 
@@ -387,6 +387,12 @@ export function ScheduleField<TValues extends FieldValues, TName extends FieldPa
 
   return (
     <div ref={field.ref} tabIndex={-1} className="flex flex-col gap-2 rounded-lg outline-none">
+      {/* Em cima: é aqui que o foco cai, e a semana é mais alta que a tela. */}
+      {serverError ? (
+        <p role="alert" className="text-xs leading-snug text-destructive">
+          {t("calendar.schedule.errors.server", { message: serverError })}
+        </p>
+      ) : null}
       <ScheduleEditor
         value={field.value as ScheduleDay[]}
         onChange={field.onChange}
@@ -394,11 +400,6 @@ export function ScheduleField<TValues extends FieldValues, TName extends FieldPa
         defaultDuration={defaultDuration}
         showAllErrors={formState.submitCount > 0}
       />
-      {serverError ? (
-        <p role="alert" className="text-xs leading-snug text-destructive">
-          {t("calendar.schedule.errors.server", { message: serverError })}
-        </p>
-      ) : null}
     </div>
   )
 }

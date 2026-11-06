@@ -7,7 +7,7 @@
       "moreGroups_one": "e mais {{count}} variação",
       "moreGroups_other": "e mais {{count}} variações",
       "until": "até",
-      "addWindow": "Horário",
+      "addWindow": "Adicionar",
       "addWindowOf": "Adicionar horário em {{day}}",
       "removeWindow": "Remover o horário das {{time}} em {{day}}",
       "startOf": "Início do horário em {{day}}",
@@ -23,7 +23,7 @@
         "title": "Copiar {{day}} para",
         "all": "Marcar todos",
         "none": "Desmarcar todos",
-        "workdays": "Dias úteis",
+        "workdays": "Marcar dias úteis",
         "apply_one": "Copiar para {{count}} dia",
         "apply_other": "Copiar para {{count}} dias",
         "apply_zero": "Escolha os dias"
@@ -86,7 +86,7 @@
       "edit": {
         "action": "Editar",
         "submit": "Salvar alterações",
-        "done": "{{name}} atualizado"
+        "done": "Cadastro de {{name}} salvo"
       },
       "delete": {
         "action": "Excluir colaborador",
@@ -95,16 +95,16 @@
         "descriptionWithServices_one": "Os agendamentos ficam no calendário, sem colaborador. A distribuição de {{services}} deixa de somar 100% e precisará ser refeita. Não dá para desfazer.",
         "descriptionWithServices_other": "Os agendamentos ficam no calendário, sem colaborador. A distribuição de {{services}} deixa de somar 100% e precisará ser refeita. Não dá para desfazer.",
         "confirm": "Excluir colaborador",
-        "done": "{{name}} excluído",
-        "doneHint_one": "Reparta de novo a distribuição do serviço em que ele atendia.",
-        "doneHint_other": "Reparta de novo a distribuição dos {{count}} serviços em que ele atendia.",
+        "done": "Cadastro de {{name}} excluído",
+        "doneHint_one": "Reparta de novo a distribuição do serviço em que essa pessoa atendia.",
+        "doneHint_other": "Reparta de novo a distribuição dos {{count}} serviços em que essa pessoa atendia.",
         "openServices": "Ver serviços"
       },
       "fields": {
         "account": "Conta ligada",
         "accountHint": "Ligado a uma conta, o nome e o e-mail vêm dela, e a pessoa recebe os avisos da agenda no app.",
         "accountPlaceholder": "Buscar pessoa da organização",
-        "accountTaken": "Já é colaborador neste calendário",
+        "accountTaken": "Já atende neste calendário",
         "fromAccount": "Vem da conta ligada.",
         "name": "Nome",
         "namePlaceholder": "Ex.: Renata Vieira",
@@ -114,10 +114,10 @@
         "emailPlaceholder": "renata@exemplo.com.br",
         "emailInvalid": "Esse e-mail não parece certo.",
         "phone": "Telefone",
-        "phoneHint": "Usado para avisar o colaborador da agenda pelo WhatsApp. Sem telefone, ele recebe só a notificação no app.",
+        "phoneHint": "Usado para avisar da agenda pelo WhatsApp. Sem telefone, os avisos chegam só no app.",
         "phoneInvalid": "Informe DDD e número, como 31 98379-4137.",
         "color": "Cor",
-        "colorHint": "É a cor dos agendamentos dele no calendário.",
+        "colorHint": "É a cor dos agendamentos desta pessoa no calendário.",
         "colorRequired": "Escolha uma cor.",
         "externalId": "ID externo",
         "externalIdHint": "Código deste colaborador em outro sistema."
@@ -269,14 +269,15 @@
         "handle": "Dividir entre {{left}} e {{right}}",
         "handleValue": "{{left}} {{leftValue}}%, {{right}} {{rightValue}}%",
         "required": "A distribuição precisa somar 100%.",
-        "server": "A distribuição {{message}}",
+        "server": "Distribuição: {{message}}",
         "broken": {
           "title": "Alguém saiu deste serviço",
           "titleEmpty": "Ninguém mais atende este serviço",
           "description": "A soma ficou em {{sum}}%. Os agendamentos continuam indo para quem ficou, mas para salvar qualquer alteração aqui é preciso repartir de novo.",
           "descriptionEmpty": "Quem atendia saiu do calendário. Escolha quem atende para poder salvar qualquer alteração aqui.",
           "fix": "Repartir os {{value}}% que faltam"
-        }
+        },
+        "percentSign": "%"
       }
     },
     "classGroups": {
@@ -291,8 +292,8 @@
         "count_other": "{{active}} de {{count}} vagas",
         "occupied_one": "{{active}} de {{count}} vaga ocupada",
         "occupied_other": "{{active}} de {{count}} vagas ocupadas",
-        "undefined_one": "{{count}} inscrito, sem vagas definidas",
-        "undefined_other": "{{count}} inscritos, sem vagas definidas"
+        "unset_one": "{{count}} inscrito, sem vagas definidas",
+        "unset_other": "{{count}} inscritos, sem vagas definidas"
       },
       "filters": {
         "status": "Situação",
@@ -360,7 +361,8 @@
         "grid": "Grade da semana",
         "gridHint": "Horários no fuso do calendário ({{zone}}). Sem horário de fim, a aula usa a duração padrão.",
         "changedTitle": "Mudar a grade move o que já está marcado",
-        "changedDescription": "As aulas futuras já registradas e as inscrições acompanham, pela posição do horário dentro do dia: o primeiro horário antigo vira o primeiro novo. Aulas passadas ficam como estão, horário que sumiu não leva nada, e a aula que alguém já moveu à mão fica onde está."
+        "changedDescription": "As aulas futuras já registradas e as inscrições acompanham, pela posição do horário dentro do dia: o primeiro horário antigo vira o primeiro novo. Aulas passadas ficam como estão, horário que sumiu não leva nada, e a aula que alguém já moveu à mão fica onde está.",
+        "noDays": "Sem nenhum dia ligado, a turma não terá aulas no calendário."
       },
       "recurrence": {
         "weekly": "Toda semana",
@@ -384,7 +386,7 @@
       "fields": {
         "name": "Nome",
         "namePlaceholder": "Ex.: Oficina de costura criativa",
-        "nameTooShort": "Use pelo menos 2 caracteres.",
+        "nameTooShort": "Escreva um nome com pelo menos 2 caracteres.",
         "nameTooLong": "Use até 120 caracteres.",
         "category": "Categoria",
         "categoryPlaceholder": "Ex.: Costura",
@@ -435,7 +437,7 @@
         "active": "Turma ativa",
         "activeHint": "Desativada, as aulas saem do calendário. As inscrições ficam guardadas.",
         "visible": "Visível para agendamento",
-        "visibleHint": "Oculta, a turma continua no calendário, mas não é oferecida para marcar.",
+        "visibleHint": "Oculta, a turma sai das listas de agendamento, mas continua no calendário.",
         "notes": "Observações",
         "notesPlaceholder": "Anotações internas sobre a turma",
         "externalId": "ID externo",
@@ -451,7 +453,7 @@
         "allEnrolled": "Quem apareceu nessa busca já está inscrito.",
         "enroll": "Inscrever",
         "enrollOne": "Inscrever {{name}}",
-        "enrolled": "{{name}} inscrito na turma",
+        "enrolled": "{{name}} entrou na turma",
         "fullError": "A turma acabou de lotar. Cancele uma inscrição ou aumente as vagas para inscrever mais alguém.",
         "noName": "Sem nome",
         "listTitle_one": "{{count}} inscrito",
@@ -476,12 +478,13 @@
         "cancel": {
           "action": "Cancelar a inscrição de {{name}}",
           "title": "Cancelar a inscrição de {{name}}?",
-          "description_one": "{{name}} sai desta turma e das próximas aulas. Dá para inscrever de novo depois.",
+          "description_one": "{{name}} sai desta turma, em todos os horários. Dá para inscrever de novo depois.",
           "description_other": "Isso cancela as {{count}} inscrições de {{name}} nesta turma, em todos os horários. Dá para inscrever de novo depois.",
           "confirm": "Cancelar inscrição",
           "keep": "Manter inscrição",
           "done": "Inscrição de {{name}} cancelada"
-        }
+        },
+        "listTitle_zero": "Inscritos"
       }
     }
   }

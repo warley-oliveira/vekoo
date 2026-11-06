@@ -28,6 +28,7 @@ import {
   useEnrollmentMutations,
 } from "@/hooks/calendar/use-class-groups"
 import { useCan } from "@/hooks/use-can"
+import { useRetained } from "@/hooks/use-panel-session"
 import { ApiError } from "@/lib/api"
 import type { ChatLookupItem, ClassEnrollment, ClassGroup } from "@/lib/calendar/types"
 import { capitalizeFirstLetter, formatDate } from "@/lib/date-format"
@@ -108,19 +109,31 @@ export function EnrollmentsPanel({
 }: EnrollmentsPanelProps) {
   const { t } = useTranslation()
   const confirm = useConfirm()
+  // Fechando, o painel para de ler: a turma pode ter acabado de ser excluída. O que já chegou fica
+  // na tela até a animação de saída terminar.
   const {
-    enrollments,
-    activeCount: loadedCount,
-    maxStudents: loadedMax,
+    enrollments: fetched,
+    activeCount: fetchedCount,
+    maxStudents: fetchedMax,
     error,
     isLoading,
     reload,
-  } = useClassEnrollments(calendarId, classGroup.id)
+  } = useClassEnrollments(calendarId, open ? classGroup.id : null)
+  const loaded = useRetained(
+    useMemo(
+      () =>
+        fetched
+          ? { enrollments: fetched, activeCount: fetchedCount, maxStudents: fetchedMax }
+          : null,
+      [fetched, fetchedCount, fetchedMax]
+    )
+  )
   const { enroll, unenroll } = useEnrollmentMutations(calendarId, classGroup.id)
 
+  const enrollments = loaded?.enrollments
   // A turma já traz os números: vagas e busca aparecem de cara, e só a lista espera a API.
-  const activeCount = enrollments ? loadedCount : classGroup.activeEnrollmentCount
-  const maxStudents = enrollments ? loadedMax : classGroup.maxStudents
+  const activeCount = loaded ? loaded.activeCount : classGroup.activeEnrollmentCount
+  const maxStudents = loaded ? loaded.maxStudents : classGroup.maxStudents
   const level = occupancyLevel(activeCount, maxStudents)
   const seatsLabel = t("calendar.classGroups.seats.occupied", {
     count: maxStudents ?? 0,
@@ -217,14 +230,18 @@ export function EnrollmentsPanel({
           )}
 
           <section className="flex flex-col gap-2">
-            {isLoading ? (
+            {isLoading && !enrollments ? (
               <ListSkeleton rows={3} avatar />
             ) : (
               <>
                 <h3 className="text-sm font-medium">
                   {t("calendar.classGroups.enrollments.listTitle", { count: contacts.length })}
                 </h3>
-                <EnrolledList contacts={contacts} onCancel={(contact) => void remove(contact)} />
+                <EnrolledList
+                  contacts={contacts}
+                  canEnroll={level !== "full"}
+                  onCancel={(contact) => void remove(contact)}
+                />
                 {activeCount > (enrollments?.length ?? 0) ? (
                   <p className="text-xs text-muted-foreground">
                     {t("calendar.classGroups.enrollments.truncated", {
@@ -339,9 +356,11 @@ function ContactSearch({
 
 function EnrolledList({
   contacts,
+  canEnroll,
   onCancel,
 }: {
   contacts: EnrolledContact[]
+  canEnroll: boolean
   onCancel: (contact: EnrolledContact) => void
 }) {
   const { t } = useTranslation()
@@ -362,7 +381,7 @@ function EnrolledList({
       <EmptyState
         icon={<Users className="size-5" />}
         title={t("calendar.classGroups.enrollments.empty.title")}
-        description={t("calendar.classGroups.enrollments.empty.description")}
+        description={canEnroll ? t("calendar.classGroups.enrollments.empty.description") : undefined}
         className="p-6"
       />
     )

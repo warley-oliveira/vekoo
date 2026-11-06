@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { motion } from "motion/react"
-import { AlertTriangle, CalendarCog, Plus, Users } from "lucide-react"
+import { AlertTriangle, CalendarCog, ClipboardList, Plus, Users } from "lucide-react"
 import { useNavigate } from "react-router"
 import { toast } from "sonner"
 
@@ -78,13 +78,13 @@ export default function ServicesPage() {
   const openNew = () => setPanel({ kind: "new" })
 
   const [query, setQuery] = useState("")
-  const [onlyBroken, setOnlyBroken] = useState(false)
+  const [brokenRequested, setBrokenRequested] = useState(false)
   const [sort, setSort] = useState<SortOrder>("name-asc")
   const [page, setPage] = useState(1)
 
   const clearFilters = () => {
     setQuery("")
-    setOnlyBroken(false)
+    setBrokenRequested(false)
     setPage(1)
   }
 
@@ -93,6 +93,8 @@ export default function ServicesPage() {
       (services ?? []).filter((service) => isBroken(service.distribution, professionals)).length,
     [professionals, services]
   )
+  // Consertou o último: o filtro some junto com o recado, para a lista não ficar vazia à toa.
+  const onlyBroken = brokenRequested && brokenCount > 0
 
   const visible = useMemo(() => {
     const matching = (services ?? []).filter((service) => {
@@ -200,6 +202,7 @@ export default function ServicesPage() {
         )
       ) : noServices ? (
         <EmptyState
+          icon={<ClipboardList className="size-5" />}
           title={t("calendar.services.empty.title")}
           description={t("calendar.services.empty.description")}
           action={{ label: t("calendar.services.create.action"), onClick: openNew }}
@@ -251,7 +254,7 @@ export default function ServicesPage() {
                   size="sm"
                   className="pointer-coarse:h-10"
                   onClick={() => {
-                    setOnlyBroken((current) => !current)
+                    setBrokenRequested(!onlyBroken)
                     setPage(1)
                   }}
                 >

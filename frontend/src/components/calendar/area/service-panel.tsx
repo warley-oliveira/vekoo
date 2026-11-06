@@ -128,7 +128,8 @@ export function ServicePanel({
       timeIncrementInterval: values.timeIncrementInterval ?? undefined,
       bufferBefore: values.bufferBefore ?? 0,
       bufferAfter: values.bufferAfter ?? 0,
-      guestLimit: values.guestLimit ?? undefined,
+      // Sem limite escrito, a API trabalha com uma pessoa por horário: a tela grava o mesmo.
+      guestLimit: values.guestLimit ?? 1,
       successMessage: values.successMessage.trim() || null,
       externalId: values.externalId || null,
       distribution: distributionForApi(values.distribution, service?.distribution ?? {}, professionals),

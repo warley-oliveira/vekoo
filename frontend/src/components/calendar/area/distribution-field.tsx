@@ -26,8 +26,8 @@ import {
   type Distribution,
 } from "./distribution"
 
-/** Sem cor gravada, um cinza neutro: a barra não pode ficar transparente. */
-const NO_COLOR = "#71717a"
+/** Sem cor gravada, o cinza do tema: a barra não pode ficar transparente. */
+const NO_COLOR = "var(--muted-foreground)"
 /** Abaixo disto, o número não cabe dentro da fatia. */
 const LABEL_MIN_WIDTH = 9
 
@@ -106,6 +106,11 @@ function ShareBar({
         return (
           <div
             key={professional.id}
+            title={t("calendar.services.card.share", {
+              name: professional.name,
+              value: value[professional.id],
+            })}
+            // Cor escolhida pela pessoa, com o texto calculado para continuar legível.
             style={{
               width: `${width}%`,
               backgroundColor: color,
@@ -152,7 +157,7 @@ function ShareBar({
               rightValue: value[next.id],
             })}
             style={{ left: `${position}%` }}
-            className="group absolute inset-y-0 z-10 flex w-5 -translate-x-1/2 cursor-col-resize touch-none items-center justify-center outline-none"
+            className="group absolute inset-y-0 z-10 flex w-5 -translate-x-1/2 cursor-col-resize touch-none items-center justify-center outline-none pointer-coarse:w-10"
             onPointerDown={(event) => onPointerDown(event, professional.id, next.id)}
             onPointerMove={onPointerMove}
             onPointerUp={() => {
@@ -201,6 +206,7 @@ export function DistributionField<TValues extends FieldValues, TName extends Fie
   const balanced = sum === FULL
   const showError = !balanced && formState.submitCount > 0
   const serverError = fieldState.error?.type === "server" ? fieldState.error.message : undefined
+  const showBrokenNotice = brokenAtStart && !balanced
 
   const splitAll = () => {
     const ids = (members.length > 0 ? members : professionals).map(({ id }) => id)
@@ -209,7 +215,13 @@ export function DistributionField<TValues extends FieldValues, TName extends Fie
 
   return (
     <div ref={field.ref} tabIndex={-1} className="flex flex-col gap-3 rounded-lg outline-none">
-      {brokenAtStart && !balanced ? (
+      {serverError ? (
+        <p role="alert" className="text-xs leading-snug text-destructive">
+          {t("calendar.services.distribution.server", { message: serverError })}
+        </p>
+      ) : null}
+
+      {showBrokenNotice ? (
         <Callout
           tone="warning"
           role="status"
@@ -261,7 +273,7 @@ export function DistributionField<TValues extends FieldValues, TName extends Fie
                 : t("calendar.services.distribution.over", { value: sum - FULL })}
         </p>
         <div className="flex flex-wrap gap-1">
-          {!balanced && members.length > 0 ? (
+          {!balanced && members.length > 0 && !showBrokenNotice ? (
             <Button
               type="button"
               variant="ghost"
@@ -330,18 +342,12 @@ export function DistributionField<TValues extends FieldValues, TName extends Fie
                     })
                   }
                 />
-                <span aria-hidden>%</span>
+                <span aria-hidden>{t("calendar.services.distribution.percentSign")}</span>
               </span>
             </li>
           )
         })}
       </ul>
-
-      {serverError ? (
-        <p role="alert" className="text-xs leading-snug text-destructive">
-          {t("calendar.services.distribution.server", { message: serverError })}
-        </p>
-      ) : null}
     </div>
   )
 }

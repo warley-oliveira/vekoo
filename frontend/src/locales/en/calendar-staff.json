@@ -7,7 +7,7 @@
       "moreGroups_one": "and {{count}} more variation",
       "moreGroups_other": "and {{count}} more variations",
       "until": "to",
-      "addWindow": "Time",
+      "addWindow": "Add",
       "addWindowOf": "Add a time on {{day}}",
       "removeWindow": "Remove the {{time}} time on {{day}}",
       "startOf": "Start time on {{day}}",
@@ -23,7 +23,7 @@
         "title": "Copy {{day}} to",
         "all": "Select all",
         "none": "Clear all",
-        "workdays": "Weekdays",
+        "workdays": "Select weekdays",
         "apply_one": "Copy to {{count}} day",
         "apply_other": "Copy to {{count}} days",
         "apply_zero": "Choose the days"
@@ -86,7 +86,7 @@
       "edit": {
         "action": "Edit",
         "submit": "Save changes",
-        "done": "{{name}} updated"
+        "done": "{{name}}'s record saved"
       },
       "delete": {
         "action": "Delete staff member",
@@ -95,16 +95,16 @@
         "descriptionWithServices_one": "Bookings stay on the calendar, without a staff member. The split of {{services}} will no longer add up to 100% and will have to be redone. This can't be undone.",
         "descriptionWithServices_other": "Bookings stay on the calendar, without a staff member. The split of {{services}} will no longer add up to 100% and will have to be redone. This can't be undone.",
         "confirm": "Delete staff member",
-        "done": "{{name}} deleted",
-        "doneHint_one": "Split again the service they worked on.",
-        "doneHint_other": "Split again the {{count}} services they worked on.",
+        "done": "{{name}}'s record deleted",
+        "doneHint_one": "Split again the service this person worked on.",
+        "doneHint_other": "Split again the {{count}} services this person worked on.",
         "openServices": "See services"
       },
       "fields": {
         "account": "Linked account",
         "accountHint": "When linked to an account, name and email come from it, and the person gets calendar notices in the app.",
         "accountPlaceholder": "Search people in your organization",
-        "accountTaken": "Already on this calendar",
+        "accountTaken": "Already works on this calendar",
         "fromAccount": "Comes from the linked account.",
         "name": "Name",
         "namePlaceholder": "E.g. Renata Vieira",
@@ -114,10 +114,10 @@
         "emailPlaceholder": "renata@example.com",
         "emailInvalid": "That email doesn't look right.",
         "phone": "Phone",
-        "phoneHint": "Used to send calendar notices on WhatsApp. Without a phone, they only get the app notification.",
+        "phoneHint": "Used to send calendar notices on WhatsApp. Without a phone, notices only reach the app.",
         "phoneInvalid": "Enter the area code and number, like 31 98379-4137.",
         "color": "Color",
-        "colorHint": "The color of their bookings on the calendar.",
+        "colorHint": "The color of this person's bookings on the calendar.",
         "colorRequired": "Pick a color.",
         "externalId": "External ID",
         "externalIdHint": "This staff member's code in another system."
@@ -276,7 +276,8 @@
           "description": "The total is now {{sum}}%. Bookings keep going to who stayed, but to save any change here you need to split it again.",
           "descriptionEmpty": "Who did it left the calendar. Choose who does it to be able to save any change here.",
           "fix": "Split the missing {{value}}%"
-        }
+        },
+        "percentSign": "%"
       }
     },
     "classGroups": {
@@ -291,8 +292,8 @@
         "count_other": "{{active}} of {{count}} seats",
         "occupied_one": "{{active}} of {{count}} seat taken",
         "occupied_other": "{{active}} of {{count}} seats taken",
-        "undefined_one": "{{count}} enrolled, no seats set",
-        "undefined_other": "{{count}} enrolled, no seats set"
+        "unset_one": "{{count}} enrolled, no seats set",
+        "unset_other": "{{count}} enrolled, no seats set"
       },
       "filters": {
         "status": "Status",
@@ -360,7 +361,8 @@
         "grid": "Weekly schedule",
         "gridHint": "Times in the calendar's time zone ({{zone}}). Without an end time, the class uses the default duration.",
         "changedTitle": "Changing the schedule moves what's already set",
-        "changedDescription": "Future recorded sessions and enrollments follow, by the time's position within the day: the first old time becomes the first new one. Past sessions stay as they are, a removed time takes nothing along, and a session someone moved by hand stays where it is."
+        "changedDescription": "Future recorded sessions and enrollments follow, by the time's position within the day: the first old time becomes the first new one. Past sessions stay as they are, a removed time takes nothing along, and a session someone moved by hand stays where it is.",
+        "noDays": "With no day on, the class won't have sessions on the calendar."
       },
       "recurrence": {
         "weekly": "Every week",
@@ -384,7 +386,7 @@
       "fields": {
         "name": "Name",
         "namePlaceholder": "E.g. Creative sewing workshop",
-        "nameTooShort": "Use at least 2 characters.",
+        "nameTooShort": "Type a name with at least 2 characters.",
         "nameTooLong": "Use up to 120 characters.",
         "category": "Category",
         "categoryPlaceholder": "E.g. Sewing",
@@ -435,7 +437,7 @@
         "active": "Active class",
         "activeHint": "When inactive, classes leave the calendar. Enrollments are kept.",
         "visible": "Visible for booking",
-        "visibleHint": "When hidden, the class stays on the calendar but isn't offered for booking.",
+        "visibleHint": "When hidden, the class leaves the booking lists but stays on the calendar.",
         "notes": "Notes",
         "notesPlaceholder": "Internal notes about the class",
         "externalId": "External ID",
@@ -451,7 +453,7 @@
         "allEnrolled": "Everyone in this search is already enrolled.",
         "enroll": "Enroll",
         "enrollOne": "Enroll {{name}}",
-        "enrolled": "{{name}} enrolled in the class",
+        "enrolled": "{{name}} joined the class",
         "fullError": "The class just filled up. Cancel an enrollment or add seats to enroll someone else.",
         "noName": "No name",
         "listTitle_one": "{{count}} enrolled",
@@ -476,12 +478,13 @@
         "cancel": {
           "action": "Cancel the enrollment of {{name}}",
           "title": "Cancel the enrollment of {{name}}?",
-          "description_one": "{{name}} leaves this class and the next sessions. You can enroll them again later.",
+          "description_one": "{{name}} leaves this class, at all times. You can enroll them again later.",
           "description_other": "This cancels the {{count}} enrollments of {{name}} in this class, at all times. You can enroll them again later.",
           "confirm": "Cancel enrollment",
           "keep": "Keep enrollment",
           "done": "Enrollment of {{name}} canceled"
-        }
+        },
+        "listTitle_zero": "Enrolled"
       }
     }
   }
