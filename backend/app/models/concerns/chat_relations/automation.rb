@@ -40,16 +40,14 @@ module ChatRelations
 
     # Carga em lote (`ignore_events`) não dispara nada.
     def dispatch_contact_created
-      return if ignore_events
-      return unless automation_enabled && organization&.automation_enabled?
-
-      fire_flow_event("contact_created")
+      fire_flow_event("contact_created") if automation_enabled && !ignore_events
     end
 
     # A conversa de teste do editor não é um contato: nada dispara por ela. E automação nunca derruba quem está criando o
     # contato, nem quem está assumindo a conversa: o envio de quem atende passa por aqui antes de sair.
     def fire_flow_event(event)
       return if external_id == Chat::TEST_EXTERNAL_ID
+      return unless organization&.automation_enabled?
 
       Flows::InboundDispatcher.fire_event(chat: self, event: event)
     rescue StandardError => e
