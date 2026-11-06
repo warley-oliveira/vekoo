@@ -264,7 +264,8 @@ module ChatMessage
     end
 
     def purge_media_blob
-      Media::Storage.purge(media_blob_id)
+      # `::`: aqui dentro `Media` resolveria para ChatMessage::Media.
+      ::Media::Storage.purge(media_blob_id)
     end
   end
 end
