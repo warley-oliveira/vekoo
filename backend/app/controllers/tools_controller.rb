@@ -20,6 +20,9 @@ class ToolsController < PlatformController
 
     records, meta = paginate(scope)
     list = records.to_a
+    # A lista curta é a dos seletores dos blocos: sem código, e com a ferramenta de origem.
+    return render json: { tools: Tools::FunctionListSerializer.call(list), meta: meta } if ActiveModel::Type::Boolean.new.cast(params[:summary])
+
     render json: { tools: ToolFunctionSerializer.many(list, tools: Tools::FunctionListSerializer.preload_tools(list)), meta: meta }
   end
 

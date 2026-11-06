@@ -29,12 +29,25 @@ module Flows
         resume_after_wait(execution, options["resume_token"])
       elsif options["first_run"]
         FlowRuntime::Engine.resume(execution, last_message: message, from: "pending")
-      else
+      elsif execution.playground?
         FlowRuntime::Engine.resume(execution, last_message: message, from: %w[waiting_for_message waiting])
+      else
+        resume_with_message(execution, message)
       end
     end
 
     private
+
+    # Duas rajadas podem enfileirar duas retomadas antes de a primeira rodar. A segunda perde a corrida, e a mensagem dela não pode
+    # sumir: volta para a caixa da conversa, e sai quando a rodada terminar. A entrega repetida do mesmo job não volta, porque aquela
+    # mensagem já foi avaliada.
+    def resume_with_message(execution, message)
+      return if message&.message_id.present? && execution.context["last_message_id"] == message.message_id
+
+      resumed = FlowRuntime::Engine.resume(execution, last_message: message, from: "waiting_for_message")
+      Flows::InboundDispatcher.requeue(execution, message) if resumed.nil? && message
+      resumed
+    end
 
     def message_from(options)
       return FlowRuntime::InboundMessage.new(options["user_text"]) if options["user_text"].present?

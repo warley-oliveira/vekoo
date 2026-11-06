@@ -42,6 +42,7 @@ module FlowRuntime
           max_tokens: max_tokens,
           effort: effort
         )
+        log_usage(MODELS.fetch(size), message)
         parse_json(text_of(message))
       end
     end
@@ -66,6 +67,7 @@ module FlowRuntime
     def run_tool_loop(system, messages, tools, model, instruction, effort)
       MAX_TOOL_ROUNDS.times do
         response = chat.respond(system: system, messages: messages, tools: tools, context: instruction, model: model, effort: effort)
+        log_usage(model, response)
         calls = response.content.select { |block| block.type == :tool_use }
         return text_of(response) if response.stop_reason != :tool_use || calls.empty?
 
@@ -100,6 +102,14 @@ module FlowRuntime
 
     def text_of(message)
       message.content.filter_map { |block| block.text if block.type == :text }.join
+    end
+
+    # Quanto cada bloco gasta de verdade, para o crédito poder ser conferido contra a conta.
+    def log_usage(model, message)
+      usage = message.try(:usage)
+      return unless usage
+
+      Rails.logger.info("[FlowRuntime::Llm] organization=#{organization.id} model=#{model} input=#{usage.input_tokens} output=#{usage.output_tokens} cache_read=#{usage.try(:cache_read_input_tokens)}")
     end
 
     def parse_json(text)

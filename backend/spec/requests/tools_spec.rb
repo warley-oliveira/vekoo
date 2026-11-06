@@ -38,6 +38,15 @@ RSpec.describe "Ferramentas", type: :request do
       expect(json["tools"].first).to include("locked" => true, "jsCode" => nil, "parametersJson" => nil)
     end
 
+    it "a lista curta dos seletores não traz código" do
+      create(:tool_function, organization: organization, name: "calcular_frete")
+
+      get "/tools", params: { summary: true }, headers: headers
+
+      expect(json["tools"].first).to include("name" => "calcular_frete", "description" => "Consulta um CEP", "tool" => nil)
+      expect(json["tools"].first).not_to have_key("jsCode")
+    end
+
     it "401 e 403" do
       get "/tools", as: :json
       expect(response).to have_http_status(:unauthorized)

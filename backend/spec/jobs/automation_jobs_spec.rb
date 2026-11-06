@@ -92,6 +92,28 @@ RSpec.describe "Jobs de automação" do
       expect(execution.logs.where(node_id: "p").count).to eq(2)
     end
 
+    it "a mensagem que perde a corrida para outra rodada volta para a caixa" do
+      execution = run_flow(published, chat: chat)
+      FlowExecution.claim(execution.id, from: "waiting_for_message")
+
+      expect do
+        described_class.perform_now(execution.id, organization.id, { "message" => { "content" => "cheguei tarde", "message_id" => "EXT-9" } })
+      end.to have_enqueued_job(Flows::DebouncedDispatchJob)
+
+      expect(chat.reload.flow_inbox.pluck("text")).to eq([ "cheguei tarde" ])
+    end
+
+    it "a entrega repetida da mesma mensagem não vale como resposta nova" do
+      flow_two = published_flow(organization, [ node("t", "trigger_manual"), node("a", "wait_for_message", save_to: "um"), node("b", "wait_for_message", save_to: "dois") ], [ edge("t", "a"), edge("a", "b") ])
+      execution = run_flow(flow_two, chat: chat)
+
+      2.times { described_class.perform_now(execution.id, organization.id, { "message" => { "content" => "oi", "message_id" => "EXT-1" } }) }
+
+      expect(execution.reload.variables).to include("um" => "oi")
+      expect(execution.variables).not_to have_key("dois")
+      expect(execution.current_node_id).to eq("b")
+    end
+
     it "a volta do processo de scripts só vale com o mesmo dono" do
       execution = create(:flow_execution, flow: flow, status: "running", run_token: "certo", current_node_id: "x")
 

@@ -36,6 +36,18 @@ module Flows
       DebouncedDispatchJob.perform_later(execution.chat_id, execution.organization_id.to_s) if pending
     end
 
+    # A mensagem chegou tarde para a execução que ia retomar (ver ResumeExecutionJob). Volta para a caixa, sem prazo a esperar.
+    def self.requeue(execution, message)
+      Chat.collection.update_one(
+        { _id: BSON::ObjectId.from_string(execution.chat_id), organization_id: execution.organization_id.to_s },
+        {
+          "$push" => { flow_inbox: { "$each" => [ { "text" => message.content, "event" => "message_received", "message_id" => message.message_id, "at" => Time.now.to_f } ], "$slice" => -MAX_INBOX } },
+          "$set" => { flow_inbox_deadline: Time.now.utc }
+        }
+      )
+      DebouncedDispatchJob.perform_later(execution.chat_id, execution.organization_id.to_s)
+    end
+
     def self.debounce_seconds(organization)
       configured = organization&.settings.to_h["flow_debounce_seconds"]
       return DEFAULT_DEBOUNCE_SECONDS if configured.nil?

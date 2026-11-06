@@ -55,7 +55,12 @@ module FlowRuntime
         execution.reload
         changes = {}
         # Cada mensagem nova do contato ganha um número: os blocos sabem se já foi avaliada (ver #fresh_message?).
-        changes[:context] = execution.context.merge("message_seq" => execution.context["message_seq"].to_i + 1) if last_message
+        if last_message
+          changes[:context] = execution.context.merge(
+            "message_seq" => execution.context["message_seq"].to_i + 1,
+            "last_message_id" => last_message.message_id
+          ).compact
+        end
         changes[:current_node_id] = override_node_id if override_node_id
         execution.update!(changes) if changes.any?
 

@@ -107,6 +107,13 @@ RSpec.describe Flows::InboundDispatcher do
       expect(chat.reload.flow_inbox.length).to eq(described_class::MAX_INBOX)
     end
 
+    it "a conversa de teste não vira contato nem transferência" do
+      published_flow(organization, [ node("t", "trigger_human_handoff") ], [], trigger_type: "human_handoff")
+      test_chat = create(:chat, organization: organization, external_id: Chat::TEST_EXTERNAL_ID)
+
+      expect { test_chat.pause_automation_for_human! }.not_to have_enqueued_job(Flows::EventDispatchJob)
+    end
+
     it "a pessoa que assumiu no meio-tempo leva a caixa junto" do
       say("oi")
       chat.update!(automation_enabled: false)

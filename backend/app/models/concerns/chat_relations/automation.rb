@@ -24,7 +24,8 @@ module ChatRelations
       def pause_automation_for_human!
         handing_off = automation_enabled
         result = super
-        Flows::InboundDispatcher.call(chat: self, text: "", event: "human_handoff") if handing_off
+        # A conversa de teste do editor não é um contato: nada dispara por ela.
+        Flows::InboundDispatcher.call(chat: self, text: "", event: "human_handoff") if handing_off && external_id != Chat::TEST_EXTERNAL_ID
         result
       end
 

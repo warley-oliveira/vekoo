@@ -42,7 +42,7 @@ RSpec.describe MiniRacerEngine::Workers::Scheduling do
     booking = chat.bookings.find(created["booking_id"])
     expect(booking.external_id).to eq("EXT-1")
 
-    expect(run("return appointment.scheduledList();").first).to include("service_name" => "Prova", "booking_id" => booking.id.to_s)
+    expect(run("return appointment.scheduledList();").first).to include("service_name" => "Prova", "id" => booking.id.to_s)
     expect(run("return appointment.updateExternalId('#{booking.id}', 'EXT-2');")).to eq("success" => true)
     expect(booking.reload.external_id).to eq("EXT-2")
     expect(run("return appointment.cancel('#{booking.id}');")).to eq("message" => "Booking canceled successfully")

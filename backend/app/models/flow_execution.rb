@@ -60,7 +60,10 @@ class FlowExecution < ApplicationRecord
     return nil if chat_id.blank?
 
     # Sempre com o escopo: `chats` não pode ser buscada só pelo id.
-    @chat ||= Chat.scoped(organization_id, chat_id)
+    @chat ||= Chat.scoped(organization_id, chat_id)&.tap do |chat|
+      # A conversa de teste não entra nas listas, nem quando um bloco mexe nela.
+      chat.ignore_events = true if playground?
+    end
   end
 
   def transition!(new_status, extra = {})
