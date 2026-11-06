@@ -231,17 +231,21 @@ export function formatWindow(window: TimeWindow, language: string): string {
 
 export type WeekGroup = { days: number[]; windows: TimeWindow[] }
 
-/** Dias com as mesmas faixas andam juntos: "seg. a sex.: 09:00 – 18:00". */
+/**
+ * Dias com as mesmas faixas andam juntos: "seg. a sex.: 09:00 – 18:00". Só aqui as faixas vão em
+ * ordem de início, porque é leitura: ao gravar, a ordem delas é a que a pessoa deixou.
+ */
 export function groupWeek(days: ScheduleDay[]): WeekGroup[] {
   const groups = new Map<string, WeekGroup>()
   for (const dayOfWeek of WEEK_ORDER) {
     const day = days.find((item) => item.dayOfWeek === dayOfWeek)
     if (!day?.enabled || day.windows.length === 0) continue
 
-    const key = day.windows.map((window) => `${window.start}-${window.end ?? ""}`).join("|")
+    const windows = [...day.windows].sort((a, b) => a.start.localeCompare(b.start))
+    const key = windows.map((window) => `${window.start}-${window.end ?? ""}`).join("|")
     const group = groups.get(key)
     if (group) group.days.push(dayOfWeek)
-    else groups.set(key, { days: [dayOfWeek], windows: day.windows })
+    else groups.set(key, { days: [dayOfWeek], windows })
   }
   return [...groups.values()]
 }
