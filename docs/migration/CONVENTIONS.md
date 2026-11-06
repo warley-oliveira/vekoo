@@ -136,6 +136,7 @@ Billing/planos/pacotes (`Stripe`, `Packages::`, `PlanLimitEnforcement`, `plan_ga
 
 - **Toda classe ou endpoint novo tem spec.** Recicle as specs da origem (`recycle.rb` também serve) quando fizer sentido; onde elas só testam dublês, reescreva contra o banco de verdade.
 - Request specs entram como a API manda: `headers: auth_headers(account)` e `as: :json`, sem stub de autenticação. Cubra: sessão ausente (401), permissão (403), isolamento entre organizações (404), validação (422).
+- Grupo sem nenhum acesso, para testar 403: `create(:access_role, organization:, permissions: AccessRole::BLANK_PERMISSIONS)`. Não monte o mapa à mão: os níveis são validados, e `chat_list_to` não aceita `none`.
 - `create` em documento Mongoid é permitido: o Mongo de teste é real e limpo a cada exemplo. Rede fechada por WebMock: stub explícito para cada provedor. Factories por domínio em `spec/factories/<dominio>.rb`.
 - Antes de encerrar: `cd backend && bundle exec rspec` **inteiro** verde no seu worktree. Não apague nem pule spec para passar.
 
