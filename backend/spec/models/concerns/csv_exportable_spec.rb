@@ -52,6 +52,13 @@ RSpec.describe CsvExportable do
       expect(export.last[2]).to eq("vip")
     end
 
+    it "aguenta documento que nunca teve o campo de etiquetas" do
+      chat = create_contact
+      Chat.collection.update_one({ _id: chat.id }, { "$unset" => { chat_tag_ids: 1 } })
+
+      expect(export.last[2]).to eq("")
+    end
+
     it "deixa de fora a conversa de teste e as sem número" do
       create_contact(external_id: Chat::TEST_EXTERNAL_ID)
       create_contact(external_id: nil)

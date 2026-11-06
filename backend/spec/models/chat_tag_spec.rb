@@ -92,6 +92,7 @@ RSpec.describe ChatTag do
       create(:chat, organization: organization)
 
       expect(tag.chats.to_a).to eq([ tagged ])
+      expect(tag).not_to respond_to(:chat_ids)
     end
 
     it "não alcança conversa de outra organização" do
