@@ -10,6 +10,7 @@ import {
   availableActions,
   connectorHandle,
   connectorPath,
+  hasRealName,
   mainAction,
   statusTone,
   type MainAction,
@@ -96,7 +97,7 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Link
               to={connectorPath(connector.id)}
-              className="min-w-0 truncate text-sm font-medium outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+              className="min-w-0 text-sm font-medium break-words outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
             >
               {texts.title(connector)}
             </Link>
@@ -106,20 +107,25 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
           </div>
 
           <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
-            <span>{texts.typeLabel(connector)}</span>
+            {/* Sem nome próprio, o título já é o tipo. */}
+            {hasRealName(connector) ? (
+              <>
+                <span>{texts.typeLabel(connector)}</span>
+                <span aria-hidden>·</span>
+              </>
+            ) : null}
             {handle ? (
               <>
-                <span aria-hidden>·</span>
                 <span className="tabular-nums">{handle}</span>
+                <span aria-hidden>·</span>
               </>
             ) : null}
             {extraNumbers > 0 ? (
               <>
-                <span aria-hidden>·</span>
                 <span>{t("connectors.row.moreNumbers", { count: extraNumbers })}</span>
+                <span aria-hidden>·</span>
               </>
             ) : null}
-            <span aria-hidden>·</span>
             <span>
               {t("connectors.row.created")} <RelativeTime value={connector.createdAt} />
             </span>

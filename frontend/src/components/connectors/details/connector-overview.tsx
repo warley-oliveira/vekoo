@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useConnectorActions } from "@/hooks/connectors/use-connector-actions"
 import {
   connectorHandle,
+  hasRealName,
   mainAction,
   statusTone,
   type MainAction,
@@ -51,7 +52,9 @@ export function ConnectorOverview({ connector, alerts = [], onConnect }: Connect
               <StatusBadge tone={statusTone(connector.status)}>
                 {texts.statusLabel(connector)}
               </StatusBadge>
-              <span className="text-sm text-muted-foreground">{texts.typeLabel(connector)}</span>
+              {hasRealName(connector) ? (
+                <span className="text-sm text-muted-foreground">{texts.typeLabel(connector)}</span>
+              ) : null}
               {handle ? <span className="text-sm tabular-nums">{handle}</span> : null}
             </div>
             <p className="text-sm text-pretty text-muted-foreground">

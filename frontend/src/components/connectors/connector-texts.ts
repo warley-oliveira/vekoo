@@ -5,7 +5,7 @@ import type { Connector } from "@/lib/connectors/types"
 
 /**
  * Os textos que dependem do canal. Enquanto não há perfil, o `name` é interno da instância
- * (`IWA-6aee...`): a pessoa vê o tipo e o que está faltando, nunca o id.
+ * (`IWA-6aee...`): a pessoa vê o tipo, e o que está faltando vem no estado, nunca o id.
  */
 export function useConnectorTexts() {
   const { t } = useTranslation()
@@ -15,10 +15,7 @@ export function useConnectorTexts() {
   }
 
   function title(connector: Connector) {
-    if (hasRealName(connector)) return connector.name
-    return connector.status === "pending"
-      ? t("connectors.name.waiting", { type: typeLabel(connector) })
-      : typeLabel(connector)
+    return hasRealName(connector) ? connector.name : typeLabel(connector)
   }
 
   function statusLabel(connector: Connector) {

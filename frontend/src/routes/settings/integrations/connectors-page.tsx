@@ -168,10 +168,14 @@ export default function ConnectorsPage() {
               aria-label={t("connectors.filter.label")}
               value={filter}
               onChange={setFilter}
-              // No celular os quatro não cabem com os números. Fica só o que pede ação.
+              // No celular os quatro não cabem com os números. Fica só o que pede ação, se houver.
               options={[
                 { value: "all", label: t("connectors.filter.all"), count: isMobile ? undefined : counts.all },
-                { value: "attention", label: t("connectors.filter.attention"), count: counts.attention },
+                {
+                  value: "attention",
+                  label: t("connectors.filter.attention"),
+                  count: isMobile && counts.attention === 0 ? undefined : counts.attention,
+                },
                 { value: "connected", label: t("connectors.filter.connected"), count: isMobile ? undefined : counts.connected },
                 { value: "off", label: t("connectors.filter.off"), count: isMobile ? undefined : counts.off },
               ]}

@@ -47,9 +47,6 @@
       "lead_chat": "LeadChat",
       "web_widget": "Chat do site"
     },
-    "name": {
-      "waiting": "{{type}}, aguardando conexão"
-    },
     "status": {
       "active": {
         "label": "Conectado",
