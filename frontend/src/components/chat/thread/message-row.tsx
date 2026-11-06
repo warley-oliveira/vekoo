@@ -1,14 +1,14 @@
 import { lazy, memo, Suspense, useCallback, useState, type MouseEvent } from "react"
 import { motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { AlertTriangle, ArrowRightLeft, Bot, RefreshCw, UserPlus } from "lucide-react"
+import { AlertTriangle, ArrowRightLeft, Bot, RefreshCw, TriangleAlert, UserPlus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useLongPress } from "@/hooks/use-long-press"
 import { useMotionPreset } from "@/lib/motion"
-import { meaningfulContent, messageKind } from "@/lib/chat/message-rules"
+import { bubbleText, meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import { useMessageSelection, useThreadUi } from "@/lib/chat/stores"
 import { useThreadStore, type OutgoingMessage } from "@/lib/chat/thread-store"
 import type { ThreadRow } from "@/lib/chat/thread-rows"
@@ -81,17 +81,33 @@ function FreshEntry({
   )
 }
 
+/** O que o envio avisa sem ter falhado: o resto foi, e isto não. */
+function SendNotice({ text }: { text: string }) {
+  return (
+    <p className="mt-1 flex max-w-full items-start justify-end gap-1 px-1 text-xs text-status-warning">
+      <TriangleAlert aria-hidden className="mt-0.5 size-3 shrink-0" />
+      <span className="min-w-0 text-right">{text}</span>
+    </p>
+  )
+}
+
 /** O conteúdo pelo tipo. */
 function BubbleContent({ message, own }: { message: ChatMessage; own: boolean }) {
+  const { t } = useTranslation()
   const { threadKey } = useThreadContext()
   const kind = messageKind(message)
   const caption = meaningfulContent(message.caption)
 
   if (kind === "text") {
-    const text = message.content ?? ""
+    const text = bubbleText(message)
     return (
       <div className="text-sm leading-5 break-words whitespace-pre-wrap">
-        <MessageText text={text} />
+        {/* Sobra vazio quando a mensagem era só a citação de um anexo que não existe mais. */}
+        {text ? (
+          <MessageText text={text} />
+        ) : (
+          <span className="text-muted-foreground italic">{t("chat.message.attachmentMissing")}</span>
+        )}
         <MessageMeta message={message} own={own} />
       </div>
     )
@@ -317,7 +333,7 @@ const MessageBubble = memo(function MessageBubble({
                   ? t("chat.message.failedWithReason", { reason: message.statusMessage })
                   : t("chat.message.failed")}
               </span>
-              {kind === "text" ? (
+              {kind === "text" && bubbleText(message) ? (
                 <Button
                   type="button"
                   variant="ghost"
@@ -331,6 +347,8 @@ const MessageBubble = memo(function MessageBubble({
               ) : null}
             </div>
           ) : null}
+
+          {row.notice ? <SendNotice text={row.notice} /> : null}
         </div>
 
         {!own && showActions ? (
@@ -384,6 +402,7 @@ const MediaGroupRow = memo(function MediaGroupRow({
             <MessageMeta message={last} own={own} floating={false} />
           </div>
         </div>
+        {row.notice ? <SendNotice text={row.notice} /> : null}
       </div>
       {!own && engaged ? <MessageActions message={last} own={false} visible={false} /> : null}
     </FreshEntry>

@@ -29,7 +29,7 @@ import { deleteMessages, reactToMessage } from "@/lib/chat/actions"
 import { channelKey, connectorNumber, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
 import { composerMode } from "@/lib/chat/composer-mode"
-import type { MessageCapabilities } from "@/lib/chat/message-rules"
+import { bubbleText, type MessageCapabilities } from "@/lib/chat/message-rules"
 import { useLastChannel, useOpenChatStore, useReplyTo } from "@/lib/chat/stores"
 import {
   applyChannelMessage,
@@ -112,7 +112,7 @@ const Conversation = memo(function Conversation({
       retry: (message) => {
         const input = {
           payload: message.content ?? "",
-          text: message.content ?? "",
+          text: bubbleText(message),
           replyToMessageId: message.replyToMessageId ?? null,
         }
         if (message.id.startsWith("local-")) {

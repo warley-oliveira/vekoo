@@ -9,6 +9,17 @@ import { useLanguage } from "@/lib/i18n"
 import { downloadMedia } from "@/lib/chat/media"
 import type { ChatMessage } from "@/lib/chat/types"
 
+/** O arquivo de um anexo não traz propriedades: o nome está no fim do endereço. */
+function nameFromUrl(url: string | null | undefined): string | null {
+  const last = url?.split("?")[0].split("/").pop()
+  if (!last?.includes(".")) return null
+  try {
+    return decodeURIComponent(last)
+  } catch {
+    return last
+  }
+}
+
 /** Um documento: tipo, nome, tamanho e baixar, pelo proxy da API. */
 export const FileCard = memo(function FileCard({ message }: { message: ChatMessage }) {
   const { t } = useTranslation()
@@ -16,8 +27,9 @@ export const FileCard = memo(function FileCard({ message }: { message: ChatMessa
   const [downloading, setDownloading] = useState(false)
 
   const properties = message.mediaProperties
-  const fileName = properties?.fileName ?? t("chat.media.file")
-  const extension = getFileExtension(properties?.fileName)
+  const realName = properties?.fileName ?? nameFromUrl(message.mediaUrl)
+  const fileName = realName ?? t("chat.media.file")
+  const extension = getFileExtension(realName)
   const bytes = toBytes(properties?.fileLength)
   const details = [
     extension,
@@ -29,7 +41,7 @@ export const FileCard = memo(function FileCard({ message }: { message: ChatMessa
     if (!message.mediaUrl || downloading) return
     setDownloading(true)
     try {
-      await downloadMedia(message.mediaUrl, properties?.fileName)
+      await downloadMedia(message.mediaUrl, realName)
     } finally {
       setDownloading(false)
     }
@@ -40,7 +52,7 @@ export const FileCard = memo(function FileCard({ message }: { message: ChatMessa
       <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-background text-muted-foreground">
         <FileTypeIcon
           mediaType={message.mediaType}
-          fileName={properties?.fileName}
+          fileName={realName}
           className="size-4"
         />
       </span>

@@ -239,7 +239,8 @@
       "select": "Selecionar",
       "selectOne": "Selecionar mensagem",
       "delete": "Excluir",
-      "more": "Mais ações da mensagem"
+      "more": "Mais ações da mensagem",
+      "attachmentMissing": "Anexo que não existe mais"
     },
     "reply": {
       "unavailable": "Mensagem que não está no histórico carregado",
@@ -332,14 +333,14 @@
       },
       "disconnectedTitle": "Este canal está desconectado",
       "disconnected": "Enquanto ele não voltar, não dá para enviar por aqui. As mensagens que já chegaram continuam nesta conversa.",
-      "openChannel": "Ver o canal"
+      "openChannel": "Ver o canal",
+      "unfilledVariable": "{{marker}} não tem valor nesta conversa. Troque antes de enviar: o contato recebe o texto como está."
     },
     "quickReplies": {
       "title": "Mensagens rápidas",
       "empty": "Nenhuma mensagem rápida cadastrada ainda.",
       "noMatch": "Nenhuma mensagem rápida com esse nome.",
       "preview": "Como vai sair",
-      "missingAttachment": "Anexo indisponível",
       "attachments_one": "{{count}} anexo",
       "attachments_other": "{{count}} anexos",
       "hintNavigate": "navegar",

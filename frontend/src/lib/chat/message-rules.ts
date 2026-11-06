@@ -87,16 +87,28 @@ export function isGroupableMedia(message: ChatMessage): boolean {
   return kind === "image" || kind === "video"
 }
 
-/** A citação `attachment_id_<id>` não é texto: quem lê a prévia não deve vê-la. */
-export function stripAttachmentReferences(text: string): string {
-  return text
-    .replace(/attachment_id_[\w-]+/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
+/** A citação `attachment_id_<id>` não é texto: vira arquivo no envio, e o contato nunca a lê. */
+function withoutCitations(text: string): string {
+  return text.replace(/attachment_id_[\w-]+/g, "").trim()
 }
 
 /** `"-"` é o que o back-end grava no áudio sem transcrição. */
 export function meaningfulContent(content: string | null | undefined): string {
   if (!content || content === "-") return ""
-  return stripAttachmentReferences(content)
+  return withoutCitations(content)
+}
+
+/**
+ * O texto da bolha. O envio é literal, então a tela mostra o que foi escrito, com aspas, til e
+ * quebras de linha: de quem atende, só some o que o contato nunca recebe, a citação de anexo e a
+ * marca de áudio da automação. O que o contato escreveu não se toca.
+ */
+export function bubbleText(
+  message: Pick<ChatMessage, "content" | "role" | "messageOrigin">
+): string {
+  const text = message.content ?? ""
+  if (message.role !== "assistant") return text
+
+  const automated = message.messageOrigin !== "frontend"
+  return withoutCitations(automated ? text.replace(/<audio>(.*?)<\/audio>/g, "$1") : text)
 }

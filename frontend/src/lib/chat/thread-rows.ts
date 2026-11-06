@@ -1,4 +1,4 @@
-import { isGroupableMedia } from "./message-rules"
+import { bubbleText, isGroupableMedia } from "./message-rules"
 import type { OutgoingMessage } from "./thread-store"
 import type { ChatMessage } from "./types"
 
@@ -29,6 +29,8 @@ export type ThreadRow =
       day: number | null
       startsGroup: boolean
       endsGroup: boolean
+      /** O que o envio avisa sem ter falhado: o anexo citado que não existe mais. */
+      notice: string | null
     }
   | {
       kind: "media-group"
@@ -37,6 +39,7 @@ export type ThreadRow =
       day: number | null
       startsGroup: boolean
       endsGroup: boolean
+      notice: string | null
     }
   | { kind: "note"; key: string; message: ChatMessage; messages: [ChatMessage]; day: number | null }
   | { kind: "ad-greeting"; key: string; message: ChatMessage; messages: [ChatMessage]; day: number | null }
@@ -47,12 +50,21 @@ export type ThreadRow =
 function isConversationMessage(message: ChatMessage): boolean {
   if (message.role !== "user" && message.role !== "assistant") return false
   if (message.missingMessage || message.deletedAt) return true
-  return (
-    Boolean(message.content) ||
+  if (
     message.typeElement === "audio" ||
     message.typeElement === "media" ||
     message.typeElement === "image"
-  )
+  ) {
+    return true
+  }
+  // Só a citação de um anexo: quem aparece é o arquivo, na parte seguinte. A não ser que tenha
+  // falhado, porque aí não há parte nenhuma, e a pessoa precisa saber.
+  return Boolean(bubbleText(message)) || message.status === "failed"
+}
+
+/** `statusMessage` sem falha: o envio foi, mas com um aviso, como o anexo citado que sumiu. */
+function noticeOf(message: ChatMessage): string | null {
+  return message.status === "failed" ? null : (message.statusMessage ?? null)
 }
 
 function isVisible(message: ChatMessage): boolean {
@@ -90,7 +102,11 @@ function sameRow(a: ThreadRow, b: ThreadRow): boolean {
   if (a.messages.some((message, index) => message !== other.messages[index])) return false
   if (a.kind === "message" || a.kind === "media-group") {
     const flags = b as typeof a
-    return a.startsGroup === flags.startsGroup && a.endsGroup === flags.endsGroup
+    return (
+      a.startsGroup === flags.startsGroup &&
+      a.endsGroup === flags.endsGroup &&
+      a.notice === flags.notice
+    )
   }
   return true
 }
@@ -158,6 +174,7 @@ export function buildThreadRows(
           day,
           startsGroup: true,
           endsGroup: true,
+          notice: group.map(noticeOf).find(Boolean) ?? null,
         })
         continue
       }
@@ -171,6 +188,7 @@ export function buildThreadRows(
       day,
       startsGroup: true,
       endsGroup: true,
+      notice: noticeOf(message),
     })
   }
 

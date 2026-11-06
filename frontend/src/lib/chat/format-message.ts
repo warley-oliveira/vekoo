@@ -8,7 +8,6 @@ import linkifyHtml from "linkify-html"
  */
 export function formatMessage(text: string | null | undefined): string {
   let html = (text ?? "")
-    .replace(/<audio>(.*?)<\/audio>/g, "$1")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")

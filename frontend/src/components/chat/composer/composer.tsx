@@ -32,17 +32,26 @@ import { Callout, ResponsivePopover } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { useAttachmentLibrary, useQuickReplies } from "@/hooks/chat/use-chat-refs"
 import { useChatRecorder } from "@/hooks/chat/use-chat-recorder"
 import { useSendMessage } from "@/hooks/chat/use-send-message"
+import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
+import { useQuickReplies } from "@/hooks/content/use-quick-replies"
 import { useCan } from "@/hooks/use-can"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { ApiError } from "@/lib/api"
+import { useAuth } from "@/lib/auth"
+import { contactPhone } from "@/lib/chat/channel"
 import { useChat } from "@/lib/chat/chat-store"
 import type { ComposerMode } from "@/lib/chat/composer-mode"
-import { referencesToVisual, visualToReferences } from "@/lib/chat/quick-reply-content"
+import {
+  firstUnfilledVariable,
+  referencesToVisual,
+  visualToReferences,
+} from "@/lib/chat/quick-reply-content"
 import { readDraft, useDrafts, useReplyTo } from "@/lib/chat/stores"
-import type { Chat, QuickReply } from "@/lib/chat/types"
+import type { Chat } from "@/lib/chat/types"
+import { fillQuickReply, type QuickReplyContext } from "@/lib/content/quick-reply-content"
+import type { Attachment, QuickReply } from "@/lib/content/types"
 import { formatDuration } from "@/lib/file-utils"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
@@ -58,6 +67,14 @@ const EmojiPicker = lazy(() => import("./emoji-picker"))
 
 const DRAFT_DEBOUNCE_MS = 300
 const MAX_TEXTAREA_HEIGHT = 160
+
+const NO_ATTACHMENTS: Attachment[] = []
+
+/** Só busca, para `/` abrir sem espera. À parte, para a revalidação não desenhar o composer. */
+function QuickRepliesPrefetch() {
+  useQuickReplies()
+  return null
+}
 
 export type ComposerHandle = {
   focus: () => void
@@ -296,11 +313,26 @@ function ComposerBox({
 
   const [hasText, setHasText] = useState(false)
   const [slash, setSlash] = useState<SlashState | null>(null)
+  const [unfilled, setUnfilled] = useState<string | null>(null)
 
   const { send, removeWaitingTag } = useSendMessage(chatId)
-  const { byId: attachmentLibrary } = useAttachmentLibrary()
-  // Já busca, para `/` abrir sem espera.
-  useQuickReplies()
+  const { attachments: library = NO_ATTACHMENTS } = useAttachmentLibrary()
+  const attachmentLibrary = useMemo(
+    () => new Map(library.map((attachment) => [attachment.id, attachment])),
+    [library]
+  )
+  const agentName = useAuth().session?.account.name
+
+  // Vale o nome de verdade: sem ele, `{{nome}}` fica à vista, em vez de virar "Contato".
+  const fillContext = useMemo<QuickReplyContext>(
+    () => ({
+      contactName: chat.displayName || chat.userName,
+      phone: contactPhone(chat),
+      agentName,
+      customAttributes: chat.customAttributes,
+    }),
+    [agentName, chat]
+  )
 
   const fallbackAttachment = t("chat.attachments.fallbackName")
 
@@ -338,6 +370,7 @@ function ComposerBox({
     element.value = text
     setHasText(text.trim().length > 0)
     setSlash(null)
+    setUnfilled(firstUnfilledVariable(text)?.marker ?? null)
     resize()
     if (!isTouch) element.focus({ preventScroll: true })
 
@@ -360,6 +393,7 @@ function ComposerBox({
 
     const filled = element.value.trim().length > 0
     setHasText((current) => (current === filled ? current : filled))
+    setUnfilled(firstUnfilledVariable(element.value)?.marker ?? null)
 
     const next = slashAtCaret(element.value, element.selectionStart)
     setSlash((current) =>
@@ -389,8 +423,9 @@ function ComposerBox({
       const element = textarea.current
       if (!element || !slash) return
 
+      // O servidor não conhece variável de mensagem rápida: é aqui que `{{nome}}` vira o nome.
       const { text, references: found } = referencesToVisual(
-        reply.content,
+        fillQuickReply(reply.content, fillContext),
         attachmentLibrary,
         fallbackAttachment
       )
@@ -402,7 +437,7 @@ function ComposerBox({
       setSlash(null)
       element.focus()
     },
-    [attachmentLibrary, fallbackAttachment, refreshFromInput, slash]
+    [attachmentLibrary, fallbackAttachment, fillContext, refreshFromInput, slash]
   )
 
   const submit = useCallback(() => {
@@ -411,6 +446,18 @@ function ComposerBox({
 
     const text = element.value.trim()
     if (!text) return
+
+    // `{{assim}}` chegaria igual ao contato. A primeira tentativa leva até a variável, para trocar;
+    // a segunda, com ela ainda selecionada, é quem quer mesmo enviar assim.
+    const variable = firstUnfilledVariable(element.value)
+    if (
+      variable &&
+      (element.selectionStart !== variable.start || element.selectionEnd !== variable.end)
+    ) {
+      element.focus()
+      element.setSelectionRange(variable.start, variable.end)
+      return
+    }
 
     const replyTo = useReplyTo.getState().byChat[chatId]
     send({
@@ -427,6 +474,7 @@ function ComposerBox({
     useReplyTo.getState().clearReplyTo(chatId)
     setHasText(false)
     setSlash(null)
+    setUnfilled(null)
     resize()
     onSent()
   }, [chatId, onSent, resize, send])
@@ -517,8 +565,16 @@ function ComposerBox({
 
   return (
     <div className={cn("relative shrink-0 border-t px-3 pt-2 md:px-5", BOTTOM_PADDING)}>
+      <QuickRepliesPrefetch />
       <AutomationHint chat={chat} />
       <ReplyBar chatId={chatId} contactName={contactName} />
+
+      {unfilled ? (
+        <p role="status" className="flex items-start gap-1.5 pb-1.5 text-xs text-status-warning">
+          <TriangleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+          <span className="min-w-0">{t("chat.composer.unfilledVariable", { marker: unfilled })}</span>
+        </p>
+      ) : null}
 
       {notice ? (
         <p role="alert" className="flex items-center justify-between gap-2 pb-2 text-xs text-status-warning">
@@ -537,7 +593,12 @@ function ComposerBox({
 
       <div className="relative">
         {slash ? (
-          <QuickReplyMenu ref={quickReplyMenu} query={slash.query} onPick={pickQuickReply} />
+          <QuickReplyMenu
+            ref={quickReplyMenu}
+            query={slash.query}
+            context={fillContext}
+            onPick={pickQuickReply}
+          />
         ) : null}
 
         <AnimatePresence initial={false} mode="popLayout">

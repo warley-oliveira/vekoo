@@ -62,6 +62,14 @@ export function contactHandle(
   return brazilian === raw ? formatPhone(raw) : brazilian
 }
 
+/** O telefone do contato, para `{{telefone}}`. Instagram, Messenger e o widget não têm. */
+export function contactPhone(
+  chat: Pick<Chat, "externalId" | "phoneNumber" | "audienceUserName" | "audienceType">
+): string | null {
+  const key = channelKey(undefined, chat.audienceType)
+  return isPhoneChannel(key) || key === "other" ? contactHandle(chat, key) : null
+}
+
 /**
  * O número ou endereço do canal, na aba e na origem de cada bolha. Na WABA o número certo sai
  * do `senderPhoneNumberId` da conversa, porque uma conta pode ter vários.

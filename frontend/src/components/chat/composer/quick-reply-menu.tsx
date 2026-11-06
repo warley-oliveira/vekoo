@@ -11,69 +11,47 @@ import {
 import { useTranslation } from "react-i18next"
 import { Paperclip } from "lucide-react"
 
-import { FileTypeIcon, InlineError } from "@/components/shared"
+import { QuickReplyPreview } from "@/components/content/quick-reply-preview"
+import { InlineError } from "@/components/shared"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Kbd } from "@/components/ui/kbd"
-import { useAttachmentLibrary, useQuickReplies } from "@/hooks/chat/use-chat-refs"
-import { mediaSource } from "@/lib/chat/media"
-import {
-  countAttachments,
-  splitReplyContent,
-  stripReferencesForPreview,
-} from "@/lib/chat/quick-reply-content"
-import type { QuickReply } from "@/lib/chat/types"
-import { matchesSearch } from "@/lib/search-text"
+import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
+import { useQuickReplies } from "@/hooks/content/use-quick-replies"
 import { useIsTouch } from "@/hooks/use-media-query"
+import { meaningfulContent } from "@/lib/chat/message-rules"
+import {
+  citedAttachmentIds,
+  fillQuickReply,
+  type QuickReplyContext,
+} from "@/lib/content/quick-reply-content"
+import type { QuickReply } from "@/lib/content/types"
+import { matchesSearch } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
 
-const MAX_ITEMS = 8
+/** A lista rola: o limite só poupa desenho numa organização com centenas de mensagens. */
+const MAX_ITEMS = 50
+
+const NO_REPLIES: QuickReply[] = []
 
 export type QuickReplyMenuHandle = {
   /** O composer passa as teclas para cá. `true` quer dizer que o menu cuidou. */
   handleKey: (event: KeyboardEvent<HTMLTextAreaElement>) => boolean
 }
 
-/** As mensagens em bolhas, como vão sair: anexo separado, parágrafo separado. */
-function ReplyPreview({ reply }: { reply: QuickReply }) {
+/** Como a mensagem sai, com os dados desta conversa: anexo separado, e o que falta em destaque. */
+function ReplyPreview({ reply, context }: { reply: QuickReply; context: QuickReplyContext }) {
   const { t } = useTranslation()
-  const { byId } = useAttachmentLibrary()
-  const pieces = useMemo(() => splitReplyContent(reply.content, byId), [byId, reply.content])
+  const { attachments } = useAttachmentLibrary()
 
   return (
     <div className="flex flex-col gap-1.5 p-3">
       <p className="text-xs font-medium text-muted-foreground">{t("chat.quickReplies.preview")}</p>
-      {pieces.map((piece, index) =>
-        piece.kind === "text" ? (
-          <p
-            key={index}
-            className="max-w-full self-end rounded-2xl bg-accent px-3 py-1.5 text-sm leading-5 break-words whitespace-pre-wrap"
-          >
-            {piece.text}
-          </p>
-        ) : piece.attachment?.file?.contentType.startsWith("image/") ? (
-          <img
-            key={index}
-            src={mediaSource(piece.attachment.file.url) ?? undefined}
-            alt={piece.attachment.name}
-            loading="lazy"
-            className="max-h-36 self-end rounded-xl object-cover"
-          />
-        ) : (
-          <span
-            key={index}
-            className="flex items-center gap-2 self-end rounded-xl bg-accent px-3 py-2 text-sm"
-          >
-            <FileTypeIcon
-              mediaType={piece.attachment?.file?.contentType}
-              fileName={piece.attachment?.file?.filename}
-              className="size-4 shrink-0 text-muted-foreground"
-            />
-            <span className="truncate">
-              {piece.attachment?.name ?? t("chat.quickReplies.missingAttachment")}
-            </span>
-          </span>
-        )
-      )}
+      <QuickReplyPreview
+        content={reply.content}
+        attachments={attachments}
+        customFields={undefined}
+        context={context}
+      />
     </div>
   )
 }
@@ -84,16 +62,18 @@ function ReplyPreview({ reply }: { reply: QuickReply }) {
  */
 export const QuickReplyMenu = memo(function QuickReplyMenu({
   query,
+  context,
   onPick,
   ref,
 }: {
   query: string
+  context: QuickReplyContext
   onPick: (reply: QuickReply) => void
   ref?: Ref<QuickReplyMenuHandle>
 }) {
   const { t } = useTranslation()
   const isTouch = useIsTouch()
-  const { quickReplies, isLoading, error, mutate } = useQuickReplies()
+  const { quickReplies = NO_REPLIES, isLoading, error, reload } = useQuickReplies()
 
   const items = useMemo(
     () =>
@@ -157,14 +137,14 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
               <Skeleton className="h-9" />
             </div>
           ) : error ? (
-            <InlineError onRetry={() => void mutate()} />
+            <InlineError onRetry={() => void reload()} />
           ) : items.length === 0 ? (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
               {quickReplies.length === 0 ? t("chat.quickReplies.empty") : t("chat.quickReplies.noMatch")}
             </p>
           ) : (
             items.map((reply, index) => {
-              const attachments = countAttachments(reply.content)
+              const attachments = citedAttachmentIds(reply.content).length
               return (
                 <button
                   key={reply.id}
@@ -187,7 +167,7 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium">{reply.name}</span>
                     <span className="line-clamp-1 text-xs text-muted-foreground">
-                      {stripReferencesForPreview(reply.content)}
+                      {meaningfulContent(fillQuickReply(reply.content, context))}
                     </span>
                   </span>
                   {attachments > 0 ? (
@@ -224,8 +204,8 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
       </div>
 
       {active ? (
-        <div className="hidden w-64 shrink-0 overflow-y-auto border-l lg:block">
-          <ReplyPreview reply={active} />
+        <div className="hidden w-72 shrink-0 overflow-y-auto border-l lg:block">
+          <ReplyPreview reply={active} context={context} />
         </div>
       ) : null}
     </div>

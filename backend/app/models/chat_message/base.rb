@@ -193,7 +193,7 @@ module ChatMessage
 
     def broadcast_changes
       return if ignore_events
-      return unless status_changed? || deleted_at_changed? || reactions_changed? || missing_message_changed?
+      return unless status_changed? || status_message_changed? || deleted_at_changed? || reactions_changed? || missing_message_changed?
 
       broadcast_message
     end

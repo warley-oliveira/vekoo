@@ -4,9 +4,6 @@ import type { SWRConfiguration } from "swr"
 import { useApi } from "@/hooks/use-api"
 import type { ChatConnector } from "@/lib/chat/channel"
 import type {
-  Attachment,
-  AttachmentsResponse,
-  ChatAccess,
   ChatPerson,
   ChatTag,
   ChatTagsResponse,
@@ -15,13 +12,11 @@ import type {
   ChatViewsResponse,
   CustomField,
   CustomFieldsResponse,
-  QuickRepliesResponse,
-  QuickReply,
 } from "@/lib/chat/types"
 
-// O que muda pouco e muita tela lê: canais, etiquetas, pessoas, mensagens rápidas. Um dado por
-// chave do SWR, sem revalidar ao focar a janela: é o que permite um `useChatConnectors()` em
-// cada linha da lista sem custar uma requisição a mais.
+// O que muda pouco e muita tela lê: canais, etiquetas, pessoas. Um dado por chave do SWR, sem
+// revalidar ao focar a janela: é o que permite um `useChatConnectors()` em cada linha da lista sem
+// custar uma requisição a mais. Mensagens rápidas e anexos vêm de `@/hooks/content`.
 
 const REFERENCE_DATA: SWRConfiguration = {
   revalidateOnFocus: false,
@@ -35,8 +30,6 @@ const NO_TAGS: ChatTag[] = []
 const NO_PEOPLE: ChatPerson[] = []
 const NO_TEAMS: ChatTeam[] = []
 const NO_VIEWS: ChatView[] = []
-const NO_REPLIES: QuickReply[] = []
-const NO_ATTACHMENTS: Attachment[] = []
 const NO_FIELDS: CustomField[] = []
 
 export const CHAT_CONNECTORS_KEY = "/chats/self-filter"
@@ -80,37 +73,12 @@ export function useChatTeams() {
   return { teams: data?.teams ?? NO_TEAMS }
 }
 
-export function useChatAccess() {
-  const { data } = useApi<ChatAccess>("/chats/access", REFERENCE_DATA)
-  return data ?? null
-}
-
 export function useChatViews() {
   const { data, error, isLoading, mutate } = useApi<ChatViewsResponse>(
     CHAT_VIEWS_KEY,
     REFERENCE_DATA
   )
   return { views: data?.chatViews ?? NO_VIEWS, error, isLoading, mutate }
-}
-
-export function useQuickReplies(enabled = true) {
-  const { data, error, isLoading, mutate } = useApi<QuickRepliesResponse>(
-    enabled ? "/quick-replies" : null,
-    REFERENCE_DATA
-  )
-  return { quickReplies: data?.quickReplies ?? NO_REPLIES, error, isLoading, mutate }
-}
-
-/** A galeria de anexos, para dar nome às citações das mensagens rápidas. */
-export function useAttachmentLibrary(enabled = true) {
-  const { data } = useApi<AttachmentsResponse>(
-    enabled ? "/attachments?perPage=100" : null,
-    REFERENCE_DATA
-  )
-  const attachments = data?.attachments ?? NO_ATTACHMENTS
-  const byId = useMemo(() => indexById(attachments), [attachments])
-
-  return { attachments, byId }
 }
 
 export function useCustomFields() {

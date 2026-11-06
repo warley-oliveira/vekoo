@@ -3,16 +3,15 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react"
 import { useChannel } from "@/hooks/use-channel"
 import { apiPost } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
-import { getChat, patchChat, publishChat, useChatStore } from "@/lib/chat/chat-store"
+import { patchChat, publishChat, useChatStore } from "@/lib/chat/chat-store"
 import {
   applyChannelMessage,
-  loadOlder,
   loadThread,
   resyncThread,
   setOpenThread,
   useThreadStore,
 } from "@/lib/chat/thread-store"
-import type { Chat, ChatChannelMessage, ChatResponse } from "@/lib/chat/types"
+import type { ChatChannelMessage, ChatResponse } from "@/lib/chat/types"
 
 /** Tempo para o canal da conversa entregar o que a lista já contou, antes de buscar. */
 const STALE_GRACE_MS = 1_500
@@ -44,7 +43,7 @@ export function useChatThread(chatId: string) {
     [chatId]
   )
 
-  const { connected, perform } = useChannel<ChatChannelMessage>(
+  const { connected } = useChannel<ChatChannelMessage>(
     "ChatChannel",
     { chatId },
     handleMessage
@@ -83,10 +82,9 @@ export function useChatThread(chatId: string) {
 
   useMarkAsRead(chatId, accountId, status === "ready")
 
-  const loadOlderMessages = useCallback(() => void loadOlder(chatId), [chatId])
   const retry = useCallback(() => void loadThread(chatId), [chatId])
 
-  return { status, connected, perform, loadOlderMessages, retry }
+  return { connected, retry }
 }
 
 /**
@@ -113,9 +111,4 @@ function useMarkAsRead(chatId: string, accountId: string | undefined, ready: boo
 
     return () => clearTimeout(timer)
   }, [canClear, chatId, ready, unread, visible])
-}
-
-/** A conversa como está agora, sem assinar: para os callbacks. */
-export function currentChat(chatId: string): Chat | undefined {
-  return getChat(chatId)
 }

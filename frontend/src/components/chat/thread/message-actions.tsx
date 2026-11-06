@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
-import { canReactToMessage, meaningfulContent } from "@/lib/chat/message-rules"
+import { bubbleText, canReactToMessage, meaningfulContent } from "@/lib/chat/message-rules"
 import { useMessageSelection } from "@/lib/chat/stores"
 import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
@@ -113,7 +113,8 @@ function MoreMenu({
 }) {
   const { t } = useTranslation()
   const { requestDelete } = useThreadContext()
-  const text = meaningfulContent(message.caption ?? message.content)
+  // Copiar é levar o que foi escrito, com as quebras de linha.
+  const text = message.caption ? meaningfulContent(message.caption) : bubbleText(message)
 
   return (
     <DropdownMenu>

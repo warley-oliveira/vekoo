@@ -228,40 +228,6 @@ export type ChatPerson = {
 
 export type ChatTeam = { id: string; name: string; visible: boolean }
 
-export type ChatAccess =
-  | { access: "all" }
-  | { access: "team"; teamIds: string[] }
-  | { access: "assigned"; accountId: string }
-
-export type QuickReply = {
-  id: string
-  name: string
-  trigger: string
-  content: string
-  createdAt: number
-  updatedAt: number
-}
-
-export type QuickRepliesResponse = { quickReplies: QuickReply[]; meta: PaginationMeta }
-
-export type Attachment = {
-  id: string
-  name: string
-  description: string | null
-  private: boolean
-  createdAt: number
-  updatedAt: number
-  file: {
-    id: string
-    filename: string
-    contentType: string
-    byteSize: number
-    url: string
-  } | null
-}
-
-export type AttachmentsResponse = { attachments: Attachment[]; meta: PaginationMeta }
-
 export type CustomFieldType = "text" | "number" | "list" | "checkbox" | "date"
 
 export type CustomField = {

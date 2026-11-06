@@ -59,6 +59,23 @@ RSpec.describe Chats::SendOperatorMessage do
       expect(@sent.join(" ")).to include("Segue o catálogo", "qualquer dúvida me chame")
     end
 
+    it "avisa na própria mensagem quando sobra um pedaço só" do
+      message = deliver("Segue o catálogo #{gone}")
+
+      expect(@sent).to eq([ "Segue o catálogo" ])
+      expect(message.reload).to have_attributes(status: "delivery_ack", status_message: be_present)
+    end
+
+    it "avisa na última parte quando a mensagem se divide, porque a original não aparece na conversa" do
+      original = deliver("Segue o catálogo #{gone} qualquer dúvida me chame")
+
+      parts = ChatMessage::Text.where(chat_id: chat.id, is_span: true).order_by(created_at: :asc).to_a
+      expect(parts.map(&:content)).to eq([ "Segue o catálogo", "qualquer dúvida me chame" ])
+      expect(parts.first.status_message).to be_nil
+      expect(parts.last).to have_attributes(status: "delivery_ack", status_message: be_present)
+      expect(original.reload.has_span).to be(true)
+    end
+
     it "marca como falha quando a mensagem era só o anexo" do
       message = deliver(gone)
 

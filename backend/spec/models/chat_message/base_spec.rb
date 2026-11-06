@@ -415,6 +415,14 @@ RSpec.describe ChatMessage::Base do
       )
     end
 
+    it "transmite o aviso que chega depois do envio, sem mudança de status" do
+      message = create_message(role: "assistant", content: "parte", is_span: true, status: "delivery_ack")
+
+      expect { message.update(status_message: "O anexo não existe mais") }.to have_broadcasted_to(message_stream).with(
+        a_hash_including("id" => message.id.to_s, "status" => "delivery_ack", "statusMessage" => "O anexo não existe mais")
+      )
+    end
+
     it "não transmite a original de uma mensagem dividida, só as partes" do
       expect { create_message(role: "assistant", content: "inteira", has_span: true) }.not_to have_broadcasted_to(message_stream)
 

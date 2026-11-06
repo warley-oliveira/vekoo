@@ -239,7 +239,8 @@
       "select": "Select",
       "selectOne": "Select message",
       "delete": "Delete",
-      "more": "More message actions"
+      "more": "More message actions",
+      "attachmentMissing": "Attachment that no longer exists"
     },
     "reply": {
       "unavailable": "Message not in the loaded history",
@@ -332,14 +333,14 @@
       },
       "disconnectedTitle": "This channel is disconnected",
       "disconnected": "Until it's back, you can't send from here. Messages that already arrived stay in this conversation.",
-      "openChannel": "See the channel"
+      "openChannel": "See the channel",
+      "unfilledVariable": "{{marker}} has no value in this conversation. Replace it before sending: the contact gets the text as it is."
     },
     "quickReplies": {
       "title": "Quick replies",
       "empty": "No quick replies yet.",
       "noMatch": "No quick reply with that name.",
       "preview": "How it will look",
-      "missingAttachment": "Attachment unavailable",
       "attachments_one": "{{count}} attachment",
       "attachments_other": "{{count}} attachments",
       "hintNavigate": "navigate",
