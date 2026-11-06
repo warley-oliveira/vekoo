@@ -43,7 +43,7 @@ import {
   type ActionDraft,
   type TriggerDraft,
 } from "@/lib/pipelines-admin/trigger-form"
-import { plainSentence, sentenceParts } from "@/lib/pipelines-admin/trigger-sentence"
+import { sentenceParts, suggestedName } from "@/lib/pipelines-admin/trigger-sentence"
 import type { Trigger, TriggerActionType, TriggerEvent } from "@/lib/pipelines-admin/types"
 import { cn } from "@/lib/utils"
 import {
@@ -123,18 +123,11 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
     [actions, conditions, eventType, lookups, stageId]
   )
 
-  // O nome acompanha a frase até a pessoa escrever o dela. Em gatilho que já existe, nunca muda sozinho.
-  const nameTouched = useRef(Boolean(trigger))
   const suggested = useMemo(
     () =>
-      plainSentence(parts, (key, values) => t(key, values as Record<string, string>), lookups)
-        .replace(/\.$/, "")
-        .slice(0, SUGGESTED_NAME_MAX),
+      suggestedName(parts, (key, values) => t(key, values as Record<string, string>), lookups, SUGGESTED_NAME_MAX),
     [lookups, parts, t]
   )
-  useEffect(() => {
-    if (!nameTouched.current) form.setValue("name", suggested, { shouldDirty: false })
-  }, [form, suggested])
 
   return (
     <SidePanel
@@ -196,17 +189,7 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
           </SentenceBlock>
 
           <div className="flex flex-col gap-4 border-t pt-5">
-            <TextField
-              control={form.control}
-              name="name"
-              label={t("pipelinesAdmin.triggers.editor.name")}
-              hint={trigger ? undefined : t("pipelinesAdmin.triggers.editor.nameHint")}
-              autoComplete="off"
-              maxLength={255}
-              onInput={() => {
-                nameTouched.current = true
-              }}
-            />
+            <NameField suggested={trigger ? null : suggested} />
             <SwitchField
               control={form.control}
               name="active"
@@ -217,6 +200,37 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
         </div>
       </FormProvider>
     </SidePanel>
+  )
+}
+
+/**
+ * O nome acompanha a frase até a pessoa escrever o dela. Em gatilho que já existe, nunca muda sozinho.
+ *
+ * O valor padrão anda junto, porque o nome sugerido não é alteração de ninguém: sem isso, abrir e fechar
+ * o painel sem mexer em nada perguntaria se a pessoa quer sair sem salvar. Mora junto do campo porque
+ * `resetField` só age em campo registrado, e o conteúdo do painel monta depois do formulário.
+ */
+function NameField({ suggested }: { suggested: string | null }) {
+  const { t } = useTranslation()
+  const { control, resetField } = useFormContext<TriggerDraft>()
+  const touched = useRef(false)
+
+  useEffect(() => {
+    if (suggested !== null && !touched.current) resetField("name", { defaultValue: suggested })
+  }, [resetField, suggested])
+
+  return (
+    <TextField
+      control={control}
+      name="name"
+      label={t("pipelinesAdmin.triggers.editor.name")}
+      hint={suggested === null ? undefined : t("pipelinesAdmin.triggers.editor.nameHint")}
+      autoComplete="off"
+      maxLength={255}
+      onInput={() => {
+        touched.current = true
+      }}
+    />
   )
 }
 

@@ -2,7 +2,8 @@ import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Trash2 } from "lucide-react"
+import { Link } from "react-router"
+import { Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -11,6 +12,7 @@ import {
   FormActions,
   NumberField,
   SidePanel,
+  TagChip,
   TextField,
   UnsavedChangesDialog,
   useFormSubmit,
@@ -18,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useStageMutations } from "@/hooks/pipelines-admin/use-board"
 import { useGuardedClose } from "@/hooks/use-panel-session"
-import type { Stage } from "@/lib/pipelines-admin/types"
+import type { CustomField, Stage } from "@/lib/pipelines-admin/types"
 import { StageChecklistEditor } from "./stage-checklist-editor"
 
 const NAME_MAX = 120
@@ -48,6 +50,8 @@ type StagePanelProps = {
   boardId: string
   /** Sem etapa, o painel cria. */
   stage: Stage | null
+  /** Todos os do quadro: o painel mostra os que são só desta etapa. */
+  customFields: CustomField[]
   open: boolean
   canDelete: boolean
   onOpenChange: (open: boolean) => void
@@ -56,10 +60,62 @@ type StagePanelProps = {
   onDelete: (stage: Stage) => void
 }
 
+/** Quem edita uma etapa quer saber o que ela pede a mais. Os campos em si moram na aba Campos. */
+function StageFields({
+  boardId,
+  stageId,
+  fields,
+}: {
+  boardId: string
+  stageId: string
+  fields: CustomField[]
+}) {
+  const { t } = useTranslation()
+  const base = `/pipelines/${boardId}/settings/fields`
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-0.5">
+        <h3 className="text-sm font-medium">{t("pipelinesAdmin.stages.stageFields.title")}</h3>
+        <p className="text-xs text-muted-foreground">
+          {fields.length > 0
+            ? t("pipelinesAdmin.stages.stageFields.hint")
+            : t("pipelinesAdmin.stages.stageFields.empty")}
+        </p>
+      </div>
+      {fields.length > 0 ? (
+        <ul className="flex flex-wrap gap-1.5">
+          {fields.map((field) => (
+            <li key={field.id}>
+              <Link
+                to={`${base}?field=${field.id}`}
+                className="block rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <TagChip className="hover:bg-accent">{field.name}</TagChip>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <Button
+        variant="ghost"
+        size="sm"
+        nativeButton={false}
+        className="-ml-2 self-start pointer-coarse:h-10"
+        render={<Link to={`${base}?field=new&stage=${stageId}`} />}
+      >
+        <Plus />
+        {t("pipelinesAdmin.stages.stageFields.create")}
+      </Button>
+    </div>
+  )
+}
+
 /** Criar, renomear e o que vale dentro da etapa, tudo no mesmo lugar. */
 export function StagePanel({
   boardId,
   stage,
+  customFields,
   open,
   canDelete,
   onOpenChange,
@@ -177,6 +233,16 @@ export function StagePanel({
         {stage ? (
           <div className="border-t pt-5">
             <StageChecklistEditor boardId={boardId} stageId={stage.id} />
+          </div>
+        ) : null}
+
+        {stage ? (
+          <div className="border-t pt-5">
+            <StageFields
+              boardId={boardId}
+              stageId={stage.id}
+              fields={customFields.filter((field) => field.stageId === stage.id)}
+            />
           </div>
         ) : null}
 

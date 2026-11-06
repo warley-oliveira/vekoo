@@ -250,7 +250,7 @@
         "title": "Checklist da etapa",
         "hint": "O que precisa estar marcado para o card avançar. Voltar de etapa não exige nada.",
         "empty": "Nada a marcar: qualquer card sai daqui sem conferência.",
-        "addPlaceholder": "Ex.: Confirmar quantidade de peças",
+        "addPlaceholder": "Ex.: Conferir as peças",
         "add": "Adicionar",
         "itemTitle": "Texto do item",
         "required": "Obrigatório",
@@ -262,6 +262,12 @@
           "confirm": "Excluir item",
           "done": "Item excluído."
         }
+      },
+      "stageFields": {
+        "title": "Campos desta etapa",
+        "hint": "Aparecem no card só quando ele está aqui.",
+        "empty": "Nenhum campo só desta etapa. Eles aparecem no card só quando ele está aqui.",
+        "create": "Criar campo nesta etapa"
       }
     },
     "fields": {
@@ -303,7 +309,7 @@
       },
       "form": {
         "createTitle": "Novo campo",
-        "createDescription": "Ele aparece em cada card deste quadro.",
+        "createDescription": "Uma informação a mais para guardar no card.",
         "submitCreate": "Criar campo",
         "submitEdit": "Salvar campo",
         "name": "Nome",

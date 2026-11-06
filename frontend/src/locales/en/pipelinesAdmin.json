@@ -250,7 +250,7 @@
         "title": "Stage checklist",
         "hint": "What must be checked for the card to move forward. Moving back requires nothing.",
         "empty": "Nothing to check: any card leaves here without review.",
-        "addPlaceholder": "E.g. Confirm the number of pieces",
+        "addPlaceholder": "E.g. Check the pieces",
         "add": "Add",
         "itemTitle": "Item text",
         "required": "Required",
@@ -262,6 +262,12 @@
           "confirm": "Delete item",
           "done": "Item deleted."
         }
+      },
+      "stageFields": {
+        "title": "Fields for this stage",
+        "hint": "They show on the card only while it is here.",
+        "empty": "No fields just for this stage. They show on the card only while it is here.",
+        "create": "Create field in this stage"
       }
     },
     "fields": {
@@ -303,7 +309,7 @@
       },
       "form": {
         "createTitle": "New field",
-        "createDescription": "It shows up on every card on this board.",
+        "createDescription": "One more piece of information to keep on the card.",
         "submitCreate": "Create field",
         "submitEdit": "Save field",
         "name": "Name",

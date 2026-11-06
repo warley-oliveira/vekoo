@@ -94,7 +94,7 @@ export function CodeActionEditor({ index }: { index: number }) {
         </p>
       ) : null}
 
-      <div className="flex max-w-xs flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 sm:max-w-xs">
         <span className="text-sm font-medium">{t("pipelinesAdmin.code.timeout")}</span>
         <SelectInput
           aria-label={t("pipelinesAdmin.code.timeout")}

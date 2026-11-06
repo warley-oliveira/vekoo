@@ -69,7 +69,7 @@ export default function PeriodSeriesChart({
   const { tickFormat, tooltipFormat } = useMemo(() => {
     const short = new Intl.DateTimeFormat(
       language,
-      bucket === "month" ? { month: "short", year: "2-digit" } : { day: "2-digit", month: "short" }
+      bucket === "month" ? { month: "short", year: "2-digit" } : { day: "numeric", month: "short" }
     )
     const long = new Intl.DateTimeFormat(
       language,

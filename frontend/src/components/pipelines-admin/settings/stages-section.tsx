@@ -165,6 +165,7 @@ export function StagesSection({ board }: { board: Board }) {
           key={panelKey}
           boardId={board.id}
           stage={shownStage}
+          customFields={board.customFields}
           open={panelOpen}
           canDelete={canDelete}
           onOpenChange={(open) => {

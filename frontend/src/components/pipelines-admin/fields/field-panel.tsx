@@ -21,6 +21,8 @@ import {
 } from "@/components/shared"
 import { useCustomFieldMutations } from "@/hooks/pipelines-admin/use-custom-fields"
 import { useGuardedClose } from "@/hooks/use-panel-session"
+import { formatDate } from "@/lib/date-format"
+import { useLanguage } from "@/lib/i18n"
 import {
   CUSTOM_FIELD_TYPES,
   type Board,
@@ -62,11 +64,13 @@ type FieldPanelProps = {
   board: Board
   /** Sem campo, o painel cria. */
   field: CustomField | null
+  /** Criando a partir de uma etapa: o campo já nasce nela. */
+  initialStageId?: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function FieldPanel({ board, field, open, onOpenChange }: FieldPanelProps) {
+export function FieldPanel({ board, field, initialStageId, open, onOpenChange }: FieldPanelProps) {
   const { t } = useTranslation()
   const { createField, updateField } = useCustomFieldMutations(board.id)
 
@@ -78,8 +82,8 @@ export function FieldPanel({ board, field, open, onOpenChange }: FieldPanelProps
       fieldType: field?.fieldType ?? "text",
       options: field?.options ?? [],
       required: field?.required ?? false,
-      scope: field?.scope ?? "board",
-      stageId: field?.stageId ?? null,
+      scope: field?.scope ?? (initialStageId ? "stage" : "board"),
+      stageId: field?.stageId ?? initialStageId ?? null,
       requiredToLeaveStage: field?.requiredToLeaveStage ?? false,
     },
     mode: "onBlur",
@@ -260,6 +264,7 @@ function FieldPreview({
   options: string[]
 }) {
   const { t } = useTranslation()
+  const language = useLanguage()
   const label = name.trim() || t("pipelinesAdmin.fields.form.previewName")
 
   if (type === "checkbox") {
@@ -279,7 +284,7 @@ function FieldPreview({
       ) : type === "date" ? (
         <span className="flex items-center gap-1.5 text-sm tabular-nums">
           <CalendarDays aria-hidden className="size-3.5 text-muted-foreground" />
-          {new Intl.DateTimeFormat(undefined, { dateStyle: "short" }).format(new Date())}
+          {formatDate(new Date(), language, "short")}
         </span>
       ) : type === "url" ? (
         <span className="text-sm underline underline-offset-2">{t("pipelinesAdmin.fields.form.previewUrl")}</span>

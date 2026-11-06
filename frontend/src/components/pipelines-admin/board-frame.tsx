@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react"
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useParams } from "react-router"
 import { Archive, SearchX } from "lucide-react"
@@ -146,7 +146,23 @@ function BoardAreaNav({ board }: { board: Board }) {
     ]
   }, [board, t])
 
-  return <AreaNav label={t("pipelinesAdmin.nav.aria", { name: board.name })} items={items} />
+  // Cada tela monta a sua barra, que nasce rolada para o começo. Em tela estreita, a aba ativa ficaria
+  // fora da vista. Mexe só no `scrollLeft`: `scrollIntoView` poderia rolar a página junto.
+  const wrapper = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const nav = wrapper.current?.querySelector("nav")
+    const active = nav?.querySelector('[aria-current="page"]')
+    if (!nav || !active) return
+    const navBox = nav.getBoundingClientRect()
+    const activeBox = active.getBoundingClientRect()
+    nav.scrollLeft += activeBox.left - navBox.left - (navBox.width - activeBox.width) / 2
+  }, [])
+
+  return (
+    <div ref={wrapper} className="contents">
+      <AreaNav label={t("pipelinesAdmin.nav.aria", { name: board.name })} items={items} />
+    </div>
+  )
 }
 
 function ArchivedNotice({ board }: { board: Board }) {

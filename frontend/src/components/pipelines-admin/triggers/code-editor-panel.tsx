@@ -95,6 +95,31 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
     editor.focus()
   }
 
+  /**
+   * Um exemplo é um script inteiro. Código ainda intocado dá lugar a ele; o que a pessoa já escreveu
+   * fica, e o exemplo entra no fim, para ela aproveitar o que quiser.
+   */
+  function insertSnippet(code: string) {
+    const editor = editorRef.current
+    const model = editor?.getModel()
+    if (!editor || !model) return
+
+    const current = model.getValue().trim()
+    const untouched = !current || current === t("pipelinesAdmin.code.starter").trim()
+    const range = untouched
+      ? model.getFullModelRange()
+      : {
+          startLineNumber: model.getLineCount(),
+          startColumn: model.getLineMaxColumn(model.getLineCount()),
+          endLineNumber: model.getLineCount(),
+          endColumn: model.getLineMaxColumn(model.getLineCount()),
+        }
+    editor.executeEdits("reference", [
+      { range, text: untouched ? `${code}\n` : `\n\n${code}\n`, forceMoveMarkers: true },
+    ])
+    editor.focus()
+  }
+
   const format = () => void editorRef.current?.getAction("editor.action.formatDocument")?.run()
   const tooLong = value.length > MAX_CODE_LENGTH
 
@@ -226,13 +251,19 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
           ) : null}
         </div>
 
-        <CodeReference onInsert={insert} />
+        <CodeReference onInsert={insert} onInsertSnippet={insertSnippet} />
       </div>
     </SidePanel>
   )
 }
 
-function CodeReference({ onInsert }: { onInsert: (text: string) => void }) {
+function CodeReference({
+  onInsert,
+  onInsertSnippet,
+}: {
+  onInsert: (text: string) => void
+  onInsertSnippet: (code: string) => void
+}) {
   const { t } = useTranslation()
 
   return (
@@ -264,7 +295,7 @@ function CodeReference({ onInsert }: { onInsert: (text: string) => void }) {
               variant="outline"
               size="xs"
               className="shrink-0 pointer-coarse:h-8"
-              onClick={() => onInsert(snippet.code)}
+              onClick={() => onInsertSnippet(snippet.code)}
             >
               {t("pipelinesAdmin.code.insert")}
             </Button>

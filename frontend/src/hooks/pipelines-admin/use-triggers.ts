@@ -14,6 +14,8 @@ import { boardKey, useRevalidateBoard } from "./use-board"
 
 type TriggersResponse = { triggers: Trigger[] }
 
+const TRIGGER_ALERTS_KEY = "/alerts/details?category=pipelines"
+
 export function triggersKey(boardId: string) {
   return `${boardKey(boardId)}/triggers`
 }
@@ -60,10 +62,11 @@ export function useTriggerMutations(boardId: string) {
     async (id: string) => {
       await apiDelete(`${base}/${id}`)
       await revalidate()
-      // Apagar resolve o alerta do gatilho: o número do menu muda.
+      // Apagar resolve o alerta do gatilho: mudam o número do menu e o recado da lista.
       void reloadAlerts()
+      void mutate(TRIGGER_ALERTS_KEY)
     },
-    [base, reloadAlerts, revalidate]
+    [base, mutate, reloadAlerts, revalidate]
   )
 
   /** Otimista: o interruptor responde na hora e volta sozinho se o servidor recusar. */
@@ -129,7 +132,7 @@ export type TriggerAlert = {
 
 /** O que está em alerta no menu. Um por gatilho, até uma execução dar certo. */
 export function useTriggerAlerts(boardId: string) {
-  const { data } = useApi<{ alerts: TriggerAlert[] }>("/alerts/details?category=pipelines")
+  const { data } = useApi<{ alerts: TriggerAlert[] }>(TRIGGER_ALERTS_KEY)
 
   return (data?.alerts ?? []).filter((alert) => {
     const owner = alert.metadata?.boardId ?? alert.metadata?.board_id

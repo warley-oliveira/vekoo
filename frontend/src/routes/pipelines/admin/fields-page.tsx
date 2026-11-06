@@ -111,6 +111,9 @@ function FieldsContent({
   const editing = useMemo(() => fields?.find((field) => field.id === shown) ?? null, [fields, shown])
   const lastEditing = useRetained(editing)
   const shownField = shown === NEW_FIELD ? null : lastEditing
+  // Vindo do painel de uma etapa: a etapa precisa existir, e o endereço pode estar velho.
+  const stageParam = params.get("stage")
+  const initialStageId = board.stages.some((stage) => stage.id === stageParam) ? stageParam : null
 
   function openPanel(value: string | null) {
     setParams(
@@ -118,6 +121,7 @@ function FieldsContent({
         const next = new URLSearchParams(current)
         if (value) next.set("field", value)
         else next.delete("field")
+        next.delete("stage")
         return next
       },
       { replace: value === null }
@@ -251,6 +255,7 @@ function FieldsContent({
           key={panelKey}
           board={board}
           field={shownField}
+          initialStageId={initialStageId}
           open={panelOpen}
           onOpenChange={(open) => {
             if (!open) openPanel(null)

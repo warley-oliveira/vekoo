@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react"
 
 import { Money, SectionCard } from "@/components/shared"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { formatMonthTitle } from "@/lib/pipelines-admin/format"
 import type { Board, BoardCard } from "@/lib/pipelines-admin/types"
@@ -108,7 +109,9 @@ export function ForecastList({ board }: { board: Board }) {
                         </Link>
                         <span className="flex shrink-0 items-baseline gap-2 text-xs text-muted-foreground">
                           {card.dealProbability !== null ? (
-                            <span className="tabular-nums">{card.dealProbability}%</span>
+                            <span className="tabular-nums">
+                              {formatPercent(card.dealProbability / 100, language, { maximumFractionDigits: 0 })}
+                            </span>
                           ) : null}
                           <Money value={card.dealValue} />
                         </span>

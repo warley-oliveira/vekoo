@@ -151,6 +151,26 @@ export function plainSentence(
   return translate(`${BASE}.whole`, { event: plain(parts.event), conditions, actions }).replace(/\s+/g, " ")
 }
 
+/**
+ * O nome que um gatilho novo ganha: o evento e a primeira ação, sem as condições, cortado em palavra
+ * inteira. A frase completa continua aparecendo no cartão, e o nome só precisa dizer de qual se trata.
+ */
+export function suggestedName(
+  parts: TriggerSentenceParts,
+  translate: (key: string, values?: Record<string, unknown>) => string,
+  lookups: Pick<SentenceLookups, "list">,
+  maxLength: number
+): string {
+  const sentence = plainSentence(
+    { ...parts, conditions: [], actions: parts.actions.slice(0, 1) },
+    translate,
+    lookups
+  ).replace(/\.$/, "")
+  if (sentence.length <= maxLength) return sentence
+  const cut = sentence.slice(0, maxLength + 1)
+  return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:]$/, "")
+}
+
 /** "2 horas", "30 minutos", pelo `Intl`. */
 export function formatPeriod(time: number, period: string, language: string): string {
   const unit = period === "minutes" ? "minute" : period === "days" ? "day" : "hour"
