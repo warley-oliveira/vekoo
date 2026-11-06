@@ -17,15 +17,23 @@ module Hooks
 
     # @param action_ids [Array<String>, nil] quais ações, quando retoma depois de um script
     # @param chat [Chat, nil] a conversa, quando retoma
-    def run(action_ids: nil, chat: nil)
+    # @param clean [Boolean] nenhum script anterior falhou
+    # @return [Boolean] true se foi até o fim; false se o resto ficou com um script, que retoma depois
+    def run(action_ids: nil, chat: nil, clean: true)
       actions = ordered_actions(action_ids)
 
       actions.each_with_index do |action, index|
-        return hand_over_to_scripts(action, chat, actions.drop(index + 1)) if action.script?
+        if action.script?
+          hand_over_to_scripts(action, chat, actions.drop(index + 1), clean)
+          return false
+        end
 
         chat = perform(action, chat)
       end
-      nil
+
+      # A entrega inteira deu certo: o alerta de uma falha anterior deixa de valer.
+      hook.resolve_failure_alert! if clean && !hook.alerted?
+      true
     end
 
     private
@@ -47,8 +55,8 @@ module Hooks
       action.current_chat || chat
     end
 
-    def hand_over_to_scripts(action, chat, remaining)
-      CodeRunnerJob.perform_later(hook.id, hook.organization_id, action.id, chat&.id&.to_s, capture, remaining.map(&:id), log_id)
+    def hand_over_to_scripts(action, chat, remaining, clean)
+      CodeRunnerJob.perform_later(hook.id, hook.organization_id, action.id, chat&.id&.to_s, capture, remaining.map(&:id), log_id, clean && !hook.alerted?)
     end
   end
 end

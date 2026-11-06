@@ -9,10 +9,6 @@ module Inbound
 
     rate_limit to: REQUESTS_PER_MINUTE, within: 1.minute, by: -> { params[:uid].to_s }, with: -> { render_too_many_requests }
 
-    rescue_from ActionDispatch::Http::Parameters::ParseError do
-      render_error(status: :bad_request, code: "invalidBody")
-    end
-
     before_action :set_hook
     before_action :reject_large_body
     before_action :verify_signature
@@ -23,6 +19,14 @@ module Inbound
     end
 
     private
+
+    # Aqui, e não num `rescue_from`: quem lê os parâmetros primeiro é `Localizable`, por fora dele. Esta URL é pública, e um corpo
+    # que não é JSON é o erro mais comum de quem está integrando.
+    def process_action(*)
+      super
+    rescue ActionDispatch::Http::Parameters::ParseError
+      render_error(status: :bad_request, code: "invalidBody")
+    end
 
     # Sem `received_payload`: é a coluna pesada, e o caminho que importa não a lê.
     def set_hook

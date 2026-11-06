@@ -9,7 +9,7 @@ FactoryBot.define do
 
   factory :flow_version do
     flow
-    sequence(:version_number)
+    version_number { (flow.versions.maximum(:version_number) || 0) + 1 }
     definition do
       {
         "nodes" => [ { "id" => "trigger", "type" => "trigger_manual", "data" => {} } ],
@@ -21,7 +21,7 @@ FactoryBot.define do
 
   factory :flow_execution do
     flow
-    flow_version { association(:flow_version, flow: flow) }
+    flow_version { flow.published_version || association(:flow_version, flow: flow) }
     organization_id { flow.organization_id }
     status { "completed" }
     context { {} }

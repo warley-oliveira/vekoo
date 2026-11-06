@@ -41,7 +41,6 @@ module Hooks
 
       ActionPipeline.new(hook, capture, log_id: log&.id&.to_s).run
       log&.set(processing_time_ms: elapsed.call)
-      hook.resolve_failure_alert! unless hook.alerted?
     rescue StandardError => e
       Rails.logger.error("[Hooks::ProcessRequestJob] #{hook.id} #{e.class}: #{e.message}")
       log&.set(status: "error", status_code: 500, error_message: e.message.truncate(2_000), processing_time_ms: elapsed.call)
