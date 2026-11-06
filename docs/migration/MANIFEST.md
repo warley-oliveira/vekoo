@@ -130,7 +130,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ✅ |
 | 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | 🔄 |
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |
-| 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | 🔄 |
+| 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ✅ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | 🔄 |
 | 18 | **fe-automation**: fluxos, editor, playground, ferramentas, webhooks + logs | `pages/flows`, `components/{flow-builder,tools,webhooks,webhook-logs,code-editor}`, `pages/settings/webhooks` | ⬜ |
 

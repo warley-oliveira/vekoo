@@ -103,7 +103,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Messenger foi ligado** (estava comentado na origem) e usa `VITE_FB_APP_ID`, porque o back troca o código com `META_APP_ID`.
 - **Criar Z-API direta e LeadChat não é oferecido**, como na origem; os que já existem funcionam.
 - **Modelos:** variáveis detectadas do texto; máximo de 3 botões, sendo 1 de telefone e 2 de URL; URL dinâmica pede exemplo. A mídia do cabeçalho é um campo de URL pública por enquanto.
-- **De fora:** histórico de desconexão (a API não expõe), importar contatos (o endpoint ainda não existe), e a documentação completa do widget virou um guia resumido, porque depende do bundle.
+- **De fora:** histórico de desconexão (a API não expõe), e a documentação completa do widget virou um guia resumido, porque depende do bundle.
 - **CSP:** `connect.facebook.net` em `script-src`; `www.facebook.com` e `web.facebook.com` em `connect-src` e `frame-src`. O `frame-src` é precaução: nenhum frame foi observado em teste.
 - **Acréscimo na API:** o código de pareamento se perdia (o canal não o reenviava a quem assinava depois, o `GET` não o trazia, e o `activate` não aceitava `phoneNumberPairing`). Corrigido, com 10 specs. A chave `pairingCode` vem do conhecimento da Evolution v2, sem confirmação em instância real.
 
@@ -177,6 +177,15 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Dashboards personalizados:** cada fonte exige a própria permissão, além de `custom_dashboards`, que substitui o `super_user` da origem. Conversas, contatos e mensagens passam por `visible_to`. 90 dias de período por padrão. Recusas novas: `contains` só em texto, lista só em `in` e `nin`, número e data validados.
 - **Copiloto:** ferramentas de agenda exigem `calendar`, e as de funil exigem `funnel`. `qualify_appointments` analisa até 10.
 
+### Contatos: tela (fe-contacts)
+
+- **Importação, regras novas:** o código 55 vem ligado por padrão; número com `+` não ganha 55; o zero de discagem é removido; número repetido no arquivo fica de fora. Linhas com problema ficam de fora e são listadas. Na origem qualquer aviso travava, embora o texto dissesse que as linhas seriam ignoradas.
+- **Exportação na hora** fica indisponível com mais de 150 ids marcados à mão, porque a URL não comporta. A de segundo plano guarda o link por conta no navegador até vencer.
+- **Confirmações:** fechar, reabrir e automação em uma linha só não confirmam, por serem reversíveis; em lote, confirmam.
+- **Escolha de colunas** fica no navegador, não na URL. Telas menores que 1500 px escondem aos poucos marca do canal, avatar, prévia e segunda etiqueta, para as colunas padrão caberem a partir de 1280 px.
+- **Filtros aplicam na hora**, sem o botão "Aplicar" da origem. Sai a coluna "Assistentes"; o canal ocupa o lugar.
+- **Acréscimos na API:** `GET /contacts` com `teamIds[]`, `assignedUser` com vários valores e `conditions`; a linha traz `customAttributes`; `POST /contact-imports` aceita `fileName`; `includeCountryCode` não confunde mais o DDD 55 com o código do país.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -191,6 +200,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Decisão de produto: excluir calendário.
 - Deploy: `db:mongoid:create_indexes` **antes** do tráfego é obrigatório (as agregações usam `hint`), e `dashboards:backfill_operational[90]` fora do horário de pico.
 - Revisão de segurança: `ffmpeg` processa arquivo enviado pelo usuário em `Chats::SendAudio` (sem shell, mas demuxers de playlist podem ler arquivo local); conferir `Chats::Filters` e os operadores das agregações. Os 3 avisos do Brakeman em aberto (`unified_contacts_controller.rb:27`, `chats/send_audio.rb:92`, `normalization_service.rb:88`) são falsos positivos, a registrar em `config/brakeman.ignore` com o motivo.
+- Filtros de contato por `team_id` e `custom_attributes` não têm índice, e não foram medidos em base grande. Exportação: se a aba fechar, o link se perde, porque só o canal avisa; uma notificação resolveria.
 - Teto de 16 MB no `$facet` do quadro de funil não foi reproduzido: passar dele vira 500.
 - ENV novas: `APIFY_API_TOKEN`, `GOOGLE_SHEETS_CLIENT_ID`, `GOOGLE_SHEETS_API_KEY`, `GOOGLE_SHEETS_APP_ID`.
 - `Inbound::ZapiEvents` não trata status, então o destinatário de campanha pela Z-API fica em `sent`.
@@ -210,14 +220,14 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
-- `fe-contacts`: ligar a ação "Importar contatos" na tela do canal quando `import-contacts` existir. Seletor de anexos no cabeçalho do modelo, quando a API de anexos existir.
+- `fe-connectors` (já integrado): seletor de anexos no cabeçalho do modelo de WhatsApp, agora que a API de anexos existe. Hoje é um campo de URL pública.
 - `fe-chat-core`: `connectorProvider` agora é `zapi` (a origem compara com `z_api`); ações em lote não avisam o tempo real, então a tela recarrega a lista; a regra de auto-remover `aguardando-operador` fica na tela, lendo `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`; eventos `bookings_changed` e `scheduled_actions_changed`; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
 - `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-core` e `fe-chat-mobile`: **ao inserir mensagem rápida, chamar `fillQuickReply(reply.content, { contactName, phone, agentName, customAttributes })`** de `lib/content/quick-reply-content.ts`. Sem isso, `{{nome}}` chega literal ao contato.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
-- Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
+- Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
