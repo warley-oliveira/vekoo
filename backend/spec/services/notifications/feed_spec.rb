@@ -44,8 +44,9 @@ RSpec.describe Notifications::Feed do
       expect(feed.page(page: "abc", per_page: 0).last).to include(page: 1, perPage: 1)
     end
 
+    # Hora redonda: o Postgres guarda microssegundos e o Mongo, milissegundos.
     it "desempata pelo id quando a data é a mesma, para a paginação ser estável" do
-      at = 30.seconds.ago
+      at = 30.seconds.ago.change(usec: 0)
       a = create(:notification, organization: organization, notified_at: at)
       b = create(:account_notice, account: account, created_at: at)
       first_two = feed.page(per_page: 2).first

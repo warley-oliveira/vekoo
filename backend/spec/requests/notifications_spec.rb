@@ -71,7 +71,7 @@ RSpec.describe "Avisos unificados", type: :request do
       expect(item).to eq(
         "id" => created.id.to_s,
         "key" => nil,
-        "at" => (created.created_at.to_f * 1000).round,
+        "at" => (created.reload.created_at.to_f * 1000).round,
         "read" => false,
         "title" => "Conversa atribuída a você",
         "description" => "Ana Beatriz está esperando resposta.",

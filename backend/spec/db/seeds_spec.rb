@@ -51,9 +51,11 @@ RSpec.describe "db/seeds.rb" do
   end
 
   it "deixa a conta de demonstração pronta para entrar" do
-    account = organization.accounts.sole
+    # A semente do domínio "access" põe outras pessoas na organização: a dona é achada pelo
+    # e-mail, e continua sendo uma só.
+    account = organization.accounts.find_by!(email: "marina.duarte@exemplo.com.br")
 
-    expect(account.email).to eq("marina.duarte@exemplo.com.br")
+    expect(organization.accounts.where(role: "owner")).to contain_exactly(account)
     expect(account.role).to eq("owner")
     expect(account.authenticate("carrossel123")).to be_truthy
     # A senha nunca fica em texto puro, nem na semente.
