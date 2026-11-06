@@ -391,7 +391,15 @@ RSpec.describe ChatChannel, type: :channel do
         perform_send("attachment_id_#{voice.id}")
 
         expect(spans.first).to be_a(ChatMessage::Media)
-        expect(spans.first).to have_attributes(is_span: true, media_type: "audio", sender_name: "Alice Prado", account_id: account.id)
+        expect(spans.first).to have_attributes(is_span: true, media_type: "audio", sender_name: "Alice Prado", account_id: account.id, message_id: "A1", status: "delivery_ack")
+      end
+
+      it "a mídia que o provedor recusa fica failed com a causa" do
+        stub_request(:post, media_url).to_return(status: 500, body: "fora do ar")
+
+        perform_send("attachment_id_#{attachment.id}")
+
+        expect(spans.first).to have_attributes(status: "failed", status_message: a_string_including("fora do ar"))
       end
     end
 

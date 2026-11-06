@@ -438,10 +438,51 @@ RSpec.describe Chats::SendOperatorMessage do
       expect(a_request(:post, media_url)).not_to have_been_made
     end
 
-    it "uma falha ao enviar a mídia não quebra o envio" do
-      stub_request(:post, media_url).to_return(status: 500, body: "erro")
+    it "a parte guarda o id do provedor e fica entregue ao canal" do
+      stub_request(:post, media_url).to_return(sent_ok)
+
+      send_message("attachment_id_#{attachment.id}")
+
+      expect(spans.first).to have_attributes(message_id: "MID-1", status: "delivery_ack", status_message: nil)
+    end
+
+    it "uma falha ao enviar a mídia não quebra o envio e fica failed com a causa" do
+      stub_request(:post, media_url).to_return(status: 500, body: "erro no provedor")
 
       expect { send_message("attachment_id_#{attachment.id}") }.not_to raise_error
+
+      expect(spans.first).to have_attributes(message_id: nil, status: "failed", status_message: a_string_including("erro no provedor"))
+    end
+
+    it "a tela recebe o failed da parte de mídia" do
+      stub_request(:post, media_url).to_timeout
+      chat
+
+      expect { send_message("attachment_id_#{attachment.id}") }.to have_broadcasted_to(message_stream).with(
+        a_hash_including("typeElement" => "media", "status" => "failed", "statusMessage" => "execution expired")
+      )
+    end
+
+    context "na WABA, que devolve a recusa dentro da resposta" do
+      let(:connector) { create(:connector_whatsapp_cloud, organization: organization) }
+      let(:chat) { create(:chat, connector: connector, external_id: "5531971810932") }
+      let(:graph_url) { "https://graph.facebook.com/v19.0/#{connector.phone_number_id}/messages" }
+
+      it "guarda o wamid" do
+        stub_request(:post, graph_url).to_return(status: 200, body: { messages: [ { id: "wamid.M" } ] }.to_json)
+
+        send_message("attachment_id_#{attachment.id}")
+
+        expect(spans.first).to have_attributes(message_id: "wamid.M", status: "delivery_ack")
+      end
+
+      it "a recusa fica failed com a causa" do
+        stub_request(:post, graph_url).to_return(status: 400, body: { error: { code: 131_053, message: "Falha no upload da mídia" } }.to_json)
+
+        send_message("attachment_id_#{attachment.id}")
+
+        expect(spans.first).to have_attributes(message_id: nil, status: "failed", status_message: "Falha no upload da mídia")
+      end
     end
 
     it "mistura texto e mídia, com pausa só quando há partes" do

@@ -66,7 +66,7 @@ module Chats
     end
 
     def send_media(dto)
-      ChatMessage::Media.create(
+      part = ChatMessage::Media.create(
         role: "assistant",
         media_type: dto.media_type,
         attachment_id: dto.attachment_id&.to_s,
@@ -78,13 +78,23 @@ module Chats
       )
 
       begin
-        if dto.media_type == "audio"
-          connector.send_audio_message_by_url(chat.phone_number, dto.media_url, chat)
+        response =
+          if dto.media_type == "audio"
+            connector.send_audio_message_by_url(chat.phone_number, dto.media_url, chat)
+          else
+            connector.send_media_message(chat.phone_number, dto, chat)
+          end
+
+        # O SDK da Meta não levanta: a recusa vem dentro da resposta.
+        error = response.try(:error)
+        if error
+          part.update(status: "failed", status_message: error.message)
         else
-          connector.send_media_message(chat.phone_number, dto, chat)
+          part.update(message_id: Connectors::ExternalId.from(response), status: "delivery_ack")
         end
       rescue StandardError => e
         Rails.logger.error("[Chats::SendOperatorMessage] media dispatch failed: #{e.message}")
+        part.update(status: "failed", status_message: e.message)
       end
 
       sleep(1) if @has_span
