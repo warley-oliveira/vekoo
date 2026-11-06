@@ -863,6 +863,13 @@ RSpec.describe Inbound::EvolutionEvents do
         expect(messages_of(chat).count).to eq(0)
       end
 
+      it "--RE-ACTIVE-ME-- digitado do nosso aparelho também religa, em vez de pausar" do
+        upsert(from_me: true, message: { conversation: "--RE-ACTIVE-ME--" })
+
+        expect(chat.reload.automation_enabled).to be(true)
+        expect(messages_of(chat).count).to eq(0)
+      end
+
       # O PFUP era a depuração de follow-up do assistente, que saiu.
       it "PFUP é mensagem comum" do
         upsert(message: { conversation: "PFUP" })

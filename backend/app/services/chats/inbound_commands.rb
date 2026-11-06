@@ -18,7 +18,7 @@ module Chats
       if clear_commands.include?(stripped.upcase)
         clear_context(chat, connector, to)
         true
-      elsif reactivate && stripped == REACTIVATE
+      elsif reactivate && stripped.upcase == REACTIVATE
         chat.update(automation_enabled: true)
         connector.send_text_message(to, I18n.t("connectors.notes.reactivated"), chat)
         true

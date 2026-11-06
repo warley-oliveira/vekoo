@@ -213,7 +213,7 @@ module Inbound
     def process_text_message
       message = text_content
       return if message.blank?
-      return if !from_me? && Chats::InboundCommands.handle(chat: chat, connector: connector, text: message, to: phone_number)
+      return if Chats::InboundCommands.handle(chat: chat, connector: connector, text: message, to: phone_number || chat_lid)
 
       first_message = first_message?(chat)
       history = create_text_message(
@@ -268,6 +268,10 @@ module Inbound
     def process_waiting_message
       Rails.logger.warn("[ZApi] Waiting message for #{phone_number}")
 
+      # O conteúdo chega depois, com este mesmo id: as travas não podem barrá-lo.
+      release_message_locks
+      return unless Rails.cache.write("zapi.waiting.#{chat.id}.#{message_id}", true, expires_in: 5.minutes, unless_exist: true)
+
       ChatMessage::Text.create(
         role: "base",
         content: ".",
@@ -293,6 +297,10 @@ module Inbound
     # fora do contexto da IA e do default_scope.
     def handle_ad_greeting
       ad = payload[:externalAdReply]
+
+      # `ctwaClid` é único por clique, e a nova tentativa do job passa por aqui de novo.
+      return if ad[:ctwaClid].present? &&
+                ChatMessage::Base.unscoped.where(chat_id: chat.id, role_base_type: "instagram-ad-greeting", "external_ad_reply.ctwa_clid" => ad[:ctwaClid]).exists?
 
       ChatMessage::Text.create(
         role: "base",
