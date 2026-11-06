@@ -388,6 +388,16 @@ RSpec.describe "Pessoas da organização", type: :request do
       expect(attendant.reload.teams).to contain_exactly(new_team)
     end
 
+    # Na origem o campo aceitava nulo. Aqui a coluna não aceita, e não pode virar 500.
+    it "trata setupOnly nulo como falso" do
+      attendant.update!(setup_only: true)
+
+      patch "/users/#{attendant.id}", params: { user: { setupOnly: nil } }, headers: auth_headers(owner), as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json["setupOnly"]).to be(false)
+    end
+
     it "não mexe nos departamentos se a chave não vier, e limpa com lista vazia" do
       team = create(:team, organization: organization)
       create(:team_membership, team: team, account: attendant)

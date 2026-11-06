@@ -30,6 +30,8 @@ class Account < ApplicationRecord
   normalizes :name, with: ->(name) { name.squish }
   normalizes :phone, with: ->(phone) { phone.strip.presence }
   normalizes :locale, with: ->(locale) { locale.strip.presence }
+  # Na origem o campo aceitava nulo, que queria dizer "atende normalmente".
+  normalizes :setup_only, with: ->(setup_only) { setup_only || false }, apply_to_nil: true
 
   validates :name, presence: true, length: { minimum: 2, maximum: 60 }
   validates :email, presence: true, format: { with: EMAIL_FORMAT }, uniqueness: true
