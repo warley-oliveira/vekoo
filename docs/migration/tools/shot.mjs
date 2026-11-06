@@ -8,6 +8,7 @@
 // ferramenta Read. Guarde os PNGs em ~/.cache/vekoo-shot/shots/ (nunca em /tmp, que
 // some ao reiniciar). O puppeteer-core mora em ~/.cache/vekoo-shot para não virar
 // dependência do projeto: o front não tem framework de teste, por decisão.
+import { readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
@@ -28,16 +29,46 @@ const api = opt('api', 'http://localhost:3040')
 const email = opt('email', 'marina.duarte@exemplo.com.br')
 const password = opt('password', 'carrossel123')
 
-const res = await fetch(`${api}/login`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json', Origin: new URL(url).origin },
-  body: JSON.stringify({ email, password }),
-})
-if (!res.ok) {
-  console.error('login falhou', res.status, await res.text())
-  process.exit(2)
+// O /login tem limite de tentativas por e-mail, compartilhado entre todos os agentes.
+// O token vale 30 dias: guarda em cache e só entra de novo se ele deixar de valer.
+const cacheFile = join(homedir(), '.cache/vekoo-shot/tokens.json')
+
+function readCache() {
+  try {
+    return JSON.parse(readFileSync(cacheFile, 'utf8'))
+  } catch {
+    return {}
+  }
 }
-const { token } = await res.json()
+
+async function validToken(candidate) {
+  if (!candidate) return false
+  const res = await fetch(`${api}/me`, { headers: { Authorization: `Bearer ${candidate}` } })
+  return res.ok
+}
+
+async function login() {
+  const res = await fetch(`${api}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: new URL(url).origin },
+    body: JSON.stringify({ session: { email, password } }),
+  })
+  if (!res.ok) {
+    console.error('login falhou', res.status, await res.text())
+    process.exit(2)
+  }
+  const { token: fresh } = await res.json()
+  const cache = readCache()
+  cache[`${api}|${email}`] = fresh
+  // Escrita atômica: vários agentes usam este arquivo ao mesmo tempo.
+  const tmp = `${cacheFile}.${process.pid}`
+  writeFileSync(tmp, JSON.stringify(cache))
+  renameSync(tmp, cacheFile)
+  return fresh
+}
+
+const cached = readCache()[`${api}|${email}`]
+const token = (await validToken(cached)) ? cached : await login()
 
 const browser = await puppeteer.launch({
   executablePath: '/usr/bin/google-chrome',
