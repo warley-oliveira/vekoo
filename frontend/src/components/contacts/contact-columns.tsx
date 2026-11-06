@@ -80,7 +80,7 @@ function ContactConnector({ contact, lookups }: { contact: Contact; lookups: Con
       title={connector ? texts.typeLabel(connector) : undefined}
     >
       <ChannelMark type={contact.connectorType} size="sm" className="max-md:hidden" />
-      <span className="max-w-40 truncate">{name}</span>
+      <span className="truncate md:max-w-32">{name}</span>
     </span>
   )
 }
@@ -98,9 +98,10 @@ function ContactTags({ contact, lookups }: { contact: Contact; lookups: ContactL
   const rest = tags.slice(MAX_VISIBLE_TAGS)
 
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-1">
+    // Em uma linha só na tabela: as linhas com a mesma altura são o que deixa comparar.
+    <div className="flex min-w-0 flex-wrap items-center gap-1 md:flex-nowrap">
       {visible.map((tag) => (
-        <TagChip key={tag.id} color={tag.color} className="max-w-32">
+        <TagChip key={tag.id} color={tag.color} className="max-w-28">
           {tag.name}
         </TagChip>
       ))}
@@ -139,7 +140,7 @@ function ContactAssignee({ contact, lookups }: { contact: Contact; lookups: Cont
   return (
     <span className="flex min-w-0 items-center gap-2">
       <UserAvatar name={user.name} size="sm" className="max-md:hidden" />
-      <span className="max-w-40 truncate">{user.name}</span>
+      <span className="truncate md:max-w-32">{user.name}</span>
     </span>
   )
 }
@@ -158,7 +159,7 @@ function LastMessage({ contact }: { contact: Contact }) {
   return (
     <div className="min-w-0 leading-tight">
       <RelativeTime value={contact.lastMessageAt} className="text-sm" />
-      <p title={text} className="max-w-56 truncate text-xs font-normal text-muted-foreground">
+      <p title={text} className="truncate text-xs font-normal text-muted-foreground md:max-w-44">
         {text}
       </p>
     </div>
@@ -252,6 +253,7 @@ export function useContactColumns({
         accessorKey: "status",
         header: t("contacts.columns.status"),
         meta: {
+          mobile: "secondary",
           className: "w-28",
           sortLabels: { asc: t("contacts.sort.statusAsc"), desc: t("contacts.sort.statusDesc") },
         },

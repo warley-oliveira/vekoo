@@ -6,6 +6,7 @@ import type { ContactSelection } from "@/hooks/contacts/use-contact-selection"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
 
 export type SelectionBannerProps = {
   selection: ContactSelection
@@ -46,7 +47,13 @@ export function SelectionBanner({ selection, pageSize, total }: SelectionBannerP
   if (pageSize === 0) return null
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-muted/50 px-3 py-2 text-sm">
+    <div
+      className={cn(
+        "flex flex-wrap items-center gap-x-3 gap-y-1 text-sm",
+        // Sem recado, no celular é só o quadrado de marcar: não pede fundo.
+        message ? "rounded-lg bg-muted/50 px-3 py-2" : "px-3"
+      )}
+    >
       {isMobile ? (
         <label className="flex min-h-10 cursor-pointer items-center gap-2.5">
           <Checkbox

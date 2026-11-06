@@ -47,6 +47,7 @@ import {
 import { useContactsExport } from "@/hooks/contacts/use-contacts-export"
 import { useContactsQuery } from "@/hooks/contacts/use-contacts-query"
 import { useCan } from "@/hooks/use-can"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { COLUMNS_STORAGE_KEY, DEFAULT_COLUMNS } from "@/lib/contacts/columns"
 import {
@@ -66,7 +67,13 @@ const ContactImportPanel = lazy(() => import("@/components/contacts/import/conta
 const NO_CONTACTS: Contact[] = []
 
 type DialogState =
-  | { kind: "tags"; mode: TagsMode; scope: BulkScope }
+  | {
+      kind: "tags"
+      mode: TagsMode
+      scope: BulkScope
+      /** Remover de um contato só: não há por que oferecer o que ele não tem. */
+      onlyTagIds?: string[]
+    }
   | { kind: "assign"; scope: BulkScope }
   | null
 
@@ -82,6 +89,7 @@ export default function ContactsPage() {
   const { t } = useTranslation()
   const language = useLanguage()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   const canOpenChat = useCan("chat")
 
   const query = useContactsQuery()
@@ -227,7 +235,8 @@ export default function ContactsPage() {
         label: t("contacts.bulk.actions.removeTags"),
         icon: <Tags />,
         hidden: contact.tagIds.length === 0,
-        onSelect: () => setDialog({ kind: "tags", mode: "remove", scope: rowScope }),
+        onSelect: () =>
+          setDialog({ kind: "tags", mode: "remove", scope: rowScope, onlyTagIds: contact.tagIds }),
       },
       {
         label: t("contacts.bulk.actions.assign"),
@@ -267,11 +276,22 @@ export default function ContactsPage() {
 
   const resultLabel =
     meta && !error
-      ? t("contacts.count", { count: total, formatted: formatNumber(total, language) })
+      ? total === 0
+        ? t("contacts.countNone")
+        : t("contacts.count", { count: total, formatted: formatNumber(total, language) })
       : null
 
+  const columnPicker = (
+    <ColumnPicker
+      visible={visibleColumns}
+      onChange={setVisibleColumns}
+      customFields={customFields}
+    />
+  )
+
   return (
-    <PageBody variant="wide">
+    // Com a barra de lote flutuando, o fim da página sobe para ela não cobrir a paginação.
+    <PageBody variant="wide" className={hasSelection ? "pb-24" : undefined}>
       <PageHeader
         actions={
           <>
@@ -304,22 +324,30 @@ export default function ContactsPage() {
           options={options}
           customFields={customFields}
           isSearching={isValidating && Boolean(filters.q)}
-          resultLabel={resultLabel}
-          actions={
-            <ColumnPicker
-              visible={visibleColumns}
-              onChange={setVisibleColumns}
-              customFields={customFields}
-            />
-          }
+          resultLabel={isMobile ? resultLabel : undefined}
+          actions={isMobile ? columnPicker : undefined}
         />
 
-        <ActiveFilterChips
-          filters={filters}
-          lookups={lookups}
-          customFields={customFields}
-          onChange={setFilters}
-        />
+        {/* No desktop, a linha de filtros já vai até a borda: a contagem e as colunas descem para
+            junto dos filtros aplicados. */}
+        <div className="flex flex-wrap items-center gap-2">
+          <ActiveFilterChips
+            filters={filters}
+            lookups={lookups}
+            customFields={customFields}
+            onChange={setFilters}
+          />
+          {isMobile ? null : (
+            <div className="ml-auto flex shrink-0 items-center gap-2">
+              {resultLabel ? (
+                <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
+                  {resultLabel}
+                </span>
+              ) : null}
+              {columnPicker}
+            </div>
+          )}
+        </div>
 
         <ContactTasksBand
           tracker={tracker}
@@ -376,7 +404,9 @@ export default function ContactsPage() {
         <ContactTagsDialog
           mode={dialog.mode}
           scope={dialog.scope}
-          tags={options?.tags ?? []}
+          tags={(options?.tags ?? []).filter(
+            (tag) => !dialog.onlyTagIds || dialog.onlyTagIds.includes(tag.id)
+          )}
           onClose={() => setDialog(null)}
         />
       ) : null}

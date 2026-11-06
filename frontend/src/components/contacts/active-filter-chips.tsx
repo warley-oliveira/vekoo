@@ -193,11 +193,13 @@ export function ActiveFilterChips({ filters, lookups, customFields, onChange }: 
         </TagChip>
       ))}
       {chips.length > 1 ? (
+        // No desktop, a barra de filtros já tem o seu "Limpar filtros". No celular ele fica
+        // dentro do painel, a um toque a mais.
         <Button
           type="button"
           variant="ghost"
           size="xs"
-          className="text-muted-foreground pointer-coarse:h-10"
+          className="text-muted-foreground md:hidden pointer-coarse:h-10"
           onClick={() => onChange({ ...EMPTY_FILTERS, q: filters.q })}
         >
           {t("contacts.filters.clearAll")}

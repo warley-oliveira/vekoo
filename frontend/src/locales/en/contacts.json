@@ -2,6 +2,7 @@
   "contacts": {
     "count_one": "{{formatted}} contact",
     "count_other": "{{formatted}} contacts",
+    "countNone": "No contacts",
     "tableLabel": "Contact list",
     "noName": "No name",
     "empty": {
