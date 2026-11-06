@@ -312,6 +312,20 @@ RSpec.describe "Campanhas", type: :request do
         expect(json.dig("campaign", "flowId")).to eq(flow_id)
       end
 
+      it "os parâmetros do modelo só aceitam id de modelo e posição" do
+        waba = create(:connector_whatsapp_cloud, organization: organization)
+        template = create(:whatsapp_template, connector: waba)
+
+        post "/campaigns", params: payload(
+          campaignMode: "template", messages: [], connectorIds: [],
+          wabaConnectorId: waba.id.to_s, phoneNumberIds: [ "111" ], templateIds: [ template.id.to_s ],
+          templateParams: { "$where" => { "1" => "x" }, template.id.to_s => { "1" => "ok", "$ne" => "y" }, "lixo" => "z" }
+        ), headers: headers, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json.dig("campaign", "templateParams")).to eq(template.id.to_s => { "1" => "ok" })
+      end
+
       it "os parâmetros do modelo passam com as chaves intactas" do
         waba = create(:connector_whatsapp_cloud, organization: organization)
         template = create(:whatsapp_template, connector: waba)
@@ -463,13 +477,25 @@ RSpec.describe "Campanhas", type: :request do
       expect(json.dig("campaign", "activityEvents").first.keys).to include("id", "occurredAt", "details", "accountId", "metadata")
     end
 
+    it "a atividade sai em camelCase" do
+      campaign = campaign_of
+      campaign.log_activity!("channel_stopped", metadata: { "connector_id" => "abc", "reason" => "connectorInactive" })
+
+      get "/campaigns/#{campaign.id}", headers: headers, as: :json
+
+      expect(json.dig("campaign", "activityEvents").first).to include(
+        "metadata" => { "connectorId" => "abc", "reason" => "connectorInactive" },
+        "details" => "Um canal desconectou. Os contatos dele continuam na fila."
+      )
+    end
+
     it "explica a pausa automática, no idioma de quem lê" do
-      campaign = campaign_of(status_cd: "paused", pause_reason: "no_active_connectors")
-      campaign.log_activity!("paused", metadata: { "reason" => "no_active_connectors" })
+      campaign = campaign_of(status_cd: "paused", pause_reason: "noActiveConnectors")
+      campaign.log_activity!("paused", metadata: { "reason" => "noActiveConnectors" })
 
       get "/campaigns/#{campaign.id}", headers: headers.merge("Accept-Language" => "en"), as: :json
 
-      expect(json["campaign"]).to include("pauseReason" => "no_active_connectors")
+      expect(json["campaign"]).to include("pauseReason" => "noActiveConnectors")
       expect(json.dig("campaign", "activityEvents").first["details"]).to eq("Paused by the platform: no channel is connected.")
     end
   end
@@ -730,7 +756,7 @@ RSpec.describe "Campanhas", type: :request do
   end
 
   describe "POST /campaigns/:id/resume" do
-    let(:campaign) { campaign_of(status_cd: "paused", run_token: "vigente", pause_reason: "no_active_connectors") }
+    let(:campaign) { campaign_of(status_cd: "paused", run_token: "vigente", pause_reason: "noActiveConnectors") }
 
     it "retoma, com token novo, um job e sem o motivo da pausa" do
       create(:outreach_recipient, campaign: campaign)
@@ -1028,7 +1054,7 @@ RSpec.describe "Campanhas", type: :request do
       step_all
 
       get "/campaigns/#{id}", headers: headers, as: :json
-      expect(json["campaign"]).to include("status" => "paused", "pauseReason" => "no_active_connectors", "sentCount" => 1, "failedCount" => 0)
+      expect(json["campaign"]).to include("status" => "paused", "pauseReason" => "noActiveConnectors", "sentCount" => 1, "failedCount" => 0)
 
       post "/campaigns/#{id}/resume", headers: headers, as: :json
       expect(json.dig("error", "code")).to eq("noActiveConnectors")

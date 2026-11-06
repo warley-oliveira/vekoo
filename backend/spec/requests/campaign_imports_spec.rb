@@ -345,6 +345,28 @@ RSpec.describe "Importações de campanha", type: :request do
       expect(json.dig("error", "code")).to eq("apifyTimeout")
     end
 
+    it "uma organização não dispara buscas sem limite" do
+      stub_request(:post, url).to_return(json_reply([]))
+
+      10.times { search }
+      expect(response).to have_http_status(:ok)
+
+      search
+
+      expect(response).to have_http_status(:too_many_requests)
+      expect(json.dig("error", "code")).to eq("tooManyRequests")
+    end
+
+    it "o limite de uma organização não atinge outra" do
+      stub_request(:post, url).to_return(json_reply([]))
+      11.times { search }
+
+      other = create(:account, organization: create(:organization), role: "owner")
+      post "/campaigns/apify-places-search", params: { searchQuery: "padaria" }, headers: auth_headers(other), as: :json
+
+      expect(response).to have_http_status(:ok)
+    end
+
     it "na requisição, espera menos que no job" do
       stub_request(:post, url).to_return(json_reply([]))
       allow(HTTParty).to receive(:post).and_call_original

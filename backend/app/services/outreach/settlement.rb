@@ -2,7 +2,7 @@ module Outreach
   # O que fazer com a campanha quando um canal para de trabalhar: terminar, pausar sozinha ou
   # remontar os lotes. Atômico nas transições: dois lotes acabando juntos não concluem duas vezes.
   class Settlement
-    NO_ACTIVE_CONNECTORS = "no_active_connectors".freeze
+    NO_ACTIVE_CONNECTORS = "noActiveConnectors".freeze
 
     def initialize(campaign)
       @campaign = campaign

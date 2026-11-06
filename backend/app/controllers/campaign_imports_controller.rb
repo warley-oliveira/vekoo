@@ -5,6 +5,11 @@ class CampaignImportsController < PlatformController
 
   require_permission :campaigns
 
+  # As duas seguram uma thread do Puma enquanto o outro lado responde, e a do Apify custa créditos.
+  rate_limit to: 10, within: 1.minute, only: %i[google_sheet apify_places_search],
+    by: -> { current_organization.id },
+    with: -> { render_too_many_requests }
+
   before_action :set_importable_campaign, only: %i[contacts csv_contacts]
 
   rescue_from Outreach::RefusedError do |error|

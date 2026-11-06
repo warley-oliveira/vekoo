@@ -8,7 +8,7 @@ module Outreach
     MAX_PLACES = 200
     DEFAULT_MAX_PLACES = 100
     ACTOR_ID = "compass~crawler-google-places".freeze
-    API_BASE = "https://api.apify.com/v2".freeze
+    DEFAULT_API_BASE = "https://api.apify.com/v2".freeze
     JOB_TIMEOUT = 300
     REQUEST_TIMEOUT = 120
 
@@ -51,7 +51,7 @@ module Outreach
     # O token no cabeçalho, e não na URL como na origem: URL acaba em log.
     def run_actor
       response = HTTParty.post(
-        "#{API_BASE}/acts/#{ACTOR_ID}/run-sync-get-dataset-items",
+        "#{ENV.fetch('APIFY_API_BASE', DEFAULT_API_BASE)}/acts/#{ACTOR_ID}/run-sync-get-dataset-items",
         headers: {
           "Content-Type" => "application/json",
           "Accept" => "application/json",

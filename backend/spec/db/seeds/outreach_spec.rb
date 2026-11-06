@@ -62,7 +62,7 @@ RSpec.describe "db/seeds/outreach.rb" do
   end
 
   it "uma das pausadas foi pela própria plataforma" do
-    expect(campaigns.where(status_cd: "paused").pluck(:pause_reason)).to contain_exactly(nil, "no_active_connectors")
+    expect(campaigns.where(status_cd: "paused").pluck(:pause_reason)).to contain_exactly(nil, "noActiveConnectors")
   end
 
   it "todas passam nas próprias validações" do

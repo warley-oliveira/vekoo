@@ -153,16 +153,18 @@ class CampaignsController < PlatformController
     match && match[1].to_i
   end
 
-  # { id do modelo => { posição => valor } }, só com texto.
+  # { id do modelo => { posição => valor } }. As chaves viram nome de campo no Mongo: só passa o que
+  # é mesmo um id e uma posição, e os valores só como texto.
   def sanitized_template_params
     raw = params[:template_params]
     raw = raw.to_unsafe_h if raw.respond_to?(:to_unsafe_h)
     return {} unless raw.is_a?(Hash)
 
     raw.each_with_object({}) do |(template_id, values), result|
-      next unless values.is_a?(Hash)
+      next unless BSON::ObjectId.legal?(template_id.to_s) && values.is_a?(Hash)
 
-      result[template_id.to_s] = values.to_h { |position, value| [ position.to_s, value.to_s ] }
+      positions = values.select { |position, _| position.to_s.match?(/\A\d{1,3}\z/) }
+      result[template_id.to_s] = positions.to_h { |position, value| [ position.to_s, value.to_s ] }
     end
   end
 

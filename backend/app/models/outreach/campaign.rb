@@ -87,6 +87,7 @@ module Outreach
 
     validates :organization_id, presence: true
     validates :name, presence: true, length: { maximum: 160 }
+    validates :flow_id, length: { maximum: 64 }
     validates :batch_size, numericality: { greater_than: 0, less_than_or_equal_to: 200 }, allow_nil: true
     validates :daily_limit_per_connector, numericality: { greater_than: 0 }
     validates :buffer_min_seconds, numericality: { greater_than_or_equal_to: 1 }

@@ -30,6 +30,13 @@ RSpec.describe Outreach::RecipientImporter do
     expect(campaign.recipients.first).to have_attributes(contact_id: "abc", custom_variables: { "cupom" => "NATAL10" })
   end
 
+  # Um documento grande demais derrubaria o bloco inteiro, com as outras 499 linhas.
+  it "descarta variáveis grandes demais, sem perder a pessoa" do
+    import([ row("5531971810932", custom_variables: { "enorme" => "x" * 20_000 }) ])
+
+    expect(campaign.recipients.first).to have_attributes(phone: "5531971810932", custom_variables: {})
+  end
+
   it "soma o total na campanha" do
     import([ row("5531971810932"), row("5531971810933") ])
 

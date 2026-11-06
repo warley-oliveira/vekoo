@@ -34,7 +34,7 @@ module Outreach
     field :completed_at, type: Time
 
     string_enum :status, %i[scheduled processing completed failed], default: :scheduled
-    # connector_inactive, connector_missing
+    # connectorInactive, connectorMissing
     field :failure_reason, type: String
 
     validates :connector_id, presence: true

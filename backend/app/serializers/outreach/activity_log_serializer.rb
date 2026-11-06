@@ -7,8 +7,8 @@ module Outreach
         accountId: log.account_id,
         occurredAt: epoch_ms(log.created_at),
         details: details(log),
-        # As chaves saem como foram gravadas: é dado, para a tela formatar do jeito dela.
-        metadata: log.metadata
+        # O mesmo dado da frase, para a tela formatar do jeito dela.
+        metadata: log.metadata.to_h.transform_keys { |key| key.to_s.camelize(:lower) }
       }
     end
 
@@ -18,9 +18,9 @@ module Outreach
 
       case log.action
       when "scheduled" then scheduled_details(metadata)
-      when "paused" then translated("paused_#{metadata['reason']}") if metadata["reason"]
+      when "paused" then translated("paused_#{metadata['reason'].underscore}") if metadata["reason"]
       when "launch_failed" then translated("launch_failed", reason: I18n.t("errors.#{metadata['code'].to_s.underscore}", default: metadata["code"].to_s))
-      when "channel_stopped" then translated("channel_stopped_#{metadata['reason']}")
+      when "channel_stopped" then translated("channel_stopped_#{metadata['reason'].to_s.underscore}")
       when "channel_resumed" then translated("channel_resumed")
       end
     end

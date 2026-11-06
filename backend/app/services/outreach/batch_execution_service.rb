@@ -82,7 +82,7 @@ module Outreach
     # Sem o canal, os destinatários continuam `pending`: a origem marcava um por um como falho,
     # queimando a lista inteira enquanto o celular estivesse desconectado.
     def stop_channel(connector)
-      reason = connector ? "connector_inactive" : "connector_missing"
+      reason = connector ? "connectorInactive" : "connectorMissing"
       stopped = campaign.batches.executable.where(channel_key: batch.channel_key)
                         .update_all(status_cd: "failed", failure_reason: reason, updated_at: Time.current)
       return if stopped.modified_count.zero?

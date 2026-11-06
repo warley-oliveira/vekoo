@@ -6,6 +6,9 @@ module Outreach
   # conferida aqui.
   class RecipientImporter
     BULK_SIZE = 500
+    # Bem acima do que uma busca de estabelecimentos traz. Sem teto, um documento grande demais para o
+    # Mongo derrubaria o bloco inteiro de 500 linhas.
+    MAX_VARIABLES_BYTES = 16.kilobytes
     DUPLICATE_KEY = 11_000
 
     Result = Struct.new(:imported, :skipped, :invalid, keyword_init: true)
@@ -61,11 +64,16 @@ module Outreach
         contact_id: row[:contact_id],
         phone: phone,
         name: row[:name].to_s.strip.presence || phone,
-        custom_variables: row[:custom_variables].presence || {},
+        custom_variables: variables_of(row),
         status_cd: "pending",
         created_at: now,
         updated_at: now
       }
+    end
+
+    def variables_of(row)
+      variables = row[:custom_variables].presence || {}
+      variables.to_json.bytesize > MAX_VARIABLES_BYTES ? {} : variables
     end
 
     # Sem ordem: uma duplicata (duas importações ao mesmo tempo) não pode impedir as outras linhas.

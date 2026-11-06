@@ -30,7 +30,7 @@ module Outreach
     # O canal voltou enquanto o resto da campanha seguia. Com a campanha toda pausada, quem decide
     # retomar é uma pessoa.
     def resume_recovered_channels
-      campaign.batches.failed.where(failure_reason: "connector_inactive").distinct(:channel_key).each do |channel_key|
+      campaign.batches.failed.where(failure_reason: "connectorInactive").distinct(:channel_key).each do |channel_key|
         batches = campaign.batches.failed.where(channel_key: channel_key)
         connector_id = batches.order_by(sequence: 1).first&.connector_id
         next unless Connector::Base.scoped(campaign.organization_id, connector_id)&.active?

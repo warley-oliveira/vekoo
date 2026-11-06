@@ -363,7 +363,7 @@ RSpec.describe Outreach::BatchExecutionService do
     it "falha o lote, com o motivo, sem tocar em ninguém" do
       run_step(batch)
 
-      expect(batch.reload).to have_attributes(status_cd: "failed", failure_reason: "connector_inactive")
+      expect(batch.reload).to have_attributes(status_cd: "failed", failure_reason: "connectorInactive")
       expect(recipients.map { |recipient| recipient.reload.status_cd }).to all(eq("pending"))
       expect(campaign.reload.failed_count).to eq(0)
       expect(text_requests).not_to have_been_made
@@ -372,8 +372,8 @@ RSpec.describe Outreach::BatchExecutionService do
     it "sem canal nenhum, a campanha pausa sozinha e diz o motivo" do
       run_step(batch)
 
-      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "no_active_connectors")
-      expect(campaign.activity_logs.where(action: "paused").take.metadata).to eq("reason" => "no_active_connectors")
+      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "noActiveConnectors")
+      expect(campaign.activity_logs.where(action: "paused").take.metadata).to eq("reason" => "noActiveConnectors")
     end
 
     it "avisa quem criou a campanha" do
@@ -416,7 +416,7 @@ RSpec.describe Outreach::BatchExecutionService do
       run_step(batch)
       run_step(other_batch)
 
-      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "no_active_connectors")
+      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "noActiveConnectors")
     end
 
     it "canal excluído tem o próprio motivo" do
@@ -425,7 +425,7 @@ RSpec.describe Outreach::BatchExecutionService do
 
       run_step(batch)
 
-      expect(batch.reload.failure_reason).to eq("connector_missing")
+      expect(batch.reload.failure_reason).to eq("connectorMissing")
     end
 
     it "não alcança um canal com o mesmo id em outra organização" do
@@ -434,7 +434,7 @@ RSpec.describe Outreach::BatchExecutionService do
 
       run_step(batch)
 
-      expect(batch.reload.failure_reason).to eq("connector_missing")
+      expect(batch.reload.failure_reason).to eq("connectorMissing")
     end
   end
 

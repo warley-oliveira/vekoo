@@ -89,7 +89,7 @@ RSpec.describe Outreach::Reconciler do
 
   describe "canal que voltou" do
     let!(:batch) do
-      build_batch(campaign, [ recipient ], connector: connector, status_cd: "failed", failure_reason: "connector_inactive", next_send_at: 1.hour.ago)
+      build_batch(campaign, [ recipient ], connector: connector, status_cd: "failed", failure_reason: "connectorInactive", next_send_at: 1.hour.ago)
     end
 
     before do
@@ -106,7 +106,7 @@ RSpec.describe Outreach::Reconciler do
     end
 
     it "reativa também os lotes seguintes do canal" do
-      following = create(:outreach_batch, campaign: campaign, connector_id: connector.id.to_s, channel_key: batch.channel_key, sequence: 1, status_cd: "failed", failure_reason: "connector_inactive")
+      following = create(:outreach_batch, campaign: campaign, connector_id: connector.id.to_s, channel_key: batch.channel_key, sequence: 1, status_cd: "failed", failure_reason: "connectorInactive")
 
       reconcile
 
@@ -148,7 +148,7 @@ RSpec.describe Outreach::Reconciler do
 
       reconcile
 
-      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "no_active_connectors")
+      expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "noActiveConnectors")
     end
 
     it "com alguém no meio do envio, espera" do
