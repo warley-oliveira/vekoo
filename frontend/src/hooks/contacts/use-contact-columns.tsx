@@ -53,7 +53,7 @@ export function useContactColumns({
         header: t("contacts.columns.contact"),
         meta: {
           mobile: "primary",
-          className: "min-w-56",
+          className: "min-w-52",
           sortLabels: { asc: t("contacts.sort.nameAsc"), desc: t("contacts.sort.nameDesc") },
         },
         cell: ({ row }) => <ContactIdentity contact={row.original} canOpenChat={canOpenChat} />,

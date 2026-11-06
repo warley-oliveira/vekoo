@@ -7,6 +7,8 @@ import { useConnectorTexts } from "@/components/connectors/connector-texts"
 import { RelativeTime, StatusBadge, TagChip, UserAvatar } from "@/components/shared"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { ContactLookups } from "@/hooks/contacts/use-contacts"
+import { useIsMobile } from "@/hooks/use-is-mobile"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { apiAssetUrl } from "@/lib/api"
 import { contactName, contactPhone, lastMessageText } from "@/lib/contacts/format"
 import type { Contact, CustomField } from "@/lib/contacts/types"
@@ -18,7 +20,12 @@ import { cn } from "@/lib/utils"
 
 // As células da lista de contatos. Quem as organiza em colunas é `useContactColumns`.
 
-const MAX_VISIBLE_TAGS = 2
+// O que aparece só com folga, do mais útil para o menos: abaixo disso as colunas padrão não cabem, e
+// a tabela rolaria de lado, levando junto o menu de cada linha. No celular também fica de fora.
+const TWO_TAGS_QUERY = "(min-width: 1360px)"
+const PREVIEW_CLASS = "hidden min-[1440px]:block"
+const AVATAR_CLASS = "hidden min-[1440px]:flex"
+const CHANNEL_MARK_CLASS = "hidden min-[1500px]:inline-flex"
 
 type CellProps = { contact: Contact; lookups: ContactLookups }
 
@@ -87,7 +94,7 @@ export function ContactConnector({ contact, lookups }: CellProps) {
       className="flex min-w-0 items-center gap-2"
       title={connector ? texts.typeLabel(connector) : undefined}
     >
-      <ChannelMark type={contact.connectorType} size="sm" className="max-md:hidden" />
+      <ChannelMark type={contact.connectorType} size="sm" className={CHANNEL_MARK_CLASS} />
       <span className="truncate md:max-w-32">{name}</span>
     </span>
   )
@@ -104,6 +111,8 @@ export function ContactStatus({ contact }: { contact: Contact }) {
 
 export function ContactTags({ contact, lookups }: CellProps) {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
+  const fitsTwoTags = useMediaQuery(TWO_TAGS_QUERY)
   const tags = contact.tagIds.flatMap((id) => {
     const tag = lookups.tags.get(id)
     return tag ? [tag] : []
@@ -112,8 +121,10 @@ export function ContactTags({ contact, lookups }: CellProps) {
   // No celular a linha de apoio já fala por si: um traço solto ali só faria ruído.
   if (tags.length === 0) return <NoValue className="max-md:hidden" />
 
-  const visible = tags.slice(0, MAX_VISIBLE_TAGS)
-  const rest = tags.slice(MAX_VISIBLE_TAGS)
+  // Quantas etiquetas cabem: no celular a linha tem a largura toda, e na tabela depende da tela.
+  const shown = isMobile || fitsTwoTags ? 2 : 1
+  const visible = tags.slice(0, shown)
+  const rest = tags.slice(shown)
 
   return (
     // Em uma linha só na tabela: as linhas com a mesma altura são o que deixa comparar.
@@ -160,7 +171,7 @@ export function ContactAssignee({ contact, lookups }: CellProps) {
 
   return (
     <span className="flex min-w-0 items-center gap-2">
-      <UserAvatar name={user.name} size="sm" className="max-md:hidden" />
+      <UserAvatar name={user.name} size="sm" className={AVATAR_CLASS} />
       <span className="truncate md:max-w-32">{user.name}</span>
     </span>
   )
@@ -193,11 +204,10 @@ export function LastMessage({ contact }: { contact: Contact }) {
   return (
     <div className="min-w-0 leading-tight">
       <RelativeTime value={contact.lastMessageAt} className="text-sm" />
-      {/* No celular cada linha já é alta, e o texto da mensagem está a um toque, na conversa. */}
       {text ? (
         <p
           title={text}
-          className="truncate text-xs font-normal text-muted-foreground max-md:hidden md:max-w-44"
+          className={cn("max-w-40 truncate text-xs font-normal text-muted-foreground", PREVIEW_CLASS)}
         >
           {text}
         </p>
