@@ -120,13 +120,15 @@ RSpec.describe FlowRuntime::Engine do
 
     it "agenda a volta por set(wait:), com a linha já gravada" do
       execution = nil
+      back_at = nil
       freeze_time do
-        expect { execution = run_flow(flow, chat: chat) }.to have_enqueued_job(Flows::ResumeExecutionJob).at(2.hours.from_now)
+        back_at = 2.hours.from_now
+        expect { execution = run_flow(flow, chat: chat) }.to have_enqueued_job(Flows::ResumeExecutionJob).at(back_at)
       end
 
       expect(execution.reload).to have_attributes(status: "waiting", current_node_id: "fim")
       expect(execution.resume_token).to be_present
-      expect(execution.resume_at).to be_within(1.second).of(2.hours.from_now)
+      expect(execution.resume_at).to be_within(1.second).of(back_at)
     end
 
     it "retoma com o token certo e segue" do
