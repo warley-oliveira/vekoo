@@ -10,9 +10,9 @@ class ZapiClient
     # @param account_token [String] Client-Token for the integrator account (required)
     # @param options [Hash] Additional options:
     #   - session_name: Session name in WhatsApp (connected devices)
-    #   - delivery_callback_url: Hook for delivered messages
-    #   - received_callback_url: Hook for received messages
-    #   - received_and_delivery_callback_url: Hook for both received and sent messages
+    #   - delivery_callback_url: Webhook for delivered messages
+    #   - received_callback_url: Webhook for received messages
+    #   - received_and_delivery_callback_url: Webhook for both received and sent messages
     #   - disconnected_callback_url: Disconnection webhook
     #   - connected_callback_url: Connection webhook
     #   - message_status_callback_url: Message status webhook
