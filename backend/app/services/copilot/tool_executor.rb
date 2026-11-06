@@ -720,18 +720,19 @@ module Copilot
         messages_sent: sent.where(:chat_id.in => attended_ids).count,
         chats_open: assigned.where(status: "open").count,
         chats_closed: assigned.where(status: "closed").count,
-        appointments_created: appointments,
-        conversion_rate: attended_ids.any? ? (appointments * 100.0 / attended_ids.size).round(1) : 0.0,
+        appointments_created: appointments.count,
+        conversion_rate: attended_ids.any? ? (appointments.distinct(:chat_id).size * 100.0 / attended_ids.size).round(1) : 0.0,
         avg_response_time_minutes: avg_response_time(attended_ids.first(50), person, from, to)
       }
     end
 
     # Agendamentos criados nas conversas que a pessoa atendeu. É um número, e o resto da nota já é
     # sobre as mesmas conversas: não exige ver a agenda.
+    #
+    # A conversão é de conversas com agendamento sobre conversas atendidas. A origem dividia o número de
+    # agendamentos pelo de conversas, e quem remarcava passava de 100%.
     def appointments_created(chat_ids, from, to)
-      return 0 if chat_ids.empty?
-
-      Agenda::Booking.where(organization_id: organization.id.to_s, :chat_id.in => chat_ids, :created_at.gte => from, :created_at.lte => to).listed.count
+      Agenda::Booking.where(organization_id: organization.id.to_s, :chat_id.in => chat_ids, :created_at.gte => from, :created_at.lte => to).listed
     end
 
     def uses_agenda?

@@ -378,6 +378,16 @@ RSpec.describe Copilot::ToolExecutor, "agenda e funil" do
       expect(agent).to include(chats_handled: 2, appointments_created: 1, conversion_rate: 50.0)
     end
 
+    # Na origem dividia agendamentos por conversas, e quem remarcava passava de 100%.
+    it "a conversão é de conversas com agendamento: dois na mesma conversa não passam de 100%" do
+      chat = attended_chat
+      2.times { booking_for(chat: chat) }
+
+      agent = tool("get_agent_performance", user_email: attendant.email)[:agents].first
+
+      expect(agent).to include(chats_handled: 1, appointments_created: 2, conversion_rate: 100.0)
+    end
+
     it "não conta agendamento cancelado de outro período, nem arquivado" do
       chat = attended_chat
       booking_for(chat: chat, created_at: 60.days.ago)
