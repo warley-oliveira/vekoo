@@ -64,7 +64,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
       it "responde 422 com conteúdo longo demais" do
         send_message("x" * (WidgetThrottling::MAX_CONTENT_LENGTH + 1))
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json["error"]).to include("code" => "contentTooLong", "field" => "content")
         expect(visitor_chat).to be_nil
       end
@@ -333,7 +333,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
       it "responde 422 com contexto grande demais, sem criar conversa" do
         send_message("oi", context: { product: { description: "a" * 9_000 } })
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("contextTooLarge")
         expect(visitor_chat).to be_nil
       end

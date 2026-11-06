@@ -55,7 +55,7 @@ RSpec.describe "Widget::V1::Context", type: :request do
     it "responde 422 com o corpo acima de 16 KB, antes de procurar a conversa" do
       put_context({ product: { description: "a" * (17 * 1024) } })
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("contextTooLarge")
     end
 
@@ -139,7 +139,7 @@ RSpec.describe "Widget::V1::Context", type: :request do
       it "responde 422 com contexto grande demais" do
         put_context({ product: { description: "a" * 9_000 } })
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("contextTooLarge")
         expect(chat.reload.widget_context).to eq({})
       end

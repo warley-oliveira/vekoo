@@ -87,8 +87,8 @@ class Connector::InstagramDirect < Connector::Base
     raise 'No Instagram user access token available' unless token.present?
 
     me = fetch_instagram_me(token)
-    if me && me['account_id'].present?
-      self.instagram_account_id = me['account_id']
+    if me && me['user_id'].present?
+      self.instagram_account_id = me['user_id']
       apply_profile_fields(me)
     else
       Rails.logger.warn '[InstagramDirect#resolve_instagram_identity!] /me returned no data, falling back to fetch_instagram_profile'

@@ -63,10 +63,11 @@ module Connectors
     end
 
     # O plano padrão ("aiva_api" na tela de escolha da origem) roda hoje sobre a Evolution.
-    # Sem provider explícito vale o padrão do modelo, ou a flag `zapi` da organização.
+    # Sem provider explícito vale a flag `zapi` da organização, ou o padrão do modelo. A flag
+    # é decidida aqui porque o padrão do campo já vem preenchido no `before_create` do modelo.
     def provider_attributes
       provider = params[:provider_api].presence
-      return {} unless provider
+      return organization.features.to_h["zapi"] ? { provider_api: "zapi" } : {} unless provider
 
       { provider_api: provider == "aiva_api" ? "evolution_api" : provider }
     end

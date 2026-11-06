@@ -86,14 +86,14 @@ RSpec.describe "Widget::V1::Visitor", type: :request do
 
       post_visitor(name: "Maria", phone: "+5511999999999", email: "not-an-email")
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json["error"]).to include("code" => "invalidEmail", "field" => "email")
     end
 
     it "responde 422 com e-mail inválido mesmo quando o e-mail é opcional" do
       post_visitor(name: "Maria", phone: "+5511999999999", email: "not-an-email")
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "guarda o e-mail" do
