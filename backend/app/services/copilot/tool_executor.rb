@@ -8,6 +8,9 @@ module Copilot
   # A entrada é do modelo, e o modelo lê texto de quem manda mensagem: nada aqui confia em id ou
   # e-mail sem conferir na organização.
   class ToolExecutor
+    include AgendaTools
+    include FunnelTools
+
     ACTIVITIES = {
       "search_chats" => %w[reading search],
       "get_chat_details" => %w[reading chat],
@@ -27,7 +30,26 @@ module Copilot
       "get_team_ranking" => %w[reading leaderboard],
       "get_tag_distribution" => %w[reading pie_chart],
       "get_chat_volume" => %w[reading show_chart],
-      "get_hourly_activity" => %w[reading schedule]
+      "get_hourly_activity" => %w[reading schedule],
+      "list_appointments" => %w[reading calendar],
+      "get_appointment_details" => %w[reading calendar],
+      "cancel_appointment" => %w[writing cancel],
+      "reschedule_appointment" => %w[writing calendar],
+      "qualify_appointments" => %w[reading analytics],
+      "get_appointment_stats" => %w[reading event_available],
+      "get_chat_funnel" => %w[reading filter_alt]
+    }.freeze
+
+    # O copiloto exige `chat`. Estas ferramentas chegam a outra tela, e a pessoa precisa poder ver a outra
+    # tela. Fora da tabela, vale só o `chat`.
+    TOOL_PERMISSIONS = {
+      "list_appointments" => :calendar,
+      "get_appointment_details" => :calendar,
+      "cancel_appointment" => :calendar,
+      "reschedule_appointment" => :calendar,
+      "qualify_appointments" => :calendar,
+      "get_appointment_stats" => :calendar,
+      "get_chat_funnel" => :funnel
     }.freeze
 
     MAX_SEND_MESSAGES = 50
@@ -98,6 +120,9 @@ module Copilot
 
     def dispatch(tool_name, input)
       return { error: I18n.t("inbox.copilot.unknown_tool") } unless ACTIVITIES.key?(tool_name)
+
+      permission = TOOL_PERMISSIONS[tool_name]
+      return { error: I18n.t("inbox.copilot.forbidden_tool") } if permission && !account.can?(permission)
 
       public_send_tool(tool_name, input)
     end
@@ -501,6 +526,7 @@ module Copilot
       case args["sort_by"]
       when "chats" then rankings.sort_by! { |entry| -entry[:chats_handled] }
       when "response_time" then rankings.sort_by! { |entry| entry[:avg_response_time_minutes] || Float::INFINITY }
+      when "conversion_rate" then rankings.sort_by! { |entry| -entry[:conversion_rate] }
       else rankings.sort_by! { |entry| -entry[:performance_score] }
       end
 
@@ -684,6 +710,7 @@ module Copilot
 
       sent = ChatMessage::Base.unscoped.where(account_id: person.id.to_s, role: "assistant", :created_at.gte => from, :created_at.lte => to)
       attended_ids = visible_chats.where(:_id.in => sent.distinct(:chat_id)).pluck(:id)
+      appointments = appointments_created(attended_ids, from, to)
 
       {
         account_id: person.id,
@@ -693,8 +720,24 @@ module Copilot
         messages_sent: sent.where(:chat_id.in => attended_ids).count,
         chats_open: assigned.where(status: "open").count,
         chats_closed: assigned.where(status: "closed").count,
+        appointments_created: appointments,
+        conversion_rate: attended_ids.any? ? (appointments * 100.0 / attended_ids.size).round(1) : 0.0,
         avg_response_time_minutes: avg_response_time(attended_ids.first(50), person, from, to)
       }
+    end
+
+    # Agendamentos criados nas conversas que a pessoa atendeu. É um número, e o resto da nota já é
+    # sobre as mesmas conversas: não exige ver a agenda.
+    def appointments_created(chat_ids, from, to)
+      return 0 if chat_ids.empty?
+
+      Agenda::Booking.where(organization_id: organization.id.to_s, :chat_id.in => chat_ids, :created_at.gte => from, :created_at.lte => to).listed.count
+    end
+
+    def uses_agenda?
+      return @uses_agenda if defined?(@uses_agenda)
+
+      @uses_agenda = organization.agenda_calendars.exists?
     end
 
     def avg_response_time(chat_ids, person, from, to)
@@ -723,8 +766,9 @@ module Copilot
       times.empty? ? nil : (times.sum / times.size).round(1)
     end
 
-    # Nota de 0 a 100. Na origem 30% vinham da taxa de conversão em agendamentos, que depende da
-    # agenda: enquanto ela não entra, os outros critérios valem proporcionalmente.
+    # Nota de 0 a 100: 30 do tempo de resposta, 30 da conversão em agendamentos, 20 do volume e 20 das
+    # fechadas. Organização que não usa a agenda não tem como converter: lá, os outros critérios valem
+    # proporcionalmente, para ninguém ficar preso em 70.
     def performance_score(metrics)
       score = 0.0
 
@@ -741,7 +785,9 @@ module Copilot
       score += [ metrics[:chats_handled].to_i * 0.5, 20 ].min
       score += [ metrics[:chats_closed].to_i * 1.0, 20 ].min
 
-      (score * 100 / 70).round(1)
+      return (score * 100 / 70).round(1) unless uses_agenda?
+
+      (score + [ metrics[:conversion_rate].to_f * 1.5, 30 ].min).round(1)
     end
 
     def count_by_day(field, from, to)

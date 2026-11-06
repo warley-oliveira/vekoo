@@ -21,6 +21,21 @@ en:
         query: "Query"
         visual_config: "Appearance"
         layout: "Position"
+  # The copilot lives in the inbox domain; these tools are what connect the agenda and funnels to it.
+  inbox:
+    copilot:
+      appointment_not_found: "Booking not found."
+      appointment_not_active: "Only an active booking can be rescheduled."
+      invalid_appointment_time: "This date or time is not valid."
+      no_linked_chat: "No conversation available to analyze."
+      activities:
+        list_appointments: "Listing bookings..."
+        get_appointment_details: "Reading the booking..."
+        cancel_appointment: "Canceling booking..."
+        reschedule_appointment: "Rescheduling booking..."
+        qualify_appointments: "Analyzing bookings..."
+        get_appointment_stats: "Calculating calendar numbers..."
+        get_chat_funnel: "Analyzing funnels..."
   insights:
     errors:
       query_timeout: "This query took too long. Choose a shorter period or fewer columns."

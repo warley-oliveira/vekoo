@@ -18,6 +18,7 @@ scope module: :agenda do
     # O teste dos lembretes ao contato: simula, sem enviar.
     resource :contact_notification_preview, path: "contact-notification-preview", only: :create, controller: "contact_notification_previews" do
       get :bookings
+      get :messages
     end
 
     resources :professionals, only: %i[index show create update destroy]

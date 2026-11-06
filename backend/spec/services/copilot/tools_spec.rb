@@ -11,7 +11,7 @@ RSpec.describe Copilot::Tools do
     it "toda ferramenta declarada tem quem a execute, com a atividade traduzida" do
       expect(described_class.names).to match_array(Copilot::ToolExecutor::ACTIVITIES.keys)
 
-      executor_methods = Copilot::ToolExecutor.private_instance_methods(false)
+      executor_methods = Copilot::ToolExecutor.private_instance_methods
       described_class.names.each do |name|
         expect(executor_methods).to include(:"tool_#{name}")
         expect(I18n.exists?("inbox.copilot.activities.#{name}", :"pt-BR")).to be(true), "sem texto em pt-BR: #{name}"
@@ -19,12 +19,20 @@ RSpec.describe Copilot::Tools do
       end
     end
 
-    # O que depende de outro domínio entra quando ele estiver aqui.
-    it "não oferece o que ainda não tem base" do
-      expect(described_class.names).not_to include(
+    it "oferece as ferramentas de agenda e de funil" do
+      expect(described_class.names).to include(
         "list_appointments", "get_appointment_details", "cancel_appointment", "reschedule_appointment",
-        "qualify_appointments", "get_appointment_stats", "get_chat_funnel", "get_token_usage"
+        "qualify_appointments", "get_appointment_stats", "get_chat_funnel"
       )
+    end
+
+    # Não há contagem de tokens por organização.
+    it "não oferece o que ainda não tem base" do
+      expect(described_class.names).not_to include("get_token_usage")
+    end
+
+    it "toda ferramenta que exige permissão existe" do
+      expect(described_class.names).to include(*Copilot::ToolExecutor::TOOL_PERMISSIONS.keys)
     end
   end
 

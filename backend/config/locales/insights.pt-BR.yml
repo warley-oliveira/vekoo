@@ -21,6 +21,21 @@ pt-BR:
         query: "Consulta"
         visual_config: "Aparência"
         layout: "Posição"
+  # O copiloto mora no domínio inbox; estas ferramentas são as que ligam agenda e funil a ele.
+  inbox:
+    copilot:
+      appointment_not_found: "Agendamento não encontrado."
+      appointment_not_active: "Só dá para remarcar um agendamento ativo."
+      invalid_appointment_time: "Essa data ou hora não é válida."
+      no_linked_chat: "Sem conversa disponível para analisar."
+      activities:
+        list_appointments: "Listando agendamentos..."
+        get_appointment_details: "Lendo o agendamento..."
+        cancel_appointment: "Cancelando agendamento..."
+        reschedule_appointment: "Remarcando agendamento..."
+        qualify_appointments: "Analisando os agendamentos..."
+        get_appointment_stats: "Calculando os números da agenda..."
+        get_chat_funnel: "Analisando os funis..."
   insights:
     errors:
       query_timeout: "Esta consulta demorou demais. Escolha um período menor ou menos colunas."
