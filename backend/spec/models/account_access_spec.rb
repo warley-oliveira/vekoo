@@ -46,6 +46,24 @@ RSpec.describe Account do
       expect(Session.exists?(session.id)).to be(false)
     end
 
+    it "revoke! lembra de quem era o token, sem guardar a sessão" do
+      session = Session.start!(account)
+
+      account.revoke!
+
+      expect(Session.revoked_token?(session.token)).to be(true)
+    end
+
+    it "restore! faz o token antigo deixar de contar como revogado" do
+      session = Session.start!(account)
+
+      account.revoke!
+      account.restore!
+
+      expect(Session.revoked_token?(session.token)).to be(false)
+      expect(Session.authenticate(session.token)).to be_nil
+    end
+
     it "revoke! derruba o WebSocket sem pedir para reconectar" do
       expect { account.revoke! }
         .to have_broadcasted_to("action_cable/#{account.to_gid_param}").with(type: "disconnect", reconnect: false)

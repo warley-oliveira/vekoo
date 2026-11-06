@@ -36,6 +36,10 @@ module ErrorRendering
     render_error(status: :unauthorized, code: "unauthorized", message: t("errors.unauthorized"))
   end
 
+  def render_access_revoked
+    render_error(status: :unauthorized, code: "accessRevoked", message: t("auth.access_revoked"))
+  end
+
   def render_record_invalid(exception)
     render_invalid(exception.record)
   end

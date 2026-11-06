@@ -38,6 +38,33 @@ class Session < ApplicationRecord
     session
   end
 
+  # Revogar apaga as sessões, e sem mais nada o próximo pedido daquele navegador seria um
+  # 401 igual ao de token vencido: a pessoa cairia no login sem saber por quê. O cache
+  # guarda de quem era cada token até o dia em que ele venceria. Cache perdido só devolve
+  # o 401 comum, e o login continua explicando.
+  def self.remember_revoked(sessions)
+    sessions.each do |session|
+      remaining = session.expires_at - Time.current
+      next unless remaining.positive?
+
+      Rails.cache.write(revoked_key(session.token_digest), session.account_id, expires_in: remaining)
+    end
+  end
+
+  # A conta é conferida agora: quem foi restaurado não tem mais o que ser avisado, e o
+  # token antigo dele é só um token que não vale.
+  def self.revoked_token?(token)
+    return false if token.blank?
+
+    account_id = Rails.cache.read(revoked_key(digest(token)))
+    account_id.present? && Account.revoked.exists?(id: account_id)
+  end
+
+  def self.revoked_key(token_digest)
+    "session.revoked.#{token_digest}"
+  end
+  private_class_method :revoked_key
+
   def touch_usage!
     update_column(:last_used_at, Time.current)
   end

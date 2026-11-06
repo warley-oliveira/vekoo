@@ -533,6 +533,61 @@ RSpec.describe "Pessoas da organização", type: :request do
       expect(json.dig("error", "code")).to eq("accessRevoked")
     end
 
+    context "com a sessão que já estava aberta" do
+      let(:open_session) { Session.start!(attendant) }
+      let(:token_headers) { { "Authorization" => "Bearer #{open_session.token}" } }
+
+      before { open_session }
+
+      it "responde accessRevoked na próxima chamada, no idioma pedido" do
+        post "/users/#{attendant.id}/revoke", headers: auth_headers(owner)
+
+        get "/me", headers: token_headers.merge("Accept-Language" => "en")
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(json.dig("error", "code")).to eq("accessRevoked")
+        expect(json.dig("error", "message")).to include("revoked")
+      end
+
+      it "vale em qualquer rota da plataforma" do
+        post "/users/#{attendant.id}/revoke", headers: auth_headers(owner)
+
+        get "/teams", headers: token_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(json.dig("error", "code")).to eq("accessRevoked")
+      end
+
+      it "depois de restaurar, o token antigo é só um token que não vale" do
+        post "/users/#{attendant.id}/revoke", headers: auth_headers(owner)
+        post "/users/#{attendant.id}/restore", headers: auth_headers(owner)
+
+        get "/me", headers: token_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(json.dig("error", "code")).to eq("unauthorized")
+      end
+
+      it "sem o cache, cai no 401 comum em vez de falhar" do
+        post "/users/#{attendant.id}/revoke", headers: auth_headers(owner)
+        Rails.cache.clear
+
+        get "/me", headers: token_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(json.dig("error", "code")).to eq("unauthorized")
+      end
+    end
+
+    it "token que nunca existiu continua sendo unauthorized" do
+      attendant.revoke!
+
+      get "/me", headers: { "Authorization" => "Bearer inventado" }
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(json.dig("error", "code")).to eq("unauthorized")
+    end
+
     it "só revela a revogação a quem acerta a senha" do
       attendant.revoke!
 

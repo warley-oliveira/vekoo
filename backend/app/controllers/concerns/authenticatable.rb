@@ -29,9 +29,15 @@ module Authenticatable
   end
 
   def require_session
-    return render_unauthorized unless signed_in?
+    return render_no_session unless signed_in?
 
     current_session.touch_usage!
+  end
+
+  # Quem tinha sessão e perdeu o acesso ouve o motivo, não um "não autorizado" qualquer.
+  # Só quem tem o token chega aqui, então isto não revela nada a mais ninguém.
+  def render_no_session
+    Session.revoked_token?(bearer_token) ? render_access_revoked : render_unauthorized
   end
 
   def bearer_token

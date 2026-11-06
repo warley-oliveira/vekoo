@@ -64,6 +64,7 @@ class Account < ApplicationRecord
 
     transaction do
       update!(revoked_at: at)
+      Session.remember_revoked(sessions)
       sessions.destroy_all
     end
     disconnect_realtime

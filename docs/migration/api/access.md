@@ -21,8 +21,8 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 | Status | `code` | Quando |
 |---|---|---|
 | 400 | `parameterMissing` | Falta o envelope, a origem do alerta ou o arquivo. `field` diz qual. |
-| 401 | `unauthorized` | Sem sessão, sessão vencida ou pessoa revogada. |
-| 401 | `accessRevoked` | `POST /login` com a senha certa de quem foi revogado. Com a senha errada, continua `wrongPassword`. |
+| 401 | `unauthorized` | Sem sessão ou sessão vencida. |
+| 401 | `accessRevoked` | O acesso foi revogado: `POST /login` com a senha certa (com a errada, continua `wrongPassword`) e qualquer rota com o token que a pessoa já tinha. O token é lembrado em cache até vencer; cache perdido, ou pessoa restaurada, volta a ser `unauthorized`. |
 | 403 | `forbidden` | Sem a permissão da rota, ou quem não é dono mexendo no dono. |
 | 404 | `notFound` | Não existe, ou é de outra organização ou pessoa. |
 | 422 | `unprocessable` | Validação. `field` é o primeiro campo inválido (onde pôr o foco); `details` traz todos: `{ "name": ["…"] }`. |
@@ -192,7 +192,7 @@ Validação (`POST /users` com `{ "user": { "name": "", "email": "x" } }`):
 
 ### `POST /users/:id/revoke`
 
-`core_settings`. Corta o acesso sem apagar nada: as sessões caem, o WebSocket aberto é derrubado (`{ "type": "disconnect", "reason": "remote", "reconnect": false }`) e `POST /login` passa a responder `accessRevoked`. É idempotente e mantém a data original. Responde a ficha, com `revokedAt` preenchido.
+`core_settings`. Corta o acesso sem apagar nada: as sessões caem, o WebSocket aberto é derrubado (`{ "type": "disconnect", "reason": "remote", "reconnect": false }`), o token que a pessoa tinha passa a responder `401 accessRevoked` e `POST /login` também. É idempotente e mantém a data original. Responde a ficha, com `revokedAt` preenchido.
 
 ### `POST /users/:id/restore`
 
@@ -735,6 +735,7 @@ Tudo acréscimo: nenhum campo existente mudou.
 |---|---|
 | `GET /me`, `POST /login`, `POST /signup` | `account` ganha `locale` e `avatarUrl`. `organization` ganha `settings` e `logoUrl`. |
 | `POST /login` | Novo erro `401 accessRevoked`. |
+| Toda rota com sessão | O token de quem foi revogado responde `401 accessRevoked`, em vez de `unauthorized`. |
 | `GET /notifications`, `POST /notifications/read-all` | Ganham `meta` e os avisos da pessoa. A lista passa a ser paginada (20 por padrão). |
 
 ## Semente
