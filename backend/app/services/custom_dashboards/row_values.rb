@@ -8,8 +8,8 @@ module CustomDashboards
   module RowValues
     module_function
 
-    def as_json(result, zone)
-      result.merge(rows: result[:rows].map { |row| row.transform_values { |value| json_value(value, zone) } })
+    def json_rows(rows, zone)
+      rows.map { |row| row.transform_values { |value| json_value(value, zone) } }
     end
 
     def json_value(value, zone)

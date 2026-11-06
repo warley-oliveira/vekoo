@@ -315,9 +315,11 @@ RSpec.describe CustomDashboards::QueryEngine do
       day = zone.today - 3.days
       create(:chat, organization: organization, created_at: zone.local(day.year, day.month, day.day, 22))
 
-      rows = execute("conversations", metrics: [ count_metric ], time_range: { start: (day - 1.day).iso8601, end: day.iso8601 })[:rows]
+      result = execute("conversations", metrics: [ count_metric ], time_range: { start: (day - 1.day).iso8601, end: day.iso8601 })
 
-      expect(rows).to eq([ { "Total" => 1 } ])
+      expect(result[:rows]).to eq([ { "Total" => 1 } ])
+      # O último milissegundo do dia, e não a meia-noite do dia seguinte.
+      expect(result[:meta][:timeRange][:to]).to eq((zone.local(day.year, day.month, day.day).end_of_day.to_i * 1000) + 999)
     end
 
     it "com a hora, vale a hora" do

@@ -143,11 +143,7 @@ module CustomDashboards
       end
 
       def tags_condition(field, operator, value)
-        ids = chat_tag_ids(value)
-        return { field.db_column => { "$nin" => ids } } if %w[ne nin].include?(operator)
-        return { field.db_column => { "$in" => ids } } if %w[eq in].include?(operator)
-
-        { field.db_column => query_condition(operator, nil) }
+        { field.db_column => { (%w[ne nin].include?(operator) ? "$nin" : "$in") => chat_tag_ids(value) } }
       end
 
       def custom_attribute_filter?(name)

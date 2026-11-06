@@ -243,6 +243,12 @@ RSpec.describe "Dashboards personalizados", type: :request do
       expect(json["customDashboard"]["widgets"].map { |item| item["title"] }).to eq([ "Antigo" ])
     end
 
+    it "com null, também: só a lista vazia apaga" do
+      patch "/custom-dashboards/#{dashboard.id}", params: { customDashboard: { widgets: nil } }, headers: headers, as: :json
+
+      expect(json["customDashboard"]["widgets"].map { |item| item["title"] }).to eq([ "Antigo" ])
+    end
+
     it "com a lista, troca os widgets" do
       patch "/custom-dashboards/#{dashboard.id}", params: { customDashboard: { widgets: [ { widgetType: "table", title: "Novo", dataSource: "contacts" } ] } }, headers: headers, as: :json
 
@@ -377,6 +383,15 @@ RSpec.describe "Dashboards personalizados", type: :request do
           expect(response).to have_http_status(:unprocessable_content)
           expect(json.dig("error", "code")).to eq("operatorNotAllowed")
         end
+      end
+
+      # A origem ignorava o filtro, e a resposta trazia tudo como se tivesse sido filtrado.
+      it "recusa operador que não faz sentido em etiqueta e em presença" do
+        query({ dataSource: "conversations", filters: [ { field: "tags", operator: "gt", value: "vip" } ] })
+        expect(json.dig("error", "code")).to eq("operatorNotAllowed")
+
+        query({ dataSource: "conversations", filters: [ { field: "booking_attendance", operator: "contains", value: "show" } ] })
+        expect(json.dig("error", "code")).to eq("operatorNotAllowed")
       end
 
       it "recusa operador proibido também no filtro de uma coluna" do

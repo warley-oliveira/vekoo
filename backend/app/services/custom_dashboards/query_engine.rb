@@ -30,6 +30,9 @@ module CustomDashboards
     # Mensagem não tem índice por organização: o período é o que limita a varredura.
     MAX_MESSAGES_RANGE_DAYS = 366
     ALLOWED_OPERATORS = %w[eq ne gt gte lt lte in nin contains exists not_exists].freeze
+    # Etiqueta e presença em agendamento são pertença a um conjunto: "maior que" não quer dizer nada, e a
+    # origem simplesmente ignorava o filtro, devolvendo tudo.
+    SET_OPERATORS = %w[eq ne in nin].freeze
     ALLOWED_GRANULARITIES = %w[day week month year].freeze
     ALLOWED_AGGREGATIONS = %w[count sum avg min max].freeze
     # `min` e `max` servem para data também; somar data não existe.
@@ -79,7 +82,8 @@ module CustomDashboards
           meta: {
             total: result[:rows].size,
             truncated: result[:truncated] || false,
-            timeRange: { field: time_range.field, from: ApplicationSerializer.epoch_ms(time_range.from), to: ApplicationSerializer.epoch_ms(time_range.to) }
+            # `floor`: `end_of_day` tem nanossegundos, e arredondar diria que o período vai até o dia seguinte.
+            timeRange: { field: time_range.field, from: ApplicationSerializer.epoch_ms(time_range.from), to: ApplicationSerializer.epoch_ms(time_range.to.floor(3)) }
           }
         }
       end
@@ -188,6 +192,10 @@ module CustomDashboards
 
           document_filter = DataSourceRegistry.document_id_filter(source, name)
           raise Forbidden if document_filter && document_filter[:permission] && !account.can?(document_filter[:permission])
+
+          if (document_filter || source.field(name)&.relationship) && SET_OPERATORS.exclude?(filter["operator"])
+            raise QueryError.new("operatorNotAllowed", field: "filters", name: filter["operator"].to_s)
+          end
 
           validate_filter_value!(source, name, filter["value"])
         end

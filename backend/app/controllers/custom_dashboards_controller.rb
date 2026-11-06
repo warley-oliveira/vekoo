@@ -150,9 +150,9 @@ class CustomDashboardsController < PlatformController
     dashboard_params.permit(:name, :description, :icon, :is_favorite, :is_default, global_filters: {}).to_h
   end
 
-  # `null` e lista vazia são coisas diferentes: sem o campo, os widgets ficam como estão.
+  # Sem o campo, ou com `null`, os widgets ficam como estão. Só a lista vazia apaga todos.
   def widget_list
-    return nil unless dashboard_params.key?(:widgets)
+    return nil if dashboard_params[:widgets].nil?
 
     Array(dashboard_params[:widgets]).select { |widget| widget.respond_to?(:permit) }.map do |widget|
       widget.permit(:widget_type, :title, :data_source, :position, query: {}, visual_config: {}, layout: {}).to_h
@@ -167,9 +167,13 @@ class CustomDashboardsController < PlatformController
   end
 
   def query_response(result)
-    json = CustomDashboards::RowValues.as_json(result, current_organization.reporting_zone)
-
-    { rows: json[:rows], columns: json[:columns], labels: json[:labels], fieldLabels: json[:field_labels], meta: json[:meta] }
+    {
+      rows: CustomDashboards::RowValues.json_rows(result[:rows], current_organization.reporting_zone),
+      columns: result[:columns],
+      labels: result[:labels],
+      fieldLabels: result[:field_labels],
+      meta: result[:meta]
+    }
   end
 
   def query_params(source)
