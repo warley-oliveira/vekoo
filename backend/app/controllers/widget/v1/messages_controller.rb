@@ -27,12 +27,15 @@ module Widget
         return if performed? # cota esgotada: a resposta já saiu
         return render_error(status: :too_many_requests, code: "rateLimited") if rate_limited?(chat)
 
+        # Antes de gravar o cartão de contexto e a abordagem proativa, que não são a mensagem
+        # do visitante: o widget manda o contexto da página já na primeira.
+        first_message = !ChatMessage::Base.where(chat_id: chat.id, :role.in => ChatMessage::Base::REAL_ROLES).exists?
+
         apply_result = ::Widget::ContextStore.apply(chat, sanitized_context) if sanitized_context.present?
         # Registro no histórico quando o contexto mudou de fato: cartão de contexto no chat.
         ::Widget::ContextHistoryWriter.record(chat, apply_result.context) if apply_result&.changed?
         persist_proactive_message(chat)
 
-        first_message = !ChatMessage::Base.where(chat_id: chat.id).exists?
         text_message = ChatMessage::Text.create!(
           role: "user",
           content: content,

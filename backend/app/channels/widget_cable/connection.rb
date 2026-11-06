@@ -24,7 +24,8 @@ module WidgetCable
       payload = peek_jwt(token)
       reject!('malformed jwt') unless payload
 
-      connector = Connector::WebWidget.where(id: payload['connector_id']).take
+      # O id vem de um token ainda não verificado: `to_s` para nunca chegar operador do Mongo.
+      connector = Connector::WebWidget.where(id: payload['connector_id'].to_s).take
       reject!("connector not found (id=#{payload['connector_id']})") unless connector
       reject!("connector inactive (id=#{connector.id})") unless connector.active?
 
@@ -80,7 +81,8 @@ module WidgetCable
     # Decode without verification just to read connector_id; the actual signature
     # check happens via connector.decode_visitor_jwt with the per-connector secret.
     def peek_jwt(token)
-      JWT.decode(token, nil, false).first
+      payload = JWT.decode(token, nil, false).first
+      payload.is_a?(Hash) ? payload : nil
     rescue JWT::DecodeError
       nil
     end

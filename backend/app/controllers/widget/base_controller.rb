@@ -37,7 +37,8 @@ module Widget
       payload = peek_widget_jwt(token)
       return render_unauthorized unless payload
 
-      connector = Connector::WebWidget.where(id: payload["connector_id"]).take
+      # O id vem de um token ainda não verificado: `to_s` para nunca chegar operador do Mongo.
+      connector = Connector::WebWidget.where(id: payload["connector_id"].to_s).take
       return render_unauthorized unless connector&.active?
 
       verified = connector.decode_visitor_jwt(token)
@@ -82,7 +83,8 @@ module Widget
     # Só para saber qual conector é: a assinatura é conferida em `decode_visitor_jwt`, com o
     # segredo daquele conector.
     def peek_widget_jwt(token)
-      JWT.decode(token, nil, false).first
+      payload = JWT.decode(token, nil, false).first
+      payload.is_a?(Hash) ? payload : nil
     rescue JWT::DecodeError
       nil
     end

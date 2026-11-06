@@ -53,7 +53,7 @@ module WidgetThrottling
     end
 
     if count.to_i > limit
-      render(json: { error: 'rate_limited', retry_after: period.to_i }, status: :too_many_requests)
+      render_error(status: :too_many_requests, code: 'rateLimited', details: { retryAfter: period.to_i })
       return false
     end
     true
