@@ -97,7 +97,7 @@ RSpec.describe "Mensagens rápidas", type: :request do
       post "/quick-replies", params: { quickReply: { name: "Outra", trigger: "PRAZO", content: "texto" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["field"]).to eq("trigger")
+      expect(json["error"]).to include("field" => "trigger", "message" => "atalho já está em uso")
     end
 
     it "aceita o mesmo atalho em outra organização" do

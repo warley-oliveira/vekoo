@@ -129,7 +129,7 @@ RSpec.describe "Anexos", type: :request do
       post "/attachments", params: { name: "Sem arquivo" }, headers: headers
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["field"]).to eq("file")
+      expect(json["error"]).to include("field" => "file", "message" => "arquivo não pode ficar em branco")
     end
 
     it "responde 422 quando `file` não é um arquivo" do

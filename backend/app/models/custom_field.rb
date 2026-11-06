@@ -36,7 +36,7 @@ class CustomField
   before_validation :set_caption
 
   validates :name, :value_type, :organization_id, presence: true
-  validates :key, uniqueness: { scope: :organization_id }, allow_blank: true
+  validate :key_not_taken
   validates :value_type, inclusion: { in: VALUE_TYPES }, allow_blank: true
   validates :normalization_strategy, inclusion: { in: CustomAttributes::ValueNormalizer::STRATEGIES }, allow_nil: true
   validates :normalization_target_key, format: { with: TARGET_KEY_FORMAT }, allow_blank: true
@@ -46,6 +46,13 @@ class CustomField
   end
 
   private
+
+  # A chave nasce do nome, e é o nome que a pessoa preenche: é nele que o erro tem onde aparecer.
+  def key_not_taken
+    return if key.blank?
+
+    errors.add(:name, :taken) if self.class.where(organization_id: organization_id, key: key, :_id.ne => id).exists?
+  end
 
   def set_caption
     self.name = name.to_s.strip

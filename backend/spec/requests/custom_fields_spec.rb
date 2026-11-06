@@ -102,7 +102,21 @@ RSpec.describe "Campos personalizados", type: :request do
       post "/custom-fields", params: { customField: { name: "CIDADE", valueType: "text" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["field"]).to eq("key")
+      expect(json["error"]).to include("field" => "name", "message" => "nome já está em uso")
+    end
+
+    it "explica o tipo errado com o nome que a pessoa conhece" do
+      post "/custom-fields", params: { customField: { name: "Errado", valueType: "string" } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["error"]).to include("field" => "valueType", "message" => "tipo não está na lista")
+    end
+
+    it "explica em inglês para quem pede em inglês" do
+      post "/custom-fields?locale=en", params: { customField: { name: "Wrong", valueType: "string" } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["error"]["message"]).to start_with("Type ")
     end
 
     it "aceita a mesma chave em outra organização" do

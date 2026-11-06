@@ -42,6 +42,31 @@ pt-BR:
           attributes:
             file:
               too_large: "passa do limite de 100 MB"
+    attributes:
+      quick_reply:
+        name: "nome"
+        trigger: "atalho"
+        content: "conteúdo"
+      chat_view:
+        name: "nome"
+        account: "conta"
+      attachment:
+        name: "nome"
+        file: "arquivo"
+
+  mongoid:
+    attributes:
+      chat:
+        status: "situação"
+        display_name: "nome de exibição"
+      chat_tag:
+        name: "nome"
+        color: "cor"
+      custom_field:
+        name: "nome"
+        value_type: "tipo"
+        normalization_strategy: "forma de normalizar"
+        normalization_target_key: "campo de destino"
 
   inbox:
     export:

@@ -50,7 +50,7 @@ RSpec.describe "Etiquetas", type: :request do
       post "/chat-tags", params: { chatTag: { name: "Sem cor" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["field"]).to eq("color")
+      expect(json["error"]).to include("field" => "color", "message" => "cor não pode ficar em branco")
     end
 
     it "recusa nome que já existe, mesmo escrito de outro jeito" do

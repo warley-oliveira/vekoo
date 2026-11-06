@@ -485,7 +485,7 @@ RSpec.describe "Chat: conversas", type: :request do
       patch "/chats/#{chat.id}", params: { chat: { status: "arquivada" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["field"]).to eq("status")
+      expect(json["error"]).to include("field" => "status", "message" => "situação não está na lista")
     end
 
     it "responde 422 com nome de exibição longo demais" do
