@@ -48,7 +48,7 @@ module Products
     end
 
     def image_params
-      params.require(:image).permit(:position, :alt)
+      envelope(:image).permit(:position, :alt)
     end
 
     # Um `file` em texto, num corpo JSON por exemplo: é o mesmo que não ter mandado.

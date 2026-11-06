@@ -81,6 +81,17 @@ RSpec.describe "Products: itens", type: :request do
       expect(json["items"].map { |item| item["title"] }).to eq(%w[Bravo Alfa])
     end
 
+    it "aceita o nome da coluna em camelCase ou snake_case" do
+      old = create(:product_item, organization: organization, title: "Antigo", created_at: 2.days.ago)
+      recent = create(:product_item, organization: organization, title: "Recente", created_at: 1.day.ago)
+
+      [ "createdAt", "created_at" ].each do |column|
+        get "/products/items", params: { sortBy: column, sortOrder: "asc" }, headers: headers
+
+        expect(json["items"].map { |item| item["id"] }).to eq([ old.id, recent.id ])
+      end
+    end
+
     # O valor vem do cliente e entra num ORDER BY: fora da allowlist cai no padrão.
     it "ignora ordenação fora da allowlist" do
       create(:product_item, organization: organization)
@@ -426,6 +437,22 @@ RSpec.describe "Products: itens", type: :request do
 
       expect(response).to have_http_status(:bad_request)
       expect(json.dig("error", "code")).to eq("parameterMissing")
+    end
+
+    it "400, e não 500, com envelope que não é objeto" do
+      post "/products/items", params: { item: "nao-e-objeto" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "code")).to eq("parameterMissing")
+    end
+
+    it "o formulário que devolve o SKU em branco não apaga a chave de um item importado" do
+      item = create(:product_item, organization: organization, external_id: "auto:abc123", title: "Importado")
+
+      patch "/products/items/#{item.id}", params: { item: { title: "Editado", externalId: "" } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(item.reload).to have_attributes(title: "Editado", external_id: "auto:abc123")
     end
   end
 

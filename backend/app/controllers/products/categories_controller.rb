@@ -41,7 +41,7 @@ module Products
     end
 
     def category_params
-      params.require(:category).permit(:name, :parent_id, :position)
+      envelope(:category).permit(:name, :parent_id, :position)
     end
   end
 end

@@ -42,11 +42,19 @@ module Products
         path, "#{sanitize_sql_like(path)}#{PATH_SEPARATOR}%")
     }
 
-    # Lista plana em ordem de árvore: filho logo depois do pai. Ordenar por `path` no
-    # banco não dá isso: entre 'moda' e 'moda/camisetas' pode cair 'moda-praia',
-    # dependendo da collation, e a tela desenha a árvore pela sequência.
+    # Lista plana em ordem de árvore: filho logo depois do pai e, entre irmãos, pela
+    # posição e depois pelo nome. Ordenar por `path` no banco não dá isso: entre 'moda' e
+    # 'moda/camisetas' pode cair 'moda-praia', dependendo da collation, e a tela desenha a
+    # árvore pela sequência.
     def self.in_tree_order(categories)
-      categories.sort_by { |category| category.path.split(PATH_SEPARATOR) }
+      by_path = categories.index_by(&:path)
+
+      categories.sort_by do |category|
+        segments = category.path.split(PATH_SEPARATOR)
+        segments.each_index.map do |level|
+          [ by_path[segments[0..level].join(PATH_SEPARATOR)]&.position.to_i, segments[level] ]
+        end
+      end
     end
 
     # A importação grava vínculos em lote, sem callback, então o `counter_cache` não a

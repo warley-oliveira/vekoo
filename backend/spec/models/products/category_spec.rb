@@ -154,6 +154,17 @@ RSpec.describe Products::Category do
 
       expect(ordered).to eq([ casa, moda, camisetas, praia ])
     end
+
+    it "entre irmãos, respeita a posição, em todos os níveis" do
+      moda = create(:product_category, organization: organization, name: "Moda", position: 0)
+      casa = create(:product_category, organization: organization, name: "Casa", position: 1)
+      vestidos = create(:product_category, organization: organization, name: "Vestidos", parent: moda, position: 0)
+      blusas = create(:product_category, organization: organization, name: "Blusas", parent: moda, position: 1)
+
+      ordered = described_class.in_tree_order(described_class.for_organization(organization.id))
+
+      expect(ordered).to eq([ moda, vestidos, blusas, casa ])
+    end
   end
 
   describe "#display_path" do

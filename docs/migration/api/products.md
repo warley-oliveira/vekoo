@@ -29,7 +29,7 @@ A grade da tela: filtra, ordena e pagina. Não usa embeddings, então não tem c
 | `custom[<chave>]` | Igualdade em campo personalizado. O valor é convertido para o tipo do campo. |
 | `custom[<chave>][min]`, `[max]` | Faixa numérica. Valores que não são número ficam de fora. |
 | `includeInactive` | `true` traz também os inativos. **Padrão: só ativos.** |
-| `sortBy` | `title`, `created_at`, `updated_at` (padrão), `external_id`. Fora disso, cai no padrão. |
+| `sortBy` | `title`, `createdAt`, `updatedAt` (padrão), `externalId`, também em snake_case. Fora disso, cai no padrão. |
 | `sortOrder` | `asc`, `desc` (padrão). |
 | `page`, `perPage` | Padrão 24 por página, máximo 100. |
 
@@ -127,7 +127,8 @@ Responde `201` (ou `200`) com o item completo. Nesse exemplo, `customFields` vol
 - `title` é o único obrigatório: até 300 caracteres. `summary`: até 1500. `tags`: até 50.
 - `customFields` **substitui o mapa inteiro**, e cada valor é convertido para o tipo do campo. Valor vazio some. Valor inválido (`"caro"` em campo número) responde `422` em `customFields`, nomeando o campo.
 - `categoryIds`: ausente deixa como está, `[]` remove todas. Id de outra organização é ignorado.
-- `externalId` e `url`: `url` precisa ser http(s). SKU repetido responde `422` em `externalId`.
+- `url` precisa ser http(s). SKU repetido responde `422` em `externalId`.
+- `externalId` em branco apaga o SKU, exceto a chave automática da importação (`auto:…`), que continua: a tela pode mostrá-la como "sem código" e devolver vazio ao salvar, sem o item duplicar na próxima reimportação.
 - **`required` e `defaultValue` são regra da tela**, como na origem: a API guarda e devolve esses valores, mas não os aplica.
 
 ### `DELETE /products/items/:id`
@@ -180,7 +181,7 @@ Multipart, campo `file`. JPEG, PNG, WebP ou GIF, até 10 MB. O tipo é conferido
 
 ### `GET /products/categories`
 
-A árvore inteira, plana e sem paginação, com cada filho logo depois do pai. Use `depth` para o recuo.
+A árvore inteira, plana e sem paginação, com cada filho logo depois do pai e, entre irmãos, por `position` e depois pelo nome. Use `depth` para o recuo.
 
 ```json
 {
@@ -377,7 +378,7 @@ Responde `202` com a importação, ainda em `status: "ready"`: ela passa a `proc
 
 Regras do processamento:
 
-- O SKU (`external_id`) é a chave: o que já existe é atualizado. Linha sem SKU recebe um código `auto:<hash>`. **A tela deve tratar `externalId` começando com `auto:` como "sem código"**, sem mostrá-lo como SKU.
+- O SKU (`external_id`) é a chave: o que já existe é atualizado. Linha sem SKU recebe um código `auto:<hash>`. **A tela deve tratar `externalId` começando com `auto:` como "sem código"**, sem mostrá-lo como SKU. Devolvê-lo em branco ao salvar é seguro.
 - Só o que foi mapeado muda. Reimportar uma tabela de preços não apaga descrição, e só mexe em `active` se essa coluna vier. `customFields` faz merge por chave; `tags` só troca se vierem. Categorias e imagens só somam, nunca removem.
 - Linha com erro (sem título) não para a importação: entra em `errorCount` e em `errorSample`.
 - Linha toda em branco é ignorada, sem contar como erro.
@@ -449,7 +450,7 @@ Em erro:
 ```
 
 - `code`: `importFailed` (inclusive arquivo malformado, com a linha na mensagem) ou `importInterrupted` (o processo morreu: reinício ou deploy).
-- `message` vem no idioma de quem iniciou a importação, inclusive no canal.
+- `message` vem no idioma de quem iniciou a importação, inclusive no canal. A exceção é `importInterrupted`, que sai de uma varredura sem requisição, em pt-BR: traduza pelo `code`.
 - `total` é uma estimativa até `completed`, e pode encolher nele: linhas em branco contam na estimativa.
 - **A transmissão é melhor esforço.** Se o Redis falhar, a importação continua e só o aviso se perde. Ao reconectar, ou se o progresso parar, leia `GET /products/imports/:id`.
 
@@ -473,7 +474,7 @@ Formato: `{ "error": { "code", "message", "field"?, "details"? } }`. `field` é 
 
 | HTTP | `code` | Quando |
 |---|---|---|
-| 400 | `parameterMissing` | Sem envelope ou sem `file`. `field` diz qual. |
+| 400 | `parameterMissing` | Sem envelope, envelope que não é objeto, ou sem `file`. `field` diz qual. |
 | 401 | `unauthorized` | Sem sessão. |
 | 403 | `forbidden` | Sem o recurso `catalog`. |
 | 404 | `notFound` | Não existe, ou é de outra organização. |
@@ -493,7 +494,7 @@ Pontos fáceis de errar:
 1. **Mande `includeInactive=true` na grade de gestão.** Sem isso, item desativado some sem caminho de volta. A origem tinha esse defeito: o selo "Inativo" existia, mas nunca aparecia.
 2. **`url` de imagem hospedada é relativa.** Prefixe com `VITE_API_URL`; a externa já é absoluta.
 3. Use `thumbUrl` na grade, não `url`: a original pode ter 10 MB.
-4. `externalId` com `auto:` é chave interna, e não um SKU para mostrar.
+4. `externalId` com `auto:` é chave interna, e não um SKU para mostrar. Devolver em branco não a apaga.
 5. Filtro de categoria usa o `path`; o `categoryIds` do item usa o `id`.
 6. `customFields` volta com tipo. Formulário de texto converte com `String(value)`, como fazia a origem.
 7. Valide na tela o `required` dos campos e a regra de só haver imagem em item já salvo.

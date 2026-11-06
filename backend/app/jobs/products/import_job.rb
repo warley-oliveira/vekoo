@@ -118,7 +118,7 @@ module Products
         "file:#{import.filename}:#{line_number}"
       end
 
-      row.attributes["external_id"] = "auto:#{Digest::SHA1.hexdigest(seed)[0, 24]}"
+      row.attributes["external_id"] = "#{Item::AUTO_KEY_PREFIX}#{Digest::SHA1.hexdigest(seed)[0, 24]}"
     end
 
     def record_failure(line_number, message, raw)

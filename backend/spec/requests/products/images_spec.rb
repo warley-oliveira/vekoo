@@ -133,6 +133,12 @@ RSpec.describe "Products: imagens", type: :request do
       expect(json.dig("error", "field")).to eq("position")
     end
 
+    it "400, e não 500, com envelope que não é objeto" do
+      patch "/products/images/#{image.id}", params: { image: "x" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
     it "não muda o endereço de origem" do
       patch "/products/images/#{image.id}", params: { image: { sourceUrl: "https://mal.com/x.png" } }, headers: headers, as: :json
 

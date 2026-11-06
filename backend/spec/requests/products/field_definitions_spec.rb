@@ -133,6 +133,12 @@ RSpec.describe "Products: campos personalizados", type: :request do
 
       expect(json.dig("error", "message")).to eq("name can't be blank")
     end
+
+    it "400, e não 500, com envelope que não é objeto" do
+      post "/products/field-definitions", params: { fieldDefinition: "x" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:bad_request)
+    end
   end
 
   describe "PATCH /products/field-definitions/:id" do

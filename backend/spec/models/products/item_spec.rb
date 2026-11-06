@@ -62,6 +62,32 @@ RSpec.describe Products::Item do
 
       expect([ first.external_id, second.external_id ]).to eq([ nil, nil ])
     end
+
+    # A tela mostra a chave automática como "sem código" e devolve vazio ao salvar. Sem
+    # isto, a próxima reimportação não acharia o item e o duplicaria.
+    it "mantém a chave automática quando o SKU volta em branco" do
+      item = create(:product_item, organization: organization, external_id: "auto:abc123")
+
+      item.update!(external_id: "", title: "Novo título")
+
+      expect(item.reload.external_id).to eq("auto:abc123")
+    end
+
+    it "deixa trocar a chave automática por um SKU de verdade" do
+      item = create(:product_item, organization: organization, external_id: "auto:abc123")
+
+      item.update!(external_id: "SKU-9")
+
+      expect(item.reload.external_id).to eq("SKU-9")
+    end
+
+    it "um SKU de verdade pode ser apagado" do
+      item = create(:product_item, organization: organization, external_id: "SKU-9")
+
+      item.update!(external_id: "")
+
+      expect(item.reload.external_id).to be_nil
+    end
   end
 
   describe "campos personalizados" do

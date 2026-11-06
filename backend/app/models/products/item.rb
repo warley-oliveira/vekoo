@@ -12,6 +12,8 @@ module Products
     MAX_CUSTOM_FIELDS_BYTES = 16.kilobytes
     # Uma frase de busca não precisa de mais que isto, e cada termo vira dois ILIKE.
     MAX_TEXT_TERMS = 8
+    # Chave que a importação dá à linha sem SKU, para reimportar não duplicar.
+    AUTO_KEY_PREFIX = "auto:"
 
     # Colunas de indexação: grandes, nunca exibidas, e o tsvector é gerado.
     # Toda listagem deve usar `listable` para não arrastá-las para o Ruby.
@@ -163,8 +165,13 @@ module Products
 
     # String vazia colidiria no índice único; NULL não (o Postgres trata NULLs como
     # distintos), que é o comportamento desejado para itens sem SKU.
+    #
+    # A chave automática sobrevive: a tela a mostra como "sem código" e devolve vazio ao
+    # salvar, e perdê-la faria a próxima reimportação duplicar o item.
     def nullify_blank_external_id
-      self.external_id = nil if external_id.blank?
+      return if external_id.present?
+
+      self.external_id = external_id_in_database&.start_with?(AUTO_KEY_PREFIX) ? external_id_in_database : nil
     end
 
     def rebuild_index_text

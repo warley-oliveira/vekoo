@@ -51,6 +51,15 @@ RSpec.describe "Products: categorias", type: :request do
       expect(json["meta"]).to eq("total" => 3)
     end
 
+    it "respeita a posição entre irmãos" do
+      create(:product_category, organization: organization, name: "Zebra", position: 0)
+      create(:product_category, organization: organization, name: "Alfa", position: 1)
+
+      get "/products/categories", headers: headers
+
+      expect(json["categories"].map { |entry| entry["name"] }).to eq(%w[Zebra Alfa])
+    end
+
     it "não devolve categoria de outra organização" do
       create(:product_category, name: "Alheia")
 
@@ -117,6 +126,12 @@ RSpec.describe "Products: categorias", type: :request do
       post "/products/categories", params: { category: { name: "" } }, headers: headers.merge("Accept-Language" => "en"), as: :json
 
       expect(json.dig("error", "message")).to eq("name can't be blank")
+    end
+
+    it "400, e não 500, com envelope que não é objeto" do
+      post "/products/categories", params: { category: "x" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:bad_request)
     end
   end
 

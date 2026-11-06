@@ -47,7 +47,7 @@ module Products
     # `fieldDefinition` no corpo, e não `definition` como na origem: esse nome é um mapa
     # livre em CamelParams (o de fluxo), e as chaves não seriam convertidas.
     def definition_params
-      params.require(:field_definition).permit(
+      envelope(:field_definition).permit(
         :name, :description, :value_type, :default_value, :required, :searchable, :position,
         option_values: []
       )

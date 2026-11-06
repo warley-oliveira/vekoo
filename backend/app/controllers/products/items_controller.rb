@@ -80,7 +80,10 @@ module Products
     # Desempate por id: sem ele o ORDER BY não é determinístico entre valores
     # iguais e a paginação repete ou pula item ao virar de página.
     def sort_clause
-      field = SORT_FIELDS.include?(params[:sort_by]) ? params[:sort_by] : "updated_at"
+      # O nome da coluna é valor, não chave, então CamelParams não o converte: aceita-se
+      # `createdAt` e `created_at`.
+      requested = params[:sort_by].to_s.underscore
+      field = SORT_FIELDS.include?(requested) ? requested : "updated_at"
       order = SORT_ORDERS.include?(params[:sort_order]) ? params[:sort_order] : "desc"
       { field => order.to_sym, id: :desc }
     end
@@ -100,7 +103,7 @@ module Products
     end
 
     def item_params
-      params.require(:item).permit(
+      envelope(:item).permit(
         :title, :summary, :description, :external_id, :url, :active,
         tags: [], custom_fields: {}
       )
