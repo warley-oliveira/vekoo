@@ -570,6 +570,24 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
       travel(6.minutes) { expect(Rails.cache.read("qrcode.base64.#{connector.id}")).to be_nil }
     end
 
+    it "entrega o código de pareamento quando ele já vem na criação" do
+      stub_request(:post, url).to_return(json_reply({ hash: "chave", qrcode: { base64: "QR-B64", pairingCode: "WZYK8QTM" } }, status: 201))
+
+      expect { connector.activate }
+        .to have_broadcasted_to(connector.stream_name).with(status: "qr_updated", base64: "QR-B64", pairCode: "WZYK8QTM")
+
+      expect(Rails.cache.read("pair_code.#{connector.id}")).to eq("WZYK8QTM")
+    end
+
+    it "não deixa o código de uma tentativa anterior reaparecer ao reconectar" do
+      Rails.cache.write("pair_code.#{connector.id}", "ANTERIOR")
+      stub_request(:post, url).to_return(reply)
+
+      connector.activate
+
+      expect(Rails.cache.read("pair_code.#{connector.id}")).to be_nil
+    end
+
     it "levanta quando a Evolution recusa" do
       stub_request(:post, url).to_return(json_reply({ message: "nome em uso" }, status: 403))
 

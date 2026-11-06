@@ -65,6 +65,9 @@ export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onB
       : null
   )
 
+  // Quem voltou daqui para digitar um código já disse o que quer: a escolha abre nele.
+  const [startedCode, setStartedCode] = useState(false)
+
   if (started) {
     return (
       <WhatsappLive
@@ -72,6 +75,10 @@ export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onB
         method={started.method}
         activateOnStart={started.activate}
         phoneNumberPairing={started.phone}
+        onChooseCode={() => {
+          setStartedCode(true)
+          setStarted(null)
+        }}
       />
     )
   }
@@ -82,6 +89,7 @@ export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onB
       provider={provider}
       stepLabel={stepLabel}
       onBack={onBack}
+      preferCode={startedCode}
       onStarted={setStarted}
     />
   )
@@ -92,12 +100,14 @@ function MethodStep({
   provider,
   stepLabel,
   onBack,
+  preferCode,
   onStarted,
 }: {
   connector?: Connector
   provider: Provider
   stepLabel?: string
   onBack?: () => void
+  preferCode: boolean
   onStarted: (started: Started) => void
 }) {
   const { t } = useTranslation()
@@ -108,7 +118,7 @@ function MethodStep({
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      method: isMobile && !zapi ? "code" : "qr",
+      method: (isMobile || preferCode) && !zapi ? "code" : "qr",
       phone: connector?.type === "whatsapp_web" ? connector.numberId : null,
     },
     mode: "onBlur",

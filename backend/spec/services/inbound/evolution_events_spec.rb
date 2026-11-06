@@ -196,6 +196,18 @@ RSpec.describe Inbound::EvolutionEvents do
       end
     end
 
+    context "com pairingCode, o nome na Evolution v2" do
+      let(:data) { { statusCode: 200, qrcode: { base64: "BASE64STR", pairingCode: "WZYK8QTM", code: "2@x", count: 1 } } }
+
+      it "guarda e transmite o código de pareamento" do
+        expect { handle("qrcode.updated", data) }.to have_broadcasted_to(connector.stream_name).with(
+          status: "qr_updated", base64: "BASE64STR", pairCode: "WZYK8QTM"
+        )
+
+        expect(Rails.cache.read("pair_code.#{connector.id}")).to eq("WZYK8QTM")
+      end
+    end
+
     context "sem pairCode" do
       let(:data) { { statusCode: 200, qrcode: { base64: "B64ONLY" } } }
 

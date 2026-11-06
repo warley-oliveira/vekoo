@@ -23,9 +23,9 @@ class ConnectorsController < PlatformController
 
   def show
     # Com o QR code qualquer um conecta o próprio WhatsApp neste canal: é só para quem configura.
-    qr_code = current_account.can?(:core_settings) ? Rails.cache.read("qrcode.base64.#{@connector.id}") : nil
+    extras = current_account.can?(:core_settings) ? connection_extras : {}
 
-    render json: { connector: ConnectorSerializer.one(@connector), extras: qr_code ? { qrCode: qr_code } : {} }
+    render json: { connector: ConnectorSerializer.one(@connector), extras: extras }
   end
 
   def create
@@ -201,6 +201,13 @@ class ConnectorsController < PlatformController
     render_type_mismatch unless @connector.is_a?(Connector::InstagramDirect)
   end
 
+  def connection_extras
+    {
+      qrCode: Rails.cache.read("qrcode.base64.#{@connector.id}"),
+      pairCode: Rails.cache.read("pair_code.#{@connector.id}")
+    }.compact
+  end
+
   def render_connector
     render json: { connector: ConnectorSerializer.one(@connector) }
   end
@@ -228,6 +235,12 @@ class ConnectorsController < PlatformController
 
   # O código de autorização da Meta, quando o canal precisa dele.
   def activate_connector
+    # Reconectar pelo celular: não dá para ler um QR code na tela do próprio aparelho, e o
+    # número do código de pareamento só existia na criação. `null` volta para o QR code.
+    if @connector.is_a?(Connector::WhatsappWeb) && params.key?(:phone_number_pairing)
+      @connector.phone_number_pairing = params[:phone_number_pairing].presence
+    end
+
     if @connector.is_a?(Connector::InstagramDirect) && params[:code].present?
       @connector.activate_via_instagram(code: params[:code], redirect_uri: params[:redirect_uri])
     elsif @connector.method(:activate).arity.zero?

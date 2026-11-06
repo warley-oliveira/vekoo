@@ -40,7 +40,8 @@ module Inbound
       data = payload[:data]
       status_code = data&.dig(:statusCode)
       qrcode_base64 = data&.dig(:qrcode, :base64)
-      pair_code = data&.dig(:qrcode, :pairCode)
+      # `pairingCode` é o nome na Evolution v2; `pairCode`, no provider AIVA.
+      pair_code = data&.dig(:qrcode, :pairingCode).presence || data&.dig(:qrcode, :pairCode).presence
 
       if status_code != 500
         Rails.cache.write("qrcode.base64.#{connector.id}", qrcode_base64, expires_in: 15.minutes)

@@ -8,7 +8,8 @@ class ConnectorsChannel < ApplicationCable::Channel
     stream_from @connector.stream_name
 
     qrcode_base64 = Rails.cache.read("qrcode.base64.#{@connector.id}")
-    transmit({ status: "qr_updated", base64: qrcode_base64, pairCode: nil }) if qrcode_base64
+    # O código de pareamento vai junto: quem assina depois do webhook não pode ficar sem ele.
+    transmit({ status: "qr_updated", base64: qrcode_base64, pairCode: Rails.cache.read("pair_code.#{@connector.id}") }) if qrcode_base64
   end
 
   def unsubscribed

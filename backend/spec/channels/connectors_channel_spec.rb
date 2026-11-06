@@ -59,6 +59,15 @@ RSpec.describe ConnectorsChannel, type: :channel do
         expect(transmissions.last).to eq("status" => "qr_updated", "base64" => "BASE64QR", "pairCode" => nil)
       end
 
+      it "entrega junto o código de pareamento guardado, para quem assina depois do webhook" do
+        Rails.cache.write("qrcode.base64.#{connector.id}", "BASE64QR")
+        Rails.cache.write("pair_code.#{connector.id}", "WZYK8QTM")
+
+        listen
+
+        expect(transmissions.last).to eq("status" => "qr_updated", "base64" => "BASE64QR", "pairCode" => "WZYK8QTM")
+      end
+
       it "sem QR em cache, não transmite nada" do
         listen
 

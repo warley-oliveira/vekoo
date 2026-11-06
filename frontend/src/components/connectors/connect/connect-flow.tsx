@@ -157,7 +157,8 @@ function ChooseChannel({ onSelect }: { onSelect: (key: OptionKey) => void }) {
 
   return (
     <>
-      <ul className="flex flex-col gap-2">
+      {/* A folga é do anel de foco: a área rolável cortaria o da primeira opção. */}
+      <ul className="flex flex-col gap-2 py-1">
         {OPTIONS.map((option) => {
           const busy = option.key === "widget" && creatingWidget
 

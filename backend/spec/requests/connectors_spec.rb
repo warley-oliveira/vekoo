@@ -188,6 +188,23 @@ RSpec.describe "Connectors", type: :request do
 
       expect(json["extras"]).to eq("qrCode" => "QR-EM-BASE64")
     end
+
+    it "traz também o código de pareamento guardado" do
+      Rails.cache.write("qrcode.base64.#{connector.id}", "QR-EM-BASE64")
+      Rails.cache.write("pair_code.#{connector.id}", "WZYK8QTM")
+
+      get "/connectors/#{connector.id}", headers: headers
+
+      expect(json["extras"]).to eq("qrCode" => "QR-EM-BASE64", "pairCode" => "WZYK8QTM")
+    end
+
+    it "não entrega o código de pareamento a quem só atende" do
+      Rails.cache.write("pair_code.#{connector.id}", "WZYK8QTM")
+
+      get "/connectors/#{connector.id}", headers: auth_headers(member)
+
+      expect(json["extras"]).to eq({})
+    end
   end
 
   describe "POST /connectors" do
@@ -586,6 +603,48 @@ RSpec.describe "Connectors", type: :request do
     end
 
     describe "POST /connectors/:id/activate" do
+      context "com o número do código de pareamento" do
+        let(:connector) { create(:connector_whatsapp_web, organization: organization, status: :closed) }
+
+        before do
+          stub_request(:post, "http://evolution.test/instance/create").to_return(provider_json({ hash: "chave", qrcode: { base64: "QR" } }, status: 201))
+        end
+
+        it "pede o código para este número ao reconectar" do
+          act(connector, :activate, phoneNumberPairing: "5531971810932")
+
+          expect(response).to have_http_status(:ok)
+          expect(connector.reload.phone_number_pairing).to eq("5531971810932")
+          expect(a_request(:post, "http://evolution.test/instance/create").with(body: hash_including("number" => "5531971810932"))).to have_been_made
+        end
+
+        it "volta para o QR code com null" do
+          connector.update!(phone_number_pairing: "5531971810932")
+
+          act(connector, :activate, phoneNumberPairing: nil)
+
+          expect(connector.reload.phone_number_pairing).to be_nil
+          expect(a_request(:post, "http://evolution.test/instance/create").with { |request| !JSON.parse(request.body).key?("number") }).to have_been_made
+        end
+
+        it "sem o campo, mantém o número que já estava guardado" do
+          connector.update!(phone_number_pairing: "5531971810932")
+
+          act(connector, :activate)
+
+          expect(connector.reload.phone_number_pairing).to eq("5531971810932")
+        end
+
+        it "ignora o campo em canal que não pareia por número" do
+          widget = create(:connector_web_widget, organization: organization, status: :inactive)
+
+          act(widget, :activate, phoneNumberPairing: "5531971810932")
+
+          expect(response).to have_http_status(:ok)
+          expect(widget.reload).not_to respond_to(:phone_number_pairing)
+        end
+      end
+
       it "volta o pausado a ativo, sem chamar o provedor de novo, e avisa a volta" do
         connector = create(:connector_web_widget, organization: organization, status: :paused)
 

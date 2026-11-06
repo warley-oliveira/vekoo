@@ -14,6 +14,7 @@ import {
   type MainAction,
 } from "@/lib/connectors/channels"
 import type { Connector, ConnectorAlert } from "@/lib/connectors/types"
+import { cn } from "@/lib/utils"
 import { ConnectorMark } from "./channel-mark"
 import { ConnectorAlertNotice } from "./connector-alert"
 import { useConnectorTexts } from "./connector-texts"
@@ -95,7 +96,7 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
     <div className="group relative flex flex-col gap-3 p-4 transition-colors hover:bg-muted/40 md:flex-row md:items-start md:gap-4">
       <div className="flex min-w-0 flex-1 items-start gap-3">
         <ConnectorMark connector={connector} />
-        <div className="min-w-0 flex-1 space-y-1">
+        <div className="min-w-0 flex-1 space-y-1 max-md:pr-8">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Link
               id={`connector-link-${connector.id}`}
@@ -144,13 +145,14 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
         </div>
       </div>
 
-      {/* Acima do link que cobre a linha: os botões continuam sendo botões. */}
-      <div className="relative z-10 flex items-center gap-1.5 pl-[3.25rem] md:pl-0">
+      {/* Acima do link que cobre a linha: os botões continuam sendo botões. No celular o
+          menu fica no canto, e o botão principal ganha a largura toda embaixo do texto. */}
+      <div className={cn("flex items-center gap-1.5 pl-[3.25rem] md:pl-0", !main && "max-md:contents")}>
         {main ? (
           <Button
             size="sm"
             variant={main === "turnOn" || main === "connect" ? "outline" : "default"}
-            className="pointer-coarse:h-10 max-md:flex-1"
+            className="relative z-10 pointer-coarse:h-10 max-md:flex-1"
             onClick={() => runMain(main)}
           >
             {t(`connectors.main.${main}`)}
@@ -159,7 +161,7 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
           <Button
             size="sm"
             variant="ghost"
-            className="text-muted-foreground pointer-coarse:h-10 max-md:hidden"
+            className="relative z-10 text-muted-foreground pointer-coarse:h-10 max-md:hidden"
             render={<Link to={connectorPath(connector.id)} />}
             nativeButton={false}
           >
@@ -167,10 +169,12 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
             <ChevronRight data-icon="inline-end" />
           </Button>
         )}
-        <ActionsMenu
-          label={t("connectors.row.actionsOf", { name: texts.title(connector) })}
-          actions={menu}
-        />
+        <div className="absolute top-3 right-3 z-10 md:static">
+          <ActionsMenu
+            label={t("connectors.row.actionsOf", { name: texts.title(connector) })}
+            actions={menu}
+          />
+        </div>
       </div>
     </div>
   )

@@ -21,6 +21,7 @@ import { ConnectorRow } from "@/components/connectors/connector-row"
 import { useConnectorTexts } from "@/components/connectors/connector-texts"
 import { useConnectorAlerts } from "@/hooks/connectors/use-connector-alerts"
 import { useConnectors } from "@/hooks/connectors/use-connectors"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { channelGroup, connectorHandle, type ChannelGroup } from "@/lib/connectors/channels"
 import { INSTAGRAM_RESUME_PARAM, takeInstagramResume } from "@/lib/connectors/instagram-oauth"
 import type { Connector } from "@/lib/connectors/types"
@@ -42,6 +43,7 @@ export default function ConnectorsPage() {
   const { t } = useTranslation()
   const texts = useConnectorTexts()
   const preset = useMotionPreset()
+  const isMobile = useIsMobile()
   const [filter, setFilter] = useState<Filter>("all")
   const [query, setQuery] = useState("")
   const [target, setTarget] = useState<ConnectTarget | null>(null)
@@ -93,7 +95,7 @@ export default function ConnectorsPage() {
   }, [connectors, alerts.byConnector])
 
   const counts: Record<Filter, number> = {
-    all: connectors.length + orphanAlerts.length,
+    all: connectors.length,
     attention: grouped.attention.length + orphanAlerts.length,
     connected: grouped.connected.length,
     off: grouped.off.length,
@@ -166,11 +168,12 @@ export default function ConnectorsPage() {
               aria-label={t("connectors.filter.label")}
               value={filter}
               onChange={setFilter}
+              // No celular os quatro não cabem com os números. Fica só o que pede ação.
               options={[
-                { value: "all", label: t("connectors.filter.all"), count: counts.all },
+                { value: "all", label: t("connectors.filter.all"), count: isMobile ? undefined : counts.all },
                 { value: "attention", label: t("connectors.filter.attention"), count: counts.attention },
-                { value: "connected", label: t("connectors.filter.connected"), count: counts.connected },
-                { value: "off", label: t("connectors.filter.off"), count: counts.off },
+                { value: "connected", label: t("connectors.filter.connected"), count: isMobile ? undefined : counts.connected },
+                { value: "off", label: t("connectors.filter.off"), count: isMobile ? undefined : counts.off },
               ]}
             />
             {connectors.length >= SEARCH_FROM ? (

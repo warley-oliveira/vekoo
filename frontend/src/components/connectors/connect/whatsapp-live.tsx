@@ -30,6 +30,8 @@ export type WhatsappLiveProps = {
   /** Pede um código novo ao abrir: é reconexão. Sem isto, acompanha quem já está esperando. */
   activateOnStart?: boolean
   phoneNumberPairing?: string | null
+  /** Volta para a escolha: sem número guardado, digitar um código exige informar o número. */
+  onChooseCode?: () => void
 }
 
 /** O passo mais delicado do produto: a pessoa com o celular na mão, olhando para esta tela. */
@@ -38,10 +40,16 @@ export function WhatsappLive({
   method,
   activateOnStart,
   phoneNumberPairing,
+  onChooseCode,
 }: WhatsappLiveProps) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
-  const live = useWhatsappConnection({ connector: initial, activateOnStart, phoneNumberPairing })
+  const live = useWhatsappConnection({
+    connector: initial,
+    activateOnStart,
+    phoneNumberPairing,
+    expectsPairCode: method === "code",
+  })
   const { phase, qrCode, pairCode, failure, slow, cableConnected, connector, restart } = live
 
   const [view, setView] = useState<ConnectMethod>(method)
@@ -51,8 +59,8 @@ export function WhatsappLive({
 
   const header = useMemo(() => {
     if (phase === "connected") return { title: t("connectors.live.connectedTitle") }
-    if (phase === "failed") return { title: t("connectors.live.failedTitle") }
-    if (phase === "expired") return { title: t("connectors.live.expiredTitle") }
+    // O que aconteceu fica no corpo, com o motivo e a saída: dois títulos só repetiriam.
+    if (phase === "failed" || phase === "expired") return { title: t("connectors.live.title") }
     return {
       title: t("connectors.live.title"),
       description: t(showingCode ? "connectors.live.codeLead" : "connectors.live.qrLead"),
@@ -125,15 +133,25 @@ export function WhatsappLive({
               ) : (
                 <QrImage src={qrCode} />
               )}
-              {qrCode && pairCode ? (
+              {showingCode && qrCode ? (
                 <Button
                   variant="link"
                   size="sm"
                   className="pointer-coarse:h-10"
-                  onClick={() => setView(showingCode ? "qr" : "code")}
+                  onClick={() => setView("qr")}
                 >
-                  {showingCode ? <QrCode /> : <Smartphone />}
-                  {t(showingCode ? "connectors.live.useQr" : "connectors.live.useCode")}
+                  <QrCode />
+                  {t("connectors.live.useQr")}
+                </Button>
+              ) : !showingCode && !zapi && (pairCode || onChooseCode) ? (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="pointer-coarse:h-10"
+                  onClick={() => (pairCode ? setView("code") : onChooseCode?.())}
+                >
+                  <Smartphone />
+                  {t("connectors.live.useCode")}
                 </Button>
               ) : null}
             </div>

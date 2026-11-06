@@ -208,8 +208,6 @@
       "qrLead": "Follow the steps on your phone. As soon as you scan the code, this screen lets you know.",
       "codeLead": "Type this code in WhatsApp on your phone. As soon as it connects, this screen lets you know.",
       "connectedTitle": "All set",
-      "failedTitle": "The connection didn't finish",
-      "expiredTitle": "Time ran out",
       "leftWaiting": "The channel is still waiting. To finish, come back here and tap Continue connecting.",
       "connectedHeading": "WhatsApp connected",
       "connectedWithNumber": "The number {{number}} is already sending and receiving messages.",

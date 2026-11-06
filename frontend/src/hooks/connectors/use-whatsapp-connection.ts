@@ -3,7 +3,12 @@ import { useTranslation } from "react-i18next"
 
 import { useChannel } from "@/hooks/use-channel"
 import { apiPost } from "@/lib/api"
-import { connectorErrorMessage, qrImageSource, usesZapi } from "@/lib/connectors/channels"
+import {
+  connectorErrorMessage,
+  isWhatsappWeb,
+  qrImageSource,
+  usesZapi,
+} from "@/lib/connectors/channels"
 import type { Connector, ConnectionEvent } from "@/lib/connectors/types"
 import { refreshConnectorAlerts } from "./use-connector-alerts"
 import { reloadConnectors, storeConnector, useConnector } from "./use-connectors"
@@ -30,6 +35,8 @@ type Options = {
   activateOnStart?: boolean
   /** Vai no pedido de ativação: o número do código de pareamento. */
   phoneNumberPairing?: string | null
+  /** A pessoa escolheu digitar um código: um QR code na tela não encerra a espera. */
+  expectsPairCode?: boolean
 }
 
 function initialPhase(connector: Connector, activateOnStart: boolean): ConnectionPhase {
@@ -44,6 +51,7 @@ export function useWhatsappConnection({
   connector: initial,
   activateOnStart = false,
   phoneNumberPairing,
+  expectsPairCode = false,
 }: Options) {
   const { t } = useTranslation()
   const id = initial.id
@@ -72,7 +80,8 @@ export function useWhatsappConnection({
     setSlow(false)
 
     try {
-      const body = phoneNumberPairing ? { phoneNumberPairing } : undefined
+      // `null` também vai: quem pediu código da outra vez e agora quer o QR precisa limpar.
+      const body = isWhatsappWeb(initial) ? { phoneNumberPairing: phoneNumberPairing ?? null } : undefined
       const { connector } = await apiPost<{ connector: Connector }>(
         `/connectors/${id}/activate`,
         body
@@ -93,7 +102,7 @@ export function useWhatsappConnection({
       setFailure(connectorErrorMessage(error, t))
       setPhase("failed")
     }
-  }, [id, phoneNumberPairing, t])
+  }, [id, initial, phoneNumberPairing, t])
 
   // Só uma vez: no StrictMode o efeito roda duas, e cada ativação cria uma instância.
   const started = useRef(false)
@@ -149,7 +158,7 @@ export function useWhatsappConnection({
     }
   }, [data, phase])
 
-  const hasCode = Boolean(qrCode || pairCode)
+  const hasCode = Boolean(expectsPairCode ? pairCode : qrCode || pairCode)
 
   useEffect(() => {
     if (phase !== "waiting" || hasCode) return

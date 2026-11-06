@@ -208,8 +208,6 @@
       "qrLead": "Siga os passos no celular. Assim que você ler o código, esta tela avisa.",
       "codeLead": "Digite este código no WhatsApp do celular. Assim que conectar, esta tela avisa.",
       "connectedTitle": "Tudo certo",
-      "failedTitle": "A conexão não terminou",
-      "expiredTitle": "O tempo acabou",
       "leftWaiting": "O canal ficou aguardando. Para terminar, volte aqui e toque em Continuar conexão.",
       "connectedHeading": "WhatsApp conectado",
       "connectedWithNumber": "O número {{number}} já está recebendo e enviando mensagens.",

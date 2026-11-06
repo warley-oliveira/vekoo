@@ -303,6 +303,7 @@ class Connector::WhatsappWeb
         end
 
         qrcode_base64 = instance_response.parsed_response.dig('qrcode', 'base64')
+        pair_code = instance_response.parsed_response.dig('qrcode', 'pairingCode').presence
 
         # Armazena o novo QrCode no cache (será usado na próxima vez)
         Rails.cache.write(
@@ -310,8 +311,14 @@ class Connector::WhatsappWeb
           qrcode_base64,
           expires_at: Time.now + 5.minutes
         )
+        # O código de uma tentativa anterior já não vale: não pode reaparecer ao reconectar.
+        if pair_code
+          Rails.cache.write("pair_code.#{connector.id}", pair_code, expires_in: 15.minutes)
+        else
+          Rails.cache.delete("pair_code.#{connector.id}")
+        end
 
-        connector.broadcast_connection(status: :qr_updated, base64: qrcode_base64, pairCode: nil)
+        connector.broadcast_connection(status: :qr_updated, base64: qrcode_base64, pairCode: pair_code)
 
         # In v2 the instance apikey is at the top-level `hash` field (string).
         # We fall back to the v1 nested `hash.apikey` shape so a server still
