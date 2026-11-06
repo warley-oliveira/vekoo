@@ -80,7 +80,8 @@ Isso dá banco de teste, Mongo e portas exclusivos; rspec e Vite rodam sem inter
    - Semente: `backend/db/seeds/<dominio>.rb`
    - i18n do front: `frontend/src/locales/pt-BR/<dominio>.json` e `en/<dominio>.json` (raiz do JSON = nome do domínio)
    - Front: `frontend/src/routes/<dominio>/`, `frontend/src/components/<dominio>/`, `frontend/src/hooks/<dominio>/`, `frontend/src/lib/<dominio>/`
-6. Comite no seu branch do worktree, em commits pequenos e descritivos (mensagens em português, no estilo do `git log`). Termine com a árvore limpa (fora `schema.rb`). **Não faça push nem merge.** Não toque no `main`.
+6. Comite no seu branch do worktree **cedo e com frequência**, em commits pequenos e descritivos (mensagens em português, no estilo do `git log`), a cada parte que funciona: a máquina pode reiniciar e o trabalho precisa estar salvo. Termine com a árvore limpa (fora `schema.rb`). **Não faça push nem merge.** Não toque no `main`.
+   Nada que precise durar vai para `/tmp`: ele some ao reiniciar.
 7. `CLAUDE.md` e `DEPLOY.md` são do integrador: não edite. O que precisar constar neles vai no relatório.
 
 ---
@@ -190,7 +191,7 @@ Reutilize **antes de criar**: `@/components/shared/*` (ver `frontend/src/compone
 Não dê tela por pronta sem olhar. Com `npx vite --port $VITE_PORT` rodando em segundo plano:
 
 ```bash
-node /tmp/claude-1000/-home-warley-workspace-vekoo/d012d7f1-8852-4222-8bdc-f5247e4b1f68/scratchpad/shot/shot.mjs http://localhost:$VITE_PORT/rota /tmp/claude-1000/-home-warley-workspace-vekoo/d012d7f1-8852-4222-8bdc-f5247e4b1f68/scratchpad/shots/<dominio>-rota.png [--mobile] [--full]
+node docs/migration/tools/shot.mjs http://localhost:$VITE_PORT/rota ~/.cache/vekoo-shot/shots/<dominio>-rota.png [--mobile] [--full]
 ```
 
 Abra o PNG com a ferramenta Read e corrija o que estiver feio, desalinhado ou quebrado, em desktop **e** em `--mobile`. O script também lista erros de console e de rede: zero é a meta. Antes de encerrar: `npm run build` e `npm run lint` sem erros novos.

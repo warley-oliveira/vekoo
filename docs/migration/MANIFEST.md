@@ -59,11 +59,11 @@ Mongo + pgvector no compose; Mongoid; `Current`; `PlatformController` (sessão, 
 
 | # | Frente | Domínio de arquivos | Status |
 |---|---|---|---|
-| 1 | **be-core**: conectores + chat base | `connectors` | ⬜ |
-| 2 | **be-access**: pessoas, avisos, push | `access` | ⬜ |
-| 3 | **be-products**: catálogo | `products` | ⬜ |
-| 4 | **fe-shell**: menu, rotas, mobile, PWA | casca | ⬜ |
-| 5 | **fe-kit**: componentes compartilhados | `components/shared` | ⬜ |
+| 1 | **be-core**: conectores + chat base | `connectors` | 🔄 |
+| 2 | **be-access**: pessoas, avisos, push | `access` | 🔄 |
+| 3 | **be-products**: catálogo | `products` | 🔄 |
+| 4 | **fe-shell**: menu, rotas, mobile, PWA | casca | 🔄 |
+| 5 | **fe-kit**: componentes compartilhados | `components/shared` | 🔄 |
 
 ### 1. be-core (agente 1)
 
