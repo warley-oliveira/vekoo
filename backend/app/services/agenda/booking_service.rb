@@ -57,7 +57,7 @@ module Agenda
       date_start = Time.current.in_time_zone(zone) + 15.minutes if date_start <= Time.current
 
       service = calendar.services.where(name: service_name).take
-      return { error: "service doesn't exists", use_one_of_this_services: calendar.services.pluck(:name) } unless service
+      return { error: "service doesn't exists", use_one_of_this_services: Offering.where(calendar_id: calendar.id).pluck(:name) } unless service
 
       priority = priority_professional(service, date_start)
 
@@ -94,7 +94,7 @@ module Agenda
     end
 
     def list_services(**_args)
-      list = calendar.services.map do |service|
+      list = Offering.where(calendar_id: calendar.id).map do |service|
         {
           "service_name" => service.name,
           "duration" => service.duration,
@@ -108,9 +108,9 @@ module Agenda
     end
 
     def list_professionals(**_args)
-      names = calendar.services.pluck(:_id, :name).to_h
+      names = Offering.where(calendar_id: calendar.id).pluck(:_id, :name).to_h
 
-      list = calendar.professionals.map do |professional|
+      list = Professional.where(calendar_id: calendar.id).map do |professional|
         {
           "name" => professional.name,
           "external_id" => professional.external_id,
@@ -277,7 +277,7 @@ module Agenda
     def rules_for(_service, professional)
       return [ professional.rule ].compact if professional
 
-      Rule.where(:professional_id.in => calendar.professionals.pluck(:_id)).to_a
+      Rule.where(:professional_id.in => Professional.where(calendar_id: calendar.id).pluck(:_id)).to_a
     end
 
     def taken_intervals(professional_ids, range)

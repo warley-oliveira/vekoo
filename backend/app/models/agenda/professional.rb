@@ -29,7 +29,8 @@ module Agenda
     field :color, type: String, default: "#20cc95"
 
     belongs_to :calendar, class_name: "Agenda::Calendar", inverse_of: :professionals
-    has_one :rule, class_name: "Agenda::Rule", inverse_of: :professional, dependent: :destroy
+    # `validate: false`: quem confere os horários é o `ProfessionalForm`, para o erro vir no campo.
+    has_one :rule, class_name: "Agenda::Rule", inverse_of: :professional, dependent: :destroy, validate: false
     # Atende estes serviços. A porcentagem de cada um mora em `Offering#distribution`.
     has_and_belongs_to_many :services, class_name: "Agenda::Offering", inverse_of: nil
     # Quem sai não leva o histórico junto: o agendamento fica, sem profissional.

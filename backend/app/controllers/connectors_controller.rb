@@ -189,7 +189,7 @@ class ConnectorsController < PlatformController
   private
 
   def set_connector
-    @connector = Connector::Base.channels.scoped(current_organization.id, params[:id])
+    @connector = Connector::Base.channels.where(organization_id: current_organization.id.to_s, id: params[:id]).take
     render_not_found unless @connector
   end
 

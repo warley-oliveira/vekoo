@@ -40,7 +40,8 @@ module Agenda
     end
 
     def calendar_params
-      permitted = envelope(:calendar).permit(
+      received = envelope(:calendar)
+      permitted = received.permit(
         :name, :description, :time_zone, :rebalancing_period, :calendar_type, :color,
         :scheduling_notification_enabled, :professional_whatsapp_connector_id,
         :scheduling_notification_reactivate_automation, :scheduling_notification_ignore_automation_paused,
@@ -50,7 +51,7 @@ module Agenda
       ).to_h
 
       %w[professional_notifications_settings professional_event_notifications scheduling_notification_config]
-        .reduce(permitted) { |result, key| rule_list(result, key) }
+        .reduce(permitted) { |result, key| rule_list(result, received, key) }
         .then { |result| check_connector(result) }
     end
 

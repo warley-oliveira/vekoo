@@ -34,9 +34,9 @@ module Agenda
       when nil, "" then nil
       when Time, DateTime, ActiveSupport::TimeWithZone then value.in_time_zone(zone)
       when Date then zone.local(value.year, value.month, value.day)
-      else zone.parse(value.to_s.strip.sub(OFFSET, ""))
+      else parse_text(without_offset(value.to_s.strip), zone)
       end
-    rescue ArgumentError
+    rescue Invalid
       nil
     end
 
@@ -47,9 +47,18 @@ module Agenda
     def parse_text(text, zone)
       return from_epoch(text.to_i, zone) if text.match?(EPOCH_MS)
 
+      # `zone.parse` empurra 30 de fevereiro para março em vez de recusar.
+      parts = Date._parse(text)
+      raise Invalid, text if parts[:mday] && parts[:mon] && parts[:year] && !Date.valid_date?(parts[:year], parts[:mon], parts[:mday])
+
       zone.parse(text) || raise(Invalid, text)
     rescue ArgumentError
       raise Invalid, text
+    end
+
+    # Só com hora há deslocamento: em "2030-01-14", o "-14" é o dia.
+    def without_offset(text)
+      text.match?(/\d{1,2}:\d{2}/) ? text.sub(OFFSET, "") : text
     end
   end
 end

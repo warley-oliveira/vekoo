@@ -36,9 +36,10 @@ module Agenda
       render_not_found unless @class_group
     end
 
-    # Lista de regras: `null` é "apagar todas", e não deixar como está.
-    def rule_list(permitted, key)
-      permitted[key] = [] if permitted.key?(key) && permitted[key].nil?
+    # Lista de regras: `null` é "apagar todas", e não deixar como está. O `permit` tira a chave
+    # nula, por isso a conferência é no que chegou.
+    def rule_list(permitted, received, key)
+      permitted[key] = [] if received.key?(key) && received[key].nil?
       permitted
     end
   end
