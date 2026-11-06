@@ -1,0 +1,13 @@
+# Jobs recorrentes do domínio "connectors".
+instances_reload:
+  # Todo dia às 03:00. Desligado por padrão, como na origem.
+  enabled: false
+  cron: "0 0 3 * * *"
+  class: InstancesReloadJobs
+  queue: low
+instagram_token_refresh:
+  # Todo dia às 04:00: renova os tokens de longa duração do Instagram (validade de 60 dias).
+  enabled: true
+  cron: "0 0 4 * * *"
+  class: InstagramTokenRefreshJob
+  queue: default

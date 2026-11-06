@@ -1,0 +1,36 @@
+# Registro de releases do widget web (aiva-frontend/widget).
+#
+# Esta é a fonte de verdade do que a plataforma oferece como versão PINADA.
+# Adicionar uma versão aqui é um PR — é esse o ponto de revisão que o cliente
+# pede antes de qualquer código novo entrar na infra dele.
+#
+# Como gerar os valores: no repo do widget, `npm run build && npm run release:prepare`
+# imprime o bloco pronto para colar abaixo. O mesmo hash é publicado em
+# https://widget.aiva-assets.com/releases.json, para o cliente conferir de
+# forma independente:
+#
+#   curl -s https://widget.aiva-assets.com/v/widget.<versao>.js \
+#     | openssl dgst -sha384 -binary | openssl base64 -A
+#
+# REGRA: uma versão publicada é imutável. Nunca altere o `sri` de uma entrada
+# existente — clientes pinados têm esse hash colado na página deles e o
+# navegador deixaria de executar o widget. Para mudar código, publique uma
+# versão nova.
+
+# Versão sugerida como padrão no admin para quem escolhe pinar.
+stable: '1.2.0'
+
+# Arquivo do canal rolling (sempre a última versão). Não é pinável.
+rolling_filename: 'widget.v1.js'
+
+releases:
+  # Primeira versão nomeada. O versionamento do widget começa aqui — não há
+  # artefato pinado anterior a esta.
+  '1.2.0':
+    sri: "sha384-zjDxcrI1lnGk4tVbafnNHZCo50LgaX+KV8JMKFa/BPJraxGHNaY2jE7EEFsSSs7R"
+    released_at: "2026-08-06"
+    notes: >-
+      Primeira release versionada e pinável. Inclui allowlist de host para
+      data-api-base/data-cable-url, validação de esquema em media_url,
+      escape de URL em CSS, folha de estilo adotada (CSP sem unsafe-inline)
+      e remoção de query string na captura automática de página.

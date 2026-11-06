@@ -1,0 +1,87 @@
+pt-BR:
+  errors:
+    invalid_connector_type: "Tipo de conector inválido."
+    connector_type_mismatch: "Esta ação não existe para este tipo de conector."
+    connector_action_failed: "Não foi possível concluir. Tente de novo em instantes."
+    connector_provider_error: "O provedor recusou o pedido."
+    template_not_found: "Modelo de mensagem não encontrado."
+    media_reference_required: "Informe a URL ou o identificador da mídia."
+    invalid_media_url: "O endereço da mídia não é válido."
+    media_host_not_allowed: "Este endereço de mídia não é permitido."
+    media_too_large: "A mídia é grande demais."
+    media_upstream_error: "Não foi possível buscar a mídia na origem."
+    file_required: "Envie um arquivo."
+    invalid_file_type: "Este tipo de arquivo não é aceito."
+    file_too_large: "O arquivo é grande demais."
+    invalid_slot: "Destino da imagem inválido."
+    upload_failed: "Não foi possível enviar a imagem."
+    connector_inactive: "Este canal não está ativo."
+    origin_not_allowed: "Este site não está autorizado a usar o chat."
+    invalid_visitor_id: "Identificador de visitante inválido."
+    content_required: "Escreva uma mensagem."
+    content_too_long: "A mensagem é longa demais."
+    context_too_large: "O contexto da página é grande demais."
+    rate_limited: "Muitas mensagens em pouco tempo. Espere um instante."
+    daily_quota_exceeded: "O limite diário de mensagens deste canal foi atingido."
+    visitor_quota_exceeded: "O limite diário de visitantes deste canal foi atingido."
+    missing_fields: "Preencha os campos obrigatórios."
+    invalid_email: "Este e-mail não parece válido."
+
+  connectors:
+    notes:
+      assigned_self: "%{name} assumiu esta conversa para si."
+      assigned_by: "%{actor} atribuiu %{name} a esta conversa."
+      assigned_to: "Esta conversa foi atribuída a %{name}."
+      unassigned_from: "%{actor} removeu a atribuição de %{name} desta conversa."
+      unassigned: "%{actor} removeu a atribuição desta conversa."
+      automation_paused_by: "%{name} pausou a automação."
+      automation_resumed_by: "%{name} retomou a automação."
+      automation_paused: "A automação foi pausada."
+      automation_resumed: "A automação foi retomada."
+      context_cleared: "Contexto limpo"
+      context_cleared_inactivity: "Limpeza de contexto por inatividade"
+      reactivated: "Certo, sua conversa está ativa de novo."
+      waiting_message: "Aguardando mensagem"
+      ad_greeting: "Mensagem de saudação automática"
+      rate_limited: "Esse contato enviou muitas mensagens em pouco tempo. A automação volta a responder em 10 minutos."
+      red_flag_quota: "Automação desativada para esse contato. Cota de advertências atingida."
+      media_failed: "Chegou uma mídia que não foi possível baixar."
+    messages:
+      none_given: "Nenhuma mensagem informada."
+      none_found: "Nenhuma mensagem encontrada."
+      chat_not_found: "Conversa não encontrada."
+      connector_not_found: "Conector não encontrado."
+      delete_unsupported: "Este canal não permite apagar para todos."
+      delete_window_expired: "O prazo para apagar esta mensagem já passou."
+      delete_failed: "Não foi possível apagar a mensagem no canal."
+      reaction_unsupported: "Este canal não permite reagir."
+      reaction_no_external_id: "Esta mensagem ainda não tem identificador no canal."
+      reaction_deleted: "Mensagem apagada não pode receber reação."
+      reaction_single_emoji: "A reação deve ser um único emoji."
+      reaction_failed: "Não foi possível enviar a reação no canal."
+      attachment_not_found: "Anexo %{name} não encontrado."
+      attachment_blank: "Anexo %{name} está em branco."
+      template_failed: "Não foi possível enviar o modelo de mensagem."
+      template_fallback: "Modelo: %{name}"
+    disconnection:
+      whatsapp: "O WhatsApp \"%{name}\" foi desconectado."
+      blocked: "Conta bloqueada: %{name}"
+      manual_shutdown: "O canal \"%{name}\" foi desligado manualmente."
+      manual_disconnect: "O canal \"%{name}\" foi desconectado manualmente."
+      number_blocked: "O número foi desconectado por um possível bloqueio do WhatsApp"
+      session_expired: "Não foi possível restaurar a sessão com o token atual. Conecte de novo."
+    business_work:
+      no_days: "Janela de atendimento: habilite ao menos um dia ou desative a janela"
+      day_prefix: "Janela de atendimento (%{day})"
+      no_ranges: "adicione ao menos um intervalo"
+      invalid_time: "horário inválido, use o formato HH:MM"
+      start_after_end: "o início deve ser anterior ao fim"
+      overlap: "há intervalos sobrepostos"
+      days:
+        - domingo
+        - segunda-feira
+        - terça-feira
+        - quarta-feira
+        - quinta-feira
+        - sexta-feira
+        - sábado
