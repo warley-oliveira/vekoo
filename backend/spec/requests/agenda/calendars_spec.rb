@@ -572,8 +572,9 @@ RSpec.describe "Agenda: calendários", type: :request do
       get "/calendars/#{calendar.id}/availability", params: { serviceId: service.id.to_s, start: 1.day.from_now.to_date.to_s, end: 8.days.from_now.to_date.to_s }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(json).to include("professionalName" => "Ana", "serviceName" => "Limpeza", "fallback" => false)
-      expect(json["slots"]).to be_a(Hash)
+      expect(json).to include("professionalId" => professional.id.to_s, "professionalName" => "Ana", "serviceName" => "Limpeza", "fallback" => false)
+      expect(json["slots"].keys).to all(match(/\A\d{4}-\d{2}-\d{2}\z/))
+      expect(json["slots"].values.flatten).to all(match(/\A\d{2}:\d{2}\z/))
     end
 
     it "serviço de outro calendário é 404" do

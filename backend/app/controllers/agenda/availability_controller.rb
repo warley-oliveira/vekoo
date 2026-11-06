@@ -16,9 +16,12 @@ module Agenda
         render_error(status: :unprocessable_entity, code: "noAvailability", message: t("agenda.errors.no_availability"))
       else
         render json: {
+          professionalId: professional_id(result[:employee_name]),
           professionalName: result[:employee_name],
           serviceName: result[:service_name],
-          slots: result[:available_slots],
+          # O serviço escreve o dia por extenso, em pt-BR, para scripts e modelos. A tela recebe a
+          # data, e a mostra no idioma dela.
+          slots: result[:available_slots].transform_keys { |day| day.split(", ").last },
           priorityProfessionalName: result[:employee_with_priority],
           fallback: result[:messages].present?
         }
@@ -28,6 +31,11 @@ module Agenda
     end
 
     private
+
+    # O escolhido pela distribuição, para a tela poder criar o agendamento com ele.
+    def professional_id(name)
+      name && @calendar.professionals.where(name: name).take&.id&.to_s
+    end
 
     def service
       @service ||= @calendar.services.where(id: params.require(:service_id).to_s).take || raise(Mongoid::Errors::DocumentNotFound.new(Offering, params[:service_id]))
