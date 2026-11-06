@@ -20,12 +20,11 @@
     },
     "quickReplies": {
       "description": "Ready-made texts to reply faster. In a conversation, type <kbd>/</kbd> in the message box and pick one by its shortcut.",
-      "search": "Search by name, shortcut or text",
+      "search": "Search messages",
       "count_one": "{{count}} message",
       "count_other": "{{count}} messages",
       "actionsOf": "Actions for {{name}}",
       "brokenBadge": "Deleted attachment",
-      "hasVariables": "Has variables",
       "saved": "Quick reply {{name}} saved.",
       "created": "Quick reply {{name}} created.",
       "missingAttachment_one": "This message cites an attachment that was deleted. Remove the red block or insert another file: as it stands, the conversation gets a code instead of the file.",
@@ -118,14 +117,15 @@
         "title": "How it looks in the conversation",
         "empty": "Write the message to see how the contact receives it.",
         "missing": "Deleted attachment: a code goes out instead of the file.",
-        "hint": "Example with made-up data. Variables are filled in when the message is inserted into the conversation, and whatever the contact doesn't have stays in the text to complete by hand. Each attachment goes as a separate message, and sending removes quotes, brackets, backticks, tildes and greater-than and less-than signs.",
         "sampleName": "Ana Beatriz Moura",
-        "samplePhone": "(41) 99911-0001"
+        "samplePhone": "(41) 99911-0001",
+        "variablesHint": "Example with made-up data. Variables are filled in when the message is inserted into the conversation, and whatever the contact doesn't have stays in the text to complete by hand.",
+        "strippedHint": "Sending removes quotes, brackets, backticks, tildes and greater-than and less-than signs, as shown above."
       }
     },
     "attachments": {
       "description": "Your organization's files, ready to use in quick replies, chat, campaigns and flows.",
-      "search": "Search by name, description or file",
+      "search": "Search files",
       "count_one": "{{count}} file",
       "count_other": "{{count}} files",
       "actionsOf": "Actions for {{name}}",
@@ -218,7 +218,7 @@
     },
     "customFields": {
       "description": "What you want to keep about each contact besides name and phone: city, size, how they found you. Each field shows up in conversations, contacts and filters.",
-      "search": "Search by name, key or description",
+      "search": "Search fields",
       "count_one": "{{count}} field",
       "count_other": "{{count}} fields",
       "actionsOf": "Actions for {{name}}",
@@ -381,7 +381,7 @@
         "destinationSame": "In this field, replacing the current value",
         "destinationOther": "In another field, keeping the original",
         "targetField": "Target field",
-        "targetPlaceholder": "Choose a field or type a new name",
+        "targetPlaceholder": "Choose or type a name",
         "targetHint": "If the field doesn't exist, it's created when you apply.",
         "targetExisting": "Stores in the key {{key}}. Whatever is already there in these conversations will be replaced.",
         "targetNew": "Creates the field when you apply, with the key {{key}}.",

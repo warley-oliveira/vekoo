@@ -20,12 +20,11 @@
     },
     "quickReplies": {
       "description": "Textos prontos para responder mais rápido. Na conversa, digite <kbd>/</kbd> no campo de mensagem e escolha pelo atalho.",
-      "search": "Buscar por nome, atalho ou texto",
+      "search": "Buscar mensagens",
       "count_one": "{{count}} mensagem",
       "count_other": "{{count}} mensagens",
       "actionsOf": "Ações de {{name}}",
       "brokenBadge": "Anexo excluído",
-      "hasVariables": "Tem variáveis",
       "saved": "Mensagem rápida {{name}} salva.",
       "created": "Mensagem rápida {{name}} criada.",
       "missingAttachment_one": "Esta mensagem cita um anexo que foi excluído. Remova o bloco em vermelho ou insira outro arquivo: do jeito que está, a conversa recebe um código no lugar do arquivo.",
@@ -118,14 +117,15 @@
         "title": "Como sai na conversa",
         "empty": "Escreva a mensagem para ver como o contato recebe.",
         "missing": "Anexo excluído: sai um código no lugar do arquivo.",
-        "hint": "Exemplo com dados fictícios. As variáveis são preenchidas ao inserir a mensagem na conversa, e o que o contato não tiver fica no texto para completar à mão. Cada anexo vai como uma mensagem separada, e o envio retira aspas, colchetes, crases, til e os sinais de maior e menor.",
         "sampleName": "Ana Beatriz Moura",
-        "samplePhone": "(41) 99911-0001"
+        "samplePhone": "(41) 99911-0001",
+        "variablesHint": "Exemplo com dados fictícios. As variáveis são preenchidas ao inserir a mensagem na conversa, e o que o contato não tiver fica no texto para completar à mão.",
+        "strippedHint": "O envio retira aspas, colchetes, crases, til e os sinais de maior e menor, como aparece acima."
       }
     },
     "attachments": {
       "description": "Os arquivos da organização, prontos para usar nas mensagens rápidas, no chat, nas campanhas e nos fluxos.",
-      "search": "Buscar por nome, descrição ou arquivo",
+      "search": "Buscar arquivos",
       "count_one": "{{count}} arquivo",
       "count_other": "{{count}} arquivos",
       "actionsOf": "Ações de {{name}}",
@@ -218,7 +218,7 @@
     },
     "customFields": {
       "description": "O que você quer guardar de cada contato além do nome e do telefone: cidade, tamanho, como conheceu. Cada campo aparece nas conversas, nos contatos e nos filtros.",
-      "search": "Buscar por nome, chave ou descrição",
+      "search": "Buscar campos",
       "count_one": "{{count}} campo",
       "count_other": "{{count}} campos",
       "actionsOf": "Ações de {{name}}",
@@ -381,7 +381,7 @@
         "destinationSame": "Neste campo, substituindo o valor atual",
         "destinationOther": "Em outro campo, preservando o original",
         "targetField": "Campo de destino",
-        "targetPlaceholder": "Escolha um campo ou digite um nome novo",
+        "targetPlaceholder": "Escolha ou digite um nome",
         "targetHint": "Se o campo não existir, ele será criado ao aplicar.",
         "targetExisting": "Grava na chave {{key}}. O que já estiver lá nessas conversas será substituído.",
         "targetNew": "Cria o campo ao aplicar, com a chave {{key}}.",

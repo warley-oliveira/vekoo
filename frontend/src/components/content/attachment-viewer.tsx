@@ -59,7 +59,7 @@ export function AttachmentViewer({ file, name }: { file: AttachmentFile; name: s
       return isTouch ? (
         <NoPreview file={file} />
       ) : (
-        <iframe title={name} src={url} className="h-[60dvh] w-full rounded-lg bg-muted" />
+        <iframe title={name} src={url} className="h-96 w-full rounded-lg bg-muted md:h-[28rem]" />
       )
     default:
       return <NoPreview file={file} />

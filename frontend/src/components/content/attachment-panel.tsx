@@ -131,6 +131,7 @@ export function AttachmentPanel({
               variant="ghost"
               size="icon-sm"
               aria-label={t("content.attachments.actions.openInNewTab")}
+              nativeButton={false}
               render={<a href={url} target="_blank" rel="noopener noreferrer" />}
             >
               <ExternalLink />

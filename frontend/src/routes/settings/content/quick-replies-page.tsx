@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { Trans, useTranslation } from "react-i18next"
-import { AlertTriangle, Braces, MessageSquareText, Pencil, Plus, Trash2 } from "lucide-react"
+import { AlertTriangle, MessageSquareText, Pencil, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { ContentExcerpt } from "@/components/content/content-excerpt"
@@ -283,9 +283,12 @@ export default function QuickRepliesPage() {
                             onClick={() => panel.open(reply.id)}
                             className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-lg px-2 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:flex-row md:gap-4"
                           >
-                            <code className="w-fit max-w-full shrink-0 truncate rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground md:mt-0.5 md:w-36">
-                              /{reply.trigger}
-                            </code>
+                            {/* A largura fixa alinha os títulos; o atalho em si ocupa só o que precisa. */}
+                            <span className="flex shrink-0 items-start md:w-36">
+                              <code className="max-w-full truncate rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
+                                /{reply.trigger}
+                              </code>
+                            </span>
                             <span className="min-w-0 flex-1 space-y-0.5">
                               <span className="flex min-w-0 items-center gap-2">
                                 <span className="truncate text-sm font-medium">{reply.name}</span>
@@ -293,11 +296,6 @@ export default function QuickRepliesPage() {
                                   <StatusBadge tone="danger" dot={false} icon={<AlertTriangle />}>
                                     {t("content.quickReplies.brokenBadge")}
                                   </StatusBadge>
-                                ) : traits.includes("variable") ? (
-                                  <Braces
-                                    aria-label={t("content.quickReplies.hasVariables")}
-                                    className="size-3.5 shrink-0 text-muted-foreground"
-                                  />
                                 ) : null}
                               </span>
                               <span className="line-clamp-2 text-sm text-pretty text-muted-foreground">

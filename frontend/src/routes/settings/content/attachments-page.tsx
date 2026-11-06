@@ -186,12 +186,13 @@ export default function AttachmentsPage() {
           : t("content.attachments.delete.description"),
       confirmLabel: t("content.attachments.delete.confirm"),
       destructive: true,
-      onConfirm: () => deleteAttachment(attachment.id),
+      onConfirm: async () => {
+        await deleteAttachment(attachment.id)
+        // Na mesma volta: quando a lista chegar sem ele, o painel já não o procura mais.
+        panel.close()
+      },
     })
-    if (confirmed) {
-      panel.close()
-      toast.success(t("content.attachments.delete.done", { name: attachment.name }))
-    }
+    if (confirmed) toast.success(t("content.attachments.delete.done", { name: attachment.name }))
   }
 
   function actionsFor(attachment: Attachment): RowAction[] {
@@ -368,7 +369,8 @@ export default function AttachmentsPage() {
                   size="icon-sm"
                   aria-label={t("content.common.refresh")}
                   onClick={reload}
-                  className="text-muted-foreground"
+                  // No celular não cabe na linha, e a lista já se atualiza ao voltar para o app.
+                  className="hidden text-muted-foreground md:inline-flex"
                 >
                   <RefreshCw className={cn(isValidating && "animate-spin")} />
                 </Button>
@@ -496,8 +498,11 @@ function AttachmentCard({ attachment, meta, onOpen, actions, actionsLabel }: Att
 
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-xl ring-1 ring-foreground/10 transition-colors hover:bg-muted/40">
-      <div className="aspect-[4/3] bg-muted">
-        <AttachmentThumb file={attachment.file} alt="" iconClassName="size-7" />
+      {/* Absoluta: em altura percentual, a imagem esticaria a caixa até a proporção dela. */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        <span className="absolute inset-0">
+          <AttachmentThumb file={attachment.file} iconClassName="size-7" />
+        </span>
       </div>
       <div className="flex min-w-0 flex-1 items-start gap-1 p-3 pr-1.5">
         <div className="min-w-0 flex-1 space-y-1">
@@ -506,7 +511,7 @@ function AttachmentCard({ attachment, meta, onOpen, actions, actionsLabel }: Att
               type="button"
               onClick={onOpen}
               title={attachment.name}
-              className="block w-full truncate rounded text-left outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+              className="line-clamp-2 w-full rounded text-left wrap-anywhere outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
             >
               {attachment.name}
             </button>

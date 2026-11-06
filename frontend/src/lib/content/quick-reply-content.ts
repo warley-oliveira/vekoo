@@ -93,6 +93,13 @@ export type MessagePart =
 
 const IMAGE_LINK = /^https?:\/\/\S+\.(?:jpe?g|gif|png|bmp|tiff?|svg|webp)$/i
 
+/** O que o envio tira do texto (`MessageHandling#handle_part`), para a tela avisar. */
+const STRIPPED_CHARACTERS = /[[\]<>`"'~]/g
+
+export function hasStrippedCharacters(content: string): boolean {
+  return new RegExp(STRIPPED_CHARACTERS.source).test(content)
+}
+
 // A mesma limpeza de `MessageHandling#clean_message!`, no caminho de quem escreve na tela.
 function cleanMessage(text: string): string {
   return text
@@ -117,7 +124,7 @@ export function splitMessageParts(content: string): MessagePart[] {
   const seenTexts = new Set<string>()
 
   const pushText = (raw: string) => {
-    const text = raw.trim().replace(/[[\]<>`"'~]/g, "")
+    const text = raw.trim().replace(STRIPPED_CHARACTERS, "")
     if (!text.trim() || seenTexts.has(text)) return
     seenTexts.add(text)
     parts.push(IMAGE_LINK.test(text) ? { kind: "imageLink", url: text } : { kind: "text", text })

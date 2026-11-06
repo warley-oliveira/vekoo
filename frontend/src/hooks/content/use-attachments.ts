@@ -118,7 +118,7 @@ export function useAttachmentMutations() {
   const deleteAttachment = useCallback(
     async (id: string) => {
       await apiDelete(`/attachments/${id}`)
-      await revalidate()
+      void revalidate()
     },
     [revalidate]
   )
