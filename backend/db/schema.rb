@@ -159,6 +159,75 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
     t.index ["organization_id", "day"], name: "index_daily_chat_stats_on_organization_id_and_day", unique: true
   end
 
+  create_table "flow_execution_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "duration_ms"
+    t.text "error_message"
+    t.datetime "executed_at", null: false
+    t.uuid "flow_execution_id", null: false
+    t.jsonb "input", default: {}, null: false
+    t.string "node_id", null: false
+    t.string "node_type", null: false
+    t.jsonb "output", default: {}, null: false
+    t.string "status", default: "success", null: false
+    t.datetime "updated_at", null: false
+    t.index ["executed_at"], name: "index_flow_execution_logs_on_executed_at"
+    t.index ["flow_execution_id", "executed_at"], name: "index_flow_execution_logs_on_flow_execution_id_and_executed_at"
+  end
+
+  create_table "flow_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "chat_id"
+    t.datetime "completed_at"
+    t.string "contact_id"
+    t.jsonb "context", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "current_node_id"
+    t.text "error_message"
+    t.uuid "flow_id", null: false
+    t.uuid "flow_version_id", null: false
+    t.string "idempotency_key"
+    t.datetime "locked_at"
+    t.uuid "organization_id", null: false
+    t.boolean "playground", default: false, null: false
+    t.datetime "resume_at"
+    t.string "resume_token"
+    t.string "run_token"
+    t.datetime "started_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["flow_id", "chat_id"], name: "index_flow_executions_one_active_per_chat", unique: true, where: "((playground = false) AND (chat_id IS NOT NULL) AND ((status)::text = ANY ((ARRAY['pending'::character varying, 'running'::character varying, 'waiting'::character varying, 'waiting_for_message'::character varying])::text[])))"
+    t.index ["flow_id", "playground", "created_at"], name: "index_flow_executions_on_flow_id_and_playground_and_created_at"
+    t.index ["idempotency_key"], name: "index_flow_executions_on_idempotency_key", unique: true, where: "(idempotency_key IS NOT NULL)"
+    t.index ["organization_id", "chat_id", "status"], name: "idx_on_organization_id_chat_id_status_1ff079db0a"
+    t.index ["status", "updated_at"], name: "index_flow_executions_on_status_and_updated_at"
+  end
+
+  create_table "flow_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "created_by_account_id"
+    t.jsonb "definition", default: {"edges" => [], "nodes" => [], "viewport" => {}}, null: false
+    t.uuid "flow_id", null: false
+    t.datetime "published_at"
+    t.datetime "updated_at", null: false
+    t.integer "version_number", null: false
+    t.index ["flow_id", "version_number"], name: "index_flow_versions_on_flow_id_and_version_number", unique: true
+  end
+
+  create_table "flows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "connector_filter", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.uuid "created_by_account_id"
+    t.text "description"
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.uuid "published_version_id"
+    t.string "status", default: "draft", null: false
+    t.string "trigger_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "status", "trigger_type"], name: "index_flows_on_organization_id_and_status_and_trigger_type"
+    t.index ["organization_id", "updated_at"], name: "index_flows_on_organization_id_and_updated_at"
+  end
+
   create_table "folders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "color", null: false
     t.datetime "created_at", null: false
@@ -185,6 +254,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
     t.uuid "organization_id", null: false
     t.datetime "updated_at", null: false
     t.index "organization_id, lower((name)::text)", name: "index_funnels_on_organization_and_lower_name", unique: true
+  end
+
+  create_table "hook_actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "config", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.uuid "hook_id", null: false
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hook_id", "created_at"], name: "index_hook_actions_on_hook_id_and_created_at"
+  end
+
+  create_table "hooks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.jsonb "received_payload", default: [], null: false
+    t.boolean "signature_enabled", default: false, null: false
+    t.text "signing_secret_ciphertext"
+    t.datetime "signing_secret_generated_at"
+    t.string "signing_secret_last_four", limit: 4
+    t.string "slug"
+    t.string "status", default: "test", null: false
+    t.bigint "total_request", default: 0, null: false
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "created_at"], name: "index_hooks_on_organization_id_and_created_at"
+    t.index ["uid"], name: "index_hooks_on_uid", unique: true
   end
 
   create_table "library_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -804,9 +900,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   add_foreign_key "contact_imports", "accounts", on_delete: :nullify
   add_foreign_key "contact_imports", "organizations", on_delete: :cascade
   add_foreign_key "daily_chat_stats", "organizations", on_delete: :cascade
+  add_foreign_key "flow_execution_logs", "flow_executions", on_delete: :cascade
+  add_foreign_key "flow_executions", "flow_versions", on_delete: :cascade
+  add_foreign_key "flow_executions", "flows", on_delete: :cascade
+  add_foreign_key "flow_executions", "organizations", on_delete: :cascade
+  add_foreign_key "flow_versions", "flows", on_delete: :cascade
+  add_foreign_key "flows", "flow_versions", column: "published_version_id", on_delete: :nullify
+  add_foreign_key "flows", "organizations", on_delete: :cascade
   add_foreign_key "folders", "organizations"
   add_foreign_key "funnel_stages", "funnels", on_delete: :cascade
   add_foreign_key "funnels", "organizations", on_delete: :cascade
+  add_foreign_key "hook_actions", "hooks", on_delete: :cascade
+  add_foreign_key "hooks", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "organizations"
   add_foreign_key "oauth_credentials", "organizations", on_delete: :cascade
   add_foreign_key "organization_alerts", "organizations", on_delete: :cascade
