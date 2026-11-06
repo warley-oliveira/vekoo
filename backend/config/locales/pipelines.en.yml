@@ -186,6 +186,12 @@ en:
               too_large: "are too large"
             description_json:
               too_large: "is too large"
+        pipelines/goal:
+          attributes:
+            assigned_account_id:
+              goal_taken: "already has a goal this month"
+            period_month:
+              goal_taken: "already has a funnel goal"
         pipelines/card_attachment:
           attributes:
             file:

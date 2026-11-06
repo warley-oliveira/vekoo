@@ -186,6 +186,12 @@ pt-BR:
               too_large: "são grandes demais"
             description_json:
               too_large: "é grande demais"
+        pipelines/goal:
+          attributes:
+            assigned_account_id:
+              goal_taken: "já tem meta neste mês"
+            period_month:
+              goal_taken: "já tem meta do funil"
         pipelines/card_attachment:
           attributes:
             file:

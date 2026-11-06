@@ -44,6 +44,19 @@ RSpec.describe "Pipelines: metas", type: :request do
       post goals_path, params: { goal: { scope: "funnel", periodMonth: "2026-11", targetValue: 1 } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "field")).to eq("periodMonth")
+      expect(json.dig("error", "message")).to eq("Mês já tem meta do funil")
+    end
+
+    it "responde 422 para duas metas da mesma pessoa no mesmo mês" do
+      create(:pipeline_goal, :user, board: board, assigned_account: owner, period_month: Date.new(2026, 11, 1))
+
+      post goals_path, params: { goal: { scope: "user", assignedAccountId: owner.id, periodMonth: "2026-11", targetValue: 1 } },
+        headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "field")).to eq("assignedAccountId")
+      expect(json.dig("error", "message")).to eq("Responsável já tem meta neste mês")
     end
 
     it "o índice também segura a corrida na meta do funil, que não tem pessoa" do

@@ -14,7 +14,10 @@ module Pipelines
     validates :target_value, numericality: { greater_than: 0, less_than: MAX_TARGET }
     validates :assigned_account, presence: true, if: :user_scope?
     validates :assigned_account, absence: true, unless: :user_scope?
-    validates :assigned_account_id, uniqueness: { scope: %i[board_id scope period_month] }
+    # Duas regras porque a mensagem é outra: para a meta do funil, que não tem pessoa, "Responsável já
+    # está em uso" não dizia nada.
+    validates :assigned_account_id, uniqueness: { scope: %i[board_id scope period_month], message: :goal_taken }, if: :user_scope?
+    validates :period_month, uniqueness: { scope: %i[board_id scope], message: :goal_taken }, unless: :user_scope?
     validate :assigned_account_belongs_to_organization
 
     scope :funnel, -> { where(scope: "funnel") }
