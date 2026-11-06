@@ -2,9 +2,11 @@ import { lazy } from "react"
 import { Route } from "react-router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
-import { placeholderRoute } from "@/routes/placeholder"
 
 const CatalogPage = lazy(() => import("./catalog-page"))
+const CategoriesPage = lazy(() => import("./categories-page"))
+const FieldsPage = lazy(() => import("./fields-page"))
+const ItemPage = lazy(() => import("./item-page"))
 
 export const catalogRoutes = (
   <>
@@ -18,15 +20,27 @@ export const catalogRoutes = (
     />
     <Route
       path="/catalog/categories"
-      element={placeholderRoute("navigation.routes.catalogCategories", "catalog")}
+      element={
+        <RouteFrame title="navigation.routes.catalogCategories" permission="catalog">
+          <CategoriesPage />
+        </RouteFrame>
+      }
     />
     <Route
       path="/catalog/fields"
-      element={placeholderRoute("navigation.routes.catalogFields", "catalog")}
+      element={
+        <RouteFrame title="navigation.routes.catalogFields" permission="catalog">
+          <FieldsPage />
+        </RouteFrame>
+      }
     />
     <Route
       path="/catalog/:itemId"
-      element={placeholderRoute("navigation.routes.catalogItem", "catalog")}
+      element={
+        <RouteFrame title="navigation.routes.catalogItem" permission="catalog">
+          <ItemPage />
+        </RouteFrame>
+      }
     />
   </>
 )
