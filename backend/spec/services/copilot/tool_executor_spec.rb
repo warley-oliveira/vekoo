@@ -53,6 +53,18 @@ RSpec.describe Copilot::ToolExecutor do
       expect(events.last.last[:contact]).to eq(userName: "Fernanda", phoneNumber: "5531971810932")
     end
 
+    # Com o traço cru, o modelo respondeu que a pessoa "respondeu só -".
+    it "mostra o áudio sem transcrição como áudio, na conversa e na lista" do
+      chat = chat_for(user_name: "Fernanda Lima")
+      ChatMessage::Audio.create!(chat: chat, role: "user", content: "-", audio_url: "https://exemplo.com/a.ogg")
+
+      details = executor.execute("get_chat_details", { "chat_id" => chat.id.to_s })
+      list = executor.execute("search_chats", { "query" => "Fernanda" })
+
+      expect(details[:recent_messages].last[:content]).to eq("[áudio sem transcrição]")
+      expect(list[:chats].first[:last_message_content]).to eq("[áudio sem transcrição]")
+    end
+
     it "corta o que guarda, porque mora num documento só" do
       chat = chat_for
       create(:chat_text_message, chat: chat, content: "x" * 390)

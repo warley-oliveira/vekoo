@@ -195,7 +195,7 @@ module Copilot
       return { error: I18n.t("inbox.copilot.no_messages") } if messages.empty?
 
       text = messages.map do |message|
-        "#{message.role == 'assistant' ? 'ATENDENTE' : 'CLIENTE'}: #{message.content.to_s[0, 500]}"
+        "#{message.role == 'assistant' ? 'ATENDENTE' : 'CLIENTE'}: #{Chats::MessageText.for(message, limit: 500)}"
       end.join("\n")
 
       summary = chat.complete(
@@ -429,7 +429,7 @@ module Copilot
           status: record.status,
           tags: tags[record.id],
           match_count: list.size,
-          matching_messages: list.first(5).map { |message| { role: message.role, content: message.content.to_s[0, 400], created_at: format_time(message.created_at) } }
+          matching_messages: list.first(5).map { |message| { role: message.role, content: Chats::MessageText.for(message), created_at: format_time(message.created_at) } }
         }
       end
 
@@ -641,7 +641,7 @@ module Copilot
           assigned_name: person_by_id(record.assigned_account_id)&.name,
           unread_messages: record.unread_messages,
           last_message_at: format_time(record.last_message_at),
-          last_message_content: record.last_message_content.to_s[0, 200],
+          last_message_content: Chats::MessageText.preview(record.last_message_content, record.last_message_type),
           tags: tags[record.id]
         }
       end
@@ -652,7 +652,7 @@ module Copilot
         id: message.id.to_s,
         from: message.role == "assistant" ? "atendente" : "contato",
         sender_name: message.sender_name,
-        content: message.content.to_s[0, 400],
+        content: Chats::MessageText.for(message),
         created_at: format_time(message.created_at)
       }
     end

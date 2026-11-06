@@ -71,7 +71,7 @@ module Chats
                                   .reverse
       return "(ainda não há mensagens: sugira uma primeira mensagem)" if messages.empty?
 
-      messages.map { |message| "#{message.role == 'assistant' ? 'ATENDENTE' : 'CONTATO'}: #{message.content.to_s[0, MAX_MESSAGE_CHARS]}" }.join("\n")
+      messages.map { |message| "#{message.role == 'assistant' ? 'ATENDENTE' : 'CONTATO'}: #{Chats::MessageText.for(message, limit: MAX_MESSAGE_CHARS)}" }.join("\n")
     end
   end
 end

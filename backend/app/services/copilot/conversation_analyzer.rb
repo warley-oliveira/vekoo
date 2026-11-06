@@ -169,7 +169,7 @@ module Copilot
       sender = message.role == "assistant" ? "ATENDENTE" : "CLIENTE"
       timestamp = message.created_at&.in_time_zone(time_zone)&.strftime("%d/%m %H:%M") || ""
 
-      "#{timestamp} #{sender}: #{message.content.to_s[0, MAX_MESSAGE_CHARS]}"
+      "#{timestamp} #{sender}: #{Chats::MessageText.for(message, limit: MAX_MESSAGE_CHARS)}"
     end
 
     def analyze_individually(chats_data, context, user_question)

@@ -66,6 +66,14 @@ RSpec.describe "Chat: resposta sugerida", type: :request do
     expect(llm).to have_received(:complete).with(hash_including(prompt: a_string_including("ainda não há mensagens")))
   end
 
+  it "diz ao modelo que o áudio não tem transcrição, em vez de passar o traço" do
+    ChatMessage::Audio.create!(chat: chat, role: "user", content: "-", audio_url: "https://exemplo.com/a.ogg")
+
+    suggest
+
+    expect(llm).to have_received(:complete).with(hash_including(prompt: a_string_including("CONTATO: [áudio sem transcrição]")))
+  end
+
   it "responde 422 sem créditos, sem chamar o modelo" do
     organization.update!(credits_used: 10)
 

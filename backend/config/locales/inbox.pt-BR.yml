@@ -66,6 +66,14 @@ pt-BR:
       failed: "Não foi possível exportar os contatos. Tente de novo."
       nothing: "Nenhum contato encontrado para exportar."
     copilot:
+      message_kinds:
+        audio: "[áudio]"
+        image: "[imagem]"
+        media: "[arquivo]"
+        audio_empty: "[áudio sem transcrição]"
+        image_empty: "[imagem sem legenda]"
+        media_empty: "[arquivo sem legenda]"
+        unknown_empty: "[mensagem sem texto]"
       connected: "Conectado ao copiloto."
       failed: "Não foi possível processar a mensagem. Tente de novo."
       timeout: "A operação demorou mais do que o esperado. Tente de novo."

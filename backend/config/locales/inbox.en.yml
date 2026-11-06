@@ -65,6 +65,14 @@ en:
       failed: "Could not export the contacts. Try again."
       nothing: "No contacts found to export."
     copilot:
+      message_kinds:
+        audio: "[audio]"
+        image: "[image]"
+        media: "[file]"
+        audio_empty: "[audio without transcript]"
+        image_empty: "[image without caption]"
+        media_empty: "[file without caption]"
+        unknown_empty: "[message without text]"
       connected: "Connected to the copilot."
       failed: "Could not process the message. Try again."
       timeout: "This took longer than expected. Try again."
