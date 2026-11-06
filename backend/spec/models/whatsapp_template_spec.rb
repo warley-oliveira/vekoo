@@ -452,6 +452,23 @@ RSpec.describe WhatsappTemplate do
       expect(named.render_message_text(params)).to eq("Oi Maria")
     end
 
+    it "preenche as variáveis nomeadas no formato da Meta" do
+      named = described_class.new(components: [ { "type" => "BODY", "text" => "Oi {{nome}}" } ])
+      params = [ { "type" => "body", "parameters" => [ { "type" => "text", "parameter_name" => "nome", "text" => "Maria" } ] } ]
+
+      expect(named.render_message_text(params)).to eq("Oi Maria")
+    end
+
+    it "preenche a variável do cabeçalho de texto" do
+      with_header = described_class.new(components: [
+        { "type" => "HEADER", "format" => "TEXT", "text" => "Pedido {{1}}" },
+        { "type" => "BODY", "text" => "Saiu para entrega" }
+      ])
+      params = [ { "type" => "header", "parameters" => [ { "type" => "text", "text" => "48213" } ] } ]
+
+      expect(with_header.render_message_text(params)).to eq("*Pedido 48213*\n\nSaiu para entrega")
+    end
+
     it "deixa como está sem parâmetros de corpo" do
       expect(template.render_message_text([ { "type" => "header" } ])).to include("Olá {{1}}")
     end

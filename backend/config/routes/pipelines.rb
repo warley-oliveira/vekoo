@@ -3,6 +3,7 @@
 scope path: "pipelines", module: :pipelines, as: :pipelines do
   resources :labels, only: %i[index create update destroy]
   resources :templates, only: :index
+  get "cards", to: "chat_cards#index"
 
   resources :boards, only: %i[index show create update destroy] do
     member do

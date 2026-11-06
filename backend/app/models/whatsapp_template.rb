@@ -211,7 +211,9 @@ class WhatsappTemplate
         # else
         #   rendered_parts << "📋 #{component['text']}" if component['text'].present?
         # end
-        rendered_parts << "*#{component['text']}*" if component['text'].present?
+        if component['text'].present?
+          rendered_parts << "*#{interpolate_parameters(component['text'], frontend_components, 'header')}*"
+        end
       when 'BODY'
         if component['text'].present?
           body_text = interpolate_parameters(component['text'], frontend_components)
@@ -314,20 +316,21 @@ class WhatsappTemplate
 
   private
 
-  def interpolate_parameters(text, frontend_components)
+  def interpolate_parameters(text, frontend_components, type = 'body')
     return text if frontend_components.blank?
 
-    # Encontrar o componente BODY nos componentes do frontend
-    body_component = frontend_components.find { |comp| comp['type']&.downcase == 'body' }
-    return text unless body_component&.dig('parameters')
+    # Encontrar o componente nos componentes do frontend
+    component = frontend_components.find { |comp| comp['type']&.downcase == type }
+    return text unless component&.dig('parameters')
 
     interpolated_text = text.dup
 
     # Interpolar cada parâmetro
-    body_component['parameters'].each_with_index do |param, index|
-      # Formato com param_name (body_text_named_params)
-      if param['param_name'].present? && param['text'].present?
-        placeholder = "{{#{param['param_name']}}}"
+    component['parameters'].each_with_index do |param, index|
+      # Formato com nome: a Meta chama de `parameter_name`; `param_name` é o que a origem mandava.
+      name = param['parameter_name'].presence || param['param_name']
+      if name.present? && param['text'].present?
+        placeholder = "{{#{name}}}"
         interpolated_text.gsub!(placeholder, param['text'])
       end
 
