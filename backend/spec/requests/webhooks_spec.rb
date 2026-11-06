@@ -511,6 +511,40 @@ RSpec.describe "Webhooks", type: :request do
         expect(ChatMessage::Media.where(media_type: "image").take).to have_attributes(caption: "Sua foto")
       end
 
+      it "o texto da ação chega como foi escrito" do
+        create(:hook_action_start_flow, hook: hook, config: { "connector_id" => connector.id.to_s, "message_text" => %(Copo d'água, "gelado" [ver] {{body.nome}}) })
+
+        perform_enqueued_jobs { deliver }
+
+        expect(sent_texts).to eq([ %(Copo d'água, "gelado" [ver] Fernanda) ])
+      end
+
+      it "o bloco de texto do modo avançado também" do
+        create(:hook_action_start_flow, hook: hook, config: {
+          "connector_id" => connector.id.to_s,
+          "send_mode" => "advanced",
+          "message_blocks" => [ { "type" => "text", "content" => "Copo d'água" } ]
+        })
+
+        perform_enqueued_jobs { deliver }
+
+        expect(sent_texts).to eq([ "Copo d'água" ])
+      end
+
+      it "anexo citado vai como mídia, e o que sumiu não chega como código e vira alerta" do
+        attachment = create(:attachment, organization: organization)
+        sent_media = stub_request(:post, %r{/message/sendMedia/}).to_return(status: 201, body: { key: { id: "M1" } }.to_json, headers: { "Content-Type" => "application/json" })
+        gone = SecureRandom.uuid
+        create(:hook_action_start_flow, hook: hook, config: { "connector_id" => connector.id.to_s, "message_text" => "Segue attachment_id_#{attachment.id} e attachment_id_#{gone} pronto" })
+
+        perform_enqueued_jobs { deliver }
+
+        expect(sent_media).to have_been_requested.once
+        expect(sent_texts.join(" ")).not_to include("attachment_id_")
+        expect(sent_texts).to eq([ "Segue", "e", "pronto" ])
+        expect(organization.organization_alerts.active.for_origin("Hook", hook.id).take.message).to include(gone)
+      end
+
       it "o canal que falha vira alerta, e o resto continua" do
         stub_request(:post, %r{/message/sendText/}).to_return(status: 500, body: "{}")
         create(:hook_action_start_flow, hook: hook, config: { "connector_id" => connector.id.to_s, "message_text" => "Oi" })

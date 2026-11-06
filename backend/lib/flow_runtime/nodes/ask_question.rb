@@ -7,10 +7,10 @@ module FlowRuntime
         return answered if context.node_state(node_id)["asked"] && context.fresh_message?
 
         text = interpolate(data["text"].to_s)
-        dispatcher.ask_question(text, sender_name: data["sender_name"].presence) if text.present?
+        delivery = dispatcher.ask_question(text, sender_name: data["sender_name"].presence) if text.present?
         context.update_node_state(node_id, "asked" => true)
 
-        suspend(:wait_for_message, log: { input: { text: data["text"] }, output: { asked: text, awaiting_reply: true } })
+        suspend(:wait_for_message, log: { input: { text: data["text"] }, output: { asked: text, awaiting_reply: true, **(delivery ? delivery.to_log : {}) } })
       end
 
       private

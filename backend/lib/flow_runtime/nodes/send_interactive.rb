@@ -12,11 +12,11 @@ module FlowRuntime
         if context.playground?
           dispatcher.emit_event("interactive_sent", text: text, buttons: list)
         else
-          dispatcher.send_text(with_options(text, list), sender_name: data["sender_name"].presence)
+          delivery = dispatcher.send_text(with_options(text, list), sender_name: data["sender_name"].presence)
         end
 
         context.update_node_state(node_id, "sent" => true)
-        suspend(:wait_for_message, log: { input: data, output: { sent: text, buttons: list.length } })
+        suspend(:wait_for_message, log: { input: data, output: { sent: text, buttons: list.length, **(delivery ? delivery.to_log : {}) } })
       end
 
       private
@@ -56,8 +56,8 @@ module FlowRuntime
       end
 
       def ask_again
-        dispatcher.send_text(interpolate(data["invalid_text"].to_s), sender_name: data["sender_name"].presence)
-        suspend(:wait_for_message, log: { input: { reply: answer_text }, output: { invalid: true } })
+        delivery = dispatcher.send_text(interpolate(data["invalid_text"].to_s), sender_name: data["sender_name"].presence)
+        suspend(:wait_for_message, log: { input: { reply: answer_text }, output: { invalid: true, **delivery.to_log } })
       end
     end
   end

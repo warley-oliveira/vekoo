@@ -99,11 +99,11 @@ module FlowRuntime
         text = converse(reply_messages, [ instruction, hint, widget_context ].compact_blank.join("\n\n").presence, judged)
 
         if text.present?
-          dispatcher.send_text(text, sender_name: data["sender_name"].presence)
+          delivery = dispatcher.send_text(text, sender_name: data["sender_name"].presence, generated: true)
           context.append_playground_message("assistant", text) if context.playground?
         end
 
-        suspend(:wait_for_message, log: { input: { messages: reply_messages.length }, output: log.merge(reply: text) })
+        suspend(:wait_for_message, log: { input: { messages: reply_messages.length }, output: log.merge(reply: text, **(delivery ? delivery.to_log : {})) })
       end
 
       # Conversa com as ferramentas que o bloco escolheu. O juiz já cobrou a chamada dele, e a rodada não paga duas vezes.

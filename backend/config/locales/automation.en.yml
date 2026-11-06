@@ -73,6 +73,7 @@ en:
         invalid_definition: "This flow has problems and can't be published."
         no_credits: "Not enough credits for the AI block."
         no_credits_alert: "Flow \"%{name}\" is out of credits for its AI blocks."
+        attachment_missing_alert: "Flow \"%{name}\" sent a message without the attachment it mentions: %{reason}"
         ai_unavailable: "AI isn't configured in this environment."
         ai_failed: "The AI didn't respond: %{reason}"
         no_connected_outputs: "AI assistant: no output is connected to another block."

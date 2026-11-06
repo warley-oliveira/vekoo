@@ -73,6 +73,7 @@ pt-BR:
         invalid_definition: "O fluxo tem problemas e não pode ser publicado."
         no_credits: "Sem créditos para o bloco de IA."
         no_credits_alert: "O fluxo \"%{name}\" está sem créditos para os blocos de IA."
+        attachment_missing_alert: "O fluxo \"%{name}\" enviou uma mensagem sem o anexo citado: %{reason}"
         ai_unavailable: "A IA não está configurada neste ambiente."
         ai_failed: "A IA não respondeu: %{reason}"
         no_connected_outputs: "Assistente IA: nenhuma saída está conectada a outro bloco."

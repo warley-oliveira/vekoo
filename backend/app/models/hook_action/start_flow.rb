@@ -66,9 +66,11 @@ module HookAction
       "#{organization.name} [WH]"
     end
 
+    # O texto foi escrito por alguém e vai como está. Anexo citado que sumiu: o resto segue, e o alerta diz o que faltou.
     def send_text(text)
-      message = @current_chat.send_text_message(text, sender_name, message_origin: "platform")
-      report_failed(message)
+      delivery = Flows::TextDelivery.call(chat: @current_chat, text: text, sender_name: sender_name)
+      delivery.messages.each { |message| report_failed(message) }
+      delivery.missing_attachments.each { |reason| report_error(reason) }
     rescue StandardError => e
       report_error(e.message)
     end
