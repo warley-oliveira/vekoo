@@ -54,7 +54,8 @@ class Connector::WhatsappWeb
           raise_if_number_not_found!(response)
           raise "Failed to send message: #{response.body}" unless (200..299).cover?(response.code)
 
-          response.parsed_response.dig('key', 'id')
+          # Tolera 2xx sem corpo: levantar aqui faria `with_retry` reenviar o que já saiu.
+          Connectors::ExternalId.from(response)
         end
       end
 
@@ -130,6 +131,8 @@ class Connector::WhatsappWeb
             Rails.logger.error("Failed to send audio message with payload: #{payload}")
             raise "Failed to send message: #{response.body} "
           end
+
+          response
         end
       end
 
@@ -197,7 +200,7 @@ class Connector::WhatsappWeb
 
           raise "Failed to send reaction: #{response.body}" unless [200, 201].include?(response.code)
 
-          response.parsed_response.dig('key', 'id')
+          Connectors::ExternalId.from(response)
         end
       end
 
@@ -272,7 +275,8 @@ class Connector::WhatsappWeb
 
         body = {
           instanceName: connector.instance_name,
-          connector: 'WHATSAPP-BAILEYS',
+          # Campo do contrato da Evolution, não o nosso "conector": sem ele a instância não nasce.
+          integration: 'WHATSAPP-BAILEYS',
           qrcode: true,
           webhook: {
             enabled: true,

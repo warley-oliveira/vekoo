@@ -31,7 +31,8 @@ class Connector::WhatsappWeb
 
           raise "Failed to send message: #{response.body}" unless (200..299).cover?(response.code)
 
-          response.parsed_response.dig('key', 'id')
+          # Tolera 2xx sem corpo: levantar aqui faria `with_retry` reenviar o que já saiu.
+          Connectors::ExternalId.from(response)
         end
       end
 
@@ -63,6 +64,8 @@ class Connector::WhatsappWeb
           Rails.logger.info("HTTParty Response (send_audio_message_by_url): #{response.body}")
 
           raise "Failed to send message: #{response.body}" unless [200, 201].include?(response.code)
+
+          response
         end
       end
 
@@ -210,13 +213,14 @@ class Connector::WhatsappWeb
 
         unless [200, 201].include?(instance_response.code)
           Rails.logger.error("Failed to retrieve instance: #{instance_response.body}")
+          return
         end
 
         current_instance =
           instance_response.find { _1.dig('instance', 'instanceName').eql?(connector.instance_name) }&.[]('instance')
         return if current_instance.nil?
 
-        connector.number_id           = current_instance['owner'].split('@').first
+        connector.number_id           = current_instance['owner']&.split('@')&.first
         connector.profile_picture_url = current_instance['profilePictureUrl']
         connector.profile_name        = current_instance['profileName']
       end
@@ -309,7 +313,7 @@ class Connector::WhatsappWeb
           attachment: file_io,
           mediatype: media_dto.media_type || 'image',
           fileName: file_name
-        }.transform_values { |v| v.is_a?(String) ? v.force_encoding(Encoding::UTF_8) : v }
+        }.transform_values { |v| v.is_a?(String) ? v.dup.force_encoding(Encoding::UTF_8) : v }
 
         if media_dto.caption.present? && %w[image video].include?(media_dto.media_type.to_s)
           payload[:caption] = media_dto.caption

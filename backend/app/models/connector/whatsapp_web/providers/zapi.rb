@@ -20,7 +20,7 @@ class Connector::WhatsappWeb
         Rails.logger.info(
           "[ZapiClient] Text message sent to #{phone}: #{message[0..50]}...\nResponse: #{response.inspect}"
         )
-        response&.dig('messageId')
+        response.try(:dig, 'messageId')
       rescue ZapiClient::Error => e
         Rails.logger.error("[ZapiClient] Failed to send text: #{e.message}")
         raise e

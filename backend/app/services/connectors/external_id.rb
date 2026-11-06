@@ -7,7 +7,6 @@ module Connectors
     # @return [String, nil]
     def from(response)
       return response if response.is_a?(String)
-      return nil if response.nil?
 
       # SDK da Meta (WhatsApp Cloud)
       wamid = response.try(:data).try(:messages)&.first.try(:id)
