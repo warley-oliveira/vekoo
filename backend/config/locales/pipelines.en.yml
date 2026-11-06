@@ -1,0 +1,222 @@
+# Pipelines copy in English. Keep the same keys as pipelines.pt-BR.yml.
+en:
+  pipelines:
+    conflict: "This record was just created by someone else. Refresh the page and try again."
+    too_many_ids: "Select at most %{max} items at a time."
+    board_factory:
+      default_stages:
+        - "To do"
+        - "In progress"
+        - "Done"
+      crm_stages:
+        - "New contacts"
+        - "Qualification"
+        - "Proposal"
+        - "Negotiation"
+        - "Won"
+        - "Lost"
+    boards:
+      visibility_lockout: "Include your own permission group: without it you would lose access to these cards."
+      invalid_lead_score_field: "The score must use a number field from this board."
+    cards:
+      unnamed_contact: "Unnamed contact"
+      checklist_incomplete: "Finish this stage's checklist to move the card forward."
+      required_fields_incomplete: "Fill in the required fields to continue."
+      chat_description:
+        contact: "Contact: %{value}"
+        phone: "Phone: %{value}"
+        status: "Chat status: %{value}"
+    comments:
+      too_many_files: "Attach at most %{max} files per comment."
+      automation_author:
+        script: "Automation"
+        flow: "Flow"
+    notices:
+      trigger_title: "Pipeline"
+      trigger_default: "The card \"%{card}\" was updated on the board \"%{board}\"."
+      sla_title: "Stage time is up"
+      sla_body: "The card \"%{card}\" has been over %{hours}h in the stage \"%{stage}\"."
+    webhook:
+      destination_refused: "This address can't receive the call."
+    triggers:
+      failures:
+        stage_not_found: "The chosen stage no longer exists."
+        board_not_found: "The chosen board no longer exists."
+        no_accounts: "None of the chosen people is active."
+        connector_not_found: "The chosen channel no longer exists."
+        connector_not_waba: "Message templates only work on WhatsApp Business channels."
+        template_not_found: "The chosen message template no longer exists."
+        template_refused: "The template wasn't sent: %{reason}"
+        message_refused: "The message wasn't sent: %{reason}"
+        card_without_chat: "This card has no chat."
+        webhook_without_url: "The webhook has no address."
+        webhook_failed: "The webhook failed: %{reason}"
+        code_timeout: "The code went over the %{ms} ms time limit."
+        code_memory: "The code went over the memory limit."
+        code_internal: "The code couldn't be run."
+        code_note: "The trigger's code failed: %{message}"
+    filters:
+      favorite_target_required: "Choose a filter to favorite."
+      errors:
+        not_an_object: "The filter definition must be an object."
+        version: "The filter version must be %{version}."
+        group_not_a_list: "The group \"%{group}\" must be a list."
+        no_conditions: "Add at least one condition."
+        too_many_conditions: "Use at most %{count} conditions."
+        condition_not_an_object: "Condition %{position} is invalid."
+        unknown_field: "Condition %{position} uses an unknown field: %{field}."
+        operator_not_allowed: "Condition %{position} uses the operator \"%{operator}\", which doesn't apply to \"%{field}\"."
+        value_required: "Fill in the value of condition %{position}."
+        value_not_a_list: "The value of condition %{position} must be a list."
+        value_list_empty: "Choose at least one value in condition %{position}."
+        between_needs_two: "Condition %{position} needs two values."
+        value_not_single: "Condition %{position} takes a single value."
+        value_not_a_number: "The value of condition %{position} must be a number."
+        value_not_an_id: "Condition %{position} has an invalid identifier."
+        value_not_allowed: "The value of condition %{position} must be one of: %{values}."
+        me_only_for_people: "\"Me\" only applies to people fields (condition %{position})."
+        unknown_token: "Condition %{position} has an unknown value: %{type}."
+        invalid_relative_token: "Condition %{position} has an invalid relative date: %{token}."
+        relative_not_allowed: "The operator \"%{operator}\" doesn't take a relative date (condition %{position})."
+        token_needs_amount: "The date \"%{token}\" needs an amount (condition %{position})."
+        invalid_custom_key: "Invalid custom field: %{key}."
+        me_needs_account: "\"Me\" needs a person in the session."
+        invalid_range: "Invalid date range: %{value}."
+        invalid_date: "Invalid date: %{value}."
+        invalid_json: "The filter isn't valid JSON."
+
+  organization_alerts:
+    messages:
+      pipeline_trigger_failed: "The trigger \"%{name}\" failed on its last run."
+
+  activerecord:
+    attributes:
+      pipelines/board:
+        name: "Name"
+        organization: "Organization"
+        board_type: "Board type"
+        deal_close_behavior: "Deal closing behavior"
+        card_visibility: "Card visibility"
+        card_visibility_bypass_role_ids: "Allowed groups"
+        auto_archive_days: "Days to archive"
+        deal_close_archive_days: "Days to archive a closed deal"
+        deal_rotting_days: "Days for a deal to go cold"
+        lead_score_low: "Low score"
+        lead_score_high: "High score"
+      pipelines/stage:
+        name: "Name"
+        position: "Position"
+        wip_limit: "Card limit"
+        sla_hours: "Maximum time in the stage"
+      pipelines/card:
+        title: "Title"
+        stage: "Stage"
+        stage_id: "Stage"
+        priority: "Priority"
+        deal_probability: "Probability"
+        deal_value: "Value"
+        assigned_to_id: "Assignee"
+        tags: "Tags"
+        custom_field_values: "Custom fields"
+        description_json: "Description"
+      pipelines/card_attachment:
+        file: "File"
+      pipelines/comment_attachment:
+        file: "File"
+      pipelines/checklist:
+        name: "Name"
+      pipelines/checklist_item:
+        title: "Title"
+        assigned_to_id: "Assignee"
+      pipelines/stage_checklist_item:
+        title: "Title"
+      pipelines/comment:
+        body: "Comment"
+        parent_id: "Replied comment"
+        automation_source: "Source"
+      pipelines/comment_reaction:
+        emoji: "Reaction"
+      pipelines/custom_field:
+        name: "Name"
+        key: "Key"
+        field_type: "Type"
+        options: "Options"
+        scope: "Scope"
+        stage_id: "Stage"
+      pipelines/goal:
+        scope: "Goal type"
+        metric: "Metric"
+        period_month: "Month"
+        target_value: "Goal value"
+        assigned_account: "Assignee"
+        assigned_account_id: "Assignee"
+      pipelines/label:
+        name: "Name"
+        color: "Color"
+      pipelines/saved_filter:
+        name: "Name"
+        visibility: "Visibility"
+        definition: "Filter"
+      pipelines/trigger:
+        name: "Name"
+        event_type: "Event"
+        actions: "Actions"
+        stage_id: "Stage"
+    errors:
+      # What's missing from the general messages in pt-BR.yml and the models here use.
+      messages:
+        greater_than: "must be greater than %{count}"
+        less_than: "must be less than %{count}"
+        not_an_integer: "must be an integer"
+        in: "must be in %{count}"
+        present: "must be blank"
+        required: "must exist"
+      models:
+        pipelines/board:
+          attributes:
+            card_visibility_bypass_role_ids:
+              blank_roles: "needs at least one permission group"
+              invalid_roles: "has an invalid permission group"
+        pipelines/card:
+          attributes:
+            tags:
+              too_many: "can be at most %{count}"
+              too_long: "can have at most %{count} characters each"
+            custom_field_values:
+              too_large: "are too large"
+            description_json:
+              too_large: "is too large"
+        pipelines/goal:
+          attributes:
+            assigned_account_id:
+              goal_taken: "already has a goal this month"
+            period_month:
+              goal_taken: "already has a funnel goal"
+        pipelines/card_attachment:
+          attributes:
+            file:
+              too_large: "is over the %{count} MB limit"
+        pipelines/comment_attachment:
+          attributes:
+            file:
+              too_large: "is over the %{count} MB limit"
+        pipelines/comment:
+          attributes:
+            base:
+              no_author: "The comment needs an author"
+              two_authors: "The comment can't have two authors"
+        pipelines/saved_filter_favorite:
+          attributes:
+            base:
+              no_target: "Choose a filter to favorite"
+              two_targets: "Choose a single filter to favorite"
+        pipelines/trigger:
+          attributes:
+            actions:
+              too_many: "can be at most %{count}"
+              not_an_object: "has an invalid item at position %{index}"
+              invalid_type: "has an unknown type at position %{index}"
+              code_blank: "has no code at position %{index}"
+              code_too_long: "has code over %{count} characters at position %{index}"
+            event_type:
+              crm_only: "only applies to deal boards"

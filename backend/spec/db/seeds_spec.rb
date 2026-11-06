@@ -7,16 +7,24 @@ RSpec.describe "db/seeds.rb" do
   # Uma vez só para o arquivo inteiro — semear é caro e o resultado é o mesmo.
   before(:all) do
     self.use_transactional_tests = false
-    [ Carousel, Notification, Folder, Session, PasswordReset, Account, Organization,
-     ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
+    self.class.clean_database
 
     silence_stream { load Rails.root.join("db/seeds.rb") }
   end
 
   after(:all) do
-    [ Carousel, Notification, Folder, Session, PasswordReset, Account, Organization,
-     ThemePreset, LibraryImage, PaletteColor ].each(&:delete_all)
+    self.class.clean_database
     self.use_transactional_tests = true
+  end
+
+  # Fora da transação nada se desfaz sozinho, e cada domínio semeia as próprias tabelas: uma
+  # lista fixa aqui deixaria dados vazando para os exemplos seguintes, e a falha apareceria
+  # longe da causa. Limpa tudo, no Postgres e no Mongo.
+  def self.clean_database
+    connection = ActiveRecord::Base.connection
+    tables = connection.tables - %w[schema_migrations ar_internal_metadata]
+    connection.execute("TRUNCATE #{tables.map { |table| connection.quote_table_name(table) }.join(', ')} CASCADE")
+    Mongoid.truncate!
   end
 
   def self.silence_stream

@@ -1,0 +1,28 @@
+# Jobs recorrentes do domínio "pipelines".
+pipelines_sla_checker:
+  # De 15 em 15 minutos: SLA é contado em horas. Avisa uma vez por passagem na etapa.
+  enabled: true
+  cron: "0 */15 * * * *"
+  class: Pipelines::SlaCheckerJob
+  queue: low
+
+pipelines_due_date_checker:
+  # De 15 em 15 minutos, deslocado do SLA. Dispara os gatilhos de prazo vencido, uma vez por prazo.
+  enabled: true
+  cron: "0 7-59/15 * * * *"
+  class: Pipelines::DueDateCheckerJob
+  queue: low
+
+pipelines_auto_archive:
+  # De 6 em 6 horas, como na origem: card parado e negócio fechado.
+  enabled: true
+  cron: "0 0 */6 * * *"
+  class: Pipelines::AutoArchiveJob
+  queue: low
+
+pipelines_purge_trigger_executions:
+  # Todo dia às 03:40: tira do histórico as execuções de gatilho mais velhas que a retenção.
+  enabled: true
+  cron: "0 40 3 * * *"
+  class: Pipelines::PurgeTriggerExecutionsJob
+  queue: low

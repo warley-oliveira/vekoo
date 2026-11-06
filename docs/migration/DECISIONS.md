@@ -186,6 +186,16 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Filtros aplicam na hora**, sem o botão "Aplicar" da origem. Sai a coluna "Assistentes"; o canal ocupa o lugar.
 - **Acréscimos na API:** `GET /contacts` com `teamIds[]`, `assignedUser` com vários valores e `conditions`; a linha traz `customAttributes`; `POST /contact-imports` aceita `fileName`; `includeCountryCode` não confunde mais o DDD 55 com o código do país.
 
+### Pipelines: API (be-pipelines)
+
+- **Gatilhos:** `run_code` é novo no gatilho e exige a permissão `flows`. Gatilho de etapa vale para qualquer evento. `toggle_automation` agora pausa a automação do fluxo. Cada ação registra o próprio status; um gatilho com código gera duas execuções; execuções ficam 90 dias; falha vira alerta da categoria `pipelines`.
+- **SLA e prazo:** SLA conta por `stage_entered_at`, uma vez por passagem, sem negócios fechados. Prazo dispara uma vez por data e só para o que venceu depois de o gatilho existir.
+- **Visibilidade:** a dona da organização substitui o `super_user`. Apagar o último grupo liberado mantém o quadro restrito.
+- **Comentários:** respostas têm um nível só; o autor pode ser a automação; como na origem, qualquer pessoa com acesso ao card apaga comentário alheio.
+- **API:** reordenar só vale dentro da etapa; `/cards` é paginado; rotas novas para anexos e observar card; `avgTimePerStage` foi redefinido. Modelos de quadro nascem no primeiro uso, em pt-BR.
+- **Tetos:** 50 tags, 64 KB de valores de campo, 256 KB de descrição, 20 mil caracteres por comentário, 10 arquivos, 25 MB.
+- **Defeitos da origem corrigidos:** IDORs entre organizações em `column_checks#toggle`, `Conversation.find`, `kanban_column_id`, `parent_id` e responsável; SSRF e escape de JSON no webhook; injeção de tokens nas mensagens; `deal_reopened` nunca disparava; reordenar pulava as travas; os jobs de SLA e prazo nunca estavam agendados; corrida no rodízio.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -240,10 +250,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
-- `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
-- `be-pipelines`: somar `:deal` em `Chats::BackfillSystemTagsService`.
 - `be-automation`: gravar `flow_id` na mensagem (para o ranking por fluxo) e tokens em `usage_*`; IA de fluxo grava `role assistant`, origem `platform`, sem conta; bloco que usa `Funnels::MoveChat`; registrar a fonte `hook_logs` em dashboards personalizados ("Fonte nova" em `docs/migration/api/insights.md`).
-- `be-pipelines`: registrar a fonte e os filtros `pipeline_status` e `pipeline_stage` em dashboards personalizados, pelos passos de "Fonte nova" em `docs/migration/api/insights.md`.
+- `fe-custom-dashboards`: registrar a fonte `pipelines` e os filtros `pipeline_status` e `pipeline_stage` em dashboards personalizados, pelos passos de "Fonte nova" em `docs/migration/api/insights.md`, respeitando `Pipelines::CardVisibility`.
 - `be-automation`: bloco `send_text` com texto escrito à mão usa `MessageHandling` com `verbatim: true`; só o que vem de LLM passa pela limpeza.
 - `be-automation`: `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id`, conferindo a organização, e preencher `Outreach::AvailableFlows.for`. Mídia de campanha usa `Attachment`: já existe, conferir com um envio real.
 

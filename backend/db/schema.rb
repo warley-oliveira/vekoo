@@ -274,6 +274,320 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
     t.index ["token_digest"], name: "index_password_resets_on_token_digest", unique: true
   end
 
+  create_table "pipeline_board_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.jsonb "custom_fields_config", default: [], null: false
+    t.string "default_board_type", default: "standard", null: false
+    t.text "description"
+    t.string "icon"
+    t.string "name", null: false
+    t.jsonb "stages_config", default: [], null: false
+    t.string "template_key", null: false
+    t.jsonb "triggers_config", default: [], null: false
+    t.datetime "updated_at", null: false
+    t.index ["template_key"], name: "index_pipeline_board_templates_on_template_key", unique: true
+  end
+
+  create_table "pipeline_boards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "archived", default: false, null: false
+    t.integer "auto_archive_days"
+    t.string "board_type", default: "standard", null: false
+    t.string "card_visibility", default: "all", null: false
+    t.uuid "card_visibility_bypass_role_ids", default: [], null: false, array: true
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.integer "deal_close_archive_days"
+    t.string "deal_close_behavior", default: "manual", null: false
+    t.integer "deal_rotting_days", default: 7
+    t.text "description"
+    t.string "icon"
+    t.string "lead_score_field_key"
+    t.integer "lead_score_high", default: 70, null: false
+    t.integer "lead_score_low", default: 30, null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.integer "position", default: 0, null: false
+    t.boolean "require_fields_on_deal_lost", default: false, null: false
+    t.boolean "require_fields_on_deal_won", default: false, null: false
+    t.string "template_key"
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "archived", "position"], name: "idx_on_organization_id_archived_position_42b324d257"
+  end
+
+  create_table "pipeline_card_activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.string "action", null: false
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "details", default: {}, null: false
+    t.index ["account_id"], name: "index_pipeline_card_activities_on_account_id"
+    t.index ["card_id", "action", "created_at"], name: "index_pipeline_card_activities_on_card_action_time", order: { created_at: :desc }
+    t.index ["card_id", "created_at"], name: "index_pipeline_card_activities_on_card_id_and_created_at", order: { created_at: :desc }
+  end
+
+  create_table "pipeline_card_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_pipeline_card_attachments_on_account_id"
+    t.index ["card_id"], name: "index_pipeline_card_attachments_on_card_id"
+  end
+
+  create_table "pipeline_card_labels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "label_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id", "label_id"], name: "index_pipeline_card_labels_on_card_id_and_label_id", unique: true
+    t.index ["label_id"], name: "index_pipeline_card_labels_on_label_id"
+  end
+
+  create_table "pipeline_card_stage_checks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "card_id", null: false
+    t.boolean "completed", default: false, null: false
+    t.datetime "completed_at"
+    t.uuid "completed_by_id"
+    t.datetime "created_at", null: false
+    t.uuid "pipeline_stage_checklist_item_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id", "pipeline_stage_checklist_item_id"], name: "index_pipeline_card_stage_checks_unique", unique: true
+    t.index ["pipeline_stage_checklist_item_id"], name: "index_pipeline_card_stage_checks_on_item"
+  end
+
+  create_table "pipeline_card_watchers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_pipeline_card_watchers_on_account_id"
+    t.index ["card_id", "account_id"], name: "index_pipeline_card_watchers_on_card_id_and_account_id", unique: true
+  end
+
+  create_table "pipeline_cards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "archived", default: false, null: false
+    t.uuid "assigned_to_id"
+    t.string "audience_id"
+    t.string "chat_id"
+    t.string "color_label"
+    t.string "company_name"
+    t.datetime "completed_at"
+    t.string "contact_email"
+    t.string "contact_phone"
+    t.datetime "created_at", null: false
+    t.uuid "created_by_id"
+    t.jsonb "custom_field_values", default: {}, null: false
+    t.integer "deal_probability"
+    t.decimal "deal_value", precision: 12, scale: 2
+    t.text "description"
+    t.jsonb "description_json"
+    t.datetime "due_date"
+    t.datetime "due_notified_at"
+    t.date "expected_close_date"
+    t.datetime "lost_at"
+    t.string "lost_reason"
+    t.uuid "organization_id", null: false
+    t.integer "position"
+    t.string "priority"
+    t.datetime "sla_notified_at"
+    t.datetime "stage_entered_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.uuid "stage_id", null: false
+    t.string "status"
+    t.string "tags", default: [], null: false, array: true
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "won_at"
+    t.index ["assigned_to_id"], name: "index_pipeline_cards_on_assigned_to_id"
+    t.index ["created_by_id"], name: "index_pipeline_cards_on_created_by_id"
+    t.index ["due_date"], name: "index_pipeline_cards_on_open_due_date", where: "((due_date IS NOT NULL) AND (archived = false) AND (completed_at IS NULL))"
+    t.index ["organization_id", "chat_id"], name: "index_pipeline_cards_on_organization_id_and_chat_id", where: "(chat_id IS NOT NULL)"
+    t.index ["stage_id", "archived", "position"], name: "index_pipeline_cards_on_stage_id_and_archived_and_position"
+    t.index ["stage_id", "won_at"], name: "index_pipeline_cards_on_stage_id_and_won_at", where: "(won_at IS NOT NULL)"
+    t.index ["tags"], name: "index_pipeline_cards_on_tags", using: :gin
+  end
+
+  create_table "pipeline_checklist_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "assigned_to_id"
+    t.boolean "completed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.uuid "pipeline_checklist_id", null: false
+    t.integer "position"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_to_id"], name: "index_pipeline_checklist_items_on_assigned_to_id"
+    t.index ["pipeline_checklist_id"], name: "index_pipeline_checklist_items_on_pipeline_checklist_id"
+  end
+
+  create_table "pipeline_checklists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position"
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_pipeline_checklists_on_card_id"
+  end
+
+  create_table "pipeline_comment_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.bigint "file_size"
+    t.uuid "pipeline_comment_id", null: false
+    t.index ["pipeline_comment_id"], name: "index_pipeline_comment_attachments_on_pipeline_comment_id"
+  end
+
+  create_table "pipeline_comment_reactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "emoji", limit: 20, null: false
+    t.uuid "pipeline_comment_id", null: false
+    t.index ["account_id"], name: "index_pipeline_comment_reactions_on_account_id"
+    t.index ["pipeline_comment_id", "account_id", "emoji"], name: "index_pipeline_comment_reactions_unique", unique: true
+  end
+
+  create_table "pipeline_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.string "automation_source"
+    t.text "body", null: false
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "edited_at"
+    t.uuid "parent_id"
+    t.boolean "pinned", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_pipeline_comments_on_account_id"
+    t.index ["card_id", "created_at"], name: "index_pipeline_comments_on_card_id_and_created_at"
+    t.index ["card_id", "pinned", "created_at"], name: "index_pipeline_comments_on_card_id_and_pinned_and_created_at"
+    t.index ["parent_id"], name: "index_pipeline_comments_on_parent_id"
+  end
+
+  create_table "pipeline_custom_fields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "board_id", null: false
+    t.datetime "created_at", null: false
+    t.string "default_value"
+    t.string "field_type", null: false
+    t.string "key", null: false
+    t.string "name", null: false
+    t.jsonb "options"
+    t.integer "position"
+    t.boolean "required", default: false, null: false
+    t.boolean "required_to_leave_stage", default: false, null: false
+    t.string "scope", default: "board", null: false
+    t.uuid "stage_id"
+    t.datetime "updated_at", null: false
+    t.index ["board_id", "key"], name: "index_pipeline_custom_fields_on_board_id_and_key", unique: true
+    t.index ["board_id", "position"], name: "index_pipeline_custom_fields_on_board_id_and_position"
+    t.index ["stage_id"], name: "index_pipeline_custom_fields_on_stage_id"
+  end
+
+  create_table "pipeline_goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "assigned_account_id"
+    t.uuid "board_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "created_by_id"
+    t.string "metric", default: "revenue", null: false
+    t.date "period_month", null: false
+    t.string "scope", null: false
+    t.decimal "target_value", precision: 12, scale: 2, null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_account_id"], name: "index_pipeline_goals_on_assigned_account_id"
+    t.index ["board_id", "scope", "assigned_account_id", "period_month"], name: "index_pipeline_goals_unique", unique: true, nulls_not_distinct: true
+  end
+
+  create_table "pipeline_labels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "color", default: "#607D8B", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index "organization_id, lower((name)::text)", name: "index_pipeline_labels_on_organization_and_lower_name", unique: true
+  end
+
+  create_table "pipeline_saved_filter_favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "board_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "pipeline_saved_filter_id"
+    t.string "preset_key"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "board_id", "preset_key"], name: "index_pipeline_filter_favorites_on_preset", unique: true, where: "(preset_key IS NOT NULL)"
+    t.index ["account_id", "pipeline_saved_filter_id"], name: "index_pipeline_filter_favorites_on_saved", unique: true, where: "(pipeline_saved_filter_id IS NOT NULL)"
+    t.index ["account_id"], name: "index_pipeline_saved_filter_favorites_on_account_id"
+    t.index ["board_id"], name: "index_pipeline_saved_filter_favorites_on_board_id"
+    t.index ["pipeline_saved_filter_id"], name: "index_pipeline_filter_favorites_on_filter"
+    t.check_constraint "(pipeline_saved_filter_id IS NULL) <> (preset_key IS NULL)", name: "pipeline_filter_favorite_target_xor"
+  end
+
+  create_table "pipeline_saved_filters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "board_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "definition", default: {}, null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "visibility", default: "private", null: false
+    t.index ["account_id"], name: "index_pipeline_saved_filters_on_account_id"
+    t.index ["board_id", "account_id"], name: "index_pipeline_saved_filters_on_board_id_and_account_id"
+    t.index ["board_id", "visibility"], name: "index_pipeline_saved_filters_on_board_id_and_visibility"
+    t.index ["organization_id"], name: "index_pipeline_saved_filters_on_organization_id"
+  end
+
+  create_table "pipeline_stage_checklist_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position"
+    t.boolean "required", default: true, null: false
+    t.uuid "stage_id", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stage_id"], name: "index_pipeline_stage_checklist_items_on_stage_id"
+  end
+
+  create_table "pipeline_stages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "board_id", null: false
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position"
+    t.integer "sla_hours"
+    t.datetime "updated_at", null: false
+    t.integer "wip_limit"
+    t.index ["board_id", "position"], name: "index_pipeline_stages_on_board_id_and_position"
+    t.index ["sla_hours"], name: "index_pipeline_stages_on_sla_hours", where: "(sla_hours IS NOT NULL)"
+  end
+
+  create_table "pipeline_trigger_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "card_id", null: false
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.jsonb "executed_actions", default: [], null: false
+    t.datetime "executed_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.uuid "pipeline_trigger_id", null: false
+    t.string "status", default: "success", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_pipeline_trigger_executions_on_card_id"
+    t.index ["executed_at"], name: "index_pipeline_trigger_executions_on_executed_at"
+    t.index ["pipeline_trigger_id", "executed_at"], name: "idx_on_pipeline_trigger_id_executed_at_4f4f7562ea"
+  end
+
+  create_table "pipeline_triggers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "actions", default: [], null: false
+    t.boolean "active", default: true, null: false
+    t.uuid "board_id", null: false
+    t.jsonb "conditions", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "event_type", null: false
+    t.integer "last_round_robin_index", default: 0, null: false
+    t.string "name", null: false
+    t.uuid "stage_id"
+    t.datetime "updated_at", null: false
+    t.index ["board_id", "event_type"], name: "index_pipeline_triggers_on_board_id_and_event_type"
+    t.index ["event_type", "active"], name: "index_pipeline_triggers_on_event_type_and_active"
+    t.index ["stage_id"], name: "index_pipeline_triggers_on_stage_id"
+  end
+
   create_table "product_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "items_count", default: 0, null: false
@@ -497,6 +811,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   add_foreign_key "oauth_credentials", "organizations", on_delete: :cascade
   add_foreign_key "organization_alerts", "organizations", on_delete: :cascade
   add_foreign_key "password_resets", "accounts"
+  add_foreign_key "pipeline_boards", "organizations", on_delete: :cascade
+  add_foreign_key "pipeline_card_activities", "accounts", on_delete: :nullify
+  add_foreign_key "pipeline_card_activities", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_card_attachments", "accounts", on_delete: :nullify
+  add_foreign_key "pipeline_card_attachments", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_card_labels", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_card_labels", "pipeline_labels", column: "label_id", on_delete: :cascade
+  add_foreign_key "pipeline_card_stage_checks", "accounts", column: "completed_by_id", on_delete: :nullify
+  add_foreign_key "pipeline_card_stage_checks", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_card_stage_checks", "pipeline_stage_checklist_items", on_delete: :cascade
+  add_foreign_key "pipeline_card_watchers", "accounts", on_delete: :cascade
+  add_foreign_key "pipeline_card_watchers", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_cards", "accounts", column: "assigned_to_id", on_delete: :nullify
+  add_foreign_key "pipeline_cards", "accounts", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "pipeline_cards", "organizations", on_delete: :cascade
+  add_foreign_key "pipeline_cards", "pipeline_stages", column: "stage_id", on_delete: :cascade
+  add_foreign_key "pipeline_checklist_items", "accounts", column: "assigned_to_id", on_delete: :nullify
+  add_foreign_key "pipeline_checklist_items", "pipeline_checklists", on_delete: :cascade
+  add_foreign_key "pipeline_checklists", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_comment_attachments", "pipeline_comments", on_delete: :cascade
+  add_foreign_key "pipeline_comment_reactions", "accounts", on_delete: :cascade
+  add_foreign_key "pipeline_comment_reactions", "pipeline_comments", on_delete: :cascade
+  add_foreign_key "pipeline_comments", "accounts", on_delete: :nullify
+  add_foreign_key "pipeline_comments", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_comments", "pipeline_comments", column: "parent_id", on_delete: :cascade
+  add_foreign_key "pipeline_custom_fields", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_custom_fields", "pipeline_stages", column: "stage_id", on_delete: :cascade
+  add_foreign_key "pipeline_goals", "accounts", column: "assigned_account_id", on_delete: :cascade
+  add_foreign_key "pipeline_goals", "accounts", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "pipeline_goals", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_labels", "organizations", on_delete: :cascade
+  add_foreign_key "pipeline_saved_filter_favorites", "accounts", on_delete: :cascade
+  add_foreign_key "pipeline_saved_filter_favorites", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_saved_filter_favorites", "pipeline_saved_filters", on_delete: :cascade
+  add_foreign_key "pipeline_saved_filters", "accounts", on_delete: :nullify
+  add_foreign_key "pipeline_saved_filters", "organizations", on_delete: :cascade
+  add_foreign_key "pipeline_saved_filters", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_stage_checklist_items", "pipeline_stages", column: "stage_id", on_delete: :cascade
+  add_foreign_key "pipeline_stages", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_trigger_executions", "pipeline_cards", column: "card_id", on_delete: :cascade
+  add_foreign_key "pipeline_trigger_executions", "pipeline_triggers", on_delete: :cascade
+  add_foreign_key "pipeline_triggers", "pipeline_boards", column: "board_id", on_delete: :cascade
+  add_foreign_key "pipeline_triggers", "pipeline_stages", column: "stage_id", on_delete: :cascade
   add_foreign_key "product_categories", "organizations", on_delete: :cascade
   add_foreign_key "product_categories", "product_categories", column: "parent_id", on_delete: :cascade
   add_foreign_key "product_embeddings", "organizations", on_delete: :cascade
