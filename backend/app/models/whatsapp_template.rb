@@ -120,15 +120,21 @@ class WhatsappTemplate
     end
   end
 
-  after_update do
+  # Antes de gravar: se a Meta recusar, o que está guardado continua igual ao que está lá.
+  before_update do
     next unless sync_update
 
     Rails.logger.info("Syncing WhatsApp Template Update: #{components}")
 
-    connector.templates_obj.update(
+    result = connector.templates_obj.update(
       template_id: template_id,
       components_json: components
     )
+    next unless result.error?
+
+    Rails.logger.error("WhatsApp Template Update Error: #{result.error.raw_data_response}")
+    errors.add(:base, result.error.raw_data_response['error_user_msg'] || result.error.raw_data_response['message'])
+    throw :abort
   end
 
   # Aplica o payload cru do endpoint /{waba-id}/message_templates.
