@@ -1,10 +1,12 @@
-# Dev infrastructure only: Postgres + Redis.
+# Dev infrastructure only: Postgres (com pgvector) + MongoDB + Redis.
 # The Rails app and Vite run natively on WSL2 (not containerized) for fast HMR/boot.
 # Values come from ./.env; COMPOSE_PROJECT_NAME namespaces network/volumes per project.
 
 services:
   postgres:
-    image: postgres:16
+    # pgvector é o Postgres 16 oficial com a extensão vector — a busca semântica
+    # do catálogo depende dela. O volume antigo continua compatível.
+    image: pgvector/pgvector:pg16-trixie
     container_name: ${COMPOSE_PROJECT_NAME}_postgres
     restart: unless-stopped
     ports:
@@ -21,6 +23,22 @@ services:
       timeout: 3s
       retries: 10
 
+  # Domínio de alto volume (conversas, mensagens, conectores, campanhas, agenda).
+  # Standalone de propósito: nada aqui depende de transação multi-documento.
+  mongodb:
+    image: mongo:7
+    container_name: ${COMPOSE_PROJECT_NAME}_mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   redis:
     image: redis:7
     container_name: ${COMPOSE_PROJECT_NAME}_redis
@@ -32,4 +50,5 @@ services:
 
 volumes:
   pgdata:
+  mongodata:
   redisdata:

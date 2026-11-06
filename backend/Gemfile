@@ -50,6 +50,41 @@ gem "sidekiq"
 # SDK oficial da Anthropic — a geração de carrossel, reescrita e legenda.
 gem "anthropic", "~> 1.69"
 
+# --- plataforma de atendimento -----------------------------------------------
+# MongoDB: domínio de alto volume (conversas, mensagens, conectores, campanhas e
+# agenda). Postgres segue com o que é relacional e permanente.
+gem "mongoid", "~> 9.1"
+
+# Tempo real e agendamento de jobs.
+gem "sidekiq-scheduler", "~> 6.0"
+
+# Clientes HTTP dos provedores (WhatsApp, Z-API, Meta, Apify, webhooks de saída).
+gem "httparty", "~> 0.24"
+gem "faraday", "~> 2.15"
+gem "whatsapp_sdk", "~> 0.12"
+
+# Blocos de código das automações, executados em V8 isolado.
+gem "mini_racer", "~> 0.22"
+
+# PWA: Web Push com VAPID.
+gem "web-push", "~> 3.1"
+
+# Ordenação de colunas, cards e itens.
+gem "acts_as_list", "~> 1.2"
+
+# Busca semântica do catálogo (pgvector) e embeddings.
+gem "neighbor", "~> 0.6"
+gem "ruby-openai", "~> 8.3"
+
+# Google Agenda.
+gem "google-apis-calendar_v3", "~> 0.58"
+gem "signet", "~> 0.22"
+
+# Utilitários usados pelo domínio.
+gem "csv", "~> 3.3"
+gem "jsonpath", "~> 1.1"
+gem "streamio-ffmpeg", "~> 3.0"
+
 group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
@@ -59,4 +94,6 @@ end
 
 group :test do
   gem "shoulda-matchers"
+  # Nenhuma spec fala com provedor de verdade: rede fechada, stubs explícitos.
+  gem "webmock"
 end

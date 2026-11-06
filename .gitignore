@@ -22,3 +22,6 @@ backend/.env
 # os / editor
 .DS_Store
 *.log
+
+# claude code
+/.claude/

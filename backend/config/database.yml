@@ -17,7 +17,7 @@ development:
 
 test:
   <<: *default
-  database: <%= ENV.fetch("POSTGRES_DB", "app_development").sub(/_development\z/, "") %>_test
+  database: <%= ENV.fetch("POSTGRES_DB", "app_development").sub(/_development\z/, "") %>_test<%= ENV["TEST_ENV_NUMBER"] %>
 
 production:
   <<: *default

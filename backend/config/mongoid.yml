@@ -1,0 +1,30 @@
+# Postgres guarda o que é relacional e permanente; o Mongo guarda o domínio de
+# alto volume ou de estrutura livre (conversas, mensagens, conectores, campanhas
+# e agenda). Ver docs/migration/CONVENTIONS.md.
+<% mongo_base = ENV.fetch("MONGO_DB", "vekoo_development").sub(/_development\z/, "") %>
+development:
+  clients:
+    default:
+      database: <%= ENV.fetch("MONGO_DB", "vekoo_development") %>
+      hosts:
+        - <%= ENV.fetch("MONGO_HOST", "localhost") %>:<%= ENV.fetch("MONGO_PORT", 27017) %>
+      options:
+        server_selection_timeout: 5
+test:
+  clients:
+    default:
+      # TEST_ENV_NUMBER isola execuções paralelas (um número por worktree).
+      database: <%= mongo_base %>_test<%= ENV["TEST_ENV_NUMBER"] %>
+      hosts:
+        - <%= ENV.fetch("MONGO_HOST", "localhost") %>:<%= ENV.fetch("MONGO_PORT", 27017) %>
+      options:
+        server_selection_timeout: 5
+        read:
+          mode: :primary
+        max_pool_size: 1
+production:
+  clients:
+    default:
+      uri: <%= ENV["MONGODB_URI"] %>
+      options:
+        server_selection_timeout: 5
