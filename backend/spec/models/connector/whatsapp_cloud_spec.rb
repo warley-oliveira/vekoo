@@ -564,6 +564,25 @@ RSpec.describe Connector::WhatsappCloud do
         expect(connector.reload.user_access_token).to eq("novo")
       end
 
+      it "segue com o token que tem quando a troca do código falha" do
+        stub_everything
+        stub_request(:post, described_class::FACEBOOK_OAUTH_URL).to_return(json_reply({ error: { message: "código expirado" } }, status: 400))
+
+        connector.activate("CODIGO")
+
+        expect(connector.reload).to be_active
+        expect(connector.reload.user_access_token).to be_nil
+      end
+
+      it "não fica ativo quando a Meta recusa listar os números" do
+        stub_request(:get, number_url).to_return(json_reply(phone))
+        stub_request(:get, numbers_url).to_return(json_reply({ error: { code: 200, message: "sem permissão na WABA" } }, status: 403))
+
+        expect { connector.activate }.to raise_error(StandardError)
+
+        expect(connector.reload).to be_inactive
+      end
+
       it "fica failed com a mensagem da Meta quando o número não abre" do
         stub_request(:get, number_url).to_return(json_reply({ error: { code: 100, message: "número inválido" } }, status: 400))
 

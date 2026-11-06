@@ -217,7 +217,8 @@ RSpec.describe "Contrato de Connector#send_text_message" do
       Connector::InstagramDirect, Connector::LeadChat, Connector::WebWidget
     ]
 
-    expect(Connector::Base.descendants).to match_array(known)
+    # `name`: outras specs podem ter criado subclasses anônimas, que também ficam na lista.
+    expect(Connector::Base.descendants.select(&:name)).to match_array(known)
     expect(known).to all(satisfy { |klass| klass.method_defined?(:send_text_message) })
   end
 

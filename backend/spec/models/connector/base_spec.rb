@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe Connector::Base do
   include ConnectorHelpers
-  include ActionCable::TestHelper
 
   let(:organization) { create(:organization) }
 
