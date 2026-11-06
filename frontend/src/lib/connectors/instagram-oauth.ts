@@ -82,10 +82,11 @@ function isFresh(result: InstagramResult | null): result is InstagramResult {
 }
 
 export class InstagramLoginError extends Error {
-  readonly reason: "closed" | "refused"
+  /** `denied`: a própria pessoa recusou na janela. `refused`: o Instagram recusou. */
+  readonly reason: "closed" | "denied" | "refused"
   readonly detail?: string
 
-  constructor(reason: "closed" | "refused", detail?: string) {
+  constructor(reason: "closed" | "denied" | "refused", detail?: string) {
     super(detail ?? reason)
     this.name = "InstagramLoginError"
     this.reason = reason
@@ -96,6 +97,9 @@ export class InstagramLoginError extends Error {
 function settleResult(result: InstagramResult): { code: string; redirectUri: string } {
   clearInstagramLogin()
   if (result.code) return { code: result.code, redirectUri: instagramRedirectUri() }
+  if (result.error === "access_denied" || result.error === "user_denied") {
+    throw new InstagramLoginError("denied")
+  }
   throw new InstagramLoginError("refused", result.errorDescription ?? result.error)
 }
 

@@ -209,6 +209,8 @@ export type TemplateButton = {
   text: string
   phone_number?: string
   url?: string
+  /** O endereço completo de exemplo de um link que muda por contato. */
+  example?: string[]
 }
 
 export type TemplateComponent = {

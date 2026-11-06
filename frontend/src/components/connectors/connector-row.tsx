@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { ChevronRight, Pause, Power, RefreshCw, Settings2, Unplug } from "lucide-react"
 
 import { ActionsMenu, RelativeTime, StatusBadge } from "@/components/shared"
@@ -9,6 +9,7 @@ import { useConnectorActions } from "@/hooks/connectors/use-connector-actions"
 import {
   availableActions,
   connectorHandle,
+  connectorPath,
   mainAction,
   statusTone,
   type MainAction,
@@ -18,11 +19,6 @@ import { cn } from "@/lib/utils"
 import { ConnectorMark } from "./channel-mark"
 import { ConnectorAlertNotice } from "./connector-alert"
 import { useConnectorTexts } from "./connector-texts"
-
-/** O caminho do detalhe. Um lugar só, para a lista, os avisos e o assistente. */
-export function connectorPath(id: string) {
-  return `/settings/integrations/${id}`
-}
 
 export type ConnectorRowProps = {
   connector: Connector
@@ -37,6 +33,7 @@ export type ConnectorRowProps = {
  */
 export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRowProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const texts = useConnectorTexts()
   const actions = useConnectorActions()
   const main = mainAction(connector)
@@ -58,8 +55,7 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
     {
       label: t("connectors.row.manage"),
       icon: <Settings2 />,
-      // O menu é só para quem não quer abrir a tela: quem clica na linha vai direto.
-      onSelect: () => document.getElementById(`connector-link-${connector.id}`)?.click(),
+      onSelect: () => navigate(connectorPath(connector.id)),
     },
     {
       label: t("connectors.pause.action"),
@@ -99,7 +95,6 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
         <div className="min-w-0 flex-1 space-y-1 max-md:pr-8">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Link
-              id={`connector-link-${connector.id}`}
               to={connectorPath(connector.id)}
               className="min-w-0 truncate text-sm font-medium outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
             >
@@ -132,7 +127,9 @@ export function ConnectorRow({ connector, alerts = [], onConnect }: ConnectorRow
 
           {hint ? <p className="text-sm text-pretty text-muted-foreground">{hint}</p> : null}
           {failedReason ? (
-            <p className="text-xs break-words text-status-danger">{failedReason}</p>
+            <p className="text-xs break-words text-status-danger">
+              {t("connectors.connect.detail")} {failedReason}
+            </p>
           ) : null}
 
           {alerts.length > 0 ? (

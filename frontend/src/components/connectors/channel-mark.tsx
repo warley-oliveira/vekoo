@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react"
+import { useState } from "react"
 import { BadgeCheck, Globe, MessageCircle } from "lucide-react"
 
 import { apiAssetUrl } from "@/lib/api"
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { InstagramGlyph, MessengerGlyph, WhatsappGlyph } from "./channel-glyphs"
 
 /** O desenho de cada tipo, em uma cor só. */
-export function channelGlyph(type: ConnectorType, className?: string): ReactNode {
+function ChannelGlyph({ type, className }: { type: ConnectorType; className?: string }) {
   switch (type) {
     case "whatsapp_web":
     case "zapi":
@@ -66,7 +66,7 @@ export function ChannelMark({ type, picture, size = "md", className }: ChannelMa
             "flex items-center justify-center bg-muted text-foreground/70"
           )}
         >
-          {channelGlyph(type, sizes.glyph)}
+          <ChannelGlyph type={type} className={sizes.glyph} />
         </span>
       )}
       {type === "whatsapp_cloud" ? (

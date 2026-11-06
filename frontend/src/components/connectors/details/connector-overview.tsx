@@ -58,7 +58,9 @@ export function ConnectorOverview({ connector, alerts = [], onConnect }: Connect
               {hint ?? t("connectors.status.active.hint")}
             </p>
             {connector.status === "failed" && connector.errorMessage ? (
-              <p className="text-xs break-words text-status-danger">{connector.errorMessage}</p>
+              <p className="text-xs break-words text-status-danger">
+                {t("connectors.connect.detail")} {connector.errorMessage}
+              </p>
             ) : null}
             <p className="text-xs text-muted-foreground">
               {t("connectors.row.created")} <RelativeTime value={connector.createdAt} />

@@ -164,8 +164,8 @@
           "description": "Use the number you already have, like WhatsApp Web. You scan a QR code or type a code on your phone."
         },
         "whatsapp_zapi": {
-          "title": "WhatsApp on your phone, via Z-API",
-          "description": "The same way to connect, with more media and template features. Requires scanning a QR code."
+          "title": "WhatsApp on your phone, with more features",
+          "description": "The same way to connect, with more media and template features. Runs on Z-API and requires scanning a QR code."
         },
         "whatsapp_cloud": {
           "title": "Official WhatsApp",
@@ -339,6 +339,8 @@
       "doneHint": "Direct messages now arrive here.",
       "closed": "The window was closed before finishing",
       "closedHint": "Nothing was connected. Try again and go all the way through in the Instagram window.",
+      "denied": "You didn't authorize access",
+      "deniedHint": "Nothing was connected. To receive Direct messages here, try again and authorize access in the Instagram window.",
       "refused": "Instagram didn't accept the connection",
       "refusedHint": "The account needs to be professional (business or creator). Check that in the app and try again.",
       "authorizing": "Continue in the Instagram window. This screen waits for you to finish.",
@@ -641,6 +643,9 @@
         "url": "Link address",
         "urlPlaceholder": "https://yourbusiness.com/order",
         "urlHint": "For a link that changes per contact, end it with {{variable}}.",
+        "urlExample": "Full link sample",
+        "urlExamplePlaceholder": "https://yourbusiness.com/order/48213",
+        "urlExampleHint": "Meta asks for a sample to review the template. Contacts don't see it.",
         "phone": "Number to call",
         "phonePlaceholder": "+5541999999999",
         "phoneHint": "With the country code.",
@@ -674,6 +679,7 @@
         "tooManyUrls": "Only 2 link buttons fit.",
         "buttonText": "Write the button text.",
         "buttonUrl": "Use a full address, starting with https://.",
+        "buttonUrlExample": "Give a full sample, starting with https://.",
         "buttonPhone": "Use the number with the country code, like +5541999999999."
       }
     },

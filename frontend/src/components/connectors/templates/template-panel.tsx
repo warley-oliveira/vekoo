@@ -32,6 +32,7 @@ import {
   emptyTemplate,
   exampleKey,
   formToComponents,
+  isDynamicUrl,
   nextVariable,
   normalizeTemplateName,
   templateToForm,
@@ -122,9 +123,13 @@ export function TemplatePanel({
       if (!base?.length) throw error
       setServerErrors(base)
       setView("edit")
-      errorsRef.current?.scrollIntoView({ block: "nearest" })
     }
   })
+
+  // O botão de enviar fica no fim do formulário: sem isto, o motivo apareceria fora da tela.
+  useEffect(() => {
+    if (serverErrors.length > 0) errorsRef.current?.scrollIntoView({ block: "nearest" })
+  }, [serverErrors])
 
   const values = useWatch({ control: form.control }) as TemplateFormValues
 
@@ -215,6 +220,11 @@ function BasicFields({ form, editing }: SectionProps & { editing: boolean }) {
   const { t } = useTranslation()
   const name = useWatch({ control: form.control, name: "name" })
   const normalized = normalizeTemplateName(name ?? "")
+  // A Meta tem mais idiomas que os oferecidos aqui: o do modelo que já existe continua na lista.
+  const category = useWatch({ control: form.control, name: "category" })
+  const language = useWatch({ control: form.control, name: "language" })
+  const categories = [...new Set<string>([...CATEGORIES, category])]
+  const languages = [...new Set<string>([...LANGUAGES, language])]
 
   return (
     <div className="flex flex-col gap-4">
@@ -238,9 +248,9 @@ function BasicFields({ form, editing }: SectionProps & { editing: boolean }) {
           name="category"
           label={t("connectors.templates.category")}
           disabled={editing}
-          options={CATEGORIES.map((value) => ({
+          options={categories.map((value) => ({
             value,
-            label: t(`connectors.templates.categories.${value}`),
+            label: t(`connectors.templates.categories.${value}`, { defaultValue: value }),
           }))}
         />
         <SelectField
@@ -248,9 +258,9 @@ function BasicFields({ form, editing }: SectionProps & { editing: boolean }) {
           name="language"
           label={t("connectors.templates.language")}
           disabled={editing}
-          options={LANGUAGES.map((value) => ({
+          options={languages.map((value) => ({
             value,
-            label: t(`connectors.templates.languages.${value}`),
+            label: t(`connectors.templates.languages.${value}`, { defaultValue: value }),
           }))}
         />
       </div>
@@ -512,7 +522,7 @@ function ButtonsSection({ form }: SectionProps) {
                 variant="outline"
                 size="sm"
                 className="border-dashed pointer-coarse:h-10"
-                onClick={() => append({ type, text: "", url: "", phone: "" })}
+                onClick={() => append({ type, text: "", url: "", urlExample: "", phone: "" })}
               >
                 <Icon />
                 {t(`connectors.templates.buttons.types.${type}`)}
@@ -542,6 +552,7 @@ function ButtonRow({
 }) {
   const { t } = useTranslation()
   const Icon = BUTTON_ICONS[type]
+  const url = useWatch({ control, name: `buttons.items.${index}.url` })
 
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-2.5">
@@ -577,6 +588,17 @@ function ButtonRow({
           label={t("connectors.templates.buttons.url")}
           placeholder={t("connectors.templates.buttons.urlPlaceholder")}
           hint={t("connectors.templates.buttons.urlHint", { variable: "{{1}}" })}
+        />
+      ) : null}
+      {type === "URL" && isDynamicUrl(url ?? "") ? (
+        <TextField
+          control={control}
+          name={`buttons.items.${index}.urlExample`}
+          type="url"
+          inputMode="url"
+          label={t("connectors.templates.buttons.urlExample")}
+          placeholder={t("connectors.templates.buttons.urlExamplePlaceholder")}
+          hint={t("connectors.templates.buttons.urlExampleHint")}
         />
       ) : null}
       {type === "PHONE_NUMBER" ? (

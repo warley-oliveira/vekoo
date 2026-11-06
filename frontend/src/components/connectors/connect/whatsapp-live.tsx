@@ -8,13 +8,13 @@ import { toast } from "sonner"
 import { CopyButton, SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { connectorPath } from "@/components/connectors/connector-row"
 import { useWhatsappConnection } from "@/hooks/connectors/use-whatsapp-connection"
-import { connectorHandle, formatPairCode, usesZapi } from "@/lib/connectors/channels"
+import { connectorHandle, connectorPath, formatPairCode, usesZapi } from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 import { useMotionPreset } from "@/lib/motion"
 import { ConnectOutcome } from "./connect-outcome"
-import { ConnectFooter, useConnectStep } from "./connect-shell"
+import { ConnectFooter } from "./connect-shell"
+import { useConnectStep } from "./connect-step"
 import { WhatsappTips } from "./whatsapp-tips"
 
 export type ConnectMethod = "qr" | "code"
@@ -67,12 +67,10 @@ export function WhatsappLive({
     }
   }, [phase, showingCode, t])
 
-  const { close } = useConnectStep(header, { busy: phase === "starting" })
-
-  function closeWaiting() {
-    toast.info(t("connectors.live.leftWaiting"))
-    close()
-  }
+  const { close } = useConnectStep(header, {
+    busy: phase === "starting",
+    onDismiss: phase === "waiting" ? () => toast.info(t("connectors.live.leftWaiting")) : undefined,
+  })
 
   const steps = t(
     `connectors.live.steps.${showingCode ? "code" : "qr"}.${platform}`,
@@ -227,7 +225,7 @@ export function WhatsappLive({
               variant="outline"
               className="pointer-coarse:h-10"
               disabled={phase === "starting"}
-              onClick={closeWaiting}
+              onClick={close}
             >
               {t("connectors.live.closeWaiting")}
             </Button>

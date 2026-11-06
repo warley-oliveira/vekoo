@@ -41,7 +41,8 @@ export const WIDGET_COLOR_FIELDS = [
 
 export type WidgetColorField = (typeof WIDGET_COLOR_FIELDS)[number]
 
-export const WIDGET_FONTS = ["", "inter", "roboto", "georgia", "rounded", "mono"] as const
+/** `system` é o vazio da API: um seletor não mostra uma opção com valor em branco. */
+export const WIDGET_FONTS = ["system", "inter", "roboto", "georgia", "rounded", "mono"] as const
 
 export type WidgetPreset = {
   key: string
@@ -76,7 +77,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       messageAreaBg: "#F8FAFC",
       bubbleRadius: 16,
       panelRadius: 18,
-      fontFamily: "",
+      fontFamily: "system",
     },
   },
   {
@@ -93,7 +94,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       messageAreaBg: "#0B1220",
       bubbleRadius: 14,
       panelRadius: 16,
-      fontFamily: "",
+      fontFamily: "system",
     },
   },
   {
@@ -110,7 +111,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       messageAreaBg: "#FFFFFF",
       bubbleRadius: 8,
       panelRadius: 12,
-      fontFamily: "",
+      fontFamily: "system",
     },
   },
   {
@@ -144,7 +145,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       messageAreaBg: "#130F2E",
       bubbleRadius: 18,
       panelRadius: 18,
-      fontFamily: "",
+      fontFamily: "system",
     },
   },
   {
@@ -161,7 +162,7 @@ export const WIDGET_PRESETS: WidgetPreset[] = [
       messageAreaBg: "#F0FDF4",
       bubbleRadius: 16,
       panelRadius: 16,
-      fontFamily: "",
+      fontFamily: "system",
     },
   },
 ]

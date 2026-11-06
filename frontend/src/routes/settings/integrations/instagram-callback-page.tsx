@@ -24,30 +24,35 @@ export default function InstagramCallbackPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [params] = useSearchParams()
+  const [published, setPublished] = useState(false)
   const [stranded, setStranded] = useState(false)
-  const published = useRef(false)
+  const publishedOnce = useRef(false)
 
+  // Só uma vez: a resposta é única, e o StrictMode rodaria o efeito duas vezes.
   useEffect(() => {
-    if (published.current) return
-    published.current = true
+    if (publishedOnce.current) return
+    publishedOnce.current = true
 
+    // Lido antes de publicar: quem está esperando em outra aba consome o pedido na hora.
+    const sameWindow = readInstagramRequest()?.sameWindow
     publishInstagramResult(params)
 
-    if (window.opener) {
-      window.setTimeout(() => window.close(), CLOSE_AFTER_MS)
-      return
-    }
-
     // O login aconteceu nesta mesma aba, porque a janela foi bloqueada: é só voltar.
-    if (readInstagramRequest()?.sameWindow) {
-      navigate(RESUME_PATH, { replace: true })
-      return
-    }
-
-    // A página da Meta cortou o `opener`, ou esta janela foi aberta em outro contexto
-    // (PWA no celular). A resposta já está guardada: quem abriu recebe, ou retoma ao voltar.
-    setStranded(true)
+    if (sameWindow) navigate(RESUME_PATH, { replace: true })
+    else setPublished(true)
   }, [navigate, params])
+
+  // Na página do Instagram o `opener` costuma ser cortado (Cross-Origin-Opener-Policy), e
+  // quem abriu recebe a resposta pelos outros caminhos. Fechar nem sempre é permitido nesse
+  // caso: se a janela continuar aberta, ela diz o que fazer.
+  useEffect(() => {
+    if (!published) return
+    const timer = window.setTimeout(() => {
+      window.close()
+      setStranded(true)
+    }, CLOSE_AFTER_MS)
+    return () => window.clearTimeout(timer)
+  }, [published])
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">

@@ -7,15 +7,15 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { ChannelMark } from "@/components/connectors/channel-mark"
-import { connectorPath } from "@/components/connectors/connector-row"
 import { reloadConnectors, storeConnector } from "@/hooks/connectors/use-connectors"
 import { apiPost } from "@/lib/api"
-import { connectionKind, connectorErrorMessage } from "@/lib/connectors/channels"
+import { connectionKind, connectorErrorMessage, connectorPath } from "@/lib/connectors/channels"
 import { instagramAppId, messengerLoginConfig, whatsappLoginConfig } from "@/lib/connectors/meta-config"
 import type { Connector, ConnectorCreated, ConnectorType } from "@/lib/connectors/types"
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
-import { ConnectFooter, ConnectShell, useConnectStep } from "./connect-shell"
+import { ConnectFooter, ConnectShell } from "./connect-shell"
+import { useConnectStep } from "./connect-step"
 import { InstagramPanel, type InstagramLogin } from "./instagram-panel"
 import { MetaPanel } from "./meta-panel"
 import { WhatsappPanel } from "./whatsapp-panel"
@@ -31,16 +31,21 @@ export type ConnectFlowProps = {
 
 /** Adicionar um canal ou conectar de novo um que caiu. */
 export function ConnectFlow({ target, onClose }: ConnectFlowProps) {
+  // O conteúdo fica até o diálogo terminar de sair: é ele que desmonta tudo ao fechar, e o
+  // próximo abre do zero. Sem isto, a janela encolheria vazia na animação de saída.
+  const [shown, setShown] = useState(target)
+  if (target && target !== shown) setShown(target)
+
   return (
     <ConnectShell open={target !== null} onClose={onClose}>
-      {target?.kind === "existing" ? (
+      {shown?.kind === "existing" ? (
         <ExistingChannel
-          key={target.connector.id}
-          connector={target.connector}
-          instagramLogin={target.instagramLogin}
+          key={shown.connector.id}
+          connector={shown.connector}
+          instagramLogin={shown.instagramLogin}
         />
-      ) : target?.kind === "new" ? (
-        <NewChannel instagramLogin={target.instagramLogin} />
+      ) : shown?.kind === "new" ? (
+        <NewChannel instagramLogin={shown.instagramLogin} />
       ) : null}
     </ConnectShell>
   )

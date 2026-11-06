@@ -19,7 +19,19 @@
   # sobe um worker de blob, então vai precisar de 'wasm-unsafe-eval' em script-src e de
   # blob: em worker-src. Sem isso, falha só aqui em produção: em desenvolvimento não há
   # CSP.
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' https: blob:; connect-src 'self' https://syco.vekoo.app wss://syco.vekoo.app; worker-src 'self'; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+  #
+  # Conectar um canal pela Meta (WhatsApp oficial e Messenger) usa o SDK dela, que entra
+  # sob demanda, só nessa tela. É o que cada origem libera:
+  # - script-src connect.facebook.net: o próprio SDK (sdk.js e o pacote para onde ele
+  #   redireciona). Sem isso, o botão de conectar nem chega a funcionar.
+  # - connect-src www e web.facebook.com: as chamadas que o SDK faz durante o login. O
+  #   `web.` é o endereço que a Meta usa em algumas regiões, como já conferia a origem.
+  # - frame-src www e web.facebook.com: os iframes que o SDK pode abrir na própria página.
+  #   'self' fica porque, sem frame-src, valia o default-src.
+  # A janela de login da Meta e a do Instagram são janelas de verdade: a CSP desta página
+  # não as alcança, e o Instagram Login não precisa de nada aqui. As imagens já passam por
+  # img-src https:, e o QR code, por data:.
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' https: blob:; connect-src 'self' https://syco.vekoo.app wss://syco.vekoo.app https://www.facebook.com https://web.facebook.com; frame-src 'self' https://www.facebook.com https://web.facebook.com; worker-src 'self'; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # Arquivos com hash no nome — imutáveis por definição.
 /assets/*

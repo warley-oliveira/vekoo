@@ -7,6 +7,11 @@ import type { Connector, ConnectorStatus, WhatsappWebConnector } from "./types"
 
 export type ChannelGroup = "attention" | "connected" | "off"
 
+/** O caminho do detalhe. Um lugar só, para a lista, os avisos e o assistente. */
+export function connectorPath(id: string) {
+  return `/settings/integrations/${id}`
+}
+
 const STATUS_TONES: Record<ConnectorStatus, StatusTone> = {
   active: "success",
   pending: "info",

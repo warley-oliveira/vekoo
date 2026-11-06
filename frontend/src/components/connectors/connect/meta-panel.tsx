@@ -4,11 +4,10 @@ import { Link } from "react-router"
 import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { connectorPath } from "@/components/connectors/connector-row"
 import { refreshConnectorAlerts } from "@/hooks/connectors/use-connector-alerts"
 import { reloadConnectors, storeConnector } from "@/hooks/connectors/use-connectors"
 import { apiPost } from "@/lib/api"
-import { connectorErrorMessage } from "@/lib/connectors/channels"
+import { connectorErrorMessage, connectorPath } from "@/lib/connectors/channels"
 import {
   loadFacebookSdk,
   MetaLoginError,
@@ -19,7 +18,8 @@ import { messengerLoginConfig, whatsappLoginConfig } from "@/lib/connectors/meta
 import type { Connector, ConnectorCreated, InstagramConnector } from "@/lib/connectors/types"
 import { useLanguage } from "@/lib/i18n"
 import { ConnectOutcome } from "./connect-outcome"
-import { ConnectFooter, useConnectStep } from "./connect-shell"
+import { ConnectFooter } from "./connect-shell"
+import { useConnectStep } from "./connect-step"
 import { WebhookDetails } from "./webhook-details"
 
 type Channel = "whatsapp" | "messenger"

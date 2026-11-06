@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useController, useForm, useWatch, type UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router"
@@ -129,7 +129,7 @@ function toValues(widget: WidgetConfig): WidgetFormValues {
     launcherSize: widget.launcherSize,
     bubbleRadius: widget.bubbleRadius,
     panelRadius: widget.panelRadius,
-    fontFamily: widget.fontFamily ?? "",
+    fontFamily: widget.fontFamily || "system",
     customCss: widget.customCss ?? "",
     allowedOrigins: widget.allowedOrigins ?? [],
     rateLimitPerMin: widget.rateLimitPerMin,
@@ -195,6 +195,7 @@ function WidgetForm({ connector, widget }: { connector: WidgetConnector; widget:
         ...next,
         // Vazio é "usar o padrão", e o back só aceita cor válida ou nada.
         ...Object.fromEntries(WIDGET_COLOR_FIELDS.map((field) => [field, next[field] || null])),
+        fontFamily: next.fontFamily === "system" ? "" : next.fontFamily,
         // Em automática a versão não vale, e texto vazio seria recusado.
         pinnedVersion: next.deliveryMode === "pinned" ? next.pinnedVersion : null,
       }
@@ -233,7 +234,7 @@ function WidgetForm({ connector, widget }: { connector: WidgetConnector; widget:
         onValueChange={(value) => setParams({ tab: value as string }, { replace: true })}
         className="gap-5"
       >
-        <TabsList variant="line" className="max-w-full justify-start overflow-x-auto">
+        <TabsList className="max-w-full justify-start overflow-x-auto pointer-coarse:h-11">
           {TABS.map((value) => (
             <TabsTrigger key={value} value={value} className="flex-none px-2.5 pointer-coarse:h-10">
               {t(`connectors.widget.tabs.${value}`)}
@@ -520,7 +521,7 @@ function AppearanceTab({
             label={t("connectors.widget.shape.font")}
             options={WIDGET_FONTS.map((value) => ({
               value,
-              label: t(`connectors.widget.shape.fonts.${value || "system"}`),
+              label: t(`connectors.widget.shape.fonts.${value}`),
             }))}
           />
         </Group>
@@ -828,6 +829,14 @@ function InstallTab({
   const mode = useWatch({ control: form.control, name: "deliveryMode" })
   const version = useWatch({ control: form.control, name: "pinnedVersion" })
   const versions = widget.availableVersions ?? []
+  const latestVersion = versions[0]?.version
+
+  // Escolher versão fixa já parte da mais nova, como a pessoa quase sempre quer.
+  useEffect(() => {
+    if (mode === "pinned" && !version && latestVersion) {
+      form.setValue("pinnedVersion", latestVersion, { shouldDirty: true, shouldValidate: true })
+    }
+  }, [form, mode, version, latestVersion])
 
   // Compara com o que está gravado: enquanto não salvar, o código abaixo é o do modo antigo.
   const pendingChange =

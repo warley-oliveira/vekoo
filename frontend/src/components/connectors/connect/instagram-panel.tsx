@@ -4,17 +4,17 @@ import { Link } from "react-router"
 import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { connectorPath } from "@/components/connectors/connector-row"
 import { InstagramProfile } from "@/components/connectors/details/instagram-profile"
 import { refreshConnectorAlerts } from "@/hooks/connectors/use-connector-alerts"
 import { reloadConnectors, storeConnector } from "@/hooks/connectors/use-connectors"
 import { apiPost } from "@/lib/api"
-import { connectorErrorMessage } from "@/lib/connectors/channels"
+import { connectorErrorMessage, connectorPath } from "@/lib/connectors/channels"
 import { InstagramLoginError, startInstagramLogin } from "@/lib/connectors/instagram-oauth"
 import { instagramAppId } from "@/lib/connectors/meta-config"
 import type { Connector, ConnectorCreated } from "@/lib/connectors/types"
 import { ConnectOutcome } from "./connect-outcome"
-import { ConnectFooter, useConnectStep } from "./connect-shell"
+import { ConnectFooter } from "./connect-shell"
+import { useConnectStep } from "./connect-step"
 import { WebhookDetails } from "./webhook-details"
 
 type Phase =
@@ -62,6 +62,12 @@ export function InstagramPanel({ connector, stepLabel, onBack, resumed }: Instag
             name: "failed",
             title: t("connectors.instagram.closed"),
             description: t("connectors.instagram.closedHint"),
+          })
+        } else if (error.reason === "denied") {
+          setPhase({
+            name: "failed",
+            title: t("connectors.instagram.denied"),
+            description: t("connectors.instagram.deniedHint"),
           })
         } else {
           setPhase({

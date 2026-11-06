@@ -82,6 +82,7 @@ const templateShape = z.object({
         type: z.enum(BUTTON_TYPES),
         text: z.string(),
         url: z.string(),
+        urlExample: z.string(),
         phone: z.string(),
       })
     ),
@@ -173,17 +174,27 @@ export function templateToForm(template: WhatsappTemplate): TemplateFormValues {
         type: button.type,
         text: button.text ?? "",
         url: button.url ?? "",
+        urlExample: button.example?.[0] ?? "",
         phone: button.phone_number ?? "",
       })),
     },
   }
 }
 
+/** Um link que muda por contato: a Meta pede o endereço completo de exemplo. */
+export function isDynamicUrl(url: string): boolean {
+  return bodyVariables(url).length > 0
+}
+
 function headerComponent(
   header: TemplateFormValues["header"],
   original?: WhatsappTemplate
 ): TemplateComponent {
+  const previous = original?.components.find((item) => item.type?.toUpperCase() === "HEADER")
+
   if (header.format === "TEXT") {
+    // Texto que não mudou fica como a Meta guardou, com o exemplo de variável, se houver.
+    if (previous?.format === "TEXT" && previous.text === header.text.trim()) return previous
     return { type: "HEADER", format: "TEXT", text: header.text.trim() }
   }
 
@@ -203,7 +214,6 @@ function headerComponent(
   }
 
   // Mídia que não mudou fica como a Meta guardou: reenviar a URL trocaria o arquivo.
-  const previous = original?.components.find((item) => item.type?.toUpperCase() === "HEADER")
   if (previous?.format === header.format && original && headerMedia(original, previous) === header.mediaUrl) {
     return previous
   }
@@ -233,7 +243,13 @@ function bodyComponent(body: TemplateFormValues["body"]): TemplateComponent {
 
 function buttonComponent(button: ButtonValue): TemplateButton {
   const base = { type: button.type, text: button.text.trim() }
-  if (button.type === "URL") return { ...base, url: button.url.trim() }
+  if (button.type === "URL") {
+    return {
+      ...base,
+      url: button.url.trim(),
+      ...(isDynamicUrl(button.url) ? { example: [button.urlExample.trim()] } : {}),
+    }
+  }
   if (button.type === "PHONE_NUMBER") return { ...base, phone_number: button.phone.trim() }
   return base
 }
@@ -347,6 +363,9 @@ export function buildTemplateSchema(t: (key: string, options?: Record<string, un
         }
         if (button.type === "URL" && !isHttpUrl(button.url)) {
           issue(["buttons", "items", index, "url"], "connectors.templates.validation.buttonUrl")
+        }
+        if (button.type === "URL" && isDynamicUrl(button.url) && !isHttpUrl(button.urlExample)) {
+          issue(["buttons", "items", index, "urlExample"], "connectors.templates.validation.buttonUrlExample")
         }
         if (button.type === "PHONE_NUMBER" && !/^\+?\d{8,15}$/.test(button.phone.replace(/[\s()-]/g, ""))) {
           issue(["buttons", "items", index, "phone"], "connectors.templates.validation.buttonPhone")

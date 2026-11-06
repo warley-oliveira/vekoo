@@ -10,11 +10,10 @@ import { Switch } from "@/components/ui/switch"
 import { useConnectorActions } from "@/hooks/connectors/use-connector-actions"
 import { storeConnector } from "@/hooks/connectors/use-connectors"
 import { apiPatch } from "@/lib/api"
-import { availableActions, connectorErrorMessage } from "@/lib/connectors/channels"
+import { availableActions, connectorErrorMessage, connectorPath } from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 import { formatDate } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
-import { connectorPath } from "../connector-row"
 
 /** Assinar a mensagem com o nome de quem atendeu. Vale na hora. */
 export function CollaboratorNameSetting({ connector }: { connector: Connector }) {

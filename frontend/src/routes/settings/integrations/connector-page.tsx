@@ -164,7 +164,7 @@ function WabaBody({ connector }: { connector: WhatsappCloudConnector }) {
       onValueChange={(value) => setParams({ tab: value as string }, { replace: true })}
       className="gap-5"
     >
-      <TabsList variant="line" className="max-w-full justify-start overflow-x-auto">
+      <TabsList className="max-w-full justify-start overflow-x-auto pointer-coarse:h-11">
         {WABA_TABS.map((value) => (
           <TabsTrigger key={value} value={value} className="flex-none px-2.5 pointer-coarse:h-10">
             {t(`connectors.waba.tabs.${value}`)}

@@ -25,7 +25,7 @@ export function InstagramSection({ connector }: { connector: InstagramConnector 
   const { t } = useTranslation()
   const live = connector.status === "active"
 
-  const { data, isValidating, mutate } = useApi<ProfileResponse>(
+  const { data, error, isValidating, mutate } = useApi<ProfileResponse>(
     live ? `/connectors/${connector.id}/instagram-profile` : null,
     {
       dedupingInterval: ONE_HOUR_MS,
@@ -42,10 +42,12 @@ export function InstagramSection({ connector }: { connector: InstagramConnector 
     >
       <InstagramProfile connector={data?.connector ?? connector} />
 
-      {data?.refreshError ? (
+      {data?.refreshError || error ? (
         <p className="rounded-lg bg-status-warning-soft px-3 py-2 text-sm text-pretty text-status-warning">
           {t("connectors.instagram.profile.stale")}{" "}
-          <span className="text-xs break-words opacity-80">{data.refreshError}</span>
+          {data?.refreshError ? (
+            <span className="text-xs break-words opacity-80">{data.refreshError}</span>
+          ) : null}
         </p>
       ) : null}
 
