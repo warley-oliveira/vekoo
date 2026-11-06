@@ -1,7 +1,7 @@
 module Chats
-  # Reaplica as etiquetas de sistema nas conversas de uma organização, a partir do que já aconteceu.
-  # Hoje, os comparecimentos da agenda (compareceu, nao-compareceu). Os negócios fechados dos
-  # pipelines (ganho, perdido) entram aqui junto com o domínio deles: é só somar um `sync_group`.
+  # Reaplica as etiquetas de sistema nas conversas de uma organização, a partir do que já aconteceu:
+  # os negócios fechados dos pipelines (ganho, perdido) e os comparecimentos da agenda (compareceu,
+  # nao-compareceu).
   #
   # As etiquetas de cada grupo são mutuamente exclusivas e refletem o estado atual. Por isso vale só
   # o evento mais recente de cada conversa na janela, e não o histórico inteiro.
@@ -17,6 +17,7 @@ module Chats
     end
 
     def call
+      sync_group(:deal, latest_deal_per_chat)
       sync_group(:attendance, latest_attendance_per_chat)
       stats
     end
@@ -24,6 +25,25 @@ module Chats
     private
 
     attr_reader :organization, :since, :dry_run, :stats
+
+    # O mesmo escopo do callback (`Pipelines::Card#sync_chat_deal_tags`), para o retroativo e o de daqui
+    # para a frente não divergirem: todos os quadros da organização, e não só os `crm`, com os cards
+    # arquivados incluídos. `unscoped`: o card tem `default_scope` por posição, que o lote ignoraria.
+    def latest_deal_per_chat
+      latest = {}
+
+      Pipelines::Card.unscoped
+                     .where(organization_id: organization.id)
+                     .where.not(chat_id: nil)
+                     .where("won_at >= :since OR lost_at >= :since", since: since)
+                     .find_each do |card|
+        stats[:deal_events] += 1
+        closed_at, keep = card.won_at.present? ? [ card.won_at, :won ] : [ card.lost_at, :lost ]
+        keep_latest(latest, card.chat_id, closed_at, keep)
+      end
+
+      latest
+    end
 
     # Cancelados ficam de fora: remarcar pode gerar um documento cancelado e um novo, e só o novo
     # representa o estado atual.

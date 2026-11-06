@@ -1,0 +1,207 @@
+# Textos dos pipelines em pt-BR (idioma padrão). Mantenha as mesmas chaves de pipelines.en.yml.
+pt-BR:
+  pipelines:
+    conflict: "Esse registro acabou de ser criado por outra pessoa. Atualize a tela e tente de novo."
+    too_many_ids: "Selecione no máximo %{max} itens por vez."
+    board_factory:
+      default_stages:
+        - "A fazer"
+        - "Em andamento"
+        - "Concluído"
+      crm_stages:
+        - "Novos contatos"
+        - "Qualificação"
+        - "Proposta"
+        - "Negociação"
+        - "Ganho"
+        - "Perdido"
+    boards:
+      visibility_lockout: "Inclua o seu grupo de permissão: sem ele, você perderia o acesso a estes cards."
+      invalid_lead_score_field: "A pontuação precisa usar um campo de número deste quadro."
+    cards:
+      unnamed_contact: "Contato sem nome"
+      checklist_incomplete: "Conclua o checklist da etapa para avançar este card."
+      required_fields_incomplete: "Preencha os campos obrigatórios para continuar."
+      chat_description:
+        contact: "Contato: %{value}"
+        phone: "Telefone: %{value}"
+        status: "Situação da conversa: %{value}"
+    comments:
+      too_many_files: "Anexe no máximo %{max} arquivos por comentário."
+      automation_author:
+        script: "Automação"
+        flow: "Fluxo"
+    notices:
+      trigger_title: "Pipeline"
+      trigger_default: "O card \"%{card}\" foi atualizado no quadro \"%{board}\"."
+      sla_title: "Tempo da etapa esgotado"
+      sla_body: "O card \"%{card}\" passou de %{hours}h na etapa \"%{stage}\"."
+    webhook:
+      destination_refused: "Esse endereço não pode receber a chamada."
+    triggers:
+      failures:
+        stage_not_found: "A etapa escolhida não existe mais."
+        board_not_found: "O quadro escolhido não existe mais."
+        no_accounts: "Nenhuma das pessoas escolhidas está ativa."
+        connector_not_found: "O canal escolhido não existe mais."
+        connector_not_waba: "Modelo de mensagem só funciona em canal do WhatsApp Business."
+        template_not_found: "O modelo de mensagem escolhido não existe mais."
+        template_refused: "O modelo não foi enviado: %{reason}"
+        message_refused: "A mensagem não foi enviada: %{reason}"
+        card_without_chat: "Este card não tem conversa."
+        webhook_without_url: "O webhook está sem endereço."
+        webhook_failed: "O webhook falhou: %{reason}"
+        code_timeout: "O código excedeu o tempo limite de %{ms} ms."
+        code_memory: "O código excedeu o limite de memória."
+        code_internal: "O código não pôde ser executado."
+        code_note: "Falha no código do gatilho: %{message}"
+    filters:
+      favorite_target_required: "Escolha um filtro para favoritar."
+      errors:
+        not_an_object: "A definição do filtro precisa ser um objeto."
+        version: "A versão do filtro precisa ser %{version}."
+        group_not_a_list: "O grupo \"%{group}\" precisa ser uma lista."
+        no_conditions: "Inclua ao menos uma condição."
+        too_many_conditions: "Use no máximo %{count} condições."
+        condition_not_an_object: "A condição %{position} é inválida."
+        unknown_field: "A condição %{position} usa um campo desconhecido: %{field}."
+        operator_not_allowed: "A condição %{position} usa o operador \"%{operator}\", que não vale para \"%{field}\"."
+        value_required: "Preencha o valor da condição %{position}."
+        value_not_a_list: "O valor da condição %{position} precisa ser uma lista."
+        value_list_empty: "Escolha ao menos um valor na condição %{position}."
+        between_needs_two: "A condição %{position} precisa de dois valores."
+        value_not_single: "A condição %{position} aceita um valor só."
+        value_not_a_number: "O valor da condição %{position} precisa ser um número."
+        value_not_an_id: "A condição %{position} tem um identificador inválido."
+        value_not_allowed: "O valor da condição %{position} precisa ser um destes: %{values}."
+        me_only_for_people: "\"Eu\" só vale em campos de pessoa (condição %{position})."
+        unknown_token: "A condição %{position} tem um valor desconhecido: %{type}."
+        invalid_relative_token: "A condição %{position} tem uma data relativa inválida: %{token}."
+        relative_not_allowed: "O operador \"%{operator}\" não aceita data relativa (condição %{position})."
+        token_needs_amount: "A data \"%{token}\" precisa de uma quantidade (condição %{position})."
+        invalid_custom_key: "Campo personalizado inválido: %{key}."
+        me_needs_account: "\"Eu\" precisa de uma pessoa na sessão."
+        invalid_range: "Intervalo de datas inválido: %{value}."
+        invalid_date: "Data inválida: %{value}."
+        invalid_json: "O filtro não é um JSON válido."
+
+  organization_alerts:
+    messages:
+      pipeline_trigger_failed: "O gatilho \"%{name}\" falhou na última execução."
+
+  activerecord:
+    attributes:
+      pipelines/board:
+        name: "Nome"
+        board_type: "Tipo do quadro"
+        deal_close_behavior: "Comportamento ao fechar negócio"
+        card_visibility: "Visibilidade dos cards"
+        card_visibility_bypass_role_ids: "Grupos liberados"
+        auto_archive_days: "Dias para arquivar"
+        deal_close_archive_days: "Dias para arquivar negócio fechado"
+        deal_rotting_days: "Dias para o negócio esfriar"
+        lead_score_low: "Pontuação baixa"
+        lead_score_high: "Pontuação alta"
+      pipelines/stage:
+        name: "Nome"
+        position: "Posição"
+        wip_limit: "Limite de cards"
+        sla_hours: "Tempo máximo na etapa"
+      pipelines/card:
+        title: "Título"
+        stage: "Etapa"
+        stage_id: "Etapa"
+        priority: "Prioridade"
+        deal_probability: "Probabilidade"
+        deal_value: "Valor"
+        assigned_to_id: "Responsável"
+        tags: "Tags"
+        custom_field_values: "Campos personalizados"
+        description_json: "Descrição"
+      pipelines/card_attachment:
+        file: "Arquivo"
+      pipelines/comment_attachment:
+        file: "Arquivo"
+      pipelines/checklist:
+        name: "Nome"
+      pipelines/checklist_item:
+        title: "Título"
+        assigned_to_id: "Responsável"
+      pipelines/stage_checklist_item:
+        title: "Título"
+      pipelines/comment:
+        body: "Comentário"
+        parent_id: "Comentário respondido"
+        automation_source: "Origem"
+      pipelines/comment_reaction:
+        emoji: "Reação"
+      pipelines/custom_field:
+        name: "Nome"
+        key: "Chave"
+        field_type: "Tipo"
+        options: "Opções"
+        scope: "Escopo"
+        stage_id: "Etapa"
+      pipelines/goal:
+        scope: "Tipo de meta"
+        metric: "Métrica"
+        period_month: "Mês"
+        target_value: "Valor da meta"
+        assigned_account: "Responsável"
+        assigned_account_id: "Responsável"
+      pipelines/label:
+        name: "Nome"
+        color: "Cor"
+      pipelines/saved_filter:
+        name: "Nome"
+        visibility: "Visibilidade"
+        definition: "Filtro"
+      pipelines/trigger:
+        name: "Nome"
+        event_type: "Evento"
+        actions: "Ações"
+        stage_id: "Etapa"
+    errors:
+      models:
+        pipelines/board:
+          attributes:
+            card_visibility_bypass_role_ids:
+              blank_roles: "precisa de ao menos um grupo de permissão"
+              invalid_roles: "tem um grupo de permissão inválido"
+        pipelines/card:
+          attributes:
+            tags:
+              too_many: "podem ser no máximo %{count}"
+              too_long: "podem ter no máximo %{count} caracteres cada"
+            custom_field_values:
+              too_large: "são grandes demais"
+            description_json:
+              too_large: "é grande demais"
+        pipelines/card_attachment:
+          attributes:
+            file:
+              too_large: "passa do tamanho máximo de %{count} MB"
+        pipelines/comment_attachment:
+          attributes:
+            file:
+              too_large: "passa do tamanho máximo de %{count} MB"
+        pipelines/comment:
+          attributes:
+            base:
+              no_author: "O comentário precisa de um autor"
+              two_authors: "O comentário não pode ter dois autores"
+        pipelines/saved_filter_favorite:
+          attributes:
+            base:
+              no_target: "Escolha um filtro para favoritar"
+              two_targets: "Escolha um filtro só para favoritar"
+        pipelines/trigger:
+          attributes:
+            actions:
+              too_many: "podem ser no máximo %{count}"
+              not_an_object: "tem um item inválido na posição %{index}"
+              invalid_type: "tem um tipo desconhecido na posição %{index}"
+              code_blank: "está sem código na posição %{index}"
+              code_too_long: "tem código com mais de %{count} caracteres na posição %{index}"
+            event_type:
+              crm_only: "só vale em quadros de negócios"
