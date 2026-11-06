@@ -54,9 +54,19 @@ class ConnectorSerializer < ApplicationSerializer
       wabaId: connector.waba_id&.to_s,
       phoneNumberId: connector.phone_number_id&.to_s,
       displayPhoneNumber: connector.display_phone_number,
-      phoneNumberDetails: connector.phone_number_details,
-      phoneNumberList: connector.phone_number_list
+      phoneNumberDetails: camelize_keys(connector.phone_number_details),
+      phoneNumberList: phone_numbers(connector)
     }
+  end
+
+  # Os campos são escolhidos por nós (`fetch_registered_numbers`, `refresh_details`): não são
+  # mapa livre e saem em camelCase, como o resto da API. No banco ficam em snake_case.
+  def self.phone_numbers(connector)
+    connector.phone_number_list.map { |phone| camelize_keys(phone) }
+  end
+
+  def self.camelize_keys(hash)
+    hash.deep_transform_keys { |key| key.to_s.camelize(:lower) }
   end
 
   def self.whatsapp_web(connector)

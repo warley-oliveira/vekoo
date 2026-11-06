@@ -552,6 +552,13 @@ RSpec.describe "Widget::V1::Messages", type: :request do
 
         expect(json["messages"].map { |message| message["content"] }).to eq(%w[antiga nova])
       end
+
+      it "ignora operador do Mongo no lugar do id" do
+        list(since: { "$foo" => "1" })
+
+        expect(response).to have_http_status(:ok)
+        expect(json["messages"].map { |message| message["content"] }).to eq(%w[antiga nova])
+      end
     end
   end
 end

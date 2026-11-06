@@ -73,7 +73,8 @@ module Media
       return failure(:too_large) if body.bytesize > MAX_BYTES
 
       Result.new(success: true, body: body, asset: asset)
-    rescue HTTParty::Error, Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED => e
+    # Qualquer falha de rede ou TLS é falha na origem, não só as mais comuns (ver AssetResolver).
+    rescue StandardError => e
       Rails.logger.error("[Media::ProxyDownloadService] GET #{uri.host} failed: #{e.class} #{e.message}")
       failure(:upstream_error)
     end

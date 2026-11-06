@@ -92,7 +92,9 @@ module Media
         created_at: parse_time(response.headers['last-modified']),
         source: 'origin'
       )
-    rescue HTTParty::Error, Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED => e
+    # Qualquer falha de rede ou TLS, não só as mais comuns: uma conexão derrubada no meio
+    # (ECONNRESET, EOFError) ou um certificado ruim não podem virar 500.
+    rescue StandardError => e
       Rails.logger.error("[Media::AssetResolver] HEAD #{uri.host} failed: #{e.class} #{e.message}")
       nil
     end

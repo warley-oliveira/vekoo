@@ -270,6 +270,15 @@ RSpec.describe "Connectors", type: :request do
         expect(Connector::WhatsappCloud.where(organization_id: organization.id).take.user_access_token).to eq("token-do-oauth")
       end
 
+      it "responde 201 com o conector failed quando falta o número, e a Meta recusa" do
+        stub_request(:get, %r{\A#{Regexp.escape(graph_sdk)}/\?fields=}).to_return(meta_error("Unsupported get request"))
+
+        create_connector(connectorType: "whatsapp_cloud", wabaId: 456, accessToken: "token-colado")
+
+        expect(response).to have_http_status(:created)
+        expect(json["connector"]).to include("status" => "failed", "errorMessage" => "Unsupported get request")
+      end
+
       it "responde 201 com o conector failed e o motivo quando a Meta recusa o número" do
         stub_cloud_phone_number_error(123, message: "Número não encontrado")
 
@@ -649,6 +658,16 @@ RSpec.describe "Connectors", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(connector.reload.status).to eq(:active)
+      end
+
+      it "não avisa a volta do Instagram desligado quando não vem o código para religar" do
+        connector = create(:connector_instagram, organization: organization, status: :inactive)
+
+        act(connector, :activate)
+
+        expect(response).to have_http_status(:ok)
+        expect(json.dig("connector", "status")).to eq("inactive")
+        expect(alerts).not_to have_received(:connector_reconnected)
       end
 
       it "cria de novo a instância do WhatsApp Web desconectado" do
@@ -1287,7 +1306,7 @@ RSpec.describe "Connectors", type: :request do
         get "/connectors/#{connector.id}/phone-numbers", headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(json["phoneNumbers"]).to eq([ { "id" => "123", "display_phone_number" => "+55 31 3333-0000" } ])
+        expect(json["phoneNumbers"]).to eq([ { "id" => "123", "displayPhoneNumber" => "+55 31 3333-0000" } ])
         expect(json["primaryPhoneNumberId"]).to eq("123")
       end
 
@@ -1309,6 +1328,7 @@ RSpec.describe "Connectors", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(json["phoneNumbers"].map { |phone| phone["id"] }).to eq(%w[123 999])
+        expect(json["phoneNumbers"].last).to include("displayPhoneNumber" => "+55 31 9999-0000", "verifiedName" => "Clínica Vida", "qualityRating" => "GREEN")
         expect(json["primaryPhoneNumberId"]).to eq("123")
         expect(connector.reload.phone_number_list.size).to eq(2)
       end
@@ -1445,6 +1465,29 @@ RSpec.describe "Connectors", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("connectorTypeMismatch")
     end
+  end
+
+  # `code` é o contrato de máquina; `message` é o que a pessoa lê quando a tela não conhece o
+  # código. Sem a chave nos dois idiomas, a mensagem cairia no "não foi possível salvar".
+  it "tem mensagem nos dois idiomas para todo código de erro destes controladores" do
+    files = %w[
+      app/controllers/connectors_controller.rb
+      app/controllers/connector_templates_controller.rb
+      app/controllers/connector_widgets_controller.rb
+      app/controllers/media_downloads_controller.rb
+      app/controllers/concerns/widget_throttling.rb
+      app/controllers/widget/base_controller.rb
+      app/controllers/widget/v1/context_controller.rb
+      app/controllers/widget/v1/messages_controller.rb
+      app/controllers/widget/v1/sessions_controller.rb
+      app/controllers/widget/v1/visitor_controller.rb
+    ]
+    codes = files.flat_map { |file| Rails.root.join(file).read.scan(/code: ['"](\w+)['"]/).flatten }
+    codes += MediaDownloadsController::ERROR_CODES.values
+
+    expect(codes.uniq.size).to be > 20
+    missing = codes.uniq.product(%i[pt-BR en]).reject { |code, locale| I18n.exists?("errors.#{code.underscore}", locale) }
+    expect(missing).to eq([])
   end
 
   # O conector guarda credenciais de todo provedor, e a listagem é lida por qualquer conta da

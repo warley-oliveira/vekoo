@@ -65,6 +65,22 @@ RSpec.describe ConnectorSerializer do
       )
     end
 
+    it "manda os números e os detalhes em camelCase, mantendo o id de cada número como chave" do
+      connector = create(
+        :connector_whatsapp_cloud,
+        organization: organization,
+        phone_number_details: { "123" => { "about" => "Oi", "profile_picture_url" => "https://cdn.exemplo.com/a.jpg" } },
+        phone_number_list: [ { "id" => "123", "display_phone_number" => "+55 31 3333-0000", "is_pin_enabled" => true } ]
+      )
+
+      [ connector, connector.reload ].each do |record|
+        serialized = described_class.one(record)
+
+        expect(serialized[:phoneNumberDetails]).to eq("123" => { "about" => "Oi", "profilePictureUrl" => "https://cdn.exemplo.com/a.jpg" })
+        expect(serialized[:phoneNumberList]).to eq([ { "id" => "123", "displayPhoneNumber" => "+55 31 3333-0000", "isPinEnabled" => true } ])
+      end
+    end
+
     it "manda os ids numéricos da Meta como texto, porque passam do inteiro seguro do JavaScript" do
       connector = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 9_007_199_254_740_993, waba_id: 9_007_199_254_740_995)
 

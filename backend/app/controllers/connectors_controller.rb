@@ -57,8 +57,9 @@ class ConnectorsController < PlatformController
       activate_connector
     end
 
-    # O provedor pode recusar sem levantar exceção (o conector fica `failed`, com o motivo).
-    Connectors::Alerts.reconnected(@connector) unless @connector.failed?
+    # O provedor pode recusar sem levantar exceção (o conector fica `failed`, com o motivo) ou
+    # nem haver o que tentar (Instagram sem o código da Meta): aí o canal não voltou.
+    Connectors::Alerts.reconnected(@connector) if @connector.active? || @connector.pending?
     render_connector
   rescue StandardError => e
     render_action_failure("activate", e)
@@ -219,7 +220,7 @@ class ConnectorsController < PlatformController
 
   def render_phone_numbers
     render json: {
-      phoneNumbers: @connector.phone_number_list,
+      phoneNumbers: ConnectorSerializer.phone_numbers(@connector),
       primaryPhoneNumberId: @connector.phone_number_id&.to_s
     }
   end

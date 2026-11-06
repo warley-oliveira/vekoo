@@ -25,7 +25,7 @@ class ConnectorWidgetsController < PlatformController
 
   def update
     attrs = params.permit(*PERMITTED_ATTRS).to_h.symbolize_keys
-    attrs[:allowed_origins] = Array(params[:allowed_origins]).compact_blank if params.key?(:allowed_origins)
+    attrs[:allowed_origins] = Array(params[:allowed_origins]).grep(String).compact_blank if params.key?(:allowed_origins)
 
     # CSS livre é semi-confiável (dono autenticado), mas vai para o <style> do widget:
     # higieniza antes de persistir. Ver Widget::CssSanitizer.

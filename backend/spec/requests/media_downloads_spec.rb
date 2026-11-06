@@ -182,6 +182,26 @@ RSpec.describe "MediaDownloads", type: :request do
         expect(response).to have_http_status(:bad_gateway)
       end
 
+      [ Errno::ECONNRESET, Errno::EHOSTUNREACH, EOFError, OpenSSL::SSL::SSLError ].each do |failure|
+        it "responde 502 com #{failure} no download" do
+          stub_request(:get, external_url).to_raise(failure)
+
+          download(url: external_url)
+
+          expect(response).to have_http_status(:bad_gateway)
+        end
+      end
+
+      it "segue o redirect da origem" do
+        stub_request(:get, external_url).to_return(status: 302, headers: { "Location" => "https://cdn.exemplo.com/final" })
+        stub_external_get("https://cdn.exemplo.com/final", body: "bytes-do-final")
+
+        download(url: external_url)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq("bytes-do-final")
+      end
+
       it "responde 413 quando o corpo passa do limite, mesmo sem Content-Length" do
         stub_const("Media::ProxyDownloadService::MAX_BYTES", 5)
         stub_external_get(body: "maior-que-cinco")
@@ -200,6 +220,16 @@ RSpec.describe "MediaDownloads", type: :request do
 
       expect(response).to have_http_status(:content_too_large)
       expect(a_request(:get, external_url)).not_to have_been_made
+    end
+
+    [ Errno::ECONNRESET, OpenSSL::SSL::SSLError ].each do |failure|
+      it "responde 404, e não 500, com #{failure} na consulta" do
+        stub_request(:head, external_url).to_raise(failure)
+
+        download(url: external_url)
+
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     it "responde 404 quando a origem diz que não existe" do
@@ -270,6 +300,13 @@ RSpec.describe "MediaDownloads", type: :request do
           expect(response).to have_http_status(:unprocessable_content)
           expect(json.dig("error", "code")).to eq("invalidMediaUrl")
         end
+      end
+
+      it "responde 422 com mapa no lugar da URL" do
+        download(url: { "a" => "1" })
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json.dig("error", "code")).to eq("invalidMediaUrl")
       end
     end
 

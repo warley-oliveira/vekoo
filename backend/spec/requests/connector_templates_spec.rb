@@ -304,6 +304,7 @@ RSpec.describe "ConnectorTemplates", type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("connectorProviderError")
+      expect(response.body).not_to include("token-da-meta")
       expect(connector.whatsapp_templates.count).to eq(0)
     end
   end
@@ -371,6 +372,15 @@ RSpec.describe "ConnectorTemplates", type: :request do
       expect(update.with(body: { components: new_components }.to_json)).to have_been_requested
       expect(json.dig("template", "components")).to eq(new_components)
       expect(template.reload.components).to eq(new_components)
+    end
+
+    it "ignora o que não é editável" do
+      stub_update
+
+      patch template_path, params: { status: "rejected", templateId: "outro", connectorId: "outro" }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(template.reload).to have_attributes(status: :approved, template_id: "meta-1", connector_id: connector.id)
     end
 
     it "responde 422 de validação sem chamar a Meta" do

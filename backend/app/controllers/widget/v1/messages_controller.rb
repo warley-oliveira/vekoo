@@ -74,7 +74,7 @@ module Widget
 
         scope = ChatMessage::Base.where(chat_id: chat.id, :role.in => %w[user assistant])
         if params[:since].present?
-          cutoff = ChatMessage::Base.where(chat_id: chat.id, id: params[:since]).take
+          cutoff = ChatMessage::Base.where(chat_id: chat.id, id: params[:since].to_s).take
           scope = scope.where(:created_at.gt => cutoff.created_at) if cutoff
         end
 

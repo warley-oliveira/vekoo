@@ -118,6 +118,20 @@ RSpec.describe "ConnectorWidgets", type: :request do
       expect(json.dig("widget", "allowedOrigins")).to eq([ "https://shop.example.com" ])
     end
 
+    it "ignora o que não é texto na lista de origens" do
+      update_widget(allowedOrigins: [ "https://shop.example.com", { "$ne" => "" }, 123 ])
+
+      expect(response).to have_http_status(:ok)
+      expect(json.dig("widget", "allowedOrigins")).to eq([ "https://shop.example.com" ])
+    end
+
+    it "não quebra com um mapa no lugar da lista de origens" do
+      update_widget(allowedOrigins: { "$ne" => "" })
+
+      expect(response).to have_http_status(:ok)
+      expect(connector.reload.allowed_origins).to eq([])
+    end
+
     it "esvazia a lista de origens" do
       connector.update!(allowed_origins: [ "https://shop.example.com" ])
 
