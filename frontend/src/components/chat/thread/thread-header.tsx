@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useIsTouch } from "@/hooks/use-media-query"
 import { apiAssetUrl } from "@/lib/api"
 import { deleteChat, updateChat } from "@/lib/chat/actions"
 import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channel"
@@ -101,6 +102,7 @@ export const ThreadHeader = memo(function ThreadHeader({
   const toggleDetails = useDetailsPanel((state) => state.toggle)
   const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
   const nameField = useRef<EditableNameHandle>(null)
+  const isTouch = useIsTouch()
 
   const channel = channelKey(connector, chat.audienceType)
   const name = chatDisplayName(chat, {
@@ -230,7 +232,12 @@ export const ThreadHeader = memo(function ThreadHeader({
             >
               <MoreVertical />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-auto min-w-52" finalFocus={false}>
+            {/* Com dedo, "Editar nome" leva o foco para o campo: o menu não pode puxá-lo de volta. */}
+            <DropdownMenuContent
+              align="end"
+              className="w-auto min-w-52"
+              finalFocus={isTouch ? false : undefined}
+            >
               <ThreadMenuExtras chat={chat} />
               <DropdownMenuItem className="pointer-fine:hidden" onClick={() => nameField.current?.edit()}>
                 <Pencil />
