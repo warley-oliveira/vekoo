@@ -111,7 +111,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 28 | 2a | **be-engine**: motor de scripts (núcleo e extensões genéricas) | `lib/mini_racer_engine` | ✅ |
 | 7 | 2b | **be-pipelines**: quadros, cards, gatilhos, metas, filtros, extensão `kanban` do motor | `pipelines` | 🔄 |
 | 10 | 2b | **be-automation**: fluxos, runtime, ferramentas, webhooks de saída, extensões `scheduling` do motor | `automation` | 🔄 |
-| 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | 🔄 |
+| 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | ✅ |
 
 - **be-inbox:** `v1/conversations_controller` (→ `/chats`), `v2/conversations`, `v2/unified_contacts`, `v1/contacts` (→ `/contacts`, filtros, exportação, ações em lote), `platform/{conversations,chat_snippets,chat_filters,attachments,definitions}`, `ContactsExportJob`, `ProcessContactImportJob`, `ImportedContact`, `ContactImportBatch`, `ChatAttachment`, `AudioAttachment`, `ChatFilter`, `ChatSnippet`, `InstanceVariable::*`, `app/services/custom_attributes/`, `Aiva::ChatAssistant` + `ChatAssistantChannel` + `ChatAssistantConversation` + `ChatAssistantJob` (Copiloto), `ContactsExportChannel`.
 - **be-pipelines:** `platform/kanban/*`, `platform/kanban_controller`, `Kanban*`, `app/services/kanban/`, `app/jobs/kanban/`, `concerns/kanban/`, `KanbanBoardChannel`, code runner dos gatilhos (`triggers/code_runner_job`), extensão `kanban` do motor (`lib/mini_racer_engine/workers/kanban.rb`).
@@ -130,8 +130,8 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ✅ |
 | 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | 🔄 |
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |
-| 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | 🔄 |
-| 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | ⬜ |
+| 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ✅ |
+| 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | 🔄 |
 | 18 | **fe-automation**: fluxos, editor, playground, ferramentas, webhooks + logs | `pages/flows`, `components/{flow-builder,tools,webhooks,webhook-logs,code-editor}`, `pages/settings/webhooks` | ⬜ |
 
 ## Fase 4 — Front-end, parte 2 (8 frentes)
@@ -142,7 +142,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | ⬜ |
 | 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar | `components/kanban-v2/{board,column,card}`, `pages/apps/kanban-v2` | ⬜ |
 | 22 | **fe-pipelines-admin**: gatilhos, metas, campos, filtros salvos, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals,filter}`, `use-kanban-*` | ⬜ |
-| 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | ⬜ |
+| 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | 🔄 |
 | 24 | **fe-campaigns-list**: lista, KPIs, monitor, extrações | `pages/campaigns/{list,monitor,shared}`, `apify-contacts-tab` | ⬜ |
 | 25 | **fe-campaigns-wizard**: assistente de campanha, importações, Sheets, Apify | `pages/campaigns/wizard` | ⬜ |
 | 26 | **fe-custom-dashboards**: construtor de dashboards | `components/custom-dashboards`, `pages/custom-dashboards`, `formula-engine` | ⬜ |

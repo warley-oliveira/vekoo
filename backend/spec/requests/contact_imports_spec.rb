@@ -57,6 +57,12 @@ RSpec.describe "Importação de contatos", type: :request do
       expect(row.additional_data).to include("assigned_user_name" => "Marina Duarte")
     end
 
+    it "guarda o nome do arquivo que a tela leu, para o histórico" do
+      post "/contact-imports", params: { connectorId: connector.id.to_s, contacts: contacts, fileName: "clientes.csv" }, headers: headers, as: :json
+
+      expect(json["contactImport"]).to include("fileName" => "clientes.csv")
+    end
+
     it "acrescenta o DDI quando pedido" do
       post "/contact-imports",
            params: { connectorId: connector.id.to_s, contacts: [ { externalId: "31971810932", userName: "Fernanda" }, { externalId: "5541999990000", userName: "Roberto" } ], includeCountryCode: true },
@@ -64,6 +70,23 @@ RSpec.describe "Importação de contatos", type: :request do
 
       phones = ContactImport.find(json["contactImport"]["id"]).contact_import_rows.pluck(:phone)
       expect(phones).to contain_exactly("5531971810932", "5541999990000")
+    end
+
+    it "não confunde o DDD 55 com o código do país" do
+      post "/contact-imports",
+           params: { connectorId: connector.id.to_s, contacts: [ { externalId: "5592199570", userName: "Do Rio Grande do Sul" } ], includeCountryCode: true },
+           headers: headers, as: :json
+
+      expect(ContactImport.find(json["contactImport"]["id"]).contact_import_rows.pluck(:phone)).to eq([ "555592199570" ])
+    end
+
+    it "recusa canal que não começa conversa por número" do
+      widget = create(:connector_web_widget, organization: organization)
+
+      post "/contact-imports", params: { connectorId: widget.id.to_s, contacts: contacts }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("connectorTypeMismatch")
     end
 
     it "guarda de qual lote veio" do

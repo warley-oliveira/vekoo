@@ -1,0 +1,241 @@
+# Copy for the "insights" domain in English. Same keys as insights.pt-BR.yml.
+en:
+  activerecord:
+    attributes:
+      funnel:
+        name: "Name"
+        description: "Description"
+      funnel_stage:
+        name: "Stage name"
+  mongoid:
+    attributes:
+      custom_dashboard:
+        name: "Name"
+        description: "Description"
+        icon: "Icon"
+        widgets: "Cards"
+      custom_dashboard_widget:
+        widget_type: "Type"
+        title: "Title"
+        data_source: "Data source"
+        query: "Query"
+        visual_config: "Appearance"
+        layout: "Position"
+  # The copilot lives in the inbox domain; these tools are what connect the agenda and funnels to it.
+  inbox:
+    copilot:
+      appointment_not_found: "Booking not found."
+      appointment_not_active: "Only an active booking can be rescheduled."
+      invalid_appointment_time: "This date or time is not valid."
+      no_linked_chat: "No conversation available to analyze."
+      activities:
+        list_appointments: "Listing bookings..."
+        get_appointment_details: "Reading the booking..."
+        cancel_appointment: "Canceling booking..."
+        reschedule_appointment: "Rescheduling booking..."
+        qualify_appointments: "Analyzing bookings..."
+        get_appointment_stats: "Calculating calendar numbers..."
+        get_chat_funnel: "Analyzing funnels..."
+  insights:
+    errors:
+      query_timeout: "This query took too long. Choose a shorter period or fewer columns."
+    dashboard:
+      errors:
+        invalid_time: "This date is not valid."
+        invalid_range: "The end date comes before the start date."
+        range_too_long: "Choose a period of up to two years."
+    funnels:
+      no_stage: "No stage"
+      errors:
+        too_many_funnels: "This organization already has the maximum of %{count} funnels."
+        stages_required: "A funnel needs at least one stage."
+        too_many_stages: "A funnel can have up to %{count} stages."
+        duplicate_stage_name: "Two stages have the same name."
+        invalid_stage: "This stage is not part of this funnel."
+    custom_dashboards:
+      copy_name: "%{name} (copy)"
+      buckets:
+        empty: "(empty)"
+        invalid: "(invalid)"
+      errors:
+        unknown_data_source: "This data source does not exist."
+        field_not_allowed: "The field %{name} cannot be used here."
+        operator_not_allowed: "The operator %{name} cannot be used here."
+        metric_not_allowed: "The calculation %{name} cannot be used on this field."
+        dimension_not_allowed: "You cannot group by %{name}."
+        invalid_granularity: "The granularity %{name} does not exist."
+        granularity_unsupported: "A custom field does not take a granularity."
+        invalid_filter_value: "The filter value on %{name} is not valid."
+        invalid_filters_operator: "Filters on a column combine with \"and\" or \"or\"."
+        metric_filters_unsupported: "This source does not take per-column filters."
+        invalid_limit: "The limit must be a number from 1 to %{max}."
+        invalid_sort: "You cannot sort by %{name}."
+        invalid_time_range: "The period is not valid."
+        invalid_steps: "Send from 1 to %{max} steps."
+        range_too_long: "Choose a period of up to %{days} days."
+        too_many_metrics: "Use up to %{max} columns per query."
+        too_many_metric_filters: "Use up to %{max} filters per column."
+        too_many_filters: "Use up to %{max} filters per query."
+        too_many_dimensions: "Group by up to %{max} fields."
+        too_many_matches: "This filter reaches too many conversations. Combine it with another filter."
+        too_many_widgets: "A dashboard can have up to %{max} cards."
+        too_many_dashboards: "This organization already has the maximum of %{max} dashboards."
+        invalid_widget: "Card %{position}: %{message}"
+        query_timeout: "This query took too long. Choose a shorter period or fewer columns."
+        query_failed: "We could not run this query. Check the filters and try again."
+      sources:
+        conversations:
+          label: "Conversations"
+          fields:
+            status: "Status"
+            assigned_account_id: "Assignee"
+            team_id: "Department"
+            connector_id: "Connected channel"
+            created_at: "Created on"
+            updated_at: "Last updated"
+            last_message_at: "Last message"
+            unread_messages: "Unread messages"
+            tags: "Tags"
+            audience_type: "Channel"
+            automation_enabled: "Automation on"
+            red_flag_count: "Alerts"
+            user_name: "Contact name"
+            custom_attributes: "Custom field"
+            chat_tag_name: "Tag"
+            booking_attendance: "Booking attendance"
+          values:
+            status:
+              open: "Open"
+              closed: "Closed"
+            audience_type:
+              whatsapp_api: "WhatsApp"
+              import_feature: "Import"
+              instagram: "Instagram"
+              facebook: "Facebook"
+              web: "Website chat"
+            automation_enabled:
+              "yes": "Yes"
+              "no": "No"
+            booking_attendance:
+              show: "Attended"
+              no_show: "Did not attend"
+        contacts:
+          label: "Contacts"
+          fields:
+            created_at: "Created on"
+            last_message_at: "Last message"
+            user_name: "Name"
+            display_name: "Display name"
+            external_id: "Identifier"
+            audience_type: "Channel"
+            contact_origin: "Origin"
+            assigned_account_id: "Assignee"
+            team_id: "Department"
+            tags: "Tags"
+            custom_attributes: "Custom field"
+            chat_tag_name: "Tag"
+          values:
+            audience_type:
+              whatsapp_api: "WhatsApp"
+              import_feature: "Import"
+              instagram: "Instagram"
+              facebook: "Facebook"
+              web: "Website chat"
+        messages:
+          label: "Messages"
+          fields:
+            created_at: "Sent on"
+            _type: "Type"
+            chat_id: "Conversation"
+            role: "Who spoke"
+            message_origin: "Origin"
+            sender_name: "Sender"
+            account_id: "Assignee"
+          values:
+            _type:
+              text: "Text"
+              image: "Image"
+              audio: "Audio"
+              media: "File"
+            role:
+              user: "Contact"
+              assistant: "Support"
+            message_origin:
+              platform: "Platform"
+              frontend: "Assignee"
+              user: "Phone"
+        agenda_bookings:
+          label: "Bookings"
+          fields:
+            status: "Status"
+            attendance_status: "Attendance"
+            start: "Start"
+            end: "End"
+            professional_id: "Professional"
+            service_id: "Service"
+            calendar_id: "Calendar"
+            created_at: "Created on"
+            title: "Title"
+            professional_name: "Professional"
+            service_name: "Service"
+            calendar_name: "Calendar"
+          values:
+            status:
+              active: "Active"
+              canceled: "Canceled"
+            attendance_status:
+              show: "Attended"
+              no_show: "Did not attend"
+              pending: "Pending"
+        campaigns:
+          label: "Campaigns"
+          fields:
+            name: "Name"
+            status: "Status"
+            campaign_mode: "Mode"
+            message_type: "Message type"
+            created_by_account_id: "Created by"
+            recipients_count: "Recipients"
+            sent_count: "Sent"
+            delivered_count: "Delivered"
+            read_count: "Read"
+            failed_count: "Failed"
+            created_at: "Created on"
+            scheduled_at: "Scheduled for"
+            started_at: "Sending started"
+            completed_at: "Sending ended"
+          values:
+            status:
+              draft: "Draft"
+              scheduled: "Scheduled"
+              running: "Sending"
+              paused: "Paused"
+              completed: "Completed"
+              cancelled: "Canceled"
+            campaign_mode:
+              text: "Text"
+              template: "Template"
+            message_type:
+              text: "Text"
+              media: "Media"
+        daily_stats:
+          label: "Daily numbers"
+          fields:
+            day: "Day"
+            chats_started: "Conversations started"
+            active_chats: "Active conversations"
+            automation_chats: "Handled by automation"
+            messages_inbound: "Messages received"
+            messages_sent_by_automation: "Sent by automation"
+            messages_sent_by_campaign: "Sent by campaign"
+            messages_sent_by_human: "Sent by the team"
+            out_of_hours_messages: "Out of hours"
+            hours_saved: "Hours saved"
+            messages_avoided: "Messages avoided"
+            automation_bookings: "Bookings by automation"
+            chats_with_human_touch: "Conversations with the team"
+            chats_handled_by_automation: "Resolved by automation"
+            first_response_automation_count: "First responses by automation"
+            first_response_human_count: "First responses by the team"
+            first_response_automation_seconds_sum: "Sum of automation first response time (s)"
+            first_response_human_seconds_sum: "Sum of team first response time (s)"

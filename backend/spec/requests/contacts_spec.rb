@@ -94,6 +94,109 @@ RSpec.describe "Contatos", type: :request do
       end
     end
 
+    it "traz os campos personalizados da linha, que viram coluna na tela" do
+      chat_for(custom_attributes: { "cidade" => "Curitiba" })
+      chat_for
+
+      get "/contacts", headers: headers
+
+      expect(json["contacts"].map { |contact| contact["customAttributes"] }).to contain_exactly({ "cidade" => "Curitiba" }, {})
+    end
+
+    it "filtra por departamento, inclusive sem nenhum" do
+      team = create(:team, organization: organization)
+      other = create(:team, organization: organization)
+      a = chat_for(team_id: team.id)
+      b = chat_for(team_id: other.id)
+      c = chat_for
+
+      {
+        { teamIds: [ team.id ] } => [ a ],
+        { teamIds: [ team.id, other.id ] } => [ a, b ],
+        { teamIds: [ "none" ] } => [ c ],
+        { teamIds: [ "none", other.id ] } => [ b, c ]
+      }.each do |filter, expected|
+        get "/contacts", params: filter, headers: headers
+        expect(ids).to match_array(expected.map { |chat| chat.id.to_s }), "filtro #{filter}"
+      end
+    end
+
+    it "aceita mais de um responsável" do
+      colleague = create(:account, organization: organization, role: "member")
+      a = chat_for(assigned_account_id: owner.id)
+      b = chat_for(assigned_account_id: colleague.id)
+      c = chat_for
+
+      get "/contacts", params: { assignedUser: [ "me", colleague.id ] }, headers: headers
+      expect(ids).to match_array([ a, b ].map { |chat| chat.id.to_s })
+
+      get "/contacts", params: { assignedUser: [ "unassigned", colleague.id ] }, headers: headers
+      expect(ids).to match_array([ b, c ].map { |chat| chat.id.to_s })
+    end
+
+    describe "condições sobre campos personalizados" do
+      def conditions(*list)
+        { conditions: list.each_with_index.to_h { |condition, index| [ index.to_s, condition ] } }
+      end
+
+      let!(:curitiba) { chat_for(user_name: "Ana", custom_attributes: { "cidade" => "Curitiba", "ticket_medio" => "950", "aceita" => "true" }) }
+      let!(:londrina) { chat_for(user_name: "Bia", custom_attributes: { "cidade" => "Londrina", "ticket_medio" => "120" }) }
+      let!(:blank) { chat_for(user_name: "Cris") }
+
+      it "filtra por lista, texto, número e booleano" do
+        {
+          { attributeKey: "custom_attributes.cidade", filterOperator: "equal_to", values: %w[Curitiba Londrina] } => [ curitiba, londrina ],
+          { attributeKey: "custom_attributes.cidade", filterOperator: "text_contains", values: [ "curi" ] } => [ curitiba ],
+          { attributeKey: "custom_attributes.ticket_medio", filterOperator: "is_greater_than", values: [ "500" ], valueType: "number" } => [ curitiba ],
+          { attributeKey: "custom_attributes.ticket_medio", filterOperator: "is_less_than", values: [ "500" ], valueType: "number" } => [ londrina ],
+          { attributeKey: "custom_attributes.aceita", filterOperator: "equal_to", values: [ "true" ] } => [ curitiba ],
+          { attributeKey: "custom_attributes.aceita", filterOperator: "not_equal_to", values: [ "true" ] } => [ londrina, blank ]
+        }.each do |condition, expected|
+          get "/contacts", params: conditions(condition), headers: headers
+          expect(ids).to match_array(expected.map { |chat| chat.id.to_s }), "condição #{condition}"
+        end
+      end
+
+      it "soma as condições, e com os outros filtros" do
+        get "/contacts",
+            params: { q: "ana" }.merge(conditions(
+              { attributeKey: "custom_attributes.ticket_medio", filterOperator: "is_greater_than", values: [ "100" ], valueType: "number" },
+              { attributeKey: "custom_attributes.ticket_medio", filterOperator: "is_less_than", values: [ "500" ], valueType: "number", queryOperator: "and" }
+            )),
+            headers: headers
+
+        expect(ids).to be_empty
+      end
+
+      it "ignora campo fora da lista, sem derrubar a tela: nada de filtrar por qualquer coisa do documento" do
+        get "/contacts", params: conditions({ attributeKey: "organization_id", filterOperator: "equal_to", values: [ "x" ] }), headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(ids.size).to eq(3)
+      end
+
+      it "vale na ação em lote" do
+        tag = tag_for
+
+        post "/contacts/bulk-add-tags",
+             params: {
+               selectAll: true,
+               filters: { conditions: [ { attributeKey: "custom_attributes.cidade", filterOperator: "equal_to", values: [ "Curitiba" ] } ] },
+               tagIds: [ tag.id.to_s ]
+             },
+             headers: headers, as: :json
+
+        expect(json).to eq("updatedCount" => 1)
+        expect(curitiba.reload.chat_tag_ids).to eq([ tag.id ])
+      end
+
+      it "vale na exportação na hora" do
+        get "/contacts/export", params: conditions({ attributeKey: "custom_attributes.cidade", filterOperator: "equal_to", values: [ "Londrina" ] }), headers: headers
+
+        expect(CSV.parse(response.body).drop(1).map(&:first)).to eq([ "Bia" ])
+      end
+    end
+
     it "filtra por data no fuso da organização, até o fim do dia" do
       inside = chat_for
       inside.set(created_at: ActiveSupport::TimeZone["America/Sao_Paulo"].parse("2026-01-10 23:30"))
@@ -154,7 +257,15 @@ RSpec.describe "Contatos", type: :request do
       expect(json["connectors"].map { |c| c["id"] }).to eq([ connector.id.to_s ])
       expect(json["tags"].map { |t| t["id"] }).to eq([ tag.id.to_s ])
       expect(json["teams"]).to eq([ { "id" => team.id, "name" => "Comercial" } ])
-      expect(json["users"]).to eq([ { "id" => owner.id, "name" => owner.name } ])
+      expect(json["users"]).to eq([ { "id" => owner.id, "name" => owner.name, "assignable" => true } ])
+    end
+
+    it "diz quem não pode receber atendimento: entra no filtro, mas a atribuição recusaria" do
+      setup_only = create(:account, organization: organization, role: "member", name: "Quem configura", setup_only: true)
+
+      get "/contacts/filters", headers: headers
+
+      expect(json["users"]).to include({ "id" => setup_only.id, "name" => "Quem configura", "assignable" => false })
     end
   end
 

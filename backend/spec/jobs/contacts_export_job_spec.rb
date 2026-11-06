@@ -74,6 +74,20 @@ RSpec.describe ContactsExportJob, type: :job do
     expect(exported_rows.drop(1).map(&:first)).to eq([ "Ana" ])
   end
 
+  it "aplica as condições de campo personalizado, depois de passar pela fila" do
+    chat_for(user_name: "Ana", custom_attributes: { "cidade" => "Curitiba" })
+    chat_for(user_name: "Bia", custom_attributes: { "cidade" => "Londrina" })
+
+    # Como o canal manda: nos hashes da fila, a condição precisa chegar inteira.
+    arguments = ActiveJob::Arguments.deserialize(ActiveJob::Arguments.serialize(
+      [ { filters: { "conditions" => [ { "attribute_key" => "custom_attributes.cidade", "filter_operator" => "equal_to", "values" => [ "Curitiba" ] } ] }.with_indifferent_access } ]
+    )).first
+
+    run(**arguments)
+
+    expect(exported_rows.drop(1).map(&:first)).to eq([ "Ana" ])
+  end
+
   it "exporta os marcados" do
     chosen = chat_for(user_name: "Ana")
     chat_for(user_name: "Bia")

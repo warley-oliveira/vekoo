@@ -1,0 +1,493 @@
+{
+  "contacts": {
+    "count_one": "{{formatted}} contact",
+    "count_other": "{{formatted}} contacts",
+    "countNone": "No contacts",
+    "tableLabel": "Contact list",
+    "noName": "No name",
+    "empty": {
+      "title": "No contacts here yet",
+      "description": "People who talk to you through your channels show up here. To bring in an existing base, import a spreadsheet."
+    },
+    "optionsError": {
+      "message": "Could not load tags, channels and assignees. The list keeps working, but without those names.",
+      "retry": "Try again"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "back": "Back",
+      "continue": "Continue"
+    },
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "automation": {
+      "on": "On",
+      "off": "Off"
+    },
+    "session": {
+      "inside": "Inside",
+      "outside": "Outside",
+      "insideHint": "This person wrote in the last 24 hours: you can reply normally.",
+      "outsideHint": "Outside the 24-hour window: on official WhatsApp, you can only start with an approved template."
+    },
+    "team": {
+      "none": "No department"
+    },
+    "assignee": {
+      "none": "Unassigned",
+      "unknown": "Person without access"
+    },
+    "connector": {
+      "removed": "Channel removed"
+    },
+    "custom": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "columns": {
+      "title": "Columns",
+      "contact": "Contact",
+      "connector": "Channel",
+      "status": "Status",
+      "tags": "Tags",
+      "assignee": "Assignee",
+      "team": "Department",
+      "lastMessage": "Last message",
+      "session": "24h window",
+      "automation": "Automation",
+      "unread": "Unread",
+      "createdAt": "Created",
+      "notes": "Notes",
+      "customFields": "Custom fields",
+      "reset": "Back to default"
+    },
+    "sort": {
+      "nameAsc": "Name, A to Z",
+      "nameDesc": "Name, Z to A",
+      "statusAsc": "Closed first",
+      "statusDesc": "Open first",
+      "lastMessageAsc": "Oldest",
+      "lastMessageDesc": "Newest",
+      "unreadAsc": "Fewest unread messages",
+      "unreadDesc": "Most unread messages",
+      "createdAsc": "Created longest ago",
+      "createdDesc": "Created most recently"
+    },
+    "row": {
+      "openChat": "Open chat",
+      "copyPhone": "Copy phone",
+      "phoneCopied": "Phone copied",
+      "copyFailed": "Could not copy the phone",
+      "moreCount": "+{{count}}",
+      "moreTags_one": "{{count}} more tag: {{names}}",
+      "moreTags_other": "{{count}} more tags: {{names}}"
+    },
+    "lastMessage": {
+      "types": {
+        "text": "Message",
+        "image": "Image",
+        "audio": "Audio",
+        "video": "Video",
+        "document": "Document",
+        "file": "File",
+        "media": "File",
+        "sticker": "Sticker",
+        "location": "Location",
+        "contact": "Shared contact",
+        "template": "Template",
+        "other": "Message"
+      }
+    },
+    "filters": {
+      "search": "Search by name or phone",
+      "connector": "Channel",
+      "connectorWithType": "{{name}} ({{type}})",
+      "tag": "Tag",
+      "team": "Department",
+      "assignee": "Assignee",
+      "assignedToMe": "Assigned to me",
+      "status": "Status",
+      "automation": "Automation",
+      "more": "More filters",
+      "session": "Inside the 24h window",
+      "sessionHint": "Only people who wrote in the last 24 hours.",
+      "createdAt": "Created",
+      "active": "Applied filters",
+      "remove": "Remove the filter {{label}}",
+      "clearAll": "Clear all",
+      "custom": {
+        "contains": "Contains",
+        "greaterThan": "Greater than",
+        "lessThan": "Less than",
+        "any": "Any"
+      },
+      "chip": {
+        "connector": "Channel: {{value}}",
+        "team": "Department: {{value}}",
+        "assignee": "Assignee: {{value}}",
+        "status": "Status: {{value}}",
+        "automation": "Automation: {{value}}",
+        "createdAt": "Created: {{value}}",
+        "field": "{{name}}: {{value}}",
+        "contains": "contains {{value}}",
+        "greaterThan": "greater than {{value}}",
+        "lessThan": "less than {{value}}",
+        "from": "from {{value}}",
+        "to": "until {{value}}"
+      }
+    },
+    "selection": {
+      "selectPage": "Select this page",
+      "page_one": "The contact on this page is selected.",
+      "page_other": "All {{formatted}} contacts on this page are selected.",
+      "selectAll_one": "Select the contact on the list",
+      "selectAll_other": "Select all {{formatted}} contacts on the list",
+      "all_one": "The contact on the list is selected.",
+      "all_other": "All {{formatted}} contacts on the list are selected.",
+      "allExcept_one": "The contact on the list is selected, except {{excluded}}.",
+      "allExcept_other": "All {{formatted}} contacts on the list are selected, except {{excluded}}.",
+      "clear": "Undo selection"
+    },
+    "bulk": {
+      "actions": {
+        "addTags": "Add tags",
+        "removeTags": "Remove tags",
+        "assign": "Assign",
+        "export": "Export",
+        "reopen": "Reopen chat",
+        "close": "Close chat",
+        "automationOn": "Turn automation on",
+        "automationOff": "Turn automation off",
+        "more": "More actions"
+      },
+      "nothingChanged": "Nothing changed",
+      "nothingChangedHint": "These contacts were already like this, or are outside what you can see.",
+      "someUnchanged_one": "The other one was already like this, or is outside what you can see.",
+      "someUnchanged_other": "The other {{formatted}} were already like this, or are outside what you can see.",
+      "failed": "Could not apply the action",
+      "noTags": "No tags created yet. Create tags in the chat to use them here.",
+      "tagsLabel": "Tags",
+      "addTags": {
+        "title": "Add tags",
+        "description_one": "Applies to {{formatted}} contact.",
+        "description_other": "Applies to {{formatted}} contacts.",
+        "descriptionNamed": "Applies to {{name}}.",
+        "confirm": "Add tags",
+        "done_one": "Tags added to {{formatted}} contact",
+        "done_other": "Tags added to {{formatted}} contacts"
+      },
+      "removeTags": {
+        "title": "Remove tags",
+        "description_one": "Applies to {{formatted}} contact. Anyone without the tag stays as is.",
+        "description_other": "Applies to {{formatted}} contacts. Anyone without the tag stays as is.",
+        "descriptionNamed": "Applies to {{name}}.",
+        "confirm": "Remove tags",
+        "done_one": "Tags removed from {{formatted}} contact",
+        "done_other": "Tags removed from {{formatted}} contacts"
+      },
+      "assign": {
+        "title": "Assign",
+        "description_one": "Applies to {{formatted}} contact.",
+        "description_other": "Applies to {{formatted}} contacts.",
+        "descriptionNamed": "Applies to {{name}}.",
+        "label": "Assignee",
+        "placeholder": "Choose a person",
+        "remove": "Nobody: remove the assignment",
+        "confirm": "Assign",
+        "confirmRemove": "Remove assignment",
+        "done_one": "Assignee set on {{formatted}} contact",
+        "done_other": "Assignee set on {{formatted}} contacts",
+        "doneRemoved_one": "Assignment removed from {{formatted}} contact",
+        "doneRemoved_other": "Assignment removed from {{formatted}} contacts"
+      },
+      "close": {
+        "title_one": "Close {{formatted}} chat?",
+        "title_other": "Close {{formatted}} chats?",
+        "hint_one": "It leaves the open list. You can reopen it later.",
+        "hint_other": "They leave the open list. You can reopen them later.",
+        "confirm_one": "Close chat",
+        "confirm_other": "Close chats",
+        "done_one": "{{formatted}} chat closed",
+        "done_other": "{{formatted}} chats closed"
+      },
+      "reopen": {
+        "title_one": "Reopen {{formatted}} chat?",
+        "title_other": "Reopen {{formatted}} chats?",
+        "hint_one": "It goes back to the open list.",
+        "hint_other": "They go back to the open list.",
+        "confirm_one": "Reopen chat",
+        "confirm_other": "Reopen chats",
+        "done_one": "{{formatted}} chat reopened",
+        "done_other": "{{formatted}} chats reopened"
+      },
+      "automationOn": {
+        "title_one": "Turn automation on for {{formatted}} contact?",
+        "title_other": "Turn automation on for {{formatted}} contacts?",
+        "hint_one": "Flows start replying to this chat again.",
+        "hint_other": "Flows start replying to these chats again.",
+        "confirm_one": "Turn automation on",
+        "confirm_other": "Turn automation on",
+        "done_one": "Automation on for {{formatted}} contact",
+        "done_other": "Automation on for {{formatted}} contacts"
+      },
+      "automationOff": {
+        "title_one": "Turn automation off for {{formatted}} contact?",
+        "title_other": "Turn automation off for {{formatted}} contacts?",
+        "hint_one": "Flows stop replying to this chat until someone turns it back on.",
+        "hint_other": "Flows stop replying to these chats until someone turns it back on.",
+        "confirm_one": "Turn automation off",
+        "confirm_other": "Turn automation off",
+        "done_one": "Automation off for {{formatted}} contact",
+        "done_other": "Automation off for {{formatted}} contacts"
+      }
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "No connection. Check your internet and try again.",
+      "forbidden": "You don't have permission for this.",
+      "invalidAssignee": "This person can't receive chats.",
+      "noChatsSelected": "Select at least one contact.",
+      "noTagsSelected": "Choose at least one tag.",
+      "invalidTags": "These tags no longer exist.",
+      "tooManyRecipients": "Too many picked by hand: the limit is 5,000. Select all on the list and uncheck who stays out.",
+      "exportTooLarge": "More than 5,000 contacts to download right away. Prepare the file in the background.",
+      "invalidConnector": "This channel no longer exists.",
+      "tooManyContacts": "A batch went over the 1,000 contact limit.",
+      "noContactsProvided": "No contacts to send.",
+      "noValidContacts": "No contact in this batch has a name and a phone."
+    },
+    "export": {
+      "action": "Export",
+      "title": "Export contacts",
+      "selectionSummary_one": "{{formatted}} selected contact goes into a CSV file.",
+      "selectionSummary_other": "The {{formatted}} selected contacts go into a CSV file.",
+      "filterSummary_one": "{{formatted}} contact on the list, with the current filters, goes into a CSV file.",
+      "filterSummary_other": "The {{formatted}} contacts on the list, with the current filters, go into a CSV file.",
+      "modeLabel": "How would you like to get it",
+      "now": "Download now",
+      "nowHint": "Up to {{limit}} contacts. The file comes right away, with this screen open.",
+      "background": "Prepare in the background",
+      "backgroundHint": "Any size. You follow the progress, can keep working, and the link lasts 1 hour.",
+      "onlyBackground": "Lists with more than {{limit}} contacts, or many picked by hand, are prepared in the background: you follow the progress, can keep working, and the link lasts 1 hour.",
+      "submitNow": "Download now",
+      "submitBackground": "Prepare file",
+      "nowDone_one": "File with {{formatted}} contact downloaded",
+      "nowDone_other": "File with {{formatted}} contacts downloaded",
+      "queued": "In the queue, starting soon.",
+      "running": "Exporting {{processed}} of {{total}} contacts",
+      "progressLabel": "Export progress",
+      "canClose": "You can close this window and even leave the screen: we'll let you know when it's ready.",
+      "stalled": "This is taking longer than usual. You can keep waiting or ask again.",
+      "startOver": "Ask again",
+      "keepGoing": "Keep going in the background",
+      "readyTitle_one": "File ready, with {{formatted}} contact",
+      "readyTitle_other": "File ready, with {{formatted}} contacts",
+      "readyHint": "The link lasts until {{time}}. After that, just export again.",
+      "download": "Download file",
+      "newExport": "Export the current list",
+      "readyAway": "Your contact export is ready",
+      "failedAway": "Could not export the contacts",
+      "expiredTitle": "This link has expired",
+      "expiredHint": "The download link lasts 1 hour. Export again to get another one.",
+      "emptyTitle": "Nothing to export",
+      "emptyHint": "No contact is in this selection.",
+      "failedTitle": "Could not export",
+      "failedHint": "Something went wrong while creating the file. Please try again.",
+      "noConnection": "We couldn't reach the server. Check your connection and try again.",
+      "exportAgain": "Export again",
+      "downloadOffline": "No connection to download the file. Please try again.",
+      "fileGone": "The file has already been deleted. Export again.",
+      "linkInvalid": "This link is no longer valid for your account. Export again."
+    },
+    "tasks": {
+      "importing_one": "Importing {{formatted}} contact",
+      "importing_other": "Importing {{formatted}} contacts",
+      "view": "View",
+      "ready_one": "File with {{formatted}} contact ready. The link lasts until {{time}}.",
+      "ready_other": "File with {{formatted}} contacts ready. The link lasts until {{time}}.",
+      "expired": "Your export link has expired.",
+      "failed": "Could not export the contacts.",
+      "empty": "The export finished without any contact.",
+      "dismiss": "Dismiss"
+    },
+    "import": {
+      "action": "Import contacts",
+      "description": "Bring in contacts from a spreadsheet. You review everything before sending.",
+      "descriptionForChannel": "Contacts go into the channel {{name}}. You review everything before sending.",
+      "submit_one": "Import {{formatted}} contact",
+      "submit_other": "Import {{formatted}} contacts",
+      "steps": {
+        "file": "File",
+        "columns": "Columns",
+        "review": "Review",
+        "channel": "Channel"
+      },
+      "file": {
+        "hint": "CSV or JSON, up to 50 MB.",
+        "loaded": "{{name}} is still loaded. Continue, or choose another file.",
+        "reading": "Reading the file…",
+        "errorTitle": "Could not read this file",
+        "moreIssues_one": "And {{count}} more problem.",
+        "moreIssues_other": "And {{count}} more problems.",
+        "helpTitle": "What works",
+        "helpCsv": "CSV, or a spreadsheet saved as CSV, with titles on the first line.",
+        "helpJson": "JSON, as a list of objects.",
+        "helpRequired": "Each contact needs a name and a phone.",
+        "noteTitle": "Good to know",
+        "notePlatform": "Contacts only come in here on the platform: nothing changes in your phone's contact book.",
+        "noteHistory": "The WhatsApp message history doesn't come along.",
+        "template": "Download template"
+      },
+      "template": {
+        "name": "Name",
+        "phone": "Phone",
+        "assignee": "Assignee",
+        "department": "Department",
+        "exampleName": "Mary Smith",
+        "fileName": "contacts-template.csv"
+      },
+      "issues": {
+        "empty": "The file is empty.",
+        "unknownFormat": "We don't recognize this format. Use CSV or JSON.",
+        "headerOnly": "The file only has the title line.",
+        "noData": "We didn't find any contact in the file.",
+        "jsonNotArray": "The JSON must be a list of objects.",
+        "jsonEmpty": "The JSON list is empty.",
+        "jsonInvalid": "The JSON has a writing error.",
+        "jsonItemInvalid": "Item {{line}} is not an object."
+      },
+      "columns": {
+        "found_one": "{{name}}: {{formatted}} line.",
+        "found_other": "{{name}}: {{formatted}} lines.",
+        "pick": "Choose the column",
+        "name": "Contact name",
+        "phone": "Phone",
+        "sameColumn": "Name and phone must be different columns.",
+        "noneReady": "No line has a name and a valid phone in these columns. Check that they are the right columns.",
+        "optional": "Assignment, if the spreadsheet has it",
+        "assignee": "Assignee",
+        "department": "Department",
+        "none": "Don't use",
+        "countryCode": "Add the Brazil code (55)",
+        "countryCodeHint": "For numbers without 55 at the start. Numbers that already have 55, or start with +, stay as they are.",
+        "sample": "How it will look"
+      },
+      "review": {
+        "total": "Lines",
+        "ready": "Coming in",
+        "ignored": "Left out",
+        "ignoredTitle": "What is left out",
+        "ignoredReason": {
+          "missingName_one": "{{formatted}} line without a name",
+          "missingName_other": "{{formatted}} lines without a name",
+          "missingPhone_one": "{{formatted}} line without a phone",
+          "missingPhone_other": "{{formatted}} lines without a phone",
+          "invalidPhone_one": "{{formatted}} line with an invalid phone",
+          "invalidPhone_other": "{{formatted}} lines with an invalid phone",
+          "duplicate_one": "{{formatted}} line with a number repeated in the file",
+          "duplicate_other": "{{formatted}} lines with a number repeated in the file"
+        },
+        "attributionNote": "Assignee and department are matched by name: anyone not found comes in unassigned.",
+        "search": "Search the spreadsheet",
+        "filter": "Show",
+        "filterAll": "All",
+        "filterReady": "Coming in",
+        "filterIgnored": "Left out",
+        "tableLabel": "Review of the file's lines",
+        "noneInFilter": "No lines here",
+        "name": "Name",
+        "phone": "Phone",
+        "assignee": "Assignee",
+        "department": "Department",
+        "result": "Status",
+        "line": "Line",
+        "original": "Original data",
+        "emptyCell": "Empty",
+        "ok": "Coming in",
+        "issue": {
+          "missingName": "No name",
+          "missingPhone": "No phone",
+          "invalidPhone": "Invalid phone",
+          "duplicate": "Repeated"
+        }
+      },
+      "channel": {
+        "label_one": "Which channel does {{formatted}} contact go to?",
+        "label_other": "Which channel do the {{formatted}} contacts go to?",
+        "emptyTitle": "No WhatsApp channel connected",
+        "emptyHint": "Contacts go into a WhatsApp channel. Connect one to import.",
+        "connect": "Connect a channel",
+        "noteTitle": "How contacts come in",
+        "noteAutomation": "With automation off: no flow talks to them on its own.",
+        "noteDuplicates": "Anyone who already has a chat on this channel isn't duplicated: the chat moves up the list and gets the assignment.",
+        "noteOrder": "New ones come in dated two days ago, so they don't fill the top of your team's list."
+      },
+      "summary": {
+        "title": "Summary",
+        "file": "File",
+        "fileWithType": "{{name}} ({{type}})",
+        "name": "Name column",
+        "phone": "Phone column",
+        "countryCode": "Brazil code (55)",
+        "countryCodeOn": "Add when missing",
+        "countryCodeOff": "Don't add",
+        "assignee": "Assignee column",
+        "department": "Department column"
+      },
+      "tracking": {
+        "title": "Contact import",
+        "sending": "Sending batch {{sent}} of {{total}}",
+        "processing": "Creating the chats",
+        "processingBatches": "Creating the chats: {{finished}} of {{total}} batches",
+        "partial": "Import finished, with failures",
+        "done": "Import finished",
+        "sendFailed": "Sending stopped midway",
+        "sendFailedHint": "{{error}} Batches sent so far: {{sent}} of {{total}}. They are still being processed.",
+        "resume": "Continue sending",
+        "progressLabel": "Import progress",
+        "imported": "Imported",
+        "sent": "Sent",
+        "notImported": "Left out",
+        "batchesFailed_one": "{{count}} batch failed while creating the chats. Import the file again: anyone already in isn't duplicated.",
+        "batchesFailed_other": "{{count}} batches failed while creating the chats. Import the file again: anyone already in isn't duplicated.",
+        "canClose": "You can close this: the import keeps going, and we'll let you know when it's done.",
+        "doneHint": "New contacts come in dated two days ago, so they may not be at the top of the list.",
+        "keepGoing": "Keep going in the background",
+        "another": "Import another file",
+        "viewContacts": "View contacts"
+      },
+      "stop": {
+        "title": "Stop sending?",
+        "hint": "Batches already sent keep being processed. The rest of the spreadsheet stays out.",
+        "confirm": "Stop sending",
+        "cancel": "Keep sending"
+      },
+      "discard": {
+        "title": "Discard this import?",
+        "hint": "Nothing has been sent yet. The file and the chosen columns are lost.",
+        "confirm": "Discard",
+        "cancel": "Keep importing"
+      },
+      "history": {
+        "title": "Imports",
+        "emptyTitle": "No imports yet",
+        "emptyHint": "Imported spreadsheets show up here, with how many contacts came in.",
+        "noFileName": "Unnamed import",
+        "counts": "{{imported}} of {{total}} contacts",
+        "status": {
+          "running": "In progress",
+          "completed": "Finished",
+          "failed": "Failed"
+        }
+      },
+      "finished": {
+        "done_one": "Import finished: {{formatted}} contact",
+        "done_other": "Import finished: {{formatted}} contacts",
+        "failed": "A contact import failed"
+      }
+    }
+  }
+}

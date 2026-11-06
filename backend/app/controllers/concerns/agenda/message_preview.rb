@@ -7,6 +7,13 @@ module Agenda
 
     private
 
+    # A conversa do agendamento, se a pessoa pode vê-la (`chat_list_to`).
+    def visible_chat(booking)
+      return nil if booking.chat_id.blank?
+
+      Chat.visible_to(current_account).where(id: booking.chat_id).take
+    end
+
     # Os últimos agendamentos do calendário que têm conversa: os candidatos para simular.
     def booking_candidates
       records = @calendar.bookings.listed.where(:chat_id.ne => nil).order_by(start: :desc).limit(50).to_a
@@ -22,6 +29,9 @@ module Agenda
       if booking.chat_id.blank?
         return render_error(status: :unprocessable_entity, code: "bookingWithoutChat", message: t("agenda.sequences.booking_without_chat"))
       end
+
+      # O histórico da conversa entra no pedido ao modelo, e a resposta pode repetir o que leu.
+      return render_not_found unless visible_chat(booking)
 
       composer = MessageComposer.new(
         booking: booking,

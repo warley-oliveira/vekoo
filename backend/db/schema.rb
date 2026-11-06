@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_000605) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -167,6 +167,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000605) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "name"], name: "index_folders_on_organization_id_and_name"
     t.index ["organization_id"], name: "index_folders_on_organization_id"
+  end
+
+  create_table "funnel_stages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "funnel_id", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["funnel_id", "position"], name: "index_funnel_stages_on_funnel_id_and_position"
+  end
+
+  create_table "funnels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index "organization_id, lower((name)::text)", name: "index_funnels_on_organization_and_lower_name", unique: true
   end
 
   create_table "library_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -473,6 +491,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000605) do
   add_foreign_key "contact_imports", "organizations", on_delete: :cascade
   add_foreign_key "daily_chat_stats", "organizations", on_delete: :cascade
   add_foreign_key "folders", "organizations"
+  add_foreign_key "funnel_stages", "funnels", on_delete: :cascade
+  add_foreign_key "funnels", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "organizations"
   add_foreign_key "oauth_credentials", "organizations", on_delete: :cascade
   add_foreign_key "organization_alerts", "organizations", on_delete: :cascade

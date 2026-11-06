@@ -23,6 +23,7 @@ RSpec.describe "Agenda: calendários", type: :request do
       [ :get, "/calendars/qualquer/attendance-sequences/bookings" ],
       [ :post, "/calendars/qualquer/attendance-sequences/preview" ],
       [ :get, "/calendars/qualquer/contact-notification-preview/bookings" ],
+      [ :get, "/calendars/qualquer/contact-notification-preview/messages" ],
       [ :post, "/calendars/qualquer/contact-notification-preview" ],
       [ :get, "/calendars/qualquer/availability" ]
     ].each do |verb, path|
@@ -559,6 +560,71 @@ RSpec.describe "Agenda: calendários", type: :request do
           get "/calendars/#{calendar.id}/contact-notification-preview/bookings", headers: headers, as: :json
 
           expect(json["bookings"]).to eq([])
+        end
+
+        # Quem só configura a agenda precisa escolher o histórico, sem a permissão `chat`.
+        describe "GET .../contact-notification-preview/messages" do
+          def messages_path = "/calendars/#{calendar.id}/contact-notification-preview/messages"
+
+          def calendar_only(level = "all")
+            member_with(organization, calendar: "all", chat_list_to: level)
+          end
+
+          it "traz as mensagens que entram na simulação, da mais antiga para a mais nova, com a permissão calendar" do
+            get messages_path, params: { bookingId: booking.id.to_s }, headers: auth_headers(calendar_only)
+
+            expect(response).to have_http_status(:ok)
+            expect(json["messages"].map { |message| message["content"] }).to eq(%w[Primeira Segunda])
+            expect(json["messages"].first).to include("id" => first_message.id.to_s, "role" => first_message.role)
+            expect(json["messages"].first["createdAt"]).to be_a(Integer)
+          end
+
+          it "deixa de fora nota, chamada de ferramenta e o que não tem texto" do
+            create(:chat_text_message, chat: chat, role: "base", content: "Nota do histórico")
+            create(:chat_text_message, chat: chat, role: "assistant", content: "Chamando", tool_calls: [ { "id" => "1" } ])
+            create(:chat_image_message, chat: chat, content: "")
+
+            get messages_path, params: { bookingId: booking.id.to_s }, headers: headers
+
+            expect(json["messages"].map { |message| message["content"] }).to eq(%w[Primeira Segunda])
+          end
+
+          it "respeita o limite, com teto" do
+            get messages_path, params: { bookingId: booking.id.to_s, limit: 1 }, headers: headers
+
+            expect(json["messages"].map { |message| message["content"] }).to eq(%w[Segunda])
+          end
+
+          # Na origem a tela lia `GET /conversations` com `initial=true`, e a simulação zerava a contagem.
+          it "não zera as não lidas da conversa" do
+            chat.set(unread_messages: 3, assigned_account_id: account.id)
+
+            get messages_path, params: { bookingId: booking.id.to_s }, headers: headers
+
+            expect(Chat.scoped(organization.id, chat.id).unread_messages).to eq(3)
+          end
+
+          it "responde 404 para conversa que a pessoa não pode ver, e não simula com ela" do
+            chat.set(assigned_account_id: account.id)
+            person = member_with(organization, calendar: "all", chat_list_to: "assigned")
+            person_headers = auth_headers(person)
+
+            get messages_path, params: { bookingId: booking.id.to_s }, headers: person_headers
+            expect(response).to have_http_status(:not_found)
+
+            post "/calendars/#{calendar.id}/contact-notification-preview", params: { bookingId: booking.id.to_s, aiPrompt: "Lembre" }, headers: person_headers, as: :json
+            expect(response).to have_http_status(:not_found)
+          end
+
+          it "responde 404 para agendamento de outro calendário, e 400 sem o agendamento" do
+            other = create(:agenda_booking, calendar: create(:agenda_calendar, organization: organization), chat: chat)
+
+            get messages_path, params: { bookingId: other.id.to_s }, headers: headers
+            expect(response).to have_http_status(:not_found)
+
+            get messages_path, headers: headers
+            expect(response).to have_http_status(:bad_request)
+          end
         end
       end
     end

@@ -47,6 +47,397 @@
         95
       ],
       "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0867569c8600010bc201399dcbaac5454097075f4fc15fc1b1ddcb98507aec3e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 107,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IS NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1a42a190c586ad18118a027f80162031f5349ca2bf863f09c5cfd87365e32b19",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 158,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{expression(source.field(time_range.field))} DESC\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_order"
+      },
+      "user_input": "expression(source.field(time_range.field))",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1ad7cf7a1d8bfa6384a08348ae07f933a4c8ac8bba51b7798fdcc72fdc20ccd9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/insights/rollups/operational_metrics_backfill.rb",
+      "line": 63,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "DailyChatStat.connection.execute(\"INSERT INTO daily_chat_stats\\n  (id, organization_id, day, metrics, hourly_breakdown, created_at, updated_at)\\nVALUES #{batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")}\\nON CONFLICT (organization_id, day) DO UPDATE\\n  SET metrics = daily_chat_stats.metrics || EXCLUDED.metrics,\\n      hourly_breakdown = EXCLUDED.hourly_breakdown,\\n      updated_at = NOW()\\n\".squish)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Insights::Rollups::OperationalMetricsBackfill",
+        "method": "write"
+      },
+      "user_input": "batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: cada linha de values sai de sanitize_sql_array, com o valor como parâmetro. O SQL é cru porque upsert_all não aceita expressão no DO UPDATE."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1f4f8f049e1bf17de2d2387dfadd69de5f182b3670942de22e51c9e05068eca6",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 252,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{sort_alias(query[\"sort\"].to_h[\"field\"], renames)} #{direction(query[\"sort\"].to_h)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "sort_alias(query[\"sort\"].to_h[\"field\"], renames)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: sort_alias só devolve nome interno (metric_N, dimension_N), e direction só devolve ASC ou DESC. O que o cliente manda nunca entra."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "4402d4459013557787d9d4793d77a721c3836f853252325417bbc13df93d4541",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 101,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} >= ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "458a24e1dc11efefcfc572392c7c346f324d1908b1f33e99f47041a189c68eb9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 102,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} < ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "571be8ea18141e9d66baa3cbc465cf274aa43af4920998790b0add658771124f",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 99,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} != ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "601547cfdbfaeefebf70c23edbc6e1c6b9bc28db57e5de61da8c721abc197969",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 254,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{dimension_alias(0)} ASC\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "dimension_alias(0)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: alias interno (dimension_0) e ASC fixo. Nada vem do cliente."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "6d630c8cea4113553c160e03a4cd1e165593598b558a06843ed2e13d807dff33",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 106,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IS NOT NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "8bc0027b767b764c0f25f4a3eff1e0e21063aee31f3e7891d9ff9e557cd2eec3",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 98,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} = ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "b50a2c902c823609ec144eaa6f7760fb420891e64ff26e65199fe79be66a88d7",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 104,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IN (?)\", Array(filter[\"value\"]).map(&:to_f))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "b8c3e56d52cbcdb75d065af100df9e99e7ea99f1bfc20f7c2f651d43967979f9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 100,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} > ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "cbf691ba56e6df849968f3565d637740fe5def4654d3c07802f755dc3019f271",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 163,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{expression(source.field(query[\"sort\"].to_h[\"field\"]))} #{direction(query[\"sort\"].to_h)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_order"
+      },
+      "user_input": "expression(source.field(query[\"sort\"].to_h[\"field\"]))",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "d43d615278bb5afc5220c3b601f3d76ea936ec80798bc46b7b16ed64c7b8436e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 105,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} NOT IN (?)\", Array(filter[\"value\"]).map(&:to_f))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "d4af0f0bdfce6144cc36f6b8f2c66686c3e06d0061999997ed2ee3eb061a85da",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 208,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{metric_expression(metric)} AS metric_#{index}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "select_list"
+      },
+      "user_input": "metric_expression(metric)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A agregação sai de um case com textos fixos, e o alias é interno (metric_N). O nome da métrica fica só em Ruby."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "e6deffeba95f49e06cc1f57f60ebe97742e9175550bac61b3a43a20b1fc286c8",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 103,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} <= ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "fe6e0c2f46551d97cee1ad1ad81fb83f757701c7cb78050e742c4f893523f6bf",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 206,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{dimension_expression(dimension)} AS #{dimension_alias(index)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "select_list"
+      },
+      "user_input": "dimension_expression(dimension)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A granularidade sai de um case com textos fixos, e o alias é interno (dimension_N)."
     }
   ],
   "brakeman_version": "8.0.5"

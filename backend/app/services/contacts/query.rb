@@ -6,6 +6,9 @@ module Contacts
   # mostra a última mensagem, e as ações em lote mudam a conversa. Na origem esta lista ignorava a
   # permissão.
   class Query
+    # Em `team_ids`, "sem departamento": a coluna fica vazia, então não há id para pedir.
+    NO_TEAM = "none".freeze
+
     # @param filters [Hash, ActionController::Parameters] em snake_case
     def initialize(account:, filters:, time_zone: Time.zone)
       @account = account
@@ -29,11 +32,13 @@ module Contacts
         Chats::SearchTerm.clause(filters[:q]),
         tag_condition,
         connector_condition,
+        team_condition,
         assigned_condition,
         status_condition,
         automation_condition,
         session_condition,
-        created_at_condition
+        created_at_condition,
+        field_conditions
       ].compact
     end
 
@@ -47,15 +52,33 @@ module Contacts
       { "connector_id" => { "$in" => ids } } if ids.any?
     end
 
-    def assigned_condition
-      value = filters[:assigned_user].to_s
-      return nil if value.blank?
+    def team_condition
+      values = list_of(filters[:team_ids])
+      return nil if values.empty?
 
-      case value
-      when "me" then { "assigned_account_id" => account.id.to_s }
-      when "unassigned" then { "assigned_account_id" => nil }
-      else { "assigned_account_id" => value }
+      { "team_id" => { "$in" => values.map { |value| value == NO_TEAM ? nil : value } } }
+    end
+
+    # Um valor ou vários: `me`, `unassigned` ou o id da pessoa.
+    def assigned_condition
+      values = list_of(filters[:assigned_user])
+      return nil if values.empty?
+
+      ids = values.map do |value|
+        case value
+        when "me" then account.id.to_s
+        when "unassigned" then nil
+        else value
+        end
       end
+
+      { "assigned_account_id" => { "$in" => ids.uniq } }
+    end
+
+    # Segmentar por campo personalizado: as mesmas condições de `/chats`, com a mesma lista de
+    # campos permitidos. Num parâmetro próprio porque, na ação em lote, `filters` já é este objeto.
+    def field_conditions
+      Chats::Filters.query(Chats::Filters.conditions(filters[:conditions]), time_zone: time_zone).presence
     end
 
     def status_condition
@@ -96,6 +119,10 @@ module Contacts
 
     def object_ids(values)
       Array(values).filter_map { |value| Chats::Filters.cast_object_id(value) }
+    end
+
+    def list_of(values)
+      Array(values).map(&:to_s).compact_blank
     end
   end
 end

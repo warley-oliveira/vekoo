@@ -1779,11 +1779,13 @@ Contato aqui é a conversa, então vale a mesma visibilidade de `chat_list_to`.
 |---|---|
 | `q` | Nome ou telefone. |
 | `tagIds[]`, `connectorIds[]` | Etiquetas e canais. |
-| `assignedUser` | `me`, `unassigned` ou o id da pessoa. |
+| `teamIds[]` | Departamentos. `none` traz quem está sem departamento, e pode vir junto de ids. |
+| `assignedUser` ou `assignedUser[]` | Um ou vários de: `me`, `unassigned` ou o id da pessoa. |
 | `status` | `open` ou `closed`. |
 | `automationEnabled` | `true` ou `false`. |
 | `hasSession` | `true`: só quem está na janela de 24 horas. `false` não filtra, como na origem. |
 | `dateFrom`, `dateTo` | Data de criação, no fuso da organização. |
+| `conditions` | Condições sobre campos personalizados e afins, no formato de [Filtros avançados](#filtros-avançados): `conditions[0][attributeKey]=custom_attributes.cidade&conditions[0][filterOperator]=equal_to&conditions[0][values][]=Curitiba`. Na ação em lote e na exportação pelo canal, vai dentro de `filters`. Campos são texto: número só compara com `valueType: "number"`. |
 | `sortBy` | `last_message_at` (padrão), `created_at`, `user_name`, `status`, `unread_messages`. |
 | `sortDir` | `asc` ou `desc` (padrão). |
 
@@ -1819,7 +1821,10 @@ Resposta `200`:
       "activeSession": false,
       "createdAt": 1792768320000,
       "unreadMessages": 0,
-      "notes": null
+      "notes": null,
+      "customAttributes": {
+        "cidade": "Curitiba"
+      }
     }
   ],
   "meta": {
@@ -1834,7 +1839,7 @@ Resposta `200`:
 
 ### `GET /contacts/filters`
 
-As opções dos filtros da tela: `connectors` no formato de `ConnectorSerializer`, `tags`, `users` e `teams`.
+As opções dos filtros da tela: `connectors` no formato de `ConnectorSerializer`, `tags`, `users` e `teams`. Em `users`, `assignable: false` é quem está em `setupOnly`: entra no filtro, porque pode ter conversas, mas `bulk-assign-user` recusaria.
 
 Resposta `200`:
 
@@ -1872,7 +1877,8 @@ Resposta `200`:
   "users": [
     {
       "id": "31e43b45-d378-4fed-a0f9-41c73e5ea0b5",
-      "name": "Beatriz Lima"
+      "name": "Beatriz Lima",
+      "assignable": true
     }
   ],
   "teams": [
@@ -2043,7 +2049,7 @@ As linhas viram conversas em segundo plano, no canal escolhido: `ProcessContactI
 
 ### `POST /contact-imports`
 
-`connectorId`, `contacts` (até 1000), `includeCountryCode` (acrescenta o 55), `batchIndex`, `totalBatches`. Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
+`connectorId` (só canal que começa conversa por número: WhatsApp e Z-API; nos outros, `connectorTypeMismatch`), `contacts` (até 1000), `includeCountryCode` (acrescenta o 55 a quem não tem, sem confundir com o DDD 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
 
 `POST /contact-imports`:
 
@@ -2497,10 +2503,16 @@ Histórico limpo:
 | `list_tags`, `assign_tag`, `remove_tag` | Etiquetas. |
 | `assign_chat`, `toggle_automation`, `close_chat` | Ações em uma conversa. |
 | `send_messages` | Envia para até 50 conversas, uma por vez. Em `tool_activity`, aparece uma vez por contato e uma vez pelo lote. |
-| `list_team_members`, `get_agent_performance`, `get_team_ranking` | A equipe. O ranking não usa conversão enquanto não há agenda. |
+| `list_team_members`, `get_agent_performance`, `get_team_ranking` | A equipe, com agendamentos criados e conversão. Quem não usa a agenda tem a nota calculada sem a conversão, proporcionalmente. |
 | `get_tag_distribution`, `get_chat_volume`, `get_hourly_activity` | Números do atendimento. `daily_active` em `get_chat_volume` conta pela última mensagem de cada conversa. |
+| `list_appointments`, `get_appointment_details`, `get_appointment_stats` | Agendamentos. Exigem `calendar`; sem ela, a ferramenta responde que a permissão não alcança. |
+| `cancel_appointment`, `reschedule_appointment` | Exigem `calendar`. Remarcar é em hora de parede, no fuso do calendário. O modelo só chama depois de a pessoa confirmar. |
+| `qualify_appointments` | Análise das conversas dos agendamentos, até 10. Exige `calendar`, e conversa fora do `chat_list_to` fica sem análise. |
+| `get_chat_funnel` | Os funis da organização. Exige `funnel`, e só conta as conversas que a pessoa vê. Ver [insights.md](insights.md). |
 
-Ficaram de fora, porque o domínio ainda não existe aqui: `list_appointments`, `get_appointment_details`, `cancel_appointment`, `reschedule_appointment`, `qualify_appointments` e `get_appointment_stats` (be-agenda), `get_chat_funnel` (be-insights). `get_token_usage` também ficou de fora, porque não há contagem de tokens por organização.
+`changesApplied` também traz `{ action: "cancel_appointment", appointmentId, reason }` e `{ action: "reschedule_appointment", appointmentId, newStart, newEnd }`. Para a tela da agenda, o tempo real (`AgendaChannel`) já avisa.
+
+`get_token_usage` ficou de fora, porque não há contagem de tokens por organização.
 
 **Modelos.** Agente em `claude-opus-5-5`, com pensamento adaptativo e `fallbacks: :default`; resumo e qualificação em `claude-haiku-5-5`. Até 15 rodadas de ferramenta por mensagem. O histórico guarda até 200 mensagens, e as antigas viram resumo a partir de 15.
 
@@ -2538,7 +2550,6 @@ Os campos ficam preenchidos nas conversas que já existem (sempre como texto), a
 - **`ChatListChannel` e REST divergem no nível `team`:** conversa sem departamento, mas com dono, aparece em REST e não chega em tempo real.
 - **`aiCosts` em `GET /catalog`** não lista copiloto nem resposta sugerida. Os custos são os daqui: 2 e 1.
 - **Áudio sem transcrição:** `content` é `"-"`. O modelo recebe `[áudio sem transcrição]`, e a tela precisa olhar `typeElement`.
-- **Agendamento e funil no copiloto** esperam os domínios deles.
 
 ## O que não foi exercitado
 
@@ -2609,7 +2620,7 @@ Conferido contra `aiva-frontend/src/api`. Na origem o id da conta ia na URL, e a
 | | `normalizeCustomField` | `POST /custom-fields/:id/normalize`. **Mande `dryRun: false` para aplicar.** |
 | `useIntegrations.ts` | `import_contacts`, `import_contacts_file` | `POST /contact-imports`, `POST /contact-imports/file` |
 | `components/chat-assistant/use-chat-assistant.ts` | | `CopilotChannel` |
-| `contactNotificationPreview.ts` | | `GET /chats/:id/messages?limit=&initial=true`, que exige `chat`. Ver pendência para be-agenda. |
+| `contactNotificationPreview.ts` | `listConversationMessages` | Não vem para cá: `GET /calendars/:id/contact-notification-preview/messages`, em [agenda.md](agenda.md), com a permissão `calendar`. |
 | `class-session-dialog.tsx`, `ClassGroupEnrollmentsDialog.tsx` | Busca de conversa | `GET /chats/lookup` |
 | `pages/campaigns/wizard/step-config.tsx` | Etiquetas | `GET /chat-tags` |
 

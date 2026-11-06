@@ -1,0 +1,241 @@
+# Textos do domínio "insights" em português. As mesmas chaves em insights.en.yml.
+pt-BR:
+  activerecord:
+    attributes:
+      funnel:
+        name: "Nome"
+        description: "Descrição"
+      funnel_stage:
+        name: "Nome da etapa"
+  mongoid:
+    attributes:
+      custom_dashboard:
+        name: "Nome"
+        description: "Descrição"
+        icon: "Ícone"
+        widgets: "Cards"
+      custom_dashboard_widget:
+        widget_type: "Tipo"
+        title: "Título"
+        data_source: "Fonte de dados"
+        query: "Consulta"
+        visual_config: "Aparência"
+        layout: "Posição"
+  # O copiloto mora no domínio inbox; estas ferramentas são as que ligam agenda e funil a ele.
+  inbox:
+    copilot:
+      appointment_not_found: "Agendamento não encontrado."
+      appointment_not_active: "Só dá para remarcar um agendamento ativo."
+      invalid_appointment_time: "Essa data ou hora não é válida."
+      no_linked_chat: "Sem conversa disponível para analisar."
+      activities:
+        list_appointments: "Listando agendamentos..."
+        get_appointment_details: "Lendo o agendamento..."
+        cancel_appointment: "Cancelando agendamento..."
+        reschedule_appointment: "Remarcando agendamento..."
+        qualify_appointments: "Analisando os agendamentos..."
+        get_appointment_stats: "Calculando os números da agenda..."
+        get_chat_funnel: "Analisando os funis..."
+  insights:
+    errors:
+      query_timeout: "Esta consulta demorou demais. Escolha um período menor ou menos colunas."
+    dashboard:
+      errors:
+        invalid_time: "Essa data não é válida."
+        invalid_range: "A data final vem antes da inicial."
+        range_too_long: "Escolha um período de até dois anos."
+    funnels:
+      no_stage: "Sem etapa"
+      errors:
+        too_many_funnels: "Esta organização já tem o máximo de %{count} funis."
+        stages_required: "Um funil precisa de pelo menos uma etapa."
+        too_many_stages: "Um funil pode ter até %{count} etapas."
+        duplicate_stage_name: "Duas etapas estão com o mesmo nome."
+        invalid_stage: "Esta etapa não é deste funil."
+    custom_dashboards:
+      copy_name: "%{name} (cópia)"
+      buckets:
+        empty: "(vazio)"
+        invalid: "(inválido)"
+      errors:
+        unknown_data_source: "Esta fonte de dados não existe."
+        field_not_allowed: "O campo %{name} não pode ser usado aqui."
+        operator_not_allowed: "O operador %{name} não pode ser usado aqui."
+        metric_not_allowed: "A conta %{name} não pode ser usada neste campo."
+        dimension_not_allowed: "Não dá para agrupar por %{name}."
+        invalid_granularity: "A granularidade %{name} não existe."
+        granularity_unsupported: "Campo personalizado não aceita granularidade."
+        invalid_filter_value: "O valor do filtro em %{name} não é válido."
+        invalid_filters_operator: "Os filtros de uma coluna se combinam com \"and\" ou \"or\"."
+        metric_filters_unsupported: "Esta fonte não aceita filtro por coluna."
+        invalid_limit: "O limite precisa ser um número de 1 a %{max}."
+        invalid_sort: "Não dá para ordenar por %{name}."
+        invalid_time_range: "O período não é válido."
+        invalid_steps: "Informe de 1 a %{max} passos."
+        range_too_long: "Escolha um período de até %{days} dias."
+        too_many_metrics: "Use até %{max} colunas por consulta."
+        too_many_metric_filters: "Use até %{max} filtros por coluna."
+        too_many_filters: "Use até %{max} filtros por consulta."
+        too_many_dimensions: "Agrupe por até %{max} campos."
+        too_many_matches: "Este filtro alcança conversas demais. Combine com outro filtro."
+        too_many_widgets: "Um dashboard pode ter até %{max} cards."
+        too_many_dashboards: "Esta organização já tem o máximo de %{max} dashboards."
+        invalid_widget: "Card %{position}: %{message}"
+        query_timeout: "Esta consulta demorou demais. Escolha um período menor ou menos colunas."
+        query_failed: "Não foi possível fazer esta consulta. Confira os filtros e tente de novo."
+      sources:
+        conversations:
+          label: "Conversas"
+          fields:
+            status: "Situação"
+            assigned_account_id: "Atendente"
+            team_id: "Departamento"
+            connector_id: "Canal conectado"
+            created_at: "Data de criação"
+            updated_at: "Última atualização"
+            last_message_at: "Última mensagem"
+            unread_messages: "Mensagens não lidas"
+            tags: "Etiquetas"
+            audience_type: "Canal"
+            automation_enabled: "Automação ligada"
+            red_flag_count: "Alertas"
+            user_name: "Nome do contato"
+            custom_attributes: "Campo personalizado"
+            chat_tag_name: "Etiqueta"
+            booking_attendance: "Presença em agendamento"
+          values:
+            status:
+              open: "Aberta"
+              closed: "Fechada"
+            audience_type:
+              whatsapp_api: "WhatsApp"
+              import_feature: "Importação"
+              instagram: "Instagram"
+              facebook: "Facebook"
+              web: "Chat do site"
+            automation_enabled:
+              "yes": "Sim"
+              "no": "Não"
+            booking_attendance:
+              show: "Compareceu"
+              no_show: "Não compareceu"
+        contacts:
+          label: "Contatos"
+          fields:
+            created_at: "Data de criação"
+            last_message_at: "Última mensagem"
+            user_name: "Nome"
+            display_name: "Nome de exibição"
+            external_id: "Identificador"
+            audience_type: "Canal"
+            contact_origin: "Origem"
+            assigned_account_id: "Atendente"
+            team_id: "Departamento"
+            tags: "Etiquetas"
+            custom_attributes: "Campo personalizado"
+            chat_tag_name: "Etiqueta"
+          values:
+            audience_type:
+              whatsapp_api: "WhatsApp"
+              import_feature: "Importação"
+              instagram: "Instagram"
+              facebook: "Facebook"
+              web: "Chat do site"
+        messages:
+          label: "Mensagens"
+          fields:
+            created_at: "Data de envio"
+            _type: "Tipo"
+            chat_id: "Conversa"
+            role: "Quem falou"
+            message_origin: "Origem"
+            sender_name: "Remetente"
+            account_id: "Atendente"
+          values:
+            _type:
+              text: "Texto"
+              image: "Imagem"
+              audio: "Áudio"
+              media: "Arquivo"
+            role:
+              user: "Contato"
+              assistant: "Atendimento"
+            message_origin:
+              platform: "Plataforma"
+              frontend: "Atendente"
+              user: "Celular"
+        agenda_bookings:
+          label: "Agendamentos"
+          fields:
+            status: "Situação"
+            attendance_status: "Presença"
+            start: "Início"
+            end: "Fim"
+            professional_id: "Profissional"
+            service_id: "Serviço"
+            calendar_id: "Calendário"
+            created_at: "Data de criação"
+            title: "Título"
+            professional_name: "Profissional"
+            service_name: "Serviço"
+            calendar_name: "Calendário"
+          values:
+            status:
+              active: "Ativo"
+              canceled: "Cancelado"
+            attendance_status:
+              show: "Compareceu"
+              no_show: "Não compareceu"
+              pending: "Pendente"
+        campaigns:
+          label: "Campanhas"
+          fields:
+            name: "Nome"
+            status: "Situação"
+            campaign_mode: "Modo"
+            message_type: "Tipo de mensagem"
+            created_by_account_id: "Criada por"
+            recipients_count: "Destinatários"
+            sent_count: "Enviadas"
+            delivered_count: "Entregues"
+            read_count: "Lidas"
+            failed_count: "Com falha"
+            created_at: "Data de criação"
+            scheduled_at: "Agendada para"
+            started_at: "Início do envio"
+            completed_at: "Fim do envio"
+          values:
+            status:
+              draft: "Rascunho"
+              scheduled: "Agendada"
+              running: "Enviando"
+              paused: "Pausada"
+              completed: "Concluída"
+              cancelled: "Cancelada"
+            campaign_mode:
+              text: "Texto"
+              template: "Modelo"
+            message_type:
+              text: "Texto"
+              media: "Mídia"
+        daily_stats:
+          label: "Números do dia"
+          fields:
+            day: "Dia"
+            chats_started: "Conversas iniciadas"
+            active_chats: "Conversas ativas"
+            automation_chats: "Atendidas pela automação"
+            messages_inbound: "Mensagens recebidas"
+            messages_sent_by_automation: "Enviadas pela automação"
+            messages_sent_by_campaign: "Enviadas por campanha"
+            messages_sent_by_human: "Enviadas pela equipe"
+            out_of_hours_messages: "Fora do horário"
+            hours_saved: "Horas economizadas"
+            messages_avoided: "Mensagens evitadas"
+            automation_bookings: "Agendamentos pela automação"
+            chats_with_human_touch: "Conversas com a equipe"
+            chats_handled_by_automation: "Resolvidas pela automação"
+            first_response_automation_count: "Primeiras respostas da automação"
+            first_response_human_count: "Primeiras respostas da equipe"
+            first_response_automation_seconds_sum: "Soma do tempo de 1ª resposta da automação (s)"
+            first_response_human_seconds_sum: "Soma do tempo de 1ª resposta da equipe (s)"

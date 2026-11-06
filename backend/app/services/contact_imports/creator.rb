@@ -53,9 +53,16 @@ module ContactImports
       name = contact[:user_name].to_s.strip
       return nil if phone.blank? || name.blank?
 
-      phone = "55#{phone}" if include_country_code && !phone.start_with?("55")
+      phone = with_country_code(phone) if include_country_code
 
       { name: name, phone: phone, additional_data: contact, status: "pending" }
+    end
+
+    # Número nacional tem 10 ou 11 dígitos, e 12 ou 13 com o país. "Começa com 55" não basta: o DDD
+    # 55, do Rio Grande do Sul, também começa assim.
+    def with_country_code(phone)
+      digits = phone.gsub(/\D/, "")
+      digits.start_with?("55") && digits.length >= 12 ? phone : "55#{phone}"
     end
   end
 end

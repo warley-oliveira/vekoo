@@ -1,0 +1,18 @@
+# Jobs recorrentes do domínio "insights".
+backfill_dashboard_hourly:
+  # De hora em hora: recalcula somente o dia corrente, como na origem.
+  enabled: true
+  cron: "0 0 * * * *"
+  class: DashboardBackfillJob
+  args:
+    - hourly
+  queue: low
+backfill_dashboard_daily:
+  # Todo dia às 02:15: recalcula o dia anterior uma única vez, para capturar o que chegou depois
+  # que o dia fechou. O lookahead de `FirstResponseDaily` conta com esse horário.
+  enabled: true
+  cron: "0 15 2 * * * America/Sao_Paulo"
+  class: DashboardBackfillJob
+  args:
+    - daily
+  queue: low

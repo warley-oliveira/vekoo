@@ -1,11 +1,13 @@
 # Uma linha da lista de contatos. Contato aqui é a conversa (ver `Contact`): o que muda em relação a
-# ChatSerializer é que vem com o nome e o tipo do canal, e sem os mapas livres.
+# ChatSerializer é que vem com o nome e o tipo do canal, e dos mapas livres só os campos
+# personalizados, que viram coluna na tela.
 class ContactSerializer < ApplicationSerializer
   # Os campos que esta linha lê: a lista só busca estes.
   FIELDS = %i[
     _id automation_enabled user_name display_name external_id assigned_account_id team_id
     profile_picture_url last_message_at last_message_type last_message_by last_message_content
     status notes created_at unread_messages session_start_at connector_id chat_tag_ids
+    custom_attributes
   ].freeze
 
   def self.one(chat, connector: nil)
@@ -32,7 +34,8 @@ class ContactSerializer < ApplicationSerializer
       activeSession: chat.active_session,
       createdAt: epoch_ms(chat.created_at),
       unreadMessages: chat.unread_messages,
-      notes: chat.notes
+      notes: chat.notes,
+      customAttributes: chat.custom_attributes || {}
     }
   end
 end

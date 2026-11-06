@@ -16,6 +16,7 @@ class Chat
   include ChatRelations::Agenda
   include ChatRelations::Outreach
   include ChatRelations::Automation
+  include ChatRelations::Insights
 
   # Quem fez a alteração, para as notas do histórico dizerem o nome da pessoa.
   attr_accessor :updated_by_account

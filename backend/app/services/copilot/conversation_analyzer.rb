@@ -70,6 +70,10 @@ module Copilot
         instruction: "Avalie o potencial de cada conversa como oportunidade de venda. Foque em sinais de intenção de compra.",
         focus: "potencial de venda e conversão"
       },
+      booking_qualification: {
+        instruction: "Avalie se os agendamentos representam oportunidades reais de venda ou são apenas testes e consultas genéricas.",
+        focus: "qualidade do agendamento e intenção real"
+      },
       general_analysis: {
         instruction: "Faça uma análise geral da qualidade e da situação de cada conversa.",
         focus: "situação geral e próximos passos"
@@ -91,7 +95,7 @@ module Copilot
     # Cada conversa é processada individualmente, em threads.
     #
     # @param chat_ids [Array<String>]
-    # @param context [Symbol] :lead_qualification ou :general_analysis
+    # @param context [Symbol] :lead_qualification, :booking_qualification ou :general_analysis
     # @param user_question [String, nil] a pergunta original, para direcionar a análise
     # @return [Hash] { chats: [...], summary: }
     def analyze_batch(chat_ids, context: :lead_qualification, user_question: nil)

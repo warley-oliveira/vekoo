@@ -3,8 +3,8 @@
 module Copilot
   # As ferramentas do copiloto, no formato da API da Anthropic, e a conferência da entrada.
   #
-  # Só as que têm base no que já existe. Agendamentos, funil e consumo de IA entram quando os domínios
-  # deles estiverem aqui (ver docs/migration/api/inbox.md).
+  # Só as que têm base no que já existe: consumo de IA fica de fora, porque não há contagem de tokens por
+  # organização (ver docs/migration/api/inbox.md).
   #
   # `eager_input_streaming`: a entrada chega em fluxo, sem o servidor esperar nem validar. Em troca,
   # quem confere somos nós (`validation_error`), antes de rodar qualquer coisa.
@@ -70,6 +70,7 @@ module Copilot
     DATE_FROM = { type: "string", description: "Data inicial (formato YYYY-MM-DD)" }.freeze
     DATE_TO = { type: "string", description: "Data final (formato YYYY-MM-DD)" }.freeze
     CHAT_ID = { type: "string", description: "ID da conversa" }.freeze
+    APPOINTMENT_ID = { type: "string", description: "ID do agendamento" }.freeze
 
     DEFINITIONS = [
       tool(
@@ -193,7 +194,7 @@ module Copilot
       ),
       tool(
         "get_agent_performance",
-        "Métricas de um atendente ou de todos: contatos atendidos, mensagens enviadas, conversas abertas e fechadas e tempo médio de resposta.",
+        "Métricas de um atendente ou de todos: contatos atendidos, mensagens enviadas, conversas abertas e fechadas, agendamentos criados, taxa de conversão e tempo médio de resposta.",
         {
           user_email: { type: "string", description: "E-mail do atendente. Sem ele, traz todos." },
           date_from: { type: "string", description: "Data inicial (formato YYYY-MM-DD). Padrão: 30 dias atrás." },
@@ -202,11 +203,11 @@ module Copilot
       ),
       tool(
         "get_team_ranking",
-        "Ranking do time com uma nota de 0 a 100, que pesa tempo de resposta, volume de conversas e conversas fechadas.",
+        "Ranking do time com uma nota de 0 a 100, que pesa tempo de resposta, conversão em agendamentos, volume de conversas e conversas fechadas.",
         {
           date_from: { type: "string", description: "Data inicial (formato YYYY-MM-DD). Padrão: 30 dias atrás." },
           date_to: { type: "string", description: "Data final (formato YYYY-MM-DD). Padrão: hoje." },
-          sort_by: { type: "string", enum: %w[score chats response_time], description: "Ordenar por: score (padrão), chats ou response_time" }
+          sort_by: { type: "string", enum: %w[score chats response_time conversion_rate], description: "Ordenar por: score (padrão), chats, response_time ou conversion_rate" }
         }
       ),
       tool(
@@ -231,6 +232,67 @@ module Copilot
         "get_hourly_activity",
         "Conversas novas por hora do dia e os três horários de pico.",
         { days_back: { type: "integer", description: "Número de dias para analisar (padrão: 7, máx: 30)" } }
+      ),
+      tool(
+        "list_appointments",
+        "Lista agendamentos do calendário. Pode filtrar por data, situação ou conversa específica.",
+        {
+          chat_id: { type: "string", description: "Só os agendamentos desta conversa" },
+          date_from: DATE_FROM,
+          date_to: DATE_TO,
+          status: { type: "string", enum: %w[active canceled], description: "Situação do agendamento" },
+          limit: { type: "integer", description: "Número máximo de resultados (padrão: 10, máx: 25)" }
+        }
+      ),
+      tool(
+        "get_appointment_details",
+        "Obtém os detalhes de um agendamento: quem, quando, serviço, calendário, conversa e o histórico recente.",
+        { appointment_id: APPOINTMENT_ID },
+        required: %w[appointment_id]
+      ),
+      tool(
+        "cancel_appointment",
+        "Cancela um agendamento. ATENÇÃO: não tem volta, e os lembretes deixam de sair. Só use depois de a pessoa confirmar nesta conversa.",
+        { appointment_id: APPOINTMENT_ID, reason: { type: "string", description: "Motivo do cancelamento" } },
+        required: %w[appointment_id]
+      ),
+      tool(
+        "reschedule_appointment",
+        "Remarca um agendamento para outra data e hora, no fuso do calendário. Sem new_end, mantém a duração. Só use depois de a pessoa confirmar nesta conversa.",
+        {
+          appointment_id: APPOINTMENT_ID,
+          new_start: { type: "string", description: "Novo início (formato YYYY-MM-DD HH:MM)" },
+          new_end: { type: "string", description: "Novo fim (formato YYYY-MM-DD HH:MM)" }
+        },
+        required: %w[appointment_id new_start]
+      ),
+      tool(
+        "qualify_appointments",
+        "Busca agendamentos e analisa o conteúdo das conversas ligadas a eles, para saber quais têm potencial real de venda. Detecta conversas de teste e falsos positivos. " \
+        "Use quando perguntarem sobre agendamentos com potencial ou sobre a qualidade dos agendamentos do dia. Analisa até 10 por vez.",
+        {
+          date_from: DATE_FROM,
+          date_to: DATE_TO,
+          status: { type: "string", enum: %w[active canceled], description: "Situação do agendamento (padrão: active)" },
+          limit: { type: "integer", description: "Número máximo de agendamentos (padrão e máx: 10)" },
+          user_question: { type: "string", description: "A pergunta original e os critérios que a pessoa mencionou." }
+        }
+      ),
+      tool(
+        "get_appointment_stats",
+        "Números dos agendamentos: total, cancelados, comparecimento, taxa de falta e o detalhe por serviço e por profissional.",
+        {
+          date_from: { type: "string", description: "Data inicial (formato YYYY-MM-DD). Padrão: 30 dias atrás." },
+          date_to: { type: "string", description: "Data final (formato YYYY-MM-DD). Padrão: hoje." }
+        }
+      ),
+      tool(
+        "get_chat_funnel",
+        "Os funis da organização: quantas conversas estão em cada etapa, quantas chegaram até ela, a conversão entre as etapas e onde se perdem. Considera as conversas com mensagem no período.",
+        {
+          date_from: { type: "string", description: "Data inicial (formato YYYY-MM-DD). Padrão: 30 dias atrás." },
+          date_to: { type: "string", description: "Data final (formato YYYY-MM-DD). Padrão: hoje." }
+        }
       )
     ].freeze
   end
