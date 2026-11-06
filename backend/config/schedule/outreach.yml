@@ -1,0 +1,7 @@
+# Jobs recorrentes do domínio "outreach".
+outreach_recovery:
+  # De 10 em 10 minutos, como na origem: retoma o que parou com a queda de um worker.
+  enabled: true
+  cron: "0 */10 * * * *"
+  class: Outreach::RecoveryJob
+  queue: campaigns

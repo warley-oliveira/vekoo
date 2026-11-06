@@ -1,0 +1,126 @@
+pt-BR:
+  errors:
+    campaign_not_launchable: "Só dá para lançar uma campanha em rascunho ou agendada."
+    campaign_not_running: "Só dá para pausar uma campanha em andamento."
+    campaign_not_paused: "Só dá para retomar uma campanha pausada."
+    campaign_not_cancellable: "Só dá para cancelar uma campanha agendada, em andamento ou pausada."
+    campaign_not_editable: "Só dá para editar uma campanha em rascunho."
+    campaign_not_deletable: "Só dá para excluir uma campanha em rascunho."
+    campaign_not_importable: "Só dá para adicionar contatos a uma campanha em rascunho ou agendada."
+    no_recipients: "Adicione ao menos um contato antes de lançar."
+    no_active_connectors: "Nenhum canal desta campanha está conectado. Reconecte um para retomar."
+    connectors_required: "Escolha ao menos um canal de envio."
+    connectors_disconnected: "Todos os canais escolhidos estão desconectados."
+    messages_required: "Escreva ao menos uma mensagem."
+    media_required: "Escolha uma mídia para enviar."
+    media_not_found: "Não encontramos a mídia escolhida."
+    waba_required: "Escolha a conta da API oficial."
+    waba_not_found: "Não encontramos a conta da API oficial."
+    waba_disconnected: "A conta da API oficial está desconectada."
+    phone_numbers_required: "Escolha ao menos um número da conta oficial."
+    templates_required: "Escolha ao menos um modelo de mensagem."
+    invalid_scheduled_at: "A data de agendamento não é válida."
+    contacts_required: "Escolha ao menos um contato."
+    too_many_contacts: "São contatos demais para uma importação só."
+    search_query_required: "Diga o que você está procurando."
+    too_many_extractions: "Já há buscas demais em andamento. Espere uma terminar."
+    apify_not_configured: "A busca de estabelecimentos não está configurada."
+    apify_invalid_token: "A chave do Apify é inválida."
+    apify_quota_exceeded: "Os créditos do Apify acabaram."
+    apify_timeout: "A busca demorou demais. Tente com menos resultados."
+    apify_failed: "Não foi possível buscar os estabelecimentos. Tente de novo."
+    interrupted: "A busca foi interrompida. Tente de novo."
+    google_sheets_not_configured: "A importação do Google Sheets não está configurada."
+    google_sheet_params_required: "Informe a planilha, a aba e o acesso do Google."
+    google_token_expired: "O acesso ao Google expirou. Entre de novo."
+    google_forbidden: "Sua conta não tem acesso a esta planilha."
+    google_sheet_not_found: "Não encontramos esta planilha."
+    google_sheet_failed: "O Google não entregou a planilha. Tente de novo."
+    google_sheet_invalid: "Não conseguimos ler esta planilha."
+    google_sheet_empty: "Esta aba está vazia."
+    google_sheet_too_large: "Esta aba tem mais de 50 mil linhas."
+    google_sheet_timeout: "O Google demorou demais para entregar a planilha."
+
+  outreach:
+    warnings:
+      connectors_skipped: "Canais desconectados ficaram de fora: %{names}."
+    recipient_errors:
+      whatsapp_error: "O WhatsApp não aceitou o envio."
+      number_not_found: "Este número não existe no WhatsApp."
+      no_phone_number: "A campanha está sem número de envio."
+      media_unsupported: "Este canal não envia mídia em campanhas."
+      media_unavailable: "O arquivo da campanha não está mais disponível."
+      template_unavailable: "O modelo da campanha não existe mais."
+      interrupted: "O envio foi interrompido e pode ter saído. Não tentamos de novo para não duplicar."
+    activity:
+      time_format: "%d/%m/%Y às %H:%M"
+      scheduled: "Agendada para %{at}."
+      paused_no_active_connectors: "Pausada pela plataforma: nenhum canal está conectado."
+      launch_failed: "Não foi lançada no horário: %{reason}"
+      channel_stopped_connector_inactive: "Um canal desconectou. Os contatos dele continuam na fila."
+      channel_stopped_connector_missing: "Um canal foi excluído. Os contatos dele continuam na fila."
+      channel_resumed: "O canal voltou e os envios dele continuaram."
+    notices:
+      paused:
+        title: "Campanha pausada: %{name}"
+        description: "Nenhum canal da campanha está conectado. Reconecte um e retome: ninguém deixou de receber."
+      launch_failed:
+        title: "Campanha não lançada: %{name}"
+        description: "A campanha agendada não pôde ser lançada e voltou para rascunho. Abra para ver o motivo."
+
+  mongoid:
+    attributes:
+      outreach/campaign:
+        name: "Nome"
+        messages: "Mensagens"
+        message_type: "Tipo de mensagem"
+        campaign_mode: "Modo da campanha"
+        attachment_id: "Mídia"
+        media_url: "Endereço da mídia"
+        media_content_type: "Tipo do arquivo"
+        media_file_name: "Nome do arquivo"
+        connector_ids: "Canais"
+        waba_connector_id: "Conta oficial"
+        phone_number_ids: "Números"
+        template_ids: "Modelos"
+        chat_tag_ids: "Etiquetas"
+        send_start_hour: "Início da janela"
+        send_end_hour: "Fim da janela"
+        send_days: "Dias de envio"
+        buffer_min_seconds: "Intervalo mínimo"
+        buffer_max_seconds: "Intervalo máximo"
+        daily_limit_per_connector: "Limite diário por canal"
+        timezone: "Fuso horário"
+        batch_size: "Tamanho do lote"
+      outreach/place_extraction:
+        search_query: "O que procurar"
+        status: "Situação"
+    errors:
+      models:
+        outreach/campaign:
+          attributes:
+            messages:
+              required: "precisa de ao menos uma mensagem"
+            attachment_id:
+              required: "é obrigatória"
+            media_url:
+              required: "é obrigatório"
+            media_content_type:
+              required: "é obrigatório"
+              unsupported: "não serve para campanhas de mídia"
+            media_file_name:
+              required: "é obrigatório"
+            template_ids:
+              required: "precisam de ao menos um modelo"
+              not_found: "têm um modelo que não existe nesta conta"
+            waba_connector_id:
+              required: "é obrigatória no modo modelo"
+              not_found: "não existe nesta organização"
+            phone_number_ids:
+              required: "precisam de ao menos um número"
+            connector_ids:
+              not_found: "têm um canal que não existe nesta organização"
+            chat_tag_ids:
+              not_found: "têm uma etiqueta que não existe nesta organização"
+            buffer_max_seconds:
+              less_than_minimum: "não pode ser menor que o intervalo mínimo"

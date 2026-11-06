@@ -338,6 +338,8 @@ module Inbound
       return if message.status.nil? || (STATUS_RANK[status] || 99) < (STATUS_RANK[message.status] || 0)
 
       message.update(status: status)
+      # Só a mensagem de campanha paga a busca: este é o caminho de maior volume.
+      Outreach::RecipientStatus.apply(external_id, status) if message.campaign_id.present?
     end
 
     # ========================================================================

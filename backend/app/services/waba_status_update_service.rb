@@ -28,14 +28,6 @@ class WabaStatusUpdateService
   # ordem — que a Meta reentrega com frequência — não regridam o status.
   STATUS_RANK = { 'pending' => 0, 'server_ack' => 1, 'delivery_ack' => 2, 'read' => 3 }.freeze
 
-  # Ranks do enum de Outreach::Recipient, que usa a nomenclatura própria dele.
-  RECIPIENT_RANK = {
-    'pending' => 0,
-    'server_ack' => 1, 'sent' => 1,
-    'delivery_ack' => 2, 'delivered' => 2,
-    'read' => 3
-  }.freeze
-
   # Backoff para o caso em que o webhook chega antes de o envio persistir o wamid.
   RETRY_DELAYS = [5.seconds, 30.seconds, 2.minutes].freeze
 
@@ -221,48 +213,13 @@ class WabaStatusUpdateService
 
   # ── Outreach::Recipient ─────────────────────────────────────────────────────
 
-  # Roda mesmo quando o ChatMessage não é encontrado: `whatsapp_message_id` tem
-  # índice esparso próprio, então é uma busca barata e independente.
-  # `take` pelo mesmo motivo do lookup de ChatMessage — sem sort implícito.
+  # Roda mesmo quando o ChatMessage não é encontrado: `whatsapp_message_id` tem índice
+  # esparso próprio, então é uma busca barata e independente. Um erro aqui não pode abortar
+  # a atualização da mensagem.
   def update_campaign_recipient
-    # Destinatário de campanha é do domínio outreach.
-    return unless defined?(::Outreach::Recipient)
-
-    recipient = ::Outreach::Recipient.where(whatsapp_message_id: message_id).take
-    return if recipient.nil?
-
-    mapped_status == FAILED ? fail_recipient(recipient) : advance_recipient(recipient)
+    Outreach::RecipientStatus.apply(message_id, mapped_status, error_message: humanized_error)
   rescue StandardError => e
     Rails.logger.error("[WabaStatus] Falha ao atualizar Outreach::Recipient: #{e.full_message}")
-  end
-
-  def fail_recipient(recipient)
-    return if recipient.status_cd == FAILED
-
-    recipient.update(status: :failed, error_message: humanized_error&.truncate(255))
-    # `sent_count` segue contando "aceitos pela Meta" — só `failed_count` avança.
-    recipient.campaign&.inc(failed_count: 1)
-  end
-
-  def advance_recipient(recipient)
-    return if RECIPIENT_RANK.fetch(mapped_status, 0) <= RECIPIENT_RANK.fetch(recipient.status_cd, 0)
-
-    campaign = recipient.campaign
-
-    case mapped_status
-    when 'delivery_ack'
-      recipient.update(status: :delivered, delivered_at: Time.current)
-      campaign&.inc(delivered_count: 1)
-    when 'read'
-      # Pulando de sent direto para read, a entrega também precisa ser contada.
-      if recipient.status_cd == 'sent'
-        recipient.update(status: :read, delivered_at: Time.current, read_at: Time.current)
-        campaign&.inc(delivered_count: 1, read_count: 1)
-      else
-        recipient.update(status: :read, read_at: Time.current)
-        campaign&.inc(read_count: 1)
-      end
-    end
   end
 
   # ── Mensagem ainda não persistida ───────────────────────────────────────────

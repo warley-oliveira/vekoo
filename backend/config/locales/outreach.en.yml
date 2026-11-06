@@ -1,0 +1,126 @@
+en:
+  errors:
+    campaign_not_launchable: "Only draft or scheduled campaigns can be launched."
+    campaign_not_running: "Only running campaigns can be paused."
+    campaign_not_paused: "Only paused campaigns can be resumed."
+    campaign_not_cancellable: "Only scheduled, running or paused campaigns can be cancelled."
+    campaign_not_editable: "Only draft campaigns can be edited."
+    campaign_not_deletable: "Only draft campaigns can be deleted."
+    campaign_not_importable: "Contacts can only be added to draft or scheduled campaigns."
+    no_recipients: "Add at least one contact before launching."
+    no_active_connectors: "None of this campaign's channels are connected. Reconnect one to resume."
+    connectors_required: "Choose at least one sending channel."
+    connectors_disconnected: "All the chosen channels are disconnected."
+    messages_required: "Write at least one message."
+    media_required: "Choose a file to send."
+    media_not_found: "We couldn't find the chosen file."
+    waba_required: "Choose the official API account."
+    waba_not_found: "We couldn't find the official API account."
+    waba_disconnected: "The official API account is disconnected."
+    phone_numbers_required: "Choose at least one number from the official account."
+    templates_required: "Choose at least one message template."
+    invalid_scheduled_at: "The scheduled date isn't valid."
+    contacts_required: "Choose at least one contact."
+    too_many_contacts: "That's too many contacts for a single import."
+    search_query_required: "Tell us what you're looking for."
+    too_many_extractions: "Too many searches are already running. Wait for one to finish."
+    apify_not_configured: "Business search isn't configured."
+    apify_invalid_token: "The Apify key is invalid."
+    apify_quota_exceeded: "The Apify credits ran out."
+    apify_timeout: "The search took too long. Try asking for fewer results."
+    apify_failed: "We couldn't search for businesses. Try again."
+    interrupted: "The search was interrupted. Try again."
+    google_sheets_not_configured: "Google Sheets import isn't configured."
+    google_sheet_params_required: "Provide the spreadsheet, the tab and the Google access."
+    google_token_expired: "Your Google access expired. Sign in again."
+    google_forbidden: "Your account can't access this spreadsheet."
+    google_sheet_not_found: "We couldn't find this spreadsheet."
+    google_sheet_failed: "Google didn't deliver the spreadsheet. Try again."
+    google_sheet_invalid: "We couldn't read this spreadsheet."
+    google_sheet_empty: "This tab is empty."
+    google_sheet_too_large: "This tab has more than 50,000 rows."
+    google_sheet_timeout: "Google took too long to deliver the spreadsheet."
+
+  outreach:
+    warnings:
+      connectors_skipped: "Disconnected channels were left out: %{names}."
+    recipient_errors:
+      whatsapp_error: "WhatsApp didn't accept the message."
+      number_not_found: "This number isn't on WhatsApp."
+      no_phone_number: "The campaign has no sending number."
+      media_unsupported: "This channel doesn't send files in campaigns."
+      media_unavailable: "The campaign's file is no longer available."
+      template_unavailable: "The campaign's template no longer exists."
+      interrupted: "Sending was interrupted and may have gone out. We didn't retry, to avoid a duplicate."
+    activity:
+      time_format: "%m/%d/%Y at %H:%M"
+      scheduled: "Scheduled for %{at}."
+      paused_no_active_connectors: "Paused by the platform: no channel is connected."
+      launch_failed: "Wasn't launched on time: %{reason}"
+      channel_stopped_connector_inactive: "A channel disconnected. Its contacts are still in the queue."
+      channel_stopped_connector_missing: "A channel was deleted. Its contacts are still in the queue."
+      channel_resumed: "The channel came back and its messages continued."
+    notices:
+      paused:
+        title: "Campaign paused: %{name}"
+        description: "None of the campaign's channels are connected. Reconnect one and resume: nobody missed out."
+      launch_failed:
+        title: "Campaign not launched: %{name}"
+        description: "The scheduled campaign couldn't be launched and went back to draft. Open it to see why."
+
+  mongoid:
+    attributes:
+      outreach/campaign:
+        name: "Name"
+        messages: "Messages"
+        message_type: "Message type"
+        campaign_mode: "Campaign mode"
+        attachment_id: "File"
+        media_url: "File address"
+        media_content_type: "File type"
+        media_file_name: "File name"
+        connector_ids: "Channels"
+        waba_connector_id: "Official account"
+        phone_number_ids: "Numbers"
+        template_ids: "Templates"
+        chat_tag_ids: "Tags"
+        send_start_hour: "Window start"
+        send_end_hour: "Window end"
+        send_days: "Sending days"
+        buffer_min_seconds: "Minimum interval"
+        buffer_max_seconds: "Maximum interval"
+        daily_limit_per_connector: "Daily limit per channel"
+        timezone: "Time zone"
+        batch_size: "Batch size"
+      outreach/place_extraction:
+        search_query: "Search"
+        status: "Status"
+    errors:
+      models:
+        outreach/campaign:
+          attributes:
+            messages:
+              required: "need at least one message"
+            attachment_id:
+              required: "is required"
+            media_url:
+              required: "is required"
+            media_content_type:
+              required: "is required"
+              unsupported: "doesn't work for media campaigns"
+            media_file_name:
+              required: "is required"
+            template_ids:
+              required: "need at least one template"
+              not_found: "include a template that isn't in this account"
+            waba_connector_id:
+              required: "is required in template mode"
+              not_found: "isn't in this organization"
+            phone_number_ids:
+              required: "need at least one number"
+            connector_ids:
+              not_found: "include a channel that isn't in this organization"
+            chat_tag_ids:
+              not_found: "include a tag that isn't in this organization"
+            buffer_max_seconds:
+              less_than_minimum: "can't be less than the minimum interval"
