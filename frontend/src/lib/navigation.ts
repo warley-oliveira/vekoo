@@ -95,6 +95,7 @@ export const NAV_GROUPS: NavGroup[] = [
       {
         // Os quadros entram como filhos em tempo de execução (useNavigationMenu).
         id: "pipelines",
+        alertKey: "pipelines",
         titleKey: "navigation.pipelines",
         icon: SquareKanban,
         to: "/pipelines",

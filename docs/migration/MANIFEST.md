@@ -109,7 +109,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 8 | 2a | **be-agenda**: calendários, agendamentos, turmas, sequências, Google, ações agendadas da conversa | `agenda` | ✅ |
 | 9 | 2a | **be-outreach**: campanhas, Apify, Sheets | `outreach` | ✅ |
 | 28 | 2a | **be-engine**: motor de scripts (núcleo e extensões genéricas) | `lib/mini_racer_engine` | ✅ |
-| 7 | 2b | **be-pipelines**: quadros, cards, gatilhos, metas, filtros, extensão `kanban` do motor | `pipelines` | 🔄 |
+| 7 | 2b | **be-pipelines**: quadros, cards, gatilhos, metas, filtros, extensão `kanban` do motor | `pipelines` | ✅ |
 | 10 | 2b | **be-automation**: fluxos, runtime, ferramentas, webhooks de saída, extensões `scheduling` do motor | `automation` | 🔄 |
 | 11 | 2b | **be-insights**: dashboard, funis, dashboards personalizados | `insights` | ✅ |
 
@@ -140,8 +140,8 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 |---|---|---|---|
 | 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | ⬜ |
 | 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | ⬜ |
-| 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar | `components/kanban-v2/{board,column,card}`, `pages/apps/kanban-v2` | ⬜ |
-| 22 | **fe-pipelines-admin**: gatilhos, metas, campos, filtros salvos, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals,filter}`, `use-kanban-*` | ⬜ |
+| 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar, filtros e filtros salvos | `components/kanban-v2/{board,column,card,filter}`, `pages/apps/kanban-v2` | 🔄 |
+| 22 | **fe-pipelines-admin**: gatilhos, metas, campos, etiquetas, ajustes do quadro, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals}`, `use-kanban-*` | 🔄 |
 | 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | 🔄 |
 | 24 | **fe-campaigns-list**: lista, KPIs, monitor, extrações | `pages/campaigns/{list,monitor,shared}`, `apify-contacts-tab` | ⬜ |
 | 25 | **fe-campaigns-wizard**: assistente de campanha, importações, Sheets, Apify | `pages/campaigns/wizard` | ⬜ |
