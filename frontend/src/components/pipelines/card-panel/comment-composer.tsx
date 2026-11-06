@@ -31,15 +31,15 @@ type ComposerProps = {
 
 function PendingFile({ file, onRemove }: { file: File; onRemove: () => void }) {
   const { t } = useTranslation()
-  const preview = useMemo(
-    () => (file.type.startsWith("image/") ? URL.createObjectURL(file) : null),
-    [file]
-  )
+  // Criado e soltado no mesmo efeito: guardar o endereço em `useMemo` o deixaria morto depois do
+  // efeito rodar duas vezes no modo estrito.
+  const [preview, setPreview] = useState<string | null>(null)
   useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview)
-    }
-  }, [preview])
+    if (!file.type.startsWith("image/")) return
+    const url = URL.createObjectURL(file)
+    setPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [file])
 
   return (
     <span className="relative inline-flex max-w-48 items-center gap-1.5 rounded-md bg-muted py-1 pr-6 pl-1.5 text-xs">

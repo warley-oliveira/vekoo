@@ -4,17 +4,22 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const COLUMN_CARDS = [3, 2, 4, 1, 2]
 
-/** O quadro carregando: as mesmas colunas e os mesmos cards, sem spinner solto. */
+/** O quadro carregando: a mesma barra, as mesmas colunas e os mesmos cards, sem spinner solto. */
 export function BoardSkeleton() {
   const { t } = useTranslation()
 
   return (
-    <div
-      role="status"
-      aria-label={t("pipelines.loading")}
-      className="flex min-h-0 flex-1 items-start gap-3 overflow-hidden px-4 pb-3 md:px-6"
-    >
-      {COLUMN_CARDS.map((cards, column) => (
+    <div role="status" aria-label={t("pipelines.loading")} className="flex min-h-0 flex-1 flex-col">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 px-4 pb-3 md:px-6">
+        <Skeleton className="h-8 w-full rounded-lg md:w-48" />
+        <Skeleton className="h-8 w-24 rounded-lg" />
+        <Skeleton className="h-8 w-24 rounded-lg max-md:hidden" />
+        <Skeleton className="h-8 w-20 rounded-lg max-md:hidden" />
+        <Skeleton className="h-8 w-20 rounded-lg max-md:hidden" />
+        <Skeleton className="ml-auto h-8 w-28 rounded-lg" />
+      </div>
+      <div className="flex min-h-0 flex-1 items-start gap-3 overflow-hidden px-4 pb-3 md:px-6">
+        {COLUMN_CARDS.map((cards, column) => (
         <div
           key={column}
           className="flex w-[calc(100vw-2rem)] shrink-0 flex-col gap-2 rounded-2xl bg-muted/50 p-2 md:w-72"
@@ -34,7 +39,8 @@ export function BoardSkeleton() {
             </div>
           ))}
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

@@ -213,11 +213,13 @@ function CommitText({
   value,
   label,
   type = "text",
+  placeholder,
   onCommit,
 }: {
   value: string | null
   label: string
   type?: string
+  placeholder?: string
   onCommit: (value: string | null) => void
 }) {
   const [draft, setDraft] = useState(value ?? "")
@@ -226,6 +228,7 @@ function CommitText({
     <Input
       aria-label={label}
       type={type}
+      placeholder={placeholder}
       value={draft}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={() => {
@@ -499,6 +502,8 @@ const CardDetails = memo(function CardDetails({
               <CommitText
                 label={t("pipelines.contact.phone")}
                 value={card.contactPhone}
+                // O número da conversa ligada, quando o card não tem um próprio.
+                placeholder={phone ?? undefined}
                 onCommit={(contactPhone) => void save({ contactPhone }, { contactPhone })}
               />
               {phone ? (

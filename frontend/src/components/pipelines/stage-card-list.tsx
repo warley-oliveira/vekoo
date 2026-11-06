@@ -15,7 +15,7 @@ import { SortableCard } from "./sortable-card"
 
 const PAGE_SIZE = 20
 /** Altura de um card antes de ser medido. Errar por pouco só ajusta a barra de rolagem depois. */
-const ESTIMATED_CARD_HEIGHT = 96
+const ESTIMATED_CARD_HEIGHT = 80
 const ROOT_MARGIN = "600px 0px"
 
 type PageProps = {
@@ -55,7 +55,8 @@ const CardPage = memo(function CardPage({ cards, stageId, meta, root, startsVisi
   return (
     <div
       ref={ref}
-      className="flex flex-col gap-2"
+      // `shrink-0`: a lista é um flex em coluna, e o espaço vazio de uma página encolheria até sumir.
+      className="flex shrink-0 flex-col gap-2"
       style={
         mounted
           ? undefined

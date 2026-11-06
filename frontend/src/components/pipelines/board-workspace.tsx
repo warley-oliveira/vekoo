@@ -338,7 +338,6 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
   if (isLoading || (!board && !error)) {
     return (
       <div className="flex h-full min-h-0 flex-col pt-3">
-        <div className="h-8 shrink-0" />
         <BoardSkeleton />
       </div>
     )

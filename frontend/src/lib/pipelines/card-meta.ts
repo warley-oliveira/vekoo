@@ -90,8 +90,12 @@ export function contactNameOf(card: Card): string | null {
   )
 }
 
+/** Abaixo disto não é telefone: quem chega pelo site tem um identificador no lugar do número. */
+const MIN_PHONE_DIGITS = 8
+
 export function contactPhoneOf(card: Card): string | null {
-  return card.chatSummary?.contactPhone?.split("@")[0] || card.contactPhone || null
+  const value = card.chatSummary?.contactPhone?.split("@")[0] || card.contactPhone
+  return value && value.replace(/\D/g, "").length >= MIN_PHONE_DIGITS ? value : null
 }
 
 export type StageTotals = {

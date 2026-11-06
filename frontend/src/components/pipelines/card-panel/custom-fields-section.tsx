@@ -45,9 +45,11 @@ function buildSchema(t: (key: string) => string) {
 function CreateFieldDialog({
   open,
   onOpenChange,
+  onCreated,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCreated: () => void
 }) {
   const { t } = useTranslation()
   const handle = useBoardHandle()
@@ -73,6 +75,7 @@ function CreateFieldDialog({
     handle.revalidate()
     void mutate(`${boardPath(handle.boardId)}/custom-fields`)
     form.reset()
+    onCreated()
     onOpenChange(false)
   })
 
@@ -279,7 +282,12 @@ export function CustomFieldsSection({
         </div>
       )}
 
-      <CreateFieldDialog open={creating} onOpenChange={setCreating} />
+      {/* Quem acabou de criar um campo quer preenchê-lo: ele nasce vazio, e vazio fica recolhido. */}
+      <CreateFieldDialog
+        open={creating}
+        onOpenChange={setCreating}
+        onCreated={() => setShowEmpty(true)}
+      />
     </section>
   )
 }
