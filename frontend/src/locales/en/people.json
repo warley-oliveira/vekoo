@@ -293,7 +293,8 @@
         "namePlaceholder": "E.g. Night shift",
         "nameRequired": "Give the group a name.",
         "nameTooLong": "That name is too long.",
-        "nameFixed": "Default groups keep their name. Their permissions can change."
+        "nameFixed": "Default groups keep their name. Their permissions can change.",
+        "permissionsInvalid": "This group has an access level that no longer exists. Use Allow everything or Remove everything and check again."
       },
       "editor": {
         "title": "What this group allows",
@@ -488,7 +489,7 @@
       },
       "devices": {
         "title": "Your devices",
-        "description": "Where your alerts arrive. If you lost a device, remove it from here.",
+        "description": "Where your alerts arrive. Lost a device? Just remove it here.",
         "empty": "No device is receiving alerts yet.",
         "label": "{{browser}} on {{system}}",
         "unknown": "Unknown device",

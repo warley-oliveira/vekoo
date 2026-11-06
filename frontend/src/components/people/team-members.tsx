@@ -35,8 +35,10 @@ export function TeamMembers({ team }: { team: Team }) {
     [active, team.id]
   )
 
+  // Quem não é dono não mexe no dono, nem no departamento dele (`PATCH /users/:id` recusa).
   const canManage = (person: Person) => person.role !== "owner" || actor.role === "owner"
 
+  const actorIsOwner = actor.role === "owner"
   const candidates = useMemo(
     () =>
       active
@@ -45,11 +47,9 @@ export function TeamMembers({ team }: { team: Team }) {
           value: person.id,
           label: person.name,
           description: person.email,
-          disabled: !canManage(person),
+          disabled: person.role === "owner" && !actorIsOwner,
         })),
-    // `canManage` só depende de `actor.role`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [active, actor.role, team.id]
+    [active, actorIsOwner, team.id]
   )
 
   async function add(id: string | null) {
@@ -115,7 +115,7 @@ export function TeamMembers({ team }: { team: Team }) {
                 {members.map((person) => (
                   <motion.li
                     key={person.id}
-                    layout="position"
+                    layout={preset.reduced ? false : "position"}
                     {...preset.listItem}
                     className="flex items-center gap-2 py-2 pr-1.5 pl-3"
                   >

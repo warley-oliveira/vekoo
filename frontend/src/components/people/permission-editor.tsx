@@ -43,7 +43,7 @@ export function PermissionEditor({ value, onChange, error }: PermissionEditorPro
             variant="ghost"
             size="sm"
             className="text-muted-foreground pointer-coarse:h-10"
-            onClick={() => onChange({ ...FULL_PERMISSIONS, chat_list_to: value.chat_list_to })}
+            onClick={() => onChange({ ...FULL_PERMISSIONS, chat_list_to: chatListLevel(value) })}
           >
             {t("people.roles.editor.grantAll")}
           </Button>
@@ -52,7 +52,7 @@ export function PermissionEditor({ value, onChange, error }: PermissionEditorPro
             variant="ghost"
             size="sm"
             className="text-muted-foreground pointer-coarse:h-10"
-            onClick={() => onChange({ ...BLANK_PERMISSIONS, chat_list_to: value.chat_list_to })}
+            onClick={() => onChange({ ...BLANK_PERMISSIONS, chat_list_to: chatListLevel(value) })}
           >
             {t("people.roles.editor.revokeAll")}
           </Button>

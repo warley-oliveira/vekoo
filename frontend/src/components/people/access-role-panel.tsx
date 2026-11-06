@@ -184,7 +184,13 @@ export function AccessRolePanel({ role, open, onOpenChange, onDelete }: AccessRo
         <PermissionEditor
           value={permissions.value}
           onChange={permissions.onChange}
-          error={permissionsState.error?.message}
+          // Nível fora do contrato em algum recurso: o erro é do mapa, e não de um campo que a
+          // tela mostre. Sem esta frase, o envio pararia em silêncio.
+          error={
+            permissionsState.error
+              ? (permissionsState.error.message ?? t("people.roles.fields.permissionsInvalid"))
+              : undefined
+          }
         />
 
         {role ? (

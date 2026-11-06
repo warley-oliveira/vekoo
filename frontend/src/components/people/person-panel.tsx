@@ -277,6 +277,12 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
             emptyLabel={t("people.users.fields.teamsEmpty")}
             optional
             disabled={locked}
+            // O campo de etiquetas não muda de aparência sozinho ao ser desativado.
+            className={
+              locked
+                ? "[&_[data-slot=combobox-chips]]:bg-input/50 [&_[data-slot=combobox-chips]]:opacity-50"
+                : undefined
+            }
           />
           <SwitchField
             control={form.control}

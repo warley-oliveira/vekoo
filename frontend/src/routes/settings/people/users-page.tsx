@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router"
@@ -83,7 +83,18 @@ export default function UsersPage() {
       },
       { replace: true }
     )
-  const closePanels = () =>
+  // Salvar pode terminar com a página já fora da tela: a pessoa foi para outra área, ou
+  // acabou de perder o acesso a esta. Fechar o painel, então, a arrastaria de volta para cá.
+  const isMounted = useRef(true)
+  useEffect(() => {
+    isMounted.current = true
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+
+  const closePanels = () => {
+    if (!isMounted.current) return
     setSearchParams(
       (current) => {
         current.delete("new")
@@ -92,6 +103,7 @@ export default function UsersPage() {
       },
       { replace: true }
     )
+  }
 
   const selected = people?.find((person) => person.id === selectedId) ?? null
   const shownPerson = useRetained(selected)
@@ -246,7 +258,8 @@ export default function UsersPage() {
                 {person.role === "owner" ? (
                   <Crown className="mr-1.5 inline size-3.5 align-[-2px] text-muted-foreground" />
                 ) : null}
-                {getValue<string>()}
+                {/* Sem nome: a lista de grupos ainda não chegou. */}
+                {getValue<string>() || "—"}
               </p>
               {person.setupOnly ? (
                 <p className="text-xs text-muted-foreground">{t("people.users.setupOnlyShort")}</p>
@@ -261,10 +274,15 @@ export default function UsersPage() {
         header: t("people.users.columns.teams"),
         enableSorting: false,
         meta: { className: "whitespace-normal w-64" },
-        cell: ({ getValue }) => {
+        cell: ({ row, getValue }) => {
           const names = getValue<string>()
-          return names ? (
-            <span className="line-clamp-2">{names}</span>
+          if (names) return <span className="line-clamp-2">{names}</span>
+          // Com departamentos e sem nomes: a lista deles ainda não chegou, e dizer "sem
+          // departamento" seria mentira.
+          return row.original.teamIds.length > 0 ? (
+            <span aria-hidden className="text-muted-foreground">
+              —
+            </span>
           ) : (
             <span className="text-muted-foreground">{t("people.users.noTeams")}</span>
           )

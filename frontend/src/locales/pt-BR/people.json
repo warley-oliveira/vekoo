@@ -293,7 +293,8 @@
         "namePlaceholder": "Ex.: Atendimento noturno",
         "nameRequired": "Dê um nome ao grupo.",
         "nameTooLong": "Nome muito longo.",
-        "nameFixed": "Os grupos padrão mantêm o nome. As permissões podem mudar."
+        "nameFixed": "Os grupos padrão mantêm o nome. As permissões podem mudar.",
+        "permissionsInvalid": "Este grupo tem um nível de acesso que não existe mais. Use Liberar tudo ou Tirar tudo e marque de novo."
       },
       "editor": {
         "title": "O que este grupo libera",
@@ -488,7 +489,7 @@
       },
       "devices": {
         "title": "Seus aparelhos",
-        "description": "Onde os seus avisos chegam. Se perdeu um aparelho, tire ele daqui.",
+        "description": "Onde os seus avisos chegam. Perdeu um aparelho? É só tirar daqui.",
         "empty": "Nenhum aparelho recebendo avisos ainda.",
         "label": "{{browser}} no {{system}}",
         "unknown": "Aparelho desconhecido",

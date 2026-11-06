@@ -273,12 +273,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUnauthorizedHandler((code) => {
       if (expiring.current) return
       expiring.current = true
-      const revoked = code === "accessRevoked"
-      if (!leaving.current) setSignedOutReason(revoked ? "accessRevoked" : "sessionExpired")
+      if (!leaving.current) {
+        setSignedOutReason(code === "accessRevoked" ? "accessRevoked" : "sessionExpired")
+      }
       dropSession()
       const target = `${window.location.pathname}${window.location.search}`
-      // Quem perdeu o acesso não tem para onde voltar.
-      const next = target === "/" || revoked ? "" : `?next=${encodeURIComponent(target)}`
+      const next = target === "/" ? "" : `?next=${encodeURIComponent(target)}`
       navigate(`/login${next}`, { replace: true })
       // Solta a trava no próximo tick, quando a rajada de 401 já passou.
       setTimeout(() => {
