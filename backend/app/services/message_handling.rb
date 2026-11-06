@@ -75,7 +75,9 @@ class MessageHandling
     elsif verbatim
       match.strip
     else
-      match.strip.remove(/\[|\]|<|>|`|"|'|~/)
+      # Tira as aspas e marcações que o modelo põe em volta das palavras; o apóstrofo dentro de uma
+      # palavra fica, porque "d'água" sem ele é erro de português.
+      match.strip.remove(/\[|\]|<|>|`|"|~|(?<!\p{L})'|'(?!\p{L})/)
     end
   end
 

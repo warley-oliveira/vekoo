@@ -373,7 +373,7 @@ Vale para `send_text`, `ask_question`, `send_interactive` e `ai_assistant`, e pa
 
 | | Escrito por alguém no editor | Resposta do `ai_assistant` |
 |---|---|---|
-| Aspas, apóstrofo, til, crase, colchetes, `<>` | Ficam | Saem: `"sim"` vira `sim`, e `d'água` vira `dágua` |
+| Aspas, apóstrofo, til, crase, colchetes, `<>` | Ficam | Saem: `"sim"` vira `sim`, menos o apóstrofo dentro de palavra: `d'água` fica |
 | `**forte**` e `[texto](link)` | Ficam | `*forte*` e o link puro |
 | Quebra em mensagens | Só com 10 quebras de linha seguidas, ou em volta de anexo citado | A cada parágrafo e a cada link |
 | `attachment_id_<id>` | Vira mídia, no lugar em que está | Vira mídia |

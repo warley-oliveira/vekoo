@@ -75,6 +75,10 @@ RSpec.describe MessageHandling do
         expect(perform(%(Oi [Maria] <você> `aqui` "ok" 'sim' ~nada~))).to eq([ "Oi Maria você aqui ok sim nada" ])
       end
 
+      it "mantém o apóstrofo dentro da palavra" do
+        expect(perform(%(Um copo d'água em Sant'Ana, 'gelado'))).to eq([ "Um copo d'água em Sant'Ana, gelado" ])
+      end
+
       it "tira a nota de score" do
         expect(perform("Olá [score:0.92]")).to eq([ "Olá" ])
       end
