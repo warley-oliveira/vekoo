@@ -22,7 +22,7 @@ module CustomDashboards
           { key: "delivered_count", type: "number" },
           { key: "read_count", type: "number" },
           { key: "failed_count", type: "number" },
-          { key: "created_at", type: "date" },
+          { key: "created_at", type: "date", index: Insights::ChatIndexes::BY_CREATION },
           { key: "scheduled_at", type: "date" },
           { key: "started_at", type: "date" },
           { key: "completed_at", type: "date" }

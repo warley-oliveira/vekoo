@@ -70,7 +70,7 @@ module Insights
     def result
       @result ||= chat_ids.each_slice(CHUNK_SIZE).reduce(blank_result) do |acc, ids|
         row = ChatMessage::Base.collection
-                               .aggregate(pipeline(ids), allow_disk_use: true)
+                               .aggregate(pipeline(ids), allow_disk_use: true, hint: ChatIndexes::MESSAGES_BY_CHAT)
                                .first || {}
 
         acc.merge(row.slice(*RESULT_KEYS)) { |_key, current, value| current + value.to_f }

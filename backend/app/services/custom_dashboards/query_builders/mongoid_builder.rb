@@ -59,7 +59,11 @@ module CustomDashboards
       end
 
       def run(stages)
-        collection.aggregate(source_stages + stages, allow_disk_use: true, max_time_ms: max_time_ms).to_a
+        options = { allow_disk_use: true, max_time_ms: max_time_ms }
+        hint = source.via_chats ? Insights::ChatIndexes::BY_ACTIVITY : source.field(time_range.field).index
+        options[:hint] = hint if hint
+
+        collection.aggregate(source_stages + stages, **options).to_a
       end
 
       def source_stages

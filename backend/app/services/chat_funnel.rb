@@ -86,7 +86,8 @@ class ChatFunnel
         { "$facet" => facets }
       ],
       allow_disk_use: true,
-      max_time_ms: MAX_TIME_MS
+      max_time_ms: MAX_TIME_MS,
+      hint: Insights::ChatIndexes.for_date_field(date_field)
     ).first || {}
   end
 

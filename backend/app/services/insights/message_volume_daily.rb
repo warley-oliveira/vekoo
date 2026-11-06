@@ -64,7 +64,7 @@ module Insights
         return self.class.blank_result
       end
 
-      raw = Chat.collection.aggregate(pipeline, allow_disk_use: true).first || {}
+      raw = Chat.collection.aggregate(pipeline, allow_disk_use: true, hint: ChatIndexes::BY_ACTIVITY).first || {}
       totals = raw.dig("totals", 0) || {}
 
       {

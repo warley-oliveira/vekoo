@@ -11,12 +11,12 @@ module CustomDashboards
         fields: [
           { key: "status", type: "enum", enum_values: %w[active canceled], labels: %w[active canceled] },
           { key: "attendance_status", type: "enum", enum_values: [ "show", "no_show", nil ], labels: { "show" => "show", "no_show" => "no_show", "" => "pending" } },
-          { key: "start", type: "date" },
+          { key: "start", type: "date", index: Insights::ChatIndexes::BOOKINGS_BY_START },
           { key: "end", type: "date" },
           { key: "professional_id", type: "string", cast: :object_id, label_from: :agenda_professionals, options_from: :agenda_professionals },
           { key: "service_id", type: "string", cast: :object_id, label_from: :agenda_services, options_from: :agenda_services },
           { key: "calendar_id", type: "string", cast: :object_id, label_from: :agenda_calendars, options_from: :agenda_calendars },
-          { key: "created_at", type: "date" },
+          { key: "created_at", type: "date", index: Insights::ChatIndexes::BY_CREATION },
           { key: "title", type: "string" }
         ],
         allowed_metrics: %w[count],

@@ -517,6 +517,39 @@ RSpec.describe CustomDashboards::QueryEngine do
     expect(collection).to have_received(:aggregate).with(anything, hash_including(max_time_ms: a_value_between(1, 30_000)))
   end
 
+  describe "índice dito por hint" do
+    def hint_for(source_model, source_key, **query)
+      collection = source_model.collection
+      allow(source_model).to receive(:collection).and_return(collection)
+      seen = []
+      allow(collection).to receive(:aggregate).and_wrap_original do |original, pipeline, **options|
+        seen << options
+        original.call(pipeline, **options)
+      end
+
+      execute(source_key, metrics: [ count_metric ], **query)
+
+      seen.first[:hint]
+    end
+
+    it "conversas, pelo campo de data do período" do
+      expect(hint_for(Chat, "conversations")).to eq("organization_id" => 1, "created_at" => -1)
+      expect(hint_for(Chat, "conversations", time_range: { field: "last_message_at" })).to eq("organization_id" => 1, "last_message_at" => -1)
+    end
+
+    it "campo de data sem índice próprio deixa o Mongo escolher" do
+      expect(hint_for(Chat, "conversations", time_range: { field: "updated_at" })).to be_nil
+    end
+
+    it "mensagens partem das conversas, pela última mensagem" do
+      expect(hint_for(Chat, "messages")).to eq("organization_id" => 1, "last_message_at" => -1)
+    end
+
+    it "agendamentos, pelo início" do
+      expect(hint_for(Agenda::Booking, "agenda_bookings")).to eq("organization_id" => 1, "start" => 1)
+    end
+  end
+
   # A última condição do `$and` é o escopo: é o que garante que nada do cliente o substitui.
   it "o escopo da organização é a última condição do $match" do
     collection = Chat.collection

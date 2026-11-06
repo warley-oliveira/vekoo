@@ -91,7 +91,7 @@ module Insights
 
     def collect_volume(chunk, result)
       raw = Chat.collection
-                .aggregate(volume_pipeline(chunk), allow_disk_use: true)
+                .aggregate(volume_pipeline(chunk), allow_disk_use: true, hint: ChatIndexes::BY_ACTIVITY)
                 .first || {}
 
       Array(raw["totals"]).each do |row|
@@ -193,7 +193,7 @@ module Insights
 
     def collect_first_response(chunk, result)
       Chat.collection
-          .aggregate(first_response_pipeline(chunk), allow_disk_use: true)
+          .aggregate(first_response_pipeline(chunk), allow_disk_use: true, hint: ChatIndexes::BY_CREATION)
           .each do |row|
         day = result[to_date(row["_id"])]
         day[:first_response_automation_seconds_sum] += row["automation_sum"].to_f.round(2)
@@ -308,7 +308,7 @@ module Insights
     # ── Mix de canais ─────────────────────────────────────────────────────────
 
     def collect_channels(chunk, result)
-      Chat.collection.aggregate(channels_pipeline(chunk)).each do |row|
+      Chat.collection.aggregate(channels_pipeline(chunk), hint: ChatIndexes::BY_CREATION).each do |row|
         bucket = result[to_date(row.dig("_id", "day"))][:chats_by_channel]
         channel = row.dig("_id", "channel").to_s
         bucket[channel] = bucket.fetch(channel, 0) + row["c"].to_i
@@ -341,7 +341,8 @@ module Insights
         [
           { "$match" => scope.selector },
           { "$group" => { "_id" => MessageAuthorship.day_of("$created_at", zone_name), "c" => { "$sum" => 1 } } }
-        ]
+        ],
+        hint: ChatIndexes::BY_CREATION
       ).each { |row| result[to_date(row["_id"])][:automation_bookings] += row["c"].to_i }
     end
   end

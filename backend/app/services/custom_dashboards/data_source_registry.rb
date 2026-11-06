@@ -51,7 +51,9 @@ module CustomDashboards
     # este campo, como número (só Postgres). `cast: :object_id`: o valor vem como texto e o banco guarda
     # ObjectId. `labels`: os valores que têm tradução. `label_from` e `options_from`: de onde vêm o nome do
     # id e as opções do filtro (`NAMED`). `relationship`: o campo é uma lista de ids filtrada pelo nome.
-    Field = Struct.new(:key, :type, :enum_values, :column, :jsonb, :cast, :labels, :label_from, :options_from, :relationship, keyword_init: true) do
+    # `index`: num campo de data, o índice com a organização, dito ao Mongo por `hint` quando o período é
+    # por este campo (ver `Insights::ChatIndexes`).
+    Field = Struct.new(:key, :type, :enum_values, :column, :jsonb, :cast, :labels, :label_from, :options_from, :relationship, :index, keyword_init: true) do
       def db_column
         column || key
       end

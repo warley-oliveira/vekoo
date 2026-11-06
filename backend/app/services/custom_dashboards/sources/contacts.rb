@@ -10,8 +10,8 @@ module CustomDashboards
         default_time_field: "created_at",
         scope: ->(account) { Chat.visible_to(account).valid_records },
         fields: [
-          { key: "created_at", type: "date" },
-          { key: "last_message_at", type: "date" },
+          { key: "created_at", type: "date", index: Insights::ChatIndexes::BY_CREATION },
+          { key: "last_message_at", type: "date", index: Insights::ChatIndexes::BY_ACTIVITY },
           { key: "user_name", type: "string" },
           { key: "display_name", type: "string" },
           { key: "external_id", type: "string" },

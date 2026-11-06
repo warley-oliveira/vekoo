@@ -20,7 +20,7 @@ module Insights
 
     # => { 'whatsapp_api' => 812, 'instagram' => 44, 'web' => 9 }
     def to_h
-      @to_h ||= Chat.collection.aggregate(pipeline).each_with_object({}) do |row, acc|
+      @to_h ||= Chat.collection.aggregate(pipeline, hint: ChatIndexes::BY_CREATION).each_with_object({}) do |row, acc|
         acc[row["_id"].to_s] = row["c"].to_i
       end
     end
