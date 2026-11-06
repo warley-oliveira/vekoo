@@ -37,7 +37,8 @@ module Agenda
     attr_reader :chat, :text, :sender_name, :generated
 
     def handled_parts
-      options = generated ? {} : { min_line_breaks: 10, split_links: false }
+      # Só o texto gerado por IA passa pela limpeza: o que alguém escreveu vai como está.
+      options = generated ? {} : { min_line_breaks: 10, split_links: false, verbatim: true }
 
       MessageHandling.new(chat.organization, **options).perform(text)
     rescue AttachmentNotFoundException => e

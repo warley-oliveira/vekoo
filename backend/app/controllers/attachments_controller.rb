@@ -15,7 +15,7 @@ class AttachmentsController < PlatformController
   before_action :set_attachment, only: %i[show update destroy]
 
   def index
-    records, meta = paginate(sorted(filtered(gallery)), per_page: DEFAULT_PER_PAGE)
+    records, meta = paginate(sorted(filtered(gallery).of_kinds(requested_kinds)), per_page: DEFAULT_PER_PAGE)
 
     render json: { attachments: AttachmentSerializer.many(records.with_attached_file), meta: meta }
   end
@@ -69,6 +69,11 @@ class AttachmentsController < PlatformController
         "attachments.name ILIKE :pattern OR attachments.description ILIKE :pattern OR active_storage_blobs.filename ILIKE :pattern",
         pattern: pattern
       )
+  end
+
+  # `?kind=image,document`: um ou mais tipos, separados por vírgula.
+  def requested_kinds
+    params[:kind].to_s.split(",").map(&:strip)
   end
 
   def sorted(scope)

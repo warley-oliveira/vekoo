@@ -1,0 +1,406 @@
+{
+  "content": {
+    "common": {
+      "close": "Close",
+      "back": "Back",
+      "refresh": "Refresh",
+      "clearFilters": "Clear filters"
+    },
+    "errors": {
+      "generic": "That didn't work just now. Try again in a moment.",
+      "network": "We couldn't reach the server. Check your connection.",
+      "forbidden": "You don't have permission to do that.",
+      "tooManyRequests": "Too many attempts in a short time. Wait a minute and try again.",
+      "notListField": "This field is no longer a list. Reload the page and try again.",
+      "invalidMapping": "Enter between 1 and 500 pairs of values to replace.",
+      "invalidTargetKey": "That field name doesn't make a valid key. Use letters and numbers."
+    },
+    "picker": {
+      "noMatch": "Nothing found."
+    },
+    "quickReplies": {
+      "description": "Ready-made texts to reply faster. In a conversation, type <kbd>/</kbd> in the message box and pick one by its shortcut.",
+      "search": "Search messages",
+      "count_one": "{{count}} message",
+      "count_other": "{{count}} messages",
+      "actionsOf": "Actions for {{name}}",
+      "brokenBadge": "Deleted attachment",
+      "saved": "Quick reply {{name}} saved.",
+      "created": "Quick reply {{name}} created.",
+      "missingAttachment_one": "This message cites an attachment that was deleted. Remove the red block or insert another file: as it stands, the conversation gets a code instead of the file.",
+      "missingAttachment_other": "This message cites {{count}} attachments that were deleted. Remove the red blocks or insert other files: as it stands, the conversation gets a code instead of the file.",
+      "unknownVariables_one": "Nothing fills in the variable {{names}}: it isn't from the contact or from a custom field. When the message is inserted, it stays in the text for you to complete by hand.",
+      "unknownVariables_other": "Nothing fills in the variables {{names}}: they aren't from the contact or from a custom field. When the message is inserted, they stay in the text for you to complete by hand.",
+      "empty": {
+        "title": "No quick replies yet",
+        "description": "Create the texts you repeat every day. Then just type / in the conversation's message box and pick one by its shortcut."
+      },
+      "noResults": {
+        "title": "No messages found",
+        "description": "Try another search or clear the filters."
+      },
+      "filters": {
+        "title": "Content",
+        "attachment": "With attachment",
+        "variable": "With variable",
+        "broken": "With deleted attachment"
+      },
+      "sort": {
+        "nameAsc": "Name, A to Z",
+        "nameDesc": "Name, Z to A",
+        "recent": "Last changed",
+        "oldest": "Created first",
+        "trigger": "Shortcut, A to Z"
+      },
+      "create": {
+        "action": "Create quick reply",
+        "mobileAction": "Create",
+        "title": "New quick reply",
+        "description": "In a conversation, it shows up when someone types / and the shortcut.",
+        "submit": "Create quick reply"
+      },
+      "edit": {
+        "action": "Edit",
+        "submit": "Save changes"
+      },
+      "delete": {
+        "action": "Delete",
+        "title": "Delete {{name}}?",
+        "description": "The shortcut /{{trigger}} stops showing up in conversations. What was already sent stays as it is, and the cited attachments stay in the library.",
+        "confirm": "Delete",
+        "done": "Quick reply {{name}} deleted."
+      },
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "Delivery time",
+        "nameRequired": "Give it a name so you can find it later.",
+        "trigger": "Shortcut",
+        "triggerPlaceholder": "delivery",
+        "triggerRequired": "Choose a shortcut.",
+        "triggerInvalid": "Use letters or numbers in the shortcut.",
+        "triggerTaken": "The message {{name}} already uses this shortcut.",
+        "triggerHint": "In a conversation, type /{{trigger}}.",
+        "triggerEmptyHint": "It comes from the name, unless you choose another.",
+        "content": "Message",
+        "contentPlaceholder": "Write it the way you'd send it in a conversation",
+        "contentRequired": "Write the message or insert an attachment.",
+        "contentTooLong": "The message is over {{max}} characters.",
+        "triggerFromName": "Generate from name"
+      },
+      "variables": {
+        "nome": "Contact name",
+        "primeiro_nome": "First name",
+        "telefone": "Contact phone",
+        "atendente": "Your name"
+      },
+      "editor": {
+        "variable": "Variable",
+        "attachment": "Attachment",
+        "insertVariable": "Insert variable",
+        "insertAttachment": "Insert attachment",
+        "searchVariable": "Search variables",
+        "searchAttachment": "Search attachments",
+        "noVariables": "No variables available.",
+        "noAttachments": "The library is still empty. Upload the first file below.",
+        "uploadNew": "Upload a new file",
+        "uploading": "Uploading {{name}}",
+        "slashHint": "Type / to insert an attachment or variable",
+        "slashLabel": "Insert into the text",
+        "variableItem": "Variable",
+        "removeChip": "Remove {{name}} from the text",
+        "missingAttachment": "Deleted attachment",
+        "variableGroups": {
+          "contact": "From the contact",
+          "team": "From the agent",
+          "fields": "Custom fields"
+        },
+        "attachmentShortcut": "Insert attachment (Ctrl+Shift+A)",
+        "attachmentCount_one": "{{count}} attachment",
+        "attachmentCount_other": "{{count}} attachments"
+      },
+      "preview": {
+        "title": "How it looks in the conversation",
+        "empty": "Write the message to see how the contact receives it.",
+        "missing": "Deleted attachment: a code goes out instead of the file.",
+        "sampleName": "Ana Beatriz Moura",
+        "samplePhone": "(41) 99911-0001",
+        "variablesHint": "Example with made-up data. Variables are filled in when the message is inserted into the conversation, and whatever the contact doesn't have stays in the text to complete by hand."
+      }
+    },
+    "attachments": {
+      "description": "Your organization's files, ready to use in quick replies, chat, campaigns and flows.",
+      "search": "Search files",
+      "count_one": "{{count}} file",
+      "count_other": "{{count}} files",
+      "actionsOf": "Actions for {{name}}",
+      "noDescription": "No description",
+      "noFile": "This attachment has no file.",
+      "saved": "Attachment {{name}} saved.",
+      "submit": "Save changes",
+      "details": "About the file",
+      "fileName": "File",
+      "fileType": "Type",
+      "uploadedAt": "Uploaded",
+      "changedAt": "Changed",
+      "kinds": {
+        "image": "Images",
+        "video": "Videos",
+        "audio": "Audio",
+        "document": "Documents"
+      },
+      "empty": {
+        "title": "No files here yet",
+        "description": "Upload the price lists, catalogs and photos you always send, and use them in quick replies and conversations."
+      },
+      "noResults": {
+        "title": "No files found",
+        "description": "Try another search or clear the filters."
+      },
+      "filters": {
+        "kind": "Type"
+      },
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "nameAsc": "Name, A to Z",
+        "nameDesc": "Name, Z to A",
+        "updated": "Last changed"
+      },
+      "view": {
+        "label": "How to show the files",
+        "grid": "As a grid",
+        "list": "As a list"
+      },
+      "actions": {
+        "open": "Open and edit",
+        "download": "Download",
+        "openInNewTab": "Open in a new tab"
+      },
+      "upload": {
+        "action": "Upload files",
+        "mobileAction": "Upload",
+        "title": "Upload files",
+        "close": "Close upload",
+        "done_one": "{{count}} file uploaded.",
+        "done_other": "{{count}} files uploaded.",
+        "tooLarge": "{{name}} is over 100 MB.",
+        "leaveTitle": "Leave while files are uploading?",
+        "leaveDescription": "Whatever hasn't finished uploading will be canceled.",
+        "leaveConfirm": "Leave and cancel",
+        "leaveCancel": "Keep uploading"
+      },
+      "fields": {
+        "name": "Name",
+        "nameRequired": "Give it a name so you can find it later.",
+        "description": "Description",
+        "descriptionPlaceholder": "What it's for, or when to use it",
+        "descriptionHint": "It's also searched.",
+        "replaceFile": "Replace file",
+        "replaceFileHint": "Quick replies that cite this attachment start sending the new file."
+      },
+      "viewer": {
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "zoomReset": "Back to original size",
+        "noPreviewTitle": "No preview here",
+        "noPreviewDescription": "This file doesn't open inside the page. Use the buttons at the top to download it or open it in a new tab."
+      },
+      "usage": {
+        "title": "Where it's used",
+        "none": "No quick reply cites this file.",
+        "scope": "Shows quick replies only. Flows and campaigns aren't counted yet."
+      },
+      "delete": {
+        "action": "Delete",
+        "title": "Delete {{name}}?",
+        "description": "The file leaves the library. What was already sent in conversations stays there. Any flow or campaign using this file will be left without it.",
+        "descriptionUsed_one": "The quick reply {{names}} cites this file: once it's deleted, it sends a code instead of the file until someone edits it. Any flow or campaign using this file will also be left without it.",
+        "descriptionUsed_other": "The quick replies {{names}} cite this file: once it's deleted, they send a code instead of the file until someone edits them. Any flow or campaign using this file will also be left without it.",
+        "confirm": "Delete",
+        "done": "Attachment {{name}} deleted."
+      }
+    },
+    "customFields": {
+      "description": "What you want to keep about each contact besides name and phone: city, size, how they found you. Each field shows up in conversations, contacts and filters.",
+      "search": "Search fields",
+      "count_one": "{{count}} field",
+      "count_other": "{{count}} fields",
+      "actionsOf": "Actions for {{name}}",
+      "moreOptions_one": "{{count}} more",
+      "moreOptions_other": "{{count}} more",
+      "defaultLabel": "Default: {{value}}",
+      "autoNormalizeBadge": "Normalizes on save",
+      "saved": "Field {{name}} saved.",
+      "created": "Field {{name}} created.",
+      "types": {
+        "text": "Text",
+        "number": "Number",
+        "list": "List",
+        "checkbox": "Checkbox",
+        "date": "Date"
+      },
+      "typeHints": {
+        "text": "Any short text.",
+        "number": "Can be filtered by greater and less than.",
+        "list": "One option among those you define.",
+        "checkbox": "Yes or no.",
+        "date": "Day, month and year."
+      },
+      "strategies": {
+        "min": "Use the lowest value",
+        "avg": "Use the average",
+        "max": "Use the highest value"
+      },
+      "checkbox": {
+        "true": "Checked",
+        "false": "Unchecked"
+      },
+      "empty": {
+        "title": "No custom fields yet",
+        "description": "Create a field to keep what matters about each contact, and filter conversations by it."
+      },
+      "noResults": {
+        "title": "No fields found",
+        "description": "Try another search or clear the filters."
+      },
+      "filters": {
+        "type": "Type"
+      },
+      "sort": {
+        "nameAsc": "Name, A to Z",
+        "nameDesc": "Name, Z to A",
+        "recent": "Last changed",
+        "type": "By type"
+      },
+      "actions": {
+        "edit": "Edit",
+        "values": "See values and normalize"
+      },
+      "create": {
+        "action": "Create field",
+        "mobileAction": "Create",
+        "title": "New field",
+        "description": "It starts showing up in every conversation and contact.",
+        "submit": "Create field"
+      },
+      "edit": {
+        "submit": "Save changes"
+      },
+      "delete": {
+        "action": "Delete",
+        "title": "Delete the field {{name}}?",
+        "description": "The field disappears from conversations, contacts and filters. If you create another one with the same name, it will show whatever is already stored.",
+        "descriptionFilled_one": "The field disappears from conversations, contacts and filters. The value in {{count}} conversation stays stored there, without showing: if you create another field with the same name, it comes back.",
+        "descriptionFilled_other": "The field disappears from conversations, contacts and filters. The values in {{count}} conversations stay stored there, without showing: if you create another field with the same name, they come back.",
+        "confirm": "Delete",
+        "done": "Field {{name}} deleted."
+      },
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "How they found us",
+        "nameRequired": "Give the field a name.",
+        "nameTooLong": "Use up to 255 characters in the name.",
+        "nameNeedsLetters": "Use letters or numbers in the name.",
+        "keyTaken": "The field {{name}} already uses the key {{key}}. Choose another name.",
+        "keyPreview": "The key will be <code>{{key}}</code>. It doesn't change after it's created, even if you rename the field.",
+        "keyEmptyHint": "The key comes from the name and doesn't change after it's created.",
+        "keyLocked": "The key doesn't change when you rename: it's how the values are stored in conversations. In quick replies, it becomes the variable {{variable}}.",
+        "description": "Description",
+        "descriptionPlaceholder": "What this field is for",
+        "descriptionTooLong": "Use up to 500 characters in the description.",
+        "type": "Type",
+        "typeChangeHint": "Changing the type doesn't alter values already stored in conversations.",
+        "options": "Options",
+        "optionsPlaceholder": "Type an option and press Enter",
+        "optionsHint": "Separate with commas to add several at once.",
+        "optionsLiveHint": "Each option applies right away, no need to save. Agents can also create options from inside a conversation.",
+        "optionsRequired": "Add at least one option.",
+        "losingOptions": "When you save, this field's list of options will be erased. Values already stored in conversations stay.",
+        "autoNormalize": "Normalize on save",
+        "autoNormalizeHint": "Every new value becomes a number: “20 to 40/day” turns into “20”. If there's no number, it stays as it came.",
+        "strategy": "Value ranges, such as “20 to 40”",
+        "target": "Store the number in",
+        "targetSame": "This same field (replaces the value)",
+        "targetHint": "Choose another number field to keep what was typed.",
+        "defaultValue": "Default value",
+        "defaultNeedsOptions": "Add options to choose a default value.",
+        "noDefaultValue": "No default value"
+      },
+      "options": {
+        "added_one": "Option added.",
+        "added_other": "{{count}} options added.",
+        "removed": "Option {{value}} removed.",
+        "removeTitle": "Remove the option {{value}}?",
+        "removeDescription": "It can no longer be chosen. Conversations that already have this value keep it.",
+        "removeDefaultDescription": "It's this field's default value, so the field ends up with no default. Conversations that already have this value keep it.",
+        "removeConfirm": "Remove option"
+      },
+      "values": {
+        "subtitle": {
+          "values": "Values in conversations",
+          "mapping": "Normalize: new value for each",
+          "review": "Normalize: check and apply"
+        },
+        "stepsLabel": "Normalization steps",
+        "steps": {
+          "values": "Values",
+          "mapping": "Mapping",
+          "review": "Check"
+        },
+        "period": "Conversations created in",
+        "periodPlaceholder": "All time",
+        "clearPeriod": "See all time",
+        "summary_one": "{{formatted}} value across {{conversations}}.",
+        "summary_other": "{{formatted}} values across {{conversations}}.",
+        "withoutValue_one": "{{formatted}} conversation with no value.",
+        "withoutValue_other": "{{formatted}} conversations with no value.",
+        "conversations_one": "{{formatted}} conversation",
+        "conversations_other": "{{formatted}} conversations",
+        "truncated": "Showing only the 500 most used values.",
+        "systemValue": "System value",
+        "blankValue": "Blank",
+        "empty": {
+          "title": "No conversation has this field filled in",
+          "description": "Once someone fills it in, the values show up here."
+        },
+        "emptyPeriod": {
+          "title": "Nothing in this period",
+          "description": "No conversation created on these dates has this field filled in."
+        },
+        "startNormalize": "Normalize values",
+        "mappingIntro": "Write the new value for each line. Whatever stays blank doesn't change, and nothing is saved until you check it.",
+        "suggestTitle": "Pull the number out of each value",
+        "suggestHint": "“R$ 50.000,00/month” becomes “50000”. For ranges, such as “20 to 40/day”, choose which number to use.",
+        "suggestAction": "Suggest numbers",
+        "noSuggestions": "No value has a number to suggest.",
+        "searchValues": "Search values",
+        "newValueFor": "New value for {{value}}",
+        "keep": "Keep",
+        "reviewAction": "Check changes",
+        "reviewWarning_one": "{{formatted}} conversation will be updated. This can't be undone.",
+        "reviewWarning_other": "{{formatted}} conversations will be updated. This can't be undone.",
+        "reviewNothing": "No conversation has these values. Go back and check the mapping or the period.",
+        "destination": "Where to store",
+        "destinationSame": "In this field, replacing the current value",
+        "destinationOther": "In another field, keeping the original",
+        "targetField": "Target field",
+        "targetPlaceholder": "Choose or type a name",
+        "targetHint": "If the field doesn't exist, it's created when you apply.",
+        "targetExisting": "Stores in the key {{key}}. Whatever is already there in these conversations will be replaced.",
+        "targetNew": "Creates the field when you apply, with the key {{key}}.",
+        "convertToNumber": "Turn this field into a Number, to filter by greater and less than",
+        "newOptions_one": "{{names}} isn't an option of this field yet: it joins the list when you apply.",
+        "newOptions_other": "{{names}} aren't options of this field yet: they join the list when you apply.",
+        "applyAction_one": "Apply to {{formatted}} conversation",
+        "applyAction_other": "Apply to {{formatted}} conversations",
+        "applyTitle_one": "Apply to {{count}} conversation?",
+        "applyTitle_other": "Apply to {{count}} conversations?",
+        "applyDescription": "The current values will be replaced, and it can't be undone.",
+        "applyDescriptionOther": "The original field stays as it is. Whatever is already in {{name}} in these conversations will be replaced, and it can't be undone.",
+        "applyConfirm": "Apply",
+        "applied_one": "{{count}} conversation updated.",
+        "applied_other": "{{count}} conversations updated."
+      }
+    }
+  }
+}

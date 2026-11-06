@@ -212,87 +212,51 @@ RSpec.describe ConnectorEventService do
     end
   end
 
-  describe "sem CustomField" do
-    before do
-      hide_const("CustomField")
-      stub_request(:post, url).to_return(json_reply({ cidade: "BH" }))
-    end
+  # Contra o `CustomField` de verdade: com dublês, esta parte passava enquanto o código lia um
+  # atributo que o modelo não tem.
+  describe "campos personalizados" do
+    let(:field) { create(:custom_field, organization_id: organization.id, name: "Cidade", default_value: "Padrão") }
 
-    it "variável de usuário e de sistema vira null no corpo" do
-      saved_event('{"a": {user.DEF1}, "b": {system.DEF2}, "id": {employee.id}}')
-
-      service.create_employee_connector_call(professional)
-
-      expect(sent_body).to eq("a" => nil, "b" => nil, "id" => "P1")
-    end
-
-    it "não tenta guardar o que a resposta trouxe" do
-      create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "cidade" })
-
-      expect { service.create_employee_connector_call(professional) }.not_to raise_error
-    end
-  end
-
-  describe "com CustomField" do
-    let(:custom_fields) { double("CustomField") }
-    let(:custom_field_values) { double("CustomFieldValue") }
-
-    before do
-      stub_const("CustomField", custom_fields)
-      stub_const("CustomFieldValue", custom_field_values)
-      stub_request(:post, url).to_return(json_reply({ data: [ { cidade: "BH" } ] }))
-    end
-
-    def definition(type, default_value: nil)
-      double("CustomField", type: type, default_value: default_value, name: "cidade")
-    end
+    before { stub_request(:post, url).to_return(json_reply({ data: [ { cidade: "BH" } ] })) }
 
     describe "lendo a variável para o corpo" do
       it "de usuário, usa o valor da conversa" do
-        field = definition("user")
-        allow(custom_fields).to receive(:find_by).with(id: "DEF1", organization_id: organization.id).and_return(field)
-        allow(custom_field_values).to receive(:find_by).with(definition: field, chat: chat).and_return(double(value: "BH"))
-        saved_event('{"a": {user.DEF1}}')
+        chat.update(custom_attributes: { field.key => "Recife" })
+        saved_event(%({"a": {user.#{field.id}}}))
 
         service.create_employee_connector_call(professional)
 
-        expect(sent_body).to eq("a" => "BH")
+        expect(sent_body).to eq("a" => "Recife")
       end
 
-      it "de sistema, usa o valor global" do
-        field = definition("system")
-        allow(custom_fields).to receive(:find_by).with(id: "DEF1", organization_id: organization.id).and_return(field)
-        allow(custom_field_values).to receive(:find_by).with(definition: field).and_return(double(value: "Global"))
-        saved_event('{"a": {system.DEF1}}')
-
-        service.create_employee_connector_call(professional)
-
-        expect(sent_body).to eq("a" => "Global")
-      end
-
-      it "cai no valor padrão quando não há valor" do
-        field = definition("user", default_value: "Padrão")
-        allow(custom_fields).to receive(:find_by).and_return(field)
-        allow(custom_field_values).to receive(:find_by).and_return(nil)
-        saved_event('{"a": {user.DEF1}}')
+      it "de usuário, cai no valor padrão quando a conversa não tem" do
+        saved_event(%({"a": {user.#{field.id}}}))
 
         service.create_employee_connector_call(professional)
 
         expect(sent_body).to eq("a" => "Padrão")
       end
 
-      it "vira null quando a definição sumiu" do
-        allow(custom_fields).to receive(:find_by).and_raise(Mongoid::Errors::DocumentNotFound.new(Chat, { id: "DEF1" }))
-        saved_event('{"a": {user.DEF1}}')
+      it "de sistema, usa o valor padrão, mesmo com valor na conversa" do
+        chat.update(custom_attributes: { field.key => "Recife" })
+        saved_event(%({"a": {system.#{field.id}}}))
+
+        service.create_employee_connector_call(professional)
+
+        expect(sent_body).to eq("a" => "Padrão")
+      end
+
+      it "vira null quando o campo não existe" do
+        saved_event('{"a": {user.nao-existe}}'.sub("nao-existe", "abc123"))
 
         service.create_employee_connector_call(professional)
 
         expect(sent_body).to eq("a" => nil)
       end
 
-      it "vira null quando a busca falha" do
-        allow(custom_fields).to receive(:find_by).and_raise(StandardError, "fora do ar")
-        saved_event('{"a": {user.DEF1}}')
+      it "não alcança campo de outra organização" do
+        foreign = create(:custom_field, organization_id: create(:organization).id, default_value: "Alheio")
+        saved_event(%({"a": {user.#{foreign.id}}}))
 
         service.create_employee_connector_call(professional)
 
@@ -301,69 +265,42 @@ RSpec.describe ConnectorEventService do
     end
 
     describe "guardando o que a resposta trouxe" do
-      let(:value) { double("CustomFieldValue", update: true) }
-
-      before { allow(custom_field_values).to receive(:find_or_create_by).and_return(value) }
-
-      it "de usuário, na audiência da conversa, seguindo o caminho com índice" do
-        field = definition("user")
-        allow(custom_fields).to receive(:find_by).with(id: "DEF1", organization_id: organization.id).and_return(field)
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
-
-        service.create_employee_connector_call(professional)
-
-        expect(custom_field_values).to have_received(:find_or_create_by).with(definition: field, audience: chat.audience)
-        expect(value).to have_received(:update).with(value: "BH")
+      def event_saving(field_id, path = "data.0.cidade")
+        saved_event('{"id": {employee.id}}', variables_path: { field_id.to_s => path }).tap(&:save!)
       end
 
-      it "de sistema, sem audiência" do
-        field = definition("system")
-        allow(custom_fields).to receive(:find_by).and_return(field)
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
+      it "grava no campo da conversa, seguindo o caminho com índice, sem apagar os outros" do
+        chat.update(custom_attributes: { "outro" => "fica" })
+        event_saving(field.id)
 
         service.create_employee_connector_call(professional)
 
-        expect(custom_field_values).to have_received(:find_or_create_by).with(definition: field)
-        expect(value).to have_received(:update).with(value: "BH")
+        expect(chat.reload.custom_attributes).to eq("outro" => "fica", field.key => "BH")
       end
 
       it "não guarda nada com resposta de erro" do
         stub_request(:post, url).to_return(json_reply({ data: [ { cidade: "BH" } ] }, status: 500))
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
+        event_saving(field.id)
 
         service.create_employee_connector_call(professional)
 
-        expect(custom_field_values).not_to have_received(:find_or_create_by)
-      end
-
-      it "registra no log a variável que não pôde ser guardada" do
-        allow(custom_fields).to receive(:find_by).and_return(definition("system"))
-        allow(custom_field_values).to receive(:find_or_create_by).and_raise(StandardError, "fora do ar")
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
-
-        log = captured_log { service.create_employee_connector_call(professional) }
-
-        expect(log).to include("Error assigning variable `cidade` with path `data.0.cidade`")
+        expect(chat.reload.custom_attributes).to eq({})
       end
 
       it "resposta que não é JSON não derruba quem chamou" do
         stub_request(:post, url).to_return(status: 200, body: "ok", headers: { "Content-Type" => "text/plain" })
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
+        event_saving(field.id)
 
         expect { service.create_employee_connector_call(professional) }.not_to raise_error
-
-        expect(custom_field_values).not_to have_received(:find_or_create_by)
+        expect(chat.reload.custom_attributes).to eq({})
       end
 
-      it "uma definição que sumiu não impede as outras" do
-        field = definition("system")
-        allow(custom_fields).to receive(:find_by).with(id: "SUMIU", organization_id: organization.id).and_raise(Mongoid::Errors::DocumentNotFound.new(Chat, { id: "SUMIU" }))
-        allow(custom_fields).to receive(:find_by).with(id: "DEF1", organization_id: organization.id).and_return(field)
-        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "SUMIU" => "data.0.cidade", "DEF1" => "data.0.cidade" })
+      it "um campo que sumiu não impede os outros" do
+        event = saved_event('{"id": {employee.id}}', variables_path: { "abc123" => "data.0.cidade", field.id.to_s => "data.0.cidade" })
+        event.save!
 
         expect { service.create_employee_connector_call(professional) }.not_to raise_error
-
-        expect(value).to have_received(:update).with(value: "BH")
+        expect(chat.reload.custom_attributes).to eq(field.key => "BH")
       end
     end
   end

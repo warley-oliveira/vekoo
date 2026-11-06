@@ -10,8 +10,28 @@ class Attachment < ApplicationRecord
 
   has_one_attached :file
 
+  # Os tipos que a biblioteca filtra. `document` é todo o resto, como no envio (ver #media_type).
+  KINDS = %w[image video audio document].freeze
+  MEDIA_KINDS = (KINDS - %w[document]).freeze
+
   # Galeria: enviado por dentro de uma conversa (`private`) não aparece nela.
   scope :available, -> { where(private: false) }
+
+  # Pelo tipo declarado no arquivo. O que não é tipo conhecido é ignorado: sem nenhum, não filtra.
+  def self.of_kinds(kinds)
+    requested = Array(kinds) & KINDS
+    return all if requested.empty?
+
+    left_joins(file_attachment: :blob).where(requested.map { |kind| kind_condition(kind) }.join(" OR "))
+  end
+
+  def self.kind_condition(kind)
+    return "active_storage_blobs.content_type LIKE '#{kind}/%'" if MEDIA_KINDS.include?(kind)
+
+    media = MEDIA_KINDS.map { |media_kind| "active_storage_blobs.content_type NOT LIKE '#{media_kind}/%'" }.join(" AND ")
+    "(active_storage_blobs.content_type IS NULL OR (#{media}))"
+  end
+  private_class_method :kind_condition
 
   before_validation :inherit_name
   before_save :remember_file_name
