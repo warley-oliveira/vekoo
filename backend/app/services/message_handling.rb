@@ -14,12 +14,22 @@ class MessageHandling
   # @param organization [Organization] dona dos anexos citados
   # @param min_line_breaks [Integer] quantas quebras de linha seguidas separam partes
   # @param split_links [Boolean] se cada link vira uma parte
-  def initialize(organization, attachment_record_only: false, min_line_breaks: DEFAULT_MIN_LINE_BREAKS, split_links: true)
+  # @param verbatim [Boolean] texto escrito por uma pessoa: vai como está. A limpeza existe para
+  #   texto gerado por IA, e tirava aspas e til de quem digitou (`d'água` virava `dágua`), sem
+  #   ninguém ver, porque a conversa guarda o original. Só anexo citado pelo id e quebras longas
+  #   ainda separam partes; anexo que não existe mais fica em `missing_attachments`, em vez de
+  #   levantar, para o código nunca chegar ao cliente.
+  def initialize(organization, attachment_record_only: false, min_line_breaks: DEFAULT_MIN_LINE_BREAKS, split_links: true, verbatim: false)
     @organization = organization
     @attachment_record_only = attachment_record_only
     @min_line_breaks = [ min_line_breaks.to_i, DEFAULT_MIN_LINE_BREAKS ].max
     @split_links = split_links
+    @verbatim = verbatim
+    @missing_attachments = []
   end
+
+  # Os motivos, no idioma da requisição, de cada anexo citado que não pôde ser enviado.
+  attr_reader :missing_attachments
 
   # @param message [String] o texto a processar
   # @return [Array<String, MediaMessageDto>]
@@ -30,17 +40,17 @@ class MessageHandling
 
   private
 
-  attr_reader :attachment_record_only, :organization
+  attr_reader :attachment_record_only, :organization, :verbatim
 
   def split_regex
     @split_regex ||= Regexp.new(
       [
         (@split_links ? '(https?://[^\s]+)' : nil),
         '(attachment_id_[\w-]+)',
-        '(attachment_[^\s]*)',
-        '(attach_url_[^\s]*)',
+        (verbatim ? nil : '(attachment_[^\s]*)'),
+        (verbatim ? nil : '(attach_url_[^\s]*)'),
         "(\\n{#{@min_line_breaks},})",
-        "(<audio>.*?</audio>)"
+        (verbatim ? nil : "(<audio>.*?</audio>)")
       ].compact.join("|")
     )
   end
@@ -53,18 +63,29 @@ class MessageHandling
 
   def handle_part(match)
     if match.start_with?("attachment_id_")
-      attachment_by_id_handling(trim_reference(match.remove("attachment_id_")))
-    elsif match.start_with?("attachment_")
+      cited_attachment(match)
+    elsif !verbatim && match.start_with?("attachment_")
       attachment_handling(trim_reference(match.remove("attachment_")))
     elsif match.start_with?("http") && !match.match?(/\s/)
       # Sem `split_links` a parte pode ser uma frase que só começa com um link: com a checagem
       # de espaço ela segue como texto, em vez de virar uma imagem de URL quebrada.
       link_handling(match)
-    elsif match.start_with?("<audio>")
+    elsif !verbatim && match.start_with?("<audio>")
       match.remove("<audio>", "</audio>")
+    elsif verbatim
+      match.strip
     else
       match.strip.remove(/\[|\]|<|>|`|"|'|~/)
     end
+  end
+
+  def cited_attachment(match)
+    attachment_by_id_handling(trim_reference(match.remove("attachment_id_")))
+  rescue AttachmentNotFoundException => e
+    raise unless verbatim
+
+    missing_attachments << e.message
+    nil
   end
 
   def trim_reference(reference)
@@ -81,13 +102,15 @@ class MessageHandling
   end
 
   def clean_message!(message)
+    message.gsub!("\r", "")
+    return if verbatim
+
     message.gsub!(%r{\[(https?://[^\s]+)\]}) { Regexp.last_match[1] }
 
     message.gsub!("![", "[")
     message.gsub!("**", "*")
     message.gsub!(/\[score:(.*?)\]/, "")
     message.gsub!(/\[.*?\]\((.*?)\)/, '\1')
-    message.gsub!("\r", "")
   end
 
   def attachment_handling(attach_name)

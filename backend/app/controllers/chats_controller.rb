@@ -123,7 +123,9 @@ class ChatsController < PlatformController
     attributes = custom_attributes_param
     return render_error(status: :unprocessable_content, code: "invalidAttributes", field: "customAttributes") if attributes.nil?
 
-    @chat.update!(custom_attributes: attributes)
+    # Soma ao que já existe, e `null` tira a chave. Substituir o mapa inteiro apagaria o que um
+    # fluxo gravou enquanto a tela estava aberta, ou o que o pedido não mandou.
+    @chat.update!(custom_attributes: @chat.custom_attributes.to_h.merge(attributes).compact)
 
     render json: { customAttributes: @chat.custom_attributes }
   end

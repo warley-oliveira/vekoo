@@ -1,0 +1,406 @@
+{
+  "content": {
+    "common": {
+      "close": "Fechar",
+      "back": "Voltar",
+      "refresh": "Atualizar",
+      "clearFilters": "Limpar filtros"
+    },
+    "errors": {
+      "generic": "Não deu certo agora. Tente de novo em instantes.",
+      "network": "Não conseguimos falar com o servidor. Verifique sua conexão.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "tooManyRequests": "Foram muitas tentativas em pouco tempo. Espere um minuto e tente de novo.",
+      "notListField": "Este campo não é mais uma lista. Recarregue a página e tente de novo.",
+      "invalidMapping": "Informe de 1 a 500 pares de valores para trocar.",
+      "invalidTargetKey": "O nome desse campo não dá uma chave válida. Use letras e números."
+    },
+    "picker": {
+      "noMatch": "Nada encontrado."
+    },
+    "quickReplies": {
+      "description": "Textos prontos para responder mais rápido. Na conversa, digite <kbd>/</kbd> no campo de mensagem e escolha pelo atalho.",
+      "search": "Buscar mensagens",
+      "count_one": "{{count}} mensagem",
+      "count_other": "{{count}} mensagens",
+      "actionsOf": "Ações de {{name}}",
+      "brokenBadge": "Anexo excluído",
+      "saved": "Mensagem rápida {{name}} salva.",
+      "created": "Mensagem rápida {{name}} criada.",
+      "missingAttachment_one": "Esta mensagem cita um anexo que foi excluído. Remova o bloco em vermelho ou insira outro arquivo: do jeito que está, a conversa recebe um código no lugar do arquivo.",
+      "missingAttachment_other": "Esta mensagem cita {{count}} anexos que foram excluídos. Remova os blocos em vermelho ou insira outros arquivos: do jeito que está, a conversa recebe um código no lugar do arquivo.",
+      "unknownVariables_one": "Nada preenche a variável {{names}}: ela não é do contato nem de um campo personalizado. Ao inserir a mensagem, ela fica no texto para você completar à mão.",
+      "unknownVariables_other": "Nada preenche as variáveis {{names}}: elas não são do contato nem de um campo personalizado. Ao inserir a mensagem, elas ficam no texto para você completar à mão.",
+      "empty": {
+        "title": "Nenhuma mensagem rápida ainda",
+        "description": "Crie os textos que você repete todo dia. Depois é só digitar / no campo de mensagem da conversa e escolher pelo atalho."
+      },
+      "noResults": {
+        "title": "Nenhuma mensagem encontrada",
+        "description": "Tente outra busca ou limpe os filtros."
+      },
+      "filters": {
+        "title": "Conteúdo",
+        "attachment": "Com anexo",
+        "variable": "Com variável",
+        "broken": "Com anexo excluído"
+      },
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "recent": "Alteradas por último",
+        "oldest": "Criadas primeiro",
+        "trigger": "Atalho de A a Z"
+      },
+      "create": {
+        "action": "Criar mensagem rápida",
+        "mobileAction": "Criar",
+        "title": "Nova mensagem rápida",
+        "description": "Na conversa, ela aparece quando alguém digita / e o atalho.",
+        "submit": "Criar mensagem rápida"
+      },
+      "edit": {
+        "action": "Editar",
+        "submit": "Salvar alterações"
+      },
+      "delete": {
+        "action": "Excluir",
+        "title": "Excluir {{name}}?",
+        "description": "O atalho /{{trigger}} deixa de aparecer na conversa. O que já foi enviado continua como está, e os anexos citados ficam na biblioteca.",
+        "confirm": "Excluir",
+        "done": "Mensagem rápida {{name}} excluída."
+      },
+      "fields": {
+        "name": "Nome",
+        "namePlaceholder": "Prazo de entrega",
+        "nameRequired": "Dê um nome para encontrar depois.",
+        "trigger": "Atalho",
+        "triggerPlaceholder": "prazo",
+        "triggerRequired": "Escolha um atalho.",
+        "triggerInvalid": "Use letras ou números no atalho.",
+        "triggerTaken": "A mensagem {{name}} já usa este atalho.",
+        "triggerHint": "Na conversa, digite /{{trigger}}.",
+        "triggerEmptyHint": "Nasce do nome, se você não escolher outro.",
+        "content": "Mensagem",
+        "contentPlaceholder": "Escreva como você mandaria na conversa",
+        "contentRequired": "Escreva a mensagem ou insira um anexo.",
+        "contentTooLong": "A mensagem passou de {{max}} caracteres.",
+        "triggerFromName": "Gerar do nome"
+      },
+      "variables": {
+        "nome": "Nome do contato",
+        "primeiro_nome": "Primeiro nome",
+        "telefone": "Telefone do contato",
+        "atendente": "Seu nome"
+      },
+      "editor": {
+        "variable": "Variável",
+        "attachment": "Anexo",
+        "insertVariable": "Inserir variável",
+        "insertAttachment": "Inserir anexo",
+        "searchVariable": "Buscar variável",
+        "searchAttachment": "Buscar anexo",
+        "noVariables": "Nenhuma variável disponível.",
+        "noAttachments": "A biblioteca ainda está vazia. Envie o primeiro arquivo aqui embaixo.",
+        "uploadNew": "Enviar arquivo novo",
+        "uploading": "Enviando {{name}}",
+        "slashHint": "Digite / para inserir anexo ou variável",
+        "slashLabel": "Inserir no texto",
+        "variableItem": "Variável",
+        "removeChip": "Tirar {{name}} do texto",
+        "missingAttachment": "Anexo excluído",
+        "variableGroups": {
+          "contact": "Do contato",
+          "team": "De quem atende",
+          "fields": "Campos personalizados"
+        },
+        "attachmentShortcut": "Inserir anexo (Ctrl+Shift+A)",
+        "attachmentCount_one": "{{count}} anexo",
+        "attachmentCount_other": "{{count}} anexos"
+      },
+      "preview": {
+        "title": "Como sai na conversa",
+        "empty": "Escreva a mensagem para ver como o contato recebe.",
+        "missing": "Anexo excluído: sai um código no lugar do arquivo.",
+        "sampleName": "Ana Beatriz Moura",
+        "samplePhone": "(41) 99911-0001",
+        "variablesHint": "Exemplo com dados fictícios. As variáveis são preenchidas ao inserir a mensagem na conversa, e o que o contato não tiver fica no texto para completar à mão."
+      }
+    },
+    "attachments": {
+      "description": "Os arquivos da organização, prontos para usar nas mensagens rápidas, no chat, nas campanhas e nos fluxos.",
+      "search": "Buscar arquivos",
+      "count_one": "{{count}} arquivo",
+      "count_other": "{{count}} arquivos",
+      "actionsOf": "Ações de {{name}}",
+      "noDescription": "Sem descrição",
+      "noFile": "Este anexo está sem arquivo.",
+      "saved": "Anexo {{name}} salvo.",
+      "submit": "Salvar alterações",
+      "details": "Sobre o arquivo",
+      "fileName": "Arquivo",
+      "fileType": "Tipo",
+      "uploadedAt": "Enviado",
+      "changedAt": "Alterado",
+      "kinds": {
+        "image": "Imagens",
+        "video": "Vídeos",
+        "audio": "Áudios",
+        "document": "Documentos"
+      },
+      "empty": {
+        "title": "Nenhum arquivo por aqui",
+        "description": "Envie tabelas, catálogos e fotos que você manda sempre, e use nas mensagens rápidas e nas conversas."
+      },
+      "noResults": {
+        "title": "Nenhum arquivo encontrado",
+        "description": "Tente outra busca ou limpe os filtros."
+      },
+      "filters": {
+        "kind": "Tipo"
+      },
+      "sort": {
+        "newest": "Mais recentes",
+        "oldest": "Mais antigos",
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "updated": "Alterados por último"
+      },
+      "view": {
+        "label": "Como mostrar os arquivos",
+        "grid": "Em grade",
+        "list": "Em lista"
+      },
+      "actions": {
+        "open": "Abrir e editar",
+        "download": "Baixar",
+        "openInNewTab": "Abrir em nova aba"
+      },
+      "upload": {
+        "action": "Enviar arquivos",
+        "mobileAction": "Enviar",
+        "title": "Enviar arquivos",
+        "close": "Fechar envio",
+        "done_one": "{{count}} arquivo enviado.",
+        "done_other": "{{count}} arquivos enviados.",
+        "tooLarge": "{{name}} passa de 100 MB.",
+        "leaveTitle": "Sair com arquivos enviando?",
+        "leaveDescription": "O que ainda não terminou de subir será cancelado.",
+        "leaveConfirm": "Sair e cancelar",
+        "leaveCancel": "Continuar enviando"
+      },
+      "fields": {
+        "name": "Nome",
+        "nameRequired": "Dê um nome para encontrar depois.",
+        "description": "Descrição",
+        "descriptionPlaceholder": "Para que serve, ou quando usar",
+        "descriptionHint": "Também entra na busca.",
+        "replaceFile": "Trocar arquivo",
+        "replaceFileHint": "As mensagens rápidas que citam este anexo passam a mandar o arquivo novo."
+      },
+      "viewer": {
+        "zoomIn": "Aumentar",
+        "zoomOut": "Diminuir",
+        "zoomReset": "Voltar ao tamanho original",
+        "noPreviewTitle": "Sem prévia aqui",
+        "noPreviewDescription": "Este arquivo não abre dentro da página. Use os botões do topo para baixar ou abrir em nova aba."
+      },
+      "usage": {
+        "title": "Onde é usado",
+        "none": "Nenhuma mensagem rápida cita este arquivo.",
+        "scope": "Mostra só as mensagens rápidas. Fluxos e campanhas ainda não entram nesta conta."
+      },
+      "delete": {
+        "action": "Excluir",
+        "title": "Excluir {{name}}?",
+        "description": "O arquivo sai da biblioteca. O que já foi enviado nas conversas continua lá. Se um fluxo ou uma campanha usar este arquivo, ficará sem ele.",
+        "descriptionUsed_one": "A mensagem rápida {{names}} cita este arquivo: depois de excluído, ela manda um código no lugar dele até alguém editá-la. Se um fluxo ou uma campanha usar este arquivo, também ficará sem ele.",
+        "descriptionUsed_other": "As mensagens rápidas {{names}} citam este arquivo: depois de excluído, elas mandam um código no lugar dele até alguém editá-las. Se um fluxo ou uma campanha usar este arquivo, também ficará sem ele.",
+        "confirm": "Excluir",
+        "done": "Anexo {{name}} excluído."
+      }
+    },
+    "customFields": {
+      "description": "O que você quer guardar de cada contato além do nome e do telefone: cidade, tamanho, como conheceu. Cada campo aparece nas conversas, nos contatos e nos filtros.",
+      "search": "Buscar campos",
+      "count_one": "{{count}} campo",
+      "count_other": "{{count}} campos",
+      "actionsOf": "Ações de {{name}}",
+      "moreOptions_one": "mais {{count}}",
+      "moreOptions_other": "mais {{count}}",
+      "defaultLabel": "Padrão: {{value}}",
+      "autoNormalizeBadge": "Normaliza ao gravar",
+      "saved": "Campo {{name}} salvo.",
+      "created": "Campo {{name}} criado.",
+      "types": {
+        "text": "Texto",
+        "number": "Número",
+        "list": "Lista",
+        "checkbox": "Caixa de seleção",
+        "date": "Data"
+      },
+      "typeHints": {
+        "text": "Qualquer texto curto.",
+        "number": "Dá para filtrar por maior e menor.",
+        "list": "Uma opção entre as que você definir.",
+        "checkbox": "Sim ou não.",
+        "date": "Dia, mês e ano."
+      },
+      "strategies": {
+        "min": "Usar o menor valor",
+        "avg": "Usar a média",
+        "max": "Usar o maior valor"
+      },
+      "checkbox": {
+        "true": "Marcado",
+        "false": "Desmarcado"
+      },
+      "empty": {
+        "title": "Nenhum campo personalizado ainda",
+        "description": "Crie um campo para guardar o que importa de cada contato, e filtre as conversas por ele."
+      },
+      "noResults": {
+        "title": "Nenhum campo encontrado",
+        "description": "Tente outra busca ou limpe os filtros."
+      },
+      "filters": {
+        "type": "Tipo"
+      },
+      "sort": {
+        "nameAsc": "Nome de A a Z",
+        "nameDesc": "Nome de Z a A",
+        "recent": "Alterados por último",
+        "type": "Por tipo"
+      },
+      "actions": {
+        "edit": "Editar",
+        "values": "Ver valores e normalizar"
+      },
+      "create": {
+        "action": "Criar campo",
+        "mobileAction": "Criar",
+        "title": "Novo campo",
+        "description": "Ele passa a aparecer em todas as conversas e contatos.",
+        "submit": "Criar campo"
+      },
+      "edit": {
+        "submit": "Salvar alterações"
+      },
+      "delete": {
+        "action": "Excluir",
+        "title": "Excluir o campo {{name}}?",
+        "description": "O campo some das conversas, dos contatos e dos filtros. Se você criar outro com o mesmo nome, ele volta a mostrar o que já estiver gravado.",
+        "descriptionFilled_one": "O campo some das conversas, dos contatos e dos filtros. O valor de {{count}} conversa continua guardado nela, sem aparecer: se você criar outro campo com o mesmo nome, ele volta.",
+        "descriptionFilled_other": "O campo some das conversas, dos contatos e dos filtros. Os valores de {{count}} conversas continuam guardados nelas, sem aparecer: se você criar outro campo com o mesmo nome, eles voltam.",
+        "confirm": "Excluir",
+        "done": "Campo {{name}} excluído."
+      },
+      "fields": {
+        "name": "Nome",
+        "namePlaceholder": "Como conheceu",
+        "nameRequired": "Dê um nome para o campo.",
+        "nameTooLong": "Use até 255 caracteres no nome.",
+        "nameNeedsLetters": "Use letras ou números no nome.",
+        "keyTaken": "O campo {{name}} já usa a chave {{key}}. Escolha outro nome.",
+        "keyPreview": "A chave será <code>{{key}}</code>. Ela não muda depois de criada, mesmo que você renomeie o campo.",
+        "keyEmptyHint": "A chave nasce do nome e não muda depois de criada.",
+        "keyLocked": "A chave não muda ao renomear: é por ela que os valores estão gravados nas conversas. Nas mensagens rápidas, ela vira a variável {{variable}}.",
+        "description": "Descrição",
+        "descriptionPlaceholder": "Para que serve este campo",
+        "descriptionTooLong": "Use até 500 caracteres na descrição.",
+        "type": "Tipo",
+        "typeChangeHint": "Trocar o tipo não altera os valores já gravados nas conversas.",
+        "options": "Opções",
+        "optionsPlaceholder": "Digite uma opção e aperte Enter",
+        "optionsHint": "Separe por vírgula para acrescentar várias de uma vez.",
+        "optionsLiveHint": "Cada opção vale na hora, sem precisar salvar. Quem atende também pode criar opção de dentro da conversa.",
+        "optionsRequired": "Adicione ao menos uma opção.",
+        "losingOptions": "Ao salvar, a lista de opções deste campo será apagada. Os valores já gravados nas conversas continuam.",
+        "autoNormalize": "Normalizar ao gravar",
+        "autoNormalizeHint": "Todo valor novo vira número: “20 a 40/dia” fica “20”. Se não houver número, fica como veio.",
+        "strategy": "Faixas de valores, como “20 a 40”",
+        "target": "Gravar o número em",
+        "targetSame": "Neste mesmo campo (substitui o valor)",
+        "targetHint": "Escolha outro campo numérico para preservar o que foi digitado.",
+        "defaultValue": "Valor padrão",
+        "defaultNeedsOptions": "Adicione opções para escolher um valor padrão.",
+        "noDefaultValue": "Sem valor padrão"
+      },
+      "options": {
+        "added_one": "Opção adicionada.",
+        "added_other": "{{count}} opções adicionadas.",
+        "removed": "Opção {{value}} removida.",
+        "removeTitle": "Tirar a opção {{value}}?",
+        "removeDescription": "Ela deixa de aparecer para escolher. As conversas que já têm esse valor continuam com ele.",
+        "removeDefaultDescription": "Ela é o valor padrão deste campo, que fica sem padrão. As conversas que já têm esse valor continuam com ele.",
+        "removeConfirm": "Tirar opção"
+      },
+      "values": {
+        "subtitle": {
+          "values": "Valores nas conversas",
+          "mapping": "Normalizar: novo valor de cada um",
+          "review": "Normalizar: conferir e aplicar"
+        },
+        "stepsLabel": "Passos da normalização",
+        "steps": {
+          "values": "Valores",
+          "mapping": "De-para",
+          "review": "Conferir"
+        },
+        "period": "Conversas criadas em",
+        "periodPlaceholder": "Todo o período",
+        "clearPeriod": "Ver todo o período",
+        "summary_one": "{{formatted}} valor em {{conversations}}.",
+        "summary_other": "{{formatted}} valores em {{conversations}}.",
+        "withoutValue_one": "{{formatted}} conversa sem valor.",
+        "withoutValue_other": "{{formatted}} conversas sem valor.",
+        "conversations_one": "{{formatted}} conversa",
+        "conversations_other": "{{formatted}} conversas",
+        "truncated": "Mostrando só os 500 valores mais usados.",
+        "systemValue": "Valor de sistema",
+        "blankValue": "Em branco",
+        "empty": {
+          "title": "Nenhuma conversa com este campo preenchido",
+          "description": "Quando alguém preencher, os valores aparecem aqui."
+        },
+        "emptyPeriod": {
+          "title": "Nada neste período",
+          "description": "Nenhuma conversa criada nessas datas tem este campo preenchido."
+        },
+        "startNormalize": "Normalizar valores",
+        "mappingIntro": "Escreva o novo valor de cada linha. O que ficar em branco não muda, e nada é gravado antes de você conferir.",
+        "suggestTitle": "Tirar o número de cada valor",
+        "suggestHint": "“R$ 50.000,00/mês” vira “50000”. Em faixas, como “20 a 40/dia”, escolha qual número usar.",
+        "suggestAction": "Sugerir números",
+        "noSuggestions": "Nenhum valor tem número para sugerir.",
+        "searchValues": "Buscar nos valores",
+        "newValueFor": "Novo valor para {{value}}",
+        "keep": "Manter",
+        "reviewAction": "Conferir alterações",
+        "reviewWarning_one": "{{formatted}} conversa será atualizada. Isto não pode ser desfeito.",
+        "reviewWarning_other": "{{formatted}} conversas serão atualizadas. Isto não pode ser desfeito.",
+        "reviewNothing": "Nenhuma conversa tem esses valores. Volte e confira o de-para ou o período.",
+        "destination": "Onde gravar",
+        "destinationSame": "Neste campo, substituindo o valor atual",
+        "destinationOther": "Em outro campo, preservando o original",
+        "targetField": "Campo de destino",
+        "targetPlaceholder": "Escolha ou digite um nome",
+        "targetHint": "Se o campo não existir, ele será criado ao aplicar.",
+        "targetExisting": "Grava na chave {{key}}. O que já estiver lá nessas conversas será substituído.",
+        "targetNew": "Cria o campo ao aplicar, com a chave {{key}}.",
+        "convertToNumber": "Transformar este campo em Número, para filtrar por maior e menor",
+        "newOptions_one": "{{names}} ainda não é opção deste campo: entra na lista ao aplicar.",
+        "newOptions_other": "{{names}} ainda não são opções deste campo: entram na lista ao aplicar.",
+        "applyAction_one": "Aplicar em {{formatted}} conversa",
+        "applyAction_other": "Aplicar em {{formatted}} conversas",
+        "applyTitle_one": "Aplicar em {{count}} conversa?",
+        "applyTitle_other": "Aplicar em {{count}} conversas?",
+        "applyDescription": "Os valores atuais serão substituídos, e não dá para desfazer.",
+        "applyDescriptionOther": "O campo original fica como está. O que já houver em {{name}} nessas conversas será substituído, e não dá para desfazer.",
+        "applyConfirm": "Aplicar",
+        "applied_one": "{{count}} conversa atualizada.",
+        "applied_other": "{{count}} conversas atualizadas."
+      }
+    }
+  }
+}

@@ -149,6 +149,24 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Defeitos da origem corrigidos:** `Integration::Base.where(:_id.in => ids)` sem escopo deixava disparar pelo canal de outra conta; canal desconectado queimava a lista inteira; retomar zerava o limite diário; a recuperação reenviava mensagem que já tinha saído; `send_days` vazio prendia a thread para sempre; `PATCH` parcial limpava a mídia.
 - **Envio sem resposta do provedor não se repete (integrador):** vale para todo envio, inclusive o humano pelo chat. Um timeout de leitura não diz se a mensagem saiu. Resposta de erro do provedor continua sendo repetida, como na origem.
 
+### Mensagens rápidas, anexos e campos: tela (fe-settings-content)
+
+- **Variáveis em mensagem rápida são novidade:** a origem não trocava nada no texto. `{{nome}}`, `{{primeiro_nome}}`, `{{telefone}}`, `{{atendente}}` e as chaves dos campos, trocadas pelo composer ao inserir a mensagem.
+- **Normalização de campo:** a sugestão automática só vale em campo Número (em data, `1989-03-14` viraria `1989`); "Transformar em Número" só aparece se todos os valores ficarem numéricos; o campo de destino novo nasce ao aplicar; valor novo em campo de lista entra nas opções.
+- **Excluir campo:** o texto diz que os valores continuam guardados, como a API documenta. A origem dizia que se perdiam.
+- **Opções de campo que já é lista** valem na hora. Remover regrava a lista inteira, então duas pessoas ao mesmo tempo ainda podem se atropelar.
+- **Tiptap:** primeiro uso no repositório, com chunk de 439 kB (138 kB gzip), carregado só nesta tela.
+- **Ordem padrão das mensagens rápidas:** nome de A a Z; na origem, mais recentes.
+- **De fora:** visibilidade pública/privada da mensagem (o back da origem ignorava), ordenar por conteúdo.
+- **Acréscimo na API:** `GET /attachments?kind=image,video,audio,document`.
+
+### Envio de mensagens (integrador)
+
+- **O que uma pessoa escreve chega como foi escrito.** O envio tirava aspas, til, crases, colchetes e sinais do texto de quem atende (`Copo d'água, "gelado"` chegava como `Copo dágua, gelado`), e convertia markdown, enquanto a conversa guardava o original, então ninguém via. A limpeza era para texto de LLM e fica só para ele: vale para o chat e para os lembretes escritos à mão. **Bloco de fluxo com texto escrito à mão precisa do mesmo tratamento** (`verbatim: true`).
+- **Anexo citado que não existe mais** não vaza o código `attachment_id_...` para o cliente: o resto da mensagem segue, e o motivo fica em `statusMessage`. Sem nada para enviar, a mensagem é uma falha.
+- **`PUT /chats/:id/attributes` soma ao mapa**, e `null` tira a chave. Substituir tudo, como na origem, apagava o que um fluxo gravou enquanto a tela estava aberta.
+- **Variáveis de evento de conector voltaram a funcionar:** o código lia `definition.type`, que o modelo não tem, então toda variável saía `null`. Agora `{user.<id>}` lê o campo da conversa, ou o padrão dele; `{system.<id>}` lê o padrão; e o que a resposta traz é gravado no campo da conversa. Era o único uso de `defaultValue`.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -183,6 +201,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-chat-core`: `connectorProvider` agora é `zapi` (a origem compara com `z_api`); ações em lote não avisam o tempo real, então a tela recarrega a lista; a regra de auto-remover `aguardando-operador` fica na tela, lendo `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`; eventos `bookings_changed` e `scheduled_actions_changed`; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
 - `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
+- `fe-chat-core` e `fe-chat-mobile`: **ao inserir mensagem rápida, chamar `fillQuickReply(reply.content, { contactName, phone, agentName, customAttributes })`** de `lib/content/quick-reply-content.ts`. Sem isso, `{{nome}}` chega literal ao contato.
+- `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
@@ -200,6 +220,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
 - `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
 - `be-pipelines`: somar `:deal` em `Chats::BackfillSystemTagsService`.
+- `be-automation`: bloco `send_text` com texto escrito à mão usa `MessageHandling` com `verbatim: true`; só o que vem de LLM passa pela limpeza.
 - `be-automation`: `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id`, conferindo a organização, e preencher `Outreach::AvailableFlows.for`. Mídia de campanha usa `Attachment`: já existe, conferir com um envio real.
 - `be-insights`: ferramentas de agenda e de funil no copiloto (`list_appointments`, `get_appointment_details`, `cancel_appointment`, `reschedule_appointment`, `qualify_appointments`, `get_appointment_stats`, `get_chat_funnel`), contexto `booking_qualification`, conversão no ranking da equipe, fonte `agenda_bookings` e `contactNotificationPreview`, que lê mensagens e hoje exigiria `chat`.
 

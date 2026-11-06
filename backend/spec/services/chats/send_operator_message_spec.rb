@@ -514,13 +514,14 @@ RSpec.describe Chats::SendOperatorMessage do
   end
 
   describe "anexo citado que não existe" do
-    it "manda o texto como veio" do
+    it "manda o resto do texto, sem o código, e guarda o motivo" do
       stub_provider("OUT-1")
 
       message = send_message("Olá attachment_id_999")
 
-      expect(@sent.map { |body| body["text"] }).to eq([ "Olá attachment_id_999" ])
+      expect(@sent.map { |body| body["text"] }).to eq([ "Olá" ])
       expect(message.reload).to have_attributes(status: "delivery_ack", has_span: false)
+      expect(message.status_message).to include("999")
     end
   end
 

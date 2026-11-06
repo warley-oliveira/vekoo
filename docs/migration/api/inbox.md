@@ -497,7 +497,7 @@ Apaga de verdade, com as mensagens e a mídia. `204`, sem corpo. A lista conecta
 
 ### `PUT /chats/:id/attributes`
 
-Substitui o mapa inteiro de campos personalizados. Número e booleano viram texto. Campo com `autoNormalize` passa pela normalização ao gravar: abaixo, `"R$ 300 a R$ 500"` num campo de estratégia `avg` virou `"400"`.
+**Soma** ao mapa de campos personalizados que já existe: o que não veio no pedido fica como está, e `null` tira a chave. Número e booleano viram texto. Campo com `autoNormalize` passa pela normalização ao gravar: abaixo, `"R$ 300 a R$ 500"` num campo de estratégia `avg` virou `"400"`.
 
 `PUT /chats/:id/attributes`:
 
@@ -1336,6 +1336,8 @@ Resposta `422`:
 
 Texto pronto que a pessoa chama no chat pelo atalho. `trigger` vira slug (`Frete Grátis` fica `frete-gratis`) e é único na organização. Para citar um anexo no texto, escreva `attachment_id_<id do anexo>`, como na origem: o envio troca a citação pelo arquivo.
 
+O texto também pode ter variáveis: `{{nome}}`, `{{primeiro_nome}}`, `{{telefone}}`, `{{atendente}}` e a chave de qualquer campo personalizado (`{{cidade}}`). **O back não as conhece, e o que chegar nele sai literal para o contato.** Quem troca é o composer, ao inserir a mensagem na conversa, com `fillQuickReply` de `@/lib/content/quick-reply-content`. O que não tiver valor continua `{{assim}}` no campo de mensagem, à vista de quem vai enviar. A leitura é `useQuickReplies()`, de `@/hooks/content/use-quick-replies`.
+
 Resposta `200`:
 
 ```json
@@ -1412,7 +1414,7 @@ Resposta `422`:
 
 Biblioteca de arquivos da organização, que o composer do chat, as campanhas e os fluxos escolhem. Na origem pertencia a um assistente, e aqui é da organização. Até 100 MB por arquivo.
 
-`GET /attachments`: `search` (em nome, descrição e nome do arquivo), `sortBy` (`name`, `created_at`, `updated_at`), `sortOrder` (`asc`, `desc`), `page`, `perPage` (padrão 20). Só a galeria: o que foi enviado pelo chat fica de fora.
+`GET /attachments`: `search` (em nome, descrição e nome do arquivo), `kind` (um ou mais de `image`, `video`, `audio`, `document`, separados por vírgula; `document` é tudo que não é os outros três), `sortBy` (`name`, `created_at`, `updated_at`), `sortOrder` (`asc`, `desc`), `page`, `perPage` (padrão 20). Só a galeria: o que foi enviado pelo chat fica de fora.
 
 `GET /attachments?perPage=2&sortBy=name&sortOrder=asc`
 

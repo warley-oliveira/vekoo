@@ -70,7 +70,8 @@ class ConnectorEventService
         if variables[::Regexp.last_match(1)]
           "\"#{variables[::Regexp.last_match(1)]}\""
         elsif ::Regexp.last_match(1).start_with?('user') || ::Regexp.last_match(1).start_with?('system')
-          var_value = get_variable(::Regexp.last_match(1).split('.')[1])
+          scope, field_id = ::Regexp.last_match(1).split('.')
+          var_value = get_variable(scope, field_id)
           var_value ? "\"#{var_value}\"" : 'null'
         end
       end
@@ -125,53 +126,35 @@ class ConnectorEventService
     end
   end
 
-  # Assign variavle
+  # O que a resposta do provedor trouxe vira campo personalizado da conversa, a fonte de verdade
+  # dos valores.
   def assign_variable(json, event)
-    event.variables_path.each do |definition_id, json_path|
-      data = json.dig(*json_path.split('.').map { _1.match(/\A\d+\z/) ? _1.to_i : _1 })
-      next unless defined?(::CustomField)
+    return unless @chat
 
-      definition = CustomField.find_by(id: definition_id, organization_id: @organization.id)
-      case definition.type
-      when 'user'
-        CustomFieldValue.find_or_create_by(
-          definition: definition,
-          audience: @chat.audience
-        ).update(value: data)
-      when 'system'
-        CustomFieldValue.find_or_create_by(definition: definition)
-                               .update(value: data)
-      end
-    rescue Mongoid::Errors::DocumentNotFound
-      Rails.logger.error("Variable not found `#{definition_id}` on organization `#{@organization.id}`")
-      nil
+    event.variables_path.each do |field_id, json_path|
+      data = json.dig(*json_path.split('.').map { _1.match(/\A\d+\z/) ? _1.to_i : _1 })
+      field = custom_field(field_id)
+      next Rails.logger.error("Variable not found `#{field_id}` on organization `#{@organization.id}`") unless field
+
+      @chat.update(custom_attributes: @chat.custom_attributes.to_h.merge(field.key => data.to_s))
     rescue StandardError => e
-      Rails.logger.error("Error assigning variable `#{definition.name}` with path `#{json_path}`: #{e.full_message}")
+      Rails.logger.error("Error assigning variable `#{field_id}` with path `#{json_path}`: #{e.full_message}")
     end
   end
 
-  # Get variable value
-  def get_variable(value_caption)
-    return nil unless defined?(::CustomField)
+  # `{user.<id>}`: o valor do campo nesta conversa, ou o padrão dele. `{system.<id>}`: o padrão.
+  def get_variable(scope, field_id)
+    field = custom_field(field_id)
+    return Rails.logger.error("Variable not found `#{field_id}`") && nil unless field
 
-    definition = CustomField.find_by(id: value_caption, organization_id: @organization.id)
-
-    case definition.type
-    when 'user'
-      CustomFieldValue.find_by(
-        definition: definition,
-        chat: @chat
-      ).try(:value) || definition.default_value
-    when 'system'
-      CustomFieldValue.find_by(
-        definition: definition
-      ).try(:value) || definition.default_value
-    end
-  rescue Mongoid::Errors::DocumentNotFound
-    Rails.logger.error("Variable not found `#{value_caption}`")
-    nil
+    value = @chat&.custom_attributes&.dig(field.key) if scope == 'user'
+    value.presence || field.default_value
   rescue StandardError => e
-    Rails.logger.error("Error getting variable `#{value_caption}`: #{e.full_message}")
+    Rails.logger.error("Error getting variable `#{field_id}`: #{e.full_message}")
     nil
+  end
+
+  def custom_field(field_id)
+    CustomField.where(organization_id: @organization.id.to_s, id: field_id).take
   end
 end

@@ -126,7 +126,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
 | 12 | **fe-settings-people**: usuários, departamentos, grupos, perfil, notificações | `components/{users,departments,authorization-roles,profile}`, `pages/settings/*`, `NotificationSettingsPage`, `PushNotificationSettings`, `Profile/*` | ✅ |
-| 13 | **fe-settings-content**: mensagens rápidas, anexos, campos personalizados | `components/{chat-snippets,attachments,custom-fields,definitions}`, `pages/settings/{chat-snippets,attachments,custom-fields}` | 🔄 |
+| 13 | **fe-settings-content**: mensagens rápidas, anexos, campos personalizados | `components/{chat-snippets,attachments,custom-fields,definitions}`, `pages/settings/{chat-snippets,attachments,custom-fields}` | ✅ |
 | 14 | **fe-connectors**: integrações, detalhes, templates, conexão | `components/integrations`, `pages/settings/integration*`, `useIntegrations`, `useIntegrationDetails` | ✅ |
 | 15 | **fe-chat-core**: lista, abas, filtros, conversa, composer, mídia, reações, tempo real | `sections/apps/chat`, `components/chat`, `api/chat/*`, `pages/apps/chat*`, stores do chat | 🔄 |
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |

@@ -658,18 +658,25 @@ RSpec.describe "Chat: conversas", type: :request do
   describe "PUT /chats/:id/attributes" do
     let(:chat) { chat_for(custom_attributes: { "antigo" => "x" }) }
 
-    it "substitui o mapa e guarda número como texto, como todo o produto espera" do
+    it "soma ao que já existe e guarda número como texto, como todo o produto espera" do
       put "/chats/#{chat.id}/attributes", params: { customAttributes: { "cidade" => "Curitiba", "idade" => 30, "ativo" => true } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect(json["customAttributes"]).to eq("cidade" => "Curitiba", "idade" => "30", "ativo" => "true")
-      expect(chat.reload.custom_attributes).to eq("cidade" => "Curitiba", "idade" => "30", "ativo" => "true")
+      expected = { "antigo" => "x", "cidade" => "Curitiba", "idade" => "30", "ativo" => "true" }
+      expect(json["customAttributes"]).to eq(expected)
+      expect(chat.reload.custom_attributes).to eq(expected)
+    end
+
+    it "null tira a chave" do
+      put "/chats/#{chat.id}/attributes", params: { customAttributes: { "antigo" => nil, "cidade" => "Curitiba" } }, headers: headers, as: :json
+
+      expect(chat.reload.custom_attributes).to eq("cidade" => "Curitiba")
     end
 
     it "mantém as chaves como vieram, sem virar snake_case" do
       put "/chats/#{chat.id}/attributes", params: { customAttributes: { "faixaEtaria" => "30" } }, headers: headers, as: :json
 
-      expect(chat.reload.custom_attributes).to eq("faixaEtaria" => "30")
+      expect(chat.reload.custom_attributes).to include("faixaEtaria" => "30")
     end
 
     it "aplica a normalização do campo" do
