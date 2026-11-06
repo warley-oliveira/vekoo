@@ -1,0 +1,36 @@
+{
+  "slug": "satisfaction_survey",
+  "name": "Pesquisa de satisfação pós-atendimento",
+  "description": "Após o atendente humano assumir, envia pesquisa rápida e salva resposta em custom_attributes.",
+  "category": "atendimento",
+  "trigger_type": "human_handoff",
+  "tags": ["pesquisa", "csat"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_human_handoff", "position": { "x": 0, "y": 0 }, "data": {} },
+      { "id": "wait_24h", "type": "wait", "position": { "x": 280, "y": 0 }, "data": { "amount": 1, "unit": "hours" } },
+      { "id": "ask_csat", "type": "send_text", "position": { "x": 560, "y": 0 }, "data": {
+        "text": "Oi {{contact.name}}! De 1 a 5, como você avaliaria o atendimento que recebeu? Responda apenas com o número."
+      } },
+      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 840, "y": 0 }, "data": {} },
+      { "id": "save_csat", "type": "set_custom_attribute", "position": { "x": 1140, "y": 0 }, "data": {
+        "key": "csat_score",
+        "value": "{{message.text}}"
+      } },
+      { "id": "thanks", "type": "send_text", "position": { "x": 1420, "y": 0 }, "data": {
+        "text": "Obrigado pelo retorno! 🙏"
+      } },
+      { "id": "end", "type": "end", "position": { "x": 1700, "y": 0 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger",     "target": "wait_24h" },
+      { "id": "e2", "source": "wait_24h",    "target": "ask_csat" },
+      { "id": "e3", "source": "ask_csat",    "target": "wait_reply" },
+      { "id": "e4", "source": "wait_reply",  "target": "save_csat" },
+      { "id": "e5", "source": "save_csat",   "target": "thanks" },
+      { "id": "e6", "source": "thanks",      "target": "end" }
+    ]
+  }
+}

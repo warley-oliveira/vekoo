@@ -1,0 +1,40 @@
+{
+  "slug": "welcome_routing",
+  "name": "Boas-vindas + roteamento por intenção",
+  "description": "Saúda o usuário na primeira mensagem, classifica a intenção e roteia para vendas, suporte ou outros.",
+  "category": "atendimento",
+  "trigger_type": "first_message",
+  "tags": ["boas-vindas", "ia", "roteamento"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_first_message", "position": { "x": 0, "y": 0 }, "data": { "label": "Primeira mensagem" } },
+      { "id": "welcome", "type": "send_text", "position": { "x": 280, "y": 0 }, "data": { "text": "Olá {{contact.name}}! Como posso te ajudar hoje?" } },
+      { "id": "intent",  "type": "ai_intent_classification", "position": { "x": 560, "y": 0 }, "data": {
+        "system_prompt": "Classifique a intenção do usuário em: vendas, suporte ou outros.",
+        "outputs": [
+          { "id": "vendas",  "label": "Vendas",  "when": "Usuário quer comprar/contratar" },
+          { "id": "suporte", "label": "Suporte", "when": "Usuário relata problema" },
+          { "id": "outros",  "label": "Outros",  "when": "Outras intenções", "default": true }
+        ]
+      } },
+      { "id": "tag_vendas",  "type": "add_tag", "position": { "x": 840, "y": -160 }, "data": { "tag_id": "" } },
+      { "id": "tag_suporte", "type": "add_tag", "position": { "x": 840, "y":   0  }, "data": { "tag_id": "" } },
+      { "id": "tag_outros",  "type": "add_tag", "position": { "x": 840, "y":  160 }, "data": { "tag_id": "" } },
+      { "id": "transfer",    "type": "transfer_to_human", "position": { "x": 1120, "y": 0 }, "data": {} },
+      { "id": "end",         "type": "end", "position": { "x": 1400, "y": 0 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger", "target": "welcome" },
+      { "id": "e2", "source": "welcome", "target": "intent" },
+      { "id": "e3", "source": "intent",  "target": "tag_vendas",  "sourceHandle": "vendas" },
+      { "id": "e4", "source": "intent",  "target": "tag_suporte", "sourceHandle": "suporte" },
+      { "id": "e5", "source": "intent",  "target": "tag_outros",  "sourceHandle": "outros" },
+      { "id": "e6", "source": "tag_vendas",  "target": "transfer" },
+      { "id": "e7", "source": "tag_suporte", "target": "transfer" },
+      { "id": "e8", "source": "tag_outros",  "target": "transfer" },
+      { "id": "e9", "source": "transfer",    "target": "end" }
+    ]
+  }
+}

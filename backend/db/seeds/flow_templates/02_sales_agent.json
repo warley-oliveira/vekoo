@@ -1,0 +1,46 @@
+{
+  "slug": "sales_agent",
+  "name": "Agente de vendas com tools",
+  "description": "Conversa interativa com IA usando tools do workspace para consultar catálogo e finalizar pedido. Saídas: pedido pronto ou falar com humano.",
+  "category": "vendas",
+  "trigger_type": "message_received",
+  "tags": ["vendas", "ia", "tools"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": { "label": "Mensagem recebida" } },
+      { "id": "ai", "type": "ai_assistant", "position": { "x": 320, "y": 0 }, "data": {
+        "mode": "interactive",
+        "system_prompt": "Você é um vendedor consultivo. Use as tools disponíveis para consultar produto/preço. Quando o cliente fechar o pedido, chame __exit_pedido_pronto. Se ele pedir humano, chame __exit_falar_humano.",
+        "model_size": "main",
+        "temperature": 0.4,
+        "use_history": true,
+        "tool_ids": [],
+        "outputs": [
+          { "id": "pedido_pronto", "label": "Pedido pronto", "when": "Cliente confirmou os itens",
+            "parameters": [
+              { "name": "produto",  "type": "string",  "description": "Nome do produto", "required": true },
+              { "name": "quantidade", "type": "integer", "description": "Quantidade", "required": true }
+            ] },
+          { "id": "falar_humano",  "label": "Falar humano", "when": "Cliente pediu atendente humano" }
+        ]
+      } },
+      { "id": "deal", "type": "create_deal", "position": { "x": 640, "y": -120 }, "data": {
+        "stage_id": "",
+        "title": "Pedido — {{vars.produto}} x {{vars.quantidade}}",
+        "deal_value": null
+      } },
+      { "id": "transfer", "type": "transfer_to_human", "position": { "x": 640, "y": 120 }, "data": {} },
+      { "id": "end_ok",   "type": "end", "position": { "x": 940, "y": -120 }, "data": {} },
+      { "id": "end_human","type": "end", "position": { "x": 940, "y":  120 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger", "target": "ai" },
+      { "id": "e2", "source": "ai", "target": "deal",     "sourceHandle": "pedido_pronto" },
+      { "id": "e3", "source": "ai", "target": "transfer", "sourceHandle": "falar_humano" },
+      { "id": "e4", "source": "deal",     "target": "end_ok" },
+      { "id": "e5", "source": "transfer", "target": "end_human" }
+    ]
+  }
+}
