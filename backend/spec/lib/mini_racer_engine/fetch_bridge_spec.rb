@@ -658,6 +658,14 @@ RSpec.describe "MiniRacerEngine fetch() bridge" do
         expect { run("downloadFile('#{file_url}');") }.to raise_error(MiniRacer::RuntimeError, /network calls/)
       end
 
+      it "conta na cota de bytes gravados, sem virar um `ok: false` que o laço ignoraria" do
+        stub_const("MiniRacerEngine::Limits::MAX_STORED_BYTES", 10)
+        stub_request(:get, file_url).to_return(status: 200, body: "x" * 8)
+
+        expect { run("downloadFile('#{file_url}'); downloadFile('#{file_url}');") }
+          .to raise_error(MiniRacer::RuntimeError, /stored bytes/)
+      end
+
       it "sem organização, falha fechado" do
         session_worker = MiniRacerEngine::Worker.new(script_session)
 

@@ -66,8 +66,14 @@ module MiniRacerEngine::Workers
 
     # ── Helpers ──────────────────────────────────────────────────────────
 
-    def guarded(name)
-      super
+    def guarded(name, &block)
+      super(name) do
+        block.call
+      rescue Mongo::Error::OperationFailure => e
+        # O filtro vem do script: operador em lugar errado é erro dele, não nosso.
+        Rails.logger.info("[MiniRacerEngine] collection: recusado pelo Mongo: #{e.message}")
+        raise InvalidInput, "Query rejected by the database"
+      end
     rescue InvalidInput => e
       { error: e.message, ok: false }
     end
@@ -112,8 +118,13 @@ module MiniRacerEngine::Workers
       ::DynamicRecord.where(dynamic_table_id: table.id)
     end
 
+    # O id em texto: ele vem do script, e um `{ $ne: null }` aqui acharia qualquer registro.
+    def record_scope(table, id)
+      records_of(table).where(id: id.to_s)
+    end
+
     def find_record(table, id)
-      records_of(table).where(id: id).take
+      record_scope(table, id).take
     end
 
     def build_query(table, criteria = {})
@@ -165,7 +176,7 @@ module MiniRacerEngine::Workers
     def apply_update(table, id, data_hash)
       return find_record(table, id) if data_hash.empty?
 
-      records_of(table).where(id: id).find_one_and_update({ "$set" => set_operation(data_hash) }, return_document: :after)
+      record_scope(table, id).find_one_and_update({ "$set" => set_operation(data_hash) }, return_document: :after)
     end
 
     def create_in(table, data_hash)
@@ -394,7 +405,7 @@ module MiniRacerEngine::Workers
       return { error: "Missing record id", ok: false } unless id
       return { error: "Missing field name", ok: false } unless field
 
-      record = records_of(table).where(id: id).find_one_and_update(
+      record = record_scope(table, id).find_one_and_update(
         { "$inc" => { field_key(field) => (amount || 1).to_f } }, return_document: :after
       )
       return { error: "Record not found", ok: false } unless record

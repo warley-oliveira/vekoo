@@ -18,6 +18,8 @@ module MiniRacerEngine
     MAX_BINARY_BYTES = 128.megabytes
     # Maior coleção que um único builtin pode montar. Ver `Sandbox`.
     MAX_COLLECTION_ITEMS = 2**24
+    # Objetos `Intl` por execução: também ficam fora do heap, até uns 27 KB cada.
+    MAX_INTL_OBJECTS = 5_000
 
     # O resultado do script, já em JSON.
     MAX_RESULT_BYTES = 5.megabytes

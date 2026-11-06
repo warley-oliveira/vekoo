@@ -104,6 +104,8 @@ module MiniRacerEngine
     #    resultado ou texto em bytes UTF-16, que explodiriam depois em quem grava.
     RUNNER_JS = <<~'JS'.freeze
       (function (params, maxResultChars) {
+        'use strict';
+
         const finish = globalThis.__racerFinish;
         delete globalThis.__racerFinish;
 

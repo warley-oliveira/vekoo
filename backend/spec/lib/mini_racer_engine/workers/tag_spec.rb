@@ -43,6 +43,7 @@ RSpec.describe MiniRacerEngine::Workers::Tag do
       expect(run_script("return tag.add('x');", organization: organization)).to eq("success" => false)
       expect(run("return tag.add('!!!');")).to eq("success" => false)
       expect(run("return tag.add();")).to eq("success" => false)
+      expect(run("return tag.add('x'.repeat(5000));")).to eq("success" => false)
       expect(ChatTag.count).to eq(0)
     end
   end

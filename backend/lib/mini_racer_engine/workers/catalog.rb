@@ -6,6 +6,8 @@ module MiniRacerEngine::Workers
   class Catalog < MiniRacerEngine::EngineModule
     MAX_LIMIT     = 20
     DEFAULT_LIMIT = 5
+    # Uma frase de busca não precisa de mais, e o texto vai inteiro para a API de embeddings.
+    MAX_QUERY_LENGTH = 1_000
 
     UUID = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
@@ -36,12 +38,15 @@ module MiniRacerEngine::Workers
       guard = require_organization
       return guard if guard
 
+      # Com a chave da OpenAI, cada busca nova é uma chamada paga na conta do servidor.
+      budget&.charge_fetch!
+
       query, options = params
       options = (options.is_a?(Hash) ? options : {}).with_indifferent_access
 
       result = ::Products::SearchService.new(
         organization_id,
-        query: query,
+        query: query.to_s.first(MAX_QUERY_LENGTH),
         filters: {
           categories: options[:categories],
           tags: options[:tags],

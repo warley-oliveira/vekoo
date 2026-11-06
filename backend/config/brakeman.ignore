@@ -1,0 +1,53 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "104da17cfebc2663477423dda73d3bfbb75bfb1a74da2bffde724c42084a5793",
+      "check_name": "Evaluation",
+      "message": "Dynamic code evaluation",
+      "file": "lib/mini_racer_engine/worker.rb",
+      "line": 181,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": "::MiniRacer::Context.new(:timeout => Budget.new(:timeout_ms => timeout_ms).timeout_ms, :max_memory => Limits.max_memory(max_memory)).eval(script_source(code, params), :filename => \"user-code.js\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "MiniRacerEngine::Worker",
+        "method": "perform"
+      },
+      "user_input": null,
+      "confidence": "Weak",
+      "cwe_id": [
+        913,
+        95
+      ],
+      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
+    },
+    {
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "e6fd10f980edd6d71499f62e7f849057a570c89584c523e767fc40414fe4bed4",
+      "check_name": "Evaluation",
+      "message": "Dynamic code evaluation",
+      "file": "lib/mini_racer_engine/worker.rb",
+      "line": 223,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": "context.eval(source, :filename => \"racer-internal.js\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "MiniRacerEngine::Worker",
+        "method": "internal_eval"
+      },
+      "user_input": null,
+      "confidence": "Weak",
+      "cwe_id": [
+        913,
+        95
+      ],
+      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
+    }
+  ],
+  "brakeman_version": "8.0.5"
+}

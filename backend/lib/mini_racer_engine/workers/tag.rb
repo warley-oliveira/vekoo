@@ -2,6 +2,8 @@ module MiniRacerEngine::Workers
   # Etiquetas e atribuição da conversa. Tudo resolvido dentro da organização do contexto: um
   # nome ou e-mail de outra organização simplesmente não existe aqui.
   class Tag < MiniRacerEngine::EngineModule
+    MAX_NAME_LENGTH = 100
+
     def register(worker, context, event)
       @worker = worker
       context.attach("tag.add", proc { |*params| attach_method(method(:add_tag), params, event) })
@@ -26,8 +28,8 @@ module MiniRacerEngine::Workers
       name = tag_name(params[0])
       conversation = chat
 
-      if conversation.nil? || name.blank?
-        Rails.logger.warn "tag.add sem conversa ou sem nome na organização #{organization_id}"
+      if conversation.nil? || name.blank? || name.length > MAX_NAME_LENGTH
+        Rails.logger.warn "tag.add sem conversa ou sem nome válido na organização #{organization_id}"
         return { success: false }
       end
 

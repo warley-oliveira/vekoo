@@ -258,11 +258,15 @@ module MiniRacerEngine::Workers
       end
 
       store_download(response, params, url.to_s)
+    rescue MiniRacerEngine::Error
+      raise
     rescue StandardError => e
       network_error(e)
     end
 
     def store_download(response, params, url)
+      budget&.charge_stored_bytes!(response.body.bytesize)
+
       content_type = response.content_type.presence || "application/octet-stream"
       file_name = resolve_filename(params, response, url, content_type)
 

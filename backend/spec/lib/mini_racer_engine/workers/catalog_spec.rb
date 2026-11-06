@@ -81,6 +81,21 @@ RSpec.describe MiniRacerEngine::Workers::Catalog do
     it "opção que não é objeto não derruba" do
       expect(run('return catalog.Search("cadeira", "x").ok;')).to be(true)
     end
+
+    # Com a chave da OpenAI, cada busca nova é uma chamada paga na conta do servidor.
+    it "conta na cota de rede" do
+      stub_const("MiniRacerEngine::Limits::MAX_FETCHES", 1)
+
+      expect { run('catalog.Search("a"); catalog.Search("b");') }.to raise_error(MiniRacer::RuntimeError, /network calls/)
+    end
+
+    it "corta a busca gigante antes de mandar para a API de embeddings" do
+      allow(Products::Embedder).to receive(:for_query).and_call_original
+
+      run('return catalog.Search("x".repeat(100000));')
+
+      expect(Products::Embedder).to have_received(:for_query).with(satisfy { |text| text.length <= described_class::MAX_QUERY_LENGTH })
+    end
   end
 
   describe "catalog.Get" do

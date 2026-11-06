@@ -141,6 +141,13 @@ RSpec.describe MiniRacerEngine::Workers::DynamicTable do
     it "filtro que não é objeto é erro" do
       expect(run("return collection.Where('pedidos', 'x');")).to include("ok" => false, "error" => /Criteria/)
     end
+
+    it "filtro que o Mongo recusa é erro do script, não uma falha interna" do
+      expect(run("return collection.Where('pedidos', { total: { $gt: 1, b: 2 } });"))
+        .to include("ok" => false, "error" => "Query rejected by the database")
+      expect(run("return collection.Where('pedidos', { total: { $regex: '(' } });"))
+        .to include("ok" => false, "error" => "Query rejected by the database")
+    end
   end
 
   describe "collection.Update" do
@@ -431,6 +438,14 @@ RSpec.describe MiniRacerEngine::Workers::DynamicTable do
 
     it "filtrar pelo id de lá não acha" do
       expect(run("return collection.Where('pedidos', { id: '#{foreign["id"]}' }).data;")).to be_empty
+    end
+
+    it "id em forma de operador não vira filtro" do
+      %w[FindById Delete].each do |call|
+        expect(run("return collection.#{call}('pedidos', { $ne: null });")).to include("ok" => false, "error" => "Record not found")
+      end
+      expect(run("return collection.Update('pedidos', { $ne: null }, { a: 1 });")).to include("ok" => false, "error" => "Record not found")
+      expect(run("return collection.Increment('pedidos', { $ne: null }, 'a');")).to include("ok" => false, "error" => "Record not found")
     end
 
     # `where(tabela).or(x)` no Mongoid é "da tabela OU x": a origem vazava por aqui.

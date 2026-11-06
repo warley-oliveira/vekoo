@@ -232,6 +232,94 @@ RSpec.describe "MiniRacerEngine: limites e isolamento" do
     it "memória compartilhada e WebAssembly não existem" do
       expect(run("return [typeof SharedArrayBuffer, typeof Atomics, typeof WebAssembly];")).to all(eq("undefined"))
     end
+
+    # Os guardas usam primitivas capturadas antes do script existir.
+    describe "trocar as primitivas não desliga os guardas" do
+      {
+        "Math.max" => "const real = Math.max; let n = 0; Math.max = (...a) => (n++ % 2 ? 0 : real(...a));",
+        "Math.trunc" => "Math.trunc = () => 0;",
+        "Number" => "const R = Number; let n = 0; globalThis.Number = (v) => (n++ % 2 ? 0 : R(v));",
+        "Reflect" => "Reflect.apply = () => 1; Reflect.construct = () => 1;",
+        "Proxy" => "globalThis.Proxy = class {};",
+        "Object.defineProperty" => "Object.defineProperty = () => {};"
+      }.each do |label, swap|
+        it label do
+          expect { run("#{swap} new Uint8Array(1e9);") }.to raise_error(MiniRacer::RuntimeError, limit_error)
+        end
+      end
+
+      it "o Array global trocado não engana a contagem" do
+        code = <<~JS
+          let n = 0;
+          class Falso { get length() { return n++ ? 2 ** 31 : 0 } }
+          globalThis.Array = Falso;
+          return new Uint8Array({ [Symbol.iterator]: function* () { yield 1 } }).length;
+        JS
+
+        expect(run(code)).to eq(1)
+      end
+    end
+  end
+
+  # Os objetos ICU também ficam fora do heap: `Intl.DateTimeFormat` em laço chegava a 1,9 GB
+  # em 3 s, com o limite de memória em 64 MB.
+  describe "objetos Intl" do
+    {
+      "NumberFormat" => "new Intl.NumberFormat('pt-BR')",
+      "DateTimeFormat" => "new Intl.DateTimeFormat('pt-BR')",
+      "Collator" => "new Intl.Collator('pt-BR')",
+      "PluralRules" => "new Intl.PluralRules('pt-BR')",
+      "ListFormat" => "new Intl.ListFormat('pt-BR')",
+      "RelativeTimeFormat" => "new Intl.RelativeTimeFormat('pt-BR')",
+      "DisplayNames" => "new Intl.DisplayNames('pt-BR', { type: 'region' })",
+      "Locale" => "new Intl.Locale('pt-BR')",
+      "sem new" => "Intl.NumberFormat('pt-BR')",
+      "pelo construtor da instância" => "new (new Intl.NumberFormat('pt-BR').constructor)('pt-BR')"
+    }.each do |label, expression|
+      it "cobra: #{label}" do
+        stub_const("MiniRacerEngine::Limits::MAX_INTL_OBJECTS", 50)
+
+        expect { run("const k = []; while (true) k.push(#{expression});", timeout_ms: 5_000) }
+          .to raise_error(MiniRacer::RuntimeError, /Intl object limit/)
+      end
+    end
+
+    it "o Segmenter não existe: cada iterador dele clona memória sem passar por construtor" do
+      expect(run("return typeof Intl.Segmenter;")).to eq("undefined")
+    end
+
+    it "uso normal continua igual" do
+      result = run(<<~JS)
+        const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        return {
+          money: money.format(1234.5),
+          instance: money instanceof Intl.NumberFormat,
+          constructor: money.constructor === Intl.NumberFormat,
+          noNew: Intl.NumberFormat('en-US').format(1.5),
+          date: new Intl.DateTimeFormat('en-US', { timeZone: 'UTC' }).format(new Date(0)),
+          compare: new Intl.Collator('pt-BR').compare('a', 'b'),
+          plural: new Intl.PluralRules('pt-BR').select(1),
+          list: new Intl.ListFormat('pt-BR').format(['a', 'b']),
+          canonical: Intl.getCanonicalLocales('pt-br')[0],
+          supported: Intl.NumberFormat.supportedLocalesOf(['pt-BR']).length,
+          locale: (1234.5).toLocaleString('pt-BR'),
+          order: 'a'.localeCompare('b')
+        };
+      JS
+
+      expect(result["money"]).to match(/R\$.*1\.234,50/)
+      expect(result).to include(
+        "instance" => true, "constructor" => true, "noNew" => "1.5", "date" => "1/1/1970", "compare" => -1,
+        "plural" => "one", "list" => "a e b", "canonical" => "pt-BR", "supported" => 1, "locale" => "1.234,5", "order" => -1
+      )
+    end
+
+    it "um laço grande de formatação, sem criar objeto, não gasta a cota" do
+      stub_const("MiniRacerEngine::Limits::MAX_INTL_OBJECTS", 1)
+
+      expect(run("const f = new Intl.NumberFormat('pt-BR'); let n = 0; for (let i = 0; i < 1000; i++) { f.format(i); (i).toLocaleString('pt-BR'); n++ } return n;"))
+        .to eq(1000)
+    end
   end
 
   describe "coleções gigantes" do

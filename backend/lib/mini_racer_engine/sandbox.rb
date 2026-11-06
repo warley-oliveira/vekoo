@@ -26,25 +26,35 @@ module MiniRacerEngine
     JITLESS_CHECK_JS = "typeof WebAssembly === 'undefined'".freeze
 
     SOURCE = <<~'JS'.freeze
-      (function (maxBinaryBytes, maxItems) {
+      (function (maxBinaryBytes, maxItems, maxIntlObjects) {
         'use strict';
 
+        // Tudo que os guardas usam em tempo de chamada é capturado aqui, antes do script
+        // existir: um `Number = () => 0` no script desligaria o limite de quem chamasse o
+        // global, e `new Array(2 ** 29).fill(0)` abortaria o processo de novo.
         const apply = Reflect.apply;
         const construct = Reflect.construct;
         const toText = String;
+        const toNumber = Number;
+        const NativeArray = Array;
+        const max = Math.max;
+        const trunc = Math.trunc;
         const iterator = Symbol.iterator;
         const getter = (proto, name) => Object.getOwnPropertyDescriptor(proto, name).get;
         const define = (target, name, value) => {
           Object.defineProperty(target, name, { value, writable: true, configurable: true, enumerable: false });
         };
+        const lock = (target, name, value) => {
+          Object.defineProperty(target, name, { value, writable: false, configurable: false, enumerable: false });
+        };
 
         // Lê o número uma vez só: quem conta e quem aloca precisam ver o mesmo valor, e um
         // `valueOf` que responde diferente na segunda leitura passaria pelo limite.
-        const toSize = (value) => Math.max(Math.trunc(Number(value)) || 0, 0);
+        const toSize = (value) => max(trunc(toNumber(value)) || 0, 0);
 
         // ── Coleções gigantes ───────────────────────────────────────────
         function refuseHuge(size) {
-          if (Number(size) > maxItems) {
+          if (toNumber(size) > maxItems) {
             throw new RangeError('Script exceeded the collection size limit');
           }
         }
@@ -107,7 +117,7 @@ module MiniRacerEngine
         function charge(bytes) {
           // Nunca desconta: `new Uint8Array(-1e12)` falha no nativo, e um valor negativo
           // aqui devolveria cota para o script.
-          binaryBytes += Math.max(Number(bytes) || 0, 0);
+          binaryBytes += max(toNumber(bytes) || 0, 0);
           if (binaryBytes > maxBinaryBytes) {
             throw new RangeError('Script exceeded the binary memory limit');
           }
@@ -127,22 +137,20 @@ module MiniRacerEngine
           });
           // A cota também vale para quem chega pelo `.constructor` de uma instância e para
           // os métodos que alocam pelo Symbol.species.
-          Object.defineProperty(Native.prototype, 'constructor', {
-            value: guarded, writable: false, configurable: false, enumerable: false
-          });
+          lock(Native.prototype, 'constructor', guarded);
           define(globalThis, name, guarded);
         }
 
         guardConstructor('ArrayBuffer', NativeArrayBuffer, (args) => {
           const size = toSize(args[0]);
           const options = args[1];
-          const max = options === null || typeof options !== 'object' ? undefined : options.maxByteLength;
-          if (max === undefined) {
+          const limit = options === null || typeof options !== 'object' ? undefined : options.maxByteLength;
+          if (limit === undefined) {
             charge(size);
             return [size];
           }
-          const maxBytes = toSize(max);
-          charge(Math.max(size, maxBytes));
+          const maxBytes = toSize(limit);
+          charge(max(size, maxBytes));
           return [size, { maxByteLength: maxBytes }];
         });
 
@@ -174,7 +182,7 @@ module MiniRacerEngine
               return args;
             }
             // Lista ou iterável: materializa antes de contar, pelo mesmo motivo do `toSize`.
-            const list = apply(NativeArrayFrom, Array, [materialize(first)]);
+            const list = apply(NativeArrayFrom, NativeArray, [materialize(first)]);
             charge(list.length * Native.BYTES_PER_ELEMENT);
             return [list];
           });
@@ -209,11 +217,46 @@ module MiniRacerEngine
         // Memória compartilhada não tem uso numa thread só, e o `Atomics.wait` só bloquearia.
         delete globalThis.SharedArrayBuffer;
         delete globalThis.Atomics;
+
+        // ── Intl ────────────────────────────────────────────────────────
+        // Os objetos ICU também ficam fora do heap: `Intl.DateTimeFormat` em laço chegava a
+        // 1,9 GB em 3 s. Cada um é pequeno, o problema é o volume, então a conta é por objeto.
+        // O Segmenter sai de vez: cada iterador clona um break iterator (2,2 GB em 2 s), e
+        // os iteradores nascem sem passar por construtor nenhum.
+        delete Intl.Segmenter;
+
+        let intlObjects = 0;
+        function chargeIntl() {
+          intlObjects += 1;
+          if (intlObjects > maxIntlObjects) {
+            throw new RangeError('Script exceeded the Intl object limit');
+          }
+        }
+
+        for (const name of Object.getOwnPropertyNames(Intl)) {
+          const Native = Intl[name];
+          // `getCanonicalLocales` e `supportedValuesOf` são funções comuns, sem protótipo.
+          if (typeof Native !== 'function' || !Native.prototype) continue;
+
+          // Sem `new` também cria: `Intl.NumberFormat('pt-BR')`.
+          const guarded = new Proxy(Native, {
+            construct(target, args, newTarget) {
+              chargeIntl();
+              return construct(target, args, newTarget);
+            },
+            apply(target, self, args) {
+              chargeIntl();
+              return apply(target, self, args);
+            }
+          });
+          lock(Native.prototype, 'constructor', guarded);
+          define(Intl, name, guarded);
+        }
       })
     JS
 
     def self.source
-      "#{SOURCE}(#{Limits::MAX_BINARY_BYTES}, #{Limits::MAX_COLLECTION_ITEMS});"
+      "#{SOURCE}(#{Limits::MAX_BINARY_BYTES}, #{Limits::MAX_COLLECTION_ITEMS}, #{Limits::MAX_INTL_OBJECTS});"
     end
   end
 end

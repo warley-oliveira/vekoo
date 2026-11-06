@@ -7,6 +7,7 @@ module MiniRacerEngine::Workers
     # 16 MB no Mongo. Sem limite, um script de cliente incharia a conversa para sempre.
     MAX_VALUE_BYTES = 64.kilobytes
     MAX_KEYS = 200
+    MAX_KEY_LENGTH = 128
 
     def register(worker, context, event)
       @worker = worker
@@ -72,7 +73,7 @@ module MiniRacerEngine::Workers
       return nil if key.nil?
 
       name = normalized(key)
-      raise MiniRacerEngine::Error, "Invalid key" if name.blank?
+      raise MiniRacerEngine::Error, "Invalid key" if name.blank? || name.length > MAX_KEY_LENGTH
 
       # O BSON não aceita texto em bytes inválidos.
       clean = MiniRacerEngine::Values.to_js(value)

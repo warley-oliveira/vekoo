@@ -38,6 +38,11 @@ RSpec.describe MiniRacerEngine::Workers::ContactStorage do
         expect { run("#{api}.setItem('!!!', 1);") }.to raise_error(MiniRacer::RuntimeError, /Invalid key/)
       end
 
+      it "chave grande demais é erro: ela também mora no documento da conversa" do
+        expect { run("#{api}.setItem('x'.repeat(5000), 1);") }.to raise_error(MiniRacer::RuntimeError, /Invalid key/)
+        expect(chat.reload.public_send(field)).to be_empty
+      end
+
       it "aceita chave que não é texto" do
         expect(run("#{api}.setItem(123, 'a'); return #{api}.getItem(123);")).to eq("a")
       end

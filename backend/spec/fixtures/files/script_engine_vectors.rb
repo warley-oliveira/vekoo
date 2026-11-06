@@ -22,6 +22,10 @@ VECTORS = {
   "symbol_replace" => "#{BIG} return /x/g[Symbol.replace](s, 'yy').length;",
   "symbol_split" => "#{BIG} return /x/[Symbol.split](s).length;",
   "json_parse" => "return JSON.parse('[' + '1,'.repeat(2 ** 27) + '1]').length;",
+  "swap_number" => "globalThis.Number = () => 0; return new Array(2 ** 29).fill(0).length;",
+  "swap_string" => "globalThis.String = () => ''; #{BIG} return s.split('').length;",
+  "swap_math" => "Math.max = () => 0; Math.trunc = () => 0; return new Array(2 ** 29).fill(0).length;",
+  "swap_symbol" => "Symbol.iterator = 1; return Array.from({ length: 2 ** 28 }).length;",
   # laço otimizado que aloca, o caso que o --jitless resolve
   "alloc_loop" => "const a = []; while (true) a.push(new Array(1000));",
   "warm_alloc" => "function f(n) { const a = []; for (let i = 0; i < n; i++) a.push(new Array(1000)); return a.length } " \
