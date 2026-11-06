@@ -223,7 +223,7 @@
       "clearField": "Sem valor",
       "editField": "Editar {{name}}",
       "saveField": "Salvar {{name}}",
-      "fieldSaved": "{{name}} salvo",
+      "fieldSaved": "Campo {{name}} salvo",
       "bookings": "Agendamentos",
       "noBookings": "Nenhum agendamento nesta conversa.",
       "untitledBooking": "Sem título",
