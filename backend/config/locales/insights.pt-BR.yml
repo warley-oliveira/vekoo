@@ -10,6 +10,11 @@ pt-BR:
   insights:
     errors:
       query_timeout: "Esta consulta demorou demais. Escolha um período menor ou menos colunas."
+    dashboard:
+      errors:
+        invalid_time: "Essa data não é válida."
+        invalid_range: "A data final vem antes da inicial."
+        range_too_long: "Escolha um período de até dois anos."
     funnels:
       no_stage: "Sem etapa"
       errors:
