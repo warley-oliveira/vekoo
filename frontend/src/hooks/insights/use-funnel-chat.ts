@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useSWRConfig } from "swr"
+import useSWR, { useSWRConfig } from "swr"
 import useSWRInfinite from "swr/infinite"
 
 import type {
@@ -14,6 +14,7 @@ import type {
 import { useApi } from "@/hooks/use-api"
 import { useCan } from "@/hooks/use-can"
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from "@/lib/api"
+import { fetchAllPages } from "@/lib/people/fetch-all-pages"
 
 // O que o painel da conversa lê e grava: as mesmas rotas do chat. Quem só tem `funnel` não alcança
 // nenhuma delas, e a tela mostra só o que o cartão já trouxe.
@@ -35,10 +36,13 @@ export function useChatDetail(chatId: string | null) {
 
 /** Aberto a qualquer sessão: serve ao filtro do quadro, com ou sem `chat`. */
 export function useChatTags() {
-  const { data, error, isLoading, mutate } = useApi<{ chatTags: ChatTag[] }>(CHAT_TAGS_KEY, {
-    revalidateOnFocus: false,
-  })
-  return { tags: data?.chatTags, error, isLoading, reload: () => mutate() }
+  // A coleção inteira: o filtro e o seletor buscam no navegador, e cortar em 100 esconderia etiqueta.
+  const { data, error, isLoading, mutate } = useSWR<ChatTag[]>(
+    CHAT_TAGS_KEY,
+    () => fetchAllPages<ChatTag>(CHAT_TAGS_KEY, "chatTags"),
+    { revalidateOnFocus: false }
+  )
+  return { tags: data, error, isLoading, reload: () => mutate() }
 }
 
 export function useChatPeople() {

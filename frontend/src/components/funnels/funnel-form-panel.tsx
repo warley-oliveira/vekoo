@@ -9,7 +9,6 @@ import { z } from "zod"
 import {
   Callout,
   FormActions,
-  FormError,
   SidePanel,
   TextareaField,
   TextField,
@@ -295,8 +294,6 @@ export function FunnelFormPanel({ funnel, stageCounts, open, onOpenChange, onSav
             />
           ))}
         </div>
-
-        <FormError form={form} />
       </div>
     </SidePanel>
   )

@@ -26,7 +26,8 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { BoardColumn, type StageActions } from "./board-column"
 import { columnKey } from "./board-state"
-import { ChatCardPreview, chatName } from "./chat-card"
+import { ChatCardPreview } from "./chat-card"
+import { chatName } from "./chat-format"
 import type { BoardChat, BoardColumn as BoardColumnData, FunnelBoard } from "./types"
 
 const MOUSE_DISTANCE_PX = 6

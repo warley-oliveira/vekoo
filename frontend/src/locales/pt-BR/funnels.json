@@ -5,6 +5,7 @@
     "refresh": "Atualizar quadro",
     "count_one": "{{value}} conversa",
     "count_other": "{{value}} conversas",
+    "countNone": "Nenhuma conversa",
     "errors": {
       "generic": "Algo deu errado. Tente de novo."
     },
@@ -128,6 +129,7 @@
       "responsible": "Responsável",
       "mine": "Minhas conversas",
       "unassigned": "Sem responsável",
+      "everyone": "Todos",
       "tags": "Etiqueta",
       "noStage": "Sem etapa"
     },

@@ -450,6 +450,7 @@ function ProfessionalsCard({ stats, className }: { stats: CalendarStats; classNa
                     <span className="min-w-0 flex-1 truncate">{professional.name}</span>
                     <span className="text-xs text-muted-foreground tabular-nums">
                       {t("dashboard.agenda.professionals.counts", {
+                        count: professional.show,
                         show: formatNumber(professional.show, language),
                         noShow: formatNumber(professional.noShow, language),
                       })}

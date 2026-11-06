@@ -5,44 +5,14 @@ import { useTranslation } from "react-i18next"
 
 import { StatTile } from "@/components/shared"
 import { useIsMobile } from "@/hooks/use-is-mobile"
-import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
-import { formatNumber } from "@/lib/format-number"
+import { formatNumber, formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { CardEmpty, ChartCard, ChartLegend } from "./chart-card"
 import { TrendChart, type TrendPoint } from "./charts"
 import { formatBucket, formatDayTick } from "./format"
 import { bucketize, bucketSize, compactSeries, sum } from "./series"
+import { growth, metricRows, TREND_METRICS, type TrendMetric } from "./trend-metrics"
 import type { DashboardReport } from "./types"
-
-export const TREND_METRICS = ["newChats", "automationChats", "activeChats", "messages"] as const
-export type TrendMetric = (typeof TREND_METRICS)[number]
-
-function metricRows(report: DashboardReport, metric: TrendMetric): { date: string; value: number }[] {
-  if (metric === "messages") {
-    return report.messageVolume.map((point) => ({
-      date: point.date,
-      value: point.inbound + point.automation + point.human,
-    }))
-  }
-  return report[metric].map((point) => ({ date: point.date, value: point.count }))
-}
-
-/**
- * A variação só faz sentido contra um período inteiro: a série começa no primeiro dia com número, e um
- * período anterior pela metade daria um "+300%" que não existe.
- */
-export function comparableReport(
-  previous: DashboardReport | undefined,
-  period: DashboardPeriod
-): DashboardReport | null {
-  if (!previous?.hasData || !period.previous) return null
-  return previous.newChats.length >= period.previous.days ? previous : null
-}
-
-/** Razão entre os totais. Sem base, sem variação: "de 0 para 12" não é uma porcentagem. */
-export function growth(current: number, previous: number): number | null {
-  return previous > 0 ? (current - previous) / previous : null
-}
 
 type KpiRowProps = {
   report: DashboardReport
@@ -80,9 +50,10 @@ export function KpiRow({ report, previous, metric, onMetric }: KpiRowProps) {
             value={key}
             nativeButton={false}
             render={<div />}
-            aria-label={t("dashboard.kpi.select", {
+            aria-label={t(change === null ? "dashboard.kpi.select" : "dashboard.kpi.selectDelta", {
               metric: t(`dashboard.kpi.${key}`),
               value: formatNumber(total, language),
+              delta: change === null ? "" : formatPercent(change, language, { signed: true }),
             })}
             className="group min-w-0 cursor-pointer rounded-xl outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >

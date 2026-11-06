@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useSearchParams } from "react-router"
 
 import type { BoardFilters, DateField, Funnel } from "@/components/funnels/types"
@@ -39,6 +39,13 @@ export function useFunnelFilters(funnels: Funnel[] | undefined) {
     if (known(saved.funnelId)) return saved.funnelId
     return funnels[0].id
   }, [funnelParam, funnels, saved.funnelId])
+
+  // Veio pelo link do Dashboard: da próxima vez, o menu abre este também.
+  useEffect(() => {
+    if (funnelId && funnelId !== saved.funnelId) {
+      setSaved((current) => ({ ...current, funnelId }))
+    }
+  }, [funnelId, saved.funnelId, setSaved])
 
   const daysParam = Number(searchParams.get("days"))
   const dateFieldParam = searchParams.get("dateField") as DateField | null

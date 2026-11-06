@@ -15,6 +15,11 @@ const GAP = 2
 const RADIUS = 4
 const MAX_BAR = 24
 
+// Tocar focava um grupo interno do Recharts, e o navegador desenhava um retângulo sobre as barras. O anel de
+// verdade fica no contêiner, e só com teclado: as setas percorrem os pontos, e a dica acompanha.
+const CHART_CLASS =
+  "aspect-auto w-full rounded-md [&_g]:outline-hidden has-[.recharts-surface:focus-visible]:ring-3 has-[.recharts-surface:focus-visible]:ring-ring/50"
+
 const AXIS_TICK = { fontSize: 11 }
 const GRID_STROKE = "var(--border)"
 
@@ -116,7 +121,7 @@ export function StackedColumns({ data, series, height = 240, totalLabel }: Stack
   }
 
   return (
-    <ChartContainer config={config} className="aspect-auto w-full" style={{ height }}>
+    <ChartContainer config={config} className={CHART_CLASS} style={{ height }}>
       <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} barCategoryGap="22%">
         <CartesianGrid vertical={false} stroke={GRID_STROKE} />
         <XAxis
@@ -197,7 +202,7 @@ export function HighlightColumns({ data, highlightId, unitLabel, height = 180 }:
   const config = useMemo<ChartConfig>(() => ({ value: { color: "var(--viz-context)" } }), [])
 
   return (
-    <ChartContainer config={config} className="aspect-auto w-full" style={{ height }}>
+    <ChartContainer config={config} className={CHART_CLASS} style={{ height }}>
       <BarChart data={data} margin={{ top: 18, right: 4, bottom: 0, left: 0 }} barCategoryGap="22%">
         <CartesianGrid vertical={false} stroke={GRID_STROKE} />
         <XAxis
@@ -307,7 +312,7 @@ export function TrendChart({ data, currentLabel, previousLabel, height = 240 }: 
   )
 
   return (
-    <ChartContainer config={config} className="aspect-auto w-full" style={{ height }}>
+    <ChartContainer config={config} className={CHART_CLASS} style={{ height }}>
       <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid vertical={false} stroke={GRID_STROKE} />
         <XAxis

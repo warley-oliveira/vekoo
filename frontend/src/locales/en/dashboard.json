@@ -83,6 +83,7 @@
     "kpi": {
       "label": "Key numbers. Pick one to see its trend.",
       "select": "{{metric}}: {{value}}. See the trend.",
+      "selectDelta": "{{metric}}: {{value}}, {{delta}} compared to the previous period. See the trend.",
       "newChats": "New contacts",
       "automationChats": "Handled by automation",
       "activeChats": "Total conversations handled",
@@ -236,7 +237,7 @@
       "daily": {
         "title": "Attendance trend",
         "description": "Attended and didn't attend, {{granularity}}",
-        "summary": "{{show}} attended and {{noShow}} didn't attend in this period.",
+        "summary": "Attended: {{show}}. Didn't attend: {{noShow}}.",
         "emptyTitle": "No attendance marked",
         "emptyHint": "Mark who attended on the bookings to see the trend here."
       },
@@ -274,8 +275,9 @@
         "title": "By professional",
         "description": "Who saw the most people in this period",
         "name": "Professional",
-        "counts": "{{show}} attended, {{noShow}} didn't",
-        "split": "{{name}}: {{show}} attended and {{noShow}} didn't, out of {{total}} bookings.",
+        "counts_one": "{{show}} attended, {{noShow}} didn't",
+        "counts_other": "{{show}} attended, {{noShow}} didn't",
+        "split": "{{name}}. Attended: {{show}}. Didn't attend: {{noShow}}. Total: {{total}}.",
         "emptyTitle": "No professionals with bookings in this period"
       },
       "upcoming": {

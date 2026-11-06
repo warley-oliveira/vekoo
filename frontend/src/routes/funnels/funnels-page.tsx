@@ -6,16 +6,12 @@ import { toast } from "sonner"
 
 import "@/components/dashboard/viz-tokens.css"
 import { BoardSkeleton } from "@/components/funnels/board-skeleton"
-import { chatName } from "@/components/funnels/chat-card"
+import { chatName } from "@/components/funnels/chat-format"
 import { ChatPanel } from "@/components/funnels/chat-panel"
 import { funnelErrorMessage } from "@/components/funnels/error-message"
 import { FunnelBoardView } from "@/components/funnels/funnel-board"
 import { FunnelFormPanel } from "@/components/funnels/funnel-form-panel"
-import {
-  BoardFiltersBar,
-  ConversionButton,
-  FunnelSwitcher,
-} from "@/components/funnels/funnel-toolbar"
+import { BoardFiltersBar, BoardSummary, FunnelSwitcher } from "@/components/funnels/funnel-toolbar"
 import { MoveChatDialog, StageNameDialog } from "@/components/funnels/stage-dialogs"
 import type { BoardChat, BoardColumn, Funnel } from "@/components/funnels/types"
 import type { StageActions } from "@/components/funnels/board-column"
@@ -245,6 +241,8 @@ function BoardArea({ funnelId, funnels, state, onCountsChange, onEdit, onDelete 
   )
 
   const handleDrop = useCallback((chat: BoardChat, toStageId: string | null) => void move(chat, toStageId), [move])
+  const handleOpen = useCallback((chat: BoardChat) => openChat(chat.id), [openChat])
+  const handleOpenChat = useCallback((chat: BoardChat) => navigate(`/chat/${chat.id}`), [navigate])
 
   /* ---------- etapas, direto no quadro ---------- */
 
@@ -373,7 +371,13 @@ function BoardArea({ funnelId, funnels, state, onCountsChange, onEdit, onDelete 
             onDelete={() => onDelete(funnel)}
             className="flex-1 md:flex-none"
           />
-          {board ? <ConversionButton board={board} /> : null}
+          <BoardSummary
+            board={board}
+            isValidating={isValidating}
+            showNoStage={showNoStage}
+            onToggleNoStage={toggleNoStage}
+            onRefresh={() => void reload()}
+          />
         </div>
         <BoardFiltersBar
           filters={filters}
@@ -417,8 +421,8 @@ function BoardArea({ funnelId, funnels, state, onCountsChange, onEdit, onDelete 
               loadMore(column).catch((cause: unknown) => toast.error(funnelErrorMessage(t, cause)))
             }}
             onDropChat={handleDrop}
-            onOpen={(chat) => openChat(chat.id)}
-            onOpenChat={(chat) => navigate(`/chat/${chat.id}`)}
+            onOpen={handleOpen}
+            onOpenChat={handleOpenChat}
             onMove={setMoveTarget}
           />
         </div>

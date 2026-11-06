@@ -10,9 +10,12 @@ import { PeriodPicker, PeriodPresets } from "@/components/dashboard/period-filte
 import { PageBody } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useCalendarStats } from "@/hooks/insights/use-dashboard"
 import { useDashboardExtraTabs } from "@/hooks/insights/use-dashboard-extra-tabs"
 import { useDashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { useCan } from "@/hooks/use-can"
+import { formatNumber } from "@/lib/format-number"
+import { useLanguage } from "@/lib/i18n"
 
 const OVERVIEW = "overview"
 const AGENDA = "agenda"
@@ -24,6 +27,7 @@ const TAB_TRIGGER =
 
 export default function DashboardPage() {
   const { t } = useTranslation()
+  const language = useLanguage()
   const canCalendar = useCan("calendar")
   const { period, setPreset, setRange } = useDashboardPeriod()
   const extra = useDashboardExtraTabs()
@@ -52,6 +56,8 @@ export default function DashboardPage() {
   )
 
   const activeExtra = extra.tabs.find((tab) => tab.id === activeTab)
+  // A mesma chave da aba: o SWR não pede duas vezes.
+  const { stats } = useCalendarStats(period, canCalendar && activeTab === AGENDA)
 
   return (
     <PageBody variant="wide">
@@ -72,6 +78,11 @@ export default function DashboardPage() {
                 <TabsTrigger value={AGENDA} className={TAB_TRIGGER}>
                   <CalendarDays />
                   {t("dashboard.tabs.agenda")}
+                  {stats?.total ? (
+                    <span className="text-xs font-normal text-muted-foreground tabular-nums">
+                      {formatNumber(stats.total, language)}
+                    </span>
+                  ) : null}
                 </TabsTrigger>
               ) : null}
               {/* Os dashboards personalizados entram aqui: ver `useDashboardExtraTabs`. */}

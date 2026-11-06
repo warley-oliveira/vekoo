@@ -100,6 +100,35 @@ function LabeledFilter({ label, children }: { label: string; children: ReactNode
   )
 }
 
+/** Em linha, o nome do filtro é o próprio placeholder. Empilhado, o título já diz, e o vazio é "todos". */
+function ResponsibleFilter({
+  options,
+  value,
+  onChange,
+}: {
+  options: SelectOption[]
+  value: string | null
+  onChange: (value: string | null) => void
+}) {
+  const { t } = useTranslation()
+  const stacked = useFilterLayout() === "stacked"
+
+  return (
+    <LabeledFilter label={t("funnels.filters.responsible")}>
+      <div className="relative md:w-48">
+        <SearchableSelect
+          aria-label={t("funnels.filters.responsible")}
+          placeholder={t(stacked ? "funnels.filters.everyone" : "funnels.filters.responsible")}
+          options={options}
+          value={value}
+          clearable
+          onChange={(next) => onChange(next)}
+        />
+      </div>
+    </LabeledFilter>
+  )
+}
+
 type BoardFiltersBarProps = {
   filters: BoardFilters
   activeCount: number
@@ -132,7 +161,6 @@ export function BoardFiltersBar({
   onRefresh,
 }: BoardFiltersBarProps) {
   const { t } = useTranslation()
-  const language = useLanguage()
   const isMobile = useIsMobile()
   const { tags } = useChatTags()
   const { people } = useChatPeople()
@@ -172,20 +200,6 @@ export function BoardFiltersBar({
     loading: isValidating && Boolean(filters.q),
   }
 
-  const refresh = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      aria-label={t("funnels.refresh")}
-      title={t("funnels.refresh")}
-      className="text-muted-foreground"
-      onClick={onRefresh}
-    >
-      <RefreshCw className={cn(isValidating && "animate-spin motion-reduce:animate-none")} />
-    </Button>
-  )
-
   const fields = (
     <>
       <LabeledFilter label={t("funnels.filters.period")}>
@@ -216,18 +230,7 @@ export function BoardFiltersBar({
           ]}
         />
       </LabeledFilter>
-      <LabeledFilter label={t("funnels.filters.responsible")}>
-        <div className="relative md:w-48">
-          <SearchableSelect
-            aria-label={t("funnels.filters.responsible")}
-            placeholder={t("funnels.filters.responsible")}
-            options={responsibleOptions}
-            value={filters.assignedUser}
-            clearable
-            onChange={(value) => onAssignedUser(value)}
-          />
-        </div>
-      </LabeledFilter>
+      <ResponsibleFilter options={responsibleOptions} value={filters.assignedUser} onChange={onAssignedUser} />
       <FacetedFilter
         title={t("funnels.filters.tags")}
         options={tagOptions}
@@ -252,24 +255,64 @@ export function BoardFiltersBar({
             <Switch checked={showNoStage} onCheckedChange={onToggleNoStage} />
           </label>
         </FilterPopover>
-        {refresh}
+        <RefreshButton isValidating={isValidating} onRefresh={onRefresh} />
       </div>
     )
   }
 
   return (
-    <FilterBar
-      search={{ ...search, className: "md:w-56" }}
-      activeCount={activeCount}
-      onClear={onClear}
-      resultLabel={
-        board
-          ? t("funnels.count", { count: board.metrics.total, value: formatNumber(board.metrics.total, language) })
-          : undefined
-      }
-      filters={fields}
-      actions={
+    <FilterBar search={{ ...search, className: "md:w-56" }} activeCount={activeCount} onClear={onClear} filters={fields} />
+  )
+}
+
+function RefreshButton({ isValidating, onRefresh }: { isValidating: boolean; onRefresh: () => void }) {
+  const { t } = useTranslation()
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon-sm"
+      aria-label={t("funnels.refresh")}
+      title={t("funnels.refresh")}
+      className="text-muted-foreground"
+      onClick={onRefresh}
+    >
+      <RefreshCw className={cn(isValidating && "animate-spin motion-reduce:animate-none")} />
+    </Button>
+  )
+}
+
+type BoardSummaryProps = {
+  board: FunnelBoard | undefined
+  isValidating: boolean
+  showNoStage: boolean
+  onToggleNoStage: () => void
+  onRefresh: () => void
+}
+
+/**
+ * O resumo do quadro, na linha do funil. Fica fora da linha de filtros de propósito: "Limpar filtros"
+ * aparecendo não pode quebrar a linha e empurrar o quadro. No celular, só a conversão: o resto está nos
+ * filtros, e os contadores estão nas etapas.
+ */
+export function BoardSummary({ board, isValidating, showNoStage, onToggleNoStage, onRefresh }: BoardSummaryProps) {
+  const { t } = useTranslation()
+  const language = useLanguage()
+  const isMobile = useIsMobile()
+  const total = board?.metrics.total ?? 0
+
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      {isMobile ? null : (
         <>
+          {board ? (
+            <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
+              {total > 0
+                ? t("funnels.count", { count: total, value: formatNumber(total, language) })
+                : t("funnels.countNone")}
+            </span>
+          ) : null}
           <Button
             type="button"
             variant="ghost"
@@ -281,10 +324,11 @@ export function BoardFiltersBar({
             {showNoStage ? <Eye /> : <EyeOff />}
             {t("funnels.filters.noStage")}
           </Button>
-          {refresh}
+          <RefreshButton isValidating={isValidating} onRefresh={onRefresh} />
         </>
-      }
-    />
+      )}
+      {board ? <ConversionButton board={board} /> : null}
+    </div>
   )
 }
 

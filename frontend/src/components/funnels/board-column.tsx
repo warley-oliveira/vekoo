@@ -150,7 +150,7 @@ export function BoardColumn({
         )}
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2 [scrollbar-width:thin]">
+      <motion.div layoutScroll className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2 [scrollbar-width:thin]">
         {column.chats.length === 0 ? (
           <p
             className={cn(
@@ -191,7 +191,7 @@ export function BoardColumn({
             {t("funnels.column.loadMore", { count: remaining, value: formatNumber(remaining, language) })}
           </Button>
         ) : null}
-      </div>
+      </motion.div>
     </section>
   )
 }

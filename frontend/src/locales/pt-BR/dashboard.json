@@ -83,6 +83,7 @@
     "kpi": {
       "label": "Principais números. Escolha um para ver a tendência.",
       "select": "{{metric}}: {{value}}. Ver a tendência.",
+      "selectDelta": "{{metric}}: {{value}}, {{delta}} em relação ao período anterior. Ver a tendência.",
       "newChats": "Novos contatos",
       "automationChats": "Atendidas pela automação",
       "activeChats": "Total de atendimentos",
@@ -236,7 +237,7 @@
       "daily": {
         "title": "Tendência de comparecimento",
         "description": "Compareceu e não compareceu, {{granularity}}",
-        "summary": "{{show}} compareceram e {{noShow}} não compareceram no período.",
+        "summary": "Compareceram: {{show}}. Não compareceram: {{noShow}}.",
         "emptyTitle": "Nenhuma presença marcada",
         "emptyHint": "Marque quem compareceu nos agendamentos para ver a tendência aqui."
       },
@@ -274,8 +275,9 @@
         "title": "Por profissional",
         "description": "Quem mais atendeu no período",
         "name": "Profissional",
-        "counts": "{{show}} compareceram, {{noShow}} não",
-        "split": "{{name}}: {{show}} compareceram e {{noShow}} não compareceram, de {{total}} agendamentos.",
+        "counts_one": "{{show}} compareceu, {{noShow}} não",
+        "counts_other": "{{show}} compareceram, {{noShow}} não",
+        "split": "{{name}}. Compareceram: {{show}}. Não compareceram: {{noShow}}. Total: {{total}}.",
         "emptyTitle": "Nenhum profissional com agendamentos no período"
       },
       "upcoming": {

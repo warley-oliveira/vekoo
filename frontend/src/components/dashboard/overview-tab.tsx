@@ -25,8 +25,9 @@ import {
   ResponseTimeCard,
   TeamRankingCard,
 } from "./overview-cards"
-import { comparableReport, growth, KpiRow, TrendCard, type TrendMetric } from "./overview-trend"
+import { KpiRow, TrendCard } from "./overview-trend"
 import { sum } from "./series"
+import { comparableReport, growth, type TrendMetric } from "./trend-metrics"
 import type { DashboardReport } from "./types"
 
 type OverviewTabProps = {

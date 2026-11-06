@@ -28,7 +28,7 @@ import { useCan } from "@/hooks/use-can"
 import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
 import { apiAssetUrl } from "@/lib/api"
 import { onlyDigits } from "@/lib/format-phone"
-import { chatName, contactPhone, MIN_PHONE_DIGITS } from "./chat-card"
+import { chatName, contactPhone, MIN_PHONE_DIGITS } from "./chat-format"
 import { ChatAttributes, ChatBookings, ChatHistory, ChatNotes, PanelSection } from "./chat-sections"
 import { ChatTagsEditor } from "./chat-tags-editor"
 import { columnKey } from "./board-state"
@@ -83,7 +83,7 @@ export function ChatPanel({ chatId, funnelId, board, onClose, onMove, onPatch, o
       title={name}
       description={phone || undefined}
     >
-      {!contact && error ? (
+      {!contact && (error || !canChat) ? (
         <ErrorState
           error={error}
           title={t("funnels.panel.notFoundTitle")}

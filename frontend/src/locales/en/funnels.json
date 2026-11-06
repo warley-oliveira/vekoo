@@ -5,6 +5,7 @@
     "refresh": "Refresh board",
     "count_one": "{{value}} conversation",
     "count_other": "{{value}} conversations",
+    "countNone": "No conversations",
     "errors": {
       "generic": "Something went wrong. Try again."
     },
@@ -128,6 +129,7 @@
       "responsible": "Assignee",
       "mine": "My conversations",
       "unassigned": "No assignee",
+      "everyone": "Everyone",
       "tags": "Tag",
       "noStage": "No stage"
     },

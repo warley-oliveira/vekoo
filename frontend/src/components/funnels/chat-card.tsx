@@ -7,22 +7,11 @@ import { ActionsMenu, RelativeTime, TagChip, UserAvatar } from "@/components/sha
 import { Button } from "@/components/ui/button"
 import { useCan } from "@/hooks/use-can"
 import { apiAssetUrl } from "@/lib/api"
-import { formatPhone, onlyDigits } from "@/lib/format-phone"
 import { cn } from "@/lib/utils"
+import { chatName, contactPhone } from "./chat-format"
 import type { BoardChat } from "./types"
 
 const VISIBLE_TAGS = 3
-/** O menor número de telefone que faz sentido: DDD + 8 dígitos. */
-export const MIN_PHONE_DIGITS = 10
-
-export function chatName(chat: Pick<BoardChat, "displayName" | "userName">, fallback: string): string {
-  return chat.displayName || chat.userName || fallback
-}
-
-/** O telefone formatado. Quem veio do site tem um identificador ali (`visitante-ana`), e não um número. */
-export function contactPhone(phone: string | null | undefined): string {
-  return phone && onlyDigits(phone).length >= MIN_PHONE_DIGITS ? formatPhone(phone) : ""
-}
 
 /** A prévia não é o texto cru: áudio sem transcrição vem como "-", e mídia pode vir sem nada. */
 function usePreview(chat: BoardChat): string | null {
@@ -110,6 +99,7 @@ export const ChatCard = memo(function ChatCard({ chat, onOpen, onOpenChat, onMov
           type="button"
           {...attributes}
           {...listeners}
+          aria-disabled={undefined}
           aria-label={t("funnels.card.open", { name })}
           onClick={() => onOpen(chat)}
           className={cn(
