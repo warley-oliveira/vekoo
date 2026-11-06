@@ -1,0 +1,38 @@
+{
+  "slug": "faq_support",
+  "name": "Suporte com FAQ",
+  "description": "IA tenta responder com base em uma tool de busca em FAQ. Se não conseguir, transfere para humano.",
+  "category": "suporte",
+  "trigger_type": "message_received",
+  "tags": ["suporte", "ia", "faq"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": {} },
+      { "id": "ai", "type": "ai_assistant", "position": { "x": 320, "y": 0 }, "data": {
+        "mode": "interactive",
+        "system_prompt": "Você é um agente de suporte. Use a tool buscar_faq para encontrar respostas. Se não encontrar resposta confiável após 2 tentativas, chame __exit_escalar.",
+        "model_size": "main",
+        "temperature": 0.2,
+        "use_history": true,
+        "tool_ids": [],
+        "outputs": [
+          { "id": "resolvido", "label": "Resolvido", "when": "Usuário confirmou que o problema foi resolvido" },
+          { "id": "escalar",   "label": "Escalar",   "when": "Não foi possível resolver" }
+        ]
+      } },
+      { "id": "tag_resolved", "type": "add_tag", "position": { "x": 640, "y": -120 }, "data": { "tag_id": "" } },
+      { "id": "transfer",     "type": "transfer_to_human", "position": { "x": 640, "y": 120 }, "data": {} },
+      { "id": "close",        "type": "finalize_chat", "position": { "x": 940, "y": -120 }, "data": {} },
+      { "id": "end_human",    "type": "end", "position": { "x": 940, "y": 120 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger",       "target": "ai" },
+      { "id": "e2", "source": "ai",            "target": "tag_resolved", "sourceHandle": "resolvido" },
+      { "id": "e3", "source": "ai",            "target": "transfer",     "sourceHandle": "escalar" },
+      { "id": "e4", "source": "tag_resolved",  "target": "close" },
+      { "id": "e5", "source": "transfer",      "target": "end_human" }
+    ]
+  }
+}

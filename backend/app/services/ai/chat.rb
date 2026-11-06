@@ -164,6 +164,47 @@ module Ai
       raise Failed, e.class.name.demodulize
     end
 
+    # Uma rodada com histórico, sem fluxo: os blocos de IA dos fluxos, que rodam em job e não têm a quem mostrar
+    # pedaços. Quem chama guarda o laço de ferramentas, porque é ele quem sabe rodar cada uma (ver FlowRuntime::Llm).
+    #
+    # @param messages [Array<Hash>] começa e termina com `user`; a API recusa o resto
+    # @param context [String, nil] orientação da rodada, depois do ponto de cache para não invalidá-lo
+    # @param schema [Hash, nil] resposta em JSON neste formato, em vez de texto livre
+    # @return [Anthropic::Message] com `stop_reason` e `content`, para quem chama seguir o laço
+    # @raise [Failed] inclusive quando o modelo recusa
+    def respond(system:, messages:, tools: [], context: nil, schema: nil, model: AGENT_MODEL, max_tokens: 16_000, effort: "medium")
+      output_config = { effort: effort }
+      output_config[:format] = { type: :json_schema, schema: schema } if schema
+
+      params = {
+        model: model,
+        max_tokens: max_tokens,
+        system_: [
+          { type: "text", text: system.presence || "Responda em português.", cache_control: { type: "ephemeral" } },
+          (context && { type: "text", text: context })
+        ].compact,
+        thinking: { type: "adaptive" },
+        output_config: output_config,
+        messages: messages
+      }
+      params[:tools] = tools if tools.present?
+
+      message =
+        if model == AGENT_MODEL
+          client.beta.messages.create(**params, betas: [ FALLBACK_BETA ], fallbacks: :default)
+        else
+          client.messages.create(**params)
+        end
+
+      raise Failed, "refusal" if message.stop_reason == :refusal
+
+      message
+    rescue ::Anthropic::Errors::APIStatusError => e
+      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+    rescue ::Anthropic::Errors::APIConnectionError => e
+      raise Failed, e.class.name.demodulize
+    end
+
     private
 
     # Ferramenta que falhou volta como erro para o modelo, em vez de derrubar a

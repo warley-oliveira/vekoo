@@ -1,0 +1,42 @@
+{
+  "slug": "audio_capture",
+  "name": "Coleta de áudio + transcrição",
+  "description": "Pede um áudio, transcreve via Whisper e classifica intenção para roteamento.",
+  "category": "ia",
+  "trigger_type": "message_received",
+  "tags": ["audio", "ia", "whisper"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": {} },
+      { "id": "ask_audio", "type": "send_text", "position": { "x": 280, "y": 0 }, "data": {
+        "text": "Pra te ajudar, manda um áudio rapidinho explicando o que você precisa 🎙️"
+      } },
+      { "id": "wait_audio", "type": "wait_for_message", "position": { "x": 560, "y": 0 }, "data": {} },
+      { "id": "transcribe", "type": "ai_audio_transcription", "position": { "x": 840, "y": 0 }, "data": { "save_to": "audio_text" } },
+      { "id": "intent", "type": "ai_intent_classification", "position": { "x": 1140, "y": 0 }, "data": {
+        "system_prompt": "Classifique a intenção da transcrição: {{vars.audio_text}}",
+        "outputs": [
+          { "id": "duvida",     "label": "Dúvida",     "when": "Pergunta informativa" },
+          { "id": "reclamacao", "label": "Reclamação", "when": "Cliente insatisfeito" },
+          { "id": "pedido",     "label": "Pedido",     "when": "Quer comprar" },
+          { "id": "outros",     "label": "Outros",     "when": "Outras", "default": true }
+        ]
+      } },
+      { "id": "transfer", "type": "transfer_to_human", "position": { "x": 1440, "y": 0 }, "data": {} },
+      { "id": "end", "type": "end", "position": { "x": 1720, "y": 0 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger",     "target": "ask_audio" },
+      { "id": "e2", "source": "ask_audio",   "target": "wait_audio" },
+      { "id": "e3", "source": "wait_audio",  "target": "transcribe" },
+      { "id": "e4", "source": "transcribe",  "target": "intent" },
+      { "id": "e5", "source": "intent",      "target": "transfer", "sourceHandle": "duvida" },
+      { "id": "e6", "source": "intent",      "target": "transfer", "sourceHandle": "reclamacao" },
+      { "id": "e7", "source": "intent",      "target": "transfer", "sourceHandle": "pedido" },
+      { "id": "e8", "source": "intent",      "target": "transfer", "sourceHandle": "outros" },
+      { "id": "e9", "source": "transfer",    "target": "end" }
+    ]
+  }
+}

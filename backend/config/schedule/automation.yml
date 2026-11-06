@@ -1,0 +1,18 @@
+# Jobs recorrentes do domínio "automation".
+flows_sweep_stale_executions:
+  # Retoma espera cujo job sumiu e dá por interrompida a execução parada no meio de um bloco.
+  cron: "*/5 * * * *"
+  class: Flows::SweepStaleExecutionsJob
+  queue: low
+
+flows_prune_executions:
+  # Retenção do histórico de execução.
+  cron: "17 4 * * *"
+  class: Flows::PruneExecutionsJob
+  queue: low
+
+hooks_prune_logs:
+  # O teto de logs por webhook. A idade é do índice TTL.
+  cron: "37 4 * * *"
+  class: Hooks::PruneLogsJob
+  queue: low

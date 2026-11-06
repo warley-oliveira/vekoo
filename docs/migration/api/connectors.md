@@ -1786,7 +1786,7 @@ Todo canal termina em `Chats::InboundFlow`, que chama:
 Flows::InboundDispatcher.call(chat: chat, text: "Quero marcar", event: "first_message", message_id: "EXT-1")
 ```
 
-- **É um stub no-op.** O domínio automation substitui o corpo, mantendo a assinatura. Em `event`: `first_message` ou `message_received`.
+- O corpo é do domínio automation (`docs/migration/api/automation.md`), com debounce. Em `event`: `first_message`, `message_received`, e também `human_handoff` e `contact_created`, que nascem na própria conversa.
 - `text` é a legenda ou a transcrição, nas mídias.
 - Só chega quando pode rodar: automação ligada na conversa e na organização, conector `active`, contato sem bloqueio por excesso de mensagens e dentro da janela de atendimento. Fora dela, `Chats::DispatchInboundJob` adia para a próxima abertura.
 - A mensagem já está gravada e transmitida quando ele é chamado.

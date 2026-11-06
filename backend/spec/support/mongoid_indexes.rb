@@ -4,6 +4,6 @@
 # apaga as coleções; `truncate!` só apaga os documentos.
 RSpec.configure do |config|
   config.before(:suite) do
-    [ Chat, ChatMessage::Base, Agenda::Booking, Outreach::Campaign ].each(&:create_indexes)
+    [ Chat, ChatMessage::Base, Agenda::Booking, Outreach::Campaign, HookLog ].each(&:create_indexes)
   end
 end

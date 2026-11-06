@@ -1779,7 +1779,7 @@ O que muda para quem já escreve script:
 
 ## API Ruby, para os blocos de fluxo
 
-Os blocos `kanban_*` são de be-automation. Eles chamam o mesmo código de `kanban.*`, com as mesmas regras e o mesmo retorno:
+Os blocos são de be-automation, e aqui se chamam `pipeline_*` (catálogo em [automation.md](automation.md)). Eles chamam o mesmo código de `kanban.*`, com as mesmas regras e o mesmo retorno:
 
 ```ruby
 Pipelines::Automation.call(:create_card, board_id, stage_id, { "title" => "Novo" }, organization:, chat:)
@@ -1809,7 +1809,7 @@ Notas para quem porta:
 
 - Ids são UUID em texto: fora o `to_id`/`Integer(...)` dos nós da origem.
 - O último card da conversa num quadro (`latest_conversation_card` da origem):
-  `Pipelines::Card.active.joins(:stage).where(organization_id:, chat_id: chat.id.to_s, pipeline_stages: { board_id: }).order(created_at: :desc).pick(:id)`
+  `Pipelines::Card.active.joins(:stage).where(organization_id:, chat_id: chat.id.to_s, pipeline_stages: { board_id: }).reorder(created_at: :desc).pick(:id)`. `reorder`, porque o card tem ordem padrão por posição: com `order`, vem o do topo da etapa
 - `create_deal` e `update_deal` da origem criam e atualizam direto, sem passar pelo gateway. Aqui, `Pipelines::Card.create!(stage:, title:, description:, deal_value:, deal_probability:, assigned_to_id:, chat_id: chat.id.to_s)`, com a etapa achada por `Pipelines::Stage.joins(:board).where(pipeline_boards: { organization_id: }).find_by(id:)`: a origem aceitava `kanban_column_id` de qualquer organização. `organization_id` vem da etapa, e a validação recusa responsável de outra. Para mudar de etapa, `Pipelines::MoveCard.call(card:, stage:, enforce_gates: false)`, e não `update!(stage_id:)`: é o que acerta as posições.
 - O que o fluxo muda dispara gatilhos, como na origem. Em `Pipelines::Card` direto, `card.suppress_trigger_evaluation = true` desliga. Quem monta a sessão à mão, em vez de `Pipelines::Automation`, usa `session.set(MiniRacerEngine::Workers::Kanban::SUPPRESS_TRIGGERS_KEY, true)`, e `COMMENT_SOURCE_KEY` para assinar os comentários.
 

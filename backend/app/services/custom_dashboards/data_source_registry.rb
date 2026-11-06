@@ -11,7 +11,7 @@ module CustomDashboards
   #
   # O escopo de cada fonte (`scope`) recebe a pessoa que consulta e é o que garante a organização.
   class DataSourceRegistry
-    SOURCE_NAMES = %w[Conversations Contacts Messages AgendaBookings Campaigns DailyStats].freeze
+    SOURCE_NAMES = %w[Conversations Contacts Messages AgendaBookings Campaigns DailyStats HookLogs].freeze
 
     DataSource = Struct.new(
       :key, :model_class, :orm, :permission, :default_time_field, :scope, :fields, :allowed_metrics,

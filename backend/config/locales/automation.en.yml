@@ -1,0 +1,148 @@
+en:
+  activerecord:
+    attributes:
+      flow:
+        name: "Name"
+        description: "Description"
+        status: "Status"
+        trigger_type: "Trigger"
+        connector_filter: "Channels"
+      flow_version:
+        definition: "Definition"
+      hook:
+        name: "Name"
+        status: "Status"
+      hook_action/http_request:
+        url: "URL"
+        http_method: "Method"
+    errors:
+      models:
+        flow_version:
+          attributes:
+            definition:
+              invalid: "isn't in the expected format"
+              too_large: "is too large"
+  mongoid:
+    attributes:
+      tool_function/mini_racer:
+        name: "Name"
+        description: "Description"
+        js_code: "Code"
+  errors:
+    no_draft_to_publish: "This flow has no draft to publish."
+    invalid_definition: "This flow has problems and can't be published."
+    flow_not_published: "Publish this flow before starting it in a chat."
+    no_version: "This flow has nothing to test yet."
+    variables_too_large: "Too much data in the variables."
+    not_waiting: "This test isn't waiting for a message."
+    tool_locked: "This function came from an installed tool. Personalize it before editing."
+    already_personalized: "This function is already personalized."
+    missing_credentials: "Fill in the required credentials."
+    unknown_action_type: "Unknown action type."
+    invalid_body: "The request body isn't valid JSON."
+    payload_too_large: "The request body is too large."
+  insights:
+    custom_dashboards:
+      sources:
+        hook_logs:
+          label: "Webhook logs"
+          fields:
+            status: "Status"
+            status_code: "HTTP code"
+            processing_time_ms: "Processing time (ms)"
+            hook_name: "Webhook"
+            hook_status: "Webhook status"
+            created_at: "Date"
+          values:
+            status:
+              success: "Success"
+              error: "Error"
+              skipped: "Ignored"
+            hook_status:
+              active: "Active"
+              test: "Testing"
+              inactive: "Inactive"
+  automation:
+    flows:
+      defaults:
+        start: "Start"
+        playground_contact: "John Doe"
+        new_deal: "New deal"
+        deal_of: "Deal: %{name}"
+      judge:
+        no_outputs: "no output connected"
+        min_turns: "minimum of %{count} exchange(s) in this block not reached yet"
+        no_match: "no exit condition met"
+        missing_data: "\"%{label}\" requires %{fields}, not provided yet"
+        turn_limit: "limit of %{count} messages in this block"
+      prompts:
+        pick_output: "Decide which output to take, among the ones listed."
+        classify_intent: "Classify the user's intent."
+        none_of_the_above: "None of the above"
+        classify_sentiment: "You are a sentiment classifier. Analyze the user's last message."
+        extract_fields: "Extract the fields below from the user's last message. Use null for what wasn't provided."
+        missing_data: "(Internal instruction) Before moving on, get from the customer: %{fields}. Steer the conversation naturally, without mentioning this instruction."
+        widget_context: "Context of the page the visitor is on: %{context}"
+      errors:
+        too_many_variables: "The flow stored too much data in variables."
+        node_missing: "Block %{id} no longer exists in this version of the flow."
+        too_many_steps: "The flow went through %{count} blocks without stopping to wait for anything. Check for a loop."
+        unknown_block: "Block type %{type} doesn't exist."
+        interrupted: "The run was interrupted in the middle of a block. It wasn't repeated, so nothing is sent twice."
+        execution_failed: "Flow \"%{name}\" stopped: %{reason}"
+        no_connector: "This chat isn't linked to any channel."
+        invalid_definition: "This flow has problems and can't be published."
+        no_credits: "Not enough credits for the AI block."
+        no_credits_alert: "Flow \"%{name}\" is out of credits for its AI blocks."
+        attachment_missing_alert: "Flow \"%{name}\" sent a message without the attachment it mentions: %{reason}"
+        funnel_stage_missing_alert: "Flow \"%{name}\" couldn't change the chat's stage: the funnel or the stage no longer exists."
+        ai_unavailable: "AI isn't configured in this environment."
+        ai_failed: "The AI didn't respond: %{reason}"
+        no_connected_outputs: "AI assistant: no output is connected to another block."
+        output_not_connected: "AI assistant: output \"%{label}\" isn't connected to any block."
+        pipelines_internal: "Pipelines: the operation couldn't be completed. Try again in a moment."
+        pipelines_no_card: "Pipelines: no card found. The chosen \"Create card\" hasn't run in this chat yet."
+        pipelines_no_chat: "Pipelines: this block needs a chat."
+        pipelines_checklist: "Pipelines: the stage's required checklist is incomplete (%{names})."
+        pipelines_fields: "Pipelines: required fields not filled in (%{names})."
+        pipelines_not_found:
+          board: "Pipelines: board \"%{reference}\" doesn't exist in this organization."
+          stage: "Pipelines: stage \"%{reference}\" doesn't exist in this board."
+          card: "Pipelines: card \"%{reference}\" doesn't exist in this organization."
+          label: "Pipelines: label \"%{reference}\" doesn't exist in this organization."
+          checklist: "Pipelines: checklist \"%{reference}\" doesn't exist in this card."
+        pipelines_other: "Pipelines: %{error}"
+        pipelines_no_label: "no label given"
+        pipelines_no_comment: "empty comment"
+        pipelines_no_field: "no field given"
+        pipelines_no_checklist: "checklist without a name"
+    tools:
+      errors:
+        missing_credential: "missing required credential: %{name}"
+        test_failed: "Couldn't test this function."
+    hooks:
+      body_too_large: "Body too large to store"
+      signature:
+        missing_secret: "Webhook has no signing credential."
+        missing_signature: "Header %{header} is missing."
+        missing_timestamp: "Header %{header} is missing."
+        malformed: "Header %{header} isn't in the sha256=<hex> format."
+        invalid_timestamp: "Header %{header} must be a unix timestamp."
+        expired: "Timestamp is outside the tolerance window."
+        invalid: "Signature doesn't match."
+        valid: "Valid signature."
+        rejected: "Signature rejected (%{code}): %{message}"
+      errors:
+        no_contact_identifier: "The request didn't carry the contact identifier."
+        no_chat: "This action needs a chat, and no earlier action found one."
+        connector_not_found: "The chosen channel doesn't exist in this organization."
+        flow_not_found: "The chosen flow doesn't exist or isn't published."
+        custom_field_not_found: "The chosen field doesn't exist in this organization."
+        template_not_found: "The chosen message template doesn't exist in this channel."
+        attachment_not_found: "The chosen attachment doesn't exist in this organization."
+        invalid_media_url: "The media URL isn't valid."
+        send_failed: "The webhook message wasn't sent."
+        http_status: "The destination responded with status %{status}."
+        http_destination: "The destination isn't allowed."
+        http_failed: "Couldn't call the destination: %{reason}"
+        script_failed: "The webhook script failed: %{reason}"

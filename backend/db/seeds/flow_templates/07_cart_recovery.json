@@ -1,0 +1,37 @@
+{
+  "slug": "cart_recovery",
+  "name": "Recuperação de carrinho",
+  "description": "Disparado por webhook quando carrinho é abandonado. Aguarda 24h, manda lembrete; se sem resposta, manda outro 24h depois.",
+  "category": "vendas",
+  "trigger_type": "webhook",
+  "tags": ["recuperacao", "carrinho", "ecommerce"],
+  "thumbnail_url": "",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "trigger", "type": "trigger_webhook", "position": { "x": 0, "y": 0 }, "data": {} },
+      { "id": "wait1", "type": "wait", "position": { "x": 280, "y": 0 }, "data": { "amount": 24, "unit": "hours" } },
+      { "id": "msg1", "type": "send_text", "position": { "x": 560, "y": 0 }, "data": {
+        "text": "Oi {{contact.name}}! Esqueceu algo no carrinho? Posso te ajudar a finalizar 🛒"
+      } },
+      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 840, "y": 0 }, "data": {} },
+      { "id": "got_reply", "type": "transfer_to_human", "position": { "x": 1140, "y": -120 }, "data": {} },
+      { "id": "wait2", "type": "wait", "position": { "x": 1140, "y": 120 }, "data": { "amount": 24, "unit": "hours" } },
+      { "id": "msg2", "type": "send_text", "position": { "x": 1440, "y": 120 }, "data": {
+        "text": "Última chance! Posso liberar 10% de desconto pra você fechar agora?"
+      } },
+      { "id": "end_ok",   "type": "end", "position": { "x": 1440, "y": -120 }, "data": {} },
+      { "id": "end_done", "type": "end", "position": { "x": 1720, "y": 120 }, "data": {} }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trigger",    "target": "wait1" },
+      { "id": "e2", "source": "wait1",      "target": "msg1" },
+      { "id": "e3", "source": "msg1",       "target": "wait_reply" },
+      { "id": "e4", "source": "wait_reply", "target": "got_reply" },
+      { "id": "e5", "source": "got_reply",  "target": "end_ok" },
+      { "id": "e6", "source": "wait_reply", "target": "wait2",  "sourceHandle": "timeout" },
+      { "id": "e7", "source": "wait2",      "target": "msg2" },
+      { "id": "e8", "source": "msg2",       "target": "end_done" }
+    ]
+  }
+}
