@@ -22,7 +22,12 @@ import { useConnectorTexts } from "@/components/connectors/connector-texts"
 import { useConnectorAlerts } from "@/hooks/connectors/use-connector-alerts"
 import { useConnectors } from "@/hooks/connectors/use-connectors"
 import { useIsMobile } from "@/hooks/use-is-mobile"
-import { channelGroup, connectorHandle, type ChannelGroup } from "@/lib/connectors/channels"
+import {
+  channelGroup,
+  connectorHandle,
+  withoutInstanceName,
+  type ChannelGroup,
+} from "@/lib/connectors/channels"
 import { INSTAGRAM_RESUME_PARAM, takeInstagramResume } from "@/lib/connectors/instagram-oauth"
 import type { Connector } from "@/lib/connectors/types"
 import { useMotionPreset } from "@/lib/motion"
@@ -242,7 +247,9 @@ export default function ConnectorsPage() {
                       ? orphanAlerts.map((alert) => (
                           <div key={alert.id} className="p-4">
                             {alert.originName ? (
-                              <p className="mb-1.5 text-sm font-medium">{alert.originName}</p>
+                              <p className="mb-1.5 text-sm font-medium">
+                                {withoutInstanceName(alert.originName, t("connectors.types.whatsapp_web"))}
+                              </p>
                             ) : null}
                             <ConnectorAlertNotice alert={alert} />
                           </div>

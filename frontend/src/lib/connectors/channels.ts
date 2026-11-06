@@ -123,6 +123,14 @@ export function hasRealName(connector: Connector): boolean {
   return !INTERNAL_NAME.test(connector.name)
 }
 
+/**
+ * Os avisos vêm prontos da API e, sem perfil, citam o nome interno da instância: quem é
+ * bloqueado na primeira conexão leria "Conta bloqueada: IWA-6aee...".
+ */
+export function withoutInstanceName(text: string, typeLabel: string): string {
+  return text.replace(/\b(?:IWA|IZA)-[0-9a-zA-Z]+/g, typeLabel)
+}
+
 /** O número ou o endereço que identifica o canal para a pessoa. */
 export function connectorHandle(connector: Connector): string | null {
   switch (connector.type) {
