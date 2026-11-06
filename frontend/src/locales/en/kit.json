@@ -1,0 +1,49 @@
+{
+  "kit": {
+    "loading": "Loading…",
+    "noValue": "—",
+    "actions": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "clear": "Clear",
+      "apply": "Apply",
+      "save": "Save",
+      "retry": "Try again",
+      "remove": "Remove"
+    },
+    "page": {
+      "breadcrumb": "Page path"
+    },
+    "tag": {
+      "remove": "Remove tag"
+    },
+    "avatar": {
+      "unknown": "Unnamed person",
+      "more": "+{{count}}",
+      "status": {
+        "online": "Available",
+        "away": "Away",
+        "offline": "Offline"
+      }
+    },
+    "copy": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "failed": "Couldn't copy. Select the text and copy it by hand."
+    },
+    "stat": {
+      "trend": "{{label}} trend: from {{first}} to {{last}}"
+    },
+    "confirm": {
+      "failed": "Couldn't finish. Try again.",
+      "typeToConfirm": "Type {{text}} to confirm"
+    },
+    "unsaved": {
+      "title": "Leave without saving?",
+      "description": "The changes made here will be lost.",
+      "leave": "Leave without saving",
+      "stay": "Keep editing"
+    }
+  }
+}
