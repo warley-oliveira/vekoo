@@ -5,17 +5,12 @@ import { ArrowDown, ArrowUp, ChevronsUpDown, ListFilter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { columnLabel } from "./data-table-utils"
 import { DateRangePicker } from "./date-range-picker"
 import type { DateRangeValue } from "./date-range-presets"
 import { FacetedFilter } from "./faceted-filter"
 import { FilterLayoutContext } from "./filter-layout-context"
 import { SearchInput } from "./search-input"
-
-/** O nome da coluna: `meta.label` ou o cabeçalho, quando é texto. */
-export function columnLabel<TData>(column: Column<TData, unknown>): string {
-  const { meta, header } = column.columnDef
-  return meta?.label ?? (typeof header === "string" ? header : column.id)
-}
 
 /** O controle de filtro de uma coluna, no popover do cabeçalho e na Sheet do celular. */
 export function ColumnFilterControl<TData>({ column }: { column: Column<TData, unknown> }) {
@@ -37,24 +32,26 @@ export function ColumnFilterControl<TData>({ column }: { column: Column<TData, u
     )
   }
 
+  if (config.type === "dateRange") {
+    return (
+      <DateRangePicker
+        label={label}
+        value={(value as DateRangeValue | undefined) ?? null}
+        onChange={(next) => column.setFilterValue(next ?? undefined)}
+      />
+    )
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-sm font-medium">{label}</span>
-      {config.type === "text" ? (
-        <SearchInput
-          shortcut={false}
-          debounce={200}
-          value={(value as string | undefined) ?? ""}
-          placeholder={config.placeholder ?? t("kit.filters.searchIn", { title: label })}
-          onChange={(next) => column.setFilterValue(next || undefined)}
-        />
-      ) : (
-        <DateRangePicker
-          label={label}
-          value={(value as DateRangeValue | undefined) ?? null}
-          onChange={(next) => column.setFilterValue(next ?? undefined)}
-        />
-      )}
+      <SearchInput
+        shortcut={false}
+        debounce={200}
+        value={(value as string | undefined) ?? ""}
+        placeholder={config.placeholder ?? t("kit.filters.searchIn", { title: label })}
+        onChange={(next) => column.setFilterValue(next || undefined)}
+      />
     </div>
   )
 }

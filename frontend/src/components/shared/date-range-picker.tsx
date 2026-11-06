@@ -15,6 +15,7 @@ import {
   type DateRangePreset,
   type DateRangeValue,
 } from "./date-range-presets"
+import { useFilterLayout } from "./filter-layout-context"
 import { FormField, type FieldControlProps, type FormFieldBaseProps } from "./form-field"
 import { ResponsivePopover } from "./responsive-popover"
 
@@ -57,6 +58,8 @@ export function DateRangePicker({
   const isMobile = useIsMobile()
   const defaultPresets = useDateRangePresets()
   const presets = customPresets ?? defaultPresets
+  // Empilhado num painel de filtros, leva o próprio título, como o `FacetedFilter`.
+  const stacked = useFilterLayout() === "stacked" && Boolean(label)
 
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState<{ from?: Date; to?: Date } | undefined>(undefined)
@@ -73,8 +76,8 @@ export function DateRangePicker({
 
   const draftReady = Boolean(draft?.from)
 
-  return (
-    <div className={cn("relative min-w-0", className)}>
+  const picker = (
+    <div className={cn("relative min-w-0", !stacked && className)}>
       <ResponsivePopover
         open={open}
         onOpenChange={(next) => {
@@ -175,6 +178,15 @@ export function DateRangePicker({
         </Button>
       ) : null}
     </div>
+  )
+
+  return stacked ? (
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      <span className="text-sm font-medium">{label}</span>
+      {picker}
+    </div>
+  ) : (
+    picker
   )
 }
 

@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react"
-import type { FilterFn, RowData, SortingFn } from "@tanstack/react-table"
+import type { Column, FilterFn, RowData, SortingFn } from "@tanstack/react-table"
 
 import { toDate, isValidDate } from "@/lib/date-format"
 import { matchesSearch } from "@/lib/search-text"
@@ -7,6 +7,13 @@ import type { DateRangeValue } from "./date-range-presets"
 
 export const SELECT_COLUMN_ID = "__select"
 export const ACTIONS_COLUMN_ID = "__actions"
+export const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100]
+
+/** O nome da coluna: `meta.label` ou o cabeçalho, quando é texto. */
+export function columnLabel<TData>(column: Column<TData, unknown>): string {
+  const { meta, header } = column.columnDef
+  return meta?.label ?? (typeof header === "string" ? header : column.id)
+}
 
 /** Clique em controle dentro da linha, ou vindo de um portal dela, não abre a linha. */
 export function ignoresRowClick(event: MouseEvent<HTMLElement>): boolean {

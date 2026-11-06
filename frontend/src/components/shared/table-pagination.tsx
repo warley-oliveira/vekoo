@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { DEFAULT_PER_PAGE_OPTIONS } from "./data-table-utils"
 import { SelectInput } from "./select-field"
-
-export const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 100]
 
 export type TablePaginationProps = {
   page: number

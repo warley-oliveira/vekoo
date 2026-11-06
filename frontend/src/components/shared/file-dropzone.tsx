@@ -183,11 +183,14 @@ export function FileDropzone({
     [patch, t, upload]
   )
 
-  function remove(item: DropzoneFile) {
-    controllers.current.get(item.id)?.abort()
-    releasePreview(item)
-    commit(latest.current.filter((other) => other.id !== item.id))
-  }
+  const remove = useCallback(
+    (item: DropzoneFile) => {
+      controllers.current.get(item.id)?.abort()
+      releasePreview(item)
+      commit(latest.current.filter((other) => other.id !== item.id))
+    },
+    [commit]
+  )
 
   // Ao sair da tela: nada de envio órfão. Com lista controlada, as prévias continuam
   // sendo do pai, que pode remontar este componente e mostrá-las de novo.
@@ -233,8 +236,7 @@ export function FileDropzone({
       commit([...latest.current, ...added])
       if (upload) added.forEach((item) => void send(item))
     },
-    // `remove` só lê refs e `commit`.
-    [commit, language, maxFiles, maxSize, send, single, t, upload]
+    [commit, language, maxFiles, maxSize, remove, send, single, t, upload]
   )
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({

@@ -37,16 +37,14 @@ import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { ActionsMenu } from "./actions-menu"
 import { BulkActionsBar } from "./bulk-actions-bar"
-import {
-  ColumnFilterControl,
-  DataTableColumnHeader,
-  columnLabel,
-} from "./data-table-column-header"
+import { ColumnFilterControl, DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableMobileList } from "./data-table-mobile-list"
 import type { DataTableProps, TableDensity } from "./data-table-types"
 import {
   ACTIONS_COLUMN_ID,
+  DEFAULT_PER_PAGE_OPTIONS,
   SELECT_COLUMN_ID,
+  columnLabel,
   dateRangeFilter,
   facetFilter,
   ignoresRowClick,
@@ -57,7 +55,7 @@ import { FilterPopover } from "./filter-popover"
 import { ListSkeleton } from "./list-skeleton"
 import { LoadingRegion } from "./loading-region"
 import { SortMenu } from "./sort-menu"
-import { DEFAULT_PER_PAGE_OPTIONS, TablePagination } from "./table-pagination"
+import { TablePagination } from "./table-pagination"
 
 const DENSITY_KEY = "vekoo.table.density"
 const DEFAULT_PAGE_SIZE = 25

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useSyncExternalStore } from "react"
+import { useCallback, useRef, useSyncExternalStore } from "react"
 
 import { safeLocalStorage } from "@/lib/safe-local-storage"
 
@@ -63,12 +63,19 @@ export function useLocalStorage<T>(
     () => readRaw(key)
   )
   // O padrão costuma ser um literal novo a cada render, então só a chave e o texto
-  // gravado decidem quando reinterpretar.
-  const value = useMemo(() => parse(raw, defaultValue), [raw, key])
+  // gravado decidem quando reinterpretar: o valor mantém a identidade entre renders.
+  const parsed = useRef<{ key: string; raw: string | null; value: T } | null>(null)
+  if (parsed.current?.key !== key || parsed.current.raw !== raw) {
+    parsed.current = { key, raw, value: parse(raw, defaultValue) }
+  }
+  const value = parsed.current.value
+
+  const latestDefault = useRef(defaultValue)
+  latestDefault.current = defaultValue
 
   const setValue = useCallback(
     (next: T | ((current: T) => T)) => {
-      const current = parse(readRaw(key), defaultValue)
+      const current = parse(readRaw(key), latestDefault.current)
       const resolved =
         typeof next === "function" ? (next as (current: T) => T)(current) : next
       writeRaw(key, JSON.stringify(resolved))

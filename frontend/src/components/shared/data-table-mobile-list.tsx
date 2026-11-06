@@ -5,8 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import type { RowAction } from "./actions-menu"
 import { ActionsMenu } from "./actions-menu"
-import { columnLabel } from "./data-table-column-header"
-import { SELECT_COLUMN_ID, ignoresRowClick } from "./data-table-utils"
+import { SELECT_COLUMN_ID, columnLabel, ignoresRowClick } from "./data-table-utils"
 
 type MobileListProps<TData> = {
   rows: Row<TData>[]
