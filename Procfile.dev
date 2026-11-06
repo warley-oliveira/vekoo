@@ -1,3 +1,4 @@
 web:    bash -c 'cd backend && bundle exec rails server -p ${RAILS_PORT:-3000}'
 worker: bash -c 'cd backend && bundle exec sidekiq -C config/sidekiq.yml'
+scripts: bash -c 'cd backend && bundle exec sidekiq -C config/sidekiq_scripts.yml'
 front:  bash -c 'cd frontend && npm run dev'

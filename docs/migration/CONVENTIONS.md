@@ -127,6 +127,8 @@ end
 ### Jobs e tempo real
 
 - `ApplicationJob` + ActiveJob (adaptador Sidekiq), `perform_later` / `set(wait:)`. Filas: `critical` (mensagens), `default`, `campaigns`, `low`. **Sem `Sidekiq::Status`**: cancelamento por token checado ao executar.
+- **Job que executa script de cliente** (`MiniRacerService`) usa `queue_as :scripts`: essa fila roda em processo próprio (`config/sidekiq_scripts.yml`), para um script não derrubar quem entrega mensagens. Contrato do motor em `docs/migration/api/script-engine.md`.
+- **Visibilidade de conversa:** todo acesso a `Chat` em nome de uma pessoa passa por `Chat.visible_to(account)`, em REST e em canal.
 - ActionCable: `ApplicationCable::Channel`, stream sempre com `organization_stream("nome")` (`self.class.organization_stream(id, nome)` para transmitir de fora). Payloads em camelCase.
 
 ### Fora do escopo: remova ao reciclar

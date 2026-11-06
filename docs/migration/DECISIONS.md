@@ -107,6 +107,36 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **CSP:** `connect.facebook.net` em `script-src`; `www.facebook.com` e `web.facebook.com` em `connect-src` e `frame-src`. O `frame-src` é precaução: nenhum frame foi observado em teste.
 - **Acréscimo na API:** o código de pareamento se perdia (o canal não o reenviava a quem assinava depois, o `GET` não o trazia, e o `activate` não aceitava `phoneNumberPairing`). Corrigido, com 10 specs. A chave `pairingCode` vem do conhecimento da Evolution v2, sem confirmação em instância real.
 
+### Chat e contatos: API (be-inbox)
+
+- **Modelos do copiloto:** Opus 5.5 no agente e Haiku 5.5 em resumo e qualificação, com `fallbacks: :default`, ou seja, a própria API pode responder com outro modelo se o principal não puder atender. Para desligar, tire o parâmetro em `Ai::Chat.converse`.
+- **Custo de IA:** 2 créditos por mensagem do copiloto (devolvidos se nada útil sair) e 1 por sugestão de resposta. `aiCosts` em `/catalog` ainda não lista esses dois.
+- **Contatos unificados sempre ligados:** `unified_contacts_enabled` não existe mais. A lista clássica segue em `/chats`.
+- **`chat_list_to` vale em tudo:** conversa por id, mensagens, unificados, contatos, lote, exportação, busca, copiloto e, depois da integração, os canais de WebSocket. Fora do nível, responde 404. Na origem, só a lista v2 respeitava.
+- **Normalização de campo** sem `dryRun` só mostra a prévia (na origem, aplicava de vez). Para aplicar, `dryRun: false`.
+- **Comportamento novo:** áudio e anexo enviados pausam a automação; mudar a automação à mão cancela o religamento agendado; mensagem apagada sai da prévia da lista.
+- **Unicidade:** chave de campo (estável ao renomear), atalho de mensagem rápida e nome de etiqueta.
+- **Exportação:** arquivo no Active Storage, removido 5 minutos depois de o link de 1 hora vencer. Fórmulas no CSV são neutralizadas. Exportação na hora vai até 5000 linhas.
+- **Formato:** `POST` em `bulk-delete` (em vez de `DELETE` com corpo); `/chats` e `/unified-contacts` sem `total`.
+
+### Motor de scripts (be-engine)
+
+- **`--jitless` no processo inteiro:** é o que faz os limites valerem. 5 milhões de iterações levam 36 ms em vez de 3 ms; um script típico não muda.
+- **Limites por execução:** 15 s (até 60 s se pedido), 64 MB de heap (até 256 MB), 50 chamadas de rede, 5.000 chamadas a extensões, 5 MB por resposta. Não há cota por organização: um script em laço pode encher `collection.*` ao longo do tempo.
+- **`fetch` só nas portas 80, 443, 8080 e 8443**, e nunca para a rede interna. Integração em outra porta quebra; liberar é uma linha em `Limits`.
+- **Fora do ambiente JS:** `WebAssembly`, `SharedArrayBuffer`, `Atomics` e `Intl.Segmenter`. Resultado sempre em JSON: `Date` e `BigInt` viram texto, função some, objeto cíclico é erro.
+- **Fila própria para scripts (integrador):** processo separado, `config/sidekiq_scripts.yml`, para um script não derrubar quem entrega mensagens.
+- **`setFupEnabled` e `setStepperStage`** existem, mas respondem "Not supported". `catalog.image` agora é URL absoluta.
+
+### Calendário: API (be-agenda)
+
+- **Sem rota de exclusão de calendário:** a origem respondia 204 sem apagar nada, e apagar de verdade levaria o histórico junto. Precisa de decisão de produto. `DELETE /calendar-events/:id` arquiva.
+- **Lembretes:** texto é grátis; com IA custa 1 crédito e cai no texto se falhar. Passo de sequência só com instrução não envia nada se a geração falhar.
+- **Modelo:** fuso IANA em vez de deslocamento inteiro; avatar da pessoa resolvido na leitura, sem espelho.
+- **Google Agenda:** fica fora de `/connectors`, com `state` assinado e o token do canal conferido. Falha ao abrir o watch não desfaz a conexão. O link do Meet chega pelo tempo real.
+- **Mantidos como na origem:** `enrollAll` não confere lotação, `create_booking` não confere a janela, lembrete ao profissional exige conversa.
+- **Defeitos da origem corrigidos** (cada um com spec): recorrência e fim de aula errados, aula avulsa que nunca aparecia, IDORs em turmas e distribuição, horários oferecidos fora da janela e nas folgas, conflito contando outras organizações, lembrete em agendamento arquivado, entre outros.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -116,7 +146,9 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Bloqueia deploy:** `config/deploy.yml` usa `postgres:16.10`, sem pgvector, e a migration do catálogo falharia. Trocar a imagem antes de migrar (conferir a glibc do volume de produção, para não repetir a incompatibilidade de collation vista em desenvolvimento: lá a variante `pg16-trixie` resolveu).
 - `OPENAI_API_KEY` em `.env.example`, `.env.deploy.example`, `deploy.yml` e `DEPLOY.md`.
 - `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
-- Revisão de segurança: `Products::RemoteImage` pode servir a outros downloads de URL vinda do cliente.
+- Rodar o processo de scripts em produção (`config/sidekiq_scripts.yml`) como papel próprio no `deploy.yml`.
+- ENV novas: `GOOGLE_MAPS_API_KEY`, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`. `ffmpeg` na imagem.
+- Decisão de produto: excluir calendário.
 - Semente do catálogo usa fotos genéricas de paisagem em itens de roupa: só afeta a demonstração.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
 - Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
@@ -132,6 +164,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
 - `fe-contacts`: ligar a ação "Importar contatos" na tela do canal quando `import-contacts` existir. Seletor de anexos no cabeçalho do modelo, quando a API de anexos existir.
+- `fe-chat-core`: `connectorProvider` agora é `zapi` (a origem compara com `z_api`); ações em lote não avisam o tempo real, então a tela recarrega a lista; a regra de auto-remover `aguardando-operador` fica na tela, lendo `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`; eventos `bookings_changed` e `scheduled_actions_changed`; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
+- `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
@@ -148,4 +182,17 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
 - `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
-- `be-pipelines`: se os bindings `catalog.*` do MiniRacer forem migrados, faltam `Facets` e `Similar`, que não têm serviço.
+- `be-pipelines`: somar `:deal` em `Chats::BackfillSystemTagsService`.
+- `be-insights`: ferramentas de agenda e de funil no copiloto (`list_appointments`, `get_appointment_details`, `cancel_appointment`, `reschedule_appointment`, `qualify_appointments`, `get_appointment_stats`, `get_chat_funnel`), contexto `booking_qualification`, conversão no ranking da equipe, fonte `agenda_bookings` e `contactNotificationPreview`, que lê mensagens e hoje exigiria `chat`.
+
+## 3. Achados na origem (`ancient-app`), que continuam lá
+
+Encontrados ao portar o motor de scripts. Aqui estão corrigidos; **na origem, seguem como estavam**. Confirmados lendo o código, sem executar nada lá.
+
+- `lib/mini_racer_engine/workers/fetch.rb:58` e `:81`: `HTTParty.send(method, url, options)` com `method` vindo do script do cliente. Não é só "método HTTP": alcança qualquer método Ruby de `HTTParty`, como `send` e `load`.
+- `lib/mini_racer_engine/workers/dynamic_table.rb:212`: `collection.Search` usa `.or`, que no Mongoid significa "o que já estava no filtro OU isto", e por isso devolve registros de **qualquer organização**. Reproduzido com Mongoid 9 aqui; lá a versão é 8.1.
+- `lib/mini_racer_engine/workers/tag.rb:114`: `assignUserByEmail` procura em todas as contas da plataforma, com `Admin::User.find_by_email`.
+- `lib/mini_racer_engine/workers/fetch.rb`: `fetch` alcança qualquer endereço, inclusive metadados da nuvem, Redis e Postgres. Não há filtro de rede.
+- Sem organização no contexto, `collection.*` cai num espaço de tabelas compartilhado; e `$where` chega ao Mongo pelo filtro.
+
+Os dois de portal mais simples: a tabela de métodos HTTP e o `any_of` em `search_records`. Ver "Buracos que a origem tinha" em `docs/migration/api/script-engine.md`.

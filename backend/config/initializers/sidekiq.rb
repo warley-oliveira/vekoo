@@ -10,6 +10,9 @@ Sidekiq.configure_server do |config|
   # Cada domínio declara os próprios jobs recorrentes em config/schedule/<dominio>.yml,
   # em vez de todos disputarem o mesmo arquivo.
   config.on(:startup) do
+    # O processo de scripts não agenda nada: os recorrentes ficam no processo principal.
+    next if config.queues == [ "scripts" ]
+
     schedule = Rails.root.glob("config/schedule/*.yml").sort.each_with_object({}) do |file, merged|
       merged.merge!(YAML.load_file(file) || {})
     end

@@ -1,0 +1,9 @@
+# Processo próprio para os jobs que executam JavaScript de cliente (fila `scripts`).
+#
+# Por precaução: os vetores conhecidos de derrubar o processo pelo V8 foram fechados, mas
+# isso é uma lista, não uma prova (ver docs/migration/api/script-engine.md, "Riscos que
+# continuam abertos"). Se um script ainda achar outro, cai este processo, e não o que
+# entrega as mensagens.
+:concurrency: 2
+:queues:
+  - scripts
