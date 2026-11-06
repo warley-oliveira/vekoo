@@ -2,8 +2,9 @@ module Outreach
   # Envia a um destinatário já tomado, pela API de envio do núcleo (`docs/migration/api/connectors.md`).
   # Origem: Campaigns::SendRecipientService. Aqui não se fala com provedor nenhum.
   #
-  # Nunca reenvia. Toda falha do canal vira `failed` e a campanha segue: repetir arriscaria mandar
-  # duas vezes para a mesma pessoa. Só erro de infraestrutura sobe, e a recuperação resolve.
+  # Nunca reenvia: depois de despachar, toda falha do canal vira `failed`, porque repetir arriscaria
+  # mandar duas vezes para a mesma pessoa. Quem decide parar o canal é o passo do lote. Só erro de
+  # banco sobe, e a recuperação resolve pelo que ficou gravado.
   class SendRecipientService
     WHATSAPP_ERROR = "whatsappError".freeze
     NUMBER_NOT_FOUND = "numberNotFound".freeze

@@ -1841,7 +1841,7 @@ Sem params: as buscas da organização. Filtre pelo `id` que recebeu em `POST /p
 
 Para quem for mexer, ou precisar explicar um número na tela.
 
-- **Lotes por canal.** Canal é o conector, ou cada número da WABA. Os destinatários são repartidos entre os canais, e cada canal anda um lote por vez. Cada canal tem **um único job na fila**, e cada execução manda no máximo uma mensagem e agenda a próxima. Campanha de 50 mil contatos em dois canais, medida: importou em 3276 ms, lançou em 534 ms, e a sorted set `schedule` do Redis ficou com 3 jobs (uma sobra do teste de limite diário e um por canal). A origem criava um job por destinatário, o que o `CLAUDE.md` dela proíbe.
+- **Lotes por canal.** Canal é o conector, ou cada número da WABA. Os destinatários são repartidos entre os canais, e cada canal anda um lote por vez. Cada canal tem **um único job na fila**, e cada execução manda no máximo uma mensagem e agenda a próxima. Campanha de 50 mil contatos em dois canais, medida: importou em 3276 ms, lançou em 534 ms, e a sorted set `schedule` do Redis ficou com 3 jobs (uma sobra do teste de limite diário e um por canal). A origem criava um job por destinatário, que é o que a regra 7 do `CLAUDE.md` de lá alerta que infla a `schedule`.
 - **Nada dorme segurando thread.** As 5 threads do Sidekiq são as mesmas do caminho das mensagens.
 - **Intervalo.** Sorteado entre `intervalMin` e `intervalMax`, por canal. Duas campanhas no mesmo canal somam o ritmo: quem protege o número nesse caso é o limite diário.
 - **Janela.** Conferida a cada envio, não só ao lançar. Um worker que volta às 3h da manhã espera a janela abrir.
@@ -1886,7 +1886,7 @@ O preço do "no máximo uma vez": quem cair no meio de um envio, ou tiver o envi
 
 - **automation:** `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id` para saber qual fluxo atende quem respondeu a uma campanha. É um id guardado sem validação, porque `Flow` ainda não existia: **confira a organização** e trate o que não existir como "sem fluxo". E preencher `Outreach::AvailableFlows.for(organization)`, mantendo a forma `{ id:, name: }`.
 - **inbox:** a mídia depende de `Attachment`, por `Media::AttachmentLookup`, usando `file_url`, `name` e `file.blob` (`content_type`, `filename`). Até lá, `POST /campaigns` com mídia responde `mediaNotFound`. `import-contacts` recebe ids de conversa: se `/contacts` devolver outro id, é preciso ajustar.
-- **connectors:** há duas alterações pontuais em arquivos de lá. `Inbound::EvolutionEvents#messages_update_event` chama `Outreach::RecipientStatus` nas mensagens de campanha, porque a origem nunca atualizava o destinatário nesse caminho. E `Providers::Base.with_retry` respeita `send_once`. `Inbound::ZapiEvents` não trata status de entrega: quem envia pela Z-API fica em `sent`.
+- **connectors:** há duas alterações pontuais em arquivos de lá. `Inbound::EvolutionEvents#messages_update_event` chama `Outreach::RecipientStatus` nas mensagens de campanha: na origem, o destinatário só era atualizado quando a mensagem não era encontrada, então entregue e lido quase nunca chegavam a ele. E `Providers::Base.with_retry` respeita `send_once`. `Inbound::ZapiEvents` não trata status de entrega: quem envia pela Z-API fica em `sent`.
 
 ## Para o deploy
 
