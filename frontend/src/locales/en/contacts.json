@@ -287,7 +287,7 @@
       "readyTitle_other": "File ready, with {{formatted}} contacts",
       "readyHint": "The link lasts until {{time}}. After that, just export again.",
       "download": "Download file",
-      "newExport": "New export",
+      "newExport": "Export the current list",
       "readyAway": "Your contact export is ready",
       "failedAway": "Could not export the contacts",
       "expiredTitle": "This link has expired",
@@ -310,6 +310,7 @@
       "ready_other": "File with {{formatted}} contacts ready. The link lasts until {{time}}.",
       "expired": "Your export link has expired.",
       "failed": "Could not export the contacts.",
+      "empty": "The export finished without any contact.",
       "dismiss": "Dismiss"
     },
     "import": {
@@ -365,6 +366,7 @@
         "name": "Contact name",
         "phone": "Phone",
         "sameColumn": "Name and phone must be different columns.",
+        "noneReady": "No line has a name and a valid phone in these columns. Check that they are the right columns.",
         "optional": "Assignment, if the spreadsheet has it",
         "assignee": "Assignee",
         "department": "Department",

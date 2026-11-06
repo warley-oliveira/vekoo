@@ -42,7 +42,7 @@ export function ContactIdentity({
   const label = name ?? t("contacts.noName")
 
   return (
-    <div className="flex min-w-0 items-center gap-2.5">
+    <div className="flex min-w-0 items-center gap-2.5 md:max-w-72">
       <UserAvatar
         name={name}
         src={contact.profilePictureUrl ? apiAssetUrl(contact.profilePictureUrl) : null}

@@ -32,6 +32,22 @@ export function reloadContactImports() {
   return mutate(IMPORTS_KEY)
 }
 
+/**
+ * O lote que acabou de ser criado já entra na lista, sem esperar a leitura: é isto que liga a
+ * sondagem, e que evita a tela dizer "concluída" antes de saber que ele existe.
+ */
+function storeContactImport(created: ContactImport) {
+  void mutate<ContactImportsResponse>(
+    IMPORTS_KEY,
+    (current) =>
+      current && {
+        ...current,
+        contactImports: [created, ...current.contactImports.filter((item) => item.id !== created.id)],
+      },
+    { revalidate: false }
+  )
+}
+
 export function useContactImports() {
   const { data, error, isLoading, mutate: reload } = useApi<ContactImportsResponse>(IMPORTS_KEY, {
     revalidateOnFocus: false,
@@ -263,6 +279,7 @@ export function useImportSender() {
             fileName: meta.fileName,
           })
           importIds.push(response.contactImport.id)
+          storeContactImport(response.contactImport)
           break
         } catch (error) {
           if (attempt < MAX_RETRIES && isRetryable(error)) {

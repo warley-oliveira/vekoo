@@ -31,9 +31,14 @@ export type ParsedImport = {
 
 /**
  * UTF-8, com ou sem BOM. O que não for UTF-8 válido é Windows-1252: é o que o Excel em
- * português salva, e lê-lo como UTF-8 transformaria "João" em "Jo�o" sem dar erro nenhum.
+ * português salva, e lê-lo como UTF-8 transformaria "João" em "Jo�o" sem dar erro nenhum. O
+ * "Texto Unicode" do Excel é UTF-16, e se anuncia pelo BOM.
  */
 export function decodeImportFile(buffer: ArrayBuffer): string {
+  const head = new Uint8Array(buffer.slice(0, 2))
+  if (head[0] === 0xff && head[1] === 0xfe) return new TextDecoder("utf-16le").decode(buffer)
+  if (head[0] === 0xfe && head[1] === 0xff) return new TextDecoder("utf-16be").decode(buffer)
+
   try {
     return new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(buffer)
   } catch {
@@ -253,7 +258,10 @@ function findHeader(
 ): string | null {
   const free = headers.filter((header) => !taken.includes(header))
   for (const pattern of patterns) {
-    const found = free.find((header) => normalizeHeader(header).includes(pattern))
+    // A coluna "Nome" vem antes de "Sobrenome", mesmo que esteja depois na planilha.
+    const found =
+      free.find((header) => normalizeHeader(header) === pattern) ??
+      free.find((header) => normalizeHeader(header).includes(pattern))
     if (found) return found
   }
   return null
@@ -314,13 +322,14 @@ export function withBrazilCountryCode(digits: string): string {
 
 /**
  * O número final, ou `null` se não dá para ser telefone. Quem escreveu `+` já disse o país: um
- * número de fora não pode ganhar o 55.
+ * número de fora não pode ganhar o 55. O zero da frente é o de discar ("031", "0055"), e não
+ * faz parte do número.
  */
 export function normalizeImportPhone(raw: string, includeCountryCode: boolean): string | null {
   const value = raw.trim().replace(/@.*$/, "")
   if (!PHONE_CHARACTERS.test(value)) return null
 
-  const digits = onlyDigits(value)
+  const digits = onlyDigits(value).replace(/^0+/, "")
   const explicit = value.startsWith("+")
   const final = includeCountryCode && !explicit ? withBrazilCountryCode(digits) : digits
 

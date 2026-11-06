@@ -180,7 +180,8 @@ function writeValue(params: URLSearchParams, name: string, value: string | null 
 
 /** Escreve só o que difere do padrão: a URL de quem não mexeu em nada é `/contacts`. */
 export function writeFilters(params: URLSearchParams, filters: ContactFilters) {
-  writeValue(params, "q", filters.q.trim() || null)
+  // Sem aparar: o espaço do fim pode ser o meio de "ana b", e a URL volta para o campo de busca.
+  writeValue(params, "q", filters.q || null)
   writeList(params, "connectors", filters.connectors)
   writeList(params, "tags", filters.tags)
   writeList(params, "teams", filters.teams)

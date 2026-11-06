@@ -226,16 +226,9 @@ export function ContactExportDialog({
     )
     footer = (
       <>
-        <Button
-          type="button"
-          variant="ghost"
-          className="text-muted-foreground pointer-coarse:h-10 sm:mr-auto"
-          onClick={dismiss}
-        >
+        {/* O arquivo é o de quando foi pedido: os filtros podem ter mudado desde então. */}
+        <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={dismiss}>
           {t("contacts.export.newExport")}
-        </Button>
-        <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={close}>
-          {t("contacts.actions.close")}
         </Button>
         <Button
           type="button"

@@ -101,6 +101,10 @@ export function ImportColumnsStep({
         <p role="alert" className="text-sm text-destructive">
           {t("contacts.import.columns.sameColumn")}
         </p>
+      ) : mapped && summary.ready === 0 ? (
+        <p role="alert" className="text-sm text-destructive">
+          {t("contacts.import.columns.noneReady")}
+        </p>
       ) : null}
 
       <div className="flex flex-col gap-3 border-t pt-4">

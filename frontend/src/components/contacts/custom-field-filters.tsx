@@ -88,16 +88,19 @@ function NumberBound({
   const commit = useDebouncedCallback(onCommit, 400)
 
   return (
-    <NumberInput
-      aria-label={label}
-      placeholder={label}
-      value={draft}
-      onChange={(next) => {
-        setDraft(next)
-        commit(next)
-      }}
-      className="min-w-0 flex-1"
-    />
+    <label className="min-w-0 flex-1">
+      <span className="sr-only">{label}</span>
+      <NumberInput
+        placeholder={label}
+        value={draft}
+        onChange={(next) => {
+          setDraft(next)
+          commit(next)
+        }}
+        // Fechar o painel logo depois de digitar não pode perder o número.
+        onBlur={() => commit.flush()}
+      />
+    </label>
   )
 }
 

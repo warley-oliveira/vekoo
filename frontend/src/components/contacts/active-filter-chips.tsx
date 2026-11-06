@@ -120,13 +120,15 @@ export function ActiveFilterChips({ filters, lookups, customFields, onChange }: 
     })
   }
 
-  if (filters.from) {
+  const createdFrom = filters.from ?? filters.to
+  const createdTo = filters.to ?? filters.from
+  if (createdFrom && createdTo) {
     chips.push({
       id: "created",
       label: t("contacts.filters.chip.createdAt", {
         value: formatDateInterval(
-          startOfDay(`${filters.from}T12:00:00`),
-          startOfDay(`${filters.to ?? filters.from}T12:00:00`),
+          startOfDay(`${createdFrom}T12:00:00`),
+          startOfDay(`${createdTo}T12:00:00`),
           language
         ),
       }),

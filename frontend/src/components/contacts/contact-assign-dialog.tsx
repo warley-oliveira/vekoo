@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Loader2 } from "lucide-react"
 
@@ -27,6 +27,7 @@ export function ContactAssignDialog({ scope, users, onClose }: ContactAssignDial
   const { t } = useTranslation()
   const language = useLanguage()
   const { report } = useContactMutations()
+  const fieldId = useId()
   const [selected, setSelected] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -99,9 +100,11 @@ export function ContactAssignDialog({ scope, users, onClose }: ContactAssignDial
       }
     >
       <div className="flex flex-col gap-1.5 pb-1">
-        <span className="text-sm font-medium">{t("contacts.bulk.assign.label")}</span>
+        <label htmlFor={fieldId} className="text-sm font-medium">
+          {t("contacts.bulk.assign.label")}
+        </label>
         <SearchableSelect
-          aria-label={t("contacts.bulk.assign.label")}
+          id={fieldId}
           options={options}
           value={selected}
           onChange={(next) => setSelected(next)}

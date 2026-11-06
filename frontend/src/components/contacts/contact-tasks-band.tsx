@@ -48,6 +48,11 @@ export function ContactTasksBand({
   const exportPercentage = state.total > 0 ? Math.round((state.processed / state.total) * 100) : 0
   const showExport = !exportOpen && state.phase !== "idle"
   const showImport = !importOpen && Boolean(runningImport)
+  const problemKey = {
+    expired: "contacts.tasks.expired",
+    failed: "contacts.tasks.failed",
+    empty: "contacts.tasks.empty",
+  }[state.phase as string]
 
   const dismissButton = (
     <Button
@@ -159,13 +164,11 @@ export function ContactTasksBand({
         </motion.div>
       ) : null}
 
-      {showExport && (state.phase === "expired" || state.phase === "failed") ? (
+      {showExport && problemKey ? (
         <motion.div key="problem" {...preset.slideUp} role="alert" className={bandClass()}>
           <div className="flex min-w-0 flex-1 items-start gap-2 text-sm">
             <TriangleAlert aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-            <span className="min-w-0 text-pretty">
-              {t(state.phase === "expired" ? "contacts.tasks.expired" : "contacts.tasks.failed")}
-            </span>
+            <span className="min-w-0 text-pretty">{t(problemKey)}</span>
           </div>
           <div className="flex shrink-0 items-center justify-end gap-1">
             <Button

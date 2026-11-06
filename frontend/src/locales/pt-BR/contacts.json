@@ -287,7 +287,7 @@
       "readyTitle_other": "Arquivo pronto, com {{formatted}} contatos",
       "readyHint": "O link vale até {{time}}. Depois disso, é só exportar de novo.",
       "download": "Baixar arquivo",
-      "newExport": "Nova exportação",
+      "newExport": "Exportar a lista de agora",
       "readyAway": "Sua exportação de contatos está pronta",
       "failedAway": "Não deu para exportar os contatos",
       "expiredTitle": "Este link venceu",
@@ -310,6 +310,7 @@
       "ready_other": "Arquivo com {{formatted}} contatos pronto. O link vale até {{time}}.",
       "expired": "O link da sua exportação venceu.",
       "failed": "Não deu para exportar os contatos.",
+      "empty": "A exportação terminou sem nenhum contato.",
       "dismiss": "Dispensar"
     },
     "import": {
@@ -365,6 +366,7 @@
         "name": "Nome do contato",
         "phone": "Telefone",
         "sameColumn": "Nome e telefone precisam ser colunas diferentes.",
+        "noneReady": "Nenhuma linha tem nome e telefone válido nessas colunas. Confira se são as colunas certas.",
         "optional": "Atribuição, se a planilha tiver",
         "assignee": "Responsável",
         "department": "Departamento",
