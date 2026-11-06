@@ -1,0 +1,472 @@
+{
+  "contacts": {
+    "count_one": "{{formatted}} contato",
+    "count_other": "{{formatted}} contatos",
+    "tableLabel": "Lista de contatos",
+    "noName": "Sem nome",
+    "empty": {
+      "title": "Nenhum contato por aqui ainda",
+      "description": "Quem conversa com você pelos canais aparece aqui. Para trazer uma base que já existe, importe uma planilha."
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "close": "Fechar",
+      "back": "Voltar",
+      "continue": "Continuar"
+    },
+    "status": {
+      "open": "Aberta",
+      "closed": "Fechada"
+    },
+    "automation": {
+      "on": "Ligada",
+      "off": "Desligada"
+    },
+    "session": {
+      "inside": "Dentro",
+      "outside": "Fora",
+      "insideHint": "A pessoa escreveu nas últimas 24 horas: dá para responder normalmente.",
+      "outsideHint": "Fora da janela de 24 horas: no WhatsApp oficial, só dá para falar primeiro com um modelo aprovado."
+    },
+    "team": {
+      "none": "Sem departamento"
+    },
+    "assignee": {
+      "none": "Sem responsável",
+      "unknown": "Pessoa sem acesso"
+    },
+    "connector": {
+      "removed": "Canal removido"
+    },
+    "custom": {
+      "yes": "Sim",
+      "no": "Não"
+    },
+    "columns": {
+      "title": "Colunas",
+      "contact": "Contato",
+      "connector": "Canal",
+      "status": "Situação",
+      "tags": "Etiquetas",
+      "assignee": "Responsável",
+      "team": "Departamento",
+      "lastMessage": "Última mensagem",
+      "session": "Janela de 24h",
+      "automation": "Automação",
+      "unread": "Não lidas",
+      "createdAt": "Criado em",
+      "notes": "Notas",
+      "customFields": "Campos personalizados",
+      "reset": "Voltar ao padrão"
+    },
+    "sort": {
+      "nameAsc": "Nome, de A a Z",
+      "nameDesc": "Nome, de Z a A",
+      "statusAsc": "Abertas primeiro",
+      "statusDesc": "Fechadas primeiro",
+      "lastMessageAsc": "Última mensagem, mais antigas",
+      "lastMessageDesc": "Última mensagem, mais recentes",
+      "unreadAsc": "Menos mensagens não lidas",
+      "unreadDesc": "Mais mensagens não lidas",
+      "createdAsc": "Criados há mais tempo",
+      "createdDesc": "Criados por último"
+    },
+    "row": {
+      "openChat": "Abrir conversa",
+      "copyPhone": "Copiar telefone",
+      "phoneCopied": "Telefone copiado",
+      "copyFailed": "Não deu para copiar o telefone",
+      "moreCount": "+{{count}}",
+      "moreTags_one": "Mais {{count}} etiqueta: {{names}}",
+      "moreTags_other": "Mais {{count}} etiquetas: {{names}}"
+    },
+    "lastMessage": {
+      "types": {
+        "text": "Mensagem",
+        "image": "Imagem",
+        "audio": "Áudio",
+        "video": "Vídeo",
+        "document": "Documento",
+        "file": "Arquivo",
+        "media": "Arquivo",
+        "sticker": "Figurinha",
+        "location": "Localização",
+        "contact": "Contato compartilhado",
+        "template": "Modelo",
+        "other": "Mensagem"
+      }
+    },
+    "filters": {
+      "search": "Buscar por nome ou telefone",
+      "connector": "Canal",
+      "connectorWithType": "{{name}} ({{type}})",
+      "tag": "Etiqueta",
+      "team": "Departamento",
+      "assignee": "Responsável",
+      "assignedToMe": "Comigo",
+      "status": "Situação",
+      "automation": "Automação",
+      "more": "Mais filtros",
+      "session": "Dentro da janela de 24h",
+      "sessionHint": "Só quem escreveu nas últimas 24 horas.",
+      "createdAt": "Criado em",
+      "active": "Filtros aplicados",
+      "remove": "Tirar o filtro {{label}}",
+      "clearAll": "Limpar todos",
+      "custom": {
+        "contains": "Contém",
+        "greaterThan": "Maior que",
+        "lessThan": "Menor que",
+        "any": "Tanto faz"
+      },
+      "chip": {
+        "connector": "Canal: {{value}}",
+        "team": "Departamento: {{value}}",
+        "assignee": "Responsável: {{value}}",
+        "status": "Situação: {{value}}",
+        "automation": "Automação: {{value}}",
+        "createdAt": "Criado em: {{value}}",
+        "field": "{{name}}: {{value}}",
+        "contains": "contém {{value}}",
+        "greaterThan": "maior que {{value}}",
+        "lessThan": "menor que {{value}}",
+        "from": "a partir de {{value}}",
+        "to": "até {{value}}"
+      }
+    },
+    "selection": {
+      "selectPage": "Selecionar esta página",
+      "page_one": "O contato desta página está selecionado.",
+      "page_other": "Os {{formatted}} contatos desta página estão selecionados.",
+      "selectAll_one": "Selecionar o contato da lista",
+      "selectAll_other": "Selecionar os {{formatted}} contatos da lista",
+      "all_one": "O contato da lista está selecionado.",
+      "all_other": "Os {{formatted}} contatos da lista estão selecionados.",
+      "allExcept_one": "O contato da lista está selecionado, menos {{excluded}}.",
+      "allExcept_other": "Os {{formatted}} contatos da lista estão selecionados, menos {{excluded}}.",
+      "clear": "Desfazer seleção"
+    },
+    "bulk": {
+      "actions": {
+        "addTags": "Adicionar etiquetas",
+        "removeTags": "Remover etiquetas",
+        "assign": "Atribuir",
+        "export": "Exportar",
+        "reopen": "Reabrir conversa",
+        "close": "Fechar conversa",
+        "automationOn": "Ligar automação",
+        "automationOff": "Desligar automação",
+        "more": "Mais ações"
+      },
+      "nothingChanged": "Nada mudou",
+      "nothingChangedHint": "Esses contatos já estavam assim, ou estão fora do que você pode ver.",
+      "someUnchanged_one": "O outro já estava assim, ou está fora do que você pode ver.",
+      "someUnchanged_other": "Os outros {{formatted}} já estavam assim, ou estão fora do que você pode ver.",
+      "failed": "Não deu para aplicar a ação",
+      "noTags": "Nenhuma etiqueta criada ainda. Crie etiquetas no chat para usá-las aqui.",
+      "tagsLabel": "Etiquetas",
+      "addTags": {
+        "title": "Adicionar etiquetas",
+        "description_one": "Vale para {{formatted}} contato.",
+        "description_other": "Vale para {{formatted}} contatos.",
+        "descriptionNamed": "Vale para {{name}}.",
+        "confirm": "Adicionar etiquetas",
+        "done_one": "Etiquetas adicionadas em {{formatted}} contato",
+        "done_other": "Etiquetas adicionadas em {{formatted}} contatos"
+      },
+      "removeTags": {
+        "title": "Remover etiquetas",
+        "description_one": "Vale para {{formatted}} contato. Quem não tem a etiqueta fica como está.",
+        "description_other": "Vale para {{formatted}} contatos. Quem não tem a etiqueta fica como está.",
+        "descriptionNamed": "Vale para {{name}}.",
+        "confirm": "Remover etiquetas",
+        "done_one": "Etiquetas removidas de {{formatted}} contato",
+        "done_other": "Etiquetas removidas de {{formatted}} contatos"
+      },
+      "assign": {
+        "title": "Atribuir",
+        "description_one": "Vale para {{formatted}} contato.",
+        "description_other": "Vale para {{formatted}} contatos.",
+        "descriptionNamed": "Vale para {{name}}.",
+        "label": "Responsável",
+        "placeholder": "Escolha uma pessoa",
+        "remove": "Ninguém: tirar a atribuição",
+        "confirm": "Atribuir",
+        "confirmRemove": "Tirar atribuição",
+        "done_one": "Responsável definido em {{formatted}} contato",
+        "done_other": "Responsável definido em {{formatted}} contatos",
+        "doneRemoved_one": "Atribuição retirada de {{formatted}} contato",
+        "doneRemoved_other": "Atribuição retirada de {{formatted}} contatos"
+      },
+      "close": {
+        "title_one": "Fechar {{formatted}} conversa?",
+        "title_other": "Fechar {{formatted}} conversas?",
+        "hint_one": "Ela sai da lista de abertas. Dá para reabrir depois.",
+        "hint_other": "Elas saem da lista de abertas. Dá para reabrir depois.",
+        "confirm_one": "Fechar conversa",
+        "confirm_other": "Fechar conversas",
+        "done_one": "{{formatted}} conversa fechada",
+        "done_other": "{{formatted}} conversas fechadas"
+      },
+      "reopen": {
+        "title_one": "Reabrir {{formatted}} conversa?",
+        "title_other": "Reabrir {{formatted}} conversas?",
+        "hint_one": "Ela volta para a lista de abertas.",
+        "hint_other": "Elas voltam para a lista de abertas.",
+        "confirm_one": "Reabrir conversa",
+        "confirm_other": "Reabrir conversas",
+        "done_one": "{{formatted}} conversa reaberta",
+        "done_other": "{{formatted}} conversas reabertas"
+      },
+      "automationOn": {
+        "title_one": "Ligar a automação em {{formatted}} contato?",
+        "title_other": "Ligar a automação em {{formatted}} contatos?",
+        "hint_one": "Os fluxos voltam a responder esta conversa.",
+        "hint_other": "Os fluxos voltam a responder estas conversas.",
+        "confirm_one": "Ligar automação",
+        "confirm_other": "Ligar automação",
+        "done_one": "Automação ligada em {{formatted}} contato",
+        "done_other": "Automação ligada em {{formatted}} contatos"
+      },
+      "automationOff": {
+        "title_one": "Desligar a automação em {{formatted}} contato?",
+        "title_other": "Desligar a automação em {{formatted}} contatos?",
+        "hint_one": "Os fluxos param de responder esta conversa até alguém religar.",
+        "hint_other": "Os fluxos param de responder estas conversas até alguém religar.",
+        "confirm_one": "Desligar automação",
+        "confirm_other": "Desligar automação",
+        "done_one": "Automação desligada em {{formatted}} contato",
+        "done_other": "Automação desligada em {{formatted}} contatos"
+      }
+    },
+    "errors": {
+      "generic": "Algo deu errado. Tente de novo.",
+      "network": "Sem conexão. Confira sua internet e tente de novo.",
+      "forbidden": "Você não tem permissão para isso.",
+      "invalidAssignee": "Essa pessoa não pode receber atendimentos.",
+      "noChatsSelected": "Selecione ao menos um contato.",
+      "noTagsSelected": "Escolha ao menos uma etiqueta.",
+      "invalidTags": "Essas etiquetas não existem mais.",
+      "tooManyRecipients": "São muitos marcados à mão: o limite é 5.000. Selecione todos da lista e desmarque quem não entra.",
+      "exportTooLarge": "São mais de 5.000 contatos para baixar na hora. Prepare o arquivo em segundo plano.",
+      "invalidConnector": "Este canal não existe mais.",
+      "tooManyContacts": "Um lote passou do limite de 1.000 contatos.",
+      "noContactsProvided": "Nenhum contato para enviar.",
+      "noValidContacts": "Nenhum contato deste lote tem nome e telefone."
+    },
+    "export": {
+      "action": "Exportar",
+      "title": "Exportar contatos",
+      "selectionSummary_one": "{{formatted}} contato selecionado vai para um arquivo CSV.",
+      "selectionSummary_other": "Os {{formatted}} contatos selecionados vão para um arquivo CSV.",
+      "filterSummary_one": "{{formatted}} contato da lista, com os filtros de agora, vai para um arquivo CSV.",
+      "filterSummary_other": "Os {{formatted}} contatos da lista, com os filtros de agora, vão para um arquivo CSV.",
+      "modeLabel": "Como você prefere receber",
+      "now": "Baixar agora",
+      "nowHint": "Para até {{limit}} contatos. O arquivo sai na hora, com esta tela aberta.",
+      "background": "Preparar em segundo plano",
+      "backgroundHint": "Para qualquer tamanho. Você acompanha o andamento, pode continuar trabalhando, e o link vale por 1 hora.",
+      "onlyBackground": "Listas com mais de {{limit}} contatos, ou com muitos marcados à mão, são preparadas em segundo plano: você acompanha o andamento, pode continuar trabalhando, e o link vale por 1 hora.",
+      "submitNow": "Baixar agora",
+      "submitBackground": "Preparar arquivo",
+      "nowDone_one": "Arquivo com {{formatted}} contato baixado",
+      "nowDone_other": "Arquivo com {{formatted}} contatos baixado",
+      "queued": "Na fila, já vai começar.",
+      "running": "Exportando {{processed}} de {{total}} contatos",
+      "progressLabel": "Andamento da exportação",
+      "canClose": "Pode fechar esta janela e até sair da tela: avisamos quando estiver pronto.",
+      "stalled": "Está demorando mais que o normal. Pode continuar esperando ou pedir de novo.",
+      "startOver": "Pedir de novo",
+      "keepGoing": "Continuar em segundo plano",
+      "readyTitle_one": "Arquivo pronto, com {{formatted}} contato",
+      "readyTitle_other": "Arquivo pronto, com {{formatted}} contatos",
+      "readyHint": "O link vale até {{time}}. Depois disso, é só exportar de novo.",
+      "download": "Baixar arquivo",
+      "newExport": "Nova exportação",
+      "readyAway": "Sua exportação de contatos está pronta",
+      "failedAway": "Não deu para exportar os contatos",
+      "expiredTitle": "Este link venceu",
+      "expiredHint": "O link de download vale por 1 hora. Exporte de novo para gerar outro.",
+      "emptyTitle": "Nada para exportar",
+      "emptyHint": "Nenhum contato entrou nesta seleção.",
+      "failedTitle": "Não deu para exportar",
+      "failedHint": "Algo deu errado ao gerar o arquivo. Tente de novo.",
+      "noConnection": "Não conseguimos falar com o servidor. Confira sua conexão e tente de novo.",
+      "exportAgain": "Exportar de novo",
+      "downloadOffline": "Sem conexão para baixar o arquivo. Tente de novo.",
+      "fileGone": "O arquivo já foi apagado. Exporte de novo.",
+      "linkInvalid": "Este link não vale mais para a sua conta. Exporte de novo."
+    },
+    "tasks": {
+      "importing_one": "Importando {{formatted}} contato",
+      "importing_other": "Importando {{formatted}} contatos",
+      "view": "Ver",
+      "ready_one": "Arquivo com {{formatted}} contato pronto. O link vale até {{time}}.",
+      "ready_other": "Arquivo com {{formatted}} contatos pronto. O link vale até {{time}}.",
+      "expired": "O link da sua exportação venceu.",
+      "failed": "Não deu para exportar os contatos.",
+      "dismiss": "Dispensar"
+    },
+    "import": {
+      "action": "Importar contatos",
+      "description": "Traga os contatos de uma planilha. Você confere tudo antes de enviar.",
+      "descriptionForChannel": "Os contatos entram no canal {{name}}. Você confere tudo antes de enviar.",
+      "submit_one": "Importar {{formatted}} contato",
+      "submit_other": "Importar {{formatted}} contatos",
+      "steps": {
+        "file": "Arquivo",
+        "columns": "Colunas",
+        "review": "Conferir",
+        "channel": "Canal"
+      },
+      "file": {
+        "hint": "CSV ou JSON, até 50 MB.",
+        "reading": "Lendo o arquivo…",
+        "errorTitle": "Não deu para ler este arquivo",
+        "moreIssues_one": "E mais {{count}} problema.",
+        "moreIssues_other": "E mais {{count}} problemas.",
+        "helpTitle": "O que funciona",
+        "helpCsv": "CSV, ou planilha salva como CSV, com os títulos na primeira linha.",
+        "helpJson": "JSON, como uma lista de objetos.",
+        "helpRequired": "Cada contato precisa de nome e telefone.",
+        "noteTitle": "Bom saber",
+        "notePlatform": "Os contatos entram só aqui na plataforma: nada muda na agenda do seu celular.",
+        "noteHistory": "O histórico de mensagens do WhatsApp não vem junto.",
+        "template": "Baixar modelo"
+      },
+      "template": {
+        "name": "Nome",
+        "phone": "Telefone",
+        "assignee": "Responsável",
+        "department": "Departamento",
+        "exampleName": "Maria Souza",
+        "fileName": "modelo-contatos.csv"
+      },
+      "issues": {
+        "empty": "O arquivo está vazio.",
+        "unknownFormat": "Não reconhecemos o formato. Use CSV ou JSON.",
+        "headerOnly": "O arquivo só tem a linha de títulos.",
+        "noData": "Não achamos nenhum contato no arquivo.",
+        "jsonNotArray": "O JSON precisa ser uma lista de objetos.",
+        "jsonEmpty": "A lista do JSON está vazia.",
+        "jsonInvalid": "O JSON tem um erro de escrita.",
+        "jsonItemInvalid": "O item {{line}} não é um objeto."
+      },
+      "columns": {
+        "found_one": "{{name}}: {{formatted}} linha.",
+        "found_other": "{{name}}: {{formatted}} linhas.",
+        "pick": "Escolha a coluna",
+        "name": "Nome do contato",
+        "phone": "Telefone",
+        "sameColumn": "Nome e telefone precisam ser colunas diferentes.",
+        "optional": "Atribuição, se a planilha tiver",
+        "assignee": "Responsável",
+        "department": "Departamento",
+        "none": "Não usar",
+        "countryCode": "Acrescentar o código do Brasil (55)",
+        "countryCodeHint": "Para números sem o 55 na frente. Quem já tem o 55, ou começa com +, fica como está.",
+        "sample": "Como vai ficar"
+      },
+      "review": {
+        "total": "Linhas",
+        "ready": "Entram",
+        "ignored": "Ficam de fora",
+        "ignoredTitle": "O que fica de fora",
+        "ignoredReason": {
+          "missingName_one": "{{formatted}} linha sem nome",
+          "missingName_other": "{{formatted}} linhas sem nome",
+          "missingPhone_one": "{{formatted}} linha sem telefone",
+          "missingPhone_other": "{{formatted}} linhas sem telefone",
+          "invalidPhone_one": "{{formatted}} linha com telefone inválido",
+          "invalidPhone_other": "{{formatted}} linhas com telefone inválido",
+          "duplicate_one": "{{formatted}} linha com número repetido no arquivo",
+          "duplicate_other": "{{formatted}} linhas com número repetido no arquivo"
+        },
+        "attributionNote": "Responsável e departamento são ligados pelo nome: quem não for encontrado entra sem atribuição.",
+        "search": "Buscar na planilha",
+        "filter": "Mostrar",
+        "filterAll": "Todas",
+        "filterReady": "Entram",
+        "filterIgnored": "Ficam de fora",
+        "tableLabel": "Conferência das linhas do arquivo",
+        "noneInFilter": "Nenhuma linha aqui",
+        "name": "Nome",
+        "phone": "Telefone",
+        "assignee": "Responsável",
+        "department": "Departamento",
+        "result": "Situação",
+        "line": "Linha",
+        "original": "Dados originais",
+        "emptyCell": "Vazio",
+        "ok": "Entra",
+        "issue": {
+          "missingName": "Sem nome",
+          "missingPhone": "Sem telefone",
+          "invalidPhone": "Telefone inválido",
+          "duplicate": "Repetido"
+        }
+      },
+      "channel": {
+        "label_one": "Para qual canal vai {{formatted}} contato?",
+        "label_other": "Para qual canal vão os {{formatted}} contatos?",
+        "emptyTitle": "Nenhum canal de WhatsApp conectado",
+        "emptyHint": "Os contatos entram em um canal do WhatsApp. Conecte um para importar.",
+        "connect": "Conectar um canal",
+        "noteTitle": "Como os contatos entram",
+        "noteAutomation": "Com a automação desligada: nenhum fluxo fala com eles sozinho.",
+        "noteDuplicates": "Quem já tem conversa nesse canal não é duplicado: a conversa sobe na lista e recebe a atribuição.",
+        "noteOrder": "Os novos entram com data de dois dias atrás, para não encher o topo da lista de quem atende."
+      },
+      "tracking": {
+        "title": "Importando contatos",
+        "sending": "Enviando lote {{sent}} de {{total}}",
+        "processing": "Criando as conversas",
+        "processingBatches": "Criando as conversas: {{finished}} de {{total}} lotes",
+        "partial": "Importação concluída, com falhas",
+        "done": "Importação concluída",
+        "sendFailed": "O envio parou no meio",
+        "sendFailedHint": "{{error}} Dos {{total}} lotes, {{sent}} já foram enviados e seguem sendo processados.",
+        "resume": "Continuar envio",
+        "progressLabel": "Andamento da importação",
+        "imported": "Importados",
+        "notImported": "Ficaram de fora",
+        "batchesFailed_one": "{{count}} lote falhou ao criar as conversas. Importe o arquivo de novo: quem já entrou não é duplicado.",
+        "batchesFailed_other": "{{count}} lotes falharam ao criar as conversas. Importe o arquivo de novo: quem já entrou não é duplicado.",
+        "canClose": "Pode fechar: a importação continua, e avisamos quando terminar.",
+        "doneHint": "Os contatos novos entram com data de dois dias atrás, então podem não estar no topo da lista.",
+        "keepGoing": "Continuar em segundo plano",
+        "another": "Importar outro arquivo",
+        "viewContacts": "Ver contatos"
+      },
+      "stop": {
+        "title": "Parar de enviar?",
+        "hint": "Os lotes já enviados continuam sendo processados. O restante da planilha não entra.",
+        "confirm": "Parar envio",
+        "cancel": "Continuar enviando"
+      },
+      "discard": {
+        "title": "Descartar esta importação?",
+        "hint": "Nada foi enviado ainda. O arquivo e as colunas escolhidas se perdem.",
+        "confirm": "Descartar",
+        "cancel": "Continuar importando"
+      },
+      "history": {
+        "title": "Importações",
+        "emptyTitle": "Nenhuma importação ainda",
+        "emptyHint": "As planilhas importadas aparecem aqui, com quantos contatos entraram.",
+        "noFileName": "Importação sem nome",
+        "counts": "{{imported}} de {{total}} contatos",
+        "status": {
+          "running": "Em andamento",
+          "completed": "Concluída",
+          "failed": "Falhou"
+        }
+      },
+      "finished": {
+        "done_one": "Importação concluída: {{formatted}} contato",
+        "done_other": "Importação concluída: {{formatted}} contatos",
+        "failed": "Uma importação de contatos falhou"
+      }
+    }
+  }
+}

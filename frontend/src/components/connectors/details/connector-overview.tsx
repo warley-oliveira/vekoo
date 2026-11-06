@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 
+import { ImportContactsAction } from "@/components/contacts/import/import-contacts-action"
 import { RelativeTime, StatusBadge } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useConnectorActions } from "@/hooks/connectors/use-connector-actions"
@@ -71,14 +72,17 @@ export function ConnectorOverview({ connector, alerts = [], onConnect }: Connect
           </div>
         </div>
 
-        {main ? (
-          <Button
-            className="pointer-coarse:h-10 max-sm:w-full"
-            onClick={() => runMain(main)}
-          >
-            {t(`connectors.main.${main}`)}
-          </Button>
-        ) : null}
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <ImportContactsAction connector={connector} />
+          {main ? (
+            <Button
+              className="pointer-coarse:h-10 max-sm:w-full"
+              onClick={() => runMain(main)}
+            >
+              {t(`connectors.main.${main}`)}
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {alerts.map((alert) => (
