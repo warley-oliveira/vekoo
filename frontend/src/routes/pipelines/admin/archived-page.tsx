@@ -248,7 +248,7 @@ function ArchivedContent({ board }: { board: Board }) {
               <UserAvatar
                 name={row.original.assignedTo.name}
                 src={row.original.assignedTo.avatarUrl ? apiAssetUrl(row.original.assignedTo.avatarUrl) : undefined}
-                size="xs"
+                size="sm"
               />
               <span className="truncate">{row.original.assignedTo.name}</span>
             </span>

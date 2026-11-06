@@ -23,7 +23,8 @@
       "new": "New",
       "close": "Close",
       "clearSearch": "Clear search",
-      "any": "any"
+      "yes": "Yes",
+      "no": "No"
     },
     "errors": {
       "generic": "That didn't work. Try again in a moment.",
@@ -458,6 +459,774 @@
         "deleted_other": "{{count}} cards deleted.",
         "deleteFailed_one": "{{count}} card could not be deleted.",
         "deleteFailed_other": "{{count}} cards could not be deleted."
+      }
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "charts": {
+      "showChart": "Show chart",
+      "showTable": "Show table",
+      "realized": "Actual",
+      "target": "Goal",
+      "ofTarget": "{{percent}}% of the goal",
+      "selectedMonth": "Selected month",
+      "otherMonths": "Other months",
+      "month": "Month",
+      "date": "Date"
+    },
+    "triggers": {
+      "description": "The board works on its own: when something happens to a card, the trigger does what you asked.",
+      "create": "Create trigger",
+      "viewLabel": "What to see",
+      "viewList": "Triggers",
+      "viewHistory": "History",
+      "search": "Search triggers",
+      "activeCount_one": "{{active}} on out of {{count}}",
+      "activeCount_other": "{{active}} on out of {{count}}",
+      "filterStatus": "Status",
+      "filters": {
+        "all": "All",
+        "on": "On",
+        "off": "Off"
+      },
+      "sort": {
+        "created": "Oldest first",
+        "name": "Name A to Z",
+        "lastFailed": "Failed first"
+      },
+      "noResults": {
+        "title": "No triggers found",
+        "description": "Check the spelling or change the filters.",
+        "clear": "Clear filters"
+      },
+      "empty": {
+        "title": "No triggers yet",
+        "description": "A trigger is a sentence: when a card enters Proposal, tell the owner. Write yours, or start from an example."
+      },
+      "examples": {
+        "title": "Start from an example",
+        "notifyOnStage": {
+          "sentence": "When a card enters a stage, tell the owner.",
+          "message": "{{cardTitle}} reached {{stageName}}."
+        },
+        "assignNew": {
+          "sentence": "When a card is created, share it among the team.",
+          "message": ""
+        },
+        "dueDate": {
+          "sentence": "When a card's due date passes, tell the owner.",
+          "message": "The due date of {{cardTitle}} has passed."
+        },
+        "dealWon": {
+          "sentence": "When a deal is won, tell the team.",
+          "message": "{{cardTitle}} closed for {{dealValue}}."
+        }
+      },
+      "alert": {
+        "title_one": "{{count}} trigger failed on its last run",
+        "title_other": "{{count}} triggers failed on their last run",
+        "description": "The alert stays in the menu until a run succeeds or the trigger is deleted.",
+        "action": "See failures"
+      },
+      "turnedOn": "{{name}} is on.",
+      "turnedOff": "{{name}} is off.",
+      "saved": "Trigger {{name}} saved.",
+      "created": "Trigger {{name}} created.",
+      "toggleLabel": "Turn {{name}} on or off",
+      "actionsOf": "Actions for {{name}}",
+      "edit": "Edit",
+      "seeHistory": "See runs",
+      "delete": {
+        "action": "Delete trigger",
+        "title": "Delete the trigger {{name}}?",
+        "description": "It stops running, and its history goes with it. To just pause it, turn it off.",
+        "descriptionCode": "It stops running, and the code and history go with it. To just pause it, turn it off.",
+        "confirm": "Delete trigger",
+        "done": "Trigger {{name}} deleted."
+      },
+      "status": {
+        "off": "Off",
+        "lastFailed": "Last run failed",
+        "waiting": "Code in the queue"
+      },
+      "runsCode": "Runs code",
+      "runsCodeLocked": "Runs code: only people with access to flows can edit it",
+      "lastRun": "Last run",
+      "neverRun": "Hasn't run yet",
+      "personNoAccess": "{{name}} (no access)",
+      "pickerSearch": "Search",
+      "pickerEmpty": "Nothing found.",
+      "insertToken": "Insert information",
+      "previewLabel": "How it looks:",
+      "tokens": {
+        "id": "Card ID",
+        "title": "Title",
+        "description": "Description",
+        "priority": "Priority",
+        "status": "Status",
+        "dueDate": "Due date",
+        "assignedTo": "Owner",
+        "assignedToId": "Owner ID",
+        "chatId": "Conversation ID",
+        "tags": "Tags",
+        "labels": "Labels",
+        "dealValue": "Deal value",
+        "companyName": "Company",
+        "contactEmail": "Contact email",
+        "contactPhone": "Contact phone",
+        "boardId": "Board ID",
+        "boardName": "Board name",
+        "stageId": "Stage ID",
+        "stageName": "Stage name",
+        "stagePosition": "Stage position",
+        "event": "What happened"
+      },
+      "tokenGroups": {
+        "card": "From the card",
+        "deal": "From the deal",
+        "board": "From the board",
+        "custom": "Custom fields"
+      },
+      "conditionFields": {
+        "priority": "the priority",
+        "assignedToId": "the owner",
+        "stageId": "the stage",
+        "fromStageId": "the source stage",
+        "toStageId": "the destination stage",
+        "stageName": "the stage name",
+        "fromStageName": "the source stage name",
+        "toStageName": "the destination stage name",
+        "slaHours": "the stage's maximum time",
+        "dealValue": "the deal value",
+        "dealProbability": "the probability",
+        "companyName": "the company",
+        "contactEmail": "the contact email",
+        "lostReason": "the reason for losing",
+        "dueDate": "the due date"
+      },
+      "operators": {
+        "equals": "is",
+        "not_equals": "is not",
+        "contains": "contains",
+        "not_contains": "does not contain",
+        "is_empty": "is empty",
+        "is_not_empty": "is filled in",
+        "greater_than": "is greater than",
+        "less_than": "is less than"
+      },
+      "events": {
+        "card_moved": {
+          "label": "a card changes stage",
+          "hint": "With a stage chosen, it applies to the card that entered it.",
+          "preposition": "to"
+        },
+        "card_created": {
+          "label": "a card is created",
+          "hint": "On screen, by a flow or from a conversation.",
+          "preposition": "in"
+        },
+        "card_updated": {
+          "label": "a card is edited",
+          "hint": "Changing only its position doesn't count.",
+          "preposition": "in"
+        },
+        "due_date_passed": {
+          "label": "a card's due date passes",
+          "hint": "Once per due date, and only for dates that pass after the trigger exists.",
+          "preposition": "in"
+        },
+        "sla_breached": {
+          "label": "a card goes over the maximum time",
+          "hint": "The maximum time is set on each stage. Once per visit to the stage.",
+          "preposition": "in"
+        },
+        "deal_won": {
+          "label": "a deal is won",
+          "hint": "When the card is marked as won.",
+          "preposition": "in"
+        },
+        "deal_lost": {
+          "label": "a deal is lost",
+          "hint": "When the card is marked as lost.",
+          "preposition": "in"
+        },
+        "deal_reopened": {
+          "label": "a deal is reopened",
+          "hint": "When a closed deal is reopened.",
+          "preposition": "in"
+        }
+      },
+      "actions": {
+        "notify": {
+          "label": "Tell the team",
+          "hint": "Sends a notice to whoever you choose."
+        },
+        "move_card": {
+          "label": "Move the card",
+          "hint": "Takes the card to another stage on this board."
+        },
+        "assign_user": {
+          "label": "Share the card",
+          "hint": "In turns, among the people you choose."
+        },
+        "create_card": {
+          "label": "Create a card on another board",
+          "hint": "Opens a new card with information from this one."
+        },
+        "send_whatsapp_message": {
+          "label": "Send a message",
+          "hint": "To the card's contact or to a number."
+        },
+        "send_whatsapp_template": {
+          "label": "Send a WhatsApp template",
+          "hint": "A template approved by Meta, with its variables filled in."
+        },
+        "toggle_automation": {
+          "label": "Pause or resume automation",
+          "hint": "Applies to the conversation linked to the card."
+        },
+        "fire_webhook": {
+          "label": "Call an external system",
+          "hint": "Sends the card's data to an address (webhook)."
+        },
+        "run_code": {
+          "label": "Run code",
+          "hint": "JavaScript, for what the other actions don't do."
+        }
+      },
+      "actionGroups": {
+        "board": "On the board",
+        "contact": "With the contact",
+        "integrations": "Integrations"
+      },
+      "sentence": {
+        "afterEvent": ", ",
+        "ifWord": "if",
+        "end": ".",
+        "ifPrefix": "if {{conditions}}, ",
+        "whole": "{{event}}, {{conditions}}{{actions}}.",
+        "condition": "{{field}} {{operator}} <b>{{value}}</b>",
+        "conditionNoValue": "{{field}} <b>{{operator}}</b>",
+        "events": {
+          "card_moved": {
+            "any": "When a card changes stage",
+            "stage": "When a card enters <b>{{stage}}</b>"
+          },
+          "card_created": {
+            "any": "When a card is created",
+            "stage": "When a card is created in <b>{{stage}}</b>"
+          },
+          "card_updated": {
+            "any": "When a card is edited",
+            "stage": "When a card in <b>{{stage}}</b> is edited"
+          },
+          "due_date_passed": {
+            "any": "When a card's due date passes",
+            "stage": "When the due date of a card in <b>{{stage}}</b> passes"
+          },
+          "sla_breached": {
+            "any": "When a card goes over the stage's maximum time",
+            "stage": "When a card goes over the maximum time in <b>{{stage}}</b>"
+          },
+          "deal_won": {
+            "any": "When a deal is won",
+            "stage": "When a deal in <b>{{stage}}</b> is won"
+          },
+          "deal_lost": {
+            "any": "When a deal is lost",
+            "stage": "When a deal in <b>{{stage}}</b> is lost"
+          },
+          "deal_reopened": {
+            "any": "When a deal is reopened",
+            "stage": "When a deal in <b>{{stage}}</b> is reopened"
+          }
+        },
+        "actions": {
+          "notify": {
+            "default": "tell <b>the owner and the watchers</b>",
+            "people": "tell <b>{{people}}</b>"
+          },
+          "move_card": {
+            "stage": "move the card to <b>{{stage}}</b>",
+            "any": "move the card"
+          },
+          "assign_user": {
+            "none": "share the card",
+            "one": "assign to <b>{{people}}</b>",
+            "many": "share among <b>{{people}}</b>"
+          },
+          "send_whatsapp_message": {
+            "contact": "send a message to <b>the card's contact</b>",
+            "phone": "send a message to <b>{{phone}}</b>"
+          },
+          "send_whatsapp_template": {
+            "contact": "send a template to <b>the card's contact</b>",
+            "phone": "send a template to <b>{{phone}}</b>"
+          },
+          "toggle_automation": {
+            "enabled": "resume the conversation's automation",
+            "disabled": "pause the conversation's automation for <b>{{duration}}</b>"
+          },
+          "create_card": {
+            "board": "create a card in <b>{{board}}</b>",
+            "any": "create a card on another board"
+          },
+          "fire_webhook": {
+            "host": "call <b>{{host}}</b>",
+            "any": "call an external system"
+          },
+          "run_code": "run code",
+          "unknown": "do something"
+        }
+      },
+      "editor": {
+        "createTitle": "New trigger",
+        "submitCreate": "Create trigger",
+        "submitEdit": "Save trigger",
+        "when": "When",
+        "if": "If",
+        "ifHint": "Optional. All of them must match.",
+        "then": "Then",
+        "thenHint": "In list order. A failure doesn't stop the next ones.",
+        "whenWord": "When",
+        "event": "What happens",
+        "stage": "On which stage",
+        "anyStage": "any stage",
+        "addCondition": "Add condition",
+        "addAnotherCondition": "And also",
+        "addAction": "Add action",
+        "maxActions": "A trigger takes up to {{count}} actions.",
+        "dragAction": "Change this action's order",
+        "actionType": "What to do",
+        "removeAction": "Remove this action",
+        "conditionField": "Condition on",
+        "conditionOperator": "How to compare",
+        "conditionValue": "Value",
+        "choose": "choose",
+        "valuePlaceholder": "Value",
+        "removeCondition": "Remove this condition",
+        "unknownCondition": "Condition created outside this screen: it keeps applying as it is.",
+        "name": "Trigger name",
+        "nameHint": "Suggested from the sentence. Change it if you like.",
+        "active": "On",
+        "activeHint": "When off, the trigger stays stored and doesn't run."
+      },
+      "validation": {
+        "name": "Give the trigger a name.",
+        "nameTooLong": "Use up to 255 characters.",
+        "actions": "Include at least one action.",
+        "people": "Choose at least one person.",
+        "stage": "Choose the stage.",
+        "connector": "Choose the channel.",
+        "message": "Write the message.",
+        "phone": "Enter the number.",
+        "template": "Choose the template.",
+        "url": "Enter an address starting with http:// or https://.",
+        "duration": "Say for how long.",
+        "targetBoard": "Choose the board.",
+        "cardTitle": "Write the new card's title.",
+        "code": "Write the code.",
+        "codeTooLong": "The code is over 100,000 characters.",
+        "timeout": "The time must be between 1 and 60 seconds.",
+        "conditionValue": "Fill in this condition's value.",
+        "conditionChoice": "Choose an option for this condition."
+      },
+      "actionForm": {
+        "peoplePlaceholder": "Choose the people",
+        "notify": {
+          "audience": "Who gets the notice",
+          "audienceDefault": "Owner and watchers",
+          "audiencePeople": "Chosen people",
+          "people": "Who gets it",
+          "message": "Message",
+          "messageHint": "With no message, a notice says the card was updated.",
+          "messagePlaceholder": "E.g. {{cardTitle}} reached {{stageName}}."
+        },
+        "move": {
+          "stage": "To which stage",
+          "hint": "The trigger moves the card without checking the stage's checklist or required fields.",
+          "placeholder": "Choose the stage"
+        },
+        "assign": {
+          "people": "Among whom",
+          "hint": "Each card goes to the next person on the list, in turns. Anyone who lost access is skipped."
+        },
+        "whatsapp": {
+          "connector": "Through which channel",
+          "connectorPlaceholder": "Choose the channel",
+          "inactiveOption": "{{name}} (disconnected)",
+          "connectorInactive": "This channel is disconnected: the message won't go out. Choose another or reconnect it.",
+          "connectorMissing": "The chosen channel no longer exists. Choose another.",
+          "noConnector": "No connected channel can send this kind of message.",
+          "connectAction": "See channels",
+          "target": "To whom",
+          "targetContact": "The card's contact",
+          "targetSpecific": "A number",
+          "targetContactHint": "The card needs a linked conversation. Without one, the action fails and shows in the history.",
+          "phone": "Number",
+          "phoneHint": "With country and area code, digits only.",
+          "phonePlaceholder": "5531983794137",
+          "message": "Message",
+          "messagePlaceholder": "E.g. Hi! Your order {{cardTitle}} has been picked."
+        },
+        "template": {
+          "template": "Template",
+          "placeholder": "Choose the template",
+          "noTemplates": "This channel has no templates yet.",
+          "notApproved": "{{name}} (not approved)",
+          "variable": "Variable {{name}}",
+          "variablePlaceholder": "Text or card information"
+        },
+        "automation": {
+          "status": "What to do with automation",
+          "pause": "Pause",
+          "resume": "Resume",
+          "time": "For how long",
+          "period": "Unit",
+          "minutes": "Minutes",
+          "hours": "Hours",
+          "days": "Days",
+          "hint": "Applies to the conversation linked to the card. With no conversation, the action fails and shows in the history."
+        },
+        "webhook": {
+          "url": "Address",
+          "urlHint": "Internal addresses are refused.",
+          "urlPlaceholder": "https://api.example.com/orders",
+          "method": "Method",
+          "headers": "Headers",
+          "headerName": "Name",
+          "headerValue": "Value",
+          "addHeader": "Add header",
+          "removeHeader": "Remove this header",
+          "body": "Body",
+          "bodyHint": "With no body, it sends everything the trigger knows about the card, board and stage.",
+          "bodyPlaceholder": "{\"card\": \"{{cardTitle}}\", \"stage\": \"{{stageName}}\"}"
+        },
+        "createCard": {
+          "noBoards": "There's no other board to receive the card. Create a board first.",
+          "board": "On which board",
+          "boardPlaceholder": "Choose the board",
+          "stage": "On which stage",
+          "stageFirst": "First stage",
+          "title": "New card's title",
+          "titlePlaceholder": "E.g. Order: {{companyName}}",
+          "more": "More options",
+          "description": "Description",
+          "descriptionPlaceholder": "E.g. From {{boardName}}, stage {{stageName}}.",
+          "priority": "Priority",
+          "noPriority": "No priority",
+          "dueDays": "Due in how many days",
+          "dueDaysHint": "Counted from when the card is created.",
+          "inheritAssigned": "Use the same owner as this card",
+          "assignedTo": "Owner",
+          "noAssignee": "No owner",
+          "inheritLabels": "Use the same labels as this card",
+          "labels": "Labels",
+          "labelsPlaceholder": "Choose the labels",
+          "tags": "Tags",
+          "tagsPlaceholder": "Separate with commas",
+          "dealValue": "Deal value",
+          "companyName": "Company",
+          "contactEmail": "Contact email",
+          "contactPhone": "Contact phone",
+          "customFields": "Fields of {{name}}",
+          "fieldEmpty": "Leave empty"
+        }
+      },
+      "history": {
+        "count_one": "{{count}} run",
+        "count_other": "{{count}} runs",
+        "filterTrigger": "Trigger",
+        "allTriggers": "All triggers",
+        "filterStatus": "Result",
+        "status": {
+          "all": "All",
+          "failure": "Failed",
+          "success": "Succeeded",
+          "skipped": "Skipped"
+        },
+        "refresh": "Refresh",
+        "clear": "Clear filters",
+        "codeNotice": "A trigger with code shows up twice: once when it enters the queue, once with the result. If the second never arrives, the scripts process is stopped.",
+        "noResults": {
+          "title": "No runs with these filters",
+          "description": "Change the filters to see the others."
+        },
+        "empty": {
+          "title": "No runs yet",
+          "description": "When a trigger runs, the result of each action shows up here. Kept for 90 days."
+        },
+        "deletedTrigger": "Deleted trigger",
+        "deletedCard": "Deleted card",
+        "openCard": "Open card",
+        "enqueued": "In the queue",
+        "unknownAction": "Unexpected error",
+        "outcome": {
+          "enqueued": "Went to the queue: the result comes in another run.",
+          "notified_one": "{{count}} person told.",
+          "notified_other": "{{count}} people told.",
+          "assigned": "Assigned to {{name}}.",
+          "someone": "someone",
+          "statusCode": "Responded {{code}}.",
+          "cardCreated": "Card created."
+        }
+      }
+    },
+    "code": {
+      "panelTitle": "Trigger code",
+      "format": "Tidy the code",
+      "wrap": "Wrap long lines",
+      "footerHint": "The code goes with the trigger when you save it.",
+      "done": "Done",
+      "loading": "Opening the editor",
+      "problems_one": "{{count}} problem in the code",
+      "problems_other": "{{count}} problems in the code",
+      "line": "Line {{line}}",
+      "referenceTitle": "Reference",
+      "referenceIntro": "Click a function to insert it at the cursor. The script is the body of an async function: return and await work directly.",
+      "rulesTitle": "Good to know",
+      "rules": {
+        "noRetry": "If it fails, it doesn't try again: the error goes to the history and becomes an alert in the menu.",
+        "noChain": "What the script changes on the card doesn't fire another trigger.",
+        "noTimers": "No setTimeout, setInterval or external libraries.",
+        "names": "In the API, a stage is a column and a chat is a conversation: the names are a contract for script writers."
+      },
+      "snippetsTitle": "Ready-made examples",
+      "snippets": {
+        "score": "Add points to the score field",
+        "webhook": "Send the card to an external system",
+        "label": "Label deals above a value"
+      },
+      "insert": "Insert",
+      "reference": {
+        "params": {
+          "title": "What the script receives",
+          "card": "The card that fired it, with the kanban API fields.",
+          "board": "The board's ID and name.",
+          "trigger": "This trigger's ID and name.",
+          "event": "The event and what came with it (from which stage to which)."
+        },
+        "find": {
+          "title": "Find",
+          "card": "A card, with the actions below.",
+          "board": "A board, by ID or name, ignoring accents and case.",
+          "boards": "All boards.",
+          "cardsForConversation": "The conversation's cards, on any board.",
+          "labels": "The organization's labels."
+        },
+        "card": {
+          "title": "On the card",
+          "update": "Changes title, priority, due date, value and other fields.",
+          "moveTo": "Moves to the stage, respecting the locks. If blocked, returns ok: false.",
+          "markWon": "Marks as won.",
+          "markLost": "Marks as lost, with the reason.",
+          "reopen": "Reopens the deal.",
+          "archive": "Archives.",
+          "unarchive": "Unarchives.",
+          "addLabel": "Adds a label. A name that doesn't exist is created.",
+          "removeLabel": "Removes a label by ID.",
+          "setCustomField": "Writes a custom field, by key or name.",
+          "getCustomField": "Reads a custom field.",
+          "incrementCustomField": "Adds to a number field and returns the total.",
+          "addComment": "Comments, signed as automation.",
+          "comments": "Reads the comments.",
+          "addChecklist": "Creates a checklist on the card.",
+          "checklists": "Reads the checklists.",
+          "refresh": "Reloads the card from the database."
+        },
+        "board": {
+          "title": "On the board",
+          "column": "A stage, by ID or name.",
+          "cards": "The cards, with filters.",
+          "createCard": "Creates a card in a stage.",
+          "customFields": "The board's fields."
+        },
+        "contact": {
+          "title": "In the card's conversation",
+          "getContactInfo": "The contact's name and phone. Only on a card with a conversation.",
+          "tagAdd": "Tags the conversation.",
+          "contactAttribute": "Writes an attribute that shows on the contact's screen.",
+          "assignUserByEmail": "Assigns the conversation. An unknown email removes the owner."
+        },
+        "network": {
+          "title": "Network and data",
+          "fetch": "Calls an external system. 4xx and 5xx don't reject: they come with ok: false.",
+          "collection": "Stores data in the organization's tables.",
+          "catalog": "Searches the product catalog.",
+          "console": "Writes to the log, for investigating."
+        }
+      },
+      "noPermission": "This trigger runs code. Only people with access to flows can see and change it: the script runs as the whole organization.",
+      "emptyPreview": "No code yet.",
+      "useLargerScreen": "To write code, use a larger screen. Here you can only read it.",
+      "linesCount_one": "{{count}} line",
+      "linesCount_other": "{{count}} lines",
+      "openEditor": "Open editor",
+      "timeout": "Maximum time",
+      "seconds_one": "{{count}} second",
+      "seconds_other": "{{count}} seconds",
+      "twoExecutions": "This trigger shows up twice in the history: when it enters the queue and with the result. A failure becomes an alert in the menu until a run succeeds.",
+      "starter": "// The card that fired the trigger is in params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Hello, ' + params.card.title);\n\nreturn { event: params.event.event_type };\n"
+    },
+    "goals": {
+      "description": "How much you want to sell each month. Actual is the sum of the deals won that month.",
+      "of": "of",
+      "meterText": "{{percent}} of the goal",
+      "boardGoal": "Board goal",
+      "boardGoalHint": "The total the whole board wants to sell in the month.",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "thisMonth": "This month",
+      "actionsOf": "Actions for {{name}}",
+      "edit": "Edit",
+      "setBoardGoal": "Set board goal",
+      "setGoal": "Set goal",
+      "setForOther": "Set a goal for someone else",
+      "byPerson": "By person",
+      "byPersonHint": "Anyone who owns a card shows up here, even without a goal.",
+      "noPeople": "Nobody owns a card on this board yet.",
+      "goalOf": "{{name}}'s goal",
+      "noGoalThisMonth": "No goal this month",
+      "notSales": {
+        "title": "Goals are for sales boards",
+        "description": "A goal compares what you wanted to sell with the deals won, and this board has no deals.",
+        "action": "See board settings"
+      },
+      "noBoardGoal": {
+        "title": "No goal for {{month}}",
+        "description": "For example: $45,000 in sales for the month. Actual updates itself with each deal won."
+      },
+      "history": {
+        "title": "Last {{count}} months",
+        "description": "Revenue won each month, against the board goal."
+      },
+      "form": {
+        "createTitle": "Set goal",
+        "editTitle": "Edit goal",
+        "submit": "Save goal",
+        "saved": "Goal saved.",
+        "person": "Person",
+        "personPlaceholder": "Choose the person",
+        "personRequired": "Choose the person.",
+        "target": "Goal amount",
+        "targetHint": "For the whole month.",
+        "targetRequired": "Enter an amount above zero.",
+        "targetTooHigh": "That amount is too high.",
+        "current": "Today:"
+      },
+      "delete": {
+        "action": "Delete goal",
+        "title": "Delete {{name}} for {{month}}?",
+        "description": "Deals won keep counting. Only the month's goal goes away.",
+        "confirm": "Delete goal",
+        "done": "Goal deleted."
+      }
+    },
+    "metrics": {
+      "description": "How the board is doing: what came in, what closed and where cards get stuck.",
+      "restricted": "On this board you see only your own cards, and the numbers count only those.",
+      "periodSection": "In the period",
+      "period": "Period",
+      "versusPrevious": "vs. previous period",
+      "nowSection": "On the board now",
+      "nowHint": "Today's snapshot. It doesn't change with the period.",
+      "priority": "By priority",
+      "priorityNone": "No priority",
+      "presets": {
+        "last90": "Last 90 days",
+        "thisYear": "This year"
+      },
+      "empty": {
+        "title": "Nothing to measure yet",
+        "description": "When the board has cards, the numbers show up here.",
+        "action": "Open the board"
+      },
+      "tiles": {
+        "created": "New cards",
+        "won": "Won",
+        "lost": "Lost",
+        "conversion": "Conversion",
+        "deals_one": "{{count}} deal",
+        "deals_other": "{{count}} deals",
+        "nothingClosed": "Nothing closed in this period",
+        "active": "Active cards",
+        "totalValue": "Value on the board",
+        "weighted": "Weighted value",
+        "weightedHint": "Open value times the probability",
+        "overdue": "Overdue"
+      },
+      "series": {
+        "createdCount": "New cards",
+        "wonCount": "Deals won",
+        "wonValue": "Revenue"
+      },
+      "trend": {
+        "title": "Trend",
+        "measure": "What to show",
+        "bucket": {
+          "day": "Day by day",
+          "week": "Week by week",
+          "month": "Month by month"
+        }
+      },
+      "conversion": {
+        "title": "Conversion between stages",
+        "description_one": "How far {{count}} card created in the period got.",
+        "description_other": "How far the {{count}} cards created in the period got.",
+        "empty": "No cards were created in this period.",
+        "won": "Won",
+        "continued": "{{percent}} moved on",
+        "biggestDrop": "biggest drop"
+      },
+      "stageTime": {
+        "title": "Average time per stage",
+        "description": "Counts the visits that ended in the period and, if it reaches today, the cards still there.",
+        "empty": "No visits in this period.",
+        "passages_one": "{{count}} visit",
+        "passages_other": "{{count}} visits"
+      },
+      "ranking": {
+        "title": "Who closed the most",
+        "description": "By value won in the period.",
+        "empty": "No deals closed with an owner in this period.",
+        "detail": "{{won}} · {{lost}} · {{rate}} conversion",
+        "won_one": "{{count}} won",
+        "won_other": "{{count}} won",
+        "lost_one": "{{count}} lost",
+        "lost_other": "{{count}} lost"
+      },
+      "goal": {
+        "section": "Goal",
+        "title": "Goal for {{month}}",
+        "manage": "See goals",
+        "none": "No goal this month."
+      },
+      "stages": {
+        "title": "By stage",
+        "measure": "What to show",
+        "cards": "Cards",
+        "value": "Value"
+      },
+      "deals": {
+        "title": "Deals",
+        "description": "Since the board began.",
+        "empty": "No deals recorded.",
+        "open": "Open",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "forecast": {
+        "title": "Closing forecast",
+        "description": "Open deals, by the month they should close. Tap a month to see which.",
+        "empty": "No open deals with a value.",
+        "noDate": "No forecast",
+        "count_one": "{{count}} deal",
+        "count_other": "{{count}} deals",
+        "weighted": "Weighted:"
       }
     }
   }

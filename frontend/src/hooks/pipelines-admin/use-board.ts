@@ -69,7 +69,7 @@ export function useBoardMutations(boardId: string) {
 
   const updateBoard = useCallback(
     async (input: BoardInput) => {
-      // Sem as etapas na resposta do formulário: guarda o que veio e relê tudo por baixo.
+      // A resposta já é o quadro inteiro: a tela muda na hora, e o resto (menu, métricas) relê por baixo.
       const saved = await apiPatch<Board>(boardKey(boardId), { board: input })
       await mutate(boardKey(boardId), saved, { revalidate: false })
       void revalidate()

@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 
 // Formatos que só esta área usa. Sempre pelo `Intl`, com o idioma ativo.
@@ -37,6 +38,11 @@ export function formatMonth(
 ): string {
   const [year, monthNumber] = month.split("-").map(Number)
   return new Intl.DateTimeFormat(language, options).format(new Date(year, (monthNumber || 1) - 1, 1))
+}
+
+/** "Novembro de 2026", para título e início de linha. */
+export function formatMonthTitle(month: string, language: string): string {
+  return capitalizeFirstLetter(formatMonth(month, language))
 }
 
 /** "2026-11" do mês em que `date` está, na hora local. */

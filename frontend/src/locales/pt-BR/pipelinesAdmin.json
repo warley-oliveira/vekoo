@@ -23,7 +23,8 @@
       "new": "Novo",
       "close": "Fechar",
       "clearSearch": "Limpar a busca",
-      "any": "qualquer"
+      "yes": "Sim",
+      "no": "Não"
     },
     "errors": {
       "generic": "Não deu certo. Tente de novo em instantes.",
@@ -458,6 +459,774 @@
         "deleted_other": "{{count}} cards excluídos.",
         "deleteFailed_one": "{{count}} card não pôde ser excluído.",
         "deleteFailed_other": "{{count}} cards não puderam ser excluídos."
+      }
+    },
+    "priorities": {
+      "low": "Baixa",
+      "medium": "Média",
+      "high": "Alta",
+      "urgent": "Urgente"
+    },
+    "charts": {
+      "showChart": "Ver gráfico",
+      "showTable": "Ver tabela",
+      "realized": "Realizado",
+      "target": "Meta",
+      "ofTarget": "{{percent}}% da meta",
+      "selectedMonth": "Mês escolhido",
+      "otherMonths": "Outros meses",
+      "month": "Mês",
+      "date": "Data"
+    },
+    "triggers": {
+      "description": "O quadro trabalha sozinho: quando algo acontece com um card, o gatilho faz o que você pediu.",
+      "create": "Criar gatilho",
+      "viewLabel": "O que ver",
+      "viewList": "Gatilhos",
+      "viewHistory": "Histórico",
+      "search": "Buscar gatilho",
+      "activeCount_one": "{{active}} ligado de {{count}}",
+      "activeCount_other": "{{active}} ligados de {{count}}",
+      "filterStatus": "Situação",
+      "filters": {
+        "all": "Todos",
+        "on": "Ligados",
+        "off": "Desligados"
+      },
+      "sort": {
+        "created": "Mais antigos primeiro",
+        "name": "Nome de A a Z",
+        "lastFailed": "Com falha primeiro"
+      },
+      "noResults": {
+        "title": "Nenhum gatilho encontrado",
+        "description": "Confira a escrita ou mude os filtros.",
+        "clear": "Limpar filtros"
+      },
+      "empty": {
+        "title": "Nenhum gatilho ainda",
+        "description": "Um gatilho é uma frase: quando um card entrar em Proposta, avisar o responsável. Escreva a sua, ou parta de um exemplo."
+      },
+      "examples": {
+        "title": "Comece com um exemplo",
+        "notifyOnStage": {
+          "sentence": "Quando um card entrar em uma etapa, avisar o responsável.",
+          "message": "{{cardTitle}} chegou em {{stageName}}."
+        },
+        "assignNew": {
+          "sentence": "Quando um card for criado, distribuir entre a equipe.",
+          "message": ""
+        },
+        "dueDate": {
+          "sentence": "Quando o prazo de um card vencer, avisar o responsável.",
+          "message": "O prazo de {{cardTitle}} venceu."
+        },
+        "dealWon": {
+          "sentence": "Quando um negócio for ganho, avisar a equipe.",
+          "message": "{{cardTitle}} fechou por R$ {{dealValue}}."
+        }
+      },
+      "alert": {
+        "title_one": "{{count}} gatilho falhou na última execução",
+        "title_other": "{{count}} gatilhos falharam na última execução",
+        "description": "O alerta fica no menu até uma execução dar certo ou o gatilho ser excluído.",
+        "action": "Ver falhas"
+      },
+      "turnedOn": "{{name}} ligado.",
+      "turnedOff": "{{name}} desligado.",
+      "saved": "Gatilho {{name}} salvo.",
+      "created": "Gatilho {{name}} criado.",
+      "toggleLabel": "Ligar ou desligar {{name}}",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Editar",
+      "seeHistory": "Ver execuções",
+      "delete": {
+        "action": "Excluir gatilho",
+        "title": "Excluir o gatilho {{name}}?",
+        "description": "Ele deixa de rodar, e o histórico dele vai junto. Se quiser só pausar, desligue.",
+        "descriptionCode": "Ele deixa de rodar, e o código e o histórico vão junto. Se quiser só pausar, desligue.",
+        "confirm": "Excluir gatilho",
+        "done": "Gatilho {{name}} excluído."
+      },
+      "status": {
+        "off": "Desligado",
+        "lastFailed": "Última execução falhou",
+        "waiting": "Código na fila"
+      },
+      "runsCode": "Roda código",
+      "runsCodeLocked": "Roda código: só quem tem acesso aos fluxos edita",
+      "lastRun": "Última execução",
+      "neverRun": "Ainda não rodou",
+      "personNoAccess": "{{name}} (sem acesso)",
+      "pickerSearch": "Buscar",
+      "pickerEmpty": "Nada encontrado.",
+      "insertToken": "Inserir informação",
+      "previewLabel": "Como fica:",
+      "tokens": {
+        "id": "Código do card",
+        "title": "Título",
+        "description": "Descrição",
+        "priority": "Prioridade",
+        "status": "Situação",
+        "dueDate": "Prazo",
+        "assignedTo": "Responsável",
+        "assignedToId": "Código do responsável",
+        "chatId": "Código da conversa",
+        "tags": "Tags",
+        "labels": "Etiquetas",
+        "dealValue": "Valor do negócio",
+        "companyName": "Empresa",
+        "contactEmail": "E-mail do contato",
+        "contactPhone": "Telefone do contato",
+        "boardId": "Código do quadro",
+        "boardName": "Nome do quadro",
+        "stageId": "Código da etapa",
+        "stageName": "Nome da etapa",
+        "stagePosition": "Posição da etapa",
+        "event": "O que aconteceu"
+      },
+      "tokenGroups": {
+        "card": "Do card",
+        "deal": "Do negócio",
+        "board": "Do quadro",
+        "custom": "Campos personalizados"
+      },
+      "conditionFields": {
+        "priority": "a prioridade",
+        "assignedToId": "o responsável",
+        "stageId": "a etapa",
+        "fromStageId": "a etapa de origem",
+        "toStageId": "a etapa de destino",
+        "stageName": "o nome da etapa",
+        "fromStageName": "o nome da etapa de origem",
+        "toStageName": "o nome da etapa de destino",
+        "slaHours": "o tempo máximo da etapa",
+        "dealValue": "o valor do negócio",
+        "dealProbability": "a probabilidade",
+        "companyName": "a empresa",
+        "contactEmail": "o e-mail do contato",
+        "lostReason": "o motivo da perda",
+        "dueDate": "o prazo"
+      },
+      "operators": {
+        "equals": "for",
+        "not_equals": "não for",
+        "contains": "contiver",
+        "not_contains": "não contiver",
+        "is_empty": "estiver vazio",
+        "is_not_empty": "estiver preenchido",
+        "greater_than": "for maior que",
+        "less_than": "for menor que"
+      },
+      "events": {
+        "card_moved": {
+          "label": "um card mudar de etapa",
+          "hint": "Na etapa escolhida, vale o card que entrou nela.",
+          "preposition": "para"
+        },
+        "card_created": {
+          "label": "um card for criado",
+          "hint": "Vale para quem cria na tela, por fluxo ou pela conversa.",
+          "preposition": "em"
+        },
+        "card_updated": {
+          "label": "um card for editado",
+          "hint": "Mudar só de posição não conta.",
+          "preposition": "em"
+        },
+        "due_date_passed": {
+          "label": "o prazo de um card vencer",
+          "hint": "Uma vez por prazo, e só para o que vencer depois de o gatilho existir.",
+          "preposition": "em"
+        },
+        "sla_breached": {
+          "label": "um card passar do tempo máximo",
+          "hint": "O tempo máximo é definido em cada etapa. Vale uma vez por passagem.",
+          "preposition": "em"
+        },
+        "deal_won": {
+          "label": "um negócio for ganho",
+          "hint": "Ao marcar o card como ganho.",
+          "preposition": "em"
+        },
+        "deal_lost": {
+          "label": "um negócio for perdido",
+          "hint": "Ao marcar o card como perdido.",
+          "preposition": "em"
+        },
+        "deal_reopened": {
+          "label": "um negócio for reaberto",
+          "hint": "Ao reabrir um negócio já fechado.",
+          "preposition": "em"
+        }
+      },
+      "actions": {
+        "notify": {
+          "label": "Avisar a equipe",
+          "hint": "Manda um aviso para quem você escolher."
+        },
+        "move_card": {
+          "label": "Mover o card",
+          "hint": "Leva o card para outra etapa deste quadro."
+        },
+        "assign_user": {
+          "label": "Distribuir o card",
+          "hint": "Em rodízio, entre as pessoas que você escolher."
+        },
+        "create_card": {
+          "label": "Criar um card em outro quadro",
+          "hint": "Abre um card novo, com informações deste."
+        },
+        "send_whatsapp_message": {
+          "label": "Enviar uma mensagem",
+          "hint": "Para o contato do card ou para um número."
+        },
+        "send_whatsapp_template": {
+          "label": "Enviar um modelo do WhatsApp",
+          "hint": "Um modelo aprovado pela Meta, com as variáveis preenchidas."
+        },
+        "toggle_automation": {
+          "label": "Pausar ou ligar a automação",
+          "hint": "Vale para a conversa ligada ao card."
+        },
+        "fire_webhook": {
+          "label": "Chamar um sistema externo",
+          "hint": "Manda os dados do card para um endereço (webhook)."
+        },
+        "run_code": {
+          "label": "Rodar um código",
+          "hint": "JavaScript, para o que as outras ações não fazem."
+        }
+      },
+      "actionGroups": {
+        "board": "No quadro",
+        "contact": "Com o contato",
+        "integrations": "Integrações"
+      },
+      "sentence": {
+        "afterEvent": ", ",
+        "ifWord": "se",
+        "end": ".",
+        "ifPrefix": "se {{conditions}}, ",
+        "whole": "{{event}}, {{conditions}}{{actions}}.",
+        "condition": "{{field}} {{operator}} <b>{{value}}</b>",
+        "conditionNoValue": "{{field}} <b>{{operator}}</b>",
+        "events": {
+          "card_moved": {
+            "any": "Quando um card mudar de etapa",
+            "stage": "Quando um card entrar em <b>{{stage}}</b>"
+          },
+          "card_created": {
+            "any": "Quando um card for criado",
+            "stage": "Quando um card for criado em <b>{{stage}}</b>"
+          },
+          "card_updated": {
+            "any": "Quando um card for editado",
+            "stage": "Quando um card em <b>{{stage}}</b> for editado"
+          },
+          "due_date_passed": {
+            "any": "Quando o prazo de um card vencer",
+            "stage": "Quando o prazo de um card em <b>{{stage}}</b> vencer"
+          },
+          "sla_breached": {
+            "any": "Quando um card passar do tempo máximo da etapa",
+            "stage": "Quando um card passar do tempo máximo em <b>{{stage}}</b>"
+          },
+          "deal_won": {
+            "any": "Quando um negócio for ganho",
+            "stage": "Quando um negócio em <b>{{stage}}</b> for ganho"
+          },
+          "deal_lost": {
+            "any": "Quando um negócio for perdido",
+            "stage": "Quando um negócio em <b>{{stage}}</b> for perdido"
+          },
+          "deal_reopened": {
+            "any": "Quando um negócio for reaberto",
+            "stage": "Quando um negócio em <b>{{stage}}</b> for reaberto"
+          }
+        },
+        "actions": {
+          "notify": {
+            "default": "avisar <b>o responsável e quem acompanha</b>",
+            "people": "avisar <b>{{people}}</b>"
+          },
+          "move_card": {
+            "stage": "mover o card para <b>{{stage}}</b>",
+            "any": "mover o card"
+          },
+          "assign_user": {
+            "none": "distribuir o card",
+            "one": "atribuir a <b>{{people}}</b>",
+            "many": "distribuir entre <b>{{people}}</b>"
+          },
+          "send_whatsapp_message": {
+            "contact": "enviar uma mensagem para <b>o contato do card</b>",
+            "phone": "enviar uma mensagem para <b>{{phone}}</b>"
+          },
+          "send_whatsapp_template": {
+            "contact": "enviar um modelo para <b>o contato do card</b>",
+            "phone": "enviar um modelo para <b>{{phone}}</b>"
+          },
+          "toggle_automation": {
+            "enabled": "ligar a automação da conversa",
+            "disabled": "pausar a automação da conversa por <b>{{duration}}</b>"
+          },
+          "create_card": {
+            "board": "criar um card em <b>{{board}}</b>",
+            "any": "criar um card em outro quadro"
+          },
+          "fire_webhook": {
+            "host": "chamar <b>{{host}}</b>",
+            "any": "chamar um sistema externo"
+          },
+          "run_code": "rodar um código",
+          "unknown": "fazer uma ação"
+        }
+      },
+      "editor": {
+        "createTitle": "Novo gatilho",
+        "submitCreate": "Criar gatilho",
+        "submitEdit": "Salvar gatilho",
+        "when": "Quando",
+        "if": "Se",
+        "ifHint": "Opcional. Todas precisam bater.",
+        "then": "Então",
+        "thenHint": "Na ordem da lista. Uma falha não impede as seguintes.",
+        "whenWord": "Quando",
+        "event": "O que acontece",
+        "stage": "Em qual etapa",
+        "anyStage": "qualquer etapa",
+        "addCondition": "Adicionar condição",
+        "addAnotherCondition": "E também",
+        "addAction": "Adicionar ação",
+        "maxActions": "Um gatilho aceita até {{count}} ações.",
+        "dragAction": "Mudar a ordem desta ação",
+        "actionType": "O que fazer",
+        "removeAction": "Tirar esta ação",
+        "conditionField": "Condição sobre",
+        "conditionOperator": "Como comparar",
+        "conditionValue": "Valor",
+        "choose": "escolher",
+        "valuePlaceholder": "Valor",
+        "removeCondition": "Tirar esta condição",
+        "unknownCondition": "Condição criada fora desta tela: continua valendo como está.",
+        "name": "Nome do gatilho",
+        "nameHint": "Sugerido pela frase. Troque se quiser.",
+        "active": "Ligado",
+        "activeHint": "Desligado, o gatilho fica guardado e não roda."
+      },
+      "validation": {
+        "name": "Dê um nome ao gatilho.",
+        "nameTooLong": "Use até 255 caracteres.",
+        "actions": "Inclua ao menos uma ação.",
+        "people": "Escolha ao menos uma pessoa.",
+        "stage": "Escolha a etapa.",
+        "connector": "Escolha o canal.",
+        "message": "Escreva a mensagem.",
+        "phone": "Informe o número.",
+        "template": "Escolha o modelo.",
+        "url": "Informe um endereço que comece com http:// ou https://.",
+        "duration": "Diga por quanto tempo.",
+        "targetBoard": "Escolha o quadro.",
+        "cardTitle": "Escreva o título do card novo.",
+        "code": "Escreva o código.",
+        "codeTooLong": "O código passou de 100 mil caracteres.",
+        "timeout": "O tempo precisa ficar entre 1 e 60 segundos.",
+        "conditionValue": "Preencha o valor desta condição.",
+        "conditionChoice": "Escolha uma opção para esta condição."
+      },
+      "actionForm": {
+        "peoplePlaceholder": "Escolha as pessoas",
+        "notify": {
+          "audience": "Para quem vai o aviso",
+          "audienceDefault": "Responsável e quem acompanha",
+          "audiencePeople": "Pessoas escolhidas",
+          "people": "Quem recebe",
+          "message": "Mensagem",
+          "messageHint": "Sem mensagem, vai um aviso dizendo que o card foi atualizado.",
+          "messagePlaceholder": "Ex.: {{cardTitle}} chegou em {{stageName}}."
+        },
+        "move": {
+          "stage": "Para qual etapa",
+          "hint": "O gatilho move sem conferir o checklist nem os campos obrigatórios da etapa.",
+          "placeholder": "Escolha a etapa"
+        },
+        "assign": {
+          "people": "Entre quem",
+          "hint": "Cada card vai para a próxima pessoa da lista, em rodízio. Quem perdeu o acesso é pulado."
+        },
+        "whatsapp": {
+          "connector": "Por qual canal",
+          "connectorPlaceholder": "Escolha o canal",
+          "inactiveOption": "{{name}} (desconectado)",
+          "connectorInactive": "Este canal está desconectado: a mensagem não vai sair. Escolha outro ou reconecte.",
+          "connectorMissing": "O canal escolhido não existe mais. Escolha outro.",
+          "noConnector": "Nenhum canal conectado que envie este tipo de mensagem.",
+          "connectAction": "Ver canais",
+          "target": "Para quem",
+          "targetContact": "Contato do card",
+          "targetSpecific": "Um número",
+          "targetContactHint": "O card precisa ter uma conversa ligada a ele. Sem isso, a ação falha e aparece no histórico.",
+          "phone": "Número",
+          "phoneHint": "Com país e DDD, só dígitos.",
+          "phonePlaceholder": "5531983794137",
+          "message": "Mensagem",
+          "messagePlaceholder": "Ex.: Olá! Seu pedido {{cardTitle}} já foi separado."
+        },
+        "template": {
+          "template": "Modelo",
+          "placeholder": "Escolha o modelo",
+          "noTemplates": "Este canal ainda não tem modelos.",
+          "notApproved": "{{name}} (não aprovado)",
+          "variable": "Variável {{name}}",
+          "variablePlaceholder": "Texto ou informação do card"
+        },
+        "automation": {
+          "status": "O que fazer com a automação",
+          "pause": "Pausar",
+          "resume": "Ligar",
+          "time": "Por quanto tempo",
+          "period": "Unidade",
+          "minutes": "Minutos",
+          "hours": "Horas",
+          "days": "Dias",
+          "hint": "Vale para a conversa ligada ao card. Card sem conversa: a ação falha e aparece no histórico."
+        },
+        "webhook": {
+          "url": "Endereço",
+          "urlHint": "Endereços internos são recusados.",
+          "urlPlaceholder": "https://api.exemplo.com.br/pedidos",
+          "method": "Método",
+          "headers": "Cabeçalhos",
+          "headerName": "Nome",
+          "headerValue": "Valor",
+          "addHeader": "Adicionar cabeçalho",
+          "removeHeader": "Tirar este cabeçalho",
+          "body": "Corpo",
+          "bodyHint": "Sem corpo, vai tudo o que o gatilho sabe do card, do quadro e da etapa.",
+          "bodyPlaceholder": "{\"card\": \"{{cardTitle}}\", \"etapa\": \"{{stageName}}\"}"
+        },
+        "createCard": {
+          "noBoards": "Não há outro quadro para receber o card. Crie um quadro antes.",
+          "board": "Em qual quadro",
+          "boardPlaceholder": "Escolha o quadro",
+          "stage": "Em qual etapa",
+          "stageFirst": "Primeira etapa",
+          "title": "Título do card novo",
+          "titlePlaceholder": "Ex.: Pedido: {{companyName}}",
+          "more": "Mais opções",
+          "description": "Descrição",
+          "descriptionPlaceholder": "Ex.: Veio de {{boardName}}, etapa {{stageName}}.",
+          "priority": "Prioridade",
+          "noPriority": "Sem prioridade",
+          "dueDays": "Prazo, em dias",
+          "dueDaysHint": "Contados a partir de quando o card nasce.",
+          "inheritAssigned": "Usar o mesmo responsável deste card",
+          "assignedTo": "Responsável",
+          "noAssignee": "Sem responsável",
+          "inheritLabels": "Usar as mesmas etiquetas deste card",
+          "labels": "Etiquetas",
+          "labelsPlaceholder": "Escolha as etiquetas",
+          "tags": "Tags",
+          "tagsPlaceholder": "Separe por vírgula",
+          "dealValue": "Valor do negócio",
+          "companyName": "Empresa",
+          "contactEmail": "E-mail do contato",
+          "contactPhone": "Telefone do contato",
+          "customFields": "Campos de {{name}}",
+          "fieldEmpty": "Não preencher"
+        }
+      },
+      "history": {
+        "count_one": "{{count}} execução",
+        "count_other": "{{count}} execuções",
+        "filterTrigger": "Gatilho",
+        "allTriggers": "Todos os gatilhos",
+        "filterStatus": "Resultado",
+        "status": {
+          "all": "Todas",
+          "failure": "Com falha",
+          "success": "Certas",
+          "skipped": "Ignorada"
+        },
+        "refresh": "Atualizar",
+        "clear": "Limpar filtros",
+        "codeNotice": "Um gatilho com código aparece duas vezes: uma ao entrar na fila, outra com o resultado. Se a segunda nunca chega, o processo de scripts está parado.",
+        "noResults": {
+          "title": "Nenhuma execução com estes filtros",
+          "description": "Mude os filtros para ver as outras."
+        },
+        "empty": {
+          "title": "Nenhuma execução ainda",
+          "description": "Quando um gatilho rodar, o resultado de cada ação aparece aqui. Fica guardado por 90 dias."
+        },
+        "deletedTrigger": "Gatilho excluído",
+        "deletedCard": "Card excluído",
+        "openCard": "Abrir card",
+        "enqueued": "Na fila",
+        "unknownAction": "Erro inesperado",
+        "outcome": {
+          "enqueued": "Foi para a fila: o resultado vem em outra execução.",
+          "notified_one": "{{count}} pessoa avisada.",
+          "notified_other": "{{count}} pessoas avisadas.",
+          "assigned": "Ficou com {{name}}.",
+          "someone": "uma pessoa",
+          "statusCode": "Respondeu {{code}}.",
+          "cardCreated": "Card criado."
+        }
+      }
+    },
+    "code": {
+      "panelTitle": "Código do gatilho",
+      "format": "Arrumar o código",
+      "wrap": "Quebrar linhas longas",
+      "footerHint": "O código vai junto quando você salvar o gatilho.",
+      "done": "Concluir",
+      "loading": "Abrindo o editor",
+      "problems_one": "{{count}} problema no código",
+      "problems_other": "{{count}} problemas no código",
+      "line": "Linha {{line}}",
+      "referenceTitle": "Referência",
+      "referenceIntro": "Clique em uma função para inserir no ponto do cursor. O script é o corpo de uma função assíncrona: return e await valem direto.",
+      "rulesTitle": "Bom saber",
+      "rules": {
+        "noRetry": "Falhou, não tenta de novo: o erro fica no histórico e vira alerta no menu.",
+        "noChain": "O que o script muda no card não dispara outro gatilho.",
+        "noTimers": "Sem setTimeout, setInterval e bibliotecas externas.",
+        "names": "Na API, etapa é column e conversa é conversation: os nomes são contrato de quem já escreve script."
+      },
+      "snippetsTitle": "Exemplos prontos",
+      "snippets": {
+        "score": "Somar pontos no campo de pontuação",
+        "webhook": "Mandar o card para um sistema externo",
+        "label": "Etiquetar negócio acima de um valor"
+      },
+      "insert": "Inserir",
+      "reference": {
+        "params": {
+          "title": "O que o script recebe",
+          "card": "O card que disparou, com os campos da API kanban.",
+          "board": "Id e nome do quadro.",
+          "trigger": "Id e nome deste gatilho.",
+          "event": "O evento, e o que veio com ele (de qual etapa para qual)."
+        },
+        "find": {
+          "title": "Achar",
+          "card": "Um card, com as ações abaixo.",
+          "board": "Um quadro, por id ou nome, sem ligar para acento e caixa.",
+          "boards": "Todos os quadros.",
+          "cardsForConversation": "Os cards da conversa, em qualquer quadro.",
+          "labels": "As etiquetas da organização."
+        },
+        "card": {
+          "title": "No card",
+          "update": "Muda título, prioridade, prazo, valor e outros campos.",
+          "moveTo": "Move para a etapa, respeitando as travas. Bloqueado, volta ok: false.",
+          "markWon": "Marca como ganho.",
+          "markLost": "Marca como perdido, com o motivo.",
+          "reopen": "Reabre o negócio.",
+          "archive": "Arquiva.",
+          "unarchive": "Tira do arquivo.",
+          "addLabel": "Põe uma etiqueta. Nome que não existe cria.",
+          "removeLabel": "Tira uma etiqueta pelo id.",
+          "setCustomField": "Grava um campo personalizado, por chave ou nome.",
+          "getCustomField": "Lê um campo personalizado.",
+          "incrementCustomField": "Soma em um campo de número e devolve o total.",
+          "addComment": "Comenta, assinando como automação.",
+          "comments": "Lê os comentários.",
+          "addChecklist": "Cria um checklist no card.",
+          "checklists": "Lê os checklists.",
+          "refresh": "Relê o card do banco."
+        },
+        "board": {
+          "title": "No quadro",
+          "column": "Uma etapa, por id ou nome.",
+          "cards": "Os cards, com filtros.",
+          "createCard": "Cria um card em uma etapa.",
+          "customFields": "Os campos do quadro."
+        },
+        "contact": {
+          "title": "Na conversa do card",
+          "getContactInfo": "Nome e telefone do contato. Só em card com conversa.",
+          "tagAdd": "Etiqueta a conversa.",
+          "contactAttribute": "Grava um atributo que aparece na tela do contato.",
+          "assignUserByEmail": "Atribui a conversa. E-mail desconhecido tira o responsável."
+        },
+        "network": {
+          "title": "Rede e dados",
+          "fetch": "Chama um sistema externo. Erro 4xx e 5xx não rejeita: vem com ok: false.",
+          "collection": "Guarda dados em tabelas da organização.",
+          "catalog": "Busca no catálogo de produtos.",
+          "console": "Escreve no log, para investigar."
+        }
+      },
+      "noPermission": "Este gatilho roda código. Só quem tem acesso aos fluxos pode ver e mudar: o script roda como a organização inteira.",
+      "emptyPreview": "Nenhum código ainda.",
+      "useLargerScreen": "Para escrever código, use uma tela maior. Aqui dá só para ler.",
+      "linesCount_one": "{{count}} linha",
+      "linesCount_other": "{{count}} linhas",
+      "openEditor": "Abrir editor",
+      "timeout": "Tempo máximo",
+      "seconds_one": "{{count}} segundo",
+      "seconds_other": "{{count}} segundos",
+      "twoExecutions": "Este gatilho aparece duas vezes no histórico: ao entrar na fila e com o resultado. Uma falha vira alerta no menu, até uma execução dar certo.",
+      "starter": "// O card que disparou o gatilho está em params.card.\nconst card = kanban.card(params.card.id);\n\ncard.addComment('Olá, ' + params.card.title);\n\nreturn { evento: params.event.event_type };\n"
+    },
+    "goals": {
+      "description": "Quanto se quer vender por mês. O realizado é a soma dos negócios ganhos no mês.",
+      "of": "de",
+      "meterText": "{{percent}} da meta",
+      "boardGoal": "Meta do quadro",
+      "boardGoalHint": "O total que o quadro inteiro quer vender no mês.",
+      "previousMonth": "Mês anterior",
+      "nextMonth": "Próximo mês",
+      "thisMonth": "Este mês",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Editar",
+      "setBoardGoal": "Definir meta do quadro",
+      "setGoal": "Definir meta",
+      "setForOther": "Definir meta para outra pessoa",
+      "byPerson": "Por pessoa",
+      "byPersonHint": "Quem é responsável por algum card aparece aqui, mesmo sem meta.",
+      "noPeople": "Ninguém é responsável por um card deste quadro ainda.",
+      "goalOf": "Meta de {{name}}",
+      "noGoalThisMonth": "Sem meta neste mês",
+      "notSales": {
+        "title": "Metas são de quadro de vendas",
+        "description": "A meta compara o que se quis vender com os negócios ganhos, e este quadro não tem negócios.",
+        "action": "Ver ajustes do quadro"
+      },
+      "noBoardGoal": {
+        "title": "Sem meta para {{month}}",
+        "description": "Por exemplo: R$ 45.000 em vendas no mês. O realizado se atualiza sozinho, a cada negócio ganho."
+      },
+      "history": {
+        "title": "Últimos {{count}} meses",
+        "description": "A receita ganha em cada mês, contra a meta do quadro."
+      },
+      "form": {
+        "createTitle": "Definir meta",
+        "editTitle": "Editar meta",
+        "submit": "Salvar meta",
+        "saved": "Meta salva.",
+        "person": "Pessoa",
+        "personPlaceholder": "Escolha a pessoa",
+        "personRequired": "Escolha a pessoa.",
+        "target": "Valor da meta",
+        "targetHint": "Em reais, para o mês inteiro.",
+        "targetRequired": "Informe um valor maior que zero.",
+        "targetTooHigh": "Esse valor é alto demais.",
+        "current": "Hoje:"
+      },
+      "delete": {
+        "action": "Excluir meta",
+        "title": "Excluir {{name}} de {{month}}?",
+        "description": "Os negócios ganhos continuam contando. Só a meta do mês some.",
+        "confirm": "Excluir meta",
+        "done": "Meta excluída."
+      }
+    },
+    "metrics": {
+      "description": "Como o quadro está indo: o que entrou, o que fechou e onde os cards ficam parados.",
+      "restricted": "Neste quadro, você vê só os seus cards, e os números contam só eles.",
+      "periodSection": "No período",
+      "period": "Período",
+      "versusPrevious": "vs. período anterior",
+      "nowSection": "Agora no quadro",
+      "nowHint": "A fotografia de hoje. Não muda com o período.",
+      "priority": "Por prioridade",
+      "priorityNone": "Sem prioridade",
+      "presets": {
+        "last90": "Últimos 90 dias",
+        "thisYear": "Este ano"
+      },
+      "empty": {
+        "title": "Ainda não há o que medir",
+        "description": "Quando o quadro tiver cards, os números aparecem aqui.",
+        "action": "Abrir o quadro"
+      },
+      "tiles": {
+        "created": "Novos cards",
+        "won": "Ganhos",
+        "lost": "Perdidos",
+        "conversion": "Conversão",
+        "deals_one": "{{count}} negócio",
+        "deals_other": "{{count}} negócios",
+        "nothingClosed": "Nada fechou neste período",
+        "active": "Cards ativos",
+        "totalValue": "Valor no quadro",
+        "weighted": "Valor ponderado",
+        "weightedHint": "Valor em aberto vezes a probabilidade",
+        "overdue": "Atrasados"
+      },
+      "series": {
+        "createdCount": "Novos cards",
+        "wonCount": "Negócios ganhos",
+        "wonValue": "Receita"
+      },
+      "trend": {
+        "title": "Tendência",
+        "measure": "O que mostrar",
+        "bucket": {
+          "day": "Dia a dia",
+          "week": "Semana a semana",
+          "month": "Mês a mês"
+        }
+      },
+      "conversion": {
+        "title": "Conversão entre etapas",
+        "description_one": "Até onde chegou {{count}} card criado no período.",
+        "description_other": "Até onde chegaram os {{count}} cards criados no período.",
+        "empty": "Nenhum card foi criado neste período.",
+        "won": "Ganhos",
+        "continued": "{{percent}} seguiram",
+        "biggestDrop": "maior perda"
+      },
+      "stageTime": {
+        "title": "Tempo médio por etapa",
+        "description": "Conta as passagens que terminaram no período e, se ele chega até hoje, os cards que ainda estão lá.",
+        "empty": "Nenhuma passagem neste período.",
+        "passages_one": "{{count}} passagem",
+        "passages_other": "{{count}} passagens"
+      },
+      "ranking": {
+        "title": "Quem mais fechou",
+        "description": "Pelo valor ganho no período.",
+        "empty": "Nenhum negócio fechado com responsável neste período.",
+        "detail": "{{won}} · {{lost}} · {{rate}} de conversão",
+        "won_one": "{{count}} ganho",
+        "won_other": "{{count}} ganhos",
+        "lost_one": "{{count}} perdido",
+        "lost_other": "{{count}} perdidos"
+      },
+      "goal": {
+        "section": "Meta",
+        "title": "Meta de {{month}}",
+        "manage": "Ver metas",
+        "none": "Sem meta neste mês."
+      },
+      "stages": {
+        "title": "Por etapa",
+        "measure": "O que mostrar",
+        "cards": "Cards",
+        "value": "Valor"
+      },
+      "deals": {
+        "title": "Negócios",
+        "description": "Desde o começo do quadro.",
+        "empty": "Nenhum negócio registrado.",
+        "open": "Em aberto",
+        "won": "Ganhos",
+        "lost": "Perdidos"
+      },
+      "forecast": {
+        "title": "Previsão de fechamento",
+        "description": "Os negócios abertos, pelo mês em que devem fechar. Toque em um mês para ver quais.",
+        "empty": "Nenhum negócio aberto com valor.",
+        "noDate": "Sem previsão",
+        "count_one": "{{count}} negócio",
+        "count_other": "{{count}} negócios",
+        "weighted": "Ponderado:"
       }
     }
   }

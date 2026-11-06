@@ -21,6 +21,7 @@ import { useDebouncedCallback } from "@/hooks/use-debounced-value"
 import { useChannel } from "@/hooks/use-channel"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 import { ApiError } from "@/lib/api"
+import { hasGoals } from "@/lib/pipelines-admin/board-rules"
 import { adminErrorMessage } from "@/lib/pipelines-admin/error-message"
 import type { Board } from "@/lib/pipelines-admin/types"
 
@@ -125,11 +126,6 @@ function AreaTitle({ area, boardName }: { area: BoardArea; boardName: string }) 
   const { t } = useTranslation()
   useDocumentTitle(`${t(`pipelinesAdmin.routes.${area}`)} · ${boardName}`)
   return null
-}
-
-/** Metas são de receita: só quadro de vendas tem. */
-export function hasGoals(board: Pick<Board, "boardType">) {
-  return board.boardType === "crm"
 }
 
 function BoardAreaNav({ board }: { board: Board }) {

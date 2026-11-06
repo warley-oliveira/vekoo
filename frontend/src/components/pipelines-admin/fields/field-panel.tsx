@@ -287,7 +287,7 @@ function FieldPreview({
         <span className="text-sm underline underline-offset-2">{t("pipelinesAdmin.fields.form.previewUrl")}</span>
       ) : type === "user" ? (
         <span className="flex items-center gap-1.5 text-sm">
-          <UserAvatar name={t("pipelinesAdmin.fields.form.previewPerson")} size="xs" />
+          <UserAvatar name={t("pipelinesAdmin.fields.form.previewPerson")} size="sm" />
           {t("pipelinesAdmin.fields.form.previewPerson")}
         </span>
       ) : type === "number" ? (
