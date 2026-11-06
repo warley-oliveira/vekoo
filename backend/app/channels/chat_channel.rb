@@ -56,6 +56,7 @@ class ChatChannel < ApplicationCable::Channel
     chat = chat_from(data)
     return unless chat
 
+    chat.updated_by_account = current_account
     chat.pause_automation_for_human!
 
     template = chat.connector.whatsapp_templates.where(template_id: data["templateId"] || data["template_id"]).take

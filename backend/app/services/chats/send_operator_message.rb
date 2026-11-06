@@ -23,6 +23,8 @@ module Chats
     end
 
     def call
+      # A nota da pausa diz quem foi: é uma pessoa intervindo, e não uma mudança do backend.
+      chat.updated_by_account = account
       chat.pause_automation_for_human!
 
       parts = handled_parts

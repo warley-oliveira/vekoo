@@ -29,7 +29,7 @@ class ConnectorsChannel < ApplicationCable::Channel
     return unless qr_response && qr_response["value"].present?
 
     connector.broadcast_connection(status: "qr_updated", base64: qr_response["value"])
-  rescue ZapiClient::Error => e
+  rescue ZapiClient::Error, Connector::Zapi::ZApiError => e
     Rails.logger.error("[ConnectorsChannel] Failed to generate QR code: #{e.message}")
     connector.broadcast_connection(status: "qr_error", error: e.message)
   rescue StandardError => e

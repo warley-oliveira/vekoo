@@ -107,10 +107,11 @@ RSpec.describe Chats::SendOperatorMessage do
       expect(chat.reload.automation_enabled).to be(false)
     end
 
-    it "deixa a nota da pausa" do
+    it "deixa a nota da pausa com o nome de quem interveio" do
       send_message
 
-      expect(ChatMessage::Base.unscoped.where(chat_id: chat.id, role_base_type: "automation-toggle-notation").count).to eq(1)
+      notes = ChatMessage::Base.unscoped.where(chat_id: chat.id, role_base_type: "automation-toggle-notation")
+      expect(notes.map(&:content)).to eq([ "Alice Prado pausou a automação." ])
     end
 
     it "com a automação já pausada, não repete a nota" do
@@ -394,8 +395,6 @@ RSpec.describe Chats::SendOperatorMessage do
     let(:audio_url) { "http://evolution.test/message/sendWhatsAppAudio/#{connector.instance_name}" }
     let(:sent_ok) { { status: 201, body: { key: { id: "MID-1" } }.to_json, headers: { "Content-Type" => "application/json" } } }
     let!(:attachment) { stub_attachment(filename: "cardapio.pdf", url: "https://cdn.exemplo.com/cardapio.pdf") }
-
-    after { remove_attachment_downloads(attachment.id) }
 
     it "manda o anexo como mídia, e não como texto" do
       send_media = stub_request(:post, media_url)

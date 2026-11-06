@@ -145,8 +145,6 @@ RSpec.describe MessageHandling do
     describe "anexo citado pelo id" do
       let!(:attachment) { stub_attachment(filename: "cardapio.pdf", url: "https://cdn.exemplo.com/cardapio.pdf") }
 
-      after { remove_attachment_downloads(attachment.id) }
-
       it "vira uma mídia, com a URL do arquivo" do
         part = perform("attachment_id_#{attachment.id}").first
 
@@ -191,8 +189,6 @@ RSpec.describe MessageHandling do
           file = stub_attachment(filename: filename, url: "https://cdn.exemplo.com/#{filename}")
 
           expect(perform("attachment_id_#{file.id}").first.media_type).to eq(media_type)
-
-          remove_attachment_downloads(file.id)
         end
       end
 
@@ -221,8 +217,6 @@ RSpec.describe MessageHandling do
 
     describe "anexo citado pelo nome" do
       let!(:attachment) { stub_attachment(name: "Cardápio de Natal", filename: "cardapio_natal.pdf", url: "https://cdn.exemplo.com/cardapio.pdf") }
-
-      after { remove_attachment_downloads("cardapio_natal", "cardapio-natal") }
 
       it "acha pelo nome do arquivo" do
         part = perform("attachment_cardapio_natal.pdf").first
