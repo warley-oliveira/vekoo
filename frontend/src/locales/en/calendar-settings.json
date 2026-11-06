@@ -1,0 +1,79 @@
+{
+  "calendar": {
+    "settings": {
+      "errors": {
+        "generic": "That didn't work. Please try again.",
+        "network": "Can't reach the server. Check your connection and try again."
+      }
+    },
+    "create": {
+      "title": "New calendar",
+      "description": "Start with the basics. You can adjust the rest later, in the calendar settings.",
+      "type": "How does this calendar work?",
+      "typeHint": "The type can't be changed after it's created.",
+      "types": {
+        "professional": {
+          "label": "Team members",
+          "description": "Each team member has their own schedule, and each booking is with one person."
+        },
+        "class_group": {
+          "label": "Classes",
+          "description": "Classes with a timetable and enrolled students, with several people attending together."
+        }
+      },
+      "name": "Name",
+      "namePlaceholder": "E.g. Studio, Sales team",
+      "nameTooShort": "Use at least 2 characters.",
+      "nameTooLong": "Use at most 120 characters.",
+      "descriptionField": "Description",
+      "descriptionPlaceholder": "What this calendar is for",
+      "descriptionTooLong": "Use at most 2,000 characters.",
+      "timeZone": "Time zone",
+      "timeZoneHint": "Sending windows, classes and reminders follow this zone's clock, wherever the person is.",
+      "timeZoneEmpty": "No time zone found.",
+      "timeZoneRequired": "Choose a time zone.",
+      "color": "Color",
+      "colorHint": "Helps you spot this calendar among the others.",
+      "submit": "Create calendar",
+      "done": "{{name}} created"
+    },
+    "sequences": {
+      "trigger": {
+        "show": "Attended",
+        "no_show": "Missed"
+      },
+      "showcase": {
+        "title": "Attendance sequences",
+        "progress": "Step {{step}} of {{total}}",
+        "goTo": "Go to step {{step}}",
+        "dismiss": "Not now",
+        "back": "Back",
+        "next": "Continue",
+        "configure": "Set up sequences",
+        "illustration": {
+          "message": "Hi, Carla! We missed you today. Would you like to book another time?",
+          "reply": "Yes, please. How about Thursday?",
+          "step": "Step {{step}}"
+        },
+        "slides": {
+          "intro": {
+            "title": "Follow-up that runs on its own",
+            "description": "Marked that someone attended or missed? The conversation gets the right messages at the right time, without anyone having to remember."
+          },
+          "steps": {
+            "title": "Messages in steps",
+            "description": "Each step goes out some time after the previous one, within the hours you choose. You write the text, or ask the AI to write it."
+          },
+          "triggers": {
+            "title": "A follow-up for each outcome",
+            "description": "Thank those who attended and win back those who missed, with separate sequences. Enrollment can be automatic, and the sequence stops if the person replies."
+          },
+          "start": {
+            "title": "Ready to start?",
+            "description": "Create your first sequence in a few minutes, from scratch or from a ready-made template."
+          }
+        }
+      }
+    }
+  }
+}

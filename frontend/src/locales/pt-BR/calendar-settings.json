@@ -1,0 +1,79 @@
+{
+  "calendar": {
+    "settings": {
+      "errors": {
+        "generic": "Não deu para concluir. Tente de novo.",
+        "network": "Sem conexão com o servidor. Confira a internet e tente de novo."
+      }
+    },
+    "create": {
+      "title": "Novo calendário",
+      "description": "Comece pelo básico. O resto você ajusta depois, nas configurações do calendário.",
+      "type": "Como este calendário funciona?",
+      "typeHint": "O tipo não muda depois de criar.",
+      "types": {
+        "professional": {
+          "label": "Colaboradores",
+          "description": "Cada colaborador tem a sua agenda, e cada agendamento é com uma pessoa."
+        },
+        "class_group": {
+          "label": "Turmas",
+          "description": "Aulas com grade e inscritos, em que várias pessoas participam ao mesmo tempo."
+        }
+      },
+      "name": "Nome",
+      "namePlaceholder": "Ex.: Estúdio, Equipe de vendas",
+      "nameTooShort": "Use pelo menos 2 caracteres.",
+      "nameTooLong": "Use no máximo 120 caracteres.",
+      "descriptionField": "Descrição",
+      "descriptionPlaceholder": "Para que serve este calendário",
+      "descriptionTooLong": "Use no máximo 2.000 caracteres.",
+      "timeZone": "Fuso horário",
+      "timeZoneHint": "Janelas, aulas e lembretes valem na hora deste fuso, onde quer que a pessoa esteja.",
+      "timeZoneEmpty": "Nenhum fuso encontrado.",
+      "timeZoneRequired": "Escolha um fuso horário.",
+      "color": "Cor",
+      "colorHint": "Ajuda a reconhecer este calendário no meio dos outros.",
+      "submit": "Criar calendário",
+      "done": "{{name}} criado"
+    },
+    "sequences": {
+      "trigger": {
+        "show": "Quem veio",
+        "no_show": "Quem faltou"
+      },
+      "showcase": {
+        "title": "Sequências de comparecimento",
+        "progress": "Passo {{step}} de {{total}}",
+        "goTo": "Ir para o passo {{step}}",
+        "dismiss": "Agora não",
+        "back": "Voltar",
+        "next": "Continuar",
+        "configure": "Configurar sequências",
+        "illustration": {
+          "message": "Oi, Carla! Sentimos sua falta hoje. Quer marcar outro horário?",
+          "reply": "Quero sim, pode ser na quinta?",
+          "step": "Passo {{step}}"
+        },
+        "slides": {
+          "intro": {
+            "title": "O pós-atendimento acontece sozinho",
+            "description": "Marcou que a pessoa veio ou faltou? A conversa recebe as mensagens certas, na hora certa, sem ninguém precisar lembrar."
+          },
+          "steps": {
+            "title": "Mensagens em passos",
+            "description": "Cada passo sai um tempo depois do anterior, dentro do horário que você escolher. Você escreve o texto, ou pede para a IA escrever."
+          },
+          "triggers": {
+            "title": "Uma conversa para cada resultado",
+            "description": "Agradeça quem veio e recupere quem faltou, com sequências separadas. A inscrição pode ser automática, e a sequência para se a pessoa responder."
+          },
+          "start": {
+            "title": "Pronto para começar?",
+            "description": "Crie a primeira sequência em poucos minutos, do zero ou a partir de um modelo pronto."
+          }
+        }
+      }
+    }
+  }
+}
