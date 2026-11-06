@@ -3,6 +3,7 @@ require "rails_helper"
 # O que muda da AIVA (v1) para a Evolution v2: caminhos e formato dos corpos.
 RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
   include ConnectorHelpers
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:organization) { create(:organization) }
   let(:connector) { create(:connector_whatsapp_web, organization: organization, instance_name: "WS-EVO") }
@@ -554,6 +555,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
         .to have_broadcasted_to(connector.stream_name).with(status: "qr_updated", base64: "QR-B64", pairCode: nil)
 
       expect(Rails.cache.read("qrcode.base64.#{connector.id}")).to eq("QR-B64")
+      travel(6.minutes) { expect(Rails.cache.read("qrcode.base64.#{connector.id}")).to be_nil }
     end
 
     it "levanta quando a Evolution recusa" do
@@ -561,6 +563,31 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
 
       expect { connector.activate }.to raise_error(/Failed to create instance: 403/)
       expect(connector.reload).to be_inactive
+    end
+
+    it "não manda QR vazio para a tela nem guarda nada quando a Evolution recusa" do
+      stub_request(:post, url).to_return(json_reply({ message: "nome em uso" }, status: 403))
+
+      expect {
+        expect { connector.activate }.to raise_error(/Failed to create instance/)
+      }.not_to have_broadcasted_to(connector.stream_name)
+
+      expect(Rails.cache.read("qrcode.base64.#{connector.id}")).to be_nil
+    end
+
+    it "diz que falhou também quando o gateway responde HTML" do
+      stub_request(:post, url).to_return(status: 502, body: "<html>Bad Gateway</html>", headers: { "Content-Type" => "text/html" })
+
+      expect { connector.activate }.to raise_error(/Failed to create instance: 502/)
+    end
+
+    it "não escreve a chave da instância nem o QR code no log" do
+      stub_request(:post, url).to_return(reply)
+
+      log = captured_log { connector.activate }
+
+      expect(log).to include("activate - create")
+      expect(log).not_to include("NEW-EVO-KEY", "QR-B64", "chave-evolution")
     end
   end
 
@@ -649,6 +676,14 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
       stub_request(:get, url).to_return(status: 500, body: "boom")
 
       expect { connector.fetch_current_information(ignore_migration: true) }.not_to(change { connector.number_id })
+    end
+
+    it "não escreve no log o token que a listagem da v2 traz" do
+      stub_request(:get, url).to_return(json_reply([ { name: "WS-EVO", token: "TOKEN-DA-INSTANCIA", ownerJid: "5531999999999@s.whatsapp.net" } ]))
+
+      log = captured_log { connector.fetch_current_information(ignore_migration: true) }
+
+      expect(log).not_to include("TOKEN-DA-INSTANCIA")
     end
 
     it "não muda nada com a lista vazia ou sem a instância" do

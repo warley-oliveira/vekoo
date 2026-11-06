@@ -293,7 +293,14 @@ class Connector::WhatsappWeb
           body: body.to_json,
           headers: connector.headers
         )
-        Rails.logger.info("HTTParty Response (activate - create): #{instance_response.body}")
+        # Só o status: o corpo traz a chave da instância e o QR code.
+        Rails.logger.info("HTTParty Response (activate - create): #{instance_response.code}")
+
+        # Antes de ler o corpo: erro de gateway vem em HTML, e a tela não deve receber QR vazio.
+        unless [200, 201].include?(instance_response.code)
+          Rails.logger.error("Failed to create instance: #{instance_response.body}")
+          raise "Failed to create instance: #{instance_response.code}"
+        end
 
         qrcode_base64 = instance_response.parsed_response.dig('qrcode', 'base64')
 
@@ -305,11 +312,6 @@ class Connector::WhatsappWeb
         )
 
         connector.broadcast_connection(status: :qr_updated, base64: qrcode_base64, pairCode: nil)
-
-        unless [200, 201].include?(instance_response.code)
-          Rails.logger.error("Failed to create instance: #{instance_response.body}")
-          raise "Failed to create instance: #{instance_response.code}"
-        end
 
         # In v2 the instance apikey is at the top-level `hash` field (string).
         # We fall back to the v1 nested `hash.apikey` shape so a server still
@@ -370,7 +372,8 @@ class Connector::WhatsappWeb
           "#{connector.base_url}/instance/fetchInstances?instanceName=#{connector.instance_name}",
           headers: connector.headers
         )
-        Rails.logger.info("HTTParty Response (fetch_current_information): #{instance_response.body}")
+        # Só o status: a listagem da v2 traz o token de cada instância.
+        Rails.logger.info("HTTParty Response (fetch_current_information): #{instance_response.code}")
 
         unless [200, 201].include?(instance_response.code)
           Rails.logger.error("Failed to retrieve instance: #{instance_response.body}")

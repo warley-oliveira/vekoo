@@ -336,6 +336,25 @@ RSpec.describe ConnectorEventService do
         expect(custom_field_values).not_to have_received(:find_or_create_by)
       end
 
+      it "registra no log a variável que não pôde ser guardada" do
+        allow(custom_fields).to receive(:find_by).and_return(definition("system"))
+        allow(custom_field_values).to receive(:find_or_create_by).and_raise(StandardError, "fora do ar")
+        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
+
+        log = captured_log { service.create_employee_connector_call(professional) }
+
+        expect(log).to include("Error assigning variable `cidade` with path `data.0.cidade`")
+      end
+
+      it "resposta que não é JSON não derruba quem chamou" do
+        stub_request(:post, url).to_return(status: 200, body: "ok", headers: { "Content-Type" => "text/plain" })
+        create_event("create_employee", '{"id": {employee.id}}', variables_path: { "DEF1" => "data.0.cidade" })
+
+        expect { service.create_employee_connector_call(professional) }.not_to raise_error
+
+        expect(custom_field_values).not_to have_received(:find_or_create_by)
+      end
+
       it "uma definição que sumiu não impede as outras" do
         field = definition("system")
         allow(custom_fields).to receive(:find_by).with(id: "SUMIU", organization_id: organization.id).and_raise(Mongoid::Errors::DocumentNotFound.new(Chat, { id: "SUMIU" }))

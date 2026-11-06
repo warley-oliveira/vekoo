@@ -130,7 +130,8 @@ class Connector::WhatsappWeb
           }.to_json,
           headers: connector.headers
         )
-        Rails.logger.info("HTTParty Response (activate - create): #{instance_response.body}")
+        # Só o status: o corpo traz a chave da instância, e o do connect, o código de pareamento.
+        Rails.logger.info("HTTParty Response (activate - create): #{instance_response.code}")
 
         unless [200, 201].include?(instance_response.code)
           Rails.logger.error("Failed to create instance: #{instance_response.body}")
@@ -145,7 +146,7 @@ class Connector::WhatsappWeb
           "#{connector.base_url}/instance/connect/#{connector.instance_name}",
           headers: connector.headers
         )
-        Rails.logger.info("HTTParty Response (activate - connect): #{connect_response.body}")
+        Rails.logger.info("HTTParty Response (activate - connect): #{connect_response.code}")
 
         unless [200, 201].include?(connect_response.code)
           Rails.logger.error("Failed to create instance: #{connect_response.body}")
@@ -209,7 +210,7 @@ class Connector::WhatsappWeb
           body: { instanceName: connector.instance_name }.to_json,
           headers: connector.headers
         )
-        Rails.logger.info("HTTParty Response (fetch_current_information): #{instance_response.body}")
+        Rails.logger.info("HTTParty Response (fetch_current_information): #{instance_response.code}")
 
         unless [200, 201].include?(instance_response.code)
           Rails.logger.error("Failed to retrieve instance: #{instance_response.body}")

@@ -344,6 +344,12 @@ RSpec.describe Connector::WebWidget do
       expect(widget.send_media_message("to", media_dto(url: nil), chat)).to be_nil
     end
 
+    it "devolve nil quando o anexo não pode ser lido: ele pode ter sido apagado entre gravar e transmitir" do
+      stub_const("Attachment", double("Attachment").tap { |attachments| allow(attachments).to receive(:find_by).and_raise(Mongoid::Errors::DocumentNotFound.new(Chat, { id: "A1" })) })
+
+      expect(widget.send_media_message("to", media_dto(url: nil, attachment_id: "A1"), chat)).to be_nil
+    end
+
     it "acha a conversa pelo visitante quando ela não vem" do
       widget.save!
       own_chat = create(:chat, connector: widget, external_id: "visitante-2")

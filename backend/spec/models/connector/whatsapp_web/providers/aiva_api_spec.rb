@@ -85,6 +85,15 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
       expect { connector.activate }.to raise_error(/Failed to connect instance/)
     end
+
+    it "não escreve a chave da instância nem o código de pareamento no log" do
+      stub_request(:get, "#{base}/instance/connect/WS-AIVA").to_return(json_reply({ pairingCode: "PAREAMENTO-1", base64: "QR-B64" }))
+
+      log = captured_log { connector.activate }
+
+      expect(log).to include("activate - create")
+      expect(log).not_to include("NEW-KEY", "PAREAMENTO-1", "QR-B64", "chave-aiva")
+    end
   end
 
   describe "#setup_webhook!" do

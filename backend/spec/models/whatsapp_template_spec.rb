@@ -238,6 +238,18 @@ RSpec.describe WhatsappTemplate do
 
       expect(request).to have_been_requested
     end
+
+    it "não grava quando a Meta recusa, e devolve a mensagem dela" do
+      stub_request(:post, "https://graph.facebook.com/v19.0/tpl-1")
+        .to_return(json_reply({ error: { code: 100, message: "técnica", error_user_msg: "Não dá para editar agora" } }, status: 400))
+      original = template.components
+      template.sync_update = true
+
+      expect(template.update(components: components)).to be(false)
+
+      expect(template.errors[:base]).to include("Não dá para editar agora")
+      expect(described_class.find(template.id).components).to eq(original)
+    end
   end
 
   describe "#assign_meta_attributes" do

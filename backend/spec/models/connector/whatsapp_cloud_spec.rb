@@ -484,6 +484,12 @@ RSpec.describe Connector::WhatsappCloud do
       expect(connector.subscribed_apps).to eq(success: false, error: "sem permissão")
     end
 
+    it "#subscribed_apps levanta em falha de rede" do
+      stub_request(:get, url).with(query: hash_including({})).to_timeout
+
+      expect { connector.subscribed_apps }.to raise_error(Net::OpenTimeout)
+    end
+
     it "cai no business_id sem WABA" do
       fallback = create(:connector_whatsapp_cloud, organization: organization, waba_id: nil, business_id: 42)
       request = stub_request(:post, "https://graph.facebook.com/v24.0/42/subscribed_apps").with(query: hash_including({})).to_return(json_reply({}))
@@ -679,14 +685,38 @@ RSpec.describe Connector::WhatsappCloud do
       expect(a_request(:post, session_url).with(query: hash_including("file_type" => "image/jpeg"))).to have_been_made
     end
 
-    it "dá nome ao arquivo sem extensão" do
-      stub_request(:get, "https://cdn.exemplo.com/abc").to_return(status: 200, body: "BYTES", headers: { "Content-Type" => "video/mp4" })
-      stub_session
-      stub_request(:post, upload_url).to_return(json_reply({ h: "HANDLE-1" }))
+    {
+      "banner.png" => "image/png",
+      "video.mp4" => "video/mp4",
+      "tabela.pdf" => "application/pdf",
+      "contrato.doc" => "application/msword",
+      "contrato.docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "planilha.bin" => "application/octet-stream"
+    }.each do |file, type|
+      it "#{file} sobe como #{type} quando a resposta não informa" do
+        url = "https://cdn.exemplo.com/#{file}"
+        stub_request(:get, url).to_return(status: 200, body: "BYTES")
+        stub_session
+        stub_request(:post, upload_url).to_return(json_reply({ h: "HANDLE-1" }))
 
-      connector.upload_media_for_template("https://cdn.exemplo.com/abc")
+        connector.upload_media_for_template(url)
 
-      expect(a_request(:post, session_url).with(query: hash_including("file_name" => a_string_matching(/\Amedia_\h{8}\.mp4\z/)))).to have_been_made
+        expect(a_request(:post, session_url).with(query: hash_including("file_name" => file, "file_type" => type))).to have_been_made
+      end
+    end
+
+    {
+      "image/jpeg" => ".jpg", "image/png" => ".png", "video/mp4" => ".mp4", "application/pdf" => ".pdf", "text/plain" => ""
+    }.each do |type, extension|
+      it "dá nome com #{extension.presence || 'nenhuma extensão'} ao arquivo #{type} que veio sem" do
+        stub_request(:get, "https://cdn.exemplo.com/abc").to_return(status: 200, body: "BYTES", headers: { "Content-Type" => type })
+        stub_session
+        stub_request(:post, upload_url).to_return(json_reply({ h: "HANDLE-1" }))
+
+        connector.upload_media_for_template("https://cdn.exemplo.com/abc")
+
+        expect(a_request(:post, session_url).with(query: hash_including("file_name" => a_string_matching(/\Amedia_\h{8}#{Regexp.escape(extension)}\z/)))).to have_been_made
+      end
     end
 
     it "devolve nil quando o arquivo não baixa" do
