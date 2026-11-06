@@ -152,7 +152,9 @@ export function useWhatsappConnection({
     } else if (data.connector.status === "failed") {
       setFailure(data.connector.errorMessage)
       setPhase(data.connector.errorMessage ? "failed" : "expired")
-    } else if (data.connector.status === "reject") {
+    } else if (data.connector.status !== "pending") {
+      // Número bloqueado (`reject`), ou o WhatsApp encerrou a sessão (`closed`). Nenhum dos dois
+      // manda evento pelo canal: sem isto, a tela ficaria esperando para sempre.
       setFailure(null)
       setPhase("failed")
     }
@@ -180,9 +182,10 @@ export function useWhatsappConnection({
     return () => clearInterval(timer)
   }, [zapi, cableConnected, watching, perform])
 
-  // Conectou: o perfil e o número só existem agora, e o aviso de desconexão foi resolvido.
+  // Terminou, bem ou mal: a lista atrás do diálogo e o número do menu precisam saber. Ao
+  // conectar, o perfil e o número só existem agora, e o aviso de desconexão foi resolvido.
   useEffect(() => {
-    if (phase !== "connected") return
+    if (phase === "starting" || phase === "waiting") return
     void mutate()
     void reloadConnectors()
     refreshConnectorAlerts()

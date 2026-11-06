@@ -109,13 +109,11 @@ export function availableActions(connector: Connector) {
 
 /**
  * Evolution e AIVA jogam fora o que chega durante a pausa, e não há como recuperar. É
- * regra do provedor, e a confirmação precisa dizer com todas as letras.
+ * regra do provedor, e a confirmação precisa dizer com todas as letras. Sem provedor
+ * gravado, o back-end usa a AIVA: no WhatsApp do celular, só a Z-API não descarta.
  */
 export function pauseDiscardsMessages(connector: Connector): boolean {
-  return (
-    connector.type === "whatsapp_web" &&
-    (connector.providerApi === "evolution_api" || connector.providerApi === "aiva_api")
-  )
+  return connector.type === "whatsapp_web" && connector.providerApi !== "zapi"
 }
 
 /** Enquanto não há perfil, o `name` é o nome interno da instância ou do registro. */

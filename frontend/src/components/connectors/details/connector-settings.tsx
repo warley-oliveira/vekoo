@@ -10,7 +10,12 @@ import { Switch } from "@/components/ui/switch"
 import { useConnectorActions } from "@/hooks/connectors/use-connector-actions"
 import { storeConnector } from "@/hooks/connectors/use-connectors"
 import { apiPatch } from "@/lib/api"
-import { availableActions, connectorErrorMessage, connectorPath } from "@/lib/connectors/channels"
+import {
+  availableActions,
+  connectorErrorMessage,
+  connectorPath,
+  pauseDiscardsMessages,
+} from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 import { formatDate } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
@@ -194,7 +199,11 @@ export function ConnectorActionsSection({ connector }: { connector: Connector })
         {available.pause ? (
           <ActionRow
             title={t("connectors.pause.action")}
-            description={t("connectors.pause.summary")}
+            description={t(
+              pauseDiscardsMessages(connector)
+                ? "connectors.pause.summaryDiscards"
+                : "connectors.pause.summary"
+            )}
             action={
               <Button
                 variant="outline"

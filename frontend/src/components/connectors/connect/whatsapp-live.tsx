@@ -106,7 +106,9 @@ export function WhatsappLive({
               description={t(
                 connector.status === "reject"
                   ? "connectors.live.blockedHint"
-                  : "connectors.live.failedHint"
+                  : failure
+                    ? "connectors.live.failedHint"
+                    : "connectors.live.failedHintPlain"
               )}
               detail={failure}
             />

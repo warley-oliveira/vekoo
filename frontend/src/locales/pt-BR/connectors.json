@@ -99,6 +99,7 @@
     "pause": {
       "action": "Pausar",
       "summary": "Para a automação até você retomar. A conexão com o canal continua de pé.",
+      "summaryDiscards": "Para o canal até você retomar. Nesta conexão, o que chegar durante a pausa é descartado.",
       "title": "Pausar {{name}}?",
       "discards": "A automação para de responder e, nesta conexão, tudo o que chegar durante a pausa é descartado e não volta. Essas mensagens não vão aparecer nas conversas. Se quiser continuar recebendo, deixe o canal ligado.",
       "keeps": "A automação para de responder até você retomar. As mensagens continuam chegando nas conversas.",
@@ -211,6 +212,7 @@
       "connectedHint": "O aparelho foi conectado e já está recebendo e enviando mensagens.",
       "failedHeading": "Não conseguimos conectar",
       "failedHint": "Pode ser algo passageiro no serviço do WhatsApp. Tente de novo; se continuar, fale com o suporte e mostre o detalhe abaixo.",
+      "failedHintPlain": "A conexão foi encerrada antes de terminar. Tente de novo; se continuar, fale com o suporte.",
       "blockedHeading": "O WhatsApp bloqueou este número",
       "blockedHint": "Abra o WhatsApp no celular e veja o que ele informa. Depois de resolver lá, tente conectar de novo.",
       "expiredHeading": "O tempo para ler o código acabou",

@@ -99,6 +99,7 @@
     "pause": {
       "action": "Pause",
       "summary": "Stops automation until you resume. The connection itself stays up.",
+      "summaryDiscards": "Stops the channel until you resume. On this connection, whatever arrives during the pause is discarded.",
       "title": "Pause {{name}}?",
       "discards": "Automation stops answering and, on this connection, everything that arrives during the pause is discarded and doesn't come back. Those messages won't show up in your conversations. To keep receiving them, leave the channel on.",
       "keeps": "Automation stops answering until you resume. Messages keep arriving in your conversations.",
@@ -211,6 +212,7 @@
       "connectedHint": "The device is linked and already sending and receiving messages.",
       "failedHeading": "We couldn't connect",
       "failedHint": "It may be a temporary problem with the WhatsApp service. Try again; if it persists, contact support and show the detail below.",
+      "failedHintPlain": "The connection ended before it finished. Try again; if it persists, contact support.",
       "blockedHeading": "WhatsApp blocked this number",
       "blockedHint": "Open WhatsApp on your phone and see what it says. Once that's sorted out, try connecting again.",
       "expiredHeading": "Time to scan the code ran out",
