@@ -1275,7 +1275,7 @@ function buildSchema(t: (key: string) => string) {
     password: z.string().min(8, t("kit.showcase.forms.passwordShort")),
     notes: z.string(),
     phone: z.string().refine(isValidPhone, t("kit.showcase.forms.phoneInvalid")),
-    stage: z.string({ error: t("kit.showcase.forms.stageRequired") }),
+    stage: z.string().nullable().refine(Boolean, t("kit.showcase.forms.stageRequired")),
     owner: z.string().nullable(),
     city: z.string().nullable(),
     tags: z.array(z.string()).min(1, t("kit.showcase.forms.tagsRequired")),
@@ -1296,13 +1296,16 @@ function buildSchema(t: (key: string) => string) {
 
 type ProfileValues = z.infer<ReturnType<typeof buildSchema>>
 
-const PROFILE_DEFAULTS: Partial<ProfileValues> = {
+// Todo campo com padrão, inclusive os vazios (`null`): campo sem padrão faz o
+// `isDirty` nascer verdadeiro e o aviso de sair sem salvar apareceria à toa.
+const PROFILE_DEFAULTS: ProfileValues = {
   name: "",
   email: "",
   website: "",
   password: "",
   notes: "",
   phone: "",
+  stage: null,
   owner: null,
   city: null,
   tags: [],

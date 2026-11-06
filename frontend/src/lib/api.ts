@@ -1,5 +1,8 @@
 import { currentLanguage } from "@/lib/i18n"
 import { clearToken, getToken } from "@/lib/token"
+// Pelo efeito colateral: precisa rodar antes do primeiro render, para ouvir o `popstate`
+// antes do roteador. Este módulo é carregado por `auth.tsx`, antes de `main.tsx` montar.
+import "@/lib/navigation-guard"
 
 // Cliente da API do Rails.
 //
