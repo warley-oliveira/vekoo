@@ -11,6 +11,14 @@ module Ai
     # `claude-opus-5` é uma linha, se um dia os carrosséis pedirem mais.
     MODEL = :"claude-sonnet-5"
 
+    # O copiloto do chat: um agente com ferramentas, que decide sozinho o que consultar. O modelo é
+    # o mesmo que a origem usava nele. As tarefas pequenas dele (resumir, qualificar uma conversa
+    # de cada vez) vão no modelo rápido.
+    AGENT_MODEL = :"claude-opus-5-5"
+    FAST_MODEL = :"claude-haiku-5-5"
+    # Recusa de classificador refeita em outro modelo pelo servidor, escolhido pela categoria.
+    FALLBACK_BETA = "server-side-fallback-2026-07-01".freeze
+
     # Sem chave o produto não quebra: o endpoint responde `failed`, registra o
     # motivo e **não cobra crédito**. Melhor do que um 500 sem explicação.
     class MissingKey < StandardError; end
@@ -44,10 +52,59 @@ module Ai
       raise Failed, e.class.name.demodulize
     end
 
+    # Uma rodada de conversa com ferramentas, em fluxo: entrega o texto em pedaços e devolve a
+    # mensagem inteira, para quem chama decidir o que fazer com `stop_reason` e os `tool_use`.
+    #
+    # `system` é o bloco estável, e é ele que carrega o `cache_control` (o cache cobre as ferramentas
+    # também, que vêm antes). `context` é o que muda a cada turno (a data de hoje), depois do ponto
+    # de cache para não invalidá-lo.
+    def converse(system:, messages:, tools:, context: nil, max_tokens: 64_000, effort: "medium")
+      stream = client.beta.messages.stream(
+        model: AGENT_MODEL,
+        max_tokens: max_tokens,
+        system_: [
+          { type: "text", text: system, cache_control: { type: "ephemeral" } },
+          (context && { type: "text", text: context })
+        ].compact,
+        thinking: { type: "adaptive" },
+        output_config: { effort: effort },
+        tools: tools,
+        messages: messages,
+        betas: [ FALLBACK_BETA ],
+        fallbacks: :default
+      )
+
+      stream.each { |event| yield event.text if event.type == :text }
+      stream.accumulated_message
+    rescue ::Anthropic::Errors::APIStatusError => e
+      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+    rescue ::Anthropic::Errors::APIConnectionError => e
+      raise Failed, e.class.name.demodulize
+    end
+
+    # O conteúdo de uma resposta como volta na rodada seguinte. Os blocos de pensamento precisam
+    # voltar intactos. A exceção é a virada de modelo no meio da escrita: o que veio antes do último
+    # bloco `fallback` foi do modelo que recusou, e pensamento e chamada de ferramenta dele não valem
+    # mais; o próprio bloco é só um marcador.
+    #
+    # Os blocos voltam como objetos do SDK, sem `to_h`: é o SDK que sabe os nomes do fio, e o `to_h`
+    # devolve os dele (`caller_`), que a API recusa.
+    def self.echoable(content)
+      blocks = content.to_a
+      boundary = blocks.rindex { |block| block.type == :fallback }
+
+      blocks.each_with_index.filter_map do |block, index|
+        next if block.type == :fallback
+        next if boundary && index < boundary && %i[thinking redacted_thinking tool_use].include?(block.type)
+
+        block
+      end
+    end
+
     # Uma resposta só, para quando não há o que mostrar em pedaços.
-    def complete(system:, prompt:, max_tokens: 1_000, effort: "low")
+    def complete(system:, prompt:, max_tokens: 1_000, effort: "low", model: MODEL)
       message = client.messages.create(
-        model: MODEL,
+        model: model,
         max_tokens: max_tokens,
         system_: [ { type: "text", text: system, cache_control: { type: "ephemeral" } } ],
         thinking: { type: "adaptive" },

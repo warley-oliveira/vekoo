@@ -27,6 +27,91 @@ RSpec.describe Ai::Chat do
     end
   end
 
+  describe "#converse" do
+    let(:beta) { double(messages: messages) }
+    let(:messages) { double }
+    let(:client) { instance_double(Anthropic::Client).tap { |c| allow(c).to receive(:beta).and_return(beta) } }
+    let(:final) { double(stop_reason: :end_turn) }
+
+    def stream_of(*events)
+      double(accumulated_message: final).tap do |stream|
+        allow(stream).to receive(:each) { |&block| events.each(&block) }
+      end
+    end
+
+    def converse(&block)
+      described_class.new(client: client).converse(
+        system: "estável", context: "de hoje", messages: [ { role: "user", content: "Oi" } ], tools: [ { name: "x" } ], &(block || proc {})
+      )
+    end
+
+    it "entrega o texto em pedaços e devolve a mensagem inteira" do
+      allow(messages).to receive(:stream).and_return(
+        stream_of(double(type: :text, text: "Ol"), double(type: :content_block_stop), double(type: :text, text: "á"))
+      )
+      pieces = []
+
+      expect(converse { |piece| pieces << piece }).to eq(final)
+      expect(pieces).to eq([ "Ol", "á" ])
+    end
+
+    it "pede o modelo do agente, com recusa refeita pelo servidor e o cache no bloco estável" do
+      allow(messages).to receive(:stream).and_return(stream_of)
+
+      converse
+
+      expect(messages).to have_received(:stream).with(
+        hash_including(
+          model: described_class::AGENT_MODEL,
+          thinking: { type: "adaptive" },
+          output_config: { effort: "medium" },
+          betas: [ described_class::FALLBACK_BETA ],
+          fallbacks: :default,
+          tools: [ { name: "x" } ],
+          system_: [ { type: "text", text: "estável", cache_control: { type: "ephemeral" } }, { type: "text", text: "de hoje" } ]
+        )
+      )
+    end
+
+    it "traduz erro do SDK em Failed" do
+      allow(messages).to receive(:stream).and_raise(Anthropic::Errors::APIConnectionError.new(url: "http://x"))
+
+      expect { converse }.to raise_error(Ai::Chat::Failed)
+    end
+
+    it "levanta MissingKey sem chave" do
+      without_key
+
+      expect {
+        described_class.new.converse(system: "s", messages: [], tools: []) { |_| }
+      }.to raise_error(Ai::Chat::MissingKey)
+    end
+  end
+
+  describe ".echoable" do
+    def block(type)
+      double(type: type)
+    end
+
+    it "devolve os blocos como vieram, com o pensamento intacto" do
+      thinking = block(:thinking)
+      use = block(:tool_use)
+
+      expect(described_class.echoable([ thinking, use ])).to eq([ thinking, use ])
+    end
+
+    it "depois de uma virada de modelo, tira o pensamento e as chamadas do modelo que recusou, e o marcador" do
+      old_thinking = block(:thinking)
+      old_use = block(:tool_use)
+      old_text = block(:text)
+      marker = block(:fallback)
+      new_thinking = block(:thinking)
+      new_use = block(:tool_use)
+
+      expect(described_class.echoable([ old_thinking, old_text, old_use, marker, new_thinking, new_use ])).to eq([ old_text, new_thinking, new_use ])
+    end
+  end
+
   describe "sem chave" do
     before { without_key }
 
