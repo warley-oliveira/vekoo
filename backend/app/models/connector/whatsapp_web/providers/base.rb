@@ -69,13 +69,14 @@ class Connector::WhatsappWeb
       # multiple calls don't share retry budget. PERMANENT_ERRORS propagate
       # immediately.
       def with_retry(label:, wait_seconds: 1, max_retries: 2)
-        max_retries = 0 if Thread.current[:connector_send_once]
         tries = 0
         begin
           yield
         rescue *PERMANENT_ERRORS
           raise
         rescue StandardError => e
+          raise if Thread.current[:connector_send_once]
+
           sleep(wait_seconds)
           tries += 1
           Rails.logger.warn("#{label} retry (#{tries}): #{e.message}")
