@@ -9,7 +9,7 @@ class MediaDownloadsController < PlatformController
     invalid_url: :unprocessable_entity,
     host_not_allowed: :forbidden,
     not_found: :not_found,
-    too_large: :payload_too_large,
+    too_large: :content_too_large,
     upstream_error: :bad_gateway
   }.freeze
 
@@ -44,7 +44,10 @@ class MediaDownloadsController < PlatformController
     asset = Media::AssetResolver.new(media_reference).call
     return render_media_error(:not_found) if asset.nil?
 
-    render json: asset.to_h.transform_keys { |key| key.to_s.camelize(:lower) }
+    payload = asset.to_h.transform_keys { |key| key.to_s.camelize(:lower) }
+    payload["createdAt"] = ApplicationSerializer.epoch_ms(asset.created_at) if asset.created_at
+
+    render json: payload
   end
 
   private
