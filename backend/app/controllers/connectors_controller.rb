@@ -14,7 +14,7 @@ class ConnectorsController < PlatformController
 
   def index
     records, meta = paginate(
-      Connector::Base.where(organization_id: current_organization.id).order_by(created_at: :asc),
+      Connector::Base.channels.where(organization_id: current_organization.id).order_by(created_at: :asc),
       per_page: Paginated::MAX_PER_PAGE
     )
 
@@ -189,7 +189,7 @@ class ConnectorsController < PlatformController
   private
 
   def set_connector
-    @connector = Connector::Base.scoped(current_organization.id, params[:id])
+    @connector = Connector::Base.channels.scoped(current_organization.id, params[:id])
     render_not_found unless @connector
   end
 

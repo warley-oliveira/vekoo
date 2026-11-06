@@ -43,6 +43,12 @@ class Connector::Base
     where(organization_id: organization_id.to_s, id: id).take
   end
 
+  # Só os canais de atendimento. O Google Agenda também é um conector, mas não conversa: ele
+  # não entra na tela de canais nem nas ações de canal (ver `Connector::GoogleCalendar`).
+  def self.channels
+    where(:_type.ne => "Connector::GoogleCalendar")
+  end
+
   def activate
     raise NotImplementedError, "Subclasses must implement the 'activate' method."
   end

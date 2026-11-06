@@ -1,0 +1,7 @@
+# Jobs recorrentes do domínio "agenda".
+google_calendar_watch_refresh:
+  # Todo dia às 04:30: renova os canais de aviso do Google Agenda, que expiram em até 7 dias.
+  enabled: true
+  cron: "0 30 4 * * *"
+  class: Agenda::GoogleCalendarWatchRefreshJob
+  queue: low

@@ -1,0 +1,167 @@
+# Textos da agenda em pt-BR (idioma padrão). Mantenha as mesmas chaves de agenda.en.yml.
+pt-BR:
+  # Datas por extenso, em lembretes e avisos. O projeto não usa a gem rails-i18n.
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+      short: "%d de %b"
+    day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
+    abbr_day_names: [dom, seg, ter, qua, qui, sex, sáb]
+    month_names: [~, janeiro, fevereiro, março, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro]
+    abbr_month_names: [~, jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez]
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      long: "%d de %B de %Y, %H:%M"
+      short: "%d/%m, %H:%M"
+    am: ""
+    pm: ""
+
+  mongoid:
+    attributes:
+      agenda/calendar:
+        name: "Nome"
+        time_zone: "Fuso horário"
+        calendar_type: "Tipo"
+        rebalancing_period: "Período de balanceamento"
+        scheduling_notification_config: "Lembretes ao contato"
+        professional_notifications_settings: "Lembretes ao profissional"
+        professional_event_notifications: "Avisos ao profissional"
+        attendance_sequences: "Sequências"
+      agenda/professional:
+        name: "Nome"
+        account_id: "Conta"
+        calendar: "Calendário"
+      agenda/rule:
+        days: "Horários"
+        blocked_times: "Bloqueios"
+        professional: "Profissional"
+      agenda/offering:
+        name: "Nome"
+        duration: "Duração"
+        time_increment_interval: "Intervalo entre horários"
+        buffer_before: "Folga antes"
+        buffer_after: "Folga depois"
+        guest_limit: "Limite de pessoas"
+        distribution: "Distribuição"
+        calendar: "Calendário"
+      agenda/booking:
+        calendar: "Calendário"
+        calendar_id: "Calendário"
+        professional_id: "Profissional"
+        service_id: "Serviço"
+        chat_id: "Conversa"
+        start: "Início"
+        end: "Fim"
+        status: "Situação"
+        attendance_status: "Comparecimento"
+      agenda/class_group:
+        name: "Nome"
+        calendar: "Calendário"
+        max_students: "Máximo de alunos"
+        min_students: "Mínimo de alunos"
+        default_duration_minutes: "Duração"
+        recurrence_type: "Repetição"
+        recurrence_end_type: "Fim da repetição"
+        start_date: "Início"
+        end_date: "Fim"
+        schedule: "Horários"
+        instructor_account_id: "Instrutor"
+      agenda/class_session:
+        start: "Início"
+        end: "Fim"
+        status: "Situação"
+      agenda/class_enrollment:
+        chat_id: "Contato"
+        chat: "Contato"
+        status: "Situação"
+      agenda/class_attendance:
+        attendance_status: "Presença"
+        chat_id: "Contato"
+        class_enrollment_id: "Inscrição"
+
+  agenda:
+    errors:
+      invalid_time: "Esse horário não é válido."
+      range_too_long: "Escolha um período menor, de até 400 dias."
+      conflict: "Isso acabou de ser feito por outra pessoa. Atualize a tela."
+      class_group_full: "Esta turma está cheia."
+      invalid_attendance_status: "Essa situação de presença não existe."
+      already_in_session: "Este contato já está nesta aula."
+      invalid_slot: "Este horário não faz parte da grade da turma."
+      no_availability: "Não encontramos horários livres para esse serviço."
+    validations:
+      unknown_time_zone: "não é um fuso horário conhecido. Use um nome como America/Sao_Paulo."
+      invalid_reminder_rule: "têm uma regra incompleta: confira o tempo e o texto."
+      invalid_event_rule: "têm um evento que não existe."
+      sequence_without_name: "precisam de um nome."
+      sequence_invalid_trigger: "\"%{name}\" precisa dizer se é para quem compareceu ou faltou."
+      sequence_invalid_anchor: "\"%{name}\" tem uma forma de inscrição que não existe."
+      step_without_text: "\"%{name}\" tem um passo sem texto."
+      step_invalid_unit: "\"%{name}\" tem um passo com uma unidade de tempo que não existe."
+      step_invalid_delay: "\"%{name}\" tem um passo com espera negativa."
+      step_invalid_hours: "\"%{name}\" tem um passo com horário inválido: o início precisa vir antes do fim."
+      invalid_day: "têm um dia da semana que não existe."
+      duplicate_day: "têm o mesmo dia da semana repetido."
+      no_windows: "precisam de pelo menos uma faixa em cada dia ligado."
+      invalid_time: "têm um horário inválido. Use o formato 09:00."
+      start_after_end: "têm uma faixa em que o início não vem antes do fim."
+      overlap: "têm faixas que se sobrepõem no mesmo dia."
+      invalid_blocked_time: "têm um período inválido: o início precisa vir antes do fim."
+      unknown_account: "não foi encontrada nesta organização."
+      unknown_calendar: "não foi encontrado."
+      unknown_professional: "não foi encontrado neste calendário."
+      unknown_service: "não foi encontrado neste calendário."
+      unknown_chat: "não foi encontrada."
+      distribution_sum: "precisa somar 100%%. Agora soma %{sum}%%."
+      end_before_start: "não pode vir antes do início."
+      end_date_before_start: "precisa ser depois do início."
+      min_above_max: "não pode ser maior que o máximo de alunos."
+      already_enrolled: "já está inscrito neste horário."
+      attendance_taken: "já tem presença registrada nesta aula."
+    sequences:
+      booking_without_chat: "Este agendamento não tem conversa."
+      booking_not_active: "Este agendamento não está ativo."
+      sequence_not_found: "Esta sequência não existe mais."
+      sequence_disabled: "Esta sequência está desligada."
+      sequence_mismatch: "Esta sequência não combina com o comparecimento marcado."
+      sequence_without_steps: "Esta sequência não tem passos."
+      exit_replied: "O contato respondeu: sequência encerrada."
+      exit_automation_off: "Automação desligada na conversa: sequência encerrada."
+    reminders:
+      label_minutes:
+        one: "Lembrete: %{count} minuto antes"
+        other: "Lembrete: %{count} minutos antes"
+      label_hours:
+        one: "Lembrete: %{count} hora antes"
+        other: "Lembrete: %{count} horas antes"
+      label_days:
+        one: "Lembrete: %{count} dia antes"
+        other: "Lembrete: %{count} dias antes"
+      default_message: "Olá, {{nome}}! Passando para lembrar do seu horário em {{data}} às {{hora}}."
+    senders:
+      calendar: "Agenda"
+      contact_reminder: "%{organization} [Lembrete da agenda]"
+      sequence: "%{organization} [Sequência]"
+      professional_reminder: "Agenda: lembrete"
+      professional_created: "Agenda: novo agendamento"
+      professional_canceled: "Agenda: cancelamento"
+      professional_rescheduled: "Agenda: remarcação"
+    notices:
+      created_title: "Novo agendamento"
+      created: "Você tem um novo agendamento com %{contact} em %{at}."
+      created_with_service: "Você tem um novo agendamento de %{service} com %{contact} em %{at}."
+      canceled_title: "Agendamento cancelado"
+      canceled: "O agendamento com %{contact} em %{at} foi cancelado."
+      reminder_title: "Lembrete de agendamento"
+      reminder_default: "Você tem um agendamento com {{nome}} em {{data}} às {{hora}}."
+      open_calendar: "Abrir agenda"
+      dismiss: "Dispensar"
+    google:
+      not_configured: "A conexão com o Google Agenda não está disponível."
+      invalid_state: "Essa autorização não vale mais. Comece a conexão de novo."
+      not_started: "Comece a conexão com o Google Agenda de novo."
+      authorization_failed: "O Google não aceitou a autorização. Tente de novo."
+      connection_failed: "Não foi possível conectar ao Google Agenda. Tente de novo."
+      revoked: "O acesso ao Google Agenda foi revogado. Conecte a conta de novo."

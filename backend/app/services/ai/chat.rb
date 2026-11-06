@@ -123,7 +123,59 @@ module Ai
       raise Failed, e.class.name.demodulize
     end
 
+    # Uma resposta em que o modelo pode consultar ou mudar algo pelo caminho.
+    # O laço mora aqui para o SDK continuar só nesta classe: quem chama passa as
+    # ferramentas e um bloco que recebe `(nome, entrada)` e devolve o resultado.
+    #
+    # Passou de `max_rounds`, a última rodada proíbe novas chamadas: o modelo
+    # precisa responder com o que já tem, em vez de a mensagem se perder.
+    def complete_with_tools(system:, prompt:, tools:, max_tokens: 2_000, effort: "low", max_rounds: 4)
+      messages = [ { role: "user", content: prompt } ]
+      rounds = 0
+
+      loop do
+        message = client.messages.create(
+          model: MODEL,
+          max_tokens: max_tokens,
+          system_: [ { type: "text", text: system, cache_control: { type: "ephemeral" } } ],
+          thinking: { type: "adaptive" },
+          output_config: { effort: effort },
+          tools: tools,
+          tool_choice: { type: rounds >= max_rounds ? "none" : "auto" },
+          messages: messages
+        )
+
+        raise Failed, "refusal" if message.stop_reason == :refusal
+
+        calls = message.content.select { |block| block.type == :tool_use }
+        if message.stop_reason != :tool_use || calls.empty?
+          return message.content.filter_map { |block| block.text if block.type == :text }.join
+        end
+
+        # A resposta volta inteira, com os blocos de pensamento: é o que a API
+        # exige para continuar a mesma rodada de ferramentas.
+        messages << { role: :assistant, content: message.content }
+        messages << { role: :user, content: calls.map { |call| tool_result(call) { |name, input| yield(name, input) } } }
+        rounds += 1
+      end
+    rescue ::Anthropic::Errors::APIStatusError => e
+      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+    rescue ::Anthropic::Errors::APIConnectionError => e
+      raise Failed, e.class.name.demodulize
+    end
+
     private
+
+    # Ferramenta que falhou volta como erro para o modelo, em vez de derrubar a
+    # geração: ele costuma conseguir terminar sem aquele dado.
+    def tool_result(call)
+      result = yield(call.name, call.input.to_h)
+
+      { type: :tool_result, tool_use_id: call.id, content: result.to_json }
+    rescue StandardError => e
+      Rails.logger.warn("ai: ferramenta #{call.name}: #{e.class}: #{e.message}")
+      { type: :tool_result, tool_use_id: call.id, content: "Falha ao executar a ferramenta.", is_error: true }
+    end
 
     # A chave só é exigida quando há um cliente para construir: quem injeta o
     # seu (os testes, e amanhã um outro transporte) não precisa dela.
