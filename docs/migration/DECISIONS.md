@@ -167,6 +167,16 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **`PUT /chats/:id/attributes` soma ao mapa**, e `null` tira a chave. Substituir tudo, como na origem, apagava o que um fluxo gravou enquanto a tela estava aberta.
 - **Variáveis de evento de conector voltaram a funcionar:** o código lia `definition.type`, que o modelo não tem, então toda variável saía `null`. Agora `{user.<id>}` lê o campo da conversa, ou o padrão dele; `{system.<id>}` lê o padrão; e o que a resposta traz é gravado no campo da conversa. Era o único uso de `defaultValue`.
 
+### Dashboard, funis e personalizados: API (be-insights)
+
+- **Cards que saem do Dashboard:** ranking de assistentes (a mensagem não guarda `flow_id`), uso de tokens, créditos e custo médio (ninguém grava tokens, e não há crédito por dia). "Equipe e assistentes" vira "Equipe".
+- **Cards que mudam:** "Autonomia da IA" vira "Autonomia da automação", calculada como conversa com automação e sem pessoa, sobre as conversas iniciadas. `MetricCard` perde follow-ups.
+- **Contagem:** mensagem enviada do celular conta como pessoa (a origem não contava), e campanha fica fora de automação. O rollup é da organização inteira, mas os funis do dashboard seguem a visão de quem olha.
+- **Agregações usam `hint`:** sem o índice, a consulta é recusada em vez de varrer. Exige `db:mongoid:create_indexes` antes do tráfego.
+- **Funis:** teto de 50 conversas por coluna (a origem ia até 100). Excluir uma etapa manda a conversa para "Sem etapa".
+- **Dashboards personalizados:** cada fonte exige a própria permissão, além de `custom_dashboards`, que substitui o `super_user` da origem. Conversas, contatos e mensagens passam por `visible_to`. 90 dias de período por padrão. Recusas novas: `contains` só em texto, lista só em `in` e `nin`, número e data validados.
+- **Copiloto:** ferramentas de agenda exigem `calendar`, e as de funil exigem `funnel`. `qualify_appointments` analisa até 10.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -179,6 +189,9 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Rodar o processo de scripts em produção (`config/sidekiq_scripts.yml`) como papel próprio no `deploy.yml`.
 - ENV novas: `GOOGLE_MAPS_API_KEY`, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`. `ffmpeg` na imagem.
 - Decisão de produto: excluir calendário.
+- Deploy: `db:mongoid:create_indexes` **antes** do tráfego é obrigatório (as agregações usam `hint`), e `dashboards:backfill_operational[90]` fora do horário de pico.
+- Revisão de segurança: `ffmpeg` processa arquivo enviado pelo usuário em `Chats::SendAudio` (sem shell, mas demuxers de playlist podem ler arquivo local); conferir `Chats::Filters` e os operadores das agregações. Os 3 avisos do Brakeman em aberto (`unified_contacts_controller.rb:27`, `chats/send_audio.rb:92`, `normalization_service.rb:88`) são falsos positivos, a registrar em `config/brakeman.ignore` com o motivo.
+- Teto de 16 MB no `$facet` do quadro de funil não foi reproduzido: passar dele vira 500.
 - ENV novas: `APIFY_API_TOKEN`, `GOOGLE_SHEETS_CLIENT_ID`, `GOOGLE_SHEETS_API_KEY`, `GOOGLE_SHEETS_APP_ID`.
 - `Inbound::ZapiEvents` não trata status, então o destinatário de campanha pela Z-API fica em `sent`.
 - Rubocop: os arquivos reciclados do `be-core` têm ofensas de estilo (aspas simples); rodar `rubocop -a` no back-end inteiro ao final.
@@ -214,15 +227,15 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `be-automation`: substituir o stub `Flows::InboundDispatcher`; debounce; eventos `human_handoff` e `contact_created`; leitor de presença (`presence.<chatId>`), para "digitando" chegar à tela; alertas por hook.
 - `be-pipelines` e `be-agenda`: mapeamento em `ConnectorEventService` (usa `model.service` e `model.professional`), `ChatRelations::*`, `BackfillSystemTagsService`.
 - `be-outreach`: `Outreach::Recipient` hoje é guardado por `defined?`; remover a guarda. `ChatMessage#campaign_id` já existe.
-- `be-insights`: calculadores de `DailyChatStat`, que a semente não preenche.
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
 - `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
 - `be-pipelines`: somar `:deal` em `Chats::BackfillSystemTagsService`.
+- `be-automation`: gravar `flow_id` na mensagem (para o ranking por fluxo) e tokens em `usage_*`; IA de fluxo grava `role assistant`, origem `platform`, sem conta; bloco que usa `Funnels::MoveChat`; registrar a fonte `hook_logs` em dashboards personalizados ("Fonte nova" em `docs/migration/api/insights.md`).
+- `be-pipelines`: registrar a fonte e os filtros `pipeline_status` e `pipeline_stage` em dashboards personalizados, pelos passos de "Fonte nova" em `docs/migration/api/insights.md`.
 - `be-automation`: bloco `send_text` com texto escrito à mão usa `MessageHandling` com `verbatim: true`; só o que vem de LLM passa pela limpeza.
 - `be-automation`: `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id`, conferindo a organização, e preencher `Outreach::AvailableFlows.for`. Mídia de campanha usa `Attachment`: já existe, conferir com um envio real.
-- `be-insights`: ferramentas de agenda e de funil no copiloto (`list_appointments`, `get_appointment_details`, `cancel_appointment`, `reschedule_appointment`, `qualify_appointments`, `get_appointment_stats`, `get_chat_funnel`), contexto `booking_qualification`, conversão no ranking da equipe, fonte `agenda_bookings` e `contactNotificationPreview`, que lê mensagens e hoje exigiria `chat`.
 
 ## 3. Achados na origem (`ancient-app`), que continuam lá
 
