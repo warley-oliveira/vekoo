@@ -154,15 +154,25 @@ export const QuotedMessage = memo(function QuotedMessage({
   const { t } = useTranslation()
 
   if (!message) {
-    return (
-      <div
+    const unknown = cn(
+      "block w-full rounded-md border-l-2 border-border bg-foreground/[0.04] px-2 py-1 text-left text-xs text-muted-foreground italic",
+      className
+    )
+
+    // Ainda há histórico para trás: ela deve estar lá, e tocar vai buscar.
+    return onClick ? (
+      <button
+        type="button"
+        onClick={onClick}
         className={cn(
-          "rounded-md border-l-2 border-border bg-foreground/[0.04] px-2 py-1 text-xs text-muted-foreground italic",
-          className
+          unknown,
+          "transition-colors outline-none hover:bg-foreground/[0.07] focus-visible:ring-3 focus-visible:ring-ring/50"
         )}
       >
-        {t("chat.reply.unavailable")}
-      </div>
+        {t("chat.reply.older")}
+      </button>
+    ) : (
+      <div className={unknown}>{t("chat.reply.unavailable")}</div>
     )
   }
 

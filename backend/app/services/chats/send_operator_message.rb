@@ -73,7 +73,6 @@ module Chats
     def flag_missing_attachments(parts)
       return if @missing_attachments.blank?
 
-      Rails.logger.warn("[Chats::SendOperatorMessage] #{@missing_attachments.join('; ')}")
       return @message.update(status: "failed", status_message: @missing_attachments.first) if parts.empty?
 
       target = @last_part || @message

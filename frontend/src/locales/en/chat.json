@@ -243,9 +243,10 @@
       "attachmentMissing": "Attachment that no longer exists"
     },
     "reply": {
-      "unavailable": "Message not in the loaded history",
+      "unavailable": "A message that is no longer in the history",
       "you": "You",
-      "cancel": "Cancel reply"
+      "cancel": "Cancel reply",
+      "older": "An older message. Tap to see it."
     },
     "selection": {
       "count_one": "{{count}} message selected",
@@ -319,7 +320,6 @@
       "send": "Send message",
       "attach": "Attach file",
       "emoji": "Emojis",
-      "emojiSearch": "Search emoji",
       "dropHere": "Drop here to send",
       "automationOn": "The automation is handling this conversation. If you reply, it pauses.",
       "automationResumes": "Automation paused: back {{when}}.",
@@ -334,7 +334,37 @@
       "disconnectedTitle": "This channel is disconnected",
       "disconnected": "Until it's back, you can't send from here. Messages that already arrived stay in this conversation.",
       "openChannel": "See the channel",
-      "unfilledVariable": "{{marker}} has no value in this conversation. Replace it before sending: the contact gets the text as it is."
+      "unfilledVariable": "{{marker}} has no value in this conversation. Replace it before sending: the contact gets the text as it is.",
+      "emojiPicker": {
+        "search": "Search emoji",
+        "clear": "Clear search",
+        "none": "No emoji found",
+        "one": "One emoji found",
+        "many": "%n emojis found",
+        "navigation": "Emoji categories",
+        "loading": "Loading emojis",
+        "loadingError": "Could not load the emojis.",
+        "retry": "Try again",
+        "categories": {
+          "suggested": "Frequently used",
+          "people": "Smileys and people",
+          "nature": "Animals and nature",
+          "food": "Food and drink",
+          "travel": "Travel and places",
+          "activities": "Activities",
+          "objects": "Objects",
+          "symbols": "Symbols",
+          "flags": "Flags"
+        },
+        "tones": {
+          "neutral": "Neutral skin tone",
+          "light": "Light skin tone",
+          "mediumLight": "Medium-light skin tone",
+          "medium": "Medium skin tone",
+          "mediumDark": "Medium-dark skin tone",
+          "dark": "Dark skin tone"
+        }
+      }
     },
     "quickReplies": {
       "title": "Quick replies",

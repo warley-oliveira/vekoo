@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
   type Ref,
+  type UIEvent,
 } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -18,7 +19,7 @@ import { ErrorState, InlineError } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useMotionPreset } from "@/lib/motion"
 import { useThreadUi } from "@/lib/chat/stores"
-import { loadOlder, useThreadStore } from "@/lib/chat/thread-store"
+import { getThreadMessages, loadOlder, useThreadStore } from "@/lib/chat/thread-store"
 import {
   buildThreadRows,
   firstMessageIdOf,
@@ -39,6 +40,28 @@ import { useDayLabel } from "./message-parts"
 const FIRST_INDEX_START = 1_000_000
 
 const FLASH_MS = 1_400
+
+/** Quantas páginas buscar atrás de uma mensagem citada, antes de desistir. */
+const MAX_PAGES_FOR_QUOTE = 20
+
+/** Até aqui do fim, ainda conta como estar no fim. */
+const AT_BOTTOM_THRESHOLD = 80
+
+/** A essa distância do topo, em linhas, as mais antigas já começam a descer. */
+const PRELOAD_ROWS = 20
+
+/** Até aqui, em linhas, ir até a mensagem citada é rolar; mais longe, é pular. */
+const NEAR_ROWS = 30
+
+const GO_TO_ATTEMPTS = 4
+const GO_TO_RETRY_MS = 200
+
+/**
+ * Nada desenhado acima da tela. As linhas novas no topo entram com um tamanho estimado, e só se
+ * corrigem ao serem medidas: medidas fora da tela, sem rolagem para cima em curso, o conteúdo
+ * saltaria. Desenhadas ao entrar na tela, a própria lista compensa.
+ */
+const VIEWPORT_MARGIN = { top: 0, bottom: 200 }
 
 const NO_MESSAGES: ChatMessage[] = []
 const NO_OUTBOX: never[] = []
@@ -118,7 +141,7 @@ function dayOfRow(row: ThreadRow | undefined): number | null {
 
 export type MessageListHandle = {
   scrollToBottom: () => void
-  scrollToMessage: (id: string) => void
+  scrollToMessage: (id: string) => Promise<void>
 }
 
 /**
@@ -169,32 +192,43 @@ export const MessageList = memo(function MessageList({
   const virtuoso = useRef<VirtuosoHandle>(null)
   const [atBottom, setAtBottom] = useState(true)
   const rowsRef = useRef(rows)
-  const atBottomRef = useRef(true)
   useLayoutEffect(() => {
     rowsRef.current = rows
-    atBottomRef.current = atBottom
   })
 
   // `followOutput` só cuida de item novo. Quem está no fim também precisa continuar lá quando uma
-  // linha cresce: a foto que terminou de carregar, o motivo de uma falha, a reação que entrou.
-  const stayAtBottom = useCallback(() => {
-    if (atBottomRef.current) {
+  // linha cresce: a foto que terminou de carregar, o motivo de uma falha, a reação que entrou. Quem
+  // decide é a última rolagem, e não `atBottom`, que chega atrasado: com ele, quem pula para o topo
+  // seria puxado de volta pelas linhas que se medem ao aparecer.
+  const pinned = useRef(true)
+  const onScroll = useCallback((event: UIEvent<HTMLDivElement>) => {
+    const element = event.currentTarget
+    pinned.current =
+      element.scrollHeight - element.clientHeight - element.scrollTop <= AT_BOTTOM_THRESHOLD
+  }, [])
+  const lastHeight = useRef(0)
+  const stayAtBottom = useCallback((height: number) => {
+    const grew = height > lastHeight.current
+    lastHeight.current = height
+    if (grew && pinned.current) {
       virtuoso.current?.scrollToIndex({ index: "LAST", align: "end", behavior: "auto" })
     }
   }, [])
 
-  // Quantas chegaram desde que a pessoa saiu do fim da conversa.
+  // Quantas chegaram desde que a pessoa saiu do fim da conversa. A conta é pela data, e não por
+  // quantas entraram: as antigas que descem ao subir não são novidade.
   const [missed, setMissed] = useState(0)
-  const seenCount = useRef(messages.length)
+  const seenUntil = useRef(0)
   useEffect(() => {
-    const added = messages.length - seenCount.current
-    seenCount.current = messages.length
-    if (atBottom) setMissed(0)
-    else if (added > 0 && !loadingOlder) setMissed((count) => count + added)
-  }, [atBottom, loadingOlder, messages.length])
+    if (atBottom) {
+      seenUntil.current = messages.at(-1)?.createdAt ?? 0
+      setMissed(0)
+    } else {
+      setMissed(messages.filter((message) => message.createdAt > seenUntil.current).length)
+    }
+  }, [atBottom, messages])
 
   const scrollToBottom = useCallback(() => {
-    setMissed(0)
     virtuoso.current?.scrollToIndex({
       index: "LAST",
       align: "end",
@@ -202,40 +236,82 @@ export const MessageList = memo(function MessageList({
     })
   }, [reduced])
 
-  const scrollToMessage = useCallback((id: string) => {
-    const index = rowsRef.current.findIndex(
-      (row) => row.kind !== "outgoing" && row.messages.some((message) => message.id === id)
-    )
-    if (index < 0) return
+  const visibleStart = useRef(0)
+  const scrollToMessage = useCallback(
+    async (id: string) => {
+      // Daqui em diante a pessoa quer ver outra coisa: o fim da conversa não a puxa de volta.
+      pinned.current = false
 
-    virtuoso.current?.scrollToIndex({ index, align: "center", behavior: "smooth" })
-    useThreadUi.setState({ flashId: id })
-    window.setTimeout(() => {
-      if (useThreadUi.getState().flashId === id) useThreadUi.setState({ flashId: null })
-    }, FLASH_MS)
-  }, [])
+      // A citada pode estar antes do que já foi carregado: busca até achar, sem subir sem limite.
+      const loaded = () => getThreadMessages(threadKey).some((message) => message.id === id)
+      for (let page = 0; page < MAX_PAGES_FOR_QUOTE && !loaded(); page += 1) {
+        if (!useThreadStore.getState().threads[threadKey]?.hasMore) break
+        await loadOlder(threadKey)
+      }
+      const indexOfRow = () =>
+        rowsRef.current.findIndex(
+          (row) => row.kind !== "outgoing" && row.messages.some((message) => message.id === id)
+        )
+
+      // Longe, rolar suave passaria por linhas que ainda não têm tamanho, e erraria o destino.
+      const near = Math.abs(indexOfRow() - visibleStart.current) <= NEAR_ROWS
+
+      // Logo depois de entrarem linhas no topo, a lista ainda está se acertando e pode ignorar o
+      // pedido: confere se a mensagem apareceu, e pede de novo.
+      const goTo = (attemptsLeft: number) => {
+        const index = indexOfRow()
+        if (index < 0) return
+        virtuoso.current?.scrollToIndex({
+          index,
+          align: "center",
+          behavior: near && !reduced ? "smooth" : "auto",
+        })
+        if (near || attemptsLeft === 0) return
+        window.setTimeout(() => {
+          const shown = document.querySelector(`[data-message-id="${CSS.escape(id)}"]`)
+          if (!shown) goTo(attemptsLeft - 1)
+        }, GO_TO_RETRY_MS)
+      }
+      goTo(GO_TO_ATTEMPTS)
+
+      useThreadUi.setState({ flashId: id })
+      window.setTimeout(() => {
+        if (useThreadUi.getState().flashId === id) useThreadUi.setState({ flashId: null })
+      }, FLASH_MS)
+    },
+    [reduced, threadKey]
+  )
 
   useImperativeHandle(ref, () => ({ scrollToBottom, scrollToMessage }), [
     scrollToBottom,
     scrollToMessage,
   ])
 
-  // A data flutuante: só aparece enquanto rola, e só muda quando muda o dia.
-  const [floatingDay, setFloatingDay] = useState<number | null>(null)
-  const [scrolling, setScrolling] = useState(false)
-  const onRange = useCallback(
-    ({ startIndex }: { startIndex: number }) => {
-      const day = dayOfRow(rowsRef.current[startIndex - anchorRef.current])
-      if (day !== null) setFloatingDay((current) => (current === day ? current : day))
-    },
-    []
-  )
   const anchorRef = useRef(anchor.index)
   useLayoutEffect(() => {
     anchorRef.current = anchor.index
   })
 
-  const loadOlderIfAny = useCallback(() => {
+  // A data flutuante só aparece enquanto rola, e só muda quando muda o dia. As antigas descem antes
+  // de chegar ao topo; depois de uma falha, só pelo botão, para não insistir sozinho.
+  const [floatingDay, setFloatingDay] = useState<number | null>(null)
+  const [scrolling, setScrolling] = useState(false)
+  const onRange = useCallback(
+    ({ startIndex }: { startIndex: number }) => {
+      const index = startIndex - anchorRef.current
+      visibleStart.current = index
+      const day = dayOfRow(rowsRef.current[index])
+      if (day !== null) setFloatingDay((current) => (current === day ? current : day))
+
+      const thread = useThreadStore.getState().threads[threadKey]
+      if (index < PRELOAD_ROWS && thread?.hasMore && !thread.loadingOlder && !thread.olderError) {
+        void loadOlder(threadKey)
+      }
+    },
+    [threadKey]
+  )
+
+  const retryOlder = useCallback(() => {
     void loadOlder(threadKey)
   }, [threadKey])
 
@@ -244,10 +320,10 @@ export const MessageList = memo(function MessageList({
       loadingOlder,
       olderError,
       hasMore,
-      onRetryOlder: loadOlderIfAny,
+      onRetryOlder: retryOlder,
       typing,
     }),
-    [hasMore, loadOlderIfAny, loadingOlder, olderError, typing]
+    [hasMore, loadingOlder, olderError, retryOlder, typing]
   )
 
   // No toque, as ações de uma bolha ficam à mostra até tocar em outro lugar.
@@ -287,6 +363,7 @@ export const MessageList = memo(function MessageList({
       <Virtuoso<ThreadRow, ListContext>
         key={threadKey}
         ref={virtuoso}
+        onScroll={onScroll}
         aria-label={t("chat.thread.history")}
         className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
         style={{ height: "100%" }}
@@ -298,12 +375,11 @@ export const MessageList = memo(function MessageList({
         firstItemIndex={anchor.index}
         initialTopMostItemIndex={{ index: rows.length - 1, align: "end" }}
         alignToBottom
-        followOutput={(isAtBottom) => (isAtBottom ? (reduced ? "auto" : "smooth") : false)}
-        startReached={hasMore && !loadingOlder && !olderError ? loadOlderIfAny : undefined}
+        followOutput={(isAtBottom) => (isAtBottom ? "auto" : false)}
         atBottomStateChange={setAtBottom}
         totalListHeightChanged={stayAtBottom}
-        atBottomThreshold={80}
-        increaseViewportBy={{ top: 600, bottom: 200 }}
+        atBottomThreshold={AT_BOTTOM_THRESHOLD}
+        increaseViewportBy={VIEWPORT_MARGIN}
         rangeChanged={onRange}
         isScrolling={setScrolling}
       />

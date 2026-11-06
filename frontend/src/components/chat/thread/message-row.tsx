@@ -223,6 +223,9 @@ const MessageBubble = memo(function MessageBubble({
       ? state.threads[threadKey]?.messages.find((item) => item.id === message.replyToMessageId)
       : undefined
   )
+  const quoteIsOlder = useThreadStore(
+    (state) => Boolean(message.replyToMessageId) && (state.threads[threadKey]?.hasMore ?? false)
+  )
 
   const { selecting, selected, onClickCapture } = useRowSelection(message.id)
   const touch = useTouchActions(message.id)
@@ -293,7 +296,7 @@ const MessageBubble = memo(function MessageBubble({
                 message={quoted}
                 contactName={contactName}
                 onClick={
-                  quoted && !selecting
+                  (quoted || quoteIsOlder) && !selecting
                     ? () => scrollToMessage(message.replyToMessageId as string)
                     : undefined
                 }

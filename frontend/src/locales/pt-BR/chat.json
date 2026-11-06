@@ -243,9 +243,10 @@
       "attachmentMissing": "Anexo que não existe mais"
     },
     "reply": {
-      "unavailable": "Mensagem que não está no histórico carregado",
+      "unavailable": "Mensagem que não está mais no histórico",
       "you": "Você",
-      "cancel": "Cancelar resposta"
+      "cancel": "Cancelar resposta",
+      "older": "Mensagem mais antiga. Toque para ver."
     },
     "selection": {
       "count_one": "{{count}} mensagem selecionada",
@@ -319,7 +320,6 @@
       "send": "Enviar mensagem",
       "attach": "Anexar arquivo",
       "emoji": "Emojis",
-      "emojiSearch": "Buscar emoji",
       "dropHere": "Solte aqui para enviar",
       "automationOn": "A automação está cuidando desta conversa. Se você responder, ela pausa.",
       "automationResumes": "Automação pausada: volta {{when}}.",
@@ -334,7 +334,37 @@
       "disconnectedTitle": "Este canal está desconectado",
       "disconnected": "Enquanto ele não voltar, não dá para enviar por aqui. As mensagens que já chegaram continuam nesta conversa.",
       "openChannel": "Ver o canal",
-      "unfilledVariable": "{{marker}} não tem valor nesta conversa. Troque antes de enviar: o contato recebe o texto como está."
+      "unfilledVariable": "{{marker}} não tem valor nesta conversa. Troque antes de enviar: o contato recebe o texto como está.",
+      "emojiPicker": {
+        "search": "Buscar emoji",
+        "clear": "Limpar busca",
+        "none": "Nenhum emoji encontrado",
+        "one": "Um emoji encontrado",
+        "many": "%n emojis encontrados",
+        "navigation": "Categorias de emoji",
+        "loading": "Carregando emojis",
+        "loadingError": "Não foi possível carregar os emojis.",
+        "retry": "Tentar de novo",
+        "categories": {
+          "suggested": "Mais usados",
+          "people": "Rostos e pessoas",
+          "nature": "Animais e natureza",
+          "food": "Comida e bebida",
+          "travel": "Viagens e lugares",
+          "activities": "Atividades",
+          "objects": "Objetos",
+          "symbols": "Símbolos",
+          "flags": "Bandeiras"
+        },
+        "tones": {
+          "neutral": "Tom de pele neutro",
+          "light": "Tom de pele claro",
+          "mediumLight": "Tom de pele médio-claro",
+          "medium": "Tom de pele médio",
+          "mediumDark": "Tom de pele médio-escuro",
+          "dark": "Tom de pele escuro"
+        }
+      }
     },
     "quickReplies": {
       "title": "Mensagens rápidas",

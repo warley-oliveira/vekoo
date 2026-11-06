@@ -125,7 +125,7 @@ const Conversation = memo(function Conversation({
         }
         list.current?.scrollToBottom()
       },
-      scrollToMessage: (id) => list.current?.scrollToMessage(id),
+      scrollToMessage: (id) => void list.current?.scrollToMessage(id),
     }),
     [capabilities, chatId, contactName, contactPicture, retryOutgoing, send, senderName, t]
   )
@@ -300,7 +300,7 @@ const AllChannelsTimeline = memo(function AllChannelsTimeline({
       react: () => {},
       requestDelete: () => {},
       retry: () => {},
-      scrollToMessage: (id) => list.current?.scrollToMessage(id),
+      scrollToMessage: (id) => void list.current?.scrollToMessage(id),
       renderOrigin: (message) => {
         const connector = message.connectorId ? connectors.get(message.connectorId) : undefined
         const channel = channelKey(connector, null)
