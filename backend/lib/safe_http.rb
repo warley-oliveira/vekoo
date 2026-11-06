@@ -22,6 +22,8 @@ class SafeHttp
   # Recusado por causa do destino. Separado porque o motivo não deve chegar a quem pediu:
   # dizer "resolve para interno" ou "não resolve" já é um mapa da rede.
   class DestinationRefused < Refused; end
+  class TooLarge < Refused; end
+  class TimedOut < Refused; end
 
   Response = Struct.new(:status, :headers, :body, :content_type, :url, keyword_init: true) do
     def success? = status.between?(200, 299)
@@ -127,7 +129,7 @@ class SafeHttp
       raise Refused, "redirecionamentos demais"
     end
   rescue Timeout::Error
-    raise Refused, "tempo esgotado"
+    raise TimedOut, "tempo esgotado"
   end
 
   private
@@ -205,12 +207,12 @@ class SafeHttp
   end
 
   def read_capped(response)
-    raise Refused, "acima do limite" if response["content-length"].to_i > @max_bytes
+    raise TooLarge, "acima do limite" if response["content-length"].to_i > @max_bytes
 
     body = +"".b
     response.read_body do |chunk|
       body << chunk
-      raise Refused, "acima do limite" if body.bytesize > @max_bytes
+      raise TooLarge, "acima do limite" if body.bytesize > @max_bytes
     end
     body
   end
