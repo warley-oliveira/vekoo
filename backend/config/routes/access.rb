@@ -27,3 +27,31 @@ resource :organization, only: %i[show update], controller: "organization" do
   post :logo, action: :upload_logo
   delete :logo, action: :destroy_logo
 end
+
+# --- avisos, alertas e push -----------------------------------------------------
+# `GET /notifications` e `POST /notifications/read-all` estão em config/routes.rb desde
+# antes da plataforma; aqui entra o que este domínio acrescenta.
+resources :notifications, only: %i[show destroy] do
+  collection do
+    get "unread-count", action: :unread_count
+  end
+
+  member do
+    post :read
+  end
+end
+
+resources :organization_alerts, path: "alerts", only: :index do
+  collection do
+    get :details
+    post :resolve
+  end
+end
+
+resources :push_devices, path: "push-devices", only: %i[index create destroy] do
+  collection do
+    get "vapid-public-key", action: :vapid_public_key
+    post :test
+    delete "", action: :destroy_by_endpoint
+  end
+end
