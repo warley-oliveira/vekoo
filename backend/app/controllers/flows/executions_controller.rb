@@ -19,14 +19,19 @@ module Flows
       scope = scope.where(chat_id: params[:chat_id]) if params[:chat_id].present?
 
       records, meta = paginate(scope)
-      render json: { executions: FlowExecutionSerializer.many(records), meta: meta }
+      list = records.to_a
+      render json: {
+        executions: FlowExecutionSerializer.many(list, contact_names: contact_names(list)),
+        counts: @flow.executions.real_runs.group(:status).count,
+        meta: meta
+      }
     end
 
     def show
       execution = @flow.executions.find(params[:id])
       logs = execution.logs.limit(MAX_LOGS)
 
-      render json: { execution: FlowExecutionSerializer.full(execution, logs) }
+      render json: { execution: FlowExecutionSerializer.full(execution, logs, contact_names: contact_names([ execution ])) }
     end
 
     # POST /flows/:flowId/executions { chatId, variables? }. É o gatilho `manual`: alguém começa o fluxo numa conversa.
@@ -47,6 +52,15 @@ module Flows
 
     def set_flow
       @flow = Flow.for_organization(current_organization.id).find(params[:flow_id])
+    end
+
+    # A conversa mora no Mongo: uma consulta por página, escopada à organização, para o histórico dizer quem é o contato.
+    def contact_names(executions)
+      ids = executions.filter_map(&:chat_id).uniq
+      return {} if ids.empty?
+
+      Chat.where(organization_id: current_organization.id.to_s, :_id.in => ids).pluck(:_id, :user_name)
+          .to_h { |id, name| [ id.to_s, name ] }
     end
 
     def variables_param

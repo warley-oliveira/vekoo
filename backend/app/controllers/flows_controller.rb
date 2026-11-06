@@ -3,7 +3,7 @@
 class FlowsController < PlatformController
   require_permission :flows
 
-  before_action :set_flow, only: %i[show update update_definition publish archive destroy]
+  before_action :set_flow, only: %i[show update update_definition publish archive unarchive destroy versions version]
 
   # GET /flows?status=&triggerType=&q=
   def index
@@ -13,7 +13,9 @@ class FlowsController < PlatformController
     scope = scope.where("name ILIKE ?", "%#{Flow.sanitize_sql_like(params[:q])}%") if params[:q].present?
 
     records, meta = paginate(scope)
-    render json: { flows: FlowSerializer.many(records), meta: meta }
+    list = records.to_a
+    stats = Flows::ListStats.for(list.map(&:id))
+    render json: { flows: list.map { |flow| FlowSerializer.one(flow).merge(stats: stats[flow.id]) }, meta: meta }
   end
 
   def show
@@ -80,9 +82,27 @@ class FlowsController < PlatformController
     render json: { flow: FlowSerializer.one(@flow) }
   end
 
+  # Liga de novo o que foi arquivado, na mesma versão publicada: o rascunho que estiver aberto continua sendo rascunho.
+  def unarchive
+    @flow.update!(status: @flow.published_version_id? ? "published" : "draft") if @flow.archived?
+
+    render json: { flow: FlowSerializer.one(@flow) }
+  end
+
   def destroy
     @flow.destroy!
     head :no_content
+  end
+
+  # GET /flows/:id/versions. As publicadas e o rascunho, sem a definição: a lista só serve para escolher.
+  def versions
+    records, meta = paginate(@flow.versions)
+    render json: { versions: records.map { |version| FlowSerializer.version_summary(version) }, meta: meta }
+  end
+
+  # GET /flows/:id/versions/:version_id. Com a definição, para abrir ou restaurar.
+  def version
+    render json: { version: FlowSerializer.version(@flow.versions.find(params[:version_id])) }
   end
 
   private

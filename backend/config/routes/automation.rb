@@ -6,6 +6,9 @@ resources :flows, only: %i[index show create update destroy] do
     match :definition, via: %i[put patch], action: :update_definition
     post :publish
     post :archive
+    post :unarchive
+    get :versions
+    get "versions/:version_id", action: :version, as: :version
   end
 
   resources :executions, only: %i[index show create], module: :flows

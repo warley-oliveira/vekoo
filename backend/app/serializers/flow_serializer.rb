@@ -20,6 +20,15 @@ class FlowSerializer < ApplicationSerializer
     )
   end
 
+  def self.version_summary(version)
+    {
+      id: version.id,
+      versionNumber: version.version_number,
+      publishedAt: epoch_ms(version.published_at),
+      updatedAt: epoch_ms(version.updated_at)
+    }
+  end
+
   # `definition` sai como está: é mapa livre, com chaves que o editor escreveu.
   def self.version(version)
     return nil unless version

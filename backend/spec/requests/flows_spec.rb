@@ -27,6 +27,127 @@ RSpec.describe "Fluxos", type: :request do
     end
   end
 
+  describe "GET /flows, o que cada um fez" do
+    it "traz o último uso, os últimos resultados e a semana, sem contar o teste do editor" do
+      flow = flow_with_draft(name: "Com histórico")
+      version = flow.versions.first
+      create(:flow_execution, flow: flow, flow_version: version, status: "failed", created_at: 1.hour.ago)
+      create(:flow_execution, flow: flow, flow_version: version, status: "completed", created_at: 2.hours.ago)
+      create(:flow_execution, flow: flow, flow_version: version, status: "completed", created_at: 10.days.ago)
+      create(:flow_execution, flow: flow, flow_version: version, status: "waiting_for_message", chat_id: "c1", created_at: 3.hours.ago)
+      create(:flow_execution, flow: flow, flow_version: version, status: "completed", playground: true)
+      idle = flow_with_draft(name: "Parado")
+
+      get "/flows", headers: headers, as: :json
+
+      stats = json["flows"].find { |item| item["id"] == flow.id }["stats"]
+      expect(stats["recent"]).to eq(%w[failed completed waiting_for_message completed])
+      expect(stats["last7Days"]).to eq("total" => 3, "failed" => 1, "waiting" => 1)
+      expect(stats["lastExecutedAt"]).to be_within(5_000).of((1.hour.ago.to_f * 1000).to_i)
+      expect(json["flows"].find { |item| item["id"] == idle.id }["stats"]).to be_nil
+    end
+
+    it "não mistura execuções de outra organização" do
+      flow_with_draft(name: "Meu")
+      create(:flow_execution, flow: create(:flow, organization: create(:organization)), status: "failed")
+
+      get "/flows", headers: headers, as: :json
+
+      expect(json["flows"].pluck("stats")).to eq([ nil ])
+    end
+  end
+
+  describe "POST /flows/:id/unarchive" do
+    it "volta a valer na versão que estava publicada, sem publicar o rascunho" do
+      flow = flow_with_draft(name: "Liga e desliga")
+      flow.publish!
+      published = flow.published_version_id
+      flow.update!(status: "archived")
+
+      post "/flows/#{flow.id}/unarchive", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json["flow"]).to include("status" => "published", "published" => true)
+      expect(flow.reload.published_version_id).to eq(published)
+    end
+
+    it "volta a rascunho se nunca foi publicado" do
+      flow = flow_with_draft(status: "archived")
+
+      post "/flows/#{flow.id}/unarchive", headers: headers, as: :json
+
+      expect(json["flow"]).to include("status" => "draft", "published" => false)
+    end
+
+    it "não mexe em quem não está arquivado" do
+      flow = flow_with_draft(status: "draft")
+
+      post "/flows/#{flow.id}/unarchive", headers: headers, as: :json
+
+      expect(flow.reload.status).to eq("draft")
+    end
+
+    it "é 404 em fluxo de outra organização e 403 sem a permissão" do
+      post "/flows/#{other_flow.id}/unarchive", headers: headers, as: :json
+      expect(response).to have_http_status(:not_found)
+
+      post "/flows/#{flow_with_draft.id}/unarchive", headers: no_access_headers, as: :json
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe "GET /flows/:id/versions" do
+    it "lista da mais nova para a mais antiga, sem a definição, e abre uma com a definição" do
+      flow = flow_with_draft
+      flow.publish!
+
+      get "/flows/#{flow.id}/versions", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json["versions"].pluck("versionNumber")).to eq([ 2, 1 ])
+      expect(json["versions"].first).not_to have_key("definition")
+      expect(json["versions"].last["publishedAt"]).to be_a(Integer)
+
+      get "/flows/#{flow.id}/versions/#{json['versions'].last['id']}", headers: headers, as: :json
+
+      expect(json["version"]["definition"]["base_prompt"]).to eq("Atenda bem")
+    end
+
+    it "não abre versão de outro fluxo" do
+      flow = flow_with_draft
+      foreign = flow_with_draft.versions.first
+
+      get "/flows/#{flow.id}/versions/#{foreign.id}", headers: headers, as: :json
+      expect(response).to have_http_status(:not_found)
+
+      get "/flows/#{other_flow.id}/versions", headers: headers, as: :json
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "exige a permissão" do
+      get "/flows/#{flow_with_draft.id}/versions", headers: no_access_headers, as: :json
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe "GET /flows/:flowId/executions, quem é o contato" do
+    it "traz o nome da conversa e a contagem por situação, sem o teste do editor" do
+      flow = flow_with_draft
+      version = flow.versions.first
+      chat = create(:chat, organization: organization, user_name: "Fernanda Souza")
+      foreign = create(:chat, organization: create(:organization), user_name: "De outra")
+      create(:flow_execution, flow: flow, flow_version: version, status: "completed", chat_id: chat.id.to_s)
+      create(:flow_execution, flow: flow, flow_version: version, status: "failed", chat_id: foreign.id.to_s)
+      create(:flow_execution, flow: flow, flow_version: version, status: "completed", playground: true)
+
+      get "/flows/#{flow.id}/executions", headers: headers, as: :json
+
+      expect(json["counts"]).to eq("completed" => 1, "failed" => 1)
+      names = json["executions"].to_h { |item| [ item["status"], item["contactName"] ] }
+      expect(names).to eq("completed" => "Fernanda Souza", "failed" => nil)
+    end
+  end
+
   describe "GET /flows" do
     it "lista os da organização, com filtros e busca" do
       flow = flow_with_draft(name: "Boas-vindas", status: "published", trigger_type: "first_message")
