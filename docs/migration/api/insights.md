@@ -57,7 +57,7 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`.
 | 422 | `invalidWidget`, `tooManyWidgets` | Dashboard: `details` traz `position` e `errors` do card. Nada é gravado, e os widgets que estavam lá continuam. |
 | 422 | `unknownDataSource` | Fonte que não existe. |
 | 422 | `fieldNotAllowed`, `operatorNotAllowed`, `metricNotAllowed`, `dimensionNotAllowed` | Campo, operador, agregação ou dimensão fora da lista da fonte. |
-| 422 | `invalidFilterValue`, `invalidFiltersOperator`, `metricFiltersUnsupported` | Valor de filtro que não serve (mapa solto, data inválida, mais de 1.000 valores); `filtersOperator` que não é `and` nem `or`; `metrics[].filters` em fonte que não aceita. |
+| 422 | `invalidFilterValue`, `invalidFiltersOperator`, `metricFiltersUnsupported` | Valor de filtro que não serve (mapa solto, lista fora de `in` e `nin`, número ou data inválidos, mais de 1.000 valores); `filtersOperator` que não é `and` nem `or`; `metrics[].filters` em fonte que não aceita. |
 | 422 | `invalidGranularity`, `granularityUnsupported`, `invalidSort`, `invalidLimit`, `invalidSteps`, `invalidTimeRange`, `rangeTooLong` | Granularidade, ordenação, limite, passos e período. |
 | 422 | `tooManyMetrics`, `tooManyMetricFilters`, `tooManyFilters`, `tooManyDimensions`, `tooManyMatches` | Tetos: 12 métricas, 5 filtros por métrica, 30 filtros, 5 dimensões, 50 mil conversas num filtro de presença. |
 | 422 | `queryTimeout` | Consulta composta: o prazo acabou entre um passo e outro. |
