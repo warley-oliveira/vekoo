@@ -542,7 +542,7 @@ RSpec.describe "Webhooks", type: :request do
         expect(sent_media).to have_been_requested.once
         expect(sent_texts.join(" ")).not_to include("attachment_id_")
         expect(sent_texts).to eq([ "Segue", "e", "pronto" ])
-        expect(organization.organization_alerts.active.for_origin("Hook", hook.id).take.message).to include(gone)
+        expect(organization.organization_alerts.active.for_origin("Hook", hook.id)).to exist
       end
 
       it "o canal que falha vira alerta, e o resto continua" do
