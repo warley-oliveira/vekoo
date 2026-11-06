@@ -35,6 +35,17 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Mantidos como na origem:** `required` e `defaultValue` dos campos não são aplicados pela API, e a listagem esconde inativos por padrão.
 - **Defeitos da origem corrigidos** (cada um com spec): upload de CSV recusado nesta versão da gem, `q` da tela ignorado, `mirror_images` que nunca enfileirava, `items_count` que podia ficar negativo, índice de busca defasado ao vincular ou renomear categoria, "Não" virando ativo, `1.234,56` descartado, dois cliques em "Importar" reprocessando o arquivo, entre outros.
 
+### Casca (fe-shell)
+
+- **Ícone do PWA provisório, feito pelo integrador:** o `favicon.svg` era o logo do Vite. Virou a marca `v.` que o app já usa no cabeçalho móvel, em branco sobre o violeta. Para trocar por uma marca oficial: substitua `frontend/public/favicon.svg` e rode `node frontend/scripts/pwa-icons.mjs`.
+- **Zoom de pinça continua disponível:** sem `maximum-scale=1`. Os campos têm 16 px no celular, então o iOS não dá zoom ao focar.
+- **`/` vai para a primeira área permitida** (`/dashboard` para quem tem acesso); sem nenhuma permissão, cai em `/carousels`.
+- **Canal sem confirmação em 10 s** para de insistir e tenta de novo depois de 1 min. Sem isso, cada aba reenviaria o subscribe duas vezes por segundo, para sempre.
+- **Avisos:** a terceira aba é "Arquivadas", como na origem. "Dispensar" não pede confirmação, porque só arquiva. O painel mostra até 50 por aba (a origem mostrava 10).
+- **Menu da conta:** "Configurações" virou "Meu perfil" e "Preferências de notificação"; "Convidar pessoas" leva a `/settings/users`.
+- **Atualização do PWA** é aplicada ao clicar. A origem também aplicava ao navegar.
+- **De fora, por escolha:** `window-controls-overlay` (cobriria as ações do topo), a tela pré-React "Atualizando…" (script inline, bloqueado pela CSP), e animações só decorativas da barra móvel.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -45,13 +56,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `OPENAI_API_KEY` em `.env.example`, `.env.deploy.example`, `deploy.yml` e `DEPLOY.md`.
 - `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
 - Revisão de segurança: `Products::RemoteImage` pode servir a outros downloads de URL vinda do cliente.
-- Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade.
+- Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
+- Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
 
 - `lib/api.ts` e `AuthErrorCode` não conhecem `accessRevoked` nem os códigos novos do domínio de pessoas (fe-settings-people).
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-contacts-catalog`: ler a seção "Para a tela" de `docs/migration/api/products.md`; a grade de gestão manda `includeInactive=true`.
+- `fe-chat-core`: **a CSP precisa mudar junto com o player de áudio.** A origem usa `OggOpusDecoderWebWorker`, que compila WASM e sobe worker de blob: `public/_headers` precisa de `'wasm-unsafe-eval'` em `script-src` e `blob:` em `worker-src`, senão o áudio falha só no Safari/iOS e só em produção (em desenvolvimento não há CSP). Testar contra a CSP real.
+- `fe-settings-people`: `account.locale` chega em `/me`, mas nada o aplica, e o idioma escolhido no menu não grava em `PATCH /profile`.
+- Ao integrar o `fe-kit`: unificar `components/shell/motion.ts` e `lib/match-media.ts` com os do kit, e pôr `ConfirmDialog` em "Excluir pasta", que nunca teve confirmação (o Charter exige).
+- `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)
 
@@ -59,4 +75,5 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `be-agenda`: a origem espelhava o avatar da pessoa em `Collaborator`.
 - Avisos criados pelos domínios: `AccountNotice.create!` (o `recycle.rb` já converte).
 - `be-automation`: bloco de fluxo que busca no catálogo usa `Products::SearchService`; entrega de imagem usa `Products::Image#delivery_url`. Ver `docs/migration/api/products.md`.
+- `be-pipelines`: o menu já consome `GET /pipelines/boards` esperando `{ boards: [{ id, name }] }`. Se o formato mudar, ajustar `hooks/use-pipeline-boards.ts`; o front invalida `PIPELINE_BOARDS_KEY` ao criar ou renomear quadro.
 - `be-pipelines`: se os bindings `catalog.*` do MiniRacer forem migrados, faltam `Facets` e `Similar`, que não têm serviço.

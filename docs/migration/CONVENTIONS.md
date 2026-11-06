@@ -184,6 +184,53 @@ Reutilize **antes de criar**: `@/components/shared/*` (ver `frontend/src/compone
 - Permissão: `useCan("chat")`, `<RequirePermission permission="chat">`. O menu já filtra.
 - Contrato da API: `docs/migration/api/<dominio>.md`. Back-end em `http://localhost:3040`, com a semente carregada. Tipos no próprio domínio. Datas chegam em milissegundos.
 
+### API da casca
+
+Está pronta e é o que as telas devem usar. Não recrie nada disto:
+
+```ts
+// Rota: src/routes/<dominio>/index.tsx fica pequeno; a página entra por lazy().
+// Não mexa em App.tsx: ele já importa o index.tsx de cada domínio.
+<RouteFrame title="chave.i18n" permission="chat"><Pagina /></RouteFrame>
+// routes/dev/<nome>.tsx com export default vira /dev/<nome>, só em desenvolvimento.
+
+// @/hooks/use-header-slot: ações da página na barra superior
+useHeaderSlot(node, { mobileNode?, mobilePlacement?: "overflow" | "inline" | "toolbar" | "hidden" })
+usePageTitle(title, { color?, backTo?, parentTitle? })
+
+// @/components/app-shell
+useShell(): { openCreate, openSearch, scroller }
+
+// @/hooks/use-app-shell
+useImmersive(active)   // esconde topbar e barra inferior (conversa no celular)
+useFullBleed(active)   // sem padding do <main>; a tela reserva --app-bottom-nav-total no fim do que rola
+
+// @/hooks/use-channel: params por valor; mesmo canal e params dividem a assinatura
+useChannel<T>(nome | null, params?, onMessage?): { connected, perform(acao, dados?) => boolean }
+
+// @/hooks/use-can
+useCan(key?): boolean; useCanAccess(): (key?) => boolean; usePermissionLevel(key)
+<RequirePermission permission="chat" fallback?>   // sem fallback, redireciona e avisa
+
+// Dados
+useApi(path, config?)                      // @/hooks/use-api
+useOptionalApi(path, fallback, config?)    // 404 vira fallback (endpoint opcional)
+usePipelineBoards(): { boards, isLoading, error, reload }   // + PIPELINE_BOARDS_KEY
+useAlerts(): { badges, reload }
+useNotifications(tab?, perPage?); useNotificationMutations(): { readAll, read, dismiss }
+usePushNotifications(): { isSupported, isAvailable, permission, isSubscribed, isLoading, error, subscribe, unsubscribe, sendTest }
+useNotificationPermission()
+apiAssetUrl(path)                          // @/lib/api: avatarUrl, logoUrl
+
+// Viewport
+useMobileShell(): { isMobileShell, isCompactPhone, isKeyboardOpen }
+useTouchDevice(); useVisualViewport(); useScrollDirection({ element, ... })
+```
+
+- CSS: `--app-bottom-nav-total`, `--app-header-total`, `--app-vh`, `--kb-inset`; utilitários `pb-safe`, `pt-safe`, `pl-safe`, `pr-safe`.
+- Folha de baixo: `BottomSheet` em `@/components/shell/bottom-sheet`. Telas sem `fullBleed` já recebem a folga da barra inferior do `<main>`.
+- Erros de domínio: `ApiError.code` passa direto (`error.code === "lastOwner"`).
+
 ### i18n (regra dura)
 
 **Nenhum texto visível literal em JSX.** Chaves em `frontend/src/locales/{pt-BR,en}/<dominio>.json`, as duas línguas no mesmo commit, chave raiz = domínio (`t("chat.list.empty")`). `{ count }` com `_one`/`_other` para plural; `<Trans>` quando houver marcação; datas e números por `Intl` com `useLanguage()` (`@/lib/format`). Vocabulário sem jargão: "carrossel", "card", "conversa", "contato", "fluxo", "pipeline" — botões com verbo, o mesmo verbo do início ao fim da ação.
