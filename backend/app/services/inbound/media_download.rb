@@ -29,7 +29,22 @@ module Inbound
           connector.download_media(reference)
         end
 
-      Result.new(path: path)
+      Result.new(path: with_real_extension(path))
+    end
+
+    # Meta e Z-API própria baixam para `.bin`: o tipo real sai do conteúdo.
+    def with_real_extension(path)
+      return path unless path.present? && File.extname(path.to_s) == ".bin" && File.exist?(path)
+
+      extension = MiniMime.lookup_by_content_type(Marcel::MimeType.for(Pathname.new(path.to_s)))&.extension
+      return path if extension.blank? || extension == "bin"
+
+      # Marcel chama de `application/ogg` e o MiniMime devolve `.ogx`, que o Whisper recusa.
+      extension = "ogg" if extension == "ogx"
+
+      renamed = "#{path.to_s.delete_suffix('.bin')}.#{extension}"
+      File.rename(path, renamed)
+      renamed
     end
 
     def cleanup(path)

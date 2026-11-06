@@ -30,6 +30,27 @@ module Chats
       new(connector, phone, sender_phone_number_id).find_or_create(attributes)
     end
 
+    # A mesma trava para quem identifica o contato por outra coisa que não telefone (Messenger,
+    # Instagram, @lid). O bloco procura e, se preciso, cria; quem perde a trava espera `find`.
+    def self.create_once(key, find:)
+      lock_key = "chats.creation.#{key}"
+
+      if Rails.cache.write(lock_key, true, unless_exist: true, expires_in: CREATION_LOCK_TTL)
+        begin
+          find.call || yield
+        ensure
+          Rails.cache.delete(lock_key)
+        end
+      else
+        CREATION_WAIT_ATTEMPTS.times do
+          sleep(CREATION_WAIT_INTERVAL)
+          found = find.call
+          return found if found
+        end
+        yield
+      end
+    end
+
     def initialize(connector, phone, sender_phone_number_id = nil)
       @connector = connector
       @phone = phone
@@ -69,26 +90,9 @@ module Chats
     end
 
     def create_guarded(attributes)
-      lock_key = "chats.creation.#{connector.id}.#{BrPhoneVariants.digits_of(phone)}.#{sender_phone_number_id}"
+      key = "#{connector.id}.#{BrPhoneVariants.digits_of(phone)}.#{sender_phone_number_id}"
 
-      if Rails.cache.write(lock_key, true, unless_exist: true, expires_in: CREATION_LOCK_TTL)
-        begin
-          find || create(attributes)
-        ensure
-          Rails.cache.delete(lock_key)
-        end
-      else
-        wait_for_concurrent_creation || create(attributes)
-      end
-    end
-
-    def wait_for_concurrent_creation
-      CREATION_WAIT_ATTEMPTS.times do
-        sleep(CREATION_WAIT_INTERVAL)
-        found = find
-        return found if found
-      end
-      nil
+      self.class.create_once(key, find: -> { find }) { create(attributes) }
     end
 
     def create(attributes)

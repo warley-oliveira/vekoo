@@ -27,6 +27,8 @@ resources :connectors, only: %i[index show create update] do
   end
 end
 
+resource :automation_settings, path: "automation-settings", only: %i[show update], controller: "automation_settings"
+
 get "media/download" => "media_downloads#show"
 get "media/metadata" => "media_downloads#metadata"
 

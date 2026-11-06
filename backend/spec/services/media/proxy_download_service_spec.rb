@@ -108,6 +108,32 @@ RSpec.describe Media::ProxyDownloadService do
         expect(result.filename).to eq("legacy-key.png")
       end
 
+      context "com a origem redirecionando" do
+        let(:outside) { "https://fora-da-lista.exemplo.com/segredo" }
+
+        it "não segue redirect para host fora da lista" do
+          stub_request(:get, reference).to_return(status: 302, headers: { "Location" => outside })
+          forbidden = stub_request(:get, outside).to_return(status: 200, body: "dados internos")
+
+          expect(service.call.error).to eq(:host_not_allowed)
+          expect(forbidden).not_to have_been_requested
+        end
+
+        it "segue redirect dentro da lista" do
+          target = "#{reference}-final"
+          stub_request(:get, reference).to_return(status: 302, headers: { "Location" => target })
+          stub_request(:get, target).to_return(status: 200, body: "remote-bytes")
+
+          expect(service.call.body).to eq("remote-bytes")
+        end
+
+        it "para no teto de redirects" do
+          stub_request(:get, reference).to_return(status: 302, headers: { "Location" => reference })
+
+          expect(service.call.error).to eq(:host_not_allowed)
+        end
+      end
+
       context "com a origem respondendo erro" do
         it "falha com upstream_error" do
           stub_request(:get, reference).to_return(status: 500)

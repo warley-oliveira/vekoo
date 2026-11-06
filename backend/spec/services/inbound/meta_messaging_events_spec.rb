@@ -669,4 +669,19 @@ RSpec.describe Inbound::MetaMessagingEvents do
       expect(chat_of(instagram).user_name).to eq("Ana Lima")
     end
   end
+  describe "contato novo em rajada" do
+    it "espera a conversa que outro processo está criando, em vez de abrir outra" do
+      connector = create(:connector_messenger, organization: organization)
+      Rails.cache.write("chats.creation.#{connector.id}.PSID-RAJADA", true)
+      other = nil
+      allow(Chats::Locator).to receive(:sleep) { other ||= create(:chat, connector: connector, external_id: "PSID-RAJADA") }
+
+      described_class.new(
+        { object: "page", entry: [ { id: connector.page_id, messaging: [ { sender: { id: "PSID-RAJADA" }, message: { mid: "m-rajada", text: "oi" } } ] } ] }.with_indifferent_access
+      ).call
+
+      expect(Chat.where(connector_id: connector.id, external_id: "PSID-RAJADA").count).to eq(1)
+      expect(ChatMessage::Text.where(chat_id: other.id, message_id: "m-rajada").exists?).to be(true)
+    end
+  end
 end

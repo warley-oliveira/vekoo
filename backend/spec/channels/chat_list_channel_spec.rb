@@ -60,7 +60,7 @@ RSpec.describe ChatListChannel, type: :channel do
       end
     end
 
-    %w[team department].each do |level|
+    %w[team].each do |level|
       context "com chat_list_to #{level}" do
         let(:member) { member_with(level) }
         let(:team) { create(:team, organization: organization) }
@@ -87,9 +87,13 @@ RSpec.describe ChatListChannel, type: :channel do
       end
     end
 
+    # A validação do grupo só aceita all, team e assigned; `none` só vem de valor antigo no banco.
     context "com chat_list_to none" do
       it "rejeita" do
-        listen_as(member_with("none"))
+        member = member_with("all")
+        member.access_role.update_columns(permissions: member.access_role.permissions.merge("chat_list_to" => "none"))
+
+        listen_as(member)
 
         expect(subscription).to be_rejected
       end
@@ -240,7 +244,8 @@ RSpec.describe ChatListChannel, type: :channel do
         member = member_with("all")
         create(:chat, organization: organization)
         listen_as(member)
-        member.access_role.update!(permissions: member.access_role.permissions.merge("chat_list_to" => "none"))
+        # Pela validação do grupo `none` não entra: a coluna, para o caso de valor antigo no banco.
+        member.access_role.update_columns(permissions: member.access_role.permissions.merge("chat_list_to" => "none"))
 
         expect(recent_ids).to be_empty
       end

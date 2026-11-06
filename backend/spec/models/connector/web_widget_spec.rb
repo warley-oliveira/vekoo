@@ -311,8 +311,9 @@ RSpec.describe Connector::WebWidget do
 
       expect { result = widget.send_text_message("ignorado", "olá", chat) }
         .to have_broadcasted_to(widget.visitor_stream("visitor-1")).with { |data|
-          expect(data).to include("type" => "message", "role" => "assistant", "content" => "olá", "sender_name" => widget.bot_display_name)
-          expect(data["message_id"]).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
+          expect(data).to include("type" => "message", "role" => "assistant", "content" => "olá", "senderName" => widget.bot_display_name)
+          expect(data["sentAt"]).to be_a(Integer)
+          expect(data["messageId"]).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
         }
 
       expect(result).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
@@ -329,7 +330,7 @@ RSpec.describe Connector::WebWidget do
 
       expect { result = widget.send_media_message("to", media_dto("image", "img.png", caption: "foto", url: "https://cdn/img.png"), chat) }
         .to have_broadcasted_to(widget.visitor_stream("visitor-1")).with { |data|
-          expect(data).to include("type" => "message", "role" => "assistant", "media_type" => "image", "media_url" => "https://cdn/img.png", "content" => "foto")
+          expect(data).to include("type" => "message", "role" => "assistant", "mediaType" => "image", "mediaUrl" => "https://cdn/img.png", "content" => "foto")
         }
 
       expect(result).to match(/\A[0-9a-f-]{36}\z/)
@@ -365,7 +366,7 @@ RSpec.describe Connector::WebWidget do
 
       expect { result = widget.send_audio_message_by_url("qualquer", "https://cdn/audio.ogg", chat) }
         .to have_broadcasted_to(widget.visitor_stream("visitor-1")).with { |data|
-          expect(data).to include("type" => "message", "role" => "assistant", "media_type" => "audio", "media_url" => "https://cdn/audio.ogg")
+          expect(data).to include("type" => "message", "role" => "assistant", "mediaType" => "audio", "mediaUrl" => "https://cdn/audio.ogg")
         }
 
       expect(result).to match(/\A[0-9a-f-]{36}\z/)
@@ -381,7 +382,7 @@ RSpec.describe Connector::WebWidget do
       create(:chat, connector: widget, external_id: "visitante-audio")
 
       expect { widget.send_audio_message_by_url("visitante-audio", "https://cdn/op.ogg") }
-        .to have_broadcasted_to(widget.visitor_stream("visitante-audio")).with { |data| expect(data).to include("media_type" => "audio") }
+        .to have_broadcasted_to(widget.visitor_stream("visitante-audio")).with { |data| expect(data).to include("mediaType" => "audio") }
     end
 
     it "não alcança conversa de outro conector" do

@@ -166,11 +166,13 @@ RSpec.describe Connectors::Creator do
       expect(Connector::WhatsappWeb.where(organization_id: organization.id).count).to eq(0)
     end
 
-    it "propaga a falha da Evolution, sem marcar como pendente" do
+    it "fica failed com o motivo quando a Evolution falha" do
       stub_request(:post, evolution_url("/instance/create")).to_return(provider_json({ message: "erro" }, status: 500))
 
-      expect { create_connector(connector_type: "whatsapp_web") }.to raise_error(/Failed to create instance/)
-      expect(Connector::WhatsappWeb.where(organization_id: organization.id).take.status).to eq(:inactive)
+      connector = create_connector(connector_type: "whatsapp_web").connector
+
+      expect(connector.reload.status).to eq(:failed)
+      expect(connector.error_message).to include("Failed to create instance")
     end
 
     context "com a flag zapi na organização" do
@@ -225,18 +227,23 @@ RSpec.describe Connectors::Creator do
         expect(stub).to have_been_requested
       end
 
-      it "propaga a falha da Z-API" do
+      it "fica failed com o motivo quando a Z-API falha" do
         stub_request(:post, "#{ConnectorProviderStubs::ZAPI}/instances/integrator/on-demand")
           .to_return(provider_json({ error: "sem saldo" }, status: 402))
 
-        expect { create_connector(connector_type: "whatsapp_web", provider_api: "zapi") }.to raise_error(ZapiClient::Error)
+        connector = create_connector(connector_type: "whatsapp_web", provider_api: "zapi").connector
+
+        expect(connector.reload.status).to eq(:failed)
+        expect(connector.error_message).to include("402")
       end
     end
 
     it "precisa da conta integradora para o provider zapi" do
       with_env("ZAPI_ACCOUNT_TOKEN" => nil) do
-        expect { create_connector(connector_type: "whatsapp_web", provider_api: "zapi") }
-          .to raise_error(ZapiClient::Error, /account token is required/)
+        connector = create_connector(connector_type: "whatsapp_web", provider_api: "zapi").connector
+
+        expect(connector.reload.status).to eq(:failed)
+        expect(connector.error_message).to match(/account token is required/)
       end
     end
   end

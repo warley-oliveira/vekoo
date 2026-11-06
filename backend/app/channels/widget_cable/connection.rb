@@ -73,9 +73,9 @@ module WidgetCable
     end
 
     def client_ip
-      request.env['HTTP_X_FORWARDED_FOR']&.split(',')&.first&.strip.presence ||
-        request.env['action_dispatch.remote_ip']&.to_s.presence ||
-        request.ip
+      # `remote_ip` só confia nos proxies conhecidos. O primeiro X-Forwarded-For é o cliente
+      # quem escreve, e trocá-lo escaparia do limite de conexões.
+      request.remote_ip.presence || request.ip
     end
 
     # Decode without verification just to read connector_id; the actual signature

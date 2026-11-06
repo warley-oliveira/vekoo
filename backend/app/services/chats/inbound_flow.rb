@@ -15,23 +15,25 @@ module Chats
     # @param first_message [Boolean] é a primeira mensagem real da conversa
     # @param from_me [Boolean] enviada pelo nosso lado, fora da plataforma
     # @param dispatch [Boolean] false quando o conteúdo ainda não chegou
-    def self.call(chat:, message:, text:, first_message: false, from_me: false, dispatch: true)
-      new(chat, message, text, first_message, from_me, dispatch).call
+    # @param count_unread [Boolean] false quando é o conteúdo de uma mensagem já contada
+    def self.call(chat:, message:, text:, first_message: false, from_me: false, dispatch: true, count_unread: true)
+      new(chat, message, text, first_message, from_me, dispatch, count_unread).call
     end
 
-    def initialize(chat, message, text, first_message, from_me, dispatch)
+    def initialize(chat, message, text, first_message, from_me, dispatch, count_unread)
       @chat = chat
       @message = message
       @text = text.to_s
       @first_message = first_message
       @from_me = from_me
       @dispatch = dispatch
+      @count_unread = count_unread
     end
 
     def call
       return register_from_me if from_me
 
-      sync_preview(unread_messages: chat.unread_messages.to_i + 1)
+      sync_preview(unread_messages: chat.unread_messages.to_i + (count_unread ? 1 : 0))
       return unless dispatch && automation_can_run?
 
       deliver_to_flows
@@ -39,7 +41,7 @@ module Chats
 
     private
 
-    attr_reader :chat, :message, :text, :first_message, :from_me, :dispatch
+    attr_reader :chat, :message, :text, :first_message, :from_me, :dispatch, :count_unread
 
     def organization
       chat.organization

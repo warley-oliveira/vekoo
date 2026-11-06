@@ -13,7 +13,7 @@ class Connector::WebWidget < Connector::Base
   MAX_CUSTOM_CSS = 8_192
 
   field :public_token,       type: String
-  field :signing_secret,     type: String
+  encrypted_field :signing_secret
   field :allowed_origins,    type: Array,   default: []
   field :primary_color,      type: String,  default: '#5B93FF'
   field :position,           type: String,  default: 'bottom-right'
@@ -100,9 +100,10 @@ class Connector::WebWidget < Connector::Base
     save!
   end
 
-  # Polymorphic outbound entrypoint called by ChatChannel (human operators) and flows. Delivery is asynchronous from the visitor's perspective:
-  # we broadcast on ActionCable and return a generated message_id synchronously so
-  # the rest of the pipeline can persist `ChatMessage::Text#message_id`.
+  # Polymorphic outbound entrypoint called by ChatChannel (human operators) and flows.
+  # Delivery is asynchronous from the visitor's perspective: we broadcast on ActionCable and
+  # return a generated message_id synchronously so the rest of the pipeline can persist
+  # `ChatMessage::Text#message_id`.
   def send_text_message(_external_id, message, chat = nil, reply_to_external_id: nil) # rubocop:disable Lint/UnusedMethodArgument
     return nil unless chat
 
@@ -112,10 +113,10 @@ class Connector::WebWidget < Connector::Base
       {
         type: 'message',
         role: 'assistant',
-        message_id: message_id,
+        messageId: message_id,
         content: message,
-        sender_name: bot_display_name,
-        sent_at: Time.current.iso8601
+        senderName: bot_display_name,
+        sentAt: ApplicationSerializer.epoch_ms(Time.current)
       }
     )
     message_id
@@ -246,12 +247,12 @@ class Connector::WebWidget < Connector::Base
       {
         type: 'message',
         role: 'assistant',
-        message_id: message_id,
-        media_type: media_type,
-        media_url: media_url,
+        messageId: message_id,
+        mediaType: media_type,
+        mediaUrl: media_url,
         content: caption.to_s,
-        sender_name: bot_display_name,
-        sent_at: Time.current.iso8601
+        senderName: bot_display_name,
+        sentAt: ApplicationSerializer.epoch_ms(Time.current)
       }
     )
     message_id

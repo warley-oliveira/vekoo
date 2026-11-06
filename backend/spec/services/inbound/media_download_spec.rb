@@ -471,4 +471,31 @@ RSpec.describe Inbound::MediaDownload do
       end
     end
   end
+  # O Whisper recusa `.bin`, e o arquivo guardado precisa do nome certo para abrir no navegador.
+  describe ".with_real_extension" do
+    let(:path) { Rails.root.join("tmp", "teste-#{SecureRandom.hex(4)}.bin").to_s }
+
+    after { [ path, path.sub(".bin", ".ogg"), path.sub(".bin", ".oga") ].each { |file| File.delete(file) if File.exist?(file) } }
+
+    it "troca .bin pela extensão do conteúdo" do
+      File.binwrite(path, "OggS\x00\x02".b + ("\x00" * 64).b)
+
+      renamed = described_class.with_real_extension(path)
+
+      expect(File.extname(renamed)).to be_in(%w[.ogg .oga .opus])
+      expect(File.exist?(renamed)).to be(true)
+      File.delete(renamed)
+    end
+
+    it "mantém quando não reconhece o conteúdo" do
+      File.binwrite(path, "conteúdo qualquer")
+
+      expect(described_class.with_real_extension(path)).to eq(path)
+    end
+
+    it "não mexe em quem já tem extensão, nem em caminho vazio" do
+      expect(described_class.with_real_extension("/tmp/audio.ogg")).to eq("/tmp/audio.ogg")
+      expect(described_class.with_real_extension(nil)).to be_nil
+    end
+  end
 end

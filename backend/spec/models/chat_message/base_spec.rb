@@ -17,8 +17,7 @@ RSpec.describe ChatMessage::Base do
   end
 
   def enable_reopen!
-    organization.update!(features: { "reopen_conversation_on_inbound_enabled" => true })
-    Rails.cache.delete(Organization.reopen_on_inbound_cache_key(organization.id))
+    organization.update_with_settings!(chat_settings: { "reopen_conversation_on_inbound_enabled" => true })
   end
 
   describe "after_create #sync_chat_last_message" do
@@ -310,13 +309,13 @@ RSpec.describe ChatMessage::Base do
 
       it "desligar o flag só vale quando o cache expira" do
         create_message(content: "voltei")
-        Organization.where(id: organization.id).update_all(features: { "reopen_conversation_on_inbound_enabled" => false })
+        Organization.where(id: organization.id).update_all(settings: { "chat_settings" => { "reopen_conversation_on_inbound_enabled" => false } })
 
         chat.set(status: "closed")
         create_message(content: "ainda em cache")
         expect(chat.reload.status).to eq("open")
 
-        travel(OrganizationRelations::Connectors::REOPEN_ON_INBOUND_CACHE_TTL + 1.second) do
+        travel(OrganizationRelations::Access::REOPEN_ON_INBOUND_CACHE_TTL + 1.second) do
           chat.set(status: "closed")
           create_message(content: "cache expirado")
           expect(chat.reload.status).to eq("closed")

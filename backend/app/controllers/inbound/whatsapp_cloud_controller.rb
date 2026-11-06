@@ -6,6 +6,9 @@ module Inbound
       return render_not_found unless connector
       return render_challenge(connector.verification_token) if verification_request?
 
+      verify_meta_signature
+      return if performed?
+
       enqueue("whatsapp_cloud", connector.id)
     end
   end

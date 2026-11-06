@@ -6,6 +6,8 @@ module Inbound
 
     JID_SUFFIX = "@s.whatsapp.net".freeze
     MISSING_MESSAGE = "--MISSING-MESSAGE--".freeze
+    # Ordem de um envio, para evento fora de ordem não regredir o status.
+    STATUS_RANK = { "pending" => 0, "server_ack" => 1, "delivery_ack" => 2, "read" => 3 }.freeze
 
     # @return [Inbound::EvolutionEvents, nil] nil quando o nome não é de uma instância nossa
     def self.for_codename(payload, codename)
@@ -20,6 +22,7 @@ module Inbound
       when "qrcode.updated" then qrcode_updated_event
       when "connection.update" then connection_update_event
       when "messages.upsert" then messages_upsert_event
+      when "messages.update" then messages_update_event
       when "presence.update" then presence_update_event
       when "contacts.upsert", "contacts.update" then contacts_upsert_event
       else
@@ -300,8 +303,39 @@ module Inbound
         text: message,
         first_message: first_message,
         from_me: from_me,
-        dispatch: !missing_message
+        dispatch: !missing_message,
+        count_unread: existing.nil?
       )
+    end
+
+    # ========================================================================
+    # messages.update
+    # ========================================================================
+
+    # Entregue e lida, das mensagens que enviamos. Evolution v2 manda o id do WhatsApp em
+    # `keyId` (o `messageId` é o id interno dela); o provider AIVA, em `id`.
+    #
+    # Sem nova tentativa de propósito: o status pode chegar antes de o envio gravar o id, mas o
+    # próximo (entregue depois do enviado, lida depois de entregue) corrige, e cada retry por
+    # status multiplicaria o custo no caminho de maior volume.
+    def messages_update_event
+      data = payload[:data]
+      status = data&.dig(:status)&.downcase
+      external_id = data&.dig(:keyId).presence || data&.dig(:id)
+      jid = data&.dig(:remoteJid)
+      return if status.blank? || external_id.blank? || jid.blank?
+
+      chat = Chats::Locator.find(connector: connector, phone: jid)
+      return unless chat
+
+      message = ChatMessage::Base.unscoped.where(chat_id: chat.id, message_id: external_id).take
+      return unless message
+
+      # Áudio ouvido é uma leitura. Mensagem sem status é a que recebemos: não tem o que seguir.
+      status = "read" if status == "played"
+      return if message.status.nil? || (STATUS_RANK[status] || 99) < (STATUS_RANK[message.status] || 0)
+
+      message.update(status: status)
     end
 
     # ========================================================================

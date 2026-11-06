@@ -18,31 +18,15 @@ module OrganizationRelations
   module Connectors
     extend ActiveSupport::Concern
 
-    # TTL do cache do flag de reabertura. O hook que o consulta roda no caminho de toda
-    # mensagem recebida, então a leitura não pode bater no Postgres a cada mensagem.
-    REOPEN_ON_INBOUND_CACHE_TTL = 5.minutes
+    AUTOMATION_PAUSE_PERIODS = %w[disabled minutes hours days].freeze
 
     included do
       include BusinessWorkWindow
 
       has_many :oauth_credentials, dependent: :destroy
       has_many :daily_chat_stats, dependent: :destroy
-    end
 
-    class_methods do
-      def reopen_on_inbound_cache_key(organization_id)
-        "org.reopen_on_inbound.#{organization_id}"
-      end
-
-      # Lê o flag sem instanciar o registro: `pick` traz só a coluna `features`.
-      def reopen_on_inbound_enabled?(organization_id)
-        return false if organization_id.blank?
-
-        Rails.cache.fetch(reopen_on_inbound_cache_key(organization_id), expires_in: REOPEN_ON_INBOUND_CACHE_TTL) do
-          stored = where(id: organization_id).pick(:features) || {}
-          ActiveModel::Type::Boolean.new.cast(stored.with_indifferent_access[:reopen_conversation_on_inbound_enabled]) || false
-        end
-      end
+      validate :automation_pause_period_is_known, if: :settings_changed?
     end
 
     def connectors
@@ -81,7 +65,22 @@ module OrganizationRelations
       settings.to_h["auto_clear_context_interval"].presence&.to_i || 48
     end
 
+    # Mescla em vez de substituir (a tela salva um grupo de cada vez), com lock pelo mesmo motivo
+    # de `update_with_settings!`: duas gravações na linha leriam o mesmo jsonb.
+    def update_automation_settings!(values)
+      with_lock do
+        self.settings = settings.merge(values.to_h.stringify_keys)
+        save!
+      end
+    end
+
     private
+
+    def automation_pause_period_is_known
+      return if AUTOMATION_PAUSE_PERIODS.include?(automation_pause_period)
+
+      errors.add(:settings, I18n.t("connectors.automation.invalid_pause_period"))
+    end
 
     def chat_setting(key, default:)
       value = settings.to_h[key]

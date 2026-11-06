@@ -153,7 +153,8 @@ module Inbound
 
     # O remetente aqui é um id da rede (PSID/IGSID), não um telefone: sem variantes.
     def find_or_create_chat(sender_id)
-      chat = Chat.where(connector_id: connector.id, external_id: sender_id).take || create_chat(sender_id)
+      find = -> { Chat.where(connector_id: connector.id, external_id: sender_id).take }
+      chat = find.call || Chats::Locator.create_once("#{connector.id}.#{sender_id}", find: find) { create_chat(sender_id) }
 
       chat.set_default_session! unless chat.session_start_at
       chat.session_start_at = Time.now

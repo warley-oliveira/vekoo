@@ -226,10 +226,10 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
         expect(Connectors::ExternalId.from(response)).to eq("MED2")
       end
 
-      it "não envia nada quando a URL não baixa" do
+      it "levanta sem enviar nada quando a URL não baixa, para quem chamou registrar a falha" do
         stub_request(:get, remote).to_return(status: 404, body: "")
 
-        connector.send_media_message("55119", media_dto("image", "foto.jpg", url: remote))
+        expect { connector.send_media_message("55119", media_dto("image", "foto.jpg", url: remote)) }.to raise_error(/Failed to fetch remote media: HTTP 404/)
 
         expect(a_request(:post, url)).not_to have_been_made
       end

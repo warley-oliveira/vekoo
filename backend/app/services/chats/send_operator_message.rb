@@ -73,7 +73,7 @@ module Chats
         content: dto.caption,
         has_span: false,
         is_span: true,
-        media_url: dto.media_url,
+        media_url: dto.stored_url,
         **author_attributes
       )
 

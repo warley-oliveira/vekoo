@@ -24,7 +24,11 @@ class MediaMessageDto
 
   # Sempre absoluta: é o provedor quem vai baixar.
   def media_url
-    url = @media_url.presence || Media::AttachmentLookup.find(attachment_id)&.file_url
-    Media::Storage.public_url(url)
+    Media::Storage.public_url(stored_url)
+  end
+
+  # Como fica guardada na mensagem: caminho sem host, se for mídia daqui (ver Media::Storage).
+  def stored_url
+    @media_url.presence || Media::AttachmentLookup.find(attachment_id)&.file_url
   end
 end

@@ -57,13 +57,19 @@ class ImageMessageJob < ApplicationJob
   end
 
   def store(download, message_id, properties)
-    extension = properties[:extension].present? ? ".#{properties[:extension]}" : File.extname(download.path.to_s)
+    extension = properties[:extension].present? ? ".#{properties[:extension]}" : stored_extension(download, properties)
 
     Media::Storage.store_file(
       download.path,
       filename: properties[:fileName].presence || "#{message_id || SecureRandom.hex(8)}#{extension}",
       content_type: download.content_type.presence || real_mime_type(properties)
     )
+  end
+
+  # O WhatsApp Web baixa tudo como `.jpg`. Vídeo ou documento sem nome leva a extensão do tipo.
+  def stored_extension(download, properties)
+    from_mime = MiniMime.lookup_by_content_type(real_mime_type(properties).to_s)&.extension
+    from_mime ? ".#{from_mime}" : File.extname(download.path.to_s)
   end
 
   # Só o que é mime de verdade: `image` e `video` puros deixam o Active Storage identificar.

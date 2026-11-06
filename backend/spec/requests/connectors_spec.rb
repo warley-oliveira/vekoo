@@ -338,23 +338,27 @@ RSpec.describe "Connectors", type: :request do
         expect(json.dig("connector", "providerApi")).to eq("evolution_api")
       end
 
-      it "responde 422 sem detalhes do provedor quando a Evolution falha" do
+      # Sem conector órfão a cada tentativa: fica um só, `failed`, e tentar de novo é `activate`.
+      it "cria como failed, sem detalhes do provedor, quando a Evolution falha" do
         stub_request(:post, evolution_url("/instance/create")).to_return(provider_json({ message: "segredo interno" }, status: 500))
 
         create_connector(connectorType: "whatsapp_web")
 
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(json.dig("error", "code")).to eq("connectorActionFailed")
+        expect(response).to have_http_status(:created)
+        expect(json["connector"]).to include("status" => "failed", "active" => false)
+        expect(json.dig("connector", "errorMessage")).to include("Failed to create instance")
         expect(response.body).not_to include("segredo interno")
+        expect(Connector::WhatsappWeb.where(organization_id: organization.id).count).to eq(1)
       end
 
-      it "responde 422 quando falta a conta integradora da Z-API" do
+      it "cria como failed quando falta a conta integradora da Z-API" do
         with_env("ZAPI_ACCOUNT_TOKEN" => nil) do
           create_connector(connectorType: "whatsapp_web", providerApi: "zapi")
         end
 
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(json.dig("error", "code")).to eq("connectorActionFailed")
+        expect(response).to have_http_status(:created)
+        expect(json["connector"]).to include("status" => "failed")
+        expect(json.dig("connector", "errorMessage")).to include("account token is required")
       end
 
       it "responde 422 com provider desconhecido, sem criar nem chamar ninguém" do
@@ -1555,6 +1559,39 @@ RSpec.describe "Connectors", type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).not_to include("SEGREDO")
+    end
+  end
+  describe "QR code em GET /connectors/:id" do
+    let(:qr_connector) { create(:connector_whatsapp_web, organization: organization, status: :pending) }
+
+    before { Rails.cache.write("qrcode.base64.#{qr_connector.id}", "data:image/png;base64,QR") }
+
+    it "sai para quem configura" do
+      get "/connectors/#{qr_connector.id}", headers: auth_headers(owner)
+
+      expect(json.dig("extras", "qrCode")).to eq("data:image/png;base64,QR")
+    end
+
+    it "não sai para quem só atende" do
+      member = create(:account, organization: organization, role: "member", access_role: create(:access_role, :member, organization: organization))
+
+      get "/connectors/#{qr_connector.id}", headers: auth_headers(member)
+
+      expect(response).to have_http_status(:ok)
+      expect(json["extras"]).to eq({})
+    end
+  end
+
+  describe "POST /connectors/:id/activate no Instagram" do
+    it "manda o redirect_uri junto com o código, para religar depois de desconectar" do
+      connector = create(:connector_instagram, organization: organization, status: :inactive, instagram_user_access_token: nil)
+      exchange = stub_request(:post, MetaApiClient::OAuth::INSTAGRAM_OAUTH_URL)
+                 .with(body: hash_including("code" => "novo-codigo", "redirect_uri" => "https://my.vekoo.app/volta"))
+                 .to_return(status: 400, body: { error_message: "recusado" }.to_json, headers: { "Content-Type" => "application/json" })
+
+      post "/connectors/#{connector.id}/activate", params: { code: "novo-codigo", redirectUri: "https://my.vekoo.app/volta" }, headers: auth_headers(owner), as: :json
+
+      expect(exchange).to have_been_requested
     end
   end
 end

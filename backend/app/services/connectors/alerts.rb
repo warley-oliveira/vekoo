@@ -1,14 +1,7 @@
 module Connectors
   # Avisos de conector na organização (queda, volta, erro de conta). Quem guarda e mostra
-  # é o domínio access (`OrganizationAlertService`); enquanto ele não existe, ou se ele
-  # falhar, o aviso só vai para o log: um aviso que falha nunca derruba o webhook ou a
-  # ação que o disparou.
-  #
-  # Assinaturas esperadas (o recycle da origem chega nelas):
-  #
-  #   OrganizationAlertService.connector_disconnected(organization, connector, message:)
-  #   OrganizationAlertService.connector_reconnected(organization, connector)
-  #   OrganizationAlertService.connector_error(organization, connector, code:, message:, metadata:)
+  # é o domínio access (`OrganizationAlertService`). Se ele falhar, o erro só vai para o log:
+  # um aviso que falha nunca derruba o webhook ou a ação que o disparou.
   module Alerts
     module_function
 
@@ -33,7 +26,6 @@ module Connectors
     def deliver(connector)
       organization = connector.organization
       return unless organization
-      return Rails.logger.info("[Connectors::Alerts] sem serviço de avisos: conector #{connector.id}") unless defined?(::OrganizationAlertService)
 
       yield organization
     rescue StandardError => e

@@ -19,6 +19,8 @@ class Connector::Base
   field :organization_id, type: String
   string_enum :status, %i[inactive active paused pending failed closed reject]
   field :send_collaborator_name, type: Boolean, default: false
+  # Por que a conexão falhou, para a pessoa ver na tela.
+  field :error_message, type: String
 
   index({ organization_id: 1, status_cd: 1 })
 

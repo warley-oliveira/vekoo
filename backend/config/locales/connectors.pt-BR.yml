@@ -26,6 +26,7 @@ pt-BR:
     visitor_quota_exceeded: "O limite diário de visitantes deste canal foi atingido."
     missing_fields: "Preencha os campos obrigatórios."
     invalid_email: "Este e-mail não parece válido."
+    invalid_signature: "Assinatura inválida."
 
   connectors:
     notes:
@@ -70,6 +71,8 @@ pt-BR:
       manual_disconnect: "O canal \"%{name}\" foi desconectado manualmente."
       number_blocked: "O número foi desconectado por um possível bloqueio do WhatsApp"
       session_expired: "Não foi possível restaurar a sessão com o token atual. Conecte de novo."
+    automation:
+      invalid_pause_period: "Período de pausa da automação inválido"
     business_work:
       no_days: "Janela de atendimento: habilite ao menos um dia ou desative a janela"
       day_prefix: "Janela de atendimento (%{day})"

@@ -201,4 +201,18 @@ RSpec.describe ConnectorsChannel, type: :channel do
       expect(a_request(:get, qr_url)).to have_been_made
     end
   end
+  # Com o QR code qualquer um conecta o próprio WhatsApp neste canal.
+  describe "sem permissão de configuração" do
+    let(:member) do
+      create(:account, organization: connector.organization, role: "member", access_role: create(:access_role, :member, organization: connector.organization))
+    end
+
+    it "recusa a assinatura" do
+      stub_connection current_account: member
+
+      subscribe connectorId: connector.id.to_s
+
+      expect(subscription).to be_rejected
+    end
+  end
 end

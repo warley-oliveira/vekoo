@@ -4,8 +4,9 @@ module Connectors
   class Creator
     TYPES = %w[whatsapp_cloud whatsapp_web zapi lead_chat meta_channels instagram_direct web_widget].freeze
 
-    # `connector` é o criado (mesmo quando a ativação no provedor falhou: ele fica `failed`
-    # com o motivo, para a pessoa ver). `instagram` só existe em `meta_channels`.
+    # `connector` é o criado, mesmo quando a ativação no provedor falhou: ele fica `failed` com
+    # o motivo, para a pessoa ver e tentar de novo em `POST /connectors/:id/activate`, em vez de
+    # sobrar um conector órfão a cada tentativa. `instagram` só existe em `meta_channels`.
     Result = Struct.new(:connector, :instagram, keyword_init: true)
 
     class UnknownType < StandardError; end
@@ -36,6 +37,13 @@ module Connectors
 
     attr_reader :organization, :params
 
+    def activating(connector)
+      yield
+    rescue StandardError => e
+      Rails.logger.error("[Connectors::Creator] #{connector.class}: #{e.class}: #{e.message}")
+      connector.set(status_cd: "failed", error_message: e.message.truncate(255))
+    end
+
     def base_attributes
       { organization_id: organization.id }
     end
@@ -48,7 +56,7 @@ module Connectors
         waba_id: params[:waba_id],
         access_token: params[:access_token]
       )
-      connector.activate(params[:code])
+      activating(connector) { connector.activate(params[:code]) }
       Result.new(connector: connector)
     end
 
@@ -58,7 +66,7 @@ module Connectors
         **provider_attributes,
         phone_number_pairing: params[:phone_number_pairing]
       )
-      connector.activate
+      activating(connector) { connector.activate }
       Result.new(connector: connector)
     end
 
@@ -79,7 +87,7 @@ module Connectors
         token: params[:token],
         account_token: params[:account_token]
       )
-      connector.activate
+      activating(connector) { connector.activate }
       Result.new(connector: connector)
     end
 
@@ -89,7 +97,7 @@ module Connectors
         phone_number_id: params[:phone_number_id],
         access_token: params[:access_token]
       )
-      connector.activate
+      activating(connector) { connector.activate }
       Result.new(connector: connector)
     end
 

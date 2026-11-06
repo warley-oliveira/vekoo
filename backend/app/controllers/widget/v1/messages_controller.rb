@@ -53,7 +53,7 @@ module Widget
             role: "user",
             messageId: text_message.id.to_s,
             content: content,
-            sentAt: text_message.created_at.iso8601,
+            sentAt: ApplicationSerializer.epoch_ms(text_message.created_at),
             context: text_message.context_message
           }
         )
@@ -171,7 +171,7 @@ module Widget
           role: message.role,
           content: message.content,
           senderName: message.sender_name,
-          createdAt: message.created_at.iso8601,
+          createdAt: ApplicationSerializer.epoch_ms(message.created_at),
           context: message.context_message.presence
         }
       end

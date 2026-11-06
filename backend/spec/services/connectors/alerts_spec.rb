@@ -64,23 +64,6 @@ RSpec.describe Connectors::Alerts do
     end
   end
 
-  # O domínio access pode ainda não ter chegado: o aviso só vai para o log.
-  context "sem o serviço de avisos" do
-    before { hide_const("OrganizationAlertService") }
-
-    it "não levanta, em nenhum dos três" do
-      expect {
-        described_class.disconnected(connector)
-        described_class.reconnected(connector)
-        described_class.error(connector, code: "x", message: "y")
-      }.not_to raise_error
-    end
-
-    it "registra no log" do
-      expect(captured_log { described_class.reconnected(connector) }).to include("sem serviço de avisos: conector #{connector.id}")
-    end
-  end
-
   it "não expõe o método interno" do
     expect { described_class.deliver(connector) { nil } }.to raise_error(NoMethodError)
   end

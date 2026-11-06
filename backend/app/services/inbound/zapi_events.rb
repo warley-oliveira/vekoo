@@ -138,13 +138,15 @@ module Inbound
       if phone_number.present?
         Chats::Locator.find_or_create(connector: connector, phone: phone_number, attributes: attributes)
       else
-        Chat.create!(
-          connector: connector,
-          organization_id: connector.organization_id,
-          external_id: chat_lid,
-          automation_enabled: organization.default_automation_enabled,
-          **attributes
-        )
+        Chats::Locator.create_once("#{connector.id}.#{chat_lid}", find: -> { find_chat }) do
+          Chat.create!(
+            connector: connector,
+            organization_id: connector.organization_id,
+            external_id: chat_lid,
+            automation_enabled: organization.default_automation_enabled,
+            **attributes
+          )
+        end
       end
     end
 

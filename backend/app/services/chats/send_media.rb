@@ -25,7 +25,7 @@ module Chats
         role: "assistant",
         chat: chat,
         media_type: media.media_type,
-        media_url: media.media_url,
+        media_url: media.stored_url,
         attachment_id: media.attachment_id&.to_s,
         content: media.caption.to_s,
         caption: media.caption,

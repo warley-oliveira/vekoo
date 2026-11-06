@@ -7,6 +7,7 @@ class ConnectorSerializer < ApplicationSerializer
       name: connector.display_name,
       status: connector.status_name,
       active: connector.active?,
+      errorMessage: connector.error_message,
       sendCollaboratorName: connector.send_collaborator_name,
       createdAt: epoch_ms(connector.created_at)
     }.merge(details(connector))
@@ -46,7 +47,6 @@ class ConnectorSerializer < ApplicationSerializer
 
   def self.whatsapp_cloud(connector)
     {
-      errorMessage: connector.error_message,
       profileName: connector.verified_name,
       fbStatus: connector.fb_status,
       qualityRating: connector.quality_rating,
@@ -92,7 +92,6 @@ class ConnectorSerializer < ApplicationSerializer
 
   def self.instagram(connector)
     {
-      errorMessage: connector.error_message,
       accountName: connector.account_name,
       profileName: connector.instagram_username,
       profilePictureUrl: connector.profile_picture_url,
@@ -111,7 +110,6 @@ class ConnectorSerializer < ApplicationSerializer
 
   def self.messenger(connector)
     {
-      errorMessage: connector.error_message,
       profileName: connector.page_name,
       profilePictureUrl: connector.profile_picture_url,
       pageId: connector.page_id,

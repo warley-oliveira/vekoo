@@ -87,6 +87,92 @@ RSpec.describe Inbound::EvolutionEvents do
     end
   end
 
+  describe "messages.update" do
+    let(:chat) { create(:chat, connector: connector, external_id: phone) }
+    let!(:message) { create(:chat_text_message, chat: chat, role: "assistant", message_id: "SENT-1", status: "delivery_ack") }
+
+    def update_status(status, **data)
+      handle("messages.update", { keyId: "SENT-1", messageId: "interno-da-evolution", remoteJid: jid, fromMe: true, status: status, **data })
+    end
+
+    it "aplica a leitura pelo id do WhatsApp (keyId), não pelo id interno da Evolution" do
+      update_status("READ")
+
+      expect(message.reload.status).to eq("read")
+    end
+
+    it "aceita o formato do provider AIVA, com o id em `id`" do
+      handle("messages.update", { id: "SENT-1", remoteJid: jid, status: "READ" })
+
+      expect(message.reload.status).to eq("read")
+    end
+
+    it "acha a conversa pela variante do 9º dígito" do
+      handle("messages.update", { keyId: "SENT-1", remoteJid: "553171810932@s.whatsapp.net", status: "READ" })
+
+      expect(message.reload.status).to eq("read")
+    end
+
+    it "conta áudio ouvido como lido" do
+      update_status("PLAYED")
+
+      expect(message.reload.status).to eq("read")
+    end
+
+    it "não regride com evento fora de ordem" do
+      message.update(status: "read")
+
+      update_status("DELIVERY_ACK")
+
+      expect(message.reload.status).to eq("read")
+    end
+
+    it "não põe status em mensagem recebida, que não tem o que acompanhar" do
+      received = create(:chat_text_message, chat: chat, role: "user", message_id: "RECV-1")
+
+      handle("messages.update", { keyId: "RECV-1", remoteJid: jid, status: "READ" })
+
+      expect(received.reload.status).to be_nil
+    end
+
+    it "transmite para a conversa aberta" do
+      expect { update_status("READ") }.to have_broadcasted_to(ChatMessage::Base.stream_for(chat)).with(a_hash_including("status" => "read"))
+    end
+
+    it "ignora o que não dá para resolver, sem levantar nem agendar nova tentativa" do
+      expect {
+        update_status(nil)
+        handle("messages.update", { keyId: "SENT-1", status: "READ" })
+        handle("messages.update", { keyId: "NAO-EXISTE", remoteJid: jid, status: "READ" })
+        handle("messages.update", { keyId: "SENT-1", remoteJid: "5599999999999@s.whatsapp.net", status: "READ" })
+      }.not_to have_enqueued_job
+
+      expect(message.reload.status).to eq("delivery_ack")
+    end
+
+    it "não alcança mensagem de outro conector com o mesmo número" do
+      other_chat = create(:chat, connector: create(:connector_whatsapp_web, organization: organization), external_id: phone)
+      other = create(:chat_text_message, chat: other_chat, role: "assistant", message_id: "SENT-2", status: "delivery_ack")
+
+      handle("messages.update", { keyId: "SENT-2", remoteJid: jid, status: "READ" })
+
+      expect(other.reload.status).to eq("delivery_ack")
+    end
+  end
+
+  describe "conteúdo que chega depois de \"Message absent from node\"" do
+    it "conta como não lida uma vez só" do
+      upsert(message: nil, messageStubParameters: [ "Message absent from node" ])
+      chat = Chat.where(connector_id: connector.id).take
+      expect(chat.reload.unread_messages).to eq(1)
+
+      Rails.cache.delete("id_performed.#{chat.id}.#{message_id}")
+      upsert(message: { conversation: "Agora sim" })
+
+      expect(chat.reload.unread_messages).to eq(1)
+    end
+  end
+
   describe "qrcode.updated" do
     context "com pairCode" do
       let(:data) { { statusCode: 200, qrcode: { base64: "BASE64STR", pairCode: "PAIR1" } } }

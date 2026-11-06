@@ -132,7 +132,7 @@ RSpec.describe WidgetCable::Connection, type: :channel do
     let(:token) { connector.issue_visitor_jwt("visitor-1") }
 
     def connect_from(ip)
-      connect "/widget-cable?token=#{token}", headers: { "HTTP_X_FORWARDED_FOR" => ip }
+      connect "/widget-cable?token=#{token}", env: { "REMOTE_ADDR" => ip }
     end
 
     it "recusa a partir da 61ª tentativa no minuto" do
@@ -147,6 +147,14 @@ RSpec.describe WidgetCable::Connection, type: :channel do
       connect_from("203.0.113.10")
 
       expect(connection.visitor_id).to eq("visitor-1")
+    end
+
+    it "não escapa do limite trocando o X-Forwarded-For, que é o cliente quem escreve" do
+      described_class::CONNECT_LIMIT_PER_MINUTE.times { connect_from("203.0.113.9") }
+
+      expect {
+        connect "/widget-cable?token=#{token}", env: { "REMOTE_ADDR" => "203.0.113.9" }, headers: { "HTTP_X_FORWARDED_FOR" => "198.51.100.7" }
+      }.to have_rejected_connection
     end
 
     it "deixa conectar quando o cache não conta" do

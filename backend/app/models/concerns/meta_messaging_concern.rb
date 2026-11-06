@@ -18,7 +18,6 @@ module MetaMessagingConcern
     field :page_name, type: String
     field :profile_picture_url, type: String
     field :auth_provider, type: String # 'facebook_login' or 'instagram_login'
-    field :error_message, type: String
 
     before_create do
       self.verification_token = SecureRandom.base36(32)

@@ -201,7 +201,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
       it "manda o eco em camelCase" do
         expect { send_message }
           .to have_broadcasted_to(connector.visitor_stream(visitor_id))
-          .with(a_hash_including("messageId" => a_kind_of(String), "sentAt" => a_kind_of(String)))
+          .with(a_hash_including("messageId" => a_kind_of(String), "sentAt" => a_kind_of(Integer)))
       end
 
       it "transmite para a tela de atendimento no stream da conversa" do
@@ -495,7 +495,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
         "id" => a_kind_of(String),
         "role" => "user",
         "senderName" => "Visitante",
-        "createdAt" => a_kind_of(String),
+        "createdAt" => a_kind_of(Integer),
         "context" => a_hash_including("product" => a_hash_including("name" => "Tênis X"))
       )
     end

@@ -8,7 +8,7 @@ class ChatListChannel < ApplicationCable::Channel
     return reject unless current_account.can?(:chat)
 
     case chat_list_permission
-    when "team", "department"
+    when "team"
       current_account.team_ids.each { |id| stream_from organization_stream("chat-list-team-#{id}") }
       stream_from organization_stream("chat-list-unassigned")
     when "assigned"
@@ -43,7 +43,7 @@ class ChatListChannel < ApplicationCable::Channel
     scope = Chat.where(organization_id: current_organization.id).valid_records.order_by(last_message_at: :desc)
 
     case chat_list_permission
-    when "team", "department"
+    when "team"
       scope = scope.where(:team_id.in => current_account.team_ids + [ nil ])
     when "assigned"
       scope = scope.where(

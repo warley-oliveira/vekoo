@@ -60,13 +60,9 @@ module Media
     # Mídia de host liberado que não tem blob aqui: busca via HTTP a partir do servidor,
     # onde CORS não existe.
     def from_http(asset, uri)
-      response = HTTParty.get(
-        uri.to_s,
-        timeout: READ_TIMEOUT,
-        open_timeout: OPEN_TIMEOUT,
-        follow_redirects: true,
-        limit: 3
-      )
+      response = AssetUrl.fetch(:get, uri, timeout: READ_TIMEOUT, open_timeout: OPEN_TIMEOUT)
+      # `unless`, e não `.nil?`: o HTTParty::Response responde `nil?` pelo corpo vazio.
+      return failure(:host_not_allowed) unless response
       return failure(:upstream_error) unless response.success?
 
       body = response.body.to_s

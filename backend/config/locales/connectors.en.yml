@@ -26,6 +26,7 @@ en:
     visitor_quota_exceeded: "This channel reached its daily visitor limit."
     missing_fields: "Fill in the required fields."
     invalid_email: "This email does not look valid."
+    invalid_signature: "Invalid signature."
 
   connectors:
     notes:
@@ -70,6 +71,8 @@ en:
       manual_disconnect: "Channel \"%{name}\" was disconnected manually."
       number_blocked: "The number was disconnected by a possible WhatsApp block"
       session_expired: "The session could not be restored with the current token. Connect again."
+    automation:
+      invalid_pause_period: "Invalid automation pause period"
     business_work:
       no_days: "Service window: enable at least one day or turn the window off"
       day_prefix: "Service window (%{day})"

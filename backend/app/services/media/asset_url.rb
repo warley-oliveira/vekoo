@@ -43,6 +43,28 @@ module Media
       allowed_hosts.include?(uri.host.to_s.downcase)
     end
 
+    REDIRECT_CODES = [ 301, 302, 303, 307, 308 ].freeze
+    MAX_REDIRECTS = 3
+
+    # Sobe a requisição seguindo redirect à mão: o destino de cada salto também tem de estar na
+    # lista, senão um host liberado que redirecione para fora escaparia dela (SSRF).
+    #
+    # @return [HTTParty::Response, nil] nil quando um redirect sai da lista ou passa do teto
+    def fetch(method, uri, **options)
+      (MAX_REDIRECTS + 1).times do
+        response = HTTParty.public_send(method, uri.to_s, follow_redirects: false, **options)
+        return response unless REDIRECT_CODES.include?(response.code)
+
+        location = response.headers["location"]
+        return response if location.blank?
+
+        uri = URI.join(uri.to_s, location)
+        return nil unless allowed?(uri)
+      end
+
+      nil
+    end
+
     # O ID do objeto: o último segmento do caminho.
     def key_from(uri)
       key = File.basename(uri.path.to_s)

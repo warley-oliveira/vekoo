@@ -280,7 +280,7 @@ class Connector::WhatsappWeb
 
       def send_remote_media(connector, to, media_dto, file_name)
         response = HTTParty.get(media_dto.media_url)
-        return Rails.logger.warn("Failed to fetch remote media: HTTP #{response.code}") unless response.code == 200
+        raise "Failed to fetch remote media: HTTP #{response.code}" unless response.code == 200
 
         dir = Dir.mktmpdir
         # `basename`: o nome vem de quem subiu o anexo e não pode escolher onde o arquivo cai.

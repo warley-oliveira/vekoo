@@ -60,7 +60,6 @@ class Connector::WhatsappCloud < Connector::Base
   field :verified_name, type: String
   field :quality_rating, type: String
   field :fb_status, type: String
-  field :error_message, type: String
   field :phone_number_details, type: Hash, default: {}
   field :phone_number_list, type: Array, default: []
 

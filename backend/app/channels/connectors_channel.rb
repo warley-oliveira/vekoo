@@ -3,7 +3,7 @@
 class ConnectorsChannel < ApplicationCable::Channel
   def subscribed
     @connector = find_connector
-    return reject unless @connector
+    return reject unless @connector && current_account.can?(:core_settings)
 
     stream_from @connector.stream_name
 
@@ -23,6 +23,7 @@ class ConnectorsChannel < ApplicationCable::Channel
   # Z-API a cada 20 segundos.
   def generate_qr_code
     connector = find_connector
+    return unless current_account.can?(:core_settings)
     return unless connector&.try(:zapi_provider?) && connector.pending?
 
     qr_response = connector.zapi_get_qr_code_image

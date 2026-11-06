@@ -72,14 +72,8 @@ module Media
     end
 
     def from_origin(uri, key)
-      response = HTTParty.head(
-        uri.to_s,
-        timeout: READ_TIMEOUT,
-        open_timeout: OPEN_TIMEOUT,
-        follow_redirects: true,
-        limit: 3
-      )
-      return nil unless response.success?
+      response = AssetUrl.fetch(:head, uri, timeout: READ_TIMEOUT, open_timeout: OPEN_TIMEOUT)
+      return nil unless response&.success?
 
       content_type = header_content_type(response)
 

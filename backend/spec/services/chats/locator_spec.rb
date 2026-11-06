@@ -185,7 +185,7 @@ RSpec.describe Chats::Locator do
         Rails.cache.write(lock_key, true)
         locator = described_class.new(connector, phone)
         created_by_other = nil
-        allow(locator).to receive(:sleep) { created_by_other ||= chat_with(phone) }
+        allow(described_class).to receive(:sleep) { created_by_other ||= chat_with(phone) }
 
         expect { expect(locator.find_or_create).to eq(created_by_other) }.to change { Chat.count }.by(1)
       end
@@ -193,12 +193,12 @@ RSpec.describe Chats::Locator do
       it "se o outro nunca termina, cria mesmo assim" do
         Rails.cache.write(lock_key, true)
         locator = described_class.new(connector, phone)
-        allow(locator).to receive(:sleep)
+        allow(described_class).to receive(:sleep)
 
         chat = locator.find_or_create
 
         expect(chat).to be_persisted
-        expect(locator).to have_received(:sleep).exactly(described_class::CREATION_WAIT_ATTEMPTS).times
+        expect(described_class).to have_received(:sleep).exactly(described_class::CREATION_WAIT_ATTEMPTS).times
       end
 
       it "a trava é por conector" do
@@ -219,6 +219,34 @@ RSpec.describe Chats::Locator do
 
         expect(described_class.find_or_create(connector: connector, phone: phone, sender_phone_number_id: 2000)).to be_persisted
       end
+    end
+  end
+  # Para quem identifica o contato por outra coisa que não telefone (Messenger, Instagram, @lid).
+  describe ".create_once" do
+    it "procura de novo dentro da trava antes de criar" do
+      calls = 0
+
+      result = described_class.create_once("x", find: -> { :achou }) { calls += 1 }
+
+      expect(result).to eq(:achou)
+      expect(calls).to eq(0)
+    end
+
+    it "cria quando não há e solta a trava" do
+      expect(described_class.create_once("x", find: -> { nil }) { :criou }).to eq(:criou)
+      expect(Rails.cache.exist?("chats.creation.x")).to be(false)
+    end
+
+    it "quem perde a trava espera o outro terminar, sem criar" do
+      Rails.cache.write("chats.creation.x", true)
+      finished = false
+      allow(described_class).to receive(:sleep) { finished = true }
+      created = false
+
+      result = described_class.create_once("x", find: -> { finished ? :do_outro : nil }) { created = true }
+
+      expect(result).to eq(:do_outro)
+      expect(created).to be(false)
     end
   end
 end
