@@ -54,8 +54,9 @@ class ConnectorEvent
   validates :event_name, inclusion: { in: EVENTS_PARAMETERS.keys.map(&:to_s) }
 
   def parameters_json_validator
-    validate_parameters_json = parameters_json.clone
-    to_parsed_json = parameters_json.clone
+    # `to_s.dup`: nulo é JSON inválido, e `clone` manteria congelado o que vem congelado.
+    validate_parameters_json = parameters_json.to_s.dup
+    to_parsed_json = parameters_json.to_s.dup
 
     validate_parameters_json.gsub!(/\{(\w+|\w+\.\w+)\}/) do |_match|
       "\"#{::Regexp.last_match(1)}\""

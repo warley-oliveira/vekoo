@@ -53,7 +53,9 @@ class Connector::WebWidget < Connector::Base
   field :font_family,                 type: String,  default: ''
   field :custom_css,                  type: String,  default: ''
 
-  index({ public_token: 1 }, { unique: true })
+  # `sparse`: a coleção é de todos os conectores, e nos outros tipos o campo nem existe. Sem
+  # isso o segundo conector que não é widget bate em `public_token: null` e não é criado.
+  index({ public_token: 1 }, { unique: true, sparse: true })
 
   COLOR_FIELDS = %i[
     primary_color header_bg_color header_text_color user_bubble_color

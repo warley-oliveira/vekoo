@@ -23,8 +23,8 @@ class WabaErrorHandler
     # ------------------------------------------------------------------
     # 3. ERROS DE TEMPLATE (MODELOS DE MENSAGEM)
     # ------------------------------------------------------------------
-    132_000 => 'O nome do template ou o idioma informado não existe, ou não está aprovado.',
-    132_001 => 'Incompatibilidade de variáveis. O número de parâmetros no JSON não bate com a quantidade do template aprovado.',
+    132_000 => 'Incompatibilidade de variáveis. O número de parâmetros no JSON não bate com a quantidade do template aprovado.',
+    132_001 => 'O nome do template ou o idioma informado não existe, ou não está aprovado.',
     132_005 => 'O template foi pausado pela Meta devido a feedback negativo recente dos usuários.',
     132_007 => 'O template foi desativado ou reprovado. Você não pode mais enviá-lo.',
     132_012 => 'O formato de uma das variáveis do template é inválido (ex: enviando texto onde deveria ser URL/botão).',

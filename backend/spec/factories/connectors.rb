@@ -89,6 +89,30 @@ FactoryBot.define do
     bot_display_name { "Atendimento" }
   end
 
+  factory :oauth_credential do
+    organization
+    sequence(:key_name) { |n| "erp-#{n}" }
+    endpoint { "https://erp.exemplo.com.br/oauth/token" }
+    client_id { "cliente-vekoo" }
+    client_secret { "segredo-do-cliente" }
+  end
+
+  factory :connector_event, class: "ConnectorEvent" do
+    organization_id { SecureRandom.uuid }
+    name { "Avisar o ERP" }
+    event_name { "create_employee" }
+    description { "Manda o profissional novo para o ERP" }
+    add_attribute(:method) { "post" }
+    url { "https://erp.exemplo.com.br/profissionais" }
+    parameters_json { '{"id": {employee.id}, "nome": {employee.name}}' }
+  end
+
+  factory :daily_chat_stat do
+    organization
+    sequence(:day) { |n| Date.new(2026, 1, 1) + n.days }
+    metrics { { "conversations_total" => 3 } }
+  end
+
   factory :whatsapp_template, class: "WhatsappTemplate" do
     connector factory: :connector_whatsapp_cloud
     sequence(:name) { |n| "lembrete_#{n}" }

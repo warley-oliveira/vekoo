@@ -54,6 +54,28 @@ RSpec.describe Connector::WebWidget do
 
       expect(widget.reload.public_token).to eq(token)
     end
+
+    # A coleção é de todos os conectores, e o índice só existe depois de
+    # `bin/rails db:mongoid:create_indexes`: é preciso criá-lo aqui para valer de verdade.
+    describe "índice único do token" do
+      before { Connector::Base.create_indexes }
+
+      after { Connector::Base.collection.indexes.drop_all }
+
+      it "não impede os outros tipos de conector, que não têm token" do
+        expect {
+          create(:connector_zapi, organization: organization)
+          create(:connector_lead_chat, organization: organization)
+        }.not_to raise_error
+      end
+
+      it "barra no banco dois widgets com o mesmo token" do
+        create(:connector_web_widget, organization: organization, public_token: "pk_widget_unico")
+        duplicate = build_widget(public_token: "pk_widget_unico", signing_secret: "a" * 64)
+
+        expect { duplicate.save(validate: false) }.to raise_error(Mongo::Error::OperationFailure, /E11000/)
+      end
+    end
   end
 
   describe "#regenerate_credentials!" do

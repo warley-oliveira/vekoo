@@ -65,7 +65,6 @@ class OauthCredential < ApplicationRecord
   end
 
   def clear_token!
-    @parsed_token_data = nil
     update!(token_data: nil, expires_at: nil)
   end
 
@@ -81,10 +80,12 @@ class OauthCredential < ApplicationRecord
     nil
   end
 
+  # Sem memoizar: o token muda ao renovar, e o bloqueio de `access_token` relê a linha porque
+  # outro processo pode ter renovado antes.
   def parsed_token_data
     return {} if token_data.blank?
 
-    @parsed_token_data ||= JSON.parse(token_data)
+    JSON.parse(token_data)
   rescue JSON::ParserError => e
     Rails.logger.error "[OauthCredential] Erro ao fazer parse do token_data: #{e.message}"
     {}
@@ -107,7 +108,9 @@ class OauthCredential < ApplicationRecord
   end
 
   def update_token_data(response)
+    # Sistema de terceiro nem sempre manda o cabeçalho de JSON, e aí o HTTParty devolve texto.
     data = response.parsed_response
+    data = JSON.parse(data) if data.is_a?(String)
 
     new_expires_at =
       if data["expires_in"].present?
@@ -117,8 +120,6 @@ class OauthCredential < ApplicationRecord
         Time.current + 1.hour
       end
 
-    # Sem limpar, quem já leu o token dentro deste objeto continuaria com o antigo.
-    @parsed_token_data = nil
     update!(token_data: data.to_json, expires_at: new_expires_at)
 
     Rails.logger.info "[OauthCredential] Token renovado com sucesso. Expira em: #{expires_at}"
