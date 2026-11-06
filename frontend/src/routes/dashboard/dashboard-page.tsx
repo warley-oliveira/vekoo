@@ -1,0 +1,112 @@
+import { useCallback, useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { useSearchParams } from "react-router"
+import { CalendarDays, ChartNoAxesCombined, Plus } from "lucide-react"
+
+import "@/components/dashboard/viz-tokens.css"
+import { AgendaTab } from "@/components/dashboard/agenda-tab"
+import { OverviewTab } from "@/components/dashboard/overview-tab"
+import { PeriodPicker, PeriodPresets } from "@/components/dashboard/period-filter"
+import { PageBody } from "@/components/shared"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useDashboardExtraTabs } from "@/hooks/insights/use-dashboard-extra-tabs"
+import { useDashboardPeriod } from "@/hooks/insights/use-dashboard-period"
+import { useCan } from "@/hooks/use-can"
+
+const OVERVIEW = "overview"
+const AGENDA = "agenda"
+
+// O sublinhado padrão fica fora da altura da aba, e a fileira rola de lado: ele sairia cortado. Sem
+// ícone no celular: "Agenda" precisa caber inteira ao lado das datas.
+const TAB_TRIGGER =
+  "h-10 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0 max-sm:[&_svg]:hidden"
+
+export default function DashboardPage() {
+  const { t } = useTranslation()
+  const canCalendar = useCan("calendar")
+  const { period, setPreset, setRange } = useDashboardPeriod()
+  const extra = useDashboardExtraTabs()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const tabParam = searchParams.get("tab")
+  const activeTab = useMemo(() => {
+    if (tabParam === AGENDA && canCalendar) return AGENDA
+    if (tabParam && extra.tabs.some((tab) => tab.id === tabParam)) return tabParam
+    return OVERVIEW
+  }, [canCalendar, extra.tabs, tabParam])
+
+  const setTab = useCallback(
+    (tab: string) => {
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current)
+          if (tab === OVERVIEW) next.delete("tab")
+          else next.set("tab", tab)
+          return next
+        },
+        { replace: true }
+      )
+    },
+    [setSearchParams]
+  )
+
+  const activeExtra = extra.tabs.find((tab) => tab.id === activeTab)
+
+  return (
+    <PageBody variant="wide">
+      <Tabs value={activeTab} onValueChange={(value) => setTab(String(value))} className="gap-6">
+        {/* Uma linha só a partir de `xl`. Antes disso, abas e datas em cima, e os atalhos embaixo. */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 [grid-template-areas:'tabs_picker''presets_presets'] xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:[grid-template-areas:'tabs_presets_picker']">
+          <div className="overflow-x-auto [grid-area:tabs] [scrollbar-width:none]">
+            <TabsList
+              variant="line"
+              aria-label={t("dashboard.tabs.label")}
+              className="justify-start p-0 group-data-horizontal/tabs:h-10"
+            >
+              <TabsTrigger value={OVERVIEW} className={TAB_TRIGGER}>
+                <ChartNoAxesCombined />
+                {t("dashboard.tabs.overview")}
+              </TabsTrigger>
+              {canCalendar ? (
+                <TabsTrigger value={AGENDA} className={TAB_TRIGGER}>
+                  <CalendarDays />
+                  {t("dashboard.tabs.agenda")}
+                </TabsTrigger>
+              ) : null}
+              {/* Os dashboards personalizados entram aqui: ver `useDashboardExtraTabs`. */}
+              {extra.tabs.map((tab) => (
+                <TabsTrigger key={tab.id} value={tab.id} className={TAB_TRIGGER}>
+                  {tab.icon}
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+              {extra.create ? (
+                <Button type="button" variant="ghost" size="sm" className="ml-1 shrink-0" onClick={extra.create.onClick}>
+                  <Plus />
+                  {extra.create.label}
+                </Button>
+              ) : null}
+            </TabsList>
+          </div>
+          <PeriodPresets period={period} onPreset={setPreset} className="[grid-area:presets] xl:justify-self-end" />
+          <PeriodPicker
+            period={period}
+            onRange={setRange}
+            className="w-41 [grid-area:picker] max-sm:[&_button]:px-2 max-sm:[&_button]:text-xs sm:w-52"
+          />
+        </div>
+
+        <TabsContent value={OVERVIEW}>
+          <OverviewTab period={period} onPreset={setPreset} />
+        </TabsContent>
+        {canCalendar ? (
+          <TabsContent value={AGENDA}>
+            <AgendaTab period={period} />
+          </TabsContent>
+        ) : null}
+        {activeExtra ? <TabsContent value={activeExtra.id}>{activeExtra.render(period)}</TabsContent> : null}
+      </Tabs>
+    </PageBody>
+  )
+}

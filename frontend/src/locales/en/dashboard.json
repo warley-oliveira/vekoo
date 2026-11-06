@@ -1,0 +1,300 @@
+{
+  "dashboard": {
+    "retry": "Try again",
+    "staleTitle": "Couldn't refresh. These are the latest numbers we have.",
+    "hour": "{{hour}}h",
+    "tabs": {
+      "label": "Dashboard views",
+      "overview": "Overview",
+      "agenda": "Calendar"
+    },
+    "period": {
+      "label": "Period",
+      "custom": "Pick a range",
+      "tooLong": "Pick a period of up to two years.",
+      "presets": {
+        "today": "Today",
+        "7d": "7 days",
+        "15d": "15 days",
+        "30d": "30 days",
+        "month": "This month",
+        "90d": "90 days"
+      },
+      "short": {
+        "today": "Today",
+        "7d": "7d",
+        "15d": "15d",
+        "30d": "30d",
+        "month": "Month",
+        "90d": "90d"
+      }
+    },
+    "granularity": {
+      "day": "per day",
+      "week": "per week",
+      "month": "per month"
+    },
+    "table": {
+      "date": "Date",
+      "weekday": "Day",
+      "hour": "Hour"
+    },
+    "chart": {
+      "showTable": "Show as table",
+      "showChart": "Show as chart"
+    },
+    "card": {
+      "failed": "This card couldn't be shown."
+    },
+    "sections": {
+      "messages": "Messages",
+      "automation": "Automation",
+      "team": "Team and hours",
+      "funnels": "Funnels"
+    },
+    "summary": {
+      "title": "Summary",
+      "newChats_one": "{{value}} new conversation {{when}}",
+      "newChats_other": "{{value}} new conversations {{when}}",
+      "when": {
+        "today": "today",
+        "month": "this month",
+        "range": "in this period",
+        "last_one": "in the last day",
+        "last_other": "in the last {{count}} days"
+      },
+      "more": ", {{value}} more than the previous period.",
+      "less": ", {{value}} fewer than the previous period.",
+      "same": ", the same as the previous period.",
+      "responseBoth": "Automation sends the first reply in {{automation}}, and the team in {{human}}.",
+      "responseAutomation": "Automation sends the first reply in {{automation}}.",
+      "responseHuman": "The team sends the first reply in {{human}}.",
+      "todayLag": "Today's numbers can take up to an hour to show up."
+    },
+    "empty": {
+      "periodTitle": "No numbers in this period",
+      "periodHint": "There were no conversations on these days. Pick another period to see your support.",
+      "todayHint": "Today's numbers can take up to an hour to show up. Meanwhile, take a look at the last few days.",
+      "seeLast30": "See the last 30 days",
+      "firstTitle": "Nothing to show yet",
+      "firstHint": "Connect a channel and start talking to your contacts. The numbers show up here within an hour.",
+      "connect": "Connect a channel"
+    },
+    "kpi": {
+      "label": "Key numbers. Pick one to see its trend.",
+      "select": "{{metric}}: {{value}}. See the trend.",
+      "newChats": "New contacts",
+      "automationChats": "Handled by automation",
+      "activeChats": "Total conversations handled",
+      "messages": "Messages exchanged",
+      "vsPrevious": "vs. previous period",
+      "vsPreviousShort": "vs. previous",
+      "short": {
+        "newChats": "New contacts",
+        "automationChats": "By automation",
+        "activeChats": "Handled",
+        "messages": "Messages"
+      }
+    },
+    "trend": {
+      "title": "Trend",
+      "description": "{{metric}} {{granularity}}",
+      "current": "This period",
+      "previous": "Previous period",
+      "summary": "{{metric}}: {{first}} on {{firstDate}}, and {{last}} on {{lastDate}}.",
+      "singleDay": "One day doesn't make a trend",
+      "singleDayHint": "Pick a longer period to see how the numbers change."
+    },
+    "volume": {
+      "title": "Message volume",
+      "description": "Received and sent, {{granularity}}",
+      "inbound": "Received",
+      "automation": "Automation",
+      "human": "Team",
+      "campaign": "Campaigns",
+      "total": "{{total}} in total",
+      "summary": "{{inbound}} received, {{automation}} sent by automation, {{human}} by the team and {{campaign}} by campaigns.",
+      "emptyTitle": "No messages in this period",
+      "emptyHint": "Once there are conversations, the volume across contacts, automation and team shows up here."
+    },
+    "responseTime": {
+      "title": "First response time",
+      "description": "How long contacts wait until someone replies",
+      "automation": "Automation",
+      "team": "Team",
+      "noSample": "No sample",
+      "sample_one": "{{value}} conversation in this period",
+      "sample_other": "{{value}} conversations in this period",
+      "ratio": "Automation replies {{ratio}}x faster than the team.",
+      "emptyTitle": "No replies measured",
+      "emptyHint": "The comparison between automation and team shows up once conversations get a reply in this period."
+    },
+    "channels": {
+      "title": "Channels",
+      "description": "Where new conversations come from",
+      "whatsapp_api": "WhatsApp",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "web": "Website",
+      "import_feature": "Import",
+      "other": "Other",
+      "emptyTitle": "No conversations in this period",
+      "emptyHint": "The split across WhatsApp, Instagram, Facebook and website shows up once conversations arrive."
+    },
+    "autonomy": {
+      "title": "Automation autonomy",
+      "description": "Conversations answered by automation, with no person involved",
+      "detail": "{{handled}} of {{total}} new conversations",
+      "humanTouch_one": "{{value}} conversation went through the team ({{rate}})",
+      "humanTouch_other": "{{value}} conversations went through the team ({{rate}})",
+      "emptyTitle": "No conversations yet",
+      "emptyHint": "This is where you see how much automation solves on its own, without handing off to the team."
+    },
+    "automation": {
+      "hoursSaved": "Hours saved",
+      "hoursSavedHint": "Estimate: 2.1 minutes per automation message",
+      "messagesAvoided": "Messages avoided",
+      "messagesAvoidedHint": "Automation sent them, so the team didn't have to",
+      "outOfHours": "Outside business hours",
+      "outOfHoursHint": "From automation, before 8am, after 6pm and on weekends",
+      "bookings": "Bookings by automation",
+      "bookingsShort": "Bookings",
+      "bookingsHint": "Created by a flow or script, with no one from the team"
+    },
+    "team": {
+      "title": "Team ranking",
+      "description": "Messages sent per person. Those sent from a personal phone have no author and are left out.",
+      "removed": "Left the organization",
+      "showAll": "See all ({{count}})",
+      "showLess": "See less",
+      "emptyTitle": "No messages from the team",
+      "emptyHint": "When someone on the team replies to a conversation, the ranking shows up here."
+    },
+    "heat": {
+      "title": "Peak hours",
+      "description": "Messages by weekday and hour, on average",
+      "cell_one": "{{day}}, {{hour}}: {{value}} message",
+      "cell_other": "{{day}}, {{hour}}: {{value}} messages",
+      "cellAverage_one": "{{day}}, {{hour}}: {{value}} message on average",
+      "cellAverage_other": "{{day}}, {{hour}}: {{value}} messages on average",
+      "peak": "The busiest time is {{day}} at {{hour}}.",
+      "less": "Less",
+      "more": "More",
+      "emptyTitle": "No messages in this period",
+      "emptyHint": "The busiest times show up here once there are messages."
+    },
+    "funnel": {
+      "open": "Open funnel",
+      "create": "Create a funnel",
+      "inStage_one": "{{value}} in this stage",
+      "inStage_other": "{{value}} in this stage",
+      "drop": "{{value}} didn't move on",
+      "totalConversion": "Total conversion",
+      "bottleneck": "Biggest bottleneck",
+      "bottleneckValue": "{{name}} ({{value}})",
+      "summary": "{{name}}: {{total}} conversations, and {{reached}} reached {{last}}.",
+      "showAll": "See all funnels ({{count}})",
+      "showLess": "See fewer funnels",
+      "idle_one": "{{count}} funnel with no conversations in this period",
+      "idle_other": "{{count}} funnels with no conversations in this period",
+      "noChatsTitle": "No conversations in funnels in this period",
+      "noChatsHint": "As conversations move through the stages, conversion shows up here.",
+      "noFunnelsTitle": "No funnels yet",
+      "noFunnelsHint": "Create a funnel with the stages of your support to follow conversion from here.",
+      "table": {
+        "stage": "Stage",
+        "count": "In this stage",
+        "reached": "Reached",
+        "conversion": "Conversion"
+      }
+    },
+    "tags": {
+      "title": "Most used tags",
+      "description": "In {{name}} conversations",
+      "showAll": "See all ({{count}})",
+      "showLess": "See less",
+      "emptyTitle": "No tags applied",
+      "emptyHint": "The tags used most in this period's conversations show up here."
+    },
+    "agenda": {
+      "open": "Open calendar",
+      "emptyTitle": "No bookings in this period",
+      "emptyHint": "Pick another period or create bookings on the calendar.",
+      "show": "Attended",
+      "noShow": "Didn't attend",
+      "pending": "Pending",
+      "pendingHint": "Pending means no attendance marked, including canceled ones.",
+      "bookings_one": "booking",
+      "bookings_other": "bookings",
+      "kpi": {
+        "total": "Total",
+        "show": "Attended",
+        "noShow": "Didn't attend",
+        "canceled": "Canceled",
+        "attendanceRate": "Attendance rate"
+      },
+      "daily": {
+        "title": "Attendance trend",
+        "description": "Attended and didn't attend, {{granularity}}",
+        "summary": "{{show}} attended and {{noShow}} didn't attend in this period.",
+        "emptyTitle": "No attendance marked",
+        "emptyHint": "Mark who attended on the bookings to see the trend here."
+      },
+      "attendance": {
+        "title": "Attendance",
+        "description": "Of this period's bookings",
+        "detail": "{{show}} of {{total}} with attendance marked",
+        "noBase": "No attendance marked in this period",
+        "tone": {
+          "good": "Good",
+          "attention": "Attention",
+          "low": "Low"
+        }
+      },
+      "cancellation": {
+        "title": "Cancellations",
+        "description": "Over the period's total",
+        "detail": "{{canceled}} of {{total}} bookings",
+        "tone": {
+          "low": "Low",
+          "attention": "Attention",
+          "high": "High"
+        }
+      },
+      "highlights": {
+        "title": "Highlights",
+        "avgPerDay": "Average per day",
+        "busiestDay": "Busiest day",
+        "peakHour": "Peak hour",
+        "best": "Best attendance",
+        "bestValue": "{{name}} ({{value}})",
+        "pending": "No attendance marked"
+      },
+      "professionals": {
+        "title": "By professional",
+        "description": "Who saw the most people in this period",
+        "name": "Professional",
+        "counts": "{{show}} attended, {{noShow}} didn't",
+        "split": "{{name}}: {{show}} attended and {{noShow}} didn't, out of {{total}} bookings.",
+        "emptyTitle": "No professionals with bookings in this period"
+      },
+      "upcoming": {
+        "title": "Upcoming bookings",
+        "description": "In the next 7 days",
+        "today": "Today, {{time}}",
+        "tomorrow": "Tomorrow, {{time}}",
+        "untitled": "Untitled",
+        "emptyTitle": "No bookings in the next 7 days"
+      },
+      "hours": {
+        "title": "By hour",
+        "peak": "The most booked time is {{hour}}.",
+        "emptyTitle": "No bookings in this period"
+      },
+      "weekdays": {
+        "title": "By weekday",
+        "peak": "The most booked day is {{day}}."
+      }
+    }
+  }
+}

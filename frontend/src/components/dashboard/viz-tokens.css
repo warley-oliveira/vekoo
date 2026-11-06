@@ -1,0 +1,56 @@
+/*
+ * As cores dos gráficos, num lugar só. O produto é quieto: quase tudo sai em tinta neutra, o
+ * violeta marca o que está em destaque, e só a autoria das mensagens precisa de matizes.
+ *
+ * Tudo aqui passou por `dataviz/scripts/validate_palette.js`, contra a superfície dos cards
+ * (`--card`, branco). Ao trocar um valor, rode de novo. O produto só tem tema claro: não há
+ * par escuro para validar.
+ */
+:root {
+  /* Marcas de uma série só: barras ranqueadas, tempo de resposta. 4,66:1 sobre o card. */
+  --viz-ink: oklch(0.56 0.02 292);
+  /* O que é contexto: período anterior, coluna que não é o pico, mensagens recebidas. 2,31:1, com
+     tabela e rótulos como alívio, que é a condição da skill para ficar abaixo de 3:1. */
+  --viz-context: oklch(0.74 0.008 285);
+  /* A série que é o assunto do gráfico. */
+  --viz-accent: var(--primary);
+  /* Trilho de medidor e célula sem nada no mapa de calor. */
+  --viz-track: var(--muted);
+
+  /*
+   * Quem escreveu a mensagem. Categórica, ordem fixa de baixo para cima na pilha, e a cor segue
+   * o autor: filtro nenhum repinta.
+   *   violeta, verde-azulado, terracota: passa em todas as portas (CVD pior par 10,6; visão
+   *   normal 21,2; contraste >= 3:1).
+   *   "Recebidas" fica em --viz-context: é o papel de contexto, fora da paleta. O validador acusa só
+   *   croma e faixa de luz desse cinza, como esperado; o par com o violeta passa em CVD (> 20).
+   */
+  --viz-series-inbound: var(--viz-context);
+  --viz-series-automation: var(--primary);
+  --viz-series-human: oklch(0.62 0.11 175);
+  --viz-series-campaign: oklch(0.62 0.13 50);
+
+  /*
+   * Compareceu e não compareceu. Os tons de texto de status (--status-success e --status-danger)
+   * reprovam como par de marcas: CVD 6,0 e croma 0,09. Ênfase no lugar disso: contexto + um tom
+   * só, que é a falta. CVD 24,5; visão normal 29,4. Sempre com rótulo.
+   */
+  --viz-show: var(--viz-context);
+  --viz-no-show: oklch(0.5 0.17 27);
+
+  /* Etapas de funil: ordinal, um matiz só, do claro ao escuro (--ordinal: passa; 2,34:1 na ponta). */
+  --viz-step-1: oklch(0.74 0.055 292);
+  --viz-step-2: oklch(0.66 0.07 292);
+  --viz-step-3: oklch(0.58 0.085 292);
+  --viz-step-4: oklch(0.5 0.1 292);
+  --viz-step-5: oklch(0.42 0.11 292);
+  --viz-step-6: oklch(0.34 0.12 292);
+
+  /* Mapa de calor: sequencial, um matiz só, terminando no acento. Luz sempre decrescente. */
+  --viz-heat-1: oklch(0.955 0.02 292);
+  --viz-heat-2: oklch(0.9 0.05 292);
+  --viz-heat-3: oklch(0.82 0.09 292);
+  --viz-heat-4: oklch(0.72 0.135 292);
+  --viz-heat-5: oklch(0.62 0.18 292);
+  --viz-heat-6: oklch(0.51 0.24 292);
+}
