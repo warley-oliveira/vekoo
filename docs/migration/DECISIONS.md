@@ -237,6 +237,19 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Fora da origem:** `lib/flow_engine`, `FlowChatSandboxChannel`, `FlowChat`, `DecisionToolBuilder`, `useAdminToolCatalog` e o CRUD de admin, `setup_follow_ups`, `next_commercial_time`, bypass de `super_user` e `partner`, `PlanLimitEnforcement`.
 - **Defeitos da origem corrigidos:** `ask_question`, `wait_for_message` e `send_interactive` repetiam para sempre ao retomar; `first_message` disparava em toda mensagem, e `keyword` não conferia a palavra; `loop` não iterava; `tool_ids` em branco dava todas as ferramentas; IDORs no canal de teste, etiquetas, anexos, departamentos, contas e etapa de `create_deal`; SSRF em `http_request`; `/tools/:id/test` rodava no Puma.
 
+### Chat: painel, copiloto e lote (fe-chat-details)
+
+- **Permissão ampliada no lote:** quem só tem `chat` agora age em lote na lista do chat, sempre preso a `chat_list_to`. Em `/contacts/bulk-*` vale `chat` ou `contacts`.
+- **Terceira coluna** só com o espaço do chat acima de 62rem; abaixo disso, o painel entra por cima da conversa.
+- **Modelo de mensagem:** só `approved` aparece na lista. Toda variável é obrigatória, e o exemplo nunca vai no lugar do valor. `{{nome}}` e chaves de campo já vêm preenchidos; `{{1}}` oferece o nome como sugestão.
+- **Copiloto:** é uma aba do painel, com botão na lista, em vez de substituir a conversa. Custos 2 e 1 fixos no front, porque `aiCosts` não os lista. 180 s sem sinal viram erro. Conversas ficam no navegador: 20 por pessoa, 100 mensagens cada, sem entrada e saída das ferramentas. Tentar de novo só a pedido, com confirmação se já agiu.
+- **Notas:** salvar é explícito, e o rascunho fica em memória por conversa. **Campos:** limpar confirma; salvar não dá toast.
+- **Lote na aba "Todos":** marcar um contato marca as conversas dele que casaram com o filtro. "Selecionar todas" alcança só as carregadas.
+- **Sessão de 24 horas** só aparece nos canais em que ela trava o envio. Editar etiqueta é pelo lápis no seletor, não por clique no chip.
+- **Fora:** seletor de fluxo por conversa, porque aqui os fluxos disparam por gatilho, sem conversa presa a um fluxo (só `outreach_flow_id`, da campanha); `LlmQuotaResetDialog`; escolha de provedor de IA; follow-ups, supressão e "reativar", que a API de ações agendadas não tem.
+- **Risco herdado da origem:** etiquetas de sistema continuam editáveis. Renomear `aguardando-operador` quebra a regra de tirar a etiqueta ao responder.
+- **Acréscimos na API:** `GET /pipelines/cards?chatId=`; `render_message_text` lê `parameter_name` e preenche a variável do cabeçalho.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -281,11 +294,13 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
-- Kit: `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
+- Semente: o canal WABA está inativo, então o aviso de 24 horas não aparece na demonstração sem retoque.
+- Kit: `BulkActionsBar` escreve "3 selecionados" no masculino, inclusive para conversas. `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
 - `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
+- `fe-chat-mobile`: o voltar do aparelho ainda não fecha o painel; o cabeçalho em 390 px corta o nome; falta segurar para selecionar.
 - `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)
