@@ -69,6 +69,7 @@ class Connector::WhatsappWeb
       # multiple calls don't share retry budget. PERMANENT_ERRORS propagate
       # immediately.
       def with_retry(label:, wait_seconds: 1, max_retries: 2)
+        max_retries = 0 if Thread.current[:connector_send_once]
         tries = 0
         begin
           yield
@@ -81,6 +82,16 @@ class Connector::WhatsappWeb
           retry if tries <= max_retries
           raise
         end
+      end
+
+      # Dentro do bloco, nenhuma chamada se repete. Quem pede são as campanhas: um timeout de leitura
+      # não diz se a mensagem saiu, e repetir o POST mandaria duas vezes para a mesma pessoa.
+      def send_once
+        previous = Thread.current[:connector_send_once]
+        Thread.current[:connector_send_once] = true
+        yield
+      ensure
+        Thread.current[:connector_send_once] = previous
       end
 
       # Maps a media `msg_type` symbol to the file extension legacy media

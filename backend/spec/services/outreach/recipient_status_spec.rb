@@ -7,7 +7,7 @@ RSpec.describe Outreach::RecipientStatus do
   let!(:recipient) { create(:outreach_recipient, campaign: campaign, status_cd: recipient_status, whatsapp_message_id: external_id) }
 
   def apply(status, **options)
-    described_class.apply(external_id, status, **options)
+    described_class.apply(external_id, status, organization_id: campaign.organization_id, **options)
     recipient.reload
   end
 
@@ -18,9 +18,17 @@ RSpec.describe Outreach::RecipientStatus do
     expect(Outreach::Recipient.where(whatsapp_message_id: "outro").take.status_cd).to eq("sent")
   end
 
+  # O id do provedor vem de fora: o webhook de um conector não alcança campanha de outra organização.
+  it "não mexe no destinatário de outra organização" do
+    described_class.apply(external_id, "read", organization_id: create(:organization).id)
+
+    expect(recipient.reload.status_cd).to eq("sent")
+    expect(campaign.reload.read_count).to eq(0)
+  end
+
   it "sem id ou sem destinatário, não faz nada" do
-    expect { described_class.apply(nil, "read") }.not_to raise_error
-    expect { described_class.apply("nao-existe", "read") }.not_to raise_error
+    expect { described_class.apply(nil, "read", organization_id: campaign.organization_id) }.not_to raise_error
+    expect { described_class.apply("nao-existe", "read", organization_id: campaign.organization_id) }.not_to raise_error
   end
 
   describe "entregue" do
@@ -110,13 +118,13 @@ RSpec.describe Outreach::RecipientStatus do
   # Dois eventos do mesmo destinatário chegando em dois jobs ao mesmo tempo.
   describe "concorrência" do
     it "de dois `delivered` iguais em paralelo, conta um" do
-      Array.new(4) { Thread.new { described_class.apply(external_id, "delivery_ack") } }.each(&:join)
+      Array.new(4) { Thread.new { described_class.apply(external_id, "delivery_ack", organization_id: campaign.organization_id) } }.each(&:join)
 
       expect(campaign.reload.delivered_count).to eq(1)
     end
 
     it "`read` não se perde quando `delivered` troca o estado no mesmo instante" do
-      service = described_class.new(external_id, "read", nil)
+      service = described_class.new(external_id, "read", campaign.organization_id, nil)
       other_job_ran = false
 
       # A leitura enxergou `sent`, mas outro job grava `delivered` antes da troca.

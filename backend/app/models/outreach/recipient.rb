@@ -24,6 +24,9 @@ module Outreach
     # A conversa de onde veio, quando a importação foi da base de contatos.
     field :contact_id, type: String
     field :phone, type: String
+    # A mesma para as duas formas do 9º dígito: é a mesma conta de WhatsApp. É nela que vale o índice
+    # único, para duas importações ao mesmo tempo não porem a mesma pessoa duas vezes.
+    field :phone_key, type: String
     field :name, type: String
     field :custom_variables, type: Hash, default: {}
 
@@ -49,9 +52,12 @@ module Outreach
     # O motivo dado pelo canal, quando há um pronto para mostrar.
     field :error_message, type: String
 
-    validates :phone, presence: true, uniqueness: { scope: :campaign_id }
+    before_validation { self.phone_key = self.class.key_for(phone) }
 
-    index({ campaign_id: 1, phone: 1 }, { unique: true })
+    validates :phone, presence: true
+    validates :phone_key, uniqueness: { scope: :campaign_id }
+
+    index({ campaign_id: 1, phone_key: 1 }, { unique: true })
     # Ordem por `_id`: as importações gravam em bloco, com o mesmo `created_at`, e a paginação
     # por ele não seria estável.
     index({ campaign_id: 1, _id: 1 })
@@ -70,6 +76,11 @@ module Outreach
       any_of({ name: pattern }, { phone: pattern })
     }
 
+    def self.key_for(phone)
+      digits = BrPhoneVariants.digits_of(phone)
+      [ digits, *BrPhoneVariants.ninth_digit_variants(digits) ].min
+    end
+
     def terminal?
       TERMINAL_STATUSES.include?(status_cd)
     end
@@ -80,6 +91,14 @@ module Outreach
     # @return [Boolean]
     def mark_dispatched!(chat_id)
       claimed_update("$set" => { dispatched_at: Time.current, chat_id: chat_id.to_s })
+    end
+
+    # Devolve quem ainda não foi despachado. Nada saiu, então não conta em nada.
+    #
+    # @param status [String] pending, ou skipped em campanha cancelada
+    # @return [Boolean]
+    def release_claim!(status = "pending")
+      claimed_update("$set" => { status_cd: status }, "$unset" => { claim_token: true, claimed_at: true })
     end
 
     # @return [Boolean] false se a saída já foi resolvida por outro caminho

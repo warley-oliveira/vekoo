@@ -50,7 +50,7 @@ module Outreach
       PlaceExtractionChannel.broadcast_completed(extraction)
     rescue ApifyPlacesSearchService::ApifyError => e
       fail_extraction(extraction, e.code, e.code == e.message ? nil : e.message)
-    rescue Net::OpenTimeout, Net::ReadTimeout
+    rescue Timeout::Error
       fail_extraction(extraction, "apifyTimeout")
     rescue StandardError => e
       Rails.logger.error("[Outreach::PlaceExtractionJob] #{extraction.id}: #{e.full_message}")

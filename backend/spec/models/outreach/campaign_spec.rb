@@ -80,6 +80,19 @@ RSpec.describe Outreach::Campaign, type: :model do
       expect(build_campaign(buffer_min_seconds: 0)).not_to be_valid
     end
 
+    # O validador lê o valor cru: 0.5 passaria por "maior que zero" para ser gravado como 0, e aí a
+    # estimativa nunca terminaria e o lote não montaria nada.
+    it "só aceita inteiros no ritmo e nos limites" do
+      expect(build_campaign(daily_limit_per_connector: 0.5)).not_to be_valid
+      expect(build_campaign(batch_size: 0.5)).not_to be_valid
+      expect(build_campaign(buffer_min_seconds: 1.5)).not_to be_valid
+      expect(build_campaign(buffer_max_seconds: 2.5)).not_to be_valid
+    end
+
+    it "limita o tamanho do id do fluxo" do
+      expect(build_campaign(flow_id: "x" * 65)).not_to be_valid
+    end
+
     # Sem dia nenhum, procurar "o próximo dia permitido" nunca terminaria.
     it "exige ao menos um dia de envio" do
       expect(build_campaign(send_days: [])).not_to be_valid
@@ -185,6 +198,27 @@ RSpec.describe Outreach::Campaign, type: :model do
 
       expect(campaign).not_to be_valid
       expect(campaign.errors[:template_ids]).to be_present
+    end
+
+    describe "números da conta oficial" do
+      let(:waba) { create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111, phone_number_list: [ { "id" => "222" } ]) }
+      let(:template) { create(:whatsapp_template, connector: waba) }
+
+      def template_campaign(*numbers)
+        build_campaign(campaign_mode_cd: "template", messages: [], waba_connector_id: waba.id.to_s, phone_number_ids: numbers, template_ids: [ template.id.to_s ])
+      end
+
+      it "aceita o número principal e os da lista" do
+        expect(template_campaign("111", "222")).to be_valid
+      end
+
+      # O id vai como remetente para a Meta e fica gravado na conversa.
+      it "recusa um número que não é da conta" do
+        campaign = template_campaign("111", "999")
+
+        expect(campaign).not_to be_valid
+        expect(campaign.errors[:phone_number_ids]).to be_present
+      end
     end
 
     it "recusa uma etiqueta de outra organização" do

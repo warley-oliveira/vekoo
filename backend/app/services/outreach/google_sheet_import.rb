@@ -48,6 +48,9 @@ module Outreach
       raise RefusedError, STATUS_CODES.fetch(response.code, "googleSheetFailed") unless response.success?
 
       response.body.to_s.dup.force_encoding("UTF-8").scrub
+    rescue SocketError, SystemCallError, OpenSSL::SSL::SSLError, HTTParty::Error => e
+      Rails.logger.warn("[Outreach::GoogleSheetImport] #{e.class}: #{e.message}")
+      raise RefusedError, "googleSheetFailed"
     end
 
     def parse(body)

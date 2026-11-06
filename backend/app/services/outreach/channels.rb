@@ -3,8 +3,9 @@ module Outreach
   # conector; no modo modelo, cada número da WABA.
   class Channels
     Channel = Struct.new(:connector, :phone_number_id, keyword_init: true) do
+      # Texto pela WABA sai do número principal da conta: é o mesmo canal de um modelo por ele.
       def key
-        "#{connector.id}:#{phone_number_id}"
+        "#{connector.id}:#{phone_number_id.presence || connector.try(:phone_number_id)}"
       end
     end
 

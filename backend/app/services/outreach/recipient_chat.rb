@@ -9,6 +9,9 @@ module Outreach
       image_url maps_url place_id latitude longitude instagram facebook opening_hours
     ].freeze
 
+    # O provedor não respondeu à consulta do número: o problema é do canal, não do destinatário.
+    class ChannelUnavailable < StandardError; end
+
     def initialize(recipient:, campaign:, connector:)
       @recipient = recipient
       @campaign = campaign
@@ -23,7 +26,7 @@ module Outreach
     def resolved
       return prepare(locate) unless connector.try(:verifies_whatsapp_numbers?)
 
-      number = connector.resolve_whatsapp_number(digits)
+      number = resolve_number
       raise WhatsappNumberNotFoundError, "#{digits} não existe no WhatsApp" if number.nil?
 
       prepare(locate_exactly(number))
@@ -44,6 +47,12 @@ module Outreach
 
     def digits
       @digits ||= BrPhoneVariants.digits_of(recipient.phone)
+    end
+
+    def resolve_number
+      connector.resolve_whatsapp_number(digits)
+    rescue StandardError => e
+      raise ChannelUnavailable, "#{e.class}: #{e.message}"
     end
 
     # A forma exata primeiro. Só depois vale a variante, que é o que o `Locator` procura.

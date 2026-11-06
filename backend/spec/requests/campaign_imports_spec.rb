@@ -68,7 +68,7 @@ RSpec.describe "Importações de campanha", type: :request do
     end
 
     it "ignora uma linha que não é um mapa" do
-      import([ "lixo", { userName: "Ana", externalId: "5531971810932" } ])
+      import([ "lixo", 5, nil, [ "x" ], { userName: "Ana", externalId: "5531971810932" } ])
 
       expect(json["importedCount"]).to eq(1)
     end
@@ -252,6 +252,15 @@ RSpec.describe "Importações de campanha", type: :request do
       expect(json.dig("error", "code")).to eq("googleSheetTimeout")
     end
 
+    it "sem conseguir falar com o Google, responde 422 com o motivo" do
+      stub_request(:get, url).to_raise(SocketError)
+
+      import
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("googleSheetFailed")
+    end
+
     it "sem a configuração do Google, responde 422 e não chama" do
       with_env("GOOGLE_SHEETS_CLIENT_ID" => nil) { import }
 
@@ -365,6 +374,15 @@ RSpec.describe "Importações de campanha", type: :request do
       post "/campaigns/apify-places-search", params: { searchQuery: "padaria" }, headers: auth_headers(other), as: :json
 
       expect(response).to have_http_status(:ok)
+    end
+
+    it "sem conseguir falar com o Apify, responde 502" do
+      stub_request(:post, url).to_raise(SocketError)
+
+      search
+
+      expect(response).to have_http_status(:bad_gateway)
+      expect(json.dig("error", "code")).to eq("apifyFailed")
     end
 
     it "na requisição, espera menos que no job" do

@@ -178,19 +178,57 @@ RSpec.describe Outreach::SendRecipientService do
         expect(deliver).to have_attributes(status_cd: "failed", error_code: "whatsappError")
       end
 
-      it "não reenvia nada além das tentativas do próprio provedor" do
+      # Um timeout de leitura não diz se a mensagem saiu: repetir mandaria duas vezes.
+      it "não repete o envio" do
         deliver
 
-        expect(a_request(:post, evolution_text_url(connector))).to have_been_made.times(3)
+        expect(a_request(:post, evolution_text_url(connector))).to have_been_made.once
       end
     end
 
+    context "quando o provedor demora a responder um envio que pode ter saído" do
+      before do
+        stub_number_check(connector)
+        stub_request(:post, evolution_text_url(connector)).to_raise(Net::ReadTimeout)
+      end
+
+      it "fica falho, sem repetir" do
+        expect(deliver).to have_attributes(status_cd: "failed", error_code: "whatsappError", dispatched_at: be_present)
+        expect(a_request(:post, evolution_text_url(connector))).to have_been_made.once
+      end
+
+      it "a regra vale só para o envio de campanha: o resto do provedor segue repetindo" do
+        deliver
+        attempts = 0
+
+        expect {
+          Connector::WhatsappWeb::Providers::Base.with_retry(label: "x") do
+            attempts += 1
+            raise "falhou"
+          end
+        }.to raise_error("falhou")
+
+        expect(attempts).to eq(3)
+      end
+    end
+
+    # O provedor caiu: nada saiu, e o destinatário não tem culpa.
     context "quando a consulta do número falha" do
       before { stub_request(:post, evolution_numbers_url(connector)).to_return(status: 500, body: "erro") }
 
-      it "falha sem enviar e sem marcar como despachado" do
-        expect(deliver).to have_attributes(status_cd: "failed", error_code: "whatsappError", dispatched_at: nil)
+      it "volta para a fila, sem enviar e sem contar" do
+        expect(deliver).to have_attributes(status_cd: "pending", claim_token: nil, dispatched_at: nil)
         expect(a_request(:post, evolution_text_url(connector))).not_to have_been_made
+        expect(campaign.reload).to have_attributes(sent_count: 0, failed_count: 0)
+      end
+
+      it "diz que o problema é do canal" do
+        taken = claimed(recipient, connector: connector)
+        service = described_class.new(recipient: taken, campaign: campaign.reload, batch: batch, connector: connector)
+
+        service.call
+
+        expect(service.channel_trouble?).to be(true)
       end
     end
 
@@ -330,8 +368,100 @@ RSpec.describe Outreach::SendRecipientService do
     end
   end
 
+  describe "o que conta como problema do canal" do
+    def trouble_after
+      taken = claimed(recipient, connector: connector)
+      service = described_class.new(recipient: taken, campaign: campaign.reload, batch: batch, connector: connector)
+      service.call
+      service.channel_trouble?
+    end
+
+    it "um envio que funcionou não conta" do
+      stub_channel_working(connector)
+
+      expect(trouble_after).to be(false)
+    end
+
+    it "número que não existe não conta: a consulta respondeu" do
+      stub_number_check(connector, only: [])
+
+      expect(trouble_after).to be(false)
+    end
+
+    it "o canal recusar conta" do
+      stub_number_check(connector)
+      stub_request(:post, evolution_text_url(connector)).to_return(status: 500, body: "fora do ar")
+
+      expect(trouble_after).to be(true)
+    end
+  end
+
+  describe "variáveis do texto" do
+    before { stub_channel_working(connector) }
+
+    def text_with(message, **variables)
+      campaign.set(messages: [ message ])
+      recipient.set(custom_variables: variables.stringify_keys)
+      deliver
+
+      JSON.parse(WebMock::RequestRegistry.instance.requested_signatures.hash.keys.find { |signature| signature.uri.to_s.include?("sendText") }.body)["text"]
+    end
+
+    it "troca nome, telefone e as próprias do destinatário" do
+      expect(text_with("{{nome}} {{name}} {{telefone}} {{phone}} {{cupom}}", cupom: "NATAL10")).to eq("Maria Maria #{phone} #{phone} NATAL10")
+    end
+
+    # As chaves chegam em snake_case da API, e a pessoa escreve como quer.
+    it "acha a variável escrita com maiúscula" do
+      expect(text_with("Seu {{Cupom}} chegou", cupom: "NATAL10")).to eq("Seu NATAL10 chegou")
+    end
+
+    it "aceita espaço dentro das chaves" do
+      expect(text_with("Oi {{ nome }}")).to eq("Oi Maria")
+    end
+
+    it "um valor com {{algo}} não é trocado de novo" do
+      expect(text_with("{{apelido}}", apelido: "{{telefone}}")).to eq("{{telefone}}")
+    end
+
+    it "o que não existe fica como veio" do
+      expect(text_with("Oi {{sumiu}}")).to eq("Oi {{sumiu}}")
+    end
+  end
+
   describe "idempotência" do
     before { stub_channel_working(connector) }
+
+    # A consulta do número pode levar minutos. Nesse meio-tempo a pessoa pausa.
+    it "se a campanha foi pausada depois de o passo começar, não envia e devolve o destinatário" do
+      taken = claimed(recipient, connector: connector)
+      stale = Outreach::Campaign.find(campaign.id)
+      Outreach::Lifecycle.new(Outreach::Campaign.find(campaign.id)).pause
+
+      described_class.new(recipient: taken, campaign: stale, batch: batch, connector: connector).call
+
+      expect(a_request(:post, evolution_text_url(connector))).not_to have_been_made
+      expect(recipient.reload).to have_attributes(status_cd: "pending", dispatched_at: nil)
+    end
+
+    it "se foi cancelada, o destinatário fica como ignorado" do
+      taken = claimed(recipient, connector: connector)
+      stale = Outreach::Campaign.find(campaign.id)
+      Outreach::Lifecycle.new(Outreach::Campaign.find(campaign.id)).cancel
+
+      described_class.new(recipient: taken, campaign: stale, batch: batch, connector: connector).call
+
+      expect(a_request(:post, evolution_text_url(connector))).not_to have_been_made
+      expect(recipient.reload.status_cd).to eq("skipped")
+    end
+
+    it "erro de banco sobe para o job: quem resolve é a recuperação" do
+      allow(Chat).to receive(:where).and_raise(Mongo::Error::SocketError, "caiu")
+      taken = claimed(recipient, connector: connector)
+
+      expect { described_class.new(recipient: taken, campaign: campaign, batch: batch, connector: connector).call }.to raise_error(Mongo::Error::SocketError)
+      expect(recipient.reload.status_cd).to eq("sending")
+    end
 
     it "grava que vai despachar antes de falar com o canal" do
       moment = nil
@@ -429,11 +559,12 @@ RSpec.describe Outreach::SendRecipientService do
       expect(deliver).to have_attributes(status_cd: "sent", whatsapp_message_id: nil)
     end
 
-    it "quando o canal recusa, fica falho" do
+    it "quando o canal recusa, fica falho, sem repetir e sem mostrar o corpo cru do provedor" do
       stub_media({ status: 500, body: "fora do ar" })
 
-      expect(deliver.status_cd).to eq("failed")
+      expect(deliver).to have_attributes(status_cd: "failed", error_code: "whatsappError", error_message: nil)
       expect(campaign.reload.failed_count).to eq(1)
+      expect(a_request(:post, evolution_media_url(connector))).to have_been_made.once
     end
 
     it "quando a Evolution responde que o número não existe, usa o motivo próprio" do

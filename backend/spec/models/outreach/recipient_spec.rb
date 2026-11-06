@@ -16,6 +16,31 @@ RSpec.describe Outreach::Recipient, type: :model do
     expect(build(:outreach_recipient, campaign: create(:outreach_campaign), phone: "5531971810932")).to be_valid
   end
 
+  # A mesma conta de WhatsApp receberia duas vezes.
+  it "não aceita a outra forma do 9º dígito na campanha" do
+    create(:outreach_recipient, campaign: campaign, phone: "5531971810932")
+
+    expect(build(:outreach_recipient, campaign: campaign, phone: "553171810932")).not_to be_valid
+  end
+
+  describe ".key_for" do
+    it "é a mesma para as duas formas do número" do
+      expect(described_class.key_for("5531971810932")).to eq(described_class.key_for("553171810932"))
+    end
+
+    it "é a mesma com máscara e com sufixo" do
+      expect(described_class.key_for("+55 (31) 97181-0932")).to eq(described_class.key_for("553171810932@s.whatsapp.net"))
+    end
+
+    it "fixo não tem variante" do
+      expect(described_class.key_for("553133330000")).to eq("553133330000")
+    end
+
+    it "é diferente para números diferentes" do
+      expect(described_class.key_for("5531971810932")).not_to eq(described_class.key_for("5531971810933"))
+    end
+  end
+
   it "nasce pendente" do
     expect(recipient.status_pending?).to be(true)
   end
@@ -99,6 +124,13 @@ RSpec.describe Outreach::Recipient, type: :model do
       expect(taken.reload).to have_attributes(status_cd: "failed", error_code: "numberNotFound")
       expect(taken.error_message.length).to eq(described_class::ERROR_MESSAGE_LIMIT)
       expect(campaign.reload.failed_count).to eq(1)
+    end
+
+    it "devolver à fila limpa a tomada, sem contar nada" do
+      expect(taken.release_claim!).to be(true)
+
+      expect(taken.reload).to have_attributes(status_cd: "pending", claim_token: nil, claimed_at: nil)
+      expect(campaign.reload).to have_attributes(sent_count: 0, failed_count: 0)
     end
 
     it "quem já terminou não muda de saída" do

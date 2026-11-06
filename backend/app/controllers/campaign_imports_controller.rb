@@ -46,7 +46,7 @@ class CampaignImportsController < PlatformController
     ).call
 
     render json: { headers: result.headers, data: result.rows, rowCount: result.rows.size }
-  rescue Net::OpenTimeout, Net::ReadTimeout
+  rescue Timeout::Error
     render_error(status: :gateway_timeout, code: "googleSheetTimeout")
   end
 
@@ -73,7 +73,7 @@ class CampaignImportsController < PlatformController
     render_error(status: :payment_required, code: e.code)
   rescue Outreach::ApifyPlacesSearchService::ApifyError => e
     render_error(status: :bad_gateway, code: e.code, message: e.code == e.message ? nil : e.message)
-  rescue Net::OpenTimeout, Net::ReadTimeout
+  rescue Timeout::Error
     render_error(status: :gateway_timeout, code: "apifyTimeout")
   end
 
@@ -109,7 +109,7 @@ class CampaignImportsController < PlatformController
   end
 
   def csv_row(row)
-    return nil unless row.respond_to?(:[]) && !row.is_a?(String)
+    return nil unless row.is_a?(ActionController::Parameters) || row.is_a?(Hash)
 
     metadata = row[:contact_metadata]
     metadata = metadata.to_unsafe_h if metadata.respond_to?(:to_unsafe_h)

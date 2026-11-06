@@ -49,6 +49,32 @@ RSpec.describe Outreach::ChannelUsage, type: :model do
     expect(described_class.used_on(channel, day)).to eq(5)
   end
 
+  # Duas campanhas na abertura da janela: o documento do dia não existe, os dois upserts inserem, e um
+  # leva E11000 com a conta longe do limite.
+  it "quem perde a corrida do primeiro envio do dia tenta de novo, em vez de dormir até amanhã" do
+    collection = described_class.collection
+    duplicate = Mongo::Error::OperationFailure.new("E11000 duplicate key", nil, code: 11_000)
+    calls = 0
+    allow(described_class).to receive(:collection).and_return(collection)
+    allow(collection).to receive(:find_one_and_update).and_wrap_original do |original, *args, **options|
+      calls += 1
+      raise duplicate if calls == 1
+
+      original.call(*args, **options)
+    end
+
+    expect(described_class.reserve(channel, day, 1)).to be(true)
+    expect(described_class.used_on(channel, day)).to eq(1)
+  end
+
+  describe ".day_of" do
+    # Todas as campanhas do canal contam o mesmo dia, qualquer que seja o fuso de cada uma.
+    it "conta em um fuso só" do
+      expect(described_class.day_of(Time.utc(2026, 11, 10, 1))).to eq("2026-11-09")
+      expect(described_class.day_of(ActiveSupport::TimeZone["Asia/Tokyo"].local(2026, 11, 10, 9))).to eq("2026-11-09")
+    end
+  end
+
   it "some sozinha depois de uns dias" do
     described_class.reserve(channel, day, 1)
 

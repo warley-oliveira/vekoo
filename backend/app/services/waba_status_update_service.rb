@@ -217,7 +217,7 @@ class WabaStatusUpdateService
   # esparso próprio, então é uma busca barata e independente. Um erro aqui não pode abortar
   # a atualização da mensagem.
   def update_campaign_recipient
-    Outreach::RecipientStatus.apply(message_id, mapped_status, error_message: humanized_error)
+    Outreach::RecipientStatus.apply(message_id, mapped_status, organization_id: connector.organization_id, error_message: humanized_error)
   rescue StandardError => e
     Rails.logger.error("[WabaStatus] Falha ao atualizar Outreach::Recipient: #{e.full_message}")
   end

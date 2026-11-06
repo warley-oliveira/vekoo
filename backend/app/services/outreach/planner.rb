@@ -80,7 +80,7 @@ module Outreach
       per_channel = (total.to_f / channels.size).ceil
 
       channels.map { |channel|
-        used = ChannelUsage.used_on(channel.key, window.day_key(now))
+        used = ChannelUsage.used_on(channel.key, ChannelUsage.day_of(now))
         window.estimate_completion(per_channel, from: now, used_today: used)
       }.compact.max
     end

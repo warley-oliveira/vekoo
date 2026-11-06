@@ -59,11 +59,16 @@ pt-BR:
       launch_failed: "Não foi lançada no horário: %{reason}"
       channel_stopped_connector_inactive: "Um canal desconectou. Os contatos dele continuam na fila."
       channel_stopped_connector_missing: "Um canal foi excluído. Os contatos dele continuam na fila."
+      channel_stopped_channel_failing: "Um canal falhou várias vezes seguidas e parou de enviar. Os contatos que faltam continuam na fila."
+      paused_channel_failing: "Pausada pela plataforma: um canal falhou várias vezes seguidas."
       channel_resumed: "O canal voltou e os envios dele continuaram."
     notices:
       paused:
         title: "Campanha pausada: %{name}"
         description: "Nenhum canal da campanha está conectado. Reconecte um e retome: ninguém deixou de receber."
+      paused_channel_failing:
+        title: "Campanha pausada: %{name}"
+        description: "Um canal da campanha falhou várias vezes seguidas. Confira a conexão e retome: quem não recebeu continua na fila."
       launch_failed:
         title: "Campanha não lançada: %{name}"
         description: "A campanha agendada não pôde ser lançada e voltou para rascunho. Abra para ver o motivo."
@@ -118,6 +123,7 @@ pt-BR:
               not_found: "não existe nesta organização"
             phone_number_ids:
               required: "precisam de ao menos um número"
+              not_found: "têm um número que não é desta conta"
             connector_ids:
               not_found: "têm um canal que não existe nesta organização"
             chat_tag_ids:

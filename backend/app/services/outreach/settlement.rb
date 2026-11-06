@@ -3,6 +3,7 @@ module Outreach
   # remontar os lotes. Atômico nas transições: dois lotes acabando juntos não concluem duas vezes.
   class Settlement
     NO_ACTIVE_CONNECTORS = "noActiveConnectors".freeze
+    CHANNEL_FAILING = "channelFailing".freeze
 
     def initialize(campaign)
       @campaign = campaign
@@ -38,11 +39,12 @@ module Outreach
     # Nenhum canal consegue enviar. Pausar diz a verdade na tela e não gasta ninguém; quem resolve
     # é uma pessoa, reconectando e retomando.
     def pause_without_channels
-      return unless campaign.transition!(from: :running, to: :paused, pause_reason: NO_ACTIVE_CONNECTORS, run_token: campaign.new_run_token)
+      reason = campaign.batches.failed.where(failure_reason: CHANNEL_FAILING).exists? ? CHANNEL_FAILING : NO_ACTIVE_CONNECTORS
+      return unless campaign.transition!(from: :running, to: :paused, pause_reason: reason, run_token: campaign.new_run_token)
 
-      campaign.log_activity!("paused", metadata: { "reason" => NO_ACTIVE_CONNECTORS })
+      campaign.log_activity!("paused", metadata: { "reason" => reason })
       MonitorEvents.status(campaign)
-      CreatorNotice.call(campaign, :paused)
+      CreatorNotice.call(campaign, reason == CHANNEL_FAILING ? :paused_channel_failing : :paused)
     end
 
     # Pendentes fora de qualquer lote: alguém importou enquanto a campanha era lançada, ou o

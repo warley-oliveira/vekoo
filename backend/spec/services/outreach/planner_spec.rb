@@ -85,7 +85,7 @@ RSpec.describe Outreach::Planner do
   end
 
   context "com vários números da WABA" do
-    let(:waba) { create(:connector_whatsapp_cloud, organization: organization) }
+    let(:waba) { create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111, phone_number_list: [ { "id" => "222" } ]) }
     let(:template) { create(:whatsapp_template, connector: waba) }
     let(:campaign) do
       create(

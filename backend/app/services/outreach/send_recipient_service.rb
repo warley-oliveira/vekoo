@@ -40,14 +40,29 @@ module Outreach
       else
         send_text
       end
+    rescue RecipientChat::ChannelUnavailable => e
+      # Nada saiu e o destinatário não tem culpa: volta para a fila. Quem conta quantas vezes isso
+      # aconteceu seguidas é o passo do lote, que para o canal antes de gastar a lista.
+      Rails.logger.warn("[Outreach::SendRecipient] #{recipient.id}: #{e.message}")
+      @channel_trouble = true
+      recipient.release_claim!
     rescue SendRefused => e
       fail_recipient(e.code)
     rescue WhatsappNumberNotFoundError => e
       Rails.logger.info("[Outreach::SendRecipient] #{recipient.id}: #{e.message}")
       fail_recipient(NUMBER_NOT_FOUND)
+    rescue Mongo::Error
+      # Infraestrutura: sobe para o job, e a recuperação decide pelo que ficou gravado.
+      raise
     rescue StandardError => e
       Rails.logger.error("[Outreach::SendRecipient] #{recipient.id}: #{e.class}: #{e.message}")
       fail_recipient(WHATSAPP_ERROR)
+    end
+
+    # Este envio não funcionou por um motivo que não é do destinatário. Número que não existe não
+    # conta: uma lista suja é outra conversa, e a consulta respondeu.
+    def channel_trouble?
+      @channel_trouble.present?
     end
 
     private
@@ -72,9 +87,9 @@ module Outreach
       return unless begin_dispatch(chat)
 
       if campaign.raise_chats
-        finish_with(chat.send_text_message(text, campaign.name, message_attributes))
+        finish_with(once { chat.send_text_message(text, campaign.name, message_attributes) })
       else
-        external_id = chat.send_text_message_without_event(text, campaign.name, false, message_attributes)
+        external_id = once { chat.send_text_message_without_event(text, campaign.name, false, message_attributes) }
         external_id ? recipient.finish_sent!(external_id) : fail_recipient(WHATSAPP_ERROR, chat.connector.try(:last_send_error))
       end
     end
@@ -92,7 +107,7 @@ module Outreach
       return unless begin_dispatch(chat)
 
       # Sem o motivo: aqui ele é o corpo cru da resposta do provedor.
-      finish_with(Chats::SendMedia.call(chat: chat, media: dto, sender_name: campaign.name, attributes: message_attributes), show_reason: false)
+      finish_with(once { Chats::SendMedia.call(chat: chat, media: dto, sender_name: campaign.name, attributes: message_attributes) }, show_reason: false)
       lower_in_list(chat)
     end
 
@@ -107,7 +122,7 @@ module Outreach
       components = content.template_components(template)
       return unless begin_dispatch(chat)
 
-      finish_with(Chats::SendTemplate.call(chat: chat, template: template, components: components, sender_name: campaign.name, attributes: message_attributes))
+      finish_with(once { Chats::SendTemplate.call(chat: chat, template: template, components: components, sender_name: campaign.name, attributes: message_attributes) })
       lower_in_list(chat)
     end
 
@@ -119,9 +134,23 @@ module Outreach
         content.phone_number_id_from_rotation.to_s.presence
     end
 
-    # A linha que separa "nada saiu" de "pode ter saído". Se a recuperação já devolveu este
-    # destinatário, outra execução é quem envia.
+    # O provedor repetiria um POST que deu timeout de leitura, e ele pode ter saído. Aqui vale no máximo
+    # uma vez: se falhar, o destinatário fica como falho, e a pessoa vê.
+    def once(&block)
+      Connector::WhatsappWeb::Providers::Base.send_once(&block)
+    end
+
+    # A linha que separa "nada saiu" de "pode ter saído". A consulta do número pode ter levado minutos:
+    # a campanha é conferida de novo, para nada sair depois de a pessoa pausar. E se a recuperação já
+    # devolveu este destinatário, outra execução é quem envia.
     def begin_dispatch(chat)
+      token, status = Campaign.where(_id: campaign.id).pick(:run_token, :status_cd)
+
+      if token != campaign.run_token
+        recipient.release_claim!(status == "cancelled" ? "skipped" : "pending")
+        return false
+      end
+
       recipient.mark_dispatched!(chat.id)
     end
 
@@ -136,6 +165,7 @@ module Outreach
     end
 
     def fail_recipient(code, detail = nil)
+      @channel_trouble = code != NUMBER_NOT_FOUND
       recipient.finish_failed!(code, detail: detail)
     end
 

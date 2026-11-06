@@ -88,10 +88,12 @@ module Outreach
     validates :organization_id, presence: true
     validates :name, presence: true, length: { maximum: 160 }
     validates :flow_id, length: { maximum: 64 }
-    validates :batch_size, numericality: { greater_than: 0, less_than_or_equal_to: 200 }, allow_nil: true
-    validates :daily_limit_per_connector, numericality: { greater_than: 0 }
-    validates :buffer_min_seconds, numericality: { greater_than_or_equal_to: 1 }
-    validates :buffer_max_seconds, numericality: { greater_than_or_equal_to: 1 }
+    # `only_integer`: o validador lê o valor cru, e 0.5 passaria por "maior que zero" para ser gravado
+    # como 0. Limite diário zero nunca termina a estimativa, e lote zero não monta lote nenhum.
+    validates :batch_size, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 200 }, allow_nil: true
+    validates :daily_limit_per_connector, numericality: { only_integer: true, greater_than: 0 }
+    validates :buffer_min_seconds, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+    validates :buffer_max_seconds, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
     validates :send_start_hour, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 23 }
     validates :send_end_hour, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 24 }
     validate :enums_are_known
@@ -301,6 +303,7 @@ module Outreach
 
       validate_connector_ids if connector_ids_changed?
       validate_waba_connector if waba_connector_id_changed?
+      validate_phone_number_ids if phone_number_ids_changed? || waba_connector_id_changed?
       validate_template_ids if template_ids_changed? || waba_connector_id_changed?
       validate_chat_tag_ids if chat_tag_ids_changed?
     end
@@ -312,6 +315,16 @@ module Outreach
 
     def validate_waba_connector
       errors.add(:waba_connector_id, :not_found) if waba_connector_id.present? && waba_connector.nil?
+    end
+
+    # O id do número vai como remetente para a Meta e fica gravado na conversa: só os da própria conta.
+    # A tela escolhe em GET /connectors/:id/phone-numbers, que lê a mesma lista.
+    def validate_phone_number_ids
+      connector = waba_connector
+      return if connector.nil? || normalized_phone_number_ids.empty?
+
+      known = connector.phone_number_list.map { |phone| phone["id"].to_s } + [ connector.phone_number_id.to_s ]
+      errors.add(:phone_number_ids, :not_found) if (normalized_phone_number_ids - known).any?
     end
 
     def validate_template_ids

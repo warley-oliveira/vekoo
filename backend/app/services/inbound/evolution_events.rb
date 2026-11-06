@@ -339,7 +339,7 @@ module Inbound
 
       message.update(status: status)
       # Só a mensagem de campanha paga a busca: este é o caminho de maior volume.
-      Outreach::RecipientStatus.apply(external_id, status) if message.campaign_id.present?
+      Outreach::RecipientStatus.apply(external_id, status, organization_id: connector.organization_id) if message.campaign_id.present?
     end
 
     # ========================================================================

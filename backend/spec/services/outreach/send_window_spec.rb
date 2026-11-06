@@ -77,13 +77,6 @@ RSpec.describe Outreach::SendWindow do
     end
   end
 
-  describe "#day_key" do
-    it "conta o dia no fuso da campanha" do
-      # 1h da manhã em UTC ainda é o dia anterior em São Paulo.
-      expect(window.day_key(Time.utc(2026, 11, 10, 1))).to eq("2026-11-09")
-    end
-  end
-
   describe "#estimate_completion" do
     let(:campaign) do
       build(:outreach_campaign, send_days: [ 1, 2, 3, 4, 5 ], buffer_min_seconds: 60, buffer_max_seconds: 60, daily_limit_per_connector: 100, **hours)
@@ -122,6 +115,13 @@ RSpec.describe Outreach::SendWindow do
       friday = monday(9) + 4.days
 
       expect(window.estimate_completion(101, from: friday)).to eq(monday(9) + 7.days)
+    end
+
+    # Um documento torto não pode prender a thread: é ela que responde à pessoa.
+    it "com limite zero, desiste em vez de ficar procurando para sempre" do
+      campaign.daily_limit_per_connector = 0
+
+      expect(window.estimate_completion(1, from: monday(9))).to be_nil
     end
 
     # A origem andava destinatário a destinatário, dentro da requisição.

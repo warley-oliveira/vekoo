@@ -226,6 +226,7 @@ module VekooOutreachSeeds
       _id: BSON::ObjectId.new,
       campaign_id: campaign.id,
       phone: phone,
+      phone_key: Outreach::Recipient.key_for(phone),
       name: "#{FIRST_NAMES[random.rand(FIRST_NAMES.size)]} #{LAST_NAMES[random.rand(LAST_NAMES.size)]}",
       custom_variables: {},
       status_cd: status,

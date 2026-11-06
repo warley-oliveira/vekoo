@@ -10,12 +10,21 @@ module Outreach
     # O bastante para a estimativa e a investigação. Quem apaga é o próprio Mongo.
     RETENTION = 7.days
     DUPLICATE_KEY = 11_000
+    # Quem perde a corrida do primeiro envio do dia precisa só de uma nova tentativa.
+    ATTEMPTS = 3
+    # Um fuso só para todas as campanhas: é o número que está sendo protegido, e com o fuso de cada
+    # campanha o mesmo canal teria duas contas perto da virada do dia.
+    DAY_ZONE = "America/Sao_Paulo".freeze
 
     field :_id, type: String, overwrite: true
     field :used, type: Integer, default: 0
     field :expires_at, type: Time
 
     index({ expires_at: 1 }, { expire_after_seconds: 0 })
+
+    def self.day_of(time)
+      time.in_time_zone(DAY_ZONE).to_date.iso8601
+    end
 
     def self.key(channel_key, day)
       "#{channel_key}:#{day}"
@@ -24,21 +33,29 @@ module Outreach
     # Reserva um envio, sem nunca passar do limite: a conta e a conferência são a mesma operação
     # atômica, para dois lotes do mesmo canal não passarem juntos pelo último lugar.
     #
-    # Lotado, o filtro não casa, e o upsert tenta inserir uma chave que já existe: é esse erro
-    # que diz "acabou por hoje".
+    # Lotado, o filtro não casa, e o upsert tenta inserir uma chave que já existe. O mesmo erro também
+    # sai quando dois chegam juntos no primeiro envio do dia: por isso a conta é relida, senão quem
+    # perdeu essa corrida dormiria até o dia seguinte com o canal livre.
     #
     # @return [Boolean]
     def self.reserve(channel_key, day, limit)
-      collection.find_one_and_update(
-        { _id: key(channel_key, day), used: { "$lt" => limit } },
-        { "$inc" => { used: 1 }, "$setOnInsert" => { expires_at: RETENTION.from_now } },
-        upsert: true
-      )
-      true
-    rescue Mongo::Error::OperationFailure => e
-      raise unless e.code == DUPLICATE_KEY
+      attempts = 0
 
-      false
+      begin
+        collection.find_one_and_update(
+          { _id: key(channel_key, day), used: { "$lt" => limit } },
+          { "$inc" => { used: 1 }, "$setOnInsert" => { expires_at: RETENTION.from_now } },
+          upsert: true
+        )
+        true
+      rescue Mongo::Error::OperationFailure => e
+        raise unless e.code == DUPLICATE_KEY
+
+        attempts += 1
+        retry if attempts < ATTEMPTS && used_on(channel_key, day) < limit
+
+        false
+      end
     end
 
     # Devolve um envio que não aconteceu.

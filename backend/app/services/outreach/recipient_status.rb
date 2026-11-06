@@ -15,13 +15,15 @@ module Outreach
 
     # @param external_id [String] id da mensagem no provedor
     # @param status [String] server_ack, delivery_ack, read ou failed
-    def self.apply(external_id, status, error_message: nil)
-      new(external_id, status, error_message).call
+    # @param organization_id [String] a do conector que recebeu o webhook: o id do provedor vem de fora
+    def self.apply(external_id, status, organization_id:, error_message: nil)
+      new(external_id, status, organization_id, error_message).call
     end
 
-    def initialize(external_id, status, error_message)
+    def initialize(external_id, status, organization_id, error_message)
       @external_id = external_id
       @status = status.to_s
+      @organization_id = organization_id
       @error_message = error_message
     end
 
@@ -33,6 +35,9 @@ module Outreach
         recipient = Recipient.where(whatsapp_message_id: external_id).take
         return if recipient.nil?
 
+        @campaign ||= Campaign.scoped(organization_id, recipient.campaign_id)
+        return if campaign.nil?
+
         change = status == "failed" ? failure_of(recipient) : advance_of(recipient)
         return if change.nil?
 
@@ -43,7 +48,7 @@ module Outreach
 
     private
 
-    attr_reader :external_id, :status, :error_message
+    attr_reader :external_id, :status, :organization_id, :error_message, :campaign
 
     # `sent_count` segue contando o que o provedor aceitou: só `failed_count` avança.
     def failure_of(recipient)
@@ -90,9 +95,6 @@ module Outreach
     end
 
     def announce(recipient)
-      campaign = recipient.campaign
-      return unless campaign
-
       MonitorEvents.recipient(campaign, recipient)
       MonitorEvents.progress(campaign)
     end

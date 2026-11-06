@@ -34,8 +34,10 @@ module Outreach
     field :completed_at, type: Time
 
     string_enum :status, %i[scheduled processing completed failed], default: :scheduled
-    # connectorInactive, connectorMissing
+    # connectorInactive, connectorMissing, channelFailing
     field :failure_reason, type: String
+    # Envios seguidos que falharam neste canal. Passa para o lote seguinte: ver `BatchExecutionService`.
+    field :consecutive_failures, type: Integer, default: 0
 
     validates :connector_id, presence: true
     validates :channel_key, presence: true
@@ -104,6 +106,18 @@ module Outreach
         },
         return_document: :after
       )
+    end
+
+    # @return [Integer] quantos falharam seguidos, contando este
+    def note_failure!
+      counted = self.class.where(_id: id).find_one_and_update({ "$inc" => { consecutive_failures: 1 } }, return_document: :after)
+      self.consecutive_failures = counted ? counted.consecutive_failures : consecutive_failures + 1
+    end
+
+    def clear_failures!
+      return if consecutive_failures.to_i.zero?
+
+      set(consecutive_failures: 0)
     end
 
     # A posição no canal: é ela que escolhe a mensagem e o modelo do rodízio.

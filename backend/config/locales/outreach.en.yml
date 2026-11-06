@@ -59,11 +59,16 @@ en:
       launch_failed: "Wasn't launched on time: %{reason}"
       channel_stopped_connector_inactive: "A channel disconnected. Its contacts are still in the queue."
       channel_stopped_connector_missing: "A channel was deleted. Its contacts are still in the queue."
+      channel_stopped_channel_failing: "A channel failed several times in a row and stopped sending. The remaining contacts are still in the queue."
+      paused_channel_failing: "Paused by the platform: a channel failed several times in a row."
       channel_resumed: "The channel came back and its messages continued."
     notices:
       paused:
         title: "Campaign paused: %{name}"
         description: "None of the campaign's channels are connected. Reconnect one and resume: nobody missed out."
+      paused_channel_failing:
+        title: "Campaign paused: %{name}"
+        description: "One of the campaign's channels failed several times in a row. Check the connection and resume: whoever didn't get it is still in the queue."
       launch_failed:
         title: "Campaign not launched: %{name}"
         description: "The scheduled campaign couldn't be launched and went back to draft. Open it to see why."
@@ -118,6 +123,7 @@ en:
               not_found: "isn't in this organization"
             phone_number_ids:
               required: "need at least one number"
+              not_found: "include a number that isn't in this account"
             connector_ids:
               not_found: "include a channel that isn't in this organization"
             chat_tag_ids:

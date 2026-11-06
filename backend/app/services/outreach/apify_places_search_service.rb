@@ -65,6 +65,9 @@ module Outreach
 
       items = response.parsed_response
       items.is_a?(Array) ? items : []
+    rescue SocketError, SystemCallError, OpenSSL::SSL::SSLError, HTTParty::Error => e
+      Rails.logger.warn("[Outreach::ApifyPlacesSearchService] #{e.class}: #{e.message}")
+      raise ApifyError, "apifyFailed"
     end
 
     def build_request_body

@@ -1,9 +1,6 @@
 module Outreach
-  # Grava destinatários em bloco, sem repetir pessoa na campanha.
-  #
-  # A mesma pessoa pode vir com e sem o 9º dígito (`5531971810932` e `553171810932`) e seria a mesma
-  # conta de WhatsApp recebendo duas vezes. O índice único só cobre a forma exata, então a variante é
-  # conferida aqui.
+  # Grava destinatários em bloco, sem repetir pessoa na campanha: a mesma pessoa pode vir com e sem o
+  # 9º dígito (`5531971810932` e `553171810932`), e seria a mesma conta de WhatsApp recebendo duas vezes.
   class RecipientImporter
     BULK_SIZE = 500
     # Bem acima do que uma busca de estabelecimentos traz. Sem teto, um documento grande demais para o
@@ -15,7 +12,7 @@ module Outreach
 
     def initialize(campaign)
       @campaign = campaign
-      @known = campaign.recipients.pluck(:phone).each_with_object(Set.new) { |phone, set| remember(set, phone) }
+      @known = campaign.recipients.pluck(:phone_key).to_set
       @imported = 0
       @skipped = 0
       @invalid = 0
@@ -34,11 +31,6 @@ module Outreach
 
     attr_reader :campaign, :known, :imported, :skipped, :invalid
 
-    def remember(set, phone)
-      set << phone
-      BrPhoneVariants.ninth_digit_variants(phone).each { |variant| set << variant }
-    end
-
     def document_for(row)
       phone = BrPhoneVariants.digits_of(row[:phone])
       if phone.blank?
@@ -46,16 +38,16 @@ module Outreach
         return nil
       end
 
-      if known.include?(phone)
+      key = Recipient.key_for(phone)
+      unless known.add?(key)
         @skipped += 1
         return nil
       end
 
-      remember(known, phone)
-      build_document(row, phone)
+      build_document(row, phone, key)
     end
 
-    def build_document(row, phone)
+    def build_document(row, phone, key)
       now = Time.current
 
       {
@@ -63,6 +55,7 @@ module Outreach
         campaign_id: campaign.id,
         contact_id: row[:contact_id],
         phone: phone,
+        phone_key: key,
         name: row[:name].to_s.strip.presence || phone,
         custom_variables: variables_of(row),
         status_cd: "pending",

@@ -55,6 +55,48 @@ RSpec.describe Connector::WhatsappWeb::Providers::Base do
       expect(attempts).to eq(1)
     end
 
+    describe ".send_once" do
+      def attempts_with_failure
+        attempts = 0
+
+        begin
+          described_class.with_retry(label: "x") do
+            attempts += 1
+            raise "falhou"
+          end
+        rescue RuntimeError
+          attempts
+        end
+      end
+
+      # Um timeout de leitura não diz se a mensagem saiu: é o que as campanhas pedem.
+      it "dentro do bloco, nada se repete" do
+        expect(described_class.send_once { attempts_with_failure }).to eq(1)
+      end
+
+      it "fora do bloco, volta a repetir" do
+        described_class.send_once { attempts_with_failure }
+
+        expect(attempts_with_failure).to eq(3)
+      end
+
+      it "volta a repetir mesmo depois de um erro no bloco" do
+        expect { described_class.send_once { raise "boom" } }.to raise_error("boom")
+
+        expect(attempts_with_failure).to eq(3)
+      end
+
+      it "não vale para as outras threads" do
+        described_class.send_once do
+          expect(Thread.new { attempts_with_failure }.value).to eq(3)
+        end
+      end
+
+      it "devolve o que o bloco devolveu" do
+        expect(described_class.send_once { "ok" }).to eq("ok")
+      end
+    end
+
     it "não repete número que não existe: repetir não muda o resultado" do
       attempts = 0
 

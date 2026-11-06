@@ -117,7 +117,7 @@ RSpec.describe Outreach::BatchExecutionService do
     it "conta o envio no canal" do
       run_step(batch)
 
-      expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::SendWindow.new(campaign).day_key(Time.current))).to eq(1)
+      expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::ChannelUsage.day_of(Time.current))).to eq(1)
     end
 
     it "transmite o destinatário e o progresso" do
@@ -195,7 +195,7 @@ RSpec.describe Outreach::BatchExecutionService do
 
       run_step(batch)
 
-      expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::SendWindow.new(campaign).day_key(Time.current))).to eq(0)
+      expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::ChannelUsage.day_of(Time.current))).to eq(0)
     end
 
     # Origem: 'does not complete campaign while there are pending batches'.
@@ -313,6 +313,32 @@ RSpec.describe Outreach::BatchExecutionService do
         expect(Time.iso8601(enqueued_steps.first["scheduled_at"])).to be > 1.hour.from_now
         expect(recipients.second.reload.status_cd).to eq("pending")
       end
+    end
+
+    it "quando o intervalo passa da virada do dia, o passo não se perde" do
+      campaign.set(buffer_min_seconds: 7200, buffer_max_seconds: 7200, send_days: [ 0, 1, 2, 3, 4, 5, 6 ])
+      late = ActiveSupport::TimeZone["America/Sao_Paulo"].local(2026, 11, 9, 23, 30)
+
+      travel_to(late) do
+        run_step(batch)
+        batch.set(next_send_at: late)
+        clear_enqueued_jobs
+
+        run_step(batch)
+
+        expect(enqueued_steps.size).to eq(1)
+        expect(Time.iso8601(enqueued_steps.first["scheduled_at"])).to eq(late + 2.hours)
+      end
+    end
+
+    # O limite protege o número de mensagens de verdade: uma lista suja não pode gastar o dia.
+    it "quem não chegou a ser despachado não gasta o limite do dia" do
+      stub_number_check(connector, only: [])
+
+      run_step(batch)
+
+      expect(recipients.first.reload).to have_attributes(status_cd: "failed", error_code: "numberNotFound")
+      expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::ChannelUsage.day_of(Time.current))).to eq(0)
     end
 
     # A origem zerava a conta ao retomar, e uma campanha pausada no meio do dia passava do limite.
@@ -435,6 +461,134 @@ RSpec.describe Outreach::BatchExecutionService do
       run_step(batch)
 
       expect(batch.reload.failure_reason).to eq("connectorMissing")
+    end
+  end
+
+  # O provedor cai sem o conector mudar de estado. Quem falha depois de despachar não é reenviado, para
+  # não duplicar: sem um teto, cada tentativa gastaria mais um destinatário.
+  describe "canal que falha seguidamente" do
+    let(:recipients) { create_list(:outreach_recipient, 8, campaign: campaign) }
+    let(:limit) { described_class::MAX_CONSECUTIVE_FAILURES }
+
+    def step_until_stopped
+      12.times do
+        batch.set(next_send_at: Time.current)
+        run_step(batch)
+        break if batch.reload.status_cd == "failed"
+      end
+    end
+
+    context "com o provedor fora do ar antes do despacho" do
+      before { stub_request(:post, evolution_numbers_url(connector)).to_return(status: 500, body: "erro") }
+
+      it "para o canal sem gastar ninguém" do
+        step_until_stopped
+
+        expect(batch.reload).to have_attributes(status_cd: "failed", failure_reason: "channelFailing")
+        expect(recipients.map { |recipient| recipient.reload.status_cd }).to all(eq("pending"))
+        expect(campaign.reload).to have_attributes(sent_count: 0, failed_count: 0)
+      end
+
+      it "sem outro canal, a campanha pausa e diz o motivo" do
+        step_until_stopped
+
+        expect(campaign.reload).to have_attributes(status_cd: "paused", pause_reason: "channelFailing")
+        expect(campaign.activity_logs.where(action: "paused").take.metadata).to eq("reason" => "channelFailing")
+        expect(campaign.activity_logs.where(action: "channel_stopped").take.metadata).to include("reason" => "channelFailing")
+      end
+
+      it "avisa quem criou, com o motivo certo" do
+        creator = create(:account, organization: organization)
+        campaign.set(created_by_account_id: creator.id)
+
+        step_until_stopped
+
+        expect(AccountNotice.where(account_id: creator.id).take.description).to include("falhou várias vezes")
+      end
+
+      it "não gasta o limite do dia" do
+        step_until_stopped
+
+        expect(Outreach::ChannelUsage.used_on(batch.channel_key, Outreach::ChannelUsage.day_of(Time.current))).to eq(0)
+      end
+
+      it "a recuperação não religa sozinha um canal que está falhando" do
+        step_until_stopped
+        other = create(:connector_whatsapp_web, organization: organization)
+        build_batch(campaign, [ create(:outreach_recipient, campaign: campaign) ], connector: other, next_send_at: 1.minute.from_now)
+        campaign.set(status_cd: "running", planned_at: 1.hour.ago)
+        clear_enqueued_jobs
+
+        Outreach::Reconciler.new(campaign.reload).call
+
+        expect(batch.reload.status_cd).to eq("failed")
+      end
+
+      it "retomar tenta de novo, e quem estava na fila recebe" do
+        step_until_stopped
+        stub_channel_working(connector)
+
+        Outreach::Lifecycle.new(campaign.reload).resume
+        new_batch = campaign.reload.batches.executable.order_by(sequence: 1).first
+        run_step(new_batch)
+
+        expect(campaign.reload.sent_count).to eq(1)
+      end
+    end
+
+    context "com o canal recusando depois do despacho" do
+      before do
+        stub_number_check(connector)
+        stub_request(:post, evolution_text_url(connector)).to_return(status: 500, body: "fora do ar")
+      end
+
+      it "para no teto: os falhos ficam falhos, e os outros continuam na fila" do
+        step_until_stopped
+
+        statuses = recipients.map { |recipient| recipient.reload.status_cd }
+        expect(statuses.count("failed")).to eq(limit)
+        expect(statuses.count("pending")).to eq(recipients.size - limit)
+        expect(a_request(:post, evolution_text_url(connector))).to have_been_made.times(limit)
+      end
+    end
+
+    it "um envio que funciona zera a conta" do
+      stub_number_check(connector)
+      responses = [ { status: 500, body: "erro" } ] * (limit - 1)
+      responses << { status: 201, body: { key: { id: "EVO-1" } }.to_json, headers: OutreachHelpers::JSON_HEADERS }
+      responses += [ { status: 500, body: "erro" } ] * 2
+      stub_request(:post, evolution_text_url(connector)).to_return(*responses)
+
+      (limit + 2).times do
+        batch.set(next_send_at: Time.current)
+        run_step(batch)
+      end
+
+      expect(batch.reload).to have_attributes(status_cd: "processing", consecutive_failures: 2)
+    end
+
+    it "número que não existe não conta: uma lista suja não para o canal" do
+      stub_number_check(connector, only: [])
+
+      recipients.size.times do
+        batch.set(next_send_at: Time.current)
+        run_step(batch)
+      end
+
+      expect(batch.reload.failure_reason).to be_nil
+      expect(campaign.reload).to have_attributes(status_cd: "completed", failed_count: recipients.size)
+    end
+
+    it "a conta passa para o lote seguinte: lote pequeno não esconde a falha" do
+      stub_number_check(connector)
+      stub_request(:post, evolution_text_url(connector)).to_return(status: 500, body: "erro")
+      only = recipients.first
+      following = create(:outreach_batch, campaign: campaign, connector_id: connector.id.to_s, sequence: 1, recipient_ids: [ recipients.second.id ], channel_key: "#{connector.id}:")
+      first = build_batch(campaign, [ only ], connector: connector)
+
+      run_step(first)
+
+      expect(following.reload.consecutive_failures).to eq(1)
     end
   end
 

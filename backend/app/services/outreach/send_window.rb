@@ -4,6 +4,8 @@ module Outreach
   # que volta às 3h da manhã espera a janela abrir, em vez de disparar o atrasado de madrugada.
   class SendWindow
     DAYS_IN_WEEK = 7
+    # Dez anos de campanha. Só para a conta terminar, mesmo com um documento torto.
+    MAX_ESTIMATED_DAYS = 3_650
 
     def initialize(campaign)
       @campaign = campaign
@@ -35,11 +37,6 @@ module Outreach
       raise ArgumentError, "Campanha #{campaign.id} sem dia de envio permitido"
     end
 
-    # O dia em que um envio conta para o limite diário.
-    def day_key(time)
-      time.in_time_zone(zone).to_date.iso8601
-    end
-
     # Quando termina um envio de `count` destinatários por um canal, no ritmo médio.
     #
     # Dia a dia, não destinatário a destinatário: a origem andava mensagem por mensagem, o que em
@@ -53,7 +50,7 @@ module Outreach
       used = used_today
       remaining = count
 
-      loop do
+      MAX_ESTIMATED_DAYS.times do
         by_time = (seconds_until_close(cursor) / average).floor + 1
         capacity = [ by_time, limit - used ].min
 
@@ -63,6 +60,8 @@ module Outreach
         cursor = next_day_start(cursor)
         used = 0
       end
+
+      nil
     end
 
     private

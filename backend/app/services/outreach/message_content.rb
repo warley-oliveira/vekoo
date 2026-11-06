@@ -1,6 +1,8 @@
 module Outreach
   # O que um destinatário recebe: qual mensagem ou modelo do rodízio, com as variáveis preenchidas.
   class MessageContent
+    MARKER = /\{\{\s*([^{}]+?)\s*\}\}/
+
     # @param position [Integer] a posição do destinatário no canal: é o que faz o rodízio. A origem
     #   usava a posição geral, e com dois canais e duas mensagens cada número só mandava uma delas.
     def initialize(campaign, recipient, position = 0)
@@ -50,26 +52,29 @@ module Outreach
       [ { "type" => "body", "parameters" => parameters } ]
     end
 
-    # Troca {{nome}}, {{telefone}} e as variáveis próprias do destinatário.
+    # Troca {{nome}}, {{telefone}} e as variáveis próprias do destinatário. Em uma passada só: um valor
+    # que contenha {{algo}} não é trocado de novo. O que não existe fica como veio, e a tela avisa.
     def interpolate(body)
       return body if body.blank?
 
-      result = body.dup
-      result.gsub!("{{name}}", recipient.name.to_s)
-      result.gsub!("{{nome}}", recipient.name.to_s)
-      result.gsub!("{{phone}}", recipient.phone.to_s)
-      result.gsub!("{{telefone}}", recipient.phone.to_s)
-
-      recipient.custom_variables.to_h.each do |key, value|
-        result.gsub!("{{#{key}}}", value.to_s)
-      end
-
-      result
+      body.gsub(MARKER) { |marker| value_for(Regexp.last_match(1)) || marker }
     end
 
     private
 
     attr_reader :campaign, :recipient, :position
+
+    # As chaves chegam em snake_case da API: `{{Cupom}}` precisa achar `cupom`.
+    def value_for(key)
+      case key
+      when "name", "nome" then recipient.name.to_s
+      when "phone", "telefone" then recipient.phone.to_s
+      else
+        variables = recipient.custom_variables.to_h
+        value = variables.fetch(key) { variables[key.underscore] }
+        value&.to_s
+      end
+    end
 
     def rotated(list)
       list = Array(list)

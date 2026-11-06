@@ -186,11 +186,11 @@ RSpec.describe "Campanhas", type: :request do
 
     it "filtra por canal, inclusive a conta oficial" do
       other = create(:connector_whatsapp_web, organization: organization)
-      waba = create(:connector_whatsapp_cloud, organization: organization)
+      waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
       template = create(:whatsapp_template, connector: waba)
       campaign_of(name: "Pelo meu")
       create(:outreach_campaign, organization: organization, name: "Pelo outro", connector_ids: [ other.id.to_s ])
-      create(:outreach_campaign, organization: organization, name: "Oficial", campaign_mode_cd: "template", messages: [], waba_connector_id: waba.id.to_s, phone_number_ids: [ "1" ], template_ids: [ template.id.to_s ])
+      create(:outreach_campaign, organization: organization, name: "Oficial", campaign_mode_cd: "template", messages: [], waba_connector_id: waba.id.to_s, phone_number_ids: [ "111" ], template_ids: [ template.id.to_s ])
 
       get "/campaigns", params: { connectorId: other.id.to_s }, headers: headers
       expect(json["campaigns"].map { |item| item["name"] }).to eq([ "Pelo outro" ])
@@ -313,7 +313,7 @@ RSpec.describe "Campanhas", type: :request do
       end
 
       it "os parâmetros do modelo só aceitam id de modelo e posição" do
-        waba = create(:connector_whatsapp_cloud, organization: organization)
+        waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
         template = create(:whatsapp_template, connector: waba)
 
         post "/campaigns", params: payload(
@@ -327,7 +327,7 @@ RSpec.describe "Campanhas", type: :request do
       end
 
       it "os parâmetros do modelo passam com as chaves intactas" do
-        waba = create(:connector_whatsapp_cloud, organization: organization)
+        waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
         template = create(:whatsapp_template, connector: waba)
 
         post "/campaigns", params: payload(
@@ -414,6 +414,15 @@ RSpec.describe "Campanhas", type: :request do
       it("modo desconhecido") { expect_invalid("campaignMode", campaignMode: "pombo") }
       it("etiqueta que não existe") { expect_invalid("chatTagIds", chatTagIds: [ BSON::ObjectId.new.to_s ]) }
       it("lote grande demais") { expect_invalid("batchSize", batchSize: 500) }
+      it("limite diário fracionado") { expect_invalid("dailyLimitPerConnector", dailyLimitPerConnector: 0.5) }
+      it("lote fracionado") { expect_invalid("batchSize", batchSize: 0.5) }
+
+      it "número que não é da conta oficial" do
+        waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
+        template = create(:whatsapp_template, connector: waba)
+
+        expect_invalid("phoneNumberIds", campaignMode: "template", messages: [], connectorIds: [], wabaConnectorId: waba.id.to_s, phoneNumberIds: [ "999" ], templateIds: [ template.id.to_s ])
+      end
 
       it "a mensagem de erro vem traduzida" do
         post "/campaigns", params: payload(messages: []), headers: headers.merge("Accept-Language" => "en"), as: :json
@@ -681,7 +690,7 @@ RSpec.describe "Campanhas", type: :request do
     end
 
     describe "modo modelo" do
-      let(:waba) { create(:connector_whatsapp_cloud, organization: organization) }
+      let(:waba) { create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111, phone_number_list: [ { "id" => "222" } ]) }
       let(:template) { create(:whatsapp_template, connector: waba) }
       let(:campaign) do
         create(
