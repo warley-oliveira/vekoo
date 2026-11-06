@@ -9,7 +9,6 @@ en:
     invalid_assignee: "This person can't take conversations in this organization."
     invalid_cursor: "Invalid pagination reference."
     invalid_attributes: "This conversation's fields are not valid."
-    invalid_scope: "Choose to delete for me or for everyone."
     invalid_connector: "This channel doesn't exist in this organization."
     invalid_phone: "Enter a phone number with country and area code."
     too_many_messages: "Delete at most 100 messages at a time."

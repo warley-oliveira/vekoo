@@ -10,7 +10,6 @@ pt-BR:
     invalid_assignee: "Essa pessoa não pode receber atendimentos nesta organização."
     invalid_cursor: "Referência de paginação inválida."
     invalid_attributes: "Os campos desta conversa não são válidos."
-    invalid_scope: "Escolha apagar para mim ou para todos."
     invalid_connector: "Este canal não existe nesta organização."
     invalid_phone: "Informe um número de telefone com DDI e DDD."
     too_many_messages: "Apague no máximo 100 mensagens de uma vez."

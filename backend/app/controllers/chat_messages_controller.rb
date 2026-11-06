@@ -36,6 +36,7 @@ class ChatMessagesController < PlatformController
     result = Messages::DeletionService.new(message: @message).call
     return render_message_refusal(result) unless result.success?
 
+    @chat.refresh_last_message_preview!
     render json: { id: @message.id.to_s, deletedAt: ApplicationSerializer.epoch_ms(@message.deleted_at) }
   end
 
@@ -54,6 +55,7 @@ class ChatMessagesController < PlatformController
     result = Messages::BulkDeletionService.new(chat: @chat, message_ids: ids, scope: scope, account: current_account).call
     return render_message_refusal(result) unless result.success?
 
+    @chat.refresh_last_message_preview!
     render json: { scopeApplied: result.scope_applied, deletedIds: result.deleted_ids, revokedIds: result.revoked_ids }
   end
 

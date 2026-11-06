@@ -65,6 +65,16 @@ RSpec.describe Copilot::ToolExecutor do
       expect(list[:chats].first[:last_message_content]).to eq("[áudio sem transcrição]")
     end
 
+    # Sem isto o modelo dizia que a contato "mandou" o arquivo que foi a loja que enviou.
+    it "diz de quem foi a última mensagem na lista" do
+      chat = chat_for(user_name: "Fernanda Lima")
+      ChatMessage::Text.create!(chat: chat, role: "assistant", content: "Separei", sender_name: "Marina")
+
+      list = executor.execute("search_chats", { "query" => "Fernanda" })
+
+      expect(list[:chats].first[:last_message_from]).to eq("atendente")
+    end
+
     it "corta o que guarda, porque mora num documento só" do
       chat = chat_for
       create(:chat_text_message, chat: chat, content: "x" * 390)

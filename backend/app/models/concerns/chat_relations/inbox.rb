@@ -41,6 +41,19 @@ module ChatRelations
       end
     end
 
+    # Depois de apagar: a prévia da lista não pode continuar mostrando a mensagem que sumiu, e o
+    # copiloto lê essa prévia. `update_last_message` não serve, porque enxerga as apagadas. A data
+    # fica como está, para a conversa não mudar de lugar na lista.
+    def refresh_last_message_preview!
+      last = ChatMessage::Base.unscoped
+                              .where(chat_id: id, :role.in => %w[assistant user], deleted_at: nil)
+                              .order_by(created_at: :desc)
+                              .first
+
+      set(last_message_type: last&.type_element, last_message_content: last&.content, last_message_by: last&.role)
+      dispatch_event!
+    end
+
     private
 
     # Para as chaves cujo valor mudou neste save e cujo campo tem `auto_normalize`, converte o

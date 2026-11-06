@@ -642,6 +642,7 @@ module Copilot
           unread_messages: record.unread_messages,
           last_message_at: format_time(record.last_message_at),
           last_message_content: Chats::MessageText.preview(record.last_message_content, record.last_message_type),
+          last_message_from: record.last_message_by == "assistant" ? "atendente" : "contato",
           tags: tags[record.id]
         }
       end
