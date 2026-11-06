@@ -76,7 +76,7 @@ class Connector::Zapi < Connector::Base
   # ============================================================================
 
   def send_text_message(phone, message, _chat = nil, delay: nil, delay_typing: nil, reply_to_external_id: nil)
-    return errors.add(:not_connected, 'não conectado') if closed?
+    return not_connected if closed?
 
     payload = { phone: sanitize_phone(phone), message: message }
     payload[:delayMessage] = delay if delay
@@ -84,9 +84,10 @@ class Connector::Zapi < Connector::Base
     payload[:messageId] = reply_to_external_id if reply_to_external_id.present?
 
     response = api_request(:post, 'send-text', body: payload)
+    @retry_count = 0
 
     Rails.logger.info("[ZApi] Message sent to #{phone}: #{message[0..50]}...")
-    response&.dig('messageId')
+    response.try(:dig, 'messageId')
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send text message: #{e.message}")
     handle_retry(e) do
@@ -95,7 +96,7 @@ class Connector::Zapi < Connector::Base
   end
 
   def send_image_message(phone, image_url, caption: nil, view_once: false)
-    return errors.add(:not_connected, 'não conectado') if closed?
+    return not_connected if closed?
 
     payload = {
       phone: sanitize_phone(phone),
@@ -105,7 +106,7 @@ class Connector::Zapi < Connector::Base
     payload[:caption] = caption if caption
 
     response = api_request(:post, 'send-image', body: payload)
-    response&.dig('messageId')
+    response.try(:dig, 'messageId')
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send image message: #{e.message}")
     nil
@@ -155,7 +156,7 @@ class Connector::Zapi < Connector::Base
   end
 
   def send_audio_message(phone, audio_url, waveform: true, view_once: false)
-    return errors.add(:not_connected, 'não conectado') if closed?
+    return not_connected if closed?
 
     payload = {
       phone: sanitize_phone(phone),
@@ -165,14 +166,14 @@ class Connector::Zapi < Connector::Base
     }
 
     response = api_request(:post, 'send-audio', body: payload)
-    response&.dig('messageId')
+    response.try(:dig, 'messageId')
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send audio message: #{e.message}")
     nil
   end
 
   def send_document_message(phone, document_url, file_name: nil)
-    return errors.add(:not_connected, 'não conectado') if closed?
+    return not_connected if closed?
 
     ext = detect_extension(document_url, file_name)
 
@@ -183,14 +184,14 @@ class Connector::Zapi < Connector::Base
     payload[:fileName] = file_name if file_name
 
     response = api_request(:post, "send-document/#{ext}", body: payload)
-    response&.dig('messageId')
+    response.try(:dig, 'messageId')
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send document message: #{e.message}")
     nil
   end
 
   def send_video_message(phone, video_url, caption: nil, view_once: false)
-    return errors.add(:not_connected, 'não conectado') if closed?
+    return not_connected if closed?
 
     payload = {
       phone: sanitize_phone(phone),
@@ -200,7 +201,7 @@ class Connector::Zapi < Connector::Base
     payload[:caption] = caption if caption
 
     response = api_request(:post, 'send-video', body: payload)
-    response&.dig('messageId')
+    response.try(:dig, 'messageId')
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send video message: #{e.message}")
     nil
@@ -261,6 +262,12 @@ class Connector::Zapi < Connector::Base
   # ============================================================================
 
   private
+
+  # Contrato de envio: id externo ou nil. `errors.add` sozinho devolveria o objeto de erro.
+  def not_connected
+    errors.add(:not_connected, 'não conectado')
+    nil
+  end
 
   def base_uri
     @base_uri ||= "#{BASE_URL}/instances/#{instance_id}/token/#{token}"

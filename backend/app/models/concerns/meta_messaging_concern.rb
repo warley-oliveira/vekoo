@@ -130,6 +130,7 @@ module MetaMessagingConcern
       self.instagram_token_expires_at  = result[:expires_at]
       self.error_message = nil
       save!
+      @meta_api_client = nil # o cliente memoizado ainda guarda o token antigo
 
       Rails.logger.info "[MetaMessaging] Token refreshed for #{self.class.name} #{id}, expires_at=#{instagram_token_expires_at}"
       true

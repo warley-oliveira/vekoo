@@ -15,8 +15,9 @@ module Connectors
       body = response.respond_to?(:parsed_response) ? response.parsed_response : response
       return nil unless body.is_a?(Hash)
 
-      # Evolution e AIVA em `key.id`; Z-API em `messageId`; Messenger e Instagram em `message_id`.
-      body.dig("key", "id") || body["messageId"] || body["message_id"]
+      # Evolution e AIVA em `key.id`; Z-API em `messageId`; Messenger e Instagram em `message_id`;
+      # LeadChat em `id`, no corpo com chaves em símbolo que o cliente dele devolve.
+      body.dig("key", "id") || body["messageId"] || body["message_id"] || body[:id]&.to_s
     end
   end
 end

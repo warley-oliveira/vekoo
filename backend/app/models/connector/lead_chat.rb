@@ -20,6 +20,8 @@ class Connector::LeadChat < Connector::Base
   end
 
   def send_text_message(_sender_id, message, chat = nil, reply_to_external_id: nil) # rubocop:disable Lint/UnusedMethodArgument
+    return nil unless chat
+
     leadchat_message = LeadChatApi::Message.new(leadchat_client)
     response = leadchat_message.send_text_message_to_session(
       session_id: chat.external_fields['session_id'],
@@ -34,7 +36,7 @@ class Connector::LeadChat < Connector::Base
 
   def send_media_message(_to, media_dto, chat = nil)
     file_url = media_dto&.media_url
-    return if file_url.blank?
+    return if file_url.blank? || chat.nil?
 
     Rails.logger.info("[LeadChat Model] Sending file: #{media_dto.as_json}")
     LeadChatApi::Message.new(leadchat_client).send_file_message_to_session(
@@ -44,7 +46,7 @@ class Connector::LeadChat < Connector::Base
   end
 
   def send_audio_message_by_url(_to, audio_url, chat = nil)
-    return if audio_url.blank?
+    return if audio_url.blank? || chat.nil?
 
     LeadChatApi::Message.new(leadchat_client).send_file_message_to_session(
       session_id: chat.external_fields['session_id'],
@@ -94,7 +96,9 @@ class Connector::LeadChat < Connector::Base
     webhook = LeadChatApi::Webhook.new(leadchat_client)
     response = webhook.create_subscription('Vekoo', webhook_url)
 
-    raise LeadChatApi::Error.new(response.dig(:error, :code), response.dig(:error, :message)) if response.is_a?(Hash) && response[:error]
+    # O cliente devolve nil em timeout: sem assinatura, o canal não está de pé.
+    raise LeadChatApi::Error.new(nil, 'sem resposta') unless response.is_a?(Hash)
+    raise LeadChatApi::Error.new(response.dig(:error, :code), response.dig(:error, :message)) if response[:error]
 
     self.external_subscription_id = response[:id]
     self.status = :active
