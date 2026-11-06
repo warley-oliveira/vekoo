@@ -68,12 +68,15 @@ module Chats
     end
 
     # O anexo citado sumiu: o resto da mensagem segue, e a pessoa fica sabendo do que não foi.
-    # Sem nada para enviar, a mensagem é uma falha.
+    # Sem nada para enviar, a mensagem é uma falha. Dividida em partes, a original nunca aparece na
+    # conversa: o aviso vai na última parte, sem apagar o motivo de ela mesma ter falhado.
     def flag_missing_attachments(parts)
       return if @missing_attachments.blank?
 
-      Rails.logger.warn("[Chats::SendOperatorMessage] #{@missing_attachments.join('; ')}")
-      @message.update(status_message: @missing_attachments.first, **(parts.empty? ? { status: "failed" } : {}))
+      return @message.update(status: "failed", status_message: @missing_attachments.first) if parts.empty?
+
+      target = @last_part || @message
+      target.update(status_message: [ target.status_message, @missing_attachments.first ].compact.join(" "))
     end
 
     def send_media(dto)
@@ -87,6 +90,7 @@ module Chats
         media_url: dto.stored_url,
         **author_attributes
       )
+      @last_part = part
 
       begin
         response =
@@ -127,7 +131,7 @@ module Chats
       status = external_id ? "delivery_ack" : "failed"
 
       if @has_span
-        ChatMessage::Text.create(
+        @last_part = ChatMessage::Text.create(
           role: "assistant",
           content: piece,
           has_span: false,

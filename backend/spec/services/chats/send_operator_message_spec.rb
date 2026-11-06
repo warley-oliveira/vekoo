@@ -521,7 +521,7 @@ RSpec.describe Chats::SendOperatorMessage do
 
       expect(@sent.map { |body| body["text"] }).to eq([ "Olá" ])
       expect(message.reload).to have_attributes(status: "delivery_ack", has_span: false)
-      expect(message.status_message).to include("999")
+      expect(message.status_message).to eq(I18n.t("connectors.messages.cited_attachment_missing"))
     end
   end
 

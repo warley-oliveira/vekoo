@@ -1638,7 +1638,7 @@ O mesmo formato em `ChatListChannel` e no ponto de partida da API do domínio in
 | `typeElement` | `text`, `image`, `audio`, `media`. |
 | `messageOrigin` | `frontend` (pessoa, pela tela), `platform` (o resto). |
 | `status` | Só nas nossas: `pending`, `server_ack`, `delivery_ack`, `read`, `failed`. Nunca regride. |
-| `statusMessage` | Motivo da falha, pronto para mostrar. |
+| `statusMessage` | Motivo da falha, pronto para mostrar. Também vem sem falha, com `status` de enviada, quando a mensagem citava um anexo que não existe mais: o resto foi. Dividida em partes, o aviso fica na última. A mudança chega por `ChatChannel`. |
 | `deletedAt`, `deletedScope` | Apagada. A tela mostra o aviso no lugar do conteúdo. |
 | `replyToMessageId` | Id (Mongo) da mensagem citada. |
 | `reactions` | `[{ emoji, from, senderName, accountId, reactedAt }]`, no máximo uma por lado. |

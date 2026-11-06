@@ -1024,7 +1024,7 @@ Quem só vê parte das conversas de um contato vê só essas abas.
 
 ### `GET /unified-contacts`
 
-`page`, `q`, `status`, `filters`. 25 por página, ordenado pela conversa mais recente. Com filtro, a linha aparece se **alguma** aba casa: a aba que casa vem primeiro com `matched: true`, e as outras continuam na lista com `matched: false`, para a tela mostrar em cinza. `matchCount` conta as que casam, e `meta.filtered` diz se há filtro ativo.
+`page`, `q`, `status`, `filters`. 25 por página, ordenado pela conversa mais recente. Com filtro, a linha aparece se **alguma** aba casa: a aba que casa vem primeiro com `matched: true`, e as outras continuam na lista com `matched: false`, para a tela mostrar em cinza. `matchCount` conta as que casam, e `meta.filtered` diz se há filtro ativo. `lastMessageType` é o mesmo de `/chats`: é ele que diz à prévia que a última mensagem é um áudio, porque áudio sem transcrição guarda só um traço em `lastMessageContent`.
 
 `GET /unified-contacts?q=fernanda&filters%5B0%5D%5BattributeKey%5D=connector_id&filters%5B0%5D%5BfilterOperator%5D=equal_to&filters%5B0%5D%5Bvalues%5D%5B%5D=6aee1d6dd559f5a3171fd279&filters%5B0%5D%5BqueryOperator%5D=and`
 
@@ -1043,6 +1043,7 @@ Resposta `200`:
       "lastMessageAt": 1793991973276,
       "lastMessageContent": null,
       "lastMessageBy": null,
+      "lastMessageType": null,
       "chats": [
         {
           "chatId": "6aee25255e6b67d74a2d0261",

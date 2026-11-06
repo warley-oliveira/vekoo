@@ -105,6 +105,7 @@ class UnifiedContactsController < PlatformController
       "last_message_at" => { "$max" => "$last_message_at" },
       "last_message_content" => { "$first" => "$last_message_content" },
       "last_message_by" => { "$first" => "$last_message_by" },
+      "last_message_type" => { "$first" => "$last_message_type" },
       "total_unread" => { "$sum" => { "$ifNull" => [ "$unread_messages", 0 ] } },
       "match_count" => { "$sum" => { "$cond" => [ "$matched", 1, 0 ] } },
       "chats" => {
@@ -127,7 +128,7 @@ class UnifiedContactsController < PlatformController
       "_id" => 0,
       "external_id" => "$_id",
       "audience_id" => 1, "user_name" => 1, "display_name" => 1, "profile_picture_url" => 1,
-      "last_message_at" => 1, "last_message_content" => 1, "last_message_by" => 1,
+      "last_message_at" => 1, "last_message_content" => 1, "last_message_by" => 1, "last_message_type" => 1,
       "total_unread" => 1, "match_count" => 1, "chats" => 1
     }
   end

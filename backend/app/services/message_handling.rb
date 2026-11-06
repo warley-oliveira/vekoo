@@ -84,7 +84,9 @@ class MessageHandling
   rescue AttachmentNotFoundException => e
     raise unless verbatim
 
-    missing_attachments << e.message
+    # O aviso é para quem está na conversa, e o id não diz nada a ela: o detalhe fica no log.
+    Rails.logger.warn("[MessageHandling] #{e.message}")
+    missing_attachments << I18n.t("connectors.messages.cited_attachment_missing")
     nil
   end
 
