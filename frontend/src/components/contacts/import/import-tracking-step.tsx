@@ -4,49 +4,10 @@ import { CircleCheck, Loader2, RefreshCw, TriangleAlert } from "lucide-react"
 import { Callout } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import {
-  isImportRunning,
-  useContactImports,
-  type SendState,
-} from "@/hooks/contacts/use-contact-imports"
+import { useImportOutcome, type SendState } from "@/hooks/contacts/use-contact-imports"
 import { contactErrorMessage } from "@/lib/contacts/error-message"
-import type { ContactImport } from "@/lib/contacts/types"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
-
-export type ImportOutcome = {
-  running: boolean
-  imported: number
-  errors: number
-  failed: number
-}
-
-/**
- * O que os lotes enviados já viraram. Quem saiu da lista recente (mais de 100 lotes) é contado
- * como terminado: a fila é em ordem, e os mais antigos são os primeiros a acabar.
- */
-export function useImportOutcome(importIds: string[], send: SendState) {
-  const { imports } = useContactImports()
-
-  const byId = new Map<string, ContactImport>((imports ?? []).map((entry) => [entry.id, entry]))
-  const entries = importIds.flatMap((id) => {
-    const entry = byId.get(id)
-    return entry ? [entry] : []
-  })
-
-  const runningBatches = entries.filter(isImportRunning).length
-  const finishedBatches = importIds.length - runningBatches
-  const waitingFirstRead = imports === undefined && importIds.length > 0
-
-  return {
-    finishedBatches,
-    totalBatches: importIds.length,
-    running: send.phase === "sending" || runningBatches > 0 || waitingFirstRead,
-    imported: entries.reduce((sum, entry) => sum + entry.importedContactsCount, 0),
-    errors: entries.reduce((sum, entry) => sum + entry.errorsCount, 0),
-    failedBatches: entries.filter((entry) => entry.status === "failed").length,
-  }
-}
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -114,7 +75,8 @@ export function ImportTrackingStep({ send, onResume, ignored }: ImportTrackingSt
           )}
           {sendFailed ? t("contacts.import.tracking.sendFailed") : title}
         </p>
-        {sendFailed ? null : (
+        {/* Com um lote só não há o que medir: o giro já diz que está andando. */}
+        {sendFailed || percentage === null ? null : (
           <Progress
             value={percentage}
             aria-label={t("contacts.import.tracking.progressLabel")}
@@ -150,7 +112,11 @@ export function ImportTrackingStep({ send, onResume, ignored }: ImportTrackingSt
 
       {send.importIds.length > 0 ? (
         <dl className="grid grid-cols-2 gap-2">
-          <Stat label={t("contacts.import.tracking.imported")} value={number(outcome.imported)} />
+          {/* Antes de terminar, o número é o que foi lido das linhas, e não as conversas criadas. */}
+          <Stat
+            label={t(done ? "contacts.import.tracking.imported" : "contacts.import.tracking.sent")}
+            value={number(outcome.imported)}
+          />
           <Stat
             label={t("contacts.import.tracking.notImported")}
             value={number(outcome.errors + ignored)}

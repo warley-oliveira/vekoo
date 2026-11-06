@@ -79,11 +79,14 @@ export function ContactTasksBand({
               })}
             </span>
           </div>
-          <Progress
-            value={runningImport.batches > 1 ? importPercentage : null}
-            aria-label={t("contacts.import.tracking.progressLabel")}
-            className="gap-0 sm:w-40"
-          />
+          {/* Com um lote só não há o que medir: o giro já diz que está andando. */}
+          {runningImport.batches > 1 ? (
+            <Progress
+              value={importPercentage}
+              aria-label={t("contacts.import.tracking.progressLabel")}
+              className="gap-0 sm:w-40"
+            />
+          ) : null}
           <Button
             type="button"
             variant="ghost"
@@ -109,11 +112,13 @@ export function ContactTasksBand({
                 : t("contacts.export.queued")}
             </span>
           </div>
-          <Progress
-            value={state.total > 0 ? exportPercentage : null}
-            aria-label={t("contacts.export.progressLabel")}
-            className="gap-0 sm:w-40"
-          />
+          {state.total > 0 ? (
+            <Progress
+              value={exportPercentage}
+              aria-label={t("contacts.export.progressLabel")}
+              className="gap-0 sm:w-40"
+            />
+          ) : null}
           <Button
             type="button"
             variant="ghost"

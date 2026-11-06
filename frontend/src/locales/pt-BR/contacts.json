@@ -9,6 +9,10 @@
       "title": "Nenhum contato por aqui ainda",
       "description": "Quem conversa com você pelos canais aparece aqui. Para trazer uma base que já existe, importe uma planilha."
     },
+    "optionsError": {
+      "message": "Não deu para carregar etiquetas, canais e responsáveis. A lista segue, mas sem esses nomes.",
+      "retry": "Tentar de novo"
+    },
     "actions": {
       "cancel": "Cancelar",
       "close": "Fechar",
@@ -63,10 +67,10 @@
     "sort": {
       "nameAsc": "Nome, de A a Z",
       "nameDesc": "Nome, de Z a A",
-      "statusAsc": "Abertas primeiro",
-      "statusDesc": "Fechadas primeiro",
-      "lastMessageAsc": "Última mensagem, mais antigas",
-      "lastMessageDesc": "Última mensagem, mais recentes",
+      "statusAsc": "Fechadas primeiro",
+      "statusDesc": "Abertas primeiro",
+      "lastMessageAsc": "Mais antigas",
+      "lastMessageDesc": "Mais recentes",
       "unreadAsc": "Menos mensagens não lidas",
       "unreadDesc": "Mais mensagens não lidas",
       "createdAsc": "Criados há mais tempo",
@@ -322,6 +326,7 @@
       },
       "file": {
         "hint": "CSV ou JSON, até 50 MB.",
+        "loaded": "{{name}} continua carregado. Continue, ou escolha outro arquivo.",
         "reading": "Lendo o arquivo…",
         "errorTitle": "Não deu para ler este arquivo",
         "moreIssues_one": "E mais {{count}} problema.",
@@ -418,18 +423,31 @@
         "noteDuplicates": "Quem já tem conversa nesse canal não é duplicado: a conversa sobe na lista e recebe a atribuição.",
         "noteOrder": "Os novos entram com data de dois dias atrás, para não encher o topo da lista de quem atende."
       },
+      "summary": {
+        "title": "Resumo",
+        "file": "Arquivo",
+        "fileWithType": "{{name}} ({{type}})",
+        "name": "Coluna do nome",
+        "phone": "Coluna do telefone",
+        "countryCode": "Código do Brasil (55)",
+        "countryCodeOn": "Acrescentar quando faltar",
+        "countryCodeOff": "Não acrescentar",
+        "assignee": "Coluna do responsável",
+        "department": "Coluna do departamento"
+      },
       "tracking": {
-        "title": "Importando contatos",
+        "title": "Importação de contatos",
         "sending": "Enviando lote {{sent}} de {{total}}",
         "processing": "Criando as conversas",
         "processingBatches": "Criando as conversas: {{finished}} de {{total}} lotes",
         "partial": "Importação concluída, com falhas",
         "done": "Importação concluída",
         "sendFailed": "O envio parou no meio",
-        "sendFailedHint": "{{error}} Dos {{total}} lotes, {{sent}} já foram enviados e seguem sendo processados.",
+        "sendFailedHint": "{{error}} Lotes enviados até aqui: {{sent}} de {{total}}. Eles seguem sendo processados.",
         "resume": "Continuar envio",
         "progressLabel": "Andamento da importação",
         "imported": "Importados",
+        "sent": "Enviados",
         "notImported": "Ficaram de fora",
         "batchesFailed_one": "{{count}} lote falhou ao criar as conversas. Importe o arquivo de novo: quem já entrou não é duplicado.",
         "batchesFailed_other": "{{count}} lotes falharam ao criar as conversas. Importe o arquivo de novo: quem já entrou não é duplicado.",

@@ -5,11 +5,12 @@ import {
   CircleCheck,
   CircleDot,
   Copy,
+  Download,
   MessageCircle,
+  RefreshCw,
   Tag,
   Tags,
   Upload,
-  Download,
   UserRoundCheck,
   Users,
   Zap,
@@ -21,20 +22,18 @@ import { ActiveFilterChips } from "@/components/contacts/active-filter-chips"
 import { ColumnPicker } from "@/components/contacts/column-picker"
 import { ContactAssignDialog } from "@/components/contacts/contact-assign-dialog"
 import { ContactBulkBar, type BulkAction } from "@/components/contacts/contact-bulk-bar"
-import { useContactColumns } from "@/components/contacts/contact-columns"
 import { ContactExportDialog } from "@/components/contacts/contact-export-dialog"
 import { ContactFilterBar } from "@/components/contacts/contact-filter-bar"
 import { ContactTagsDialog, type TagsMode } from "@/components/contacts/contact-tags-dialog"
 import { ContactTasksBand } from "@/components/contacts/contact-tasks-band"
+import type {
+  ContactImportPanelProps,
+  ImportView,
+} from "@/components/contacts/import/contact-import-panel"
 import { SelectionBanner } from "@/components/contacts/selection-banner"
-import type { ContactImportPanelProps, ImportView } from "@/components/contacts/import/contact-import-panel"
-import {
-  DataTable,
-  PageBody,
-  PageHeader,
-  type RowAction,
-} from "@/components/shared"
+import { Callout, DataTable, PageBody, PageHeader, type RowAction } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useContactColumns } from "@/hooks/contacts/use-contact-columns"
 import { useContactMutations, type BulkScope } from "@/hooks/contacts/use-contact-mutations"
 import { useContactSelection } from "@/hooks/contacts/use-contact-selection"
 import { useImportFinished } from "@/hooks/contacts/use-contact-imports"
@@ -95,7 +94,7 @@ export default function ContactsPage() {
   const query = useContactsQuery()
   const { filters, sort, setFilters, setSort, setPage, setPerPage, setParam, searchParams } = query
   const { data, error, isLoading, isValidating, mutate } = useContacts(query.path)
-  const { options, lookups } = useContactFilterOptions()
+  const { options, lookups, error: optionsError, reload: reloadOptions } = useContactFilterOptions()
   const customFields = useContactCustomFields()
 
   const rows = data?.contacts ?? NO_CONTACTS
@@ -196,6 +195,16 @@ export default function ContactsPage() {
 
   /* ---------- linha ---------- */
 
+  async function copyPhone(phone: string) {
+    try {
+      // Fora de HTTPS, o navegador nem oferece a área de transferência.
+      await navigator.clipboard.writeText(phone)
+      toast.success(t("contacts.row.phoneCopied"))
+    } catch {
+      toast.error(t("contacts.row.copyFailed"))
+    }
+  }
+
   const rowActions = (contact: Contact): RowAction[] => {
     const name = contactName(contact) ?? t("contacts.noName")
     const phone = contactPhone(contact)
@@ -218,11 +227,7 @@ export default function ContactsPage() {
         icon: <Copy />,
         hidden: !phone,
         onSelect: () => {
-          if (!phone) return
-          void navigator.clipboard
-            .writeText(phone)
-            .then(() => toast.success(t("contacts.row.phoneCopied")))
-            .catch(() => toast.error(t("contacts.row.copyFailed")))
+          if (phone) void copyPhone(phone)
         },
       },
       {
@@ -348,6 +353,28 @@ export default function ContactsPage() {
             </div>
           )}
         </div>
+
+        {/* Sem as opções, a lista funciona, mas etiqueta e responsável ficam sem nome. */}
+        {optionsError && !options ? (
+          <Callout
+            tone="warning"
+            role="alert"
+            action={
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="pointer-coarse:h-10"
+                onClick={() => void reloadOptions()}
+              >
+                <RefreshCw />
+                {t("contacts.optionsError.retry")}
+              </Button>
+            }
+          >
+            {t("contacts.optionsError.message")}
+          </Callout>
+        ) : null}
 
         <ContactTasksBand
           tracker={tracker}

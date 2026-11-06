@@ -9,6 +9,10 @@
       "title": "No contacts here yet",
       "description": "People who talk to you through your channels show up here. To bring in an existing base, import a spreadsheet."
     },
+    "optionsError": {
+      "message": "Could not load tags, channels and assignees. The list keeps working, but without those names.",
+      "retry": "Try again"
+    },
     "actions": {
       "cancel": "Cancel",
       "close": "Close",
@@ -63,10 +67,10 @@
     "sort": {
       "nameAsc": "Name, A to Z",
       "nameDesc": "Name, Z to A",
-      "statusAsc": "Open first",
-      "statusDesc": "Closed first",
-      "lastMessageAsc": "Last message, oldest",
-      "lastMessageDesc": "Last message, newest",
+      "statusAsc": "Closed first",
+      "statusDesc": "Open first",
+      "lastMessageAsc": "Oldest",
+      "lastMessageDesc": "Newest",
       "unreadAsc": "Fewest unread messages",
       "unreadDesc": "Most unread messages",
       "createdAsc": "Created longest ago",
@@ -322,6 +326,7 @@
       },
       "file": {
         "hint": "CSV or JSON, up to 50 MB.",
+        "loaded": "{{name}} is still loaded. Continue, or choose another file.",
         "reading": "Reading the file…",
         "errorTitle": "Could not read this file",
         "moreIssues_one": "And {{count}} more problem.",
@@ -418,18 +423,31 @@
         "noteDuplicates": "Anyone who already has a chat on this channel isn't duplicated: the chat moves up the list and gets the assignment.",
         "noteOrder": "New ones come in dated two days ago, so they don't fill the top of your team's list."
       },
+      "summary": {
+        "title": "Summary",
+        "file": "File",
+        "fileWithType": "{{name}} ({{type}})",
+        "name": "Name column",
+        "phone": "Phone column",
+        "countryCode": "Brazil code (55)",
+        "countryCodeOn": "Add when missing",
+        "countryCodeOff": "Don't add",
+        "assignee": "Assignee column",
+        "department": "Department column"
+      },
       "tracking": {
-        "title": "Importing contacts",
+        "title": "Contact import",
         "sending": "Sending batch {{sent}} of {{total}}",
         "processing": "Creating the chats",
         "processingBatches": "Creating the chats: {{finished}} of {{total}} batches",
         "partial": "Import finished, with failures",
         "done": "Import finished",
         "sendFailed": "Sending stopped midway",
-        "sendFailedHint": "{{error}} Of {{total}} batches, {{sent}} were already sent and are still being processed.",
+        "sendFailedHint": "{{error}} Batches sent so far: {{sent}} of {{total}}. They are still being processed.",
         "resume": "Continue sending",
         "progressLabel": "Import progress",
         "imported": "Imported",
+        "sent": "Sent",
         "notImported": "Left out",
         "batchesFailed_one": "{{count}} batch failed while creating the chats. Import the file again: anyone already in isn't duplicated.",
         "batchesFailed_other": "{{count}} batches failed while creating the chats. Import the file again: anyone already in isn't duplicated.",

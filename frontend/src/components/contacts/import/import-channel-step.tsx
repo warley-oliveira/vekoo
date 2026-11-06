@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { Unplug } from "lucide-react"
@@ -20,6 +21,8 @@ export type ImportChannelStepProps = {
   value: string | null
   onChange: (connectorId: string) => void
   readyCount: number
+  /** Abaixo de tudo: o resumo das escolhas. */
+  footer?: ReactNode
 }
 
 /** Para qual canal vão os contatos. Só os que começam conversa por número entram na lista. */
@@ -31,6 +34,7 @@ export function ImportChannelStep({
   value,
   onChange,
   readyCount,
+  footer,
 }: ImportChannelStepProps) {
   const { t } = useTranslation()
   const language = useLanguage()
@@ -71,17 +75,24 @@ export function ImportChannelStep({
         </span>
         <RadioGroup
           aria-labelledby="import-channel-label"
+          className="grid-cols-1"
           value={value}
           onValueChange={(next) => onChange(next as string)}
         >
           {connectors.map((connector) => {
-            const handle = connectorHandle(connector)
-            const description = [texts.typeLabel(connector), handle].filter(Boolean).join(" · ")
+            // Canal parado também recebe os contatos: só não dá para conversar até reconectar.
+            const description = [
+              texts.typeLabel(connector),
+              connectorHandle(connector),
+              connector.status === "active" ? null : texts.statusLabel(connector),
+            ]
+              .filter(Boolean)
+              .join(" · ")
 
             return (
               <label
                 key={connector.id}
-                className="flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 has-data-checked:border-primary has-data-checked:bg-accent/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50"
+                className="flex min-w-0 cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 has-data-checked:border-primary has-data-checked:bg-accent/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50"
               >
                 <RadioGroupItem value={connector.id} className="border-muted-foreground/40" />
                 <ConnectorMark connector={connector} size="sm" />
@@ -89,15 +100,10 @@ export function ImportChannelStep({
                   <span className="block truncate text-sm font-medium">
                     {texts.title(connector)}
                   </span>
-                  <span className="block truncate text-xs text-muted-foreground">
+                  <span className="block text-xs text-pretty text-muted-foreground">
                     {description}
                   </span>
                 </span>
-                {connector.status !== "active" ? (
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    {texts.statusLabel(connector)}
-                  </span>
-                ) : null}
               </label>
             )
           })}
@@ -111,6 +117,8 @@ export function ImportChannelStep({
           <li>{t("contacts.import.channel.noteOrder")}</li>
         </ul>
       </Callout>
+
+      {footer}
     </div>
   )
 }

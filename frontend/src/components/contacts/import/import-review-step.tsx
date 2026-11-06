@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
 import { CircleCheck, CircleX } from "lucide-react"
@@ -30,6 +30,8 @@ export type ImportReviewStepProps = {
   preview: ImportPreviewRow[]
   summary: ImportSummary
   mapping: ImportMapping
+  /** Quando esta é a última etapa: o resumo das escolhas. */
+  footer?: ReactNode
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -42,7 +44,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 /** Conferir antes de enviar: o que entra, o que fica de fora e por quê, linha a linha. */
-export function ImportReviewStep({ preview, summary, mapping }: ImportReviewStepProps) {
+export function ImportReviewStep({ preview, summary, mapping, footer }: ImportReviewStepProps) {
   const { t } = useTranslation()
   const language = useLanguage()
   const [rowFilter, setRowFilter] = useState<RowFilter>("all")
@@ -57,8 +59,19 @@ export function ImportReviewStep({ preview, summary, mapping }: ImportReviewStep
     [preview, rowFilter]
   )
 
+  // O painel é estreito: o que decide a conferência (quem é, o número, se entra) vem primeiro, e o
+  // resto rola de lado.
   const columns = useMemo<ColumnDef<ImportPreviewRow, any>[]>(
     () => [
+      {
+        accessorKey: "line",
+        header: t("contacts.import.review.line"),
+        enableSorting: false,
+        meta: { mobile: "hidden", align: "right", className: "w-14" },
+        cell: ({ row }) => (
+          <span className="text-muted-foreground">{number(row.original.line)}</span>
+        ),
+      },
       {
         accessorKey: "name",
         header: t("contacts.import.review.name"),
@@ -94,29 +107,12 @@ export function ImportReviewStep({ preview, summary, mapping }: ImportReviewStep
           </span>
         ),
       },
-      ...(mapping.assignee
-        ? [
-            {
-              accessorKey: "assignee",
-              header: t("contacts.import.review.assignee"),
-              enableSorting: false,
-            } satisfies ColumnDef<ImportPreviewRow, any>,
-          ]
-        : []),
-      ...(mapping.department
-        ? [
-            {
-              accessorKey: "department",
-              header: t("contacts.import.review.department"),
-              enableSorting: false,
-            } satisfies ColumnDef<ImportPreviewRow, any>,
-          ]
-        : []),
       {
         id: "result",
         accessorFn: (row) => row.issue ?? "",
         header: t("contacts.import.review.result"),
         enableSorting: false,
+        meta: { mobile: "secondary" },
         cell: ({ row }) =>
           row.original.issue ? (
             <StatusBadge tone="danger">
@@ -126,15 +122,26 @@ export function ImportReviewStep({ preview, summary, mapping }: ImportReviewStep
             <StatusBadge tone="success">{t("contacts.import.review.ok")}</StatusBadge>
           ),
       },
-      {
-        accessorKey: "line",
-        header: t("contacts.import.review.line"),
-        enableSorting: false,
-        meta: { align: "right", className: "w-16" },
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">{number(row.original.line)}</span>
-        ),
-      },
+      ...(mapping.assignee
+        ? [
+            {
+              accessorKey: "assignee",
+              header: t("contacts.import.review.assignee"),
+              enableSorting: false,
+              cell: ({ row }) => row.original.assignee || t("kit.noValue"),
+            } satisfies ColumnDef<ImportPreviewRow, any>,
+          ]
+        : []),
+      ...(mapping.department
+        ? [
+            {
+              accessorKey: "department",
+              header: t("contacts.import.review.department"),
+              enableSorting: false,
+              cell: ({ row }) => row.original.department || t("kit.noValue"),
+            } satisfies ColumnDef<ImportPreviewRow, any>,
+          ]
+        : []),
       {
         accessorKey: "original",
         header: t("contacts.import.review.original"),
@@ -207,12 +214,16 @@ export function ImportReviewStep({ preview, summary, mapping }: ImportReviewStep
         data={rows}
         getRowId={(row) => String(row.line)}
         globalFilter={query}
+        isFiltered={Boolean(query)}
+        onClearFilters={() => setQuery("")}
         pageSize={PREVIEW_PAGE_SIZE}
         perPageOptions={PREVIEW_PAGE_OPTIONS}
         density="compact"
         maxHeight="24rem"
         empty={{ title: t("contacts.import.review.noneInFilter") }}
       />
+
+      {footer}
     </div>
   )
 }

@@ -5,9 +5,9 @@ import { useNavigate } from "react-router"
 import { ArrowLeft, Check, Plus } from "lucide-react"
 
 import { useConnectorTexts } from "@/components/connectors/connector-texts"
-import { SidePanel, useConfirm } from "@/components/shared"
+import { KeyValueList, SidePanel, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { useImportSender } from "@/hooks/contacts/use-contact-imports"
+import { useImportOutcome, useImportSender } from "@/hooks/contacts/use-contact-imports"
 import { useContactFilterOptions } from "@/hooks/contacts/use-contacts"
 import { useCan } from "@/hooks/use-can"
 import { useOpenCount } from "@/hooks/use-panel-session"
@@ -31,7 +31,7 @@ import { ImportColumnsStep } from "./import-columns-step"
 import { ImportFileStep } from "./import-file-step"
 import { ImportHistory } from "./import-history"
 import { ImportReviewStep } from "./import-review-step"
-import { ImportTrackingStep, useImportOutcome } from "./import-tracking-step"
+import { ImportTrackingStep } from "./import-tracking-step"
 
 type Step = "file" | "columns" | "review" | "channel" | "tracking" | "history"
 
@@ -193,6 +193,44 @@ function ImportPanelBody({
   const previous = isWizard && wizardIndex > 0 ? stepOrder[wizardIndex - 1] : null
   const next = isWizard && !isLastStep ? stepOrder[wizardIndex + 1] : null
 
+  // O resumo da última etapa: o último olhar antes de enviar.
+  const settingsSummary = parsed ? (
+    <section aria-labelledby="import-summary-title" className="flex flex-col gap-2 border-t pt-4">
+      <h3 id="import-summary-title" className="text-sm font-medium">
+        {t("contacts.import.summary.title")}
+      </h3>
+      <KeyValueList
+        items={[
+          {
+            label: t("contacts.import.summary.file"),
+            value: parsed.fileType
+              ? t("contacts.import.summary.fileWithType", {
+                  name: fileName,
+                  type: parsed.fileType.toUpperCase(),
+                })
+              : fileName,
+          },
+          { label: t("contacts.import.summary.name"), value: mapping.name },
+          { label: t("contacts.import.summary.phone"), value: mapping.phone },
+          {
+            label: t("contacts.import.summary.countryCode"),
+            value: t(
+              includeCountryCode
+                ? "contacts.import.summary.countryCodeOn"
+                : "contacts.import.summary.countryCodeOff"
+            ),
+          },
+          ...(mapping.assignee
+            ? [{ label: t("contacts.import.summary.assignee"), value: mapping.assignee }]
+            : []),
+          ...(mapping.department
+            ? [{ label: t("contacts.import.summary.department"), value: mapping.department }]
+            : []),
+        ]}
+      />
+    </section>
+  ) : null
+
   const footer =
     step === "history" ? (
       <Button type="button" className="pointer-coarse:h-10" onClick={startOver}>
@@ -200,7 +238,11 @@ function ImportPanelBody({
         {t("contacts.import.action")}
       </Button>
     ) : step === "tracking" ? (
-      outcome.running || sender.state.phase === "failed" ? (
+      sender.state.phase === "failed" ? (
+        <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={() => void close()}>
+          {t("contacts.actions.close")}
+        </Button>
+      ) : outcome.running ? (
         <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={() => void close()}>
           {t("contacts.import.tracking.keepGoing")}
         </Button>
@@ -220,8 +262,10 @@ function ImportPanelBody({
           )}
         </>
       )
-    ) : step === "file" ? undefined : (
-      <>
+    ) : step === "file" && !parsed ? undefined : (
+      // Numa linha só, também no celular: três botões empilhados comeriam a conferência, e lá
+      // cancelar já está no X do painel.
+      <div className="flex w-full items-center gap-2 sm:justify-end">
         {previous ? (
           <Button
             type="button"
@@ -236,7 +280,7 @@ function ImportPanelBody({
         <Button
           type="button"
           variant="outline"
-          className="pointer-coarse:h-10"
+          className="max-sm:hidden pointer-coarse:h-10"
           onClick={() => void close()}
         >
           {t("contacts.actions.cancel")}
@@ -245,7 +289,7 @@ function ImportPanelBody({
           <Button
             type="button"
             disabled={!connectorId || !columnsReady}
-            className="pointer-coarse:h-10"
+            className="pointer-coarse:h-10 max-sm:flex-1"
             onClick={startImport}
           >
             {t("contacts.import.submit", amount)}
@@ -254,7 +298,7 @@ function ImportPanelBody({
           <Button
             type="button"
             disabled={!next || !columnsReady}
-            className="pointer-coarse:h-10"
+            className="pointer-coarse:h-10 max-sm:flex-1"
             onClick={() => {
               if (next) setStep(next)
             }}
@@ -262,7 +306,7 @@ function ImportPanelBody({
             {t("contacts.actions.continue")}
           </Button>
         )}
-      </>
+      </div>
     )
 
   return (
@@ -283,7 +327,11 @@ function ImportPanelBody({
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={step} {...preset.fade}>
             {step === "file" ? (
-              <ImportFileStep onParsed={handleParsed} onHistory={() => setStep("history")} />
+              <ImportFileStep
+                loadedFile={parsed ? fileName : null}
+                onParsed={handleParsed}
+                onHistory={() => setStep("history")}
+              />
             ) : step === "columns" && parsed ? (
               <ImportColumnsStep
                 fileName={fileName}
@@ -296,7 +344,12 @@ function ImportPanelBody({
                 summary={summary}
               />
             ) : step === "review" ? (
-              <ImportReviewStep preview={preview} summary={summary} mapping={mapping} />
+              <ImportReviewStep
+                preview={preview}
+                summary={summary}
+                mapping={mapping}
+                footer={isLastStep ? settingsSummary : null}
+              />
             ) : step === "channel" ? (
               <ImportChannelStep
                 connectors={importable}
@@ -306,6 +359,7 @@ function ImportPanelBody({
                 value={connectorId}
                 onChange={setPickedConnector}
                 readyCount={summary.ready}
+                footer={settingsSummary}
               />
             ) : step === "tracking" ? (
               <ImportTrackingStep

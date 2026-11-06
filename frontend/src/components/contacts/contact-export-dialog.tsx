@@ -162,7 +162,8 @@ export function ContactExportDialog({
   } else if (active) {
     body = (
       <div className="flex flex-col gap-3">
-        <p role="status" className="text-sm tabular-nums">
+        <p role="status" className="flex items-center gap-2 text-sm tabular-nums">
+          <Loader2 aria-hidden className="size-4 shrink-0 animate-spin text-muted-foreground" />
           {state.phase === "requesting" || state.total === 0
             ? t("contacts.export.queued")
             : t("contacts.export.running", {
@@ -170,11 +171,13 @@ export function ContactExportDialog({
                 total: number(state.total),
               })}
         </p>
-        <Progress
-          value={state.phase === "requesting" || state.total === 0 ? null : percentage}
-          aria-label={t("contacts.export.progressLabel")}
-          className="gap-0"
-        />
+        {state.phase === "requesting" || state.total === 0 ? null : (
+          <Progress
+            value={percentage}
+            aria-label={t("contacts.export.progressLabel")}
+            className="gap-0"
+          />
+        )}
         <p className="text-xs text-pretty text-muted-foreground">
           {t(state.stalled ? "contacts.export.stalled" : "contacts.export.canClose")}
         </p>

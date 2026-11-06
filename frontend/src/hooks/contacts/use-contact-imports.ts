@@ -158,6 +158,33 @@ export function useImportFinished(onFinished: (group: ImportGroup) => void) {
   return groups
 }
 
+/**
+ * O que os lotes enviados já viraram. Quem saiu da lista recente (mais de 100 lotes) é contado
+ * como terminado: a fila é em ordem, e os mais antigos são os primeiros a acabar.
+ */
+export function useImportOutcome(importIds: string[], send: SendState) {
+  const { imports } = useContactImports()
+
+  const byId = new Map<string, ContactImport>((imports ?? []).map((entry) => [entry.id, entry]))
+  const entries = importIds.flatMap((id) => {
+    const entry = byId.get(id)
+    return entry ? [entry] : []
+  })
+
+  const runningBatches = entries.filter(isImportRunning).length
+  const finishedBatches = importIds.length - runningBatches
+  const waitingFirstRead = imports === undefined && importIds.length > 0
+
+  return {
+    finishedBatches,
+    totalBatches: importIds.length,
+    running: send.phase === "sending" || runningBatches > 0 || waitingFirstRead,
+    imported: entries.reduce((sum, entry) => sum + entry.importedContactsCount, 0),
+    errors: entries.reduce((sum, entry) => sum + entry.errorsCount, 0),
+    failedBatches: entries.filter((entry) => entry.status === "failed").length,
+  }
+}
+
 export type SendState = {
   phase: "idle" | "sending" | "sent" | "failed"
   sentBatches: number

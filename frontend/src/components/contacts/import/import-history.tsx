@@ -91,9 +91,9 @@ export function ImportHistory({ connectorName, onNew }: ImportHistoryProps) {
                 {t(`contacts.import.history.status.${group.status}`)}
               </StatusBadge>
             </div>
-            {group.status === "running" ? (
+            {group.status === "running" && group.batches > 1 ? (
               <Progress
-                value={group.batches > 1 ? percentage : null}
+                value={percentage}
                 aria-label={t("contacts.import.tracking.progressLabel")}
                 className="gap-0"
               />

@@ -26,6 +26,8 @@ const ACCEPT = {
 }
 
 export type ImportFileStepProps = {
+  /** Voltou de uma etapa à frente: este arquivo continua valendo, até escolher outro. */
+  loadedFile: string | null
   onParsed: (fileName: string, parsed: ParsedImport) => void
   onHistory: () => void
 }
@@ -34,7 +36,7 @@ export type ImportFileStepProps = {
  * Primeira fase: o arquivo é lido aqui mesmo, sem subir para lugar nenhum. É o que deixa mapear
  * as colunas e conferir linha a linha antes de enviar.
  */
-export function ImportFileStep({ onParsed, onHistory }: ImportFileStepProps) {
+export function ImportFileStep({ loadedFile, onParsed, onHistory }: ImportFileStepProps) {
   const { t } = useTranslation()
   const [files, setFiles] = useState<DropzoneFile[]>([])
   const [reading, setReading] = useState(false)
@@ -78,6 +80,10 @@ export function ImportFileStep({ onParsed, onHistory }: ImportFileStepProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      {loadedFile && files.length === 0 ? (
+        <Callout>{t("contacts.import.file.loaded", { name: loadedFile })}</Callout>
+      ) : null}
+
       <FileDropzone
         value={files}
         onChange={(next) => {
