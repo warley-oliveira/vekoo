@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_000605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -72,6 +72,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "file_name"
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.boolean "private", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "private", "created_at"], name: "idx_on_organization_id_private_created_at_ce6b95c8f9"
+  end
+
   create_table "carousels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "caption"
     t.jsonb "cards", default: [], null: false
@@ -89,6 +100,52 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
     t.index ["organization_id", "favorite"], name: "index_carousels_on_organization_id_and_favorite"
     t.index ["organization_id", "trashed_at", "edited_at"], name: "idx_on_organization_id_trashed_at_edited_at_28a7be86a4"
     t.index ["organization_id"], name: "index_carousels_on_organization_id"
+  end
+
+  create_table "chat_views", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.jsonb "payload", default: [], null: false
+    t.boolean "personal", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_chat_views_on_account_id"
+    t.index ["organization_id", "personal"], name: "index_chat_views_on_organization_id_and_personal"
+  end
+
+  create_table "contact_import_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "additional_data", default: {}, null: false
+    t.uuid "contact_import_id", null: false
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.string "name", null: false
+    t.string "phone", null: false
+    t.datetime "processed_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_import_id", "status"], name: "index_contact_import_rows_on_contact_import_id_and_status"
+  end
+
+  create_table "contact_imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.integer "batch_index"
+    t.datetime "completed_at"
+    t.string "connector_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "errors_count", default: 0, null: false
+    t.string "file_name"
+    t.integer "imported_contacts_count", default: 0, null: false
+    t.boolean "include_country_code", default: false, null: false
+    t.uuid "organization_id", null: false
+    t.datetime "started_at"
+    t.string "status", default: "pending", null: false
+    t.integer "total_batches"
+    t.integer "total_contacts", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_contact_imports_on_account_id"
+    t.index ["organization_id", "created_at"], name: "index_contact_imports_on_organization_id_and_created_at"
+    t.index ["status", "updated_at"], name: "index_contact_imports_on_status_and_updated_at"
   end
 
   create_table "daily_chat_stats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -333,6 +390,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
     t.index ["organization_id"], name: "index_push_devices_on_organization_id"
   end
 
+  create_table "quick_replies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "organization_id", null: false
+    t.string "trigger", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_quick_replies_on_organization_id_and_name"
+    t.index ["organization_id", "trigger"], name: "index_quick_replies_on_organization_id_and_trigger", unique: true
+  end
+
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
@@ -395,8 +463,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
   add_foreign_key "accounts", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "attachments", "organizations", on_delete: :cascade
   add_foreign_key "carousels", "folders", on_delete: :nullify
   add_foreign_key "carousels", "organizations"
+  add_foreign_key "chat_views", "accounts", on_delete: :cascade
+  add_foreign_key "chat_views", "organizations", on_delete: :cascade
+  add_foreign_key "contact_import_rows", "contact_imports", on_delete: :cascade
+  add_foreign_key "contact_imports", "accounts", on_delete: :nullify
+  add_foreign_key "contact_imports", "organizations", on_delete: :cascade
   add_foreign_key "daily_chat_stats", "organizations", on_delete: :cascade
   add_foreign_key "folders", "organizations"
   add_foreign_key "notifications", "organizations"
@@ -417,6 +491,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_000309) do
   add_foreign_key "product_items", "organizations", on_delete: :cascade
   add_foreign_key "push_devices", "accounts", on_delete: :cascade
   add_foreign_key "push_devices", "organizations", on_delete: :cascade
+  add_foreign_key "quick_replies", "organizations", on_delete: :cascade
   add_foreign_key "sessions", "accounts"
   add_foreign_key "team_memberships", "accounts", on_delete: :cascade
   add_foreign_key "team_memberships", "teams", on_delete: :cascade
