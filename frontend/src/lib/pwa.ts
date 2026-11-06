@@ -93,9 +93,9 @@ export function startPwa(): void {
 
 /** "Atualizar agora": SKIP_WAITING no SW que espera. O reload vem do `controlling`. */
 export function applyPwaUpdate(): void {
-  if (!applyUpdate && import.meta.env.PROD) return
+  if (!applyUpdate) return
   setPhase("applying")
-  void applyUpdate?.(true)
+  void applyUpdate(true)
   window.setTimeout(() => {
     if (phase === "applying") setPhase("waiting")
   }, APPLY_TIMEOUT_MS)
@@ -104,9 +104,4 @@ export function applyPwaUpdate(): void {
 /** "Agora não": some até a próxima abertura, em que o SW ainda estará esperando. */
 export function dismissPwaUpdate(): void {
   setPhase("idle")
-}
-
-/** Só para a página interna `/dev/shell`, onde não há service worker. */
-export function simulatePwaPhase(next: PwaPhase): void {
-  if (import.meta.env.DEV) setPhase(next)
 }

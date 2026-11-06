@@ -21,6 +21,8 @@ const IS_APPLE =
 const SEARCH_SHORTCUT = IS_APPLE ? "⌘K" : "Ctrl K"
 /** Um pouco mais que a transição de altura dos grupos (`duration-200`). */
 const GROUP_EXPAND_MS = 240
+/** A altura da borda esmaecida no fim do menu (a máscara, abaixo). */
+const EDGE_FADE_PX = 16
 
 type AppSidebarProps = {
   collapsed: boolean
@@ -39,12 +41,20 @@ export function AppSidebar({
   const scrollerRef = useRef<HTMLDivElement>(null)
 
   // O item ativo nunca fica escondido: quem abre um link direto para Integrações
-  // precisa ver onde está. Espera o grupo terminar de expandir antes de medir.
+  // precisa ver onde está. Espera o grupo terminar de expandir antes de medir, e só
+  // rola se ele estiver fora de vista: mexer no menu a cada clique desorienta.
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      scrollerRef.current
-        ?.querySelector('[aria-current="page"]')
-        ?.scrollIntoView({ block: "nearest" })
+      const scroller = scrollerRef.current
+      const row = scroller?.querySelector('[aria-current="page"]')
+      if (!scroller || !row) return
+      const box = scroller.getBoundingClientRect()
+      const rect = row.getBoundingClientRect()
+      if (rect.top < box.top || rect.bottom > box.bottom - EDGE_FADE_PX) {
+        // Não `scrollIntoView`: ele rola também os ancestrais, e a tela inteira, que é
+        // `overflow-hidden`, sairia do lugar.
+        scroller.scrollTop += rect.top - box.top - (box.height - rect.height) / 2
+      }
     }, GROUP_EXPAND_MS)
     return () => window.clearTimeout(timer)
   }, [pathname, collapsed])

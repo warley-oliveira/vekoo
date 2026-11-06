@@ -35,10 +35,10 @@ import {
 import { cn } from "@/lib/utils"
 
 const TILE =
-  "group/tile relative flex min-w-0 flex-col items-center gap-1.5 rounded-xl px-1 py-2 text-center outline-none transition-transform duration-100 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-95 motion-reduce:transform-none"
+  "group/tile relative flex min-w-0 flex-col items-center gap-1.5 rounded-xl py-2 text-center outline-none transition-transform duration-100 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-95 motion-reduce:transform-none"
 const TILE_ICON =
   "relative flex size-11 items-center justify-center rounded-xl transition-colors"
-const TILE_LABEL = "line-clamp-2 w-full text-xs leading-tight font-medium"
+const TILE_LABEL = "w-full text-[11px] leading-tight font-medium"
 const SECTION_TITLE =
   "mb-1 px-1 text-[11px] font-medium tracking-wider text-muted-foreground uppercase"
 
@@ -130,7 +130,8 @@ function EntryGrid({ entries }: { entries: NavEntry[] }) {
   const { t } = useTranslation()
 
   return (
-    <div className="grid grid-cols-4 gap-1">
+    // Três colunas nos celulares estreitos: "Configurações" não tem onde quebrar.
+    <div className="grid grid-cols-4 gap-1 max-[374px]:grid-cols-3">
       {entries.map((entry) => {
         const children = entry.children ?? []
         const expandable = children.length > 0
