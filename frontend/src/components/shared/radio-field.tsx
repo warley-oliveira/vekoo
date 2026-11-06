@@ -72,12 +72,16 @@ export function RadioField<
             className={cn(
               "flex cursor-pointer items-start gap-2.5",
               option.disabled && "cursor-not-allowed opacity-60",
-              variant === "default" && "min-h-10 md:min-h-0",
+              variant === "default" && "pointer-coarse:min-h-10",
               variant === "cards" &&
                 "rounded-lg border p-3 transition-colors hover:bg-muted/50 has-data-checked:border-primary has-data-checked:bg-accent/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50"
             )}
           >
-            <RadioGroupItem value={option.value} disabled={option.disabled} className="mt-px" />
+            <RadioGroupItem
+              value={option.value}
+              disabled={option.disabled}
+              className="mt-px border-muted-foreground/40"
+            />
             <span className="min-w-0 space-y-0.5">
               <span className="flex items-center gap-1.5 text-sm leading-snug [&>svg]:size-4 [&>svg]:shrink-0">
                 {option.icon}

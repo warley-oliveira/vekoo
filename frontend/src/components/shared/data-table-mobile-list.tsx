@@ -75,7 +75,7 @@ export function DataTableMobileList<TData>({
           >
             {selectable ? (
               <Checkbox
-                className="mt-0.5"
+                className="mt-0.5 border-muted-foreground/40"
                 checked={row.getIsSelected()}
                 disabled={!row.getCanSelect()}
                 aria-label={t("kit.table.selectRow")}

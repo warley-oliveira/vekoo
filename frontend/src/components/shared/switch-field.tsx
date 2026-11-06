@@ -35,7 +35,7 @@ export function SwitchField<
     <div className={cn("space-y-1.5", className)}>
       <label
         className={cn(
-          "flex min-h-10 cursor-pointer items-center justify-between gap-4 md:min-h-0",
+          "flex cursor-pointer items-center justify-between gap-4 pointer-coarse:min-h-10",
           disabled && "cursor-not-allowed opacity-60"
         )}
       >

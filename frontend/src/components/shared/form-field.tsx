@@ -79,9 +79,11 @@ export function FormField<
       className={className}
       action={
         optional || action ? (
-          <span className="flex items-baseline gap-2">
+          <span className="flex items-baseline gap-2 leading-none">
             {optional ? (
-              <span className="text-xs text-muted-foreground">{t("kit.form.optional")}</span>
+              <span className="text-xs leading-none text-muted-foreground">
+                {t("kit.form.optional")}
+              </span>
             ) : null}
             {action}
           </span>

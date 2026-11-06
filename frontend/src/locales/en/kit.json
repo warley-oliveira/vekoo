@@ -157,8 +157,8 @@
       "emptyTitle": "Nothing here yet",
       "noResultsTitle": "No results with these filters",
       "noResultsDescription": "Try broader terms or clear the filters to see everything.",
-      "sortDesc": "{{column}}: highest to lowest",
-      "sortAsc": "{{column}}: lowest to highest"
+      "sortDesc": "{{column}}: descending",
+      "sortAsc": "{{column}}: ascending"
     },
     "showcase": {
       "title": "Component kit",
@@ -285,6 +285,8 @@
         "endLabel": "All conversations have been loaded",
         "bulkDone_one": "{{count}} contact archived",
         "bulkDone_other": "{{count}} contacts archived",
+        "filterBar": "Filter bar",
+        "filterBarHint": "Search, filters, sorting and clear. On mobile, filters move to a Sheet.",
         "filterPopover": "Filters in a popover"
       },
       "overlays": {

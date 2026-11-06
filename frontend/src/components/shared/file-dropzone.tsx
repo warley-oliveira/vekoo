@@ -33,11 +33,16 @@ export type DropzoneFile = {
 
 export type DropzoneUpload = {
   /** Caminho da API: `/attachments`. */
-  path: string
+  path?: string
   /** Nome do campo no multipart. */
   fieldName?: string
   /** Campos a mais no mesmo envio. */
   fields?: Record<string, string>
+  /** Transporte próprio no lugar de `path`, como uma URL pré-assinada. */
+  send?: (
+    file: File,
+    options: { onProgress: (fraction: number) => void; signal: AbortSignal }
+  ) => Promise<unknown>
   onSuccess?: (response: unknown, file: DropzoneFile) => void
 }
 
@@ -145,15 +150,21 @@ export function FileDropzone({
       controllers.current.set(item.id, controller)
       patch(item.id, { status: "uploading", progress: 0, error: undefined })
 
-      const body = new FormData()
-      body.append(upload.fieldName ?? "file", item.file)
-      Object.entries(upload.fields ?? {}).forEach(([key, field]) => body.append(key, field))
+      const options = {
+        signal: controller.signal,
+        onProgress: (progress: number) => patch(item.id, { progress }),
+      }
 
       try {
-        const response = await apiUpload(upload.path, body, {
-          signal: controller.signal,
-          onProgress: (progress) => patch(item.id, { progress }),
-        })
+        let response: unknown
+        if (upload.send) {
+          response = await upload.send(item.file, options)
+        } else {
+          const body = new FormData()
+          body.append(upload.fieldName ?? "file", item.file)
+          Object.entries(upload.fields ?? {}).forEach(([key, field]) => body.append(key, field))
+          response = await apiUpload(upload.path ?? "", body, options)
+        }
         patch(item.id, { status: "done", progress: 1, response })
         upload.onSuccess?.(response, { ...item, status: "done", progress: 1, response })
       } catch (cause) {

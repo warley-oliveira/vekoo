@@ -51,7 +51,7 @@ export function FilterPopover({
         <Button
           type="button"
           variant="outline"
-          size={iconOnly ? "icon-sm" : "sm"}
+          size={iconOnly ? "icon" : "default"}
           aria-label={iconOnly ? t("kit.filters.withCount", { count: activeCount }) : undefined}
           className={cn("relative pointer-coarse:h-10", iconOnly && "pointer-coarse:w-10", className)}
         >

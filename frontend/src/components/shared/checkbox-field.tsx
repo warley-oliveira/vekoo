@@ -34,7 +34,7 @@ export function CheckboxField<
   return (
     <label
       className={cn(
-        "flex min-h-10 cursor-pointer items-start gap-2.5 md:min-h-0",
+        "flex cursor-pointer items-start gap-2.5 pointer-coarse:min-h-10",
         disabled && "cursor-not-allowed opacity-60",
         className
       )}
@@ -48,7 +48,7 @@ export function CheckboxField<
         aria-describedby={message ? messageId : undefined}
         onCheckedChange={(checked) => field.onChange(checked)}
         onBlur={field.onBlur}
-        className="mt-px"
+        className="mt-px border-muted-foreground/40"
       />
       <span className="min-w-0 space-y-0.5">
         <span className="block text-sm leading-snug">{label}</span>

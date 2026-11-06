@@ -511,7 +511,13 @@ function useContactColumns(): ColumnDef<Contact, any>[] {
       {
         accessorKey: "lastContact",
         header: t("kit.showcase.collections.columns.lastContact"),
-        meta: { filter: { type: "dateRange" } },
+        meta: {
+          filter: { type: "dateRange" },
+          sortLabels: {
+            desc: t("kit.showcase.collections.sort.recent"),
+            asc: t("kit.showcase.collections.sort.oldest"),
+          },
+        },
         cell: ({ row }) => (
           <RelativeTime value={row.original.lastContact} className="text-muted-foreground" />
         ),
@@ -560,11 +566,15 @@ function CollectionsSection() {
   const columns = useContactColumns()
   const rowActions = useContactRowActions()
 
-  /* Tabela local, com FilterBar */
+  /* Tabela local: a busca vem do FilterBar e os filtros, das colunas */
   const [query, setQuery] = useState("")
+
+  /* FilterBar completa, sobre uma lista simples */
+  const [barQuery, setBarQuery] = useState("")
   const [stages, setStages] = useState<string[]>([])
   const [owners, setOwners] = useState<string[]>([])
   const [period, setPeriod] = useState<DateRangeValue | null>(null)
+  const [barSort, setBarSort] = useState<"recent" | "oldest" | "nameAsc">("recent")
 
   const stageOptions = (["new", "negotiating", "won", "lost"] as const).map((stage) => ({
     value: stage,
@@ -577,23 +587,28 @@ function CollectionsSection() {
     count: CONTACTS.filter((contact) => contact.owner === owner).length,
   }))
 
-  const visible = useMemo(
-    () =>
-      CONTACTS.filter(
-        (contact) =>
-          (!query || matchesSearch(`${contact.name} ${contact.company}`, query)) &&
-          (stages.length === 0 || stages.includes(contact.stage)) &&
-          (owners.length === 0 || owners.includes(contact.owner)) &&
-          (!period ||
-            (contact.lastContact >= period.from.getTime() &&
-              contact.lastContact <= period.to.getTime()))
-      ),
-    [owners, period, query, stages]
-  )
+  const barResults = useMemo(() => {
+    const found = CONTACTS.filter(
+      (contact) =>
+        (!barQuery || matchesSearch(`${contact.name} ${contact.company}`, barQuery)) &&
+        (stages.length === 0 || stages.includes(contact.stage)) &&
+        (owners.length === 0 || owners.includes(contact.owner)) &&
+        (!period ||
+          (contact.lastContact >= period.from.getTime() &&
+            contact.lastContact <= period.to.getTime()))
+    )
+    return [...found].sort((a, b) =>
+      barSort === "recent"
+        ? b.lastContact - a.lastContact
+        : barSort === "oldest"
+          ? a.lastContact - b.lastContact
+          : a.name.localeCompare(b.name, "pt-BR")
+    )
+  }, [barQuery, barSort, owners, period, stages])
 
   const activeFilters = (stages.length > 0 ? 1 : 0) + (owners.length > 0 ? 1 : 0) + (period ? 1 : 0)
   const clearAll = () => {
-    setQuery("")
+    setBarQuery("")
     setStages([])
     setOwners([])
     setPeriod(null)
@@ -624,41 +639,16 @@ function CollectionsSection() {
             onChange: setQuery,
             placeholder: t("kit.showcase.collections.searchLabel"),
           }}
-          activeCount={activeFilters}
-          onClear={clearAll}
-          resultLabel={t("kit.showcase.collections.resultCount", { count: visible.length })}
-          filters={
-            <>
-              <FacetedFilter
-                title={t("kit.showcase.collections.columns.stage")}
-                options={stageOptions}
-                value={stages}
-                onChange={setStages}
-              />
-              <FacetedFilter
-                title={t("kit.showcase.collections.columns.owner")}
-                options={ownerOptions}
-                value={owners}
-                onChange={setOwners}
-              />
-              <DateRangePicker
-                size="sm"
-                className="md:w-48"
-                label={t("kit.showcase.forms.period")}
-                value={period}
-                onChange={setPeriod}
-              />
-            </>
-          }
+          onClear={() => setQuery("")}
         />
         <DataTable
           aria-label={t("kit.showcase.collections.dataTable")}
           columns={columns}
-          data={visible}
+          data={CONTACTS}
           pageSize={5}
           perPageOptions={[5, 10, 25]}
-          isFiltered={activeFilters > 0 || Boolean(query)}
-          onClearFilters={clearAll}
+          globalFilter={query}
+          onClearFilters={() => setQuery("")}
           defaultSorting={[{ id: "lastContact", desc: true }]}
           selectable
           selectAllMatching
@@ -686,6 +676,73 @@ function CollectionsSection() {
             </>
           )}
         />
+      </Example>
+
+      <Example
+        title={t("kit.showcase.collections.filterBar")}
+        hint={t("kit.showcase.collections.filterBarHint")}
+      >
+        <FilterBar
+          search={{ value: barQuery, onChange: setBarQuery }}
+          activeCount={activeFilters}
+          onClear={clearAll}
+          resultLabel={t("kit.showcase.collections.resultCount", { count: barResults.length })}
+          sort={
+            <SortMenu
+              value={barSort}
+              onChange={setBarSort}
+              options={[
+                { value: "recent", label: t("kit.showcase.collections.sort.recent") },
+                { value: "oldest", label: t("kit.showcase.collections.sort.oldest") },
+                { value: "nameAsc", label: t("kit.showcase.collections.sort.nameAsc") },
+              ]}
+            />
+          }
+          filters={
+            <>
+              <FacetedFilter
+                title={t("kit.showcase.collections.columns.stage")}
+                options={stageOptions}
+                value={stages}
+                onChange={setStages}
+              />
+              <FacetedFilter
+                title={t("kit.showcase.collections.columns.owner")}
+                options={ownerOptions}
+                value={owners}
+                onChange={setOwners}
+              />
+              <DateRangePicker
+                className="md:w-52"
+                label={t("kit.showcase.forms.period")}
+                value={period}
+                onChange={setPeriod}
+              />
+            </>
+          }
+        />
+        {barResults.length > 0 ? (
+          <ul className="flex flex-col divide-y rounded-lg border">
+            {barResults.slice(0, 3).map((contact) => (
+              <li key={contact.id} className="flex items-center gap-3 px-3 py-2.5">
+                <UserAvatar name={contact.name} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{contact.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{contact.company}</p>
+                </div>
+                <StatusBadge tone={STAGE_TONES[contact.stage]}>
+                  {t(`kit.showcase.collections.stages.${contact.stage}`)}
+                </StatusBadge>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EmptyState
+            title={t("kit.table.noResultsTitle")}
+            description={t("kit.table.noResultsDescription")}
+            action={{ label: t("kit.filters.clear"), onClick: clearAll }}
+          />
+        )}
       </Example>
 
       <Example title={t("kit.showcase.collections.states")}>
@@ -1282,6 +1339,33 @@ function searchOwners(query: string, signal: AbortSignal): Promise<SelectOption[
   })
 }
 
+/**
+ * Envio simulado, para a vitrine não depender de rota: um arquivo com "falha" no nome
+ * rejeita, para dar para ver o erro e o tentar de novo. Na tela de verdade, use
+ * `upload={{ path: "/attachments" }}`.
+ */
+function simulateUpload(
+  file: File,
+  { onProgress, signal }: { onProgress: (fraction: number) => void; signal: AbortSignal }
+) {
+  return new Promise<void>((resolve, reject) => {
+    let progress = 0
+    const timer = setInterval(() => {
+      progress += 0.2
+      onProgress(Math.min(progress, 1))
+      if (progress >= 1) {
+        clearInterval(timer)
+        if (file.name.includes("falha")) reject(new Error("simulado"))
+        else resolve()
+      }
+    }, 200)
+    signal.addEventListener("abort", () => {
+      clearInterval(timer)
+      reject(new DOMException("Aborted", "AbortError"))
+    })
+  })
+}
+
 function FormsSection() {
   const { t } = useTranslation()
   const schema = useMemo(() => buildSchema(t), [t])
@@ -1571,6 +1655,7 @@ function FormsSection() {
             accept={{ "image/*": [], "application/pdf": [".pdf"] }}
             maxSize={5 * 1024 * 1024}
             maxFiles={3}
+            upload={{ send: simulateUpload }}
           />
         </Example>
         <Example title={t("kit.showcase.forms.dropzoneStates")}>

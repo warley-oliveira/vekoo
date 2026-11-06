@@ -42,7 +42,6 @@ export function SortMenu<T extends string = string>({
         render={
           <Button
             variant="ghost"
-            size="sm"
             aria-label={t("kit.sort.current", { label: current?.label ?? "" })}
             className={cn("text-muted-foreground pointer-coarse:h-10", className)}
           />

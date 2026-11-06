@@ -91,10 +91,10 @@ export function StatTile({
       )}
     >
       <p className="truncate text-sm text-muted-foreground">{label}</p>
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
         <p
           title={compacted ? formatNumber(value as number, language) : undefined}
-          className="min-w-0 font-heading text-2xl leading-tight font-semibold tracking-tight tabular-nums"
+          className="font-heading text-2xl leading-tight font-semibold tracking-tight whitespace-nowrap tabular-nums"
         >
           {display}
         </p>

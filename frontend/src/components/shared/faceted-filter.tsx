@@ -106,14 +106,13 @@ function PopoverFacet({
         <Button
           type="button"
           variant="outline"
-          size="sm"
           className={cn("max-w-full pointer-coarse:h-10", className)}
         >
           {icon}
           <span className="truncate">{title}</span>
           {selected.length > 0 ? (
             <>
-              <Separator orientation="vertical" className="mx-0.5 h-3.5" />
+              <Separator orientation="vertical" className="mx-0.5 h-3.5 self-center" />
               {selected.length > MAX_VISIBLE_LABELS ? (
                 <Badge variant="secondary" className="rounded-sm bg-accent px-1 text-accent-foreground">
                   {t("kit.filters.selected", { count: selected.length })}
@@ -217,11 +216,12 @@ function StackedFacet({ title, options, value, onChange, className }: FacetedFil
           <label
             key={option.value}
             className={cn(
-              "flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-1 text-sm hover:bg-muted/50 md:min-h-8",
+              "flex min-h-8 cursor-pointer items-center gap-2.5 rounded-md px-1 text-sm hover:bg-muted/50 pointer-coarse:min-h-10",
               option.disabled && "cursor-not-allowed opacity-60"
             )}
           >
             <Checkbox
+              className="border-muted-foreground/40"
               checked={value.includes(option.value)}
               disabled={option.disabled}
               onCheckedChange={() => onChange(toggle(value, option.value))}

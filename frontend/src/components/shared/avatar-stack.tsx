@@ -5,6 +5,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils"
 import { UserAvatar, type UserAvatarProps } from "./user-avatar"
 
+// A sobreposição não pode cortar as iniciais, então diminui junto com o avatar.
+const OVERLAP = {
+  sm: "-space-x-1",
+  default: "-space-x-1.5",
+  lg: "-space-x-2",
+} as const
+
 export type AvatarStackUser = {
   id?: string
   name: string
@@ -31,7 +38,7 @@ export function AvatarStack({ users, max = 4, size = "sm", className }: AvatarSt
     <AvatarGroup
       role="group"
       aria-label={users.map((user) => user.name).join(", ")}
-      className={cn("w-fit", className)}
+      className={cn("w-fit", OVERLAP[size ?? "default"], className)}
     >
       {visible.map((user, index) => (
         <Tooltip key={user.id ?? `${user.name}-${index}`}>

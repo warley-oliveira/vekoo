@@ -34,6 +34,8 @@ declare module "@tanstack/react-table" {
     /** Filtro no cabeçalho. Com API, a tela aplica; sem API, o `DataTable` aplica. */
     filter?: ColumnFilterConfig
     mobile?: ColumnMobileRole
+    /** Como dizer a ordem no celular: "Mais recentes" diz mais que "decrescente". */
+    sortLabels?: { asc: string; desc: string }
     /** Classes do `th` e do `td`: largura, `whitespace-normal`. */
     className?: string
     /** Sobre `TData` e `TValue`: só para o TypeScript aceitar a extensão. */

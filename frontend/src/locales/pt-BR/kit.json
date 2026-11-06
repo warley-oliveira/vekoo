@@ -157,8 +157,8 @@
       "emptyTitle": "Nada por aqui ainda",
       "noResultsTitle": "Nenhum resultado com esses filtros",
       "noResultsDescription": "Tente termos mais amplos ou limpe os filtros para ver tudo.",
-      "sortDesc": "{{column}}: do maior para o menor",
-      "sortAsc": "{{column}}: do menor para o maior"
+      "sortDesc": "{{column}}: decrescente",
+      "sortAsc": "{{column}}: crescente"
     },
     "showcase": {
       "title": "Kit de componentes",
@@ -285,6 +285,8 @@
         "endLabel": "Todas as conversas foram carregadas",
         "bulkDone_one": "{{count}} contato arquivado",
         "bulkDone_other": "{{count}} contatos arquivados",
+        "filterBar": "Barra de filtros",
+        "filterBarHint": "Busca, filtros, ordenação e limpar. No celular, os filtros vão para uma Sheet.",
         "filterPopover": "Filtros em popover"
       },
       "overlays": {

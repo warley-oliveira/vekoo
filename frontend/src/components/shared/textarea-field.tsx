@@ -42,7 +42,7 @@ export function TextareaField<
 
   const counter =
     showCount && maxLength ? (
-      <span className="text-xs text-muted-foreground tabular-nums">
+      <span className="text-xs leading-none text-muted-foreground tabular-nums">
         {formatNumber(value?.length ?? 0, language)}/{formatNumber(maxLength, language)}
       </span>
     ) : null

@@ -302,8 +302,9 @@ export function DataTable<TData>({
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setLocalPagination,
     enableRowSelection: canSelectRow ? (row) => canSelectRow(row.original) : selectable,
-    // Na API só ordena quem a tela liga a uma ordem no servidor.
+    // Na API, só ordena e filtra o que a tela liga a uma consulta no servidor.
     enableSorting: !isServer || Boolean(onSortingChange),
+    enableFilters: !isServer || Boolean(onColumnFiltersChange),
     globalFilterFn: textFilter as unknown as FilterFn<TData>,
     getCoreRowModel: getCoreRowModel(),
     ...(isServer
@@ -472,13 +473,20 @@ export function DataTable<TData>({
     const sortable = table.getAllLeafColumns().filter((column) => column.getCanSort())
     const filterable = table
       .getAllLeafColumns()
-      .filter((column) => column.columnDef.meta?.filter)
+      .filter((column) => column.columnDef.meta?.filter && column.getCanFilter())
 
     const sortOptions = sortable.flatMap((column) => {
       const label = columnLabel(column)
+      const custom = column.columnDef.meta?.sortLabels
       return [
-        { value: `${column.id}:desc`, label: t("kit.table.sortDesc", { column: label }) },
-        { value: `${column.id}:asc`, label: t("kit.table.sortAsc", { column: label }) },
+        {
+          value: `${column.id}:desc`,
+          label: custom?.desc ?? t("kit.table.sortDesc", { column: label }),
+        },
+        {
+          value: `${column.id}:asc`,
+          label: custom?.asc ?? t("kit.table.sortAsc", { column: label }),
+        },
       ]
     })
     const currentSort = sorting[0]

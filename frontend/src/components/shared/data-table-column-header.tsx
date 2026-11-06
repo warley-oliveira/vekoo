@@ -69,7 +69,7 @@ export function DataTableColumnHeader<TData>({
   const label = columnLabel(column)
   const sorted = column.getIsSorted()
   const align = column.columnDef.meta?.align
-  const filter = column.columnDef.meta?.filter
+  const filter = column.columnDef.meta?.filter && column.getCanFilter()
   const filtered = column.getIsFiltered()
 
   return (
