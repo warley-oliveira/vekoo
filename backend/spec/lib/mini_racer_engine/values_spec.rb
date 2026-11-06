@@ -87,6 +87,13 @@ RSpec.describe MiniRacerEngine::Values do
       expect(elapsed).to be < 1
     end
 
+    it "recusa texto gigante" do
+      stub_const("#{described_class}::MAX_STRING_BYTES", 10)
+
+      expect(described_class.from_js("x" * 10)).to eq("x" * 10)
+      expect { described_class.from_js([ "x" * 11 ]) }.to raise_error(MiniRacerEngine::Error, /too large/)
+    end
+
     it "recusa aninhamento além do teto" do
       deep = []
       (described_class::MAX_DEPTH + 2).times { deep = [ deep ] }

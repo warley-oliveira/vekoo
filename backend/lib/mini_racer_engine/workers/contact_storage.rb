@@ -58,13 +58,15 @@ module MiniRacerEngine::Workers
       conversation = require_chat!
       return nil if key.nil?
 
-      conversation.public_send(field)[normalized(key)]
+      stored(conversation, field)[normalized(key)]
     end
 
     # `$set` só na chave, como `Chat#sync_system_tags!` faz com as etiquetas. `save!` gravaria
-    # o mapa inteiro, e dois scripts na mesma conversa apagariam a chave um do outro. O
-    # `attributes` atualiza a memória sem marcar o campo como alterado, senão o próximo
-    # `save!` desta execução reescreveria o mapa do mesmo jeito.
+    # o mapa inteiro, e dois scripts na mesma conversa apagariam a chave um do outro.
+    #
+    # Na memória, escreve direto em `attributes` e tira o campo da lista de alterados: ler um
+    # Hash pelo getter já o marca, e o próximo `save!` da conversa (`disableAutomation`, por
+    # exemplo) reescreveria o mapa inteiro do mesmo jeito.
     def write(field, key, value)
       conversation = require_chat!
       return nil if key.nil?
@@ -79,7 +81,12 @@ module MiniRacerEngine::Workers
       Chat.where(organization_id: conversation.organization_id, _id: conversation.id)
           .update_all("$set" => { "#{field}.#{name}" => clean })
       (conversation.attributes[field.to_s] ||= {})[name] = clean
+      conversation.remove_change(field)
       true
+    end
+
+    def stored(conversation, field)
+      conversation.attributes[field.to_s] || {}
     end
 
     def guard_size!(conversation, field, name, value)
@@ -88,7 +95,7 @@ module MiniRacerEngine::Workers
 
       budget&.charge_stored_bytes!(bytes)
 
-      current = conversation.public_send(field) || {}
+      current = stored(conversation, field)
       return if current.key?(name) || current.size < MAX_KEYS
 
       raise MiniRacerEngine::Error, "Too many keys (limit: #{MAX_KEYS})"

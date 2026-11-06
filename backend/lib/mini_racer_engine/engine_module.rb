@@ -26,7 +26,9 @@ module MiniRacerEngine
     def attach_method(method_def, params, event = nil, charge: true)
       budget&.charge_call!(method_def.name) if charge
 
-      input = Values.from_js(params)
+      # O `to_js` também aqui: texto com meio emoji chega do V8 em bytes inválidos, e nem o
+      # BSON nem o `to_json` de quem recebe aceitariam.
+      input = Values.to_js(Values.from_js(params))
       output = Values.to_js(guarded(method_def.name) { method_def.call(input) })
       emit_event(event, method_def.name, input: input, output: output)
       output

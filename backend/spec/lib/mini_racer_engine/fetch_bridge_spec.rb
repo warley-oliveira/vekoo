@@ -539,6 +539,37 @@ RSpec.describe "MiniRacerEngine fetch() bridge" do
 
       expect(fetch.send(:http_limits, 45)[:total_timeout]).to be > 0
     end
+
+    # De ponta a ponta: V8, callback Ruby e um servidor de verdade que aceita e não responde.
+    # O `timeout` do V8 sozinho não alcança um callback Ruby em andamento.
+    context "com um servidor que não responde" do
+      around do |example|
+        WebMock.allow_net_connect!
+        example.run
+      ensure
+        WebMock.disable_net_connect!(allow_localhost: false)
+      end
+
+      it "a requisição desiste no prazo da execução, e o script segue" do
+        server = TCPServer.new("127.0.0.1", 0)
+        port = server.addr[1]
+        accepted = Thread.new { server.accept }
+        stub_const("MiniRacerEngine::Limits::FETCH_PORTS", [ port ])
+        allow(SafeHttp).to receive(:internal_address?).and_return(false)
+        allow(SafeHttp).to receive(:resolve).with("lento.test").and_return([ "127.0.0.1" ])
+
+        result = nil
+        elapsed = elapsed_seconds do
+          result = run("const r = request('http://lento.test:#{port}/'); return [r.ok, r.status];", timeout_ms: 2_000)
+        end
+
+        expect(result).to eq([ false, 504 ])
+        expect(elapsed).to be_between(1.5, 3)
+      ensure
+        accepted&.kill
+        server&.close
+      end
+    end
   end
 
   describe "downloadFile" do

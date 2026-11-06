@@ -170,6 +170,12 @@ RSpec.describe MiniRacerEngine::Worker do
       expect { worker.perform("throw { get stack() { throw 1 } };") }.to raise_error(MiniRacer::RuntimeError, /unprintable/)
     end
 
+    it "erro gigante é cortado" do
+      expect { worker.perform("throw 'x'.repeat(2 ** 24);") }.to raise_error(MiniRacer::RuntimeError) { |error|
+        expect(error.message.length).to eq(10_000)
+      }
+    end
+
     # Com o script na primeira linha do `eval`, a linha do erro é a que a pessoa escreveu.
     it "aponta a linha que a pessoa escreveu" do
       expect { worker.perform("const a = 1;\nconst b = 2;\nthrow new Error('aqui');") }

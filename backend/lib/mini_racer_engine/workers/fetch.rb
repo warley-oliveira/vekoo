@@ -117,9 +117,10 @@ module MiniRacerEngine::Workers
       budget&.charge_call!(event_name)
       budget&.charge_fetch!
 
+      # Sem o `to_js` na entrada: o corpo pode ser binário de propósito (`Uint8Array`).
       input = MiniRacerEngine::Values.from_js(params)
       output = MiniRacerEngine::Values.to_js(guarded(event_name) { send(handler, input) })
-      emit_event(event, event_name, input: redacted(input), output: output)
+      emit_event(event, event_name, input: MiniRacerEngine::Values.to_js(redacted(input)), output: output)
       output
     end
 

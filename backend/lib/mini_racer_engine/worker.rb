@@ -114,6 +114,7 @@ module MiniRacerEngine
         const fromEntries = Object.fromEntries;
         const toArray = Array.from;
         const toWellFormed = String.prototype.toWellFormed;
+        const slice = String.prototype.slice;
         const NativeMap = Map;
         const NativeSet = Set;
 
@@ -133,7 +134,7 @@ module MiniRacerEngine
           } catch (e) {
             text = 'Script failed with an unprintable error';
           }
-          finish(false, text);
+          finish(false, apply(slice, text, [0, 10000]));
         }
 
         function succeed(value) {

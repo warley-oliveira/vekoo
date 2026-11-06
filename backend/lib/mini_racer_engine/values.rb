@@ -12,6 +12,9 @@ module MiniRacerEngine
   module Values
     MAX_DEPTH = 64
     MAX_NODES = 200_000
+    # Uma string desse tamanho é o heap inteiro do script. Sem o teto, um `console.log(s)`
+    # copiaria centenas de MB para o lado do Ruby antes de alguém cortar.
+    MAX_STRING_BYTES = 16.megabytes
 
     module_function
 
@@ -26,6 +29,10 @@ module MiniRacerEngine
         case current
         when Hash then current.to_h { |key, item| [ key.to_s, walk.call(item, depth + 1) ] }
         when Array then current.map { |item| walk.call(item, depth + 1) }
+        when String
+          raise Error, "Arguments too large" if current.bytesize > MAX_STRING_BYTES
+
+          current
         when ::MiniRacer::JavaScriptFunction then nil
         when ::MiniRacer::ScriptError then current.message
         else current

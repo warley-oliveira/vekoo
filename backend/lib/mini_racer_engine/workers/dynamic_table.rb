@@ -303,7 +303,9 @@ module MiniRacerEngine::Workers
       escaped = Regexp.escape(text.to_s)
       or_conditions = fields.map { |field| { field_key(field) => /#{escaped}/i } }
 
-      records = records_of(table).or(or_conditions).order_by(_id: 1).limit(MAX_RECORDS + 1).to_a
+      # `any_of`, nunca `or`: no Mongoid `where(tabela).or(x)` quer dizer "da tabela OU x", o
+      # que na origem devolvia registros de qualquer tabela de qualquer organização.
+      records = records_of(table).any_of(or_conditions).order_by(_id: 1).limit(MAX_RECORDS + 1).to_a
       capped_response(records.first(MAX_RECORDS).map(&:to_data), records.size > MAX_RECORDS)
     end
 

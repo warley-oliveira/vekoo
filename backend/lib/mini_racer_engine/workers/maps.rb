@@ -81,7 +81,7 @@ module MiniRacerEngine::Workers
 
     # O `timeout` do V8 não interrompe um callback Ruby.
     def request_timeout
-      [ TIMEOUT, budget&.remaining_seconds || TIMEOUT, ].min.clamp(0.01, TIMEOUT)
+      [ TIMEOUT, budget&.remaining_seconds || TIMEOUT ].min.clamp(0.01, TIMEOUT)
     end
 
     def build_payload(origin, destination, options)
