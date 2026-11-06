@@ -563,6 +563,22 @@ RSpec.describe WabaStatusUpdateService do
 
       expect(service.call.code).to eq(:updated)
     end
+
+    # O mesmo motivo do lookup da mensagem: `first` injetaria uma ordenação por _id.
+    it "busca com take, nunca first" do
+      criteria = double("Busca do destinatário", take: nil)
+      stub_const("Outreach::Recipient", double(where: criteria))
+
+      service.call
+
+      expect(criteria).to have_received(:take)
+    end
+
+    it "sem o domínio de campanhas, segue normalmente" do
+      hide_const("Outreach::Recipient")
+
+      expect(service.call.code).to eq(:updated)
+    end
   end
 
   describe "nova tentativa" do

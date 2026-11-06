@@ -574,6 +574,13 @@ RSpec.describe ChatMessage::Base do
       expect(described_class.ia.where(chat_id: chat.id).pluck(:id)).not_to include(operator.id)
     end
 
+    it ".human pega as marcadas como intervenção humana" do
+      human = create_message(role: "assistant", content: "pessoa", role_base_type: "human")
+      create_message(role: "assistant", content: "fluxo")
+
+      expect(described_class.human.where(chat_id: chat.id).pluck(:id)).to eq([ human.id ])
+    end
+
     it ".within_range é fechado no início e aberto no fim" do
       inside = create_message(content: "dentro", created_at: Time.utc(2026, 11, 2, 12))
       create_message(content: "no fim", created_at: Time.utc(2026, 11, 3))

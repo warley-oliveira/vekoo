@@ -161,7 +161,7 @@ RSpec.describe Chats::SendMedia do
       expect(a_request(:post, evolution_media_url)).not_to have_been_made
     end
 
-    it "guarda a mídia com a URL absoluta, que vale para qualquer domínio da API" do
+    it "guarda a mesma URL absoluta que foi para o provedor" do
       stub_request(:post, evolution_audio_url).to_return(json_reply({ key: { id: "AUD-1" } }))
 
       expect(send_media.media_url).to eq(Media::Storage.public_url("/rails/active_storage/blobs/proxy/abc/recado.ogg"))

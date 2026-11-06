@@ -295,6 +295,31 @@ RSpec.describe BusinessWorkWindow do
         [ { "day_of_week" => "1", "enabled" => "true", "windows" => [ { "start" => "09:00", "end" => "18:00" } ] } ]
       )
     end
+
+    describe BusinessWorkWindow::Normalizer do
+      it "aceita os parâmetros do controlador" do
+        params = ActionController::Parameters.new(days: [ { day_of_week: "1", enabled: "true", windows: [ { start: "09:00", end: "18:00" } ] } ])
+
+        expect(described_class.call(params)).to eq(
+          "days" => [ { "day_of_week" => "1", "enabled" => "true", "windows" => [ { "start" => "09:00", "end" => "18:00" } ] } ]
+        )
+      end
+
+      it "devolve como veio o que não é um mapa" do
+        expect(described_class.call("lixo")).to eq("lixo")
+        expect(described_class.call(nil)).to be_nil
+      end
+
+      it "sem dias, não inventa a chave" do
+        expect(described_class.call({ "outro" => 1 })).to eq("outro" => 1)
+      end
+
+      it "descarta dia e janela que não são mapas" do
+        expect(described_class.days([ "lixo", { "day_of_week" => "2", "windows" => [ "lixo", { "start" => "09:00", "end" => "10:00" } ] } ])).to eq(
+          [ { "day_of_week" => "2", "enabled" => "false", "windows" => [ { "start" => "09:00", "end" => "10:00" } ] } ]
+        )
+      end
+    end
   end
 
   describe "validação" do
@@ -388,6 +413,15 @@ RSpec.describe BusinessWorkWindow do
       saved.settings = saved.settings.merge("automation_pause_period" => "hours")
 
       expect(saved).to be_valid
+    end
+
+    it "valida ao ligar a janela sobre uma agenda que já estava gravada" do
+      saved = create(:organization, settings: { "business_work_enabled" => false, "business_work" => { "days" => [] } })
+
+      saved.settings = saved.settings.merge("business_work_enabled" => true)
+
+      expect(saved).not_to be_valid
+      expect(saved.errors[:settings]).to include(a_string_matching(/habilite ao menos um dia/))
     end
 
     it "sai no idioma pedido" do
