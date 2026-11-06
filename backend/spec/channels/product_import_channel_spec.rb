@@ -57,5 +57,11 @@ RSpec.describe ProductImportChannel, type: :channel do
       expect { described_class.broadcast_event(organization.id, "progress", { importId: "x", processed: 1 }) }
         .to have_broadcasted_to(own_stream).with(action: "progress", data: { importId: "x", processed: 1 })
     end
+
+    it "não levanta se o Redis soluçar" do
+      allow(ActionCable.server).to receive(:broadcast).and_raise(Errno::ECONNREFUSED)
+
+      expect { described_class.broadcast_event(organization.id, "progress", {}) }.not_to raise_error
+    end
   end
 end

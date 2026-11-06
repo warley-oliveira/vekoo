@@ -317,6 +317,17 @@ RSpec.describe Products::ImportJob, type: :job do
       expect(messages.last.first).to eq("completed")
     end
 
+    # O progresso é aviso, e a importação é o trabalho.
+    it "conclui a importação mesmo com o Redis fora do ar" do
+      allow(ActionCable.server).to receive(:broadcast).and_raise(Errno::ECONNREFUSED)
+      import = build_import
+
+      described_class.perform_now(import.id)
+
+      expect(import.reload).to be_completed
+      expect(import.created_count).to eq(3)
+    end
+
     it "não transmite para outra organização" do
       other = ProductImportChannel.organization_stream(create(:organization).id, ProductImportChannel::STREAM)
 
