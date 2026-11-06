@@ -262,17 +262,7 @@ module FlowRuntime
     end
 
     def alert_failure(message)
-      return if execution.playground?
-
-      OrganizationAlertService.flow_error(
-        execution.organization,
-        execution.flow,
-        code: "flow_execution_failed",
-        message: I18n.t("automation.flows.errors.execution_failed", name: execution.flow.name, reason: message.to_s.truncate(300)),
-        metadata: { execution_id: execution.id, node_id: execution.current_node_id, chat_id: execution.chat_id }
-      )
-    rescue StandardError => e
-      Rails.logger.error("[FlowRuntime] alerta não gravou: #{e.class}: #{e.message}")
+      execution.alert!("flow_execution_failed", I18n.t("automation.flows.errors.execution_failed", name: execution.flow.name, reason: message.to_s.truncate(300)))
     end
 
     def broadcast_playground(kind, payload = {})

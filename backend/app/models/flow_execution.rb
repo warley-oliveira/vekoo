@@ -40,6 +40,21 @@ class FlowExecution < ApplicationRecord
     won == 1 ? token : nil
   end
 
+  # O alerta deste fluxo na organização. O teste do editor não alerta ninguém, e alerta que não grava não derruba a execução.
+  def alert!(code, message)
+    return if playground?
+
+    OrganizationAlertService.flow_error(
+      organization,
+      flow,
+      code: code,
+      message: message,
+      metadata: { execution_id: id, node_id: current_node_id, chat_id: chat_id }
+    )
+  rescue StandardError => e
+    Rails.logger.error("[FlowExecution] alerta não gravou: #{e.class}: #{e.message}")
+  end
+
   def active?
     ACTIVE_STATUSES.include?(status)
   end

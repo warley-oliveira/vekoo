@@ -81,6 +81,8 @@ module ChatMessage
 
     # Campanha que originou a mensagem. Campo solto: `Outreach::Campaign` é de outro domínio.
     field :campaign_id, type: String
+    # Fluxo que originou a mensagem, para o ranking por fluxo. Campo solto, e sem default: só existe em mensagem de fluxo.
+    field :flow_id, type: String
 
     # Anexo escolhido pela pessoa (`Attachment`, domínio inbox).
     field :attachment_id, type: String

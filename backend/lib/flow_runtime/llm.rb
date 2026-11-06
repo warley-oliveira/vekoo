@@ -21,9 +21,14 @@ module FlowRuntime
       COSTS.fetch(size_of(size))
     end
 
+    # Quanto a última `converse` gastou, nos campos de `ChatMessage`: a resposta que ela gerou guarda isso. Soma as rodadas de
+    # ferramenta. O juiz de saída fica de fora, porque é outro modelo e `usage_model` só cabe um.
+    attr_reader :conversation_usage
+
     def initialize(organization, chat: Ai::Chat.new)
       @organization = organization
       @chat = chat
+      @conversation_usage = {}
     end
 
     # Uma resposta em JSON, no formato de `schema`. O corte de tokens leva em conta o pensamento, que conta nele.
@@ -54,6 +59,7 @@ module FlowRuntime
     # @raise [NoCredits, Ai::Chat::Failed, Ai::Chat::MissingKey]
     def converse(system:, messages:, tools: [], size: "main", instruction: nil, effort: "medium", cost: nil, &on_tool)
       size = self.class.size_of(size)
+      @conversation_usage = {}
 
       billed(cost || self.class.cost_of(size)) do
         run_tool_loop(system, messages.dup, tools, MODELS.fetch(size), instruction, effort, &on_tool)
@@ -68,6 +74,7 @@ module FlowRuntime
       MAX_TOOL_ROUNDS.times do
         response = chat.respond(system: system, messages: messages, tools: tools, context: instruction, model: model, effort: effort)
         log_usage(model, response)
+        add_conversation_usage(model, response)
         calls = response.content.select { |block| block.type == :tool_use }
         return text_of(response) if response.stop_reason != :tool_use || calls.empty?
 
@@ -110,6 +117,23 @@ module FlowRuntime
       return unless usage
 
       Rails.logger.info("[FlowRuntime::Llm] organization=#{organization.id} model=#{model} input=#{usage.input_tokens} output=#{usage.output_tokens} cache_read=#{usage.try(:cache_read_input_tokens)}")
+    end
+
+    # `usage_prompt_tokens` é o prompt inteiro, e `usage_cached_tokens` é a parte dele que veio do cache: a API conta os três
+    # pedaços em separado.
+    def add_conversation_usage(model, message)
+      usage = message.try(:usage)
+      return unless usage
+
+      cached = usage.try(:cache_read_input_tokens).to_i
+      prompt = usage.input_tokens.to_i + cached + usage.try(:cache_creation_input_tokens).to_i
+
+      @conversation_usage = {
+        usage_model: model.to_s,
+        usage_prompt_tokens: @conversation_usage[:usage_prompt_tokens].to_i + prompt,
+        usage_completion_tokens: @conversation_usage[:usage_completion_tokens].to_i + usage.output_tokens.to_i,
+        usage_cached_tokens: @conversation_usage[:usage_cached_tokens].to_i + cached
+      }
     end
 
     def parse_json(text)

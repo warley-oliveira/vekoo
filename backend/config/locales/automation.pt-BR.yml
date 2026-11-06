@@ -41,6 +41,27 @@ pt-BR:
     unknown_action_type: "Tipo de ação desconhecido."
     invalid_body: "O corpo da requisição não é um JSON válido."
     payload_too_large: "O corpo da requisição é grande demais."
+  insights:
+    custom_dashboards:
+      sources:
+        hook_logs:
+          label: "Logs de webhooks"
+          fields:
+            status: "Situação"
+            status_code: "Código HTTP"
+            processing_time_ms: "Tempo de processamento (ms)"
+            hook_name: "Webhook"
+            hook_status: "Situação do webhook"
+            created_at: "Data"
+          values:
+            status:
+              success: "Sucesso"
+              error: "Erro"
+              skipped: "Ignorado"
+            hook_status:
+              active: "Ativo"
+              test: "Em teste"
+              inactive: "Inativo"
   automation:
     flows:
       defaults:
@@ -74,6 +95,7 @@ pt-BR:
         no_credits: "Sem créditos para o bloco de IA."
         no_credits_alert: "O fluxo \"%{name}\" está sem créditos para os blocos de IA."
         attachment_missing_alert: "O fluxo \"%{name}\" enviou uma mensagem sem o anexo citado: %{reason}"
+        funnel_stage_missing_alert: "O fluxo \"%{name}\" não conseguiu mudar a etapa da conversa: o funil ou a etapa não existem mais."
         ai_unavailable: "A IA não está configurada neste ambiente."
         ai_failed: "A IA não respondeu: %{reason}"
         no_connected_outputs: "Assistente IA: nenhuma saída está conectada a outro bloco."

@@ -41,6 +41,27 @@ en:
     unknown_action_type: "Unknown action type."
     invalid_body: "The request body isn't valid JSON."
     payload_too_large: "The request body is too large."
+  insights:
+    custom_dashboards:
+      sources:
+        hook_logs:
+          label: "Webhook logs"
+          fields:
+            status: "Status"
+            status_code: "HTTP code"
+            processing_time_ms: "Processing time (ms)"
+            hook_name: "Webhook"
+            hook_status: "Webhook status"
+            created_at: "Date"
+          values:
+            status:
+              success: "Success"
+              error: "Error"
+              skipped: "Ignored"
+            hook_status:
+              active: "Active"
+              test: "Testing"
+              inactive: "Inactive"
   automation:
     flows:
       defaults:
@@ -74,6 +95,7 @@ en:
         no_credits: "Not enough credits for the AI block."
         no_credits_alert: "Flow \"%{name}\" is out of credits for its AI blocks."
         attachment_missing_alert: "Flow \"%{name}\" sent a message without the attachment it mentions: %{reason}"
+        funnel_stage_missing_alert: "Flow \"%{name}\" couldn't change the chat's stage: the funnel or the stage no longer exists."
         ai_unavailable: "AI isn't configured in this environment."
         ai_failed: "The AI didn't respond: %{reason}"
         no_connected_outputs: "AI assistant: no output is connected to another block."

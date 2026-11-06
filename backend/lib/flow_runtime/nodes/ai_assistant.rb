@@ -99,7 +99,7 @@ module FlowRuntime
         text = converse(reply_messages, [ instruction, hint, widget_context ].compact_blank.join("\n\n").presence, judged)
 
         if text.present?
-          delivery = dispatcher.send_text(text, sender_name: data["sender_name"].presence, generated: true)
+          delivery = dispatcher.send_text(text, sender_name: data["sender_name"].presence, generated: true, usage: llm.conversation_usage)
           context.append_playground_message("assistant", text) if context.playground?
         end
 

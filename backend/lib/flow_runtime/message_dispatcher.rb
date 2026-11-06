@@ -11,9 +11,10 @@ module FlowRuntime
 
     # @param generated [Boolean] o texto veio do modelo. Só ele passa pela limpeza: o que alguém escreveu no editor chega como
     #   foi escrito (ver Flows::TextDelivery).
+    # @param usage [Hash] os tokens da resposta do modelo (`Llm#conversation_usage`)
     # @return [Flows::TextDelivery::Result] levanta quando o canal levanta, como `Chat#send_text_message`
-    def send_text(text, sender_name: nil, generated: false)
-      delivery = playground? ? preview_text(text, sender_name, generated) : deliver_text(text, sender_name, generated)
+    def send_text(text, sender_name: nil, generated: false, usage: {})
+      delivery = playground? ? preview_text(text, sender_name, generated) : deliver_text(text, sender_name, generated, usage)
       report_missing_attachments(delivery.missing_attachments)
       delivery
     end
@@ -24,7 +25,7 @@ module FlowRuntime
       return broadcast_media(media) if playground?
       raise I18n.t("automation.flows.errors.no_connector") unless chat&.connector
 
-      Chats::SendMedia.call(chat: chat, media: media, sender_name: sender_name)
+      Chats::SendMedia.call(chat: chat, media: media, sender_name: sender_name, attributes: message_attributes)
     end
 
     def ask_question(text, sender_name: nil)
@@ -46,16 +47,22 @@ module FlowRuntime
       @execution.playground?
     end
 
+    # O que toda mensagem de fluxo leva. Quem separa automação de pessoa nas métricas é o resto: `role: "assistant"`, origem
+    # `platform` e nenhuma conta, que é como sai tudo o que vem daqui (ver Insights::MessageAuthorship).
+    def message_attributes
+      { flow_id: @execution.flow_id.to_s }
+    end
+
     private
 
     def chat
       @execution.chat
     end
 
-    def deliver_text(text, sender_name, generated)
+    def deliver_text(text, sender_name, generated, usage)
       raise I18n.t("automation.flows.errors.no_connector") unless chat&.connector
 
-      Flows::TextDelivery.call(chat: chat, text: text, sender_name: sender_name, generated: generated)
+      Flows::TextDelivery.call(chat: chat, text: text, sender_name: sender_name, generated: generated, attributes: message_attributes, usage: usage)
     end
 
     # O teste do editor mostra as partes como iriam, sem enviar nem baixar nada.
@@ -71,15 +78,7 @@ module FlowRuntime
       return if reasons.blank?
       return broadcast(:event, name: "attachment_missing", payload: { reasons: reasons }) if playground?
 
-      OrganizationAlertService.flow_error(
-        @execution.organization,
-        @execution.flow,
-        code: "flow_attachment_missing",
-        message: I18n.t("automation.flows.errors.attachment_missing_alert", name: @execution.flow.name, reason: reasons.first),
-        metadata: { execution_id: @execution.id, node_id: @execution.current_node_id, chat_id: @execution.chat_id }
-      )
-    rescue StandardError => e
-      Rails.logger.error("[FlowRuntime] alerta não gravou: #{e.class}: #{e.message}")
+      @execution.alert!("flow_attachment_missing", I18n.t("automation.flows.errors.attachment_missing_alert", name: @execution.flow.name, reason: reasons.first))
     end
 
     def broadcast_media(media)

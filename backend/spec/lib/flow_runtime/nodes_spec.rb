@@ -131,7 +131,8 @@ RSpec.describe "Blocos de fluxo" do
 
       expect(Chats::SendTemplate).to have_received(:call).with(hash_including(
         template: template,
-        components: [ { "type" => "body", "parameters" => [ { "type" => "text", "text" => "Maria Souza" } ] } ]
+        components: [ { "type" => "body", "parameters" => [ { "type" => "text", "text" => "Maria Souza" } ] } ],
+        attributes: { flow_id: flow.id }
       ))
     end
   end
@@ -490,16 +491,79 @@ RSpec.describe "Blocos de fluxo" do
   end
 
   describe "set_funnel_stage" do
-    it "move a conversa só naquele funil" do
-      chat.set(funnel_stages: { "funil-a" => "etapa-1" })
+    let(:funnel) { create(:funnel, organization: organization) }
+    let(:stage) { funnel.stages.second }
 
-      run_block("set_funnel_stage", { funnel_id: "funil-b", stage_id: "etapa-2" })
-
-      expect(chat.reload.funnel_stages).to eq("funil-a" => "etapa-1", "funil-b" => "etapa-2")
+    def alert_of(execution)
+      organization.organization_alerts.active.for_origin("Flow", execution.flow_id).for_code("flow_funnel_stage_missing").take
     end
 
-    it "não aceita chave que seria caminho no Mongo" do
-      expect(log_of(run_block("set_funnel_stage", { funnel_id: "a.b", stage_id: "c" }), "b").output).to eq("skipped" => "no_funnel_stage")
+    it "move a conversa só naquele funil, e avisa a lista" do
+      other = create(:funnel, organization: organization)
+      chat.place_in_funnel!(other.id, other.stages.first.id)
+
+      execution = run_block("set_funnel_stage", { funnel_id: funnel.id, stage_id: stage.id })
+
+      fresh = Chat.scoped(organization.id, chat.id)
+      expect(fresh.funnel_stage_id(funnel.id)).to eq(stage.id)
+      expect(fresh.funnel_stage_id(other.id)).to eq(other.stages.first.id)
+      expect(log_of(execution, "b").output).to eq("funnel_id" => funnel.id, "stage_id" => stage.id, "moved" => true)
+    end
+
+    it "aceita a etapa em variável" do
+      run_block("set_funnel_stage", { funnel_id: funnel.id, stage_id: "{{vars.etapa}}" }, variables: { "etapa" => stage.id })
+
+      expect(Chat.scoped(organization.id, chat.id).funnel_stage_id(funnel.id)).to eq(stage.id)
+    end
+
+    it "passar de novo não move nem avisa" do
+      chat.place_in_funnel!(funnel.id, stage.id)
+
+      expect(log_of(run_block("set_funnel_stage", { funnel_id: funnel.id, stage_id: stage.id }), "b").output).to include("moved" => false)
+    end
+
+    it "etapa de outro funil não entra: fica no log, alerta e o fluxo segue" do
+      alheia = create(:funnel, organization: organization).stages.first
+
+      execution = run_block("set_funnel_stage", { funnel_id: funnel.id, stage_id: alheia.id }, handles: [ nil ])
+
+      expect(execution).to have_attributes(status: "completed")
+      expect(execution.context["variables"]["saiu_por"]).to eq("padrao")
+      expect(log_of(execution, "b").output).to eq("skipped" => "funnel_stage_not_found")
+      expect(Chat.scoped(organization.id, chat.id).funnel_stage_id(funnel.id)).to be_nil
+      expect(alert_of(execution).message).to include(execution.flow.name)
+    end
+
+    it "funil de outra organização é como se não existisse" do
+      alheio = create(:funnel, organization: create(:organization))
+
+      execution = run_block("set_funnel_stage", { funnel_id: alheio.id, stage_id: alheio.stages.first.id })
+
+      expect(log_of(execution, "b").output).to eq("skipped" => "funnel_stage_not_found")
+      expect(Chat.scoped(organization.id, chat.id).funnel_stages.to_h).to be_empty
+    end
+
+    it "funil apagado e id que nem é id não derrubam o fluxo" do
+      funnel_id = funnel.id
+      stage_id = stage.id
+      funnel.destroy!
+
+      expect(run_block("set_funnel_stage", { funnel_id: funnel_id, stage_id: stage_id })).to have_attributes(status: "completed")
+      expect(run_block("set_funnel_stage", { funnel_id: "a.b", stage_id: "c" })).to have_attributes(status: "completed")
+    end
+
+    it "sem funil ou etapa, só registra" do
+      expect(log_of(run_block("set_funnel_stage", { funnel_id: funnel.id, stage_id: "{{vars.nada}}" }), "b").output).to eq("skipped" => "no_funnel_stage")
+    end
+
+    it "publicar de novo resolve o alerta" do
+      execution = run_block("set_funnel_stage", { funnel_id: SecureRandom.uuid, stage_id: SecureRandom.uuid })
+
+      expect(alert_of(execution)).to be_present
+
+      OrganizationAlertService.flow_resolved(organization, execution.flow)
+
+      expect(alert_of(execution)).to be_nil
     end
   end
 

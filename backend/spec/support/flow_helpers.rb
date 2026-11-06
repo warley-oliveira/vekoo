@@ -1,6 +1,7 @@
 # Atalhos das specs de fluxo: uma definição enxuta, publicada, e um `Ai::Chat` de mentira que responde o roteiro.
 module FlowHelpers
-  FakeMessage = Struct.new(:stop_reason, :content, keyword_init: true)
+  FakeMessage = Struct.new(:stop_reason, :content, :usage, keyword_init: true)
+  FakeUsage = Struct.new(:input_tokens, :output_tokens, :cache_read_input_tokens, :cache_creation_input_tokens, keyword_init: true)
   FakeText = Struct.new(:text) do
     def type = :text
   end
@@ -38,16 +39,16 @@ module FlowHelpers
 
   attr_reader :sent_texts
 
-  def llm_text(text, stop_reason: :end_turn)
-    FakeMessage.new(stop_reason: stop_reason, content: [ FakeText.new(text) ])
+  def llm_text(text, stop_reason: :end_turn, usage: nil)
+    FakeMessage.new(stop_reason: stop_reason, content: [ FakeText.new(text) ], usage: usage && FakeUsage.new(**usage))
   end
 
   def llm_json(hash)
     llm_text(hash.to_json)
   end
 
-  def llm_tool(name, input = {}, id: "toolu_#{SecureRandom.hex(4)}")
-    FakeMessage.new(stop_reason: :tool_use, content: [ FakeToolUse.new(id, name, input) ])
+  def llm_tool(name, input = {}, id: "toolu_#{SecureRandom.hex(4)}", usage: nil)
+    FakeMessage.new(stop_reason: :tool_use, content: [ FakeToolUse.new(id, name, input) ], usage: usage && FakeUsage.new(**usage))
   end
 
   # Cada chamada a `Ai::Chat#respond` devolve a próxima do roteiro. `seen` guarda os argumentos.

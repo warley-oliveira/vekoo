@@ -42,15 +42,7 @@ module Flows
     end
 
     def alert(execution)
-      return if execution.playground?
-
-      OrganizationAlertService.flow_error(
-        execution.organization,
-        execution.flow,
-        code: "flow_execution_failed",
-        message: I18n.t("automation.flows.errors.execution_failed", name: execution.flow.name, reason: I18n.t("automation.flows.errors.interrupted")),
-        metadata: { execution_id: execution.id, node_id: execution.current_node_id, chat_id: execution.chat_id }
-      )
+      execution.alert!("flow_execution_failed", I18n.t("automation.flows.errors.execution_failed", name: execution.flow.name, reason: I18n.t("automation.flows.errors.interrupted")))
     end
   end
 end

@@ -32,6 +32,7 @@ Em dashboard personalizado, **cada fonte exige também a permissão da tela de o
 | `agenda_bookings` | `calendar` | não: é a mesma lista do calendário |
 | `campaigns` | `campaigns` | não |
 | `daily_stats` | `dashboard` | não: número da organização |
+| `hook_logs` | `core_settings` | não: é a mesma lista dos logs de webhook |
 
 Fonte sem a permissão: `403 forbidden` na consulta, e ela não aparece em `data-sources`. Um dashboard pode misturar fontes: quem não alcança uma recebe `403` só naquele card, e a tela trata por card.
 
@@ -184,7 +185,7 @@ Respostas `422`:
 | **`AiAutonomyCard`** | **Vira "Autonomia da automação"**: `automationResolutionRate`, `chatsHandledByAutomation` sobre `chatsTotal`. Mudou o cálculo: a origem mostrava 100 menos `humanTouchRate`, e aí conversa que ninguém respondeu contava como autonomia. `humanTouchRate` continua saindo. |
 | `ChannelMixCard` | Fica: `chatsByChannel`. Os valores são os de `audienceType`, e a origem traduzia outros (`whatsapp`, `webchat`). |
 | `MessageVolumeCard` | Fica: `messageVolume`, com `automation` no lugar de `ai` e uma série nova, `campaign`. |
-| **`AssistantRankingCard`** | **Sai.** Não há assistente, e a mensagem não guarda de qual fluxo saiu, então não existe o equivalente. Quando `be-automation` gravar `flow_id` na mensagem, entra numa faceta de `MessageVolumeDaily`. Sem ele, "Equipe e assistentes" vira só "Equipe". |
+| **`AssistantRankingCard`** | **Sai.** Não há assistente. A mensagem de fluxo já guarda `flow_id` (ver [automation.md](automation.md)): o equivalente é uma faceta de `MessageVolumeDaily`, que ainda não existe. Sem ela, "Equipe e assistentes" vira só "Equipe". |
 | `TeamRankingCard` | Fica: `messagesByAccount`. `profile_picture_url` e `provider_avatar_url` viram um só, `avatarUrl`, e o id é UUID. |
 | `MetricCard`, Horas economizadas | Fica: `hoursSaved`. Agora conta as mensagens do período, de qualquer conversa. A origem contava só as de conversas criadas no período. |
 | `MetricCard`, Resolução autônoma | **Vira o mesmo número de Autonomia da automação.** Na origem era "automação nunca pausada", que também contava conversa sem resposta. A tela pode juntar os dois cards. |
@@ -195,7 +196,7 @@ Respostas `422`:
 | `FunelDataCard` | Fica, por funil: `funnels[].stages`. Na origem eram duas listas paralelas (`funel_names`, `funel_count`). |
 | `TagsDataCard` | Fica, por funil: `funnels[].tags`, uma lista de `{ id, name, color, count }` no lugar de três listas paralelas. |
 | `TrafficHeatMapCard` | Fica: `heatMap`. Hora sem mensagem não vem. |
-| **`TokenUsageCard`, `CreditUsageCard`, `AvgCostCard`** | **Saem.** Só apareciam para `super_user`, que não existe aqui. E não há dado: ninguém grava `usage_*` na mensagem, nem crédito por dia. |
+| **`TokenUsageCard`, `CreditUsageCard`, `AvgCostCard`** | **Saem.** Só apareciam para `super_user`, que não existe aqui. E o dado é parcial: `ai_assistant` grava `usage_*` na resposta, mas o juiz e os blocos que não respondem ao contato não têm mensagem onde gravar (ver [automation.md](automation.md)), e não há crédito por dia. |
 | `AgendaHighlightsCard`, `AttendanceRateCard`, `CalendarStatsCard`, `CancellationRateCard`, `CollaboratorPerformanceCard`, `DailyTrendCard`, `HourlyDistributionCard`, `UpcomingEventsCard`, `WeekdayDistributionCard` | Ficam, sem mudança nesta rota: `GET /dashboard/calendar-stats`, em [agenda.md](agenda.md). |
 | `DashboardDateFilterModal`, `DashboardSkeleton`, `InlineRangeCalendar` | Só tela. |
 
@@ -520,6 +521,7 @@ A chave dos campos é em snake_case, porque é **valor**: é o que a tela manda 
 | `agenda_bookings` | Agendamentos, sem os arquivados. | `start` |
 | `campaigns` | Campanhas e os contadores delas. | `created_at` |
 | `daily_stats` | Os números do dashboard, dia a dia. Não aceita `metrics[].filters`. | `day` |
+| `hook_logs` | O que os webhooks receberam, com a permissão `core_settings`. O que veio na requisição não sai. Logs duram 90 dias. Ver [automation.md](automation.md). | `created_at` |
 
 ### `GET /custom-dashboards/filter-options?sourceKey=conversations`
 
@@ -747,7 +749,7 @@ Cabeçalho e valores com os nomes, data legível no fuso da organização, e fó
 
 ### Para o bloco de fluxo: `Funnels::MoveChat`
 
-O único caminho de escrita da posição. A tela chama por `PUT /funnels/:id/chats/:chatId`, e um bloco de fluxo deve chamar daqui:
+O único caminho de escrita da posição. A tela chama por `PUT /funnels/:id/chats/:chatId`, e o bloco `set_funnel_stage` ([automation.md](automation.md)) chama daqui:
 
 ```ruby
 funnel = chat.organization.funnels.find(funnel_id)
@@ -806,7 +808,7 @@ Modelo Mongoid passa por `MongoidBuilder`, e ActiveRecord por `ActiveRecordBuild
 
 No Postgres, `related_dimensions`, `document_id_filters` e `metrics[].filters` não existem: `ActiveRecordBuilder` só agrupa por campo da fonte, e o nome de uma coluna de id vem por `label_from`.
 
-Os filtros `pipeline_status` e `pipeline_stage` da origem, sobre conversas: um resolver em `DocumentIdResolvers` e uma linha em `document_id_filters` de `Sources::Conversations`. A fonte `hook_logs` (`webhook_logs` na origem) segue o mesmo caminho.
+Os filtros `pipeline_status` e `pipeline_stage` da origem, sobre conversas: um resolver em `DocumentIdResolvers` e uma linha em `document_id_filters` de `Sources::Conversations`.
 
 ---
 
@@ -941,8 +943,8 @@ Rotas da origem que nenhum export usa: `query_csv` (`POST /custom-dashboards/que
 
 - **Sem as conversões de nome da origem.** `camelizePreserving` e `decamelizePreserving` caem: `query`, `visualConfig`, `layout` e `globalFilters` são guardados como a tela manda, em camelCase, e voltam iguais.
 - **Sem `is_public` nem `public_token`.** Na origem o token era gerado e nada o lia: nem rota, nem tela. Virou ruído, e não veio.
-- **Templates (`dashboard-templates.ts`, `widget-templates.ts`):** `appointments` agora é `agenda_bookings`. `agent_executions` e `webhook_logs` não existem. Em `collaborator_id`, `collaborator_name` e `assigned_user_id`, os nomes são `professional_id`, `professional_name` e `assigned_account_id`. `conversation_tag_name` é `chat_tag_name`, e `appointment_attendance` é `booking_attendance`. `first_response_time` e `messages_count`, que os templates citam, não existiam como campo nem na origem.
-- **`messages` não tem mais `usage_*`:** ninguém grava tokens por enquanto.
+- **Templates (`dashboard-templates.ts`, `widget-templates.ts`):** `appointments` agora é `agenda_bookings`. `agent_executions` não existe. `webhook_logs` é `hook_logs`, e `webhook_name` é `hook_name`. Em `collaborator_id`, `collaborator_name` e `assigned_user_id`, os nomes são `professional_id`, `professional_name` e `assigned_account_id`. `conversation_tag_name` é `chat_tag_name`, e `appointment_attendance` é `booking_attendance`. `first_response_time` e `messages_count`, que os templates citam, não existiam como campo nem na origem.
+- **`messages` não tem mais `usage_*`:** `ai_assistant` grava os tokens na mensagem, mas esta fonte não os expõe.
 - **`daily_stats` mudou os campos:** `conversations_started` é `chats_started`, `active_conversations` é `active_chats`, `messages_sent_by_ai` é `messages_sent_by_automation`. Saíram tokens e créditos.
 - **Data nas linhas é número:** milissegundos, e não ISO-8601, em todas as fontes. A série de `daily_stats` alinha com a das outras por dia, no mesmo fuso.
 - **Permissão por card:** `403` numa consulta é "você não tem acesso a esta fonte", e não falha do dashboard.

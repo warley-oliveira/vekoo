@@ -62,14 +62,7 @@ module FlowRuntime
 
       # A conta em que a execução está parada também precisa saber que ficou sem crédito.
       def alert_no_credits
-        return if context.playground?
-
-        OrganizationAlertService.flow_error(
-          organization,
-          context.flow,
-          code: "flow_no_credits",
-          message: I18n.t("automation.flows.errors.no_credits_alert", name: context.flow.name)
-        )
+        context.execution.alert!("flow_no_credits", I18n.t("automation.flows.errors.no_credits_alert", name: context.flow.name))
       end
 
       def failure_reason(error)

@@ -25,9 +25,11 @@ module Flows
     # @param text [String]
     # @param sender_name [String, nil] sem nome, é o da organização
     # @param generated [Boolean] o texto veio do modelo
+    # @param attributes [Hash] campos extras de cada mensagem (ex.: `flow_id:`)
+    # @param usage [Hash] os tokens da resposta (`usage_*`), que ficam numa mensagem só
     # @return [Result] levanta quando o canal levanta, como `Chat#send_text_message`
-    def self.call(chat:, text:, sender_name: nil, generated: false)
-      new(chat.organization, text, generated: generated).deliver(chat, sender_name)
+    def self.call(chat:, text:, sender_name: nil, generated: false, attributes: {}, usage: {})
+      new(chat.organization, text, generated: generated).deliver(chat, sender_name, attributes, usage)
     end
 
     # O que iria para o canal, sem enviar nem baixar anexo: é o que o teste do editor mostra.
@@ -51,13 +53,15 @@ module Flows
       @parts ||= generated ? generated_parts : verbatim_parts
     end
 
-    def deliver(chat, sender_name)
+    def deliver(chat, sender_name, attributes = {}, usage = {})
       name = sender_name.presence || organization.name
       has_span = parts.size > 1
-      # A original fica para o histórico e para o modelo. A lista da conversa mostra as partes.
-      ChatMessage::Text.create(role: "assistant", content: text, chat: chat, has_span: true, sender_name: name) if has_span
+      # A original fica para o histórico e para o modelo, e a lista da conversa mostra as partes. As métricas contam a original,
+      # e por isso os tokens ficam nela.
+      ChatMessage::Text.create(role: "assistant", content: text, chat: chat, has_span: true, sender_name: name, **attributes, **usage) if has_span
 
-      messages = parts.map { |part| send_part(chat, part, name, has_span) }
+      part_attributes = { is_span: has_span, **attributes, **(has_span ? {} : usage) }
+      messages = parts.map { |part| send_part(chat, part, name, part_attributes) }
       chat.update_last_message! if has_span
 
       Result.new(messages: messages, missing_attachments: missing_attachments)
@@ -97,10 +101,10 @@ module Flows
       missing_attachments.empty? ? cleaned : cleaned.gsub(/ {2,}/, " ")
     end
 
-    def send_part(chat, part, name, has_span)
-      return chat.send_text_message(part.to_s, name, { is_span: has_span, message_origin: "platform" }) unless part.is_a?(MediaMessageDto)
+    def send_part(chat, part, name, attributes)
+      return chat.send_text_message(part.to_s, name, { message_origin: "platform", **attributes }) unless part.is_a?(MediaMessageDto)
 
-      Chats::SendMedia.call(chat: chat, media: with_real_name(part), sender_name: name, attributes: { is_span: has_span })
+      Chats::SendMedia.call(chat: chat, media: with_real_name(part), sender_name: name, attributes: attributes)
     end
 
     # `MessageHandling` nomeia o anexo citado pelo id com o próprio código, e é esse nome que o contato veria no documento.

@@ -17,7 +17,13 @@ module FlowRuntime
         template = templates.available.where(name: name).take
         return skip("template_not_found") unless template
 
-        message = Chats::SendTemplate.call(chat: chat, template: template, components: components(params), sender_name: data["sender_name"].presence)
+        message = Chats::SendTemplate.call(
+          chat: chat,
+          template: template,
+          components: components(params),
+          sender_name: data["sender_name"].presence,
+          attributes: dispatcher.message_attributes
+        )
         continue(default_next_node_id, log: { input: data, output: { sent: name, status: message.status, error: message.status_message }.compact })
       end
 

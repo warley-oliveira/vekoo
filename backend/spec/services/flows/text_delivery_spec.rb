@@ -259,6 +259,94 @@ RSpec.describe Flows::TextDelivery do
     end
   end
 
+  describe "de qual fluxo saiu" do
+    it "vai em todas as partes da mensagem, e na original" do
+      execution = run_block("send_text", { text: "Segue attachment_id_#{attachment.id} e pronto" })
+
+      expect(stored_messages.length).to eq(4)
+      expect(stored_messages.map(&:flow_id).uniq).to eq([ execution.flow_id ])
+    end
+
+    %w[ask_question send_interactive].each do |type|
+      it "vai em #{type}" do
+        execution = run_block(type, { text: "Tudo bem?" })
+
+        expect(stored_messages.map(&:flow_id)).to eq([ execution.flow_id ])
+      end
+    end
+
+    it "vai em send_media" do
+      execution = run_block("send_media", { attachment_id: attachment.id })
+
+      expect(stored_messages.map(&:flow_id)).to eq([ execution.flow_id ])
+    end
+
+    it "não aparece em mensagem que não é de fluxo" do
+      expect(chat.send_text_message("oi").flow_id).to be_nil
+    end
+
+    it "sai sem conta e pela plataforma, que é como as métricas enxergam automação" do
+      run_block("send_text", { text: "Segue attachment_id_#{attachment.id} e pronto" })
+
+      expect(stored_messages.map(&:role).uniq).to eq([ "assistant" ])
+      expect(stored_messages.map(&:message_origin).uniq).to eq([ "platform" ])
+      expect(stored_messages.map(&:account_id).uniq).to eq([ nil ])
+    end
+  end
+
+  describe "os tokens da resposta do modelo" do
+    let(:outputs) { [ { id: "fim", label: "Terminou", when: "O cliente terminou", parameters: [] } ] }
+    let(:flow) do
+      published_flow(
+        organization,
+        [ node("t", "trigger_message_received"), node("ia", "ai_assistant", system_prompt: "Atenda.", outputs: outputs), node("fim", "send_text", text: "Tchau") ],
+        [ edge("t", "ia"), edge("ia", "fim", "fim") ]
+      )
+    end
+    let(:usage) { { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 300, cache_creation_input_tokens: 50 } }
+
+    def model_replies(text)
+      ChatMessage::Text.create!(role: "user", content: "oi", chat: chat, message_id: SecureRandom.hex(4))
+      script_llm(
+        llm_text({ decision: "stay", reason: "conversa", data: {} }.to_json, usage: { input_tokens: 9_999, output_tokens: 9_999 }),
+        llm_text(text, usage: usage)
+      )
+      run_flow(flow, chat: chat, message: "oi").reload
+    end
+
+    it "ficam na mensagem, com o cache dentro do prompt e sem os do juiz, que é outro modelo" do
+      model_replies("Tudo ótimo!")
+
+      expect(stored_messages.first).to have_attributes(
+        usage_model: Ai::Chat::AGENT_MODEL.to_s, usage_prompt_tokens: 450, usage_completion_tokens: 20, usage_cached_tokens: 300, flow_id: flow.id
+      )
+    end
+
+    it "em partes, ficam só na original, a que as métricas contam" do
+      model_replies("Primeiro parágrafo.\n\nSegundo parágrafo.")
+
+      original, *parts = stored_messages
+      expect(original).to have_attributes(has_span: true, usage_prompt_tokens: 450, usage_completion_tokens: 20)
+      expect(parts.map(&:usage_completion_tokens)).to eq([ nil, nil ])
+      expect(parts.map(&:flow_id).uniq).to eq([ flow.id ])
+    end
+
+    it "a resposta em partes conta como uma mensagem de automação" do
+      model_replies("Primeiro parágrafo.\n\nSegundo parágrafo.")
+
+      zone = ActiveSupport::TimeZone["America/Sao_Paulo"]
+      volume = Insights::MessageVolumeDaily.new(organization_id: organization.id, range: day_range(zone.today, zone), zone: zone).to_h
+
+      expect(volume).to include(messages_inbound: 1, messages_sent_by_automation: 1, messages_sent_by_human: 0, messages_sent_by_campaign: 0, messages_by_account: {})
+    end
+
+    it "texto escrito à mão não tem tokens" do
+      run_block("send_text", { text: "oi" })
+
+      expect(stored_messages.first.usage_model).to be_nil
+    end
+  end
+
   describe "no teste do editor" do
     let(:broadcasts) { [] }
 

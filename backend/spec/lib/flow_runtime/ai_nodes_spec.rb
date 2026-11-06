@@ -190,6 +190,21 @@ RSpec.describe "Blocos de IA" do
       expect(JSON.parse(result[:content])).to eq("prazo" => 3)
     end
 
+    it "a resposta guarda os tokens de todas as rodadas" do
+      contact_says("frete para 80000000?")
+      script_llm(
+        llm_tool("consultar_frete", { "cep" => "80000000" }, usage: { input_tokens: 100, output_tokens: 10, cache_read_input_tokens: 400 }),
+        llm_text("Chega em 3 dias.", usage: { input_tokens: 120, output_tokens: 15, cache_read_input_tokens: 400 })
+      )
+
+      perform_enqueued_jobs { run_flow(flow, chat: chat, message: "frete para 80000000?") }
+
+      message = ChatMessage::Base.where(chat_id: chat.id, role: "assistant").take
+      expect(message).to have_attributes(
+        flow_id: flow.id, usage_model: Ai::Chat::AGENT_MODEL.to_s, usage_prompt_tokens: 1_020, usage_completion_tokens: 25, usage_cached_tokens: 800
+      )
+    end
+
     it "o erro do script volta para o modelo, em vez de derrubar a rodada" do
       tool.update!(js_code: "throw new Error('fora do ar');")
       contact_says("frete?")
