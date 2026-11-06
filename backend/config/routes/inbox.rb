@@ -35,6 +35,25 @@ resources :unified_contacts, path: "unified-contacts", only: :index
 get "unified-contacts/:external_id/messages", to: "unified_contacts#messages",
     constraints: { external_id: %r{[^/]+} }, format: false
 
+resources :contacts, only: :index do
+  collection do
+    get :filters
+    get :export
+    get "download-export", action: :download_export
+    post "bulk-add-tags", action: :bulk_add_tags
+    post "bulk-remove-tags", action: :bulk_remove_tags
+    post "bulk-assign-user", action: :bulk_assign_user
+    post "bulk-update-status", action: :bulk_update_status
+    post "bulk-toggle-automation", action: :bulk_toggle_automation
+  end
+end
+
+resources :contact_imports, path: "contact-imports", only: %i[index show create] do
+  collection do
+    post :file, action: :create_from_file
+  end
+end
+
 resources :quick_replies, path: "quick-replies", only: %i[index show create update destroy]
 
 resources :chat_views, path: "chat-views", only: %i[index show create update destroy]

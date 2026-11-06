@@ -46,6 +46,7 @@ en:
     export:
       headers:
         name: "Name"
+        whatsapp: "WhatsApp"
         phone: "Phone"
         status: "Status"
         automation: "Automation"

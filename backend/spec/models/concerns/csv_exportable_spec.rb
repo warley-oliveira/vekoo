@@ -19,7 +19,7 @@ RSpec.describe CsvExportable do
       expect(export).to eq([ [ "Nome", "WhatsApp", "Etiquetas", "Criado em", "Última mensagem" ] ])
     end
 
-    it "traz uma linha por conversa, com as datas formatadas" do
+    it "traz uma linha por conversa, com as datas no fuso da organização" do
       create_contact(
         user_name: "Maria Souza",
         external_id: "5531971810932",
@@ -27,7 +27,27 @@ RSpec.describe CsvExportable do
         last_message_at: Time.utc(2026, 9, 2, 11, 45)
       )
 
-      expect(export.last).to eq([ "Maria Souza", "5531971810932", "", "01/09/2026 10:30", "02/09/2026 11:45" ])
+      expect(export.last).to eq([ "Maria Souza", "5531971810932", "", "01/09/2026 07:30", "02/09/2026 08:45" ])
+    end
+
+    it "usa o fuso de cada organização" do
+      organization.update!(timezone: "Asia/Tokyo")
+      create_contact(created_at: Time.utc(2026, 9, 1, 20, 0))
+
+      expect(export.last[3]).to eq("02/09/2026 05:00")
+    end
+
+    it "sai com o cabeçalho no idioma de quem pede" do
+      I18n.with_locale(:en) do
+        expect(export.first).to eq([ "Name", "WhatsApp", "Tags", "Created at", "Last message" ])
+      end
+    end
+
+    # O nome vem do contato: é ele quem escolhe o que o Excel vai executar.
+    it "não deixa fórmula passar como fórmula" do
+      create_contact(user_name: "=HYPERLINK(\"http://x.test\")", external_id: "5531971810932")
+
+      expect(export.last.first).to eq("'=HYPERLINK(\"http://x.test\")")
     end
 
     it "tira o sufixo do JID do número" do
@@ -99,12 +119,9 @@ RSpec.describe CsvExportable do
 
     context "com os campos personalizados do domínio inbox" do
       before do
-        definitions = [
-          double(name: "Cidade", key: "cidade"),
-          double(name: "Plano", key: "plano")
-        ]
-        order = double(to_a: definitions)
-        stub_const("CustomField", double(where: double(only: double(order_by: order))))
+        create(:custom_field, organization_id: organization.id, name: "Cidade")
+        create(:custom_field, organization_id: organization.id, name: "Plano")
+        create(:custom_field, name: "De outra organização")
       end
 
       it "acrescenta uma coluna por campo" do
