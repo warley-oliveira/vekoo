@@ -1335,6 +1335,8 @@ Resposta `422`:
 
 Texto pronto que a pessoa chama no chat pelo atalho. `trigger` vira slug (`Frete Grátis` fica `frete-gratis`) e é único na organização. Para citar um anexo no texto, escreva `attachment_id_<id do anexo>`, como na origem: o envio troca a citação pelo arquivo.
 
+O texto também pode ter variáveis: `{{nome}}`, `{{primeiro_nome}}`, `{{telefone}}`, `{{atendente}}` e a chave de qualquer campo personalizado (`{{cidade}}`). **O back não as conhece, e o que chegar nele sai literal para o contato.** Quem troca é o composer, ao inserir a mensagem na conversa, com `fillQuickReply` de `@/lib/content/quick-reply-content`. O que não tiver valor continua `{{assim}}` no campo de mensagem, à vista de quem vai enviar. A leitura é `useQuickReplies()`, de `@/hooks/content/use-quick-replies`.
+
 Resposta `200`:
 
 ```json

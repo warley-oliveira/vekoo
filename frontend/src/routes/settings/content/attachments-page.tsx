@@ -17,15 +17,17 @@ import { toast } from "sonner"
 import { AttachmentPanel } from "@/components/content/attachment-panel"
 import { AttachmentThumb } from "@/components/content/attachment-thumb"
 import {
+  AttachmentGridSkeleton,
+  AttachmentListSkeleton,
+} from "@/components/content/content-skeletons"
+import {
   ActionsMenu,
-  CardGridSkeleton,
   ConfirmDialog,
   EmptyState,
   ErrorState,
   FacetedFilter,
   FileDropzone,
   FilterBar,
-  ListSkeleton,
   PageBody,
   PageHeader,
   RelativeTime,
@@ -245,15 +247,6 @@ export default function AttachmentsPage() {
   const firstLoad = isLoading && !attachments
   const libraryEmpty = !isFiltered && meta?.total === 0
 
-  const skeleton =
-    view === "grid" ? (
-      <CardGridSkeleton cards={8} media className="grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" />
-    ) : (
-      <SectionCard contentClassName="px-4">
-        <ListSkeleton rows={6} />
-      </SectionCard>
-    )
-
   return (
     <PageBody>
       <PageHeader
@@ -405,7 +398,11 @@ export default function AttachmentsPage() {
           />
 
           {firstLoad ? (
-            skeleton
+            view === "grid" ? (
+              <AttachmentGridSkeleton />
+            ) : (
+              <AttachmentListSkeleton />
+            )
           ) : items.length === 0 ? (
             <EmptyState
               title={t("content.attachments.noResults.title")}

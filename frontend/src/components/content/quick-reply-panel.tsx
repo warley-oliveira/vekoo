@@ -164,7 +164,13 @@ export default function QuickReplyPanel({
         const attachment = attachmentsById.get(id)
         return {
           id,
-          label: attachment?.name ?? t("content.quickReplies.editor.missingAttachment"),
+          label:
+            attachment?.name ??
+            t(
+              library.attachments
+                ? "content.quickReplies.editor.missingAttachment"
+                : "content.quickReplies.editor.attachment"
+            ),
           mediaType: attachment?.file?.contentType ?? null,
           fileName: attachment?.file?.filename ?? null,
           // Sem a biblioteca, não dá para afirmar que sumiu.
@@ -329,10 +335,12 @@ export default function QuickReplyPanel({
 
         {unknownVariables.length > 0 ? (
           <Callout tone="warning" icon={<AlertTriangle />}>
-            {t("content.quickReplies.unknownVariables", {
-              count: unknownVariables.length,
-              names: unknownVariables.map((key) => `{{${key}}}`).join(", "),
-            })}
+            <span className="wrap-anywhere">
+              {t("content.quickReplies.unknownVariables", {
+                count: unknownVariables.length,
+                names: unknownVariables.map((key) => `{{${key}}}`).join(", "),
+              })}
+            </span>
           </Callout>
         ) : null}
 

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { BarChart3, Pencil, Plus, RefreshCw, SlidersHorizontal, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
+import { CustomFieldListSkeleton } from "@/components/content/content-skeletons"
 import { CustomFieldPanel } from "@/components/content/custom-field-panel"
 import { CustomFieldValuesPanel } from "@/components/content/custom-field-values-panel"
 import { FieldTypeIcon } from "@/components/content/field-type-icon"
@@ -13,7 +14,6 @@ import {
   ErrorState,
   FacetedFilter,
   FilterBar,
-  ListSkeleton,
   PageBody,
   PageHeader,
   SectionCard,
@@ -194,9 +194,7 @@ export default function CustomFieldsPage() {
       {error && !customFields ? (
         <ErrorState error={error} onRetry={reload} />
       ) : isLoading && !customFields ? (
-        <SectionCard contentClassName="px-4">
-          <ListSkeleton rows={6} />
-        </SectionCard>
+        <CustomFieldListSkeleton />
       ) : list.length === 0 ? (
         <EmptyState
           icon={<SlidersHorizontal className="size-5" />}

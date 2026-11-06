@@ -61,7 +61,8 @@ const MAX_FILE_BYTES = 100 * 1024 * 1024
 /** O texto antes do cursor: `/` no começo da linha ou depois de espaço, e o que veio depois. */
 const SLASH_QUERY = /(?:^|[\s￼])\/([^/\n￼]{0,40})$/
 const OBJECT_REPLACEMENT = "￼"
-const SLASH_LIMIT = 8
+/** Por tipo: com uma biblioteca grande, os anexos não podem esconder as variáveis. */
+const SLASH_LIMIT_PER_KIND = 5
 
 export type VariableOption = {
   key: string
@@ -566,6 +567,7 @@ export function QuickReplyEditor({
 
     const variableItems = variables
       .filter((option) => matchesSearch(`${option.label} ${option.key}`, slash.query))
+      .slice(0, SLASH_LIMIT_PER_KIND)
       .map((option) => ({
         id: `variable-${option.key}`,
         insert: () => insertVariable(option, range),
@@ -582,6 +584,7 @@ export function QuickReplyEditor({
       .filter((item) =>
         matchesSearch(`${item.name} ${item.file?.filename ?? ""}`, slash.query)
       )
+      .slice(0, SLASH_LIMIT_PER_KIND)
       .map((item) => ({
         id: `attachment-${item.id}`,
         insert: () => insertAttachmentAt(item, range),
@@ -594,10 +597,17 @@ export function QuickReplyEditor({
         description: describeFile(item),
       }))
 
-    return [...attachmentItems, ...variableItems].slice(0, SLASH_LIMIT)
+    return [...attachmentItems, ...variableItems]
   }, [attachments, describeFile, insertAttachmentAt, insertVariable, slash, t, variables])
 
   latest.current.slashItems = slashItems
+
+  const slashListRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    slashListRef.current
+      ?.querySelector('[aria-selected="true"]')
+      ?.scrollIntoView({ block: "nearest" })
+  }, [highlight])
 
   // Uma lista sem resultado e um espaço no meio é texto comum, não mais uma busca.
   const showSlash = slash && (slashItems.length > 0 || !slash.query.includes(" "))
@@ -732,12 +742,13 @@ export function QuickReplyEditor({
 
         {showSlash ? (
           <div
+            ref={slashListRef}
             role="listbox"
             aria-label={t("content.quickReplies.editor.slashLabel")}
             // Sem isto o clique tiraria o foco do texto antes de inserir.
             onMouseDown={(event) => event.preventDefault()}
             style={{ top: slash.top, left: slash.left }}
-            className="absolute z-20 w-72 max-w-full overflow-hidden rounded-lg bg-popover p-1 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10"
+            className="absolute z-20 max-h-64 w-72 max-w-full overflow-y-auto rounded-lg bg-popover p-1 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10"
           >
             {slashItems.length === 0 ? (
               <p className="px-2 py-3 text-center text-xs text-muted-foreground">

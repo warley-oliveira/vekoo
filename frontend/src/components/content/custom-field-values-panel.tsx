@@ -520,7 +520,7 @@ export function CustomFieldValuesPanel({
                 )}
 
                 {shownChanges.length > 0 ? (
-                  <ul className="flex flex-col divide-y">
+                  <ul className="flex max-h-72 flex-col divide-y overflow-y-auto">
                     {shownChanges.map((change) => (
                       <li
                         key={change.from}

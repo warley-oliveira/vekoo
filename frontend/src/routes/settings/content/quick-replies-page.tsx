@@ -5,13 +5,13 @@ import { AlertTriangle, MessageSquareText, Pencil, Plus, Trash2 } from "lucide-r
 import { toast } from "sonner"
 
 import { ContentExcerpt } from "@/components/content/content-excerpt"
+import { QuickReplyListSkeleton } from "@/components/content/content-skeletons"
 import {
   ActionsMenu,
   EmptyState,
   ErrorState,
   FacetedFilter,
   FilterBar,
-  ListSkeleton,
   PageBody,
   PageHeader,
   RelativeTime,
@@ -218,9 +218,7 @@ export default function QuickRepliesPage() {
       {error && !quickReplies ? (
         <ErrorState error={error} onRetry={reload} />
       ) : isLoading && !quickReplies ? (
-        <SectionCard contentClassName="px-4">
-          <ListSkeleton rows={6} />
-        </SectionCard>
+        <QuickReplyListSkeleton />
       ) : (quickReplies?.length ?? 0) === 0 ? (
         <EmptyState
           icon={<MessageSquareText className="size-5" />}

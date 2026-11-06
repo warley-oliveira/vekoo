@@ -261,7 +261,9 @@ export function CustomFieldPanel({
               </span>
             }
           >
-            {t("content.customFields.fields.keyLocked", { variable: `{{${field.key}}}` })}
+            <span className="wrap-anywhere">
+              {t("content.customFields.fields.keyLocked", { variable: `{{${field.key}}}` })}
+            </span>
           </Callout>
         ) : null}
 
