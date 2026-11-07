@@ -301,7 +301,8 @@ RSpec.describe Outreach::BatchExecutionService do
     before { campaign.set(daily_limit_per_connector: 1) }
 
     it "atingido, não envia e deixa para o próximo dia" do
-      freeze_time do
+      # Meio-dia em São Paulo: perto da meia-noite, o próximo dia está a menos de uma hora.
+      travel_to(Time.utc(2026, 3, 10, 15, 0, 0)) do
         run_step(batch)
         batch.set(next_send_at: Time.current)
         clear_enqueued_jobs

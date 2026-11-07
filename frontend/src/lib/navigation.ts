@@ -140,6 +140,7 @@ export const NAV_GROUPS: NavGroup[] = [
         titleKey: "navigation.campaigns",
         icon: Megaphone,
         to: "/campaigns",
+        match: ["/campaigns", "/place-extractions"],
         permission: "campaigns",
       },
     ],

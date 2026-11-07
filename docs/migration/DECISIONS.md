@@ -294,6 +294,16 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acréscimos na API:** `stats` na lista, `POST /flows/:id/unarchive`, `GET /flows/:id/versions` e `/versions/:versionId`, `contactName` e `counts` nas execuções.
 - **Monaco no próprio pacote**, fora do precache, porque a CSP bloqueia o CDN padrão da biblioteca. Conferido contra a CSP real.
 
+### Campanhas: lista e monitor (fe-campaigns-list)
+
+- **"Respondidos" é dado novo**, que nem a API nem a origem tinham: a primeira mensagem do contato depois do envio conta (`Chat#outreach_recipient_id`, `Recipient#replied_at`, `Campaign#replied_count`), e quem recebeu duas campanhas responde à última. Toca uma linha em `Chats::InboundFlow`; erro ali não bloqueia a mensagem.
+- **Pausar não confirma:** o aviso traz "Retomar". Na origem confirmava. Cancelar e excluir confirmam.
+- **Veredito do monitor:** só falha pesa, porque a Z-API não avisa entrega. "Algumas falhas" é ≥ 5% e ≥ 2; "muitas" é ≥ 20% e ≥ 3.
+- **Clique em rascunho** vai direto para `/edit`. Lote no cliente, 4 por vez; "Duplicar" só com uma campanha selecionada. "Cancelada" em tom neutro.
+- **Lista própria de campanhas**, em vez de `DataTable`, para só a linha que mudou redesenhar.
+- **Fora:** `FeatureLocked`, `PackageLimitAlert` e `UpgradePromptDialog` (planos fora do escopo; a permissão decide); vídeo "Ver como funciona", que a CSP bloqueia e mostra o produto antigo. `NewCampaignFab` virou botão no cabeçalho, e o anel de progresso virou barra.
+- **Acréscimos na API:** `GET /campaigns?sort=`, listas em `status` e `connectorId`, `recipients?status=replied`, `place-extractions?status=a,b`.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -337,10 +347,11 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - O topo pode receber aviso com `key: null`: `app-shell.tsx` não pode depender de `n.key` (fe-shell, em andamento).
 - `fe-connectors` (já integrado): seletor de anexos no cabeçalho do modelo de WhatsApp, agora que a API de anexos existe. Hoje é um campo de URL pública.
 - `fe-chat-details`: ações em lote não avisam o tempo real, então chamar `afterBulkAction` depois delas; eventos `bookings_changed` e `scheduled_actions_changed` chegam por `ChatChannel` e `applyChannelMessage` os ignora: o painel que precisar deles escuta por conta própria; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
-- `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
+- `fe-campaigns-wizard`: avisar de variável inexistente antes de lançar; oferecer só `whatsapp_web` no modo texto; ler `?placeExtraction=<id>` (o link das buscas abre o assistente vazio) e `?duplicate=`.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Semente: o canal WABA está inativo, então o aviso de 24 horas não aparece na demonstração sem retoque.
+- Kit: `SortMenu` não fecha ao escolher. `BulkActionsBar` corta rótulos em 390 px. `DataTable` refaz todas as células a cada mudança de dados.
 - Kit: `BulkActionsBar` escreve "3 selecionados" no masculino, inclusive para conversas. `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
