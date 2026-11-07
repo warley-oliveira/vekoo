@@ -54,7 +54,7 @@ function EditorSkeleton() {
           <Skeleton className="h-3 w-5/6" />
         </div>
       </div>
-      <Skeleton className="absolute bottom-4 left-1/2 h-10 w-96 -translate-x-1/2 rounded-xl" />
+      <Skeleton className="absolute bottom-4 left-4 h-10 w-115 max-w-[calc(100%-2rem)] rounded-xl" />
     </div>
   )
 }

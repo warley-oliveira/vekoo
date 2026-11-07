@@ -599,6 +599,17 @@ RSpec.describe "Fluxos", type: :request do
       expect(types - FlowRuntime::NodeRegistry.types).to be_empty
     end
 
+    it "não promete um caminho que o motor não segue: esperar resposta só tem a saída padrão" do
+      get "/flow-templates", headers: headers, as: :json
+
+      json["flowTemplates"].each do |template|
+        waits = template["definition"]["nodes"].select { |node| node["type"] == "wait_for_message" }.pluck("id")
+        edges = template["definition"]["edges"].select { |edge| waits.include?(edge["source"]) }
+
+        expect(edges.pluck("sourceHandle").compact).to be_empty, "#{template["slug"]}: #{edges}"
+      end
+    end
+
     it "mostra um" do
       get "/flow-templates/welcome_routing", headers: headers, as: :json
 

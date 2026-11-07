@@ -197,20 +197,26 @@ export default function CodeEditorCore({
             .map((diagnostic: any) => {
               const start = shadow.getPositionAt(diagnostic.start ?? 0)
               const end = shadow.getPositionAt((diagnostic.start ?? 0) + (diagnostic.length ?? 0))
+              const startLine = start.lineNumber - WRAPPER_LINES_BEFORE
+              const endLine = end.lineNumber - WRAPPER_LINES_BEFORE
+              // O fecho do invólucro não existe para quem escreve: `catalog.` no fim e chave sem fechar acusam
+              // lá, e o erro é da última linha. Descartar daria "Sem problemas" num código que nem compila.
+              const lastLine = model.getLineCount()
+              const lastColumn = model.getLineMaxColumn(lastLine)
               return {
                 severity: diagnostic.category === 1 ? ERROR_SEVERITY : WARNING_SEVERITY,
                 message:
                   typeof diagnostic.messageText === "string"
                     ? diagnostic.messageText
                     : (diagnostic.messageText?.messageText ?? ""),
-                startLineNumber: start.lineNumber - WRAPPER_LINES_BEFORE,
-                startColumn: start.column,
-                endLineNumber: end.lineNumber - WRAPPER_LINES_BEFORE,
-                endColumn: end.column,
+                startLineNumber: Math.min(startLine, lastLine),
+                startColumn: startLine > lastLine ? lastColumn : start.column,
+                endLineNumber: Math.min(endLine, lastLine),
+                endColumn: endLine > lastLine ? lastColumn : end.column,
                 code: String(diagnostic.code),
               }
             })
-            .filter((marker) => marker.startLineNumber >= 1 && marker.startLineNumber <= model.getLineCount())
+            .filter((marker) => marker.startLineNumber >= 1)
 
           monaco.editor.setModelMarkers(model, "script-validation", next)
           setMarkers(next)

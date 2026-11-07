@@ -24,8 +24,15 @@ type EdgeLike = { id: string; source: string; target: string; sourceHandle?: str
 
 function reachable(nodes: NodeLike[], edges: EdgeLike[]): Set<string> {
   const triggers = nodes.filter((node) => isTrigger(node.type)).map((node) => node.id)
+  const byId = new Map(nodes.map((node) => [node.id, node]))
   const next = new Map<string, string[]>()
-  edges.forEach((edge) => next.set(edge.source, [...(next.get(edge.source) ?? []), edge.target]))
+  edges.forEach((edge) => {
+    // Conexão por uma saída que o bloco não tem não aparece no quadro e o motor não segue: não é caminho.
+    const source = byId.get(edge.source)
+    const handle = normalizeHandle(edge.sourceHandle)
+    if (!source || !blockOutputs(source.type ?? "", source.data).some((output) => output.id === handle)) return
+    next.set(edge.source, [...(next.get(edge.source) ?? []), edge.target])
+  })
 
   const seen = new Set<string>(triggers)
   const queue = [...triggers]
