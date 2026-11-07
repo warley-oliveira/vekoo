@@ -150,4 +150,6 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 
 ## Fase 5 — Integração e qualidade (integrador)
 
+**Status: ✅** suíte com 10044 exemplos e 0 falhas, build, lint, rubocop, Brakeman e bundler-audit limpos em 07/11/2026. O que falta é decisão da pessoa: `DECISIONS.md`, seção 2.
+
 Juntar frentes, regenerar `schema.rb`, suíte completa, build e lint, semente completa, varredura visual de todas as rotas (desktop e 390 px), revisão de segurança, `CLAUDE.md`, `DEPLOY.md` (Mongo em produção, VAPID, `MONGODB_URI`, CSP), `bin/setup`/`bin/dev`.

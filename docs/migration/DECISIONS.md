@@ -376,7 +376,56 @@ Corrigidos, cada um com spec que falhava antes:
 
 Integrador: Rails 8.1.4.1, rack 3.2.8, nokogiri, loofah, rails-html-sanitizer, crass e json nas versões corrigidas; `bundler-audit` limpo. O Rails corrigido recusa libvips abaixo de 8.13. Em desenvolvimento, `config/vips_local.rb` deixa o WSL com Ubuntu 22.04 subir; em produção a recusa continua. A conta de demonstração não nasce mais em produção, a menos que `SEED_DEMO_DATA=1`.
 
+### Varredura visual (qa-sweep)
+
+74 rotas em 1440 px e 74 em 390 px. Mudanças que a pessoa pode vetar:
+
+- **Conteúdo preso à esquerda em todas as telas** (`238b04b`), alinhado ao título. Centrado, as abas pulavam 192 px em 1920 px. Em monitor largo sobra espaço à direita.
+- **Busca global (Ctrl K) acha contatos e telas**, além de carrosséis, e respeita permissão. É acréscimo, sobre endpoints que já existiam. Ainda não acha item de catálogo, fluxo ou card.
+- **"Novos contatos" virou "Conversas novas":** o número conta conversas criadas.
+- **Favorito em violeta:** era o único âmbar solto na interface.
+- **Modais de carrossel viram folha no celular**, com `ResponsiveDialog`.
+- **"Criar" no lugar de "Novo" e "Cadastrar"**. "Adicionar" fica onde se junta algo que já existe (pessoa, canal, etiqueta).
+- **Semente sem o aviso de modelos**, que prometia "6 modelos" numa tela que diz que eles ainda estão chegando.
+
+### Ponta a ponta (qa-e2e)
+
+API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro em `~/.cache/vekoo-shot/wt33/`.
+
+- **Tempo real volta sozinho depois de reiniciar o Redis** (`config/initializers/action_cable_redis.rb`). Antes morria até reiniciar o Puma.
+- **Envio pelo `ChatChannel` passa pelo job `Chats::OperatorActionJob`,** e agora depende do Sidekiq no ar. Com o provedor mudo, o canal segurava o tempo real de todas as organizações por até 58,8 s.
+- **Quem perde a conversa por reatribuição para de ouvir e sai da lista.**
+- **Varredura entrega a caixa cujo job do debounce sumiu**, com índice esparso `flow_inbox_deadline`: o deploy precisa de `db:mongoid:create_indexes`, que já roda no `docker-entrypoint`.
+- **Queda logo depois de gravar a mensagem:** a nova tentativa completa não lida, prévia e fluxo, em vez de parar em "já existe".
+- **Erro de rede não mostra o endereço do provedor** em execução, alerta, gatilho e canal.
+- **Campanha recusa fluxo de outra organização.**
+
 ## 2. Pendências por frente
+
+### Ponta a ponta e varredura: precisam de decisão
+
+- **Timeout de provedor:** vale o padrão de 60 s. Com o provedor mudo, as 5 threads do Sidekiq ficam presas, e uma mensagem recebida levou 59,5 s para aparecer, em todas as organizações. Sugestão do qa-e2e: cerca de 20 s no `sendText` e fila própria para envio. Timeout menor aumenta os casos de "pode ter saído".
+- **Lembrete perdido em queda do Redis:** não sai, fica pendente na conversa e não levanta alerta. Reenviar atrasado, antes do início do agendamento?
+- **Latência do debounce:** os 3 s viram de 5 a 13 s, porque o Sidekiq confere os agendados a cada 5 s em média, por processo. Reduzir `average_scheduled_poll_interval` melhora, ao custo de mais consultas ao Redis.
+- **`agenda_bookings` em dashboard personalizado:** o período padrão termina agora, e agendamento futuro não conta sem `end`.
+- **Modelos e Marcas** seguem no menu como "estão chegando", e "Melhorar plano" só mostra um aviso. Ficam visíveis ou saem?
+- **Botão de criar no celular:** flutuante em Chat e Calendário, no cabeçalho no resto. Unificar?
+- **Cadastro:** preenche o nome como "`<nome>` Conteúdo", herança dos carrosséis, e chama de "Nome da conta" o que depois é "Organização".
+- **Termos de uso e Política de privacidade** em `/login` e `/signup` parecem links, mas não têm destino: falta o conteúdo.
+
+### Ponta a ponta e varredura: conhecidos, sem correção
+
+- **Lote:** `POST /contacts/bulk-assign-user` usa `update_all`, e quem perde a conversa segue ouvindo até reconectar.
+- **Listas por stream compartilhada:** ao sair de "sem dono" ou de um departamento, a linha fica parada em `assigned` ou `team`.
+- **Só lidos no código, sem reproduzir:** erro interno em fluxo com o Mongo fora mostra host e porta; Redis caindo entre gravar e agendar a nova tentativa perde o fluxo, e `Chats::InboundDelivery` engole erro do dispatcher; `kill -9` no meio de envio humano deixa a mensagem sem `status`.
+- **Gatilho com ids de outra organização** salva com `201` e não alcança nada ao executar: deveria responder `422`.
+- **Erro 500 com o Mongo fora** responde `{ status, error }`, fora do contrato. A tela trata como `unknown`.
+- **Ordem da rajada:** o fluxo recebeu `três, uma, duas` em modo produção, com uma resposta só.
+- **Avisos de agendamento** levam a `/calendar`, não ao agendamento. `?event=` só abre o que está no período visível.
+- **Visão geral × painel personalizado:** 154 contra 14 conversas na demonstração, porque a semente sorteia `DailyChatStat` e o painel consulta conversas. Na rodada ponta a ponta, com o rollup real, os números bateram (13 = 13), mas nunca numa base real.
+- **Semente:** alertas citam canais que não existem; webhook diz "Nenhuma requisição ainda" com 90 no histórico; anexos são PNGs de cor chapada. O banco compartilhado só perde o aviso de modelos e o gatilho "negócio ganho" depois de `db:seed`.
+- **Acabamento:** "(sem valor)" cru em "Conversas por atendente"; alvos de toque menores em "2 execuções em 7 dias", "Ver histórico" e "Renomear carrossel"; conversa no celular sem `h1`, porque o nome fica dentro de um botão.
+- **Não exercitado:** Evolution, Z-API, Meta, OpenAI, Whisper, Google e Apify reais; geração de carrossel por IA de ponta a ponta; Puma com vários processos, volume, reinício do Postgres, `kamal-proxy`, Cloudflare, Safari, Firefox e aparelho físico.
 
 ### Segurança: precisam de decisão
 
@@ -390,7 +439,7 @@ Integrador: Rails 8.1.4.1, rack 3.2.8, nokogiri, loofah, rails-html-sanitizer, c
 - **Token de 30 dias em `?token=` no WebSocket:** o Rails filtra; proxy e Cloudflare não foram conferidos. Um ticket curto resolveria.
 - **Sem cota por organização:** cadastro grátis usa Apify, Maps, embeddings, Whisper e a instância Evolution por conta do servidor, enche disco (`/attachments` aceita 100 MB por arquivo) e a fila `scripts`.
 - **Segredos sem cifra em repouso** em `hook_actions` e `pipeline_triggers`; cabeçalhos em claro em `GET /flows/:id` para quem tem `flows`; corpo e query da ação sem máscara.
-- **Menores:** enumeração de contas em `check-email` e login; links assinados de mídia nunca expiram; `POST /credits/consume` deixa qualquer membro gastar o saldo da organização; quem perde a conversa por reatribuição segue ouvindo o `ChatChannel` até sair dela; qualquer pessoa com acesso ao card apaga comentário alheio, como na origem.
+- **Menores:** enumeração de contas em `check-email` e login; links assinados de mídia nunca expiram; `POST /credits/consume` deixa qualquer membro gastar o saldo da organização; qualquer pessoa com acesso ao card apaga comentário alheio, como na origem.
 - **Não verificado:** exploração real da CVE; produção, `kamal-proxy` e Cloudflare; webhooks com token em provedor real; reconexão do WebSocket e o `422` de cabeçalho no navegador; injeção de prompt em fluxos e copiloto; fuzzing do V8; carga em `$regex` e o teto de 16 MB do funil.
 - **`npm audit --omit=dev`:** 24 avisos (2 críticos, 13 altos), quase todos de `shadcn` em `dependencies`, um CLI que `src` não importa: deveria ir para `devDependencies`. No bundle ficam `dompurify` (dentro do Monaco) e `zod`.
 
