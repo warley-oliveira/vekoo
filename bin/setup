@@ -1,25 +1,45 @@
 #!/usr/bin/env bash
+# Sobe o ambiente de desenvolvimento do zero: .env, Postgres + Mongo + Redis, dependências,
+# índices, banco e semente. Idempotente: rode de novo quando quiser. Depois dele, todo dia: bin/dev.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-set -a; [ -f .env ] && . ./.env; set +a
-
-echo "==> starting infra (postgres + redis)"
-docker compose up -d
-
-echo "==> backend deps"
-( cd backend && bundle install )
-
-echo "==> frontend deps"
-( cd frontend && npm install )
-
-echo "==> waiting for postgres on :${POSTGRES_PORT:-?}"
-for _ in $(seq 1 30); do
-  docker compose exec -T postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1 && break
-  sleep 1
+for tool in docker bundle npm; do
+  command -v "$tool" >/dev/null 2>&1 || {
+    echo "Falta o comando '$tool'. Versões de Ruby e Node em .tool-versions; Docker com Compose v2."
+    exit 1
+  }
 done
 
-echo "==> preparing database"
-( cd backend && bin/rails db:prepare )
+# O .env é a fonte única: o back-end lê pelo link, o Vite por `envDir`.
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo "==> .env criado a partir de .env.example (o que cada chave opcional liga está explicado lá)"
+fi
+ln -sfn ../.env backend/.env
 
-echo "✅ setup complete — run: bin/dev"
+set -a; . ./.env; set +a
+
+echo "==> infra (postgres + mongodb + redis)"
+docker compose up -d --wait
+
+echo "==> dependências do back-end"
+( cd backend && { bundle check >/dev/null 2>&1 || bundle install; } )
+
+echo "==> dependências do front-end"
+( cd frontend && npm install )
+
+# Índices antes do banco, como no bin/docker-entrypoint: a semente de um banco vazio já consulta, e o
+# Mongo recusa `hint` sem o índice. db:prepare cria o banco, aplica migrations e, se o banco nasceu
+# agora, carrega a semente.
+echo "==> índices do Mongo, banco e semente"
+( cd backend && bin/rails db:mongoid:create_indexes db:prepare )
+
+cat <<DONE
+
+Pronto. Para subir tudo: bin/dev
+  API  http://localhost:${RAILS_PORT:-3000}
+  Tela http://localhost:${VITE_PORT:-5173}  (marina.duarte@exemplo.com.br / carrossel123)
+
+A semente só roda sozinha em banco novo. Para carregar de novo: cd backend && bin/rails db:seed
+DONE
