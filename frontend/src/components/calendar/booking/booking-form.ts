@@ -24,6 +24,8 @@ export type BookingDraft = {
   calendarId?: string | null
   start: Date
   end: Date
+  /** Quem já vem escolhido: agendar a partir da conversa não pede para achar o contato de novo. */
+  chat?: { id: string; name: string; externalId?: string | null } | null
 }
 
 function buildSchema(t: (key: string) => string) {
@@ -93,7 +95,7 @@ function valuesOfDraft(draft: BookingDraft | null): BookingFormValues {
   return {
     calendarId: draft?.calendarId ?? null,
     title: "",
-    chatId: null,
+    chatId: draft?.chat?.id ?? null,
     serviceId: null,
     professionalId: null,
     start: draft?.start ?? null,

@@ -1,7 +1,7 @@
 import { memo, useMemo, useState } from "react"
 import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
-import { CalendarDays, ChevronDown, Video } from "lucide-react"
+import { CalendarDays, ChevronDown, Plus, Video } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -14,7 +14,9 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useCalendarTimeZone, useChatBookings } from "@/hooks/chat-details/use-chat-details-data"
+import { useChatFields } from "@/hooks/chat-details/use-chat-fields"
 import { apiDelete } from "@/lib/api"
+import { chatDisplayName } from "@/lib/chat/chat-store"
 import {
   bookingDayParts,
   bookingState,
@@ -26,6 +28,8 @@ import type { Booking, BookingHistoryEntry } from "@/lib/chat-details/types"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { DetailsSection, SectionEmpty, SectionError, SectionRowsSkeleton, ShowMoreButton } from "./section"
+
+const CONTACT_FIELDS = ["displayName", "userName", "externalId", "audienceType", "audienceUserName"] as const
 
 /** Um contato pode acumular vários: só o que vem pela frente fica à vista de saída. */
 const VISIBLE_LIMIT = 3
@@ -236,6 +240,7 @@ export const BookingsSection = memo(function BookingsSection({ chatId }: { chatI
   const { t } = useTranslation()
   const { allowed, upcoming, past, error, isLoading, retry } = useChatBookings(chatId)
   const timeZoneOf = useCalendarTimeZone()
+  const chat = useChatFields(chatId, CONTACT_FIELDS)
   const [expanded, setExpanded] = useState(false)
 
   if (!allowed) return null
@@ -243,8 +248,44 @@ export const BookingsSection = memo(function BookingsSection({ chatId }: { chatI
   const all = [...upcoming, ...past]
   const visible = expanded ? all : all.slice(0, VISIBLE_LIMIT)
 
+  // O calendário abre com o painel de agendar e o contato já escolhido.
+  const scheduleLink = (
+    <Link
+      to="/calendar?new=1"
+      state={{
+        bookingChat: chat
+          ? {
+              id: chatId,
+              name: chatDisplayName(chat, {
+                visitor: t("chat.contact.visitor"),
+                contact: t("chat.contact.fallback"),
+              }),
+              externalId: chat.externalId ?? null,
+            }
+          : null,
+      }}
+    />
+  )
+
   return (
-    <DetailsSection id="bookings" title={t("chatDetails.bookings.title")} count={all.length}>
+    <DetailsSection
+      id="bookings"
+      title={t("chatDetails.bookings.title")}
+      count={all.length}
+      action={
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t("chatDetails.bookings.schedule")}
+          title={t("chatDetails.bookings.schedule")}
+          className="text-muted-foreground pointer-coarse:size-10"
+          nativeButton={false}
+          render={scheduleLink}
+        >
+          <Plus />
+        </Button>
+      }
+    >
       {error ? (
         <SectionError message={t("chatDetails.bookings.loadFailed")} onRetry={retry} />
       ) : isLoading ? (
@@ -257,10 +298,10 @@ export const BookingsSection = memo(function BookingsSection({ chatId }: { chatI
               size="sm"
               className="-mr-2 pointer-coarse:h-10"
               nativeButton={false}
-              render={<Link to="/calendar" />}
+              render={scheduleLink}
             >
               <CalendarDays />
-              {t("chatDetails.bookings.openCalendar")}
+              {t("chatDetails.bookings.schedule")}
             </Button>
           }
         >

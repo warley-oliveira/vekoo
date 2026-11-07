@@ -20,7 +20,7 @@ import { useProfessionals, useServices } from "@/hooks/calendar/use-professional
 import type { AgendaCalendar, BookingEvent, ChatLookupItem } from "@/lib/calendar/types"
 import { contactLine } from "@/lib/calendar/contact"
 import { TimeZoneNote } from "../calendar-toolbar"
-import type { BookingFormValues } from "./booking-form"
+import type { BookingDraft, BookingFormValues } from "./booking-form"
 import { BookingWhen } from "./booking-when"
 
 /** Mais de 7 opções pedem busca. Poucas ficam num seletor simples, melhor no toque. */
@@ -98,11 +98,13 @@ export function BookingFields({
   form,
   calendars,
   event,
+  draftChat = null,
   resolvedProfessional,
 }: {
   form: UseFormReturn<BookingFormValues>
   calendars: AgendaCalendar[]
   event: BookingEvent | null
+  draftChat?: BookingDraft["chat"]
   resolvedProfessional: { current: string | null }
 }) {
   const { t } = useTranslation()
@@ -147,17 +149,18 @@ export function BookingFields({
     }))
   }, [professionals, service])
 
-  const contactOption = useMemo<SelectOption | null>(
-    () =>
-      event?.chatId
-        ? {
-            value: event.chatId,
-            label: event.userName || event.contactExternalId || event.chatId,
-            description: contactLine(event.contactExternalId),
-          }
-        : null,
-    [event]
-  )
+  const contactOption = useMemo<SelectOption | null>(() => {
+    if (event?.chatId) {
+      return {
+        value: event.chatId,
+        label: event.userName || event.contactExternalId || event.chatId,
+        description: contactLine(event.contactExternalId),
+      }
+    }
+    return draftChat
+      ? { value: draftChat.id, label: draftChat.name, description: contactLine(draftChat.externalId) }
+      : null
+  }, [draftChat, event])
   const [pickedContact, setPickedContact] = useState<SelectOption | null>(null)
   const loadContacts = useCallback<LoadOptions>(
     async (query, signal) => (await lookupChats(query, signal)).map(chatOption),

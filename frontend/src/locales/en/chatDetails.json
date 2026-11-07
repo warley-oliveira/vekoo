@@ -115,7 +115,7 @@
     "bookings": {
       "title": "Bookings",
       "empty": "Nothing booked.",
-      "openCalendar": "Open calendar",
+      "schedule": "Schedule",
       "loadFailed": "Couldn't load the bookings.",
       "details": "See details of {{name}}",
       "meet": "Join the Google Meet",

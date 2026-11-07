@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useLocation } from "react-router"
 import { useTranslation } from "react-i18next"
 import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { CalendarOff, Plus, RefreshCw } from "lucide-react"
@@ -130,6 +131,7 @@ export default function CalendarPage() {
   const { options: filterOptions } = useCalendarFilters()
   const screen = useCalendarScreen(calendars)
   const actions = useBookingActions(calendars)
+  const location = useLocation()
 
   const [createCalendarOpen, setCreateCalendarOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -176,6 +178,9 @@ export default function CalendarPage() {
 
   const openEventId = screen.params.get("event")
   const isNew = screen.params.get("new") === "1"
+  // Vindo de "Agendar", na conversa. Só o que veio junto com esta entrada do histórico: criar outro,
+  // daqui, não repete o contato.
+  const bookingChat = (location.state as { bookingChat?: BookingDraft["chat"] } | null)?.bookingChat ?? null
   const [draft, setDraft] = useState<BookingDraft | null>(null)
   const { patchParams } = screen
 
@@ -677,7 +682,10 @@ export default function CalendarPage() {
           onOpenChange={(next) => {
             if (!next) closePanel()
           }}
-          draft={draft ?? nextSlotDraft(screen.anchor, screen.today, screen.primaryZone, defaultCalendarId)}
+          draft={{
+            ...(draft ?? nextSlotDraft(screen.anchor, screen.today, screen.primaryZone, defaultCalendarId)),
+            chat: bookingChat,
+          }}
           calendars={calendars}
           onCreated={(event) => {
             // A tela vai até o que acabou de ser marcado: a confirmação é ver o evento ali.

@@ -138,6 +138,7 @@ export function NewEventPanel({
             form={booking.form}
             calendars={staffCalendars}
             event={null}
+            draftChat={draft?.chat}
             resolvedProfessional={booking.resolvedProfessional}
           />
         ) : (

@@ -115,7 +115,7 @@
     "bookings": {
       "title": "Agendamentos",
       "empty": "Nada agendado.",
-      "openCalendar": "Abrir calendário",
+      "schedule": "Agendar",
       "loadFailed": "Não foi possível carregar os agendamentos.",
       "details": "Ver detalhes de {{name}}",
       "meet": "Entrar na reunião do Google Meet",
