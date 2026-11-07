@@ -1,10 +1,8 @@
 import { Suspense, type ReactNode } from "react"
-import { useTranslation } from "react-i18next"
 
 import { RequirePermission } from "@/components/require-permission"
 import { RouteBoundary } from "@/components/shell/route-boundary"
 import { RouteSkeleton } from "@/components/shell/route-skeleton"
-import { useDocumentTitle } from "@/hooks/use-document-title"
 import { useRouteTitle } from "@/hooks/use-header-slot"
 import type { PermissionKey } from "@/lib/auth"
 
@@ -62,8 +60,6 @@ export function RouteFrame({ title, permission, children }: RouteFrameProps) {
 }
 
 function RouteTitle({ titleKey }: { titleKey: string }) {
-  const { t } = useTranslation()
   useRouteTitle(titleKey)
-  useDocumentTitle(t(titleKey))
   return null
 }

@@ -737,6 +737,7 @@ Presets: `fade`, `slideUp`, `listItem`, `stagger` com `staggerItem`. Transiçõe
 | `useLongPress(fn, { delay })` | `{ handlers, didFire }`: pressionar e segurar. Espalhe `handlers` e cheque `didFire()` no clique |
 | `useUnsavedChanges(when)` | `{ blocked, proceed, reset }`, sob `BrowserRouter` e data router |
 | `usePageTitle(title)` (de `@/hooks/use-header-slot`) | Título da página na barra superior e na aba: "Contatos · Vekoo". `RouteFrame` já cuida do título da rota; só chame para um título que a página conhece, como o nome do contato |
+| `useTabTitle(title)` (de `@/hooks/use-header-slot`) | Só a aba do navegador, sem mexer na barra: a conversa aberta, numa tela que segue chamada "Chat". Dentro da casca, é por aqui ou por `usePageTitle`: `useDocumentTitle` fica para o que está fora dela, como o editor |
 
 ## Utilitários: `@/lib/*`
 

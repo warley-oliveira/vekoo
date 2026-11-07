@@ -7,10 +7,16 @@ import { useMobileNav } from "@/hooks/use-mobile-nav"
 
 const BASE_TITLE = document.title
 
-/** O `<title>` da aba acompanha o título da barra. Volta ao padrão fora da casca. */
+/**
+ * O `<title>` da aba acompanha o título da barra. Volta ao padrão fora da casca. É o único que
+ * escreve o título dentro da casca: com mais de um, valia quem escrevesse por último, e a aba
+ * da conversa ora dizia o nome do contato, ora "Chat".
+ */
 export function DocumentTitle(): null {
-  const { title } = useHeaderTitle()
+  const { title: headerTitle } = useHeaderTitle()
+  const tabTitle = useHeaderStore((state) => state.tabTitle)
   const { t } = useTranslation()
+  const title = tabTitle ?? headerTitle
 
   useEffect(() => {
     document.title = title ? t("navigation.documentTitle", { title }) : BASE_TITLE

@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button"
 import { useBoard, useBoardMutations, useRevalidateBoard } from "@/hooks/pipelines-admin/use-board"
 import { useDebouncedCallback } from "@/hooks/use-debounced-value"
 import { useChannel } from "@/hooks/use-channel"
-import { useDocumentTitle } from "@/hooks/use-document-title"
+import { useTabTitle } from "@/hooks/use-header-slot"
 import { ApiError } from "@/lib/api"
 import { hasGoals } from "@/lib/pipelines-admin/board-rules"
 import { adminErrorMessage } from "@/lib/pipelines-admin/error-message"
@@ -124,7 +124,7 @@ export function BoardFrame({ area, variant, skeleton, header, children }: BoardF
 
 function AreaTitle({ area, boardName }: { area: BoardArea; boardName: string }) {
   const { t } = useTranslation()
-  useDocumentTitle(`${t(`pipelinesAdmin.routes.${area}`)} · ${boardName}`)
+  useTabTitle(`${t(`pipelinesAdmin.routes.${area}`)} · ${boardName}`)
   return null
 }
 

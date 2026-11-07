@@ -2,8 +2,6 @@ import { useLayoutEffect, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { create } from "zustand"
 
-import { useDocumentTitle } from "@/hooks/use-document-title"
-
 // O que a página põe na barra superior. A barra e a página são irmãs (o `Outlet` não
 // é ancestral do cabeçalho), então o caminho é um store: a página escreve ao montar e
 // limpa ao desmontar. Só as folhas que desenham o cabeçalho assinam, nenhuma re-render
@@ -37,6 +35,8 @@ export type PageTitleOptions = {
 type HeaderState = {
   routeTitleKey: string | null
   page: (PageTitleOptions & { title: string }) | null
+  /** Só para a aba do navegador: ver `useTabTitle`. */
+  tabTitle: string | null
   node: ReactNode
   mobileNode: ReactNode
   mobilePlacement: HeaderSlotPlacement
@@ -45,6 +45,7 @@ type HeaderState = {
 export const useHeaderStore = create<HeaderState>()(() => ({
   routeTitleKey: null,
   page: null,
+  tabTitle: null,
   node: null,
   mobileNode: null,
   mobilePlacement: "overflow",
@@ -94,8 +95,6 @@ export function usePageTitle(
   const backTo = options?.backTo
   const parentTitle = options?.parentTitle
 
-  useDocumentTitle(title)
-
   // Antes da pintura: o título da rota não pisca antes do nome da pasta.
   useLayoutEffect(() => {
     useHeaderStore.setState({
@@ -103,6 +102,17 @@ export function usePageTitle(
     })
     return () => useHeaderStore.setState({ page: null })
   }, [title, color, backTo, parentTitle])
+}
+
+/**
+ * Muda só a aba do navegador, e a barra superior continua com o título da tela: é a conversa
+ * aberta, numa tela que segue chamada "Chat".
+ */
+export function useTabTitle(title: string | null | undefined): void {
+  useLayoutEffect(() => {
+    useHeaderStore.setState({ tabTitle: title || null })
+    return () => useHeaderStore.setState({ tabTitle: null })
+  }, [title])
 }
 
 /** Uso interno de `RouteFrame`: o título que cada rota declara. */

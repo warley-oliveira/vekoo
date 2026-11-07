@@ -23,7 +23,7 @@ import { useLiveSyncGuard } from "@/hooks/chat/use-live-sync-guard"
 import { useOpenChat } from "@/hooks/chat/use-open-chat"
 import { useSendMessage } from "@/hooks/chat/use-send-message"
 import { useChannel } from "@/hooks/use-channel"
-import { useDocumentTitle } from "@/hooks/use-document-title"
+import { useTabTitle } from "@/hooks/use-header-slot"
 import { ApiError } from "@/lib/api"
 import { useAuth } from "@/lib/auth"
 import { deleteMessages, reactToMessage } from "@/lib/chat/actions"
@@ -406,7 +406,7 @@ export default memo(function ChatThread({
         contact: t("chat.contact.fallback"),
       })
     : ""
-  useDocumentTitle(contactName || null)
+  useTabTitle(contactName || null)
 
   // No celular, trocar de aba substitui: voltar significa a lista, e não cada canal por onde passou.
   const replace = Boolean(variant)
