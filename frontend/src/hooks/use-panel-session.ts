@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 
 import { useConfirm } from "@/components/shared"
 
-// O que os painéis laterais desta área têm em comum: a seleção da tela e a vida do painel
+// O que os modais de edição têm em comum: a seleção da tela e a vida do modal
 // não andam juntas. Ele continua na tela enquanto anima a saída, e cada abertura precisa
 // nascer do zero.
 

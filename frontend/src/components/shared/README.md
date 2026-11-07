@@ -21,8 +21,7 @@ Antes de criar um componente, procure aqui. Se faltar algo genérico, é melhor 
 | Lista longa sem colunas (conversas, avisos) | `InfiniteList` |
 | Busca e filtros acima de uma coleção | `FilterBar` com `FacetedFilter` |
 | Filtro ligado a uma coluna específica | `meta.filter` na coluna |
-| Detalhe ou edição sem sair da lista | `SidePanel` |
-| Tarefa curta sobre a tela | `ResponsiveDialog` |
+| Tarefa, edição ou detalhe, curto ou pesado | `ResponsiveDialog`, com o `size` do conteúdo |
 | Lista que a pessoa ordena arrastando | `SortableArea`, `DragHandle`, `useSortableEntry` |
 | Digitar várias palavras livres | `ChipsInput` |
 | Escolher uma opção ou criar outra | `CreatableSelect` |
@@ -80,16 +79,16 @@ Agrupa um assunto quando só o espaçamento não basta. `flush` encosta o conte�
 
 ---
 
-### `AreaNav`, `EntityCard`, `Callout`, `ImagePicker` e os hooks de painel
+### `AreaNav`, `EntityCard`, `Callout`, `ImagePicker` e os hooks de modal
 
-O padrão das telas de configuração, nascido em Pessoas: `AreaNav` no topo quando a área tem mais de uma rota (o endereço diz onde se está, e o botão voltar funciona), `SettingsSection` com salvar por seção, interruptor que vale na hora e edição em `SidePanel`.
+O padrão das telas de configuração, nascido em Pessoas: `AreaNav` no topo quando a área tem mais de uma rota (o endereço diz onde se está, e o botão voltar funciona), `SettingsSection` com salvar por seção, interruptor que vale na hora e edição em `ResponsiveDialog`.
 
 - `AreaNav`: abas com rota, rolando de lado em tela estreita, com a aba ativa à vista.
 - `EntityCard`: card de uma coisa nomeada (departamento, grupo) com menu de ações e rodapé.
 - `Callout`: recado no meio do conteúdo, para o que a pessoa precisa saber antes de agir.
 - `ImagePicker`: foto ou logo, com enviar, trocar, remover e validação de tipo e tamanho.
-- Em `@/hooks/use-panel-session`, para painéis de edição: `useGuardedClose(isDirty, close)` pede confirmação ao fechar com alteração pendente (X, Esc e clique fora; Cancelar fecha direto), `useRetained(value)` mantém o conteúdo na tela durante a animação de saída, e `useOpenCount(open)` serve de `key` para o painel reabrir limpo.
-- Painel aberto na URL (`?person=<id>`, `?new=1`) deixa a tela compartilhável e faz o voltar funcionar.
+- Em `@/hooks/use-panel-session`, para modais de edição: `useGuardedClose(isDirty, close)` pede confirmação ao fechar com alteração pendente (X, Esc e clique fora; Cancelar fecha direto), `useRetained(value)` mantém o conteúdo na tela durante a animação de saída, e `useOpenCount(open)` serve de `key` para o modal reabrir limpo.
+- Modal aberto na URL (`?person=<id>`, `?new=1`) deixa a tela compartilhável e faz o voltar funcionar.
 
 ### `SortableArea`, `DragHandle` e `useSortableEntry`
 
@@ -463,36 +462,51 @@ Histórico em ordem: atividades, passos de um envio. O marcador usa os tons de s
 
 ## Sobreposições
 
-**O voltar do aparelho** fecha o que está por cima, um passo de cada vez, sem a tela precisar pedir: `lib/back-stack.ts`, ligado pela casca abaixo de 1024 px. Vale para tudo que vem do Base UI. Camada que não é um popup (seleção, painel feito à mão) se declara com `useBackLayer(ativa, fechar)`, de `@/hooks/use-back-layer`. Navegar de dentro de uma folha pede `replace`.
+**O voltar do aparelho** fecha o que está por cima, um passo de cada vez, sem a tela precisar pedir: `lib/back-stack.ts`, ligado pela casca abaixo de 1024 px. Vale para tudo que vem do Base UI. Camada que não é um popup (seleção, painel feito à mão) se declara com `useBackLayer(ativa, fechar)`, de `@/hooks/use-back-layer`. Navegar de dentro de um modal ou de uma folha pede `replace`.
 
-### `SidePanel`
+**Modal para tudo, drawer só para o que pesa pouco.** Toda tarefa, edição ou detalhe abre em `ResponsiveDialog`, do aviso curto ao card do pipeline. Folha que desliza (`BottomSheet`, a folha de `ResponsivePopover`, os filtros no celular) fica para informação de baixa relevância: menu de ações, seletor, filtro, avisos. Painel lateral não existe mais.
 
-Detalhe ou edição sem sair da lista. **É a escolha padrão no lugar de um modal grande.** Corpo rolável, cabeçalho e rodapé fixos, largura toda no celular. `size`: `md`, `lg`, `xl`. Com dedo, abrir não sobe o teclado.
+| O que abre | Use |
+|---|---|
+| Tarefa, edição ou detalhe | `ResponsiveDialog` |
+| Confirmar ação destrutiva | `useConfirm` / `ConfirmDialog` |
+| Escolher data, cor, etiqueta; filtrar | `ResponsivePopover` (popover; folha no celular) |
+| Menu de ações no celular ("Mais", ações da mensagem, da página) | `BottomSheet` (`components/shell`) |
+| Avisos | central de notificações (popover; folha no celular) |
+
+### `ResponsiveDialog`
+
+O modal da plataforma. **A largura vem do `size`, escolhido pelo conteúdo** (nunca pela tela de onde abre); a altura acompanha o conteúdo até o teto, e o corpo rola entre o cabeçalho e o rodapé, que ficam parados.
+
+| `size` | Largura | Para |
+|---|---|---|
+| `sm` | 24rem | Uma pergunta ou um campo: renomear, escolher uma opção |
+| `md` (padrão) | 28rem | Formulário curto, até uns cinco campos |
+| `lg` | 32rem | Formulário com seções, ou um detalhe simples |
+| `xl` | 42rem | Detalhe com abas, formulário longo, lista para escolher |
+| `2xl` | 56rem | Duas colunas, prévia ao lado, tabela de conferência, importação |
+| `full` | até 88rem × 90dvh | Trabalho que pede a tela: card do pipeline, editor de código, editor de widget |
+
+Na dúvida, o menor que não espreme o conteúdo. De `xl` para cima, o cabeçalho ganha um fio e o corpo, respiro em cima: são modais que rolam.
+
+- **Altura:** `sm` a `lg` param em `min(85dvh, 48rem)`; `xl` e `2xl`, em `min(90dvh, 60rem)`. `full` tem altura fixa. `fixedHeight` faz qualquer tamanho ocupar o teto, para a caixa não saltar ao trocar de passo ou de aba (importações, listas com abas).
+- **Celular (abaixo do `md`):** `sm` e `md` são um cartão centrado, com 16 px de margem; `lg` para cima ocupam a tela, com as áreas seguras. Os dois ficam presos ao viewport visível (`--app-vh`), então o teclado virtual não cobre o campo nem o rodapé. A escolha mora em `MOBILE_PRESENTATION`, no próprio componente: trocar um valor por `"sheet"` volta à folha que sobe de baixo.
+- **De graça:** foco no primeiro campo (com dedo, no próprio modal, para o teclado não subir antes da hora, a não ser que um campo peça `autoFocus`), armadilha de foco, Esc, clique fora (menos com `disablePointerDismissal`), voltar do aparelho fecha só o de cima, fechar com rótulo traduzido, entrada curta por fade e escala que respeita `prefers-reduced-motion`.
+- `headerActions` fica ao lado do fechar: copiar, seguir, menu "...".
+- `bodyClassName="p-0"` para conteúdo que vai até a borda (editor, duas colunas com rolagem própria); nesse caso use `fixedHeight` ou `full`, para `h-full` valer.
+- Modal sobre modal funciona: a confirmação de excluir abre por cima da edição, e Esc ou voltar fecham só ela.
 
 ```tsx
-<SidePanel
+<ResponsiveDialog
   open={open}
   onOpenChange={setOpen}
+  size="xl"
   title={contact.name}
   description={contact.company}
   headerActions={<CopyButton value={contact.phone} />}
   footer={<Button variant="outline" onClick={() => setOpen(false)}>{t("x.close")}</Button>}
 >
   <KeyValueList items={items} />
-</SidePanel>
-```
-
-### `ResponsiveDialog`
-
-Tarefa curta sobre a tela: Dialog no desktop, Sheet que sobe de baixo no celular. `size`: `sm`, `md`, `lg`, `xl`.
-
-```tsx
-<ResponsiveDialog
-  trigger={<Button>{t("tags.rename")}</Button>}
-  title={t("tags.renameTitle")}
-  description={t("tags.renameHint")}
->
-  {children}
 </ResponsiveDialog>
 ```
 
@@ -576,7 +590,7 @@ Em página, `Form`:
 </Form>
 ```
 
-Em `SidePanel` e `ResponsiveDialog`, `useFormSubmit`, passando `form` ao `FormActions`, porque o conteúdo vai para um portal:
+Em `ResponsiveDialog`, `useFormSubmit`, passando `form` ao `FormActions`, porque o conteúdo vai para um portal:
 
 ```tsx
 const submit = useFormSubmit(form, async (values) => {
@@ -585,11 +599,11 @@ const submit = useFormSubmit(form, async (values) => {
   close()
 })
 
-<SidePanel open={open} onOpenChange={setOpen} title={t("contacts.edit")} onSubmit={submit}
+<ResponsiveDialog open={open} onOpenChange={setOpen} title={t("contacts.edit")} onSubmit={submit}
   footer={<FormActions form={form} submitLabel={t("contacts.save")} onCancel={close} requireChanges />}
 >
   <TextField control={form.control} name="name" label={t("contacts.name")} />
-</SidePanel>
+</ResponsiveDialog>
 ```
 
 `requireChanges` só libera o botão depois de alguma alteração. Fora do react-hook-form, `<FormActions loading={busy} … />`. `FormError` mostra o erro geral em outro lugar.
@@ -688,7 +702,7 @@ Carregando é esqueleto que espelha o layout, nunca spinner solto. Todos anuncia
 <ListSkeleton rows={6} avatar />
 <TableSkeleton rows={8} columns={4} />
 <CardGridSkeleton cards={6} media />
-<DetailSkeleton rows={5} /> {/* em SidePanel */}
+<DetailSkeleton rows={5} /> {/* em ResponsiveDialog */}
 <PageSkeleton variant="wide" /> {/* fallback de rota lazy */}
 ```
 

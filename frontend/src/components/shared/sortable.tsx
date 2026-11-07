@@ -45,7 +45,7 @@ const DRAG_KEYS = new Set([
 ])
 
 /**
- * O sensor de teclado do dnd-kit ouve no `document`, na bolha. Dentro de `SidePanel` e
+ * O sensor de teclado do dnd-kit ouve no `document`, na bolha. Dentro de um
  * `ResponsiveDialog`, as setas nunca chegam lá, porque o `Dialog` do Base UI para a propagação delas:
  * a pessoa pegava o item com Espaço e ficava sem como movê-lo. Este ouve na captura, antes do popup,
  * e a tecla usada no arrasto não segue adiante: Esc cancela o arrasto sem fechar o painel.
