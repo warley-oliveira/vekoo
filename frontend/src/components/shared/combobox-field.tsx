@@ -28,6 +28,8 @@ const SEARCH_DEBOUNCE = 250
 export type LoadOptions = (query: string, signal: AbortSignal) => Promise<SelectOption[]>
 
 export type SearchableSelectProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   value: string | null | undefined
   onChange: (value: string | null, option: SelectOption | null) => void
   onBlur?: () => void
@@ -60,6 +62,7 @@ export function SearchableSelect({
   className,
   id,
   disabled,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: SearchableSelectProps) {
@@ -151,6 +154,7 @@ export function SearchableSelect({
           id={id}
           ref={inputRef}
           placeholder={placeholder ?? t("kit.form.searchPlaceholder")}
+          aria-label={ariaLabel}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
           render={<InputGroupInput disabled={disabled} />}

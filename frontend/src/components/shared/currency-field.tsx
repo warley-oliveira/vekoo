@@ -19,6 +19,8 @@ function toDigits(amount: number | string | null | undefined): string {
 }
 
 export type CurrencyInputProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   /** Em unidades da moeda; a API pode mandar number ou string ("5000.0"). */
   value: number | string | null | undefined
   /** Recebe o valor numérico, ou `null` quando o campo esvazia. */

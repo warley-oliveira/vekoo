@@ -23,6 +23,8 @@ import { FormField, type FieldControlProps, type FormFieldBaseProps } from "./fo
 import type { SelectOption } from "./select-field"
 
 export type MultiSelectInputProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   options: SelectOption[]
   value: string[] | null | undefined
   onChange: (value: string[]) => void
@@ -45,6 +47,7 @@ export function MultiSelectInput({
   className,
   id,
   disabled,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: MultiSelectInputProps) {
@@ -98,6 +101,7 @@ export function MultiSelectInput({
               <ComboboxChipsInput
                 id={id}
                 ref={inputRef}
+                aria-label={ariaLabel}
                 aria-invalid={ariaInvalid}
                 aria-describedby={ariaDescribedBy}
                 placeholder={

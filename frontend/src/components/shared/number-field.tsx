@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils"
 import { FormField, type FieldControlProps, type FormFieldBaseProps } from "./form-field"
 
 export type NumberInputProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   value: number | null | undefined
   onChange: (value: number | null) => void
   onBlur?: () => void
@@ -41,6 +43,7 @@ export function NumberInput({
   className,
   id,
   disabled,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: NumberInputProps) {
@@ -81,6 +84,7 @@ export function NumberInput({
         ) : null}
         <NumberFieldPrimitive.Input
           ref={inputRef}
+          aria-label={ariaLabel}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
           placeholder={placeholder}

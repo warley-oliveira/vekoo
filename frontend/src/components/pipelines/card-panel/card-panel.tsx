@@ -65,7 +65,6 @@ import { useSession } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { AttachmentsSection } from "./attachments-section"
 import { CardActivities } from "./card-activities"
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { CardComments } from "./card-comments"
 import { ChatLink } from "./chat-link"
 import { ChecklistsSection, StageChecksSection } from "./checklists-section"
@@ -191,21 +190,17 @@ function CommitNumber({
   const [draft, setDraft] = useState(value)
   useEffect(() => setDraft(value), [value])
   return (
-    <HiddenLabel text={label}>
-      {(id) => (
-        <NumberInput
-          id={id}
-          disabled={disabled}
-          min={min}
-          max={max}
-          value={draft}
-          onChange={setDraft}
-          onBlur={() => {
-            if (draft !== value) onCommit(draft)
-          }}
-        />
-      )}
-    </HiddenLabel>
+    <NumberInput
+      aria-label={label}
+      disabled={disabled}
+      min={min}
+      max={max}
+      value={draft}
+      onChange={setDraft}
+      onBlur={() => {
+        if (draft !== value) onCommit(draft)
+      }}
+    />
   )
 }
 
@@ -363,21 +358,17 @@ const CardDetails = memo(function CardDetails({
 
       <section aria-label={t("pipelines.card.properties")} className="flex flex-col gap-2">
         <PropertyRow label={t("pipelines.card.assignee")}>
-          <HiddenLabel text={t("pipelines.card.assignee")}>
-            {(id) => (
-              <SearchableSelect
-                id={id}
-                clearable
-                placeholder={t("pipelines.card.noAssignee")}
-                value={card.assignedToId}
-                options={assigneeOptions}
-                onChange={(assignedToId) => {
-                  const person = people.find((candidate) => candidate.id === assignedToId) ?? null
-                  void save({ assignedToId }, { assignedToId, assignedTo: person })
-                }}
-              />
-            )}
-          </HiddenLabel>
+          <SearchableSelect
+            aria-label={t("pipelines.card.assignee")}
+            clearable
+            placeholder={t("pipelines.card.noAssignee")}
+            value={card.assignedToId}
+            options={assigneeOptions}
+            onChange={(assignedToId) => {
+              const person = people.find((candidate) => candidate.id === assignedToId) ?? null
+              void save({ assignedToId }, { assignedToId, assignedTo: person })
+            }}
+          />
         </PropertyRow>
         <PropertyRow label={t("pipelines.card.priority")}>
           <SelectInput

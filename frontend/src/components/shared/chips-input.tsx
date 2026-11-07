@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils"
 const SEPARATORS = /[,;\n]/
 
 type ChipsInputProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   value: string[] | null | undefined
   onChange: (value: string[]) => void
   onBlur?: () => void
@@ -38,6 +40,7 @@ export function ChipsInput({
   className,
   id,
   disabled,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: ChipsInputProps) {
@@ -106,6 +109,7 @@ export function ChipsInput({
         ref={inputRef}
         value={text}
         disabled={disabled}
+        aria-label={ariaLabel}
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
         enterKeyHint="done"

@@ -10,7 +10,6 @@ import {
   UserAvatar,
   type LoadOptions,
 } from "@/components/shared"
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { Button } from "@/components/ui/button"
 import { useCan } from "@/hooks/use-can"
 import { apiAssetUrl, apiGet } from "@/lib/api"
@@ -52,20 +51,16 @@ export function ChatLink({ card, onLink }: ChatLinkProps) {
 
   if (!card.chatId) {
     return (
-      <HiddenLabel text={t("pipelines.chat.link")}>
-        {(id) => (
-          <SearchableSelect
-            id={id}
-            placeholder={t("pipelines.chat.linkPlaceholder")}
-            emptyLabel={t("pipelines.chat.noResults")}
-            value={null}
-            loadOptions={search}
-            onChange={(chatId) => {
-              if (chatId) onLink(chatId)
-            }}
-          />
-        )}
-      </HiddenLabel>
+      <SearchableSelect
+        aria-label={t("pipelines.chat.link")}
+        placeholder={t("pipelines.chat.linkPlaceholder")}
+        emptyLabel={t("pipelines.chat.noResults")}
+        value={null}
+        loadOptions={search}
+        onChange={(chatId) => {
+          if (chatId) onLink(chatId)
+        }}
+      />
     )
   }
 
