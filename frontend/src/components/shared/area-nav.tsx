@@ -1,4 +1,5 @@
-import { NavLink } from "react-router"
+import { useLayoutEffect, useRef } from "react"
+import { NavLink, useLocation } from "react-router"
 
 import { cn } from "@/lib/utils"
 
@@ -6,11 +7,26 @@ export type AreaNavItem = { to: string; label: string }
 
 /**
  * Abas de uma área de configurações, cada uma com a sua rota: o endereço diz onde se está,
- * e o botão voltar funciona. Em tela estreita, rola de lado em vez de quebrar a linha.
+ * e o botão voltar funciona. Em tela estreita, rola de lado em vez de quebrar a linha, e a
+ * aba ativa fica à vista.
  */
 export function AreaNav({ label, items }: { label: string; items: AreaNavItem[] }) {
+  const navRef = useRef<HTMLElement>(null)
+  const { pathname } = useLocation()
+
+  // Mexe só no `scrollLeft`: `scrollIntoView` poderia rolar a página junto.
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    const active = nav?.querySelector('[aria-current="page"]')
+    if (!nav || !active) return
+    const navBox = nav.getBoundingClientRect()
+    const activeBox = active.getBoundingClientRect()
+    nav.scrollLeft += activeBox.left - navBox.left - (navBox.width - activeBox.width) / 2
+  }, [pathname, items.length])
+
   return (
     <nav
+      ref={navRef}
       aria-label={label}
       className="-mx-4 overflow-x-auto border-b px-4 [scrollbar-width:none] md:mx-0 md:px-0"
     >
