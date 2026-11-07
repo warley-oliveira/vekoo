@@ -557,6 +557,25 @@ RSpec.describe Connector::WhatsappCloud do
         expect(a_request(:post, subscribe_url).with(query: hash_including("app_id" => "APP"))).to have_been_made
       end
 
+      it "só a ativação que a Meta confirmou prova que o WABA é deste conector" do
+        connector.update!(waba_verified_at: nil)
+        stub_everything
+
+        connector.activate
+
+        expect(connector.reload.waba_verified_at).to be_present
+      end
+
+      it "a ativação recusada não prova nada" do
+        connector.update!(waba_verified_at: nil)
+        stub_request(:get, number_url).to_return(json_reply(phone))
+        stub_request(:get, numbers_url).to_return(json_reply({ error: { message: "sem acesso", code: 100 } }, status: 400))
+
+        expect { connector.activate }.to raise_error(StandardError)
+
+        expect(connector.reload.waba_verified_at).to be_nil
+      end
+
       it "guarda a lista de números e o perfil de cada um" do
         stub_everything
 

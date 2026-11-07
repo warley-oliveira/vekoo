@@ -52,6 +52,9 @@ class Connector::WhatsappCloud < Connector::Base
   field :phone_number_id, type: Integer
   field :waba_id, type: Integer
   field :business_id, type: Integer
+  # Quando a Meta confirmou que o token deste conector enxerga o WABA (ver #activate). `waba_id` é escrito
+  # por quem cria o conector, e o estado não prova nada: pausar e reativar leva qualquer conector a `active`.
+  field :waba_verified_at, type: Time
   encrypted_field :access_token
   encrypted_field :user_access_token
 
@@ -67,6 +70,15 @@ class Connector::WhatsappCloud < Connector::Base
 
   before_create do
     self.verification_token = SecureRandom.base36(32)
+  end
+
+  # O dono do WABA de um evento: só quem provou que enxerga o WABA. Sem isto, cadastrar o id de outra
+  # organização bastava para receber as mensagens dela, porque o webhook de aplicativo da Meta é um só.
+  # `business_id` só vale em conector sem `waba_id`: é o único caso em que foi ele que a Meta conferiu.
+  def self.owner_of_entry(entry_id)
+    verified = where(:waba_verified_at.ne => nil)
+
+    verified.where(waba_id: entry_id).take || verified.where(waba_id: nil, business_id: entry_id).take
   end
 
   def instance_name
@@ -86,6 +98,7 @@ class Connector::WhatsappCloud < Connector::Base
       return
     end
     self.phone_number_list = fetch_registered_numbers
+    self.waba_verified_at = Time.current
     self.display_phone_number = registered_number.data.display_phone_number
     self.verified_name = registered_number.data.verified_name
     self.fb_status = registered_number.data.status
