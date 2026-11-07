@@ -8,18 +8,68 @@
 # comando única, sem re-aspá-los: passada crua, o shell remoto a quebra nos
 # espaços e só "ssh-ed25519" chega em $1 — gravando uma authorized_keys inválida.
 #
+# Num host que já roda, para atualizar só o backup, sem reiniciar o Docker nem refazer o firewall:
+#
+#   ssh root@<IP> "bash -s -- --backup-only" < bin/deploy-setup
+#
 # O que este script NÃO faz: instalar nginx ou certbot. O kamal-proxy assume
 # 80/443 e resolve TLS e roteamento sozinho.
 set -euo pipefail
-
-PUBKEY_B64="${1:-}"
-[ -n "$PUBKEY_B64" ] || { echo "FATAL: passe a chave pública em base64 como \$1"; exit 1; }
-PUBKEY="$(echo "$PUBKEY_B64" | base64 -d)"
 
 DEPLOY_USER=deploy
 APP=vekoo
 
 log() { printf '\n\033[1;35m==> %s\033[0m\n' "$*"; }
+
+# --- backup noturno --------------------------------------------------------
+# Cada parte falha sozinha: Mongo fora do ar não pode custar o dump do Postgres e os anexos. O
+# arquivo só ganha o nome final se o dump terminou, e a saída diferente de zero aparece no log.
+install_backup() {
+  log "Backup noturno (03:20) com retenção de 14 dias: Postgres, Mongo e anexos"
+  install -d -m 750 -o "$DEPLOY_USER" -g "$DEPLOY_USER" /var/backups/$APP
+  cat > /usr/local/bin/${APP}-backup <<BACKUP
+#!/usr/bin/env bash
+set -uo pipefail
+DEST=/var/backups/$APP
+STAMP=\$(date +%Y%m%d-%H%M%S)
+status=0
+
+dump() {            # \$1 = nome do arquivo; o resto = comando que escreve no stdout
+  local target="\$DEST/\$1"; shift
+  if "\$@" > "\$target.tmp"; then
+    mv "\$target.tmp" "\$target"
+  else
+    rm -f "\$target.tmp"
+    echo "\$(date -Is) FALHOU: \$target" >&2
+    status=1
+  fi
+}
+
+# -Fc (custom) porque permite restore seletivo com pg_restore.
+dump "db-\$STAMP.pgdump" docker exec ${APP}-api-db pg_dump -U $APP -d ${APP}_production -Fc
+# As credenciais vêm do ambiente do próprio container, para não morar neste arquivo.
+dump "mongo-\$STAMP.archive.gz" docker exec ${APP}-api-mongodb sh -c \\
+  'exec mongodump --quiet -u "\$MONGO_INITDB_ROOT_USERNAME" -p "\$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --db ${APP}_production --archive --gzip'
+dump "storage-\$STAMP.tar.gz" docker run --rm -v ${APP}_storage:/data:ro alpine tar czf - -C /data .
+
+find "\$DEST" -type f -mtime +14 -delete
+exit \$status
+BACKUP
+  chmod +x /usr/local/bin/${APP}-backup
+  cat > /etc/cron.d/${APP}-backup <<CRON
+20 3 * * * root /usr/local/bin/${APP}-backup >> /var/log/${APP}-backup.log 2>&1
+CRON
+}
+
+if [ "${1:-}" = "--backup-only" ]; then
+  install_backup
+  log "Pronto. Teste agora: /usr/local/bin/${APP}-backup && ls -lh /var/backups/$APP"
+  exit 0
+fi
+
+PUBKEY_B64="${1:-}"
+[ -n "$PUBKEY_B64" ] || { echo "FATAL: passe a chave pública em base64 como \$1"; exit 1; }
+PUBKEY="$(echo "$PUBKEY_B64" | base64 -d)"
 
 # --- pacotes base ----------------------------------------------------------
 log "Pacotes base"
@@ -226,25 +276,7 @@ sshd -t
 # pode abortar o script — senão o servidor tranca no meio do bootstrap.
 systemctl reload ssh 2>/dev/null || systemctl restart ssh.socket 2>/dev/null || true
 
-# --- backup noturno --------------------------------------------------------
-log "Backup noturno (03:20) com retenção de 14 dias"
-install -d -m 750 -o "$DEPLOY_USER" -g "$DEPLOY_USER" /var/backups/$APP
-cat > /usr/local/bin/${APP}-backup <<BACKUP
-#!/usr/bin/env bash
-set -euo pipefail
-DEST=/var/backups/$APP
-STAMP=\$(date +%Y%m%d-%H%M%S)
-# -Fc (custom) porque permite restore seletivo com pg_restore.
-docker exec ${APP}-api-db pg_dump -U $APP -d ${APP}_production -Fc \
-  > "\$DEST/db-\$STAMP.pgdump"
-docker run --rm -v ${APP}_storage:/data:ro -v "\$DEST:/backup" alpine \
-  tar czf "/backup/storage-\$STAMP.tar.gz" -C /data .
-find "\$DEST" -type f -mtime +14 -delete
-BACKUP
-chmod +x /usr/local/bin/${APP}-backup
-cat > /etc/cron.d/${APP}-backup <<CRON
-20 3 * * * root /usr/local/bin/${APP}-backup >> /var/log/${APP}-backup.log 2>&1
-CRON
+install_backup
 
 log "Pronto."
 echo
