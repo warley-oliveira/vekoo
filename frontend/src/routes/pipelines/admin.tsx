@@ -1,15 +1,15 @@
-import { lazy } from "react"
 import { Route } from "react-router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
-
-const SettingsPage = lazy(() => import("./admin/settings-page"))
-const TriggersPage = lazy(() => import("./admin/triggers-page"))
-const GoalsPage = lazy(() => import("./admin/goals-page"))
-const FieldsPage = lazy(() => import("./admin/fields-page"))
-const LabelsPage = lazy(() => import("./admin/labels-page"))
-const MetricsPage = lazy(() => import("./admin/metrics-page"))
-const ArchivedPage = lazy(() => import("./admin/archived-page"))
+import {
+  ArchivedPage,
+  FieldsPage,
+  GoalsPage,
+  LabelsPage,
+  MetricsPage,
+  SettingsPage,
+  TriggersPage,
+} from "./admin/pages"
 
 /**
  * A administração de um quadro: o que configura e mede. Caminhos absolutos, para entrar como
