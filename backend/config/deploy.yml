@@ -125,6 +125,7 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
+    - HASHID_SALT                   # URL do front (/a/<hashid>): vazio vale o padrão; trocar quebra links guardados
     - DATABASE_URL                  # Postgres. Sem ela, a API não sobe
     - MONGODB_URI                   # Mongo. Sem ela, a API não sobe
     - ANTHROPIC_API_KEY             # Claude: geração, copiloto e blocos de IA param, sem cobrar crédito

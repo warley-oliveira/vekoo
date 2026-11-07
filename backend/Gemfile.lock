@@ -176,6 +176,7 @@ GEM
       pstore (~> 0.1)
       signet (>= 0.16, < 2.a)
     hashdiff (1.2.1)
+    hashids (1.0.6)
     httparty (0.24.3)
       csv
       mini_mime (>= 1.0.0)
@@ -490,6 +491,7 @@ DEPENDENCIES
   faker
   faraday (~> 2.15)
   google-apis-calendar_v3 (~> 0.58)
+  hashids (~> 1.0)
   httparty (~> 0.24)
   image_processing (~> 1.2)
   jsonpath (~> 1.1)
