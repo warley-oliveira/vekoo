@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState, type ReactNode } from "react"
+import { memo, useMemo, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { useReducedMotion } from "motion/react"
 import {
@@ -18,6 +18,7 @@ import { RankedBars } from "@/components/dashboard/bars"
 import { ChartLegend } from "@/components/dashboard/chart-card"
 import { TooltipShell } from "@/components/dashboard/charts"
 import { ChartContainer, ChartTooltip, type ChartConfig } from "@/components/ui/chart"
+import { useSteppedWidth } from "@/hooks/custom-dashboards/use-stepped-width"
 import { formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import type { ChartModel } from "@/lib/custom-dashboards/chart-model"
@@ -42,27 +43,10 @@ const MAX_LABELLED_BARS = 16
 
 /** O que o eixo e as margens tomam da largura do card. Não precisa ser exato: só decide a folga das barras. */
 const AXIS_WIDTH = 36
-const WIDTH_STEP = 8
 const CROWDED_BELOW = 10
-
-/** A largura do gráfico, em degraus: decide a folga sem redesenhar a cada pixel de um redimensionamento. */
-function useSteppedWidth(active: boolean) {
-  const [width, setWidth] = useState(0)
-
-  const ref = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node || !active) return
-      const measure = () => setWidth(Math.round(node.clientWidth / WIDTH_STEP) * WIDTH_STEP)
-      measure()
-      const observer = new ResizeObserver(measure)
-      observer.observe(node)
-      return () => observer.disconnect()
-    },
-    [active]
-  )
-
-  return { ref, width }
-}
+/** Largura média de uma letra no eixo, em 11 px, e o mínimo de letras para um rótulo ainda dizer alguma coisa. */
+const TICK_CHAR_WIDTH = 6.4
+const MIN_TICK_CHARS = 4
 
 /**
  * A folga das barras. O Recharts trunca a largura de cada barra para inteiro: com 90 dias no celular, os 22% de folga e os
@@ -73,6 +57,10 @@ function barSpacing(width: number, slots: number, marksPerSlot: number) {
   const perMark = slot / marksPerSlot
   if (perMark >= CROWDED_BELOW) return { barCategoryGap: "22%", barGap: GAP }
   return { barCategoryGap: slot < 2 ? 0 : slot < 8 ? 0.5 : 1, barGap: perMark < 3 ? 0 : 1 }
+}
+
+function ellipsize(text: string, chars: number) {
+  return text.length > chars ? `${text.slice(0, chars - 1)}…` : text
 }
 
 type ChartRow = { id: string; tick: string; title: string } & Record<string, unknown>
@@ -145,7 +133,12 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
   const perCategoryColor = series.length === 1 && categories.some((category) => valueMap?.[category.id]?.color)
   const thresholds = config.thresholds ?? []
   const allPositive = series.every((item) => item.values.every((value) => (value ?? 0) >= 0))
-  const measured = useSteppedWidth(type === "bar_chart" && !horizontal)
+  const measured = useSteppedWidth(!horizontal && (type === "bar_chart" || model.kind !== "time"))
+  // Data pula rótulo sem perder o sentido. Categoria não: "WhatsApp" e "Instagram" com duas barras sem nome no meio não
+  // dizem de quem são. Cabendo pelo menos o começo do nome, todas aparecem, e o nome inteiro fica na dica e na tabela.
+  const plotWidth = measured.width - AXIS_WIDTH
+  const tickChars = plotWidth > 0 && categories.length ? Math.floor(plotWidth / categories.length / TICK_CHAR_WIDTH) : 0
+  const labelEveryCategory = model.kind !== "time" && tickChars >= MIN_TICK_CHARS
 
   const rows = useMemo<ChartRow[]>(
     () =>
@@ -192,7 +185,8 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
     const item = series[0]
     const total = model.additive && model.partition ? item.total : 0
     return (
-      <div className="h-full min-h-0 overflow-y-auto pr-1 [scrollbar-width:thin]">
+      // `data-cd-grows`: na pilha do celular, o card acompanha a lista em vez de rolar dentro da página.
+      <div data-cd-grows className="h-full min-h-0 overflow-y-auto pr-1 [scrollbar-width:thin]">
         <RankedBars
           color={item.color}
           items={categories.map((category, index) => {
@@ -347,8 +341,9 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
                   axisLine={{ stroke: GRID_STROKE }}
                   tick={AXIS_TICK}
                   tickMargin={6}
-                  interval="preserveStartEnd"
+                  interval={labelEveryCategory ? 0 : "preserveStartEnd"}
                   minTickGap={24}
+                  {...(labelEveryCategory ? { tickFormatter: (tick: string) => ellipsize(tick, tickChars) } : {})}
                 />
                 {valueAxis}
               </>
@@ -390,7 +385,13 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
                   ifOverflow="extendDomain"
                   label={
                     threshold.label
-                      ? { value: threshold.label, position: "insideTopRight", fontSize: 11, fill: "var(--muted-foreground)" }
+                      ? {
+                          value: threshold.label,
+                          // No tempo, o movimento costuma estar no fim; em categorias, na maior barra, a primeira.
+                          position: model.kind === "time" ? "insideTopLeft" : "insideTopRight",
+                          fontSize: 11,
+                          fill: "var(--muted-foreground)",
+                        }
                       : undefined
                   }
                 />

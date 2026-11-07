@@ -94,7 +94,7 @@ export function refreshWidgetData() {
   return globalMutate(isWidgetDataKey)
 }
 
-async function storeDashboard(dashboard: CustomDashboard) {
+export async function storeDashboard(dashboard: CustomDashboard) {
   await globalMutate(dashboardKey(dashboard.id), { customDashboard: dashboard }, { revalidate: false })
   await globalMutate(DASHBOARD_LIST_KEY)
 }

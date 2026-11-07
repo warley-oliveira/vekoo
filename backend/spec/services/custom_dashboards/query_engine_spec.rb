@@ -633,6 +633,14 @@ RSpec.describe CustomDashboards::QueryEngine do
       expect(execute("conversations", query.merge(sort: { field: "status", direction: "desc" }))[:rows].first["status"]).to eq("open")
     end
 
+    it "empate na métrica: desempata pela dimensão, e o limite corta sempre o mesmo" do
+      %w[open closed].each { |status| create(:chat, organization: organization, status: status) }
+      query = { dimensions: [ { field: "status" } ], metrics: [ count_metric ], sort: { field: "Total", direction: "desc" } }
+
+      expect(execute("conversations", query)[:rows].map { |row| row["status"] }).to eq(%w[closed open])
+      expect(execute("conversations", query.merge(limit: 1))[:rows].first["status"]).to eq("closed")
+    end
+
     it "por padrão, ordena pela primeira dimensão" do
       create(:chat, organization: organization, status: "open")
       create(:chat, organization: organization, status: "closed")

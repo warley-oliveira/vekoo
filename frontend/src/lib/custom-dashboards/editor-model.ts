@@ -7,7 +7,6 @@ import type {
   Aggregation,
   DashboardWidget,
   DataSourceMeta,
-  FilterOperator,
   FormulaStep,
   Granularity,
   QueryFilter,
@@ -462,13 +461,4 @@ export function recordFields(source: DataSourceMeta | undefined) {
 export function hasRules(values: Pick<EditorValues, "widgetType" | "breakdown">) {
   const spec = WIDGET_SPECS[values.widgetType]
   return spec.figure || spec.axes || Boolean(values.breakdown)
-}
-
-/** Comparações que não pedem valor: "está preenchido", "está vazio". */
-export const VALUELESS_OPERATORS: FilterOperator[] = ["exists", "not_exists"]
-
-export function isFilterFilled(filter: QueryFilter) {
-  if (VALUELESS_OPERATORS.includes(filter.operator)) return true
-  if (Array.isArray(filter.value)) return filter.value.length > 0
-  return filter.value !== "" && filter.value !== null && filter.value !== undefined
 }

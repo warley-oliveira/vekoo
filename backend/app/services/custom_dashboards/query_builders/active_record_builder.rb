@@ -261,9 +261,13 @@ module CustomDashboards
 
       def apply_order(scope, renames)
         sort = query["sort"].to_h
-        return scope.order(Arel.sql("#{sort_alias(sort['field'], renames)} #{direction(sort)}")) if sort["field"].present?
+        first_dimension = dimensions.any? ? dimension_alias(0) : nil
+        return first_dimension ? scope.order(Arel.sql("#{first_dimension} ASC")) : scope if sort["field"].blank?
 
-        dimensions.any? ? scope.order(Arel.sql("#{dimension_alias(0)} ASC")) : scope
+        field = sort_alias(sort["field"], renames)
+        # Empate: sem o desempate, o limite corta um valor diferente a cada consulta, e as barras trocam de lugar.
+        tie_break = first_dimension && first_dimension != field ? ", #{first_dimension} ASC" : ""
+        scope.order(Arel.sql("#{field} #{direction(sort)}#{tie_break}"))
       end
 
       def sort_alias(sort_field, renames)

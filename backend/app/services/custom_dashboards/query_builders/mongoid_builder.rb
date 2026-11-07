@@ -380,7 +380,10 @@ module CustomDashboards
         sort = query["sort"].to_h
 
         if sort["field"].present?
-          { resolve_sort_field(sort["field"]) => (sort["direction"] == "desc" ? -1 : 1) }
+          field = resolve_sort_field(sort["field"])
+          stage = { field => (sort["direction"] == "desc" ? -1 : 1) }
+          # Empate: sem o desempate, o limite corta um valor diferente a cada consulta, e as barras trocam de lugar.
+          field.start_with?("_id") ? stage : stage.merge("_id" => 1)
         elsif dimensions.first
           # Pela primeira dimensão, ascendente, por padrão.
           { "_id.#{group_alias(dimensions.first['field'])}" => 1 }

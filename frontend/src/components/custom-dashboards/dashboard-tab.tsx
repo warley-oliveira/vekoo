@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import {
   normalizeDashboard,
   refreshWidgetData,
+  storeDashboard,
   useCustomDashboard,
   useDashboardMutations,
   useDataSources,
@@ -208,6 +209,8 @@ function LoadedDashboard({ dashboard, period }: { dashboard: CustomDashboard; pe
       // outra pessoa fez, sem aviso.
       const { customDashboard } = await apiGet<{ customDashboard: CustomDashboard }>(`/custom-dashboards/${dashboardId}`)
       if (!sameWidgets(toSnapshot(normalizeDashboard(customDashboard)), current.saved)) {
+        // A versão nova já veio: quem desistir e descartar o rascunho cai nela, e não na que estava guardada.
+        await storeDashboard(customDashboard)
         const overwrite = await confirm({
           title: t("customDashboards.toolbar.conflictTitle"),
           description: t("customDashboards.toolbar.conflictDescription"),

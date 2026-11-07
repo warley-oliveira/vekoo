@@ -23,7 +23,8 @@ import type {
 
 // Do que está guardado num card ao corpo de `POST /custom-dashboards/query`. Nada aqui fala com a rede.
 
-const VALUELESS_OPERATORS = new Set(["exists", "not_exists"])
+/** Comparações que não pedem valor: "está preenchido", "está vazio". */
+export const VALUELESS_OPERATORS = new Set(["exists", "not_exists"])
 
 /** Sem agrupar, ou por categoria: mais linhas que isto não cabem num gráfico. Quem quer mais, pede no card. */
 export const DEFAULT_ROWS = 100
@@ -140,7 +141,7 @@ export function effectiveMetrics(query: WidgetQuery): WidgetMetric[] {
   return query.metrics?.length ? query.metrics : [{ aggregation: "count" }]
 }
 
-function isFilled(filter: QueryFilter): boolean {
+export function isFilterFilled(filter: QueryFilter): boolean {
   if (VALUELESS_OPERATORS.has(filter.operator)) return true
   if (Array.isArray(filter.value)) return filter.value.length > 0
   return filter.value !== "" && filter.value !== null && filter.value !== undefined
@@ -148,7 +149,7 @@ function isFilled(filter: QueryFilter): boolean {
 
 /** Filtro pela metade não vale: ele ainda vai ser preenchido, e não pode zerar o card na prévia. */
 function completeFilters(filters: QueryFilter[] | undefined): QueryFilter[] {
-  return (filters ?? []).filter(isFilled).map(({ field, operator, value }) => ({ field, operator, value: value ?? null }))
+  return (filters ?? []).filter(isFilterFilled).map(({ field, operator, value }) => ({ field, operator, value: value ?? null }))
 }
 
 function apiMetric(metric: WidgetMetric, key: string): ApiMetric {

@@ -1,6 +1,7 @@
 import { memo, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { useSteppedWidth } from "@/hooks/custom-dashboards/use-stepped-width"
 import { useLanguage } from "@/lib/i18n"
 import type { ChartModel } from "@/lib/custom-dashboards/chart-model"
 import { formatValue } from "@/lib/custom-dashboards/format"
@@ -13,8 +14,12 @@ type HeatmapWidgetProps = {
 }
 
 const STEPS = 6
-/** Passou disso, nem todo rótulo do eixo cabe: mostra um sim, outro não. */
+/** Enquanto não mediu: passou disso, nem todo rótulo do eixo cabe. */
 const MAX_TICKS = 12
+/** O que a coluna dos nomes costuma tomar, e a largura de uma letra do eixo. Só decidem de quantas em quantas colunas há rótulo. */
+const NAMES_WIDTH = 96
+const TICK_CHAR_WIDTH = 6.4
+const TICK_GAP = 8
 
 function stepOf(value: number, max: number) {
   if (max <= 0 || value <= 0) return 0
@@ -36,8 +41,20 @@ export const HeatmapWidget = memo(function HeatmapWidget({ model, config }: Heat
     [series]
   )
 
-  const tickEvery = Math.max(1, Math.ceil(categories.length / MAX_TICKS))
   const single = series.length === 1
+  const { ref, width } = useSteppedWidth()
+  const columnWidth = (width - (single ? 0 : NAMES_WIDTH)) / Math.max(1, categories.length)
+  const longestTick = Math.max(0, ...categories.map((category) => category.tick.length))
+  const tickEvery =
+    columnWidth > 0
+      ? Math.max(1, Math.ceil((longestTick * TICK_CHAR_WIDTH + TICK_GAP) / columnWidth))
+      : Math.max(1, Math.ceil(categories.length / MAX_TICKS))
+  // Cada rótulo ocupa as colunas dele até o próximo: não encosta no vizinho nem é cortado.
+  const ticks = categories.flatMap((category, index) => {
+    if (index % tickEvery !== 0) return []
+    const span = Math.min(tickEvery, categories.length - index)
+    return [{ key: category.id, span, tick: span === tickEvery ? category.tick : "" }]
+  })
   const readout = hovered
     ? {
         category: categories[hovered.column].title,
@@ -49,6 +66,7 @@ export const HeatmapWidget = memo(function HeatmapWidget({ model, config }: Heat
   return (
     <div className="flex h-full min-h-0 flex-col gap-2">
       <div
+        ref={ref}
         role="img"
         aria-label={t("customDashboards.chart.heatmapSummary", {
           rows: series.length,
@@ -86,9 +104,9 @@ export const HeatmapWidget = memo(function HeatmapWidget({ model, config }: Heat
           </div>
         ))}
         {single ? null : <span />}
-        {categories.map((category, index) => (
-          <span key={category.id} className="truncate pt-1 text-center text-[11px] text-muted-foreground">
-            {index % tickEvery === 0 ? category.tick : ""}
+        {ticks.map(({ key, span, tick }) => (
+          <span key={key} className="truncate pt-1 text-[11px] text-muted-foreground" style={{ gridColumn: `span ${span}` }}>
+            {tick}
           </span>
         ))}
       </div>

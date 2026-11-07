@@ -28,6 +28,17 @@ RSpec.describe CustomDashboards::Sources::Pipelines do
       expect(result[:labels]["stage_id"]).to eq(proposal.id => "Comercial · Proposta", closing.id => "Comercial · Fechamento")
     end
 
+    it "empate na métrica: desempata pela dimensão, e o limite corta sempre o mesmo" do
+      create(:pipeline_card, stage: proposal)
+      create(:pipeline_card, stage: closing)
+      ordered = [ proposal.id, closing.id ].sort
+
+      query = { dimensions: [ { field: "stage_id" } ], metrics: [ total ], sort: { field: "Total", direction: "desc" } }
+
+      expect(execute(**query)[:rows].map { |row| row["stage_id"] }).to eq(ordered)
+      expect(execute(**query, limit: 1)[:rows].first["stage_id"]).to eq(ordered.first)
+    end
+
     it "agrupa por quadro, mesmo o quadro sendo da etapa" do
       other = create(:pipeline_board, organization: organization, name: "Suporte")
       create(:pipeline_card, stage: proposal)

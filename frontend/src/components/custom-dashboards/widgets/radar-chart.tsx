@@ -18,6 +18,13 @@ type RadarWidgetProps = {
 
 type RadarRow = { id: string; tick: string; title: string } & Record<string, unknown>
 
+const MAX_TICK_CHARS = 14
+const MARGIN = { top: 8, right: 28, bottom: 8, left: 28 }
+
+function shortTick(tick: string) {
+  return tick.length > MAX_TICK_CHARS ? `${tick.slice(0, MAX_TICK_CHARS - 1)}…` : tick
+}
+
 /** Vários aspectos de uma coisa, num desenho só. Precisa de três eixos ou mais: abaixo disso não forma figura. */
 export const RadarWidget = memo(function RadarWidget({ model, config, animate }: RadarWidgetProps) {
   const language = useLanguage()
@@ -50,10 +57,11 @@ export const RadarWidget = memo(function RadarWidget({ model, config, animate }:
         />
       ) : null}
       <div className="min-h-0 flex-1">
-        <ChartContainer config={chartConfig} className="aspect-auto size-full [&_g]:outline-hidden">
-          <RadarChart data={rows} outerRadius="72%">
+        {/* O rótulo fica fora do desenho, e pode usar o respiro do card em vez de ser cortado. */}
+        <ChartContainer config={chartConfig} className="aspect-auto size-full [&_.recharts-surface]:overflow-visible [&_g]:outline-hidden">
+          <RadarChart data={rows} outerRadius="68%" margin={MARGIN}>
             <PolarGrid stroke="var(--border)" />
-            <PolarAngleAxis dataKey="tick" tick={{ fontSize: 11 }} />
+            <PolarAngleAxis dataKey="tick" tick={{ fontSize: 11 }} tickFormatter={shortTick} />
             <ChartTooltip
               isAnimationActive={false}
               content={(props) => {

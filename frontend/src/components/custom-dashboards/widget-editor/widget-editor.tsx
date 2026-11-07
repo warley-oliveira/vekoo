@@ -18,12 +18,12 @@ import {
   describeEditor,
   editorToWidget,
   hasRules,
-  isFilterFilled,
   widgetToEditor,
   type EditorValues,
 } from "@/lib/custom-dashboards/editor-model"
 import { validateFormula } from "@/lib/custom-dashboards/formula-engine"
 import { newWidgetId } from "@/lib/custom-dashboards/layout"
+import { isFilterFilled } from "@/lib/custom-dashboards/query"
 import type { DashboardWidget, DataSourceMeta, QueryFilter, WidgetLayout, WidgetQuery } from "@/lib/custom-dashboards/types"
 
 import { useFormulaErrorMessage } from "../use-formula-error"

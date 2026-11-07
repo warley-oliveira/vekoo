@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input"
 import { CUSTOM_ATTRIBUTE_PREFIX, useFilterFieldOptions } from "@/hooks/custom-dashboards/use-editor-options"
 import { parseDay } from "@/hooks/insights/use-dashboard-period"
 import { toDateInputValue } from "@/lib/date-format"
-import { VALUELESS_OPERATORS, type EditorValues } from "@/lib/custom-dashboards/editor-model"
+import type { EditorValues } from "@/lib/custom-dashboards/editor-model"
+import { VALUELESS_OPERATORS } from "@/lib/custom-dashboards/query"
 import type { DataSourceMeta, FilterOperator, FilterOptions } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
@@ -205,7 +206,7 @@ function FilterRow({
           <X />
         </Button>
       </div>
-      {VALUELESS_OPERATORS.includes(operator) ? null : (
+      {VALUELESS_OPERATORS.has(operator) ? null : (
         <FilterValue
           info={info}
           multi={multi}

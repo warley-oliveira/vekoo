@@ -48,7 +48,11 @@ function StackedCanvas({ snapshot, editing, period, refreshInterval, selectedId 
   return (
     <div className="grid grid-cols-2 gap-3">
       {widgets.map((widget, index) => (
-        <div key={widget.id} className={cn("min-w-0", spans[index] === 2 && "col-span-2")} style={stackSize(widget)}>
+        <div
+          key={widget.id}
+          className={cn("min-w-0 has-data-cd-grows:h-auto!", spans[index] === 2 && "col-span-2")}
+          style={stackSize(widget)}
+        >
           <WidgetCard
             widget={snapshot.widgets[widget.id]}
             period={period}

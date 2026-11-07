@@ -105,7 +105,7 @@ export const WidgetBody = memo(function WidgetBody({ widget, view, editing, anim
       <WidgetFigure widget={widget} model={view.chart}>
         <WidgetVisual widget={widget} view={view} animate={animate} />
       </WidgetFigure>
-      <PartialNote model={view.chart} truncated={view.table?.truncated} />
+      <PartialNote model={view.chart} truncated={view.table?.truncated} chosenLimit={Boolean(view.shownQuery.limit)} />
     </div>
   )
 })
@@ -175,10 +175,10 @@ function WidgetVisual({ widget, view, animate }: Pick<WidgetBodyProps, "widget" 
   }
 }
 
-/** O card não mostra tudo, e precisa dizer. */
-function PartialNote({ model, truncated }: { model: ChartModel | null; truncated?: boolean }) {
+/** O card não mostra tudo, e precisa dizer. Se o corte é o limite que a pessoa escolheu ("as dez maiores"), ela já sabe. */
+function PartialNote({ model, truncated, chosenLimit }: { model: ChartModel | null; truncated?: boolean; chosenLimit: boolean }) {
   const { t } = useTranslation()
-  const cut = truncated || model?.truncated
+  const cut = !chosenLimit && (truncated || model?.truncated)
   const folded = model?.folded ?? 0
 
   if (!cut && !folded) return null

@@ -56,6 +56,31 @@ function toRecord(layout: Layout): Record<string, WidgetLayout> {
   return Object.fromEntries(layout.map(({ i, x, y, w, h }) => [i, { x, y, w, h }]))
 }
 
+/** Leva o card até (x, y), empurra quem está no caminho e compacta. A biblioteca muda o próprio objeto: tem de ser o da lista. */
+function placeAt(current: Layout, id: string, x: number, y: number): Layout {
+  const copy = current.map((entry) => ({ ...entry }))
+  const target = copy.find((entry) => entry.i === id)
+  if (!target) return current
+  return verticalCompactor.compact(moveElement(copy, target, x, y, true, false, "vertical", GRID_COLS), GRID_COLS)
+}
+
+/**
+ * Um passo do teclado. A compactação puxa tudo para cima, então descer uma linha quase sempre volta ao mesmo lugar. Na
+ * vertical, o passo é até o card de fato mudar de linha: passar pelo vizinho.
+ */
+function stepFrom(current: Layout, item: LayoutItem, dx: number, dy: number): Layout {
+  const x = Math.max(0, Math.min(GRID_COLS - item.w, item.x + dx))
+  if (dy === 0) return x === item.x ? current : placeAt(current, item.i, x, item.y)
+
+  const bottom = current.reduce((max, entry) => Math.max(max, entry.y + entry.h), 0)
+  for (let y = item.y + dy; y >= 0 && y <= bottom; y += dy) {
+    const next = placeAt(current, item.i, x, y)
+    const placed = next.find((entry) => entry.i === item.i)
+    if (placed && (placed.x !== item.x || placed.y !== item.y)) return next
+  }
+  return current
+}
+
 /**
  * A grade: 12 colunas a partir do celular. A origem mudava o número de colunas por largura e só guardava a de 12, então o
  * que se arrastava numa tela média sumia ao salvar. Aqui a grade é uma só, e o card estreita.
@@ -116,18 +141,8 @@ export default function DashboardGrid({
         const item = current.find((entry) => entry.i === widgetId)
         if (!item || item.static) return
 
-        const moved = moveElement(
-          current.map((entry) => ({ ...entry })),
-          { ...item },
-          Math.max(0, Math.min(GRID_COLS - item.w, item.x + dx)),
-          Math.max(0, item.y + dy),
-          true,
-          false,
-          "vertical",
-          GRID_COLS
-        )
-        const next = verticalCompactor.compact(moved, GRID_COLS)
-        commitLayouts(dashboardId, toRecord(next))
+        const next = stepFrom(current, item, dx, dy)
+        if (next !== current) commitLayouts(dashboardId, toRecord(next))
 
         const placed = next.find((entry) => entry.i === widgetId)
         if (placed) {

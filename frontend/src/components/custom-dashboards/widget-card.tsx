@@ -254,14 +254,30 @@ export const WidgetCard = memo(function WidgetCard({
         className
       )}
     >
-      {presentation === "expanded" ? null : (
+      {presentation === "expanded" ? (
+        hasRows ? (
+          // É aqui que o foco começa ao abrir, e não no gráfico, que abriria a dica sozinho.
+          <div className="flex shrink-0 flex-wrap justify-end gap-1.5 px-4">
+            {canTwin ? (
+              <Button type="button" variant="outline" size="sm" aria-pressed={showTable} className="pointer-coarse:h-10" onClick={() => setShowTable(!showTable)}>
+                {showTable ? <ChartColumn /> : <Table2 />}
+                {t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
+              </Button>
+            ) : null}
+            <Button type="button" variant="outline" size="sm" className="pointer-coarse:h-10" onClick={exportCsv}>
+              <Download />
+              {t("customDashboards.card.exportCsv")}
+            </Button>
+          </div>
+        ) : null
+      ) : (
         <header className="relative flex items-start gap-1.5 px-4 pt-3 pb-1">
           {handle}
           <div className="min-w-0 flex-1">
             <h3 className="flex items-start gap-1.5 text-sm font-medium">
               {Icon ? <Icon aria-hidden className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" /> : null}
-              {/* No celular a linha é estreita e o card é de ler: o título pode quebrar. */}
-              <span title={widget.title} className={presentation === "stack" ? "line-clamp-2 min-w-0 wrap-anywhere hyphens-auto" : "truncate"}>
+              {/* No celular a linha é estreita e o card é de ler: o título quebra, inclusive no meio de uma palavra longa. */}
+              <span title={widget.title} className={presentation === "stack" ? "line-clamp-3 min-w-0 wrap-anywhere hyphens-auto" : "truncate"}>
                 {widget.title}
               </span>
               {view.error && view.data ? (
@@ -293,7 +309,8 @@ export const WidgetCard = memo(function WidgetCard({
                 "cd-no-drag flex shrink-0 items-center gap-0.5 transition-opacity",
                 // Com mouse, as ações aparecem por cima, ao passar: o título usa a largura toda enquanto ninguém mexe.
                 "absolute top-2 right-2 rounded-md bg-card pl-1 opacity-0 group-focus-within/card:opacity-100 group-hover/card:opacity-100 has-data-popup-open:opacity-100",
-                "pointer-coarse:static pointer-coarse:bg-transparent pointer-coarse:pl-0 pointer-coarse:opacity-100"
+                // Com o dedo, ficam sempre à vista, e o alvo de 40 px avança sobre o respiro do card, não sobre o título.
+                "pointer-coarse:static pointer-coarse:-mt-1.5 pointer-coarse:-mr-2.5 pointer-coarse:bg-transparent pointer-coarse:pl-0 pointer-coarse:opacity-100"
               )}
             >
               {!editing && canTwin ? (

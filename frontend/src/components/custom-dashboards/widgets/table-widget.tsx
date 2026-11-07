@@ -3,10 +3,14 @@ import { useTranslation } from "react-i18next"
 import type { ColumnDef } from "@tanstack/react-table"
 
 import { DataTable } from "@/components/shared"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { useLanguage } from "@/lib/i18n"
 import type { TableModel, TableRowData } from "@/lib/custom-dashboards/chart-model"
 import { formatValue } from "@/lib/custom-dashboards/format"
 import type { VisualConfig } from "@/lib/custom-dashboards/types"
+
+const PAGE_SIZE = 25
+const MOBILE_PAGE_SIZE = 5
 
 type TableWidgetProps = {
   title: string
@@ -21,6 +25,7 @@ type TableWidgetProps = {
 export const TableWidget = memo(function TableWidget({ title, table, config }: TableWidgetProps) {
   const { t } = useTranslation()
   const language = useLanguage()
+  const isMobile = useIsMobile()
 
   const columns = useMemo<ColumnDef<TableRowData, unknown>[]>(
     () =>
@@ -54,7 +59,8 @@ export const TableWidget = memo(function TableWidget({ title, table, config }: T
         columns={columns}
         data={table.rows}
         density="compact"
-        pageSize={25}
+        // No celular, cada linha vira um cartão: 25 por página seriam uma rolagem sem fim antes do próximo card.
+        pageSize={isMobile ? MOBILE_PAGE_SIZE : PAGE_SIZE}
         maxHeight="none"
         className="min-h-0 [&>[role=region]]:min-h-0"
       />
