@@ -347,6 +347,20 @@ export function BoardBulkBar() {
 
   const ids = useMemo(() => Object.keys(selected), [selected])
 
+  // Esc sai da seleção. O que estiver por cima (diálogo, menu, arraste no teclado) fecha primeiro.
+  useEffect(() => {
+    if (count === 0) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return
+      const above = document.querySelectorAll('[role="dialog"], [role="alertdialog"], [role="menu"]')
+      // `data-closed`: o menu de onde veio a seleção ainda pode estar saindo, na animação.
+      if (Array.from(above).some((node) => !node.hasAttribute("data-closed"))) return
+      clearSelected()
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [clearSelected, count])
+
   async function archive() {
     const confirmed = await confirm({
       title: t("pipelines.bulk.archiveTitle", { count: ids.length }),
