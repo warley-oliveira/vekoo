@@ -5,7 +5,7 @@ const DAY = 24 * HOUR
 // Datas saem do `Intl` com o idioma ativo — nada de string de tempo escrita à
 // mão por locale. Quem chama passa o idioma (`useLanguage()`).
 
-/** "há 3 horas" / "ontem" / "em 2 dias" / "12 de mai." — no idioma pedido. */
+/** "agora" / "há 3 horas" / "ontem" / "em 2 dias" / "12 de mai." — no idioma pedido. */
 export function formatRelative(
   timestamp: number,
   language: string,
@@ -27,9 +27,9 @@ export function formatRelative(
     }).format(timestamp)
   }
 
-  if (diff < HOUR) {
-    return relative.format(-Math.max(1, Math.floor(diff / MINUTE)), "minute")
-  }
+  // Acabou de acontecer: "há 1 minuto" logo depois de salvar soa como se não tivesse salvado.
+  if (diff < MINUTE) return relative.format(0, "second")
+  if (diff < HOUR) return relative.format(-Math.floor(diff / MINUTE), "minute")
   if (diff < DAY) return relative.format(-Math.floor(diff / HOUR), "hour")
   if (diff < 30 * DAY) return relative.format(-Math.floor(diff / DAY), "day")
 
