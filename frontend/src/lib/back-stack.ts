@@ -64,8 +64,8 @@ let knownDepth = 0
 /** A entrada do roteador em que se está, pela `key` dela. Mudou, e o `popstate` é dele. */
 let routerKey: unknown = null
 let lastRouteEntryAt = Number.NEGATIVE_INFINITY
-/** O que o roteador escreveu na entrada de cima, para descer às de baixo. */
-let carry: { state: HistoryRecord; url: string } | null = null
+/** O que o roteador escreveu na entrada de cima, para descer às de baixo, que têm a chave `fromKey`. */
+let carry: { state: HistoryRecord; url: string; fromKey: unknown } | null = null
 /** O que o roteador escreveu com a travessia a caminho. */
 let raced: { write: typeof nativePushState; state: HistoryRecord; url: string } | null = null
 let afterSettled: (() => void) | null = null
@@ -96,7 +96,10 @@ function portalRoots(): Element[] {
 function classify(popup: Element) {
   if (classified.has(popup)) return
   classified.add(popup)
-  if (performance.now() - lastRouteEntryAt < ROUTE_POPUP_WINDOW_MS) routeOwned.add(popup)
+  // Só painel abre com a rota: menu e seletor são sempre de quem tocou neles.
+  if (popup.matches('[role="dialog"]') && performance.now() - lastRouteEntryAt < ROUTE_POPUP_WINDOW_MS) {
+    routeOwned.add(popup)
+  }
 }
 
 function openPopups(): Element[] {
@@ -210,15 +213,18 @@ function onPopState(event: PopStateEvent) {
 
   // Andou só entre as nossas entradas: a rota é a mesma, e o roteador não tem o que fazer aqui. Com
   // `carry`, a chave de baixo é outra, mas é o endereço de cima que vale.
-  if (carry || (state?.key !== undefined && state.key === routerKey)) {
+  const key = state?.key
+  const landedOnCarry = carry !== null && key === carry.fromKey
+  if (landedOnCarry || (key !== undefined && key === routerKey)) {
     event.stopImmediatePropagation()
     if (carry) {
       nativeReplaceState(depth > 0 ? { ...carry.state, [DEPTH_KEY]: depth } : carry.state, "", carry.url)
       if (depth === 0) carry = null
     }
   } else {
-    routerKey = state?.key
+    routerKey = key
     lastRouteEntryAt = performance.now()
+    carry = null
   }
 
   // Voltar do aparelho: sumiu uma entrada nossa, e quem responde é a camada de cima.
@@ -253,7 +259,11 @@ window.history.replaceState = (state, unused, url) => {
 
   const next = new URL(absoluteUrl(url))
   if (next.pathname === window.location.pathname) {
-    carry = { state: state as HistoryRecord, url: next.href }
+    carry = {
+      state: state as HistoryRecord,
+      url: next.href,
+      fromKey: carry ? carry.fromKey : historyState()?.key,
+    }
     routerKey = (state as HistoryRecord)?.key
     nativeReplaceState({ ...(state as HistoryRecord), [DEPTH_KEY]: depth }, unused, url)
     return
@@ -275,6 +285,15 @@ function watchPortal(element: Element) {
     attributes: true,
     attributeFilter: ["data-open", "data-closed"],
   })
+}
+
+/**
+ * Para quem precisa andar no histórico por conta própria, como a guarda de alteração sem salvar, que
+ * desfaz um voltar. A conta espera chegar: agir antes empilharia uma entrada na rota errada.
+ */
+export function traverseHistory(delta: number): void {
+  if (installs === 0) window.history.go(delta)
+  else beginTraversal(delta)
 }
 
 /** Liga a conta enquanto a casca do celular estiver montada. Devolve o desligar. */

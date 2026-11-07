@@ -1,6 +1,6 @@
 import type { Navigator, To } from "react-router"
 
-import { closeLayersThen } from "./back-stack"
+import { closeLayersThen, traverseHistory } from "./back-stack"
 
 // Segura a navegação sob o `BrowserRouter`, que não tem `useBlocker`. Quem usa é
 // `useUnsavedChanges`; as telas nunca falam com este módulo.
@@ -132,7 +132,7 @@ window.addEventListener(
 
     event.stopImmediatePropagation()
     undoing = true
-    window.history.go(-delta)
+    traverseHistory(-delta)
 
     ask({
       proceed: () => {
