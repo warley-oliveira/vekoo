@@ -44,7 +44,8 @@
       "emptyDescription": "No tools are available yet. If you code, you can create a function in the Functions tab.",
       "noResultsTitle": "No tools found",
       "noResultsDescription": "Try another word, or clear the filters.",
-      "availableTitle": "Available"
+      "availableTitle": "Available",
+      "count_zero": "No tools"
     },
     "panel": {
       "loading": "Tool",
@@ -54,8 +55,6 @@
       "uninstallTitle": "Uninstall {{name}}?",
       "uninstallDescription": "This tool's functions leave the organization, and the blocks that use them stop finding them. The ones you personalized stay.",
       "uninstalled": "{{name}} uninstalled",
-      "statusOn": "On",
-      "statusOff": "Off",
       "enabled": "On",
       "enabledHint": "When off, the functions don't run and blocks don't offer them. Nothing is lost: just turn it back on.",
       "turnedOn": "{{name}} is on",
@@ -114,7 +113,9 @@
       "emptyTitle": "No functions here yet",
       "emptyDescription": "Install a tool from the catalog, or write your own in JavaScript.",
       "noResultsTitle": "No functions found",
-      "noResultsDescription": "Try another word, or clear the filters."
+      "noResultsDescription": "Try another word, or clear the filters.",
+      "parameters_zero": "No parameters",
+      "count_zero": "No functions"
     },
     "personalize": {
       "title": "Personalize {{name}}?",
@@ -177,7 +178,7 @@
       }
     },
     "tester": {
-      "run": "Test",
+      "run": "Run test",
       "running": "Running...",
       "stopWaiting": "Stop waiting",
       "failed": "Couldn't run the test. Try again.",

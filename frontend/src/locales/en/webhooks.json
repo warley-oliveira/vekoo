@@ -1,0 +1,440 @@
+{
+  "webhooks": {
+    "common": {
+      "loading": "Loading...",
+      "actionFailed": "That didn't work. Try again.",
+      "clearFilters": "Clear filters",
+      "none": "—"
+    },
+    "nav": {
+      "label": "Webhooks sections",
+      "webhooks": "Webhooks",
+      "logs": "History"
+    },
+    "status": {
+      "test": "Testing",
+      "active": "Active",
+      "inactive": "Off"
+    },
+    "list": {
+      "description": "A webhook is an address another system calls to tell you something happened: order approved, form submitted. When the call arrives, the platform finds the contact and does what you set up.",
+      "refresh": "Refresh webhooks",
+      "create": "Create webhook",
+      "createShort": "Create",
+      "createTitle": "Create webhook",
+      "createDescription": "It starts in testing: it stores what arrives, so you can see the fields, and does nothing until you activate it.",
+      "created": "Webhook created, in testing",
+      "emptyTitle": "No webhooks yet",
+      "emptyDescription": "Create one to get notified by your store, your website or any system that can call an address.",
+      "search": "Search webhooks",
+      "count_one": "{{count}} webhook",
+      "count_other": "{{count}} webhooks",
+      "sortRecent": "Most recent",
+      "sortName": "Name, A to Z",
+      "sortUsed": "Most used",
+      "statusFilter": "Status",
+      "withAlert": "With a warning",
+      "noResultsTitle": "No webhooks found",
+      "noResultsDescription": "Try another word, or clear the filters.",
+      "switchToTest": "Put {{name}} back in testing",
+      "switchToActive": "Activate {{name}}",
+      "copyUrl": "Copy the address of {{name}}",
+      "requests_one": "{{formatted}} request",
+      "requests_other": "{{formatted}} requests",
+      "actions_one": "{{count}} action",
+      "actions_other": "{{count}} actions",
+      "createdAt": "Created",
+      "signed": "Signed",
+      "actionsOf": "Actions for {{name}}",
+      "edit": "Edit",
+      "logs": "See history",
+      "requests_zero": "No requests yet",
+      "actions_zero": "Only identifies the contact",
+      "count_zero": "No webhooks"
+    },
+    "delete": {
+      "action": "Delete",
+      "title": "Delete {{name}}?",
+      "description": "The address stops working right away, and this webhook's actions and history go with it. Anyone still calling gets an error. This can't be undone.",
+      "done": "{{name}} deleted"
+    },
+    "mode": {
+      "title": "Mode",
+      "description": "What happens when a request arrives. Changes right away.",
+      "explain": {
+        "test": "Stores what arrived, so you can see the fields, and runs nothing. Good for connecting the other system without worry.",
+        "active": "Runs the actions on every request: finds the contact, sends the message, starts the flow.",
+        "inactive": "Only records it in the history. Nothing is stored for the fields, and nothing runs."
+      },
+      "changed": {
+        "test": "Testing: nothing will run",
+        "active": "Active: the actions run on every request",
+        "inactive": "Off: it only records in the history"
+      },
+      "nowTest": "{{name}} is back in testing",
+      "nowActive": "{{name}} is active",
+      "needsContact": "Before activating, say where the contact's number comes from: without it, every request fails.",
+      "needsContactAction": "Open",
+      "saveFirst": "Save your changes before activating: otherwise it runs the old actions."
+    },
+    "entry": {
+      "title": "Address",
+      "description": "Paste it in the system that will call. It sends a POST here, preferably in JSON.",
+      "copy": "Copy",
+      "seeLogs": "See history",
+      "sizeLimit": "Up to 1 MB per request",
+      "sizeLimitHint": "Above that, the caller gets a 413 error and nothing is processed. The history keeps up to 100 KB of the body; the actions get all of it.",
+      "rateLimit": "Up to 1,200 per minute",
+      "rateLimitHint": "Above that, the caller gets a 429 error and needs to try again shortly."
+    },
+    "test": {
+      "title": "Test",
+      "modeLabel": "How to test",
+      "modeHere": "From here",
+      "modeTerminal": "From a terminal",
+      "hint": {
+        "test": "In testing, nothing runs: the fields show up below in a few seconds.",
+        "active": "When active, the test is real: it runs the actions, and may send a message to the number in the body.",
+        "inactive": "When off, the request only goes into the history."
+      },
+      "signedTitle": "Signing is on",
+      "signedHere": "This page can't sign, because the key isn't on screen: this test will be refused, which is what happens to anyone without the key. To test it signed, use a terminal.",
+      "signedTerminal": "The command takes your key from a variable: set it before running, with the key you saved.",
+      "bodyLabel": "The request body, in JSON",
+      "invalidJson": "That isn't valid JSON. Check the quotes and commas.",
+      "tooLarge": "The body is over 1 MB: it would be refused.",
+      "confirmTitle": "Run the actions for real?",
+      "confirmDescription": "This webhook is active: the test finds or creates the contact in the body and does everything the actions say, including sending messages. To just see the fields, put it in testing.",
+      "confirmAction": "Send anyway",
+      "send": "Send test",
+      "delivered": "Received.",
+      "unreachable": "It didn't reach the server. Check your connection.",
+      "refused": "Refused with error {{status}}. {{message}}",
+      "seeLog": "See it in the history",
+      "copyCommand": "Copy the command",
+      "sampleName": "Ana Souza",
+      "samplePhone": "5500000000000",
+      "sampleOrder": "48213"
+    },
+    "fields": {
+      "title_one": "{{count}} field received",
+      "title_other": "{{count}} fields received",
+      "hint": "From the last request in testing. Drag a field into a text on the side, or use the + to save it on the contact's record.",
+      "hintTouch": "From the last request in testing. Use the braces button in each text to choose, or the + to save it on the contact's record.",
+      "waiting": "Waiting for the first request",
+      "waitingHint": "Send a test: the fields show up here on their own, in a few seconds.",
+      "none": "No fields stored",
+      "noneHint": "Fields are only stored in testing. Put it in testing and send a request, or write it by hand: {{body.name}}.",
+      "groups": {
+        "body": "Body",
+        "query": "URL parameters",
+        "headers": "Headers"
+      },
+      "empty": "empty",
+      "createUserField": "Save {{name}} to a contact field",
+      "createUserFieldHint": "Save to a contact field",
+      "userFieldAdded": "Action added. You still need to choose the field."
+    },
+    "template": {
+      "insert": "Insert a received field",
+      "listLabel": "Received fields",
+      "noMatches": "No field with that name. You can write the path by hand, if it hasn't arrived yet.",
+      "nothingYet": "Nothing has arrived yet. Send a test to see the fields, or write the path by hand, like {{body.name}}."
+    },
+    "form": {
+      "title": "What to do when it arrives",
+      "description": "The actions run in this order, one after the other. In texts, {{body.x}} becomes the value that arrived.",
+      "save": "Save changes",
+      "saved": "Webhook saved",
+      "discard": "Discard changes",
+      "actionRemoved": "Action taken off the list. Save to confirm.",
+      "undo": "Undo",
+      "addTitle": "Add action",
+      "notRunning": {
+        "test": "In testing, nothing here runs. Set up the actions calmly, and activate when you're ready.",
+        "inactive": "When off, nothing here runs."
+      },
+      "errors": {
+        "contactRequired": "Say where the number comes from: with the webhook active, every request fails without it.",
+        "customField": "Choose the field.",
+        "value": "Say what to save.",
+        "code": "The code is missing.",
+        "url": "The address is missing.",
+        "urlInvalid": "Start with http:// or https://, or use a variable.",
+        "headerKey": "The header name is missing.",
+        "connector": "Choose the channel.",
+        "nothingToDo": "Choose a flow or write a message: with neither, this action does nothing.",
+        "blockText": "Write the text.",
+        "blockAttachment": "Choose the attachment.",
+        "blockUrl": "The media address is missing."
+      }
+    },
+    "actions": {
+      "step": "Step {{step}}",
+      "locked": "Fixed: this one finds the conversation, and the others depend on it",
+      "remove": "Remove {{name}}",
+      "contact": {
+        "title": "Identify the contact",
+        "description": "Finds the conversation by phone number, or creates one if there isn't any.",
+        "missing": "The number is missing: with the webhook active, every request is failing because of it.",
+        "identifier": "Contact's number",
+        "identifierPlaceholder": "{{body.phone}}",
+        "identifierHint": "With country and area code. Finds the contact with or without Brazil's ninth digit.",
+        "name": "Contact's name",
+        "namePlaceholder": "{{body.name}}",
+        "nameHint": "Updates the name when it comes in different."
+      },
+      "startFlow": {
+        "title": "Start flow",
+        "short": "Sends a message and starts a flow.",
+        "description": "Connects the conversation to a channel, turns on automation, sends the message and starts the flow. What arrived stays in {{vars.webhook.body.x}} inside the flow.",
+        "connector": "Channel",
+        "connectorPick": "Choose channel",
+        "connectorEmpty": "No active channels",
+        "connectorInactive": "The chosen channel is no longer active: the message won't go out through it. Choose another.",
+        "flow": "Flow",
+        "flowPick": "Just send the message",
+        "flowEmpty": "No published flows",
+        "flowHint": "Without a flow, it only sends the message.",
+        "flowNotPublished": "This flow isn't published: until it is, it won't start.",
+        "flowNoAccess": "You don't have access to flows. Someone who does can choose here.",
+        "flowChosen": "A flow is chosen",
+        "flowNone": "No flow chosen",
+        "message": "Message",
+        "modeLabel": "How to write the message",
+        "modeSimple": "Simple",
+        "modeAdvanced": "Advanced",
+        "text": "Text",
+        "textHint": "If blank, nothing is sent and the flow just starts.",
+        "textPlaceholder": "Hi {{body.name}}! We got your order.",
+        "number": "Sending number",
+        "numberPick": "The channel's default",
+        "template": "Message template",
+        "templatePick": "No template",
+        "templateEmpty": "No approved templates on this channel",
+        "templateNone": "Without a template, nothing is sent: the official WhatsApp API doesn't accept free text to someone who hasn't talked in the last 24 hours.",
+        "templateParams_one": "{{count}} template variable",
+        "templateParams_other": "{{count}} template variables",
+        "templateParamPlaceholder": "What goes here"
+      },
+      "userField": {
+        "title": "Save to a contact field",
+        "short": "Stores a value on the contact's record.",
+        "description": "Stores a value in the chosen custom field, on the contact's record.",
+        "field": "Field",
+        "fieldPick": "Choose field",
+        "fieldEmpty": "No fields created",
+        "manage": "Manage fields",
+        "value": "Value",
+        "valuePlaceholder": "{{body.product}}"
+      },
+      "code": {
+        "title": "Run code",
+        "short": "Runs a JavaScript script.",
+        "description": "Runs a script, and the next actions wait for it to finish. It can take up to 15 seconds.",
+        "hint": "What arrived comes in params, by path: params['body.name']."
+      },
+      "http": {
+        "title": "Call another address",
+        "short": "Forwards what arrived to another system.",
+        "description": "Forwards what arrived to another system, with the headers and body you define.",
+        "method": "Method",
+        "url": "Address",
+        "urlPlaceholder": "https://api.yourcompany.com/orders",
+        "urlHint": "It must be a public address on the internet, on ports 80, 443, 8080 or 8443.",
+        "refused": {
+          "internal": {
+            "title": "This address will be refused",
+            "description": "It points inside a network, not to the internet. For safety, the platform never calls internal addresses, like localhost or 192.168.x.x: otherwise anyone could use it to peek at the computers inside. Use a public address; for testing, a public tunnel works."
+          },
+          "port": {
+            "title": "This port will be refused",
+            "description": "For safety, the platform only calls ports 80, 443, 8080 and 8443. Use one of those, or leave the port out of the address."
+          },
+          "credentials": {
+            "title": "User and password can't go in the address",
+            "description": "The platform refuses addresses with a user and password built in, so they don't end up in logs. Send them in a header, like Authorization."
+          },
+          "scheme": {
+            "title": "Only http and https",
+            "description": "The platform only calls addresses that start with http:// or https://."
+          }
+        },
+        "headers": "Headers",
+        "headerName": "Header name",
+        "headerNamePlaceholder": "X-Source",
+        "headerValue": "Header value",
+        "headerValuePlaceholder": "vekoo",
+        "headerRemove": "Remove the header {{name}}",
+        "headerAdd": "Add header",
+        "body": "Body",
+        "bodyPlaceholder": "{ \"name\": \"{{body.name}}\" }",
+        "bodyHint": "Without a Content-Type, it goes as JSON.",
+        "failureHint": "If the destination fails, the next actions carry on, and the webhook shows a warning until the next delivery works."
+      }
+    },
+    "blocks": {
+      "empty": "Nothing in the sequence yet. Start with a text, an image or a document.",
+      "add": "Add:",
+      "types": {
+        "text": "Text",
+        "image": "Image",
+        "video": "Video",
+        "document": "Document",
+        "audio": "Audio"
+      },
+      "reorder": "Change the position of item {{position}}",
+      "remove": "Remove item {{position}}",
+      "text": "Text",
+      "textPlaceholder": "Hi {{body.name}}! We got your order.",
+      "source": "Where the media comes from",
+      "sourceUrl": "Address",
+      "sourceAttachment": "Attachment",
+      "url": "Media address",
+      "urlPlaceholder": {
+        "image": "https://example.com/photo.jpg or {{body.photo}}",
+        "video": "https://example.com/video.mp4 or {{body.video}}",
+        "document": "https://example.com/receipt.pdf or {{body.receipt}}",
+        "audio": "https://example.com/audio.ogg or {{body.audio}}"
+      },
+      "fileName": "File name (optional)",
+      "fileNamePlaceholder": "receipt.pdf",
+      "caption": "Caption (optional)",
+      "captionPlaceholder": "Here's the receipt, {{body.name}}.",
+      "attachment": "Attachment",
+      "attachmentHint": {
+        "image": "Images only: jpg, png, webp.",
+        "video": "Videos only: mp4, mov.",
+        "document": "Documents only: pdf, docx, xlsx.",
+        "audio": "Audio only: ogg, mp3, wav."
+      },
+      "attachmentLoading": "Loading attachments...",
+      "attachmentPick": "Choose attachment",
+      "attachmentEmpty": "No attachments of this type"
+    },
+    "signature": {
+      "title": "Signature",
+      "description": "Without a signature, anyone with the address can call it. With one, only whoever has the key.",
+      "switch": "Require a signature",
+      "switchOn": "A request without a valid signature is refused with a 401 error, and stays in the history.",
+      "switchOff": "Any request to this address is accepted.",
+      "activeKey": "Active key",
+      "noKey": "None",
+      "generated": "Generated",
+      "rotate": "Renew key",
+      "how": "How to sign the requests",
+      "howDescription": "Send the headers X-Vekoo-Timestamp, with the time in seconds, and X-Vekoo-Signature, with sha256= and the HMAC-SHA256 of \"timestamp.body\", made with the key. The body must be exactly what goes in the request. The time has a 5-minute tolerance, either way.",
+      "languageLabel": "Example language",
+      "copyExample": "Copy the example",
+      "sampleBody": "{\"name\":\"Ana Souza\",\"phone\":\"5500000000000\"}",
+      "secretVariable": "SECRET",
+      "turnedOnSameKey": "Signing on, with the same key as before",
+      "disableTitle": "Turn off signing?",
+      "disableDescription": "Anyone with the address will be able to call it again. The key stays stored: turning it back on uses the same one.",
+      "disableAction": "Turn off",
+      "turnedOff": "Signing turned off",
+      "rotateTitle": "Renew the key?",
+      "rotateDescription": "The current key stops working right away: any request signed with it is refused until you change it in the calling system.",
+      "rotateAction": "Renew",
+      "secretTitle": "Save this key",
+      "secretDescription": "The other system signs every request with it.",
+      "secretWarning": "This is the only time it shows in full. If you lose it, the way out is to renew, and then the previous one stops working.",
+      "secretCopy": "Copy the key",
+      "secretDone": "I've saved the key"
+    },
+    "alerts": {
+      "dismiss": "Dismiss",
+      "dismissTitle": "Dismiss this warning?",
+      "dismissDescription": "Everyone in the organization stops seeing the warning, and the number in the menu goes down. Dismissing doesn't fix anything: if the problem persists, it comes back on the next failure.",
+      "dismissed": "Warning dismissed",
+      "fallback": "This webhook's last delivery failed."
+    },
+    "dialog": {
+      "name": "Name",
+      "namePlaceholder": "Order approved in the store",
+      "nameTooShort": "Use at least 3 letters.",
+      "nameTooLong": "Use at most 100 characters."
+    },
+    "detail": {
+      "routeTitle": "Webhook",
+      "notFoundTitle": "This webhook no longer exists",
+      "notFoundDescription": "It may have been deleted. Go back to the list of webhooks.",
+      "backToList": "See webhooks",
+      "moreActions": "More actions",
+      "rename": "Rename",
+      "renameTitle": "Rename webhook",
+      "renameAction": "Save name",
+      "renamed": "Name saved"
+    },
+    "logs": {
+      "description": "Every request that arrived in the last 90 days: what came in and what the platform did with it.",
+      "refresh": "Refresh history",
+      "listLabel": "Requests received",
+      "count_one": "{{count}} request",
+      "count_other": "{{count}} requests",
+      "webhookFilter": "Filter by webhook",
+      "allWebhooks": "All webhooks",
+      "statusFilter": "Filter by status",
+      "allStatuses": "All statuses",
+      "period": "Period",
+      "status": {
+        "success": "Success",
+        "error": "Error",
+        "skipped": "Ignored"
+      },
+      "columns": {
+        "status": "Status",
+        "webhook": "Webhook",
+        "code": "Code",
+        "ip": "Source IP",
+        "when": "When",
+        "duration": "Time"
+      },
+      "emptyTitle": "Nothing has arrived yet",
+      "emptyDescription": "Every request that arrives shows up here on its own. Open a webhook and send a test.",
+      "emptyAction": "See webhooks",
+      "detailTitle": "Request",
+      "openWebhook": "Open the webhook",
+      "outcome": "What happened",
+      "outcomes": {
+        "ran": "The caller got 200, and the platform ran the webhook's actions.",
+        "captured": "The caller got 200. The webhook was in testing: the fields were stored, and no action ran.",
+        "skipped": "The caller got 200. The webhook was off: only this record remains.",
+        "refused": "The request was refused with error {{code}}, by the signature: nothing was processed.",
+        "failed": "The caller got 200, but an action failed along the way. The reason is below."
+      },
+      "statusCode": "Recorded code",
+      "modeAtTheTime": "Mode at the time",
+      "method": "Method",
+      "received": "What came in",
+      "nothingReceived": "The request came with no data.",
+      "truncated": "The body was over 100 KB and wasn't stored here. The actions received the whole body.",
+      "body": "Body",
+      "query": "URL parameters",
+      "headers": "Headers",
+      "headersHint": "Headers with secrets, like Authorization, aren't even stored.",
+      "fieldCount_one": "{{count}} field",
+      "fieldCount_other": "{{count}} fields",
+      "copy": "Copy {{name}}",
+      "stats": {
+        "label": "Indicators",
+        "title": "All webhooks",
+        "titleWebhook": "{{name}}",
+        "periodLabel": "Indicators period",
+        "days_one": "{{count}} day",
+        "days_other": "{{count}} days",
+        "total": "Requests",
+        "skipped_one": "{{count}} ignored, with the webhook off",
+        "skipped_other": "{{count}} ignored, with the webhook off",
+        "success": "Successful",
+        "rate": "{{value}} of those that ran",
+        "errors": "With errors",
+        "noErrors": "No failures in the period",
+        "average": "Average time",
+        "averageHint": "To process, after receiving",
+        "noAverage": "—"
+      },
+      "count_zero": "No requests"
+    }
+  }
+}

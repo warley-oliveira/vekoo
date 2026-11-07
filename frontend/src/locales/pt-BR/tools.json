@@ -44,7 +44,8 @@
       "emptyDescription": "Nenhuma ferramenta disponível por enquanto. Quem programa pode criar uma função na aba Funções.",
       "noResultsTitle": "Nenhuma ferramenta encontrada",
       "noResultsDescription": "Tente outra palavra, ou limpe os filtros.",
-      "availableTitle": "Disponíveis"
+      "availableTitle": "Disponíveis",
+      "count_zero": "Nenhuma ferramenta"
     },
     "panel": {
       "loading": "Ferramenta",
@@ -54,8 +55,6 @@
       "uninstallTitle": "Desinstalar {{name}}?",
       "uninstallDescription": "As funções desta ferramenta saem da organização, e os blocos que as usam deixam de encontrá-las. As que você personalizou ficam.",
       "uninstalled": "{{name}} desinstalada",
-      "statusOn": "Ligada",
-      "statusOff": "Desligada",
       "enabled": "Ligada",
       "enabledHint": "Desligada, as funções não rodam e os blocos não as oferecem. Nada se perde: é só ligar de novo.",
       "turnedOn": "{{name}} ligada",
@@ -114,7 +113,9 @@
       "emptyTitle": "Nenhuma função por aqui",
       "emptyDescription": "Instale uma ferramenta no catálogo, ou escreva a sua própria em JavaScript.",
       "noResultsTitle": "Nenhuma função encontrada",
-      "noResultsDescription": "Tente outra palavra, ou limpe os filtros."
+      "noResultsDescription": "Tente outra palavra, ou limpe os filtros.",
+      "parameters_zero": "Sem parâmetros",
+      "count_zero": "Nenhuma função"
     },
     "personalize": {
       "title": "Personalizar {{name}}?",
@@ -177,7 +178,7 @@
       }
     },
     "tester": {
-      "run": "Testar",
+      "run": "Rodar teste",
       "running": "Rodando...",
       "stopWaiting": "Parar de esperar",
       "failed": "Não foi possível testar. Tente de novo.",

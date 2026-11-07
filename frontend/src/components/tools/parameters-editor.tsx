@@ -198,7 +198,12 @@ function ParameterCard({
       </div>
 
       {expanded ? (
-        <div className="flex flex-col gap-3 border-t p-3">
+        <div
+          className="flex flex-col gap-3 border-t p-3"
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && event.target instanceof HTMLInputElement) event.preventDefault()
+          }}
+        >
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_9rem]">
             <Field
               label={t("tools.parameters.name")}

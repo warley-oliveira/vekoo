@@ -239,14 +239,7 @@ function LoadedPanel({
           <ToolLogo tool={tool} size="lg" className={cn(installation && !installation.enabled && "opacity-50")} />
           <div className="min-w-0 flex-1 space-y-1.5">
             <p className="text-sm text-pretty">{texts.description(tool)}</p>
-            <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              {t("tools.card.functions", { count: functionCount || rows.length })}
-              {installation ? (
-                <StatusBadge tone={installation.enabled ? "success" : "neutral"}>
-                  {t(installation.enabled ? "tools.panel.statusOn" : "tools.panel.statusOff")}
-                </StatusBadge>
-              ) : null}
-            </p>
+            <p className="text-xs text-muted-foreground">{t("tools.card.functions", { count: functionCount || rows.length })}</p>
           </div>
         </div>
 

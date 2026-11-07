@@ -1,0 +1,440 @@
+{
+  "webhooks": {
+    "common": {
+      "loading": "Carregando...",
+      "actionFailed": "Não deu certo. Tente de novo.",
+      "clearFilters": "Limpar filtros",
+      "none": "—"
+    },
+    "nav": {
+      "label": "Partes de Webhooks",
+      "webhooks": "Webhooks",
+      "logs": "Histórico"
+    },
+    "status": {
+      "test": "Em teste",
+      "active": "Ativo",
+      "inactive": "Desligado"
+    },
+    "list": {
+      "description": "Um webhook é um endereço que outro sistema chama para avisar de alguma coisa: pedido aprovado, formulário enviado. Quando o aviso chega, a plataforma acha o contato e faz o que você combinou.",
+      "refresh": "Atualizar webhooks",
+      "create": "Criar webhook",
+      "createShort": "Criar",
+      "createTitle": "Criar webhook",
+      "createDescription": "Ele nasce em teste: guarda o que chegar, para você ver os campos, e não faz nada até você ativar.",
+      "created": "Webhook criado, em teste",
+      "emptyTitle": "Nenhum webhook ainda",
+      "emptyDescription": "Crie um para receber avisos da sua loja, do seu site ou de qualquer sistema que saiba chamar um endereço.",
+      "search": "Buscar webhook",
+      "count_one": "{{count}} webhook",
+      "count_other": "{{count}} webhooks",
+      "sortRecent": "Mais recentes",
+      "sortName": "Nome de A a Z",
+      "sortUsed": "Mais usados",
+      "statusFilter": "Situação",
+      "withAlert": "Com aviso",
+      "noResultsTitle": "Nenhum webhook encontrado",
+      "noResultsDescription": "Tente outra palavra, ou limpe os filtros.",
+      "switchToTest": "Voltar {{name}} para teste",
+      "switchToActive": "Ativar {{name}}",
+      "copyUrl": "Copiar o endereço de {{name}}",
+      "requests_one": "{{formatted}} requisição",
+      "requests_other": "{{formatted}} requisições",
+      "actions_one": "{{count}} ação",
+      "actions_other": "{{count}} ações",
+      "createdAt": "Criado",
+      "signed": "Com assinatura",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Editar",
+      "logs": "Ver histórico",
+      "requests_zero": "Nenhuma requisição ainda",
+      "actions_zero": "Só identifica o contato",
+      "count_zero": "Nenhum webhook"
+    },
+    "delete": {
+      "action": "Excluir",
+      "title": "Excluir {{name}}?",
+      "description": "O endereço para de funcionar na hora, e as ações e o histórico deste webhook vão junto. Quem ainda chamar recebe erro. Isso não tem volta.",
+      "done": "{{name}} excluído"
+    },
+    "mode": {
+      "title": "Modo",
+      "description": "O que acontece quando chega uma requisição. Muda na hora.",
+      "explain": {
+        "test": "Guarda o que chegou, para você ver os campos, e não executa nada. Bom para ligar o outro sistema sem medo.",
+        "active": "Executa as ações a cada requisição: acha o contato, manda mensagem, começa o fluxo.",
+        "inactive": "Só registra no histórico. Nada é guardado para os campos, e nada é executado."
+      },
+      "changed": {
+        "test": "Em teste: nada será executado",
+        "active": "Ativo: as ações rodam a cada requisição",
+        "inactive": "Desligado: só registra no histórico"
+      },
+      "nowTest": "{{name}} voltou para teste",
+      "nowActive": "{{name}} está ativo",
+      "needsContact": "Antes de ativar, diga de onde vem o número do contato: sem ele, toda requisição falha.",
+      "needsContactAction": "Abrir",
+      "saveFirst": "Salve as alterações antes de ativar: senão, ele roda as ações antigas."
+    },
+    "entry": {
+      "title": "Endereço",
+      "description": "Cole no sistema que vai avisar. Ele manda um POST para cá, de preferência em JSON.",
+      "copy": "Copiar",
+      "seeLogs": "Ver histórico",
+      "sizeLimit": "Até 1 MB por requisição",
+      "sizeLimitHint": "Acima disso, quem mandou recebe o erro 413 e nada é processado. O histórico guarda até 100 KB do corpo; as ações recebem tudo.",
+      "rateLimit": "Até 1.200 por minuto",
+      "rateLimitHint": "Acima disso, quem mandou recebe o erro 429 e precisa tentar de novo daqui a pouco."
+    },
+    "test": {
+      "title": "Testar",
+      "modeLabel": "Como testar",
+      "modeHere": "Daqui",
+      "modeTerminal": "Pelo terminal",
+      "hint": {
+        "test": "Em teste, nada é executado: os campos aparecem aqui embaixo em alguns segundos.",
+        "active": "Ativo, o teste é de verdade: roda as ações, e pode mandar mensagem para o número que estiver no corpo.",
+        "inactive": "Desligado, a requisição só entra no histórico."
+      },
+      "signedTitle": "A assinatura está ligada",
+      "signedHere": "Daqui não dá para assinar, porque a chave não fica na tela: este teste será recusado, e é isso que acontece com quem não tem a chave. Para testar assinado, use o terminal.",
+      "signedTerminal": "O comando usa a sua chave por uma variável: defina antes de rodar, com a chave que você guardou.",
+      "bodyLabel": "O corpo da requisição, em JSON",
+      "invalidJson": "Isso não é um JSON válido. Confira as aspas e as vírgulas.",
+      "tooLarge": "O corpo passou de 1 MB: a entrada recusaria.",
+      "confirmTitle": "Rodar as ações de verdade?",
+      "confirmDescription": "Este webhook está ativo: o teste acha ou cria o contato do corpo, e faz tudo o que as ações mandam, inclusive enviar mensagem. Para só ver os campos, ponha em teste.",
+      "confirmAction": "Enviar mesmo assim",
+      "send": "Enviar teste",
+      "delivered": "Recebido.",
+      "unreachable": "Não chegou ao servidor. Confira a conexão.",
+      "refused": "Recusado com o erro {{status}}. {{message}}",
+      "seeLog": "Ver no histórico",
+      "copyCommand": "Copiar o comando",
+      "sampleName": "Ana Souza",
+      "samplePhone": "5500000000000",
+      "sampleOrder": "48213"
+    },
+    "fields": {
+      "title_one": "{{count}} campo recebido",
+      "title_other": "{{count}} campos recebidos",
+      "hint": "Da última requisição em teste. Arraste um campo para um texto ao lado, ou use o + para gravá-lo na ficha do contato.",
+      "hintTouch": "Da última requisição em teste. Use o botão de chaves em cada texto para escolher, ou o + para gravar na ficha do contato.",
+      "waiting": "Esperando a primeira requisição",
+      "waitingHint": "Mande um teste: os campos aparecem aqui sozinhos, em alguns segundos.",
+      "none": "Nenhum campo guardado",
+      "noneHint": "Os campos só são guardados em teste. Ponha em teste e mande uma requisição, ou escreva à mão: {{body.nome}}.",
+      "groups": {
+        "body": "Corpo",
+        "query": "Parâmetros da URL",
+        "headers": "Cabeçalhos"
+      },
+      "empty": "vazio",
+      "createUserField": "Gravar {{name}} num campo do contato",
+      "createUserFieldHint": "Gravar num campo do contato",
+      "userFieldAdded": "Ação adicionada. Falta escolher o campo."
+    },
+    "template": {
+      "insert": "Inserir um campo recebido",
+      "listLabel": "Campos recebidos",
+      "noMatches": "Nenhum campo com esse nome. Dá para escrever o caminho à mão, se ele ainda não chegou.",
+      "nothingYet": "Nada chegou ainda. Mande um teste para ver os campos, ou escreva o caminho à mão, como {{body.nome}}."
+    },
+    "form": {
+      "title": "O que fazer quando chegar",
+      "description": "As ações rodam nesta ordem, uma depois da outra. Nos textos, {{body.x}} vira o valor que chegou.",
+      "save": "Salvar alterações",
+      "saved": "Webhook salvo",
+      "discard": "Desfazer alterações",
+      "actionRemoved": "Ação tirada da lista. Salve para confirmar.",
+      "undo": "Desfazer",
+      "addTitle": "Adicionar ação",
+      "notRunning": {
+        "test": "Em teste, nada aqui é executado. Combine as ações com calma, e ative quando estiver pronto.",
+        "inactive": "Desligado, nada aqui é executado."
+      },
+      "errors": {
+        "contactRequired": "Diga de onde vem o número: com o webhook ativo, sem ele toda requisição falha.",
+        "customField": "Escolha o campo.",
+        "value": "Diga o que gravar.",
+        "code": "Falta o código.",
+        "url": "Falta o endereço.",
+        "urlInvalid": "Comece com http:// ou https://, ou use uma variável.",
+        "headerKey": "Falta o nome do cabeçalho.",
+        "connector": "Escolha o canal.",
+        "nothingToDo": "Escolha um fluxo ou escreva uma mensagem: sem nenhum dos dois, esta ação não faz nada.",
+        "blockText": "Escreva o texto.",
+        "blockAttachment": "Escolha o anexo.",
+        "blockUrl": "Falta o endereço da mídia."
+      }
+    },
+    "actions": {
+      "step": "Passo {{step}}",
+      "locked": "Fixa: é ela que acha a conversa, e as outras dependem disso",
+      "remove": "Remover {{name}}",
+      "contact": {
+        "title": "Identificar o contato",
+        "description": "Acha a conversa pelo telefone, ou cria uma, se não existir.",
+        "missing": "Falta o número: com o webhook ativo, toda requisição está falhando por causa disso.",
+        "identifier": "Número do contato",
+        "identifierPlaceholder": "{{body.telefone}}",
+        "identifierHint": "Com DDI e DDD. Acha o contato com ou sem o nono dígito.",
+        "name": "Nome do contato",
+        "namePlaceholder": "{{body.nome}}",
+        "nameHint": "Atualiza o nome, quando vier diferente."
+      },
+      "startFlow": {
+        "title": "Iniciar fluxo",
+        "short": "Manda uma mensagem e começa um fluxo.",
+        "description": "Liga a conversa a um canal, liga a automação, manda a mensagem e começa o fluxo. O que chegou fica em {{vars.webhook.body.x}} dentro do fluxo.",
+        "connector": "Canal",
+        "connectorPick": "Escolher canal",
+        "connectorEmpty": "Nenhum canal ativo",
+        "connectorInactive": "O canal escolhido não está mais ativo: a mensagem não sai por ele. Escolha outro.",
+        "flow": "Fluxo",
+        "flowPick": "Só mandar a mensagem",
+        "flowEmpty": "Nenhum fluxo publicado",
+        "flowHint": "Sem fluxo, só manda a mensagem.",
+        "flowNotPublished": "Este fluxo não está publicado: enquanto for assim, ele não começa.",
+        "flowNoAccess": "Você não tem acesso a fluxos. Quem tem consegue escolher aqui.",
+        "flowChosen": "Um fluxo está escolhido",
+        "flowNone": "Nenhum fluxo escolhido",
+        "message": "Mensagem",
+        "modeLabel": "Como escrever a mensagem",
+        "modeSimple": "Simples",
+        "modeAdvanced": "Avançado",
+        "text": "Texto",
+        "textHint": "Em branco, não manda nada e só começa o fluxo.",
+        "textPlaceholder": "Oi, {{body.nome}}! Recebemos o seu pedido.",
+        "number": "Número de envio",
+        "numberPick": "O padrão do canal",
+        "template": "Modelo de mensagem",
+        "templatePick": "Sem modelo",
+        "templateEmpty": "Nenhum modelo aprovado neste canal",
+        "templateNone": "Sem modelo, nada é enviado: a API oficial do WhatsApp não aceita texto livre para quem não falou nas últimas 24 horas.",
+        "templateParams_one": "{{count}} variável do modelo",
+        "templateParams_other": "{{count}} variáveis do modelo",
+        "templateParamPlaceholder": "O que entra aqui"
+      },
+      "userField": {
+        "title": "Gravar num campo do contato",
+        "short": "Guarda um valor na ficha do contato.",
+        "description": "Guarda um valor no campo personalizado escolhido, na ficha do contato.",
+        "field": "Campo",
+        "fieldPick": "Escolher campo",
+        "fieldEmpty": "Nenhum campo criado",
+        "manage": "Gerenciar campos",
+        "value": "Valor",
+        "valuePlaceholder": "{{body.produto}}"
+      },
+      "code": {
+        "title": "Executar código",
+        "short": "Roda um script em JavaScript.",
+        "description": "Roda um script, e as ações seguintes esperam ele terminar. Pode levar até 15 segundos.",
+        "hint": "O que chegou vem em params, pelo caminho: params['body.nome']."
+      },
+      "http": {
+        "title": "Chamar outro endereço",
+        "short": "Repassa o que chegou para outro sistema.",
+        "description": "Repassa o que chegou para outro sistema, com os cabeçalhos e o corpo que você definir.",
+        "method": "Método",
+        "url": "Endereço",
+        "urlPlaceholder": "https://api.suaempresa.com.br/pedidos",
+        "urlHint": "Precisa ser um endereço público na internet, nas portas 80, 443, 8080 ou 8443.",
+        "refused": {
+          "internal": {
+            "title": "Este endereço vai ser recusado",
+            "description": "Ele aponta para dentro de uma rede, e não para a internet. Por segurança, a plataforma nunca chama endereços internos, como localhost ou 192.168.x.x: senão, qualquer pessoa poderia usá-la para espiar os computadores de dentro. Use um endereço público; para testar, um serviço como um túnel público serve."
+          },
+          "port": {
+            "title": "Esta porta vai ser recusada",
+            "description": "Por segurança, a plataforma só chama as portas 80, 443, 8080 e 8443. Use uma delas, ou deixe sem porta no endereço."
+          },
+          "credentials": {
+            "title": "Usuário e senha não podem ir no endereço",
+            "description": "A plataforma recusa endereços com usuário e senha embutidos, para eles não irem parar em registros. Mande em um cabeçalho, como Authorization."
+          },
+          "scheme": {
+            "title": "Só http e https",
+            "description": "A plataforma só chama endereços que começam com http:// ou https://."
+          }
+        },
+        "headers": "Cabeçalhos",
+        "headerName": "Nome do cabeçalho",
+        "headerNamePlaceholder": "X-Origem",
+        "headerValue": "Valor do cabeçalho",
+        "headerValuePlaceholder": "vekoo",
+        "headerRemove": "Remover o cabeçalho {{name}}",
+        "headerAdd": "Adicionar cabeçalho",
+        "body": "Corpo",
+        "bodyPlaceholder": "{ \"nome\": \"{{body.nome}}\" }",
+        "bodyHint": "Sem Content-Type, vai como JSON.",
+        "failureHint": "Se o destino falhar, as ações seguintes continuam, e o webhook fica com um aviso até a próxima entrega dar certo."
+      }
+    },
+    "blocks": {
+      "empty": "Nada na sequência ainda. Comece por um texto, uma imagem ou um documento.",
+      "add": "Adicionar:",
+      "types": {
+        "text": "Texto",
+        "image": "Imagem",
+        "video": "Vídeo",
+        "document": "Documento",
+        "audio": "Áudio"
+      },
+      "reorder": "Mudar a posição do item {{position}}",
+      "remove": "Remover o item {{position}}",
+      "text": "Texto",
+      "textPlaceholder": "Oi, {{body.nome}}! Recebemos o seu pedido.",
+      "source": "De onde vem a mídia",
+      "sourceUrl": "Endereço",
+      "sourceAttachment": "Anexo",
+      "url": "Endereço da mídia",
+      "urlPlaceholder": {
+        "image": "https://exemplo.com.br/foto.jpg ou {{body.foto}}",
+        "video": "https://exemplo.com.br/video.mp4 ou {{body.video}}",
+        "document": "https://exemplo.com.br/recibo.pdf ou {{body.recibo}}",
+        "audio": "https://exemplo.com.br/audio.ogg ou {{body.audio}}"
+      },
+      "fileName": "Nome do arquivo (opcional)",
+      "fileNamePlaceholder": "recibo.pdf",
+      "caption": "Legenda (opcional)",
+      "captionPlaceholder": "Segue o recibo, {{body.nome}}.",
+      "attachment": "Anexo",
+      "attachmentHint": {
+        "image": "Só imagens: jpg, png, webp.",
+        "video": "Só vídeos: mp4, mov.",
+        "document": "Só documentos: pdf, docx, xlsx.",
+        "audio": "Só áudios: ogg, mp3, wav."
+      },
+      "attachmentLoading": "Carregando anexos...",
+      "attachmentPick": "Escolher anexo",
+      "attachmentEmpty": "Nenhum anexo deste tipo"
+    },
+    "signature": {
+      "title": "Assinatura",
+      "description": "Sem assinatura, qualquer um que tenha o endereço consegue chamar. Com ela, só quem tem a chave.",
+      "switch": "Exigir assinatura",
+      "switchOn": "Requisição sem assinatura válida é recusada com o erro 401, e fica no histórico.",
+      "switchOff": "Qualquer requisição para este endereço é aceita.",
+      "activeKey": "Chave ativa",
+      "noKey": "Nenhuma",
+      "generated": "Gerada",
+      "rotate": "Renovar chave",
+      "how": "Como assinar as requisições",
+      "howDescription": "Mande os cabeçalhos X-Vekoo-Timestamp, com a hora em segundos, e X-Vekoo-Signature, com sha256= e o HMAC-SHA256 de \"timestamp.corpo\", feito com a chave. O corpo precisa ser exatamente o que vai na requisição. A hora tem 5 minutos de tolerância, para mais ou para menos.",
+      "languageLabel": "Linguagem do exemplo",
+      "copyExample": "Copiar o exemplo",
+      "sampleBody": "{\"nome\":\"Ana Souza\",\"telefone\":\"5500000000000\"}",
+      "secretVariable": "SEGREDO",
+      "turnedOnSameKey": "Assinatura ligada, com a mesma chave de antes",
+      "disableTitle": "Desligar a assinatura?",
+      "disableDescription": "Qualquer um que tenha o endereço volta a conseguir chamar. A chave fica guardada: ao religar, é a mesma.",
+      "disableAction": "Desligar",
+      "turnedOff": "Assinatura desligada",
+      "rotateTitle": "Renovar a chave?",
+      "rotateDescription": "A chave atual para de valer na hora: toda requisição assinada com ela passa a ser recusada, até você trocar no sistema que chama.",
+      "rotateAction": "Renovar",
+      "secretTitle": "Guarde esta chave",
+      "secretDescription": "É com ela que o outro sistema assina cada requisição.",
+      "secretWarning": "É a única vez que ela aparece inteira. Se perder, o jeito é renovar, e aí a anterior para de valer.",
+      "secretCopy": "Copiar a chave",
+      "secretDone": "Já guardei a chave"
+    },
+    "alerts": {
+      "dismiss": "Dispensar",
+      "dismissTitle": "Dispensar este aviso?",
+      "dismissDescription": "Todas as pessoas da organização deixam de ver o aviso, e o número do menu diminui. Dispensar não conserta nada: se o problema continuar, ele volta na próxima falha.",
+      "dismissed": "Aviso dispensado",
+      "fallback": "A última entrega deste webhook falhou."
+    },
+    "dialog": {
+      "name": "Nome",
+      "namePlaceholder": "Pedido aprovado na loja",
+      "nameTooShort": "Use pelo menos 3 letras.",
+      "nameTooLong": "Use no máximo 100 caracteres."
+    },
+    "detail": {
+      "routeTitle": "Webhook",
+      "notFoundTitle": "Este webhook não existe mais",
+      "notFoundDescription": "Ele pode ter sido excluído. Volte para a lista de webhooks.",
+      "backToList": "Ver webhooks",
+      "moreActions": "Mais ações",
+      "rename": "Renomear",
+      "renameTitle": "Renomear webhook",
+      "renameAction": "Salvar nome",
+      "renamed": "Nome salvo"
+    },
+    "logs": {
+      "description": "Cada requisição que chegou nos últimos 90 dias: o que veio e o que a plataforma fez com aquilo.",
+      "refresh": "Atualizar histórico",
+      "listLabel": "Requisições recebidas",
+      "count_one": "{{count}} requisição",
+      "count_other": "{{count}} requisições",
+      "webhookFilter": "Filtrar por webhook",
+      "allWebhooks": "Todos os webhooks",
+      "statusFilter": "Filtrar por situação",
+      "allStatuses": "Todas as situações",
+      "period": "Período",
+      "status": {
+        "success": "Sucesso",
+        "error": "Erro",
+        "skipped": "Ignorada"
+      },
+      "columns": {
+        "status": "Situação",
+        "webhook": "Webhook",
+        "code": "Código",
+        "ip": "IP de origem",
+        "when": "Quando",
+        "duration": "Tempo"
+      },
+      "emptyTitle": "Nada chegou ainda",
+      "emptyDescription": "Toda requisição que chegar aparece aqui, sozinha. Abra um webhook e mande um teste.",
+      "emptyAction": "Ver webhooks",
+      "detailTitle": "Requisição",
+      "openWebhook": "Abrir o webhook",
+      "outcome": "O que aconteceu",
+      "outcomes": {
+        "ran": "Quem chamou recebeu 200, e a plataforma rodou as ações do webhook.",
+        "captured": "Quem chamou recebeu 200. O webhook estava em teste: os campos foram guardados, e nenhuma ação rodou.",
+        "skipped": "Quem chamou recebeu 200. O webhook estava desligado: só ficou este registro.",
+        "refused": "A requisição foi recusada com o erro {{code}}, pela assinatura: nada foi processado.",
+        "failed": "Quem chamou recebeu 200, mas uma ação falhou no meio do caminho. O motivo está aqui embaixo."
+      },
+      "statusCode": "Código registrado",
+      "modeAtTheTime": "Modo na hora",
+      "method": "Método",
+      "received": "O que entrou",
+      "nothingReceived": "A requisição veio sem nenhum dado.",
+      "truncated": "O corpo passou de 100 KB e não foi guardado aqui. As ações receberam o corpo inteiro.",
+      "body": "Corpo",
+      "query": "Parâmetros da URL",
+      "headers": "Cabeçalhos",
+      "headersHint": "Cabeçalhos com segredo, como Authorization, nem são guardados.",
+      "fieldCount_one": "{{count}} campo",
+      "fieldCount_other": "{{count}} campos",
+      "copy": "Copiar {{name}}",
+      "stats": {
+        "label": "Indicadores",
+        "title": "Todos os webhooks",
+        "titleWebhook": "{{name}}",
+        "periodLabel": "Período dos indicadores",
+        "days_one": "{{count}} dia",
+        "days_other": "{{count}} dias",
+        "total": "Requisições",
+        "skipped_one": "{{count}} ignorada, com o webhook desligado",
+        "skipped_other": "{{count}} ignoradas, com o webhook desligado",
+        "success": "Com sucesso",
+        "rate": "{{value}} das que rodaram",
+        "errors": "Com erro",
+        "noErrors": "Nenhuma falha no período",
+        "average": "Tempo médio",
+        "averageHint": "Para processar, depois de receber",
+        "noAverage": "—"
+      },
+      "count_zero": "Nenhuma requisição"
+    }
+  }
+}

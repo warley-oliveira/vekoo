@@ -33,12 +33,12 @@ export function useToolFunctionMutations() {
   const { mutate } = useSWRConfig()
 
   return useMemo(() => {
-    const refresh = () => mutate((key) => typeof key === "string" && key.startsWith("/tools"))
+    const refreshLists = () => mutate((key) => typeof key === "string" && key.startsWith("/tools?"))
 
     // A função já fica no cache antes de a lista ser relida: é o que deixa o editor trocar de endereço sem piscar.
     const store = async (tool: ToolFunction) => {
       await mutate(toolFunctionKey(tool.id), { tool }, { revalidate: false })
-      void mutate((key) => typeof key === "string" && key.startsWith("/tools?"))
+      void refreshLists()
       return tool
     }
 
@@ -57,7 +57,7 @@ export function useToolFunctionMutations() {
       },
       deleteFunction: async (id: string) => {
         await apiDelete(toolFunctionKey(id))
-        void refresh()
+        void refreshLists()
       },
     }
   }, [mutate])

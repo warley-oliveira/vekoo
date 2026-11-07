@@ -93,7 +93,16 @@ export function FunctionTester({
   useImperativeHandle(ref, () => ({ start }))
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3"
+      // O teste mora dentro de um formulário: Enter num campo daqui roda o teste, e não salva o que está em volta.
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" || !(event.target instanceof HTMLInputElement)) return
+        if (event.target.getAttribute("role") === "combobox") return
+        event.preventDefault()
+        if (!running && !disabled) start()
+      }}
+    >
       {json !== null ? (
         <Field label={t("tools.tester.jsonLabel")} error={jsonError ?? undefined}>
           {(control) => (
