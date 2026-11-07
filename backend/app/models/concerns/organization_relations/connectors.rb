@@ -14,6 +14,7 @@
 #   business_work                 dias e horários da janela
 #   auto_clear_context_enabled    limpa o contexto da conversa depois de inatividade (padrão: false)
 #   auto_clear_context_interval   horas de inatividade para isso (padrão: 48)
+#   flow_debounce_seconds         quanto o fluxo espera a pessoa terminar de escrever (0 a 60; padrão: 3)
 module OrganizationRelations
   module Connectors
     extend ActiveSupport::Concern

@@ -75,6 +75,7 @@ export default function AutomationSettingsPage() {
             </div>
           </SettingsSection>
 
+          <DebounceSection settings={settings} disabled={!canEdit} onSave={apply} />
           <PauseSection settings={settings} disabled={!canEdit} onSave={apply} />
           <BusinessHoursSection settings={settings} disabled={!canEdit} onSave={apply} />
           <ClearContextSection settings={settings} disabled={!canEdit} onSave={apply} />
@@ -125,6 +126,49 @@ function SaveRow({ dirty, busy, disabled, onSave }: { dirty: boolean; busy: bool
         {t("flows.settings.save")}
       </Button>
     </div>
+  )
+}
+
+/** A mesma trava do disparo no servidor. */
+const MAX_DEBOUNCE_SECONDS = 60
+
+function DebounceSection({ settings, disabled, onSave }: SectionProps) {
+  const { t } = useTranslation()
+  const [seconds, setSeconds] = useState<number | null>(settings.flowDebounceSeconds)
+  const [busy, setBusy] = useState(false)
+  const dirty = seconds !== null && seconds !== settings.flowDebounceSeconds
+
+  return (
+    <SettingsSection title={t("flows.settings.debounceTitle")} description={t("flows.settings.debounceHint")}>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="debounce-seconds">{t("flows.settings.debounceLabel")}</Label>
+          <NumberInput
+            id="debounce-seconds"
+            aria-describedby="debounce-seconds-hint"
+            className="max-w-48"
+            steppers
+            disabled={disabled}
+            min={0}
+            max={MAX_DEBOUNCE_SECONDS}
+            value={seconds}
+            onChange={setSeconds}
+          />
+          <p id="debounce-seconds-hint" className="text-xs text-muted-foreground">
+            {t("flows.settings.debounceRange", { max: MAX_DEBOUNCE_SECONDS })}
+          </p>
+        </div>
+        <SaveRow
+          dirty={dirty}
+          busy={busy}
+          disabled={disabled}
+          onSave={() => {
+            setBusy(true)
+            void onSave({ flowDebounceSeconds: seconds ?? 0 }).finally(() => setBusy(false))
+          }}
+        />
+      </div>
+    </SettingsSection>
   )
 }
 
