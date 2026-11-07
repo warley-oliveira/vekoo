@@ -93,6 +93,10 @@ export type DataTableProps<TData> = {
   onColumnFiltersChange?: (filters: { id: string; value: unknown }[]) => void
   /** Texto da busca do `FilterBar`, para filtrar no próprio navegador. */
   globalFilter?: string
+  /** Colunas escondidas: `{ phone: false }`. Quem guarda a preferência e oferece a escolha é a tela. */
+  columnVisibility?: Record<string, boolean>
+  onColumnVisibilityChange?: (visibility: Record<string, boolean>) => void
+  defaultColumnVisibility?: Record<string, boolean>
 
   /* Seleção */
   selectable?: boolean

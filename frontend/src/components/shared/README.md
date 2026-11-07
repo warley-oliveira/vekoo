@@ -221,6 +221,10 @@ Filtro **de fora** da tabela (`FilterBar`): quem zera a página é a tela, e `is
 />
 ```
 
+**Colunas escondidas:** `columnVisibility` e `onColumnVisibilityChange` (ou `defaultColumnVisibility`), com o id da coluna. Quem guarda a preferência e oferece a escolha é a tela.
+
+**O que a tabela faz sozinha:** a coluna de ações fica presa à direita quando a tabela rola de lado, e a célula de um registro que não mudou não se desenha de novo a cada revalidação (as linhas são comparadas pelo JSON: passe dados da API, não objetos com função).
+
 **Não use `FilterBar` com filtros e `meta.filter` na mesma tabela:** no celular apareceriam dois botões "Filtros". `FilterBar` só com a busca, mais `meta.filter`, funciona bem.
 
 ### `FilterBar`

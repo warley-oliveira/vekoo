@@ -14,6 +14,7 @@ import {
   type RowSelectionState,
   type SortingState,
   type Updater,
+  type VisibilityState,
 } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
 import { Rows3, Rows4 } from "lucide-react"
@@ -37,6 +38,7 @@ import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { ActionsMenu } from "./actions-menu"
 import { BulkActionsBar } from "./bulk-actions-bar"
+import { CellContent } from "./data-table-cell"
 import { ColumnFilterControl, DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableMobileList } from "./data-table-mobile-list"
 import type { DataTableProps, TableDensity } from "./data-table-types"
@@ -50,6 +52,7 @@ import {
   ignoresRowClick,
   localeSorting,
   textFilter,
+  useStableRows,
 } from "./data-table-utils"
 import { FilterPopover } from "./filter-popover"
 import { ListSkeleton } from "./list-skeleton"
@@ -64,6 +67,15 @@ const CELL_WIDTHS = ["w-2/3", "w-1/2", "w-3/4", "w-2/5", "w-3/5"]
 // O mesmo array sempre: `data={x ?? []}` criaria um novo a cada render e faria a tabela
 // recalcular tudo sem necessidade.
 const NO_ROWS: never[] = []
+
+// A coluna de ações fica à vista quando a tabela rola de lado. Com fundo opaco, para o que passa por
+// baixo não aparecer através dela, e o mesmo tom que a linha tem em cada estado. Em célula presa à
+// lateral, o fio da linha não acompanha: quem desenha é a própria célula. O fio da esquerda só
+// aparece quando há o que passar por baixo.
+const STICKY_ACTIONS =
+  "sticky right-0 z-[1] bg-background before:absolute before:inset-y-0 before:left-0 before:hidden before:w-px before:bg-border [[data-overflowing]_&]:before:block"
+const STICKY_ACTIONS_HEAD = `${STICKY_ACTIONS} shadow-[inset_0_-1px_0_var(--border)]`
+const STICKY_ACTIONS_CELL = `${STICKY_ACTIONS} transition-colors [@media(hover:hover)]:[tr:hover>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr:has([aria-expanded=true])>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr[data-state=selected]>&]:bg-[color-mix(in_oklab,var(--accent)_60%,var(--background))] [tr:not(:last-child)>&]:shadow-[inset_0_-1px_0_var(--border)]`
 
 const FILTER_FNS = {
   text: textFilter,
@@ -123,6 +135,9 @@ export function DataTable<TData>({
   columnFilters: columnFiltersProp,
   onColumnFiltersChange,
   globalFilter,
+  columnVisibility: columnVisibilityProp,
+  onColumnVisibilityChange,
+  defaultColumnVisibility,
   selectable = false,
   rowSelection: rowSelectionProp,
   onRowSelectionChange,
@@ -142,7 +157,10 @@ export function DataTable<TData>({
   const language = useLanguage()
   const isMobile = useIsMobile()
   const isServer = meta !== undefined || onPageChange !== undefined
-  const data = rawData.length === 0 ? (NO_ROWS as TData[]) : rawData
+  const rowIdOf = (row: TData, index: number) =>
+    getRowId?.(row) ?? (row as { id?: string }).id ?? String(index)
+  const stableRows = useStableRows(rawData, rowIdOf)
+  const data = stableRows.length === 0 ? (NO_ROWS as TData[]) : stableRows
 
   const [storedDensity, setStoredDensity] = useLocalStorage<TableDensity>(
     DENSITY_KEY,
@@ -176,6 +194,11 @@ export function DataTable<TData>({
     rowSelectionProp,
     onRowSelectionChange,
     {}
+  )
+  const [columnVisibility, setColumnVisibility] = useTableState<VisibilityState>(
+    columnVisibilityProp,
+    onColumnVisibilityChange,
+    defaultColumnVisibility ?? {}
   )
   const [allMatching, setAllMatching] = useState(false)
 
@@ -232,6 +255,8 @@ export function DataTable<TData>({
     setAllMatching(false)
   }, [globalFilter, isServer])
 
+  const hasRowActions = Boolean(rowActions)
+
   const allColumns = useMemo<ColumnDef<TData, any>[]>(() => {
     const withFilters = columns.map((column) => {
       const type = column.meta?.filter?.type
@@ -278,22 +303,17 @@ export function DataTable<TData>({
       enableHiding: false,
       meta: { label: t("kit.table.actions"), mobile: "hidden", align: "right", className: "w-10" },
       header: () => <span className="sr-only">{t("kit.table.actions")}</span>,
-      cell: ({ row }) => (
-        <div className="flex justify-end">
-          <ActionsMenu
-            actions={rowActions?.(row.original) ?? []}
-            label={t("kit.table.rowActions")}
-          />
-        </div>
-      ),
+      // Desenhada na linha, e não aqui: `rowActions` costuma nascer a cada render da tela, e entrar
+      // nestas dependências refaria a tabela inteira a cada vez.
+      cell: () => null,
     }
 
     return [
       ...(selectable ? [selectColumn] : []),
       ...withFilters,
-      ...(rowActions ? [actionsColumn] : []),
+      ...(hasRowActions ? [actionsColumn] : []),
     ]
-  }, [columns, rowActions, selectable, t])
+  }, [columns, hasRowActions, selectable, t])
 
   const defaultColumn = useMemo(
     () => ({ sortingFn: localeSorting<TData>(language), sortUndefined: "last" as const }),
@@ -304,12 +324,12 @@ export function DataTable<TData>({
     data,
     columns: allColumns,
     defaultColumn,
-    getRowId: (row, index) =>
-      getRowId?.(row) ?? (row as { id?: string }).id ?? String(index),
-    state: { sorting, columnFilters, rowSelection, pagination, globalFilter },
+    getRowId: rowIdOf,
+    state: { sorting, columnFilters, rowSelection, pagination, globalFilter, columnVisibility },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setLocalPagination,
     enableRowSelection: canSelectRow ? (row) => canSelectRow(row.original) : selectable,
     // Na API, só ordena e filtra o que a tela liga a uma consulta no servidor.
@@ -333,6 +353,21 @@ export function DataTable<TData>({
           autoResetPageIndex: false,
         }),
   })
+
+  // Só para desenhar o fio da coluna de ações. Sem ela, não há o que medir.
+  const scrollRegion = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const region = scrollRegion.current
+    if (!region || !hasRowActions || typeof ResizeObserver === "undefined") return
+    const measure = () => {
+      region.toggleAttribute("data-overflowing", region.scrollWidth > region.clientWidth + 1)
+    }
+    const observer = new ResizeObserver(measure)
+    observer.observe(region)
+    if (region.firstElementChild) observer.observe(region.firstElementChild)
+    measure()
+    return () => observer.disconnect()
+  }, [hasRowActions, isMobile])
 
   const pageCount = table.getPageCount()
   useEffect(() => {
@@ -562,6 +597,7 @@ export function DataTable<TData>({
       <div
         // Cabeçalho fixo precisa de um rolável próprio: o `Table` da primitiva tem um
         // `overflow-x-auto` que cortaria o `sticky`.
+        ref={scrollRegion}
         role="region"
         aria-label={ariaLabel}
         tabIndex={0}
@@ -580,9 +616,8 @@ export function DataTable<TData>({
                 {group.headers.map((header) => {
                   const columnMeta = header.column.columnDef.meta
                   const sorted = header.column.getIsSorted()
-                  const custom =
-                    header.column.id === SELECT_COLUMN_ID ||
-                    header.column.id === ACTIONS_COLUMN_ID
+                  const isActions = header.column.id === ACTIONS_COLUMN_ID
+                  const custom = header.column.id === SELECT_COLUMN_ID || isActions
 
                   return (
                     <TableHead
@@ -598,7 +633,8 @@ export function DataTable<TData>({
                         "px-3 text-xs text-muted-foreground",
                         columnMeta?.align === "right" && "text-right",
                         columnMeta?.align === "center" && "text-center",
-                        columnMeta?.className
+                        columnMeta?.className,
+                        isActions && STICKY_ACTIONS_HEAD
                       )}
                     >
                       {header.isPlaceholder ? null : custom ? (
@@ -672,6 +708,7 @@ export function DataTable<TData>({
                 >
                   {row.getVisibleCells().map((cell) => {
                     const columnMeta = cell.column.columnDef.meta
+                    const isActions = cell.column.id === ACTIONS_COLUMN_ID
                     return (
                       <TableCell
                         key={cell.id}
@@ -679,10 +716,22 @@ export function DataTable<TData>({
                           cellPadding,
                           columnMeta?.align === "right" && "text-right tabular-nums",
                           columnMeta?.align === "center" && "text-center",
-                          columnMeta?.className
+                          columnMeta?.className,
+                          isActions && STICKY_ACTIONS_CELL
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {isActions ? (
+                          <div className="flex justify-end">
+                            <ActionsMenu
+                              actions={rowActions?.(row.original) ?? []}
+                              label={t("kit.table.rowActions")}
+                            />
+                          </div>
+                        ) : cell.column.id === SELECT_COLUMN_ID ? (
+                          flexRender(cell.column.columnDef.cell, cell.getContext())
+                        ) : (
+                          <CellContent cell={cell} />
+                        )}
                       </TableCell>
                     )
                   })}
