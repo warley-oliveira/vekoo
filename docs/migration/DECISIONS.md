@@ -411,7 +411,7 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 
 ### Modal no lugar de drawer (modals)
 
-- **Diretiva da pessoa: toda tarefa, edição ou detalhe abre em modal com tamanho dinâmico; drawer só para informação de baixa relevância.** O `SidePanel` (folha pela direita) saiu do kit, e os 51 usos (48 arquivos, mais a vitrine) viraram `ResponsiveDialog`.
+- **Diretiva da pessoa: toda tarefa, edição ou detalhe abre em modal com tamanho dinâmico; drawer só para informação de baixa relevância.** O `SidePanel` (folha pela direita) saiu do kit, e os usos viraram `ResponsiveDialog` (38 em 36 arquivos, mais a vitrine; os 13 do calendário ficam com a frente do calendário).
 - **Um modal só, com seis tamanhos** escolhidos pelo conteúdo: `sm` 24rem, `md` 28rem, `lg` 32rem, `xl` 42rem, `2xl` 56rem e `full` (até 88rem × 90dvh, altura fixa). A altura acompanha o conteúdo até o teto; `fixedHeight` trava no teto para wizard e abas não saltarem. Ganhou `headerActions`.
 - **Celular (vetável):** `sm` e `md` como cartão centrado com 16 px de margem; `lg` para cima em tela cheia. Ambos presos ao viewport visível, para o teclado não cobrir campo nem botão. Voltar à folha de baixo é trocar `MOBILE_PRESENTATION` para `"sheet"` no componente.
 - **Card do pipeline em `full`**, com detalhes à esquerda e comentários e atividade ao lado a partir de 1024 px; abaixo disso, as três abas de antes. Continua abrindo por `?card=`.
