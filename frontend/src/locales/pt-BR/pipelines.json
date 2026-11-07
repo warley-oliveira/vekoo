@@ -274,7 +274,7 @@
     },
     "summary": {
       "title": "Resumo do pipeline",
-      "open": "Em aberto",
+      "open": "Valor em aberto",
       "openHint_one": "Soma do valor de {{count}} card em aberto",
       "openHint_other": "Soma do valor de {{count}} cards em aberto",
       "weighted": "Ponderado",
@@ -328,8 +328,6 @@
       "label": "Descrição do card",
       "placeholder": "Adicione uma descrição…",
       "toolbar": "Formatação",
-      "linkPrompt": "Endereço do link (deixe em branco para tirar)",
-      "imagePrompt": "Endereço da imagem",
       "saving": "Salvando…",
       "saved": "Salvo",
       "saveFailed": "Não foi possível salvar a descrição.",
@@ -347,7 +345,9 @@
         "code": "Código",
         "link": "Link",
         "image": "Imagem"
-      }
+      },
+      "linkHint": "Deixe em branco para tirar o link.",
+      "apply": "Aplicar"
     },
     "fields": {
       "title": "Campos",

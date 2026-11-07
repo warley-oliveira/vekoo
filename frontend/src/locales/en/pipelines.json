@@ -274,7 +274,7 @@
     },
     "summary": {
       "title": "Pipeline summary",
-      "open": "Open",
+      "open": "Open value",
       "openHint_one": "Total value of {{count}} open card",
       "openHint_other": "Total value of {{count}} open cards",
       "weighted": "Weighted",
@@ -286,7 +286,7 @@
       "noConversion": "—",
       "won": "Won",
       "wonHint": "Total value of won cards",
-      "openCards": "Open",
+      "openCards": "Open cards",
       "openCardsHint": "Cards not yet won or lost"
     },
     "forecast": {
@@ -328,8 +328,6 @@
       "label": "Card description",
       "placeholder": "Add a description…",
       "toolbar": "Formatting",
-      "linkPrompt": "Link address (leave blank to remove)",
-      "imagePrompt": "Image address",
       "saving": "Saving…",
       "saved": "Saved",
       "saveFailed": "Couldn't save the description.",
@@ -347,7 +345,9 @@
         "code": "Code",
         "link": "Link",
         "image": "Image"
-      }
+      },
+      "linkHint": "Leave it blank to remove the link.",
+      "apply": "Apply"
     },
     "fields": {
       "title": "Fields",

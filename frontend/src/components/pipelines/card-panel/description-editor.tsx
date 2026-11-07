@@ -23,7 +23,9 @@ import {
   Underline,
 } from "lucide-react"
 
+import { ResponsivePopover } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { keepKnownContent, LEGACY_EXTENSIONS } from "./description-schema"
 
@@ -42,6 +44,12 @@ const EXTENSIONS = [
 const SCHEMA = getSchema(EXTENSIONS)
 
 const SAVE_DELAY_MS = 1_200
+const URL_EXAMPLE = "https://"
+
+/** "loja.com.br" vira um endereço de verdade; quem escreveu o esquema sabe o que quer. */
+function withScheme(url: string): string {
+  return /^[a-z][a-z0-9+.-]*:/i.test(url) ? url : `${URL_EXAMPLE}${url}`
+}
 
 /** Card que nasceu de gatilho ou automação só tem texto puro: vira parágrafos no editor. */
 function plainTextToDoc(text: string): JSONContent {
@@ -89,20 +97,92 @@ function ToolbarButton({
   )
 }
 
+/** Link e imagem pedem um endereço: num popup da própria tela, e não no `prompt` do navegador. */
+function UrlTool({
+  label,
+  active,
+  hint,
+  initial,
+  onApply,
+  children,
+}: {
+  label: string
+  active?: boolean
+  hint?: string
+  initial: () => string
+  onApply: (url: string) => void
+  children: React.ReactNode
+}) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+  const [url, setUrl] = useState("")
+
+  return (
+    <ResponsivePopover
+      open={open}
+      onOpenChange={(next) => {
+        if (next) setUrl(initial())
+        setOpen(next)
+      }}
+      title={label}
+      className="w-80 gap-0 p-2"
+      trigger={
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          className={cn(
+            "text-muted-foreground pointer-coarse:size-9",
+            active && "bg-muted text-foreground"
+          )}
+          aria-label={label}
+          aria-pressed={active}
+          title={label}
+          // A seleção do editor precisa continuar lá para o comando valer sobre ela.
+          onMouseDown={(event) => event.preventDefault()}
+        >
+          {children}
+        </Button>
+      }
+    >
+      <form
+        className="flex flex-col gap-1.5"
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          onApply(url.trim())
+          setOpen(false)
+        }}
+      >
+        <div className="flex items-center gap-1.5">
+          <Input
+            autoFocus
+            inputMode="url"
+            value={url}
+            aria-label={label}
+            placeholder={URL_EXAMPLE}
+            onChange={(event) => setUrl(event.target.value)}
+          />
+          <Button type="submit" size="sm" className="pointer-coarse:h-10">
+            {t("pipelines.description.apply")}
+          </Button>
+        </div>
+        {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      </form>
+    </ResponsivePopover>
+  )
+}
+
 function Toolbar({ editor }: { editor: Editor }) {
   const { t } = useTranslation()
 
-  function setLink() {
-    const previous = editor.getAttributes("link").href as string | undefined
-    const url = window.prompt(t("pipelines.description.linkPrompt"), previous ?? "https://")
-    if (url === null) return
-    if (url === "") editor.chain().focus().extendMarkRange("link").unsetLink().run()
-    else editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
+  function setLink(url: string) {
+    if (!url) editor.chain().focus().extendMarkRange("link").unsetLink().run()
+    else editor.chain().focus().extendMarkRange("link").setLink({ href: withScheme(url) }).run()
   }
 
-  function addImage() {
-    const url = window.prompt(t("pipelines.description.imagePrompt"))
-    if (url) editor.chain().focus().setImage({ src: url }).run()
+  function addImage(url: string) {
+    if (url) editor.chain().focus().setImage({ src: withScheme(url) }).run()
   }
 
   const tool = (key: string) => t(`pipelines.description.tools.${key}`)
@@ -149,12 +229,18 @@ function Toolbar({ editor }: { editor: Editor }) {
       <ToolbarButton label={tool("code")} active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
         <Code2 />
       </ToolbarButton>
-      <ToolbarButton label={tool("link")} active={editor.isActive("link")} onClick={setLink}>
+      <UrlTool
+        label={tool("link")}
+        active={editor.isActive("link")}
+        hint={t("pipelines.description.linkHint")}
+        initial={() => (editor.getAttributes("link").href as string | undefined) ?? ""}
+        onApply={setLink}
+      >
         <LinkIcon />
-      </ToolbarButton>
-      <ToolbarButton label={tool("image")} onClick={addImage}>
+      </UrlTool>
+      <UrlTool label={tool("image")} initial={() => ""} onApply={addImage}>
         <ImageIcon />
-      </ToolbarButton>
+      </UrlTool>
     </div>
   )
 }
