@@ -3,7 +3,7 @@ import { CalendarList, type CalendarListProps } from "./calendar-list"
 import { DaySummary } from "./day-summary"
 import { MiniMonth } from "./mini-month"
 
-/** O mês, os calendários e o resumo do dia: inline no desktop, em painel no celular e no tablet. */
+/** O mês, os calendários e o resumo do dia: inline no desktop, num modal no celular e no tablet. */
 export function CalendarSidebar({
   day,
   today,

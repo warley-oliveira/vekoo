@@ -6,7 +6,7 @@ import {
   Callout,
   FormActions,
   SegmentedControl,
-  SidePanel,
+  ResponsiveDialog,
   UnsavedChangesDialog,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -91,12 +91,12 @@ export function NewEventPanel({
   const requestClose = useGuardedClose(isDirty, close)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
-      size="lg"
+      size="xl"
       title={t(kind === "booking" ? "calendar.booking.new.title" : "calendar.session.new.panelTitle")}
       onSubmit={current.submit}
       footer={
@@ -145,7 +145,7 @@ export function NewEventPanel({
           <NewSessionFields form={session.form} calendars={classCalendars} />
         )}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 
@@ -189,12 +189,12 @@ export function BookingPanel({
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
-      size="lg"
+      size="2xl"
       title={
         <EventTitle color={event.color}>
           {eventHeadline(event).title || t("calendar.event.untitled")}
@@ -296,6 +296,6 @@ export function BookingPanel({
           </TabsContent>
         </Tabs>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

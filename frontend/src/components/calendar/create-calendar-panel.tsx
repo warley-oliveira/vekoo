@@ -11,7 +11,7 @@ import {
   ComboboxField,
   FormActions,
   RadioField,
-  SidePanel,
+  ResponsiveDialog,
   TextField,
   TextareaField,
   UnsavedChangesDialog,
@@ -105,7 +105,8 @@ function CreateCalendarForm({ open, onOpenChange, onCreated }: CreateCalendarPan
   })
 
   return (
-    <SidePanel
+    <ResponsiveDialog
+      size="lg"
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -174,6 +175,6 @@ function CreateCalendarForm({ open, onOpenChange, onCreated }: CreateCalendarPan
           hint={t("calendar.create.colorHint")}
         />
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

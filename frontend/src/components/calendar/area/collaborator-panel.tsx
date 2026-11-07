@@ -11,7 +11,7 @@ import {
   ColorField,
   FormActions,
   PhoneField,
-  SidePanel,
+  ResponsiveDialog,
   TextField,
   UnsavedChangesDialog,
   useFormSubmit,
@@ -194,7 +194,7 @@ export function CollaboratorPanel({
     : []
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -348,6 +348,6 @@ export function CollaboratorPanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

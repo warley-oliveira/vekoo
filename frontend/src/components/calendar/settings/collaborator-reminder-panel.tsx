@@ -12,7 +12,7 @@ import {
   FormActions,
   NumberField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   UnsavedChangesDialog,
   useFormSubmit,
@@ -122,7 +122,8 @@ export function CollaboratorReminderPanel({
   const silent = !push && (!whatsapp || !whatsappAvailable)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
+      size="lg"
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -213,6 +214,6 @@ export function CollaboratorReminderPanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

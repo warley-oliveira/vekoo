@@ -16,7 +16,7 @@ import {
   FormError,
   KeyValueList,
   ListSkeleton,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
   TextareaField,
   TextField,
@@ -187,10 +187,10 @@ export function ClassSessionPanel({
   ].filter((item) => item.value)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
-      size="lg"
+      size="xl"
       title={<EventTitle color={session.color}>{title}</EventTitle>}
       description={formatEventWhen(session.start, session.end, zone, language)}
       footer={
@@ -369,7 +369,7 @@ export function ClassSessionPanel({
           void revalidateEvents()
         }}
       />
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

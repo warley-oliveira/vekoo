@@ -13,7 +13,7 @@ import {
   InlineError,
   ListSkeleton,
   SearchInput,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
   UserAvatar,
   useConfirm,
@@ -175,10 +175,10 @@ export function EnrollmentsPanel({
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
-      size="lg"
+      size="xl"
       title={classGroup.name}
       description={t("calendar.classGroups.enrollments.description")}
     >
@@ -255,7 +255,7 @@ export function EnrollmentsPanel({
           </section>
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

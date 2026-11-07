@@ -29,7 +29,7 @@ import { EnrollSequenceDialog } from "@/components/calendar/enroll-sequence-dial
 import { EventPreview } from "@/components/calendar/event-preview"
 import { ClassSessionPanel } from "@/components/calendar/session/class-session-panel"
 import { WeekStrip } from "@/components/calendar/week-strip"
-import { EmptyState, ErrorState, SidePanel } from "@/components/shared"
+import { EmptyState, ErrorState, ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useAgendaChannel } from "@/hooks/calendar/use-agenda-channel"
 import { useBookingActions } from "@/hooks/calendar/use-booking-actions"
@@ -519,7 +519,7 @@ export default function CalendarPage() {
 
   return (
     <div className="flex h-full min-h-0 pb-(--app-bottom-nav-total)">
-      {/* Do `lg` para cima, a lateral é fixa. Abaixo, ela abre em painel. */}
+      {/* Do `lg` para cima, a lateral é fixa. Abaixo, ela abre num modal. */}
       <aside className="hidden w-64 shrink-0 overflow-y-auto border-r p-4 lg:block">
         <CalendarSidebar
           day={screen.anchor}
@@ -656,7 +656,8 @@ export default function CalendarPage() {
       </div>
 
       {/* Painéis */}
-      <SidePanel
+      <ResponsiveDialog
+        size="md"
         open={sidebarOpen}
         onOpenChange={setSidebarOpen}
         title={t("calendar.sidebar.title")}
@@ -673,7 +674,7 @@ export default function CalendarPage() {
           }}
           calendarList={calendarListProps}
         />
-      </SidePanel>
+      </ResponsiveDialog>
 
       {newPanelKey > 0 && calendars ? (
         <NewEventPanel
