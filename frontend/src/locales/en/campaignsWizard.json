@@ -83,6 +83,7 @@
       "schedulePast": "Choose a time that hasn't passed yet",
       "daysRequired": "Choose at least one day",
       "intervalRange": "The longer wait must be equal to or longer than the shorter one",
+      "intervalFloor": "The shortest wait is 1 minute: anything less raises the risk of the number being blocked",
       "dailyLimit": "The daily limit must be a whole number, 1 or more",
       "windowRange": "The end must come after the start. To send all day, turn on the option above"
     },
@@ -362,6 +363,7 @@
         "instagram": "Instagram",
         "facebook": "Facebook",
         "map": "Map",
+        "categories": "Categories",
         "hours": "Opening hours"
       }
     },
@@ -549,8 +551,8 @@
       "seconds": "{{value}} s",
       "minutes": "{{value}} min",
       "range": "{{from}} to {{to}}",
-      "everyDay": "every day",
       "weekdays": "Monday to Friday",
+      "dayRange": "{{from}} to {{to}}",
       "allDay": "all day",
       "between": "from {{start}}:00 to {{end}}:00"
     },
@@ -600,6 +602,7 @@
       "scheduledWaits": "Scheduled for {{date}}, outside the sending days and hours. The first one goes out on {{first}}",
       "startsNow": "Starts as soon as you launch",
       "window": "Only {{days}}, {{hours}}, on {{timezone}} time.",
+      "windowEveryDay": "Every day, {{hours}}, on {{timezone}} time.",
       "pace": "One message every {{range}}, up to {{limit}} a day on each number.",
       "finishesSoon": "Should finish in less than an hour.",
       "finishesHours_one": "Should finish in about {{count}} hour.",

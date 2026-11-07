@@ -83,6 +83,7 @@
       "schedulePast": "Escolha um horário que ainda não passou",
       "daysRequired": "Escolha ao menos um dia",
       "intervalRange": "O maior intervalo precisa ser igual ou maior que o menor",
+      "intervalFloor": "O menor intervalo é de 1 minuto: menos que isso aumenta o risco de o número ser bloqueado",
       "dailyLimit": "O limite por dia precisa ser um número inteiro, de 1 para cima",
       "windowRange": "O fim precisa ser depois do início. Para mandar o dia todo, ligue a opção acima"
     },
@@ -362,6 +363,7 @@
         "instagram": "Instagram",
         "facebook": "Facebook",
         "map": "Mapa",
+        "categories": "Categorias",
         "hours": "Horário de funcionamento"
       }
     },
@@ -549,8 +551,8 @@
       "seconds": "{{value}} s",
       "minutes": "{{value}} min",
       "range": "{{from}} a {{to}}",
-      "everyDay": "todos os dias",
       "weekdays": "de segunda a sexta",
+      "dayRange": "de {{from}} a {{to}}",
       "allDay": "o dia todo",
       "between": "das {{start}}h às {{end}}h"
     },
@@ -600,6 +602,7 @@
       "scheduledWaits": "Agendada para {{date}}, fora dos dias e horários de envio. A primeira sai em {{first}}",
       "startsNow": "Começa assim que você lançar",
       "window": "Só {{days}}, {{hours}}, no horário de {{timezone}}.",
+      "windowEveryDay": "Todos os dias, {{hours}}, no horário de {{timezone}}.",
       "pace": "Uma mensagem a cada {{range}}, até {{limit}} por dia em cada número.",
       "finishesSoon": "Deve terminar em menos de uma hora.",
       "finishesHours_one": "Deve terminar em cerca de {{count}} hora.",

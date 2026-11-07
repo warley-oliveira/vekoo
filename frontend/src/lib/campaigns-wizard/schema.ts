@@ -1,7 +1,7 @@
 import type { TFunction } from "i18next"
 import { z } from "zod"
 
-import { hourOf } from "./estimate"
+import { MIN_INTERVAL_SECONDS, hourOf } from "./estimate"
 import type { WizardStep, WizardValues } from "./form"
 import { filledMessages } from "./form"
 
@@ -112,7 +112,9 @@ export function buildWizardSchema(
         }
       }
 
-      if (values.intervalMin < 1 || values.intervalMax < values.intervalMin) {
+      if (values.intervalMin < MIN_INTERVAL_SECONDS) {
+        issue("intervalMax", t("campaignsWizard.errors.intervalFloor"))
+      } else if (values.intervalMax < values.intervalMin) {
         issue("intervalMax", t("campaignsWizard.errors.intervalRange"))
       }
 

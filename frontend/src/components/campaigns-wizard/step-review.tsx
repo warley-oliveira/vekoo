@@ -351,11 +351,16 @@ export function StepReview() {
                       : t("campaignsWizard.review.startsNow")}
                 </p>
                 <p className="text-muted-foreground">
-                  {t("campaignsWizard.review.window", {
-                    days: describeDays(values.sendDays, t, language),
-                    hours: describeHours(values.sendWindowStart, values.sendWindowEnd, t),
-                    timezone: describeTimezone(values.timezone, t, language),
-                  })}
+                  {values.sendDays.length === 7
+                    ? t("campaignsWizard.review.windowEveryDay", {
+                        hours: describeHours(values.sendWindowStart, values.sendWindowEnd, t),
+                        timezone: describeTimezone(values.timezone, t, language),
+                      })
+                    : t("campaignsWizard.review.window", {
+                        days: describeDays(values.sendDays, t, language),
+                        hours: describeHours(values.sendWindowStart, values.sendWindowEnd, t),
+                        timezone: describeTimezone(values.timezone, t, language),
+                      })}
                 </p>
                 <p className="text-muted-foreground">
                   {t("campaignsWizard.review.pace", {

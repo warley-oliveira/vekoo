@@ -29,6 +29,7 @@ import {
   TablePagination,
   useConfirm,
 } from "@/components/shared"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -218,6 +219,18 @@ function PlaceDetails({ place, onClose }: { place: PlaceResult | null; onClose: 
                 : []),
             ]}
           />
+          {place.categories.length > 0 ? (
+            <section className="flex flex-col gap-1.5">
+              <h3 className="text-sm font-medium">{t("campaignsWizard.places.fields.categories")}</h3>
+              <ul className="flex flex-wrap gap-1">
+                {place.categories.map((category) => (
+                  <li key={category}>
+                    <Badge variant="secondary">{category}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
           {place.openingHours.length > 0 ? (
             <section className="flex flex-col gap-1">
               <h3 className="text-sm font-medium">{t("campaignsWizard.places.fields.hours")}</h3>

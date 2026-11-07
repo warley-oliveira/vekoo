@@ -130,10 +130,13 @@ export function estimateCampaign(input: EstimateInput): Estimate {
 export type PacePreset = "calm" | "balanced" | "fast"
 export type Pace = PacePreset | "custom"
 
+/** O piso da origem: a API aceitaria menos, mas abaixo de um minuto o risco é do número de quem envia. */
+export const MIN_INTERVAL_SECONDS = 60
+
 export const PACE_PRESETS: Record<PacePreset, { intervalMin: number; intervalMax: number }> = {
   calm: { intervalMin: 180, intervalMax: 360 },
   balanced: { intervalMin: 60, intervalMax: 120 },
-  fast: { intervalMin: 30, intervalMax: 60 },
+  fast: { intervalMin: 60, intervalMax: 90 },
 }
 
 export function paceOf(intervalMin: number, intervalMax: number): Pace {
@@ -143,9 +146,9 @@ export function paceOf(intervalMin: number, intervalMax: number): Pace {
   return "custom"
 }
 
-/** A régua do controle de intervalo: passos que fazem sentido, de 15 segundos a meia hora. */
+/** A régua do controle de intervalo: passos que fazem sentido, de um minuto a meia hora. */
 export const INTERVAL_STOPS = [
-  15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600, 900, 1200, 1500, 1800,
+  MIN_INTERVAL_SECONDS, 90, 120, 180, 240, 300, 420, 600, 900, 1200, 1500, 1800,
 ] as const
 
 export function nearestStop(seconds: number): number {

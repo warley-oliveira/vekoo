@@ -29,11 +29,18 @@ export function weekdayName(day: number, language: string, style: "short" | "lon
   return new Intl.DateTimeFormat(language, { weekday: style, timeZone: "UTC" }).format(date).replace(/\.$/, "")
 }
 
-/** "de segunda a sexta", "todos os dias", ou a lista. */
+/** "de segunda a sexta", "de terça-feira a sábado", ou a lista. Para os sete dias, quem chama diz a frase toda. */
 export function describeDays(days: number[], t: TFunction, language: string): string {
   const sorted = [...days].sort((a, b) => a - b)
-  if (sorted.length === 7) return t("campaignsWizard.time.everyDay")
   if (sorted.join() === "1,2,3,4,5") return t("campaignsWizard.time.weekdays")
+
+  const inARow = sorted.every((day, index) => index === 0 || day === sorted[index - 1] + 1)
+  if (inARow && sorted.length >= 3) {
+    return t("campaignsWizard.time.dayRange", {
+      from: weekdayName(sorted[0], language, "long"),
+      to: weekdayName(sorted[sorted.length - 1], language, "long"),
+    })
+  }
 
   return new Intl.ListFormat(language, { style: "long", type: "conjunction" }).format(
     sorted.map((day) => weekdayName(day, language, "long"))
