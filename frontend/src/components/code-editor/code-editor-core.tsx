@@ -333,9 +333,18 @@ export default function CodeEditorCore({
           {maximized ? <Minimize2 /> : <Maximize2 />}
         </IconButton>
         {onRun ? (
-          <Button type="button" size="sm" variant="secondary" disabled={running} onClick={onRun} className="ml-1 h-7">
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            disabled={running}
+            onClick={onRun}
+            aria-label={t("flows.codeEditor.run")}
+            title={t("flows.codeEditor.run")}
+            className="ml-1 h-7"
+          >
             {running ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : <Play />}
-            {t("flows.codeEditor.run")}
+            <span className="max-sm:hidden">{t("flows.codeEditor.run")}</span>
           </Button>
         ) : null}
       </div>
@@ -432,7 +441,7 @@ function ProblemsChip({
 
   if (errors === 0 && warnings === 0) {
     return (
-      <span className="flex items-center gap-1 px-1.5 text-xs text-status-success">
+      <span className="flex items-center gap-1 px-1.5 text-xs whitespace-nowrap text-status-success">
         <CheckCircle2 className="size-3.5" aria-hidden />
         {t("flows.codeEditor.noProblems")}
       </span>

@@ -40,7 +40,6 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
   countRender(id)
   const { t } = useTranslation()
   const api = useEditorApi()
-  const readOnly = useEditor((state) => state.readOnly)
   const outlets = useEditor((state) => state.outlets[id] ?? "")
   const run = useRun((state) => state.blocks[id])
   const selectionCount = useEditor((state) => (selected ? state.selectionCount : 0))
@@ -94,7 +93,7 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
 
   return (
     <>
-      {selected && selectionCount === 1 && !readOnly ? (
+      {selected && selectionCount === 1 ? (
         <NodeToolbar isVisible position={Position.Top} offset={8}>
           <div className="flex items-center gap-0.5 rounded-full border bg-popover p-0.5 shadow-sm">
             {!isTrigger(type) ? (
@@ -161,7 +160,6 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
             <OutputHandle
               id={DEFAULT_OUTPUT}
               loose={!connected.has(DEFAULT_OUTPUT)}
-              readOnly={readOnly}
               label={t("flows.block.addAfter")}
               onAdd={add}
             />
@@ -213,7 +211,6 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
                   <OutputHandle
                     id={output.id}
                     loose={loose}
-                    readOnly={readOnly}
                     subtle={output.id === "onError"}
                     label={t("flows.block.addAfterOutput", { name: text })}
                     onAdd={add}
@@ -241,14 +238,12 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
 function OutputHandle({
   id,
   loose,
-  readOnly,
   subtle,
   label,
   onAdd,
 }: {
   id: string
   loose: boolean
-  readOnly: boolean
   subtle?: boolean
   label: string
   onAdd: (handle: string, anchor: HTMLElement) => void
@@ -256,7 +251,7 @@ function OutputHandle({
   return (
     <>
       <Handle type="source" position={Position.Right} id={id} />
-      {loose && !readOnly ? (
+      {loose ? (
         <button
           type="button"
           aria-label={label}

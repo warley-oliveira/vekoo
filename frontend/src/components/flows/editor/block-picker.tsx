@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "motion/react"
 import { Search, X } from "lucide-react"
 import { useShallow } from "zustand/react/shallow"
 
+import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { BLOCK_CATALOG, BLOCK_GROUPS, blockFamily, blockIcon, isTrigger, POPULAR_BLOCKS, type BlockGroup } from "@/lib/flows/catalog"
 import { useMotionPreset } from "@/lib/motion"
 import { normalizeSearchText } from "@/lib/search-text"
@@ -13,7 +15,8 @@ import { useEditor, useEditorApi } from "./store"
 import { useEditorUi } from "./ui-store"
 
 // O seletor de blocos, com tudo agrupado pelo que a pessoa quer fazer. Abre do "+" de uma saída, ao
-// soltar a linha no vazio e pelo botão da barra (ou Ctrl+K). Dá para arrastar um item para o quadro.
+// soltar a linha no vazio e pelo botão da barra (ou Ctrl+K). Dá para arrastar um item para o quadro. No
+// celular ocupa quase a tela toda, e o teclado só sobe se a pessoa tocar na busca: ele cobriria a lista.
 
 export const BLOCK_DRAG_TYPE = "application/x-vekoo-block"
 
@@ -35,7 +38,7 @@ function GroupChip({ label, active, onClick }: { label: string; active: boolean;
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "h-6 shrink-0 rounded-full border px-2 text-xs whitespace-nowrap transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+        "h-6 shrink-0 rounded-full border px-2 text-xs whitespace-nowrap transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:h-9 pointer-coarse:px-3",
         active ? "border-primary bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
       )}
     >
@@ -48,6 +51,7 @@ function PickerPanel() {
   const { t } = useTranslation()
   const preset = useMotionPreset()
   const api = useEditorApi()
+  const isMobile = useIsMobile()
   const picker = useEditor((state) => state.picker)
   const hasTrigger = useEditor(useShallow((state) => state.nodes.some((node) => isTrigger(node.type))))
   const [query, setQuery] = useState("")
@@ -121,6 +125,11 @@ function PickerPanel() {
     }
   }, [api])
 
+  // Sem o foco na busca, ele fica no painel: quem usa leitor de tela precisa saber que abriu.
+  useEffect(() => {
+    if (isMobile) panelRef.current?.focus()
+  }, [isMobile])
+
   useLayoutEffect(() => {
     const element = listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)
     element?.scrollIntoView({ block: "nearest" })
@@ -173,16 +182,24 @@ function PickerPanel() {
       ref={panelRef}
       {...preset.slideUp}
       role="dialog"
+      tabIndex={-1}
       aria-label={t("flows.picker.title")}
       onKeyDown={onKeyDown}
-      className="fixed z-40 flex flex-col overflow-hidden rounded-2xl border bg-popover shadow-xl"
-      style={{ ...position, width: PICKER_WIDTH, maxWidth: "calc(100vw - 32px)", maxHeight: `min(${PICKER_MAX_HEIGHT}px, calc(100dvh - 32px))` }}
+      className={cn(
+        "fixed z-40 flex flex-col overflow-hidden rounded-2xl border bg-popover shadow-xl outline-none",
+        isMobile && "inset-x-2 top-2 bottom-[calc(var(--app-bottom-nav-total,0px)+0.5rem)]"
+      )}
+      style={
+        isMobile
+          ? undefined
+          : { ...position, width: PICKER_WIDTH, maxWidth: "calc(100vw - 32px)", maxHeight: `min(${PICKER_MAX_HEIGHT}px, calc(100dvh - 32px))` }
+      }
     >
       <div className="flex items-center gap-2 border-b px-3">
         <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
         <input
           // oxlint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus
+          autoFocus={!isMobile}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={picker?.source ? t("flows.picker.placeholderNext") : t("flows.picker.placeholder")}
@@ -191,9 +208,13 @@ function PickerPanel() {
           aria-expanded
           aria-controls={listId}
           aria-activedescendant={activeRow ? `${listId}-${active}` : undefined}
-          className="h-11 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          className="h-11 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground md:text-sm"
         />
-        {query ? (
+        {isMobile ? (
+          <Button type="button" variant="ghost" size="icon-sm" aria-label={t("flows.picker.close")} onClick={close}>
+            <X />
+          </Button>
+        ) : query ? (
           <button
             type="button"
             aria-label={t("flows.picker.clear")}
@@ -254,7 +275,7 @@ function PickerPanel() {
                   }}
                   onClick={() => pick(entry.type)}
                   className={cn(
-                    "flow-block flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5",
+                    "flow-block flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 pointer-coarse:py-2.5",
                     rowIndex === active && "bg-muted"
                   )}
                   data-family={blockFamily(entry.type)}

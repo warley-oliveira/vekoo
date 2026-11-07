@@ -21,7 +21,6 @@ export function useEditorShortcuts() {
   useEffect(() => {
     // Na captura: chega antes da busca da casca, que também quer o Ctrl+K.
     const onGlobalKey = (event: KeyboardEvent) => {
-      if (api.getState().readOnly) return
       const mod = event.metaKey || event.ctrlKey
       const key = event.key.toLowerCase()
       const state = api.getState()
@@ -51,7 +50,6 @@ export function useEditorShortcuts() {
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (api.getState().readOnly) return
       const mod = event.metaKey || event.ctrlKey
       const key = event.key.toLowerCase()
       const typing = isTypingTarget(event.target)

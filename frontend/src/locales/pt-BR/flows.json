@@ -547,6 +547,7 @@
       "placeholder": "O que este fluxo precisa fazer?",
       "placeholderNext": "O que acontece depois?",
       "clear": "Limpar a busca",
+      "close": "Fechar a lista de blocos",
       "groupsLabel": "Filtrar os blocos",
       "allGroups": "Todos",
       "emptyTitle": "Nenhum bloco com esse nome",
@@ -555,9 +556,6 @@
       "footerDrag": "Clique para adicionar, ou arraste para o quadro."
     },
     "inspector": {
-      "readOnlyTitle": "O que este bloco faz",
-      "readOnlyNext": "Para onde vai",
-      "readOnlyEnds": "Termina aqui",
       "advanced": "Mais opções",
       "optional": "Opcional",
       "loading": "Carregando...",
@@ -1202,7 +1200,7 @@
       "clear": "Limpar o caminho"
     },
     "mobile": {
-      "readOnly": "Para editar os blocos, abra numa tela maior. Aqui dá para conferir, testar e publicar.",
+      "hint": "Toque num bloco para editar, e no + para continuar o fluxo.",
       "views": "Como ver o fluxo",
       "list": "Lista",
       "map": "Mapa"

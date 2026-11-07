@@ -16,6 +16,7 @@ import {
 import "@xyflow/react/dist/style.css"
 import { useTranslation } from "react-i18next"
 
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { BLOCK_CATALOG, isTrigger } from "@/lib/flows/catalog"
 import { BLOCK_BASE_HEIGHT, BLOCK_WIDTH, FIT_OPTIONS, READABLE_ZOOM } from "@/lib/flows/layout"
 
@@ -57,11 +58,11 @@ export function FlowCanvas() {
   const { t } = useTranslation()
   const api = useEditorApi()
   const reactFlow = useReactFlow<BlockNode, LinkEdge>()
+  const isMobile = useIsMobile()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const nodes = useEditor((state) => state.nodes)
   const edges = useEditor((state) => state.edges)
-  const readOnly = useEditor((state) => state.readOnly)
   const selectedId = useEditor((state) => state.selectedId)
   const onNodesChange = useEditor((state) => state.onNodesChange)
   const onEdgesChange = useEditor((state) => state.onEdgesChange)
@@ -98,7 +99,7 @@ export function FlowCanvas() {
 
   // Selecionou um bloco que ficaria atrás do inspetor: desliza o quadro, sem mudar o zoom.
   useEffect(() => {
-    if (!selectedId || readOnly) return
+    if (!selectedId) return
     const rect = wrapperRef.current?.getBoundingClientRect()
     const node = reactFlow.getNode(selectedId)
     if (!rect || !node || rect.width < 900) return
@@ -106,7 +107,7 @@ export function FlowCanvas() {
     const right = rect.left + x + (node.position.x + (node.measured?.width ?? BLOCK_WIDTH)) * zoom
     const limit = rect.right - INSPECTOR_SPACE
     if (right > limit) void reactFlow.setViewport({ x: x - (right - limit), y, zoom }, { duration: motionMs(200) })
-  }, [reactFlow, readOnly, selectedId])
+  }, [reactFlow, selectedId])
 
   const isValidConnection = useCallback(
     (connection: Connection | LinkEdge) => connection.source !== connection.target,
@@ -151,11 +152,12 @@ export function FlowCanvas() {
   }, [api])
 
   // Abre no fluxo inteiro, se ele couber legível. Comprido demais, abre no começo: é de lá que se lê, a linha saindo
-  // pela direita convida a seguir, e "Ajustar à tela" mostra o todo. No celular o mapa é só conferência: sempre o todo.
+  // pela direita convida a seguir, e "Ajustar à tela" mostra o todo. No celular quem lê é a lista, e o mapa é a visão
+  // de conjunto: sempre o todo.
   const onInit = useCallback(() => {
-    const { nodes: blocks, readOnly: viewOnly } = api.getState()
+    const blocks = api.getState().nodes
     const rect = wrapperRef.current?.getBoundingClientRect()
-    if (rect && blocks.length > 0 && !viewOnly) {
+    if (rect && blocks.length > 0 && !isMobile) {
       const bounds = reactFlow.getNodesBounds(blocks)
       const { zoom } = getViewportForBounds(bounds, rect.width, rect.height, MIN_ZOOM, FIT_OPTIONS.maxZoom, FIT_OPTIONS.padding)
       if (zoom < READABLE_ZOOM) {
@@ -171,16 +173,10 @@ export function FlowCanvas() {
       }
     }
     void reactFlow.fitView(FIT_OPTIONS)
-  }, [api, reactFlow])
+  }, [api, isMobile, reactFlow])
 
   return (
-    <div
-      ref={wrapperRef}
-      className="flow-canvas relative size-full"
-      data-readonly={readOnly}
-      onDragOver={readOnly ? undefined : onDragOver}
-      onDrop={readOnly ? undefined : onDrop}
-    >
+    <div ref={wrapperRef} className="flow-canvas relative size-full" onDragOver={onDragOver} onDrop={onDrop}>
       <ReactFlow<BlockNode, LinkEdge>
         nodes={nodes}
         edges={edges}
@@ -205,10 +201,8 @@ export function FlowCanvas() {
         snapGrid={SNAP_GRID}
         // Arrastar não abre o inspetor: abrir é um clique, e mover é outra intenção.
         selectNodesOnDrag={false}
-        nodesDraggable={!readOnly}
-        nodesConnectable={!readOnly}
         edgesReconnectable={false}
-        deleteKeyCode={readOnly ? null : DELETE_KEYS}
+        deleteKeyCode={DELETE_KEYS}
         multiSelectionKeyCode={MULTI_SELECT_KEYS}
         selectionKeyCode="Shift"
         onlyRenderVisibleElements={nodes.length >= VIRTUALIZE_FROM}

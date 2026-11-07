@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { FIT_OPTIONS } from "@/lib/flows/layout"
 import { formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
@@ -61,7 +62,8 @@ function ToolButton({
   )
 }
 
-function ZoomControls() {
+/** Com dedo, aproximar é de pinça: ficam só o valor e o enquadrar. */
+function ZoomControls({ touch }: { touch: boolean }) {
   const { t } = useTranslation()
   const language = useLanguage()
   const flow = useReactFlow()
@@ -69,21 +71,25 @@ function ZoomControls() {
 
   return (
     <>
-      <ToolButton label={t("flows.toolbar.zoomOut")} onClick={() => void flow.zoomOut({ duration: motionMs(120) })}>
-        <Minus />
-      </ToolButton>
+      {touch ? null : (
+        <ToolButton label={t("flows.toolbar.zoomOut")} onClick={() => void flow.zoomOut({ duration: motionMs(120) })}>
+          <Minus />
+        </ToolButton>
+      )}
       <button
         type="button"
         onClick={() => void flow.zoomTo(1, { duration: motionMs(150) })}
         aria-label={t("flows.toolbar.zoomReset")}
         title={t("flows.toolbar.zoomReset")}
-        className="h-7 w-11 rounded-lg text-xs text-muted-foreground tabular-nums hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+        className="h-7 w-11 rounded-lg text-xs text-muted-foreground tabular-nums hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:h-10"
       >
         {formatPercent(zoom, language, { maximumFractionDigits: 0 })}
       </button>
-      <ToolButton label={t("flows.toolbar.zoomIn")} onClick={() => void flow.zoomIn({ duration: motionMs(120) })}>
-        <Plus />
-      </ToolButton>
+      {touch ? null : (
+        <ToolButton label={t("flows.toolbar.zoomIn")} onClick={() => void flow.zoomIn({ duration: motionMs(120) })}>
+          <Plus />
+        </ToolButton>
+      )}
       <ToolButton
         label={t("flows.toolbar.fit")}
         shortcut="F"
@@ -99,7 +105,7 @@ export function CanvasToolbar() {
   const { t } = useTranslation()
   const api = useEditorApi()
   const flow = useReactFlow()
-  const readOnly = useEditor((state) => state.readOnly)
+  const isMobile = useIsMobile()
   const canUndo = useEditor((state) => state.past.length > 0)
   const canRedo = useEditor((state) => state.future.length > 0)
   const outlineOpen = useEditorUi((state) => state.outlineOpen)
@@ -119,20 +125,20 @@ export function CanvasToolbar() {
       aria-label={t("flows.toolbar.label")}
       className="flex items-center gap-0.5 rounded-xl border bg-popover p-1 shadow-md"
     >
-      {!readOnly ? (
+      <Button
+        type="button"
+        size="sm"
+        variant="secondary"
+        onClick={() => api.getState().openPicker({})}
+        className="rounded-lg pointer-coarse:h-10"
+        title={`${t("flows.toolbar.add")} (${modKey()}+K)`}
+      >
+        <Plus />
+        {t("flows.toolbar.add")}
+      </Button>
+      <Separator orientation="vertical" className="mx-1 my-auto h-5" />
+      {isMobile ? null : (
         <>
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            onClick={() => api.getState().openPicker({})}
-            className="rounded-lg"
-            title={`${t("flows.toolbar.add")} (${modKey()}+K)`}
-          >
-            <Plus />
-            {t("flows.toolbar.add")}
-          </Button>
-          <Separator orientation="vertical" className="mx-1 h-5" />
           <ToolButton
             label={t("flows.toolbar.undo")}
             shortcut={`${modKey()}+Z`}
@@ -149,26 +155,24 @@ export function CanvasToolbar() {
           >
             <Redo2 />
           </ToolButton>
-          <Separator orientation="vertical" className="mx-1 h-5" />
+          <Separator orientation="vertical" className="mx-1 my-auto h-5" />
         </>
-      ) : null}
+      )}
 
-      <ZoomControls />
+      <ZoomControls touch={isMobile} />
 
-      {!readOnly ? (
+      <Separator orientation="vertical" className="mx-1 my-auto h-5" />
+      <ToolButton label={t("flows.toolbar.arrange")} onClick={arrange}>
+        <LayoutGrid />
+      </ToolButton>
+      {isMobile ? null : (
         <>
-          <Separator orientation="vertical" className="mx-1 h-5" />
-          <ToolButton label={t("flows.toolbar.arrange")} onClick={arrange}>
-            <LayoutGrid />
+          <ToolButton label={t("flows.toolbar.outline")} shortcut="L" pressed={outlineOpen} onClick={toggleOutline}>
+            <ListTree />
           </ToolButton>
+          <ShortcutsPopover />
         </>
-      ) : null}
-      {!readOnly ? (
-        <ToolButton label={t("flows.toolbar.outline")} shortcut="L" pressed={outlineOpen} onClick={toggleOutline}>
-          <ListTree />
-        </ToolButton>
-      ) : null}
-      {!readOnly ? <ShortcutsPopover /> : null}
+      )}
     </div>
   )
 }

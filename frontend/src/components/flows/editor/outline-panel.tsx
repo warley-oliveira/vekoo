@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
-import { AlertCircle, CornerDownRight, Repeat, X } from "lucide-react"
+import { AlertCircle, CornerDownRight, Plus, Repeat, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-is-mobile"
@@ -17,8 +17,9 @@ import { useEditor, useEditorApi, type BlockNode } from "./store"
 import { useEditorUi } from "./ui-store"
 import { useFocusBlock } from "./use-editor-shortcuts"
 
-// O fluxo em forma de lista, na ordem em que ele anda. É a alternativa ao quadro para quem usa teclado ou leitor
-// de tela, a conferência no celular e uma leitura rápida num fluxo grande. Clicar leva ao bloco.
+// O fluxo em forma de lista, na ordem em que ele anda. É como se edita no celular, a alternativa ao quadro para
+// quem usa teclado ou leitor de tela e uma leitura rápida num fluxo grande. Clicar leva ao bloco, e cada saída
+// livre oferece o próximo.
 
 export function OutlinePanel() {
   const { t } = useTranslation()
@@ -98,6 +99,26 @@ function OutlineRow({ entry, node }: { entry: OutlineEntry; node: BlockNode }) {
     (typeof node.data.label === "string" && node.data.label.trim()) ||
     t(`flows.blocks.${node.type}.label`, { defaultValue: node.type ?? "" })
   const via = "via" in entry ? entry.via : undefined
+
+  if (entry.kind === "free") {
+    const name = outputLabel(entry.output, t)
+    return (
+      <li style={{ paddingLeft: entry.depth * 14 }}>
+        {entry.named ? <ViaLabel text={name} /> : null}
+        <button
+          type="button"
+          onClick={() => api.getState().openPicker({ source: { nodeId: node.id, handle: entry.output.id } })}
+          aria-label={entry.named ? t("flows.block.addAfterOutput", { name }) : t("flows.block.addAfter")}
+          className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:min-h-11"
+        >
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-md border border-dashed">
+            <Plus className="size-3.5" aria-hidden />
+          </span>
+          {t("flows.toolbar.add")}
+        </button>
+      </li>
+    )
+  }
 
   const pick = () => {
     if (isMobile) api.getState().selectBlock(node.id)

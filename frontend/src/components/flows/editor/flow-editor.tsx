@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 import { ReactFlowProvider } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
-import { RefreshCw, Sparkles, X } from "lucide-react"
+import { Redo2, RefreshCw, Sparkles, Undo2, X } from "lucide-react"
 import { toast } from "sonner"
 import { useSearchParams } from "react-router"
 
-import { Callout, ConfirmDialog, EmptyState } from "@/components/shared"
+import { Callout, ConfirmDialog, EmptyState, SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { useFlowExecution } from "@/hooks/flows/use-flows"
@@ -34,8 +34,9 @@ import { useEditorHeader } from "./use-editor-header"
 import { useEditorShortcuts } from "./use-editor-shortcuts"
 import { VersionsPanel } from "./versions-panel"
 
-// A montagem do editor: um store por fluxo aberto e os painéis em volta do quadro. No celular o quadro fica
-// só de leitura, com a lista como visão principal. Editar nós num visor de 390 px não ajudaria ninguém.
+// A montagem do editor: um store por fluxo aberto e os painéis em volta do quadro. No celular a lista é a visão
+// principal: tocar abre o bloco na tela toda, e cada saída livre oferece o próximo. Dá para fazer tudo sem puxar
+// linha com o dedo, e o quadro continua lá como mapa.
 
 const CodeToolPanel = lazy(() => import("./code-tool-panel"))
 
@@ -52,12 +53,10 @@ export function FlowEditor({
   demo?: boolean
 }) {
   const { t } = useTranslation()
-  const isMobile = useIsMobile()
 
   const [store] = useState(() =>
     createEditorStore(
       prepareDefinition(flow.draft?.definition ?? flow.publishedVersion?.definition ?? EMPTY),
-      isMobile,
       { block: t("flows.canvas.a11y.blockRole"), link: t("flows.canvas.a11y.linkRole") }
     )
   )
@@ -65,11 +64,6 @@ export function FlowEditor({
   const context = useMemo(() => ({ flow, reload }), [flow, reload])
 
   useEffect(() => () => useEditorUi.getState().reset(), [])
-
-  // A largura mudou com o editor aberto (girou o tablet): só leitura acompanha.
-  useEffect(() => {
-    store.setState({ readOnly: isMobile })
-  }, [isMobile, store])
 
   return (
     <EditorStoreContext.Provider value={store}>
@@ -271,7 +265,6 @@ function EmptyCanvas() {
   const { t } = useTranslation()
   const api = useEditorApi()
   const empty = useEditor((state) => state.nodes.length === 0)
-  const readOnly = useEditor((state) => state.readOnly)
   if (!empty) return null
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center p-4">
@@ -280,7 +273,7 @@ function EmptyCanvas() {
           className="bg-card"
           title={t("flows.canvas.emptyTitle")}
           description={t("flows.canvas.emptyHint")}
-          action={readOnly ? undefined : { label: t("flows.toolbar.add"), onClick: () => api.getState().openPicker({}) }}
+          action={{ label: t("flows.toolbar.add"), onClick: () => api.getState().openPicker({}) }}
         />
       </div>
     </div>
@@ -290,10 +283,11 @@ function EmptyCanvas() {
 /** A primeira coisa que alguém precisa saber, enquanto o fluxo ainda é só o gatilho. */
 function FirstStepHint() {
   const { t } = useTranslation()
-  const readOnly = useEditor((state) => state.readOnly)
+  const isMobile = useIsMobile()
   const lonely = useEditor((state) => state.nodes.length === 1 && state.edges.length === 0)
   const picker = useEditor((state) => Boolean(state.picker))
-  if (readOnly || !lonely || picker) return null
+  // No celular a própria lista oferece o próximo bloco, logo abaixo do gatilho.
+  if (isMobile || !lonely || picker) return null
   return (
     <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center px-4">
       <p className="flex items-center gap-2 rounded-full border bg-popover px-3 py-1.5 text-sm text-pretty shadow-sm">
@@ -333,30 +327,48 @@ function ReplayFromUrl() {
 
 function MobileBody() {
   const { t } = useTranslation()
+  const api = useEditorApi()
+  const canUndo = useEditor((state) => state.past.length > 0)
+  const canRedo = useEditor((state) => state.future.length > 0)
   const [view, setView] = useState<"list" | "map">("list")
 
   return (
     <div className="flex h-full flex-col">
       <div className="shrink-0 border-b bg-background px-4 py-2.5">
-        <p className="text-xs text-pretty text-muted-foreground">{t("flows.mobile.readOnly")}</p>
-        <div className="mt-2 grid grid-cols-2 gap-1 rounded-lg bg-muted p-0.5" role="tablist" aria-label={t("flows.mobile.views")}>
-          {(["list", "map"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              role="tab"
-              aria-selected={view === option}
-              onClick={() => setView(option)}
-              className={
-                view === option
-                  ? "h-9 rounded-md bg-background text-sm font-medium shadow-xs"
-                  : "h-9 rounded-md text-sm text-muted-foreground"
-              }
-            >
-              {t(`flows.mobile.${option}`)}
-            </button>
-          ))}
+        <div className="flex items-center gap-1">
+          <SegmentedControl
+            fullWidth
+            className="min-w-0 flex-1"
+            aria-label={t("flows.mobile.views")}
+            value={view}
+            onChange={setView}
+            options={[
+              { value: "list", label: t("flows.mobile.list") },
+              { value: "map", label: t("flows.mobile.map") },
+            ]}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t("flows.toolbar.undo")}
+            disabled={!canUndo}
+            onClick={() => api.getState().undo()}
+          >
+            <Undo2 />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t("flows.toolbar.redo")}
+            disabled={!canRedo}
+            onClick={() => api.getState().redo()}
+          >
+            <Redo2 />
+          </Button>
         </div>
+        <p className="mt-2 text-xs text-pretty text-muted-foreground">{t("flows.mobile.hint")}</p>
       </div>
       {view === "map" ? (
         <div className="relative min-h-0 flex-1 pb-(--app-bottom-nav-total)">

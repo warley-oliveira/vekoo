@@ -6,11 +6,13 @@ import { useShallow } from "zustand/react/shallow"
 
 import { Callout, SearchableSelect, type SelectOption } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 import { blockEntry, blockFamily, blockIcon, isTrigger } from "@/lib/flows/catalog"
 import { blockOutputs, DEFAULT_OUTPUT, normalizeHandle, outputLabel, type BlockOutput } from "@/lib/flows/outputs"
 import { missingKey } from "@/lib/flows/summary"
 import type { BlockData } from "@/lib/flows/types"
 import { useMotionPreset } from "@/lib/motion"
+import { cn } from "@/lib/utils"
 
 import { useEditor, useEditorApi } from "../store"
 import { useEditorUi } from "../ui-store"
@@ -56,11 +58,10 @@ import {
 } from "./forms-pipeline"
 import { BlockFormProvider, str, type BlockSet } from "./form-context"
 import { Section } from "./parts"
-import { BlockReadOnly } from "./read-only"
 import { TriggerForm } from "./trigger-form"
 
-// O inspetor: um painel à direita com o essencial à vista e o avançado recolhido. Assina só o `data` do
-// bloco aberto, então arrastar qualquer bloco no quadro não passa por aqui.
+// O inspetor: um painel à direita com o essencial à vista e o avançado recolhido; no celular, a tela toda.
+// Assina só o `data` do bloco aberto, então arrastar qualquer bloco no quadro não passa por aqui.
 
 const FORMS: Record<string, ComponentType> = {
   send_text: SendTextForm,
@@ -115,10 +116,8 @@ export function Inspector() {
   const selectedId = useEditor((state) => state.selectedId)
   const selectionCount = useEditor((state) => state.selectionCount)
   const testOpen = useEditorUi((state) => state.testOpen)
-  const readOnly = useEditor((state) => state.readOnly)
+  const isMobile = useIsMobile()
   const visible = !testOpen && (Boolean(selectedId) || selectionCount > 1)
-
-  if (readOnly) return <BlockReadOnly />
 
   return (
     <AnimatePresence>
@@ -129,7 +128,12 @@ export function Inspector() {
           initial={preset.reduced ? { opacity: 0 } : { opacity: 0, x: 16 }}
           animate={preset.reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
           exit={preset.reduced ? { opacity: 0 } : { opacity: 0, x: 16 }}
-          className="absolute top-3 right-3 bottom-3 z-20 flex w-[min(24rem,calc(100%-1.5rem))] flex-col overflow-hidden rounded-2xl border bg-popover shadow-lg"
+          className={cn(
+            "absolute z-20 flex flex-col overflow-hidden bg-popover",
+            isMobile
+              ? "inset-0 pb-(--app-bottom-nav-total)"
+              : "top-3 right-3 bottom-3 w-[min(24rem,calc(100%-1.5rem))] rounded-2xl border shadow-lg"
+          )}
         >
           {selectedId ? <BlockPanel key={selectedId} id={selectedId} /> : <SelectionPanel />}
         </motion.aside>

@@ -547,6 +547,7 @@
       "placeholder": "What does this flow need to do?",
       "placeholderNext": "What happens next?",
       "clear": "Clear the search",
+      "close": "Close the block list",
       "groupsLabel": "Filter the blocks",
       "allGroups": "All",
       "emptyTitle": "No block with that name",
@@ -555,9 +556,6 @@
       "footerDrag": "Click to add, or drag it onto the board."
     },
     "inspector": {
-      "readOnlyTitle": "What this block does",
-      "readOnlyNext": "Where it goes",
-      "readOnlyEnds": "Ends here",
       "advanced": "More options",
       "optional": "Optional",
       "loading": "Loading...",
@@ -1202,7 +1200,7 @@
       "clear": "Clear the path"
     },
     "mobile": {
-      "readOnly": "To edit the blocks, open this on a bigger screen. Here you can check, test and publish.",
+      "hint": "Tap a block to edit it, and + to continue the flow.",
       "views": "How to view the flow",
       "list": "List",
       "map": "Map"

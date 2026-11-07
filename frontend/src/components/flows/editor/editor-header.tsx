@@ -37,35 +37,35 @@ function SaveIndicator() {
   const flush = useEditorUi((state) => state.flush)
 
   return (
-    <span aria-live="polite" className="hidden items-center gap-1.5 text-xs text-muted-foreground md:inline-flex">
+    <span aria-live="polite" className="inline-flex items-center gap-1.5 px-1 text-xs text-muted-foreground md:px-0">
       {status === "saving" ? (
         <>
           <Loader2 className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden />
-          {t("flows.save.saving")}
+          <span className="max-md:sr-only">{t("flows.save.saving")}</span>
         </>
       ) : status === "dirty" ? (
         <>
           <Pencil className="size-3.5" aria-hidden />
-          {t("flows.save.dirty")}
+          <span className="max-md:sr-only">{t("flows.save.dirty")}</span>
         </>
       ) : status === "error" ? (
         <button
           type="button"
           onClick={() => void flush()}
-          className="inline-flex items-center gap-1.5 rounded text-status-danger underline-offset-2 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="inline-flex items-center gap-1.5 rounded text-status-danger underline-offset-2 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:min-h-10 pointer-coarse:min-w-10 pointer-coarse:justify-center"
         >
           <CloudOff className="size-3.5" aria-hidden />
-          {t("flows.save.failed")}
+          <span className="max-md:sr-only">{t("flows.save.failed")}</span>
         </button>
       ) : status === "conflict" ? (
         <span className="inline-flex items-center gap-1.5 text-status-warning">
           <AlertTriangle className="size-3.5" aria-hidden />
-          {t("flows.save.conflict")}
+          <span className="max-md:sr-only">{t("flows.save.conflict")}</span>
         </span>
       ) : (
         <>
           <Check className="size-3.5" aria-hidden />
-          {t("flows.save.saved")}
+          <span className="max-md:sr-only">{t("flows.save.saved")}</span>
         </>
       )}
     </span>

@@ -71,7 +71,7 @@ export function useAutosave(flow: FlowDetail) {
 
     const save = (): Promise<boolean> => {
       if (inFlight.current) return inFlight.current
-      if (api.getState().readOnly || inConflict.current) return Promise.resolve(!inConflict.current)
+      if (inConflict.current) return Promise.resolve(false)
 
       const state = api.getState()
       const revision = state.revision
@@ -125,7 +125,7 @@ export function useAutosave(flow: FlowDetail) {
       window.clearTimeout(validateTimer)
       validateTimer = window.setTimeout(validate, VALIDATE_DELAY)
 
-      if (state.readOnly || inConflict.current) return
+      if (inConflict.current) return
       ui.setState({ saveStatus: "dirty" })
       window.clearTimeout(timer.current)
       timer.current = window.setTimeout(() => void save(), SAVE_DELAY)

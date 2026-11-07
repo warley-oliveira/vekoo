@@ -6,7 +6,7 @@ import { Unlink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { useRun } from "./run-store"
-import { useEditor, useEditorApi } from "./store"
+import { useEditorApi } from "./store"
 
 // A linha entre dois blocos: curva e suave. Selecionada, oferece desligar. Sem isso, só dava para
 // apagar pela tecla Delete, o que ninguém adivinha.
@@ -26,7 +26,6 @@ export const LinkEdgeView = memo(function LinkEdgeView({
 }: EdgeProps) {
   const { t } = useTranslation()
   const api = useEditorApi()
-  const readOnly = useEditor((state) => state.readOnly)
   const lit = useRun((state) => Boolean(state.links[`${source}>${target}`]))
 
   const [path, labelX, labelY] = getBezierPath({
@@ -48,7 +47,7 @@ export const LinkEdgeView = memo(function LinkEdgeView({
         interactionWidth={22}
         style={lit ? { stroke: "var(--status-success)", strokeWidth: 2.25 } : undefined}
       />
-      {selected && !readOnly ? (
+      {selected ? (
         <EdgeLabelRenderer>
           <UnlinkButton
             x={labelX}

@@ -92,11 +92,6 @@
   border-color: color-mix(in oklch, var(--status-danger) 55%, var(--flow-line));
 }
 
-.flow-canvas[data-readonly="true"] .react-flow__handle {
-  pointer-events: none;
-  opacity: 0.6;
-}
-
 /* O caminho aceso. O anel é a informação; o pulso só diz que ainda está rodando. */
 .flow-block[data-run="done"] {
   border-color: color-mix(in oklch, var(--status-success) 55%, var(--border));

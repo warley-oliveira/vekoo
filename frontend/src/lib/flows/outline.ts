@@ -2,9 +2,10 @@ import { isTrigger } from "./catalog"
 import { blockOutputs, normalizeHandle, type BlockOutput } from "./outputs"
 import type { BlockData } from "./types"
 
-// O fluxo lido como texto, de cima para baixo: é a conferência no celular e a alternativa ao quadro
-// para quem usa teclado ou leitor de tela. Cada bloco aparece uma vez; quem volta a um que já apareceu
-// vira uma referência, e é assim que `loop` e caminhos que se juntam não viram uma lista infinita.
+// O fluxo lido como texto, de cima para baixo: é como se edita no celular e a alternativa ao quadro para
+// quem usa teclado ou leitor de tela. Cada bloco aparece uma vez; quem volta a um que já apareceu vira uma
+// referência, e é assim que `loop` e caminhos que se juntam não viram uma lista infinita. Saída sem ligação
+// vira uma linha para continuar dali, menos a de erro, que é opcional e encheria a lista.
 
 type NodeLike = { id: string; type?: string; data?: BlockData }
 type EdgeLike = { source: string; target: string; sourceHandle?: string | null }
@@ -33,7 +34,17 @@ export type OutlineLoose = {
   depth: number
 }
 
-export type OutlineEntry = OutlineRow | OutlineReference | OutlineLoose
+export type OutlineFree = {
+  kind: "free"
+  key: string
+  nodeId: string
+  depth: number
+  output: BlockOutput
+  /** O bloco tem mais de uma saída, e a linha diz qual é esta. */
+  named: boolean
+}
+
+export type OutlineEntry = OutlineRow | OutlineReference | OutlineLoose | OutlineFree
 
 export function buildOutline(nodes: NodeLike[], edges: EdgeLike[]): OutlineEntry[] {
   const byId = new Map(nodes.map((node) => [node.id, node]))
@@ -57,13 +68,18 @@ export function buildOutline(nodes: NodeLike[], edges: EdgeLike[]): OutlineEntry
     const links = outgoing.get(id) ?? []
     const named = outputs.length > 1
 
+    const free = (output: BlockOutput, at: number) =>
+      rows.push({ kind: "free", key: `free-${id}-${output.id}`, nodeId: id, depth: at, output, named })
+
     if (!named) {
       links.forEach((edge) => visit(edge.target, depth))
+      if (links.length === 0 && outputs[0]) free(outputs[0], depth)
       return
     }
     outputs.forEach((output) => {
       const edge = links.find((link) => normalizeHandle(link.sourceHandle) === output.id)
       if (edge) visit(edge.target, depth + 1, output)
+      else if (output.id !== "onError") free(output, depth + 1)
     })
     // Conexão por uma saída que o bloco não mostra (a padrão, em quem tem saídas nomeadas).
     links

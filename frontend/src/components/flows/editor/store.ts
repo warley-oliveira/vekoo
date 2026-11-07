@@ -48,7 +48,6 @@ export type PickerRequest = {
 }
 
 export type EditorState = Snapshot & {
-  readOnly: boolean
   /** O bloco que o inspetor mostra. Vários selecionados: nenhum. */
   selectedId: string | null
   selectionCount: number
@@ -144,7 +143,6 @@ function outletsOf(edges: LinkEdge[]): Record<string, string> {
 
 export function createEditorStore(
   definition: FlowDefinition,
-  readOnly: boolean,
   labels: EditorLabels
 ): StoreApi<EditorState> {
   const initialEdges = toEdges(definition, labels)
@@ -200,7 +198,6 @@ export function createEditorStore(
       edges: initialEdges,
       fields: definition.fields ?? [],
       basePrompt: definition.base_prompt ?? "",
-      readOnly,
       selectedId: null,
       selectionCount: 0,
       past: [],
