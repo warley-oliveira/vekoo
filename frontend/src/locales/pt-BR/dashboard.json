@@ -85,14 +85,14 @@
       "label": "Principais números. Escolha um para ver a tendência.",
       "select": "{{metric}}: {{value}}. Ver a tendência.",
       "selectDelta": "{{metric}}: {{value}}, {{delta}} em relação ao período anterior. Ver a tendência.",
-      "newChats": "Novos contatos",
+      "newChats": "Conversas novas",
       "automationChats": "Atendidas pela automação",
       "activeChats": "Total de atendimentos",
       "messages": "Mensagens trocadas",
       "vsPrevious": "vs. período anterior",
       "vsPreviousShort": "vs. anterior",
       "short": {
-        "newChats": "Novos contatos",
+        "newChats": "Conversas novas",
         "automationChats": "Pela automação",
         "activeChats": "Atendimentos",
         "messages": "Mensagens"
