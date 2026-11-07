@@ -152,6 +152,8 @@
       "clear": "Desfazer seleção"
     },
     "bulk": {
+      "selected_one": "{{formatted}} contato selecionado",
+      "selected_other": "{{formatted}} contatos selecionados",
       "actions": {
         "addTags": "Adicionar etiquetas",
         "removeTags": "Remover etiquetas",

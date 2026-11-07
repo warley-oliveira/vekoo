@@ -398,6 +398,8 @@
       }
     },
     "bulk": {
+      "selected_one": "{{formatted}} item selecionado",
+      "selected_other": "{{formatted}} itens selecionados",
       "activate": "Ativar",
       "deactivate": "Desativar",
       "deleteShort": "Excluir",

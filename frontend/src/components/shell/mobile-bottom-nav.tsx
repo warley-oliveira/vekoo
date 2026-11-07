@@ -133,7 +133,7 @@ function EntryTab({
   const { t } = useTranslation()
   const label = t(entry.titleKey)
 
-  // Pipelines não navega: escolher QUAL quadro abrir é a ação. Sem quadros, não há
+  // Pipelines não navega: escolher QUAL pipeline abrir é a ação. Sem quadros, não há
   // o que escolher, e a aba segue direto para a tela.
   if (entry.id === PIPELINES_ENTRY_ID && (entry.children?.length ?? 0) > 0) {
     return (

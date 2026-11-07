@@ -128,10 +128,10 @@
     },
     "bulk": {
       "toolbar": "Actions on selected items",
-      "selected_one": "{{formatted}} selected",
-      "selected_other": "{{formatted}} selected",
+      "selected_one": "{{formatted}} item selected",
+      "selected_other": "{{formatted}} items selected",
       "selectAll_one": "Select the result",
-      "selectAll_other": "Select all {{formatted}}",
+      "selectAll_other": "Select all {{formatted}} results",
       "clear": "Clear selection"
     },
     "list": {
@@ -347,7 +347,7 @@
         "tags": "Tags",
         "tagsPlaceholder": "Choose the tags",
         "tagsRequired": "Choose at least one tag.",
-        "dealValue": "Deal value",
+        "dealValue": "Sale value",
         "seats": "Number of seats",
         "discount": "Discount",
         "birthday": "Birthday",
@@ -382,6 +382,9 @@
         "dropzoneStates": "Upload states"
       },
       "skeletons": {
+        "progress": "Progress",
+        "progressHint": "With a value, and without knowing how much is left.",
+        "disabled": "Disabled fields",
         "list": "List",
         "table": "Table",
         "cards": "Card grid",

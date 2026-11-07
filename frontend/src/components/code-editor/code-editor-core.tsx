@@ -109,8 +109,11 @@ export default function CodeEditorCore({
   onChange,
   language = "javascript",
   height = 360,
+  fill = false,
   readOnly = false,
   parameters,
+  paramsDefinition,
+  onEditorMount,
   credentialFields,
   onAddParameter,
   onRun,
@@ -152,18 +155,19 @@ export default function CodeEditorCore({
     ts.javascriptDefaults.setExtraLibs([
       {
         content: scriptDefinitions(
-          paramsDeclaration(JSON.parse(paramsKey)),
+          paramsDefinition ?? paramsDeclaration(JSON.parse(paramsKey)),
           credentialsDeclaration(JSON.parse(credentialsKey))
         ),
         filePath: "ts:script-globals.d.ts",
       },
     ])
     validateRef.current?.()
-  }, [credentialsKey, isScript, paramsKey])
+  }, [credentialsKey, isScript, paramsDefinition, paramsKey])
 
   const handleMount = useCallback<OnMount>(
     (editor) => {
       editorRef.current = editor
+      onEditorMount?.(editor)
       if (!isScript) return
 
       configureCompiler()
@@ -240,7 +244,7 @@ export default function CodeEditorCore({
         validateRef.current = null
       })
     },
-    [isScript, t]
+    [isScript, onEditorMount, t]
   )
 
   useEffect(() => {
@@ -326,12 +330,14 @@ export default function CodeEditorCore({
             <BookOpen />
           </IconButton>
         ) : null}
-        <IconButton
-          label={maximized ? t("flows.codeEditor.restore") : t("flows.codeEditor.maximize")}
-          onClick={() => setMaximized((current) => !current)}
-        >
-          {maximized ? <Minimize2 /> : <Maximize2 />}
-        </IconButton>
+        {fill ? null : (
+          <IconButton
+            label={maximized ? t("flows.codeEditor.restore") : t("flows.codeEditor.maximize")}
+            onClick={() => setMaximized((current) => !current)}
+          >
+            {maximized ? <Minimize2 /> : <Maximize2 />}
+          </IconButton>
+        )}
         {onRun ? (
           <Button
             type="button"
@@ -350,8 +356,8 @@ export default function CodeEditorCore({
       </div>
 
       <div
-        className={cn("flex min-h-0", maximized ? "flex-1" : "shrink-0", isMobile && "flex-col")}
-        style={maximized ? undefined : { height }}
+        className={cn("flex min-h-0", maximized || fill ? "flex-1" : "shrink-0", isMobile && "flex-col")}
+        style={maximized || fill ? undefined : { height }}
       >
         <div className="min-h-0 min-w-0 flex-1">
           <Editor

@@ -267,5 +267,6 @@ export type AutomationSettings = {
   businessWork: { days?: BusinessDay[] }
   autoClearContextEnabled: boolean
   autoClearContextInterval: number
+  flowDebounceSeconds: number
   timezone: string
 }

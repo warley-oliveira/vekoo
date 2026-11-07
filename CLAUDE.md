@@ -134,8 +134,8 @@ tela nem sempre usa o nome do código:
 conta cria a organização** e a pessoa entra como `owner`. Permissão por `AccessRole` e `Account#can?`.
 
 **Semente:** `db/seeds.rb` tem o acervo e a conta de demonstração, e cada domínio tem a sua em
-`db/seeds/<domain>.rb`, tudo idempotente. Em produção só a primeira roda: dado do produto que precisa existir
-em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
+`db/seeds/<domain>.rb`, tudo idempotente. Em produção só o acervo roda, a menos que `SEED_DEMO_DATA=1`: dado do produto que precisa
+existir em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
 
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos, conversa, contato, fluxo,
 pipeline — nunca projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao

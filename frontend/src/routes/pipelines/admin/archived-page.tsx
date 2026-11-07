@@ -359,6 +359,7 @@ function ArchivedContent({ board }: { board: Board }) {
         getRowId={(card) => card.id}
         rowActions={rowActions}
         onRowClick={openCard}
+        bulkLabel={(amount) => t("pipelines.bulk.selected", amount)}
         bulkActions={({ ids, clear }) => (
           <>
             <Button variant="ghost" size="sm" onClick={() => void restoreMany(ids, clear)}>

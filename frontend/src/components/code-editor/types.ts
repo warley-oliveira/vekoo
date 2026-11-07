@@ -1,3 +1,5 @@
+import type { OnMount } from "@monaco-editor/react"
+
 /** Um parâmetro da função: é o que tipa `params` no autocompletar. */
 export type ScriptParameter = {
   name: string
@@ -35,15 +37,27 @@ export type CodeRunResult = {
   durationMs?: number
 }
 
+/** O editor do Monaco, para quem precisa inserir texto ou mover o cursor de fora. */
+export type CodeEditorInstance = Parameters<OnMount>[0]
+
 export type CodeEditorProps = {
   value: string
   onChange: (value: string) => void
   language?: "javascript" | "json"
   /** Altura do campo. Em tela cheia, ocupa a tela. */
   height?: number
+  /** Ocupa a altura do pai, no lugar de `height`, sem botão de tela cheia: o editor é o corpo de um painel. */
+  fill?: boolean
   readOnly?: boolean
   /** Tipa `params`: `params.cep` completa, e `params.errado` acusa. */
   parameters?: ScriptParameter[]
+  /**
+   * Declaração pronta de `params`, no lugar de `parameters`, quando o formato não vem de uma lista de
+   * parâmetros (gatilho de pipeline). Pode usar os tipos da API, como `KanbanCardInfo`.
+   */
+  paramsDefinition?: string
+  /** Chamada quando o editor monta. */
+  onEditorMount?: (editor: CodeEditorInstance) => void
   credentialFields?: CredentialField[]
   /** Oferece "Criar parâmetro" quando o código usa `params.x` que não existe. */
   onAddParameter?: (name: string) => void

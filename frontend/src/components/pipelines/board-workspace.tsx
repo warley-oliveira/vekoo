@@ -22,6 +22,7 @@ import { ApiError } from "@/lib/api"
 import { useSession } from "@/lib/auth"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
+import { ALL_PIPELINES_PATH } from "@/lib/navigation"
 import { leadScoreConfigOf } from "@/lib/pipelines/card-meta"
 import {
   advancedQuery,
@@ -352,7 +353,7 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
             description={t("pipelines.boards.notFoundHint")}
             action={{
               label: t("pipelines.boards.all"),
-              onClick: () => navigate("/pipelines?all=1"),
+              onClick: () => navigate(ALL_PIPELINES_PATH),
             }}
           />
         ) : (

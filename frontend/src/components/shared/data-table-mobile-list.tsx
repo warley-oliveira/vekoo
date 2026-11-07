@@ -1,10 +1,11 @@
-import { flexRender, type Cell, type Row } from "@tanstack/react-table"
+import type { Cell, Row } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import type { RowAction } from "./actions-menu"
 import { ActionsMenu } from "./actions-menu"
+import { CellContent } from "./data-table-cell"
 import { SELECT_COLUMN_ID, columnLabel, ignoresRowClick } from "./data-table-utils"
 
 type MobileListProps<TData> = {
@@ -84,9 +85,7 @@ export function DataTableMobileList<TData>({
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1 text-sm font-medium wrap-anywhere">
-                  {primary
-                    ? flexRender(primary.column.columnDef.cell, primary.getContext())
-                    : null}
+                  {primary ? <CellContent cell={primary} /> : null}
                 </div>
                 {actions ? (
                   <ActionsMenu
@@ -100,7 +99,7 @@ export function DataTableMobileList<TData>({
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
                   {secondary.map((cell) => (
                     <span key={cell.id} className="min-w-0">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <CellContent cell={cell} />
                     </span>
                   ))}
                 </div>
@@ -113,7 +112,7 @@ export function DataTableMobileList<TData>({
                         {columnLabel(cell.column)}
                       </dt>
                       <dd className="min-w-0 wrap-anywhere">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <CellContent cell={cell} />
                       </dd>
                     </div>
                   ))}

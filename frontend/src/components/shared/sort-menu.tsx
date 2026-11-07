@@ -58,7 +58,7 @@ export function SortMenu<T extends string = string>({
             onValueChange={(next) => onChange(next as T)}
           >
             {options.map((option) => (
-              <DropdownMenuRadioItem key={option.value} value={option.value}>
+              <DropdownMenuRadioItem key={option.value} value={option.value} closeOnClick>
                 {option.label}
               </DropdownMenuRadioItem>
             ))}

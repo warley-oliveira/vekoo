@@ -1472,7 +1472,7 @@ Nomes de campo que mudaram: `integrationFilter` é `connectorFilter` (`integrati
 - **`send_interactive`** manda as opções como texto numerado: nenhum canal daqui tem botão nativo. Na origem, as opções se perdiam.
 - **Fluxos que casam disparam todos**, como na origem.
 - **`human_handoff`** não dispara quando a pessoa só desliga a automação pela tela (`PATCH /chats/:id`), só quando assume respondendo. Mudar é uma linha em `ChatRelations::Automation`.
-- **`flow_debounce_seconds`** não tem rota: `/automation-settings` é do domínio connectors.
+- **`flow_debounce_seconds`** se ajusta em `/automation-settings` (`flowDebounceSeconds`), do domínio connectors.
 - **Ordem da rajada:** mensagens processadas ao mesmo tempo podem entrar na caixa fora de ordem. Mensagem que chega com segundos de diferença sai em ordem.
 - **Credencial em URL de `http_request`:** o histórico filtra cabeçalhos, não a URL nem o corpo.
 - **`ToolFunction::Http`** existe, sem rota, como na origem, onde nada o usava.

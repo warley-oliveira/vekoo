@@ -41,7 +41,11 @@ export function CampaignBulkBar({ selected, actions, onClear }: CampaignBulkBarP
   const single = selected.length === 1 ? selected[0] : null
 
   return (
-    <BulkActionsBar count={selected.length} onClear={onClear}>
+    <BulkActionsBar
+      count={selected.length}
+      onClear={onClear}
+      label={(amount) => t("campaigns.bulk.selected", amount)}
+    >
       {single ? (
         <Button
           type="button"

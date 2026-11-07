@@ -1420,6 +1420,11 @@ interface KanbanCardFluent extends KanbanCardInfo {
    * Devolve null se o campo não está setado.
    */
   getCustomField(key: string): any;
+  /** Os campos que valem para a etapa em que o card está. */
+  relevantCustomFields(): KanbanCustomFieldDefinition[];
+  /** Soma ao número do campo, e devolve o novo valor. */
+  incrementCustomField(key: string, delta: number): number;
+  getCustomFieldNumber(key: string): number;
   addChecklist(name: string): KanbanChecklistFluent | null;
   checklists(): KanbanChecklistFluent[];
   addComment(body: string): KanbanCommentInfo | null;

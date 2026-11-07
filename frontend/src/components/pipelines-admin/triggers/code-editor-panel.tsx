@@ -1,59 +1,13 @@
-import { useRef, useState } from "react"
-import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react"
-// Monaco do próprio pacote, e não do CDN padrão da biblioteca, que a CSP de produção bloqueia.
-import "@/components/code-editor/monaco-setup"
+import { useCallback, useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { AlignLeft, CircleAlert, Loader2, WrapText } from "lucide-react"
 
+import { CodeEditor, type CodeEditorInstance } from "@/components/code-editor"
 import { Callout, CopyButton, SidePanel } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { SCRIPT_GLOBALS } from "@/lib/pipelines-admin/script-globals"
+import { TRIGGER_PARAMS_DEFINITION } from "@/lib/pipelines-admin/script-globals"
 import { SCRIPT_REFERENCE, SCRIPT_SNIPPETS } from "@/lib/pipelines-admin/script-reference"
 import { MAX_CODE_LENGTH } from "@/lib/pipelines-admin/trigger-catalog"
 import { cn } from "@/lib/utils"
-
-type EditorInstance = Parameters<OnMount>[0]
-
-type Problem = { line: number; message: string }
-
-const ERROR_SEVERITY = 8
-
-// O corpo do script roda dentro de `async function onMessage(params)`: `return` e `await` valem no
-// topo, e o editor não pode reclamar deles.
-const IGNORED_DIAGNOSTICS = [1108, 1375, 1378, 7044, 80001, 80005]
-
-const configureLanguage: BeforeMount = (monaco) => {
-  // A API de TypeScript existe em execução, em `monaco.typescript`; a tipagem do pacote não a declara.
-  const typescript = (monaco as unknown as { typescript: MonacoTypescript }).typescript
-  const defaults = typescript.javascriptDefaults
-
-  defaults.setDiagnosticsOptions({
-    noSemanticValidation: false,
-    noSyntaxValidation: false,
-    diagnosticCodesToIgnore: IGNORED_DIAGNOSTICS,
-  })
-  defaults.setCompilerOptions({
-    target: typescript.ScriptTarget.ES2020,
-    allowNonTsExtensions: true,
-    allowJs: true,
-    checkJs: true,
-    strict: false,
-    noEmit: true,
-    lib: ["es2020"],
-  })
-  defaults.setExtraLibs([{ content: SCRIPT_GLOBALS, filePath: "ts:vekoo-script.d.ts" }])
-}
-
-type MonacoTypescript = {
-  ScriptTarget: { ES2020: number }
-  javascriptDefaults: {
-    setDiagnosticsOptions: (options: Record<string, unknown>) => void
-    setCompilerOptions: (options: Record<string, unknown>) => void
-    setExtraLibs: (libs: { content: string; filePath?: string }[]) => void
-  }
-}
 
 type CodeEditorPanelProps = {
   open: boolean
@@ -65,19 +19,18 @@ type CodeEditorPanelProps = {
 }
 
 /**
- * O editor do script, em tela larga: código à esquerda, referência da API à direita. Fica num
- * painel próprio, sobre o do gatilho, e carrega só quando alguém abre: o Monaco pesa.
+ * O editor do script, em tela larga: o `CodeEditor` da plataforma à esquerda, e à direita a referência
+ * do que um gatilho enxerga. Fica num painel próprio, sobre o do gatilho, e carrega só quando alguém
+ * abre: o Monaco pesa.
  */
 export default function CodeEditorPanel({ open, onOpenChange, value, onChange, title }: CodeEditorPanelProps) {
   const { t } = useTranslation()
-  const editorRef = useRef<EditorInstance | null>(null)
-  const [wrap, setWrap] = useState(true)
-  const [problems, setProblems] = useState<Problem[]>([])
+  const editorRef = useRef<CodeEditorInstance | null>(null)
 
-  const onMount: OnMount = (editor) => {
+  const onEditorMount = useCallback((editor: CodeEditorInstance) => {
     editorRef.current = editor
     editor.focus()
-  }
+  }, [])
 
   function insert(text: string) {
     const editor = editorRef.current
@@ -86,14 +39,6 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
     if (selection) {
       editor.executeEdits("reference", [{ range: selection, text, forceMoveMarkers: true }])
     }
-    editor.focus()
-  }
-
-  function goToLine(line: number) {
-    const editor = editorRef.current
-    if (!editor) return
-    editor.revealLineInCenter(line)
-    editor.setPosition({ lineNumber: line, column: 1 })
     editor.focus()
   }
 
@@ -122,7 +67,6 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
     editor.focus()
   }
 
-  const format = () => void editorRef.current?.getAction("editor.action.formatDocument")?.run()
   const tooLong = value.length > MAX_CODE_LENGTH
 
   return (
@@ -134,43 +78,6 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
       title={t("pipelinesAdmin.code.panelTitle")}
       description={title}
       bodyClassName="flex min-h-0 flex-col overflow-hidden p-0"
-      headerActions={
-        <div className="mr-8 flex items-center gap-1">
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t("pipelinesAdmin.code.format")}
-                  onClick={format}
-                />
-              }
-            >
-              <AlignLeft />
-            </TooltipTrigger>
-            <TooltipContent>{t("pipelinesAdmin.code.format")}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  type="button"
-                  variant={wrap ? "secondary" : "ghost"}
-                  size="icon-sm"
-                  aria-pressed={wrap}
-                  aria-label={t("pipelinesAdmin.code.wrap")}
-                  onClick={() => setWrap((current) => !current)}
-                />
-              }
-            >
-              <WrapText />
-            </TooltipTrigger>
-            <TooltipContent>{t("pipelinesAdmin.code.wrap")}</TooltipContent>
-          </Tooltip>
-        </div>
-      }
       footer={
         <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="min-w-0 text-xs text-pretty text-muted-foreground">
@@ -184,72 +91,20 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
     >
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <div className="flex min-h-[20rem] min-w-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1">
-            <Editor
-              height="100%"
-              defaultLanguage="javascript"
-              value={value}
-              onChange={(next) => onChange(next ?? "")}
-              beforeMount={configureLanguage}
-              onMount={onMount}
-              onValidate={(markers) =>
-                setProblems(
-                  markers
-                    .filter((marker) => marker.severity >= ERROR_SEVERITY)
-                    .map((marker) => ({ line: marker.startLineNumber, message: marker.message }))
-                )
-              }
-              loading={
-                <div className="flex h-full w-full flex-col gap-2 p-4" aria-label={t("pipelinesAdmin.code.loading")}>
-                  <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Loader2 aria-hidden className="size-4 animate-spin" />
-                    {t("pipelinesAdmin.code.loading")}
-                  </span>
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-3/5" />
-                </div>
-              }
-              options={{
-                minimap: { enabled: false },
-                fontSize: 13,
-                wordWrap: wrap ? "on" : "off",
-                scrollBeyondLastLine: false,
-                tabSize: 2,
-                automaticLayout: true,
-                fixedOverflowWidgets: true,
-                padding: { top: 12, bottom: 12 },
-              }}
-            />
-          </div>
+          <CodeEditor
+            fill
+            value={value}
+            onChange={onChange}
+            paramsDefinition={TRIGGER_PARAMS_DEFINITION}
+            showReference={false}
+            onEditorMount={onEditorMount}
+            aria-label={t("pipelinesAdmin.code.panelTitle")}
+            className="min-h-0 flex-1 rounded-none border-0"
+          />
           {tooLong ? (
             <p role="alert" className="border-t px-4 py-2 text-xs text-destructive">
               {t("pipelinesAdmin.triggers.validation.codeTooLong")}
             </p>
-          ) : null}
-          {problems.length > 0 ? (
-            <div className="max-h-28 overflow-y-auto border-t px-2 py-1.5">
-              <p className="px-2 pb-1 text-xs font-medium text-status-danger">
-                {t("pipelinesAdmin.code.problems", { count: problems.length })}
-              </p>
-              <ul>
-                {problems.map((problem, index) => (
-                  <li key={index}>
-                    <button
-                      type="button"
-                      className="flex w-full gap-2 rounded px-2 py-1 text-left text-xs outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
-                      onClick={() => goToLine(problem.line)}
-                    >
-                      <CircleAlert aria-hidden className="mt-0.5 size-3 shrink-0 text-status-danger" />
-                      <span className="shrink-0 text-muted-foreground tabular-nums">
-                        {t("pipelinesAdmin.code.line", { line: problem.line })}
-                      </span>
-                      <span className="min-w-0">{problem.message}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
           ) : null}
         </div>
 

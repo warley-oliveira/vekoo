@@ -30,7 +30,6 @@ import {
 } from "@/lib/pipelines/filters"
 import { CARD_PRIORITIES, DEAL_STATUSES, type CustomField, type Stage } from "@/lib/pipelines/types"
 import { cn } from "@/lib/utils"
-import { HiddenLabel } from "./hidden-label"
 
 function colorDot(color: string | null | undefined) {
   return (
@@ -78,26 +77,18 @@ function NumberRange({
   return (
     <FilterField label={label}>
       <div className="grid grid-cols-2 gap-2">
-        <HiddenLabel text={t("pipelines.filters.minOf", { label })}>
-          {(id) => (
-            <Control
-              id={id}
-              placeholder={t("pipelines.filters.min")}
-              value={min}
-              onChange={(value) => onChange(value, max)}
-            />
-          )}
-        </HiddenLabel>
-        <HiddenLabel text={t("pipelines.filters.maxOf", { label })}>
-          {(id) => (
-            <Control
-              id={id}
-              placeholder={t("pipelines.filters.max")}
-              value={max}
-              onChange={(value) => onChange(min, value)}
-            />
-          )}
-        </HiddenLabel>
+        <Control
+          aria-label={t("pipelines.filters.minOf", { label })}
+          placeholder={t("pipelines.filters.min")}
+          value={min}
+          onChange={(value) => onChange(value, max)}
+        />
+        <Control
+          aria-label={t("pipelines.filters.maxOf", { label })}
+          placeholder={t("pipelines.filters.max")}
+          value={max}
+          onChange={(value) => onChange(min, value)}
+        />
       </div>
     </FilterField>
   )

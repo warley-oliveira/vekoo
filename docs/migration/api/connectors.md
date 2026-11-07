@@ -920,6 +920,7 @@ Como a automação se comporta nas conversas. Na origem era do assistente; aqui 
 | `automationPausePeriod`, `automationPauseTimeTo` | Quanto a automação fica pausada quando uma pessoa intervém: `minutes`, `hours`, `days` e a quantidade. Com `disabled`, não volta sozinha. |
 | `businessWorkEnabled`, `businessWork` | Janela de atendimento. Fora dela o disparo espera a próxima abertura. `dayOfWeek` de `0` (domingo) a `6`. |
 | `autoClearContextEnabled`, `autoClearContextInterval` | Limpa o contexto da conversa depois dessa quantidade de horas sem mensagem. |
+| `flowDebounceSeconds` | Quanto o fluxo espera a pessoa terminar de escrever, de `0` (sem espera) a `60`; fora disso, vale o limite. Padrão: `3`. `null` volta ao padrão. |
 | `timezone` | Só leitura. É o fuso da organização, usado na janela. |
 
 `PATCH /automation-settings`:

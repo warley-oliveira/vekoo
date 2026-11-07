@@ -57,7 +57,11 @@ module Flows
       configured = organization&.settings.to_h["flow_debounce_seconds"]
       return DEFAULT_DEBOUNCE_SECONDS if configured.nil?
 
-      configured.to_i.clamp(0, MAX_DEBOUNCE_SECONDS)
+      clamp_debounce(configured)
+    end
+
+    def self.clamp_debounce(seconds)
+      seconds.to_i.clamp(0, MAX_DEBOUNCE_SECONDS)
     end
 
     def initialize(chat, text, event, message_id)

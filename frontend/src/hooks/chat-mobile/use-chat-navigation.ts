@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect } from "react"
 import { useNavigate } from "react-router"
 
-import { closeLayersThen } from "@/lib/chat-mobile/back-stack"
+import { closeLayersThen } from "@/lib/back-stack"
 
 /** Em que posição do histórico a lista ficou. Sobrevive a recarregar a página, e nada mais. */
 const LIST_ENTRY_KEY = "vekoo.chat.list-entry"

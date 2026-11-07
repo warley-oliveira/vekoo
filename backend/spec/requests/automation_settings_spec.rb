@@ -29,6 +29,7 @@ RSpec.describe "Configurações de automação", type: :request do
         "businessWorkEnabled" => false,
         "autoClearContextEnabled" => false,
         "autoClearContextInterval" => 48,
+        "flowDebounceSeconds" => 3,
         "timezone" => organization.timezone
       )
     end
@@ -106,6 +107,54 @@ RSpec.describe "Configurações de automação", type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "message")).to start_with("Período de pausa")
+    end
+
+    describe "espera para a pessoa terminar de escrever" do
+      it "guarda, e é o que o fluxo passa a usar" do
+        patch "/automation-settings", params: { flowDebounceSeconds: 15 }, headers: auth_headers(owner), as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(15)
+        expect(Flows::InboundDispatcher.debounce_seconds(organization.reload)).to eq(15)
+      end
+
+      it "zero é sem espera, e não cai no padrão" do
+        patch "/automation-settings", params: { flowDebounceSeconds: 0 }, headers: auth_headers(owner), as: :json
+
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(0)
+      end
+
+      it "tem a mesma trava do disparo: de 0 a 60" do
+        patch "/automation-settings", params: { flowDebounceSeconds: 600 }, headers: auth_headers(owner), as: :json
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(60)
+        expect(organization.reload.settings["flow_debounce_seconds"]).to eq(60)
+
+        patch "/automation-settings", params: { flowDebounceSeconds: -5 }, headers: auth_headers(owner), as: :json
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(0)
+      end
+
+      it "null volta ao padrão" do
+        organization.update!(settings: { "flow_debounce_seconds" => 20 })
+
+        patch "/automation-settings", params: { flowDebounceSeconds: nil }, headers: auth_headers(owner), as: :json
+
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(3)
+      end
+
+      it "o que não é número não muda nada" do
+        organization.update!(settings: { "flow_debounce_seconds" => 20 })
+
+        patch "/automation-settings", params: { flowDebounceSeconds: "logo" }, headers: auth_headers(owner), as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(json.dig("automationSettings", "flowDebounceSeconds")).to eq(20)
+      end
+
+      it "exige permissão de configuração" do
+        patch "/automation-settings", params: { flowDebounceSeconds: 30 }, headers: auth_headers(member), as: :json
+
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
     it "não mistura organizações" do

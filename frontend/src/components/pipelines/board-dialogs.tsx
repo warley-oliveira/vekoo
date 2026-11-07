@@ -36,7 +36,6 @@ import {
 } from "@/lib/pipelines/types"
 import { cn } from "@/lib/utils"
 import { CustomFieldControl } from "./card-panel/custom-field-control"
-import { HiddenLabel } from "./hidden-label"
 
 /* ---------- mover ---------- */
 
@@ -376,7 +375,11 @@ export function BoardBulkBar() {
   }
 
   return (
-    <BulkActionsBar count={count} onClear={clearSelected}>
+    <BulkActionsBar
+      count={count}
+      onClear={clearSelected}
+      label={(selected) => t("pipelines.bulk.selected", selected)}
+    >
       <Button type="button" variant="ghost" size="sm" onClick={() => requestMove(ids)}>
         <ArrowRightLeft />
         {t("pipelines.move.action")}
@@ -474,22 +477,18 @@ export function BulkFieldDialog() {
       }
     >
       {isAssign ? (
-        <HiddenLabel text={t("pipelines.card.assignee")}>
-          {(id) => (
-            <SearchableSelect
-              id={id}
-              clearable
-              placeholder={t("pipelines.card.noAssignee")}
-              value={value}
-              onChange={(next) => setValue(next)}
-              options={assignable.map((person) => ({
-                value: person.id,
-                label: person.name,
-                description: person.email ?? undefined,
-              }))}
-            />
-          )}
-        </HiddenLabel>
+        <SearchableSelect
+          aria-label={t("pipelines.card.assignee")}
+          clearable
+          placeholder={t("pipelines.card.noAssignee")}
+          value={value}
+          onChange={(next) => setValue(next)}
+          options={assignable.map((person) => ({
+            value: person.id,
+            label: person.name,
+            description: person.email ?? undefined,
+          }))}
+        />
       ) : (
         <div className="flex flex-col gap-0.5">
           {[...CARD_PRIORITIES, null].map((priority) => (

@@ -121,7 +121,7 @@ RSpec.describe "Blocos de Pipelines" do
     context "com quadro que não existe" do
       let(:failing_run) { run_block("pipeline_create_card", { board_id: SecureRandom.uuid, stage_id: first_stage.id }) }
 
-      it_behaves_like "um bloco que falha com mensagem", "o quadro"
+      it_behaves_like "um bloco que falha com mensagem", "o pipeline"
     end
 
     context "com etapa que não existe" do
@@ -149,12 +149,12 @@ RSpec.describe "Blocos de Pipelines" do
       execution = run_block("pipeline_create_card", { board_id: SecureRandom.uuid }, handles: %w[onError])
 
       expect(execution.status).to eq("completed")
-      expect(execution.variables).to include("saiu_por" => "onError", "pipeline_error" => a_string_including("o quadro"))
+      expect(execution.variables).to include("saiu_por" => "onError", "pipeline_error" => a_string_including("o pipeline"))
     end
 
     it "traduz a mensagem" do
       I18n.with_locale(:en) do
-        expect(FlowRuntime::Nodes::PipelineBase.humanize_error(error: "not_found: Column 'x' not found in board 'y'")).to eq(%(Pipelines: stage "x" doesn't exist in this board.))
+        expect(FlowRuntime::Nodes::PipelineBase.humanize_error(error: "not_found: Column 'x' not found in board 'y'")).to eq(%(Pipelines: stage "x" doesn't exist in this pipeline.))
       end
     end
   end

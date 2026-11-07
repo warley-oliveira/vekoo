@@ -84,7 +84,7 @@ Agrupa um assunto quando só o espaçamento não basta. `flush` encosta o conte�
 
 O padrão das telas de configuração, nascido em Pessoas: `AreaNav` no topo quando a área tem mais de uma rota (o endereço diz onde se está, e o botão voltar funciona), `SettingsSection` com salvar por seção, interruptor que vale na hora e edição em `SidePanel`.
 
-- `AreaNav`: abas com rota, rolando de lado em tela estreita.
+- `AreaNav`: abas com rota, rolando de lado em tela estreita, com a aba ativa à vista.
 - `EntityCard`: card de uma coisa nomeada (departamento, grupo) com menu de ações e rodapé.
 - `Callout`: recado no meio do conteúdo, para o que a pessoa precisa saber antes de agir.
 - `ImagePicker`: foto ou logo, com enviar, trocar, remover e validação de tipo e tamanho.
@@ -221,6 +221,10 @@ Filtro **de fora** da tabela (`FilterBar`): quem zera a página é a tela, e `is
 />
 ```
 
+**Colunas escondidas:** `columnVisibility` e `onColumnVisibilityChange` (ou `defaultColumnVisibility`), com o id da coluna. Quem guarda a preferência e oferece a escolha é a tela.
+
+**O que a tabela faz sozinha:** a coluna de ações fica presa à direita quando a tabela rola de lado, e a célula de um registro que não mudou não se desenha de novo a cada revalidação (as linhas são comparadas pelo JSON: passe dados da API, não objetos com função).
+
 **Não use `FilterBar` com filtros e `meta.filter` na mesma tabela:** no celular apareceriam dois botões "Filtros". `FilterBar` só com a busca, mais `meta.filter`, funciona bem.
 
 ### `FilterBar`
@@ -331,10 +335,16 @@ Lista longa virtualizada: só o que está na tela existe no DOM. **Precisa de al
 
 ### `BulkActionsBar`
 
-Ações sobre os selecionados, flutuando embaixo. O `DataTable` já traz esta barra: use sozinha só em listas e grades. Fica acima da navegação do celular pela variável `--mobile-nav-height`.
+Ações sobre os selecionados, flutuando embaixo. O `DataTable` já traz esta barra (`bulkActions` e `bulkLabel`): use sozinha só em listas e grades. Fica acima da navegação do celular pela variável `--app-bottom-nav-total`; em tela estreita, as ações descem para a linha de baixo em vez de cortar.
+
+`label` diz o que está selecionado, com gênero e plural. Sem ele sai "3 itens selecionados". As chaves são `_one` e `_other`, e `formatted` é o número já escrito no idioma ativo.
 
 ```tsx
-<BulkActionsBar count={selected.length} onClear={clear}>
+<BulkActionsBar
+  count={selected.length}
+  onClear={clear}
+  label={(amount) => t("campaigns.bulk.selected", amount)} // "{{formatted}} campanhas selecionadas"
+>
   <Button variant="ghost" size="sm" onClick={archive}><Archive />{t("x.archive")}</Button>
 </BulkActionsBar>
 ```
@@ -452,6 +462,8 @@ Histórico em ordem: atividades, passos de um envio. O marcador usa os tons de s
 ---
 
 ## Sobreposições
+
+**O voltar do aparelho** fecha o que está por cima, um passo de cada vez, sem a tela precisar pedir: `lib/back-stack.ts`, ligado pela casca abaixo de 1024 px. Vale para tudo que vem do Base UI. Camada que não é um popup (seleção, painel feito à mão) se declara com `useBackLayer(ativa, fechar)`, de `@/hooks/use-back-layer`. Navegar de dentro de uma folha pede `replace`.
 
 ### `SidePanel`
 

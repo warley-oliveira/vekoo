@@ -67,8 +67,8 @@ pt-BR:
       defaults:
         start: "Início"
         playground_contact: "João da Silva"
-        new_deal: "Novo negócio"
-        deal_of: "Negócio: %{name}"
+        new_deal: "Nova venda"
+        deal_of: "Venda: %{name}"
       judge:
         no_outputs: "nenhuma saída conectada"
         min_turns: "mínimo de %{count} troca(s) neste bloco ainda não atingido"
@@ -106,8 +106,8 @@ pt-BR:
         pipelines_checklist: "Pipelines: checklist obrigatório da etapa incompleto (%{names})."
         pipelines_fields: "Pipelines: campos obrigatórios não preenchidos (%{names})."
         pipelines_not_found:
-          board: "Pipelines: o quadro \"%{reference}\" não existe nesta organização."
-          stage: "Pipelines: a etapa \"%{reference}\" não existe neste quadro."
+          board: "Pipelines: o pipeline \"%{reference}\" não existe nesta organização."
+          stage: "Pipelines: a etapa \"%{reference}\" não existe neste pipeline."
           card: "Pipelines: o card \"%{reference}\" não existe nesta organização."
           label: "Pipelines: a etiqueta \"%{reference}\" não existe nesta organização."
           checklist: "Pipelines: o checklist \"%{reference}\" não existe neste card."

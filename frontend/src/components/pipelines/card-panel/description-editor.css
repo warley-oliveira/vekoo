@@ -1,0 +1,189 @@
+/* O texto da descrição, dentro do editor. Só tokens: as únicas cores soltas são as que a pessoa escolheu. */
+
+.description-editor .ProseMirror p {
+  margin-block: 0.25rem;
+}
+
+.description-editor .ProseMirror h1 {
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+.description-editor .ProseMirror h2 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.description-editor .ProseMirror h3 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.description-editor .ProseMirror > :first-child {
+  margin-top: 0;
+}
+
+.description-editor .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.description-editor .ProseMirror ul {
+  margin-block: 0.25rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.description-editor .ProseMirror ol {
+  margin-block: 0.25rem;
+  padding-left: 1.25rem;
+  list-style: decimal;
+}
+
+.description-editor .ProseMirror ul[data-type="taskList"] {
+  padding-left: 0.125rem;
+  list-style: none;
+}
+
+.description-editor .ProseMirror li[data-checked] {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.description-editor .ProseMirror li[data-checked] > label {
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.description-editor .ProseMirror li[data-checked] > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.description-editor .ProseMirror li[data-checked="true"] > div {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+
+.description-editor .ProseMirror blockquote {
+  margin-block: 0.5rem;
+  border-left: 2px solid var(--border);
+  padding-left: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.description-editor .ProseMirror pre {
+  margin-block: 0.5rem;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  padding: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.description-editor .ProseMirror code {
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  padding-inline: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.description-editor .ProseMirror pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+.description-editor .ProseMirror a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.description-editor .ProseMirror img {
+  margin-block: 0.5rem;
+  max-height: 18rem;
+  border-radius: var(--radius-md);
+}
+
+.description-editor .ProseMirror hr {
+  margin-block: 0.75rem;
+  border-color: var(--border);
+}
+
+.description-editor .ProseMirror mark {
+  border-radius: 0.125rem;
+  padding-inline: 0.125rem;
+  color: inherit;
+}
+
+/* Tabela: rola de lado quando não cabe, e as colunas se ajustam arrastando a divisa. */
+.description-editor .tableWrapper {
+  margin-block: 0.5rem;
+  overflow-x: auto;
+}
+
+.description-editor .ProseMirror table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.description-editor .ProseMirror td,
+.description-editor .ProseMirror th {
+  position: relative;
+  min-width: 4rem;
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+.description-editor .ProseMirror th {
+  background: var(--muted);
+  font-weight: 500;
+}
+
+.description-editor .ProseMirror td > p,
+.description-editor .ProseMirror th > p {
+  margin-block: 0;
+}
+
+.description-editor .ProseMirror .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--accent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.description-editor .ProseMirror .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -1px;
+  z-index: 2;
+  width: 4px;
+  background: var(--primary);
+  pointer-events: none;
+}
+
+.description-editor .ProseMirror.resize-cursor {
+  cursor: col-resize;
+}

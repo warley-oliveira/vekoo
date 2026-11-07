@@ -22,7 +22,7 @@
       "ai": { "title": "Let the AI handle it" },
       "decide": { "title": "Decide and wait" },
       "organize": { "title": "Organize the conversation" },
-      "pipeline": { "title": "Cards and deals" },
+      "pipeline": { "title": "Cards and sales" },
       "connect": { "title": "Other systems and code" },
       "finish": { "title": "Wrap up" }
     },
@@ -209,16 +209,16 @@
       },
       "pipeline_mark_won": {
         "label": "Mark as won",
-        "description": "Closes the deal as won",
+        "description": "Closes the sale as won",
         "keywords": "card deal sale won close negocio venda ganho fechar"
       },
       "pipeline_mark_lost": {
         "label": "Mark as lost",
-        "description": "Closes the deal, with the reason",
+        "description": "Closes the sale, with the reason",
         "keywords": "card deal loss lost negocio perda perdido"
       },
       "pipeline_reopen_deal": {
-        "label": "Reopen deal",
+        "label": "Reopen sale",
         "description": "Undoes the win or the loss",
         "keywords": "card deal reopen negocio reabrir"
       },
@@ -244,17 +244,17 @@
       },
       "pipeline_archive_card": {
         "label": "Archive card",
-        "description": "Takes the card off the board",
+        "description": "Takes the card out of the pipeline",
         "keywords": "card archive arquivar"
       },
       "pipeline_create_deal": {
-        "label": "Create deal",
-        "description": "Creates a deal with a value, on any board",
+        "label": "Create sale",
+        "description": "Creates a sale with a value, in any pipeline",
         "keywords": "deal sale value opportunity negocio venda valor oportunidade"
       },
       "pipeline_update_deal": {
-        "label": "Update deal",
-        "description": "Changes the deal created earlier in this flow",
+        "label": "Update sale",
+        "description": "Changes the sale created earlier in this flow",
         "keywords": "deal update value negocio atualizar valor"
       },
       "http_request": {
@@ -354,7 +354,7 @@
         "last_sentiment": "Last message tone",
         "pipeline_card_id": "Card created",
         "pipeline_error": "Reason for the card error",
-        "last_deal_id": "Deal created",
+        "last_deal_id": "Sale created",
         "catalog_results": "What was found in the catalog",
         "catalog_results_total": "How many were found in the catalog",
         "item": "Item in the repeat",
@@ -381,7 +381,7 @@
       "agent": "Choose who handles it",
       "team": "Choose the department",
       "funnelStage": "Choose the funnel and the stage",
-      "boardStage": "Choose the board and the stage",
+      "boardStage": "Choose the pipeline and the stage",
       "dealStage": "Choose the stage",
       "url": "Enter the address",
       "tool": "Choose the function",
@@ -472,9 +472,9 @@
       "comment": "Comments: {{text}}",
       "checklist_one": "{{name}}, with 1 item",
       "checklist_other": "{{name}}, with {{count}} items",
-      "archiveCard": "Takes the card off the board",
+      "archiveCard": "Takes the card out of the pipeline",
       "createDeal": "In {{stage}}",
-      "updateDeal": "Changes the last deal created",
+      "updateDeal": "Changes the last sale created",
       "tool": "Runs {{name}}",
       "goto": "Calls {{name}}",
       "catalogQuery": "Searches: {{query}}",
@@ -508,13 +508,13 @@
         "moved_left": "Block moved left.",
         "moved_right": "Block moved right.",
         "link": "Enter selects the link, and Delete removes it.",
-        "controls": "Board controls",
-        "minimap": "Flow map",
+        "controls": "Map controls",
+        "minimap": "Map overview",
         "handle": "Connection point"
       }
     },
     "toolbar": {
-      "label": "Board tools",
+      "label": "Map tools",
       "add": "Add block",
       "undo": "Undo",
       "redo": "Redo",
@@ -553,7 +553,7 @@
       "emptyTitle": "No block with that name",
       "emptyHint": "Try another word, like \"message\", \"tag\" or \"code\".",
       "footerConnect": "The block comes already connected.",
-      "footerDrag": "Click to add, or drag it onto the board."
+      "footerDrag": "Click to add, or drag it onto the map."
     },
     "inspector": {
       "advanced": "More options",
@@ -562,7 +562,7 @@
       "nameLabel": "Block name",
       "close": "Close",
       "nextTitle": "Where it goes",
-      "nextHint": "Choose the next block here, or pull the line on the board.",
+      "nextHint": "Choose the next block here, or pull the line on the map.",
       "nextBlock": "Next step",
       "linkTo": "Next block for {{name}}",
       "linkPlaceholder": "Ends here",
@@ -669,7 +669,7 @@
         "label": "Stage",
         "placeholder": "Choose a stage",
         "pick": "Choose a stage",
-        "pickBoard": "Choose the board first"
+        "pickBoard": "Choose the pipeline first"
       },
       "method": {
         "label": "Method"
@@ -742,9 +742,9 @@
         "fastHint": "Faster and cheaper. It doesn't use the flow's general instructions, only this block's."
       },
       "board_id": {
-        "label": "Board",
-        "placeholder": "Choose a board",
-        "empty": "No active board. Create one in Pipelines."
+        "label": "Pipeline",
+        "placeholder": "Choose a pipeline",
+        "empty": "No active pipeline. Create one in Pipelines."
       },
       "title": {
         "label": "Title",
@@ -763,7 +763,7 @@
         "urgent": "Urgent"
       },
       "deal_value": {
-        "label": "Deal value",
+        "label": "Sale value",
         "placeholder": "1500"
       },
       "deal_probability": {
@@ -825,7 +825,7 @@
         "placeholder": "Choose a person"
       },
       "card_id": {
-        "label": "Which deal",
+        "label": "Which sale",
         "hint": "Without it, the last one created in this flow."
       },
       "trigger": {
@@ -1106,7 +1106,7 @@
         "placeholder": "Choose the card",
         "entersIn": "Goes into {{stage}}",
         "latest": "The most recent card in the conversation",
-        "latestHint": "On a board you choose",
+        "latestHint": "In a pipeline you choose",
         "useCreator": "Use the card from \"{{name}}\"",
         "noCreator": "No \"Create card\" comes before this block. Connect one before it, or use the most recent card in the conversation.",
         "creatorGone": "The chosen \"Create card\" was deleted. Choose another.",
@@ -1135,17 +1135,17 @@
       "pipeline_set_custom_field": {
         "title": "Custom field",
         "pickCard": "Choose the card first",
-        "empty": "This board has no custom fields.",
+        "empty": "This pipeline has no custom fields.",
         "options": "Options: {{options}}"
       },
       "pipeline_mark_won": {
-        "note": "Closes the deal as won. If the board requires fields, they must be filled in."
+        "note": "Closes the sale as won. If the pipeline requires fields, they must be filled in."
       },
       "pipeline_reopen_deal": {
-        "note": "Undoes the win or the loss, and the deal goes back on the board."
+        "note": "Undoes the win or the loss, and the sale goes back in the pipeline."
       },
       "pipeline_archive_card": {
-        "note": "The card leaves the board, but stays in the history."
+        "note": "The card leaves the pipeline, but stays in the history."
       },
       "pipeline_add_label": {
         "note": "If the label doesn't exist, it's created with this name.",
@@ -1164,10 +1164,10 @@
         "addItem": "Add item"
       },
       "pipeline_create_deal": {
-        "note": "Creates it directly, on any board, without the stage's locks. If something doesn't fit, it's logged in the history and the flow moves on."
+        "note": "Creates it directly, in any pipeline, without the stage's locks. If something doesn't fit, it's logged in the history and the flow moves on."
       },
       "pipeline_update_deal": {
-        "note": "Updates the last deal created in this flow. Changing stage doesn't check the locks."
+        "note": "Updates the last sale created in this flow. Changing stage doesn't check the locks."
       }
     },
     "save": {
@@ -1242,7 +1242,7 @@
       "restart": "Test again",
       "close": "Close the test",
       "realCost": "The conversation is pretend, and nothing goes out through the channels. But the AI and the functions are real, and they use credits.",
-      "empty": "Write as if you were the contact. The blocks light up on the board as the flow moves.",
+      "empty": "Write as if you were the contact. The blocks light up on the map as the flow moves.",
       "typing": "The flow is running...",
       "attachment": "File",
       "placeholder": "Write as if you were the contact",
@@ -1253,7 +1253,7 @@
       "seconds": "{{value}} s",
       "stepFailed": "It failed",
       "stepWaiting": "Waiting",
-      "stepSkippedBoard": "In a test, it doesn't touch the board",
+      "stepSkippedBoard": "In a test, it doesn't touch the pipeline",
       "stepStayed": "Kept the conversation going. {{reason}}",
       "stepLeft": "Followed \"{{name}}\". {{reason}}",
       "status": {
@@ -1268,7 +1268,7 @@
       },
       "notes": {
         "templateSent": "WhatsApp template sent: {{name}}. In a test, nothing really goes out.",
-        "pipelineSkipped": "\"{{name}}\" doesn't touch the board during a test. To see a card get created, test in a real conversation.",
+        "pipelineSkipped": "\"{{name}}\" doesn't touch the pipeline during a test. To see a card get created, test in a real conversation.",
         "attachmentMissing": "An attachment mentioned in the text no longer exists, and was left out of the message. {{reason}}",
         "event": "Event: {{name}}",
         "aiLeft": "The AI followed \"{{name}}\". {{reason}}",
@@ -1458,7 +1458,7 @@
         "tags": { "title": "Tags and assignment", "hint": "Mark the conversation and hand it to someone." },
         "collection": { "title": "Tables", "hint": "Free-form organization tables, created on the fly." },
         "catalog": { "title": "Catalog", "hint": "Search and read products." },
-        "kanban": { "title": "Pipelines", "hint": "Boards, stages and cards." },
+        "kanban": { "title": "Pipelines", "hint": "Pipelines, stages and cards." },
         "agenda": { "title": "Schedule", "hint": "Services, times and classes." },
         "utilities": { "title": "Utilities", "hint": "Logging, waiting, routes and encryption." }
       }
@@ -1618,7 +1618,7 @@
         "already_running": "The other flow was already running in this conversation.",
         "no_funnel_stage": "No stage chosen.",
         "funnel_stage_not_found": "The funnel or the stage no longer exists.",
-        "playground": "In the editor's test, nothing touches a board.",
+        "playground": "In the editor's test, nothing touches a pipeline.",
         "empty": "The text was empty.",
         "nothing_after": "There was nothing after the wait.",
         "invalid_or_missing_stage": "The stage no longer exists.",
@@ -1686,6 +1686,10 @@
       "enabledHint": "When it's off, no flow fires in any conversation.",
       "defaultEnabled": "On in new conversations",
       "defaultEnabledHint": "Each conversation can turn its own automation on and off. This is how it starts.",
+      "debounceTitle": "Wait for the person to finish typing",
+      "debounceHint": "Many people split a sentence across several messages. The automation waits this long after the last one before replying, so it reads everything at once.",
+      "debounceLabel": "Seconds to wait",
+      "debounceRange": "From 0 to {{max}}. With 0, it replies right away.",
       "pauseTitle": "When a team member replies",
       "pauseHint": "How long the automation stays paused in the conversation, so it doesn't talk over anyone.",
       "pausePeriod": "Pause time",

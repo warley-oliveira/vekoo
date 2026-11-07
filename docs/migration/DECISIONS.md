@@ -351,6 +351,14 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Fora:** "Criar com IA", que não tinha back-end; o assistente de 3 passos virou uma tela só, com prévia; `toggle_public`, que não veio na API. "Desempenho da IA" virou "Automação"; o modelo "Vendas" é novo.
 - **Acréscimos na API:** fonte `pipelines`, com os filtros `pipeline_status` e `pipeline_stage`, respeitando `Pipelines::CardVisibility`. Corrigidos: salvar widgets com o mesmo id não gravava nada; `decimal` saía como texto; a consulta crua vinha sem `labels`; empate no `sort` cortava valores diferentes a cada consulta; "maior primeiro" no Postgres abria pelos sem valor.
 
+### Acabamento (fe-polish)
+
+- **Voltar por camadas no app todo** (`lib/back-stack.ts`), **o item de maior risco desta rodada:** troca `history.pushState` e `replaceState` em tempo de carga, e só age com a casca do celular montada. Cada coisa aberta por cima da tela vira uma entrada no histórico, inclusive menus e seletores. Testado só em emulação de 390 px, em Chrome sem tela. Para reverter, juntos: `2c1f507`, `b7ba6cf` e `517e40e`, que no histórico integrado mantêm o assunto.
+- **Pílula de metas** no topo do quadro, só em pipeline de vendas, lendo a API depois de o quadro desenhar. Usa violeta, e verde ao bater a meta, em vez do vermelho e amarelo da origem, pela direção visual. Apagar meta segue só nos ajustes.
+- **Descrição do card** com tabela, cor, realce, alinhamento, título 1, comandos com `/` e barra flutuante, em chunk lazy. Sem cor de sintaxe em bloco de código, porque `lowlight` não está instalado, e sem a extensão que troca aspas e travessões. A barra flutuante não aparece com dedo.
+- **Vocabulário:** "pipeline" e "venda" no front e no back; "Quadro" fica só como nome da visão; "negócio" fica onde quer dizer empresa. "Mapa" nos fluxos. As palavras antigas ficam nas palavras-chave de busca dos blocos.
+- **`RelativeTime`** diz "agora" no primeiro minuto. `kit.bulk.selected` sem rótulo diz "3 itens selecionados". `DataTable` ganhou coluna de ações fixa e `columnVisibility`, e as células não se refazem a cada revalidação. `flowDebounceSeconds` em `/automation-settings`, como "Esperar a pessoa terminar de escrever".
+
 ### Segurança (sec-review)
 
 Corrigidos, cada um com spec que falhava antes:
@@ -427,12 +435,8 @@ Integrador: Rails 8.1.4.1, rack 3.2.8, nokogiri, loofah, rails-html-sanitizer, c
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Semente: o canal WABA está inativo, então o aviso de 24 horas não aparece na demonstração sem retoque.
-- Kit: `SortMenu` não fecha ao escolher. `BulkActionsBar` corta rótulos em 390 px. `DataTable` refaz todas as células a cada mudança de dados.
-- Kit: `BulkActionsBar` escreve "3 selecionados" no masculino, inclusive para conversas. `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
-- Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
+- Kit: `EmptyState` aceita uma ação só e `TablePagination` só tem anterior e próxima; nenhuma tela pronta pede mais.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
-- `fe-polish`: pílula e popover de metas no topo do quadro (`goals-header-control` e `metas-popover` da origem), que cada frente de pipelines deixou para a outra; `?card=` abrir card arquivado; "Todos os quadros" no menu vai para `/pipelines?all=1` e diz "pipelines"; `aria-label` em `SearchableSelect`, `NumberInput`, `MultiSelectInput` e `ChipsInput`, tirando o contorno `components/pipelines/hidden-label.tsx`; `AreaNav` rolar até a aba ativa; vocabulário de pipelines (a tela chama de "pipeline" o que a administração chama de "quadro", e de "venda" o que ela chama de "negócio"; "Quadro" fica só como nome da visão, ao lado de "Lista"); na descrição do card, barra de comandos, barra flutuante, tabela, cor, realce, alinhamento e título 1, como na origem (as extensões do Tiptap já estão instaladas).
-- `fe-polish` (continuação): `components/pipelines-admin/triggers/code-editor-panel.tsx` duplica o editor, e os dois configuram o mesmo estado global do Monaco: trocar pelo `components/code-editor/`; `flow_debounce_seconds` em `/automation-settings` (API e tela); `RelativeTime` diz "há 1 minuto" logo depois de salvar; o editor de fluxos chama a tela de "quadro" no desktop e de "mapa" no celular, e "quadro" é a visão de pipelines: usar "mapa".
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
 
 ### Back (Fase 2)

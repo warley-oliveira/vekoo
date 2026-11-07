@@ -2,7 +2,7 @@
   "funnels": {
     "select": "Choose funnel",
     "actionsOf": "Actions for funnel {{name}}",
-    "refresh": "Refresh board",
+    "refresh": "Refresh funnel",
     "count_one": "{{value}} conversation",
     "count_other": "{{value}} conversations",
     "countNone": "No conversations",
@@ -66,8 +66,7 @@
       "stageDuplicate": "There's already a stage with this name.",
       "stagesRequired": "A funnel needs at least one stage.",
       "tooManyStages": "A funnel can have up to {{max}} stages.",
-      "dragStage": "Drag stage {{position}}. The up and down arrows also change the order.",
-      "stageMoved": "{{name}} is now stage {{position}} of {{total}}.",
+      "dragStage": "Drag stage {{position}}",
       "removeStage": "Delete stage {{position}}",
       "removedStage_one": "{{name}} will be deleted when you save. {{count}} conversation goes to \"No stage\".",
       "removedStage_other": "{{name}} will be deleted when you save. {{count}} conversations go to \"No stage\".",

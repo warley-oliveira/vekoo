@@ -234,7 +234,7 @@ module VekooPipelinesSeeds
         actions: [ { "type" => "assign_user", "account_ids" => [ person("juliana.ferreira@exemplo.com.br").id, person("rafael.nunes@exemplo.com.br").id ] } ]
       ),
       board.triggers.create!(
-        name: "Avisar a gerência de negócio ganho", event_type: "deal_won",
+        name: "Avisar a gerência de venda ganha", event_type: "deal_won",
         actions: [ { "type" => "notify", "account_ids" => [ person("rafael.nunes@exemplo.com.br").id ], "message" => "{{card.title}} fechou por R$ {{card.deal_value}}." } ]
       ),
       board.triggers.create!(
@@ -257,7 +257,7 @@ module VekooPipelinesSeeds
         name: "Abrir o pedido no pós-venda", event_type: "deal_won",
         actions: [ {
           "type" => "create_card", "target_board_id" => after_sales.id, "target_stage_id" => target_stage.id,
-          "card_title_template" => "Pedido: {{card.company_name}}", "card_description_template" => "Negócio de R$ {{card.deal_value}}, fechado por {{card.assigned_to}}.",
+          "card_title_template" => "Pedido: {{card.company_name}}", "card_description_template" => "Venda de R$ {{card.deal_value}}, fechada por {{card.assigned_to}}.",
           "card_inherit_labels" => true, "card_priority" => "medium"
         } ]
       )
@@ -299,7 +299,7 @@ module VekooPipelinesSeeds
 
   def create_saved_filters(board)
     big = board.saved_filters.create!(
-      organization: @organization, owner: person("rafael.nunes@exemplo.com.br"), name: "Negócios acima de R$ 5 mil", visibility: "shared",
+      organization: @organization, owner: person("rafael.nunes@exemplo.com.br"), name: "Vendas acima de R$ 5 mil", visibility: "shared",
       definition: { "version" => 1, "all" => [ { "field" => "deal_value", "operator" => "gte", "value" => 5000 }, { "field" => "deal_status", "operator" => "eq", "value" => "open" } ], "any" => [] }
     )
     mine = board.saved_filters.create!(
@@ -484,7 +484,7 @@ if pipelines_organization
 
     Pipelines.
 
-      Quadros     #{pipelines_boards.count} (#{pipelines_boards.pluck(:name).join(', ')})
+      Pipelines   #{pipelines_boards.count} (#{pipelines_boards.pluck(:name).join(', ')})
       Etapas      #{Pipelines::Stage.where(board_id: pipelines_boards.select(:id)).count}
       Cards       #{pipelines_cards.count} (#{pipelines_cards.where(archived: true).count} arquivados, #{pipelines_cards.won.count} ganhos, #{pipelines_cards.lost.count} perdidos)
       Comentários #{Pipelines::Comment.where(card_id: pipelines_cards.unscope(:order).select(:id)).count}

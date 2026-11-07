@@ -9,6 +9,7 @@ import {
   useSensors,
   type Announcements,
   type DragEndEvent,
+  type KeyboardSensorProps,
   type UniqueIdentifier,
 } from "@dnd-kit/core"
 import {
@@ -30,6 +31,42 @@ import { cn } from "@/lib/utils"
 const TOUCH_DELAY_MS = 180
 const TOUCH_TOLERANCE_PX = 8
 const MOUSE_DISTANCE_PX = 6
+
+/** As teclas que o arrasto por teclado usa. O resto continua o caminho de sempre. */
+const DRAG_KEYS = new Set([
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "Space",
+  "Enter",
+  "Tab",
+  "Escape",
+])
+
+/**
+ * O sensor de teclado do dnd-kit ouve no `document`, na bolha. Dentro de `SidePanel` e
+ * `ResponsiveDialog`, as setas nunca chegam lá, porque o `Dialog` do Base UI para a propagação delas:
+ * a pessoa pegava o item com Espaço e ficava sem como movê-lo. Este ouve na captura, antes do popup,
+ * e a tecla usada no arrasto não segue adiante: Esc cancela o arrasto sem fechar o painel.
+ */
+class LayerSafeKeyboardSensor extends KeyboardSensor {
+  constructor(props: KeyboardSensorProps) {
+    super(props)
+    // O construtor de cima só liga a escuta no próximo tique: dá tempo de trocar como ela é ligada.
+    const { listeners } = this as unknown as {
+      listeners: { add: (name: string, handler: EventListener, options?: AddEventListenerOptions) => void }
+    }
+    const add = listeners.add.bind(listeners)
+    listeners.add = (name, handler) => {
+      const relay: EventListener = (event) => {
+        if (DRAG_KEYS.has((event as KeyboardEvent).code)) event.stopPropagation()
+        handler(event)
+      }
+      add(name, relay, { capture: true })
+    }
+  }
+}
 
 type SortableAreaProps<T extends { id: string }> = {
   items: readonly T[]
@@ -58,7 +95,7 @@ export function SortableArea<T extends { id: string }>({
     useSensor(TouchSensor, {
       activationConstraint: { delay: TOUCH_DELAY_MS, tolerance: TOUCH_TOLERANCE_PX },
     }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(LayerSafeKeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
   const accessibility = useMemo(() => {

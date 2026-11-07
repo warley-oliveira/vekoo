@@ -208,6 +208,24 @@
 }
 
 /*
+ * `Progress` sem valor (`value={null}`): algo está acontecendo e não dá para saber quanto falta.
+ * O indicador do Base UI só tem largura com valor, e sem isto a barra pareceria parada em 0%.
+ * Fica aqui para a primitiva continuar intacta.
+ */
+[data-slot="progress-indicator"][data-indeterminate] {
+  width: 40%;
+  animation: progress-indeterminate 1.4s ease-in-out infinite;
+}
+@keyframes progress-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+/*
  * Quem pediu menos movimento no sistema não vê diálogo crescendo nem Sheet deslizando.
  * `useMotionPreset` cuida do Motion; aqui fica o que as primitivas animam em CSS. O giro
  * de carregamento fica: é o aviso de que algo está acontecendo, e não desloca nada.
@@ -224,6 +242,12 @@
   .animate-spin {
     animation-duration: 1s !important;
     animation-iteration-count: infinite !important;
+  }
+  /* Parada, ela diria "40%": sem movimento, a trilha inteira em tom suave. */
+  [data-slot="progress-indicator"][data-indeterminate] {
+    width: 100%;
+    opacity: 0.4;
+    animation: none;
   }
 }
 

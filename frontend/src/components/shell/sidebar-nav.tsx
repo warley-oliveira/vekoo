@@ -27,7 +27,7 @@ import {
 import { useCarouselDrop } from "@/hooks/use-carousel-drop"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { useNavigation } from "@/hooks/use-navigation"
-import type { NavChild, NavEntry } from "@/lib/navigation"
+import { ALL_PIPELINES_PATH, type NavChild, type NavEntry } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
 import { usePersistentState } from "@/lib/view-prefs"
 
@@ -331,7 +331,7 @@ function RailFlyout({ entry }: { entry: NavEntry }) {
           <DropdownMenuLabel>{label}</DropdownMenuLabel>
           {entry.to && (
             <DropdownMenuItem
-              render={<Link to={entry.to} />}
+              render={<Link to={ALL_PIPELINES_PATH} />}
               className={cn("pointer-coarse:py-2.5")}
             >
               {t("navigation.allBoards")}

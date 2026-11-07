@@ -23,6 +23,8 @@ import { FormField, type FieldControlProps, type FormFieldBaseProps } from "./fo
 import type { SelectOption } from "./select-field"
 
 export type MultiSelectInputProps = Partial<FieldControlProps> & {
+  /** Nome para leitor de tela, quando o rótulo não aparece. */
+  "aria-label"?: string
   options: SelectOption[]
   value: string[] | null | undefined
   onChange: (value: string[]) => void
@@ -45,6 +47,7 @@ export function MultiSelectInput({
   className,
   id,
   disabled,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: MultiSelectInputProps) {
@@ -72,7 +75,12 @@ export function MultiSelectInput({
     >
       <ComboboxChips
         ref={anchor}
-        className={cn("w-full pointer-coarse:min-h-10", className)}
+        className={cn(
+          "w-full pointer-coarse:min-h-10",
+          // A mesma aparência do `Input` desativado: a primitiva não muda sozinha.
+          disabled && "cursor-not-allowed bg-input/50 opacity-50",
+          className
+        )}
         onClick={(event) => {
           if (event.target === event.currentTarget) {
             event.currentTarget.querySelector("input")?.focus()
@@ -83,21 +91,29 @@ export function MultiSelectInput({
           {(current: SelectOption[]) => (
             <>
               {current.map((option) => (
-                <ComboboxChip key={option.value} aria-label={option.label} showRemove={false} className="pr-0">
+                <ComboboxChip
+                  key={option.value}
+                  aria-label={option.label}
+                  showRemove={false}
+                  className={disabled ? undefined : "pr-0"}
+                >
                   {option.label}
-                  <ComboboxPrimitive.ChipRemove
-                    aria-label={t("kit.form.removeItem", { label: option.label })}
-                    render={
-                      <Button variant="ghost" size="icon-xs" className="size-5 opacity-60 hover:opacity-100" />
-                    }
-                  >
-                    <X className="pointer-events-none" />
-                  </ComboboxPrimitive.ChipRemove>
+                  {disabled ? null : (
+                    <ComboboxPrimitive.ChipRemove
+                      aria-label={t("kit.form.removeItem", { label: option.label })}
+                      render={
+                        <Button variant="ghost" size="icon-xs" className="size-5 opacity-60 hover:opacity-100" />
+                      }
+                    >
+                      <X className="pointer-events-none" />
+                    </ComboboxPrimitive.ChipRemove>
+                  )}
                 </ComboboxChip>
               ))}
               <ComboboxChipsInput
                 id={id}
                 ref={inputRef}
+                aria-label={ariaLabel}
                 aria-invalid={ariaInvalid}
                 aria-describedby={ariaDescribedBy}
                 placeholder={
@@ -105,7 +121,7 @@ export function MultiSelectInput({
                     ? undefined
                     : (placeholder ?? t("kit.form.selectPlaceholder"))
                 }
-                className="bg-transparent text-base placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-8"
+                className="bg-transparent text-base placeholder:text-muted-foreground disabled:cursor-not-allowed md:text-sm pointer-coarse:min-h-8"
               />
             </>
           )}

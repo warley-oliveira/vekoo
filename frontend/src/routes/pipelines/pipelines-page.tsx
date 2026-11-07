@@ -12,7 +12,7 @@ const LAST_BOARD_KEY = "vekoo.pipelines.lastBoard"
 
 /**
  * `/pipelines`, sozinho, leva ao último pipeline aberto ou ao primeiro. Vindo de dentro de um
- * pipeline, ou com `?all=1`, é a lista de todos: "Todos os quadros" no menu do celular aponta para
+ * pipeline, ou com `?all=1`, é a lista de todos: "Todos os pipelines" no menu aponta para
  * este mesmo endereço, e a pessoa pediu para ver a lista, não para voltar ao que já estava aberto.
  */
 export default function PipelinesPage() {
