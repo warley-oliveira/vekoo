@@ -22,55 +22,33 @@ class ChatChannel < ApplicationCable::Channel
     stop_all_streams
   end
 
+  # O que fala com o provedor não roda aqui: as ações do Action Cable dividem um pool de 4 threads por processo, o mesmo que aceita
+  # conexões e entrega os eventos de todas as organizações, e um provedor mudo segura cada envio por 60 s. A resposta continua voltando
+  # por este canal, que é o que a tela escuta. Ver `Chats::OperatorActionJob`.
+
   # { chatId, message, replyToMessageId? }
   def send_message(data)
-    chat = chat_from(data)
-    return unless chat
-
-    Chats::SendOperatorMessage.call(
-      chat: chat,
-      account: current_account,
-      text: data["message"],
-      reply_to_message_id: data["replyToMessageId"] || data["reply_to_message_id"]
-    )
+    enqueue_action("send_message", data, text: data["message"], reply_to_message_id: data["replyToMessageId"] || data["reply_to_message_id"])
   end
 
   # { chatId, messageId, emoji } (emoji vazio remove a reação)
-  #
-  # Em caso de sucesso não há transmissão aqui: a mensagem transmite sozinha quando
-  # `reactions` muda, e a tela funde por `id`. Só a falha precisa de evento próprio, para a
-  # tela reverter a atualização otimista.
   def send_reaction(data)
-    chat = chat_from(data)
-    return unless chat
-
-    target = ChatMessage::Base.unscoped.where(chat_id: chat.id, id: (data["messageId"] || data["message_id"]).to_s).take
-    return Rails.logger.warn("[ChatChannel] Mensagem da reação não encontrada") if target.nil?
-
-    result = Messages::ReactionService.new(message: target, emoji: data["emoji"], account: current_account).call
-
-    broadcast_reaction_failure(chat, target, result.errors) unless result.success?
-  rescue StandardError => e
-    Rails.logger.error("[ChatChannel] send_reaction: #{e.full_message}")
+    enqueue_action("send_reaction", data, message_id: data["messageId"] || data["message_id"], emoji: data["emoji"])
   end
 
   # { chatId, templateId, components }
   def send_template_message(data)
-    chat = chat_from(data)
-    return unless chat
-
-    chat.updated_by_account = current_account
-    chat.pause_automation_for_human!
-
-    template = chat.connector.whatsapp_templates.where(template_id: data["templateId"] || data["template_id"]).take
-    return Rails.logger.error("[ChatChannel] Modelo não encontrado: #{data['templateId']}") unless template
-
-    Chats::SendTemplate.call(chat: chat, template: template, components: data["components"], account: current_account)
-  rescue StandardError => e
-    Rails.logger.error("[ChatChannel] send_template_message: #{e.full_message}")
+    enqueue_action("send_template_message", data, template_id: data["templateId"] || data["template_id"], components: data["components"])
   end
 
   private
+
+  def enqueue_action(action, data, **details)
+    chat = chat_from(data)
+    return unless chat
+
+    Chats::OperatorActionJob.perform_later(action, chat.id.to_s, chat.organization_id, current_account.id, details.stringify_keys)
+  end
 
   # Tudo o que a conversa transmite passa por aqui. O aviso de que a atribuição mudou não vai para a tela: é a deixa para conferir de
   # novo, e quem não enxerga mais a conversa para de ouvir.
@@ -92,18 +70,5 @@ class ChatChannel < ApplicationCable::Channel
     return nil if id.blank?
 
     Chat.visible_to(current_account).where(id: id.to_s).take
-  end
-
-  # Manda o estado atual das reações junto com o erro: a tela reverte sem refazer a lista.
-  def broadcast_reaction_failure(chat, message, errors)
-    ActionCable.server.broadcast(
-      ChatMessage::Base.stream_for(chat),
-      {
-        event: "message_reaction_failed",
-        id: message.id.to_s,
-        reactions: ChatMessageSerializer.reactions(message),
-        errors: errors
-      }
-    )
   end
 end

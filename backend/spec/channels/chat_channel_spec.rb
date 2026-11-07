@@ -4,6 +4,10 @@ require "rails_helper"
 # provedores por WebMock. Nada aqui passa por dublê de conector.
 RSpec.describe ChatChannel, type: :channel do
   include AttachmentHelpers
+  include ActiveJob::TestHelper
+
+  # O canal só enfileira (ver chat_channel_provider_isolation_spec.rb). Aqui vale o que a pessoa vê, com o job rodando.
+  around { |example| perform_enqueued_jobs(only: Chats::OperatorActionJob) { example.run } }
 
   let(:organization) { create(:organization) }
   let(:account) { create(:account, organization: organization, name: "Alice Prado") }
