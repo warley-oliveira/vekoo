@@ -291,10 +291,10 @@ RSpec.describe Connector::WhatsappWeb::Providers::Zapi do
 
       prefix = "https://api.vekoo.test/inbound/zapi/#{connector.id}"
       expect(a_request(:post, on_demand).with(body: hash_including(
-        "deliveryCallbackUrl" => "#{prefix}/on-message-send",
-        "receivedCallbackUrl" => "#{prefix}/on-message-received",
-        "disconnectedCallbackUrl" => "#{prefix}/on-whatsapp-disconnected",
-        "connectedCallbackUrl" => "#{prefix}/on-whatsapp-connected"
+        "deliveryCallbackUrl" => "#{prefix}/on-message-send?token=#{connector.inbound_token}",
+        "receivedCallbackUrl" => "#{prefix}/on-message-received?token=#{connector.inbound_token}",
+        "disconnectedCallbackUrl" => "#{prefix}/on-whatsapp-disconnected?token=#{connector.inbound_token}",
+        "connectedCallbackUrl" => "#{prefix}/on-whatsapp-connected?token=#{connector.inbound_token}"
       ))).to have_been_made
     end
 

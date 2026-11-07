@@ -29,6 +29,10 @@ class Connector::Base
   # Reativar pela tela não liga: lá a falha do provedor precisa chegar à pessoa.
   attr_accessor :tolerate_profile_failure
 
+  # Evolution, Z-API e LeadChat não assinam o que mandam, e essas rotas não têm sessão. WhatsApp oficial,
+  # Messenger e Instagram são assinados pela Meta, e o Google manda o token do canal.
+  TOKEN_ROUTES = %i[evolution lead_chat_event zapi_message_received zapi_message_send zapi_disconnected zapi_connected].freeze
+
   validates :organization_id, presence: true
 
   has_many :chats, class_name: "Chat", inverse_of: :connector, dependent: :destroy
@@ -92,9 +96,17 @@ class Connector::Base
     ActionCable.server.broadcast(stream_name, payload)
   end
 
-  # URL pública de um webhook de entrada deste backend.
+  # URL pública de um webhook de entrada deste backend. Nas rotas de provedor que não assina nada, leva o
+  # token do conector.
   def inbound_url(route, *args)
-    path = Rails.application.routes.url_helpers.public_send("inbound_#{route}_path", *args)
+    options = TOKEN_ROUTES.include?(route) ? { token: inbound_token } : {}
+    path = Rails.application.routes.url_helpers.public_send("inbound_#{route}_path", *args, **options)
     "#{Media::Storage.backend_url}#{path}"
+  end
+
+  # O que só o provedor sabe, porque fomos nós que entregamos a ele junto com o endereço. Derivado, e não
+  # guardado: vale enquanto `secret_key_base` valer, como os tokens cifrados dos conectores.
+  def inbound_token
+    OpenSSL::HMAC.hexdigest("SHA256", Rails.application.key_generator.generate_key("connector inbound webhook", 32), id.to_s)
   end
 end

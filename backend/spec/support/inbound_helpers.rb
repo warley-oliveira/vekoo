@@ -3,6 +3,11 @@
 module InboundHelpers
   JSON_HEADERS = { "Content-Type" => "application/json" }.freeze
 
+  # O caminho que entregamos ao provedor, com o token do conector (ver `Connector::Base#inbound_url`).
+  def inbound_path(connector, route, *args)
+    connector.inbound_url(route, *args).delete_prefix(Media::Storage.backend_url)
+  end
+
   # O corpo do jeito que `Inbound::ProcessWebhookJob` entrega aos processadores.
   def webhook_payload(hash)
     JSON.parse(hash.to_json).with_indifferent_access

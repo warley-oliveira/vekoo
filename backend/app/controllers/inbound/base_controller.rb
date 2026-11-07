@@ -19,18 +19,35 @@ module Inbound
       request.raw_post.dup.force_encoding(Encoding::UTF_8).scrub
     end
 
+    # O provedor que não assina nada prova quem é pelo token que entregamos a ele na URL
+    # (`Connector::Base#inbound_url`). Sem isto, conhecer o id do conector bastava para injetar mensagem,
+    # trocar o QR code que a pessoa está escaneando e derrubar o canal. A resposta é a mesma de quando o
+    # conector não existe: a rota é pública e não confirma que aquele id é de alguém.
+    def authenticated_connector(connector)
+      return nil if connector.nil?
+
+      ActiveSupport::SecurityUtils.secure_compare(params[:token].to_s, connector.inbound_token) ? connector : nil
+    end
+
     # A Meta assina o corpo com o segredo do app. Sem isto, bastaria conhecer o id de uma página
     # (que é público) para injetar mensagem numa conversa e disparar fluxos. Instagram Login é
-    # outro app, com outro segredo, então vale qualquer um dos dois. Sem segredo configurado
-    # (desenvolvimento) não há o que conferir.
+    # outro app, com outro segredo, então vale qualquer um dos dois. Sem segredo configurado não há o
+    # que conferir, o que só é aceitável em desenvolvimento: em produção, a variável esquecida não pode
+    # virar uma rota aberta.
     def verify_meta_signature
       secrets = [ ENV["META_APP_SECRET"], ENV["INSTAGRAM_APP_SECRET"] ].compact_blank
+      return refuse_without_meta_secret if secrets.empty? && Rails.env.production?
       return if secrets.empty?
 
       signature = request.headers["X-Hub-Signature-256"].to_s
       return if secrets.any? { |secret| valid_meta_signature?(secret, signature) }
 
       Rails.logger.warn("[Inbound] Assinatura da Meta inválida em #{request.path}")
+      render_error(status: :forbidden, code: "invalidSignature")
+    end
+
+    def refuse_without_meta_secret
+      Rails.logger.error("[Inbound] META_APP_SECRET e INSTAGRAM_APP_SECRET ausentes: webhook da Meta recusado em #{request.path}")
       render_error(status: :forbidden, code: "invalidSignature")
     end
 

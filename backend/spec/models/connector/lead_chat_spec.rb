@@ -58,7 +58,7 @@ RSpec.describe Connector::LeadChat do
 
   describe "#webhook_url" do
     it "aponta para o evento de entrada deste conector" do
-      expect(connector.webhook_url).to eq("https://api.vekoo.test/inbound/lead-chat/#{connector.id}/event")
+      expect(connector.webhook_url).to eq("https://api.vekoo.test/inbound/lead-chat/#{connector.id}/event?token=#{connector.inbound_token}")
     end
 
     it "é uma rota que existe" do

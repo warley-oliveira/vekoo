@@ -1067,11 +1067,13 @@ Quem chama é o provedor, nunca a tela. Sem sessão. Respondem `200` sem corpo e
 |---|---|---|
 | `GET`, `POST /inbound/whatsapp-cloud/:id` | WhatsApp Cloud | Desafio com `verificationToken` do conector. Assinatura `X-Hub-Signature-256`. |
 | `GET`, `POST /inbound/meta-messaging` | Instagram e Messenger | Desafio com `META_MESSAGING_VERIFY_TOKEN`. Assinatura `X-Hub-Signature-256`. |
-| `POST /inbound/evolution/:codename` | Evolution e AIVA | `codename` é `IWA-<id do conector>`. |
-| `POST /inbound/lead-chat/:id/event` | LeadChat | O conector existe. |
-| `POST /inbound/zapi/:connectorId/on-message-received`, `on-message-send`, `on-whatsapp-disconnected`, `on-whatsapp-connected` | Z-API | O conector existe. |
+| `POST /inbound/evolution/:codename?token=` | Evolution e AIVA | `codename` é `IWA-<id do conector>`. `token`, abaixo. |
+| `POST /inbound/lead-chat/:id/event?token=` | LeadChat | `token`, abaixo. |
+| `POST /inbound/zapi/:connectorId/on-message-received`, `on-message-send`, `on-whatsapp-disconnected`, `on-whatsapp-connected`, todas com `?token=` | Z-API | `token`, abaixo. |
 
-A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois (desenvolvimento), não há o que conferir. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
+Evolution, Z-API e LeadChat não assinam o que mandam. O `token` é um HMAC do id do conector, derivado de `secret_key_base` (`Connector::Base#inbound_token`), e vai na URL que a ativação entrega ao provedor. Token ausente ou errado responde `404`, igual a conector que não existe. Conector criado antes disso precisa ter o webhook configurado de novo no provedor. Trocar `secret_key_base` invalida todos, como já invalida os tokens cifrados.
+
+A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois, em desenvolvimento não há o que conferir, e em produção responde `403 invalidSignature`. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
 
 O que acontece com a mensagem recebida, em todos os canais: acha ou cria a conversa pelas variantes do telefone, grava, reabre se a organização pediu, atualiza `lastMessage*`, transmite por `ChatChannel` e `ChatListChannel` e chama `Flows::InboundDispatcher`.
 

@@ -86,7 +86,7 @@ RSpec.describe Connector::Zapi do
     let(:connector) { create(:connector_zapi, organization: organization, instance_id: "ZINST", token: "ZTOKEN", status: :inactive) }
 
     def webhook(endpoint, path)
-      a_request(:put, "#{base}/#{endpoint}").with(body: { value: "https://api.vekoo.test/inbound/zapi/#{connector.id}/#{path}" }.to_json)
+      a_request(:put, "#{base}/#{endpoint}").with(body: { value: "https://api.vekoo.test/inbound/zapi/#{connector.id}/#{path}?token=#{connector.inbound_token}" }.to_json)
     end
 
     it "aponta os cinco webhooks para /inbound/zapi e fica pendente" do

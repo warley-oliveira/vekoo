@@ -213,7 +213,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     let(:codename) { "IWA-#{connector.id}" }
 
     it "responde 200 e enfileira pelo nome da instância" do
-      post "/inbound/evolution/#{codename}", params: body, as: :json
+      post inbound_path(connector, :evolution, codename), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
       expect_enqueued("evolution", codename, nil)
@@ -222,7 +222,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     it "aceita instância que está com o provedor AIVA" do
       aiva = create(:connector_whatsapp_web, :aiva, organization: organization)
 
-      post "/inbound/evolution/IWA-#{aiva.id}", params: body, as: :json
+      post inbound_path(aiva, :evolution, "IWA-#{aiva.id}"), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
     end
@@ -254,7 +254,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     let(:connector) { create(:connector_lead_chat, organization: organization) }
 
     it "responde 200 e enfileira" do
-      post "/inbound/lead-chat/#{connector.id}/event", params: body, as: :json
+      post inbound_path(connector, :lead_chat_event, connector.id), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
       expect_enqueued("lead_chat", connector.id.to_s, nil)
@@ -283,7 +283,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     }.each do |route, event|
       describe route do
         it "responde 200 e enfileira o evento" do
-          post "/inbound/zapi/#{connector.id}/#{route}", params: body, as: :json
+          post "/inbound/zapi/#{connector.id}/#{route}?token=#{connector.inbound_token}", params: body, as: :json
 
           expect(response).to have_http_status(:ok)
           expect_enqueued("zapi", connector.id.to_s, event)
@@ -307,7 +307,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     it "aceita o conector próprio da Z-API" do
       own = create(:connector_zapi, organization: organization)
 
-      post "/inbound/zapi/#{own.id}/on-message-received", params: body, as: :json
+      post inbound_path(own, :zapi_message_received, own.id), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
       expect_enqueued("zapi", own.id.to_s, "on_message_received")
@@ -315,7 +315,7 @@ RSpec.describe "Controladores de webhook", type: :request do
 
     describe "on-message-send" do
       it "responde 200 e não faz nada: o eco vem em received" do
-        post "/inbound/zapi/#{connector.id}/on-message-send", params: body, as: :json
+        post inbound_path(connector, :zapi_message_send, connector.id), params: body, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(Inbound::ProcessWebhookJob).not_to have_been_enqueued
@@ -333,7 +333,7 @@ RSpec.describe "Controladores de webhook", type: :request do
     connector = create(:connector_lead_chat, organization: organization)
     outsider = create(:account, organization: create(:organization))
 
-    post "/inbound/lead-chat/#{connector.id}/event", params: body, headers: auth_headers(outsider), as: :json
+    post inbound_path(connector, :lead_chat_event, connector.id), params: body, headers: auth_headers(outsider), as: :json
 
     expect(response).to have_http_status(:ok)
   end

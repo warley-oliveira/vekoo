@@ -428,7 +428,7 @@ RSpec.describe "Connectors", type: :request do
           "type" => "lead_chat",
           "status" => "active",
           "phoneNumberId" => "5531",
-          "webhookUrl" => "#{Media::Storage.backend_url}/inbound/lead-chat/#{connector.id}/event",
+          "webhookUrl" => "#{Media::Storage.backend_url}/inbound/lead-chat/#{connector.id}/event?token=#{connector.inbound_token}",
           "verificationToken" => connector.verification_token
         )
         expect(response.body).not_to include("lead-token")

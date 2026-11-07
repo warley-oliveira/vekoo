@@ -5,8 +5,8 @@ module Inbound
     def receive
       codename = params[:codename].to_s
       prefix = Connector::WhatsappWeb::PREFIX_INSTANCE
-      known = codename.start_with?(prefix) && Connector::WhatsappWeb.where(id: codename.delete_prefix(prefix)).exists?
-      return render_not_found unless known
+      connector = codename.start_with?(prefix) ? Connector::WhatsappWeb.where(id: codename.delete_prefix(prefix)).take : nil
+      return render_not_found unless authenticated_connector(connector)
 
       enqueue("evolution", codename)
     end

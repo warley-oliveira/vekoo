@@ -35,7 +35,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
       expect(create_instance).to have_been_requested
       expect(connect).to have_been_requested
       expect(a_request(:post, "#{base}/webhook/set/WS-AIVA")
-        .with(body: { enabled: true, url: "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}" }.to_json)).to have_been_made
+        .with(body: { enabled: true, url: "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}?token=#{connector.inbound_token}" }.to_json)).to have_been_made
       expect(connector.reload).to have_attributes(instance_api_key: "NEW-KEY", status_cd: "pending")
     end
 
