@@ -1,5 +1,7 @@
 import { useRef, useState } from "react"
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react"
+// Monaco do próprio pacote, e não do CDN padrão da biblioteca, que a CSP de produção bloqueia.
+import "@/components/code-editor/monaco-setup"
 import { useTranslation } from "react-i18next"
 import { AlignLeft, CircleAlert, Loader2, WrapText } from "lucide-react"
 
@@ -23,8 +25,8 @@ const ERROR_SEVERITY = 8
 const IGNORED_DIAGNOSTICS = [1108, 1375, 1378, 7044, 80001, 80005]
 
 const configureLanguage: BeforeMount = (monaco) => {
-  // `monaco.languages.typescript` existe em execução; a tipagem do pacote deixou de declarar.
-  const typescript = (monaco.languages as unknown as { typescript: MonacoTypescript }).typescript
+  // A API de TypeScript existe em execução, em `monaco.typescript`; a tipagem do pacote não a declara.
+  const typescript = (monaco as unknown as { typescript: MonacoTypescript }).typescript
   const defaults = typescript.javascriptDefaults
 
   defaults.setDiagnosticsOptions({

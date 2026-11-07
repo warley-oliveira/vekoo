@@ -75,7 +75,7 @@ export const NAV_GROUPS: NavGroup[] = [
         titleKey: "navigation.flows",
         icon: Workflow,
         to: "/flows",
-        match: ["/flows", "/tools"],
+        match: ["/flows", "/tools", "/automation-settings"],
         permission: "flows",
         alertKey: "flows",
       },

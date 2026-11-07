@@ -132,8 +132,8 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 16 | **fe-catalog**: catálogo, categorias, campos, importação | `pages/catalog`, `components/catalog`, `use-catalog-import` | ✅ |
 | 27 | **fe-contacts**: lista de contatos, filtros, ações em lote, exportação, importação | `pages/contacts`, `components/contacts`, `useContacts` | ✅ |
 | 17 | **fe-dashboard-funnels**: dashboard + funis | `pages/dashboard`, `sections/dashboard`, `components/{cards/dashboard,dashboard-page,pipeline}`, `pages/pipeline` | ✅ |
-| 18 | **fe-flows**: lista de fluxos, editor, teste no editor, execuções, modelos, editor de código | `pages/flows/{FlowsListPage,FlowEditorPage}`, `components/{flow-builder,code-editor}` | 🔄 |
-| 28 | **fe-tools-webhooks**: ferramentas, catálogo, webhooks e logs | `pages/flows/WorkspaceToolsPage`, `components/{tools,webhooks,webhook-logs}`, `pages/settings/webhooks` | ⬜ |
+| 18 | **fe-flows**: lista de fluxos, editor, teste no editor, execuções, modelos, editor de código | `pages/flows/{FlowsListPage,FlowEditorPage}`, `components/{flow-builder,code-editor}` | ✅ |
+| 28 | **fe-tools-webhooks**: ferramentas, catálogo, webhooks e logs | `pages/flows/WorkspaceToolsPage`, `components/{tools,webhooks,webhook-logs}`, `pages/settings/webhooks` | 🔄 |
 
 ## Fase 4 — Front-end, parte 2 (8 frentes)
 

@@ -15,15 +15,7 @@ import { useEditor, useEditorApi, type BlockNode } from "./store"
 
 // Um bloco do quadro: título forte e o resumo em uma linha do que ele faz. Só redesenha quando o que é
 // dele mudou (`memo`, e cada leitura do store é um valor simples), e é isso que mantém o editor fluido
-// com 100 blocos. Em desenvolvimento, conta os renders: a medição fica em `routes/dev/flow-perf`.
-
-/** Tela de conferência em desenvolvimento: `window.__flowRenders`. Some do build de produção. */
-function countRender(id: string) {
-  if (!import.meta.env.DEV) return
-  const counters = window as unknown as { __flowRenders?: Record<string, number> }
-  counters.__flowRenders ??= {}
-  counters.__flowRenders[id] = (counters.__flowRenders[id] ?? 0) + 1
-}
+// com 100 blocos.
 
 // O xyflow passa a posição como prop, e ela muda a cada quadro do arrasto. O bloco não usa: quem move é o invólucro,
 // por `transform`. Comparar só o que ele desenha é o que deixa o arrasto sem nenhum render do bloco.
@@ -37,7 +29,6 @@ function sameBlock(previous: NodeProps<BlockNode>, next: NodeProps<BlockNode>) {
 }
 
 export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: NodeProps<BlockNode>) {
-  countRender(id)
   const { t } = useTranslation()
   const api = useEditorApi()
   const outlets = useEditor((state) => state.outlets[id] ?? "")

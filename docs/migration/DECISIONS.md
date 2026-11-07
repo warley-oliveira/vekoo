@@ -281,6 +281,19 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acrescentado:** `run_code` nos gatilhos, condições na frase, filtro de período, ranking e excluir arquivados.
 - **Acréscimos na API:** `Pipelines::BoardPeriodMetrics`, `?from&to` em `metrics` (com `422 invalidPeriod`) e `?status&triggerId` no histórico.
 
+### Fluxos: tela (fe-flows)
+
+- **Excluir bloco não pergunta nada:** mostra um aviso com "Desfazer".
+- **"Desligar" um fluxo** usa arquivar, e ligar de novo usa `unarchive`, voltando à versão publicada sem publicar o rascunho.
+- **A lista baixa todas as páginas e filtra no cliente.** Duplicar é feito no cliente, com desfazer se falhar.
+- **Conflito de edição** é detectado no cliente, comparando `updatedAt` ao voltar o foco e a cada 60 s, porque a API não tem trava.
+- **Conferência mais rígida que a API:** bloco sem configuração impede publicar, e bloco solto só avisa. O gatilho é trocável, mas não pode ser excluído. O salvamento automático não altera o gatilho de um fluxo publicado; isso só acontece ao publicar.
+- **Editar no celular de verdade**, e não só leitura, porque a origem deixava: tocar abre o bloco na tela toda, e cada saída livre oferece "Adicionar bloco".
+- **Modelos** renomeados para tirar "agente" e "tools" (mesmos slugs). "Recuperação de carrinho" perdeu a segunda metade, que dependia de uma saída `timeout` que o motor não tem.
+- **Mudou ou saiu em relação à origem:** salvar virou automático + Ctrl+S; destaque ao passar o mouse virou clique que foca o bloco; editor rico do prompt base virou texto simples; minimapa só a partir de 12 blocos; `temperature`, seletor de assistente no teste e categoria escrita no bloco saíram.
+- **Acréscimos na API:** `stats` na lista, `POST /flows/:id/unarchive`, `GET /flows/:id/versions` e `/versions/:versionId`, `contactName` e `counts` nas execuções.
+- **Monaco no próprio pacote**, fora do precache, porque a CSP bloqueia o CDN padrão da biblioteca. Conferido contra a CSP real.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -316,6 +329,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Não exercitado de ponta a ponta: `send_template`, `catalog_search`, `goto_flow` e `send_media` em fluxo (só specs), transcrição Whisper, `PruneExecutionsJob` e `PruneLogsJob` no cron, 429 da entrada de webhook, volume.
 - `GOOGLE_CALENDAR_REDIRECT_URI` em produção deve apontar para `https://<front>/calendar/google-callback`.
 - `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
+- Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -331,7 +345,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
 - `fe-polish`: pílula e popover de metas no topo do quadro (`goals-header-control` e `metas-popover` da origem), que cada frente de pipelines deixou para a outra; `?card=` abrir card arquivado; "Todos os quadros" no menu vai para `/pipelines?all=1` e diz "pipelines"; `aria-label` em `SearchableSelect`, `NumberInput`, `MultiSelectInput` e `ChipsInput`, tirando o contorno `components/pipelines/hidden-label.tsx`; `AreaNav` rolar até a aba ativa; vocabulário de pipelines (a tela chama de "pipeline" o que a administração chama de "quadro", e de "venda" o que ela chama de "negócio"; "Quadro" fica só como nome da visão, ao lado de "Lista"); na descrição do card, barra de comandos, barra flutuante, tabela, cor, realce, alinhamento e título 1, como na origem (as extensões do Tiptap já estão instaladas).
-- `fe-flows` ao integrar: `components/pipelines-admin/triggers/code-editor-panel.tsx` usa o Monaco do CDN, que a CSP bloqueia em produção. Trocar pelo `components/code-editor/`, que traz o Monaco no próprio pacote.
+- `fe-polish` (continuação): `components/pipelines-admin/triggers/code-editor-panel.tsx` duplica o editor, e os dois configuram o mesmo estado global do Monaco: trocar pelo `components/code-editor/`; `flow_debounce_seconds` em `/automation-settings` (API e tela); `RelativeTime` diz "há 1 minuto" logo depois de salvar; o editor de fluxos chama a tela de "quadro" no desktop e de "mapa" no celular, e "quadro" é a visão de pipelines: usar "mapa".
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
 - `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
 - `fe-chat-mobile`: o voltar do aparelho ainda não fecha o painel; o cabeçalho em 390 px corta o nome; falta segurar para selecionar.
