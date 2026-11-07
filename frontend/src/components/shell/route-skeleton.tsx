@@ -9,7 +9,7 @@ export function RouteSkeleton() {
   return (
     <div
       aria-hidden
-      className="mx-auto max-w-6xl animate-in px-4 py-6 delay-150 duration-200 fade-in fill-mode-both md:px-6"
+      className="mr-auto max-w-6xl animate-in px-4 py-6 delay-150 duration-200 fade-in fill-mode-both md:px-6"
     >
       <div className="mb-6 flex items-center justify-between gap-3">
         <Skeleton className="h-8 w-56 max-w-[60%]" />

@@ -476,7 +476,7 @@ function ActionBar() {
       className="sticky z-10 mt-auto border-t bg-background/95 pb-safe backdrop-blur"
       style={{ bottom: "var(--kb-inset, 0px)" }}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-2 px-4 py-3 md:px-6">
+      <div className="mr-auto flex w-full max-w-6xl items-center gap-2 px-4 py-3 md:px-6">
         {index > 0 ? (
           <Button
             type="button"
@@ -870,7 +870,7 @@ export function CampaignWizard({ campaign, copyFrom, placeExtractionId, onDraftC
 
             <div
               data-slot="page-body"
-              className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 pt-4 pb-8 md:px-6 lg:pt-6"
+              className="relative mr-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 pt-4 pb-8 md:px-6 lg:pt-6"
             >
               {isMobileShell ? null : <WizardStepper />}
               <StepContent />

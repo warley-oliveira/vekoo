@@ -152,7 +152,7 @@ export function MyCarouselsPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+      <div className="mr-auto max-w-6xl px-4 py-6 md:px-6">
         <ErrorState error={error} onRetry={reload} />
       </div>
     )
@@ -163,7 +163,7 @@ export function MyCarouselsPage() {
   const isFirstRun = !folder && !isLoading && carousels?.length === 0
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+    <div className="mr-auto max-w-6xl px-4 py-6 md:px-6">
       {isFirstRun ? (
         <FirstCarouselHero />
       ) : (

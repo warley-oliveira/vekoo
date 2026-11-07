@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/empty-state"
 export function TemplatesPage() {
   const { t } = useTranslation()
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 md:px-6">
+    <div className="mr-auto max-w-3xl px-4 py-6 md:px-6">
       <EmptyState
         icon={<LayoutTemplate className="size-6" />}
         title={t("templates.emptyTitle")}
@@ -22,7 +22,7 @@ export function TemplatesPage() {
 export function BrandsPage() {
   const { t } = useTranslation()
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 md:px-6">
+    <div className="mr-auto max-w-3xl px-4 py-6 md:px-6">
       <EmptyState
         icon={<Palette className="size-6" />}
         title={t("brands.emptyTitle")}

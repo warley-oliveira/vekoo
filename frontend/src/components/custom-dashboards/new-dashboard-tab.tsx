@@ -74,7 +74,7 @@ export default function NewDashboardTab() {
   })
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+    <div className="mr-auto flex w-full max-w-5xl flex-col gap-6">
       <SectionCard title={t("customDashboards.newDashboard.blankTitle")} description={t("customDashboards.newDashboard.blankHint")}>
         <Form
           form={form}

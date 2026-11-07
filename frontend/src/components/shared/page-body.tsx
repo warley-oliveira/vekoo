@@ -18,6 +18,10 @@ export type PageBodyProps = ComponentProps<"div"> & {
 /**
  * Contêiner de toda página: largura, respiro e espaço entre as seções. Vai direto
  * dentro da rota, com o `PageHeader` como primeiro filho.
+ *
+ * Preso à esquerda, no eixo do título da barra superior, e não centrado: centrado, cada
+ * largura começava num ponto, e as abas de uma mesma área pulavam ao trocar de variante
+ * (192 px em tela de 1920).
  */
 export function PageBody({ variant = "default", className, ...props }: PageBodyProps) {
   return (
@@ -26,7 +30,7 @@ export function PageBody({ variant = "default", className, ...props }: PageBodyP
       // `relative` segura os `sr-only`: sem um ancestral posicionado, eles escapam do
       // rolável da página e esticam o documento, criando uma segunda barra de rolagem.
       className={cn(
-        "relative mx-auto flex w-full flex-col gap-6 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:gap-8 md:px-6",
+        "relative mr-auto flex w-full flex-col gap-6 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:gap-8 md:px-6",
         VARIANTS[variant],
         className
       )}
