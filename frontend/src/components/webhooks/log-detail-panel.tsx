@@ -6,19 +6,15 @@ import { ChevronRight, CircleAlert, ExternalLink } from "lucide-react"
 import { Callout, CopyButton, DetailSkeleton, ErrorState, KeyValueList, SidePanel, StatusBadge } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { formatFullDateTime } from "@/lib/date-format"
-import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { formatMs } from "@/lib/webhooks/format"
 import type { WebhookLog } from "@/lib/webhooks/types"
 
 import { LOG_STATUS_TONES, WEBHOOK_STATUS_TONES } from "./webhook-status"
 
 // Uma requisição, para depurar: o que entrou, como veio, e o que a plataforma fez com aquilo. Abre no corpo, que é o que
 // quase sempre se procura; cabeçalhos e parâmetros ficam a um clique.
-
-export function formatMs(value: number | null | undefined, language: string) {
-  return value === null || value === undefined ? null : `${formatNumber(Math.round(value), language)} ms`
-}
 
 function isEmpty(value: Record<string, unknown> | null | undefined) {
   return !value || Object.keys(value).length === 0

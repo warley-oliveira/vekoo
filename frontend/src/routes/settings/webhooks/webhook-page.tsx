@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "react-router"
 import { Code2, Globe, History, Loader2, Pencil, Plus, Send, Tag, Trash2, Undo2, Unplug } from "lucide-react"
 import { toast } from "sonner"
 
-import { ReceivedFieldsProvider } from "@/components/webhooks/fields-context"
+import { ReceivedFieldsContext } from "@/components/webhooks/fields-context"
 import { ReceivedFields } from "@/components/webhooks/received-fields"
 import { CodeAction, ContactAction, HttpAction, UserFieldAction } from "@/components/webhooks/simple-actions"
 import { StartFlowAction } from "@/components/webhooks/start-flow-action"
@@ -276,7 +276,7 @@ function WebhookDetail({ webhook, reload }: { webhook: Webhook; reload: () => vo
         </SettingsSection>
 
         <FormProvider {...form}>
-          <ReceivedFieldsProvider groups={groups}>
+          <ReceivedFieldsContext.Provider value={groups}>
             <form onSubmit={submit} noValidate>
               {/* A mesma grade de `SettingsSection`, com a lista de campos na coluna da explicação. */}
               <section className="grid gap-4 border-t pt-6 md:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] md:gap-10 md:pt-8">
@@ -318,7 +318,7 @@ function WebhookDetail({ webhook, reload }: { webhook: Webhook; reload: () => vo
                 </div>
               </section>
             </form>
-          </ReceivedFieldsProvider>
+          </ReceivedFieldsContext.Provider>
         </FormProvider>
 
         <SettingsSection title={t("webhooks.signature.title")} description={t("webhooks.signature.description")}>

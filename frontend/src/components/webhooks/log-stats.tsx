@@ -4,9 +4,8 @@ import { useTranslation } from "react-i18next"
 import { InlineError, StatTile } from "@/components/shared"
 import { formatNumber, formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
+import { formatMs } from "@/lib/webhooks/format"
 import type { WebhookDayStats, WebhookLogStats } from "@/lib/webhooks/types"
-
-import { formatMs } from "./log-detail-panel"
 
 // Os indicadores do histórico: uma fileira de números, com a tendência em miniatura onde ela diz alguma coisa. Sem
 // gráfico: a pergunta aqui é "está dando erro?" e "desde quando?", e o número e a linha respondem. A cor fica nos selos da

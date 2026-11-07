@@ -7,6 +7,7 @@ import { CheckCircle2, CircleAlert, Loader2, Send } from "lucide-react"
 import { Callout, SegmentedControl, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
 import { sampleBody } from "@/lib/webhooks/fields"
 import { sendTestRequest, webhookAddress, type TestDelivery } from "@/lib/webhooks/send-test"
 import { curlExample, signedCurlExample } from "@/lib/webhooks/snippets"
@@ -136,7 +137,7 @@ export function WebhookTest({ webhook, onSent }: { webhook: Webhook; onSent: () 
 function DeliveryResult({ result, webhookId }: { result: TestDelivery; webhookId: string }) {
   const { t } = useTranslation()
   return (
-    <p role="status" className={`flex min-w-0 items-start gap-1.5 text-sm ${result.ok ? "text-status-success" : "text-status-danger"}`}>
+    <p role="status" className={cn("flex min-w-0 items-start gap-1.5 text-sm", result.ok ? "text-status-success" : "text-status-danger")}>
       {result.ok ? <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden /> : <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />}
       <span className="min-w-0">
         {result.ok

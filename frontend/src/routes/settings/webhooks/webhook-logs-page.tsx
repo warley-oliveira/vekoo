@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router"
 import { History, RefreshCw } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { formatMs, LogDetailPanel } from "@/components/webhooks/log-detail-panel"
+import { LogDetailPanel } from "@/components/webhooks/log-detail-panel"
 import { LogStats } from "@/components/webhooks/log-stats"
 import { LOG_STATUS_TONES } from "@/components/webhooks/webhook-status"
 import { WebhooksNav } from "@/components/webhooks/webhooks-nav"
@@ -27,6 +27,7 @@ import { useWebhookLog, useWebhookLogs, useWebhookLogStats } from "@/hooks/webho
 import { useWebhooks } from "@/hooks/webhooks/use-webhooks"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { formatMs } from "@/lib/webhooks/format"
 import { LOG_STATUSES, type WebhookLog, type WebhookLogStatus } from "@/lib/webhooks/types"
 
 // O histórico: cada requisição que chegou, dos últimos 90 dias. É a tela de quem está depurando, e por isso é tabela:
