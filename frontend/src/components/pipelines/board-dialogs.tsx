@@ -375,7 +375,11 @@ export function BoardBulkBar() {
   }
 
   return (
-    <BulkActionsBar count={count} onClear={clearSelected}>
+    <BulkActionsBar
+      count={count}
+      onClear={clearSelected}
+      label={(selected) => t("pipelines.bulk.selected", selected)}
+    >
       <Button type="button" variant="ghost" size="sm" onClick={() => requestMove(ids)}>
         <ArrowRightLeft />
         {t("pipelines.move.action")}

@@ -86,6 +86,8 @@
       "resumeFailed": "Couldn't resume. Try again."
     },
     "bulk": {
+      "selected_one": "{{formatted}} campaign selected",
+      "selected_other": "{{formatted}} campaigns selected",
       "actions": {
         "pause": "Pause ({{count}})",
         "resume": "Resume ({{count}})",

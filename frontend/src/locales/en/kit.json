@@ -128,10 +128,10 @@
     },
     "bulk": {
       "toolbar": "Actions on selected items",
-      "selected_one": "{{formatted}} selected",
-      "selected_other": "{{formatted}} selected",
+      "selected_one": "{{formatted}} item selected",
+      "selected_other": "{{formatted}} items selected",
       "selectAll_one": "Select the result",
-      "selectAll_other": "Select all {{formatted}}",
+      "selectAll_other": "Select all {{formatted}} results",
       "clear": "Clear selection"
     },
     "list": {

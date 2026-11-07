@@ -152,6 +152,8 @@
       "clear": "Undo selection"
     },
     "bulk": {
+      "selected_one": "{{formatted}} contact selected",
+      "selected_other": "{{formatted}} contacts selected",
       "actions": {
         "addTags": "Add tags",
         "removeTags": "Remove tags",

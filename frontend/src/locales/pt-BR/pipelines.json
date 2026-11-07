@@ -243,6 +243,8 @@
       "requiredFieldsIncomplete": "Preencha os campos obrigatórios antes de avançar"
     },
     "bulk": {
+      "selected_one": "{{formatted}} card selecionado",
+      "selected_other": "{{formatted}} cards selecionados",
       "select": "Selecionar",
       "assign": "Atribuir",
       "priority": "Prioridade",

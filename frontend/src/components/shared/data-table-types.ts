@@ -4,6 +4,7 @@ import type { ColumnDef, RowData } from "@tanstack/react-table"
 import type { PaginationMeta } from "@/lib/api"
 import type { EmptyStateProps } from "@/components/empty-state"
 import type { RowAction } from "./actions-menu"
+import type { BulkLabelAmount } from "./bulk-actions-bar"
 import type { FacetOption } from "./faceted-filter"
 
 export type ColumnFilterConfig =
@@ -100,6 +101,8 @@ export type DataTableProps<TData> = {
   canSelectRow?: (row: TData) => boolean
   /** Botões da barra de ações em lote, que aparece ao selecionar. */
   bulkActions?: (context: BulkActionsContext<TData>) => ReactNode
+  /** O que está selecionado, com gênero e plural: `(amount) => t("x.selected", amount)`. */
+  bulkLabel?: (amount: BulkLabelAmount) => string
   /** Oferece "selecionar todos os N resultados" além da página. Só com `meta`. */
   selectAllMatching?: boolean
 

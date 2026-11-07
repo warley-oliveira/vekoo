@@ -128,6 +128,7 @@ export function DataTable<TData>({
   onRowSelectionChange,
   canSelectRow,
   bulkActions,
+  bulkLabel,
   selectAllMatching = false,
   rowActions,
   onRowClick,
@@ -367,6 +368,7 @@ export function DataTable<TData>({
     <BulkActionsBar
       count={allMatching ? total : selectedIds.length}
       onClear={clearSelection}
+      label={bulkLabel}
       selectAll={
         selectAllMatching && isServer && !allMatching
           ? { total, onSelect: () => setAllMatching(true) }

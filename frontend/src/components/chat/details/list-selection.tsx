@@ -203,7 +203,11 @@ export const ListSelectionStrip = memo(function ListSelectionStrip() {
             </Button>
           </div>
 
-          <BulkActionsBar count={count} onClear={clear}>
+          <BulkActionsBar
+            count={count}
+            onClear={clear}
+            label={(selected) => t("chatDetails.bulk.selected", selected)}
+          >
             {primary.map((action) => (
               <Button
                 key={action.label}

@@ -425,6 +425,7 @@ export default function CatalogPage() {
               <BulkActionsBar
                 count={selectedIds.length}
                 onClear={() => setSelection({})}
+                label={(amount) => t("products.bulk.selected", amount)}
                 selectAll={
                   canSelectAll ? { total, onSelect: () => void selectAllResults() } : undefined
                 }

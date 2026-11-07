@@ -9,10 +9,19 @@ import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
+/** O que `t()` precisa para o plural: `count` escolhe a forma, `formatted` é o número escrito. */
+export type BulkLabelAmount = { count: number; formatted: string }
+
 export type BulkActionsBarProps = {
   /** Quantos itens estão selecionados. Com 0 a barra sai de cena. */
   count: number
   onClear: () => void
+  /**
+   * O que está selecionado, com gênero e plural de quem sabe o que é:
+   * `(amount) => t("campaigns.bulk.selected", amount)`, "3 campanhas selecionadas".
+   * Sem ele, "3 itens selecionados".
+   */
+  label?: (amount: BulkLabelAmount) => string
   /** Botões das ações, tamanho `sm`. */
   children: ReactNode
   /** Oferece estender a seleção a todos os resultados, além da página. */
@@ -30,6 +39,7 @@ export type BulkActionsBarProps = {
 export function BulkActionsBar({
   count,
   onClear,
+  label,
   children,
   selectAll,
   className,
@@ -37,6 +47,7 @@ export function BulkActionsBar({
   const { t } = useTranslation()
   const language = useLanguage()
   const preset = useMotionPreset()
+  const amount: BulkLabelAmount = { count, formatted: formatNumber(count, language) }
 
   return (
     <AnimatePresence>
@@ -50,23 +61,25 @@ export function BulkActionsBar({
           <div
             role="toolbar"
             aria-label={t("kit.bulk.toolbar")}
+            // Em tela estreita, duas linhas: quantos e o fechar em cima, as ações embaixo. Nenhum
+            // rótulo some atrás de uma rolagem que ninguém descobre.
             className={cn(
-              "pointer-events-auto flex max-w-full items-center gap-2 rounded-xl bg-popover py-1.5 pr-1.5 pl-3 text-sm text-popover-foreground shadow-lg ring-1 ring-foreground/10",
+              "pointer-events-auto flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-xl bg-popover py-1.5 pr-1.5 pl-3 text-sm text-popover-foreground shadow-lg ring-1 ring-foreground/10 sm:flex-nowrap",
               className
             )}
           >
-            <span role="status" className="font-medium whitespace-nowrap tabular-nums">
-              {t("kit.bulk.selected", {
-                count,
-                formatted: formatNumber(count, language),
-              })}
+            <span
+              role="status"
+              className="min-w-0 flex-1 font-medium tabular-nums sm:flex-none sm:whitespace-nowrap"
+            >
+              {label ? label(amount) : t("kit.bulk.selected", amount)}
             </span>
             {selectAll && selectAll.total > count ? (
               <Button
                 type="button"
                 variant="link"
                 size="sm"
-                className="hidden px-0 sm:inline-flex"
+                className="order-1 w-full justify-start px-0 sm:order-none sm:w-auto"
                 onClick={selectAll.onSelect}
               >
                 {t("kit.bulk.selectAll", {
@@ -75,8 +88,10 @@ export function BulkActionsBar({
                 })}
               </Button>
             ) : null}
-            <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
-            <div className="flex min-w-0 items-center gap-1 overflow-x-auto">{children}</div>
+            <span aria-hidden className="hidden h-5 w-px shrink-0 bg-border sm:block" />
+            <div className="order-2 -ml-1.5 flex w-full min-w-0 flex-wrap items-center gap-1 sm:order-none sm:ml-0 sm:w-auto">
+              {children}
+            </div>
             <Button
               type="button"
               variant="ghost"

@@ -86,6 +86,8 @@
       "resumeFailed": "Não deu para retomar. Tente de novo."
     },
     "bulk": {
+      "selected_one": "{{formatted}} campanha selecionada",
+      "selected_other": "{{formatted}} campanhas selecionadas",
       "actions": {
         "pause": "Pausar ({{count}})",
         "resume": "Retomar ({{count}})",

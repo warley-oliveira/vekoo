@@ -87,7 +87,11 @@ export function ContactBulkBar({ count, onClear, onAction }: ContactBulkBarProps
   ]
 
   return (
-    <BulkActionsBar count={count} onClear={onClear}>
+    <BulkActionsBar
+      count={count}
+      onClear={onClear}
+      label={(selected) => t("contacts.bulk.selected", selected)}
+    >
       {isMobile ? null : (
         <>
           {primary.map((action) => (

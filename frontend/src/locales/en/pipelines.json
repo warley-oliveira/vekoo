@@ -243,6 +243,8 @@
       "requiredFieldsIncomplete": "Fill in the required fields before advancing"
     },
     "bulk": {
+      "selected_one": "{{formatted}} card selected",
+      "selected_other": "{{formatted}} cards selected",
       "select": "Select",
       "assign": "Assign",
       "priority": "Priority",
