@@ -188,13 +188,23 @@ export default function FlowsPage() {
       {header}
 
       <div className="flex flex-col gap-3">
-        <Link
-          to="/automation-settings"
-          className="flex items-center gap-1.5 self-start rounded text-sm text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none md:hidden"
-        >
-          <Settings2 className="size-4" aria-hidden />
-          {t("flows.settings.title")}
-        </Link>
+        {/* No celular, o cabeçalho só tem espaço para "Criar": os outros dois caminhos ficam aqui. */}
+        <div className="-my-1 flex flex-wrap gap-x-4 md:hidden">
+          <Link
+            to="/automation-settings"
+            className="flex items-center gap-1.5 rounded text-sm text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:h-10"
+          >
+            <Settings2 className="size-4" aria-hidden />
+            {t("flows.settings.title")}
+          </Link>
+          <Link
+            to="/tools"
+            className="flex items-center gap-1.5 rounded text-sm text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none pointer-coarse:h-10"
+          >
+            <Wrench className="size-4" aria-hidden />
+            {t("flows.list.tools")}
+          </Link>
+        </div>
         <SegmentedControl
           aria-label={t("flows.list.statusLabel")}
           value={tab}
