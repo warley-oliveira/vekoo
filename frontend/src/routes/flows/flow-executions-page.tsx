@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useFlow, useFlowExecutions } from "@/hooks/flows/use-flows"
 import { useIsMobile } from "@/hooks/use-is-mobile"
+import { ApiError } from "@/lib/api"
 import { contactLabel, contactPhone, EXECUTION_TONES } from "@/lib/flows/execution-steps"
 import type { FlowExecution, FlowExecutionStatus } from "@/lib/flows/types"
 
@@ -33,7 +34,7 @@ export default function FlowExecutionsPage() {
   const { t } = useTranslation()
   const { flowId } = useParams()
   const isMobile = useIsMobile()
-  const { flow } = useFlow(flowId)
+  const { flow, error: flowError } = useFlow(flowId)
   const [params, setParams] = useSearchParams()
   const [page, setPage] = useState(1)
 
@@ -62,10 +63,20 @@ export default function FlowExecutionsPage() {
     count: value === "all" ? total : (counts?.[value as FlowExecutionStatus] ?? 0),
   }))
 
+  // Fluxo excluído, ou link errado: o erro das execuções diria que foi a conexão.
+  if (flowError instanceof ApiError && flowError.status === 404) {
+    return (
+      <PageBody>
+        <PageHeader backTo="/flows" title={t("flows.executions.routeTitle")} />
+        <EmptyState title={t("flows.editor.notFound")} description={t("flows.editor.notFoundHint")} />
+      </PageBody>
+    )
+  }
+
   return (
     <PageBody>
       <PageHeader
-        title={t("flows.executions.title", { name: flow?.name ?? "" })}
+        title={flow ? t("flows.executions.title", { name: flow.name }) : t("flows.executions.routeTitle")}
         backTo={`/flows/${flowId}`}
         parentTitle={t("navigation.flows")}
         description={t("flows.executions.description")}
