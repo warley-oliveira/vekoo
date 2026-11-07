@@ -196,7 +196,7 @@ function EventChip({
       : null
 
   return (
-    <div className="vk-event">
+    <div className="vk-event vk-event--tall">
       <div className="vk-event-row">
         <span className="vk-event-time">{info.timeText}</span>
         {source.type === "booking" ? mark : null}

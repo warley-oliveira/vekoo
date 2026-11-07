@@ -543,7 +543,6 @@ export default function CalendarPage() {
               onNext={() => step(1)}
               stepLabel={stepLabels}
             />
-            <TimeZoneNote zones={screen.selectedZones} className="hidden max-w-56 xl:inline-flex" />
           </div>
           {screen.isPhone ? (
             filtersButton
@@ -553,7 +552,7 @@ export default function CalendarPage() {
               <ViewSwitch value={screen.view} onChange={screen.setView} isPhone={false} />
             </div>
           )}
-          <TimeZoneNote zones={screen.selectedZones} className="w-full xl:hidden" />
+          {screen.isPhone ? <TimeZoneNote zones={screen.selectedZones} className="w-full" /> : null}
         </div>
 
         {screen.isPhone && screen.view !== "month" ? (
@@ -576,6 +575,7 @@ export default function CalendarPage() {
               onChange={(values) => screen.setFilter("situations", values)}
               className="min-w-0 flex-1"
             />
+            <TimeZoneNote zones={screen.selectedZones} className="max-w-[45%] shrink-0" />
           </div>
         )}
 

@@ -63,6 +63,30 @@
   line-height: 1.25;
 }
 
+/*
+ * Bloco alto: as linhas não encolhem, e o que não cabe sai inteiro. Sem isto, a segunda e a terceira
+ * linhas apareciam cortadas ao meio nos atendimentos de 45 minutos.
+ */
+.vk-event--tall {
+  container-type: size;
+}
+
+.vk-event--tall > * {
+  flex-shrink: 0;
+}
+
+@container (max-height: 2.9rem) {
+  .vk-event-detail {
+    display: none;
+  }
+}
+
+@container (max-height: 1.75rem) {
+  .vk-event-title {
+    display: none;
+  }
+}
+
 .vk-event-row {
   display: flex;
   min-width: 0;
