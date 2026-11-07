@@ -181,7 +181,7 @@
       "expandAria": "Show the card trail",
       "viewThumbs": "Show thumbnails",
       "viewTitles": "Show titles only",
-      "newCard": "New card",
+      "newCard": "Create card",
       "newCardTypes": {
         "text": "Title and text",
         "list": "List",

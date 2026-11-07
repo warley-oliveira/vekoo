@@ -339,7 +339,7 @@
       "noResultsFound": "Nothing found. Try another word or place.",
       "found_one": "{{formatted}} business found",
       "found_other": "{{formatted}} businesses found",
-      "newSearch": "New search",
+      "newSearch": "Run another search",
       "filterResults": "Filter by name, address or category",
       "noFilterResults": "Nothing matches that search",
       "searchExisting": "Search by name, address, phone or category",

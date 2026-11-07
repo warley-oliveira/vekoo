@@ -994,7 +994,7 @@
         "fromTool": "From {{name}}",
         "seeTool": "See the function",
         "editCode": "Edit the code",
-        "newTool": "New function",
+        "newTool": "Create function",
         "paramsTitle": "What to send to the function",
         "paramsHint": "They accept variables."
       },
@@ -1029,7 +1029,7 @@
         "required": "Required",
         "requiredHint": "The AI only follows this way after filling in this piece of data.",
         "removeField": "Remove {{name}}",
-        "pickField": "Choose or add a piece of data",
+        "pickField": "Choose or create a piece of data",
         "manage": "Manage conversation data"
       },
       "ai_assistant": {
@@ -1332,7 +1332,7 @@
       "usedIn_one": "Used in 1 block",
       "usedIn_other": "Used in {{count}} blocks",
       "unused": "Not used yet",
-      "add": "Add data",
+      "add": "Create data",
       "delete": "Delete",
       "deleteTitle": "Delete \"{{name}}\"?",
       "deleteDescription_one": "It's in 1 block, and will stop being collected. What was already saved in the conversations stays there.",
@@ -1472,8 +1472,8 @@
       "description": "A flow looks after your conversations: what happens when someone sends a message, step by step.",
       "settings": "Settings",
       "tools": "Tools",
-      "create": "New flow",
-      "createShort": "New",
+      "create": "Create flow",
+      "createShort": "Create",
       "statusLabel": "Filter by status",
       "tabActive": "All",
       "tabPublished": "On",

@@ -12,7 +12,7 @@
       "channels": "Canais",
       "allChannels": "Todos",
       "channelDown": "{{name}} está desconectado",
-      "newChat": "Nova conversa",
+      "newChat": "Começar conversa",
       "empty": "Nenhuma conversa por aqui",
       "emptyHint": "Quando alguém escrever para um dos seus canais, a conversa aparece aqui. Você também pode começar uma.",
       "noResults": "Nada encontrado",

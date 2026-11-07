@@ -15,8 +15,8 @@
       "action": "Criar primeiro funil"
     },
     "create": {
-      "action": "Novo funil",
-      "mobileAction": "Novo",
+      "action": "Criar funil",
+      "mobileAction": "Criar",
       "title": "Novo funil",
       "description": "Dê um nome e diga por quais etapas uma conversa passa.",
       "submit": "Criar funil",
@@ -81,13 +81,13 @@
       "removedConfirm_other": "Excluir etapas e salvar"
     },
     "stage": {
-      "add": "Nova etapa",
+      "add": "Criar etapa",
       "name": "Nome da etapa",
       "rename": "Renomear etapa",
       "renameTitle": "Renomear etapa",
       "renameSubmit": "Salvar nome",
       "renamed": "Etapa renomeada para {{name}}",
-      "addAfter": "Nova etapa depois desta",
+      "addAfter": "Criar etapa depois desta",
       "createTitle": "Nova etapa",
       "createSubmit": "Criar etapa",
       "created": "Etapa {{name}} criada",

@@ -403,7 +403,7 @@
       "remove": "Remove {{name}}"
     },
     "creatable": {
-      "create": "Add “{{value}}”"
+      "create": "Create “{{value}}”"
     },
     "imagePicker": {
       "hint": "JPG, PNG or WebP, up to 2 MB. You can drag it here.",

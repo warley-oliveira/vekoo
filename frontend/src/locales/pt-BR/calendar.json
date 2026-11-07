@@ -641,7 +641,7 @@
       },
       "noCollaborators": {
         "title": "Este calendário ainda não tem colaboradores",
-        "description": "Todo serviço precisa de alguém para atender. Cadastre um colaborador e volte aqui para criar o serviço.",
+        "description": "Todo serviço precisa de alguém para atender. Crie um colaborador e volte aqui para criar o serviço.",
         "open": "Ir para colaboradores",
         "classGroupTitle": "Calendário de turmas não tem colaboradores",
         "classGroupDescription": "Serviço precisa de alguém para atender, e neste calendário quem organiza os horários são as turmas. Sem colaborador não dá para salvar um serviço aqui."

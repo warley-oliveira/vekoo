@@ -403,7 +403,7 @@
       "remove": "Tirar {{name}}"
     },
     "creatable": {
-      "create": "Cadastrar “{{value}}”"
+      "create": "Criar “{{value}}”"
     },
     "imagePicker": {
       "hint": "JPG, PNG ou WebP, até 2 MB. Pode arrastar para cá.",

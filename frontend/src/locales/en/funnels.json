@@ -15,8 +15,8 @@
       "action": "Create first funnel"
     },
     "create": {
-      "action": "New funnel",
-      "mobileAction": "New",
+      "action": "Create funnel",
+      "mobileAction": "Create",
       "title": "New funnel",
       "description": "Give it a name and say which stages a conversation goes through.",
       "submit": "Create funnel",
@@ -81,13 +81,13 @@
       "removedConfirm_other": "Delete stages and save"
     },
     "stage": {
-      "add": "New stage",
+      "add": "Create stage",
       "name": "Stage name",
       "rename": "Rename stage",
       "renameTitle": "Rename stage",
       "renameSubmit": "Save name",
       "renamed": "Stage renamed to {{name}}",
-      "addAfter": "New stage after this one",
+      "addAfter": "Create a stage after this one",
       "createTitle": "New stage",
       "createSubmit": "Create stage",
       "created": "Stage {{name}} created",

@@ -34,7 +34,7 @@
     },
     "boards": {
       "pageDescription": "Cada pipeline é um caminho que os cards percorrem, do primeiro contato ao fim.",
-      "new": "Novo pipeline",
+      "new": "Criar pipeline",
       "create": "Criar pipeline",
       "createFirst": "Criar o primeiro pipeline",
       "createTitle": "Novo pipeline",
@@ -105,11 +105,11 @@
       "slaHint_other": "Tempo máximo nesta etapa: {{count}} horas"
     },
     "card": {
-      "new": "Novo card",
+      "new": "Criar card",
       "create": "Criar card",
       "created": "Card criado",
-      "add": "Adicionar card",
-      "addConfirm": "Adicionar",
+      "add": "Criar card",
+      "addConfirm": "Criar",
       "addCancel": "Fechar",
       "open": "Abrir card",
       "actions": "Ações do card",
@@ -476,7 +476,7 @@
       "deleteHint": "\"{{name}}\" some do card para todo mundo."
     },
     "labels": {
-      "new": "Nova etiqueta",
+      "new": "Criar etiqueta",
       "edit": "Editar etiqueta",
       "editOf": "Editar a etiqueta {{name}}",
       "create": "Criar etiqueta",
@@ -577,7 +577,7 @@
       "mine": "Salvos",
       "quick": "Filtros rápidos",
       "cleanup": "Limpeza de dados",
-      "create": "Novo filtro",
+      "create": "Criar filtro",
       "saved": "Filtro salvo",
       "edit": "Editar o filtro {{name}}",
       "favorite": "Favoritar {{name}}",

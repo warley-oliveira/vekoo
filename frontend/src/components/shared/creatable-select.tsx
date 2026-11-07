@@ -35,7 +35,7 @@ type CreatableSelectProps = Partial<FieldControlProps> & {
 
 /**
  * Campo de lista em que a pessoa escolhe ou cadastra a opção ali mesmo, sem sair do item:
- * `SearchableSelect` com a saída "Cadastrar". Digitar o que já existe com outra caixa ou
+ * `SearchableSelect` com a saída "Criar". Digitar o que já existe com outra caixa ou
  * acento escolhe a existente, em vez de duplicar.
  */
 export function CreatableSelect({

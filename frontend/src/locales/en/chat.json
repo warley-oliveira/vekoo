@@ -12,7 +12,7 @@
       "channels": "Channels",
       "allChannels": "All",
       "channelDown": "{{name}} is disconnected",
-      "newChat": "New conversation",
+      "newChat": "Start conversation",
       "empty": "No conversations here",
       "emptyHint": "When someone writes to one of your channels, the conversation shows up here. You can also start one.",
       "noResults": "Nothing found",

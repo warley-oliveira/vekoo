@@ -339,7 +339,7 @@
       "noResultsFound": "Nada encontrado. Tente outra palavra ou outro lugar.",
       "found_one": "{{formatted}} estabelecimento encontrado",
       "found_other": "{{formatted}} estabelecimentos encontrados",
-      "newSearch": "Nova busca",
+      "newSearch": "Fazer outra busca",
       "filterResults": "Filtrar por nome, endereço ou categoria",
       "noFilterResults": "Nada com essa busca",
       "searchExisting": "Buscar por nome, endereço, telefone ou categoria",
