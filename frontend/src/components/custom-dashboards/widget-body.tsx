@@ -282,6 +282,30 @@ export function CardSkeleton({ type }: { type: DashboardWidget["widgetType"] }) 
       </LoadingRegion>
     )
   }
+  if (type === "pie_chart" || type === "donut_chart" || type === "radar") {
+    return (
+      <LoadingRegion className="flex h-full items-center justify-center">
+        <Skeleton className="aspect-square h-3/4 max-h-52 rounded-full" />
+      </LoadingRegion>
+    )
+  }
+  if (type === "heatmap") {
+    return (
+      <LoadingRegion className="grid h-full grid-cols-7 grid-rows-4 gap-0.5 overflow-hidden">
+        {Array.from({ length: 28 }, (_, index) => (
+          <Skeleton key={index} className="rounded-[3px]" />
+        ))}
+      </LoadingRegion>
+    )
+  }
+  if (type === "line_chart" || type === "area_chart") {
+    return (
+      <LoadingRegion className="flex h-full flex-col gap-3 pt-2">
+        <Skeleton className="w-full flex-1 rounded-md" />
+        <Skeleton className="h-3 w-full shrink-0" />
+      </LoadingRegion>
+    )
+  }
   if (type === "table" || type === "funnel") {
     return (
       <LoadingRegion className="flex h-full flex-col gap-2.5 overflow-hidden">

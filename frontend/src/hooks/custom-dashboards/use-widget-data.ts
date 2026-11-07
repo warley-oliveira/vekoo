@@ -37,14 +37,13 @@ const COMPOUND_PATH = "/custom-dashboards/compound-query"
 const SWR_OPTIONS = {
   revalidateOnFocus: false,
   revalidateOnReconnect: true,
+  // Um card que chega à tela, ou a prévia que abre, com a mesma consulta de outro não pergunta de novo: esmaeceria os dois à
+  // toa. Fica abaixo do menor "atualizar sozinho" (30 s): a janela é a da consulta anterior, e engoliria a atualização.
+  dedupingInterval: 25_000,
   // 403, 422 e prazo estourado não melhoram sozinhos. Quem insiste é a pessoa, no "tentar de novo" do card.
   shouldRetryOnError: false,
 }
 
-// Um card que chega à tela, ou a prévia que abre, com a mesma consulta de outro não pergunta de novo: esmaeceria os dois à
-// toa. Com o "atualizar a cada 30 s" ligado, a janela encurta, senão ela engoliria a própria atualização.
-const DEDUPE_MS = 60_000
-const DEDUPE_REFRESHING_MS = 5_000
 
 type CompoundResponse = { results: Record<string, QueryResult> }
 type WidgetResponse = QueryResult | CompoundResponse
@@ -254,7 +253,6 @@ export function useWidgetData(
   const swr = useSWR<WidgetResponse>(enabled && request ? request.key : null, () => runRequest(request as WidgetRequest), {
     ...SWR_OPTIONS,
     refreshInterval,
-    dedupingInterval: refreshInterval ? DEDUPE_REFRESHING_MS : DEDUPE_MS,
   })
 
   // Trocou a consulta (outro período, outro campo): o desenho anterior fica até o novo chegar, esmaecido. Ele foi feito

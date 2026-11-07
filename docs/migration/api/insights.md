@@ -33,8 +33,11 @@ Em dashboard personalizado, **cada fonte exige também a permissão da tela de o
 | `campaigns` | `campaigns` | não |
 | `daily_stats` | `dashboard` | não: número da organização |
 | `hook_logs` | `core_settings` | não: é a mesma lista dos logs de webhook |
+| `pipelines` | `pipelines` | não: passa por `Pipelines::CardVisibility`, a mesma regra do quadro |
 
 Fonte sem a permissão: `403 forbidden` na consulta, e ela não aparece em `data-sources`. Um dashboard pode misturar fontes: quem não alcança uma recebe `403` só naquele card, e a tela trata por card.
+
+Os filtros `pipeline_status` e `pipeline_stage`, sobre conversas, também exigem `pipelines`: sem ela, não aparecem em `data-sources` nem em `filter-options`, e usar um deles é `403 forbidden`.
 
 ### Quem vê o quê
 
@@ -424,7 +427,7 @@ Tira a conversa só deste funil. Mesma resposta.
 | `GET /custom-dashboards` | | `{ customDashboards: [...], meta }`, do mais recente para o mais antigo, sem os widgets, com `widgetsCount` e `createdByName`. 100 por padrão. |
 | `GET /custom-dashboards/:id` | | `{ customDashboard }`, com os widgets. |
 | `POST /custom-dashboards` | `{ customDashboard: { name, description, icon, globalFilters, widgets } }` | `201`. |
-| `PATCH /custom-dashboards/:id` | Os mesmos. Sem `widgets`, ou com `null`, ficam como estão. Lista vazia apaga todos. | `200`. A lista inteira é trocada de uma vez, e só depois de conferir tudo. |
+| `PATCH /custom-dashboards/:id` | Os mesmos. Sem `widgets`, ou com `null`, ficam como estão. Lista vazia apaga todos. | `200`. A lista inteira é trocada de uma vez, e só depois de conferir tudo. Cada widget mantém o `id` que veio, se for um id válido e único na lista; sem isso, ganha um novo. `updatedAt` muda. |
 | `DELETE /custom-dashboards/:id` | | `204`. |
 | `POST /custom-dashboards/:id/duplicate` | | `201`, com o nome "(cópia)", widgets de id novo, e em nome de quem duplicou. |
 | `PATCH /custom-dashboards/:id/toggle-favorite` | | `{ isFavorite }`. O favorito é do dashboard, e não da pessoa, como na origem. |
@@ -503,18 +506,19 @@ As fontes que **esta pessoa** pode consultar. É o que a tela usa para montar os
         { "key": "status", "label": "Situação", "type": "enum", "enumValues": [ "open", "closed" ] },
         { "key": "assigned_account_id", "label": "Atendente", "type": "string", "enumValues": null, "filterType": "relationship" },
         { "key": "custom_attributes", "label": "Campo personalizado", "type": "custom_attribute", "enumValues": null, "filterType": "custom_attribute" },
-        { "key": "booking_attendance", "label": "Presença em agendamento", "type": "string", "enumValues": null, "filterType": "relationship" }
+        { "key": "booking_attendance", "label": "Presença em agendamento", "type": "string", "enumValues": null, "filterType": "relationship", "virtual": true }
       ],
       "allowedMetrics": [ "count", "sum", "avg", "min", "max" ],
       "allowedDimensions": [ "status", "assigned_account_id", "audience_type", "team_id", "connector_id", "created_at" ],
       "relatedDimensions": [ { "key": "chat_tag_name", "label": "Etiqueta" } ],
-      "supportsCustomAttributeDimensions": true
+      "supportsCustomAttributeDimensions": true,
+      "supportsMetricFilters": true
     }
   ]
 }
 ```
 
-A chave dos campos é em snake_case, porque é **valor**: é o que a tela manda de volta em `field`. `booking_attendance` é só filtro: nunca métrica nem dimensão.
+A chave dos campos é em snake_case, porque é **valor**: é o que a tela manda de volta em `field`. Campo com `virtual: true` (`booking_attendance`, `pipeline_status`, `pipeline_stage`) é só filtro: nunca métrica nem dimensão. `supportsMetricFilters` diz se a fonte aceita `metrics[].filters`: as do Postgres (`daily_stats`, `pipelines`) não aceitam.
 
 | Fonte | O que é | Período padrão |
 |---|---|---|
@@ -525,10 +529,11 @@ A chave dos campos é em snake_case, porque é **valor**: é o que a tela manda 
 | `campaigns` | Campanhas e os contadores delas. | `created_at` |
 | `daily_stats` | Os números do dashboard, dia a dia. Não aceita `metrics[].filters`. | `day` |
 | `hook_logs` | O que os webhooks receberam, com a permissão `core_settings`. O que veio na requisição não sai. Logs duram 90 dias. Ver [automation.md](automation.md). | `created_at` |
+| `pipelines` | Os cards de todos os quadros, com a permissão `pipelines`. Quem não vê um card no quadro não o conta aqui. **Arquivados contam**, como na origem: `mark_won!` pode arquivar o ganho. Quem quer só os ativos filtra por `archived`. `board_id` vem da etapa, e `deal_status` (`open`, `won`, `lost`) é derivado de `won_at` e `lost_at`; os dois agrupam e filtram como qualquer campo. `tags` do card não entra. Não aceita `metrics[].filters`. | `created_at` |
 
 ### `GET /custom-dashboards/filter-options?sourceKey=conversations`
 
-As opções dos filtros da organização. As chaves são os campos, e ficam como estão. Fonte que não existe: `404`. Sem a permissão dela: `403`.
+As opções dos filtros da organização. As chaves são os campos, e ficam como estão. Fonte que não existe: `404`. Sem a permissão dela: `403`. Campo com valores de nome conhecido (`status`, `audience_type`, `deal_status`) também vem aqui: sem isso, a tela só teria `whatsapp_api` e `open` para mostrar.
 
 ```json
 {
@@ -538,10 +543,15 @@ As opções dos filtros da organização. As chaves são os campos, e ficam como
     "connector_id": [ { "value": "6aee3ca95d4d5c0eb9961bc0", "label": "Site da Doma Store" } ],
     "tags": [ { "value": "aguardando-operador", "label": "aguardando-operador" } ],
     "custom_attributes": [ { "value": "aniversario", "label": "Aniversário", "valueType": "date", "optionValues": [] } ],
-    "booking_attendance": [ { "value": "show", "label": "Compareceu" }, { "value": "no_show", "label": "Não compareceu" } ]
+    "status": [ { "value": "open", "label": "Aberta" }, { "value": "closed", "label": "Fechada" } ],
+    "booking_attendance": [ { "value": "show", "label": "Compareceu" }, { "value": "no_show", "label": "Não compareceu" } ],
+    "pipeline_status": [ { "value": "won", "label": "Ganho" }, { "value": "lost", "label": "Perdido" }, { "value": "open", "label": "Em aberto" } ],
+    "pipeline_stage": [ { "value": "4b8f2c1e-7a55-4a62-9d27-0f7a3e2b6c11", "label": "Vendas no atacado · Proposta enviada" } ]
   }
 }
 ```
+
+`pipeline_status` e `pipeline_stage` olham só os quadros de CRM: são os que têm conversa no card.
 
 ### `POST /custom-dashboards/query`
 
@@ -648,6 +658,10 @@ Por etiqueta (`chat_tag_name`), pelo profissional da agenda (`professional_name`
 { "rows": [ { "status": "cancelled", "Enviadas": 9 }, { "status": "completed", "Enviadas": 93 }, { "status": "paused", "Enviadas": 33 } ], "labels": { "status": { "draft": "Rascunho", "cancelled": "Cancelada", "...": "..." } } }
 ```
 
+**Empate em `sort`:** desempata pela primeira dimensão, nas duas bases. O limite corta sempre os mesmos valores, e as barras não trocam de lugar ao atualizar.
+
+**Número decimal** sai como número no JSON, mesmo vindo de `decimal` no Postgres (`deal_value`). No CSV, sai por extenso.
+
 Sem agrupar, com `limit: 1`:
 
 ```json
@@ -670,9 +684,12 @@ Sem agrupar, com `limit: 1`:
       "custom_attributes": { "cidade": "Belo Horizonte", "ticket_medio": "500" }
     }
   ],
+  "labels": { "status": { "open": "Aberta" }, "audience_type": { "whatsapp_api": "WhatsApp" }, "assigned_account_id": { "...": "..." } },
   "meta": { "total": 1, "truncated": true, "...": "..." }
 }
 ```
+
+Sem agrupar, `labels` traz o nome de todo campo que tem nome, como na consulta agrupada: a tabela de registros não mostra id.
 
 Recusas, `422`, cada uma a partir do que o cliente mandou:
 
@@ -777,9 +794,9 @@ ChatFunnel.analyze(Chat.visible_to(account).valid_records, funnels, from:, to:, 
 
 ### Fonte nova em dashboard personalizado
 
-**A de pipelines entra assim, sem mexer no resto** (ver `app/services/custom_dashboards/data_source_registry.rb`):
+A de pipelines (`app/services/custom_dashboards/sources/pipelines.rb`) é o exemplo mais completo. Os passos:
 
-1. Crie `app/services/custom_dashboards/sources/pipelines.rb`:
+1. Crie `app/services/custom_dashboards/sources/<fonte>.rb`:
 
    ```ruby
    module CustomDashboards
@@ -791,9 +808,10 @@ ChatFunnel.analyze(Chat.visible_to(account).valid_records, funnels, from:, to:, 
            permission: :pipelines,
            default_time_field: "created_at",
            # Com a organização: é o que garante o isolamento. Recebe a pessoa que consulta.
-           scope: ->(account) { Pipelines::Card.where(organization_id: account.organization_id) },
+           # `::Pipelines`, com os dois pontos: aqui dentro, `Pipelines` é este módulo.
+           scope: ->(account) { ::Pipelines::Card.unscoped.where(organization_id: account.organization_id) },
            fields: [
-             { key: "stage_id", type: "string" },
+             { key: "stage_id", type: "string", label_from: :pipeline_stages, options_from: :active_pipeline_stages },
              { key: "created_at", type: "date" }
            ],
            allowed_metrics: %w[count],
@@ -804,14 +822,14 @@ ChatFunnel.analyze(Chat.visible_to(account).valid_records, funnels, from:, to:, 
    end
    ```
 
-2. Acrescente `Pipelines` em `DataSourceRegistry::SOURCE_NAMES`.
-3. Acrescente `insights.custom_dashboards.sources.pipelines` (`label` e `fields`) nos dois idiomas. Uma spec confere que nenhum campo fica sem tradução.
+2. Acrescente o módulo em `DataSourceRegistry::SOURCE_NAMES`.
+3. Acrescente `insights.custom_dashboards.sources.<fonte>` (`label` e `fields`) nos dois idiomas. Uma spec confere que nenhum campo fica sem tradução.
 
-Modelo Mongoid passa por `MongoidBuilder`, e ActiveRecord por `ActiveRecordBuilder`, que já trata coluna de verdade (`jsonb:` é só para campo dentro de jsonb), o prazo e a falha de SQL. O escopo é aplicado sempre, e nada do cliente o alcança.
+Modelo Mongoid passa por `MongoidBuilder`, e ActiveRecord por `ActiveRecordBuilder`, que já trata coluna de verdade (`jsonb:` é só para campo dentro de jsonb), o prazo e a falha de SQL. O escopo é aplicado sempre, e nada do cliente o alcança. Modelo com `default_scope` que ordena precisa de `unscoped`, senão o agrupamento quebra.
 
-No Postgres, `related_dimensions`, `document_id_filters` e `metrics[].filters` não existem: `ActiveRecordBuilder` só agrupa por campo da fonte, e o nome de uma coluna de id vem por `label_from`.
+No Postgres, `related_dimensions`, `document_id_filters` e `metrics[].filters` não existem: `ActiveRecordBuilder` só agrupa por campo da fonte, e o nome de uma coluna de id vem por `label_from`. Campo que não é coluna da tabela (de uma junção, ou derivado) vem por `sql:`, que é o desenvolvedor quem escreve: nada do cliente entra nele.
 
-Os filtros `pipeline_status` e `pipeline_stage` da origem, sobre conversas: um resolver em `DocumentIdResolvers` e uma linha em `document_id_filters` de `Sources::Conversations`.
+Filtro que resolve ids em outra coleção, como `pipeline_status` e `pipeline_stage` sobre conversas: um resolver em `DocumentIdResolvers`, que recebe a pessoa, e uma linha em `document_id_filters` da fonte, com a `permission` e as opções.
 
 ---
 
@@ -884,6 +902,7 @@ O que a varredura limita, além do índice: `days` no quadro (até 365), `dateSt
 - **`$facet` tem teto de 16 MB:** 31 colunas com 50 conversas, em conversas com `notes` ou `summary` muito longos, podem bater nele. Vira `500`. Não reproduzido.
 - **Filtro de presença em agendamento** recusa acima de 50 mil conversas (`tooManyMatches`).
 - `contacts` conta conversas, e não pessoas.
+- **`pipelines` e `daily_stats` não aceitam `metrics[].filters`:** "só contar quando" não aparece para elas. Uma tabela com "ganhos" e "perdidos" na mesma linha precisa de fórmula em cima de dois passos.
 
 ## O que não foi exercitado
 
@@ -894,12 +913,11 @@ Ficou de fora, ou só em spec:
 - **Volume de produção.** O `explain` foi com 20 mil conversas, e não com milhões. `max_time_ms` estourando está só em spec, com o erro simulado. `statement_timeout` também só em spec, mas cortando de verdade um `pg_sleep`.
 - **`daily` às 02:15 pelo relógio:** rodou enfileirado à mão. O cron dele foi carregado, e não disparou.
 - **Limite de 300 consultas por minuto:** a spec exercita o de CSV, que é o mesmo mecanismo.
-- **`tooManyMatches` e `queryFailed`:** só em spec.
+- **`tooManyMatches` e `queryFailed`:** só em spec. Pelo mesmo motivo, os filtros `pipeline_status` e `pipeline_stage` acima de 50 mil conversas.
 - **Teto de 16 MB no `$facet`:** não reproduzido.
 - **O ranking da equipe com o modelo:** `get_team_ranking` passou pelo modelo antes de a conversão contar conversas distintas. A conta corrigida só foi exercitada em spec, sem nova rodada com o modelo.
 - **Google e provedores de mensagem:** remarcar e cancelar pelo copiloto passaram pelo serviço da agenda, sem agenda do Google conectada e sem envio de verdade.
-- **A fonte `pipelines`:** o caminho acima não foi exercitado. Nada está registrado neste branch.
-- **A tela dos dashboards personalizados.** O Dashboard e os Funis já têm front (`routes/dashboard`, `routes/funnels`); os personalizados, não.
+- **Quadro em modo `assigned` pela tela:** a regra de `Pipelines::CardVisibility` na fonte `pipelines` está em spec, com uma pessoa restrita de verdade no banco. A semente não tem esse quadro, e nenhum screenshot passou por ele.
 
 ---
 
