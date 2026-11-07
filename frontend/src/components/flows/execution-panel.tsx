@@ -9,9 +9,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useFlowExecution } from "@/hooks/flows/use-flows"
 import { useRetained } from "@/hooks/use-panel-session"
 import { blockIcon } from "@/lib/flows/catalog"
-import { contactLabel, describeStep, EXECUTION_TONES } from "@/lib/flows/execution-steps"
+import { contactLabel, contactPhone, describeStep, EXECUTION_TONES } from "@/lib/flows/execution-steps"
 import type { FlowDefinition, FlowExecutionDetail, FlowExecutionLog } from "@/lib/flows/types"
-import { formatPhone } from "@/lib/format-phone"
 import { cn } from "@/lib/utils"
 
 // O passo a passo de uma execução, em frases. O dado cru continua a um clique, porque é o que resolve quando alguém
@@ -40,7 +39,7 @@ export function ExecutionPanel({
       }}
       size="lg"
       title={execution ? contactLabel(execution, t) : t("flows.executions.detailTitle")}
-      description={execution?.contactName && execution.contactId ? formatPhone(execution.contactId) : undefined}
+      description={execution?.contactName ? (contactPhone(execution) ?? undefined) : undefined}
     >
       {error ? (
         <ErrorState error={error} onRetry={() => void reload()} />

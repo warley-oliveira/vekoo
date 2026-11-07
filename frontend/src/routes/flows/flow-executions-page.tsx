@@ -19,9 +19,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { useFlow, useFlowExecutions } from "@/hooks/flows/use-flows"
 import { useIsMobile } from "@/hooks/use-is-mobile"
-import { contactLabel, EXECUTION_TONES } from "@/lib/flows/execution-steps"
+import { contactLabel, contactPhone, EXECUTION_TONES } from "@/lib/flows/execution-steps"
 import type { FlowExecution, FlowExecutionStatus } from "@/lib/flows/types"
-import { formatPhone } from "@/lib/format-phone"
 
 // O histórico de um fluxo: quem passou por ele, quem ainda está esperando, e o que deu errado. Abre o passo a passo
 // num painel, pelo endereço (`?execution=`): o link pode ser mandado para alguém, e o voltar funciona.
@@ -147,7 +146,7 @@ export default function FlowExecutionsPage() {
 const ExecutionRow = memo(function ExecutionRow({ execution, onOpen }: { execution: FlowExecution; onOpen: () => void }) {
   const { t } = useTranslation()
   const name = contactLabel(execution, t)
-  const phone = execution.contactName && execution.contactId ? formatPhone(execution.contactId) : null
+  const phone = execution.contactName ? contactPhone(execution) : null
 
   return (
     <li>

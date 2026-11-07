@@ -1,6 +1,7 @@
 import type { TFunction } from "i18next"
 
 import type { StatusTone } from "@/components/shared"
+import { formatPhone } from "@/lib/format-phone"
 
 import type { FlowExecutionLog, FlowExecutionStatus } from "./types"
 import { humanizeVariables } from "./variables"
@@ -170,7 +171,13 @@ export function describeStep(log: FlowExecutionLog, t: TFunction): ExecutionStep
   }
 }
 
+/** `contactId` nem sempre é telefone: no chat do site é o id do visitante, que não diz nada a ninguém. */
+export function contactPhone(execution: { contactId: string | null }): string | null {
+  const id = execution.contactId
+  return id && /^\+?\d{8,15}$/.test(id) ? formatPhone(id) : null
+}
+
 /** O nome da conversa quando há, ou o telefone do contato. */
 export function contactLabel(execution: { contactName?: string | null; contactId: string | null }, t: TFunction): string {
-  return execution.contactName || execution.contactId || t("flows.executions.unknownContact")
+  return execution.contactName || contactPhone(execution) || t("flows.executions.unknownContact")
 }
