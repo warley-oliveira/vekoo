@@ -1,9 +1,9 @@
-# Kamal 2 — API Vekoo em syco.vekoo.app
+# Kamal 2 — API Vekoo em syco.vekoo.app. Passo a passo em DEPLOY.md.
 #
 # TLS: NÃO usamos Let's Encrypt. syco.vekoo.app está atrás do proxy da Cloudflare
 # (nuvem laranja), então o desafio ACME HTTP-01 do kamal-proxy não fecha de forma
-# confiável. Em vez disso o kamal-proxy serve um Cloudflare Origin Certificate e o
-# modo SSL da zona fica em Full (strict). Ver DEPLOY.md.
+# confiável. Em vez disso o kamal-proxy serve um certificado próprio, hoje
+# autoassinado, com o modo SSL da zona em Full.
 
 minimum_version: 2.12.0
 service: vekoo-api
@@ -12,6 +12,9 @@ service: vekoo-api
 # `.downcase` porque repositório Docker não aceita maiúscula.
 image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api
 
+# O primeiro papel é o primário: `web` sobe primeiro, prepara os bancos no entrypoint
+# (índices do Mongo, migrations, dado do produto), e o Kamal só sobe os outros depois
+# de ele passar no healthcheck.
 servers:
   web:
     hosts:
@@ -27,9 +30,26 @@ servers:
         # Active Record estoura com ConnectionTimeoutError intermitente.
         RAILS_MAX_THREADS: 6
         WEB_CONCURRENCY: 0
+  # JavaScript de cliente (fila `scripts`), em processo próprio: se um script achar um jeito de
+  # derrubar o V8, cai este container, e não o que entrega as mensagens. Sem este papel, os blocos
+  # `execute_tool` e `ai_assistant` com ferramenta e a ação de script do webhook ficam parados.
+  scripts:
+    hosts:
+      - 107.152.37.137
+    cmd: bundle exec sidekiq -C config/sidekiq_scripts.yml
+    proxy: false
+    options:
+      # Alguns builtins do V8 passam do limite do script antes de parar (870 MB a 2 GB, ver
+      # docs/migration/api/script-engine.md). O teto mantém o estrago aqui dentro: o container
+      # morre e o Docker o reinicia, sem levar a máquina junto.
+      memory: 1g
+    env:
+      clear:
+        RAILS_MAX_THREADS: 3        # >= :concurrency do config/sidekiq_scripts.yml (2)
+        WEB_CONCURRENCY: 0
 
 proxy:
-  # Certificado de origem da Cloudflare, carregado dos secrets (.kamal/secrets).
+  # Certificado de origem, carregado dos secrets (.kamal/secrets).
   ssl:
     certificate_pem: SSL_CERTIFICATE_PEM
     private_key_pem: SSL_PRIVATE_KEY_PEM
@@ -43,14 +63,18 @@ proxy:
   healthcheck:
     path: /up
     interval: 3
-    timeout: 60                     # boot do Rails + db:prepare numa VPS pequena
+    timeout: 60                     # por tentativa; o teto do deploy é deploy_timeout
   # A geração por IA é um stream longo: 60s cortaria o carrossel no meio. O
   # `event: start` sai imediatamente, mas o teto precisa caber na geração toda.
+  # Vale também para o Thruster: ver HTTP_WRITE_TIMEOUT abaixo. WebSocket (/cable e
+  # /widget-cable) não pede nada aqui: este prazo é o da resposta, e o upgrade a encerra.
   response_timeout: 300
   buffering:
     requests: true
-    max_request_body: 52_428_800    # 50 MB — upload de imagem do editor
-    max_response_body: 0
+    max_request_body: 52_428_800    # 50 MB — upload de imagem do editor e importação do catálogo
+    # O padrão do Kamal é guardar a resposta inteira antes de repassar, e o SSE da geração por IA
+    # chegaria todo de uma vez no fim. `max_response_body: 0` não desliga isso, só tira o teto.
+    responses: false
 
 registry:
   server: ghcr.io
@@ -72,35 +96,77 @@ ssh:
   keys:
     - "~/.ssh/vekoo_deploy"
 
+# O que é só endereço fica aqui. Tudo o que depende da instalação vem de .env.deploy, pelo
+# .kamal/secrets: o significado de cada um está em .env.deploy.example. O opcional sem valor chega
+# vazio no container, e o código trata vazio como "não configurado".
 env:
   clear:
     RAILS_ENV: production
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
     APP_HOSTS: syco.vekoo.app                        # config.hosts
-    # CORS, sem curinga — lista explícita. A URL do Worker entra junto porque
-    # a zona vekoo.app vive em outra conta Cloudflare: enquanto o domínio não
-    # for apontado para este Worker, é por workers.dev que o front atende.
+    # CORS e origem do /cable, sem curinga — lista explícita. A URL do Worker entra
+    # junto porque a zona vekoo.app vive em outra conta Cloudflare: enquanto o domínio
+    # não for apontado para este Worker, é por workers.dev que o front atende.
     FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.warleyolf.workers.dev
-    BACKEND_URL: https://syco.vekoo.app              # URLs absolutas de anexo
+    BACKEND_URL: https://syco.vekoo.app              # webhooks, mídia e URLs absolutas de anexo
     REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable
     CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2  # Rails.cache (trava da geração)
+    # O Thruster corta a resposta em 30s por padrão, abaixo do response_timeout do proxy.
+    HTTP_WRITE_TIMEOUT: 300
+    # O Google devolve o login para a TELA, e não para a API.
+    GOOGLE_CALENDAR_REDIRECT_URI: https://my.vekoo.app/calendar/google-callback
+    WHATSAPP_WEB_DEFAULT_PROVIDER: evolution_api
+    # O snippet que o cliente cola no site: de onde carrega o script e com quem fala.
+    WIDGET_BASE_URL: https://widget.vekoo.app
+    WIDGET_API_BASE_URL: https://syco.vekoo.app
+    WIDGET_ASSETS_BASE_URL: https://syco.vekoo.app
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - DATABASE_URL
+    - MONGODB_URI
     - ANTHROPIC_API_KEY
+    - OPENAI_API_KEY
+    - OPENAI_ACCESS_TOKEN
+    - VAPID_PUBLIC_KEY
+    - VAPID_PRIVATE_KEY
+    - VAPID_SUBJECT
+    - META_APP_ID
+    - META_APP_SECRET
+    - META_MESSAGING_VERIFY_TOKEN
+    - INSTAGRAM_APP_ID
+    - INSTAGRAM_APP_SECRET
+    - EVOLUTION_API_URL
+    - EVOLUTION_API_KEY
+    - WHATSAPP_API_URL
+    - WHATSAPP_API_KEY
+    - ZAPI_ACCOUNT_TOKEN
+    - ZAPI_CLIENT_TOKEN
+    - GOOGLE_CALENDAR_CLIENT_ID
+    - GOOGLE_CALENDAR_CLIENT_SECRET
+    - GOOGLE_SHEETS_CLIENT_ID
+    - GOOGLE_SHEETS_API_KEY
+    - GOOGLE_SHEETS_APP_ID
+    - GOOGLE_MAPS_API_KEY
+    - APIFY_API_TOKEN
+    - MEDIA_PROXY_ALLOWED_HOSTS
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro
-# upload morreria com EACCES. Sem ele, todo deploy apagaria os anexos.
+# upload morreria com EACCES. Sem ele, todo deploy apagaria os anexos. Vale para os
+# três papéis, e é assim que a exportação feita pelo worker chega à API.
 volumes:
   - "vekoo_storage:/rails/storage"
 
 accessories:
   db:
-    image: postgres:16.10           # fixado no patch: major novo recusa PGDATA existente
+    # O Postgres 16 oficial com a extensão vector, de que a busca do catálogo depende.
+    # O sufixo fixa o major (major novo recusa PGDATA existente) e a distro (glibc nova muda a
+    # ordenação de texto e invalida os índices). ANTES de trocar esta imagem num volume que já
+    # existe, confira a glibc: DEPLOY.md, "Trocar a imagem do Postgres".
+    image: pgvector/pgvector:pg16-trixie
     host: 107.152.37.137
     # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
     # do iptables e IGNORA o ufw, expondo o Postgres à internet.
@@ -118,6 +184,30 @@ accessories:
       health-interval: 10s
       health-retries: 5
 
+  # Conversas, mensagens, conectores, campanhas e agenda. Standalone de propósito: nada aqui
+  # depende de transação multi-documento. Backup: bin/deploy-setup (vekoo-backup).
+  mongodb:
+    image: mongo:7.0                # fixado no major: subir de major pede passo a passo
+    host: 107.152.37.137
+    # SEM `port:`, pelo mesmo motivo do Postgres. O host é o nome do container (rede `kamal`).
+    #
+    # Por padrão o WiredTiger pega metade da RAM menos 1 GB, sem enxergar os vizinhos: seriam
+    # 1.4 GB de uma VPS de 3.8 GB que também roda Puma, dois Sidekiq, Postgres e Redis.
+    cmd: "mongod --wiredTigerCacheSizeGB 0.5"
+    env:
+      clear:
+        MONGO_INITDB_ROOT_USERNAME: vekoo
+      secret:
+        - MONGO_INITDB_ROOT_PASSWORD
+    volumes:
+      - "vekoo_mongodata:/data/db"
+      # A imagem declara este também. Sem nome, cada reboot deixaria um volume anônimo para trás.
+      - "vekoo_mongoconfig:/data/configdb"
+    options:
+      health-cmd: "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
+      health-interval: 10s
+      health-retries: 5
+
   redis:
     image: redis:7.4-alpine
     host: 107.152.37.137
@@ -131,14 +221,18 @@ accessories:
       health-interval: 10s
       health-retries: 5
 
+# `kamal app exec` sem `--interactive` roda UMA VEZ POR PAPEL, ao mesmo tempo. Com três papéis, o
+# que não for interativo precisa do `-r web`, ou a tarefa roda três vezes.
 aliases:
-  console: app exec --interactive --reuse "bin/rails console"
-  shell:   app exec --interactive --reuse "bash"
-  migrate: app exec --reuse "bin/rails db:migrate"
-  seed:    app exec --reuse "bin/rails db:seed"
-  dbc:     accessory exec db --interactive --reuse "psql -U vekoo -d vekoo_production"
+  console:  app exec --interactive --reuse "bin/rails console"
+  shell:    app exec --interactive --reuse "bash"
+  migrate:  app exec -r web --reuse "bin/rails db:migrate"
+  seed:     app exec -r web --reuse "bin/rails db:seed"
+  indexes:  app exec -r web --reuse "bin/rails db:mongoid:create_indexes"
+  dbc:      accessory exec db --interactive --reuse "psql -U vekoo -d vekoo_production"
+  mongoc:   accessory exec mongodb --interactive --reuse "sh -c 'exec mongosh -u \"$MONGO_INITDB_ROOT_USERNAME\" -p \"$MONGO_INITDB_ROOT_PASSWORD\" --authenticationDatabase admin vekoo_production'"
 
 retain_containers: 3
-deploy_timeout: 120
+deploy_timeout: 180                 # boot do Rails + índices + db:prepare + boot do Puma numa VPS pequena
 drain_timeout: 30
 readiness_delay: 7
