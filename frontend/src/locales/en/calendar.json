@@ -92,7 +92,8 @@
       "monthTotal_one": "{{value}} event in {{month}}",
       "monthTotal_other": "{{value}} events in {{month}}",
       "dayWithCount_one": "{{date}}, {{count}} event",
-      "dayWithCount_other": "{{date}}, {{count}} events"
+      "dayWithCount_other": "{{date}}, {{count}} events",
+      "monthTotal_zero": "Nothing booked in {{month}}"
     },
     "sidebar": {
       "title": "Month, calendars and summary",
@@ -359,7 +360,10 @@
         "noShow_one": "{{count}} absent",
         "noShow_other": "{{count}} absent",
         "pending_one": "{{count}} pending",
-        "pending_other": "{{count}} pending"
+        "pending_other": "{{count}} pending",
+        "show_zero": "0 present",
+        "noShow_zero": "0 absent",
+        "pending_zero": "0 pending"
       },
       "mark": {
         "show": "Mark present",
@@ -402,7 +406,8 @@
         "empty": {
           "title": "No one enrolled",
           "description": "Add someone to this class only, or enroll them in the group."
-        }
+        },
+        "title_zero": "Participants"
       },
       "remove": {
         "guestAction": "Remove from this class",

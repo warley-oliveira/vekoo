@@ -92,7 +92,8 @@
       "monthTotal_one": "{{value}} compromisso em {{month}}",
       "monthTotal_other": "{{value}} compromissos em {{month}}",
       "dayWithCount_one": "{{date}}, {{count}} compromisso",
-      "dayWithCount_other": "{{date}}, {{count}} compromissos"
+      "dayWithCount_other": "{{date}}, {{count}} compromissos",
+      "monthTotal_zero": "Nada marcado em {{month}}"
     },
     "sidebar": {
       "title": "Mês, calendários e resumo",
@@ -359,7 +360,10 @@
         "noShow_one": "{{count}} ausente",
         "noShow_other": "{{count}} ausentes",
         "pending_one": "{{count}} pendente",
-        "pending_other": "{{count}} pendentes"
+        "pending_other": "{{count}} pendentes",
+        "show_zero": "0 presentes",
+        "noShow_zero": "0 ausentes",
+        "pending_zero": "0 pendentes"
       },
       "mark": {
         "show": "Marcar presente",
@@ -402,7 +406,8 @@
         "empty": {
           "title": "Ninguém inscrito",
           "description": "Adicione alguém só para esta aula, ou inscreva na turma."
-        }
+        },
+        "title_zero": "Participantes"
       },
       "remove": {
         "guestAction": "Remover desta aula",
