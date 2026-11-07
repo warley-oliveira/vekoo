@@ -393,6 +393,7 @@ module VekooAutomationSeeds
         status = hook.inactive? ? "skipped" : (random.rand(10).zero? ? "error" : "success")
         log(organization, hook, status, random, index)
       end
+      hook.update_columns(total_request: 30)
     end
   end
 

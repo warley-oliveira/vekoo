@@ -37,7 +37,11 @@ class Hook < ApplicationRecord
   before_save :set_slug
   before_validation :set_uid, on: :create
 
-  after_destroy { HookLog.where(hook_id: id.to_s).delete_all }
+  after_destroy do
+    HookLog.where(hook_id: id.to_s).delete_all
+    # Sem o webhook, nenhuma entrega resolveria o aviso, e o número do menu ficaria preso.
+    resolve_failure_alert!
+  end
 
   def self.scoped(organization_id, id)
     for_organization(organization_id).find_by(id: id)

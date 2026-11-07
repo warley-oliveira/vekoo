@@ -143,6 +143,6 @@ pt-BR:
         invalid_media_url: "A URL da mídia não é válida."
         send_failed: "A mensagem do webhook não foi enviada."
         http_status: "O destino respondeu com o status %{status}."
-        http_destination: "O destino não é permitido."
+        http_destination: "O endereço não foi aceito: por segurança, só chamamos endereços públicos da internet, nas portas 80, 443, 8080 ou 8443."
         http_failed: "Não foi possível chamar o destino: %{reason}"
         script_failed: "O script do webhook falhou: %{reason}"
