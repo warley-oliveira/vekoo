@@ -34,7 +34,7 @@ export function AlertCount({
   )
 }
 
-/** Ponto no ícone: há alerta aqui dentro, inclusive com o grupo fechado ou no trilho. */
+/** Ponto no ícone: há alerta aqui dentro. Só no trilho, onde o número não cabe. */
 export function AlertDot({ className }: { className?: string }) {
   return (
     <span

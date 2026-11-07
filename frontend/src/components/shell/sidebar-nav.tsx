@@ -154,7 +154,7 @@ function EntryLink({ entry, rail = false }: { entry: NavEntry; rail?: boolean })
         dragOver && "bg-accent text-accent-foreground ring-2 ring-ring/60"
       )}
     >
-      <EntryIcon icon={entry.icon} alert={badge > 0} />
+      <EntryIcon icon={entry.icon} alert={rail && badge > 0} />
       {!rail && (
         <>
           <span className="flex-1 truncate">{label}</span>
@@ -231,7 +231,7 @@ function ExpandableEntry({ entry }: { entry: NavEntry }) {
             aria-current={selfActive ? "page" : undefined}
             className="flex h-8 min-w-0 flex-1 items-center gap-2.5 rounded-lg pl-2.5 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:h-10"
           >
-            <EntryIcon icon={entry.icon} alert={badge > 0} />
+            <EntryIcon icon={entry.icon} alert={false} />
             <span className="flex-1 truncate">{label}</span>
             <AlertCount count={badge} />
           </Link>
@@ -248,7 +248,7 @@ function ExpandableEntry({ entry }: { entry: NavEntry }) {
         <CollapsibleTrigger
           className={cn(ROW, ROW_IDLE, childActive && "text-foreground")}
         >
-          <EntryIcon icon={entry.icon} alert={badge > 0} />
+          <EntryIcon icon={entry.icon} alert={false} />
           <span className="flex-1 truncate">{label}</span>
           <AlertCount count={badge} />
           {chevron}
