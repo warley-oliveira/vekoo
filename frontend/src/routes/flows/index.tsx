@@ -2,7 +2,7 @@ import { lazy } from "react"
 import { Route } from "react-router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
-import { placeholderRoute } from "@/routes/placeholder"
+import { toolsRoutes } from "@/routes/tools"
 
 const FlowsPage = lazy(() => import("./flows-page"))
 const FlowEditorPage = lazy(() => import("./flow-editor-page"))
@@ -43,6 +43,6 @@ export const flowsRoutes = (
         </RouteFrame>
       }
     />
-    <Route path="/tools" element={placeholderRoute("navigation.routes.tools", "flows")} />
+    {toolsRoutes}
   </>
 )
