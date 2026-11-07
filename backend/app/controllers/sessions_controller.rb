@@ -40,8 +40,12 @@ class SessionsController < AuthenticatedController
     render json: SessionSerializer.one(current_session)
   end
 
+  # O WebSocket é conferido só ao conectar: sem isto, o de um aparelho que ficou aberto continuaria
+  # recebendo depois de sair. Os das outras sessões voltam sozinhos.
   def destroy
+    account = current_account
     current_session.destroy!
+    account.reconnect_realtime
     head :no_content
   end
 

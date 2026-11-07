@@ -44,6 +44,7 @@ class Account < ApplicationRecord
   # O Mongo não tem chave estrangeira: os avisos da pessoa saem junto com ela.
   after_destroy { AccountNotice.where(account_id: id).delete_all }
   after_destroy_commit :disconnect_realtime
+  after_update_commit :reconnect_realtime, if: -> { saved_change_to_access_role_id? || saved_change_to_role? }
 
   scope :active, -> { where(revoked_at: nil) }
   scope :revoked, -> { where.not(revoked_at: nil) }
@@ -76,12 +77,20 @@ class Account < ApplicationRecord
     update!(revoked_at: nil)
   end
 
-  # Derruba as sessões abertas, como a troca de senha pelo link já fazia. Com
-  # `except`, poupa a sessão de quem está pedindo (e o WebSocket dela).
+  # Derruba as sessões abertas, como a troca de senha pelo link já fazia. Com `except`, poupa a sessão de
+  # quem está pedindo. O WebSocket é identificado pela conta, e não pela sessão: cai o de todos os
+  # aparelhos, e o de quem tem token que ainda vale volta sozinho.
   def end_sessions!(except: nil)
     scope = except ? sessions.where.not(id: except.id) : sessions
     scope.destroy_all
-    disconnect_realtime unless except
+    except ? reconnect_realtime : disconnect_realtime
+  end
+
+  # A permissão é conferida ao assinar o canal, e a conexão guarda a conta enquanto ficar aberta: quem
+  # perdeu um acesso seguiria recebendo eventos e enviando mensagem. Reconectando, passa pela conferência
+  # de novo, com o que vale agora.
+  def reconnect_realtime
+    disconnect_realtime(reconnect: true)
   end
 
   # Dono vê tudo; os demais valem pelo grupo de permissões. Sem grupo, valem os
@@ -104,8 +113,8 @@ class Account < ApplicationRecord
 
   # A sessão só é conferida ao conectar: sem isto, um WebSocket já aberto seguiria
   # recebendo eventos depois de a pessoa perder o acesso.
-  def disconnect_realtime
-    ActionCable.server.remote_connections.where(current_account: self).disconnect(reconnect: false)
+  def disconnect_realtime(reconnect: false)
+    ActionCable.server.remote_connections.where(current_account: self).disconnect(reconnect: reconnect)
   rescue StandardError => e
     Rails.logger.warn("account #{id}: não foi possível derrubar o WebSocket (#{e.class})")
   end

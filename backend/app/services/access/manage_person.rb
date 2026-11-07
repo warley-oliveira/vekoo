@@ -53,6 +53,7 @@ module Access
       attributes = drop_blank_password(attributes)
       changing_password = attributes.key?(:password)
       raise Refused.new("ownPasswordInProfile", field: "password") if changing_password && account == @actor
+      teams_before = account.team_ids
 
       @organization.with_lock do
         keep_an_owner!(account) if demoting?(account, attributes)
@@ -65,6 +66,8 @@ module Access
       # Mesmo tratamento da troca de senha pelo link: quem estava com a senha
       # antiga, seja quem for, precisa entrar de novo.
       account.end_sessions! if changing_password
+      # `chat_list_to: team` escuta a stream de cada departamento da pessoa.
+      account.reconnect_realtime if account.team_ids.sort != teams_before.sort
       account
     rescue ActiveRecord::RecordInvalid => e
       raise taken_email if e.record.errors.of_kind?(:email, :taken)
