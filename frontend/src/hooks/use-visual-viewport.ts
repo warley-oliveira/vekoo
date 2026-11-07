@@ -7,8 +7,9 @@ export type VisualViewportMetrics = {
   layoutHeight: number
   /** `visualViewport.offsetTop`, nunca negativo. */
   offsetTop: number
-  /** Pixels do viewport de layout cobertos pelo teclado virtual. */
+  /** Pixels do viewport de layout cobertos pelo teclado virtual. Zero se ele encolhe a tela. */
   keyboardInset: number
+  /** Coberta ou encolhida: é o que diz se a barra inferior sai de cena. */
   isKeyboardOpen: boolean
 }
 
@@ -24,6 +25,36 @@ const INITIAL_METRICS: VisualViewportMetrics = {
   offsetTop: 0,
   keyboardInset: 0,
   isKeyboardOpen: false,
+}
+
+const EDITABLE_SELECTOR =
+  'input:not([type="checkbox"], [type="radio"], [type="button"], [type="file"]), textarea, [contenteditable="true"]'
+
+type Orientation = "portrait" | "landscape"
+
+/** A maior altura visível já vista: o tamanho da tela sem o teclado, em cada orientação. */
+const tallest: Record<Orientation, number> = { portrait: 0, landscape: 0 }
+
+// Pela tela, e não pela janela: em celular baixo, o teclado aberto deixa a janela mais larga do que
+// alta, e a orientação pareceria ter mudado.
+function currentOrientation(): Orientation {
+  const type = window.screen?.orientation?.type
+  if (type) return type.startsWith("landscape") ? "landscape" : "portrait"
+  return window.innerWidth > window.innerHeight ? "landscape" : "portrait"
+}
+
+/**
+ * No Android, com `interactive-widget=resizes-content`, o teclado encolhe a tela de verdade: nada fica
+ * coberto, e a conta do `keyboardInset` dá zero. O que funciona nos dois sistemas é comparar a altura
+ * visível com a maior já vista. Só com dedo e com um campo em foco: encolher a janela no computador,
+ * ou dividir a tela no aparelho, também reduz a altura, e não é teclado.
+ */
+function hasShrunkForKeyboard(height: number): boolean {
+  const orientation = currentOrientation()
+  if (height > tallest[orientation]) tallest[orientation] = height
+  if (tallest[orientation] - height <= KEYBOARD_THRESHOLD) return false
+  if (!window.matchMedia("(pointer: coarse)").matches) return false
+  return Boolean(document.activeElement?.matches(EDITABLE_SELECTOR))
 }
 
 // Store no módulo: um conjunto de ouvintes e um rAF para o app inteiro, não importa
@@ -53,7 +84,7 @@ function readMetrics(): VisualViewportMetrics {
     layoutHeight,
     offsetTop,
     keyboardInset,
-    isKeyboardOpen: keyboardInset > 0,
+    isKeyboardOpen: hasShrunkForKeyboard(height) || keyboardInset > 0,
   }
 }
 
