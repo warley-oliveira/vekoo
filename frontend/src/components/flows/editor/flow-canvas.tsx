@@ -21,6 +21,7 @@ import { BLOCK_WIDTH, FIT_OPTIONS } from "@/lib/flows/layout"
 import { BLOCK_DRAG_TYPE } from "./block-picker"
 import { CanvasToolbar } from "./canvas-toolbar"
 import { FlowBlock } from "./flow-block"
+import { motionMs } from "./keys"
 import { LinkEdgeView } from "./link-edge"
 import { useEditor, useEditorApi, type BlockNode, type LinkEdge } from "./store"
 import { useEditorUi } from "./ui-store"
@@ -100,7 +101,7 @@ export function FlowCanvas() {
     const { x, y, zoom } = reactFlow.getViewport()
     const right = rect.left + x + (node.position.x + (node.measured?.width ?? BLOCK_WIDTH)) * zoom
     const limit = rect.right - INSPECTOR_SPACE
-    if (right > limit) void reactFlow.setViewport({ x: x - (right - limit), y, zoom }, { duration: 200 })
+    if (right > limit) void reactFlow.setViewport({ x: x - (right - limit), y, zoom }, { duration: motionMs(200) })
   }, [reactFlow, readOnly, selectedId])
 
   const isValidConnection = useCallback(

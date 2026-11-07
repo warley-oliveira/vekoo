@@ -57,7 +57,9 @@ export function useAutosave(flow: FlowDetail) {
     }
 
     const syncTrigger = () => {
-      // O gatilho que a lista mostra é do fluxo. Publicar acerta sozinho; num rascunho, é aqui.
+      // O gatilho que a lista mostra é do fluxo. Publicar acerta sozinho; num rascunho, é aqui. Num fluxo no ar, não:
+      // é esse valor que decide o que dispara, e o rascunho ainda não foi publicado.
+      if (flowRef.current.status === "published") return
       const trigger = api.getState().nodes.find((node) => isTrigger(node.type))
       const type = trigger?.type ? triggerTypeOf(trigger.type) : null
       if (!type || type === lastTrigger.current) return

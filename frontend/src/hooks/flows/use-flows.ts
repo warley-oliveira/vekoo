@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from "react"
-import { mutate as globalMutate } from "swr"
+import useSWR, { mutate as globalMutate } from "swr"
 
 import { useApi } from "@/hooks/use-api"
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from "@/lib/api"
+import { fetchAllPages } from "@/lib/people/fetch-all-pages"
 import type {
   ExecutionsResponse,
   FlowDefinition,
@@ -10,7 +11,6 @@ import type {
   FlowExecutionDetail,
   FlowExecutionStatus,
   FlowSummary,
-  FlowsResponse,
   FlowTemplate,
   FlowTriggerType,
   FlowVersion,
@@ -33,11 +33,14 @@ function reloadFlows() {
 
 /** Uma organização tem poucas dezenas de fluxos: a lista vem inteira e a tela filtra sem ir ao servidor. */
 export function useFlows() {
-  const { data, error, isLoading, mutate } = useApi<FlowsResponse>(FLOWS_KEY, { keepPreviousData: true })
+  const { data, error, isLoading, mutate } = useSWR<FlowSummary[]>(
+    FLOWS_KEY,
+    () => fetchAllPages<FlowSummary>(FLOWS_KEY, "flows"),
+    { keepPreviousData: true }
+  )
   return {
-    flows: data?.flows ?? NO_FLOWS,
+    flows: data ?? NO_FLOWS,
     hasData: Boolean(data),
-    total: data?.meta.total ?? 0,
     error,
     isLoading,
     reload: mutate,
@@ -86,15 +89,15 @@ export function useFlowMutations() {
   }, [])
 
   /** A API não tem cópia: lê o rascunho, cria o novo e grava a definição. Se a gravação falhar, desfaz. */
-  const duplicateFlow = useCallback(async (source: FlowSummary, name: string) => {
-    const { flow } = await apiGet<{ flow: FlowDetail }>(flowKey(source.id))
+  const duplicateFlow = useCallback(async (sourceId: string, name: string) => {
+    const { flow } = await apiGet<{ flow: FlowDetail }>(flowKey(sourceId))
     const definition = flow.draft?.definition ?? flow.publishedVersion?.definition
     const created = await apiPost<{ flow: FlowDetail }>("/flows", {
       flow: {
         name,
-        description: source.description,
-        triggerType: source.triggerType,
-        connectorFilter: source.connectorFilter,
+        description: flow.description,
+        triggerType: flow.triggerType,
+        connectorFilter: flow.connectorFilter,
       },
     })
     if (definition) {

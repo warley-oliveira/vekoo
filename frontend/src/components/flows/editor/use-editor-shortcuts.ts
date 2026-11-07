@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { FIT_OPTIONS } from "@/lib/flows/layout"
 import { blockOutputs } from "@/lib/flows/outputs"
 
-import { isTypingTarget } from "./keys"
+import { isTypingTarget, motionMs } from "./keys"
 import { useEditorApi } from "./store"
 import { useEditorUi } from "./ui-store"
 
@@ -100,7 +100,7 @@ export function useEditorShortcuts() {
       if (mod || event.altKey) return
 
       if (key === "f") {
-        void flow.fitView({ ...FIT_OPTIONS, duration: 250 })
+        void flow.fitView({ ...FIT_OPTIONS, duration: motionMs(250) })
       } else if (key === "l") {
         ui.toggleOutline()
       } else if (key === "t") {
@@ -124,7 +124,7 @@ export function useFocusBlock() {
   return (id: string) => {
     if (!api.getState().nodes.some((node) => node.id === id)) return false
     api.getState().selectBlock(id)
-    void flow.fitView({ ...FIT_OPTIONS, nodes: [{ id }], padding: 1.2, duration: 280 })
+    void flow.fitView({ ...FIT_OPTIONS, nodes: [{ id }], padding: 1.2, duration: motionMs(280) })
     return true
   }
 }

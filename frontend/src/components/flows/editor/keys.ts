@@ -1,3 +1,8 @@
+/** O tempo de uma animação do quadro: zero para quem pediu menos movimento. */
+export function motionMs(ms: number): number {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : ms
+}
+
 export function isMac(): boolean {
   return typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
 }

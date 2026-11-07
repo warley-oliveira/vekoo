@@ -12,7 +12,7 @@ import { FIT_OPTIONS } from "@/lib/flows/layout"
 import { formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 
-import { isMac, modKey } from "./keys"
+import { isMac, modKey, motionMs } from "./keys"
 import { useEditor, useEditorApi } from "./store"
 import { useEditorUi } from "./ui-store"
 
@@ -69,25 +69,25 @@ function ZoomControls() {
 
   return (
     <>
-      <ToolButton label={t("flows.toolbar.zoomOut")} onClick={() => void flow.zoomOut({ duration: 120 })}>
+      <ToolButton label={t("flows.toolbar.zoomOut")} onClick={() => void flow.zoomOut({ duration: motionMs(120) })}>
         <Minus />
       </ToolButton>
       <button
         type="button"
-        onClick={() => void flow.zoomTo(1, { duration: 150 })}
+        onClick={() => void flow.zoomTo(1, { duration: motionMs(150) })}
         aria-label={t("flows.toolbar.zoomReset")}
         title={t("flows.toolbar.zoomReset")}
         className="h-7 w-11 rounded-lg text-xs text-muted-foreground tabular-nums hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
       >
         {formatPercent(zoom, language, { maximumFractionDigits: 0 })}
       </button>
-      <ToolButton label={t("flows.toolbar.zoomIn")} onClick={() => void flow.zoomIn({ duration: 120 })}>
+      <ToolButton label={t("flows.toolbar.zoomIn")} onClick={() => void flow.zoomIn({ duration: motionMs(120) })}>
         <Plus />
       </ToolButton>
       <ToolButton
         label={t("flows.toolbar.fit")}
         shortcut="F"
-        onClick={() => void flow.fitView({ ...FIT_OPTIONS, duration: 250 })}
+        onClick={() => void flow.fitView({ ...FIT_OPTIONS, duration: motionMs(250) })}
       >
         <Maximize />
       </ToolButton>
@@ -107,7 +107,7 @@ export function CanvasToolbar() {
 
   const arrange = () => {
     api.getState().arrange()
-    window.setTimeout(() => void flow.fitView({ ...FIT_OPTIONS, duration: 300 }), 30)
+    window.setTimeout(() => void flow.fitView({ ...FIT_OPTIONS, duration: motionMs(300) }), 30)
     toast.success(t("flows.toolbar.arranged"), {
       action: { label: t("flows.toolbar.undo"), onClick: () => api.getState().undo() },
     })

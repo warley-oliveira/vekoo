@@ -37,7 +37,7 @@ function SaveIndicator() {
   const flush = useEditorUi((state) => state.flush)
 
   return (
-    <span aria-live="polite" className="hidden items-center gap-1.5 text-xs text-muted-foreground lg:inline-flex">
+    <span aria-live="polite" className="hidden items-center gap-1.5 text-xs text-muted-foreground md:inline-flex">
       {status === "saving" ? (
         <>
           <Loader2 className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden />
@@ -106,9 +106,9 @@ export function HeaderActions({
 
   const toggleOn = async () => {
     if (status === "archived") {
-      await unarchiveFlow(flowId)
+      const updated = await unarchiveFlow(flowId)
       await refresh()
-      toast.success(t("flows.toggle.turnedOn", { name: flowName }))
+      toast.success(updated.status === "published" ? t("flows.toggle.turnedOn", { name: flowName }) : t("flows.list.restored"))
       return
     }
     const confirmed = await confirm({
@@ -146,10 +146,7 @@ export function HeaderActions({
         icon: <Copy />,
         separatorBefore: true,
         onSelect: () => {
-          void duplicateFlow(
-            { id: flowId, name: flowName, description: null, status, triggerType, connectorFilter: { connectorIds: [] } } as never,
-            t("flows.list.copyName", { name: flowName })
-          )
+          void duplicateFlow(flowId, t("flows.list.copyName", { name: flowName }))
             .then((copy) => {
               toast.success(t("flows.list.duplicated"))
               navigate(`/flows/${copy.id}`)

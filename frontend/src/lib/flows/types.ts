@@ -108,8 +108,6 @@ export type FlowTemplate = {
   definition: FlowDefinition
 }
 
-export type FlowsResponse = { flows: FlowSummary[]; meta: PaginationMeta }
-
 export type PublishIssueCode =
   | "noTrigger"
   | "multipleTriggers"

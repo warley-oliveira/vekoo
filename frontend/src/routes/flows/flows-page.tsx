@@ -178,6 +178,13 @@ export default function FlowsPage() {
       {header}
 
       <div className="flex flex-col gap-3">
+        <Link
+          to="/automation-settings"
+          className="flex items-center gap-1.5 self-start rounded text-sm text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none md:hidden"
+        >
+          <Settings2 className="size-4" aria-hidden />
+          {t("flows.settings.title")}
+        </Link>
         <SegmentedControl
           aria-label={t("flows.list.statusLabel")}
           value={tab}
@@ -300,8 +307,8 @@ const FlowRow = memo(function FlowRow({ flow }: { flow: FlowSummary }) {
   const turnOn = async () => {
     setPending(true)
     try {
-      await unarchiveFlow(flow.id)
-      toast.success(flow.published || flow.status === "archived" ? t("flows.toggle.turnedOn", { name: flow.name }) : t("flows.list.restored"))
+      const updated = await unarchiveFlow(flow.id)
+      toast.success(updated.status === "published" ? t("flows.toggle.turnedOn", { name: flow.name }) : t("flows.list.restored"))
     } catch (error) {
       failed(error)
     } finally {
@@ -347,7 +354,7 @@ const FlowRow = memo(function FlowRow({ flow }: { flow: FlowSummary }) {
 
   const duplicate = async () => {
     try {
-      const copy = await duplicateFlow(flow, t("flows.list.copyName", { name: flow.name }))
+      const copy = await duplicateFlow(flow.id, t("flows.list.copyName", { name: flow.name }))
       toast.success(t("flows.list.duplicated"), {
         action: { label: t("flows.list.open"), onClick: () => navigate(`/flows/${copy.id}`) },
       })
