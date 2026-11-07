@@ -10,7 +10,7 @@ import {
   ErrorState,
   SearchableSelect,
   SelectInput,
-  SidePanel,
+  ResponsiveDialog,
   useConfirm,
   type LoadOptions,
 } from "@/components/shared"
@@ -151,15 +151,14 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open
       onOpenChange={(next) => {
         if (!next) void close()
       }}
       title={toolId ? (tool?.name ?? t("flows.toolPanel.title")) : t("flows.toolPanel.newTitle")}
       description={t("flows.toolPanel.description")}
-      size="xl"
-      className="data-[side=right]:sm:max-w-4xl"
+      size="2xl"
       footer={
         locked ? (
           <Button type="button" variant="outline" onClick={onClose}>
@@ -291,7 +290,7 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
           ) : null}
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

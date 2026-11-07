@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Plus, Trash2 } from "lucide-react"
 
-import { Callout, SelectInput, SidePanel, useConfirm } from "@/components/shared"
+import { Callout, SelectInput, ResponsiveDialog, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -49,7 +49,7 @@ export function FieldsPanel() {
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => setDialog(next ? "fields" : null)}
       title={t("flows.dataFields.title")}
@@ -128,6 +128,6 @@ export function FieldsPanel() {
           {t("flows.dataFields.add")}
         </Button>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

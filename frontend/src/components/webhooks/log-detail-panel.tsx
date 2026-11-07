@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { ChevronRight, CircleAlert, ExternalLink } from "lucide-react"
 
-import { Callout, CopyButton, DetailSkeleton, ErrorState, KeyValueList, SidePanel, StatusBadge } from "@/components/shared"
+import { Callout, CopyButton, DetailSkeleton, ErrorState, KeyValueList, ResponsiveDialog, StatusBadge } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { formatFullDateTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
@@ -39,7 +39,7 @@ export function LogDetailPanel({
   const language = useLanguage()
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       size="xl"
@@ -66,7 +66,7 @@ export function LogDetailPanel({
       ) : (
         <ErrorState error={error} onRetry={onRetry} />
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

@@ -9,7 +9,7 @@ import { z } from "zod"
 import {
   Callout,
   FormActions,
-  SidePanel,
+  ResponsiveDialog,
   TextareaField,
   TextField,
   UnsavedChangesDialog,
@@ -165,7 +165,7 @@ export function FunnelFormPanel({ funnel, stageCounts, open, onOpenChange, onSav
   const listError = stageError?.root?.message ?? stageError?.message
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -295,7 +295,7 @@ export function FunnelFormPanel({ funnel, stageCounts, open, onOpenChange, onSav
           ))}
         </div>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

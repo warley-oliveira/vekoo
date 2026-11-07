@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Check, Plus, SlidersHorizontal } from "lucide-react"
 import { toast } from "sonner"
 
-import { DetailSkeleton, EmptyState, ErrorState, SearchInput, SegmentedControl, SidePanel } from "@/components/shared"
+import { DetailSkeleton, EmptyState, ErrorState, SearchInput, SegmentedControl, ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useDataSources } from "@/hooks/custom-dashboards/use-custom-dashboards"
 import { useOpenCount } from "@/hooks/use-panel-session"
@@ -74,12 +74,13 @@ function LibraryPanel({ open, onOpenChange, widgetCount, onAdd, onCustomize, onS
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       title={t("customDashboards.library.title")}
       description={t("customDashboards.library.description")}
-      size="xl"
+      size="2xl"
+      fixedHeight
     >
       {error && !dataSources ? (
         <ErrorState error={error} onRetry={() => void reload()} />
@@ -189,6 +190,6 @@ function LibraryPanel({ open, onOpenChange, widgetCount, onAdd, onCustomize, onS
           )}
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
