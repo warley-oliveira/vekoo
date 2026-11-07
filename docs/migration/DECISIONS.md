@@ -250,6 +250,17 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Risco herdado da origem:** etiquetas de sistema continuam editáveis. Renomear `aguardando-operador` quebra a regra de tirar a etiqueta ao responder.
 - **Acréscimos na API:** `GET /pipelines/cards?chatId=`; `render_message_text` lê `parameter_name` e preenche a variável do cabeçalho.
 
+### Calendário: tela (fe-calendar)
+
+- **Fuso:** a grade mostra hora de parede, e cada evento cai no fuso do próprio calendário. Com calendários de fusos diferentes, a mesma linha não é o mesmo instante, e a tela avisa.
+- **Semana não aparece no celular:** abaixo de `md` ficam agenda, dia e mês, como na origem.
+- **Título do agendamento** é opcional, mas exige contato, serviço ou título. **Calendário de turmas** não recebe agendamento: nele se cria "Aula avulsa".
+- **Presença** só aparece depois de começar ou se já estiver marcada; na origem, sempre. **Inscrição na turma** lista todos os horários da grade, com os de mesma hora pré-marcados; a origem só deixava mesma hora. Participantes em ordem de nome.
+- **Áreas:** o botão insere `{{colaborador}}`, e não `{{profissional}}`; serviço novo nasce repartido por igual; turma nova nasce com a grade vazia; avisos ao colaborador ficam escondidos em calendário de turmas; toda escrita de sequência relê a lista antes de gravar; salvar é por seção, sem barra fixa de "não salvas".
+- **Fora ou menor que a origem:** `text_color` na grade; `role` do colaborador, que a API não tem; aba Mensagens só leitura, com as últimas 50; toast de evento novo só para agendamento; excluir calendário (decisão de produto em aberto).
+- **Acrescentado:** aula avulsa, cancelar e remarcar aula, arquivar, horários livres e conflito, desfazer depois de arrastar.
+- **Acréscimos na API:** `SchedulerBalancer` não escolhe quem tem 0% na distribuição. `Ai::Run`: quem recebia `busy` soltava a vaga de quem estava gerando.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -283,6 +294,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Processo de scripts com concorrência 2 pode virar gargalo em IA com ferramenta.
 - Brakeman: os 69 avisos de `pipelines/card_query.rb` são falsos positivos (coluna vem de `FieldRegistry`, chave de campo passa por `CUSTOM_KEY_FORMAT`, valor vai como bind): registrar em `config/brakeman.ignore` com o motivo.
 - Não exercitado de ponta a ponta: `send_template`, `catalog_search`, `goto_flow` e `send_media` em fluxo (só specs), transcrição Whisper, `PruneExecutionsJob` e `PruneLogsJob` no cron, 429 da entrada de webhook, volume.
+- `GOOGLE_CALENDAR_REDIRECT_URI` em produção deve apontar para `https://<front>/calendar/google-callback`.
+- `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -291,7 +304,6 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-connectors` (já integrado): seletor de anexos no cabeçalho do modelo de WhatsApp, agora que a API de anexos existe. Hoje é um campo de URL pública.
 - `fe-chat-details`: ações em lote não avisam o tempo real, então chamar `afterBulkAction` depois delas; eventos `bookings_changed` e `scheduled_actions_changed` chegam por `ChatChannel` e `applyChannelMessage` os ignora: o painel que precisar deles escuta por conta própria; conferir `useCan("calendar")` antes de pedir agendamentos do contato.
 - `fe-campaigns-*`: avisar de variável inexistente antes de lançar; tratar os status `sending` e `skipped`; oferecer só `whatsapp_web` no modo texto.
-- `fe-calendar`: retorno do OAuth (o id do calendário é o começo do `state`); trocar a aula calculada quando é materializada; esconder excluir calendário; a busca de `class-session-dialog` usa `/chats/lookup`.
 - `fe-chat-details`: `PUT /chats/:id/attributes` agora soma ao que existe, e `null` tira a chave.
 - `fe-chat-details`: toggles locais do chat da origem (`showTagsInList`, `showPhoneNumberInList`) não foram portados; e, se fizer sentido, preferências na própria tela do chat por `/organization/chat-settings`.
 - Semente: o canal WABA está inativo, então o aviso de 24 horas não aparece na demonstração sem retoque.
