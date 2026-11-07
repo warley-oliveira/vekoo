@@ -291,9 +291,22 @@
     "places": {
       "title": "Estabelecimentos",
       "description": "Encontre negócios no Google Maps, ou use os que você já encontrou.",
+      "link": {
+        "opening": "Abrindo a busca…",
+        "fromSearch": "Da sua busca: {{search}}",
+        "notFoundTitle": "Não encontramos essa busca",
+        "notFoundHint": "Ela pode ter sido apagada, ou ser de outra organização. Escolha as pessoas abaixo.",
+        "failedTitle": "Essa busca não terminou",
+        "failedHint": "Ela parou antes de encontrar os estabelecimentos. Escolha as pessoas abaixo.",
+        "emptyTitle": "Essa busca não trouxe ninguém com telefone",
+        "emptyHint": "Sem telefone não há como mandar a mensagem. Escolha as pessoas abaixo.",
+        "errorTitle": "Não foi possível abrir essa busca",
+        "errorHint": "Confira a conexão e tente de novo, ou escolha as pessoas abaixo.",
+        "retry": "Tentar de novo"
+      },
       "tabs": {
         "label": "De onde vêm os estabelecimentos",
-        "search": "Nova busca",
+        "search": "Buscar",
         "existing": "Já encontrados"
       },
       "query": "O que você procura",

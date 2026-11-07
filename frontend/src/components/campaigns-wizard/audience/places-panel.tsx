@@ -42,8 +42,16 @@ import { useApi } from "@/hooks/use-api"
 import { useCan } from "@/hooks/use-can"
 import { useChannel } from "@/hooks/use-channel"
 import { ApiError, apiGet, apiPost, type PaginationMeta } from "@/lib/api"
-import { hasPhone, placeKey, placePhone, placeToContact, REVIEW_SORTS } from "@/lib/campaigns-wizard/places"
+import {
+  hasPhone,
+  placeKey,
+  placePhone,
+  placeToContact,
+  REVIEW_SORTS,
+  selectionOf,
+} from "@/lib/campaigns-wizard/places"
 import type {
+  LinkedPlaces,
   PlaceChannelEvent,
   PlaceContact,
   PlaceExtraction,
@@ -274,30 +282,49 @@ const EMPTY_FORM: SearchForm = {
  * Busca de estabelecimentos: procurar por tipo e cidade, acompanhar a busca e escolher quem entra, ou
  * reaproveitar o que já foi encontrado antes. Sem a chave do Apify, a busca nova explica o que falta, e o
  * que já foi encontrado continua valendo.
+ *
+ * Com `linked`, a pessoa já escolheu a busca na tela de buscas: abre nela, com quem tem telefone já marcado,
+ * e só falta confirmar. Nada é gravado antes disso.
  */
-export default function PlacesPanel({ available, onClose }: { available: boolean; onClose: () => void }) {
+export default function PlacesPanel({
+  available,
+  linked = null,
+  onClose,
+}: {
+  available: boolean
+  linked?: LinkedPlaces | null
+  onClose: () => void
+}) {
   const { t } = useTranslation()
   const language = useLanguage()
   const confirm = useConfirm()
   const canConfigure = useCan("core_settings")
   const sender = useRecipientImport()
 
+  const linkedId = linked?.extraction.id ?? null
+  const linkedDone = linked?.extraction.status === "completed"
+
   const [open, setOpen] = useState(true)
-  const [tab, setTab] = useState<Tab>(available ? "search" : "existing")
+  const [tab, setTab] = useState<Tab>(available || linked ? "search" : "existing")
   const [form, setForm] = useState(EMPTY_FORM)
-  const [phase, setPhase] = useState<SearchPhase>("form")
-  const [runStatus, setRunStatus] = useState<PlaceExtraction["status"]>("pending")
+  const [phase, setPhase] = useState<SearchPhase>(!linked ? "form" : linkedDone ? "results" : "running")
+  const [runStatus, setRunStatus] = useState<PlaceExtraction["status"]>(linked?.extraction.status ?? "pending")
   const [searchError, setSearchError] = useState<string | null>(null)
-  const [results, setResults] = useState<PlaceResult[]>([])
+  const [results, setResults] = useState<PlaceResult[]>(linked?.results ?? [])
   const [resultsFilter, setResultsFilter] = useState("")
   const [resultsPage, setResultsPage] = useState(1)
-  const [selected, setSelected] = useState(new Map<string, PlaceResult>())
+  const [selected, setSelected] = useState(() => selectionOf(linked?.results ?? []))
+  // Marcar por conta própria é o que vale uma pergunta ao fechar. O que veio marcado, não: nada se perde.
+  const [touched, setTouched] = useState(false)
+  const [fromSearch, setFromSearch] = useState(() =>
+    linked ? [linked.extraction.searchQuery, linked.extraction.location].filter(Boolean).join(" · ") : null
+  )
   const [existingQuery, setExistingQuery] = useState("")
   const [existingPage, setExistingPage] = useState(1)
   const [details, setDetails] = useState<PlaceResult | null>(null)
   const [includeCountryCode, setIncludeCountryCode] = useState(true)
 
-  const extractionRef = useRef<string | null>(null)
+  const extractionRef = useRef<string | null>(linkedDone ? null : linkedId)
   const sending = sender.state.phase !== "idle" && sender.state.phase !== "done"
 
   useEffect(() => {
@@ -333,6 +360,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
         }
         setResults(response.results)
         setResultsPage(1)
+        if (id === linkedId) setSelected(selectionOf(response.results))
         setPhase("results")
       } catch {
         extractionRef.current = null
@@ -340,7 +368,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
         setPhase("form")
       }
     },
-    [t]
+    [linkedId, t]
   )
 
   const fail = useCallback(
@@ -431,6 +459,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
 
   const toggle = useCallback((place: PlaceResult) => {
     const key = placeKey(place)
+    setTouched(true)
     setSelected((current) => {
       const next = new Map(current)
       if (next.has(key)) next.delete(key)
@@ -464,6 +493,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
   const someSelected = !allSelected && selectable.some((place) => selected.has(placeKey(place)))
 
   function toggleAll() {
+    setTouched(true)
     setSelected((current) => {
       const next = new Map(current)
       for (const place of selectable) {
@@ -499,7 +529,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
       })
       if (!stop) return
       sender.stop()
-    } else if (count > 0) {
+    } else if (count > 0 && touched) {
       const leave = await confirm({
         title: t("campaignsWizard.places.discardTitle"),
         description: t("campaignsWizard.places.discardHint"),
@@ -590,26 +620,8 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
             />
 
             {tab === "search" ? (
-              !available ? (
-                <div className="flex flex-col gap-3">
-                  <Callout tone="neutral" title={t("campaignsWizard.places.unavailableTitle")}>
-                    {t("campaignsWizard.places.unavailableHint")}
-                  </Callout>
-                  {canConfigure ? (
-                    <p className="text-xs text-pretty text-muted-foreground">
-                      {t("campaignsWizard.places.unavailableAdmin", { variable: "APIFY_API_TOKEN" })}
-                    </p>
-                  ) : null}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="self-start pointer-coarse:h-10"
-                    onClick={() => setTab("existing")}
-                  >
-                    {t("campaignsWizard.places.useExisting")}
-                  </Button>
-                </div>
-              ) : phase === "running" ? (
+              // A chave do Apify só faz falta para buscar de novo: o que já foi encontrado está gravado.
+              phase === "running" ? (
                 <div role="status" className="flex flex-col gap-3 rounded-lg border p-4">
                   <p className="flex items-center gap-2 text-sm font-medium">
                     <Loader2 aria-hidden className="size-4 animate-spin" />
@@ -626,12 +638,19 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
               ) : phase === "results" ? (
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm text-muted-foreground">
-                      {t("campaignsWizard.places.found", {
-                        count: results.length,
-                        formatted: formatNumber(results.length, language),
-                      })}
-                    </p>
+                    <div className="min-w-0">
+                      <p className="text-sm text-muted-foreground">
+                        {t("campaignsWizard.places.found", {
+                          count: results.length,
+                          formatted: formatNumber(results.length, language),
+                        })}
+                      </p>
+                      {fromSearch ? (
+                        <p className="text-xs text-pretty text-muted-foreground">
+                          {t("campaignsWizard.places.link.fromSearch", { search: fromSearch })}
+                        </p>
+                      ) : null}
+                    </div>
                     <Button
                       type="button"
                       variant="ghost"
@@ -640,6 +659,7 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
                       onClick={() => {
                         setPhase("form")
                         setSelected(new Map())
+                        setFromSearch(null)
                       }}
                     >
                       {t("campaignsWizard.places.newSearch")}
@@ -685,6 +705,30 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
                     </>
                   )}
                   <CountryCodeSwitch checked={includeCountryCode} onChange={setIncludeCountryCode} />
+                </div>
+              ) : !available ? (
+                <div className="flex flex-col gap-3">
+                  {searchError ? (
+                    <Callout tone="danger" role="alert">
+                      {searchError}
+                    </Callout>
+                  ) : null}
+                  <Callout tone="neutral" title={t("campaignsWizard.places.unavailableTitle")}>
+                    {t("campaignsWizard.places.unavailableHint")}
+                  </Callout>
+                  {canConfigure ? (
+                    <p className="text-xs text-pretty text-muted-foreground">
+                      {t("campaignsWizard.places.unavailableAdmin", { variable: "APIFY_API_TOKEN" })}
+                    </p>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="self-start pointer-coarse:h-10"
+                    onClick={() => setTab("existing")}
+                  >
+                    {t("campaignsWizard.places.useExisting")}
+                  </Button>
                 </div>
               ) : (
                 <form

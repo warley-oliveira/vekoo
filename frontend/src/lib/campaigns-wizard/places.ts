@@ -15,6 +15,11 @@ export function placePhone(place: PlaceResult): string {
 
 export const hasPhone = (place: PlaceResult) => placePhone(place).length > 0
 
+/** Todo mundo que dá para marcar, do jeito que a seleção do painel guarda. */
+export function selectionOf(places: PlaceResult[]): Map<string, PlaceResult> {
+  return new Map(places.filter(hasPhone).map((place) => [placeKey(place), place]))
+}
+
 export function placeToContact(place: PlaceResult, includeCountryCode: boolean): ImportContact {
   const phone = placePhone(place)
   const metadata: Record<string, unknown> = {

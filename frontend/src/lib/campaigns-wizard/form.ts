@@ -5,6 +5,9 @@ import type { Campaign, CampaignMode, MessageType } from "./types"
 export const WIZARD_STEPS = ["audience", "message", "schedule", "review"] as const
 export type WizardStep = (typeof WIZARD_STEPS)[number]
 
+/** `/campaigns/new?placeExtraction=<id>`: é por onde a tela de buscas entrega uma busca ao assistente. */
+export const LINKED_EXTRACTION_PARAM = "placeExtraction"
+
 export function isWizardStep(value: string | null): value is WizardStep {
   return (WIZARD_STEPS as readonly string[]).includes(value ?? "")
 }

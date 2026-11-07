@@ -33,6 +33,7 @@ import { useMobileShell } from "@/hooks/use-mobile-shell"
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes"
 import { apiDelete, apiPost } from "@/lib/api"
 import {
+  LINKED_EXTRACTION_PARAM,
   WIZARD_STEPS,
   defaultValues,
   filledMessages,
@@ -185,6 +186,7 @@ function RouteSync() {
 
     const query = new URLSearchParams(window.location.search)
     query.delete("duplicate")
+    query.delete(LINKED_EXTRACTION_PARAM)
     const search = query.toString()
     navigate(`${target}${search ? `?${search}` : ""}`, { replace: true })
   }, [calm, campaignId, navigate])
@@ -707,6 +709,8 @@ export type CampaignWizardProps = {
   campaign: Campaign | null
   /** A campanha a copiar. Vem a configuração, e o público é escolhido de novo. */
   copyFrom: Campaign | null
+  /** A busca de estabelecimentos que veio na URL. O passo "Para quem" abre nela. */
+  placeExtractionId: string | null
   onDraftCreated: (id: string) => void
 }
 
@@ -723,7 +727,7 @@ function resumeStep(campaign: Campaign): WizardStep {
   return hasMessage ? "review" : "message"
 }
 
-export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignWizardProps) {
+export function CampaignWizard({ campaign, copyFrom, placeExtractionId, onDraftCreated }: CampaignWizardProps) {
   const { t } = useTranslation()
   const language = useLanguage()
   const { scroller } = useShell()
@@ -768,14 +772,17 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
       : "audience"
 
   const [audienceError, setAudienceError] = useState(false)
+  const [linkedExtractionId, setLinkedExtractionId] = useState(placeExtractionId)
 
   const goTo = useCallback(
     (next: WizardStep) => {
       setAudienceError(false)
+      setLinkedExtractionId(null)
       setParams(
         (current) => {
           const updated = new URLSearchParams(current)
           updated.set("step", next)
+          updated.delete(LINKED_EXTRACTION_PARAM)
           return updated
         },
         // É o que faz o voltar do aparelho andar entre os passos, em vez de sair da tela.
@@ -784,6 +791,22 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
     },
     [setParams]
   )
+
+  // Resolvida, a busca sai da URL: recarregar não abre o painel de novo, nem repete um aviso já visto.
+  const settleLinkedExtraction = useCallback(() => {
+    setLinkedExtractionId(null)
+    // Se o rascunho já nasceu, `RouteSync` já tirou.
+    if (!new URLSearchParams(window.location.search).has(LINKED_EXTRACTION_PARAM)) return
+
+    setParams(
+      (current) => {
+        const updated = new URLSearchParams(current)
+        updated.delete(LINKED_EXTRACTION_PARAM)
+        return updated
+      },
+      { replace: true }
+    )
+  }, [setParams])
 
   // A barra de ações fica presa embaixo: quem anda com Tab não pode acabar com o campo atrás dela.
   useEffect(() => {
@@ -814,8 +837,10 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
       goTo,
       audienceError,
       onAudienceEmpty: () => setAudienceError(true),
+      linkedExtractionId,
+      settleLinkedExtraction,
     }),
-    [audienceError, goTo, step]
+    [audienceError, goTo, linkedExtractionId, settleLinkedExtraction, step]
   )
 
   usePageTitle(campaign?.name ?? t("navigation.routes.campaignNew"), {

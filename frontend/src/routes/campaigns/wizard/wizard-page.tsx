@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button"
 import { useApi } from "@/hooks/use-api"
 import { usePageTitle } from "@/hooks/use-header-slot"
 import { ApiError } from "@/lib/api"
+import { LINKED_EXTRACTION_PARAM } from "@/lib/campaigns-wizard/form"
 import type { CampaignResponse } from "@/lib/campaigns-wizard/types"
 
-// `/campaigns/new`, `/campaigns/new?duplicate=<id>` e `/campaigns/:campaignId/edit`.
+// `/campaigns/new`, `/campaigns/new?duplicate=<id>`, `/campaigns/new?placeExtraction=<id>` e
+// `/campaigns/:campaignId/edit`.
 //
 // Criar o rascunho troca a URL de `new` para `edit`, sem o formulário perder nada. Quem decide se a URL nova
 // é outro formulário é esta página: se ela aponta para o rascunho que este formulário acabou de criar, nada
@@ -22,13 +24,28 @@ type Session = {
   /** O que a rota dizia ao abrir. */
   campaignId: string | null
   duplicateId: string | null
+  extractionId: string | null
   /** O que a rota diz agora. */
   routeId: string | null
   routeDuplicateId: string | null
+  routeExtractionId: string | null
 }
 
-function openSession(number: number, routeId: string | null, duplicateId: string | null): Session {
-  return { number, campaignId: routeId, duplicateId, routeId, routeDuplicateId: duplicateId }
+function openSession(
+  number: number,
+  routeId: string | null,
+  duplicateId: string | null,
+  extractionId: string | null
+): Session {
+  return {
+    number,
+    campaignId: routeId,
+    duplicateId,
+    extractionId,
+    routeId,
+    routeDuplicateId: duplicateId,
+    routeExtractionId: extractionId,
+  }
 }
 
 function LockedCampaign({ id, name, status }: { id: string; name: string; status: string }) {
@@ -54,10 +71,12 @@ function LockedCampaign({ id, name, status }: { id: string; name: string; status
 function WizardLoader({
   campaignId,
   duplicateId,
+  extractionId,
   onDraftCreated,
 }: {
   campaignId: string | null
   duplicateId: string | null
+  extractionId: string | null
   onDraftCreated: (id: string) => void
 }) {
   const { t } = useTranslation()
@@ -115,6 +134,7 @@ function WizardLoader({
     <CampaignWizard
       campaign={campaignId ? opened : null}
       copyFrom={duplicateId ? opened : null}
+      placeExtractionId={extractionId}
       onDraftCreated={onDraftCreated}
     />
   )
@@ -126,20 +146,29 @@ export default function CampaignWizardPage() {
   const navigationType = useNavigationType()
   const routeId = campaignId ?? null
   const routeDuplicateId = routeId ? null : searchParams.get("duplicate")
+  const routeExtractionId = routeId ? null : searchParams.get(LINKED_EXTRACTION_PARAM)
 
-  const [session, setSession] = useState(() => openSession(0, routeId, routeDuplicateId))
+  const [session, setSession] = useState(() => openSession(0, routeId, routeDuplicateId, routeExtractionId))
   const [createdId, setCreatedId] = useState<string | null>(null)
 
-  if (routeId !== session.routeId || routeDuplicateId !== session.routeDuplicateId) {
+  // A busca sair da URL é o assistente dizendo que já tratou dela, não outro formulário. Outra busca, sim.
+  const otherExtraction = routeExtractionId !== null && routeExtractionId !== session.routeExtractionId
+
+  if (routeId !== session.routeId || routeDuplicateId !== session.routeDuplicateId || otherExtraction) {
     // O voltar do aparelho pode cair num passo de antes de o rascunho existir: ainda é o mesmo formulário,
     // e `RouteSync` devolve a URL para `edit`. Um "Nova campanha" de verdade entra como PUSH.
     const sameDraft = routeId !== null && routeId === createdId
     const backBeforeDraft = routeId === null && createdId !== null && navigationType === "POP"
 
     if (sameDraft || backBeforeDraft) {
-      setSession({ ...session, routeId, routeDuplicateId })
+      setSession({
+        ...session,
+        routeId,
+        routeDuplicateId,
+        routeExtractionId: routeExtractionId ?? session.routeExtractionId,
+      })
     } else {
-      setSession(openSession(session.number + 1, routeId, routeDuplicateId))
+      setSession(openSession(session.number + 1, routeId, routeDuplicateId, routeExtractionId))
       setCreatedId(null)
     }
   }
@@ -149,6 +178,7 @@ export default function CampaignWizardPage() {
       key={session.number}
       campaignId={session.campaignId}
       duplicateId={session.duplicateId}
+      extractionId={session.extractionId}
       onDraftCreated={setCreatedId}
     />
   )

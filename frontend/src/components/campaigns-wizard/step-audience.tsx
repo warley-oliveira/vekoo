@@ -5,8 +5,10 @@ import {
   FileSpreadsheet,
   FileUp,
   List,
+  Loader2,
   Store,
   Trash2,
+  TriangleAlert,
   Users,
 } from "lucide-react"
 
@@ -14,6 +16,7 @@ import { Callout, ErrorState, ListSkeleton, StatusBadge, useConfirm } from "@/co
 import { Button } from "@/components/ui/button"
 import {
   useCampaignCapabilities,
+  useLinkedExtraction,
   useRecipientSummary,
 } from "@/hooks/campaigns-wizard/use-campaign-options"
 import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
@@ -21,7 +24,7 @@ import { useWizardNav } from "@/hooks/campaigns-wizard/use-wizard-nav"
 import { useCan } from "@/hooks/use-can"
 import { apiDelete } from "@/lib/api"
 import { toast } from "@/lib/campaigns-wizard/notify"
-import type { RemoveResult } from "@/lib/campaigns-wizard/types"
+import type { LinkedPlaces, RemoveResult } from "@/lib/campaigns-wizard/types"
 import { asToken, offeredVariables } from "@/lib/campaigns-wizard/variables"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
@@ -106,19 +109,95 @@ function OriginRow({
   )
 }
 
+/**
+ * A busca que a pessoa trouxe da tela de buscas (`?placeExtraction=`). Dando certo, abre o painel pronto para
+ * confirmar. Sem dar, avisa aqui mesmo, e o resto do passo continua valendo.
+ */
+function LinkedSearch({
+  id,
+  available,
+  ready,
+  onSettled,
+}: {
+  id: string
+  available: boolean
+  /** Já se sabe o que está configurado. */
+  ready: boolean
+  onSettled: () => void
+}) {
+  const { t } = useTranslation()
+  const link = useLinkedExtraction(id)
+  // O painel abre uma vez: o que a API responder depois não passa por cima do que a pessoa está marcando.
+  const [opened, setOpened] = useState<LinkedPlaces | null>(null)
+
+  if (!opened && ready && link.state === "ready") setOpened(link.search)
+
+  if (opened) {
+    return (
+      <Suspense fallback={null}>
+        <PlacesPanel available={available} linked={opened} onClose={onSettled} />
+      </Suspense>
+    )
+  }
+
+  if (link.state === "loading" || link.state === "ready") {
+    return (
+      <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Loader2 aria-hidden className="size-4 animate-spin" />
+        {t("campaignsWizard.places.link.opening")}
+      </p>
+    )
+  }
+
+  const closeButton = (
+    <Button type="button" variant="outline" size="sm" className="pointer-coarse:h-10" onClick={onSettled}>
+      {t("campaignsWizard.actions.close")}
+    </Button>
+  )
+
+  return (
+    <Callout
+      tone="warning"
+      role="alert"
+      icon={<TriangleAlert />}
+      title={t(`campaignsWizard.places.link.${link.state}Title`)}
+      action={
+        link.state === "error" ? (
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" className="pointer-coarse:h-10" onClick={link.retry}>
+              {t("campaignsWizard.places.link.retry")}
+            </Button>
+            {closeButton}
+          </div>
+        ) : (
+          closeButton
+        )
+      }
+    >
+      {link.state === "failed" && link.reason ? link.reason : t(`campaignsWizard.places.link.${link.state}Hint`)}
+    </Callout>
+  )
+}
+
 /** Para quem vai: de onde vem a lista, quantas pessoas já entraram e o que dá para usar na mensagem. */
 export function StepAudience() {
   const { t } = useTranslation()
   const language = useLanguage()
   const confirm = useConfirm()
   const { campaignId } = useDraft()
-  const { audienceError } = useWizardNav()
+  const { audienceError, linkedExtractionId, settleLinkedExtraction } = useWizardNav()
   const canSeeContacts = useCan("contacts")
   const { capabilities, isLoading: capabilitiesLoading } = useCampaignCapabilities()
   const { summary, error, isLoading, reload } = useRecipientSummary(campaignId)
   const [panel, setPanel] = useState<Panel | null>(null)
 
   const close = () => setPanel(null)
+
+  function openSource(next: Panel) {
+    // Foi atrás de outra fonte: o aviso sobre a busca que veio na URL já cumpriu o papel.
+    if (linkedExtractionId) settleLinkedExtraction()
+    setPanel(next)
+  }
 
   async function removeOrigin(origin: "contacts" | "imported", count: number) {
     if (!campaignId) return
@@ -146,6 +225,15 @@ export function StepAudience() {
         title={t("campaignsWizard.steps.audience.title")}
         hint={t("campaignsWizard.steps.audience.hint")}
       />
+
+      {linkedExtractionId ? (
+        <LinkedSearch
+          id={linkedExtractionId}
+          available={capabilities?.placeExtractions.available ?? false}
+          ready={!capabilitiesLoading}
+          onSettled={settleLinkedExtraction}
+        />
+      ) : null}
 
       {isLoading ? (
         <ListSkeleton rows={2} />
@@ -222,13 +310,13 @@ export function StepAudience() {
                 <StatusBadge tone="neutral">{t("campaignsWizard.audience.noPermission")}</StatusBadge>
               )
             }
-            onClick={() => setPanel("contacts")}
+            onClick={() => openSource("contacts")}
           />
           <SourceCard
             icon={<FileUp />}
             title={t("campaignsWizard.audience.sources.file.title")}
             description={t("campaignsWizard.audience.sources.file.description")}
-            onClick={() => setPanel("file")}
+            onClick={() => openSource("file")}
           />
           <SourceCard
             icon={<FileSpreadsheet />}
@@ -239,13 +327,13 @@ export function StepAudience() {
                 <StatusBadge tone="neutral">{t("campaignsWizard.audience.notConfigured")}</StatusBadge>
               ) : null
             }
-            onClick={() => setPanel("sheets")}
+            onClick={() => openSource("sheets")}
           />
           <SourceCard
             icon={<Store />}
             title={t("campaignsWizard.audience.sources.places.title")}
             description={t("campaignsWizard.audience.sources.places.description")}
-            onClick={() => setPanel("places")}
+            onClick={() => openSource("places")}
           />
         </div>
         <p className={cn("text-xs text-pretty text-muted-foreground")}>

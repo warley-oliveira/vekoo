@@ -10,6 +10,9 @@ export type WizardNav = {
   /** Tentou avançar sem ninguém no público: o passo mostra o recado. */
   audienceError: boolean
   onAudienceEmpty: () => void
+  /** A busca de estabelecimentos que veio na URL (`?placeExtraction=`), até a pessoa resolver o que fazer com ela. */
+  linkedExtractionId: string | null
+  settleLinkedExtraction: () => void
 }
 
 export const WizardNavContext = createContext<WizardNav | null>(null)

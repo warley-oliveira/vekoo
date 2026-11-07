@@ -152,6 +152,12 @@ export type PlaceExtraction = {
   errorMessage: string | null
 }
 
+/** Uma busca aberta pelo link da tela de buscas. Ainda em andamento, vem sem resultados. */
+export type LinkedPlaces = {
+  extraction: PlaceExtraction
+  results: PlaceResult[]
+}
+
 export type PlaceChannelEvent = {
   action: "status_update" | "extraction_completed"
   data: PlaceExtraction

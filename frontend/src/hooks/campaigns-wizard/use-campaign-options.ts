@@ -1,11 +1,16 @@
 import { useMemo } from "react"
 
 import { useApi } from "@/hooks/use-api"
+import { ApiError } from "@/lib/api"
+import { hasPhone } from "@/lib/campaigns-wizard/places"
 import type { Connector, WhatsappCloudConnector, WhatsappTemplate, WhatsappWebConnector } from "@/lib/connectors/types"
 import type {
   Capabilities,
   CampaignFlow,
   CampaignTag,
+  LinkedPlaces,
+  PlaceExtraction,
+  PlaceResult,
   RecipientSummary,
 } from "@/lib/campaigns-wizard/types"
 
@@ -75,6 +80,59 @@ export function useConnectorTemplates(connectorId: string | null) {
     { revalidateOnFocus: false, keepPreviousData: false }
   )
   return { templates: data?.templates, error, isLoading, reload: () => mutate() }
+}
+
+export type LinkedExtractionState =
+  | { state: "loading" }
+  | { state: "notFound" }
+  | { state: "failed"; reason: string | null }
+  | { state: "empty" }
+  | { state: "error"; retry: () => void }
+  | { state: "ready"; search: LinkedPlaces }
+
+// O cache pode estar velho (a busca terminou, ou foi apagada): vale a resposta de agora.
+const FRESH = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  revalidateOnMount: true,
+  dedupingInterval: 0,
+  keepPreviousData: false,
+}
+
+/**
+ * A busca que veio em `?placeExtraction=`. Lê só o que está gravado, então vale mesmo sem a chave do Apify.
+ * De outra organização e inexistente respondem igual, 404: para quem está na tela, nenhuma das duas existe.
+ */
+export function useLinkedExtraction(id: string): LinkedExtractionState {
+  const path = `/place-extractions/${encodeURIComponent(id)}`
+  const info = useApi<{ extraction: PlaceExtraction }>(path, FRESH)
+  const extraction = info.data?.extraction
+  const list = useApi<{ results: PlaceResult[] }>(
+    extraction?.status === "completed" && extraction.resultsCount > 0 ? `${path}/results` : null,
+    FRESH
+  )
+
+  if (info.isValidating || list.isValidating) return { state: "loading" }
+
+  const failure = info.error ?? list.error
+  if (failure instanceof ApiError && failure.status === 404) return { state: "notFound" }
+  if (failure) {
+    return {
+      state: "error",
+      retry: () => void (info.error ? info.mutate() : list.mutate()),
+    }
+  }
+
+  if (!extraction) return { state: "loading" }
+  if (extraction.status === "failed") return { state: "failed", reason: extraction.errorMessage }
+  // Ainda procurando: o painel acompanha, e marca todo mundo quando terminar.
+  if (extraction.status !== "completed") return { state: "ready", search: { extraction, results: [] } }
+  if (extraction.resultsCount === 0) return { state: "empty" }
+  if (!list.data) return { state: "loading" }
+
+  return list.data.results.some(hasPhone)
+    ? { state: "ready", search: { extraction, results: list.data.results } }
+    : { state: "empty" }
 }
 
 export const EMPTY_SUMMARY: RecipientSummary = {

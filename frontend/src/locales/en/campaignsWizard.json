@@ -291,9 +291,22 @@
     "places": {
       "title": "Businesses",
       "description": "Find businesses on Google Maps, or use the ones you already found.",
+      "link": {
+        "opening": "Opening the search…",
+        "fromSearch": "From your search: {{search}}",
+        "notFoundTitle": "We couldn't find that search",
+        "notFoundHint": "It may have been deleted, or belong to another organization. Choose the people below.",
+        "failedTitle": "That search didn't finish",
+        "failedHint": "It stopped before finding any businesses. Choose the people below.",
+        "emptyTitle": "That search found nobody with a phone number",
+        "emptyHint": "Without a phone number the message can't be sent. Choose the people below.",
+        "errorTitle": "We couldn't open that search",
+        "errorHint": "Check your connection and try again, or choose the people below.",
+        "retry": "Try again"
+      },
       "tabs": {
         "label": "Where the businesses come from",
-        "search": "New search",
+        "search": "Search",
         "existing": "Already found"
       },
       "query": "What are you looking for",
