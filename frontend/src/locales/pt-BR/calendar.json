@@ -264,9 +264,8 @@
         "noAttributes": "Nenhum dado preenchido.",
         "none": {
           "title": "Sem contato neste agendamento",
-          "description": "Escolha um contato para ligar a conversa e os lembretes a este agendamento.",
-          "canceled": "Este agendamento foi marcado sem contato.",
-          "action": "Escolher contato"
+          "description": "Em Editar, escolha um contato para ligar a conversa e os lembretes.",
+          "canceled": "Este agendamento foi marcado sem contato."
         },
         "phone": "Telefone"
       },

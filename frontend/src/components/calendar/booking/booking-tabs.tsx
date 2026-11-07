@@ -81,8 +81,16 @@ export function BookingContactTab({ event }: { event: BookingEvent }) {
   const language = useLanguage()
   const { customFields } = useCustomFields()
 
+  // A API já entrega os campos pelo nome cadastrado (`CustomFieldLabels`); o que não tem cadastro
+  // vem pela chave. Os dois servem para achar o tipo.
   const fieldsByKey = useMemo(
-    () => new Map((customFields ?? []).map((field) => [field.key, field])),
+    () =>
+      new Map(
+        (customFields ?? []).flatMap((field) => [
+          [field.key, field],
+          [field.name, field],
+        ])
+      ),
     [customFields]
   )
 

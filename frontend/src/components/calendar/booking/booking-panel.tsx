@@ -410,7 +410,7 @@ export function BookingPanel({
             >
               {/* No celular a barra de abas gruda no topo ao rolar, e o painel tem ao menos a
                   altura útil da tela: trocar de aba não puxa a página para cima. */}
-              <div className="sticky top-0 z-10 border-b bg-background px-4 md:static md:px-6">
+              <div className="sticky top-0 z-10 border-b bg-popover px-4 md:static md:px-6">
                 <TabsList variant="line" className="h-11 gap-4 group-data-horizontal/tabs:h-11">
                   <TabsTrigger value="contact" className="flex-none px-0.5">
                     {t("calendar.booking.tabs.contact")}
@@ -437,11 +437,6 @@ export function BookingPanel({
                     ? "calendar.booking.contact.none.canceled"
                     : "calendar.booking.contact.none.description"
                 )}
-                action={
-                  canceled
-                    ? undefined
-                    : { label: t("calendar.booking.contact.none.action"), onClick: () => setEditing(true) }
-                }
               />
             </div>
           )}
