@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useNavigate, useSearchParams } from "react-router"
+import { Navigate, useNavigate, useSearchParams } from "react-router"
 import { useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { RefreshCw, Settings2 } from "lucide-react"
@@ -33,7 +33,7 @@ import {
   type BoardFilters,
   type FilterContext,
 } from "@/lib/pipelines/filters"
-import type { BoardView } from "@/lib/pipelines/paths"
+import { boardViewUrl, type BoardView } from "@/lib/pipelines/paths"
 import type {
   BoardDetail,
   FilterDefinition,
@@ -361,6 +361,12 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
         )}
       </div>
     )
+  }
+
+  // Previsão só existe em pipeline de vendas: sem isto, o endereço abria uma lista de zeros, sem
+  // nenhuma visão acesa no seletor.
+  if (view === "forecast" && !meta.isCrm) {
+    return <Navigate replace to={boardViewUrl(board.id)} />
   }
 
   const resultLabel =
