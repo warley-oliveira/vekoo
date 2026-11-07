@@ -336,8 +336,12 @@ export function installBackStack(): () => void {
     layers.length = 0
 
     // Saiu da largura de celular com camada aberta: a entrada não pode virar um voltar que não faz nada.
-    const depth = currentDepth()
-    if (depth > 0) window.history.go(-depth)
+    // Num microtask, porque o StrictMode desliga e religa na mesma hora: recarregar com uma folha aberta
+    // andava duas vezes para trás, a daqui e a de `reconcile`, e caía na tela anterior.
+    queueMicrotask(() => {
+      const depth = currentDepth()
+      if (installs === 0 && depth > 0) window.history.go(-depth)
+    })
   }
 }
 
