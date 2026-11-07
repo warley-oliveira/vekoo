@@ -37,6 +37,7 @@ import {
   DateRangePicker,
   DateTimeField,
   DetailSkeleton,
+  ChipsInput,
   type DateRangeValue,
   type DropzoneFile,
   EmptyState,
@@ -52,6 +53,7 @@ import {
   ListSkeleton,
   Money,
   MultiSelectField,
+  MultiSelectInput,
   NumberField,
   PageBody,
   PageHeader,
@@ -84,6 +86,7 @@ import {
   UserAvatar,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
 import { useBoolean } from "@/hooks/use-boolean"
 import { ApiError, type PaginationMeta } from "@/lib/api"
 import { isValidPhone } from "@/lib/format-phone"
@@ -1790,6 +1793,25 @@ function SkeletonsSection() {
   return (
     <Section id="skeletons" title={t("kit.showcase.sections.skeletons")}>
       <div className="grid gap-6 md:grid-cols-2">
+        <Example title={t("kit.showcase.skeletons.progress")} hint={t("kit.showcase.skeletons.progressHint")}>
+          <Progress value={40} aria-label={t("kit.showcase.skeletons.progress")} />
+          <Progress value={null} aria-label={t("kit.showcase.skeletons.progress")} />
+        </Example>
+        <Example title={t("kit.showcase.skeletons.disabled")}>
+          <MultiSelectInput
+            disabled
+            aria-label={t("kit.showcase.forms.tags")}
+            options={TAG_OPTIONS}
+            value={TAG_OPTIONS.slice(0, 2).map((option) => option.value)}
+            onChange={() => {}}
+          />
+          <ChipsInput
+            disabled
+            aria-label={t("kit.showcase.forms.tags")}
+            value={TAG_OPTIONS.slice(0, 2).map((option) => option.label)}
+            onChange={() => {}}
+          />
+        </Example>
         <Example title={t("kit.showcase.skeletons.list")}>
           <ListSkeleton rows={4} avatar />
         </Example>

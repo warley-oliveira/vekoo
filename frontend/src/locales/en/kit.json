@@ -382,6 +382,9 @@
         "dropzoneStates": "Upload states"
       },
       "skeletons": {
+        "progress": "Progress",
+        "progressHint": "With a value, and without knowing how much is left.",
+        "disabled": "Disabled fields",
         "list": "List",
         "table": "Table",
         "cards": "Card grid",

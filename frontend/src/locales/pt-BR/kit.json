@@ -382,6 +382,9 @@
         "dropzoneStates": "Estados de envio"
       },
       "skeletons": {
+        "progress": "Progresso",
+        "progressHint": "Com valor, e sem saber quanto falta.",
+        "disabled": "Campos desativados",
         "list": "Lista",
         "table": "Tabela",
         "cards": "Grade de cards",
