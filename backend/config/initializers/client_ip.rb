@@ -9,7 +9,9 @@
 #
 # 2. A Cloudflare entra na lista de quem é confiável. Sem ela o último endereço da fila é o da borda: todo
 #    mundo que sai pelo mesmo endereço da Cloudflare divide o limite, e uma pessoa errando a senha corta o
-#    login das outras. A lista substitui o padrão, por isso as faixas internas vêm junto.
+#    login das outras. A lista substitui o padrão, por isso as faixas internas vêm junto. É seguro porque o
+#    firewall só aceita 80/443 destas faixas (ver bin/deploy-setup), e o que a pessoa escreve em
+#    X-Forwarded-For fica à esquerda do que a Cloudflare acrescenta.
 #    Fonte: https://www.cloudflare.com/ips/ (raramente muda; faixa nova só devolve o comportamento antigo).
 Rack::Request.forwarded_priority = [ :x_forwarded ]
 

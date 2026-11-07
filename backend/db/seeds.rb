@@ -983,8 +983,16 @@ module VekooSeeds
       ])
   end
 
+  # A conta de demonstração tem senha pública. Em produção, só o acervo, que é dado do produto, a menos
+  # que o ambiente seja de demonstração. `db:prepare` roda esta semente em banco vazio.
+  def demo?
+    !Rails.env.production? || ENV["SEED_DEMO_DATA"] == "1"
+  end
+
   def call
     seed_catalog!
+    return unless demo?
+
     organization = seed_demo_account!
     seed_notifications!(organization)
     seed_carousels!(organization)
@@ -997,7 +1005,7 @@ end
 
 organization = VekooSeeds.call
 
-puts <<~REPORT
+puts <<~REPORT if organization
   Semente aplicada.
 
     Acervo      #{ThemePreset.count} temas · #{LibraryImage.count} imagens · #{PaletteColor.count} cores

@@ -64,6 +64,28 @@ RSpec.describe "db/seeds.rb" do
     end
   end
 
+  describe "conta de demonstração, que tem senha pública" do
+    before { allow(ENV).to receive(:[]).and_call_original }
+
+    def with_environment(environment, env_flag: nil)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::EnvironmentInquirer.new(environment))
+      allow(ENV).to receive(:[]).with("SEED_DEMO_DATA").and_return(env_flag)
+      yield
+    end
+
+    it "não nasce em produção" do
+      with_environment("production") { expect(VekooSeeds.demo?).to be(false) }
+    end
+
+    it "nasce em produção só com SEED_DEMO_DATA=1" do
+      with_environment("production", env_flag: "1") { expect(VekooSeeds.demo?).to be(true) }
+    end
+
+    it "nasce em desenvolvimento" do
+      with_environment("development") { expect(VekooSeeds.demo?).to be(true) }
+    end
+  end
+
   let(:organization) { Organization.first }
 
   it "traz o acervo da ferramenta inteiro" do

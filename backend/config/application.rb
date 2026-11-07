@@ -1,6 +1,8 @@
 require_relative "boot"
 
 require "rails"
+# Antes do Active Storage, que confere o libvips ao carregar.
+require_relative "vips_local" unless Rails.env.production?
 # Pick the frameworks you want:
 require "active_model/railtie"
 require "active_job/railtie"

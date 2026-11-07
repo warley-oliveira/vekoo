@@ -341,7 +341,50 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acréscimos na API:** `POST /campaigns/:id/schedule`, `GET /campaigns/:id/recipient-summary`, `DELETE /campaigns/:id/recipients` (com `?origin=`) e `/recipients/:recipientId`; `ChatAudience` usa a mesma busca da lista de contatos.
 - **Integrador:** a CSP libera `accounts.google.com` e `apis.google.com` em `script-src`, `sheets.googleapis.com` em `connect-src`, e `docs.google.com` e `accounts.google.com` em `frame-src`, para o seletor de planilhas. Não testado contra o Google real.
 
+### Dashboards personalizados: tela (fe-custom-dashboards)
+
+- **Entram como abas do Dashboard**, em `?tab=<id>`, sob o mesmo filtro de período, e a criação em `?tab=new`. Ordem: favoritos, depois do mais antigo para o mais novo. Favoritar é novo na tela.
+- **Grade de 12 colunas em qualquer largura**: colunas por tamanho de tela da origem saíram, porque o que se arrastava numa tela média sumia ao salvar. O celular permite adicionar, editar e remover, sem mover, com aviso.
+- **Números:** nunca coloridos; a regra vira selo, e no medidor vale sobre o percentual da meta. Fórmula em que nenhum passo achou nada mostra o traço e "Sem dados", e não "0,0%". `number_trend` usa o período inteiro no valor e o anterior na variação.
+- **Gráficos:** pizza e rosca até 6 partes, com sugestão de barras acima disso; lacuna de tempo preenchida com zero; série única em barras na tinta neutra.
+- **Dados:** CSV feito no navegador, porque fórmula só existe na tela; cards carregam ao aparecer; consultas iguais não repetem em 25 s; conflito é conferido antes de salvar por cima.
+- **Fora:** "Criar com IA", que não tinha back-end; o assistente de 3 passos virou uma tela só, com prévia; `toggle_public`, que não veio na API. "Desempenho da IA" virou "Automação"; o modelo "Vendas" é novo.
+- **Acréscimos na API:** fonte `pipelines`, com os filtros `pipeline_status` e `pipeline_stage`, respeitando `Pipelines::CardVisibility`. Corrigidos: salvar widgets com o mesmo id não gravava nada; `decimal` saía como texto; a consulta crua vinha sem `labels`; empate no `sort` cortava valores diferentes a cada consulta; "maior primeiro" no Postgres abria pelos sem valor.
+
+### Segurança (sec-review)
+
+Corrigidos, cada um com spec que falhava antes:
+
+- **SSRF com leitura por URL de mídia** em todos os provedores: conta nova forjava webhook com endereço interno e lia a resposta como mídia.
+- **Webhooks de provedor sem autenticação** (Evolution, Z-API, LeadChat): agora há token por conector na URL. **Quem já tem conector precisa reconfigurar o webhook no provedor.** A Meta passa a recusar em produção sem segredo configurado.
+- **Sequestro de WABA em `reroute_by_entry`:** só vale conector com `waba_verified_at`. **WABA existente precisa ser reativado.**
+- **Limites por IP burláveis** pelo cabeçalho `Forwarded`, e a Cloudflare não era proxy confiável.
+- **Upload direto do Active Storage aberto sem conta**; bloqueio do libvips; sem `ffprobe` em anexo.
+- **WebSocket sobrevivia** à perda de acesso e à troca de senha, e pedidos de nova senha abertos seguiam valendo. **Comportamento novo:** trocar a própria senha e sair derrubam e reconectam o WebSocket de todos os aparelhos.
+- **ffmpeg lia playlist HLS**, e um "áudio" podia ler outro arquivo do disco.
+- **`chat_list_to` faltava** em ações agendadas, inscrição em turma, presença e agendamento.
+- **`/uploads` e imagem do widget confiavam no tipo declarado.** CSV de contatos ganhou teto de 10 MB. Argumentos de job saíram do log. Carrossel em pasta de outra organização.
+- **Cabeçalho com segredo em claro**, em webhooks e gatilhos: agora só de escrita. A resposta traz `••••••••`, mandar a máscara de volta mantém o valor, e trocar destino ou nome responde `422 secretHeaderNeedsRetyping`. `GET /tool-catalog/:id` não entrega mais `jsCode`.
+
+Integrador: Rails 8.1.4.1, rack 3.2.8, nokogiri, loofah, rails-html-sanitizer, crass e json nas versões corrigidas; `bundler-audit` limpo. O Rails corrigido recusa libvips abaixo de 8.13. Em desenvolvimento, `config/vips_local.rb` deixa o WSL com Ubuntu 22.04 subir; em produção a recusa continua. A conta de demonstração não nasce mais em produção, a menos que `SEED_DEMO_DATA=1`.
+
 ## 2. Pendências por frente
+
+### Segurança: precisam de decisão
+
+- **Produção de hoje exposta a CVE-2026-66066** (Rails 8.1.3 com libvips): `VIPS_BLOCK_UNTRUSTED=1` no ambiente, ou subir o Rails. A correção está nesta branch, e não no `main`.
+- **`backend/config/master.key` versionado desde o primeiro commit**, e no GitHub. Trocar a chave, tirar do git e pôr no `.gitignore`. Antes, conferir se `.env.deploy` tem `SECRET_KEY_BASE` próprio; com o valor do repositório, quem lê o repositório forja links assinados e decifra tokens de conector. `.env.deploy.example` manda copiar desse arquivo.
+- **Copiloto `send_messages`:** a aprovação humana existe só no prompt, sem trava no servidor. Uma mensagem de contato pode induzir o envio para até 50 conversas.
+- **`/campaigns/:id/import-contacts` ignora `chat_list_to`:** quem tem `campaigns` importa a base inteira e lê os telefones em `recipients`.
+- **Comandos no canal:** qualquer contato com `--RE-ACTIVE-ME--` religa a automação durante atendimento humano, e com `CCTX` zera o limite de mensagens.
+- **WABA sem dono:** evento de `entry.id` desconhecido fica no conector da URL, ou seja, em outra organização.
+- **Mídia enviada por URL:** Evolution e Z-API baixam o endereço do lado delas. Se a Evolution estiver na rede interna, é SSRF por tabela: precisa de regra de saída no host.
+- **Token de 30 dias em `?token=` no WebSocket:** o Rails filtra; proxy e Cloudflare não foram conferidos. Um ticket curto resolveria.
+- **Sem cota por organização:** cadastro grátis usa Apify, Maps, embeddings, Whisper e a instância Evolution por conta do servidor, enche disco (`/attachments` aceita 100 MB por arquivo) e a fila `scripts`.
+- **Segredos sem cifra em repouso** em `hook_actions` e `pipeline_triggers`; cabeçalhos em claro em `GET /flows/:id` para quem tem `flows`; corpo e query da ação sem máscara.
+- **Menores:** enumeração de contas em `check-email` e login; links assinados de mídia nunca expiram; `POST /credits/consume` deixa qualquer membro gastar o saldo da organização; quem perde a conversa por reatribuição segue ouvindo o `ChatChannel` até sair dela; qualquer pessoa com acesso ao card apaga comentário alheio, como na origem.
+- **Não verificado:** exploração real da CVE; produção, `kamal-proxy` e Cloudflare; webhooks com token em provedor real; reconexão do WebSocket e o `422` de cabeçalho no navegador; injeção de prompt em fluxos e copiloto; fuzzing do V8; carga em `$regex` e o teto de 16 MB do funil.
+- **`npm audit --omit=dev`:** 24 avisos (2 críticos, 13 altos), quase todos de `shadcn` em `dependencies`, um CLI que `src` não importa: deveria ir para `devDependencies`. No bundle ficam `dompurify` (dentro do Monaco) e `zod`.
 
 ### Integrador (Fase 5)
 

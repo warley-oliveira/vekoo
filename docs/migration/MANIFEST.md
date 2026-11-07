@@ -146,7 +146,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | ✅ |
 | 24 | **fe-campaigns-list**: lista, KPIs, monitor, extrações | `pages/campaigns/{list,monitor,shared}`, `apify-contacts-tab` | ✅ |
 | 25 | **fe-campaigns-wizard**: assistente de campanha, importações, Sheets, Apify | `pages/campaigns/wizard` | ✅ |
-| 26 | **fe-custom-dashboards**: construtor de dashboards | `components/custom-dashboards`, `pages/custom-dashboards`, `formula-engine` | 🔄 |
+| 26 | **fe-custom-dashboards**: construtor de dashboards | `components/custom-dashboards`, `pages/custom-dashboards`, `formula-engine` | ✅ |
 
 ## Fase 5 — Integração e qualidade (integrador)
 

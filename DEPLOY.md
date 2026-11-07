@@ -135,9 +135,9 @@ kamal config > /dev/null && echo ok    # imprime os segredos: não mande a saíd
 kamal setup
 ```
 
-Num banco vazio o `db:prepare` **já roda a semente base** (carrosséis e a conta de demonstração). Enquanto Postgres e Mongo inicializam, o `web` pode morrer e reiniciar uma ou duas vezes: é a política de restart fazendo o que deve, dentro do `deploy_timeout`.
+Num banco vazio o `db:prepare` roda a semente base, que em produção traz só o acervo da ferramenta: a conta de demonstração e os carrosséis exigem `SEED_DEMO_DATA=1`. Enquanto Postgres e Mongo inicializam, o `web` pode morrer e reiniciar uma ou duas vezes: é a política de restart fazendo o que deve, dentro do `deploy_timeout`.
 
-**Antes de abrir para clientes, troque a senha da conta de demonstração, ou apague a conta:** `marina.duarte@exemplo.com.br` / `carrossel123` é pública, está neste repositório. As sementes de domínio, com mais pessoas de senha conhecida, não rodam em produção: é preciso pedir, com `SEED_DEMO_DATA=1`.
+**Se a conta de demonstração já existe neste banco, de um deploy anterior, troque a senha ou apague a conta antes de abrir para clientes:** `marina.duarte@exemplo.com.br` / `carrossel123` é pública, está neste repositório. As sementes de domínio, com mais pessoas de senha conhecida, não rodam em produção: é preciso pedir, com `SEED_DEMO_DATA=1`.
 
 **4.8 Front:** [seção 7.1](#71-front-na-cloudflare). **4.9 Fora do repositório:** [seção 7.2](#72-o-que-se-registra-fora-do-repositório). **4.10** [Conferir](#8-o-que-conferir-depois-do-deploy).
 
