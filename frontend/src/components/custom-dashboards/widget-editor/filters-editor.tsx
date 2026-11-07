@@ -173,7 +173,8 @@ function FilterRow({
 
   return (
     <div className="flex flex-col gap-1.5 rounded-lg bg-muted/40 p-2">
-      <div className="flex items-center gap-1.5">
+      {/* No celular, o campo fica numa linha só dele: dividindo com a comparação, o nome não caberia. */}
+      <div className="flex flex-wrap items-center gap-1.5 sm:flex-nowrap">
         <HiddenLabel text={t("customDashboards.filters.field")}>
           {(id) => (
             <SearchableSelect
@@ -182,11 +183,11 @@ function FilterRow({
               onChange={changeField}
               options={fieldOptions}
               placeholder={t("customDashboards.filters.field")}
-              className="min-w-0 flex-1 bg-background"
+              className="min-w-0 flex-1 basis-full bg-background sm:basis-0"
             />
           )}
         </HiddenLabel>
-        <div className="w-40 shrink-0">
+        <div className="min-w-0 flex-1 sm:w-40 sm:flex-none sm:shrink-0">
           <SelectInput
             aria-label={t("customDashboards.filters.operator")}
             options={operatorOptions}
