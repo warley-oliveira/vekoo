@@ -266,3 +266,15 @@
     touch-action: pan-y;
   }
 }
+
+/*
+ * A seleção de horário (o bloco-espelho do FullCalendar): sem cor de evento, só o violeta da
+ * seleção, tracejado, para não se confundir com um compromisso de verdade.
+ */
+.vk-calendar .vk-fc-selection {
+  --fc-event-color: var(--primary);
+  background-color: color-mix(in oklab, var(--primary) 12%, var(--background));
+  color: var(--primary);
+  outline: 1px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+  outline-offset: -1px;
+}

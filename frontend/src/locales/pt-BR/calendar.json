@@ -82,7 +82,8 @@
       "allDay": "Dia inteiro",
       "noEvents": "Nada marcado",
       "more_one": "mais {{count}}",
-      "more_other": "mais {{count}}"
+      "more_other": "mais {{count}}",
+      "newSelection": "Novo agendamento"
     },
     "agenda": {
       "emptyDay": "Nada marcado neste dia.",

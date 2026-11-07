@@ -82,7 +82,8 @@
       "allDay": "All day",
       "noEvents": "Nothing booked",
       "more_one": "{{count}} more",
-      "more_other": "{{count}} more"
+      "more_other": "{{count}} more",
+      "newSelection": "New booking"
     },
     "agenda": {
       "emptyDay": "Nothing booked on this day.",

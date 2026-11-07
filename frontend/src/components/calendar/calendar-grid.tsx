@@ -82,8 +82,27 @@ export type CalendarGridProps = {
   onDragChange?: (dragging: boolean) => void
 }
 
-function sourceOf(info: { event: { extendedProps: Record<string, unknown> } }): CalendarEvent {
-  return info.event.extendedProps.source as CalendarEvent
+/**
+ * O evento do Vekoo por trás do bloco. Nem todo bloco tem um: a seleção de horário na grade de
+ * horas (`selectMirror`) desenha um bloco-espelho sem `extendedProps`, e é nele que a leitura de
+ * `status` quebrava. Quem chama trata o vazio.
+ */
+function sourceOf(info: { event: { extendedProps: Record<string, unknown> } }): CalendarEvent | null {
+  const source = info.event.extendedProps?.source as CalendarEvent | undefined
+  return source && typeof source === "object" && "type" in source ? source : null
+}
+
+/** O bloco da seleção, enquanto a pessoa arrasta por horários vazios: o que vai virar agendamento. */
+function SelectionChip({ info }: { info: EventDisplayInfo }) {
+  const { t } = useTranslation()
+  return (
+    <div className="vk-event vk-event--selection">
+      <span className="vk-event-time vk-event-time--whole">{info.timeText}</span>
+      {info.isShort ? null : (
+        <span className="vk-event-title">{t("calendar.grid.newSelection")}</span>
+      )}
+    </div>
+  )
 }
 
 /** O bloco do evento. A cor é a do evento; o que muda por situação vem em ícone e texto. */
@@ -97,8 +116,23 @@ function EventChip({
   /** Mês no celular: não cabe texto, só a cor de que há algo naquele dia. */
   bare: boolean
 }) {
-  const { t } = useTranslation()
   const source = sourceOf(info)
+  if (!source) return <SelectionChip info={info} />
+  return <SourceChip info={info} source={source} short={short} bare={bare} />
+}
+
+function SourceChip({
+  info,
+  source,
+  short,
+  bare,
+}: {
+  info: EventDisplayInfo
+  source: CalendarEvent
+  short: boolean
+  bare: boolean
+}) {
+  const { t } = useTranslation()
   const { title, detail } = eventHeadline(source)
 
   if (bare) {
@@ -333,6 +367,7 @@ export default function CalendarGrid({
   const eventClass = useCallback(
     (info: EventDisplayInfo) => {
       const source = sourceOf(info)
+      if (!source) return "vk-fc-selection"
       const classes: string[] = []
       if (isCanceled(source)) classes.push("vk-fc-canceled")
       else if (source.type === "booking" && source.attendanceStatus === "no_show") {
@@ -385,6 +420,10 @@ export default function CalendarGrid({
     }
     const handleMove = (info: EventDropInfo | EventResizeDoneInfo) => {
       const source = sourceOf(info)
+      if (!source) {
+        info.revert()
+        return
+      }
       const zone = latest.current.zoneFor(source.calendarId)
       const { start: gridStart, end: gridEnd } = info.event
       if (!gridStart) return
@@ -465,6 +504,7 @@ export default function CalendarGrid({
         info.jsEvent.preventDefault()
         latest.current.onHoverEvent?.(null, null)
         const source = sourceOf(info)
+        if (!source) return
         if (bareMonth) {
           latest.current.onOpenDay(
             dayKeyOfGrid(gridDateOf(source.start, latest.current.zoneFor(source.calendarId)))
@@ -482,7 +522,8 @@ export default function CalendarGrid({
       eventMouseEnter: isTouch
         ? undefined
         : (info: EventHoveringInfo) => {
-            if (!isMoving.current) latest.current.onHoverEvent?.(sourceOf(info), info.el)
+            const source = sourceOf(info)
+            if (source && !isMoving.current) latest.current.onHoverEvent?.(source, info.el)
           },
       eventMouseLeave: isTouch ? undefined : () => latest.current.onHoverEvent?.(null, null),
     }
