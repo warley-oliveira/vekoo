@@ -13,7 +13,7 @@ import {
   InlineError,
   ListSkeleton,
   SearchInput,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
   UserAvatar,
   useConfirm,
@@ -175,7 +175,7 @@ export function EnrollmentsPanel({
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       size="lg"
@@ -255,7 +255,7 @@ export function EnrollmentsPanel({
           </section>
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

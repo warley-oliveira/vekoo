@@ -11,7 +11,7 @@ import {
 } from "@/components/calendar/settings/message-test-dialog"
 import {
   FormActions,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextField,
   UnsavedChangesDialog,
@@ -198,7 +198,7 @@ export function SequencePanel({
   const minutesParts = splitMinutes(minutes.field.value ?? 60)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -379,6 +379,6 @@ export function SequencePanel({
         }}
       />
       <SequenceToolsDialog open={toolsOpen} onOpenChange={setToolsOpen} />
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
