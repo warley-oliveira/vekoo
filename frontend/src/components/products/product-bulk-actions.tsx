@@ -84,8 +84,6 @@ export function ProductBulkActions({
   }
 
   const disabled = busy !== null
-  // No celular a barra é estreita: fica só o ícone, com o nome para o leitor de tela.
-  const label = "hidden sm:inline"
 
   return (
     <>
@@ -94,34 +92,31 @@ export function ProductBulkActions({
         variant="ghost"
         size="sm"
         disabled={disabled}
-        aria-label={t("products.bulk.activate")}
         onClick={() => void setActive(true)}
       >
         {busy === "activate" ? <Loader2 className="animate-spin" /> : <CirclePlay />}
-        <span className={label}>{t("products.bulk.activate")}</span>
+        {t("products.bulk.activate")}
       </Button>
       <Button
         type="button"
         variant="ghost"
         size="sm"
         disabled={disabled}
-        aria-label={t("products.bulk.deactivate")}
         onClick={() => void setActive(false)}
       >
         {busy === "deactivate" ? <Loader2 className="animate-spin" /> : <CirclePause />}
-        <span className={label}>{t("products.bulk.deactivate")}</span>
+        {t("products.bulk.deactivate")}
       </Button>
       <Button
         type="button"
         variant="ghost"
         size="sm"
         disabled={disabled}
-        aria-label={t("products.bulk.deleteShort")}
         className="text-destructive hover:text-destructive"
         onClick={() => void remove()}
       >
         <Trash2 />
-        <span className={label}>{t("products.bulk.deleteShort")}</span>
+        {t("products.bulk.deleteShort")}
       </Button>
     </>
   )

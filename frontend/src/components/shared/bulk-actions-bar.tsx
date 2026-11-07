@@ -61,8 +61,8 @@ export function BulkActionsBar({
           <div
             role="toolbar"
             aria-label={t("kit.bulk.toolbar")}
-            // Em tela estreita, duas linhas: quantos e o fechar em cima, as ações embaixo. Nenhum
-            // rótulo some atrás de uma rolagem que ninguém descobre.
+            // Em tela estreita, duas linhas: quantos e o fechar em cima, as ações embaixo, salvo se
+            // for um botão só. Nenhum rótulo some atrás de uma rolagem que ninguém descobre.
             className={cn(
               "pointer-events-auto flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-xl bg-popover py-1.5 pr-1.5 pl-3 text-sm text-popover-foreground shadow-lg ring-1 ring-foreground/10 sm:flex-nowrap",
               className
@@ -89,7 +89,7 @@ export function BulkActionsBar({
               </Button>
             ) : null}
             <span aria-hidden className="hidden h-5 w-px shrink-0 bg-border sm:block" />
-            <div className="order-2 -ml-1.5 flex w-full min-w-0 flex-wrap items-center gap-1 sm:order-none sm:ml-0 sm:w-auto">
+            <div className="order-2 -ml-1.5 flex w-full min-w-0 flex-wrap items-center gap-1 has-[>:only-child]:order-none has-[>:only-child]:ml-0 has-[>:only-child]:w-auto sm:order-none sm:ml-0 sm:w-auto">
               {children}
             </div>
             <Button
