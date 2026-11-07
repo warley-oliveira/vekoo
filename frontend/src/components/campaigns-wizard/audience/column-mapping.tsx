@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { ChevronDown, CircleCheck, CircleX } from "lucide-react"
 
@@ -290,48 +290,4 @@ export function SendingProgress({
       <p className="text-xs text-pretty text-muted-foreground">{t("campaignsWizard.import.keepOpen")}</p>
     </div>
   )
-}
-
-/** O mapeamento no worker, com um atraso mínimo: cada troca de coluna reconfere o arquivo inteiro. */
-export function useColumnMapping(
-  mapColumns: (columns: ColumnChoice, includeCountryCode: boolean) => Promise<MappedSummary>,
-  active: boolean
-) {
-  const [columns, setColumns] = useState<ColumnChoice>({ name: null, phone: null })
-  const [includeCountryCode, setIncludeCountryCode] = useState(true)
-  const [mapped, setMapped] = useState<MappedSummary | null>(null)
-  const [mapping, setMapping] = useState(false)
-
-  const ready = Boolean(columns.name && columns.phone) && columns.name !== columns.phone
-
-  useEffect(() => {
-    if (!active || !ready) return
-
-    let current = true
-    setMapping(true)
-    mapColumns(columns, includeCountryCode)
-      .then((result) => {
-        if (current) setMapped(result)
-      })
-      .catch(() => {
-        if (current) setMapped(null)
-      })
-      .finally(() => {
-        if (current) setMapping(false)
-      })
-
-    return () => {
-      current = false
-    }
-  }, [active, columns, includeCountryCode, mapColumns, ready])
-
-  return {
-    columns,
-    setColumns,
-    includeCountryCode,
-    setIncludeCountryCode,
-    mapped: ready ? mapped : null,
-    mapping,
-    ready,
-  }
 }

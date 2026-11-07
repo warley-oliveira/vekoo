@@ -228,16 +228,16 @@
       "submit_zero": "Adicionar pessoas",
       "submit_one": "Adicionar {{formatted}} pessoa",
       "submit_other": "Adicionar {{formatted}} pessoas",
-      "sending": "Enviando {{sent}} de {{total}}…",
+      "sending": "Adicionando à lista: {{sent}} de {{total}}…",
       "stopped": "Parou em {{sent}} de {{total}}. Quem já foi continua na lista.",
-      "keepOpen": "Deixe esta janela aberta até terminar. Se a conexão cair, é só continuar: ninguém entra duas vezes.",
-      "failedTitle": "O envio parou no meio",
+      "keepOpen": "Ninguém recebe nada agora: isto só monta a lista. Deixe esta janela aberta até terminar. Se a conexão cair, é só continuar, e ninguém entra duas vezes.",
+      "failedTitle": "A importação parou no meio",
       "failedHint": "Verifique a conexão e continue de onde parou.",
       "resume": "Continuar de onde parou",
       "stop": "Parar",
-      "stopTitle": "Parar o envio?",
+      "stopTitle": "Parar de adicionar?",
       "stopHint": "Os {{sent}} que já foram continuam na lista.",
-      "keepGoing": "Continuar enviando",
+      "keepGoing": "Continuar adicionando",
       "discardTitle": "Sair sem adicionar?",
       "discardHint": "Ninguém deste arquivo entrou na lista ainda.",
       "discard": "Sair sem adicionar",
@@ -259,7 +259,8 @@
         "rowCity": "Curitiba",
         "rowCoupon": "VOLTA10",
         "fileName": "exemplo-campanha.csv"
-      }
+      },
+      "done_zero": "Ninguém novo: essas pessoas já estavam na lista"
     },
     "sheets": {
       "title": "Importar do Google Sheets",
@@ -316,7 +317,6 @@
       "searchHint": "O resultado traz telefone, endereço, site e redes sociais, quando existem.",
       "queued": "Na fila, já começa…",
       "running": "Procurando estabelecimentos…",
-      "progress": "Andamento da busca",
       "runningHint": "Costuma levar alguns minutos. Pode fechar esta janela: o resultado fica em Já encontrados.",
       "searchFailed": "A busca não funcionou. Tente de novo.",
       "noResultsFound": "Nada encontrado. Tente outra palavra ou outro lugar.",
@@ -416,7 +416,16 @@
     "variables": {
       "menu": "Inserir variável",
       "nome": "Nome",
-      "telefone": "Telefone"
+      "telefone": "Telefone",
+      "known": {
+        "address": "Endereço",
+        "category_name": "Categoria",
+        "city": "Cidade",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "state": "Estado",
+        "website": "Site"
+      }
     },
     "media": {
       "hint": "Foto, vídeo, PDF, planilha ou documento, até 100 MB",
@@ -588,6 +597,7 @@
       "noFlow": "Segue como as outras conversas",
       "when": "Quando",
       "scheduledFor": "Começa em {{date}}",
+      "scheduledWaits": "Agendada para {{date}}, fora dos dias e horários de envio. A primeira sai em {{first}}",
       "startsNow": "Começa assim que você lançar",
       "window": "Só {{days}}, {{hours}}, no horário de {{timezone}}.",
       "pace": "Uma mensagem a cada {{range}}, até {{limit}} por dia em cada número.",

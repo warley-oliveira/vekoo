@@ -9,7 +9,6 @@ import {
   Trash2,
   Users,
 } from "lucide-react"
-import { toast } from "@/lib/campaigns-wizard/notify"
 
 import { Callout, ErrorState, ListSkeleton, StatusBadge, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -18,14 +17,16 @@ import {
   useRecipientSummary,
 } from "@/hooks/campaigns-wizard/use-campaign-options"
 import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
+import { useWizardNav } from "@/hooks/campaigns-wizard/use-wizard-nav"
 import { useCan } from "@/hooks/use-can"
 import { apiDelete } from "@/lib/api"
+import { toast } from "@/lib/campaigns-wizard/notify"
 import type { RemoveResult } from "@/lib/campaigns-wizard/types"
-import { asToken } from "@/lib/campaigns-wizard/variables"
+import { asToken, offeredVariables } from "@/lib/campaigns-wizard/variables"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { StepHeading, useWizardNav } from "./wizard-nav"
+import { StepHeading } from "./wizard-nav"
 
 const ContactsPanel = lazy(() => import("./audience/contacts-panel"))
 const FileImportPanel = lazy(() => import("./audience/file-import-panel"))
@@ -113,7 +114,7 @@ export function StepAudience() {
   const { campaignId } = useDraft()
   const { audienceError } = useWizardNav()
   const canSeeContacts = useCan("contacts")
-  const { capabilities } = useCampaignCapabilities()
+  const { capabilities, isLoading: capabilitiesLoading } = useCampaignCapabilities()
   const { summary, error, isLoading, reload } = useRecipientSummary(campaignId)
   const [panel, setPanel] = useState<Panel | null>(null)
 
@@ -136,6 +137,7 @@ export function StepAudience() {
   }
 
   const { total } = summary
+  const offered = offeredVariables(summary.variables)
 
   return (
     <section aria-labelledby="wizard-step-audience" className="flex flex-col gap-6">
@@ -195,10 +197,10 @@ export function StepAudience() {
             ) : null}
           </ul>
 
-          {summary.variables.length > 0 ? (
+          {offered.length > 0 ? (
             <p className="text-xs text-pretty text-muted-foreground">
               {t("campaignsWizard.audience.variablesFound", {
-                list: summary.variables
+                list: offered
                   .slice(0, 6)
                   .map((variable) => asToken(variable.name))
                   .join(", "),
@@ -263,14 +265,15 @@ export function StepAudience() {
       <Suspense fallback={null}>
         {panel === "contacts" ? <ContactsPanel onClose={close} /> : null}
         {panel === "file" ? <FileImportPanel onClose={close} /> : null}
-        {panel === "sheets" ? (
+        {/* Só depois de saber o que está configurado: abrir antes diria "falta configurar" por engano. */}
+        {panel === "sheets" && !capabilitiesLoading ? (
           <SheetsPanel
             capabilities={capabilities?.googleSheets ?? null}
             onClose={close}
             onUseFile={() => setPanel("file")}
           />
         ) : null}
-        {panel === "places" ? (
+        {panel === "places" && !capabilitiesLoading ? (
           <PlacesPanel available={capabilities?.placeExtractions.available ?? false} onClose={close} />
         ) : null}
         {panel === "recipients" && campaignId ? (

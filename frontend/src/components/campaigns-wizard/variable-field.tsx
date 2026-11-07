@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useIsMobile } from "@/hooks/use-is-mobile"
-import { BUILT_IN_VARIABLES, asToken } from "@/lib/campaigns-wizard/variables"
+import { BUILT_IN_VARIABLES, asToken, offeredVariables } from "@/lib/campaigns-wizard/variables"
 import type { RecipientVariable } from "@/lib/campaigns-wizard/types"
 import { normalizeSearchText } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
@@ -106,9 +106,11 @@ export function VariableField({
     }))
     return [
       ...builtIn,
-      ...variables
-        .filter((variable) => !BUILT_IN_VARIABLES.includes(variable.name as (typeof BUILT_IN_VARIABLES)[number]))
-        .map(({ name }) => ({ name, label: name.replace(/_/g, " ") })),
+      ...offeredVariables(variables).map(({ name }) => ({
+        name,
+        // O que veio de uma busca tem nome em inglês; o que veio de uma planilha já é o nome da coluna.
+        label: t(`campaignsWizard.variables.known.${name}`, { defaultValue: name.replace(/_/g, " ") }),
+      })),
     ]
   }, [t, variables])
 

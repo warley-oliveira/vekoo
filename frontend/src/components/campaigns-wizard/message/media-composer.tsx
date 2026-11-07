@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useAttachmentMutations, useAttachments } from "@/hooks/content/use-attachments"
 import type { WizardValues } from "@/lib/campaigns-wizard/form"
+import { mediaKindOf } from "@/lib/campaigns-wizard/media"
 import type { Attachment, AttachmentFile, AttachmentKind } from "@/lib/content/types"
 import { TextComposer } from "./text-composer"
 
@@ -36,17 +37,6 @@ const ACCEPT = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
   "application/vnd.ms-powerpoint": [".ppt"],
   "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
-}
-
-/** O mesmo corte do servidor: só imagem e vídeo aceitam legenda. */
-export function mediaKindOf(contentType: string | null | undefined): "image" | "video" | "document" | null {
-  const normalized = contentType?.toLowerCase() ?? ""
-  if (normalized.startsWith("image/")) return "image"
-  if (normalized.startsWith("video/")) return "video"
-  if (["pdf", "document", "sheet", "presentation", "msword", "excel", "powerpoint"].some((kind) => normalized.includes(kind))) {
-    return "document"
-  }
-  return null
 }
 
 function asFile(media: NonNullable<WizardValues["media"]>): AttachmentFile {

@@ -11,8 +11,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useCampaignChannels } from "@/hooks/campaigns-wizard/use-campaign-options"
 import { useCan } from "@/hooks/use-can"
 import { apiAssetUrl } from "@/lib/api"
+import { connectorLabel, wabaNumbers } from "@/lib/campaigns-wizard/channels"
 import type { WizardValues } from "@/lib/campaigns-wizard/form"
-import type { WhatsappCloudConnector, WhatsappWebConnector } from "@/lib/connectors/types"
 import { formatPhone } from "@/lib/format-phone"
 import { cn } from "@/lib/utils"
 
@@ -20,30 +20,6 @@ const QUALITY_TONE: Record<string, "success" | "warning" | "danger" | "neutral">
   GREEN: "success",
   YELLOW: "warning",
   RED: "danger",
-}
-
-export function connectorLabel(connector: WhatsappWebConnector | WhatsappCloudConnector): string {
-  return connector.profileName || connector.name
-}
-
-export function connectorNumber(connector: WhatsappWebConnector | WhatsappCloudConnector): string | null {
-  return connector.type === "whatsapp_web" ? connector.numberFormatted : connector.displayPhoneNumber
-}
-
-/** Os números de uma conta oficial. Sem a lista guardada, o principal. */
-export function wabaNumbers(connector: WhatsappCloudConnector) {
-  if (connector.phoneNumberList.length > 0) return connector.phoneNumberList
-
-  return connector.phoneNumberId
-    ? [
-        {
-          id: connector.phoneNumberId,
-          displayPhoneNumber: connector.displayPhoneNumber,
-          verifiedName: connector.profileName,
-          qualityRating: connector.qualityRating,
-        },
-      ]
-    : []
 }
 
 function NumberRow({

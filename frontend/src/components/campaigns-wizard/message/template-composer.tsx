@@ -18,6 +18,7 @@ import { useConnectorTemplates, useRecipientSummary } from "@/hooks/campaigns-wi
 import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
 import { useCan } from "@/hooks/use-can"
 import type { WizardValues } from "@/lib/campaigns-wizard/form"
+import { templateFitsCampaign, templatePositions } from "@/lib/campaigns-wizard/templates"
 import { asToken, variableProblems } from "@/lib/campaigns-wizard/variables"
 import { sendableTemplates, templateTitle, templateVariables } from "@/lib/chat-details/template-params"
 import { templateSummary } from "@/lib/connectors/template-builder"
@@ -29,22 +30,6 @@ import { cn } from "@/lib/utils"
 import { VariableField } from "../variable-field"
 
 const NO_TEMPLATES: WhatsappTemplate[] = []
-
-/**
- * O envio de campanha só preenche o corpo, por posição (`Outreach::MessageContent#template_components`).
- * Modelo com variável em cabeçalho, botão ou com nome seria recusado pela Meta, um destinatário de cada
- * vez: melhor dizer aqui do que deixar escolher.
- */
-export function templateFitsCampaign(template: WhatsappTemplate): boolean {
-  return templateVariables(template).every(
-    (variable) => variable.component === "body" && /^\d+$/.test(variable.name)
-  )
-}
-
-/** As lacunas do corpo, pela posição. */
-export function templatePositions(template: WhatsappTemplate): string[] {
-  return templateVariables(template).map((variable) => variable.name)
-}
 
 function TemplateRow({
   template,

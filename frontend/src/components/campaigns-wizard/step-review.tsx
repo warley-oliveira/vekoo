@@ -23,6 +23,8 @@ import {
   useRecipientSummary,
 } from "@/hooks/campaigns-wizard/use-campaign-options"
 import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
+import { useWizardNav } from "@/hooks/campaigns-wizard/use-wizard-nav"
+import { connectorLabel, connectorNumber, wabaNumbers } from "@/lib/campaigns-wizard/channels"
 import { estimateCampaign } from "@/lib/campaigns-wizard/estimate"
 import { describeDays, describeHours, describeTimezone, formatRange } from "@/lib/campaigns-wizard/format"
 import { filledMessages, type WizardStep, type WizardValues } from "@/lib/campaigns-wizard/form"
@@ -33,9 +35,8 @@ import { formatFullDateTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { MessagePreview } from "./message/message-preview"
-import { connectorLabel, connectorNumber, wabaNumbers } from "./message/channel-picker"
 import { channelCount } from "./wizard-summary"
-import { StepHeading, useWizardNav } from "./wizard-nav"
+import { StepHeading } from "./wizard-nav"
 
 function ReviewRow({
   icon,
@@ -335,9 +336,14 @@ export function StepReview() {
               <ReviewRow icon={<CalendarClock />} title={t("campaignsWizard.review.when")} step="schedule">
                 <p className="font-medium">
                   {later && values.scheduledAt
-                    ? t("campaignsWizard.review.scheduledFor", {
-                        date: formatFullDateTime(values.scheduledAt, language),
-                      })
+                    ? estimate.waitsForWindow
+                      ? t("campaignsWizard.review.scheduledWaits", {
+                          date: formatFullDateTime(values.scheduledAt, language),
+                          first: formatFullDateTime(estimate.firstSendAt, language),
+                        })
+                      : t("campaignsWizard.review.scheduledFor", {
+                          date: formatFullDateTime(values.scheduledAt, language),
+                        })
                     : estimate.waitsForWindow
                       ? t("campaignsWizard.estimate.waits", {
                           date: formatFullDateTime(estimate.firstSendAt, language),

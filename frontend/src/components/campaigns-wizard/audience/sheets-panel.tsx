@@ -6,6 +6,7 @@ import { toast } from "@/lib/campaigns-wizard/notify"
 import { Callout, SidePanel, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useColumnMapping } from "@/hooks/campaigns-wizard/use-column-mapping"
 import { useGoogleSheetPicker } from "@/hooks/campaigns-wizard/use-google-sheet-picker"
 import { useImportWorker } from "@/hooks/campaigns-wizard/use-import-worker"
 import { useRecipientImport } from "@/hooks/campaigns-wizard/use-recipient-import"
@@ -16,7 +17,7 @@ import type { Capabilities } from "@/lib/campaigns-wizard/types"
 import type { ImportRow } from "@/lib/contacts/import-parser"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
-import { ColumnMapping, SendingProgress, useColumnMapping } from "./column-mapping"
+import { ColumnMapping, SendingProgress } from "./column-mapping"
 
 /**
  * Google Sheets: entrar na conta, escolher a planilha e a aba, dizer as colunas. O acesso é da própria

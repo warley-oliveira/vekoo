@@ -1,18 +1,8 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import type { UseFormReturn } from "react-hook-form"
-import { mutate as globalMutate } from "swr"
-import { create } from "zustand"
 
 import { applyServerErrors } from "@/components/shared"
+import { DraftContext, useSaveState } from "@/hooks/campaigns-wizard/use-draft"
 import { ApiError, apiPatch, apiPost } from "@/lib/api"
 import {
   changedKeys,
@@ -29,40 +19,6 @@ import type { CampaignResponse } from "@/lib/campaigns-wizard/types"
 
 const SAVE_DELAY_MS = 800
 
-export type SaveStatus = "idle" | "pending" | "saving" | "saved" | "error" | "locked"
-
-type SaveState = {
-  status: SaveStatus
-  savedAt: number | null
-  error: unknown
-}
-
-/** Fora do formulário, para só o indicador redesenhar: digitar não passa pela tela inteira. */
-export const useSaveState = create<SaveState>()(() => ({
-  status: "idle",
-  savedAt: null,
-  error: null,
-}))
-
-export type Draft = {
-  /** `null` até existir o que guardar. */
-  campaignId: string | null
-  /** Agora, sem esperar a pausa na digitação. Rejeita se não salvou. */
-  flush: () => Promise<void>
-  /** O id do rascunho, criando se ainda não houver. */
-  ensureDraft: () => Promise<string>
-  /** Lançou ou descartou: daqui para frente nada mais é salvo. */
-  finish: () => void
-}
-
-const DraftContext = createContext<Draft | null>(null)
-
-export function useDraft(): Draft {
-  const draft = useContext(DraftContext)
-  if (!draft) throw new Error("useDraft precisa estar dentro de DraftProvider")
-  return draft
-}
-
 const SERVER_FIELDS = [
   "name",
   "messages",
@@ -75,14 +31,6 @@ const SERVER_FIELDS = [
   "timezone",
   "dailyLimitPerConnector",
 ] as const
-
-export function reloadCampaignLists() {
-  return globalMutate(
-    (key) => typeof key === "string" && key.startsWith("/campaigns") && !key.includes("/recipient"),
-    undefined,
-    { revalidate: true }
-  )
-}
 
 export function DraftProvider({
   form,
@@ -109,23 +57,26 @@ export function DraftProvider({
   const queueRef = useRef<Promise<unknown>>(Promise.resolve())
   const timerRef = useRef<number | undefined>(undefined)
   const finishedRef = useRef(false)
+  // A pessoa mexeu em alguma coisa, e isso já vale um rascunho. Não basta olhar os valores: a cópia de uma
+  // campanha nasce com tudo preenchido, e abrir e sair não pode deixar nada na lista.
+  const worthSavingRef = useRef(false)
+  // Chegou alteração depois de a última requisição sair: ainda não dá para dizer "salvo".
+  const changedSinceRef = useRef(false)
 
   useEffect(() => {
-    useSaveState.setState({ status: "idle", savedAt: null, error: null })
+    useSaveState.setState({ status: "idle", savedAt: null, error: null, leaving: false })
   }, [])
 
   const save = useCallback(
     async (force: boolean) => {
       if (finishedRef.current) return
-
-      const values = form.getValues()
-      const payload = toDraftPayload(values, fallbackName)
-
-      if (!idRef.current && !force && !hasContent(values, initialValues)) {
+      if (!idRef.current && !force && !worthSavingRef.current) {
         useSaveState.setState({ status: "idle" })
         return
       }
 
+      changedSinceRef.current = false
+      const payload = toDraftPayload(form.getValues(), fallbackName)
       const changes = idRef.current ? changedKeys(payload, savedRef.current) : payload
       if (Object.keys(changes).length === 0) {
         useSaveState.setState((state) => ({ status: state.savedAt ? "saved" : "idle", error: null }))
@@ -140,7 +91,11 @@ export function DraftProvider({
         if (!created) await apiPatch<CampaignResponse>(`/campaigns/${idRef.current}`, changes)
 
         savedRef.current = { ...savedRef.current, ...payload }
-        useSaveState.setState({ status: "saved", savedAt: Date.now(), error: null })
+        useSaveState.setState({
+          status: changedSinceRef.current ? "pending" : "saved",
+          savedAt: Date.now(),
+          error: null,
+        })
 
         if (created) {
           idRef.current = created.id
@@ -158,7 +113,7 @@ export function DraftProvider({
         throw error
       }
     },
-    [fallbackName, form, initialValues, onCreated]
+    [fallbackName, form, onCreated]
   )
 
   const enqueue = useCallback(
@@ -191,16 +146,18 @@ export function DraftProvider({
       callback: ({ isDirty }) => {
         if (finishedRef.current) return
 
-        // `isDirty`, para contar só o que a pessoa fez: o número que a tela já escolhe sozinha, ou abrir
-        // uma cópia e sair, não pode deixar um rascunho na lista.
+        // `isDirty`, para contar só o que a pessoa fez: o número que a tela já escolhe sozinha não é uma
+        // decisão dela.
         const values = form.getValues()
-        if (!idRef.current && !(isDirty && hasContent(values, initialValues))) return
+        worthSavingRef.current = Boolean(isDirty) && hasContent(values, initialValues)
+        if (!idRef.current && !worthSavingRef.current) return
 
         const changes = idRef.current
           ? changedKeys(toDraftPayload(values, fallbackName), savedRef.current)
           : { any: true }
         if (Object.keys(changes).length === 0) return
 
+        changedSinceRef.current = true
         useSaveState.setState({ status: "pending" })
         window.clearTimeout(timerRef.current)
         timerRef.current = window.setTimeout(() => {

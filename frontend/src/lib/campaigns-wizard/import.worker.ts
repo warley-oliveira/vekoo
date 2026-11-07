@@ -68,9 +68,21 @@ function reset(nextHeaders: string[], nextRows: ImportRow[], nextType: ImportFil
   variables = []
 }
 
+/** Na planilha de quem vende, o nome costuma vir como "Cliente". A sugestão da base não conhece isso. */
+const NAME_FALLBACKS = /cliente|contato|empresa|razao|estabelecimento|loja/
+
 function suggested(): ColumnChoice {
   const mapping = suggestMapping(headers)
-  return { name: mapping.name, phone: mapping.phone }
+  const normalize = (header: string) =>
+    header.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+
+  return {
+    name:
+      mapping.name ??
+      headers.find((header) => header !== mapping.phone && NAME_FALLBACKS.test(normalize(header))) ??
+      null,
+    phone: mapping.phone,
+  }
 }
 
 async function read(id: number, file: File) {

@@ -10,6 +10,7 @@ import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
 import { apiAssetUrl } from "@/lib/api"
 import type { WizardValues } from "@/lib/campaigns-wizard/form"
 import { filledMessages } from "@/lib/campaigns-wizard/form"
+import { mediaKindOf } from "@/lib/campaigns-wizard/media"
 import type { RecipientSample } from "@/lib/campaigns-wizard/types"
 import { fillMessage } from "@/lib/campaigns-wizard/variables"
 import { formatMessage } from "@/lib/chat/format-message"
@@ -17,7 +18,6 @@ import { templatePreviewValues, templateTitle, templateVariables } from "@/lib/c
 import type { WhatsappTemplate } from "@/lib/connectors/types"
 import { formatTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
-import { mediaKindOf } from "./media-composer"
 
 /** Anterior e próxima, quando há mais de uma versão a mostrar. */
 function Pager({

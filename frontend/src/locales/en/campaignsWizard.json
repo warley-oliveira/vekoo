@@ -228,16 +228,16 @@
       "submit_zero": "Add people",
       "submit_one": "Add {{formatted}} person",
       "submit_other": "Add {{formatted}} people",
-      "sending": "Sending {{sent}} of {{total}}…",
+      "sending": "Adding to the list: {{sent}} of {{total}}…",
       "stopped": "Stopped at {{sent}} of {{total}}. Those already sent stay on the list.",
-      "keepOpen": "Keep this window open until it finishes. If the connection drops, just continue: nobody gets in twice.",
-      "failedTitle": "Sending stopped halfway",
+      "keepOpen": "Nobody receives anything now: this only builds the list. Keep this window open until it finishes. If the connection drops, just continue, and nobody gets in twice.",
+      "failedTitle": "The import stopped halfway",
       "failedHint": "Check your connection and continue where it stopped.",
       "resume": "Continue where it stopped",
       "stop": "Stop",
-      "stopTitle": "Stop sending?",
+      "stopTitle": "Stop adding?",
       "stopHint": "The {{sent}} already sent stay on the list.",
-      "keepGoing": "Keep sending",
+      "keepGoing": "Keep adding",
       "discardTitle": "Leave without adding?",
       "discardHint": "Nobody from this file has joined the list yet.",
       "discard": "Leave without adding",
@@ -259,7 +259,8 @@
         "rowCity": "Curitiba",
         "rowCoupon": "BACK10",
         "fileName": "campaign-example.csv"
-      }
+      },
+      "done_zero": "Nobody new: these people were already on the list"
     },
     "sheets": {
       "title": "Import from Google Sheets",
@@ -316,7 +317,6 @@
       "searchHint": "Results bring phone, address, website and social media, when they exist.",
       "queued": "In line, starting soon…",
       "running": "Looking for businesses…",
-      "progress": "Search progress",
       "runningHint": "It usually takes a few minutes. You can close this window: the result stays under Already found.",
       "searchFailed": "The search didn't work. Try again.",
       "noResultsFound": "Nothing found. Try another word or place.",
@@ -416,7 +416,16 @@
     "variables": {
       "menu": "Insert variable",
       "nome": "Name",
-      "telefone": "Phone"
+      "telefone": "Phone",
+      "known": {
+        "address": "Address",
+        "category_name": "Category",
+        "city": "City",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "state": "State",
+        "website": "Website"
+      }
     },
     "media": {
       "hint": "Photo, video, PDF, spreadsheet or document, up to 100 MB",
@@ -588,6 +597,7 @@
       "noFlow": "Same as your other conversations",
       "when": "When",
       "scheduledFor": "Starts on {{date}}",
+      "scheduledWaits": "Scheduled for {{date}}, outside the sending days and hours. The first one goes out on {{first}}",
       "startsNow": "Starts as soon as you launch",
       "window": "Only {{days}}, {{hours}}, on {{timezone}} time.",
       "pace": "One message every {{range}}, up to {{limit}} a day on each number.",

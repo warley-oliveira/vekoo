@@ -1,9 +1,7 @@
-import { lazy } from "react"
 import { Route } from "react-router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
-
-const CampaignWizardPage = lazy(() => import("./wizard/wizard-page"))
+import { CampaignWizardPage } from "./wizard/lazy"
 
 // O mesmo elemento nas duas rotas, com o mesmo título: criar o rascunho troca `new` por `edit` na URL, e o
 // formulário aberto precisa continuar o mesmo. Um título por rota remontaria a página no meio da digitação.

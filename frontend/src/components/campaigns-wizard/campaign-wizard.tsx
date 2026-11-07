@@ -21,12 +21,12 @@ import {
   useRecipientSummary,
 } from "@/hooks/campaigns-wizard/use-campaign-options"
 import {
-  DraftProvider,
   reloadCampaignLists,
   useDraft,
   useSaveState,
   type SaveStatus,
 } from "@/hooks/campaigns-wizard/use-draft"
+import { WizardNavContext, useWizardNav } from "@/hooks/campaigns-wizard/use-wizard-nav"
 import { useImmersive } from "@/hooks/use-app-shell"
 import { useHeaderSlot, usePageTitle } from "@/hooks/use-header-slot"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
@@ -52,18 +52,18 @@ import {
 } from "@/lib/campaigns-wizard/schema"
 import type { Campaign, CampaignResponse, LaunchResponse } from "@/lib/campaigns-wizard/types"
 import { toast } from "@/lib/campaigns-wizard/notify"
+import { templateFitsCampaign, templatePositions } from "@/lib/campaigns-wizard/templates"
 import { asToken, variableProblems } from "@/lib/campaigns-wizard/variables"
 import { formatFullDateTime, formatTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
-import { templateFitsCampaign, templatePositions } from "./message/template-composer"
+import { DraftProvider } from "./draft-provider"
 import { StepAudience } from "./step-audience"
 import { StepMessage } from "./step-message"
 import { StepReview } from "./step-review"
 import { StepSchedule } from "./step-schedule"
-import { WizardNavProvider, useWizardNav } from "./wizard-nav"
 
 /* ---------- salvar ---------- */
 
@@ -119,7 +119,7 @@ function LeaveGuard() {
   const unsaved = status === "pending" || status === "saving" || status === "error"
   // A guarda segura a navegação até salvar: se ela desligasse assim que o rascunho ficasse salvo, a saída
   // que estava esperando se perderia, e o clique da pessoa não daria em nada.
-  const [leaving, setLeaving] = useState(false)
+  const leaving = useSaveState((state) => state.leaving)
   const { blocked, proceed, reset } = useUnsavedChanges(unsaved || leaving)
   const [failed, setFailed] = useState(false)
 
@@ -127,12 +127,12 @@ function LeaveGuard() {
     if (!blocked) return
 
     let current = true
-    setLeaving(true)
+    useSaveState.setState({ leaving: true })
     flush()
       .then(() => {
-        if (!current) return
-        proceed()
-        setLeaving(false)
+        // `leaving` fica ligado: a troca de rota é uma transição, e até ela chegar `RouteSync` não pode
+        // achar que a tela continua aqui. Quem desliga é a próxima abertura.
+        if (current) proceed()
       })
       .catch(() => {
         if (current) setFailed(true)
@@ -148,12 +148,11 @@ function LeaveGuard() {
       onOpenChange={(open) => {
         if (open) return
         setFailed(false)
-        setLeaving(false)
+        useSaveState.setState({ leaving: false })
         reset()
       }}
       onConfirmed={() => {
         setFailed(false)
-        setLeaving(false)
         proceed()
       }}
       destructive
@@ -174,7 +173,9 @@ function RouteSync() {
   const navigate = useNavigate()
   const { campaignId } = useDraft()
   const status = useSaveState((state) => state.status)
-  const calm = status === "saved" || status === "idle"
+  const leaving = useSaveState((state) => state.leaving)
+  // Quem está saindo vai para onde pediu: trocar o endereço agora tomaria o lugar da saída que espera.
+  const calm = (status === "saved" || status === "idle") && !leaving
 
   useEffect(() => {
     if (!campaignId || !calm) return
@@ -832,7 +833,7 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
         fallbackName={fallbackName}
         onCreated={onDraftCreated}
       >
-        <WizardNavProvider value={nav}>
+        <WizardNavContext.Provider value={nav}>
           <LeaveGuard />
           <RouteSync />
           <ErrorSync />
@@ -852,7 +853,7 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
 
             <ActionBar />
           </div>
-        </WizardNavProvider>
+        </WizardNavContext.Provider>
       </DraftProvider>
     </FormProvider>
   )

@@ -6,6 +6,7 @@ import { toast } from "@/lib/campaigns-wizard/notify"
 import { Callout, FileDropzone, SidePanel, useConfirm, type DropzoneFile } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { useColumnMapping } from "@/hooks/campaigns-wizard/use-column-mapping"
 import { useImportWorker } from "@/hooks/campaigns-wizard/use-import-worker"
 import { useRecipientImport } from "@/hooks/campaigns-wizard/use-recipient-import"
 import type { ParsedSummary } from "@/lib/campaigns-wizard/import-protocol"
@@ -14,7 +15,7 @@ import type { ImportIssue } from "@/lib/contacts/import-parser"
 import { triggerBlobDownload } from "@/lib/file-utils"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
-import { ColumnMapping, SendingProgress, useColumnMapping } from "./column-mapping"
+import { ColumnMapping, SendingProgress } from "./column-mapping"
 
 const MAX_FILE_BYTES = 200 * 1024 * 1024
 

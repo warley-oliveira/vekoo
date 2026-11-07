@@ -10,6 +10,31 @@ const BUILT_IN_ALIASES = new Set(["nome", "name", "telefone", "phone"])
 
 export const asToken = (name: string) => `{{${name}}}`
 
+/**
+ * O que a busca de estabelecimentos guarda para os dados da conversa, e não faz sentido numa mensagem. Continua
+ * valendo se alguém escrever (`variableProblems` não olha esta lista): só não é oferecido.
+ */
+const TECHNICAL_VARIABLES = new Set([
+  "categories",
+  "image_url",
+  "latitude",
+  "longitude",
+  "maps_url",
+  "opening_hours",
+  "place_id",
+  "postal_code",
+  "reviews_count",
+  "street",
+  "total_score",
+])
+
+/** O que oferecer à pessoa: nem as prontas, que já têm botão, nem os dados técnicos. */
+export function offeredVariables<T extends { name: string }>(variables: T[]): T[] {
+  return variables.filter(
+    (variable) => !TECHNICAL_VARIABLES.has(variable.name) && !BUILT_IN_ALIASES.has(variable.name)
+  )
+}
+
 /** `String#underscore` do Rails, que é o que o servidor faz com a chave e com o marcador. */
 export function underscore(name: string): string {
   return name

@@ -34,7 +34,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { useRecipientImport } from "@/hooks/campaigns-wizard/use-recipient-import"
@@ -605,7 +604,8 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
                       ? t("campaignsWizard.places.running")
                       : t("campaignsWizard.places.queued")}
                   </p>
-                  <Progress value={runStatus === "running" ? 60 : 20} aria-label={t("campaignsWizard.places.progress")} />
+                  {/* Sem porcentagem: o serviço não diz quanto falta, e um número inventado seria mentira. */}
+                  <div aria-hidden className="h-1 w-full animate-pulse rounded-full bg-primary/60" />
                   <p className="text-xs text-pretty text-muted-foreground">
                     {t("campaignsWizard.places.runningHint")}
                   </p>
