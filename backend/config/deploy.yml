@@ -97,8 +97,8 @@ ssh:
     - "~/.ssh/vekoo_deploy"
 
 # O que é só endereço fica aqui. Tudo o que depende da instalação vem de .env.deploy, pelo
-# .kamal/secrets: o significado de cada um está em .env.deploy.example. O opcional sem valor chega
-# vazio no container, e o código trata vazio como "não configurado".
+# .kamal/secrets, e .env.deploy.example explica cada um em detalhe. O opcional sem valor chega vazio no
+# container, e o código trata vazio como "não configurado".
 env:
   clear:
     RAILS_ENV: production
@@ -125,33 +125,33 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
-    - DATABASE_URL
-    - MONGODB_URI
-    - ANTHROPIC_API_KEY
-    - OPENAI_API_KEY
-    - OPENAI_ACCESS_TOKEN
-    - VAPID_PUBLIC_KEY
+    - DATABASE_URL                  # Postgres. Sem ela, a API não sobe
+    - MONGODB_URI                   # Mongo. Sem ela, a API não sobe
+    - ANTHROPIC_API_KEY             # Claude: geração, copiloto e blocos de IA param, sem cobrar crédito
+    - OPENAI_API_KEY                # busca semântica do catálogo: sem ela, só por texto
+    - OPENAI_ACCESS_TOKEN           # Whisper: sem ela, áudio fica sem transcrição
+    - VAPID_PUBLIC_KEY              # push do PWA: sem as três, nada é enviado
     - VAPID_PRIVATE_KEY
     - VAPID_SUBJECT
-    - META_APP_ID
-    - META_APP_SECRET
-    - META_MESSAGING_VERIFY_TOKEN
-    - INSTAGRAM_APP_ID
+    - META_APP_ID                   # WhatsApp oficial e Messenger: sem ele, não conectam
+    - META_APP_SECRET               # vazio com o do Instagram: webhook da Meta sem conferir assinatura
+    - META_MESSAGING_VERIFY_TOKEN   # sem ele, a Meta não valida o webhook de Instagram e Messenger
+    - INSTAGRAM_APP_ID              # Instagram Login: sem ele, não conecta
     - INSTAGRAM_APP_SECRET
-    - EVOLUTION_API_URL
+    - EVOLUTION_API_URL             # WhatsApp Web, provedor padrão: sem as duas, QR code falha
     - EVOLUTION_API_KEY
-    - WHATSAPP_API_URL
+    - WHATSAPP_API_URL              # provedor AIVA: sem as duas, só ele para
     - WHATSAPP_API_KEY
-    - ZAPI_ACCOUNT_TOKEN
+    - ZAPI_ACCOUNT_TOKEN            # Z-API: sem ele, criar instância falha
     - ZAPI_CLIENT_TOKEN
-    - GOOGLE_CALENDAR_CLIENT_ID
+    - GOOGLE_CALENDAR_CLIENT_ID     # Google Agenda: sem as duas, conectar responde googleNotConfigured
     - GOOGLE_CALENDAR_CLIENT_SECRET
-    - GOOGLE_SHEETS_CLIENT_ID
-    - GOOGLE_SHEETS_API_KEY
+    - GOOGLE_SHEETS_CLIENT_ID       # importar do Sheets: sem ela, a opção fica indisponível
+    - GOOGLE_SHEETS_API_KEY         # Picker do Google, na tela
     - GOOGLE_SHEETS_APP_ID
-    - GOOGLE_MAPS_API_KEY
-    - APIFY_API_TOKEN
-    - MEDIA_PROXY_ALLOWED_HOSTS
+    - GOOGLE_MAPS_API_KEY           # maps.* nos scripts: sem ela, devolve erro ao script
+    - APIFY_API_TOKEN               # busca de estabelecimentos: sem ela, a opção fica indisponível
+    - MEDIA_PROXY_ALLOWED_HOSTS     # hosts externos em /media/*: fora da lista, áudio falha no Safari
 
 # Volume NOMEADO: nasce com dono 1000:1000 (o da imagem), então o container
 # não-root consegue escrever. Um bind mount nasceria root:root e o primeiro

@@ -58,42 +58,36 @@ The root `.env` is the single source of truth. The backend reads it via the syml
 contract in `docs/migration/api/<domain>.md`. `docs/migration/DECISIONS.md` records what was decided and
 what is still open. The rules that apply everywhere:
 
-- **Backend:** thin controllers inheriting `PlatformController`; business logic in service objects;
-  JSON through `ApplicationSerializer` (camelCase, dates in **milliseconds**, ids as strings); errors
-  always `{ error: { code, field?, message, details? } }`, where `code` is the machine contract and
-  `message` comes in the request's language. Organization comes from the session, never from the URL.
-  Background work goes through ActiveJob on Sidekiq: queues `critical`, `default`, `campaigns`, `low`,
-  and `scripts` for client JavaScript, which runs in its own process. RSpec only — there is no Minitest.
-- **Two databases:** `Mongoid::Document` for high volume or free-form data, ActiveRecord for the rest.
-  Ids are UUID in Postgres and BSON strings in Mongo. A Mongo `index(...)` only exists after
-  `bin/rails db:mongoid:create_indexes`, and aggregations use `hint`: without the index, Mongo refuses
-  them. Never `.first`/`.last` without `order_by` on a large collection, never fetch `Chat` or
-  `ChatMessage::*` by id alone, and every person's access to a chat goes through `Chat.visible_to(account)`.
-- **One file per domain, so nobody fights over the same one:** `config/routes/<domain>.rb`,
-  `config/locales/<domain>.{pt-BR,en}.yml`, `config/schedule/<domain>.yml`, `db/seeds/<domain>.rb`,
-  `models/concerns/organization_relations/<domain>.rb`; on the front, `routes/<domain>/`,
-  `components/<domain>/`, `hooks/<domain>/`, `lib/<domain>/`, `locales/<lang>/<domain>.json`.
+- **Backend:** thin controllers on `PlatformController` (the organization comes from the session, never
+  the URL); business logic in service objects; JSON through `ApplicationSerializer` (camelCase, dates in
+  **milliseconds**, ids as strings); errors always `{ error: { code, field?, message, details? } }`.
+  Background work goes through ActiveJob on Sidekiq, and client JavaScript only on the `scripts` queue,
+  a process of its own. RSpec only — there is no Minitest.
+- **Two databases:** Mongoid for high volume or free-form data, ActiveRecord for the rest. A Mongo
+  `index(...)` only exists after `bin/rails db:mongoid:create_indexes`, and aggregations use `hint`:
+  without the index, Mongo refuses them. Never fetch `Chat` or `ChatMessage::*` by id alone, and a
+  person's access to a chat always goes through `Chat.visible_to(account)`.
+- **One file per domain** (routes, locales, schedule, seeds; `routes/<domain>/`, `components/<domain>/`
+  and `hooks/<domain>/` on the front), so nobody fights over the same one.
 - **Environment (hard rule):** a new `ENV` or `import.meta.env` goes into `.env.example` and, if it
   applies to production, `.env.deploy.example`, `backend/config/deploy.yml` and `backend/.kamal/secrets`,
   in the same commit, with what stops working without it.
 - **i18n (hard rule):** **no user-visible string literal in JSX, ever.** Frontend uses
-  **i18next + react-i18next** (`src/lib/i18n.ts`, one namespace, static bundles in
-  `src/locales/<lang>/<domain>.json`, root key = domain). Languages: `pt-BR` (source, fallback) and
-  `en`; add a key to **both** files in the same commit. `useTranslation()` for copy, `<Trans>` when the
-  string contains markup, `{ count }` for plurals (`key_one` / `key_other`) — never string
-  concatenation. Dates/numbers come from `Intl` with `useLanguage()` (see `lib/format.ts`), never
-  hand-written per locale. Non-UI modules (`lib/auth.tsx`) stay language-free: they carry **codes**
-  (`AuthErrorCode`, `plan`, `NotificationKey`) and the screen translates them. Backend: `Localizable`
-  resolves the locale per request from `?locale=` or `Accept-Language`. Example content in the seeds
-  is the fictional *user's work*, not UI — it stays pt-BR on purpose.
-- **Frontend:** data fetching goes through `useApi` (SWR) over the typed client in `@/lib/api`;
-  realtime through `useChannel`; permissions through `useCan` and `<RequirePermission>`.
-  **Read `src/components/shared/README.md` before building a screen**: `@/components/shared` is the
-  kit (`PageHeader`, `DataTable`, `FilterBar`, `SidePanel`, `ResponsiveDialog`, `useConfirm`, form fields…)
-  and the live showcase is `/dev/kit`. Use `ResponsiveDialog` and `SidePanel`, not `Dialog` or `Sheet`
-  directly. Each screen has one title, in the top bar, declared by `RouteFrame`. shadcn primitives live
-  untouched in `@/components/ui`; domain components in `@/components/<domain>`. Add primitives with
-  `npx shadcn@latest add <component>`. It is a PWA: every screen must work at 390 px.
+  **i18next + react-i18next** (`src/lib/i18n.ts`, static bundles in `src/locales/<lang>/<domain>.json`,
+  root key = domain). Languages: `pt-BR` (source, fallback) and `en`; add a key to **both** files in the
+  same commit. `useTranslation()` for copy, `<Trans>` when the string contains markup, `{ count }` for
+  plurals (`key_one` / `key_other`) — never string concatenation. Dates/numbers come from `Intl` with
+  `useLanguage()` (see `lib/format.ts`), never hand-written per locale. Non-UI modules (`lib/auth.tsx`)
+  carry **codes** (`AuthErrorCode`) and the screen translates them. Backend: `Localizable` resolves the
+  locale per request from `?locale=` or `Accept-Language`. Example content in the seeds is the fictional
+  *user's work*, not UI — it stays pt-BR on purpose.
+- **Frontend:** data through `useApi` (SWR) over the typed client in `@/lib/api`, realtime through
+  `useChannel`, permissions through `useCan`. **Read `src/components/shared/README.md` before building a
+  screen:** `@/components/shared` is the kit, with a live showcase at `/dev/kit`. `ResponsiveDialog` and
+  `SidePanel`, not `Dialog` or `Sheet` directly. One title per screen, in the top bar, declared by
+  `RouteFrame`. shadcn primitives live untouched in `@/components/ui`; domain components in
+  `@/components/<domain>`. Add primitives with `npx shadcn@latest add <component>`. It is a PWA: every
+  screen must work at 390 px.
 - **Routes (hard rule):** every URL path in the platform is in **English**, kebab-case —
   frontend routes and Rails API paths alike (`/login`, `/quick-replies`, `/folders/:id`, `/settings/users`).
   Query params too (`?next=`). Only the **visible copy** is pt-BR; the URL never is. Same for file and
@@ -116,12 +110,12 @@ professor…): a interface não assume repertório técnico nem pode parecer fer
 - **Criação:** a pessoa descreve um assunto em uma frase e recebe um carrossel de Instagram pronto para
   editar e exportar. Fica em `/carousels` (com `/folders/:id`, `/templates`, `/brands`, `/trash`).
 
-`/` abre o Dashboard, ou a primeira tela que a pessoa pode ver. O menu final está em
-`docs/migration/MANIFEST.md`, e `frontend/src/lib/navigation.ts` é a fonte de verdade. Carrosséis, IA
-(Anthropic, em `app/services/ai/`, com geração por SSE) e créditos seguem como eram antes da plataforma.
+`/` abre o Dashboard, ou a primeira tela que a pessoa pode ver. O menu está em
+`frontend/src/lib/navigation.ts`. A IA fica em `app/services/ai/` (Anthropic, com geração por SSE) e cobra
+créditos.
 
-**Mapa de conceitos** (a tabela completa, com a origem do código, em `CONVENTIONS.md`). Os nomes vieram
-de outro produto e foram trocados, e a tela nem sempre usa o nome do código:
+**Mapa de conceitos** (completo em `CONVENTIONS.md`). O código veio de outro produto, com nomes trocados, e a
+tela nem sempre usa o nome do código:
 
 | Código | Na tela | Contrato |
 |---|---|---|
@@ -136,13 +130,12 @@ de outro produto e foram trocados, e a tela nem sempre usa o nome do código:
 | `Outreach::*` | Campanhas | `outreach` |
 | `lib/mini_racer_engine` | Script de cliente em V8 isolado | `script-engine` |
 
-**Autenticação:** sessão por `Authorization: Bearer` (o banco guarda só o resumo SHA-256 do token), telas
-em `/login`, `/signup` e `/forgot-password`, guardas em `components/auth-guard.tsx`. **Criar conta cria a
-organização** e a pessoa entra como `owner`. Permissão por `AccessRole` e `Account#can?`.
+**Autenticação:** sessão por `Authorization: Bearer` (o banco guarda só o resumo SHA-256 do token). **Criar
+conta cria a organização** e a pessoa entra como `owner`. Permissão por `AccessRole` e `Account#can?`.
 
-**Semente:** `backend/db/seeds.rb` tem o acervo e a conta de demonstração, e cada domínio tem a sua em
-`db/seeds/<domain>.rb`, tudo idempotente. Em produção, só a primeira roda. O dado do produto que precisa
-existir em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
+**Semente:** `db/seeds.rb` tem o acervo e a conta de demonstração, e cada domínio tem a sua em
+`db/seeds/<domain>.rb`, tudo idempotente. Em produção só a primeira roda: dado do produto que precisa existir
+em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
 
 **Linguagem (pt-BR, sem jargão):** carrossel, card, pasta, marca, créditos, conversa, contato, fluxo,
 pipeline — nunca projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao

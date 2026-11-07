@@ -89,6 +89,19 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
+  # A API fica atrás da Cloudflare, e o Rails só confia em proxy de rede privada. Sem as faixas dela,
+  # `remote_ip` é o IP da borda: todo mundo que cai na mesma borda divide o mesmo limite de login, de
+  # cadastro e de conexão do widget. É seguro porque o firewall só aceita 80/443 destas faixas (ver
+  # bin/deploy-setup), e o que a pessoa escreve em X-Forwarded-For fica à esquerda do que a Cloudflare
+  # acrescenta. Lista de https://www.cloudflare.com/ips/. Faixa nova que falte aqui só devolve quem vier
+  # por ela ao comportamento antigo.
+  config.action_dispatch.trusted_proxies = ActionDispatch::RemoteIp::TRUSTED_PROXIES + %w[
+    173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18
+    190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13
+    104.24.0.0/14 172.64.0.0/13 131.0.72.0/22
+    2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+  ].map { |range| IPAddr.new(range) }
+
   # Proteção contra DNS rebinding / Host header. APP_HOSTS vem do deploy.yml.
   config.hosts = ENV.fetch("APP_HOSTS", "").split(",").map(&:strip).reject(&:empty?)
 

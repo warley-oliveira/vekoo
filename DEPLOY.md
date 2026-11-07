@@ -83,6 +83,7 @@ Hardening aplicado ao Rails (`backend/config/`):
 | `environments/production.rb` | `config.hosts` via `APP_HOSTS` **e** `/up` excluído | Sem a exclusão o healthcheck toma 403 e **todo deploy faz rollback** |
 | `environments/production.rb` | `cache_store = :redis_cache_store` (banco 2) | O cache guarda estado **compartilhado**: travas e contadores de tentativa. `memory_store` é por processo |
 | `environments/production.rb` | mailer/`default_url_options` de `BACKEND_URL` | URLs absolutas de anexo apontariam para `example.com` |
+| `environments/production.rb` | `trusted_proxies` com as faixas da Cloudflare | Sem isso `remote_ip` é o IP da borda, e quem cai na mesma borda divide o limite de login, de cadastro e de conexão do widget |
 | `initializers/cors.rb` | `FRONTEND_ORIGINS` explícito, também no `/cable` | `origins '*'` deixa qualquer site dirigir a API pelo navegador de quem está logado |
 | `puma.rb` | `workers` declarado | O arquivo stock não declara: `WEB_CONCURRENCY` não fazia nada |
 | `cable.yml` | `CABLE_REDIS_URL` própria | Senão o pub/sub do cable vai parar no banco 0, o da fila |
@@ -424,7 +425,9 @@ Não é configuração que falta: é código, ou decisão. A lista completa est�
 | Ensaio | Resultado |
 |---|---|
 | Entrypoint em banco vazio, com Mongo autenticado | Índices, schema, semente e `platform:sync` em 15 s; 35 coleções, 126 índices |
-| Thruster + Puma em cluster (2 processos) | `/up` 200 com Host de IP; `/catalog` 200, e 403 com Host errado; CORS certo; rotas de todos os domínios respondem; sem aviso de troca de PID do Mongo |
+| O mesmo com `BUNDLE_WITHOUT=development:test`, como no Dockerfile | Boot do zero em 13 s, sem `LoadError`. Nenhuma gem de desenvolvimento faz falta em produção |
+| Thruster + Puma em cluster (2 processos) | `/up` 200 com Host de IP; `/catalog` 200, e 403 com Host errado; CORS certo; rotas de todos os domínios respondem; nenhum cliente do Mongo aberto antes do fork |
+| `X-Forwarded-For` como a Cloudflare manda | `remote_ip` é o cliente, em IPv4 e IPv6; escrever outro IP no cabeçalho não engana |
 | Sem Mongo: URI vazia, servidor fora do ar, senha errada | Os três saem com código 1, e a porta não abre |
 | Papel `scripts` | Script de cliente de verdade pela fila, em V8 sem JIT |
 | Papel `worker` | Sobe e registra os 15 recorrentes |
