@@ -1073,7 +1073,7 @@ Quem chama é o provedor, nunca a tela. Sem sessão. Respondem `200` sem corpo e
 
 Evolution, Z-API e LeadChat não assinam o que mandam. O `token` é um HMAC do id do conector, derivado de `secret_key_base` (`Connector::Base#inbound_token`), e vai na URL que a ativação entrega ao provedor. Token ausente ou errado responde `404`, igual a conector que não existe. Conector criado antes disso precisa ter o webhook configurado de novo no provedor. Trocar `secret_key_base` invalida todos, como já invalida os tokens cifrados.
 
-A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois, em desenvolvimento não há o que conferir, e em produção responde `403 invalidSignature`. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
+A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois, em desenvolvimento não há o que conferir, e em produção responde `403 invalidSignature`. Como o webhook de aplicativo da Meta é um só, o `entry.id` do evento escolhe o conector da WABA, e só conta quem a Meta já confirmou: `waba_verified_at`, gravado na ativação. Conector ativado antes disso precisa ser ativado de novo para receber por essa rota. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
 
 O que acontece com a mensagem recebida, em todos os canais: acha ou cria a conversa pelas variantes do telefone, grava, reabre se a organização pediu, atualiza `lastMessage*`, transmite por `ChatChannel` e `ChatListChannel` e chama `Flows::InboundDispatcher`.
 
