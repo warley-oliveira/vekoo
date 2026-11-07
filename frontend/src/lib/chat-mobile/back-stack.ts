@@ -42,6 +42,8 @@ let observer: MutationObserver | null = null
 let frame = 0
 let traversing = false
 let traversalTimer = 0
+/** Até onde o histórico estava: é o que separa o voltar do aparelho da folha da casca se desfazendo. */
+let knownDepth = 0
 let afterSettled: (() => void) | null = null
 
 function historyState(): Record<string, unknown> | null {
@@ -110,6 +112,7 @@ function reconcile() {
     for (let depth = have + 1; depth <= wanted; depth += 1) {
       window.history.pushState({ ...base, [DEPTH_KEY]: depth }, "")
     }
+    knownDepth = wanted
   } else if (wanted < have) {
     beginTraversal(wanted - have)
   } else if (afterSettled) {
@@ -152,13 +155,14 @@ function onPopState() {
   traversing = false
   window.clearTimeout(traversalTimer)
 
-  // Voltar do aparelho: uma entrada a menos do que camadas, e quem responde é a de cima.
+  const depth = currentDepth()
+  const lost = knownDepth - depth
+  knownDepth = depth
+
+  // Voltar do aparelho: sumiu uma entrada nossa, e quem responde é a camada de cima. Uma folha da
+  // casca se desfazendo também dispara `popstate`, mas não mexe na nossa conta.
   if (!wasOurs) {
-    let lost = openLayerCount() - currentDepth()
-    while (lost > 0) {
-      closeTop()
-      lost -= 1
-    }
+    for (let step = 0; step < lost; step += 1) closeTop()
   }
   schedule()
 }
@@ -177,6 +181,7 @@ export function installBackStack(): () => void {
   installs += 1
 
   if (installs === 1) {
+    knownDepth = currentDepth()
     window.addEventListener("popstate", onPopState)
     // Só os filhos do `body` e o que há dentro dos portais: o histórico de mensagens, que muda a
     // cada quadro de rolagem, nunca acorda este observador.

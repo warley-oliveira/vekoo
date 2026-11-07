@@ -14,6 +14,7 @@ import {
 } from "motion/react"
 import { useTranslation } from "react-i18next"
 
+import { useSheetFocus } from "@/components/shared/use-sheet-focus"
 import {
   Sheet,
   SheetClose,
@@ -104,6 +105,8 @@ export function BottomSheet({
   const dragControls = useDragControls()
   const y = useMotionValue(0)
   const bodyRef = useRef<HTMLDivElement>(null)
+  // Folha com campo de busca: com dedo, abrir não sobe o teclado por cima dela.
+  const { popupRef, initialFocus } = useSheetFocus()
 
   useCloseOnBack(open, onClose)
 
@@ -183,12 +186,14 @@ export function BottomSheet({
       }}
     >
       <SheetContent
+        ref={popupRef}
+        initialFocus={initialFocus}
         side="bottom"
         showCloseButton={false}
         // A área larga do popup é transparente e deixa o toque passar para o fundo: no
         // tablet o papel fica estreito e centralizado, e tocar ao lado continua fechando.
         className={cn(
-          "pointer-events-none gap-0 bg-transparent shadow-none data-[side=bottom]:border-t-0",
+          "pointer-events-none gap-0 bg-transparent shadow-none outline-none data-[side=bottom]:border-t-0",
           reducedMotion && "transition-none"
         )}
         style={{ maxHeight }}

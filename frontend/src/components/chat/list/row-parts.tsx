@@ -1,4 +1,4 @@
-import { memo, type MouseEvent, type ReactNode } from "react"
+import { memo, useRef, type MouseEvent, type ReactNode, type TouchEvent } from "react"
 import { useTranslation } from "react-i18next"
 import {
   Check,
@@ -73,10 +73,16 @@ export function ListRow({
   onHold?: () => void
 }) {
   const hold = useLongPress(onHold ?? NOTHING, { delay: HOLD_MS })
+  // Quem segura vira checkbox debaixo do dedo: o clique ao soltar não pode desmarcar o que marcou.
+  // Um toque novo já é outro gesto.
+  const heldUntilRelease = useRef(false)
   // Só o toque: em tela larga, segurar o botão do mouse continua sendo arrastar ou selecionar.
   const holdHandlers = onHold
     ? {
-        onTouchStart: hold.handlers.onTouchStart,
+        onTouchStart: (event: TouchEvent<HTMLElement>) => {
+          heldUntilRelease.current = true
+          hold.handlers.onTouchStart(event)
+        },
         onTouchMove: hold.handlers.onTouchMove,
         onTouchEnd: hold.handlers.onTouchEnd,
         onTouchCancel: hold.handlers.onTouchCancel,
@@ -103,7 +109,16 @@ export function ListRow({
           role="checkbox"
           aria-checked={selection.checked}
           aria-label={selection.label}
-          onClick={selection.onToggle}
+          onTouchStart={() => {
+            heldUntilRelease.current = false
+          }}
+          onClick={() => {
+            if (onHold && hold.didFire() && heldUntilRelease.current) {
+              heldUntilRelease.current = false
+              return
+            }
+            selection.onToggle()
+          }}
           className={cn(
             "flex min-h-[4.25rem] w-full items-start gap-3 rounded-lg px-2.5 py-2.5 text-left transition-colors outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 md:min-h-[3.75rem] md:py-2 md:select-auto",
             selection.checked ? "bg-accent text-accent-foreground" : "hover:bg-muted/70"

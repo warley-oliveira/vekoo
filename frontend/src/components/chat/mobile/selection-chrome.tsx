@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { createPortal } from "react-dom"
 import { useTranslation } from "react-i18next"
 import { MoreHorizontal, X } from "lucide-react"
 
@@ -40,8 +41,9 @@ export default function SelectionChrome({
     action()
   }
 
-  return (
-    <>
+  // No `body`: a lista tem `contain`, que prenderia estas barras dentro dela.
+  return createPortal(
+    <div className="chat-touch">
       <div className="fixed inset-x-0 top-0 z-40 border-b bg-background pt-safe pr-safe pl-safe">
         <div className="flex h-14 items-center gap-1 pr-2 pl-1">
           <Button
@@ -122,6 +124,7 @@ export default function SelectionChrome({
           ))}
         </div>
       </BottomSheet>
-    </>
+    </div>,
+    document.body
   )
 }

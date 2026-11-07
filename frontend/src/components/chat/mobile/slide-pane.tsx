@@ -88,7 +88,11 @@ export function SlidePane({
     const element = pane.current
     if (isOpen && element) {
       // Em repouso, sem `transform`: com ele, a tela viraria referência de tudo que é `fixed` dentro.
-      element.style.transform = ""
+      // No quadro seguinte, porque o fim da animação ainda escreve o valor final.
+      const token = run.current
+      window.requestAnimationFrame(() => {
+        if (token === run.current) element.style.transform = ""
+      })
       if (scrim.current) scrim.current.style.opacity = "1"
     }
     if (!isOpen) setMounted(false)
@@ -271,7 +275,7 @@ export function SlidePane({
         ref={pane}
         aria-label={label}
         onPointerDown={onPointerDown}
-        className="chat-pane chat-touch fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe shadow-[-12px_0_32px_-24px_var(--foreground)] [overscroll-behavior-x:none]"
+        className="chat-pane chat-touch fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe shadow-[-8px_0_24px_-8px_color-mix(in_oklch,var(--foreground)_14%,transparent)] [overscroll-behavior-x:none]"
         style={{
           top: "var(--app-vv-top, 0px)",
           height: "var(--app-vh, 100dvh)",

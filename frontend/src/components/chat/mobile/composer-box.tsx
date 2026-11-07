@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react"
 
+import { SHEET_EXIT_MS } from "@/components/shell/bottom-sheet"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatConnectors } from "@/hooks/chat/use-chat-refs"
@@ -53,6 +54,8 @@ const EmojiPicker = lazy(() => import("../composer/emoji-picker"))
 const KEYBOARD_SWAP_TIMEOUT_MS = 450
 
 const MIN_EMOJI_HEIGHT = 240
+/** A faixa de cima do painel, com apagar. O painel inteiro é que fica do tamanho do teclado. */
+const EMOJI_BAR_HEIGHT = 45
 
 /** Por origem, e não um seletor só: com um `accept` genérico, cada aparelho abre um menu diferente. */
 const FILE_SOURCES: Record<FileSource, { accept: string; capture?: "environment"; multiple: boolean }> = {
@@ -180,6 +183,16 @@ export default function MobileComposerBox({
 
   const onSuggest = () => {
     void suggest().finally(() => setActionsOpen(false))
+  }
+
+  // Uma folha só por vez: esta espera a outra sair. Abrindo junto, o `history.back()` de quem fecha
+  // cairia em cima da entrada de quem abre, e a folha nova fecharia sozinha.
+  const chainTimer = useRef(0)
+  useEffect(() => () => window.clearTimeout(chainTimer.current), [])
+  const openRepliesFromActions = () => {
+    setActionsOpen(false)
+    window.clearTimeout(chainTimer.current)
+    chainTimer.current = window.setTimeout(() => setRepliesOpen(true), SHEET_EXIT_MS)
   }
 
   /** O emoji não tem tecla de apagar por perto: esta tira o último caractere, inteiro. */
@@ -455,7 +468,7 @@ export default function MobileComposerBox({
 
       {emojiOpen ? (
         <div className="pb-safe" data-emoji-panel>
-          <div className="flex items-center justify-between border-t px-3 py-1">
+          <div className="flex h-11 items-center justify-between border-t pr-1 pl-3">
             <span className="text-xs font-medium text-muted-foreground">{t("chat.composer.emoji")}</span>
             <Button
               type="button"
@@ -468,8 +481,12 @@ export default function MobileComposerBox({
               <Delete />
             </Button>
           </div>
-          <Suspense fallback={<Skeleton className="w-full" style={{ height: emojiHeight }} />}>
-            <EmojiPicker onPick={insertText} height={emojiHeight} />
+          <Suspense
+            fallback={
+              <Skeleton className="w-full" style={{ height: emojiHeight - EMOJI_BAR_HEIGHT }} />
+            }
+          >
+            <EmojiPicker onPick={insertText} height={emojiHeight - EMOJI_BAR_HEIGHT} />
           </Suspense>
         </div>
       ) : null}
@@ -480,10 +497,7 @@ export default function MobileComposerBox({
         suggesting={suggesting}
         canSendTemplate={canSendTemplate}
         onPickFiles={pickFiles}
-        onOpenQuickReplies={() => {
-          setActionsOpen(false)
-          setRepliesOpen(true)
-        }}
+        onOpenQuickReplies={openRepliesFromActions}
         onSuggest={onSuggest}
         onSendTemplate={() => {
           setActionsOpen(false)
