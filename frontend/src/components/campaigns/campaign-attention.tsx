@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { CircleAlert } from "lucide-react"
@@ -10,7 +11,7 @@ import { usePlatformPausedCampaigns } from "@/hooks/campaigns/use-campaigns"
  * O que parou sem a pessoa pedir: é o que ela não pode descobrir por acaso, página 3 abaixo. Fora do
  * filtro da lista, de propósito: filtrar por outra coisa não faz o problema sumir.
  */
-export function CampaignAttention() {
+export const CampaignAttention = memo(function CampaignAttention() {
   const { t } = useTranslation()
   const paused = usePlatformPausedCampaigns()
 
@@ -45,4 +46,4 @@ export function CampaignAttention() {
         : paused.map((campaign) => campaign.name).join(", ")}
     </Callout>
   )
-}
+})

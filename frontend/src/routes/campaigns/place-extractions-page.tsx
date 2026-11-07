@@ -285,7 +285,7 @@ function PlacesGrid({ filters, unavailable, onQuery, onPage, onPerPage, onClear 
       ) : (
         <div
           className={cn(
-            "grid items-start gap-3 transition-opacity sm:grid-cols-2 xl:grid-cols-3",
+            "grid grid-cols-1 items-start gap-3 transition-opacity sm:grid-cols-2 xl:grid-cols-3",
             isLoading && "opacity-60"
           )}
         >

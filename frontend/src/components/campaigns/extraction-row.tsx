@@ -49,80 +49,87 @@ export const ExtractionRow = memo(function ExtractionRow({
     ],
     [extraction, onDelete, t]
   )
+  const menu = (
+    <ActionsMenu
+      actions={actions}
+      label={t("campaigns.places.row.actionsOf", { query: extraction.searchQuery })}
+      className="pointer-coarse:size-10"
+    />
+  )
 
   return (
     <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:gap-4 md:px-4 md:py-3">
-      <div className="min-w-0 flex-1 space-y-0.5">
-        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <p className="min-w-0 text-sm font-medium wrap-anywhere">{extraction.searchQuery}</p>
-          <StatusBadge
-            tone={EXTRACTION_TONES[status]}
-            icon={working ? <Loader2 className="motion-safe:animate-spin" /> : undefined}
-          >
-            {t(`campaigns.places.status.${status}`)}
-          </StatusBadge>
-        </div>
-        <p className="text-xs text-pretty text-muted-foreground">
-          <Trans
-            i18nKey={extraction.location ? "campaigns.places.row.metaLocated" : "campaigns.places.row.meta"}
-            values={{
-              location: extraction.location ?? "",
-              name: extraction.createdBy.name ?? t("campaigns.places.row.someone"),
-            }}
-            components={{ time: <RelativeTime value={extraction.createdAt} className="whitespace-nowrap" /> }}
-          />
-        </p>
-        {status === "failed" ? (
-          <p className="text-xs text-pretty text-status-danger">
-            {errorCode && KNOWN_ERRORS.has(errorCode)
-              ? t(`campaigns.places.errors.${errorCode}`)
-              : (errorMessage ?? t("campaigns.places.errors.apifyFailed"))}
+      <div className="flex min-w-0 flex-1 items-start gap-2">
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <p className="min-w-0 text-sm font-medium wrap-anywhere">{extraction.searchQuery}</p>
+            <StatusBadge
+              tone={EXTRACTION_TONES[status]}
+              icon={working ? <Loader2 className="motion-safe:animate-spin" /> : undefined}
+            >
+              {t(`campaigns.places.status.${status}`)}
+            </StatusBadge>
+          </div>
+          <p className="text-xs text-pretty text-muted-foreground">
+            <Trans
+              i18nKey={extraction.location ? "campaigns.places.row.metaLocated" : "campaigns.places.row.meta"}
+              values={{
+                location: extraction.location ?? "",
+                name: extraction.createdBy.name ?? t("campaigns.places.row.someone"),
+              }}
+              components={{ time: <RelativeTime value={extraction.createdAt} className="whitespace-nowrap" /> }}
+            />
           </p>
-        ) : null}
-        {working ? (
-          <p className="text-xs text-pretty text-muted-foreground">{t("campaigns.places.row.working")}</p>
-        ) : null}
+          {status === "failed" ? (
+            <p className="text-xs text-pretty text-status-danger">
+              {errorCode && KNOWN_ERRORS.has(errorCode)
+                ? t(`campaigns.places.errors.${errorCode}`)
+                : (errorMessage ?? t("campaigns.places.errors.apifyFailed"))}
+            </p>
+          ) : null}
+          {working ? (
+            <p className="text-xs text-pretty text-muted-foreground">{t("campaigns.places.row.working")}</p>
+          ) : null}
+        </div>
+        {/* No celular o menu fica no canto da linha: sozinho embaixo, sobraria um buraco. */}
+        <div className="-my-1 -mr-1 shrink-0 md:hidden">{menu}</div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 md:shrink-0 md:justify-end">
-        {status === "completed" ? (
-          <span className="mr-auto text-sm tabular-nums md:mr-1">
-            {t("campaigns.places.row.results", {
-              count: extraction.resultsCount,
-              formatted: formatNumber(extraction.resultsCount, language),
-            })}
-          </span>
-        ) : null}
-        {usable ? (
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="pointer-coarse:h-10"
-              onClick={() => onOpen(id)}
-            >
-              <List />
-              {t("campaigns.places.seeResults")}
-            </Button>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              size="sm"
-              className="pointer-coarse:h-10"
-              render={<Link to={campaignFromExtractionPath(id)} />}
-            >
-              <Megaphone />
-              {t("campaigns.places.useInCampaign")}
-            </Button>
-          </>
-        ) : null}
-        <ActionsMenu
-          actions={actions}
-          label={t("campaigns.places.row.actionsOf", { query: extraction.searchQuery })}
-          className="pointer-coarse:size-10"
-        />
-      </div>
+      {status === "completed" ? (
+        <p className="text-sm tabular-nums md:shrink-0">
+          {t("campaigns.places.row.results", {
+            count: extraction.resultsCount,
+            formatted: formatNumber(extraction.resultsCount, language),
+          })}
+        </p>
+      ) : null}
+
+      {usable ? (
+        <div className="grid grid-cols-2 gap-2 md:flex md:shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="pointer-coarse:h-10"
+            onClick={() => onOpen(id)}
+          >
+            <List />
+            {t("campaigns.places.seeResults")}
+          </Button>
+          <Button
+            nativeButton={false}
+            variant="outline"
+            size="sm"
+            className="pointer-coarse:h-10"
+            render={<Link to={campaignFromExtractionPath(id)} />}
+          >
+            <Megaphone />
+            {t("campaigns.places.useInCampaign")}
+          </Button>
+        </div>
+      ) : null}
+
+      <div className="hidden shrink-0 md:block">{menu}</div>
     </div>
   )
 })

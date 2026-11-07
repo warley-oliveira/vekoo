@@ -87,15 +87,16 @@ export function ExtractionResultsPanel({ extractionId, onClose }: ExtractionResu
               <Trash2 />
               {t("campaigns.places.delete.action")}
             </Button>
-            <Button
-              nativeButton={false}
-              className="pointer-coarse:h-10"
-              disabled={(results?.length ?? 0) === 0}
-              render={<Link to={campaignFromExtractionPath(id)} />}
-            >
-              <Megaphone />
-              {t("campaigns.places.useInCampaign")}
-            </Button>
+            {(results?.length ?? 0) > 0 ? (
+              <Button
+                nativeButton={false}
+                className="pointer-coarse:h-10"
+                render={<Link to={campaignFromExtractionPath(id)} />}
+              >
+                <Megaphone />
+                {t("campaigns.places.useInCampaign")}
+              </Button>
+            ) : null}
           </>
         ) : undefined
       }
@@ -154,7 +155,7 @@ function ResultsBody({
         />
       ) : null}
       {visible.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-2">
           {visible.map((place, index) => (
             <PlaceCard key={place.placeId || `${place.title}-${index}`} place={place} />
           ))}

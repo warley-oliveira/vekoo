@@ -159,6 +159,7 @@
       "finishedAt": "Terminou <time/>",
       "cancelledAt": "Cancelada <time/>",
       "pausedAt": "Pausada <time/>",
+      "stoppedAt": "Parou sozinha <time/>",
       "createdAt": "Criada <time/>",
       "contacts_one": "{{formatted}} contato na lista",
       "contacts_other": "{{formatted}} contatos na lista",
@@ -220,8 +221,8 @@
       },
       "scheduled": {
         "title": "Agendada",
-        "description_one": "Começa {{when}}, para {{total}} pessoa. Nada saiu ainda.",
-        "description_other": "Começa {{when}}, para {{total}} pessoas. Nada saiu ainda."
+        "description_one": "Programada para {{when}}. {{total}} pessoa vai receber. Nada saiu ainda.",
+        "description_other": "Programada para {{when}}. {{total}} pessoas vão receber. Nada saiu ainda."
       },
       "starting": {
         "title": "Começando",
@@ -229,19 +230,19 @@
       },
       "healthy": {
         "title": "Está indo bem",
-        "description": "{{processed}} de {{total}} mensagens já saíram."
+        "description": "{{sent}} de {{total}} mensagens já saíram."
       },
       "someFailures": {
         "title": "Está indo, com algumas falhas",
-        "description": "{{processed}} de {{total}} mensagens já saíram, e {{failed}} não chegaram. O resto segue normalmente."
+        "description": "{{sent}} de {{total}} mensagens já saíram, e {{failed}} não chegaram. O resto segue normalmente."
       },
       "manyFailures": {
         "title": "Muitas mensagens não estão chegando",
-        "description": "{{failed}} de {{processed}} não chegaram. Veja os motivos abaixo e, se preferir, pause para conferir o canal."
+        "description": "De {{processed}} tentativas, {{failed}} não chegaram. Veja os motivos abaixo e, se preferir, pause para conferir o canal."
       },
       "outsideWindow": {
         "title": "Esperando o horário de envio",
-        "description": "{{processed}} de {{total}} mensagens já saíram. O resto sai a partir de {{when}}."
+        "description": "{{sent}} de {{total}} mensagens já saíram. O resto sai a partir de {{when}}."
       },
       "pausedByPerson": {
         "title": "Pausada",
@@ -303,7 +304,6 @@
       "copyPhone": "Copiar telefone",
       "columns": {
         "contact": "Contato",
-        "phone": "Telefone",
         "status": "Situação",
         "sentAt": "Enviada",
         "deliveredAt": "Entregue",
@@ -395,6 +395,7 @@
         "failed": "Não deu certo"
       },
       "fields": {
+        "address": "Endereço",
         "street": "Rua",
         "neighborhood": "Bairro",
         "cityState": "Cidade",
@@ -454,7 +455,7 @@
         "noResults": "Nenhuma busca com esses filtros"
       },
       "grid": {
-        "search": "Buscar por nome, endereço, telefone ou categoria",
+        "search": "Buscar por nome, endereço ou telefone",
         "count_one": "{{formatted}} estabelecimento",
         "count_other": "{{formatted}} estabelecimentos",
         "noResults": "Nenhum estabelecimento com esse texto"

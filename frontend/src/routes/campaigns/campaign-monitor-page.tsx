@@ -171,24 +171,68 @@ function MonitorHeader({ campaign }: { campaign: CampaignDetail }) {
     </Button>
   ) : null
 
-  const controls = (
-    <>
-      <CampaignStatusBadge status={status} className="max-md:hidden" />
-      {primary}
-      <ActionsMenu
-        actions={menu}
-        label={t("campaigns.monitor.moreActions")}
-        className="pointer-coarse:size-10"
-      />
-    </>
+  const moreActions = (
+    <ActionsMenu
+      actions={menu}
+      label={t("campaigns.monitor.moreActions")}
+      className="pointer-coarse:size-10"
+    />
   )
+
+  // No celular, só o ícone: o nome da campanha é o que não pode ficar sem espaço.
+  const primaryOnPhone = canPause(status) ? (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      disabled={busy}
+      aria-label={t("campaigns.actions.pause")}
+      className="size-10"
+      onClick={() => void run(() => actions.pause(campaign))}
+    >
+      {busy ? <Loader2 className="animate-spin" /> : <Pause />}
+    </Button>
+  ) : canResume(status) ? (
+    <Button
+      type="button"
+      size="icon"
+      disabled={busy}
+      aria-label={t("campaigns.actions.resume")}
+      className="size-10"
+      onClick={() => void run(() => actions.resume(campaign))}
+    >
+      {busy ? <Loader2 className="animate-spin" /> : <Play />}
+    </Button>
+  ) : canEdit(status) ? (
+    <Button
+      nativeButton={false}
+      size="icon"
+      aria-label={t("campaigns.actions.continueEditing")}
+      className="size-10"
+      render={<Link to={`/campaigns/${campaign.id}/edit`} />}
+    >
+      <PencilLine />
+    </Button>
+  ) : null
 
   return (
     <PageHeader
       title={campaign.name}
       backTo="/campaigns"
       parentTitle={t("navigation.campaigns")}
-      actions={controls}
+      actions={
+        <>
+          <CampaignStatusBadge status={status} />
+          {primary}
+          {moreActions}
+        </>
+      }
+      mobileActions={
+        <>
+          {primaryOnPhone}
+          {moreActions}
+        </>
+      }
       mobilePlacement="inline"
     />
   )

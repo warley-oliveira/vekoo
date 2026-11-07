@@ -29,9 +29,13 @@ import { DeliveryBar } from "./delivery-bar"
 import { LiveNumber } from "./live-number"
 
 // As colunas moram aqui para o cabeçalho e o esqueleto alinharem com as linhas. Abaixo do `md`, cada
-// linha é um card empilhado.
+// linha é um card empilhado. Até o `xl`, com o menu lateral, não cabe uma coluna de resultado: ela desce
+// para baixo do envio, para o nome não ficar espremido.
 export const CAMPAIGN_ROW_GRID =
-  "md:grid md:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(11rem,16rem)_8.5rem_2rem] md:items-center md:gap-x-4"
+  "md:grid md:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(12rem,16rem)_2rem] md:items-center md:gap-x-4 xl:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(10rem,15rem)_11rem_2rem]"
+const SPANS_BOTH_ROWS = "md:row-span-2 xl:row-span-1"
+const RESULT_CELL = "md:col-start-4 md:row-start-2 md:mt-1 xl:col-start-5 xl:row-start-1 xl:mt-0"
+const MENU_CELL = "md:col-start-5 md:row-span-2 md:row-start-1 xl:col-start-6 xl:row-span-1"
 
 type CampaignRowProps = {
   campaign: Campaign
@@ -127,7 +131,12 @@ function RowTime({ campaign }: { campaign: Campaign }) {
     case "cancelled":
       return <Trans i18nKey="campaigns.row.cancelledAt" components={{ time: time(campaign.completedAt) }} />
     case "paused":
-      return <Trans i18nKey="campaigns.row.pausedAt" components={{ time: time(campaign.updatedAt) }} />
+      return (
+        <Trans
+          i18nKey={campaign.pauseReason ? "campaigns.row.stoppedAt" : "campaigns.row.pausedAt"}
+          components={{ time: time(campaign.updatedAt) }}
+        />
+      )
     case "draft":
     default:
       return <Trans i18nKey="campaigns.row.createdAt" components={{ time: time(campaign.createdAt) }} />
@@ -164,11 +173,13 @@ export const CampaignRow = memo(function CampaignRow({
         CAMPAIGN_ROW_GRID
       )}
     >
-      {/* Fora do fluxo no celular: selecionar começa por segurar a linha ou pelo menu. */}
+      {/* No desktop, uma coluna que aparece ao passar o mouse. No celular, selecionar começa por segurar
+          a linha ou pelo menu, e a caixa entra ao lado do nome. */}
       <div
         className={cn(
           "relative z-10 hidden md:flex md:opacity-0 md:transition-opacity md:group-hover/row:opacity-100 md:focus-within:opacity-100",
-          (selecting || selected) && "flex md:opacity-100"
+          SPANS_BOTH_ROWS,
+          (selecting || selected) && "md:opacity-100"
         )}
       >
         <Checkbox
@@ -180,7 +191,15 @@ export const CampaignRow = memo(function CampaignRow({
       </div>
 
       {/* O nome é o link, e ele cobre a linha: teclado e leitor de tela encontram um alvo só. */}
-      <div className="flex min-w-0 items-start gap-2 md:block">
+      <div className={cn("flex min-w-0 items-start gap-2 md:block", SPANS_BOTH_ROWS)}>
+        {selecting || selected ? (
+          <Checkbox
+            checked={selected}
+            aria-label={t("campaigns.list.selectRow", { name: campaign.name })}
+            className="relative z-10 mt-0.5 border-muted-foreground/40 md:hidden"
+            onCheckedChange={() => onToggleSelect(campaign)}
+          />
+        ) : null}
         <div className="min-w-0 flex-1">
           <Link
             to={path}
@@ -204,7 +223,7 @@ export const CampaignRow = memo(function CampaignRow({
         </div>
       </div>
 
-      <div className="order-last flex flex-wrap items-center gap-x-2 gap-y-1 md:order-none md:flex-col md:items-start md:gap-y-0.5">
+      <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1 md:flex-col md:items-start md:gap-y-0.5", SPANS_BOTH_ROWS)}>
         <CampaignStatusBadge status={campaign.status} />
         <p className="relative z-10 min-w-0 text-xs text-muted-foreground">
           <RowTime campaign={campaign} />
@@ -239,32 +258,39 @@ export const CampaignRow = memo(function CampaignRow({
       </div>
 
       {notStarted ? (
-        <div aria-hidden className="hidden md:block" />
+        <div aria-hidden className={cn("hidden xl:block", RESULT_CELL)} />
       ) : (
-        <div className="relative z-10 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs tabular-nums md:flex-col md:items-start">
-          {read !== null ? (
-            <Tooltip>
-              <TooltipTrigger render={<span />}>
-                {t("campaigns.row.readShare", { share: formatPercent(read, language, { maximumFractionDigits: 0 }) })}
-              </TooltipTrigger>
-              <TooltipContent>
-                {t("campaigns.row.readTooltip", {
-                  read: formatNumber(numbers.read, language),
-                  sent: formatNumber(numbers.sent, language),
-                })}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <span className="text-muted-foreground">{t("kit.noValue")}</span>
+        <div
+          className={cn(
+            "relative z-10 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs tabular-nums xl:flex-col xl:items-start",
+            RESULT_CELL
           )}
-          {numbers.replied ? (
-            <span className="text-muted-foreground">
-              {t("campaigns.row.replied", {
-                count: numbers.replied,
-                formatted: formatNumber(numbers.replied, language),
-              })}
-            </span>
-          ) : null}
+        >
+          <span className="flex flex-wrap gap-x-2">
+            {read !== null ? (
+              <Tooltip>
+                <TooltipTrigger render={<span />}>
+                  {t("campaigns.row.readShare", { share: formatPercent(read, language, { maximumFractionDigits: 0 }) })}
+                </TooltipTrigger>
+                <TooltipContent>
+                  {t("campaigns.row.readTooltip", {
+                    read: formatNumber(numbers.read, language),
+                    sent: formatNumber(numbers.sent, language),
+                  })}
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <span className="text-muted-foreground">{t("kit.noValue")}</span>
+            )}
+            {numbers.replied ? (
+              <span className="text-muted-foreground">
+                {t("campaigns.row.replied", {
+                  count: numbers.replied,
+                  formatted: formatNumber(numbers.replied, language),
+                })}
+              </span>
+            ) : null}
+          </span>
           {numbers.failed > 0 ? (
             <span className="inline-flex items-center gap-1 text-status-danger">
               <AlertCircle aria-hidden className="size-3" />
@@ -277,7 +303,7 @@ export const CampaignRow = memo(function CampaignRow({
         </div>
       )}
 
-      <div className="relative z-10 hidden justify-end md:flex">
+      <div className={cn("relative z-10 hidden justify-end md:flex", MENU_CELL)}>
         <ActionsMenu actions={rowActions} label={t("campaigns.list.actionsOf", { name: campaign.name })} />
       </div>
     </div>
@@ -288,12 +314,12 @@ export const CampaignRow = memo(function CampaignRow({
 export function CampaignRowSkeleton() {
   return (
     <div className={cn("flex flex-col gap-3 p-4 md:px-4 md:py-3", CAMPAIGN_ROW_GRID)}>
-      <div aria-hidden className="hidden md:block" />
-      <div className="flex flex-col gap-1.5">
+      <div aria-hidden className={cn("hidden md:block", SPANS_BOTH_ROWS)} />
+      <div className={cn("flex flex-col gap-1.5", SPANS_BOTH_ROWS)}>
         <Skeleton className="h-4 w-2/3" />
         <Skeleton className="h-3 w-1/3" />
       </div>
-      <div className="order-last flex items-center gap-2 md:order-none md:flex-col md:items-start md:gap-1.5">
+      <div className={cn("flex items-center gap-2 md:flex-col md:items-start md:gap-1.5", SPANS_BOTH_ROWS)}>
         <Skeleton className="h-5 w-24 rounded-full" />
         <Skeleton className="h-3 w-20" />
       </div>
@@ -301,11 +327,11 @@ export function CampaignRowSkeleton() {
         <Skeleton className="h-3 w-1/2" />
         <Skeleton className="h-1.5 w-full rounded-full" />
       </div>
-      <div className="hidden flex-col gap-1.5 md:flex">
+      <div className={cn("flex gap-2 xl:flex-col xl:gap-1.5", RESULT_CELL)}>
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-3 w-20" />
       </div>
-      <div aria-hidden className="hidden md:block" />
+      <div aria-hidden className={cn("hidden md:block", MENU_CELL)} />
     </div>
   )
 }

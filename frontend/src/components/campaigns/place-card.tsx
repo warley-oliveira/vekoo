@@ -65,13 +65,14 @@ type PlaceCardProps = {
   className?: string
 }
 
-/** Um estabelecimento encontrado: o que importa para disparar à mostra, o resto ao abrir. */
+/** Um estabelecimento encontrado: o que importa para disparar à mostra, o resto ao abrir. Quem põe em grade alinha pelo topo: abrir um não estica os vizinhos. */
 export const PlaceCard = memo(function PlaceCard({ place, className }: PlaceCardProps) {
   const { t } = useTranslation()
   const language = useLanguage()
   const [open, setOpen] = useState(false)
 
   const details: KeyValueItem[] = [
+    ...(place.address ? [{ label: t("campaigns.places.fields.address"), value: place.address }] : []),
     ...(place.street && place.street !== place.address
       ? [{ label: t("campaigns.places.fields.street"), value: place.street }]
       : []),
@@ -120,7 +121,7 @@ export const PlaceCard = memo(function PlaceCard({ place, className }: PlaceCard
     Boolean(source)
 
   return (
-    <article className={cn("flex flex-col rounded-xl bg-card ring-1 ring-foreground/10", className)}>
+    <article className={cn("flex min-w-0 flex-col rounded-xl bg-card ring-1 ring-foreground/10", className)}>
       <Collapsible open={open} onOpenChange={setOpen} className="flex flex-1 flex-col">
         <div className="flex flex-1 flex-col gap-3 p-3">
           <div className="flex min-w-0 gap-3">
@@ -162,9 +163,11 @@ export const PlaceCard = memo(function PlaceCard({ place, className }: PlaceCard
               )}
             </li>
             {place.address ? (
-              <li className="flex min-w-0 items-start gap-2">
-                <MapPin aria-hidden className="mt-0.5 size-3.5 shrink-0" />
-                <span className="line-clamp-2 text-pretty">{place.address}</span>
+              <li className="flex min-w-0 items-center gap-2">
+                <MapPin aria-hidden className="size-3.5 shrink-0" />
+                <span title={place.address} className="truncate">
+                  {place.address}
+                </span>
               </li>
             ) : null}
             {place.website ? (
@@ -197,7 +200,7 @@ export const PlaceCard = memo(function PlaceCard({ place, className }: PlaceCard
                     <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5">
                       {place.openingHours.map((entry) => (
                         <div key={entry.day} className="contents">
-                          <dt className="capitalize">{entry.day}</dt>
+                          <dt className="first-letter:uppercase">{entry.day}</dt>
                           <dd className="text-muted-foreground tabular-nums">{entry.hours}</dd>
                         </div>
                       ))}

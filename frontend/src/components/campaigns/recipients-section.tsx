@@ -123,23 +123,16 @@ export const RecipientsSection = memo(
               <p className="truncate font-medium">
                 {row.original.contactName || t("campaigns.recipients.noName")}
               </p>
-              <p className="hidden text-xs text-muted-foreground tabular-nums md:block">
+              <p className="text-xs font-normal text-muted-foreground tabular-nums">
                 {formatPhone(row.original.phoneNumber)}
               </p>
             </div>
           ),
         },
         {
-          id: "phone",
-          header: t("campaigns.recipients.columns.phone"),
-          // No desktop, o telefone já está debaixo do nome.
-          meta: { mobile: "secondary", className: "md:hidden" },
-          cell: ({ row }) => <span className="tabular-nums">{formatPhone(row.original.phoneNumber)}</span>,
-        },
-        {
           id: "status",
           header: t("campaigns.recipients.columns.status"),
-          meta: { mobile: "secondary", className: "whitespace-normal min-w-44" },
+          meta: { mobile: "secondary", className: "whitespace-normal min-w-60" },
           cell: ({ row }) => (
             <div className="flex min-w-0 flex-col items-start gap-1">
               <div className="flex flex-wrap items-center gap-1.5">

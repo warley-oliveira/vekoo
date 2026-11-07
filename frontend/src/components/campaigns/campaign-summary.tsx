@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { InlineError, StatTile } from "@/components/shared"
@@ -10,7 +11,7 @@ import { useLanguage } from "@/lib/i18n"
  * Os números do topo, da organização inteira. Assina o resumo por conta própria: quando ele muda, é
  * só isto que re-renderiza, e não a lista.
  */
-export function CampaignSummaryTiles() {
+export const CampaignSummaryTiles = memo(function CampaignSummaryTiles() {
   const { t } = useTranslation()
   const language = useLanguage()
   const { data, error, isLoading } = useCampaignSummary()
@@ -79,4 +80,4 @@ export function CampaignSummaryTiles() {
       />
     </div>
   )
-}
+})

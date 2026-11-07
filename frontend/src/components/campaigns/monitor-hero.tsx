@@ -1,6 +1,6 @@
 import { memo, useSyncExternalStore, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link, useSearchParams } from "react-router"
 import {
   CircleCheck,
   CircleSlash,
@@ -113,6 +113,13 @@ export const MonitorHero = memo(function MonitorHero({
   const { data, error, mutate } = useCampaignStats(campaign.id)
   const stats = data?.stats
 
+  const [params] = useSearchParams()
+  const activeFilter = [...params.getAll("status")].sort().join()
+  const filterCell = (statuses: string[]) => {
+    const active = activeFilter === [...statuses].sort().join()
+    return { active, onClick: () => onFilterRecipients(active ? [] : statuses) }
+  }
+
   const numbers = stats ? numbersFromStats(stats) : numbersFromCampaign(campaign)
   const processed = processedCount(numbers)
   const pending = stats?.pending ?? Math.max(numbers.total - processed, 0)
@@ -121,6 +128,7 @@ export const MonitorHero = memo(function MonitorHero({
   const Icon = HEALTH_ICONS[health.kind]
   const notStarted = hasNotStarted(campaign.status)
   const running = campaign.status === "running"
+  const finished = campaign.status === "completed" || campaign.status === "cancelled"
 
   const whenWindowOpens = (window: SendWindowState) => {
     if (window.open) return ""
@@ -210,7 +218,7 @@ export const MonitorHero = memo(function MonitorHero({
             <LiveNumber
               value={Math.round(progressRatio(numbers) * 100)}
               format={(value) => formatPercent(value / 100, language, { maximumFractionDigits: 0 })}
-              className="font-heading w-14 shrink-0 text-2xl leading-none font-semibold tracking-tight"
+              className="font-heading min-w-[3.25rem] shrink-0 text-2xl leading-none font-semibold tracking-tight"
             />
             <DeliveryBar numbers={numbers} className="flex-1" />
           </div>
@@ -222,28 +230,28 @@ export const MonitorHero = memo(function MonitorHero({
               label={t("campaigns.numbers.sent")}
               value={numbers.sent}
               caption={t("campaigns.numbers.ofList", { share: percentOf(numbers.sent, numbers.total) })}
-              onClick={() => onFilterRecipients(["sent", "delivered", "read"])}
+              {...filterCell(["sent", "delivered", "read"])}
             />
             <NumberCell
               color={DELIVERY_COLORS.delivered}
               label={t("campaigns.numbers.delivered")}
               value={numbers.delivered}
               caption={t("campaigns.numbers.ofSent", { share: percentOf(numbers.delivered, numbers.sent) })}
-              onClick={() => onFilterRecipients(["delivered", "read"])}
+              {...filterCell(["delivered", "read"])}
             />
             <NumberCell
               color={DELIVERY_COLORS.read}
               label={t("campaigns.numbers.read")}
               value={numbers.read}
               caption={t("campaigns.numbers.ofDelivered", { share: percentOf(numbers.read, numbers.delivered) })}
-              onClick={() => onFilterRecipients(["read"])}
+              {...filterCell(["read"])}
             />
             {numbers.replied !== null ? (
               <NumberCell
                 label={t("campaigns.numbers.replied")}
                 value={numbers.replied}
                 caption={t("campaigns.numbers.ofSent", { share: percentOf(numbers.replied, numbers.sent) })}
-                onClick={() => onFilterRecipients(["replied"])}
+                {...filterCell(["replied"])}
               />
             ) : null}
             <NumberCell
@@ -251,7 +259,7 @@ export const MonitorHero = memo(function MonitorHero({
               label={t("campaigns.numbers.failed")}
               value={numbers.failed}
               caption={t("campaigns.numbers.ofList", { share: percentOf(numbers.failed, numbers.total) })}
-              onClick={() => onFilterRecipients(["failed"])}
+              {...filterCell(["failed"])}
             />
             {skipped > 0 ? (
               <NumberCell
@@ -259,17 +267,17 @@ export const MonitorHero = memo(function MonitorHero({
                 label={t("campaigns.numbers.skipped")}
                 value={skipped}
                 caption={t("campaigns.numbers.ofList", { share: percentOf(skipped, numbers.total) })}
-                onClick={() => onFilterRecipients(["skipped"])}
+                {...filterCell(["skipped"])}
               />
-            ) : (
+            ) : pending > 0 || !finished ? (
               <NumberCell
                 color={DELIVERY_COLORS.pending}
                 label={t("campaigns.numbers.pending")}
                 value={pending}
                 caption={t("campaigns.numbers.ofList", { share: percentOf(pending, numbers.total) })}
-                onClick={() => onFilterRecipients(["pending", "sending"])}
+                {...filterCell(["pending", "sending"])}
               />
-            )}
+            ) : null}
           </div>
         </>
       )}
@@ -280,11 +288,7 @@ export const MonitorHero = memo(function MonitorHero({
         </div>
       ) : null}
 
-      <HeroActions
-        kind={health.kind}
-        campaignId={campaign.id}
-        onShowFailures={() => onFilterRecipients(["failed"])}
-      />
+      <HeroActions kind={health.kind} onShowFailures={() => onFilterRecipients(["failed"])} />
     </section>
   )
 })
@@ -320,19 +324,25 @@ function NumberCell({
   label,
   value,
   caption,
+  active,
   onClick,
 }: {
   color?: string
   label: string
   value: number
   caption: string
+  active: boolean
   onClick: () => void
 }) {
   return (
     <button
       type="button"
+      aria-pressed={active}
       onClick={onClick}
-      className="flex min-w-0 flex-col items-start gap-0.5 rounded-lg px-2 py-2 text-left transition-colors outline-none hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50"
+      className={cn(
+        "flex min-w-0 flex-col items-start gap-0.5 rounded-lg px-2 py-2 text-left transition-colors outline-none hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50",
+        active && "bg-muted hover:bg-muted"
+      )}
     >
       <span className="flex max-w-full items-center gap-1.5 text-xs text-muted-foreground">
         {color ? (
@@ -350,15 +360,7 @@ function NumberCell({
   )
 }
 
-function HeroActions({
-  kind,
-  campaignId,
-  onShowFailures,
-}: {
-  kind: HealthKind
-  campaignId: string
-  onShowFailures: () => void
-}) {
+function HeroActions({ kind, onShowFailures }: { kind: HealthKind; onShowFailures: () => void }) {
   const { t } = useTranslation()
   const canSeeChannels = useCan(CHANNELS_PERMISSION)
 
@@ -390,20 +392,6 @@ function HeroActions({
           onClick={onShowFailures}
         >
           {t("campaigns.monitor.seeFailures")}
-        </Button>
-      </div>
-    )
-  }
-  if (kind === "draft") {
-    return (
-      <div className="flex flex-wrap gap-2">
-        <Button
-          nativeButton={false}
-          size="sm"
-          className="pointer-coarse:h-10"
-          render={<Link to={`/campaigns/${campaignId}/edit`} />}
-        >
-          {t("campaigns.actions.continueEditing")}
         </Button>
       </div>
     )

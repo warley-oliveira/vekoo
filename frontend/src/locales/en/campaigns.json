@@ -159,6 +159,7 @@
       "finishedAt": "Finished <time/>",
       "cancelledAt": "Cancelled <time/>",
       "pausedAt": "Paused <time/>",
+      "stoppedAt": "Stopped on its own <time/>",
       "createdAt": "Created <time/>",
       "contacts_one": "{{formatted}} contact on the list",
       "contacts_other": "{{formatted}} contacts on the list",
@@ -220,8 +221,8 @@
       },
       "scheduled": {
         "title": "Scheduled",
-        "description_one": "Starts {{when}}, for {{total}} person. Nothing has gone out yet.",
-        "description_other": "Starts {{when}}, for {{total}} people. Nothing has gone out yet."
+        "description_one": "Set for {{when}}. {{total}} person will get it. Nothing has gone out yet.",
+        "description_other": "Set for {{when}}. {{total}} people will get it. Nothing has gone out yet."
       },
       "starting": {
         "title": "Getting started",
@@ -229,19 +230,19 @@
       },
       "healthy": {
         "title": "It's going well",
-        "description": "{{processed}} of {{total}} messages have gone out."
+        "description": "{{sent}} of {{total}} messages have gone out."
       },
       "someFailures": {
         "title": "It's going, with a few failures",
-        "description": "{{processed}} of {{total}} messages have gone out, and {{failed}} didn't arrive. The rest carries on as usual."
+        "description": "{{sent}} of {{total}} messages have gone out, and {{failed}} didn't arrive. The rest carries on as usual."
       },
       "manyFailures": {
         "title": "Many messages aren't arriving",
-        "description": "{{failed}} of {{processed}} didn't arrive. See the reasons below and, if you prefer, pause to check the channel."
+        "description": "Out of {{processed}} attempts, {{failed}} didn't arrive. See the reasons below and, if you prefer, pause to check the channel."
       },
       "outsideWindow": {
         "title": "Waiting for sending hours",
-        "description": "{{processed}} of {{total}} messages have gone out. The rest goes out from {{when}}."
+        "description": "{{sent}} of {{total}} messages have gone out. The rest goes out from {{when}}."
       },
       "pausedByPerson": {
         "title": "Paused",
@@ -303,7 +304,6 @@
       "copyPhone": "Copy phone",
       "columns": {
         "contact": "Contact",
-        "phone": "Phone",
         "status": "Status",
         "sentAt": "Sent",
         "deliveredAt": "Delivered",
@@ -395,6 +395,7 @@
         "failed": "Didn't work"
       },
       "fields": {
+        "address": "Address",
         "street": "Street",
         "neighborhood": "Neighborhood",
         "cityState": "City",
@@ -454,7 +455,7 @@
         "noResults": "No searches with these filters"
       },
       "grid": {
-        "search": "Search by name, address, phone or category",
+        "search": "Search by name, address or phone",
         "count_one": "{{formatted}} business",
         "count_other": "{{formatted}} businesses",
         "noResults": "No businesses with this text"

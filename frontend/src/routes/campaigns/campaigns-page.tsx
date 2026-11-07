@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState, type ComponentProps, type Ref } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
@@ -49,10 +49,26 @@ import { cn } from "@/lib/utils"
 const SKELETON_ROWS = 6
 const NO_CAMPAIGNS: Campaign[] = []
 
+/**
+ * Memorizado inteiro, com o `motion.li`: um lote de eventos de uma campanha não passa pelas outras. O
+ * `ref` é do `AnimatePresence`, para a linha sair sem empurrar as vizinhas.
+ */
+const CampaignListItem = memo(function CampaignListItem({
+  ref,
+  ...props
+}: ComponentProps<typeof CampaignRow> & { ref?: Ref<HTMLLIElement> }) {
+  const preset = useMotionPreset()
+
+  return (
+    <motion.li ref={ref} layout={!preset.reduced} {...preset.listItem}>
+      <CampaignRow {...props} />
+    </motion.li>
+  )
+})
+
 export default function CampaignsPage() {
   const { t } = useTranslation()
   const language = useLanguage()
-  const preset = useMotionPreset()
 
   const { filters, listPath, isFiltered, activeCount, setQuery, setStatuses, setConnectorIds, setSort, setPage, setPerPage, clear } =
     useCampaignFilters()
@@ -272,22 +288,21 @@ export default function CampaignsPage() {
                   <span>{t("campaigns.list.columns.campaign")}</span>
                   <span>{t("campaigns.list.columns.status")}</span>
                   <span>{t("campaigns.list.columns.progress")}</span>
-                  <span>{t("campaigns.list.columns.result")}</span>
+                  <span className="hidden xl:block">{t("campaigns.list.columns.result")}</span>
                   <span aria-hidden />
                 </div>
                 <ul className="divide-y">
                   <AnimatePresence initial={false} mode="popLayout">
                     {campaigns.map((campaign) => (
-                      <motion.li key={campaign.id} layout={!preset.reduced} {...preset.listItem}>
-                        <CampaignRow
-                          campaign={campaign}
-                          channel={channelLabel(campaign, byId, t)}
-                          actions={actions}
-                          selected={Boolean(selection[campaign.id])}
-                          selecting={selecting}
-                          onToggleSelect={toggleSelected}
-                        />
-                      </motion.li>
+                      <CampaignListItem
+                        key={campaign.id}
+                        campaign={campaign}
+                        channel={channelLabel(campaign, byId, t)}
+                        actions={actions}
+                        selected={Boolean(selection[campaign.id])}
+                        selecting={selecting}
+                        onToggleSelect={toggleSelected}
+                      />
                     ))}
                   </AnimatePresence>
                 </ul>
