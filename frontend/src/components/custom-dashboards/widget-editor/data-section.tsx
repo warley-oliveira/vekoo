@@ -173,7 +173,7 @@ export function DataSection({ sources }: { sources: DataSourceMeta[] }) {
               {source && !records ? <GroupingSection sources={sources} source={source} metricCount={metricCount} /> : null}
 
               {source ? (
-                <EditorSection title={t("customDashboards.filters.title")} hint={t("customDashboards.filters.hint")}>
+                <EditorSection title={t(records ? "customDashboards.filters.titleRecords" : "customDashboards.filters.title")} hint={t("customDashboards.filters.hint")}>
                   <FiltersEditor name="filters" source={source} filterOptions={filterOptions} max={MAX_FILTERS} />
                 </EditorSection>
               ) : null}
@@ -300,7 +300,11 @@ function GroupingSection({
         </div>
       ) : null}
 
-      {showBreakdown ? (
+      {showBreakdown && breakdownOptions.length === 0 && grouping === "category" ? (
+        <Callout tone="neutral">{t("customDashboards.editor.noBreakdown", { source: source?.label })}</Callout>
+      ) : null}
+
+      {showBreakdown && (breakdownOptions.length > 0 || grouping === "category") ? (
         <FormField
           control={control}
           name="breakdown"
@@ -362,27 +366,31 @@ function SortSection({ source }: { source: DataSourceMeta }) {
 
   return (
     <EditorSection title={t("customDashboards.editor.orderAndLimit")}>
-      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_7rem] sm:items-end">
-        <div className="flex min-w-0 flex-col gap-1.5">
-          <p className="text-sm font-medium">{t("customDashboards.editor.orderBy")}</p>
-          <SelectInput
-            aria-label={t("customDashboards.editor.orderBy")}
-            options={options}
-            value={sortField}
-            onChange={(next) => setValue("sortField", next, dirty)}
-            clearLabel={t(records ? "customDashboards.editor.orderDefaultRecords" : "customDashboards.editor.orderDefault")}
-            placeholder={t(records ? "customDashboards.editor.orderDefaultRecords" : "customDashboards.editor.orderDefault")}
+      {/* Pelo topo, com o mesmo rótulo nos dois campos: o campo escondido do NumberField deixa folga embaixo dele. */}
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_7rem] sm:items-start">
+        <FormField control={control} name="sortField" label={t("customDashboards.editor.orderBy")} className="min-w-0">
+          {({ controlProps }) => (
+            <SelectInput
+              {...controlProps}
+              options={options}
+              value={sortField}
+              onChange={(next) => setValue("sortField", next, dirty)}
+              clearLabel={t(records ? "customDashboards.editor.orderDefaultRecords" : "customDashboards.editor.orderDefault")}
+              placeholder={t(records ? "customDashboards.editor.orderDefaultRecords" : "customDashboards.editor.orderDefault")}
+            />
+          )}
+        </FormField>
+        <div className="sm:pt-5">
+          <SegmentedControl
+            aria-label={t("customDashboards.editor.orderDirection")}
+            value={sortDirection}
+            onChange={(next) => setValue("sortDirection", next, dirty)}
+            options={[
+              { value: "desc", label: t("customDashboards.editor.orderDesc") },
+              { value: "asc", label: t("customDashboards.editor.orderAsc") },
+            ]}
           />
         </div>
-        <SegmentedControl
-          aria-label={t("customDashboards.editor.orderDirection")}
-          value={sortDirection}
-          onChange={(next) => setValue("sortDirection", next, dirty)}
-          options={[
-            { value: "desc", label: t("customDashboards.editor.orderDesc") },
-            { value: "asc", label: t("customDashboards.editor.orderAsc") },
-          ]}
-        />
         <FormField control={control} name="limit" label={t("customDashboards.editor.limit")}>
           {({ controlProps }) => (
             <NumberInput

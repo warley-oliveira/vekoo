@@ -274,7 +274,8 @@
         "contains": "contém",
         "exists": "está preenchido",
         "not_exists": "está vazio"
-      }
+      },
+      "titleRecords": "Só mostrar quando"
     },
     "formula": {
       "label": "A conta",
@@ -370,7 +371,8 @@
       "autoColor": "Automática",
       "customColor": "Outra cor",
       "useBars": "Trocar para barras",
-      "tooManyParts": "Com {{count}} partes, as menores viram \"Outros\". Em barras, todas aparecem e ficam mais fáceis de comparar."
+      "tooManyParts": "Com {{count}} partes, as menores viram \"Outros\". Em barras, todas aparecem e ficam mais fáceis de comparar.",
+      "noBreakdown": "{{source}} não tem por onde dividir. Troque a fonte ou o tipo de card."
     },
     "appearance": {
       "icon": "Ícone",
@@ -466,7 +468,10 @@
       "newLabel": "Nova nota",
       "required": "Escreva a nota.",
       "add": "Adicionar nota",
-      "remove": "Tirar esta nota"
+      "remove": "Tirar esta nota",
+      "openOf_zero": "Notas de {{title}}",
+      "openOf_one": "{{title}}: {{count}} nota",
+      "openOf_other": "{{title}}: {{count}} notas"
     },
     "validation": {
       "name": "Dê um nome ao painel.",

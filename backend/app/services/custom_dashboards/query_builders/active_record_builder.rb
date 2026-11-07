@@ -172,7 +172,7 @@ module CustomDashboards
         field = source.field(sort["field"])
         raise QueryEngine::QueryError.new("invalidSort", field: "sort", name: sort["field"].to_s) unless field
 
-        Arel.sql("#{expression(field)} #{direction(sort)}")
+        Arel.sql("#{expression(field)} #{direction(sort)} NULLS LAST")
       end
 
       def direction(sort)
@@ -267,7 +267,8 @@ module CustomDashboards
         field = sort_alias(sort["field"], renames)
         # Empate: sem o desempate, o limite corta um valor diferente a cada consulta, e as barras trocam de lugar.
         tie_break = first_dimension && first_dimension != field ? ", #{first_dimension} ASC" : ""
-        scope.order(Arel.sql("#{field} #{direction(sort)}#{tie_break}"))
+        # `NULLS LAST`: no `DESC`, o Postgres põe primeiro quem não tem valor. "Maior primeiro" abriria pelos zeros.
+        scope.order(Arel.sql("#{field} #{direction(sort)} NULLS LAST#{tie_break}"))
       end
 
       def sort_alias(sort_field, renames)

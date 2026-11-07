@@ -58,7 +58,7 @@ export function WidgetNotesPopover({ widget, editing }: { widget: DashboardWidge
           type="button"
           variant="ghost"
           size={notes.length ? "xs" : "icon-xs"}
-          aria-label={t("customDashboards.notes.open", { count: notes.length })}
+          aria-label={t("customDashboards.notes.openOf", { count: notes.length, title: widget.title })}
           title={t("customDashboards.notes.open", { count: notes.length })}
           className="gap-1 text-muted-foreground"
         >

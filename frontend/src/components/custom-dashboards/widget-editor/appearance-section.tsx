@@ -1,3 +1,4 @@
+import { useId, type ComponentProps } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -12,6 +13,19 @@ import { WIDGET_ICON_KEYS, ICONS } from "../icons"
 import { ColorChoice, EditorSection } from "./editor-parts"
 
 const FORMATS = ["number", "percent", "currency", "duration"] as const
+
+/** O nome vai por `aria-labelledby`: é só assim que ele chega ao campo de verdade, que fica dentro do polegar. */
+function NamedSlider({ label, ...props }: ComponentProps<typeof Slider> & { label: string }) {
+  const id = useId()
+  return (
+    <>
+      <span id={id} className="sr-only">
+        {label}
+      </span>
+      <Slider aria-labelledby={id} {...props} />
+    </>
+  )
+}
 
 export function AppearanceSection() {
   const { t } = useTranslation()
@@ -143,8 +157,8 @@ export function AppearanceSection() {
                 {t("customDashboards.appearance.fontSizeValue", { size: visual.fontSize ?? 28 })}
               </span>
             </div>
-            <Slider
-              aria-label={t("customDashboards.appearance.fontSize")}
+            <NamedSlider
+              label={t("customDashboards.appearance.fontSize")}
               min={16}
               max={48}
               step={1}
@@ -236,8 +250,8 @@ export function AppearanceSection() {
       {isArea || widgetType === "radar" ? (
         <EditorSection title={t("customDashboards.appearance.opacity")}>
           <div className="flex items-center gap-3">
-            <Slider
-              aria-label={t("customDashboards.appearance.opacity")}
+            <NamedSlider
+              label={t("customDashboards.appearance.opacity")}
               min={0.05}
               max={1}
               step={0.05}
@@ -253,8 +267,8 @@ export function AppearanceSection() {
 
       {widgetType === "rich_text" || widgetType === "section_divider" ? (
         <EditorSection title={t("customDashboards.appearance.textSize")}>
-          <Slider
-            aria-label={t("customDashboards.appearance.textSize")}
+          <NamedSlider
+            label={t("customDashboards.appearance.textSize")}
             min={12}
             max={24}
             step={1}

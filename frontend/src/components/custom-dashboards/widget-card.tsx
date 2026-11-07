@@ -70,6 +70,10 @@ type WidgetCardProps = {
   className?: string
 }
 
+/** Sem largura até a pessoa chegar no card, mas no caminho do teclado: o foco neles é o que os revela. */
+const REVEALED_ACTIONS =
+  "flex w-0 items-center gap-0.5 overflow-hidden group-focus-within/card:w-auto group-focus-within/card:overflow-visible group-hover/card:w-auto group-hover/card:overflow-visible has-data-popup-open:w-auto has-data-popup-open:overflow-visible pointer-coarse:w-auto pointer-coarse:overflow-visible"
+
 const KEYBOARD_MOVES: Record<string, [number, number]> = {
   ArrowLeft: [-1, 0],
   ArrowRight: [1, 0],
@@ -271,7 +275,7 @@ export const WidgetCard = memo(function WidgetCard({
           </div>
         ) : null
       ) : (
-        <header className="relative flex items-start gap-1.5 px-4 pt-3 pb-1">
+        <header className={cn("relative flex items-start gap-1.5 px-4 pt-3 pb-1", notes.length > 0 && "pr-14 pointer-coarse:pr-4")}>
           {handle}
           <div className="min-w-0 flex-1">
             <h3 className="flex items-start gap-1.5 text-sm font-medium">
@@ -296,53 +300,54 @@ export const WidgetCard = memo(function WidgetCard({
             ) : null}
           </div>
 
-          {/* Nota escrita fica sempre à vista: é recado para quem lê. */}
-          {onDashboard && notes.length > 0 ? (
-            <div className="cd-no-drag">
-              <WidgetNotesPopover widget={widget} editing={editing} />
-            </div>
-          ) : null}
-
           {onDashboard ? (
             <div
               className={cn(
-                "cd-no-drag flex shrink-0 items-center gap-0.5 transition-opacity",
-                // Com mouse, as ações aparecem por cima, ao passar: o título usa a largura toda enquanto ninguém mexe.
-                "absolute top-2 right-2 rounded-md bg-card pl-1 opacity-0 group-focus-within/card:opacity-100 group-hover/card:opacity-100 has-data-popup-open:opacity-100",
+                "cd-no-drag flex shrink-0 items-center gap-0.5",
+                // Com mouse, as ações ficam por cima do título, e só ao passar: ele usa a largura toda enquanto ninguém mexe.
+                "absolute top-2 right-2 rounded-md bg-card pl-1",
                 // Com o dedo, ficam sempre à vista, e o alvo de 40 px avança sobre o respiro do card, não sobre o título.
-                "pointer-coarse:static pointer-coarse:-mt-1.5 pointer-coarse:-mr-2.5 pointer-coarse:bg-transparent pointer-coarse:pl-0 pointer-coarse:opacity-100"
+                "pointer-coarse:static pointer-coarse:-mt-1.5 pointer-coarse:-mr-2.5 pointer-coarse:bg-transparent pointer-coarse:pl-0"
               )}
             >
-              {!editing && canTwin ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-pressed={showTable}
-                  aria-label={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
-                  title={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
-                  className="text-muted-foreground pointer-coarse:hidden"
-                  onClick={() => setShowTable(!showTable)}
-                >
-                  {showTable ? <ChartColumn /> : <Table2 />}
-                </Button>
+              <div className={REVEALED_ACTIONS}>
+                {!editing && canTwin ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-pressed={showTable}
+                    aria-label={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
+                    title={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
+                    className="text-muted-foreground pointer-coarse:hidden"
+                    onClick={() => setShowTable(!showTable)}
+                  >
+                    {showTable ? <ChartColumn /> : <Table2 />}
+                  </Button>
+                ) : null}
+                {!editing && spec.needsData ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t("customDashboards.card.expandLabel", { title: widget.title })}
+                    title={t("customDashboards.card.expand")}
+                    className="text-muted-foreground pointer-coarse:hidden"
+                    onClick={() => actions?.expand(widget)}
+                  >
+                    <Maximize2 />
+                  </Button>
+                ) : null}
+                {editButton}
+              </div>
+              {/* Nota escrita fica sempre à vista: é recado para quem lê. O lugar é um só, para o popover seguir aberto ao
+                  escrever a primeira. */}
+              {notes.length > 0 || editing ? (
+                <div className={notes.length > 0 ? "flex" : REVEALED_ACTIONS}>
+                  <WidgetNotesPopover widget={widget} editing={editing} />
+                </div>
               ) : null}
-              {!editing && spec.needsData ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={t("customDashboards.card.expandLabel", { title: widget.title })}
-                  title={t("customDashboards.card.expand")}
-                  className="text-muted-foreground pointer-coarse:hidden"
-                  onClick={() => actions?.expand(widget)}
-                >
-                  <Maximize2 />
-                </Button>
-              ) : null}
-              {editing && notes.length === 0 ? <WidgetNotesPopover widget={widget} editing={editing} /> : null}
-              {editButton}
-              {menu}
+              <div className={REVEALED_ACTIONS}>{menu}</div>
             </div>
           ) : null}
         </header>

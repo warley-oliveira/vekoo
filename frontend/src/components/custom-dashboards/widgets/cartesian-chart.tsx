@@ -165,7 +165,8 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
     return -1
   }
 
-  const formatAxis = (value: number) => formatCompactValue(value, config, language)
+  // O eixo só tem inteiros, e casa decimal nele é ruído: "R$ 5.500,00" ao lado de "R$ 17 mil", "105,0%".
+  const formatAxis = (value: number) => formatCompactValue(value, { ...config, decimalPrecision: 0 }, language)
 
   const legend = showLegend ? (
     <ChartLegend

@@ -274,7 +274,8 @@
         "contains": "contains",
         "exists": "is filled",
         "not_exists": "is empty"
-      }
+      },
+      "titleRecords": "Only show when"
     },
     "formula": {
       "label": "The calculation",
@@ -370,7 +371,8 @@
       "autoColor": "Automatic",
       "customColor": "Other color",
       "useBars": "Switch to bars",
-      "tooManyParts": "With {{count}} parts, the smallest become \"Other\". In bars, they all show and are easier to compare."
+      "tooManyParts": "With {{count}} parts, the smallest become \"Other\". In bars, they all show and are easier to compare.",
+      "noBreakdown": "{{source}} has nothing to divide by. Change the source or the card type."
     },
     "appearance": {
       "icon": "Icon",
@@ -466,7 +468,10 @@
       "newLabel": "New note",
       "required": "Write the note.",
       "add": "Add note",
-      "remove": "Remove this note"
+      "remove": "Remove this note",
+      "openOf_zero": "Notes on {{title}}",
+      "openOf_one": "{{title}}: {{count}} note",
+      "openOf_other": "{{title}}: {{count}} notes"
     },
     "validation": {
       "name": "Give the dashboard a name.",

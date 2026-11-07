@@ -39,6 +39,25 @@ RSpec.describe CustomDashboards::Sources::Pipelines do
       expect(execute(**query, limit: 1)[:rows].first["stage_id"]).to eq(ordered.first)
     end
 
+    it "maior primeiro: quem não tem valor fica por último" do
+      create(:pipeline_card, stage: proposal, deal_value: nil)
+      create(:pipeline_card, stage: closing, deal_value: 100)
+      value = { field: "deal_value", aggregation: "sum", label: "Valor" }
+
+      rows = execute(dimensions: [ { field: "stage_id" } ], metrics: [ value ], sort: { field: "Valor", direction: "desc" })[:rows]
+
+      expect(rows.map { |row| row["stage_id"] }).to eq([ closing.id, proposal.id ])
+    end
+
+    it "registros: quem não tem a data fica por último" do
+      won = create(:pipeline_card, :won, stage: proposal, title: "Ganhou")
+      create(:pipeline_card, stage: proposal, title: "Em aberto")
+
+      rows = execute(sort: { field: "won_at", direction: "desc" })[:rows]
+
+      expect(rows.map { |row| row["title"] }).to eq([ won.title, "Em aberto" ])
+    end
+
     it "agrupa por quadro, mesmo o quadro sendo da etapa" do
       other = create(:pipeline_board, organization: organization, name: "Suporte")
       create(:pipeline_card, stage: proposal)
