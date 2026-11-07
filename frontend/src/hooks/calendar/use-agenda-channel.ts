@@ -23,17 +23,15 @@ import type {
 import { useEventCacheWriter, useRevalidateEvents } from "./use-calendar-events"
 
 type AgendaChannelOptions = {
-  /** Um evento novo que veio de outra pessoa, ou da automação. */
+  /** Um agendamento novo que veio de outra pessoa, ou da automação. */
   onRemoteCreate?: (event: CalendarEvent) => void
-  /** Um agendamento mudou: a grade não precisa disto, mas o painel aberto pode. */
-  onEventChange?: (event: CalendarEvent) => void
 }
 
 /**
  * O tempo real da agenda. O canal é da organização inteira, então cada mensagem é conferida com
  * o período e os filtros de cada chave em cache, em vez de entrar em todas, como na origem.
  */
-export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChannelOptions = {}) {
+export function useAgendaChannel({ onRemoteCreate }: AgendaChannelOptions = {}) {
   const { cache, mutate } = useSWRConfig()
   const write = useEventCacheWriter()
   const revalidateEvents = useRevalidateEvents()
@@ -85,13 +83,12 @@ export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChanne
           const known = isKnown(event.id)
 
           if (event.type === "class_session") {
-            applyCreatedSession(event, write, revalidateSoon, message.action)
+            applySession(event, write, revalidateSoon, message.action)
           } else {
             write((events, key) => upsertEvent(events, event, key))
           }
           if (keysFilterTags()) revalidateSoon()
           refreshCounts()
-          onEventChange?.(event)
           // Aula gravada quase sempre é a calculada que ganhou documento, e não novidade: só
           // agendamento vira aviso.
           if (
@@ -128,7 +125,6 @@ export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChanne
     [
       isKnown,
       keysFilterTags,
-      onEventChange,
       onRemoteCreate,
       refreshCounts,
       revalidateAttendances,
@@ -150,26 +146,31 @@ export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChanne
   return { connected }
 }
 
-/** Aula gravada: toma o lugar da calculada, na mesma escrita, sem duplicar nem piscar. */
-function applyCreatedSession(
+/**
+ * Aula gravada toma o lugar da calculada, na mesma escrita, sem duplicar nem piscar. Vale também
+ * para `update`: quem ficou sem conexão pode nem ter visto o `create` que a materializou.
+ */
+function applySession(
   event: ClassSessionEvent,
   write: ReturnType<typeof useEventCacheWriter>,
   revalidateSoon: () => void,
   action: "create" | "update"
 ) {
-  if (action === "create" && !event.virtual) {
-    let replaced = false
-    write((events, key) => {
-      const next = swapMaterialized(events, event, null, key)
-      if (events.some((item) => isVirtualId(item.id) && !next.includes(item))) replaced = true
-      for (const item of events) {
-        if (isVirtualId(item.id) && !next.includes(item)) rememberAlias(item.id, event.id)
-      }
-      return next
-    })
-    // Aula movida para outro dia: a calculada do dia antigo só some relendo o período.
-    if (!replaced) revalidateSoon()
+  if (event.virtual) {
+    write((events, key) => upsertEvent(events, event, key))
     return
   }
-  write((events, key) => upsertEvent(events, event, key))
+  let replaced = false
+  write((events, key) => {
+    const next = swapMaterialized(events, event, null, key)
+    for (const item of events) {
+      if (isVirtualId(item.id) && !next.includes(item)) {
+        replaced = true
+        rememberAlias(item.id, event.id)
+      }
+    }
+    return next
+  })
+  // Aula movida para outro dia: a calculada do dia antigo só some relendo o período.
+  if (action === "create" && !replaced) revalidateSoon()
 }
