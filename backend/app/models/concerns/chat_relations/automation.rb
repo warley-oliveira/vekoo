@@ -8,6 +8,8 @@ module ChatRelations
     included do
       field :flow_inbox, type: Array
       field :flow_inbox_deadline, type: Time
+      # Para `Flows::SweepStaleExecutionsJob` achar a caixa esquecida. Esparso: só tem quem está com mensagem esperando.
+      index({ flow_inbox_deadline: 1 }, { sparse: true })
 
       after_create :dispatch_contact_created
 

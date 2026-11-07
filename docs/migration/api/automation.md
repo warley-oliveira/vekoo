@@ -1317,6 +1317,7 @@ Todos os que casam começam, como na origem. Um fluxo com a palavra `pix` e outr
 - **Um bloco não roda duas vezes.** Retomar é um `UPDATE` só, condicionado ao estado (`FlowExecution.claim`), e só quem o ganha executa.
 - **Uma execução viva por fluxo e conversa**, garantida por índice único. A mesma mensagem nunca começa o mesmo fluxo duas vezes (`idempotency_key`).
 - **Mensagem que perde a corrida** volta para a caixa.
+- **Job do debounce que sumiu no Redis:** `Flows::SweepStaleExecutionsJob` entrega a caixa com o prazo vencido há 5 minutos, sem esperar o contato escrever de novo. Usa o índice esparso de `flow_inbox_deadline`.
 - **Queda no meio de um bloco não repete:** o bloco pode já ter enviado a mensagem. `Flows::SweepStaleExecutionsJob` dá por `failed` depois de 15 minutos parada, com alerta, e entrega o que estava na caixa.
 - **Espera por tempo:** `set(wait:)`, com um token. Uma pessoa assumiu no meio? Cancela, em vez de falar por cima. Job que sumiu no Redis é reagendado. Mensagem que chega nessa hora não retoma nem recomeça o fluxo, porque ele continua vivo.
 - **Script:** bloco que roda JavaScript (`execute_tool`, e `ai_assistant` com ferramenta) vai para a fila `scripts`, faz só aquele bloco e volta. Sem nova tentativa.
