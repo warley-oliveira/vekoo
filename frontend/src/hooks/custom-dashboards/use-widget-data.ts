@@ -35,6 +35,9 @@ const QUERY_PATH = "/custom-dashboards/query"
 const COMPOUND_PATH = "/custom-dashboards/compound-query"
 
 const SWR_OPTIONS = {
+  // O padrão do app guarda o dado da chave anterior, e a consulta que falha ficaria mostrando o desenho velho como atual.
+  // Quem segura o desenho durante a troca é o `last`, logo abaixo, que sabe de qual consulta ele veio.
+  keepPreviousData: false,
   revalidateOnFocus: false,
   revalidateOnReconnect: true,
   // Um card que chega à tela, ou a prévia que abre, com a mesma consulta de outro não pergunta de novo: esmaeceria os dois à
@@ -250,7 +253,8 @@ export function useWidgetData(
     [compare, dataSource, period, query, source, sources, widgetType]
   )
 
-  const swr = useSWR<WidgetResponse>(enabled && request ? request.key : null, () => runRequest(request as WidgetRequest), {
+  const key = enabled && request ? request.key : null
+  const swr = useSWR<WidgetResponse>(key, () => runRequest(request as WidgetRequest), {
     ...SWR_OPTIONS,
     refreshInterval,
   })
@@ -262,7 +266,7 @@ export function useWidgetData(
   if (swr.data && (last?.response !== swr.data || last.query !== query)) {
     setLast({ response: swr.data, query })
   }
-  const lagging = !swr.data && swr.isLoading ? last : null
+  const lagging = key && !swr.data && !swr.error ? last : null
   const response = swr.data ?? lagging?.response
   const shownQuery = lagging?.query ?? query
 
@@ -280,7 +284,7 @@ export function useWidgetData(
     error: swr.error as unknown,
     // Sem chave não há busca: o card fica no esqueleto até aparecer na tela.
     isLoading: !data && !swr.error,
-    isRefreshing: Boolean(data) && (swr.isValidating || swr.isLoading),
+    isRefreshing: Boolean(data) && (Boolean(lagging) || swr.isValidating || swr.isLoading),
     hasRequest: Boolean(request),
     retry,
   }

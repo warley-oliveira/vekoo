@@ -658,7 +658,7 @@ Por etiqueta (`chat_tag_name`), pelo profissional da agenda (`professional_name`
 { "rows": [ { "status": "cancelled", "Enviadas": 9 }, { "status": "completed", "Enviadas": 93 }, { "status": "paused", "Enviadas": 33 } ], "labels": { "status": { "draft": "Rascunho", "cancelled": "Cancelada", "...": "..." } } }
 ```
 
-**Empate em `sort`:** desempata pela primeira dimensão, nas duas bases. O limite corta sempre os mesmos valores, e as barras não trocam de lugar ao atualizar.
+**Empate em `sort`:** desempata pela primeira dimensão, nas duas bases. O limite corta sempre os mesmos valores, e as barras não trocam de lugar ao atualizar. No Postgres, quem não tem valor fica por último nos dois sentidos, para "maior primeiro" não abrir por ele.
 
 **Número decimal** sai como número no JSON, mesmo vindo de `decimal` no Postgres (`deal_value`). No CSV, sai por extenso.
 
@@ -959,6 +959,8 @@ O filtro de assistente (`useAutomations`, em `pipeline-filter-bar.tsx`) vira a l
 | `useCompoundWidgetData` | `POST .../compound_query` | `POST /custom-dashboards/compound-query`. `formula-series-align` fica como está: é conta no cliente. |
 
 Rotas da origem que nenhum export usa: `query_csv` (`POST /custom-dashboards/query-csv`), `toggle_favorite` (`PATCH .../toggle-favorite`), `toggle_public` (**não veio**: ver abaixo).
+
+A tela nova usa `toggle-favorite`, e não usa `query-csv`: o CSV de um card sai do que ele está mostrando, no navegador, porque fórmula e coluna calculada só existem ali. A rota continua valendo para quem quiser o dado cru.
 
 ### O que muda para a tela
 
