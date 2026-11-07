@@ -26,16 +26,9 @@ export function OutlinePanel() {
   const isMobile = useIsMobile()
   const open = useEditorUi((state) => state.outlineOpen)
   const setOpen = useEditorUi((state) => state.setOutlineOpen)
-  const testOpen = useEditorUi((state) => state.testOpen)
 
-  if (isMobile) {
-    if (!open || testOpen) return null
-    return (
-      <div className="absolute inset-x-0 top-[6.75rem] bottom-0 z-10 overflow-y-auto bg-background pb-[calc(var(--app-bottom-nav-total,0px)+1rem)]">
-        <OutlineList />
-      </div>
-    )
-  }
+  // No celular a lista é o corpo da tela (ver `MobileBody`).
+  if (isMobile) return null
 
   return (
     <AnimatePresence>

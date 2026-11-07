@@ -10,11 +10,11 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_first_message", "position": { "x": 0, "y": 0 }, "data": {} },
-      { "id": "ask", "type": "send_text", "position": { "x": 280, "y": 0 }, "data": {
+      { "id": "ask", "type": "send_text", "position": { "x": 368, "y": 0 }, "data": {
         "text": "Oi! Pra te direcionar melhor, me conta seu nome, email e empresa numa única mensagem 🙂"
       } },
-      { "id": "wait", "type": "wait_for_message", "position": { "x": 560, "y": 0 }, "data": {} },
-      { "id": "extract", "type": "ai_parameter_extractor", "position": { "x": 840, "y": 0 }, "data": {
+      { "id": "wait", "type": "wait_for_message", "position": { "x": 728, "y": 0 }, "data": {} },
+      { "id": "extract", "type": "ai_parameter_extractor", "position": { "x": 1088, "y": 0 }, "data": {
         "system_prompt": "Extraia nome, email e empresa da mensagem do usuário.",
         "fields": [
           { "name": "lead_name",    "type": "string", "description": "Nome completo do contato" },
@@ -22,17 +22,17 @@
           { "name": "lead_company", "type": "string", "description": "Empresa" }
         ]
       } },
-      { "id": "deal", "type": "pipeline_create_deal", "position": { "x": 1140, "y": 0 }, "data": {
+      { "id": "deal", "type": "pipeline_create_deal", "position": { "x": 1480, "y": 0 }, "data": {
         "stage_id": "",
         "title": "{{vars.lead_name}} — {{vars.lead_company}}",
         "description": "Email: {{vars.lead_email}}",
         "deal_probability": 30
       } },
-      { "id": "assign", "type": "assign_agent", "position": { "x": 1420, "y": 0 }, "data": { "account_pool": [] } },
-      { "id": "ack", "type": "send_text", "position": { "x": 1700, "y": 0 }, "data": {
+      { "id": "assign", "type": "assign_agent", "position": { "x": 1848, "y": 0 }, "data": { "account_pool": [] } },
+      { "id": "ack", "type": "send_text", "position": { "x": 2208, "y": 0 }, "data": {
         "text": "Obrigado, {{vars.lead_name}}! Já estou te conectando com um especialista."
       } },
-      { "id": "end", "type": "end", "position": { "x": 1980, "y": 0 }, "data": {} }
+      { "id": "end", "type": "end", "position": { "x": 2576, "y": 0 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger", "target": "ask" },

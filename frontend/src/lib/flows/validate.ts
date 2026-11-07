@@ -79,6 +79,12 @@ export function validateFlow(nodes: NodeLike[], edges: EdgeLike[]): FlowIssue[] 
       return
     }
 
+    // Bloco que nenhum caminho alcança não roda: pode estar guardado para depois, e não impede de publicar.
+    if (!isTrigger(type) && !alive.has(node.id)) {
+      issues.push({ id: `orphan-${node.id}`, severity: "warning", messageKey: "flows.issues.unreachable", nodeId: node.id })
+      return
+    }
+
     const missing = missingKey(type, data)
     if (missing) {
       issues.push({ id: `missing-${node.id}`, severity: "error", messageKey: missing, nodeId: node.id })
@@ -89,11 +95,6 @@ export function validateFlow(nodes: NodeLike[], edges: EdgeLike[]): FlowIssue[] 
       if (!handles?.size) {
         issues.push({ id: `start-${node.id}`, severity: "error", messageKey: "flows.issues.triggerAlone", nodeId: node.id })
       }
-      return
-    }
-
-    if (!alive.has(node.id)) {
-      issues.push({ id: `orphan-${node.id}`, severity: "warning", messageKey: "flows.issues.unreachable", nodeId: node.id })
       return
     }
 

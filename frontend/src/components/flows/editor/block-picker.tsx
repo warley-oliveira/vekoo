@@ -28,6 +28,22 @@ export function BlockPicker() {
   return <AnimatePresence>{picker ? <PickerPanel key="picker" /> : null}</AnimatePresence>
 }
 
+function GroupChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        "h-6 shrink-0 rounded-full border px-2 text-xs whitespace-nowrap transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+        active ? "border-primary bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+      )}
+    >
+      {label}
+    </button>
+  )
+}
+
 function PickerPanel() {
   const { t } = useTranslation()
   const preset = useMotionPreset()
@@ -36,6 +52,7 @@ function PickerPanel() {
   const hasTrigger = useEditor(useShallow((state) => state.nodes.some((node) => isTrigger(node.type))))
   const [query, setQuery] = useState("")
   const [active, setActive] = useState(0)
+  const [group, setGroup] = useState<BlockGroup | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const listId = useId()
@@ -68,23 +85,29 @@ function PickerPanel() {
   )
 
   const needle = normalizeSearchText(query)
+  const groups = useMemo(
+    () => BLOCK_GROUPS.filter((value) => allowed.some((entry) => entry.group === value)),
+    [allowed]
+  )
+
   const rows = useMemo<Row[]>(() => {
+    const scoped = group ? allowed.filter((entry) => entry.group === group) : allowed
     if (needle) {
       const words = needle.split(/\s+/)
-      return allowed
+      return scoped
         .filter((entry) => words.every((word) => entry.haystack.includes(word)))
         .map((entry) => ({ type: entry.type, group: entry.group }))
     }
-    const ordered = BLOCK_GROUPS.flatMap((group) =>
-      allowed.filter((entry) => entry.group === group).map((entry) => ({ type: entry.type, group }))
-    )
-    const popular = hasTrigger || picker?.source
+    const ordered = groups
+      .filter((value) => !group || value === group)
+      .flatMap((value) => scoped.filter((entry) => entry.group === value).map((entry) => ({ type: entry.type, group: value })))
+    const popular = !group && (hasTrigger || picker?.source)
       ? POPULAR_BLOCKS.map((type): Row => ({ type, group: "popular" }))
       : []
     return [...popular, ...ordered]
-  }, [allowed, hasTrigger, needle, picker?.source])
+  }, [allowed, group, groups, hasTrigger, needle, picker?.source])
 
-  useEffect(() => setActive(0), [needle])
+  useEffect(() => setActive(0), [needle, group])
 
   // Clique fora fecha. No próximo ciclo, para o clique que abriu não fechar na mesma hora.
   useEffect(() => {
@@ -181,6 +204,20 @@ function PickerPanel() {
           </button>
         ) : null}
       </div>
+
+      {groups.length > 1 ? (
+        <div className="flex shrink-0 gap-1 overflow-x-auto border-b px-2 py-1.5 [scrollbar-width:none]" role="group" aria-label={t("flows.picker.groupsLabel")}>
+          <GroupChip label={t("flows.picker.allGroups")} active={!group} onClick={() => setGroup(null)} />
+          {groups.map((value) => (
+            <GroupChip
+              key={value}
+              label={t(`flows.groups.${value}.title`)}
+              active={group === value}
+              onClick={() => setGroup(group === value ? null : value)}
+            />
+          ))}
+        </div>
+      ) : null}
 
       <div ref={listRef} id={listId} role="listbox" aria-label={t("flows.picker.title")} className="min-h-0 flex-1 overflow-y-auto p-1.5">
         {rows.length === 0 ? (

@@ -21,7 +21,6 @@ type EditorUiState = {
   canvasCenter: (() => { x: number; y: number }) | null
 
   saveStatus: SaveStatus
-  savedAt: number | null
   /** Grava agora o que estiver pendente. `false` se não conseguiu. */
   flush: () => Promise<boolean>
   /** Publicar abre um rascunho novo: quem salva precisa saber, para não achar que foi outra pessoa. */
@@ -48,7 +47,6 @@ const INITIAL = {
   codeTool: null,
   canvasCenter: null,
   saveStatus: "saved" as SaveStatus,
-  savedAt: null,
   flush: async () => true,
   acceptDraft: () => {},
   issues: [],

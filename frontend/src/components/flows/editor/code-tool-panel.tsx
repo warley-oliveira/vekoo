@@ -4,15 +4,25 @@ import { Lock, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { CodeEditor, type CodeRunResult, type ScriptParameter } from "@/components/code-editor"
-import { Callout, DetailSkeleton, ErrorState, SelectInput, SidePanel, useConfirm } from "@/components/shared"
+import {
+  Callout,
+  DetailSkeleton,
+  ErrorState,
+  SearchableSelect,
+  SelectInput,
+  SidePanel,
+  useConfirm,
+  type LoadOptions,
+} from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { runToolTest, useToolDetail, useToolMutations } from "@/hooks/flows/use-flow-references"
+import { lookupChats, runToolTest, useToolDetail, useToolMutations } from "@/hooks/flows/use-flow-references"
 import { useGuardedClose } from "@/hooks/use-panel-session"
 import { ApiError } from "@/lib/api"
+import { formatPhone } from "@/lib/format-phone"
 
 import { useEditorApi } from "./store"
 import { useEditorUi } from "./ui-store"
@@ -23,17 +33,17 @@ import { useEditorUi } from "./ui-store"
 
 const PARAMETER_TYPES = ["string", "number", "integer", "boolean", "array", "object"]
 
-const STARTER = `// O que este bloco faz. Quem chama manda os dados em \`params\`, e o que você devolver fica em uma variável do fluxo.
-const contato = getContactInfo();
-
-return { mensagem: 'Olá, ' + contato.name };
+const STARTER = `// Quem chama manda os dados em \`params\`, e o que você devolver fica numa variável do fluxo.
+// A referência ao lado mostra o que dá para usar.
+return { ok: true };
 `
 
 export default function CodeToolPanel() {
   const codeTool = useEditorUi((state) => state.codeTool)
   const setCodeTool = useEditorUi((state) => state.setCodeTool)
   if (!codeTool) return null
-  return <PanelBody key={codeTool.id ?? "new"} toolId={codeTool.id} nodeId={codeTool.nodeId} onClose={() => setCodeTool(null)} />
+  // A `key` é o bloco, e não a função: criar a função no meio do caminho não pode apagar o que está na tela.
+  return <PanelBody key={codeTool.nodeId} toolId={codeTool.id} nodeId={codeTool.nodeId} onClose={() => setCodeTool(null)} />
 }
 
 function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId: string; onClose: () => void }) {
@@ -48,6 +58,7 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
   const [code, setCode] = useState(STARTER)
   const [parameters, setParameters] = useState<ScriptParameter[]>([])
   const [args, setArgs] = useState<Record<string, string>>({})
+  const [testChatId, setTestChatId] = useState<string | null>(null)
   const [dirty, setDirty] = useState(false)
   const [busy, setBusy] = useState(false)
   const [running, setRunning] = useState(false)
@@ -114,7 +125,7 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
       const parsed = Object.fromEntries(
         parameters.filter((parameter) => args[parameter.name]).map((parameter) => [parameter.name, coerce(args[parameter.name], parameter.type)])
       )
-      setResult(await runToolTest(id, parsed, runController.current.signal))
+      setResult(await runToolTest(id, parsed, testChatId, runController.current.signal))
     } catch (failure) {
       if (failure instanceof DOMException && failure.name === "AbortError") return
       setResult({ status: "failed", error: failure instanceof ApiError ? failure.message : t("flows.toolPanel.runFailed") })
@@ -233,10 +244,26 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
           ) : null}
 
           {!locked ? (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="tool-test-chat">{t("flows.toolPanel.testChat")}</Label>
+              <SearchableSelect
+                id="tool-test-chat"
+                value={testChatId}
+                clearable
+                loadOptions={searchChats}
+                placeholder={t("flows.start.pick")}
+                emptyLabel={t("flows.start.empty")}
+                onChange={(value) => setTestChatId(value)}
+              />
+              <p className="text-xs text-muted-foreground">{t("flows.toolPanel.testChatHint")}</p>
+            </div>
+          ) : null}
+
+          {!locked ? (
             <CodeEditor
               value={code}
               onChange={change(setCode)}
-              height={420}
+              height={340}
               parameters={parameters}
               onAddParameter={(parameter) =>
                 change(setParameters)([...parameters, { name: parameter, type: "string", description: "", required: false }])
@@ -266,6 +293,15 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
       )}
     </SidePanel>
   )
+}
+
+const searchChats: LoadOptions = async (query, signal) => {
+  const chats = await lookupChats(query, signal)
+  return chats.map((chat) => ({
+    value: chat.id,
+    label: chat.displayName || chat.userName || formatPhone(chat.externalId),
+    description: formatPhone(chat.externalId),
+  }))
 }
 
 function coerce(value: string, type: string): unknown {

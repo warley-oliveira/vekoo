@@ -12,6 +12,12 @@ export const ROW_GAP = 40
 export const BLOCK_BASE_HEIGHT = 76
 export const OUTPUT_ROW_HEIGHT = 28
 
+/**
+ * Enquadrar o fluxo inteiro. `includeHiddenNodes` conta também o que ainda não foi medido: com muitos blocos só o
+ * que está na tela existe no DOM, e sem isto o resto ficaria de fora.
+ */
+export const FIT_OPTIONS = { padding: 0.25, maxZoom: 1, includeHiddenNodes: true }
+
 type NodeLike = {
   id: string
   type?: string

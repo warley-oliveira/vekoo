@@ -14,7 +14,7 @@ import { createStore, type StoreApi } from "zustand/vanilla"
 
 import { blockEntry, isTrigger } from "@/lib/flows/catalog"
 import { syncFieldRefs } from "@/lib/flows/fields"
-import { arrangeBlocks, nudgeFree, placeAfter } from "@/lib/flows/layout"
+import { arrangeBlocks, BLOCK_WIDTH, estimatedHeight, nudgeFree, placeAfter } from "@/lib/flows/layout"
 import { blockOutputs, dedupeEdges, DEFAULT_OUTPUT, normalizeHandle } from "@/lib/flows/outputs"
 import type { BlockData, FlowDefinition, FlowField } from "@/lib/flows/types"
 
@@ -104,6 +104,10 @@ function toNodes(definition: FlowDefinition, labels: EditorLabels): BlockNode[] 
     // O gatilho não sai: todo fluxo começa por um, e a pessoa troca qual é no inspetor.
     deletable: !isTrigger(node.type),
     domAttributes: { "aria-roledescription": labels.block },
+    // O tamanho antes de medir. Com muitos blocos só o que está na tela existe no DOM, e sem isto o enquadramento
+    // inicial não enxerga o resto do fluxo.
+    initialWidth: BLOCK_WIDTH,
+    initialHeight: estimatedHeight({ id: node.id, type: node.type, data: node.data, position: { x: 0, y: 0 } }),
   }))
 }
 
@@ -112,7 +116,7 @@ function toEdges(definition: FlowDefinition, labels: EditorLabels): LinkEdge[] {
 }
 
 function linkEdge(
-  edge: { id: string; source: string; target: string; sourceHandle?: string | null },
+  edge: { id: string; source: string; target: string; sourceHandle?: string | null; label?: string },
   labels: EditorLabels
 ): LinkEdge {
   return {
@@ -120,6 +124,7 @@ function linkEdge(
     source: edge.source,
     target: edge.target,
     sourceHandle: normalizeHandle(edge.sourceHandle),
+    ...(edge.label ? { label: edge.label } : null),
     type: "link",
     ariaLabel: labels.link,
     domAttributes: { "aria-roledescription": labels.link },
@@ -554,6 +559,7 @@ export function createEditorStore(
             source: edge.source,
             target: edge.target,
             sourceHandle: edge.sourceHandle ?? DEFAULT_OUTPUT,
+            ...(typeof edge.label === "string" && edge.label ? { label: edge.label } : null),
           })),
           viewport: viewport ?? { x: 0, y: 0, zoom: 1 },
           fields: savedFields,

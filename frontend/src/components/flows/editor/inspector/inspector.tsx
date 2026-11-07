@@ -56,6 +56,7 @@ import {
 } from "./forms-pipeline"
 import { BlockFormProvider, str, type BlockSet } from "./form-context"
 import { Section } from "./parts"
+import { BlockReadOnly } from "./read-only"
 import { TriggerForm } from "./trigger-form"
 
 // O inspetor: um painel à direita com o essencial à vista e o avançado recolhido. Assina só o `data` do
@@ -114,7 +115,10 @@ export function Inspector() {
   const selectedId = useEditor((state) => state.selectedId)
   const selectionCount = useEditor((state) => state.selectionCount)
   const testOpen = useEditorUi((state) => state.testOpen)
+  const readOnly = useEditor((state) => state.readOnly)
   const visible = !testOpen && (Boolean(selectedId) || selectionCount > 1)
+
+  if (readOnly) return <BlockReadOnly />
 
   return (
     <AnimatePresence>
@@ -161,13 +165,17 @@ const BlockPanel = memo(function BlockPanel({ id }: { id: string }) {
           <Icon className="size-4" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <input
-            aria-label={t("flows.inspector.nameLabel")}
-            value={str(data.label)}
-            placeholder={label}
-            onChange={(event) => set({ label: event.target.value })}
-            className="-ml-1 w-full rounded-md bg-transparent px-1 py-0.5 font-heading text-base font-semibold tracking-tight outline-none placeholder:text-foreground hover:bg-muted focus:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
-          />
+          {trigger ? (
+            <h2 className="py-0.5 font-heading text-base font-semibold tracking-tight">{label}</h2>
+          ) : (
+            <input
+              aria-label={t("flows.inspector.nameLabel")}
+              value={str(data.label)}
+              placeholder={label}
+              onChange={(event) => set({ label: event.target.value })}
+              className="-ml-1 w-full rounded-md bg-transparent px-1 py-0.5 font-heading text-base font-semibold tracking-tight outline-none placeholder:text-foreground hover:bg-muted focus:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
+            />
+          )}
           <p className="px-0 text-xs text-pretty text-muted-foreground">{t(`flows.blocks.${type}.description`, { defaultValue: "" })}</p>
         </div>
         <div className="flex shrink-0 items-center">

@@ -10,12 +10,12 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": {} },
-      { "id": "ask_audio", "type": "send_text", "position": { "x": 280, "y": 0 }, "data": {
+      { "id": "ask_audio", "type": "send_text", "position": { "x": 368, "y": 0 }, "data": {
         "text": "Pra te ajudar, manda um áudio rapidinho explicando o que você precisa 🎙️"
       } },
-      { "id": "wait_audio", "type": "wait_for_message", "position": { "x": 560, "y": 0 }, "data": {} },
-      { "id": "transcribe", "type": "ai_audio_transcription", "position": { "x": 840, "y": 0 }, "data": { "save_to": "audio_text" } },
-      { "id": "intent", "type": "ai_intent_classification", "position": { "x": 1140, "y": 0 }, "data": {
+      { "id": "wait_audio", "type": "wait_for_message", "position": { "x": 728, "y": 0 }, "data": {} },
+      { "id": "transcribe", "type": "ai_audio_transcription", "position": { "x": 1088, "y": 0 }, "data": { "save_to": "audio_text" } },
+      { "id": "intent", "type": "ai_intent_classification", "position": { "x": 1480, "y": 0 }, "data": {
         "system_prompt": "Classifique a intenção da transcrição: {{vars.audio_text}}",
         "outputs": [
           { "id": "duvida",     "label": "Dúvida",     "when": "Pergunta informativa" },
@@ -24,8 +24,8 @@
           { "id": "outros",     "label": "Outros",     "when": "Outras", "default": true }
         ]
       } },
-      { "id": "transfer", "type": "transfer_to_human", "position": { "x": 1440, "y": 0 }, "data": {} },
-      { "id": "end", "type": "end", "position": { "x": 1720, "y": 0 }, "data": {} }
+      { "id": "transfer", "type": "transfer_to_human", "position": { "x": 1872, "y": 0 }, "data": {} },
+      { "id": "end", "type": "end", "position": { "x": 2240, "y": 0 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger",     "target": "ask_audio" },

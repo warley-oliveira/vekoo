@@ -51,11 +51,6 @@
   stroke-width: 2;
 }
 
-.flow-canvas .react-flow__edge[data-lit="true"] .react-flow__edge-path {
-  stroke: var(--status-success);
-  stroke-width: 2.25;
-}
-
 /* As bolinhas de ligar. A área de pegar é maior do que o desenho. */
 .flow-canvas .react-flow__handle {
   width: 11px;

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { FIT_OPTIONS } from "@/lib/flows/layout"
 import { formatPercent } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 
@@ -86,7 +87,7 @@ function ZoomControls() {
       <ToolButton
         label={t("flows.toolbar.fit")}
         shortcut="F"
-        onClick={() => void flow.fitView({ padding: 0.25, maxZoom: 1, duration: 250 })}
+        onClick={() => void flow.fitView({ ...FIT_OPTIONS, duration: 250 })}
       >
         <Maximize />
       </ToolButton>
@@ -106,7 +107,7 @@ export function CanvasToolbar() {
 
   const arrange = () => {
     api.getState().arrange()
-    window.setTimeout(() => void flow.fitView({ padding: 0.25, maxZoom: 1, duration: 300 }), 30)
+    window.setTimeout(() => void flow.fitView({ ...FIT_OPTIONS, duration: 300 }), 30)
     toast.success(t("flows.toolbar.arranged"), {
       action: { label: t("flows.toolbar.undo"), onClick: () => api.getState().undo() },
     })
@@ -154,16 +155,19 @@ export function CanvasToolbar() {
 
       <ZoomControls />
 
-      <Separator orientation="vertical" className="mx-1 h-5" />
-
       {!readOnly ? (
-        <ToolButton label={t("flows.toolbar.arrange")} onClick={arrange}>
-          <LayoutGrid />
+        <>
+          <Separator orientation="vertical" className="mx-1 h-5" />
+          <ToolButton label={t("flows.toolbar.arrange")} onClick={arrange}>
+            <LayoutGrid />
+          </ToolButton>
+        </>
+      ) : null}
+      {!readOnly ? (
+        <ToolButton label={t("flows.toolbar.outline")} shortcut="L" pressed={outlineOpen} onClick={toggleOutline}>
+          <ListTree />
         </ToolButton>
       ) : null}
-      <ToolButton label={t("flows.toolbar.outline")} shortcut="L" pressed={outlineOpen} onClick={toggleOutline}>
-        <ListTree />
-      </ToolButton>
       {!readOnly ? <ShortcutsPopover /> : null}
     </div>
   )

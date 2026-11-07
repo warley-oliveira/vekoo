@@ -92,9 +92,10 @@ export function useToolMutations() {
 export async function runToolTest(
   toolId: string,
   args: Record<string, unknown>,
+  chatId?: string | null,
   signal?: AbortSignal
 ): Promise<ToolTestRun> {
-  const { testRun } = await apiPost<{ testRun: ToolTestRun }>(`/tools/${toolId}/test`, { args })
+  const { testRun } = await apiPost<{ testRun: ToolTestRun }>(`/tools/${toolId}/test`, { args, chatId: chatId ?? undefined })
   const deadline = Date.now() + 90_000
   for (;;) {
     await new Promise((resolve) => setTimeout(resolve, 700))

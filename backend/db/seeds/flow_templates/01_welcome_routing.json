@@ -10,8 +10,8 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_first_message", "position": { "x": 0, "y": 0 }, "data": { "label": "Primeira mensagem" } },
-      { "id": "welcome", "type": "send_text", "position": { "x": 280, "y": 0 }, "data": { "text": "Olá {{contact.name}}! Como posso te ajudar hoje?" } },
-      { "id": "intent",  "type": "ai_intent_classification", "position": { "x": 560, "y": 0 }, "data": {
+      { "id": "welcome", "type": "send_text", "position": { "x": 368, "y": 0 }, "data": { "text": "Olá {{contact.name}}! Como posso te ajudar hoje?" } },
+      { "id": "intent",  "type": "ai_intent_classification", "position": { "x": 728, "y": 0 }, "data": {
         "system_prompt": "Classifique a intenção do usuário em: vendas, suporte ou outros.",
         "outputs": [
           { "id": "vendas",  "label": "Vendas",  "when": "Usuário quer comprar/contratar" },
@@ -19,11 +19,11 @@
           { "id": "outros",  "label": "Outros",  "when": "Outras intenções", "default": true }
         ]
       } },
-      { "id": "tag_vendas",  "type": "add_tag", "position": { "x": 840, "y": -160 }, "data": { "tag_id": "" } },
-      { "id": "tag_suporte", "type": "add_tag", "position": { "x": 840, "y":   0  }, "data": { "tag_id": "" } },
-      { "id": "tag_outros",  "type": "add_tag", "position": { "x": 840, "y":  160 }, "data": { "tag_id": "" } },
-      { "id": "transfer",    "type": "transfer_to_human", "position": { "x": 1120, "y": 0 }, "data": {} },
-      { "id": "end",         "type": "end", "position": { "x": 1400, "y": 0 }, "data": {} }
+      { "id": "tag_vendas",  "type": "add_tag", "position": { "x": 1088, "y": -160 }, "data": { "tag_id": "" } },
+      { "id": "tag_suporte", "type": "add_tag", "position": { "x": 1088, "y":   0  }, "data": { "tag_id": "" } },
+      { "id": "tag_outros",  "type": "add_tag", "position": { "x": 1088, "y":  160 }, "data": { "tag_id": "" } },
+      { "id": "transfer",    "type": "transfer_to_human", "position": { "x": 1456, "y": 0 }, "data": {} },
+      { "id": "end",         "type": "end", "position": { "x": 1824, "y": 0 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger", "target": "welcome" },

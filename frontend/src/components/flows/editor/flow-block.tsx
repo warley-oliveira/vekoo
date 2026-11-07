@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from "react"
+import { memo, useEffect, useMemo, useRef } from "react"
 import { Handle, NodeToolbar, Position, useUpdateNodeInternals, type NodeProps } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
 import { AlertCircle, Copy, Plus, Trash2 } from "lucide-react"
@@ -25,6 +25,17 @@ function countRender(id: string) {
   counters.__flowRenders[id] = (counters.__flowRenders[id] ?? 0) + 1
 }
 
+// O xyflow passa a posição como prop, e ela muda a cada quadro do arrasto. O bloco não usa: quem move é o invólucro,
+// por `transform`. Comparar só o que ele desenha é o que deixa o arrasto sem nenhum render do bloco.
+function sameBlock(previous: NodeProps<BlockNode>, next: NodeProps<BlockNode>) {
+  return (
+    previous.id === next.id &&
+    previous.type === next.type &&
+    previous.data === next.data &&
+    previous.selected === next.selected
+  )
+}
+
 export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: NodeProps<BlockNode>) {
   countRender(id)
   const { t } = useTranslation()
@@ -42,17 +53,36 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
   const summary = useMemo(() => blockSummary(type, data, t), [type, data, t])
   const connected = useMemo(() => new Set(outlets.split("|").filter(Boolean)), [outlets])
 
-  const customLabel = typeof data.label === "string" ? data.label.trim() : ""
-  const blockLabel = t(`flows.blocks.${type}.label`, { defaultValue: type })
-  const title = customLabel && customLabel !== blockLabel ? customLabel : blockLabel
+  // O gatilho se chama pelo que dispara. O nome livre fica para os outros blocos.
+  const customLabel = !isTrigger(type) && typeof data.label === "string" ? data.label.trim() : ""
+  const title = customLabel || t(`flows.blocks.${type}.label`, { defaultValue: type })
 
   // Saída renomeada ou reordenada não muda o tamanho do bloco. Sem avisar, o xyflow mantém a
   // posição antiga e a linha sai do lugar errado.
   const updateInternals = useUpdateNodeInternals()
   const outputsKey = outputs.map((output) => output.id).join("|")
+  const measuredOutputs = useRef(outputsKey)
   useEffect(() => {
+    // Só quando muda. Ao montar, avisar antes da medição geral faria o enquadramento olhar para este bloco sozinho.
+    if (measuredOutputs.current === outputsKey) return
+    measuredOutputs.current = outputsKey
     updateInternals(id)
   }, [id, outputsKey, updateInternals])
+
+  // No bloco de IA, saída sem ligação nem é oferecida ao modelo: é comum logo depois de duplicar.
+  const looseDecisions =
+    type === "ai_assistant"
+      ? outputs.filter((output) => output.id !== "maxTurns" && output.id !== "onError" && !connected.has(output.id)).length
+      : 0
+
+  // Blocos de Pipelines: de qual "Criar card" vem o card, lido ao vivo. Só quem tem origem passa por aqui.
+  const cardSource = data.card_source as { type?: string; node_id?: string; board_name?: string } | null | undefined
+  const creatorLabel = useEditor((state) => {
+    if (cardSource?.type !== "node") return null
+    const creator = state.nodes.find((node) => node.id === cardSource.node_id)
+    if (!creator) return ""
+    return (typeof creator.data.label === "string" && creator.data.label.trim()) || String(creator.data.board_name ?? "")
+  })
 
   // A saída padrão escondida: conexão sem nome num bloco com saídas nomeadas continua aparecendo.
   const hiddenDefault = !single && connected.has(DEFAULT_OUTPUT) && !outputs.some((output) => output.id === DEFAULT_OUTPUT)
@@ -105,14 +135,16 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
           </span>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm leading-5 font-semibold tracking-tight">{title}</p>
+            <p className="truncate text-sm leading-5 font-semibold tracking-tight" title={title}>
+              {title}
+            </p>
             {summary.missing ? (
               <p className="mt-0.5 flex items-center gap-1 truncate text-xs leading-4 text-status-warning">
                 <AlertCircle className="size-3 shrink-0" aria-hidden />
                 <span className="truncate">{summary.missing}</span>
               </p>
             ) : (
-              <p className="mt-0.5 truncate text-xs leading-4 text-muted-foreground">
+              <p className="mt-0.5 truncate text-xs leading-4 text-muted-foreground" title={summary.text}>
                 {known ? summary.text : t("flows.block.unknown")}
               </p>
             )}
@@ -135,6 +167,28 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
             />
           ) : null}
         </div>
+
+        {cardSource ? (
+          <p
+            className={cn(
+              "-mt-1.5 truncate px-3 pb-2 pl-12.5 text-xs leading-4",
+              creatorLabel === "" ? "text-status-warning" : "text-muted-foreground"
+            )}
+          >
+            {cardSource.type === "chat"
+              ? t("flows.block.cardFromChat", { board: cardSource.board_name ?? "" })
+              : creatorLabel === ""
+                ? t("flows.block.cardCreatorGone")
+                : t("flows.block.cardFrom", { name: creatorLabel || t("flows.blocks.pipeline_create_card.label") })}
+          </p>
+        ) : null}
+
+        {looseDecisions > 0 ? (
+          <p className="-mt-1.5 flex items-center gap-1 px-3 pb-2 pl-12.5 text-xs leading-4 text-status-warning">
+            <AlertCircle className="size-3 shrink-0" aria-hidden />
+            <span className="truncate">{t("flows.issues.aiLoose", { count: looseDecisions })}</span>
+          </p>
+        ) : null}
 
         {!single && outputs.length > 0 ? (
           <ul className="border-t border-dashed py-1">
@@ -182,7 +236,7 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
       </div>
     </>
   )
-})
+}, sameBlock)
 
 function OutputHandle({
   id,

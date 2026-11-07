@@ -10,19 +10,19 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_human_handoff", "position": { "x": 0, "y": 0 }, "data": {} },
-      { "id": "wait_24h", "type": "wait", "position": { "x": 280, "y": 0 }, "data": { "amount": 1, "unit": "hours" } },
-      { "id": "ask_csat", "type": "send_text", "position": { "x": 560, "y": 0 }, "data": {
+      { "id": "wait_24h", "type": "wait", "position": { "x": 368, "y": 0 }, "data": { "amount": 1, "unit": "hours" } },
+      { "id": "ask_csat", "type": "send_text", "position": { "x": 728, "y": 0 }, "data": {
         "text": "Oi {{contact.name}}! De 1 a 5, como você avaliaria o atendimento que recebeu? Responda apenas com o número."
       } },
-      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 840, "y": 0 }, "data": {} },
-      { "id": "save_csat", "type": "set_custom_attribute", "position": { "x": 1140, "y": 0 }, "data": {
+      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 1088, "y": 0 }, "data": {} },
+      { "id": "save_csat", "type": "set_custom_attribute", "position": { "x": 1480, "y": 0 }, "data": {
         "key": "csat_score",
         "value": "{{message.text}}"
       } },
-      { "id": "thanks", "type": "send_text", "position": { "x": 1420, "y": 0 }, "data": {
+      { "id": "thanks", "type": "send_text", "position": { "x": 1848, "y": 0 }, "data": {
         "text": "Obrigado pelo retorno! 🙏"
       } },
-      { "id": "end", "type": "end", "position": { "x": 1700, "y": 0 }, "data": {} }
+      { "id": "end", "type": "end", "position": { "x": 2208, "y": 0 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger",     "target": "wait_24h" },

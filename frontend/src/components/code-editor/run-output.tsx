@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { Loader2 } from "lucide-react"
 
@@ -31,20 +32,26 @@ export function RunOutput({
 }) {
   const { t } = useTranslation()
   const language = useLanguage()
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  // O resultado pode nascer abaixo da dobra, num painel que rola: quem executou precisa ver.
+  useEffect(() => {
+    if (running || result) rootRef.current?.scrollIntoView({ block: "nearest" })
+  }, [result, running])
 
   if (running) {
     return (
-      <p className="flex items-center gap-2 p-3 text-sm text-muted-foreground" role="status">
+      <div ref={rootRef} className="flex items-center gap-2 p-3 text-sm text-muted-foreground" role="status">
         <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
         {t("flows.codeEditor.running")}
-      </p>
+      </div>
     )
   }
   if (!result) return null
 
   const events = result.events ?? []
   return (
-    <div className="flex flex-col gap-2 p-3 text-sm">
+    <div ref={rootRef} className="flex flex-col gap-2 p-3 text-sm">
       <div className="flex items-center gap-2">
         {result.status === "failed" ? (
           <StatusBadge tone="danger">{t("flows.codeEditor.resultFailed")}</StatusBadge>
@@ -95,18 +102,21 @@ function EventRow({ event, onLineHover }: { event: ScriptEvent; onLineHover?: (l
   const { t } = useTranslation()
   const text = pretty(event.name === "console_log" ? event.output : (event.input ?? event.output))
   return (
-    <li
-      onMouseEnter={() => onLineHover?.(event.caller_line ?? null)}
-      onMouseLeave={() => onLineHover?.(null)}
-      className="flex items-baseline gap-2 rounded px-1 py-0.5 hover:bg-muted"
-    >
-      <code className="shrink-0 font-mono text-[11px] text-foreground/80">{event.name}</code>
-      <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-muted-foreground">{text}</span>
-      {event.caller_line ? (
-        <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
-          {t("flows.codeEditor.line", { line: event.caller_line })}
-        </span>
-      ) : null}
+    <li onMouseEnter={() => onLineHover?.(event.caller_line ?? null)} onMouseLeave={() => onLineHover?.(null)}>
+      <details className="rounded hover:bg-muted">
+        <summary className="flex cursor-pointer items-baseline gap-2 px-1 py-0.5">
+          <code className="shrink-0 font-mono text-[11px] text-foreground/80">{event.name}</code>
+          <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-muted-foreground">{text}</span>
+          {event.caller_line ? (
+            <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
+              {t("flows.codeEditor.line", { line: event.caller_line })}
+            </span>
+          ) : null}
+        </summary>
+        <pre className="max-h-48 overflow-auto rounded-b bg-muted/60 p-2 font-mono text-[11px] whitespace-pre-wrap">
+          {pretty({ input: event.input, output: event.output })}
+        </pre>
+      </details>
     </li>
   )
 }

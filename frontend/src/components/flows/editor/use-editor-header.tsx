@@ -16,8 +16,17 @@ export function useEditorHeader() {
 
   usePageTitle(flow.name, { backTo: "/flows", parentTitle: t("navigation.flows") })
 
-  const actions = <HeaderActions flowId={flow.id} flowName={flow.name} status={flow.status} published={flow.published} triggerType={flow.triggerType} compact={false} />
-  const mobileActions = <HeaderActions flowId={flow.id} flowName={flow.name} status={flow.status} published={flow.published} triggerType={flow.triggerType} compact />
+  const props = {
+    flowId: flow.id,
+    flowName: flow.name,
+    status: flow.status,
+    published: flow.published,
+    triggerType: flow.triggerType,
+    draftVersion: flow.draft?.versionNumber,
+    publishedVersion: flow.publishedVersion?.versionNumber,
+  }
+  const actions = <HeaderActions {...props} compact={false} />
+  const mobileActions = <HeaderActions {...props} compact />
 
   useHeaderSlot(actions, { mobileNode: mobileActions, mobilePlacement: isMobile ? "inline" : "overflow" })
 }

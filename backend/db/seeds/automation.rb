@@ -95,7 +95,7 @@ module VekooAutomationSeeds
   # ---------------------------------------------------------------------------------------------
 
   def node(id, type, x, y = 0, **data)
-    { "id" => id, "type" => type, "position" => { "x" => x, "y" => y }, "data" => data.deep_stringify_keys }
+    { "id" => id, "type" => type, "position" => { "x" => (x * 1.3).round, "y" => y }, "data" => data.deep_stringify_keys }
   end
 
   def edge(source, target, handle = nil)

@@ -45,7 +45,7 @@ const WARNING_SEVERITY = 4
 const IGNORED_DIAGNOSTICS = new Set(["7006", "7008", "7010", "7016", "7017", "7022", "7023", "7034", "7053"])
 
 /* oxlint-disable typescript/no-explicit-any -- a API de linguagens do Monaco não tem tipo público nesta entrada */
-const tsApi = () => (monaco.languages as any).typescript
+const tsApi = () => (monaco as any).typescript
 
 let compilerConfigured = false
 
@@ -334,7 +334,10 @@ export default function CodeEditorCore({
         ) : null}
       </div>
 
-      <div className={cn("flex min-h-0 flex-1", isMobile && "flex-col")} style={maximized ? undefined : { height }}>
+      <div
+        className={cn("flex min-h-0", maximized ? "flex-1" : "shrink-0", isMobile && "flex-col")}
+        style={maximized ? undefined : { height }}
+      >
         <div className="min-h-0 min-w-0 flex-1">
           <Editor
             language={language}
@@ -365,7 +368,7 @@ export default function CodeEditorCore({
         {referenceOpen && canReference ? (
           <aside
             aria-label={t("flows.codeEditor.referenceToggle")}
-            className={cn("shrink-0 border-l bg-muted/20", isMobile ? "h-56 border-t border-l-0" : "w-64")}
+            className={cn("min-h-0 shrink-0 overflow-hidden border-l bg-muted/20", isMobile ? "h-40 border-t border-l-0" : "w-64")}
           >
             <ApiReference onInsert={insertAtCursor} />
           </aside>

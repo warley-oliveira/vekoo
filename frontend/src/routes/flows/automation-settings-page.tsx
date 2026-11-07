@@ -51,7 +51,7 @@ export default function AutomationSettingsPage() {
       ) : isLoading || !settings ? (
         <DetailSkeleton rows={6} />
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-6 md:gap-8">
           {!canEdit ? <Callout className="mb-4">{t("flows.settings.readOnly")}</Callout> : null}
 
           <SettingsSection title={t("flows.settings.mainTitle")} description={t("flows.settings.mainHint")}>
@@ -118,7 +118,7 @@ type SectionProps = {
 
 function SaveRow({ dirty, busy, disabled, onSave }: { dirty: boolean; busy: boolean; disabled: boolean; onSave: () => void }) {
   const { t } = useTranslation()
-  if (disabled) return null
+  if (disabled || !dirty) return null
   return (
     <div className="flex justify-end">
       <Button type="button" size="sm" disabled={!dirty || busy} onClick={onSave}>

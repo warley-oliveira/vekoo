@@ -488,10 +488,15 @@
       "noName": "Sem nome",
       "unlink": "Desligar",
       "addAfter": "Adicionar o próximo passo",
-      "addAfterOutput": "Adicionar o próximo passo em {{name}}"
+      "addAfterOutput": "Adicionar o próximo passo em {{name}}",
+      "cardFromChat": "Card da conversa em {{board}}",
+      "cardFrom": "Card de {{name}}",
+      "cardCreatorGone": "O \"Criar card\" escolhido foi excluído"
     },
     "canvas": {
       "firstStep": "Clique no + do bloco para dizer o que acontece depois.",
+      "emptyTitle": "Comece pelo gatilho",
+      "emptyHint": "Todo fluxo começa com um acontecimento: uma mensagem, uma palavra-chave, um webhook.",
       "a11y": {
         "blockRole": "bloco",
         "linkRole": "ligação",
@@ -542,12 +547,17 @@
       "placeholder": "O que este fluxo precisa fazer?",
       "placeholderNext": "O que acontece depois?",
       "clear": "Limpar a busca",
+      "groupsLabel": "Filtrar os blocos",
+      "allGroups": "Todos",
       "emptyTitle": "Nenhum bloco com esse nome",
       "emptyHint": "Tente outra palavra, como \"mensagem\", \"etiqueta\" ou \"código\".",
-      "footerConnect": "Setas para navegar, Enter para escolher. O bloco já nasce ligado.",
+      "footerConnect": "O bloco já nasce ligado.",
       "footerDrag": "Clique para adicionar, ou arraste para o quadro."
     },
     "inspector": {
+      "readOnlyTitle": "O que este bloco faz",
+      "readOnlyNext": "Para onde vai",
+      "readOnlyEnds": "Termina aqui",
       "advanced": "Mais opções",
       "optional": "Opcional",
       "loading": "Carregando...",
@@ -1165,7 +1175,6 @@
       "saving": "Salvando...",
       "dirty": "Alterações não salvas",
       "saved": "Tudo salvo",
-      "savedPrefix": "Salvo",
       "savedNow": "Salvo",
       "failed": "Não salvou. Tentar de novo",
       "conflict": "Alterado em outro lugar"
@@ -1348,6 +1357,8 @@
       "title": "Versões",
       "description": "Cada publicação fica guardada. Restaurar traz para o rascunho: nada vai para o ar sem publicar.",
       "number": "Versão {{number}}",
+      "lineDraft": "Rascunho v{{number}}",
+      "linePublished": "publicado v{{number}}",
       "draft": "Rascunho",
       "live": "No ar",
       "savedAt": "Salva",
@@ -1402,6 +1413,8 @@
         "object": "Objeto"
       },
       "codeLabel": "Código da função",
+      "testChat": "Testar numa conversa",
+      "testChatHint": "Opcional. Sem conversa, o que depende do contato (getContactInfo, tag) dá erro no teste.",
       "save": "Salvar função",
       "saved": "Função salva",
       "saveFailed": "Não foi possível salvar. Tente de novo.",
@@ -1462,6 +1475,9 @@
       "createShort": "Novo",
       "statusLabel": "Filtrar pela situação",
       "tabActive": "Todos",
+      "tabPublished": "Ligados",
+      "tabDraft": "Rascunhos",
+      "tabArchived": "Arquivados",
       "search": "Buscar fluxo",
       "triggerFilter": "Como começa",
       "count_one": "1 fluxo",

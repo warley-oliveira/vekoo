@@ -44,47 +44,23 @@ export function CreateFlowDialog({
   initialTab?: Tab
 }) {
   const { t } = useTranslation()
-  return (
-    <ResponsiveDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title={t("flows.create.title")}
-      description={t("flows.create.description")}
-      size="xl"
-      className="sm:max-w-4xl"
-    >
-      {open ? <CreateBody initialTab={initialTab} onClose={() => onOpenChange(false)} /> : null}
-    </ResponsiveDialog>
-  )
-}
-
-function CreateBody({ initialTab, onClose }: { initialTab: Tab; onClose: () => void }) {
-  const { t } = useTranslation()
-  const [tab, setTab] = useState<Tab>(initialTab)
-  return (
-    <div className="flex flex-col gap-4 pt-1">
-      <SegmentedControl
-        aria-label={t("flows.create.title")}
-        value={tab}
-        onChange={setTab}
-        options={[
-          { value: "template", label: t("flows.create.fromTemplate") },
-          { value: "blank", label: t("flows.create.fromScratch") },
-        ]}
-      />
-      {tab === "template" ? <FromTemplate onClose={onClose} /> : <FromScratch onClose={onClose} />}
-    </div>
-  )
-}
-
-function FromTemplate({ onClose }: { onClose: () => void }) {
-  const { t } = useTranslation()
   const navigate = useNavigate()
   const { createFlow } = useFlowMutations()
+  const [tab, setTab] = useState<Tab>(initialTab)
   const [selected, setSelected] = useState<FlowTemplate | null>(null)
+  const [trigger, setTrigger] = useState<FlowTriggerType>("first_message")
   const [busy, setBusy] = useState(false)
 
-  const create = async (template: FlowTemplate) => {
+  const schema = useMemo(() => buildSchema(t), [t])
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: "" },
+    mode: "onBlur",
+  })
+
+  const close = () => onOpenChange(false)
+
+  const createFromTemplate = async (template: FlowTemplate) => {
     if (busy) return
     setBusy(true)
     try {
@@ -94,7 +70,7 @@ function FromTemplate({ onClose }: { onClose: () => void }) {
         triggerType: template.triggerType,
         template: template.slug,
       })
-      onClose()
+      close()
       navigate(`/flows/${flow.id}`)
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : t("flows.create.failed"))
@@ -102,93 +78,107 @@ function FromTemplate({ onClose }: { onClose: () => void }) {
     }
   }
 
-  return (
-    <>
-      <TemplateGallery selected={selected?.slug ?? null} onSelect={setSelected} onConfirm={(template) => void create(template)} />
-      <div className="sticky bottom-0 -mx-4 flex items-center justify-end gap-2 border-t bg-popover px-4 pt-3 pb-1">
-        <p className="mr-auto hidden text-xs text-muted-foreground sm:block">{t("flows.create.templateHint")}</p>
-        <Button type="button" variant="outline" onClick={onClose}>
-          {t("flows.create.cancel")}
-        </Button>
-        <Button type="button" disabled={!selected || busy} onClick={() => selected && void create(selected)}>
-          {busy ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : null}
-          {t("flows.create.useTemplate")}
-        </Button>
-      </div>
-    </>
-  )
-}
-
-function FromScratch({ onClose }: { onClose: () => void }) {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const { createFlow } = useFlowMutations()
-  const [trigger, setTrigger] = useState<FlowTriggerType>("first_message")
-  const schema = useMemo(() => buildSchema(t), [t])
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: { name: "" },
-    mode: "onBlur",
-  })
-
   const submit = useFormSubmit(form, async ({ name }) => {
     const flow = await createFlow({ name, triggerType: trigger })
-    onClose()
+    close()
     navigate(`/flows/${flow.id}`)
   })
 
+  const creating = busy || form.formState.isSubmitting
+
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-4">
-      <TextField
-        control={form.control}
-        name="name"
-        label={t("flows.create.name")}
-        placeholder={t("flows.create.namePlaceholder")}
-        autoFocus
-      />
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("flows.create.title")}
+      description={t("flows.create.description")}
+      size="xl"
+      className="sm:max-w-4xl"
+      onSubmit={
+        tab === "blank"
+          ? submit
+          : (event) => {
+              event.preventDefault()
+              if (selected) void createFromTemplate(selected)
+            }
+      }
+      footer={
+        <>
+          {tab === "template" ? (
+            <p className="mr-auto hidden self-center text-xs text-muted-foreground sm:block">{t("flows.create.templateHint")}</p>
+          ) : null}
+          <Button type="button" variant="outline" onClick={close}>
+            {t("flows.create.cancel")}
+          </Button>
+          <Button type="submit" disabled={creating || (tab === "template" && !selected)}>
+            {creating ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : null}
+            {tab === "template" ? t("flows.create.useTemplate") : t("flows.create.submit")}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-4 pt-1">
+        <SegmentedControl
+          aria-label={t("flows.create.title")}
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: "template", label: t("flows.create.fromTemplate") },
+            { value: "blank", label: t("flows.create.fromScratch") },
+          ]}
+        />
 
-      <fieldset className="flex flex-col gap-1.5">
-        <legend className="mb-1.5 text-sm font-medium">{t("flows.create.triggerQuestion")}</legend>
-        <div role="radiogroup" className="grid gap-1.5 sm:grid-cols-2">
-          {FLOW_TRIGGER_TYPES.map((value) => {
-            const Icon = blockIcon(triggerBlockType(value))
-            const active = trigger === value
-            return (
-              <button
-                key={value}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => setTrigger(value)}
-                className={cn(
-                  "flex items-start gap-2.5 rounded-lg border p-2.5 text-left transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                  active ? "border-primary bg-accent/50" : "hover:border-foreground/20"
-                )}
-              >
-                <Icon className={cn("mt-0.5 size-4 shrink-0", active ? "text-primary" : "text-muted-foreground")} aria-hidden />
-                <span className="min-w-0">
-                  <span className="block text-sm font-medium">{t(`flows.blocks.trigger_${value}.label`)}</span>
-                  <span className="block text-xs text-pretty text-muted-foreground">
-                    {t(`flows.blocks.trigger_${value}.description`)}
-                  </span>
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </fieldset>
+        {tab === "template" ? (
+          <TemplateGallery
+            selected={selected?.slug ?? null}
+            onSelect={setSelected}
+            onConfirm={(template) => void createFromTemplate(template)}
+          />
+        ) : (
+          <div className="flex flex-col gap-4">
+            <TextField
+              control={form.control}
+              name="name"
+              label={t("flows.create.name")}
+              placeholder={t("flows.create.namePlaceholder")}
+              autoFocus
+            />
 
-      <FormError form={form} />
+            <fieldset className="flex flex-col gap-1.5">
+              <legend className="mb-1.5 text-sm font-medium">{t("flows.create.triggerQuestion")}</legend>
+              <div role="radiogroup" className="grid gap-1.5 sm:grid-cols-2">
+                {FLOW_TRIGGER_TYPES.map((value) => {
+                  const Icon = blockIcon(triggerBlockType(value))
+                  const active = trigger === value
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setTrigger(value)}
+                      className={cn(
+                        "flex items-start gap-2.5 rounded-lg border p-2.5 text-left transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                        active ? "border-primary bg-accent/50" : "hover:border-foreground/20"
+                      )}
+                    >
+                      <Icon className={cn("mt-0.5 size-4 shrink-0", active ? "text-primary" : "text-muted-foreground")} aria-hidden />
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium">{t(`flows.blocks.trigger_${value}.label`)}</span>
+                        <span className="block text-xs text-pretty text-muted-foreground">
+                          {t(`flows.blocks.trigger_${value}.description`)}
+                        </span>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </fieldset>
 
-      <div className="sticky bottom-0 -mx-4 flex justify-end gap-2 border-t bg-popover px-4 pt-3 pb-1">
-        <Button type="button" variant="outline" onClick={onClose}>
-          {t("flows.create.cancel")}
-        </Button>
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : null}
-          {t("flows.create.submit")}
-        </Button>
+            <FormError form={form} />
+          </div>
+        )}
       </div>
-    </form>
+    </ResponsiveDialog>
   )
 }

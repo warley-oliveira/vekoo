@@ -163,7 +163,8 @@ export function VariableField({
 
   const listId = id ? `${id}-variables` : undefined
   const open = Boolean(suggestion && matches.length > 0 && rect)
-  const typography = cn("px-2.5 py-2 text-base md:text-sm", mono && "font-mono md:text-[13px]")
+  // O espelho e o campo precisam quebrar a linha no mesmo lugar. A folga da direita é do botão.
+  const typography = cn("py-2 pr-8 pl-2.5 text-base md:text-sm", mono && "font-mono md:text-[13px]")
 
   return (
     <div className="group/variable relative">
@@ -190,7 +191,7 @@ export function VariableField({
           }}
           onKeyDown={onKeyDown}
           onBlur={() => window.setTimeout(() => setSuggestion(null), 120)}
-          className={cn("relative col-start-1 row-start-1 min-h-0 resize-none pr-8", typography, singleLine && "whitespace-pre-wrap")}
+          className={cn("relative col-start-1 row-start-1 min-h-0 resize-none", typography, singleLine && "whitespace-pre-wrap")}
           style={{ minHeight: `calc(${rows}lh + 1rem + 2px)` }}
         />
       </div>

@@ -90,7 +90,7 @@ export function useAutosave(flow: FlowDetail) {
           syncTrigger()
           refreshPublished()
           if (api.getState().revision !== revision) return save()
-          ui.setState({ saveStatus: "saved", savedAt: Date.now() })
+          ui.setState({ saveStatus: "saved" })
           return true
         })
         .catch(() => {

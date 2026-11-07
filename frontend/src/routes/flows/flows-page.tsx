@@ -28,6 +28,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useFlowMutations, useFlows } from "@/hooks/flows/use-flows"
 import { useCan } from "@/hooks/use-can"
+import { useOpenCount } from "@/hooks/use-panel-session"
 import { ApiError } from "@/lib/api"
 import { FLOW_TRIGGER_TYPES, type FlowStatus, type FlowSummary, type FlowTemplate } from "@/lib/flows/types"
 import { matchesSearch } from "@/lib/search-text"
@@ -45,6 +46,7 @@ export default function FlowsPage() {
   const [params, setParams] = useSearchParams()
   const [createOpen, setCreateOpen] = useState(false)
   const [createTab, setCreateTab] = useState<"template" | "blank">("template")
+  const dialogKey = useOpenCount(createOpen)
   const [query, setQuery] = useState("")
   const [triggers, setTriggers] = useState<string[]>([])
   const [sort, setSort] = useState<SortKey>("recent")
@@ -137,7 +139,7 @@ export default function FlowsPage() {
     />
   )
 
-  const dialog = <CreateFlowDialog key={createTab} open={createOpen} onOpenChange={setCreateOpen} initialTab={createTab} />
+  const dialog = <CreateFlowDialog key={dialogKey} open={createOpen} onOpenChange={setCreateOpen} initialTab={createTab} />
 
   if (error && !hasData) {
     return (
@@ -182,9 +184,9 @@ export default function FlowsPage() {
           onChange={setTab}
           options={[
             { value: "active", label: t("flows.list.tabActive"), count: counts.draft + counts.published },
-            { value: "published", label: t("flows.status.published"), count: counts.published },
-            { value: "draft", label: t("flows.status.draft"), count: counts.draft },
-            { value: "archived", label: t("flows.status.archived"), count: counts.archived },
+            { value: "published", label: t("flows.list.tabPublished"), count: counts.published },
+            { value: "draft", label: t("flows.list.tabDraft"), count: counts.draft },
+            { value: "archived", label: t("flows.list.tabArchived"), count: counts.archived },
           ]}
         />
         <FilterBar
@@ -370,7 +372,10 @@ const FlowRow = memo(function FlowRow({ flow }: { flow: FlowSummary }) {
           </Link>
           <StatusBadge tone={STATUS_TONES[flow.status]}>{t(`flows.status.${flow.status}`)}</StatusBadge>
         </div>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">{t(`flows.triggers.${flow.triggerType}`)}</p>
+        <p className="mt-0.5 truncate text-xs text-muted-foreground" title={flow.description ?? undefined}>
+          {t(`flows.triggers.${flow.triggerType}`)}
+          {flow.description ? ` · ${flow.description}` : ""}
+        </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground sm:hidden">
           <FlowUsage flow={flow} />
         </div>

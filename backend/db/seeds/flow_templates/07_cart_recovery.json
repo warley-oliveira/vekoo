@@ -10,18 +10,18 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_webhook", "position": { "x": 0, "y": 0 }, "data": {} },
-      { "id": "wait1", "type": "wait", "position": { "x": 280, "y": 0 }, "data": { "amount": 24, "unit": "hours" } },
-      { "id": "msg1", "type": "send_text", "position": { "x": 560, "y": 0 }, "data": {
+      { "id": "wait1", "type": "wait", "position": { "x": 368, "y": 0 }, "data": { "amount": 24, "unit": "hours" } },
+      { "id": "msg1", "type": "send_text", "position": { "x": 728, "y": 0 }, "data": {
         "text": "Oi {{contact.name}}! Esqueceu algo no carrinho? Posso te ajudar a finalizar 🛒"
       } },
-      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 840, "y": 0 }, "data": {} },
-      { "id": "got_reply", "type": "transfer_to_human", "position": { "x": 1140, "y": -120 }, "data": {} },
-      { "id": "wait2", "type": "wait", "position": { "x": 1140, "y": 120 }, "data": { "amount": 24, "unit": "hours" } },
-      { "id": "msg2", "type": "send_text", "position": { "x": 1440, "y": 120 }, "data": {
+      { "id": "wait_reply", "type": "wait_for_message", "position": { "x": 1088, "y": 0 }, "data": {} },
+      { "id": "got_reply", "type": "transfer_to_human", "position": { "x": 1480, "y": -120 }, "data": {} },
+      { "id": "wait2", "type": "wait", "position": { "x": 1480, "y": 120 }, "data": { "amount": 24, "unit": "hours" } },
+      { "id": "msg2", "type": "send_text", "position": { "x": 1872, "y": 120 }, "data": {
         "text": "Última chance! Posso liberar 10% de desconto pra você fechar agora?"
       } },
-      { "id": "end_ok",   "type": "end", "position": { "x": 1440, "y": -120 }, "data": {} },
-      { "id": "end_done", "type": "end", "position": { "x": 1720, "y": 120 }, "data": {} }
+      { "id": "end_ok",   "type": "end", "position": { "x": 1872, "y": -120 }, "data": {} },
+      { "id": "end_done", "type": "end", "position": { "x": 2240, "y": 120 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger",    "target": "wait1" },

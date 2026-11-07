@@ -10,7 +10,7 @@
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
     "nodes": [
       { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": {} },
-      { "id": "ai", "type": "ai_assistant", "position": { "x": 320, "y": 0 }, "data": {
+      { "id": "ai", "type": "ai_assistant", "position": { "x": 416, "y": 0 }, "data": {
         "mode": "interactive",
         "system_prompt": "Você é a pessoa de suporte. Use a função buscar_faq para encontrar respostas. Se não encontrar resposta confiável após 2 tentativas, chame __exit_escalar.",
         "model_size": "main",
@@ -22,10 +22,10 @@
           { "id": "escalar",   "label": "Escalar",   "when": "Não foi possível resolver" }
         ]
       } },
-      { "id": "tag_resolved", "type": "add_tag", "position": { "x": 640, "y": -120 }, "data": { "tag_id": "" } },
-      { "id": "transfer",     "type": "transfer_to_human", "position": { "x": 640, "y": 120 }, "data": {} },
-      { "id": "close",        "type": "finalize_chat", "position": { "x": 940, "y": -120 }, "data": {} },
-      { "id": "end_human",    "type": "end", "position": { "x": 940, "y": 120 }, "data": {} }
+      { "id": "tag_resolved", "type": "add_tag", "position": { "x": 832, "y": -120 }, "data": { "tag_id": "" } },
+      { "id": "transfer",     "type": "transfer_to_human", "position": { "x": 832, "y": 120 }, "data": {} },
+      { "id": "close",        "type": "finalize_chat", "position": { "x": 1224, "y": -120 }, "data": {} },
+      { "id": "end_human",    "type": "end", "position": { "x": 1224, "y": 120 }, "data": {} }
     ],
     "edges": [
       { "id": "e1", "source": "trigger",       "target": "ai" },

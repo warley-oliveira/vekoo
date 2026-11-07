@@ -16,7 +16,7 @@ import "@xyflow/react/dist/style.css"
 import { useTranslation } from "react-i18next"
 
 import { BLOCK_CATALOG } from "@/lib/flows/catalog"
-import { BLOCK_WIDTH } from "@/lib/flows/layout"
+import { BLOCK_WIDTH, FIT_OPTIONS } from "@/lib/flows/layout"
 
 import { BLOCK_DRAG_TYPE } from "./block-picker"
 import { CanvasToolbar } from "./canvas-toolbar"
@@ -38,7 +38,6 @@ const DEFAULT_EDGE_OPTIONS = {
   type: "link",
   markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14, color: "var(--flow-line)" },
 }
-const FIT_VIEW_OPTIONS = { padding: 0.25, maxZoom: 1 }
 const SNAP_GRID: [number, number] = [8, 8]
 const DELETE_KEYS = ["Backspace", "Delete"]
 const MULTI_SELECT_KEYS = ["Meta", "Control", "Shift"]
@@ -46,8 +45,8 @@ const MULTI_SELECT_KEYS = ["Meta", "Control", "Shift"]
 /** Quantos blocos antes de só desenhar o que está na tela. Abaixo disso, não compensa o custo de montar ao rolar. */
 const VIRTUALIZE_FROM = 80
 const MINIMAP_FROM = 12
-/** Largura do inspetor mais a folga: bloco selecionado não fica escondido atrás dele. */
-const INSPECTOR_SPACE = 416
+/** O inspetor e a folga para o "+" do bloco: o que está selecionado não fica escondido atrás dele. */
+const INSPECTOR_SPACE = 470
 
 export function FlowCanvas() {
   const { t } = useTranslation()
@@ -146,6 +145,10 @@ export function FlowCanvas() {
     api.getState().closePicker()
   }, [api])
 
+  const onInit = useCallback(() => {
+    void reactFlow.fitView(FIT_OPTIONS)
+  }, [reactFlow])
+
   return (
     <div
       ref={wrapperRef}
@@ -171,8 +174,7 @@ export function FlowCanvas() {
         onSelectionDragStart={startDrag}
         onSelectionDragStop={endDrag}
         onPaneClick={onPaneClick}
-        fitView
-        fitViewOptions={FIT_VIEW_OPTIONS}
+        onInit={onInit}
         minZoom={0.2}
         maxZoom={1.5}
         snapToGrid
@@ -195,6 +197,7 @@ export function FlowCanvas() {
         {nodes.length >= MINIMAP_FROM ? (
           <MiniMap
             position="bottom-left"
+            style={{ marginBottom: 72 }}
             pannable
             zoomable
             nodeBorderRadius={6}
@@ -204,7 +207,7 @@ export function FlowCanvas() {
             className="hidden overflow-hidden rounded-xl border lg:block"
           />
         ) : null}
-        <Panel position="bottom-center" className="!mb-4">
+        <Panel position="bottom-left">
           <CanvasToolbar />
         </Panel>
       </ReactFlow>

@@ -5,7 +5,7 @@ import { RefreshCw, Sparkles, X } from "lucide-react"
 import { toast } from "sonner"
 import { useSearchParams } from "react-router"
 
-import { Callout, ConfirmDialog } from "@/components/shared"
+import { Callout, ConfirmDialog, EmptyState } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { useFlowExecution } from "@/hooks/flows/use-flows"
@@ -22,7 +22,7 @@ import { FieldsPanel } from "./fields-panel"
 import { FlowCanvas } from "./flow-canvas"
 import { FlowContext, useFlowContext } from "./flow-context"
 import { Inspector } from "./inspector/inspector"
-import { OutlinePanel } from "./outline-panel"
+import { OutlineList, OutlinePanel } from "./outline-panel"
 import { PublishDialog } from "./publish-dialog"
 import { createRunStore, RunStoreContext, useRun, useRunApi, type RunStep } from "./run-store"
 import { StartFlowDialog } from "./start-dialog"
@@ -100,6 +100,7 @@ function EditorSurface({ demo }: { demo: boolean }) {
       {isMobile ? <MobileBody /> : <FlowCanvas />}
 
       <Banners />
+      <EmptyCanvas />
       <FirstStepHint />
       <Inspector />
       <OutlinePanel />
@@ -265,6 +266,27 @@ function Banners() {
   )
 }
 
+/** Definição sem nenhum bloco. Pela tela não acontece, porque o gatilho não sai; pela API, pode. */
+function EmptyCanvas() {
+  const { t } = useTranslation()
+  const api = useEditorApi()
+  const empty = useEditor((state) => state.nodes.length === 0)
+  const readOnly = useEditor((state) => state.readOnly)
+  if (!empty) return null
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center p-4">
+      <div className="pointer-events-auto w-[min(22rem,100%)]">
+        <EmptyState
+          className="bg-card"
+          title={t("flows.canvas.emptyTitle")}
+          description={t("flows.canvas.emptyHint")}
+          action={readOnly ? undefined : { label: t("flows.toolbar.add"), onClick: () => api.getState().openPicker({}) }}
+        />
+      </div>
+    </div>
+  )
+}
+
 /** A primeira coisa que alguém precisa saber, enquanto o fluxo ainda é só o gatilho. */
 function FirstStepHint() {
   const { t } = useTranslation()
@@ -312,9 +334,6 @@ function ReplayFromUrl() {
 function MobileBody() {
   const { t } = useTranslation()
   const [view, setView] = useState<"list" | "map">("list")
-  useEffect(() => {
-    useEditorUi.setState({ outlineOpen: view === "list" })
-  }, [view])
 
   return (
     <div className="flex h-full flex-col">
@@ -339,7 +358,15 @@ function MobileBody() {
           ))}
         </div>
       </div>
-      <div className="relative min-h-0 flex-1">{view === "map" ? <FlowCanvas /> : null}</div>
+      {view === "map" ? (
+        <div className="relative min-h-0 flex-1">
+          <FlowCanvas />
+        </div>
+      ) : (
+        <div className="min-h-0 flex-1 overflow-y-auto pb-[calc(var(--app-bottom-nav-total,0px)+1rem)]">
+          <OutlineList />
+        </div>
+      )}
     </div>
   )
 }

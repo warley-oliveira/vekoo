@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
-import { ActionsMenu, RelativeTime, StatusBadge, useConfirm, type RowAction } from "@/components/shared"
+import { ActionsMenu, StatusBadge, useConfirm, type RowAction } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { flowKey, useFlowMutations } from "@/hooks/flows/use-flows"
 import { STATUS_TONES } from "@/components/flows/flow-status"
@@ -34,7 +34,6 @@ import { useSWRConfig } from "swr"
 function SaveIndicator() {
   const { t } = useTranslation()
   const status = useEditorUi((state) => state.saveStatus)
-  const savedAt = useEditorUi((state) => state.savedAt)
   const flush = useEditorUi((state) => state.flush)
 
   return (
@@ -66,13 +65,7 @@ function SaveIndicator() {
       ) : (
         <>
           <Check className="size-3.5" aria-hidden />
-          {savedAt ? (
-            <span className="inline-flex items-center gap-1">
-              {t("flows.save.savedPrefix")} <RelativeTime value={savedAt} />
-            </span>
-          ) : (
-            t("flows.save.saved")
-          )}
+          {t("flows.save.saved")}
         </>
       )}
     </span>
@@ -85,6 +78,8 @@ export function HeaderActions({
   status,
   published,
   triggerType,
+  draftVersion,
+  publishedVersion,
   compact,
 }: {
   flowId: string
@@ -92,6 +87,8 @@ export function HeaderActions({
   status: "draft" | "published" | "archived"
   published: boolean
   triggerType: string
+  draftVersion?: number
+  publishedVersion?: number
   compact: boolean
 }) {
   const { t } = useTranslation()
@@ -196,11 +193,17 @@ export function HeaderActions({
   )
 
   const canPublish = status !== "published" || unpublished
+  const versionLine = [
+    draftVersion ? t("flows.versions.lineDraft", { number: draftVersion }) : null,
+    publishedVersion ? t("flows.versions.linePublished", { number: publishedVersion }) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ")
 
   return (
     <div className="flex items-center gap-1.5">
       <SaveIndicator />
-      <StatusBadge tone={STATUS_TONES[status]} className="hidden md:inline-flex">
+      <StatusBadge tone={STATUS_TONES[status]} className="hidden md:inline-flex" title={versionLine}>
         {status === "published" && unpublished ? t("flows.status.publishedChanged") : t(`flows.status.${status}`)}
       </StatusBadge>
 
@@ -221,15 +224,18 @@ export function HeaderActions({
 
       <Button
         type="button"
-        size="sm"
+        size={compact ? "icon-sm" : "sm"}
         onClick={() => setDialog("publish")}
         disabled={!canPublish}
+        aria-label={t("flows.publish.action")}
         title={canPublish ? undefined : t("flows.publish.nothing")}
         className="pointer-coarse:h-10"
       >
         <Rocket />
-        {t("flows.publish.action")}
-        {errors > 0 && !compact ? <span className="ml-0.5 rounded-full bg-primary-foreground/20 px-1.5 text-xs tabular-nums">{errors}</span> : null}
+        {compact ? null : t("flows.publish.action")}
+        {errors > 0 && !compact && canPublish ? (
+          <span className="ml-0.5 rounded-full bg-primary-foreground/20 px-1.5 text-xs tabular-nums">{errors}</span>
+        ) : null}
       </Button>
     </div>
   )

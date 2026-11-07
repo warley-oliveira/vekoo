@@ -12,6 +12,8 @@ import "./flow-tokens.css"
 const BLOCK_WIDTH = 264
 const BLOCK_HEIGHT = 84
 const PADDING = 48
+/** Quanto do fluxo cabe na miniatura sem o bloco virar um risco. O resto some aos poucos, à direita. */
+const MAX_VISIBLE_WIDTH = 1240
 
 export const FlowMiniMap = memo(function FlowMiniMap({
   definition,
@@ -32,8 +34,9 @@ export const FlowMiniMap = memo(function FlowMiniMap({
     const byId = new Map(nodes.map((node) => [node.id, node]))
     const minX = Math.min(...nodes.map((node) => node.x)) - PADDING
     const minY = Math.min(...nodes.map((node) => node.y)) - PADDING
-    const maxX = Math.max(...nodes.map((node) => node.x)) + BLOCK_WIDTH + PADDING
+    const maxX = Math.min(Math.max(...nodes.map((node) => node.x)) + BLOCK_WIDTH + PADDING, minX + MAX_VISIBLE_WIDTH)
     const maxY = Math.max(...nodes.map((node) => node.y)) + BLOCK_HEIGHT + PADDING
+    const cropped = Math.max(...nodes.map((node) => node.x)) + BLOCK_WIDTH + PADDING > maxX
 
     const edges = (definition.edges ?? []).flatMap((edge) => {
       const from = byId.get(edge.source)
@@ -47,7 +50,7 @@ export const FlowMiniMap = memo(function FlowMiniMap({
       return [{ id: edge.id, d: `M${x1},${y1} C${x1 + bend},${y1} ${x2 - bend},${y2} ${x2},${y2}` }]
     })
 
-    return { nodes, edges, viewBox: `${minX} ${minY} ${maxX - minX} ${maxY - minY}` }
+    return { nodes, edges, cropped, viewBox: `${minX} ${minY} ${maxX - minX} ${maxY - minY}` }
   }, [definition])
 
   if (!geometry) return null
@@ -56,8 +59,8 @@ export const FlowMiniMap = memo(function FlowMiniMap({
     <svg
       aria-hidden
       viewBox={geometry.viewBox}
-      preserveAspectRatio="xMidYMid meet"
-      className={cn("block size-full", className)}
+      preserveAspectRatio={geometry.cropped ? "xMinYMid meet" : "xMidYMid meet"}
+      className={cn("block size-full", geometry.cropped && "mask-r-from-75%", className)}
     >
       {geometry.edges.map((edge) => (
         <path key={edge.id} d={edge.d} fill="none" stroke="var(--border)" strokeWidth={8} />

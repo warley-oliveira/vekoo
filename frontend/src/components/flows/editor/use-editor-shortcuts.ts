@@ -3,6 +3,7 @@ import { useReactFlow } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
+import { FIT_OPTIONS } from "@/lib/flows/layout"
 import { blockOutputs } from "@/lib/flows/outputs"
 
 import { isTypingTarget } from "./keys"
@@ -18,24 +19,26 @@ export function useEditorShortcuts() {
   const { t } = useTranslation()
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
+    // Na captura: chega antes da busca da casca, que também quer o Ctrl+K.
+    const onGlobalKey = (event: KeyboardEvent) => {
       if (api.getState().readOnly) return
       const mod = event.metaKey || event.ctrlKey
       const key = event.key.toLowerCase()
-      const typing = isTypingTarget(event.target)
       const state = api.getState()
       const ui = useEditorUi.getState()
 
       if (mod && key === "s") {
         event.preventDefault()
+        event.stopPropagation()
         void ui.flush().then((saved) => {
           if (saved) toast.success(t("flows.save.savedNow"))
         })
         return
       }
 
-      if (mod && key === "k") {
+      if (mod && key === "k" && !ui.dialog && !ui.codeTool) {
         event.preventDefault()
+        event.stopPropagation()
         const selected = state.nodes.find((node) => node.id === state.selectedId)
         const outlets = selected ? (state.outlets[selected.id] ?? "").split("|") : []
         const loose = selected
@@ -44,10 +47,26 @@ export function useEditorShortcuts() {
             )
           : undefined
         state.openPicker(selected && loose ? { source: { nodeId: selected.id, handle: loose.id } } : {})
+      }
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (api.getState().readOnly) return
+      const mod = event.metaKey || event.ctrlKey
+      const key = event.key.toLowerCase()
+      const typing = isTypingTarget(event.target)
+      const state = api.getState()
+      const ui = useEditorUi.getState()
+
+      // Esc fecha o painel de qualquer lugar. Menus e listas abertos seguram o Esc antes de chegar aqui.
+      if (key === "escape" && !ui.dialog && !ui.codeTool) {
+        if (typing && event.target instanceof HTMLElement) event.target.blur()
+        if (state.picker) state.closePicker()
+        else if (state.selectedId || state.selectionCount > 0) state.selectBlock(null)
         return
       }
 
-      if (typing || ui.dialog) return
+      if (typing || ui.dialog || ui.codeTool) return
 
       if (mod && key === "z") {
         event.preventDefault()
@@ -80,13 +99,8 @@ export function useEditorShortcuts() {
       }
       if (mod || event.altKey) return
 
-      if (key === "escape") {
-        if (state.picker) state.closePicker()
-        else if (state.selectedId || state.selectionCount > 0) state.selectBlock(null)
-        return
-      }
       if (key === "f") {
-        void flow.fitView({ padding: 0.25, maxZoom: 1, duration: 250 })
+        void flow.fitView({ ...FIT_OPTIONS, duration: 250 })
       } else if (key === "l") {
         ui.toggleOutline()
       } else if (key === "t") {
@@ -94,8 +108,12 @@ export function useEditorShortcuts() {
       }
     }
 
+    window.addEventListener("keydown", onGlobalKey, { capture: true })
     window.addEventListener("keydown", onKeyDown)
-    return () => window.removeEventListener("keydown", onKeyDown)
+    return () => {
+      window.removeEventListener("keydown", onGlobalKey, { capture: true })
+      window.removeEventListener("keydown", onKeyDown)
+    }
   }, [api, flow, t])
 }
 
@@ -106,7 +124,7 @@ export function useFocusBlock() {
   return (id: string) => {
     if (!api.getState().nodes.some((node) => node.id === id)) return false
     api.getState().selectBlock(id)
-    void flow.fitView({ nodes: [{ id }], maxZoom: 1, padding: 1.2, duration: 280 })
+    void flow.fitView({ ...FIT_OPTIONS, nodes: [{ id }], padding: 1.2, duration: 280 })
     return true
   }
 }
