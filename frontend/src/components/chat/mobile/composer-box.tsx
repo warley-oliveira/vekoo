@@ -24,13 +24,14 @@ import {
   X,
 } from "lucide-react"
 
+import { useConfirm } from "@/components/shared"
 import { SHEET_EXIT_MS } from "@/components/shell/bottom-sheet"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatConnectors } from "@/hooks/chat/use-chat-refs"
 import { useComposer } from "@/hooks/chat/use-composer"
 import { useSuggestReply } from "@/hooks/chat-details/use-suggest-reply"
-import { useBackLayer } from "@/hooks/chat-mobile/use-chat-mobile"
+import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
 import { useHoldToRecord } from "@/hooks/chat-mobile/use-hold-to-record"
 import { openTemplateSender } from "@/lib/chat-details/template-sender-store"
 import { rememberedKeyboardHeight, useKeyboardOpen } from "@/lib/chat-mobile/keyboard"
@@ -55,6 +56,7 @@ const EmojiPicker = lazy(() => import("../composer/emoji-picker"))
 const KEYBOARD_SWAP_TIMEOUT_MS = 450
 
 const MIN_EMOJI_HEIGHT = 240
+const DISCARD_WITHOUT_ASKING_SECONDS = 5
 /** A faixa de cima do painel, com apagar. O painel inteiro é que fica do tamanho do teclado. */
 const EMOJI_BAR_HEIGHT = 45
 
@@ -83,6 +85,7 @@ export default function MobileComposerBox({
 }: ComposerBoxProps) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
+  const confirm = useConfirm()
   const {
     textarea,
     attachments,
@@ -136,10 +139,26 @@ export default function MobileComposerBox({
     setSwappingToKeyboard(false)
   }, [])
 
-  // O voltar desfaz o que está aberto aqui antes de sair da conversa. Gravando, descarta.
+  // O voltar desfaz o que está aberto aqui antes de sair da conversa. Um áudio de poucos segundos sai
+  // na hora; um mais longo não se perde por um toque sem querer no voltar.
   useBackLayer(emojiOpen, closeEmoji)
   useBackLayer(Boolean(slash), () => setSlash(null))
-  useBackLayer(recorder.isRecording, recorder.cancel)
+  useBackLayer(recorder.isRecording, () => {
+    if (recorder.elapsed < DISCARD_WITHOUT_ASKING_SECONDS) {
+      recorder.cancel()
+      return
+    }
+    void confirm({
+      title: t("chatMobile.composer.discardTitle"),
+      description: t("chatMobile.composer.discardHint", { duration: formatDuration(recorder.elapsed) }),
+      confirmLabel: t("chat.recorder.discard"),
+      cancelLabel: t("chatMobile.composer.discardKeep"),
+      destructive: true,
+    }).then((discard) => {
+      if (discard) recorder.cancel()
+    })
+    return false
+  })
 
   /** O painel de emoji fica onde o teclado fica, do tamanho dele: a troca não mexe na conversa. */
   const openEmoji = () => {
@@ -160,6 +179,11 @@ export default function MobileComposerBox({
     const timer = window.setTimeout(closeEmoji, KEYBOARD_SWAP_TIMEOUT_MS)
     return () => window.clearTimeout(timer)
   }, [closeEmoji, keyboardOpen, swappingToKeyboard])
+
+  // Gravar toma a linha inteira: o painel de emoji não fica aberto embaixo dela.
+  useEffect(() => {
+    if (recorder.isBusy) closeEmoji()
+  }, [closeEmoji, recorder.isBusy])
 
   // Tocar no histórico: fecha o painel, e desce o teclado para ler melhor. Rolar não conta.
   useEffect(() => {
@@ -212,6 +236,7 @@ export default function MobileComposerBox({
       element.setRangeText("", start, end, "end")
     } else if (start > 0) {
       const before = element.value.slice(0, start)
+      // Por grafema: um emoji com tom de pele são vários caracteres, e sai inteiro.
       const graphemes = Array.from(
         new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(before)
       )

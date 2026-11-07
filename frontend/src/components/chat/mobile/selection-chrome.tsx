@@ -5,7 +5,7 @@ import { MoreHorizontal, X } from "lucide-react"
 
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { Button } from "@/components/ui/button"
-import { useBackLayer } from "@/hooks/chat-mobile/use-chat-mobile"
+import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
@@ -43,7 +43,7 @@ export default function SelectionChrome({
 
   // No `body`: a lista tem `contain`, que prenderia estas barras dentro dela.
   return createPortal(
-    <div className="chat-touch">
+    <div>
       <div className="fixed inset-x-0 top-0 z-40 border-b bg-background pt-safe pr-safe pl-safe">
         <div className="flex h-14 items-center gap-1 pr-2 pl-1">
           <Button
@@ -113,7 +113,7 @@ export default function SelectionChrome({
         onClose={() => setMoreOpen(false)}
         title={t("chatDetails.bulk.actions.more")}
       >
-        <div className="chat-touch flex flex-col gap-0.5 pb-3">
+        <div className="flex flex-col gap-0.5 pb-3">
           {secondary.map((action) => (
             <SheetRow
               key={action.label}

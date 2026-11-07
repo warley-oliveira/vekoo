@@ -88,7 +88,7 @@ export const ComposerActionsSheet = memo(function ComposerActionsSheet({
 
   return (
     <BottomSheet open={open} onClose={onClose} title={t("chatMobile.composer.actions")}>
-      <div className="chat-touch grid grid-cols-3 gap-1 pb-3 landscape:grid-cols-6">
+      <div className="grid grid-cols-3 gap-1 pb-3 landscape:grid-cols-6">
         <Tile
           icon={<Camera />}
           label={t("chatMobile.composer.camera")}
@@ -212,7 +212,7 @@ function QuickRepliesBody({
   const { items, total, isLoading, error, reload } = useQuickReplyItems(query)
 
   return (
-    <div className="chat-touch flex flex-col gap-2 pb-3">
+    <div className="flex flex-col gap-2 pb-3">
       <SearchInput
         value={query}
         onChange={setQuery}

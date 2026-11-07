@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useBackLayer } from "@/hooks/chat-mobile/use-chat-mobile"
+import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
 import { useRetained } from "@/hooks/use-panel-session"
 import { canReactToMessage, copyableText, QUICK_REACTIONS } from "@/lib/chat/message-rules"
 import { useMessageSelection, useThreadUi } from "@/lib/chat/stores"
@@ -59,7 +59,7 @@ export default function MobileMessageSheet() {
   return (
     <BottomSheet open={open} onClose={close} title={t("chatMobile.message.title")} disableDrag={allEmojis}>
       {shown ? (
-        <div className="chat-touch flex flex-col gap-2 pb-3">
+        <div className="flex flex-col gap-2 pb-3">
           <QuotedMessage message={shown} contactName={contactName} className="mb-0" />
 
           {canReact ? (

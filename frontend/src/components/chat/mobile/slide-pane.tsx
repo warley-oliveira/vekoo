@@ -279,7 +279,7 @@ export function SlidePane({
         aria-label={label}
         tabIndex={-1}
         onPointerDown={onPointerDown}
-        className="chat-pane chat-touch fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe outline-none shadow-[-8px_0_24px_-8px_color-mix(in_oklch,var(--foreground)_14%,transparent)] [overscroll-behavior-x:none]"
+        className="chat-pane fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe outline-none shadow-[-8px_0_24px_-8px_color-mix(in_oklch,var(--foreground)_14%,transparent)] [overscroll-behavior-x:none]"
         style={{
           top: "var(--app-vv-top, 0px)",
           height: "var(--app-vh, 100dvh)",

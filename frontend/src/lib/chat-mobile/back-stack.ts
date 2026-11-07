@@ -29,7 +29,8 @@ const POPUP_SELECTOR =
 /** A folha da casca: o popup é transparente e deixa o toque passar. */
 const SHELL_SHEET_SELECTOR = '[data-slot="sheet-content"].pointer-events-none'
 
-type Layer = { close: () => void }
+/** `close` que devolve `false` não fechou: perguntou antes, e a camada continua aberta. */
+type Layer = { close: () => boolean | void }
 
 /** Em ordem de abertura: a última é a de cima. */
 const layers: Layer[] = []
@@ -130,7 +131,8 @@ function schedule() {
 function closeTop() {
   const popup = openPopups().at(-1)
   if (!popup) {
-    layers.pop()?.close()
+    const layer = layers.pop()
+    if (layer?.close() === false) layers.push(layer)
     return
   }
 
@@ -224,7 +226,7 @@ export function installBackStack(): () => void {
 }
 
 /** Declara uma camada aberta. Devolve o que a tira da conta, quando ela fecha por outro caminho. */
-export function pushLayer(close: () => void): () => void {
+export function pushLayer(close: Layer["close"]): () => void {
   const layer: Layer = { close }
   layers.push(layer)
   schedule()
@@ -242,7 +244,13 @@ export function pushLayer(close: () => void): () => void {
  * assentar faria o `history.go` pendente cair em cima da rota nova.
  */
 export function closeLayersThen(run: () => void): void {
-  layers.splice(0).forEach((layer) => layer.close())
+  const refused = layers.splice(0).filter((layer) => layer.close() === false)
+  if (refused.length > 0) {
+    // Alguma camada perguntou antes de fechar: a resposta é da pessoa, e ninguém navega por ela.
+    layers.unshift(...refused)
+    schedule()
+    return
+  }
 
   if (!traversing && currentDepth() === 0 && openPopups().length === 0) {
     run()

@@ -42,8 +42,7 @@ function Chip({
     <button
       type="button"
       data-slot="chip"
-      role="radio"
-      aria-checked={selected}
+      aria-pressed={selected}
       title={title}
       onClick={onSelect}
       className={cn(
@@ -86,7 +85,7 @@ const ListChips = memo(function ListChips() {
 
   return (
     <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto px-3 py-1.5 [scrollbar-width:none] landscape:flex-1 landscape:pl-0 [&::-webkit-scrollbar]:hidden">
-      <div role="radiogroup" aria-label={t("chat.list.status")} className="flex shrink-0 gap-1.5">
+      <div role="group" aria-label={t("chat.list.status")} className="flex shrink-0 gap-1.5">
         {STATUS_OPTIONS.map((value) => (
           <Chip key={value} selected={status === value} onSelect={() => setStatus(value)}>
             {t(`chat.list.statusFilter.${value}`)}
@@ -97,7 +96,7 @@ const ListChips = memo(function ListChips() {
       {tabs.length > 0 ? (
         <>
           <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 bg-border" />
-          <div role="radiogroup" aria-label={t("chat.list.channels")} className="flex shrink-0 gap-1.5">
+          <div role="group" aria-label={t("chat.list.channels")} className="flex shrink-0 gap-1.5">
             <Chip selected={channel === null} onSelect={() => setConnectorId(null)}>
               {t("chatMobile.list.allChannels")}
             </Chip>
@@ -239,7 +238,7 @@ export const MobileListPanel = memo(function MobileListPanel({ connected }: { co
       ) : null}
 
       <BottomSheet open={menuOpen} onClose={() => setMenuOpen(false)} title={t("chatDetails.list.more")}>
-        <div className="chat-touch flex flex-col gap-0.5 pb-3">
+        <div className="flex flex-col gap-0.5 pb-3">
           <SheetRow
             icon={<Sparkles />}
             title={t("chatDetails.copilot.open")}

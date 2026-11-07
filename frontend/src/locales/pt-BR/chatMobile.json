@@ -49,7 +49,10 @@
       "deleteBackward": "Apagar",
       "automationOn": "Automação ligada: se você responder, ela pausa.",
       "slideToCancel": "Deslize para cancelar",
-      "slideToLock": "Travar"
+      "slideToLock": "Travar",
+      "discardTitle": "Descartar o áudio?",
+      "discardHint": "Você gravou {{duration}}. Sair agora apaga o que foi gravado.",
+      "discardKeep": "Continuar gravando"
     }
   }
 }

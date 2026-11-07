@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatNavigation } from "@/hooks/chat-mobile/use-chat-navigation"
-import { useBackLayer } from "@/hooks/chat-mobile/use-chat-mobile"
+import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
 import { useAppShell } from "@/hooks/use-app-shell"
 import { useRetained } from "@/hooks/use-panel-session"
 import { useDetailsPanel } from "@/lib/chat/stores"
@@ -96,7 +96,6 @@ export default function MobileChatLayout({
     setDetailsOpen(false)
   }, [chatId, setDetailsOpen])
 
-  // A conversa sai de cena quando o painel termina de entrar; e o painel que abre tira o teclado.
   const [threadSettled, setThreadSettled] = useState(Boolean(chatId))
   const [threadPeeking, setThreadPeeking] = useState(false)
   const [detailsSettled, setDetailsSettled] = useState(false)
@@ -106,6 +105,7 @@ export default function MobileChatLayout({
   if (!chatId && threadSettled) setThreadSettled(false)
   if (!showDetails && detailsSettled) setDetailsSettled(false)
 
+  // O painel que abre tira o teclado: quem entra nele quer ler, e a conversa fica coberta.
   useEffect(() => {
     if (showDetails && document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }, [showDetails])
@@ -156,7 +156,7 @@ export default function MobileChatLayout({
       >
         <div
           ref={list}
-          className="chat-list chat-touch h-full min-h-0 pr-safe pl-safe [contain:layout_paint_style]"
+          className="chat-list h-full min-h-0 pr-safe pl-safe [contain:layout_paint_style]"
           style={{ visibility: listCovered ? "hidden" : undefined }}
         >
           <MobileListPanel connected={connected || Boolean(chatId)} />
@@ -195,7 +195,8 @@ export default function MobileChatLayout({
           if (!open) setDetailsPeeking(false)
         }}
       >
-        <div className="flex h-full min-h-0 flex-col pt-safe">
+        {/* O fim do que rola não fica atrás da barra de gestos do aparelho. */}
+        <div className="flex h-full min-h-0 flex-col pt-safe [&_.overscroll-contain]:pb-[calc(1rem+var(--app-safe-bottom))]">
           <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
         </div>
       </SlidePane>

@@ -1,9 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
+import { LazyChatPreferences } from "@/components/chat/details/lazy-chat-preferences"
 import { disconnectCopilot } from "@/lib/chat-details/copilot-store"
 import { useChatSelection } from "@/lib/chat-details/selection"
-
-const ChatPreferences = lazy(() => import("@/components/chat/details/chat-preferences"))
 
 /** As preferências do chat, montadas na primeira vez que alguém as abre. */
 export function useChatPreferencesPanel() {
@@ -17,7 +16,7 @@ export function useChatPreferencesPanel() {
     },
     panel: everOpen ? (
       <Suspense fallback={null}>
-        <ChatPreferences open={open} onOpenChange={setOpen} />
+        <LazyChatPreferences open={open} onOpenChange={setOpen} />
       </Suspense>
     ) : null,
   }

@@ -49,7 +49,10 @@
       "deleteBackward": "Delete",
       "automationOn": "Automation is on: replying pauses it.",
       "slideToCancel": "Slide to cancel",
-      "slideToLock": "Lock"
+      "slideToLock": "Lock",
+      "discardTitle": "Discard the audio?",
+      "discardHint": "You recorded {{duration}}. Leaving now deletes the recording.",
+      "discardKeep": "Keep recording"
     }
   }
 }

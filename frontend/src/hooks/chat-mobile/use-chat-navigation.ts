@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect } from "react"
-import { useLocation, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 
 import { closeLayersThen } from "@/lib/chat-mobile/back-stack"
 
@@ -43,7 +43,6 @@ let seededList = false
  */
 export function useChatNavigation(chatId: string | null) {
   const navigate = useNavigate()
-  const { search } = useLocation()
 
   useLayoutEffect(() => {
     if (!chatId) writeListEntry(entryIndex())
@@ -56,7 +55,7 @@ export function useChatNavigation(chatId: string | null) {
 
     navigate("/chat", { replace: true })
     writeListEntry(0)
-    navigate({ pathname: `/chat/${chatId}`, search })
+    navigate({ pathname: `/chat/${chatId}`, search: window.location.search })
     // Só na montagem: é o retrato de como a pessoa chegou aqui.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

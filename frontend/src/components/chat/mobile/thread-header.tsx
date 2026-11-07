@@ -145,7 +145,7 @@ export default memo(function MobileThreadHeader({ chat, connector, onBack }: Thr
               onClose={() => setMenuOpen(false)}
               title={t("chat.header.more")}
             >
-              <div className="chat-touch flex flex-col gap-0.5 pb-3">
+              <div className="flex flex-col gap-0.5 pb-3">
                 <SheetRow
                   icon={closed ? <RotateCcw /> : <CheckCircle2 />}
                   title={statusLabel}
