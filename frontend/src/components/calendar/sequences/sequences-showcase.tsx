@@ -73,7 +73,9 @@ function ShowcaseDialog({ open, onOpenChange, calendarId }: SequencesShowcasePro
             {isFirst ? t("calendar.sequences.showcase.dismiss") : t("calendar.sequences.showcase.back")}
           </Button>
 
-          <div className="flex items-center">
+          {/* No cartão do celular, os pontos de 40 px empurravam "Continuar" para fora: lá, o passo
+              já está no subtítulo, e os botões bastam. */}
+          <div className="hidden items-center sm:flex">
             {SLIDES.map((key, position) => (
               <button
                 key={key}

@@ -49,16 +49,19 @@ export function EnrollSequenceDialog({ actions }: { actions: BookingActions }) {
     (sequence) => sequence.trigger === target.trigger && sequence.enabled && sequence.id
   )
 
+  // Uma opção só já vem escolhida: o botão "Inscrever" não fica apagado esperando um clique óbvio.
+  const chosen = selected ?? (available.length === 1 ? (available[0].id ?? null) : null)
+
   function close() {
     actions.closeEnroll()
     setSelected(null)
   }
 
   async function enroll() {
-    if (!selected || !target || busy) return
+    if (!chosen || !target || busy) return
     setBusy(true)
     try {
-      await actions.mutations.enrollSequence(target.event, selected)
+      await actions.mutations.enrollSequence(target.event, chosen)
       toast.success(t("calendar.sequence.enroll.done"))
       close()
     } catch (cause) {
@@ -87,7 +90,7 @@ export function EnrollSequenceDialog({ actions }: { actions: BookingActions }) {
       footer={
         <FormActions
           loading={busy}
-          disabled={!selected}
+          disabled={!chosen}
           submitLabel={t("calendar.sequence.enroll.submit")}
           cancelLabel={t("calendar.sequence.enroll.notNow")}
           onCancel={close}
@@ -115,7 +118,7 @@ export function EnrollSequenceDialog({ actions }: { actions: BookingActions }) {
               <SequenceOption
                 key={sequence.id}
                 sequence={sequence}
-                selected={selected === sequence.id}
+                selected={chosen === sequence.id}
                 current={target.event.enrolledSequenceId === sequence.id}
                 language={language}
                 onSelect={() => setSelected(sequence.id ?? null)}
