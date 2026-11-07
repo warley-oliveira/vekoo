@@ -534,7 +534,7 @@ Formato de resposta que mudou, para quem reaproveitar os hooks: `data` → nome 
 
 ## API Ruby, para um bloco de fluxo
 
-As funções da assistente (`catalog_enabled`, `lib/mini_racer_engine/workers/catalog.rb`) ficaram fora. Para um bloco de fluxo buscar no catálogo, o serviço é este, o mesmo da tela:
+O `catalog_enabled` da assistente ficou fora, porque assistente não existe aqui. Quem automatiza chega ao catálogo pelo bloco de fluxo `catalog_search` (`lib/flow_runtime/nodes/catalog_search.rb`) ou pela extensão `catalog.*` do motor de scripts (`lib/mini_racer_engine/workers/catalog.rb`). Os dois usam este serviço, o mesmo da tela:
 
 ```ruby
 result = Products::SearchService.new(

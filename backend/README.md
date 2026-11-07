@@ -1,24 +1,9 @@
-# README
+# Back-end do Vekoo
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+API Rails 8.1. A documentação fica na raiz do repositório:
 
-Things you may want to cover:
+- `CLAUDE.md`: como rodar e as convenções.
+- `DEPLOY.md`: como subir em produção.
+- `docs/migration/api/`: o contrato de cada domínio.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Para desenvolver, `bin/setup` e `bin/dev`, na raiz. Testes: `bundle exec rspec`, aqui.

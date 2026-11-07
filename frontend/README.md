@@ -1,32 +1,9 @@
-# React + TypeScript + Vite
+# Front-end do Vekoo
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19, Vite e TypeScript. A documentação fica na raiz do repositório:
 
-Currently, two official plugins are available:
+- `CLAUDE.md`: como rodar, as convenções e o UX Charter.
+- `DEPLOY.md`: como publicar na Cloudflare.
+- `src/components/shared/README.md`: o kit de componentes. A vitrine viva está em `/dev/kit`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Para desenvolver, `bin/setup` e `bin/dev`, na raiz. Conferir aqui: `npm run build` e `npm run lint`.

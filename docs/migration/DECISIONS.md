@@ -345,42 +345,35 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 ### Integrador (Fase 5)
 
-- `.env.example` e `DEPLOY.md`: VAPID (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`), `MONGODB_URI`, `db:mongoid:create_indexes` no deploy, Mongo como accessory.
 - Sem caminho pela API para ligar `features`: hoje só pelo console.
-- **Bloqueia deploy:** `config/deploy.yml` usa `postgres:16.10`, sem pgvector, e a migration do catálogo falharia. Trocar a imagem antes de migrar (conferir a glibc do volume de produção, para não repetir a incompatibilidade de collation vista em desenvolvimento: lá a variante `pg16-trixie` resolveu).
-- `OPENAI_API_KEY` em `.env.example`, `.env.deploy.example`, `deploy.yml` e `DEPLOY.md`.
-- `bin/brakeman` sai com código 5 só por causa do `--ensure-latest` (8.0.5 contra 8.1.0), o que quebra `bin/ci` independentemente do código.
-- Rodar o processo de scripts em produção (`config/sidekiq_scripts.yml`) como papel próprio no `deploy.yml`.
-- ENV novas: `GOOGLE_MAPS_API_KEY`, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`. `ffmpeg` na imagem.
 - Decisão de produto: excluir calendário.
-- Deploy: `db:mongoid:create_indexes` **antes** do tráfego é obrigatório (as agregações usam `hint`), e `dashboards:backfill_operational[90]` fora do horário de pico.
-- Revisão de segurança: `ffmpeg` processa arquivo enviado pelo usuário em `Chats::SendAudio` (sem shell, mas demuxers de playlist podem ler arquivo local); conferir `Chats::Filters` e os operadores das agregações. Os 3 avisos do Brakeman em aberto (`unified_contacts_controller.rb:27`, `chats/send_audio.rb:92`, `normalization_service.rb:88`) são falsos positivos, a registrar em `config/brakeman.ignore` com o motivo.
+- Revisão de segurança: `ffmpeg` processa arquivo enviado pelo usuário em `Chats::SendAudio` (sem shell, mas demuxers de playlist podem ler arquivo local); conferir `Chats::Filters` e os operadores das agregações.
 - Filtros de contato por `team_id` e `custom_attributes` não têm índice, e não foram medidos em base grande. Exportação: se a aba fechar, o link se perde, porque só o canal avisa; uma notificação resolveria.
 - Teto de 16 MB no `$facet` do quadro de funil não foi reproduzido: passar dele vira 500.
-- ENV novas: `APIFY_API_TOKEN`, `GOOGLE_SHEETS_CLIENT_ID`, `GOOGLE_SHEETS_API_KEY`, `GOOGLE_SHEETS_APP_ID`.
 - `Inbound::ZapiEvents` não trata status, então o destinatário de campanha pela Z-API fica em `sent`.
 - Rubocop: os arquivos reciclados do `be-core` têm ofensas de estilo (aspas simples); rodar `rubocop -a` no back-end inteiro ao final.
 - Copiloto: seis rodadas de verificação usaram a chave real da Anthropic do `.env`, sem medir o gasto de tokens (be-inbox e be-agenda).
 - Semente do catálogo usa fotos genéricas de paisagem em itens de roupa: só afeta a demonstração.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
-- Variáveis novas de provedor: ver a seção "Para o deploy" de `docs/migration/api/connectors.md`.
 - Revisão de segurança: `/media` não confere a organização (o acesso é por chave ou id assinado); `has_one :proxy` tem `destroy` em instância em memória.
 - Não confirmados com a Meta: textos do `WabaErrorHandler` para 132005, 132007, 132015 e 132016. Nenhum provedor real foi exercitado, por falta de credenciais.
-- Front em produção: `VITE_FB_APP_ID`, `VITE_FB_CONFIG_ID`, `VITE_FB_META_CONFIG_ID`, `VITE_FB_SDK_VERSION`, `VITE_IG_APP_ID` e `VITE_IG_REDIRECT_URI` (sem elas, as opções da Meta aparecem desabilitadas, com aviso), e registrar `https://<front>/auth/instagram/callback` na Meta.
 - Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION, pareamento na Z-API (`zapi_get_phone_code` existe, mas nenhum fluxo chama).
 - Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
-- `MEDIA_PROXY_ALLOWED_HOSTS` em produção precisa listar o CDN de mídia: host fora da lista dá erro no player de áudio do Safari, e só nele.
 - Dashboard: faceta por `flow_id` em `MessageVolumeDaily`, `flow_id` em `MessageAuthorship.projection` e o card de ranking por fluxo, agora que a mensagem guarda o fluxo. A fonte `messages` não expõe `usage_*`. `aiCosts` em `/catalog` ainda não lista os créditos dos blocos.
 - Processo de scripts com concorrência 2 pode virar gargalo em IA com ferramenta.
-- Brakeman: os 69 avisos de `pipelines/card_query.rb` são falsos positivos (coluna vem de `FieldRegistry`, chave de campo passa por `CUSTOM_KEY_FORMAT`, valor vai como bind): registrar em `config/brakeman.ignore` com o motivo.
 - Não exercitado de ponta a ponta: `send_template`, `catalog_search`, `goto_flow` e `send_media` em fluxo (só specs), transcrição Whisper, `PruneExecutionsJob` e `PruneLogsJob` no cron, 429 da entrada de webhook, volume.
-- `GOOGLE_CALENDAR_REDIRECT_URI` em produção deve apontar para `https://<front>/calendar/google-callback`.
 - `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
 - Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
 - Não testado em aparelho: teclado virtual (simulado), botão voltar físico, gesto de sistema do Android, háptico, permissão do microfone durante o segurar, zoom no visualizador, intervenção de histórico do Chrome em link direto.
 - Ferramentas: `transform_to_schema` descarta `properties` de objetos de nível superior, como na origem; função personalizada perde as credenciais (a tela avisa); não há endpoint de teste para script de webhook. `BACKEND_URL` sem valor em desenvolvimento gera URL relativa, que o front resolve com `apiAssetUrl`.
 - Campanhas: `ChatAudience` vale para a organização inteira, enquanto `/contacts` respeita `visible_to`: "todos" pode trazer mais do que a tela mostra a quem tem `chat_list_to` restrito. Precisa de decisão: quem pode criar campanha vê toda a base? Filtros de etiqueta, canal e situação no assistente não foram aplicados no navegador, e o caminho do celular parou na confirmação de lançar.
-- Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
+- **`bin/ci` ainda para no Brakeman, com código 3:** 73 avisos, 69 em `pipelines/card_query.rb` (coluna vem de `FieldRegistry`, chave de campo passa por `CUSTOM_KEY_FORMAT`, valor vai como bind), 1 em `pipelines/card_sort.rb`, e `unified_contacts_controller.rb:27`, `chats/send_audio.rb:92` e `normalization_service.rb:88`. As frentes os deram como falsos positivos, e `card_sort.rb` ainda não foi olhado. É da revisão de segurança registrar em `config/brakeman.ignore` com o motivo. O `--ensure-latest`, que dava código 5, saiu.
+- Revisão de segurança, achados do deploy: `backend/config/master.key` está versionado (`.gitignore` não o cobre; nada usa `credentials` hoje, mas a chave está no histórico). A conta de demonstração nasce em produção com senha pública, pela semente base. Com `META_APP_SECRET` e `INSTAGRAM_APP_SECRET` vazios, `verify_meta_signature` aceita webhook sem assinatura também em produção.
+- **`docker build` não foi rodado** desde a entrada de `ffmpeg` e `mini_racer` na imagem, por falta de memória na máquina. Antes do primeiro deploy: construir, e rodar num container `ffmpeg -version` e um script por `bin/rails runner`. `kamal-proxy` também não foi exercitado: ver `DEPLOY.md`, seção 12.
+- **Nenhum e-mail sai em produção.** Não há mailer: `POST /password-resets` responde 202 e a pessoa não recebe o link. Falta escolher o serviço de e-mail.
+- OpenAI em duas variáveis: `OPENAI_API_KEY` (embeddings do catálogo) e `OPENAI_ACCESS_TOKEN` (Whisper). Estão documentadas assim. Unificar é trocar uma linha em `chats/audio_transcriber.rb`, e os contratos.
+- O `.env.deploy` real, fora do repositório, precisa ganhar as variáveis novas à mão: `DEPLOY.md`, seção 5.
+- CSP do seletor de planilhas: `script-src` libera só `accounts.google.com/gsi/` e `apis.google.com/js/` e `/_/`, por caminho, porque essas origens têm endpoints JSONP que furariam a política se liberadas inteiras. Nunca testado contra o Google real: conferir ao configurar as credenciais.
 
 ### Front (fases 3 e 4)
 
