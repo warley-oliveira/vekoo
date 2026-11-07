@@ -26,6 +26,7 @@ RSpec.describe "Agenda: eventos do calendário", type: :request do
   describe "sessão e permissão" do
     [
       [ :get, "/calendar-events" ],
+      [ :get, "/calendar-events/qualquer" ],
       [ :post, "/calendar-events" ],
       [ :patch, "/calendar-events/qualquer" ],
       [ :delete, "/calendar-events/qualquer" ],
@@ -333,6 +334,39 @@ RSpec.describe "Agenda: eventos do calendário", type: :request do
 
         expect(Agenda::Booking.find(json["id"]).organization_id).to eq(organization.id.to_s)
       end
+    end
+  end
+
+  describe "GET /calendar-events/:id" do
+    it "devolve o agendamento no mesmo formato da lista" do
+      record = booking(chat: chat, professional: professional, service: service)
+
+      get "/calendar-events/#{record.id}", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(json).to include("id" => record.id.to_s, "type" => "booking", "calendarId" => calendar.id.to_s, "chatId" => chat.id.to_s)
+      expect(json["start"]).to eq(record.start.to_i * 1000)
+    end
+
+    it "mostra o cancelado, que continua na agenda" do
+      record = booking(status: "canceled")
+
+      get "/calendar-events/#{record.id}", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(json["status"]).to eq("canceled")
+    end
+
+    it "o arquivado e o de outra organização são 404" do
+      archived = booking(status: "archived")
+      foreign_calendar = create(:agenda_calendar, organization: create(:organization))
+      foreign = create(:agenda_booking, calendar: foreign_calendar, start: 1.day.from_now, end: 1.day.from_now + 1.hour, skip_professional_notifications: true)
+
+      get "/calendar-events/#{archived.id}", headers: headers
+      expect(response).to have_http_status(:not_found)
+
+      get "/calendar-events/#{foreign.id}", headers: headers
+      expect(response).to have_http_status(:not_found)
     end
   end
 

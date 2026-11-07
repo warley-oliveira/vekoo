@@ -2,7 +2,7 @@ module Agenda
   # O calendário em si: agendamentos e aulas de um intervalo, e o que se faz com um agendamento.
   # A aula calculada tem as próprias rotas, em `class-sessions`.
   class CalendarEventsController < BaseController
-    before_action :set_booking, only: %i[update destroy enroll_sequence unenroll_sequence]
+    before_action :set_booking, only: %i[show update destroy enroll_sequence unenroll_sequence]
 
     rescue_from EventQuery::RangeTooLong do
       render_error(status: :unprocessable_entity, code: "rangeTooLong", message: t("agenda.errors.range_too_long"))
@@ -10,6 +10,14 @@ module Agenda
 
     def index
       render json: { events: EventQuery.new(current_organization, event_filters).call }
+    end
+
+    # Um agendamento só, para o link `?event=` que aponta para fora do período aberto (aviso, conversa).
+    # O arquivado não volta para a tela: é 404, como em qualquer outro lugar.
+    def show
+      return render_not_found if @booking.archived?
+
+      render json: BookingSerializer.one(@booking)
     end
 
     # Os dias com evento, para o mini calendário.

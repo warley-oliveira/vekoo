@@ -36,7 +36,7 @@ scope module: :agenda do
   get "professionals" => "professionals#all"
   get "services" => "offerings#all"
 
-  resources :calendar_events, path: "calendar-events", only: %i[index create update destroy] do
+  resources :calendar_events, path: "calendar-events", only: %i[index show create update destroy] do
     collection do
       get "month-counts", action: :month_counts
       get :filters

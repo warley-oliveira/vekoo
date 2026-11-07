@@ -96,7 +96,7 @@ Sempre `{ "error": { "code", "message", "field?", "details?" } }`. `code` é o c
 | `GET` `POST .../class-groups/:classGroupId/enrollments`, `DELETE .../:id` | Inscrições. |
 | `GET` `POST /class-sessions/:classSessionId/attendances`, `PUT` `DELETE .../:id` | Presença. |
 | `GET .../attendances/schedule`, `POST .../attendances/bulk-update` | Grade da turma e presença em lote. |
-| `GET` `POST /calendar-events`, `PATCH` `DELETE /calendar-events/:id` | O calendário em si. |
+| `GET` `POST /calendar-events`, `GET` `PATCH` `DELETE /calendar-events/:id` | O calendário em si. |
 | `GET /calendar-events/month-counts`, `GET /calendar-events/filters` | Mini calendário e painel de filtros. |
 | `POST` `DELETE /calendar-events/:id/sequence` | Inscrever e tirar de uma sequência. |
 | `GET /dashboard/calendar-stats` | O bloco do calendário no dashboard. |
@@ -435,6 +435,10 @@ Aula calculada, que ainda não tem documento (`virtual: true`):
 ```
 
 O id `vcs_<turma>_<AAAAMMDD>_<HHMM>` vale em todas as rotas de aula, e a primeira ação nele materializa o documento. Com documento, é o mesmo formato, com `virtual: false`, `createdAt`, `updatedAt` e `attendanceSummary: { total, show, noShow, pending }`. `scheduleDayOfWeek` e `scheduleWindowStart` são o horário da grade que a aula ocupa, no fuso do calendário: a tela não precisa ler nada do id, e a aula movida continua com eles.
+
+### `GET /calendar-events/:id`
+
+Um agendamento só, no mesmo formato de um item de `GET /calendar-events` (`type: "booking"`). Serve ao link `/calendar?event=<id>` que aponta para fora do período aberto: a tela busca o agendamento e vai até o dia dele. O cancelado volta normalmente; o arquivado e o de outra organização são `404`. Aula não tem esta rota: a calculada não tem documento, e a gravada se lê por `/calendars/:calendarId/class-groups/:classGroupId/sessions/:id`.
 
 ### `POST /calendar-events`
 

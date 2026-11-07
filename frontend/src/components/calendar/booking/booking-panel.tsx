@@ -207,7 +207,7 @@ export function BookingPanel({
   }, [canceled, editing, form])
 
   // O kit foca o primeiro controle, que aqui seria o menu "…" do topo. Quem abre para ler cai em
-  // "Editar", a ação principal: Enter já edita, e Tab segue para o resto.
+  // "Editar", a ação principal (ou em "Fechar", no cancelado): Enter age, e Tab segue para o resto.
   // Com dedo, nada ganha foco sozinho: um anel no botão, ou o teclado subindo, só atrapalha.
   const isTouch = useIsTouch()
   const editButton = useRef<HTMLButtonElement>(null)
@@ -283,7 +283,13 @@ export function BookingPanel({
           />
         ) : (
           <>
-            <Button type="button" variant="outline" className="pointer-coarse:h-10" onClick={close}>
+            <Button
+              ref={canceled ? editButton : undefined}
+              type="button"
+              variant="outline"
+              className="pointer-coarse:h-10"
+              onClick={close}
+            >
               {t("calendar.common.close")}
             </Button>
             {canceled ? null : (

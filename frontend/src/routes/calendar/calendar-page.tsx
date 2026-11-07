@@ -54,7 +54,8 @@ import {
   localDateOfDayKey,
   safeTimeZone,
 } from "@/lib/calendar/timezone"
-import type { CalendarEvent } from "@/lib/calendar/types"
+import type { BookingEvent, CalendarEvent } from "@/lib/calendar/types"
+import { apiGet } from "@/lib/api"
 import { useLanguage } from "@/lib/i18n"
 
 const CalendarGrid = lazy(() => import("@/components/calendar/calendar-grid"))
@@ -248,13 +249,42 @@ export default function CalendarPage() {
   const eventPanelKey = useOpenCount(eventOpen)
   const newPanelKey = useOpenCount(isNew)
 
-  // Link para um evento que não está neste período: avisa, em vez de não fazer nada.
+  // Link para um agendamento fora deste período (um aviso, a conversa, outro dia): busca ele e leva a
+  // tela até o dia dele, com o calendário marcado. Só avisa quando não existe mais, ou quando nem
+  // assim ele aparece (um filtro escondendo). Aula calculada não tem como ser buscada por id.
   const missing = Boolean(openEventId && events && !loadingEvents && !isValidating && !panelEvent)
+  const lookedUp = useRef<string | null>(null)
+  const { goToDay, selectedCalendarIds, setSelectedCalendarIds, zones, primaryZone } = screen
   useEffect(() => {
-    if (!missing) return
-    toast.error(t("calendar.event.notFound"))
-    closePanel()
-  }, [closePanel, missing, t])
+    if (!missing || !openEventId) return
+    const giveUp = () => {
+      toast.error(t("calendar.event.notFound"))
+      closePanel()
+    }
+    if (isVirtualId(openEventId) || lookedUp.current === openEventId) {
+      giveUp()
+      return
+    }
+    lookedUp.current = openEventId
+    apiGet<BookingEvent>(`/calendar-events/${resolveEventId(openEventId)}`)
+      .then((found) => {
+        if (!selectedCalendarIds.includes(found.calendarId)) {
+          setSelectedCalendarIds([...selectedCalendarIds, found.calendarId])
+        }
+        goToDay(dayKeyOf(found.start, safeTimeZone(zones.get(found.calendarId), primaryZone)))
+      })
+      .catch(giveUp)
+  }, [
+    closePanel,
+    goToDay,
+    missing,
+    openEventId,
+    primaryZone,
+    selectedCalendarIds,
+    setSelectedCalendarIds,
+    t,
+    zones,
+  ])
 
   /* ---------- tempo real ---------- */
 
