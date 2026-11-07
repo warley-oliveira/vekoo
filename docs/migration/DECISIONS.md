@@ -328,6 +328,19 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - **Só pt-BR vem no pacote inicial.** Os dois idiomas juntos eram 841 KB (243 KB em gzip), metade do JavaScript da primeira visita, e crescendo a cada domínio. O inglês desce em chunk próprio, e `main.tsx` espera `i18nReady` antes de desenhar: em inglês, a primeira tela demora o tempo desse chunk, sem piscar em português. Conferido ao trocar pelo menu da conta. pt-BR segue tudo no pacote inicial (464 KB, 138 KB em gzip): carregar por domínio seria o próximo passo, mas há telas que usam texto de outros domínios.
 
+### Campanhas: assistente (fe-campaigns-wizard)
+
+- **Quatro passos, com o público primeiro:** Para quem, O que dizer, Quando, Revisar. O nome da campanha vem automático e se edita na revisão; o canal fica no passo da mensagem.
+- **Tutorial de 9 slides saiu:** o ensino está no próprio fluxo, em dicas sobre variáveis, versões, ritmo, número e o que acontece depois de lançar.
+- **Destinatários são gravados no servidor na hora**, e dá para tirar por origem, por pessoa ou todos. O rascunho salva incompleto (`messages_present` só vale fora do rascunho), e lançar e agendar conferem tudo.
+- **Importação:** o 55 vem ligado (na origem, desligado); linha ruim não bloqueia (na origem, bloqueava); coluna extra vira variável.
+- **Envio:** janela sem atravessar a madrugada, com "O dia todo"; ritmo com calma 3–6 min, equilibrado 1–2 min (padrão da origem), mais rápido 1–1,5 min; detalhado de 1 a 30 min, com o piso de 1 minuto da origem, embora a API aceite menos. 500 por dia e por número, 10 versões, arquivo de 200 MB, mídia de 100 MB.
+- **Aviso de volume** só a partir de 1.000 pessoas (na origem, sempre). **Data agendada** fica no aparelho até agendar, e não é copiada ao duplicar (na origem, era). Custo em texto fixo, sem crédito por mensagem; em modelo, avisa que a Meta cobra.
+- **Modelos com variável em cabeçalho, botão ou nomeada** aparecem desabilitados, com a explicação, porque a campanha só preenche o corpo por posição.
+- **Fora:** filtro "Assistente" nos contatos e a rota síncrona `apify-places-search` (a busca vai por `/place-extractions`).
+- **Acréscimos na API:** `POST /campaigns/:id/schedule`, `GET /campaigns/:id/recipient-summary`, `DELETE /campaigns/:id/recipients` (com `?origin=`) e `/recipients/:recipientId`; `ChatAudience` usa a mesma busca da lista de contatos.
+- **Integrador:** a CSP libera `accounts.google.com` e `apis.google.com` em `script-src`, `sheets.googleapis.com` em `connect-src`, e `docs.google.com` e `accounts.google.com` em `frame-src`, para o seletor de planilhas. Não testado contra o Google real.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -366,6 +379,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
 - Não testado em aparelho: teclado virtual (simulado), botão voltar físico, gesto de sistema do Android, háptico, permissão do microfone durante o segurar, zoom no visualizador, intervenção de histórico do Chrome em link direto.
 - Ferramentas: `transform_to_schema` descarta `properties` de objetos de nível superior, como na origem; função personalizada perde as credenciais (a tela avisa); não há endpoint de teste para script de webhook. `BACKEND_URL` sem valor em desenvolvimento gera URL relativa, que o front resolve com `apiAssetUrl`.
+- Campanhas: `ChatAudience` vale para a organização inteira, enquanto `/contacts` respeita `visible_to`: "todos" pode trazer mais do que a tela mostra a quem tem `chat_list_to` restrito. Precisa de decisão: quem pode criar campanha vê toda a base? Filtros de etiqueta, canal e situação no assistente não foram aplicados no navegador, e o caminho do celular parou na confirmação de lançar.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)

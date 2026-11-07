@@ -2,7 +2,6 @@ import { lazy } from "react"
 import { Route } from "react-router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
-import { placeholderRoute } from "@/routes/placeholder"
 
 const CampaignsPage = lazy(() => import("./campaigns-page"))
 const CampaignMonitorPage = lazy(() => import("./campaign-monitor-page"))
@@ -18,15 +17,7 @@ export const campaignsRoutes = (
         </RouteFrame>
       }
     />
-    {/* Criar e editar são do assistente (`wizard.tsx`), ligado na integração. */}
-    <Route
-      path="/campaigns/new"
-      element={placeholderRoute("navigation.routes.campaignNew", "campaigns")}
-    />
-    <Route
-      path="/campaigns/:campaignId/edit"
-      element={placeholderRoute("navigation.routes.campaign", "campaigns")}
-    />
+    {/* Criar e editar são do assistente: ver `wizard.tsx`. */}
     <Route
       path="/campaigns/:campaignId"
       element={

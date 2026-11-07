@@ -10,6 +10,7 @@ import { RootRedirect } from "@/components/require-permission"
 import { RouteBoundary } from "@/components/shell/route-boundary"
 import { calendarRoutes } from "@/routes/calendar"
 import { campaignsRoutes } from "@/routes/campaigns"
+import { campaignWizardRoutes } from "@/routes/campaigns/wizard"
 import { carouselsRoutes } from "@/routes/carousels"
 import { catalogRoutes } from "@/routes/catalog"
 import { chatRoutes } from "@/routes/chat"
@@ -130,6 +131,7 @@ export default function App() {
           {contactsRoutes}
           {catalogRoutes}
           {funnelsRoutes}
+          {campaignWizardRoutes}
           {campaignsRoutes}
           {carouselsRoutes}
           {settingsRoutes}
