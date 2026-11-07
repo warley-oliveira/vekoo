@@ -1,5 +1,7 @@
 import type { Navigator, To } from "react-router"
 
+import { closeLayersThen } from "./back-stack"
+
 // Segura a navegação sob o `BrowserRouter`, que não tem `useBlocker`. Quem usa é
 // `useUnsavedChanges`; as telas nunca falam com este módulo.
 //
@@ -135,7 +137,8 @@ window.addEventListener(
     ask({
       proceed: () => {
         uninstall()
-        window.history.go(delta)
+        // A própria pergunta é uma camada: sem esperar ela sair, voltar só a fecharia.
+        closeLayersThen(() => window.history.go(delta))
       },
       reset: () => {},
     })

@@ -341,6 +341,11 @@ export function pushLayer(close: Layer["close"]): () => void {
  * assentar faria o `history.go` pendente cair em cima da rota nova.
  */
 export function closeLayersThen(run: () => void): void {
+  if (installs === 0) {
+    run()
+    return
+  }
+
   const refused = layers.splice(0).filter((layer) => layer.close() === false)
   if (refused.length > 0) {
     // Alguma camada perguntou antes de fechar: a resposta é da pessoa, e ninguém navega por ela.

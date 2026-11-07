@@ -84,7 +84,7 @@ Agrupa um assunto quando só o espaçamento não basta. `flush` encosta o conte�
 
 O padrão das telas de configuração, nascido em Pessoas: `AreaNav` no topo quando a área tem mais de uma rota (o endereço diz onde se está, e o botão voltar funciona), `SettingsSection` com salvar por seção, interruptor que vale na hora e edição em `SidePanel`.
 
-- `AreaNav`: abas com rota, rolando de lado em tela estreita.
+- `AreaNav`: abas com rota, rolando de lado em tela estreita, com a aba ativa à vista.
 - `EntityCard`: card de uma coisa nomeada (departamento, grupo) com menu de ações e rodapé.
 - `Callout`: recado no meio do conteúdo, para o que a pessoa precisa saber antes de agir.
 - `ImagePicker`: foto ou logo, com enviar, trocar, remover e validação de tipo e tamanho.

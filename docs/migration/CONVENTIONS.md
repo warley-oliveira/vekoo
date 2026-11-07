@@ -219,6 +219,9 @@ useChannel<T>(nome | null, params?, onMessage?): { connected, perform(acao, dado
 useCan(key?): boolean; useCanAccess(): (key?) => boolean; usePermissionLevel(key)
 <RequirePermission permission="chat" fallback?>   // sem fallback, redireciona e avisa
 
+// @/hooks/use-back-layer: camada que não é popup do Base UI (seleção, painel feito à mão). O resto é sozinho.
+useBackLayer(ativa, fechar)                // o voltar do aparelho fecha isto antes de sair da tela
+
 // Dados
 useApi(path, config?)                      // @/hooks/use-api
 useOptionalApi(path, fallback, config?)    // 404 vira fallback (endpoint opcional)
