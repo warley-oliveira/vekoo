@@ -665,7 +665,7 @@
       "submitting": "Enviando…",
       "backToLogin": "Voltar para entrar",
       "sentTitle": "Olhe seu e-mail",
-      "sentDescription": "Se existir uma conta em <strong>{{email}}</strong>, enviamos um link para criar uma senha nova. Ele vale por 1 hora.",
+      "sentDescription": "Se existir uma conta em <strong>{{email}}</strong>, enviamos um link para criar uma senha nova.",
       "sentNote": "Se houver uma conta com esse e-mail, o link de nova senha chega em instantes. Ele vale por 2 horas.",
       "notReceived": "Não chegou? Confira a caixa de spam ou",
       "tryAnotherEmail": "tente com outro e-mail",

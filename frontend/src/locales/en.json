@@ -665,7 +665,7 @@
       "submitting": "Sending…",
       "backToLogin": "Back to sign in",
       "sentTitle": "Check your email",
-      "sentDescription": "If an account exists for <strong>{{email}}</strong>, we've sent a link to create a new password. It's valid for 1 hour.",
+      "sentDescription": "If an account exists for <strong>{{email}}</strong>, we've sent a link to create a new password.",
       "sentNote": "If there's an account with that email, the password link arrives shortly. It's valid for 2 hours.",
       "notReceived": "Didn't arrive? Check your spam folder or",
       "tryAnotherEmail": "try another email",
