@@ -260,6 +260,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Fora ou menor que a origem:** `text_color` na grade; `role` do colaborador, que a API não tem; aba Mensagens só leitura, com as últimas 50; toast de evento novo só para agendamento; excluir calendário (decisão de produto em aberto).
 - **Acrescentado:** aula avulsa, cancelar e remarcar aula, arquivar, horários livres e conflito, desfazer depois de arrastar.
 - **Acréscimos na API:** `SchedulerBalancer` não escolhe quem tem 0% na distribuição. `Ai::Run`: quem recebia `busy` soltava a vaga de quem estava gerando.
+- **Revisão da tela (fe-calendar-36):** tudo que abria em painel lateral abre em `ResponsiveDialog`, com o tamanho pelo conteúdo (`lg` regras e criar, `xl` serviço, inscritos da turma, sequência e aula, `2xl` agendamento aberto, colaborador e turma, `md` a lateral do calendário abaixo de `lg`). **O agendamento abre para ler:** resumo com o dia em destaque, situação no título e presença a um toque; "Editar" troca o resumo pelo formulário no mesmo lugar e salvar volta ao resumo. Cancelar e excluir ficam no menu "…" do topo. **"Arquivar" virou "Excluir agendamento"** na tela (a API continua arquivando, com o histórico). **Aula** segue a regra do agendamento: presença e marcação em lote só depois de começar. **Bloco da grade de horas** ganha um fio de 3 px na cor do colaborador.
+- **`GET /calendar-events/:id`** (acréscimo na API): `?event=` fora do período busca o agendamento, marca o calendário dele e vai até o dia. Arquivado é 404. Aula calculada continua só no período aberto.
 
 ### Pipelines: quadro e card (fe-pipelines-board)
 
@@ -438,7 +440,7 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Gatilho com ids de outra organização** salva com `201` e não alcança nada ao executar: deveria responder `422`.
 - **Erro 500 com o Mongo fora** responde `{ status, error }`, fora do contrato. A tela trata como `unknown`.
 - **Ordem da rajada:** o fluxo recebeu `três, uma, duas` em modo produção, com uma resposta só.
-- **Avisos de agendamento** levam a `/calendar`, não ao agendamento. `?event=` só abre o que está no período visível.
+- **Avisos de agendamento** levam a `/calendar`, não ao agendamento. `?event=` já abre agendamento de outro período (fe-calendar-36): falta o aviso levar o id.
 - **Visão geral × painel personalizado:** 154 contra 14 conversas na demonstração, porque a semente sorteia `DailyChatStat` e o painel consulta conversas. Na rodada ponta a ponta, com o rollup real, os números bateram (13 = 13), mas nunca numa base real.
 - **Semente:** alertas citam canais que não existem; webhook diz "Nenhuma requisição ainda" com 90 no histórico; anexos são PNGs de cor chapada. O banco compartilhado só perde o aviso de modelos e o gatilho "negócio ganho" depois de `db:seed`.
 - **Acabamento:** "(sem valor)" cru em "Conversas por atendente"; alvos de toque menores em "2 execuções em 7 dias", "Ver histórico" e "Renomear carrossel"; conversa no celular sem `h1`, porque o nome fica dentro de um botão.
@@ -478,7 +480,7 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - Dashboard: faceta por `flow_id` em `MessageVolumeDaily`, `flow_id` em `MessageAuthorship.projection` e o card de ranking por fluxo, agora que a mensagem guarda o fluxo. A fonte `messages` não expõe `usage_*`. `aiCosts` em `/catalog` ainda não lista os créditos dos blocos.
 - Processo de scripts com concorrência 2 pode virar gargalo em IA com ferramenta.
 - Não exercitado de ponta a ponta: `send_template`, `catalog_search`, `goto_flow` e `send_media` em fluxo (só specs), transcrição Whisper, `PruneExecutionsJob` e `PruneLogsJob` no cron, 429 da entrada de webhook, volume.
-- `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
+- `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. `GET /calendar-events/:id` já existe (fe-calendar-36).
 - Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
 - Não testado em aparelho: teclado virtual (simulado), botão voltar físico, gesto de sistema do Android, háptico, permissão do microfone durante o segurar, zoom no visualizador, intervenção de histórico do Chrome em link direto.
 - Ferramentas: `transform_to_schema` descarta `properties` de objetos de nível superior, como na origem; função personalizada perde as credenciais (a tela avisa); não há endpoint de teste para script de webhook. `BACKEND_URL` sem valor em desenvolvimento gera URL relativa, que o front resolve com `apiAssetUrl`.

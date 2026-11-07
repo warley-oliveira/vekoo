@@ -199,7 +199,7 @@ export function CollaboratorPanel({
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
-      size="xl"
+      size="2xl"
       title={professional?.name ?? t("calendar.collaborators.create.title")}
       description={professional ? undefined : t("calendar.collaborators.create.description")}
       onSubmit={submit}

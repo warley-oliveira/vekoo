@@ -311,7 +311,7 @@ export function ClassGroupPanel({
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
-      size="xl"
+      size="2xl"
       title={classGroup?.name ?? t("calendar.classGroups.create.title")}
       description={classGroup ? undefined : t("calendar.classGroups.create.description")}
       onSubmit={submit}
