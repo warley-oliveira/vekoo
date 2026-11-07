@@ -83,7 +83,7 @@ export function ResetPasswordPage() {
         title={t("auth.reset.invalidTitle")}
         description={t("auth.reset.invalidDescription")}
         footer={
-          <Link to="/login" className="font-medium text-foreground hover:underline">
+          <Link to="/login" className="pointer-coarse:-my-2.5 pointer-coarse:py-2.5 font-medium text-foreground hover:underline">
             {t("auth.login.submit")}
           </Link>
         }
@@ -105,7 +105,7 @@ export function ResetPasswordPage() {
       title={t("auth.reset.title")}
       description={t("auth.reset.description")}
       footer={
-        <Link to="/login" className="font-medium text-foreground hover:underline">
+        <Link to="/login" className="pointer-coarse:-my-2.5 pointer-coarse:py-2.5 font-medium text-foreground hover:underline">
           {t("auth.login.submit")}
         </Link>
       }

@@ -263,7 +263,7 @@ function WebhookRow({ webhook, alerts }: { webhook: Webhook; alerts?: WebhookAle
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <Link
               to={path}
-              className="truncate rounded text-sm font-semibold tracking-tight hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="pointer-coarse:-my-2.5 pointer-coarse:py-2.5 truncate rounded text-sm font-semibold tracking-tight hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               {webhook.name}
             </Link>

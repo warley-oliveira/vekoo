@@ -342,7 +342,7 @@ function CategoryRow({
       <button
         type="button"
         onClick={() => context.edit(category)}
-        className="min-w-0 flex-1 rounded-md py-1 text-left text-sm font-medium outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="min-w-0 flex-1 rounded-md py-1 text-left text-sm font-medium pointer-coarse:min-h-10 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <span className="block truncate">
           {flat ? categoryPathLabel(context.categories, category) : category.name}

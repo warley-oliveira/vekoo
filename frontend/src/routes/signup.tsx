@@ -93,7 +93,7 @@ export function SignUpPage() {
           {t("auth.signup.hasAccount")}{" "}
           <Link
             to="/login"
-            className="rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="pointer-coarse:-my-2.5 pointer-coarse:py-2.5 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {t("auth.signup.signIn")}
           </Link>

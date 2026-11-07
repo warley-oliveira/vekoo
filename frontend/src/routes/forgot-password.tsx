@@ -119,7 +119,7 @@ export function ForgotPasswordPage() {
       footer={
         <Link
           to="/login"
-          className="inline-flex items-center gap-1.5 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="pointer-coarse:-my-2.5 pointer-coarse:py-2.5 inline-flex items-center gap-1.5 rounded font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="size-3.5" /> {t("auth.forgot.backToLogin")}
         </Link>
