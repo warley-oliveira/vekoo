@@ -75,7 +75,7 @@ export function CarouselTable({
         </div>
       ),
     }),
-    columnHelper.accessor((c) => c.cards.length, {
+    columnHelper.accessor((c) => c.cardCount, {
       id: "cards",
       header: t("carousels.table.cards"),
       cell: (info) => (

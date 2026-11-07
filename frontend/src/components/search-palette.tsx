@@ -194,7 +194,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
                       {!inTitle && matchedCard
                         ? `“…${cardTitle(matchedCard)}…”`
                         : `${t("carousels.cardCount", {
-                            count: carousel.cards.length,
+                            count: carousel.cardCount,
                           })} · ${t("carousels.editedAt", {
                             when: formatRelative(carousel.editedAt, language),
                           })}`}

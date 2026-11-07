@@ -127,7 +127,7 @@ export function CarouselGridCard({
       <div className="mt-2.5 space-y-0.5">
         <h3 className="truncate text-sm font-medium">{carousel.title}</h3>
         <p className="text-xs text-muted-foreground">
-          {t("carousels.cardCount", { count: carousel.cards.length })} ·{" "}
+          {t("carousels.cardCount", { count: carousel.cardCount })} ·{" "}
           {carousel.format} ·{" "}
           {t("carousels.editedAt", {
             when: formatRelative(carousel.editedAt, language),
