@@ -43,7 +43,8 @@
       "emptyTitle": "O catálogo está vazio",
       "emptyDescription": "Nenhuma ferramenta disponível por enquanto. Quem programa pode criar uma função na aba Funções.",
       "noResultsTitle": "Nenhuma ferramenta encontrada",
-      "noResultsDescription": "Tente outra palavra, ou limpe os filtros."
+      "noResultsDescription": "Tente outra palavra, ou limpe os filtros.",
+      "availableTitle": "Disponíveis"
     },
     "panel": {
       "loading": "Ferramenta",
@@ -240,6 +241,89 @@
         "parameterNameTaken": "Já existe um parâmetro com este nome aqui.",
         "parameterDescription": "Diga o que vai aqui: é o que a IA lê."
       }
+    },
+    "catalogCopy": {
+      "appointments": {
+        "name": "Agendamentos",
+        "description": "Mostra os serviços, procura horários livres, marca e cancela atendimentos na sua agenda."
+      },
+      "atendimento-humano": {
+        "name": "Atendimento humano",
+        "description": "Passa a conversa para uma pessoa da equipe ou um departamento, e volta a responder quando for a hora."
+      },
+      "dynamic-database": {
+        "name": "Tabelas de dados",
+        "description": "Guarda e consulta informações em tabelas próprias, criadas na hora, sem precisar configurar nada antes."
+      },
+      "catalog": {
+        "name": "Catálogo de produtos",
+        "description": "Encontra produtos, imóveis ou serviços do seu catálogo pelo que o cliente descreve, e sugere opções parecidas."
+      },
+      "contact-memory": {
+        "name": "Memória do contato",
+        "description": "Anota o que importa sobre cada contato, e lembra na próxima conversa."
+      },
+      "pipelines": {
+        "name": "Pipelines",
+        "description": "Coloca o contato num pipeline, avança de etapa, preenche o card e fecha a venda como ganha ou perdida."
+      },
+      "contact-tags": {
+        "name": "Etiquetas do contato",
+        "description": "Põe, tira e consulta as etiquetas de cada contato, para separar quem é quem."
+      },
+      "utilidades-brasil": {
+        "name": "Utilidades do Brasil",
+        "description": "Confere CPF e CNPJ, consulta o endereço pelo CEP, calcula idade e arruma o formato do telefone."
+      }
+    },
+    "functionCopy": {
+      "validate_cpf_cnpj": "Confere se um CPF ou CNPJ é válido",
+      "lookup_cep": "Consulta o endereço pelo CEP",
+      "calculate_age": "Calcula a idade pela data de nascimento",
+      "format_phone_br": "Arruma o formato de um telefone",
+      "base64_encode_decode": "Codifica e decodifica texto em base64",
+      "list_services": "Mostra os serviços que dá para agendar",
+      "list_employees": "Mostra os profissionais que atendem",
+      "get_available_slots": "Procura horários livres",
+      "create_appointment": "Marca um horário",
+      "cancel_appointment": "Cancela um horário marcado",
+      "transfer_to_human_by_email": "Passa a conversa para uma pessoa da equipe",
+      "transfer_to_department": "Passa a conversa para um departamento",
+      "resume_bot": "Volta a responder na conversa",
+      "list_team_members": "Mostra quem está na equipe",
+      "assigned_agent": "Diz quem está cuidando da conversa",
+      "db_create_record": "Guarda um registro numa tabela",
+      "db_find_records": "Procura registros numa tabela",
+      "db_find_one": "Busca um registro",
+      "db_update_record": "Atualiza um registro",
+      "db_delete_record": "Apaga um registro",
+      "db_count_records": "Conta os registros de uma tabela",
+      "db_search_records": "Procura por texto nos registros",
+      "catalog_search": "Busca produtos pelo que o cliente descreve",
+      "catalog_get_item": "Mostra os detalhes de um produto",
+      "catalog_list_categories": "Mostra as categorias do catálogo",
+      "catalog_facet_values": "Mostra as opções disponíveis, como cores e tamanhos",
+      "catalog_similar_items": "Sugere produtos parecidos",
+      "remember_fact": "Anota algo sobre o contato",
+      "recall_fact": "Lembra o que foi anotado",
+      "set_contact_attribute": "Preenche um dado na ficha do contato",
+      "get_contact_attribute": "Lê um dado da ficha do contato",
+      "who_is_this_contact": "Diz quem é o contato",
+      "list_pipelines": "Mostra os pipelines e as etapas",
+      "get_lead_pipeline_context": "Diz em que etapa o contato está",
+      "qualify_lead_in_pipeline": "Coloca o contato num pipeline",
+      "advance_lead_in_pipeline": "Avança o contato para a próxima etapa",
+      "update_lead_card": "Atualiza os dados do card",
+      "mark_lead_won": "Marca a venda como ganha",
+      "mark_lead_lost": "Marca a venda como perdida",
+      "add_label_to_lead": "Põe uma etiqueta no card",
+      "set_lead_custom_field": "Preenche um campo do card",
+      "comment_on_lead_card": "Deixa um comentário no card",
+      "add_checklist_to_lead_card": "Cria uma lista de tarefas no card",
+      "add_contact_tag": "Põe uma etiqueta no contato",
+      "remove_contact_tag": "Tira uma etiqueta do contato",
+      "list_contact_tags": "Mostra as etiquetas do contato",
+      "list_workspace_tags": "Mostra todas as etiquetas"
     }
   }
 }

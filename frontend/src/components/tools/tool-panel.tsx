@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils"
 
 import { StandaloneFunctionTester } from "./function-tester"
 import { ParametersSummary } from "./parameters-editor"
+import { useToolTexts } from "./tool-texts"
 import { ToolLogo } from "./tool-logo"
 
 // Uma ferramenta: o que ela faz, o que pede e, depois de instalada, como usar. É aqui que o dono da loja instala sem
@@ -84,6 +85,7 @@ export function ToolPanel({ toolId, open, onOpenChange }: ToolPanelProps) {
 
 type PanelTool = {
   id: string
+  slug: string
   name: string
   description: string
   category: string | null
@@ -110,6 +112,7 @@ function LoadedPanel({
   installationId: string | null
 }) {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const confirm = useConfirm()
   const canUseFlows = useCan("flows")
   const { installations } = useToolInstallations()
@@ -118,6 +121,7 @@ function LoadedPanel({
   const [toggling, setToggling] = useState(false)
 
   const installation = installationId ? (installations.find((item) => item.id === installationId) ?? null) : null
+  const toolName = texts.name(tool)
   const fields = useMemo(() => tool.credentialsSchema ?? [], [tool.credentialsSchema])
   const requireValues = !installation?.hasCredentials
 
@@ -137,7 +141,7 @@ function LoadedPanel({
     if (!installation) {
       await install(tool.id, filled(values))
       form.reset(blank(fields))
-      toast.success(t("tools.panel.installed", { name: tool.name }))
+      toast.success(t("tools.panel.installed", { name: toolName }))
       return
     }
     const changes = filled(values)
@@ -152,7 +156,7 @@ function LoadedPanel({
     setToggling(true)
     try {
       const updated = await toggle(installation)
-      toast.success(t(updated.enabled ? "tools.panel.turnedOn" : "tools.panel.turnedOff", { name: tool.name }))
+      toast.success(t(updated.enabled ? "tools.panel.turnedOn" : "tools.panel.turnedOff", { name: toolName }))
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : t("tools.common.actionFailed"))
     } finally {
@@ -163,14 +167,14 @@ function LoadedPanel({
   const remove = async () => {
     if (!installation) return
     const confirmed = await confirm({
-      title: t("tools.panel.uninstallTitle", { name: tool.name }),
+      title: t("tools.panel.uninstallTitle", { name: toolName }),
       description: t("tools.panel.uninstallDescription"),
       confirmLabel: t("tools.panel.uninstall"),
       destructive: true,
       onConfirm: () => uninstall(installation.id),
     })
     if (confirmed) {
-      toast.success(t("tools.panel.uninstalled", { name: tool.name }))
+      toast.success(t("tools.panel.uninstalled", { name: toolName }))
       onOpenChange(false)
     }
   }
@@ -224,7 +228,7 @@ function LoadedPanel({
       onOpenChange={(next) => {
         if (!next) void close()
       }}
-      title={tool.name}
+      title={toolName}
       description={t(`tools.categories.${knownCategory(tool.category)}`)}
       size="lg"
       onSubmit={submit}
@@ -234,7 +238,7 @@ function LoadedPanel({
         <div className="flex items-start gap-3">
           <ToolLogo tool={tool} size="lg" className={cn(installation && !installation.enabled && "opacity-50")} />
           <div className="min-w-0 flex-1 space-y-1.5">
-            <p className="text-sm text-pretty">{tool.description}</p>
+            <p className="text-sm text-pretty">{texts.description(tool)}</p>
             <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               {t("tools.card.functions", { count: functionCount || rows.length })}
               {installation ? (
@@ -334,6 +338,7 @@ function IncludedFunction({
   fn: ToolFunction | null
 }) {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const [expanded, setExpanded] = useState(false)
   const [testing, setTesting] = useState(false)
   const personalized = fn && !fn.locked
@@ -351,15 +356,16 @@ function IncludedFunction({
           aria-hidden
         />
         <span className="min-w-0 flex-1 space-y-0.5">
-          <span className={cn("block text-sm text-pretty", !expanded && "line-clamp-2")}>{description}</span>
-          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-            <code className="font-mono text-xs break-all text-muted-foreground">{name}</code>
-            {personalized ? <StatusBadge tone="accent">{t("tools.panel.personalized")}</StatusBadge> : null}
-          </span>
+          <span className={cn("block text-sm text-pretty", !expanded && "line-clamp-2")}>{texts.functionLabel(name, description)}</span>
+          {personalized ? <StatusBadge tone="accent">{t("tools.panel.personalized")}</StatusBadge> : null}
         </span>
       </button>
       {expanded ? (
         <div className="flex flex-col gap-3 border-t bg-muted/20 px-3 py-3 pl-8">
+          <div className="min-w-0 space-y-0.5">
+            <code className="font-mono text-xs font-medium break-all">{name}</code>
+            <p className="text-xs text-pretty text-muted-foreground">{description}</p>
+          </div>
           <ParametersSummary parameters={parameters} />
           {fn ? (
             <div className="flex flex-wrap items-center gap-1.5">

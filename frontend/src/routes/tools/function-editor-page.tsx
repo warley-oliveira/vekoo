@@ -10,6 +10,7 @@ import { z } from "zod"
 import { FunctionTester, StandaloneFunctionTester, type FunctionTesterHandle } from "@/components/tools/function-tester"
 import { GatedCodeEditor } from "@/components/tools/gated-code-editor"
 import { ParametersEditor, ParametersSummary } from "@/components/tools/parameters-editor"
+import { useToolTexts } from "@/components/tools/tool-texts"
 import { usePersonalize } from "@/components/tools/use-personalize"
 import {
   ActionsMenu,
@@ -135,6 +136,7 @@ export default function FunctionEditorPage() {
 
 function LockedFunction({ fn }: { fn: ToolFunction }) {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const personalize = usePersonalize()
   const [busy, setBusy] = useState(false)
 
@@ -153,7 +155,7 @@ function LockedFunction({ fn }: { fn: ToolFunction }) {
 
       <Callout
         icon={<Lock />}
-        title={t("tools.editor.lockedTitle", { name: fn.tool?.name })}
+        title={t("tools.editor.lockedTitle", { name: fn.tool ? texts.name(fn.tool) : "" })}
         action={
           <Button type="button" variant="outline" size="sm" disabled={busy} className="pointer-coarse:h-10" onClick={() => void start()}>
             {t("tools.personalize.action")}

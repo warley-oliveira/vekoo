@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { ToolCard } from "@/components/tools/tool-card"
 import { ToolPanel } from "@/components/tools/tool-panel"
+import { useToolTexts } from "@/components/tools/tool-texts"
 import { ToolsNav } from "@/components/tools/tools-nav"
 import { CardGridSkeleton, EmptyState, ErrorState, FacetedFilter, FilterBar, PageBody, PageHeader } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -26,6 +27,7 @@ import type { CatalogTool, ToolInstallation } from "@/lib/tools/types"
 
 export default function ToolsPage() {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const preset = useMotionPreset()
   const catalog = useToolCatalog()
   const installed = useToolInstallations()
@@ -58,9 +60,13 @@ export default function ToolsPage() {
       ? functions.filter((fn) => fn.toolInstallationId === installation.id).length
       : installation.toolFunctionIds.length
 
-  const matches = (tool: { name: string; description: string; category: string | null }) => {
+  const categoryLabel = (tool: { category: string | null }) => t(`tools.categories.${knownCategory(tool.category)}`)
+
+  // Procura no texto de gente e no da API: quem digita "tags" acha "Etiquetas do contato".
+  const matches = (tool: { name: string; slug: string; description: string; category: string | null }) => {
     if (categories.length > 0 && !categories.includes(knownCategory(tool.category))) return false
-    return !query || matchesSearch(`${tool.name} ${tool.description} ${t(`tools.categories.${knownCategory(tool.category)}`)}`, query)
+    if (!query) return true
+    return matchesSearch(`${texts.name(tool)} ${texts.description(tool)} ${tool.name} ${tool.description} ${categoryLabel(tool)}`, query)
   }
 
   const installedToolIds = useMemo(() => new Set(installed.installations.map((item) => item.toolId)), [installed.installations])
@@ -68,7 +74,8 @@ export default function ToolsPage() {
   const visibleInstalled = installed.installations.filter((item) => item.tool && matches(item.tool))
   const available = catalog.tools.filter((tool) => !installedToolIds.has(tool.id))
   const visibleAvailable = available.filter(matches)
-  const groups = groupByCategory(visibleAvailable)
+  // Na ordem das categorias: quem filtra por uma vê as outras saírem sem o resto mudar de lugar.
+  const orderedAvailable = groupByCategory(visibleAvailable).flatMap((group) => group.tools)
 
   const categoryOptions = useMemo(() => {
     const everything = [...catalog.tools, ...installed.installations.flatMap((item) => (item.tool && !catalog.tools.some((tool) => tool.id === item.toolId) ? [item.tool] : []))]
@@ -93,7 +100,7 @@ export default function ToolsPage() {
     setInstalling(tool.id)
     try {
       await install(tool.id)
-      toast.success(t("tools.panel.installed", { name: tool.name }), {
+      toast.success(t("tools.panel.installed", { name: texts.name(tool) }), {
         description: t("tools.page.installedHint"),
         action: { label: t("tools.page.seeHowTo"), onClick: () => panel.open(tool.id) },
       })
@@ -108,7 +115,7 @@ export default function ToolsPage() {
     setToggling(installation.id)
     try {
       const updated = await toggle(installation)
-      toast.success(t(updated.enabled ? "tools.panel.turnedOn" : "tools.panel.turnedOff", { name: installation.tool?.name }))
+      toast.success(t(updated.enabled ? "tools.panel.turnedOn" : "tools.panel.turnedOff", { name: installation.tool ? texts.name(installation.tool) : "" }))
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : t("tools.common.actionFailed"))
     } finally {
@@ -178,6 +185,7 @@ export default function ToolsPage() {
                       <motion.div key={installation.id} {...preset.listItem} className="min-w-0">
                         <ToolCard
                           tool={tool}
+                          categoryLabel={categoryLabel(tool)}
                           functionCount={functionCountOf(installation)}
                           needsCredentials={tool.credentialsSchema.length > 0 && !installation.hasCredentials}
                           off={!installation.enabled}
@@ -190,14 +198,14 @@ export default function ToolsPage() {
                                     <Switch
                                       checked={installation.enabled}
                                       disabled={toggling === installation.id}
-                                      aria-label={t(installation.enabled ? "tools.page.turnOff" : "tools.page.turnOn", { name: tool.name })}
+                                      aria-label={t(installation.enabled ? "tools.page.turnOff" : "tools.page.turnOn", { name: texts.name(tool) })}
                                       onCheckedChange={() => void flip(installation)}
                                     />
                                   </span>
                                 }
                               />
                               <TooltipContent side="top">
-                                {t(installation.enabled ? "tools.page.turnOff" : "tools.page.turnOn", { name: tool.name })}
+                                {t(installation.enabled ? "tools.page.turnOff" : "tools.page.turnOn", { name: texts.name(tool) })}
                               </TooltipContent>
                             </Tooltip>
                           }
@@ -210,15 +218,16 @@ export default function ToolsPage() {
             </section>
           ) : null}
 
-          {groups.map(({ category, tools }) => (
-            <section key={category} aria-labelledby={`tools-${category}`} className="flex flex-col gap-3">
-              <SectionHeading id={`tools-${category}`} title={t(`tools.categories.${category}`)} hint={t("tools.page.count", { count: tools.length })} />
+          {orderedAvailable.length > 0 ? (
+            <section aria-labelledby="tools-available" className="flex flex-col gap-3">
+              <SectionHeading id="tools-available" title={t("tools.page.availableTitle")} hint={t("tools.page.count", { count: orderedAvailable.length })} />
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <AnimatePresence initial={false}>
-                  {tools.map((tool) => (
+                  {orderedAvailable.map((tool) => (
                     <motion.div key={tool.id} {...preset.listItem} className="min-w-0">
                       <ToolCard
                         tool={tool}
+                        categoryLabel={categoryLabel(tool)}
                         functionCount={tool.functionCount}
                         needsCredentials={tool.requiresCredentials}
                         onOpen={() => panel.open(tool.id)}
@@ -228,7 +237,7 @@ export default function ToolsPage() {
                             variant="outline"
                             size="sm"
                             disabled={installing === tool.id}
-                            aria-label={t("tools.page.installTool", { name: tool.name })}
+                            aria-label={t("tools.page.installTool", { name: texts.name(tool) })}
                             className="pointer-coarse:h-10"
                             onClick={() => void quickInstall(tool)}
                           >
@@ -242,7 +251,7 @@ export default function ToolsPage() {
                 </AnimatePresence>
               </div>
             </section>
-          ))}
+          ) : null}
 
           {!filtering && available.length === 0 && installed.installations.length > 0 ? (
             <p className="text-sm text-muted-foreground">{t("tools.page.allInstalled")}</p>

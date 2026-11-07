@@ -6,6 +6,7 @@ import { ChevronRight, Code2, Lock, PencilRuler, Plus, Search, Trash2 } from "lu
 import { toast } from "sonner"
 
 import { ToolLogo } from "@/components/tools/tool-logo"
+import { useToolTexts } from "@/components/tools/tool-texts"
 import { ToolsNav } from "@/components/tools/tools-nav"
 import { usePersonalize } from "@/components/tools/use-personalize"
 import {
@@ -19,7 +20,6 @@ import {
   PageHeader,
   RelativeTime,
   SortMenu,
-  StatusBadge,
   useConfirm,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -39,6 +39,7 @@ type SortKey = "name" | "recent"
 
 export default function FunctionsPage() {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const language = useLanguage()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -67,10 +68,10 @@ export default function FunctionsPage() {
     () =>
       allGroups.map((group) => ({
         value: group.key,
-        label: group.tool?.name ?? t("tools.functions.customGroup"),
+        label: group.tool ? texts.name(group.tool) : t("tools.functions.customGroup"),
         count: group.functions.length,
       })),
-    [allGroups, t]
+    [allGroups, t, texts]
   )
 
   const visible = useMemo(() => {
@@ -173,6 +174,7 @@ export default function FunctionsPage() {
 
 function GroupSection({ group, collapsed, onToggle }: { group: FunctionGroup; collapsed: boolean; onToggle: () => void }) {
   const { t } = useTranslation()
+  const texts = useToolTexts()
   const preset = useMotionPreset()
   const contentId = `functions-${group.key}`
 
@@ -190,7 +192,7 @@ function GroupSection({ group, collapsed, onToggle }: { group: FunctionGroup; co
           {group.tool ? <ToolLogo tool={group.tool} size="sm" /> : null}
           <span className="min-w-0">
             <span className="block truncate font-heading text-base leading-snug font-medium">
-              {group.tool?.name ?? t("tools.functions.customGroup")}
+              {group.tool ? texts.name(group.tool) : t("tools.functions.customGroup")}
             </span>
             <span className="block truncate text-xs text-muted-foreground">
               {t(group.tool ? "tools.functions.toolGroupHint" : "tools.functions.customGroupHint", { count: group.functions.length })}
@@ -253,11 +255,7 @@ function FunctionRow({ fn }: { fn: ToolFunction }) {
       >
         <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
           <code className="font-mono text-[13px] font-medium break-all">{fn.name}</code>
-          {fn.locked ? (
-            <StatusBadge tone="neutral" dot={false} icon={<Lock />}>
-              {t("tools.functions.managed")}
-            </StatusBadge>
-          ) : null}
+          {fn.locked ? <Lock className="size-3 shrink-0 text-muted-foreground" aria-label={t("tools.functions.managed")} /> : null}
         </span>
         {fn.description ? <span className="line-clamp-2 text-sm text-pretty text-muted-foreground">{fn.description}</span> : null}
         <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">

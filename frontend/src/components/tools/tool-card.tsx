@@ -6,10 +6,13 @@ import { StatusBadge } from "@/components/shared"
 import type { ToolBrand } from "@/lib/tools/types"
 import { cn } from "@/lib/utils"
 
+import { useToolTexts } from "./tool-texts"
 import { ToolLogo } from "./tool-logo"
 
 export type ToolCardProps = {
-  tool: Pick<ToolBrand, "name" | "icon" | "imageUrl"> & { description: string }
+  tool: Pick<ToolBrand, "name" | "slug" | "icon" | "imageUrl"> & { description: string }
+  /** "Utilidades", "Clientes e vendas". */
+  categoryLabel: string
   functionCount: number
   /** Precisa de chave de outro sistema: quem instala fica sabendo antes de abrir. */
   needsCredentials?: boolean
@@ -24,8 +27,9 @@ export type ToolCardProps = {
  * Uma ferramenta: o cartão inteiro abre o painel, e o botão de verdade é o título, para o teclado e o leitor de tela
  * o acharem.
  */
-export function ToolCard({ tool, functionCount, needsCredentials, off, control, onOpen }: ToolCardProps) {
+export function ToolCard({ tool, categoryLabel, functionCount, needsCredentials, off, control, onOpen }: ToolCardProps) {
   const { t } = useTranslation()
+  const texts = useToolTexts()
 
   return (
     <article className="relative flex h-full min-h-36 flex-col gap-3 rounded-xl p-4 ring-1 ring-foreground/10 transition-colors hover:bg-muted/40">
@@ -41,11 +45,13 @@ export function ToolCard({ tool, functionCount, needsCredentials, off, control, 
                 off && "text-muted-foreground"
               )}
             >
-              {tool.name}
+              {texts.name(tool)}
             </button>
           </h3>
-          <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-            {t("tools.card.functions", { count: functionCount })}
+          <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
+            <span>{categoryLabel}</span>
+            <span aria-hidden>·</span>
+            <span>{t("tools.card.functions", { count: functionCount })}</span>
             {needsCredentials ? (
               <span className="inline-flex items-center gap-1">
                 <KeyRound className="size-3" aria-hidden />
@@ -55,7 +61,7 @@ export function ToolCard({ tool, functionCount, needsCredentials, off, control, 
           </p>
         </div>
       </div>
-      <p className="line-clamp-2 text-sm text-pretty text-muted-foreground">{tool.description}</p>
+      <p className="line-clamp-3 text-sm text-pretty text-muted-foreground">{texts.description(tool)}</p>
       {control || off ? (
         <div className="mt-auto flex items-center justify-between gap-2">
           {off ? <StatusBadge tone="neutral">{t("tools.card.off")}</StatusBadge> : <span />}

@@ -43,7 +43,8 @@
       "emptyTitle": "The catalog is empty",
       "emptyDescription": "No tools are available yet. If you code, you can create a function in the Functions tab.",
       "noResultsTitle": "No tools found",
-      "noResultsDescription": "Try another word, or clear the filters."
+      "noResultsDescription": "Try another word, or clear the filters.",
+      "availableTitle": "Available"
     },
     "panel": {
       "loading": "Tool",
@@ -240,6 +241,89 @@
         "parameterNameTaken": "There's already a parameter with this name here.",
         "parameterDescription": "Say what goes here: that's what the AI reads."
       }
+    },
+    "catalogCopy": {
+      "appointments": {
+        "name": "Appointments",
+        "description": "Shows your services, finds open slots, and books or cancels appointments on your calendar."
+      },
+      "atendimento-humano": {
+        "name": "Human support",
+        "description": "Hands the conversation to someone on the team or a department, and picks it back up when it's time."
+      },
+      "dynamic-database": {
+        "name": "Data tables",
+        "description": "Stores and looks up information in tables of its own, created on the fly, with nothing to set up first."
+      },
+      "catalog": {
+        "name": "Product catalog",
+        "description": "Finds products, properties or services in your catalog from what the customer describes, and suggests similar options."
+      },
+      "contact-memory": {
+        "name": "Contact memory",
+        "description": "Takes note of what matters about each contact, and remembers it in the next conversation."
+      },
+      "pipelines": {
+        "name": "Pipelines",
+        "description": "Puts the contact in a pipeline, moves them along, fills in the card and closes the sale as won or lost."
+      },
+      "contact-tags": {
+        "name": "Contact tags",
+        "description": "Adds, removes and checks each contact's tags, to tell people apart."
+      },
+      "utilidades-brasil": {
+        "name": "Brazil utilities",
+        "description": "Checks CPF and CNPJ numbers, finds an address from a postal code, works out age and tidies up phone numbers."
+      }
+    },
+    "functionCopy": {
+      "validate_cpf_cnpj": "Checks whether a CPF or CNPJ is valid",
+      "lookup_cep": "Finds an address from a postal code",
+      "calculate_age": "Works out age from a birth date",
+      "format_phone_br": "Tidies up a phone number",
+      "base64_encode_decode": "Encodes and decodes base64 text",
+      "list_services": "Shows the services that can be booked",
+      "list_employees": "Shows the professionals available",
+      "get_available_slots": "Finds open slots",
+      "create_appointment": "Books an appointment",
+      "cancel_appointment": "Cancels an appointment",
+      "transfer_to_human_by_email": "Hands the conversation to someone on the team",
+      "transfer_to_department": "Hands the conversation to a department",
+      "resume_bot": "Goes back to answering the conversation",
+      "list_team_members": "Shows who's on the team",
+      "assigned_agent": "Says who's looking after the conversation",
+      "db_create_record": "Stores a record in a table",
+      "db_find_records": "Looks up records in a table",
+      "db_find_one": "Finds one record",
+      "db_update_record": "Updates a record",
+      "db_delete_record": "Deletes a record",
+      "db_count_records": "Counts the records in a table",
+      "db_search_records": "Searches the records by text",
+      "catalog_search": "Finds products from what the customer describes",
+      "catalog_get_item": "Shows a product's details",
+      "catalog_list_categories": "Shows the catalog's categories",
+      "catalog_facet_values": "Shows the available options, like colors and sizes",
+      "catalog_similar_items": "Suggests similar products",
+      "remember_fact": "Takes a note about the contact",
+      "recall_fact": "Remembers what was noted",
+      "set_contact_attribute": "Fills in a detail on the contact's record",
+      "get_contact_attribute": "Reads a detail from the contact's record",
+      "who_is_this_contact": "Says who the contact is",
+      "list_pipelines": "Shows the pipelines and their stages",
+      "get_lead_pipeline_context": "Says which stage the contact is in",
+      "qualify_lead_in_pipeline": "Puts the contact in a pipeline",
+      "advance_lead_in_pipeline": "Moves the contact to the next stage",
+      "update_lead_card": "Updates the card's details",
+      "mark_lead_won": "Marks the sale as won",
+      "mark_lead_lost": "Marks the sale as lost",
+      "add_label_to_lead": "Adds a label to the card",
+      "set_lead_custom_field": "Fills in a field on the card",
+      "comment_on_lead_card": "Leaves a comment on the card",
+      "add_checklist_to_lead_card": "Creates a to-do list on the card",
+      "add_contact_tag": "Adds a tag to the contact",
+      "remove_contact_tag": "Removes a tag from the contact",
+      "list_contact_tags": "Shows the contact's tags",
+      "list_workspace_tags": "Shows all the tags"
     }
   }
 }
