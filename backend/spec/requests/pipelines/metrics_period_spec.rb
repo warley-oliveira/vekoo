@@ -11,6 +11,8 @@ RSpec.describe "Pipelines: métricas por período e filtro do histórico", type:
 
   describe "GET /pipelines/boards/:id/metrics com período" do
     let(:path) { "/pipelines/boards/#{board.id}/metrics" }
+    # O "hoje" do pedido é o do fuso da organização. Às 21h em São Paulo, `Date.current` já é amanhã em UTC.
+    let(:today) { Time.current.in_time_zone(Pipelines.time_zone_for(organization)).to_date }
 
     it "não traz `period` sem datas, como sempre foi" do
       get path, headers: headers
@@ -22,7 +24,7 @@ RSpec.describe "Pipelines: métricas por período e filtro do histórico", type:
     it "acrescenta `period` ao resto das métricas" do
       create(:pipeline_card, stage: stage, deal_value: 400, won_at: Time.current)
 
-      get path, params: { from: 7.days.ago.to_date.iso8601, to: Date.current.iso8601 }, headers: headers
+      get path, params: { from: (today - 7).iso8601, to: today.iso8601 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(body["totalCards"]).to eq(1)
@@ -48,7 +50,7 @@ RSpec.describe "Pipelines: métricas por período e filtro do histórico", type:
       create(:pipeline_card, stage: stage, assigned_to: member, deal_value: 100, won_at: Time.current)
       create(:pipeline_card, stage: stage, deal_value: 900, won_at: Time.current)
 
-      get path, params: { from: Date.current.iso8601, to: Date.current.iso8601 }, headers: auth_headers(member)
+      get path, params: { from: today.iso8601, to: today.iso8601 }, headers: auth_headers(member)
 
       expect(body["period"]["summary"]).to include("createdCount" => 1, "wonCount" => 1, "wonValue" => 100.0)
       expect(body["period"]["ranking"].map { |entry| entry["user"]["id"] }).to eq([ member.id ])

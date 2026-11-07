@@ -718,8 +718,9 @@ RSpec.describe "Dashboards personalizados", type: :request do
   describe "POST /custom-dashboards/compound-query" do
     it "devolve o resultado de cada passo pelo id, cada um na própria fonte" do
       create(:chat, organization: organization)
-      # Ontem: o período é no fuso da organização, e hoje em UTC ainda é o dia seguinte para ela entre 0h e 3h.
-      DailyChatStat.create!(organization: organization, day: 1.day.ago.to_date, metrics: { "messages_inbound" => 5 })
+      # O dia do agregado é o do fuso da organização: às 21h em São Paulo, `Date.current` já é amanhã em UTC.
+      today = Time.current.in_time_zone(organization.reporting_zone).to_date
+      DailyChatStat.create!(organization: organization, day: today, metrics: { "messages_inbound" => 5 })
 
       post "/custom-dashboards/compound-query", params: {
         steps: [
