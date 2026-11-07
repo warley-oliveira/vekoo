@@ -89,6 +89,7 @@ en:
         phone_number_ids: "Numbers"
         template_ids: "Templates"
         chat_tag_ids: "Tags"
+        flow_id: "Flow"
         send_start_hour: "Window start"
         send_end_hour: "Window end"
         send_days: "Sending days"
@@ -128,5 +129,7 @@ en:
               not_found: "include a channel that isn't in this organization"
             chat_tag_ids:
               not_found: "include a tag that isn't in this organization"
+            flow_id:
+              not_found: "isn't in this organization"
             buffer_max_seconds:
               less_than_minimum: "can't be less than the minimum interval"
