@@ -25,7 +25,7 @@ export function EditorSection({
       {title ? (
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-sm font-medium">{title}</h3>
+            <h3 className="font-heading text-[0.95rem] font-semibold">{title}</h3>
             {hint ? <p className="text-xs text-pretty text-muted-foreground">{hint}</p> : null}
           </div>
           {action}

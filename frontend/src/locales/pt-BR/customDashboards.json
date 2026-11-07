@@ -1,7 +1,7 @@
 {
   "customDashboards": {
     "tab": {
-      "create": "Criar painel",
+      "create": "Criar",
       "loading": "Painel",
       "unsaved": "Alterações não salvas",
       "notFound": "Este painel não existe mais",
@@ -47,9 +47,9 @@
       "refresh": "Atualizar agora",
       "autoRefresh": "Atualização automática",
       "refreshOptions": {
-        "0": "Sem atualização automática",
+        "0": "Não atualizar sozinho",
         "30": "A cada 30 segundos",
-        "60": "A cada 1 minuto",
+        "60": "A cada minuto",
         "300": "A cada 5 minutos"
       },
       "edit": "Editar",
@@ -303,6 +303,8 @@
       "tableMode": "O que a tabela mostra",
       "tableSummary": "Um resumo",
       "tableRecords": "Cada registro",
+      "showTotals": "Mostrar o total",
+      "showTotalsHint": "Abaixo da tabela. Coluna calculada refaz a conta em cima dos totais.",
       "columns": "Colunas",
       "columnsHint": "Sem escolher nada, entram todas.",
       "columnsPlaceholder": "Todas as colunas",
@@ -558,7 +560,7 @@
         "delivered": "Entregues",
         "recipients": "Destinatários",
         "sent": "Enviadas",
-        "noteContent": "## Como ler este painel\n\nExplique aqui o que cada número quer dizer, ou o que mudou."
+        "noteContent": "Explique aqui o que cada número quer dizer, ou o que mudou."
       },
       "items": {
         "conversationsTotal": { "title": "Total de conversas", "description": "Quantas conversas novas, contra o período anterior." },

@@ -223,13 +223,14 @@ function EditorForm({
     filterOptions?.custom_attributes?.find((item) => `custom_attributes.${item.value}` === field)?.label
 
   const sentence = describeEditor(values, sources, customLabel, t)
+  const suggestedTitle = describeEditor(values, sources, customLabel, t, { asTitle: true })
 
-  // O título sugerido acompanha a frase até a pessoa escrever o dela.
+  // O título sugerido acompanha as escolhas até a pessoa escrever o dela.
   const titleTouched = useRef(target.kind === "edit" || Boolean(defaults.title.trim()))
   useEffect(() => {
-    if (titleTouched.current || !sentence) return
-    form.setValue("title", sentence, { shouldValidate: form.formState.isSubmitted })
-  }, [form, sentence])
+    if (titleTouched.current || !suggestedTitle) return
+    form.setValue("title", suggestedTitle, { shouldValidate: form.formState.isSubmitted })
+  }, [form, suggestedTitle])
 
   const titleDirty = form.formState.dirtyFields.title
   useEffect(() => {

@@ -64,6 +64,20 @@ function TabIcon({ dashboard, dirty }: { dashboard: Pick<CustomDashboardSummary,
   )
 }
 
+/**
+ * A fileira de abas rola de lado, sem barra, e a página não sabe trazer a aba ativa para a vista. Com vários painéis, ou
+ * vindo de um link, ela ficaria cortada ou escondida.
+ */
+function useActiveTabInView(active: string | null) {
+  useEffect(() => {
+    if (!active) return
+    const frame = requestAnimationFrame(() => {
+      document.querySelector('main [role="tab"][aria-selected="true"]')?.scrollIntoView({ block: "nearest", inline: "nearest" })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [active])
+}
+
 /** Sair da tela com rascunho pergunta antes. Fica aqui porque o rascunho de uma aba vive enquanto outra está aberta. */
 function useLeaveGuard(dirtyIds: string) {
   const { t } = useTranslation()
@@ -110,6 +124,7 @@ export function useCustomDashboardTabs(): DashboardExtraTabs {
   const param = searchParams.get("tab")
 
   useLeaveGuard(dirtyIds)
+  useActiveTabInView(param && dashboards ? param : null)
 
   return useMemo(() => {
     if (!can) return NO_TABS

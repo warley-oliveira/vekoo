@@ -154,7 +154,7 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
   // Uma série por categoria, deitada: o nome é longo e varia de tamanho. Em HTML, como no Dashboard, cada linha quebra bem.
   if (allowRanked && horizontal && series.length === 1 && !perCategoryColor && thresholds.length === 0) {
     const item = series[0]
-    const total = model.additive ? item.total : 0
+    const total = model.additive && model.partition ? item.total : 0
     return (
       <div className="h-full min-h-0 overflow-y-auto pr-1 [scrollbar-width:thin]">
         <RankedBars

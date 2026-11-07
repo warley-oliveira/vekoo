@@ -232,7 +232,7 @@ function MetricRow({
       </div>
       {fieldError ? <p className="text-xs text-destructive">{fieldError}</p> : null}
 
-      {columns || multiple ? (
+      {columns || (multiple && total > 1) ? (
         <TextField
           control={control}
           name={`metrics.${index}.label`}

@@ -53,7 +53,12 @@ export type ChartModel = {
   folded: number
   /** Pode somar: ponto vazio vale zero. Média e maior valor não têm zero, e ficam em branco. */
   additive: boolean
+  /** As categorias dividem um todo? Uma conversa tem várias etiquetas: aí "12% do total" não quer dizer nada. */
+  partition: boolean
 }
+
+/** Dimensões em que um registro cai em mais de um valor. */
+const MULTI_VALUE_DIMENSIONS = new Set(["chat_tag_name"])
 
 export const MAX_SERIES = 8
 export const MAX_SLICES = 6
@@ -272,6 +277,7 @@ export function buildChartModel(widget: DashboardWidget, result: QueryResult, co
       truncated,
       folded: 0,
       additive,
+      partition: false,
     }
   }
 
@@ -300,6 +306,7 @@ export function buildChartModel(widget: DashboardWidget, result: QueryResult, co
     granularity,
     truncated,
     additive,
+    partition: !MULTI_VALUE_DIMENSIONS.has(xDimension.field),
   }
 
   if (breakdown) {
@@ -441,6 +448,55 @@ function evaluateFormulaColumns(widget: DashboardWidget, rows: QueryRow[]): Quer
 }
 
 /**
+ * O total de cada coluna é o que aquela conta permite. Quantidade e soma somam. Média não: a média das médias engana, e a
+ * coluna fica sem total. Maior e menor valem o maior e o menor. A coluna calculada refaz a conta em cima dos totais: o total
+ * de um percentual é o percentual dos totais, e não a soma das linhas (a origem somava, e mostrava "353%").
+ */
+function buildTotals(widget: DashboardWidget, columns: TableColumn[], rows: TableRowData[]): Record<string, number | null> {
+  const totals: Record<string, number | null> = {}
+  const metrics = isFormulaQuery(widget.query) ? [] : effectiveMetrics(widget.query)
+  const keys = metricKeys(metrics)
+  const letters: Record<string, number> = {}
+
+  const numbersOf = (key: string) => rows.map((row) => row[key]).filter((value): value is number => typeof value === "number")
+
+  metrics.forEach((metric, index) => {
+    if (metric.formula !== undefined) return
+
+    const numbers = numbersOf(keys[index])
+    let total: number | null = null
+    if (numbers.length) {
+      if (metric.aggregation === "min") total = Math.min(...numbers)
+      else if (metric.aggregation === "max") total = Math.max(...numbers)
+      else if (metric.aggregation !== "avg") total = numbers.reduce((sum, value) => sum + value, 0)
+    }
+    totals[keys[index]] = total
+    if (total !== null) letters[columnLetter(index)] = total
+  })
+
+  metrics.forEach((metric, index) => {
+    if (metric.formula === undefined) return
+
+    try {
+      const value = evaluateScalar(parseFormula(metric.formula), letters)
+      totals[keys[index]] = value
+      letters[columnLetter(index)] = value
+    } catch {
+      totals[keys[index]] = null
+    }
+  })
+
+  for (const column of columns) {
+    if (column.kind === "number" && !(column.key in totals)) {
+      const numbers = numbersOf(column.key)
+      totals[column.key] = numbers.length ? numbers.reduce((sum, value) => sum + value, 0) : null
+    }
+  }
+
+  return totals
+}
+
+/**
  * A tabela: resumo (dimensões e medidas) ou registros (uma linha por documento). Coluna de fórmula é calculada aqui,
  * linha a linha, e a letra aponta para a medida naquela posição, como no editor.
  */
@@ -516,15 +572,7 @@ export function buildTableModel(widget: DashboardWidget, result: QueryResult, co
     return cells
   })
 
-  let totals: TableModel["totals"] = null
-  if (config.showTotals && tableRows.length) {
-    totals = {}
-    for (const column of columns) {
-      if (column.kind !== "number") continue
-      const numbers = tableRows.map((row) => row[column.key]).filter((value): value is number => typeof value === "number")
-      totals[column.key] = numbers.length ? numbers.reduce((sum, value) => sum + value, 0) : null
-    }
-  }
+  const totals = config.showTotals && summary && tableRows.length ? buildTotals(widget, columns, tableRows) : null
 
   return { columns, rows: tableRows, totals, truncated: result.meta?.truncated ?? false }
 }

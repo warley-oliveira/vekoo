@@ -85,11 +85,13 @@ module CustomDashboards
         result = builder_for(source).new(source, account, query, time_range: time_range, zone: zone, max_time_ms: remaining_ms(deadline)).execute
 
         dimension_fields = Array(query["dimensions"]).map { |dimension| dimension["field"] }
+        # Sem agrupar, cada coluna é um campo: a lista de registros também precisa de "Aberta" e do nome da pessoa.
+        label_fields = dimension_fields.empty? && Array(query["metrics"]).empty? ? source.allowed_fields : dimension_fields
 
         {
           rows: result[:rows],
           columns: result[:columns],
-          labels: DataSourceRegistry.resolve_labels(source, result[:rows], dimension_fields, account.organization),
+          labels: DataSourceRegistry.resolve_labels(source, result[:rows], label_fields, account.organization),
           field_labels: DataSourceRegistry.field_labels(source, dimension_fields, account.organization),
           meta: {
             total: result[:rows].size,

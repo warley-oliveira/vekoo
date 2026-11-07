@@ -56,7 +56,7 @@ export const TableWidget = memo(function TableWidget({ title, table, config }: T
         density="compact"
         pageSize={25}
         maxHeight="none"
-        className="min-h-0 flex-1 [&>[role=region]]:min-h-0 [&>[role=region]]:flex-1"
+        className="min-h-0 [&>[role=region]]:min-h-0"
       />
       {table.totals ? (
         <dl className="flex shrink-0 flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-2 text-xs">

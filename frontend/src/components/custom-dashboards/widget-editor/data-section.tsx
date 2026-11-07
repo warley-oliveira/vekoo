@@ -22,6 +22,7 @@ import {
   adaptToSource,
   CARD_PERIOD_PRESETS,
   recordFields,
+  shouldStack,
   type EditorValues,
   type PeriodMode,
 } from "@/lib/custom-dashboards/editor-model"
@@ -157,6 +158,15 @@ export function DataSection({ sources }: { sources: DataSourceMeta[] }) {
                   />
                 ) : null}
 
+                {source && !records && widgetType === "table" ? (
+                  <SwitchField
+                    control={control}
+                    name="visual.showTotals"
+                    label={t("customDashboards.editor.showTotals")}
+                    hint={t("customDashboards.editor.showTotalsHint")}
+                  />
+                ) : null}
+
                 {source && records ? <RecordColumns source={source} /> : null}
               </EditorSection>
 
@@ -268,6 +278,7 @@ function GroupingSection({
             onChange={(next) => {
               setValue("granularity", next, dirty)
               if (next !== "none" && !timeField) setValue("timeField", defaultDateField(source) ?? null, dirty)
+              if (shouldStack({ widgetType, granularity: next, breakdown })) setValue("visual.stacked", true, dirty)
             }}
             options={GRANULARITIES.filter((item) => item !== "none" || grouping !== "time").map((item) => ({
               value: item,
@@ -296,7 +307,10 @@ function GroupingSection({
           </p>
           <SearchableSelect
             value={breakdown}
-            onChange={(next) => setValue("breakdown", next, dirty)}
+            onChange={(next) => {
+              setValue("breakdown", next, dirty)
+              if (shouldStack({ widgetType, granularity, breakdown: next })) setValue("visual.stacked", true, dirty)
+            }}
             options={breakdownOptions}
             clearable={grouping !== "category"}
             placeholder={t(
@@ -383,9 +397,12 @@ function PeriodSection({ source }: { source: DataSourceMeta | undefined }) {
   const range = useWatch({ control, name: "periodRange" })
   const dateField = useWatch({ control, name: "dateField" })
   const useFormula = useWatch({ control, name: "useFormula" })
+  const granularity = useWatch({ control, name: "granularity" })
+  const widgetType = useWatch({ control, name: "widgetType" })
   const dates = dateFields(source)
   const dirty = { shouldDirty: true }
   const error = form.formState.errors.periodRange?.message
+  const groupsByTime = granularity !== "none" && WIDGET_SPECS[widgetType].grouping !== "category"
 
   return (
     <EditorSection title={t("customDashboards.editor.period")} hint={t("customDashboards.editor.periodHint")}>
@@ -422,7 +439,7 @@ function PeriodSection({ source }: { source: DataSourceMeta | undefined }) {
         </div>
       ) : null}
 
-      {!useFormula && dates.length > 1 ? (
+      {!useFormula && dates.length > 1 && !groupsByTime ? (
         <div className="flex flex-col gap-1.5">
           <p className="text-sm font-medium">{t("customDashboards.editor.countBy")}</p>
           <SelectInput

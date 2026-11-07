@@ -254,12 +254,14 @@ function dimensionsFromEditor(values: EditorValues, source: DataSourceMeta | und
 }
 
 function periodFromEditor(values: EditorValues): WidgetQuery["timeRange"] {
-  const field = values.dateField ? { field: values.dateField } : {}
+  // Agrupando por data, é ela que conta para o período: a consulta já sabe disso.
+  const groupsByTime = values.granularity !== "none" && WIDGET_SPECS[values.widgetType].grouping !== "category"
+  const field = values.dateField && !groupsByTime ? { field: values.dateField } : {}
   if (values.periodMode === "preset") return { ...field, preset: values.periodPreset }
   if (values.periodMode === "custom" && values.periodRange) {
     return { ...field, start: toDateInputValue(values.periodRange.from), end: toDateInputValue(values.periodRange.to) }
   }
-  return values.dateField ? field : undefined
+  return "field" in field ? field : undefined
 }
 
 /** Do formulário ao que vai ser guardado, e ao que a prévia desenha. */
@@ -323,6 +325,14 @@ export function newDraft(type: WidgetType, sources: DataSourceMeta[], title = ""
 }
 
 /**
+ * Tempo e separação juntos pedem pilha: mostra o total e as partes, e 14 semanas com 4 canais lado a lado viram fiapos.
+ * É o ponto de partida: quem prefere lado a lado desliga em "Aparência".
+ */
+export function shouldStack(values: Pick<EditorValues, "widgetType" | "granularity" | "breakdown">) {
+  return (values.widgetType === "bar_chart" || values.widgetType === "area_chart") && values.granularity !== "none" && Boolean(values.breakdown)
+}
+
+/**
  * Trocar o tipo não pode largar o card num estado que não desenha. O que o tipo novo não usa sai do formulário; o que ele
  * exige ganha o valor mais provável. Medidas e filtros ficam.
  */
@@ -334,7 +344,11 @@ export function adaptToType(values: EditorValues, type: WidgetType, source: Data
     ...values,
     widgetType: type,
     metrics: multipleMetrics ? values.metrics : values.metrics.slice(0, 1),
-    visual: { ...values.visual, compare: type === "number_trend" ? true : values.visual.compare },
+    visual: {
+      ...values.visual,
+      compare: type === "number_trend" ? true : values.visual.compare,
+      stacked: values.visual.stacked || shouldStack({ ...values, widgetType: type }),
+    },
   }
 
   switch (grouping) {
@@ -399,24 +413,29 @@ function metricPhrase(metric: Pick<EditorMetric, "aggregation" | "field">, sourc
   return t(`customDashboards.sentence.${metric.aggregation}`, { field: lowerFirst(field) })
 }
 
-/** O que a pessoa está montando, em uma frase. O título sugerido sai daqui. */
+/**
+ * O que a pessoa está montando, em uma frase ("Quantas conversas por semana, por canal"). Com `asTitle`, o mesmo em forma de
+ * nome, para sugerir o título ("Conversas por semana, por canal").
+ */
 export function describeEditor(
   values: EditorValues,
   sources: DataSourceMeta[] | undefined,
   customFieldLabel: (field: string) => string | undefined,
-  t: Translate
+  t: Translate,
+  { asTitle = false }: { asTitle?: boolean } = {}
 ): string {
   const spec = WIDGET_SPECS[values.widgetType]
   if (!spec.needsData) return ""
 
   const source = sources?.find((item) => item.key === values.dataSource)
-  if (values.useFormula) return t("customDashboards.sentence.formula")
+  if (values.useFormula) return asTitle ? "" : t("customDashboards.sentence.formula")
   if (values.widgetType === "table" && values.records) {
     return t("customDashboards.sentence.records", { source: source ? lowerFirst(source.label) : "" })
   }
-  if (!source) return t("customDashboards.sentence.pickSource")
+  if (!source) return asTitle ? "" : t("customDashboards.sentence.pickSource")
 
-  const parts = [metricPhrase(values.metrics[0] ?? emptyMetric(), source, t)]
+  const metric = values.metrics[0] ?? emptyMetric()
+  const parts = [asTitle && (metric.aggregation === "count" || !metric.field) ? source.label : metricPhrase(metric, source, t)]
   if (spec.grouping !== "category" && spec.grouping !== "none" && values.granularity !== "none") {
     parts.push(t(`customDashboards.sentence.by.${values.granularity}`))
   }

@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { DetailSkeleton, EmptyState, ErrorState, SearchInput, SegmentedControl, SidePanel } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useDataSources } from "@/hooks/custom-dashboards/use-custom-dashboards"
+import { useOpenCount } from "@/hooks/use-panel-session"
 import { MAX_WIDGETS, WIDGET_CATEGORIES } from "@/lib/custom-dashboards/catalog"
 import { matchesSearch } from "@/lib/search-text"
 import {
@@ -36,7 +37,13 @@ type WidgetLibraryProps = {
  * De onde saem os cards: prontos, para quem só quer o número, ou do zero, por tipo. O painel fica aberto ao adicionar um
  * pronto: montar um painel é pegar vários, e cada volta ao botão seria um clique a mais.
  */
-export function WidgetLibrary({ open, onOpenChange, widgetCount, onAdd, onCustomize, onStartBlank }: WidgetLibraryProps) {
+export function WidgetLibrary(props: WidgetLibraryProps) {
+  // Cada abertura começa de novo, em "Prontos" e sem a busca da vez anterior.
+  const openCount = useOpenCount(props.open)
+  return <LibraryPanel key={openCount} {...props} />
+}
+
+function LibraryPanel({ open, onOpenChange, widgetCount, onAdd, onCustomize, onStartBlank }: WidgetLibraryProps) {
   const { t } = useTranslation()
   const { dataSources, error, reload } = useDataSources()
   const [mode, setMode] = useState<"recipes" | "blank">("recipes")

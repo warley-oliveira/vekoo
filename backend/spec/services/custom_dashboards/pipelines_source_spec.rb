@@ -85,6 +85,18 @@ RSpec.describe CustomDashboards::Sources::Pipelines do
       expect(card.reload.title).to eq("Pedido da Doma")
     end
 
+    it "sem agrupar, os valores também vêm com nome" do
+      person = create(:account, organization: organization, name: "Camila Rocha")
+      create(:pipeline_card, stage: proposal, priority: "high", assigned_to: person)
+
+      labels = execute[:labels]
+
+      expect(labels["priority"]).to include("high" => "Alta")
+      expect(labels["stage_id"]).to eq(proposal.id => "Comercial · Proposta")
+      expect(labels["assigned_to_id"]).to eq(person.id => "Camila Rocha")
+      expect(labels["board_id"]).to eq(board.id => "Comercial")
+    end
+
     it "conta o arquivado, e quem quer só os ativos filtra" do
       create(:pipeline_card, :won, stage: proposal, archived: true)
       create(:pipeline_card, stage: proposal)

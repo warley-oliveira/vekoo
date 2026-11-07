@@ -87,7 +87,7 @@ export function DashboardToolbar({
           >
             <RefreshCw />
           </Button>
-          <div className="w-44">
+          <div className="w-48">
             <SelectInput
               size="sm"
               aria-label={t("customDashboards.toolbar.autoRefresh")}

@@ -133,6 +133,12 @@ export const WidgetCard = memo(function WidgetCard({
           onSelect: () => setShowTable(!showTable),
           hidden: !canTwin,
         },
+        {
+          label: t("customDashboards.card.expand"),
+          icon: <Maximize2 />,
+          onSelect: () => actions?.expand(widget),
+          hidden: !spec.needsData || editing,
+        },
         { label: t("customDashboards.card.refresh"), icon: <RefreshCw />, onSelect: view.retry, hidden: !spec.needsData || editing },
         { label: t("customDashboards.card.exportCsv"), icon: <Download />, onSelect: exportCsv, hidden: !hasRows },
         {
@@ -167,7 +173,7 @@ export const WidgetCard = memo(function WidgetCard({
       size="icon-xs"
       aria-label={t("customDashboards.card.editLabel", { title: widget.title })}
       title={t("customDashboards.card.edit")}
-      className="text-muted-foreground"
+      className="text-muted-foreground pointer-coarse:hidden"
       onClick={() => actions?.edit(widget.id)}
     >
       <Pencil />
@@ -247,12 +253,13 @@ export const WidgetCard = memo(function WidgetCard({
       )}
     >
       {presentation === "expanded" ? null : (
-        <header className="flex items-start gap-1.5 px-4 pt-3 pb-1">
+        <header className="relative flex items-start gap-1.5 px-4 pt-3 pb-1">
           {handle}
           <div className="min-w-0 flex-1">
-            <h3 className="flex items-center gap-1.5 text-sm font-medium">
-              {Icon ? <Icon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" /> : null}
-              <span title={widget.title} className="truncate">
+            <h3 className="flex items-start gap-1.5 text-sm font-medium">
+              {Icon ? <Icon aria-hidden className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" /> : null}
+              {/* No celular a linha é estreita e o card é de ler: o título pode quebrar. */}
+              <span title={widget.title} className={presentation === "stack" ? "line-clamp-2" : "truncate"}>
                 {widget.title}
               </span>
               {view.error && view.data ? (
@@ -271,11 +278,20 @@ export const WidgetCard = memo(function WidgetCard({
             ) : null}
           </div>
 
+          {/* Nota escrita fica sempre à vista: é recado para quem lê. */}
+          {onDashboard && notes.length > 0 ? (
+            <div className="cd-no-drag">
+              <WidgetNotesPopover widget={widget} editing={editing} />
+            </div>
+          ) : null}
+
           {onDashboard ? (
             <div
               className={cn(
                 "cd-no-drag flex shrink-0 items-center gap-0.5 transition-opacity",
-                !editing && "opacity-0 group-focus-within/card:opacity-100 group-hover/card:opacity-100 pointer-coarse:opacity-100 has-data-popup-open:opacity-100"
+                // Com mouse, as ações aparecem por cima, ao passar: o título usa a largura toda enquanto ninguém mexe.
+                "pointer-fine:absolute pointer-fine:top-2 pointer-fine:right-2 pointer-fine:rounded-md pointer-fine:bg-card pointer-fine:pl-1",
+                "pointer-fine:opacity-0 pointer-fine:group-focus-within/card:opacity-100 pointer-fine:group-hover/card:opacity-100 pointer-fine:has-data-popup-open:opacity-100"
               )}
             >
               {!editing && canTwin ? (
@@ -286,7 +302,7 @@ export const WidgetCard = memo(function WidgetCard({
                   aria-pressed={showTable}
                   aria-label={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
                   title={t(showTable ? "customDashboards.card.showChart" : "customDashboards.card.showTable")}
-                  className="text-muted-foreground"
+                  className="text-muted-foreground pointer-coarse:hidden"
                   onClick={() => setShowTable(!showTable)}
                 >
                   {showTable ? <ChartColumn /> : <Table2 />}
@@ -299,20 +315,15 @@ export const WidgetCard = memo(function WidgetCard({
                   size="icon-xs"
                   aria-label={t("customDashboards.card.expandLabel", { title: widget.title })}
                   title={t("customDashboards.card.expand")}
-                  className="text-muted-foreground"
+                  className="text-muted-foreground pointer-coarse:hidden"
                   onClick={() => actions?.expand(widget)}
                 >
                   <Maximize2 />
                 </Button>
               ) : null}
+              {editing && notes.length === 0 ? <WidgetNotesPopover widget={widget} editing={editing} /> : null}
               {editButton}
               {menu}
-            </div>
-          ) : null}
-
-          {onDashboard && (notes.length > 0 || editing) ? (
-            <div className="cd-no-drag">
-              <WidgetNotesPopover widget={widget} editing={editing} />
             </div>
           ) : null}
         </header>

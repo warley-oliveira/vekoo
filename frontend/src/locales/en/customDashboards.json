@@ -1,7 +1,7 @@
 {
   "customDashboards": {
     "tab": {
-      "create": "Create dashboard",
+      "create": "Create",
       "loading": "Dashboard",
       "unsaved": "Unsaved changes",
       "notFound": "This dashboard no longer exists",
@@ -47,7 +47,7 @@
       "refresh": "Refresh now",
       "autoRefresh": "Automatic refresh",
       "refreshOptions": {
-        "0": "No automatic refresh",
+        "0": "Don't auto-refresh",
         "30": "Every 30 seconds",
         "60": "Every minute",
         "300": "Every 5 minutes"
@@ -303,6 +303,8 @@
       "tableMode": "What the table shows",
       "tableSummary": "A summary",
       "tableRecords": "Each record",
+      "showTotals": "Show the total",
+      "showTotalsHint": "Below the table. Calculated columns redo the math on the totals.",
       "columns": "Columns",
       "columnsHint": "If you don't pick any, all of them show.",
       "columnsPlaceholder": "All columns",
@@ -558,7 +560,7 @@
         "delivered": "Delivered",
         "recipients": "Recipients",
         "sent": "Sent",
-        "noteContent": "## How to read this dashboard\n\nExplain here what each number means, or what changed."
+        "noteContent": "Explain here what each number means, or what changed."
       },
       "items": {
         "conversationsTotal": { "title": "Total conversations", "description": "How many new conversations, against the previous period." },
