@@ -6,7 +6,7 @@ import { Search } from "lucide-react"
 import {
   ErrorState,
   ListSkeleton,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -66,7 +66,7 @@ export function SearchTestPanel({
   const items = data?.items ?? []
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       size="lg"
@@ -158,6 +158,6 @@ export function SearchTestPanel({
           </div>
         )}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

@@ -11,7 +11,7 @@ import {
   FormActions,
   NumberField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextField,
   useFormSubmit,
@@ -172,7 +172,7 @@ export function FieldFormPanel({
   })
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       title={t(field ? "products.fields.editTitle" : "products.fields.createTitle")}
@@ -291,6 +291,6 @@ export function FieldFormPanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

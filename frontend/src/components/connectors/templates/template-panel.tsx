@@ -9,7 +9,7 @@ import {
   FormActions,
   SegmentedControl,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   TextField,
   TextareaField,
   useFormSubmit,
@@ -134,11 +134,11 @@ export function TemplatePanel({
   const values = useWatch({ control: form.control }) as TemplateFormValues
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
-      size="xl"
-      className="data-[side=right]:sm:max-w-5xl"
+      size="2xl"
+      fixedHeight
       disablePointerDismissal
       title={t(editing ? "connectors.templates.editTitle" : "connectors.templates.createTitle")}
       description={connectorName}
@@ -210,7 +210,7 @@ export function TemplatePanel({
           <TemplatePreview values={values} />
         </aside>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

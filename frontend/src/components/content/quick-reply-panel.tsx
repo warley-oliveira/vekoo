@@ -11,7 +11,7 @@ import {
   DetailSkeleton,
   FormActions,
   FormField,
-  SidePanel,
+  ResponsiveDialog,
   TextField,
   UnsavedChangesDialog,
   useFormSubmit,
@@ -214,7 +214,7 @@ export default function QuickReplyPanel({
   )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -369,6 +369,6 @@ export default function QuickReplyPanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

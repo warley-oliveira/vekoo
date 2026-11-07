@@ -10,7 +10,7 @@ import { z } from "zod"
 
 import {
   FormActions,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   useConfirm,
   useFormSubmit,
@@ -148,12 +148,13 @@ export function ImportPanel({ view, onViewChange, feed }: ImportPanelProps) {
         : undefined
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
       }}
-      size="xl"
+      size="2xl"
+      fixedHeight
       title={title}
       description={description}
       // Clicar fora não pode jogar fora um mapeamento feito com cuidado.
@@ -240,7 +241,7 @@ export function ImportPanel({ view, onViewChange, feed }: ImportPanelProps) {
           </motion.div>
         </AnimatePresence>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 
