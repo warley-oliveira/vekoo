@@ -69,8 +69,6 @@ module VekooAccessSeeds
   ALERTS = [
     { category: "connectors", origin_type: "Connector", origin_id: "seed-whatsapp-loja", origin_name: "WhatsApp da loja",
       code: "connector_disconnected", severity: "error", metadata: { "connector_type" => "Connector::WhatsappWeb" } },
-    { category: "webhooks", origin_type: "Hook", origin_id: "seed-webhook-crm", origin_name: "CRM externo",
-      code: "webhook_delivery_failed", severity: "error", metadata: { "webhook_uid" => "seed-crm" } },
     { category: "connectors", origin_type: "Connector", origin_id: "seed-whatsapp-oficial", origin_name: "WhatsApp oficial",
       code: "template_rejected", severity: "warning", message: "A Meta rejeitou o modelo \"confirmacao_agendamento\".",
       metadata: { "template" => "confirmacao_agendamento" } }

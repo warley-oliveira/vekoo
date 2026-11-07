@@ -7,7 +7,7 @@ import './index.css'
 import App from './App.tsx'
 import { PwaUpdatePrompt } from '@/components/shell/pwa-update-prompt'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import '@/lib/i18n'
+import { i18nReady } from '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
 import { CatalogProvider } from '@/lib/catalog'
 import { startPwa } from '@/lib/pwa'
@@ -16,6 +16,9 @@ import { dropLegacyStorage } from '@/lib/token'
 
 dropLegacyStorage()
 startPwa()
+
+// O texto da primeira tela já no idioma certo: em pt-BR não espera nada de rede.
+await i18nReady
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

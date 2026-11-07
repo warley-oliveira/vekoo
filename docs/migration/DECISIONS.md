@@ -316,6 +316,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Cortado como enfeite:** paralaxe da lista, troca animada enviar/microfone, negrito no trecho buscado. `use-fill-viewport-height` não veio: a conversa fica presa ao viewport visual por `--app-vh` e `--app-vv-top`.
 - **Fora da área:** `BottomSheet` usa `useSheetFocus`, e abrir folha com busca não sobe mais o teclado, no app todo.
 
+### Ferramentas e webhooks: tela (fe-tools-webhooks)
+
+- **Ferramentas:** a cor do catálogo é ignorada, e o ícone é monocromático, pela direção visual. Instalar é um clique quando não há credencial. Dá para testar função travada. Testar salva antes, e os valores de teste ficam guardados com a função. No celular, o código abre atrás de um aviso com "Abrir o editor".
+- **Webhooks:** não ativa sem número do contato nem com alteração por salvar. O aviso de endereço interno não bloqueia salvar. O teste sai do navegador e pede confirmação quando o webhook está ativo. Remover uma ação usa "Desfazer", porque só vale ao salvar. A validação é mais rígida que a da origem. Cabeçalhos de segredo são mascarados pelo nome.
+- **Mudou em relação à origem:** JSON Schema cru virou editor estruturado com importar JSON; seções por categoria viraram grade única com filtro; salvar fica no editor em vez de voltar à lista; renomear é em diálogo.
+- **Fora:** catálogo interno e superusuário; `ToolsHubPage` e `HubStatsBar`, que eram do domínio de assistentes; cobrança; "Reenviar" e busca textual nos logs, que a API não tem.
+- **Acréscimos na API:** excluir um webhook resolve o alerta aberto, que antes ficava preso no número do menu; a mensagem de endereço recusado é em linguagem simples, e genérica de propósito.
+
+### Idioma em chunk próprio (integrador)
+
+- **Só pt-BR vem no pacote inicial.** Os dois idiomas juntos eram 841 KB (243 KB em gzip), metade do JavaScript da primeira visita, e crescendo a cada domínio. O inglês desce em chunk próprio, e `main.tsx` espera `i18nReady` antes de desenhar: em inglês, a primeira tela demora o tempo desse chunk, sem piscar em português. Conferido ao trocar pelo menu da conta. pt-BR segue tudo no pacote inicial (464 KB, 138 KB em gzip): carregar por domínio seria o próximo passo, mas há telas que usam texto de outros domínios.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -353,6 +365,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
 - Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
 - Não testado em aparelho: teclado virtual (simulado), botão voltar físico, gesto de sistema do Android, háptico, permissão do microfone durante o segurar, zoom no visualizador, intervenção de histórico do Chrome em link direto.
+- Ferramentas: `transform_to_schema` descarta `properties` de objetos de nível superior, como na origem; função personalizada perde as credenciais (a tela avisa); não há endpoint de teste para script de webhook. `BACKEND_URL` sem valor em desenvolvimento gera URL relativa, que o front resolve com `apiAssetUrl`.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -371,7 +384,6 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-polish`: pílula e popover de metas no topo do quadro (`goals-header-control` e `metas-popover` da origem), que cada frente de pipelines deixou para a outra; `?card=` abrir card arquivado; "Todos os quadros" no menu vai para `/pipelines?all=1` e diz "pipelines"; `aria-label` em `SearchableSelect`, `NumberInput`, `MultiSelectInput` e `ChipsInput`, tirando o contorno `components/pipelines/hidden-label.tsx`; `AreaNav` rolar até a aba ativa; vocabulário de pipelines (a tela chama de "pipeline" o que a administração chama de "quadro", e de "venda" o que ela chama de "negócio"; "Quadro" fica só como nome da visão, ao lado de "Lista"); na descrição do card, barra de comandos, barra flutuante, tabela, cor, realce, alinhamento e título 1, como na origem (as extensões do Tiptap já estão instaladas).
 - `fe-polish` (continuação): `components/pipelines-admin/triggers/code-editor-panel.tsx` duplica o editor, e os dois configuram o mesmo estado global do Monaco: trocar pelo `components/code-editor/`; `flow_debounce_seconds` em `/automation-settings` (API e tela); `RelativeTime` diz "há 1 minuto" logo depois de salvar; o editor de fluxos chama a tela de "quadro" no desktop e de "mapa" no celular, e "quadro" é a visão de pipelines: usar "mapa".
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
-- `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
 
 ### Back (Fase 2)
 

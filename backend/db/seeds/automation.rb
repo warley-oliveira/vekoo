@@ -360,6 +360,13 @@ module VekooAutomationSeeds
       created.rotate_signing_secret!
     end
 
+    # O aviso aponta para um webhook de verdade: abrir o aviso leva a ele.
+    OrganizationAlert.raise_alert!(
+      organization,
+      category: "webhooks", origin_type: "Hook", origin_id: crm.id.to_s, origin_name: crm.name,
+      code: "webhook_delivery_failed", severity: "error", metadata: { "webhook_uid" => crm.uid }
+    )
+
     seed_logs(organization, order, form, crm)
   end
 

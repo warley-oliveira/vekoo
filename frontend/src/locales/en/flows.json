@@ -1059,7 +1059,8 @@
         "hint": "Only the ones you choose: check stock, shipping, price...",
         "placeholder": "No functions",
         "empty": "The organization has no functions yet. Create them in Flows, Tools.",
-        "gone": "Function that no longer exists"
+        "gone": "Function that no longer exists",
+        "manage": "See tools and functions"
       },
       "ai_intent_classification": {
         "note": "Reads the last message and follows the topic that fits best. Uses the fast model, without the history.",
@@ -1470,6 +1471,7 @@
     "list": {
       "description": "A flow looks after your conversations: what happens when someone sends a message, step by step.",
       "settings": "Settings",
+      "tools": "Tools",
       "create": "New flow",
       "createShort": "New",
       "statusLabel": "Filter by status",

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, type ReactNode } from "react"
+import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
 import { Bot, ChevronDown, Signpost, X } from "lucide-react"
 
@@ -422,6 +423,13 @@ function ToolsPicker() {
           />
         </Field>
       )}
+      <Link
+        to="/tools"
+        target="_blank"
+        className="self-start rounded text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      >
+        {t("flows.fields.tool_ids.manage")}
+      </Link>
     </Section>
   )
 }

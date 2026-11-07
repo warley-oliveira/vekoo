@@ -16,6 +16,15 @@ RSpec.describe "Semente do domínio automation" do
     create(:custom_field, organization_id: organization.id, name: "Interesse")
   end
 
+  it "o aviso de webhook da demonstração aponta para um webhook que existe" do
+    seed
+
+    alert = organization.organization_alerts.find_by(category: "webhooks")
+
+    expect(alert.origin_id).to eq(organization.hooks.find_by(name: "Espelho no CRM").id.to_s)
+    expect(alert.display_message).to include("Espelho no CRM")
+  end
+
   it "cria catálogo, fluxos em cada estado, histórico e webhooks com logs, sem disparar nada" do
     expect { seed }.not_to have_enqueued_job
 

@@ -2,17 +2,20 @@ import i18n from "i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next, useTranslation } from "react-i18next"
 
-import en from "@/locales/en.json"
+import { buildBundle, type Bundle } from "@/lib/i18n-bundles"
 import ptBR from "@/locales/pt-BR.json"
 
 // i18n do app. pt-BR é o idioma de origem (é onde a copy nasce e é revisada);
 // en existe desde já para o texto nunca voltar a ser escrito solto no JSX.
-// Um único namespace e bundles estáticos — sem carregamento por HTTP, sem estado
-// de "traduções carregando" nas telas.
+// Um único namespace e nenhum estado de "traduções carregando" nas telas: `main.tsx` espera
+// `i18nReady` antes de desenhar, e trocar de idioma só vale depois de o idioma chegar.
 //
 // Cada domínio traz o seu arquivo em `locales/<lang>/<dominio>.json` (raiz do JSON
-// = nome do domínio) e entra aqui sozinho, pelo glob: ninguém disputa o mesmo
-// arquivo e ninguém precisa editar este módulo. `locales/<lang>.json` segue valendo.
+// = nome do domínio) e entra sozinho, pelo glob: ninguém disputa o mesmo arquivo e
+// ninguém precisa editar este módulo. `locales/<lang>.json` segue valendo.
+//
+// pt-BR vem no pacote inicial, porque também é o fallback; o inglês desce em chunk próprio
+// (`i18n-en.ts`). Juntos, eram metade do JavaScript da primeira visita.
 
 export const SUPPORTED_LANGUAGES = ["pt-BR", "en"] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
@@ -21,33 +24,27 @@ export const FALLBACK_LANGUAGE: Language = "pt-BR"
 
 const LANGUAGE_STORAGE_KEY = "vekoo.lang"
 
-type Bundle = Record<string, unknown>
-
-const domainFiles = import.meta.glob<Bundle>("../locales/*/*.json", {
+const sourceFiles = import.meta.glob<Bundle>("../locales/pt-BR/*.json", {
   eager: true,
   import: "default",
 })
 
-function isBundle(value: unknown): value is Bundle {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-}
+// O que não é o idioma de origem chega por aqui, e o i18next espera antes de trocar.
+const lazyLanguages = {
+  type: "backend" as const,
+  init() {},
+  read(
+    language: string,
+    _namespace: string,
+    callback: (error: unknown, data: Bundle | boolean) => void
+  ) {
+    if (language !== "en") return callback(null, false)
 
-/** Funde por chave: dois arquivos podem contribuir para a mesma raiz. */
-function mergeBundles(base: Bundle, extra: Bundle): Bundle {
-  const merged: Bundle = { ...base }
-  for (const [key, value] of Object.entries(extra)) {
-    const current = merged[key]
-    merged[key] =
-      isBundle(current) && isBundle(value) ? mergeBundles(current, value) : value
-  }
-  return merged
-}
-
-function bundleFor(language: Language, base: Bundle): Bundle {
-  return Object.keys(domainFiles)
-    .filter((path) => path.split("/").at(-2) === language)
-    .sort()
-    .reduce((bundle, path) => mergeBundles(bundle, domainFiles[path]), base)
+    import("@/lib/i18n-en").then(
+      (module) => callback(null, module.default),
+      (error) => callback(error, false)
+    )
+  },
 }
 
 /**
@@ -62,14 +59,16 @@ export function normalizeLanguageTag(tag: string): string {
   return tag
 }
 
-i18n
+/** Pronto para desenhar. Se o chunk do idioma falhar, resolve assim mesmo, e o texto cai no fallback. */
+export const i18nReady = i18n
   .use(LanguageDetector)
+  .use(lazyLanguages)
   .use(initReactI18next)
   .init({
     resources: {
-      "pt-BR": { translation: bundleFor("pt-BR", ptBR) },
-      en: { translation: bundleFor("en", en) },
+      "pt-BR": { translation: buildBundle(ptBR, sourceFiles) },
     },
+    partialBundledLanguages: true,
     supportedLngs: SUPPORTED_LANGUAGES,
     // Mapa explícito em vez de `nonExplicitSupportedLngs`: aquela opção resolve
     // "pt-BR" para "pt", que não é um bundle nosso — e aí *toda* chave em
@@ -94,13 +93,13 @@ i18n
     },
     returnNull: false,
   })
+  .catch(() => undefined)
 
 /** Mantém `<html lang>` em dia — leitores de tela e `:lang()` dependem disso. */
 function syncDocumentLanguage(language: string) {
   document.documentElement.lang = language
 }
 
-syncDocumentLanguage(i18n.resolvedLanguage ?? FALLBACK_LANGUAGE)
 i18n.on("languageChanged", syncDocumentLanguage)
 
 /** Idioma ativo, sempre um dos suportados — use para `Intl.*`. */

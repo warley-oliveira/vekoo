@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useNavigate, useSearchParams } from "react-router"
-import { Archive, Copy, ListChecks, Pencil, Plus, Power, Settings2, Sparkles, Trash2 } from "lucide-react"
+import { Archive, Copy, ListChecks, Pencil, Plus, Power, Settings2, Sparkles, Trash2, Wrench } from "lucide-react"
 import { toast } from "sonner"
 
 import { CreateFlowDialog } from "@/components/flows/create-flow-dialog"
@@ -122,6 +122,16 @@ export default function FlowsPage() {
           >
             <Settings2 />
             {t("flows.list.settings")}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            nativeButton={false}
+            render={<Link to="/tools" />}
+            className="pointer-coarse:h-10"
+          >
+            <Wrench />
+            {t("flows.list.tools")}
           </Button>
           <Button size="sm" onClick={() => openCreate()} className="pointer-coarse:h-10">
             <Plus />

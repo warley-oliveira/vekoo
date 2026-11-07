@@ -64,11 +64,10 @@ RSpec.describe "db/seeds/access.rb" do
   end
 
   it "traz alertas ativos com o texto que a tela mostra" do
-    expect(organization.active_alert_badges).to eq("connectors" => 2, "webhooks" => 1)
+    expect(organization.active_alert_badges).to eq("connectors" => 2)
 
     expect(organization.organization_alerts.map(&:display_message)).to contain_exactly(
       "A integração \"WhatsApp da loja\" foi desconectada.",
-      "Falha na entrega do webhook \"CRM externo\".",
       "A Meta rejeitou o modelo \"confirmacao_agendamento\"."
     )
   end

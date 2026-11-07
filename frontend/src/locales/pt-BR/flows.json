@@ -1059,7 +1059,8 @@
         "hint": "Só as escolhidas: consultar estoque, frete, preço...",
         "placeholder": "Nenhuma função",
         "empty": "A organização ainda não tem funções. Crie em Fluxos, Ferramentas.",
-        "gone": "Função que não existe mais"
+        "gone": "Função que não existe mais",
+        "manage": "Ver ferramentas e funções"
       },
       "ai_intent_classification": {
         "note": "Lê a última mensagem e segue pelo assunto que mais combina. Usa o modelo rápido, sem o histórico.",
@@ -1470,6 +1471,7 @@
     "list": {
       "description": "Quem cuida das conversas é um fluxo: o que acontece quando alguém manda mensagem, passo a passo.",
       "settings": "Configurações",
+      "tools": "Ferramentas",
       "create": "Novo fluxo",
       "createShort": "Novo",
       "statusLabel": "Filtrar pela situação",
