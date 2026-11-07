@@ -39,7 +39,7 @@
       },
       "sales": {
         "name": "Sales",
-        "description": "Deals won, open value and where stages get stuck."
+        "description": "Sales won, open value and where stages get stuck."
       },
       "operations": {
         "name": "Operations",
@@ -773,18 +773,18 @@
         },
         "wonValue": {
           "title": "Value won",
-          "description": "The sum of deals won in the period."
+          "description": "The sum of sales won in the period."
         },
         "openValue": {
           "title": "Open value",
-          "description": "The sum of deals still open."
+          "description": "The sum of sales still open."
         },
         "winRate": {
           "title": "Win rate",
           "description": "Won over won and lost."
         },
         "dealsByStatus": {
-          "title": "Deals by status",
+          "title": "Sales by status",
           "description": "Open, won and lost."
         },
         "cardsByStage": {

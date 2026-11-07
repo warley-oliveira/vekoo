@@ -39,7 +39,7 @@
       },
       "sales": {
         "name": "Vendas",
-        "description": "Negócios ganhos, valor em aberto e onde as etapas travam."
+        "description": "Vendas ganhas, valor em aberto e onde as etapas travam."
       },
       "operations": {
         "name": "Operação",
@@ -773,18 +773,18 @@
         },
         "wonValue": {
           "title": "Valor ganho",
-          "description": "A soma dos negócios ganhos no período."
+          "description": "A soma das vendas ganhas no período."
         },
         "openValue": {
           "title": "Valor em aberto",
-          "description": "A soma dos negócios ainda em aberto."
+          "description": "A soma das vendas ainda em aberto."
         },
         "winRate": {
           "title": "Taxa de ganho",
           "description": "Ganhos sobre ganhos e perdidos."
         },
         "dealsByStatus": {
-          "title": "Negócios por situação",
+          "title": "Vendas por situação",
           "description": "Em aberto, ganhos e perdidos."
         },
         "cardsByStage": {

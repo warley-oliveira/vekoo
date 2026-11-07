@@ -342,8 +342,8 @@ RSpec.describe CustomDashboards::Sources::Pipelines do
 
       source = json["dataSources"].find { |item| item["key"] == "pipelines" }
       expect(source).to include("label" => "Pipelines", "supportsMetricFilters" => false)
-      expect(source["fields"].find { |field| field["key"] == "deal_value" }).to include("label" => "Deal value", "type" => "number")
-      expect(source["fields"].find { |field| field["key"] == "board_id" }).to include("label" => "Board", "filterType" => "relationship")
+      expect(source["fields"].find { |field| field["key"] == "deal_value" }).to include("label" => "Sale value", "type" => "number")
+      expect(source["fields"].find { |field| field["key"] == "board_id" }).to include("label" => "Pipeline", "filterType" => "relationship")
       expect(json["dataSources"].find { |item| item["key"] == "conversations" }).to include("supportsMetricFilters" => true)
     end
 
