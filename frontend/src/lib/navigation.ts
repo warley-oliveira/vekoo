@@ -232,6 +232,68 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ]
 
+/** Telas sem linha no menu, que a busca global também acha. */
+export const SEARCH_SHORTCUTS: {
+  id: string
+  titleKey: string
+  parentKey?: string
+  to: string
+  permission?: PermissionKey
+}[] = [
+  { id: "profile", titleKey: "navigation.routes.profile", to: "/settings/profile" },
+  { id: "notifications", titleKey: "navigation.routes.notificationSettings", to: "/settings/notifications" },
+  { id: "tools", titleKey: "navigation.routes.tools", parentKey: "navigation.flows", to: "/tools", permission: "flows" },
+  {
+    id: "automationSettings",
+    titleKey: "flows.settings.title",
+    parentKey: "navigation.flows",
+    to: "/automation-settings",
+    permission: "flows",
+  },
+  {
+    id: "placeExtractions",
+    titleKey: "campaigns.places.title",
+    parentKey: "navigation.campaigns",
+    to: "/place-extractions",
+    permission: "campaigns",
+  },
+  {
+    id: "catalogCategories",
+    titleKey: "navigation.routes.catalogCategories",
+    parentKey: "navigation.catalog",
+    to: "/catalog/categories",
+    permission: "catalog",
+  },
+  {
+    id: "catalogFields",
+    titleKey: "navigation.routes.catalogFields",
+    parentKey: "navigation.catalog",
+    to: "/catalog/fields",
+    permission: "catalog",
+  },
+  {
+    id: "teams",
+    titleKey: "navigation.routes.teams",
+    parentKey: "navigation.settings",
+    to: "/settings/teams",
+    permission: "core_settings",
+  },
+  {
+    id: "accessRoles",
+    titleKey: "navigation.routes.accessRoles",
+    parentKey: "navigation.settings",
+    to: "/settings/access-roles",
+    permission: "core_settings",
+  },
+  {
+    id: "organization",
+    titleKey: "people.organization.title",
+    parentKey: "navigation.settings",
+    to: "/settings/organization",
+    permission: "core_settings",
+  },
+]
+
 /** A entrada que abre os quadros de pipeline (folha própria no celular). */
 export const PIPELINES_ENTRY_ID = "pipelines"
 /** A lista de todos. `/pipelines`, sozinho, leva ao último pipeline aberto. */

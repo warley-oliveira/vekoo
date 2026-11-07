@@ -563,11 +563,17 @@
     "emptyFailed": "Não deu para esvaziar a lixeira. Tente de novo."
   },
   "search": {
-    "title": "Buscar carrosséis",
-    "placeholder": "Buscar pelo título do carrossel…",
-    "hint": "Digite para buscar pelo título dos seus carrosséis.",
+    "title": "Buscar",
+    "placeholder": "Buscar contatos, carrosséis e telas…",
+    "hint": "Digite um nome, um telefone ou o título de um carrossel.",
     "noResults": "Nada encontrado para “{{query}}”.",
-    "resultsAria": "Resultados da busca"
+    "resultsAria": "Resultados da busca",
+    "unnamedContact": "Contato sem nome",
+    "groups": {
+      "pages": "Telas",
+      "contacts": "Contatos",
+      "carousels": "Carrosséis"
+    }
   },
   "templates": {
     "emptyTitle": "Modelos estão chegando",

@@ -563,11 +563,17 @@
     "emptyFailed": "We couldn't empty the trash. Try again."
   },
   "search": {
-    "title": "Search carousels",
-    "placeholder": "Search by carousel title…",
-    "hint": "Type to search your carousels by title.",
+    "title": "Search",
+    "placeholder": "Search contacts, carousels and screens…",
+    "hint": "Type a name, a phone number or a carousel title.",
     "noResults": "Nothing found for “{{query}}”.",
-    "resultsAria": "Search results"
+    "resultsAria": "Search results",
+    "unnamedContact": "Unnamed contact",
+    "groups": {
+      "pages": "Screens",
+      "contacts": "Contacts",
+      "carousels": "Carousels"
+    }
   },
   "templates": {
     "emptyTitle": "Templates are on the way",
