@@ -92,7 +92,14 @@ export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChanne
           if (keysFilterTags()) revalidateSoon()
           refreshCounts()
           onEventChange?.(event)
-          if (message.action === "create" && !known && localCreates.count === 0) {
+          // Aula gravada quase sempre é a calculada que ganhou documento, e não novidade: só
+          // agendamento vira aviso.
+          if (
+            message.action === "create" &&
+            event.type === "booking" &&
+            !known &&
+            localCreates.count === 0
+          ) {
             onRemoteCreate?.(event)
           }
           return

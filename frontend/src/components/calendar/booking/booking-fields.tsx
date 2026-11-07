@@ -133,7 +133,18 @@ export function BookingFields({
     const attends = service
       ? list.filter((item) => (service.distribution[item.id] ?? 0) > 0)
       : list
-    return attends.map((item) => ({ value: item.id, label: item.name }))
+    return attends.map((item) => ({
+      value: item.id,
+      label: item.name,
+      // A cor do colaborador é a que o evento herda: já se vê aqui qual vai ser.
+      icon: item.color ? (
+        <span
+          aria-hidden
+          className="size-2.5 shrink-0 rounded-full"
+          style={{ backgroundColor: item.color }}
+        />
+      ) : undefined,
+    }))
   }, [professionals, service])
 
   const contactOption = useMemo<SelectOption | null>(

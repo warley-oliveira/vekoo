@@ -43,20 +43,28 @@ export function useCalendarScreen(calendars: AgendaCalendar[] | undefined) {
     null
   )
 
-  const setParam = useCallback(
-    (updates: Record<string, string | null>) => {
-      setParams(
-        (current) => {
-          for (const [name, value] of Object.entries(updates)) {
-            if (value) current.set(name, value)
-            else current.delete(name)
-          }
-          return current
-        },
-        { replace: true }
-      )
+  // Lê o endereço de agora, e não o do último render: fechar o painel e trocar de dia na mesma
+  // ação são duas escritas, e a segunda não pode desfazer a primeira.
+  const patchParams = useCallback(
+    (updates: Record<string, string | null>, { push = false }: { push?: boolean } = {}) => {
+      const next = new URLSearchParams(window.location.search)
+      for (const [name, value] of Object.entries(updates)) {
+        if (value === null) next.delete(name)
+        else next.set(name, value)
+      }
+      setParams(next, { replace: !push })
     },
     [setParams]
+  )
+
+  const setParam = useCallback(
+    (updates: Record<string, string | null>) => {
+      const cleaned = Object.fromEntries(
+        Object.entries(updates).map(([name, value]) => [name, value || null])
+      )
+      patchParams(cleaned)
+    },
+    [patchParams]
   )
 
   /* ---------- calendários marcados ---------- */
@@ -74,15 +82,10 @@ export function useCalendarScreen(calendars: AgendaCalendar[] | undefined) {
   const setSelectedCalendarIds = useCallback(
     (ids: string[]) => {
       setStoredCalendars(ids)
-      setParams(
-        (current) => {
-          current.set("calendars", ids.join(","))
-          return current
-        },
-        { replace: true }
-      )
+      // Vazio também vai para o endereço: "nenhum marcado" é uma escolha.
+      patchParams({ calendars: ids.join(",") })
     },
-    [setParams, setStoredCalendars]
+    [patchParams, setStoredCalendars]
   )
 
   const selectedCalendars = useMemo(
@@ -199,6 +202,8 @@ export function useCalendarScreen(calendars: AgendaCalendar[] | undefined) {
     (filters.situations.length ? 1 : 0)
 
   return {
+    params,
+    patchParams,
     isPhone,
     today,
     view,

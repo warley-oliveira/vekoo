@@ -5,7 +5,7 @@ import { getDefaultClassNames } from "react-day-picker"
 import { useCalendarLocale } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { monthCountsKey, useMonthCounts } from "@/hooks/calendar/use-calendar-events"
+import { useMonthCounts } from "@/hooks/calendar/use-calendar-events"
 import { instantRangeOfDays, startOfMonthKey, visibleDays } from "@/lib/calendar/calendar-view"
 import { dayKeyOfLocal, localDateOfDayKey } from "@/lib/calendar/timezone"
 import type { MonthCounts } from "@/lib/calendar/types"
@@ -76,7 +76,7 @@ export function MiniMonth({ value, today, timeZone, onSelect, className }: MiniM
   )
 
   return (
-    <div data-slot="mini-month" data-key={monthCountsKey(range)} className={cn("min-w-0", className)}>
+    <div className={cn("min-w-0", className)}>
       <Calendar
         mode="single"
         locale={locale}

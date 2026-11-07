@@ -17,7 +17,7 @@ import { eventHeadline, isCanceled } from "@/lib/calendar/event-status"
 import { formatEventWhen, safeTimeZone } from "@/lib/calendar/timezone"
 import type { AgendaCalendar, BookingEvent, CalendarEvent, ClassSessionEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
-import { EventSituationBadge, MeetLink } from "../event-badges"
+import { EventSituationBadge, EventTitle, MeetLink } from "../event-badges"
 import { TimeZoneNote } from "../calendar-toolbar"
 import { AttendanceSection } from "./attendance-section"
 import { useBookingForm, type BookingDraft } from "./booking-form"
@@ -193,7 +193,11 @@ export function BookingPanel({
         if (!next) void requestClose()
       }}
       size="lg"
-      title={eventHeadline(event).title || t("calendar.event.untitled")}
+      title={
+        <EventTitle color={event.color}>
+          {eventHeadline(event).title || t("calendar.event.untitled")}
+        </EventTitle>
+      }
       description={formatEventWhen(event.start, event.end, zone, language)}
       onSubmit={submit}
       footer={

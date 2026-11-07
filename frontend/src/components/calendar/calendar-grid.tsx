@@ -39,7 +39,6 @@ import {
   gridDateOfDayKey,
   instantFromGrid,
   safeTimeZone,
-  wallClockOf,
 } from "@/lib/calendar/timezone"
 import type { CalendarEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
@@ -62,6 +61,8 @@ export type CalendarGridProps = {
   /** O dia aberto, "AAAA-MM-DD". */
   anchor: string
   events: CalendarEvent[]
+  /** Os eventos deste período já chegaram: é quando dá para decidir onde abrir a rolagem. */
+  dataReady: boolean
   /** O fuso de cada calendário. Cada evento cai na hora de parede do seu. */
   zones: Map<string, string>
   /** O fuso de "agora": a linha da hora e o destaque de hoje. */
@@ -223,6 +224,7 @@ export default function CalendarGrid({
   view,
   anchor,
   events,
+  dataReady,
   zones,
   nowZone,
   pulseId,
@@ -271,15 +273,34 @@ export default function CalendarGrid({
   // A faixa de dia inteiro só ocupa espaço quando há o que mostrar nela.
   const hasAllDay = useMemo(() => inputs.some((input) => input.allDay), [inputs])
 
-  // Abre onde importa: perto de agora, se hoje está na tela; senão, no começo do expediente.
+  // Abre onde importa: perto de agora, se hoje está na tela; senão, no primeiro compromisso
+  // do período, ou no começo do expediente, se não houver nenhum.
   const scrollTarget = useCallback(() => {
     const today = dayKeyOf(Date.now(), nowZone)
     const { start, end } = visibleDays(view, anchor)
-    if (today < start || today >= end) return MORNING
-    const hour = Math.max(gridDateOf(Date.now(), nowZone).getUTCHours() - 1, 0)
-    return `${String(hour).padStart(2, "0")}:00:00`
-  }, [anchor, nowZone, view])
-  const initialScroll = useRef(scrollTarget())
+    const hourText = (hour: number) => `${String(Math.max(hour, 0)).padStart(2, "0")}:00:00`
+    if (today >= start && today < end) {
+      return hourText(gridDateOf(Date.now(), nowZone).getUTCHours() - 1)
+    }
+    const hours = events.flatMap((event) => {
+      const zone = zoneFor(event.calendarId)
+      const day = dayKeyOf(event.start, zone)
+      return day >= start && day < end && !isAllDayEvent(event.start, event.end, zone)
+        ? [gridDateOf(event.start, zone).getUTCHours()]
+        : []
+    })
+    return hours.length ? hourText(Math.min(...hours) - 1) : MORNING
+  }, [anchor, events, nowZone, view, zoneFor])
+
+  // Uma vez por período, assim que os eventos dele chegam: depois, a rolagem é de quem está usando.
+  const scrolledFor = useRef<string | null>(null)
+  useEffect(() => {
+    const key = `${view}|${anchor}`
+    if (!dataReady || scrolledFor.current === key || view === "month") return
+    scrolledFor.current = key
+    const api = calendarRef.current?.getApi()
+    if (api) queueMicrotask(() => api.scrollToTime(scrollTarget()))
+  }, [anchor, dataReady, scrollTarget, view])
 
   const fullCalendarView = FULLCALENDAR_VIEW[view]
   const initial = useRef({ view: fullCalendarView, anchor })
@@ -291,13 +312,10 @@ export default function CalendarGrid({
     // Fora do ciclo do React: o FullCalendar se redesenha de forma síncrona ao trocar de visão.
     queueMicrotask(() => {
       const date = gridDateOfDayKey(anchor)
-      const viewChanged = api.view.type !== fullCalendarView
-      if (viewChanged) api.changeView(fullCalendarView, date)
+      if (api.view.type !== fullCalendarView) api.changeView(fullCalendarView, date)
       else if (dayKeyOfGrid(api.getDate()) !== anchor) api.gotoDate(date)
-      else return
-      if (fullCalendarView !== "dayGridMonth") api.scrollToTime(scrollTarget())
     })
-  }, [anchor, fullCalendarView, scrollTarget])
+  }, [anchor, fullCalendarView])
 
   // Acabou de marcar: a grade vai até o horário, mesmo que ele esteja fora da parte visível.
   useEffect(() => {
@@ -379,7 +397,7 @@ export default function CalendarGrid({
     eventInteractive: true,
     navLinks: true,
     navLinkDayClick: (date: Date) => onOpenDay(dayKeyOfGrid(date)),
-    scrollTime: initialScroll.current,
+    scrollTime: MORNING,
     scrollTimeReset: false,
     slotDuration: "00:30:00",
     slotHeaderFormat: { hour: "2-digit", minute: "2-digit" },
@@ -458,7 +476,7 @@ export default function CalendarGrid({
   }
 
   return (
-    <div className="vk-calendar" data-current-time={wallClockOf(Date.now(), nowZone)}>
+    <div className="vk-calendar">
       <FullCalendar ref={calendarRef} {...options} />
     </div>
   )

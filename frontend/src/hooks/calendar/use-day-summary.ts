@@ -14,6 +14,7 @@ export type DaySummaryData = {
   pending: number
   next: CalendarEvent | null
   isLoading: boolean
+  failed: boolean
 }
 
 /**
@@ -45,7 +46,7 @@ export function useDaySummary({
     [calendarIds.length, selectedZones, weekStart]
   )
   const filters = useMemo(() => ({ calendarIds }), [calendarIds])
-  const { events, isLoading } = useCalendarEvents(range, filters)
+  const { events, error, isLoading } = useCalendarEvents(range, filters)
 
   // "Próximo" muda sozinho conforme o relógio anda.
   const [now, setNow] = useState(() => Date.now())
@@ -73,6 +74,7 @@ export function useDaySummary({
       pending: counts.pending,
       next,
       isLoading: isLoading && !events,
+      failed: Boolean(error) && !events,
     }
-  }, [day, events, isLoading, now, primaryZone, weekStart, zones])
+  }, [day, error, events, isLoading, now, primaryZone, weekStart, zones])
 }

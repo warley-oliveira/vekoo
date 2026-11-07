@@ -9,7 +9,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import type { DaySummaryData } from "@/hooks/calendar/use-day-summary"
 import { eventHeadline } from "@/lib/calendar/event-status"
-import { formatDayKey, formatTimeInZone, safeTimeZone } from "@/lib/calendar/timezone"
+import { dayKeyOf, formatDayKey, formatTimeInZone, safeTimeZone } from "@/lib/calendar/timezone"
+import type { CalendarEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
 import { formatNumber } from "@/lib/format-number"
 import { cn } from "@/lib/utils"
@@ -43,6 +44,16 @@ export function DaySummary({
       ? t("calendar.days.today")
       : formatDayKey(day, language, { weekday: "short", day: "numeric", month: "short" })
 
+  // O próximo pode não ser hoje: sem o dia, "10:00" enganaria.
+  const nextWhen = (event: CalendarEvent) => {
+    const zone = safeTimeZone(zones.get(event.calendarId), primaryZone)
+    const time = formatTimeInZone(event.start, zone, language)
+    const eventDay = dayKeyOf(event.start, zone)
+    return eventDay === today
+      ? time
+      : `${formatDayKey(eventDay, language, { weekday: "short" })} ${time}`
+  }
+
   return (
     <Collapsible defaultOpen className={cn("min-w-0", className)}>
       <CollapsibleTrigger
@@ -60,7 +71,9 @@ export function DaySummary({
         {t("calendar.summary.title")}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        {summary.isLoading ? (
+        {summary.failed ? (
+          <p className="pt-1 text-sm text-muted-foreground">{t("calendar.summary.failed")}</p>
+        ) : summary.isLoading ? (
           <div aria-hidden className="space-y-2 py-1.5">
             <Skeleton className="h-4 w-3/5" />
             <Skeleton className="h-4 w-4/5" />
@@ -104,13 +117,7 @@ export function DaySummary({
               <div className="min-w-0">
                 <dt className="text-xs text-muted-foreground">{t("calendar.summary.next")}</dt>
                 <dd className="truncate">
-                  <span className="tabular-nums">
-                    {formatTimeInZone(
-                      summary.next.start,
-                      safeTimeZone(zones.get(summary.next.calendarId), primaryZone),
-                      language
-                    )}
-                  </span>
+                  <span className="tabular-nums">{nextWhen(summary.next)}</span>
                   {" · "}
                   {eventHeadline(summary.next).title || t("calendar.event.untitled")}
                 </dd>

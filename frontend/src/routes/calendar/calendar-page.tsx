@@ -2,7 +2,6 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { useTranslation } from "react-i18next"
 import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { CalendarOff, Plus, RefreshCw } from "lucide-react"
-import { useSearchParams } from "react-router"
 import { toast } from "sonner"
 
 import { AgendaList } from "@/components/calendar/agenda-list"
@@ -61,6 +60,7 @@ const CalendarGrid = lazy(() => import("@/components/calendar/calendar-grid"))
 
 const SWIPE_DISTANCE = 56
 const SWIPE_MAX_MS = 600
+const TAP_SLOP = 10
 const PULSE_MS = 2200
 
 /** Quem guardou o id de uma aula calculada continua achando ela depois de gravada. */
@@ -174,42 +174,24 @@ export default function CalendarPage() {
 
   /* ---------- painel: o endereço diz o que está aberto ---------- */
 
-  const [params, setParams] = useSearchParams()
-  const openEventId = params.get("event")
-  const isNew = params.get("new") === "1"
+  const openEventId = screen.params.get("event")
+  const isNew = screen.params.get("new") === "1"
   const [draft, setDraft] = useState<BookingDraft | null>(null)
+  const { patchParams } = screen
 
+  // Abrir empilha no histórico: no celular, o voltar do aparelho fecha o painel.
   const openEvent = useCallback(
-    (event: CalendarEvent) => {
-      setParams((current) => {
-        current.set("event", event.id)
-        current.delete("new")
-        return current
-      })
-    },
-    [setParams]
+    (event: CalendarEvent) => patchParams({ event: event.id, new: null }, { push: true }),
+    [patchParams]
   )
-  const closePanel = useCallback(() => {
-    setParams(
-      (current) => {
-        current.delete("event")
-        current.delete("new")
-        return current
-      },
-      { replace: true }
-    )
-  }, [setParams])
+  const closePanel = useCallback(() => patchParams({ event: null, new: null }), [patchParams])
 
   const startNew = useCallback(
     (nextDraft: BookingDraft) => {
       setDraft(nextDraft)
-      setParams((current) => {
-        current.set("new", "1")
-        current.delete("event")
-        return current
-      })
+      patchParams({ new: "1", event: null }, { push: true })
     },
-    [setParams]
+    [patchParams]
   )
 
   const defaultCalendarId = screen.selectedCalendars[0]?.id ?? calendars?.[0]?.id ?? null
@@ -301,11 +283,20 @@ export default function CalendarPage() {
   const previewEvent = preview
     ? (events?.find((event) => event.id === preview.id) ?? null)
     : null
+  const previewSequence =
+    previewEvent?.type === "booking" && previewEvent.enrolledSequenceId
+      ? calendars
+          ?.find((calendar) => calendar.id === previewEvent.calendarId)
+          ?.attendanceSequences.find((item) => item.id === previewEvent.enrolledSequenceId)?.name
+      : undefined
 
   /* ---------- trocar de dia por gesto, sem brigar com a rolagem nem com o arraste ---------- */
 
   const swipeArea = useRef<HTMLDivElement>(null)
   const swipeStart = useRef<{ x: number; y: number; at: number } | null>(null)
+  // A grade entende um gesto dentro da mesma coluna como toque: sem isto, trocar de dia abriria
+  // um agendamento novo junto. O toque chega à grade depois daqui.
+  const ignoreTapUntil = useRef(0)
 
   const nudge = useCallback(
     (direction: 1 | -1) => {
@@ -340,14 +331,18 @@ export default function CalendarPage() {
   function onTouchEnd(touchEvent: React.TouchEvent) {
     const start = swipeStart.current
     swipeStart.current = null
-    if (!start || screen.view === "month") return
+    if (!start) return
     const touch = touchEvent.changedTouches[0]
     const dx = touch.clientX - start.x
     const dy = touch.clientY - start.y
+    if (Math.abs(dx) > TAP_SLOP || Math.abs(dy) > TAP_SLOP) {
+      ignoreTapUntil.current = Date.now() + 400
+    }
     if (
       Math.abs(dx) >= SWIPE_DISTANCE &&
       Math.abs(dx) > Math.abs(dy) * 1.5 &&
-      Date.now() - start.at <= SWIPE_MAX_MS
+      Date.now() - start.at <= SWIPE_MAX_MS &&
+      screen.view !== "month"
     ) {
       step(dx < 0 ? 1 : -1)
     }
@@ -474,14 +469,19 @@ export default function CalendarPage() {
         view={screen.view}
         anchor={screen.anchor}
         events={visibleEvents}
+        dataReady={!loadingEvents}
         zones={screen.zones}
         nowZone={screen.primaryZone}
         pulseId={pulseId}
         focusTime={focusTime}
         isTouch={isTouch}
         isPhone={screen.isPhone}
-        onSelectRange={newFromRange}
-        onOpenEvent={openEvent}
+        onSelectRange={(range) => {
+          if (Date.now() >= ignoreTapUntil.current) newFromRange(range)
+        }}
+        onOpenEvent={(event) => {
+          if (Date.now() >= ignoreTapUntil.current) openEvent(event)
+        }}
         onMoveEvent={(event, start, end, revert) => void actions.move(event, start, end, revert)}
         onHoverEvent={screen.isPhone ? undefined : hover}
         onOpenDay={screen.openDay}
@@ -562,7 +562,7 @@ export default function CalendarPage() {
           </div>
         ) : null}
 
-        {screen.isPhone || nothingSelected ? null : (
+        {screen.isPhone || nothingSelected || (eventsError && !events) ? null : (
           <div className="flex items-center gap-2 border-b px-3 py-1.5 md:px-4">
             <SituationChips
               counts={situationCounts}
@@ -721,6 +721,7 @@ export default function CalendarPage() {
           screen.primaryZone
         )}
         actions={actions}
+        sequenceName={previewSequence}
         popupHandlers={popupHandlers}
         onClose={closePreview}
         onOpenFull={(event) => {

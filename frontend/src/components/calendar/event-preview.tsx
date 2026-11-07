@@ -16,6 +16,7 @@ export function EventPreview({
   anchor,
   timeZone,
   actions,
+  sequenceName,
   popupHandlers,
   onClose,
   onOpenFull,
@@ -24,6 +25,7 @@ export function EventPreview({
   anchor: HTMLElement | null
   timeZone: string
   actions: BookingActions
+  sequenceName?: string
   popupHandlers: { onMouseEnter: () => void; onMouseLeave: () => void }
   onClose: () => void
   onOpenFull: (event: CalendarEvent) => void
@@ -77,7 +79,12 @@ export function EventPreview({
                 </div>
 
                 {event.type === "booking" ? (
-                  <BookingPreview event={event} actions={actions} onClose={onClose} />
+                  <BookingPreview
+                    event={event}
+                    actions={actions}
+                    sequenceName={sequenceName}
+                    onClose={onClose}
+                  />
                 ) : (
                   <SessionPreview event={event} />
                 )}
@@ -112,10 +119,12 @@ function Line({ icon, children }: { icon: React.ReactNode; children: React.React
 function BookingPreview({
   event,
   actions,
+  sequenceName,
   onClose,
 }: {
   event: BookingEvent
   actions: BookingActions
+  sequenceName?: string
   onClose: () => void
 }) {
   const { t } = useTranslation()
@@ -147,7 +156,9 @@ function BookingPreview({
         ) : null}
         {event.enrolledSequenceId ? (
           <Line icon={<ListChecks aria-hidden />}>
-            {t("calendar.preview.enrolled")}
+            {t("calendar.sequence.enrolledIn", {
+              name: sequenceName ?? t("calendar.sequence.fallbackName"),
+            })}
           </Line>
         ) : null}
       </div>

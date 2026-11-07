@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Check, Video, X } from "lucide-react"
 
@@ -28,6 +29,20 @@ export function EventSituationBadge({ event }: { event: CalendarEvent }) {
     return <StatusBadge tone="warning">{t("calendar.event.needsAttendance")}</StatusBadge>
   }
   return null
+}
+
+/** O título com a cor do evento: é o elo entre o painel e o bloco que foi clicado. */
+export function EventTitle({ color, children }: { color: string | null; children: ReactNode }) {
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      <span
+        aria-hidden
+        className="size-2.5 shrink-0 rounded-full bg-muted-foreground/40"
+        style={color ? { backgroundColor: color } : undefined}
+      />
+      <span className="min-w-0 truncate">{children}</span>
+    </span>
+  )
 }
 
 /** Link do Meet: abre em outra aba, sem abrir o detalhe de quem está em volta. */

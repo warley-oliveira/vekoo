@@ -51,7 +51,7 @@ import type {
 import { contactLine } from "@/lib/calendar/contact"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { EventSituationBadge, SessionOccupancy } from "../event-badges"
+import { EventSituationBadge, EventTitle, SessionOccupancy } from "../event-badges"
 import { TimeZoneNote } from "../calendar-toolbar"
 import { AddParticipantDialog } from "./add-participant-dialog"
 
@@ -88,7 +88,15 @@ export function ClassSessionPanel({
   const [bulkBusy, setBulkBusy] = useState(false)
 
   const canceled = isCanceled(session)
-  const list = useMemo(() => attendances ?? [], [attendances])
+  // A API põe primeiro quem já tem registro: sem ordem própria, a linha fugiria do dedo a cada
+  // marcação. Por nome, ela fica onde está.
+  const list = useMemo(
+    () =>
+      [...(attendances ?? [])].sort((a, b) =>
+        (a.userName ?? "").localeCompare(b.userName ?? "", language)
+      ),
+    [attendances, language]
+  )
   const title = session.title || session.classGroupName || t("calendar.session.fallbackTitle")
 
   const counts = useMemo(() => {
@@ -182,7 +190,7 @@ export function ClassSessionPanel({
       open={open}
       onOpenChange={onOpenChange}
       size="lg"
-      title={title}
+      title={<EventTitle color={session.color}>{title}</EventTitle>}
       description={formatEventWhen(session.start, session.end, zone, language)}
       footer={
         !canceled && list.length > 0 ? (
