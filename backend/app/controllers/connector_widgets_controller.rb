@@ -59,10 +59,12 @@ class ConnectorWidgetsController < PlatformController
 
     file = params[:file]
     return render_error(status: :unprocessable_entity, code: "fileRequired", field: "file") unless file.respond_to?(:read)
-    return render_error(status: :unprocessable_entity, code: "invalidFileType", field: "file") unless ALLOWED_IMAGE_TYPES.include?(file.content_type)
+    # Pelos bytes: esta URL é pública e vai para o site do cliente.
+    content_type = Marcel::MimeType.for(file.tempfile)
+    return render_error(status: :unprocessable_entity, code: "invalidFileType", field: "file") unless ALLOWED_IMAGE_TYPES.include?(content_type)
     return render_error(status: :unprocessable_entity, code: "fileTooLarge", field: "file") if file.size > MAX_IMAGE_SIZE
 
-    blob = Media::Storage.store_io(file, filename: file.original_filename.presence || "widget-image", content_type: file.content_type)
+    blob = Media::Storage.store_io(file, filename: file.original_filename.presence || "widget-image", content_type: content_type)
     @connector.update!(field => Media::Storage.public_url(Media::Storage.path_for(blob)))
 
     render_widget

@@ -28,8 +28,12 @@ class Upload < ApplicationRecord
   scope :recent_first, -> { order(created_at: :desc) }
 
   # Só o que o servidor consegue transformar. Recusar na entrada é melhor do
-  # que descobrir na hora de gerar a variante, com o arquivo já no disco.
+  # que descobrir na hora de gerar a variante, com o arquivo já no disco. O tipo
+  # sai dos bytes: o declarado é escolha de quem manda, e o que chega aqui vai
+  # para o libvips, que escolhe o leitor pelo conteúdo.
   def self.acceptable?(io)
-    CONTENT_TYPES.include?(io.content_type) && io.size.to_i.between?(1, MAX_BYTES)
+    return false unless io.respond_to?(:tempfile)
+
+    io.size.to_i.between?(1, MAX_BYTES) && CONTENT_TYPES.include?(Marcel::MimeType.for(io.tempfile))
   end
 end
