@@ -22,6 +22,7 @@ import { MobileTrail, Trail } from "@/components/editor/trail"
 import { ErrorState } from "@/components/error-state"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useCarousel } from "@/hooks/use-carousels"
+import { useDocumentTitle } from "@/hooks/use-document-title"
 import { ApiError } from "@/lib/api"
 import { duplicateBlock, newId, type Block } from "@/lib/doc"
 
@@ -96,6 +97,8 @@ function EditorLoadError({
 function EditorShell() {
   const location = useLocation()
   const { runCarousel } = useAi()
+  const { state } = useEditor()
+  useDocumentTitle(state.doc.title)
   const [aiOpen, setAiOpen] = useState(false)
   const kicked = useRef(false)
 
