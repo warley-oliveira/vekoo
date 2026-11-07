@@ -98,7 +98,7 @@ export function CarouselGridCard({
         >
           <Star
             className={cn(
-              carousel.favorite && "fill-amber-400 stroke-amber-400"
+              carousel.favorite && "fill-primary stroke-primary"
             )}
           />
         </Button>

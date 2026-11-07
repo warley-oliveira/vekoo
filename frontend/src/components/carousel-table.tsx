@@ -70,7 +70,7 @@ export function CarouselTable({
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate font-medium">{row.original.title}</span>
           {row.original.favorite && (
-            <Star className="size-3.5 shrink-0 fill-amber-400 stroke-amber-400" />
+            <Star className="size-3.5 shrink-0 fill-primary stroke-primary" />
           )}
         </div>
       ),
@@ -120,7 +120,7 @@ export function CarouselTable({
           >
             <Star
               className={cn(
-                row.original.favorite && "fill-amber-400 stroke-amber-400"
+                row.original.favorite && "fill-primary stroke-primary"
               )}
             />
           </Button>
