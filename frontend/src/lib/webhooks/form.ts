@@ -207,6 +207,9 @@ function checkAction(action: ActionValues, index: number, ctx: z.RefinementCtx, 
     if (!config.flowId && !hasBlocks && !hasText && !config.whatsappTemplateId) {
       issue("flowId", "webhooks.form.errors.nothingToDo")
     }
+    if (config.whatsappTemplateId && config.whatsappTemplateParams.some((param) => !param.trim())) {
+      issue("whatsappTemplateParams", "webhooks.form.errors.templateParams")
+    }
     if (config.sendMode === "advanced") {
       config.messageBlocks.forEach((block, position) => {
         if (block.type === "text") {

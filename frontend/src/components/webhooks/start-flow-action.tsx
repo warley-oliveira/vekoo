@@ -90,7 +90,7 @@ export function StartFlowAction({
 
   // Trocar de modelo muda quantas variáveis há: a lista acompanha, mantendo o que couber.
   const paramsName = `${config}.whatsappTemplateParams` as const
-  const { field: paramsField } = useController({ control, name: paramsName })
+  const { field: paramsField, fieldState: paramsState } = useController({ control, name: paramsName })
   const params = (paramsField.value ?? []) as string[]
   useEffect(() => {
     if (!pickedTemplate || params.length === variables.length) return
@@ -187,6 +187,7 @@ export function StartFlowAction({
           picked={pickedTemplate}
           variables={variables}
           params={params}
+          paramsError={paramsState.error?.message}
           onParamChange={(position, value) =>
             setValue(
               paramsName,
@@ -237,6 +238,7 @@ function CloudOptions({
   picked,
   variables,
   params,
+  paramsError,
   onParamChange,
 }: {
   control: Control<WebhookFormValues>
@@ -247,6 +249,7 @@ function CloudOptions({
   picked: WhatsappTemplate | null
   variables: string[]
   params: string[]
+  paramsError?: string
   onParamChange: (position: number, value: string) => void
 }) {
   const { t } = useTranslation()
@@ -320,6 +323,11 @@ function CloudOptions({
               )}
             </Field>
           ))}
+          {paramsError ? (
+            <p role="alert" className="text-xs text-destructive">
+              {paramsError}
+            </p>
+          ) : null}
         </div>
       ) : null}
     </div>

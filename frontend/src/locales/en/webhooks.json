@@ -166,7 +166,8 @@
         "nothingToDo": "Choose a flow or write a message: with neither, this action does nothing.",
         "blockText": "Write the text.",
         "blockAttachment": "Choose the attachment.",
-        "blockUrl": "The media address is missing."
+        "blockUrl": "The media address is missing.",
+        "templateParams": "Fill in every variable: Meta refuses a template with a blank one."
       },
       "saveShort": "Save"
     },

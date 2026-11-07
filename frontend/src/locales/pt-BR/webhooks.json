@@ -166,7 +166,8 @@
         "nothingToDo": "Escolha um fluxo ou escreva uma mensagem: sem nenhum dos dois, esta ação não faz nada.",
         "blockText": "Escreva o texto.",
         "blockAttachment": "Escolha o anexo.",
-        "blockUrl": "Falta o endereço da mídia."
+        "blockUrl": "Falta o endereço da mídia.",
+        "templateParams": "Preencha todas as variáveis: a Meta recusa o modelo com alguma em branco."
       },
       "saveShort": "Salvar"
     },
