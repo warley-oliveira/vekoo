@@ -14,6 +14,7 @@ import { TextBlockView } from "@/components/editor/blocks/block-text"
 import { CardImage } from "@/components/editor/card-image"
 import {
   blockLayoutClass,
+  emptyCard,
   FORMAT_RATIOS,
   type Block,
   type CarouselCard,
@@ -21,7 +22,6 @@ import {
   type CarouselTheme,
   type VerticalAlign,
 } from "@/lib/doc"
-import { emptyCard } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 // O renderizador do card — a arte real, do thumbnail da busca ao canvas do
