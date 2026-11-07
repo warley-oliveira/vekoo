@@ -11,7 +11,7 @@ import {
   MultiSelectField,
   PhoneField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextField,
   UnsavedChangesDialog,
@@ -167,7 +167,7 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
   const requestClose = useGuardedClose(isDirty, close)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -363,6 +363,6 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
           )}
         </AnimatePresence>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

@@ -8,7 +8,7 @@ import { z } from "zod"
 
 import {
   FormActions,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextField,
   UnsavedChangesDialog,
@@ -75,7 +75,8 @@ export function TeamPanel({ team, open, onOpenChange, onCreated, onDelete }: Tea
   const requestClose = useGuardedClose(isDirty, close)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
+      size="lg"
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -131,6 +132,6 @@ export function TeamPanel({ team, open, onOpenChange, onCreated, onDelete }: Tea
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

@@ -11,7 +11,7 @@ import {
   FormActions,
   InlineError,
   ListSkeleton,
-  SidePanel,
+  ResponsiveDialog,
   TextField,
   UnsavedChangesDialog,
   useConfirm,
@@ -148,14 +148,14 @@ export function AccessRolePanel({ role, open, onOpenChange, onDelete }: AccessRo
   const requestClose = useGuardedClose(isDirty, close)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
       title={role ? roleName(role) : t("people.roles.create.title")}
       description={role ? undefined : t("people.roles.create.description")}
-      size="lg"
+      size="xl"
       onSubmit={submit}
       footer={
         <FormActions
@@ -245,6 +245,6 @@ export function AccessRolePanel({ role, open, onOpenChange, onDelete }: AccessRo
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
