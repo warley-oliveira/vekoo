@@ -4,6 +4,15 @@ module Pipelines
     before_action :set_trigger, only: %i[update destroy toggle]
     before_action :require_code_permission, only: %i[create update]
 
+    rescue_from SecretHeaders::NeedsRetyping do |error|
+      render_error(
+        status: :unprocessable_content,
+        code: "secretHeaderNeedsRetyping",
+        field: "actions",
+        message: t("errors.secret_header_needs_retyping", name: error.header)
+      )
+    end
+
     def index
       triggers = @board.triggers.ordered
 
@@ -11,7 +20,7 @@ module Pipelines
     end
 
     def create
-      trigger = @board.triggers.build(trigger_params)
+      trigger = @board.triggers.build(with_kept_secret_headers(trigger_params))
 
       if trigger.save
         render json: TriggerSerializer.one(trigger, viewer: current_account), status: :created
@@ -21,7 +30,7 @@ module Pipelines
     end
 
     def update
-      if @trigger.update(trigger_params)
+      if @trigger.update(with_kept_secret_headers(trigger_params))
         render json: TriggerSerializer.one(@trigger, viewer: current_account)
       else
         render_invalid(@trigger)
@@ -52,6 +61,25 @@ module Pipelines
       return unless Array(envelope(:trigger)[:actions]).any? { |action| action.respond_to?(:permit) && action[:type].to_s == "run_code" }
 
       render_forbidden
+    end
+
+    # As ações chegam sempre inteiras e sem id. O valor guardado vem de uma ação para o mesmo destino, a da
+    # mesma posição primeiro: duas ações para o mesmo servidor podem levar chaves diferentes.
+    def with_kept_secret_headers(attributes)
+      return attributes unless attributes[:actions]
+
+      stored = Array(@trigger&.actions)
+      attributes[:actions] = attributes[:actions].each_with_index.map do |action, position|
+        next action if action[:headers].blank?
+
+        candidates = stored.rotate(position).select do |candidate|
+          candidate["type"] == "fire_webhook" && SecretHeaders.same_destination?(candidate["url"], action[:url])
+        end
+        known = candidates.reverse.reduce({}) { |all, candidate| all.merge(candidate["headers"].to_h) }
+
+        action.merge(headers: SecretHeaders.restore(action[:headers].to_h, stored: known, same_destination: true))
+      end
+      attributes
     end
 
     def trigger_params

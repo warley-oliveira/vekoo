@@ -5,6 +5,7 @@ en:
     not_found: "Not found."
     unauthorized: "You need to sign in to continue."
     too_many_requests: "Too many attempts. Wait a few minutes and try again."
+    secret_header_needs_retyping: "Type the value of %{name} again: it isn't kept for another address or another header."
     unprocessable: "We couldn't save that. Check the fields."
     parameter_missing: "Missing %{param}."
     format: "%{attribute} %{message}"

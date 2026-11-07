@@ -1339,7 +1339,7 @@ Até 20 por gatilho. As chaves são camelCase na API, e snake_case no banco.
 | `assign_user` | `accountIds` | Rodízio, pulando quem perdeu o acesso ou é `setupOnly`. |
 | `send_whatsapp_message` | `connectorId`, `message`, `target` (`card_contact`, `specific`), `specificPhone` | |
 | `send_whatsapp_template` | `connectorId`, `whatsappTemplateId`, `templateParams`, `target`, `specificPhone` | Só em canal WhatsApp Cloud. `templateParams` é uma lista de textos, um por variável do corpo. |
-| `fire_webhook` | `url`, `method`, `headers`, `bodyTemplate` | Passa por `SafeHttp`: endereço interno é recusado. |
+| `fire_webhook` | `url`, `method`, `headers`, `bodyTemplate` | Passa por `SafeHttp`: endereço interno é recusado. Valor de cabeçalho cujo nome parece segredo é só de escrita: a resposta traz `••••••••`, e mandar a máscara de volta mantém o que estava. Se o destino ou o nome mudarem, `422 secretHeaderNeedsRetyping`. |
 | `toggle_automation` | `automationStatus` (`enabled`, `disabled`), `disablePeriod`, `disableTime` | Liga e pausa a automação (fluxo) da conversa do card. |
 | `create_card` | `targetBoardId`, `targetStageId`, `cardTitleTemplate`, `cardDescriptionTemplate`, `cardPriority`, `cardColorLabel`, `cardDueDateOffset`, `cardAssignedToId`, `cardInheritAssigned`, `cardInheritLabels`, `cardDealValueTemplate`, `cardCompanyNameTemplate`, `cardContactEmailTemplate`, `cardContactPhoneTemplate`, `cardTags`, `cardLabelIds`, `cardCustomFieldValues` | Da mesma organização. |
 | `run_code` | `code` (até 100 mil caracteres), `timeoutMs` (1 a 60 s, padrão 15 s) | Roda em V8, na fila `scripts`. Ver abaixo. |

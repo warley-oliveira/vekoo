@@ -16,8 +16,10 @@ class ToolSerializer < ApplicationSerializer
     }
   end
 
+  # Sem o código: a tela do catálogo só mostra nome, descrição e parâmetros, e a função instalada vem travada
+  # (`locked`). Quem quer o código usa "personalizar".
   def self.full(tool)
-    one(tool).merge(functionTemplates: camelized(tool.function_templates))
+    one(tool).merge(functionTemplates: camelized(Array(tool.function_templates).map { |template| template.to_h.except("js_code") }))
   end
 
   def self.camelized(list)
