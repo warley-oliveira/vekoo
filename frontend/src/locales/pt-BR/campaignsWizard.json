@@ -100,7 +100,10 @@
       "removeOrigin": "Tirar da lista: {{label}}",
       "removeTitle_one": "Tirar {{formatted}} pessoa da lista?",
       "removeTitle_other": "Tirar {{formatted}} pessoas da lista?",
-      "removeHint": "Sai quem veio de: {{label}}. Dá para adicionar de novo depois.",
+      "removeHint": {
+        "contacts": "Saem as pessoas que vieram da sua base de contatos. Dá para adicionar de novo depois.",
+        "imported": "Saem as pessoas que vieram de arquivos e buscas. Dá para adicionar de novo depois."
+      },
       "removed": "Lista atualizada",
       "variablesFound": "Da sua lista, você pode usar na mensagem: {{list}}.",
       "noPermission": "Sem acesso",

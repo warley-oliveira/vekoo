@@ -120,12 +120,12 @@ export function StepAudience() {
 
   const close = () => setPanel(null)
 
-  async function removeOrigin(origin: "contacts" | "imported", label: string, count: number) {
+  async function removeOrigin(origin: "contacts" | "imported", count: number) {
     if (!campaignId) return
 
     const confirmed = await confirm({
       title: t("campaignsWizard.audience.removeTitle", { count, formatted: formatNumber(count, language) }),
-      description: t("campaignsWizard.audience.removeHint", { label }),
+      description: t(`campaignsWizard.audience.removeHint.${origin}`),
       confirmLabel: t("campaignsWizard.audience.remove"),
       destructive: true,
       onConfirm: async () => {
@@ -177,22 +177,14 @@ export function StepAudience() {
               <OriginRow
                 label={t("campaignsWizard.audience.fromContacts")}
                 count={summary.fromContacts}
-                onRemove={() =>
-                  void removeOrigin(
-                    "contacts",
-                    t("campaignsWizard.audience.fromContacts"),
-                    summary.fromContacts
-                  )
-                }
+                onRemove={() => void removeOrigin("contacts", summary.fromContacts)}
               />
             ) : null}
             {summary.imported > 0 ? (
               <OriginRow
                 label={t("campaignsWizard.audience.imported")}
                 count={summary.imported}
-                onRemove={() =>
-                  void removeOrigin("imported", t("campaignsWizard.audience.imported"), summary.imported)
-                }
+                onRemove={() => void removeOrigin("imported", summary.imported)}
               />
             ) : null}
           </ul>

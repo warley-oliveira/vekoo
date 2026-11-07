@@ -100,7 +100,10 @@
       "removeOrigin": "Remove from list: {{label}}",
       "removeTitle_one": "Remove {{formatted}} person from the list?",
       "removeTitle_other": "Remove {{formatted}} people from the list?",
-      "removeHint": "Removes those who came from: {{label}}. You can add them again later.",
+      "removeHint": {
+        "contacts": "Removes the people who came from your contacts. You can add them again later.",
+        "imported": "Removes the people who came from files and searches. You can add them again later."
+      },
       "removed": "List updated",
       "variablesFound": "From your list, you can use in the message: {{list}}.",
       "noPermission": "No access",
