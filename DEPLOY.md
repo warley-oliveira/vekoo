@@ -41,7 +41,7 @@ O volume `vekoo_storage` (anexos) é montado nos três papéis da aplicação: �
 
 | Passo | Por quê |
 |---|---|
-| `db:mongoid:create_indexes` | As agregações do dashboard, dos funis e dos dashboards personalizados usam `hint`. Sem o índice, o Mongo **recusa** a consulta. Os índices únicos são os que seguram clique duplo e importação simultânea, e o TTL de `HookLog` também depende disso. Roda primeiro porque a semente de um banco vazio já consulta. |
+| `db:mongoid:create_indexes` | As agregações do dashboard, dos funis e dos dashboards personalizados usam `hint`. Sem o índice, o Mongo **recusa** a consulta. Os índices únicos são os que seguram clique duplo e importação simultânea, e o TTL de `HookLog` também depende disso. Vem primeiro: sem Mongo, o deploy para antes de migrar o Postgres. |
 | `db:prepare` | Cria o banco no primeiro boot e aplica as migrations nos demais. Num banco vazio, roda a semente base. |
 | `platform:sync` | O dado do produto, que a semente não leva a produção: o catálogo de ferramentas (sem ele, `GET /tool-catalog` responde vazio) e os grupos padrão das organizações antigas. |
 
@@ -147,12 +147,17 @@ O host já tem `vekoo-api-web`, `-worker`, `-db` (`postgres:16.10`, **sem pgvect
 
 A API antiga continua funcionando durante todos os passos até o 7, exceto pelos segundos em que o Postgres reinicia. Faça fora do horário de pico.
 
-**1. Preencha `.env.deploy`** com o que entrou: compare com `.env.deploy.example`. No mínimo `MONGO_INITDB_ROOT_PASSWORD` e `MONGODB_URI`, com a mesma senha.
-
-**2. Backup agora, e fora do servidor.** Como root no host:
+**1. Preencha `.env.deploy`** com o que entrou: compare com `.env.deploy.example`. No mínimo `MONGO_INITDB_ROOT_PASSWORD` e `MONGODB_URI`, com a mesma senha. Todos os comandos abaixo saem de `backend/`, com o ambiente carregado:
 
 ```bash
-/usr/local/bin/vekoo-backup
+set -a; . ./.env.deploy; set +a
+cd backend
+```
+
+**2. Backup agora, e fora do servidor:**
+
+```bash
+ssh root@107.152.37.137 /usr/local/bin/vekoo-backup
 scp deploy@107.152.37.137:'/var/backups/vekoo/db-*.pgdump' .
 ```
 
@@ -182,7 +187,7 @@ A senha só vale na criação do volume. Trocar depois pede `db.changeUserPasswo
 **6. Atualize o backup do host**, agora que o Mongo existe. Só isto, sem reiniciar o Docker nem refazer o firewall:
 
 ```bash
-ssh root@107.152.37.137 "bash -s -- --backup-only" < bin/deploy-setup
+ssh root@107.152.37.137 "bash -s -- --backup-only" < ../bin/deploy-setup
 ssh root@107.152.37.137 /usr/local/bin/vekoo-backup
 ssh deploy@107.152.37.137 'ls -lh /var/backups/vekoo'    # db, mongo e storage
 ```
@@ -443,7 +448,17 @@ Não é configuração que falta: é código, ou decisão. A lista completa est�
 
 **Não verificado:**
 
-- **`docker build`** desta imagem, com `ffmpeg` e a compilação do `mini_racer`. O código nunca rodou de dentro dela, e o `ffmpeg` dela nunca rodou. Falta construir e, num container, rodar `ffmpeg -version` e `bin/rails runner` com um script.
+- **`docker build`** desta imagem, com `ffmpeg` e a compilação do `mini_racer`. O código nunca rodou de dentro dela. Antes do primeiro deploy, com memória livre na máquina:
+
+  ```bash
+  cd backend
+  docker build --platform linux/amd64 -t vekoo-api:ensaio .
+  docker run --rm --entrypoint sh -e RAILS_ENV=production -e SECRET_KEY_BASE=x \
+    -e DATABASE_URL=postgres://x/y -e MONGODB_URI=mongodb://x/y vekoo-api:ensaio \
+    -c 'ffmpeg -version | head -1; ffprobe -version | head -1; bin/rails runner "puts MiniRacer::Context.new.eval(%q(40 + 2))"'
+  ```
+
+  Tem que imprimir as duas versões e `42`.
 - **`kamal-proxy`:** nada passou por ele nesta versão, nem `buffering.responses: false` nem WebSocket. Os ensaios pararam no Thruster.
 - **Cloudflare:** WebSocket e SSE atravessando, front publicado, CSP com as telas novas.
 - **Provedores reais:** Meta, Evolution, Z-API, Google, OpenAI, Apify, push em navegador. Ver `docs/migration/DECISIONS.md`.

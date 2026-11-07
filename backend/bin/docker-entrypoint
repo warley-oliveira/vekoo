@@ -11,7 +11,7 @@ fi
 # desse healthcheck. É isso que fecha a janela de 500 entre "código novo" e "banco preparado".
 #
 #   db:mongoid:create_indexes  As agregações usam `hint`, e o Mongo recusa a consulta sem o índice.
-#                              Vem primeiro porque a semente de um banco vazio já consulta.
+#                              Vem primeiro: sem Mongo, o deploy para antes de migrar o Postgres.
 #   db:prepare                 Cria o banco no primeiro boot e aplica as migrations nos demais.
 #   platform:sync              Dado do produto, que a semente não carrega em produção.
 #
