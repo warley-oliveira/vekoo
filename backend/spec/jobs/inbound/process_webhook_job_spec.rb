@@ -182,6 +182,39 @@ RSpec.describe Inbound::ProcessWebhookJob do
       expect(messages_of(chat).pluck(:message_id)).to eq([ "E1" ])
       expect(Flows::InboundDispatcher).to have_received(:call).once
     end
+
+    # A mensagem foi gravada e a queda veio logo depois. A nova tentativa do webhook acha "já existe" e para ali: a mensagem ficava
+    # sem não lida, sem prévia na lista e sem fluxo, para sempre.
+    it "erro depois de gravar: o resto do caminho acontece, sem repetir a mensagem" do
+      attempts = 0
+      allow(Outreach::RecipientReply).to receive(:record).and_wrap_original do |original, *args|
+        attempts += 1
+        raise Mongo::Error::SocketError, "mongo fora" if attempts == 1
+
+        original.call(*args)
+      end
+
+      perform_enqueued_jobs(only: [ described_class, Chats::RetryInboundFlowJob ]) do
+        described_class.perform_later("evolution", body, "IWA-#{connector.id}")
+      end
+
+      expect(messages_of(chat).pluck(:message_id)).to eq([ "E1" ])
+      expect(chat).to have_attributes(unread_messages: 1, last_message_content: "Oi")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(a_hash_including(event: "first_message", message_id: "E1")).once
+    end
+
+    it "o erro que persiste desiste depois de 3 tentativas, com log" do
+      allow(Outreach::RecipientReply).to receive(:record).and_raise(Mongo::Error::SocketError, "mongo fora")
+      allow(Rails.logger).to receive(:error)
+
+      perform_enqueued_jobs(only: [ described_class, Chats::RetryInboundFlowJob ]) do
+        described_class.perform_later("evolution", body, "IWA-#{connector.id}")
+      end
+
+      # A primeira, no webhook, e as três do job.
+      expect(Outreach::RecipientReply).to have_received(:record).exactly(4).times
+      expect(Rails.logger).to have_received(:error).with(a_string_matching(/RetryInboundFlowJob.*mongo fora/))
+    end
   end
 
   # A Meta agrupa eventos: se o segundo falha, a nova tentativa refaz o primeiro.

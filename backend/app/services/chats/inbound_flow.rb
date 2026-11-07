@@ -18,6 +18,14 @@ module Chats
     # @param count_unread [Boolean] false quando é o conteúdo de uma mensagem já contada
     def self.call(chat:, message:, text:, first_message: false, from_me: false, dispatch: true, count_unread: true)
       new(chat, message, text, first_message, from_me, dispatch, count_unread).call
+    rescue StandardError => e
+      # A mensagem já está gravada. Se o erro subisse, a nova tentativa de quem a recebeu acharia "já existe" e pararia ali: ela ficaria
+      # sem não lida, sem prévia na lista e sem fluxo, para sempre. O resto do caminho tenta de novo sozinho.
+      Rails.logger.error("[Chats::InboundFlow] #{e.class}: #{e.message} chat=#{chat.id}")
+      RetryInboundFlowJob.set(wait: 3.seconds).perform_later(
+        chat.id.to_s, chat.organization_id, message.id.to_s, text.to_s,
+        { "first_message" => first_message, "from_me" => from_me, "dispatch" => dispatch, "count_unread" => count_unread }
+      )
     end
 
     def initialize(chat, message, text, first_message, from_me, dispatch, count_unread)
