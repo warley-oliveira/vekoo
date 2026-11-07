@@ -9,13 +9,7 @@ import { CardArt } from "@/components/editor/card-art"
 import { useEditor } from "@/components/editor/editor-store"
 import { Section } from "@/components/editor/panel-controls"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { ResponsiveDialog } from "@/components/shared"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -103,119 +97,117 @@ export function ExportDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl">
-            {t("editor.export.title")}
-          </DialogTitle>
-          <DialogDescription>{t("editor.export.description")}</DialogDescription>
-        </DialogHeader>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      size="lg"
+      title={t("editor.export.title")}
+      description={t("editor.export.description")}
+      footer={
+        <>
+          <p className="self-center text-xs leading-relaxed text-muted-foreground sm:mr-auto">
+            {t("editor.export.note")}
+          </p>
+          <Button
+            className="shrink-0"
+            disabled={exporting || selected.length === 0}
+            onClick={() => void run()}
+          >
+            {exporting ? <Loader2 className="animate-spin" /> : <Download />}
+            {t("editor.export.action")}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-5">
+        <Section label={t("editor.export.scope")}>
+          <ToggleGroup
+            value={[scope]}
+            onValueChange={(value) => {
+              const next = value[0] as Scope | undefined
+              if (next) setScope(next)
+            }}
+          >
+            <ToggleGroupItem value="all" className="px-3">
+              {t("editor.export.scopeAll", { count: cards.length })}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="current" className="px-3">
+              {t("editor.export.scopeCurrent")}
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </Section>
 
-        <div className="space-y-5">
-          <Section label={t("editor.export.scope")}>
-            <ToggleGroup
-              value={[scope]}
-              onValueChange={(value) => {
-                const next = value[0] as Scope | undefined
-                if (next) setScope(next)
-              }}
-            >
-              <ToggleGroupItem value="all" className="px-3">
-                {t("editor.export.scopeAll", { count: cards.length })}
-              </ToggleGroupItem>
-              <ToggleGroupItem value="current" className="px-3">
-                {t("editor.export.scopeCurrent")}
-              </ToggleGroupItem>
-            </ToggleGroup>
-          </Section>
-
-          <Section label={t("editor.export.caption")}>
-            <Textarea
-              value={caption}
-              onChange={(e) => saveCaption(e.target.value)}
-              placeholder={t("editor.export.captionPlaceholder")}
-              rows={4}
-            />
-            <div className="flex items-center gap-2 pt-1.5">
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {t("editor.export.captionCount", { count: caption.length })}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ml-auto text-muted-foreground"
-                disabled={busy}
-                onClick={() => void captionFor(saveCaption)}
-              >
-                {task?.kind === "caption" ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <Sparkles />
-                )}
-                {t("editor.ai.suggestCaption")}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={caption.trim() === ""}
-                onClick={() => void copyCaption()}
-              >
-                {copied ? <Check /> : <Copy />}
-                {copied ? t("editor.export.copied") : t("editor.export.copy")}
-              </Button>
-            </div>
-          </Section>
-
-          {exporting && (
-            <div className="space-y-1.5">
-              <Progress value={(done / selected.length) * 100} />
-              <p className="text-xs text-muted-foreground tabular-nums">
-                {t("editor.export.progress", {
-                  done,
-                  total: selected.length,
-                })}
-              </p>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2">
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              {t("editor.export.note")}
-            </p>
+        <Section label={t("editor.export.caption")}>
+          <Textarea
+            value={caption}
+            onChange={(e) => saveCaption(e.target.value)}
+            placeholder={t("editor.export.captionPlaceholder")}
+            rows={4}
+          />
+          <div className="flex items-center gap-2 pt-1.5">
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {t("editor.export.captionCount", { count: caption.length })}
+            </span>
             <Button
-              className="ml-auto shrink-0"
-              disabled={exporting || selected.length === 0}
-              onClick={() => void run()}
+              variant="ghost"
+              size="sm"
+              className="ml-auto text-muted-foreground"
+              disabled={busy}
+              onClick={() => void captionFor(saveCaption)}
             >
-              {exporting ? <Loader2 className="animate-spin" /> : <Download />}
-              {t("editor.export.action")}
+              {task?.kind === "caption" ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Sparkles />
+              )}
+              {t("editor.ai.suggestCaption")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={caption.trim() === ""}
+              onClick={() => void copyCaption()}
+            >
+              {copied ? <Check /> : <Copy />}
+              {copied ? t("editor.export.copied") : t("editor.export.copy")}
             </Button>
           </div>
-        </div>
+        </Section>
 
-        {/* Palco fora da tela: os mesmos cards, no tamanho de publicação. */}
-        <div
-          ref={stage}
-          aria-hidden
-          className="pointer-events-none fixed top-0 left-0 -z-10"
-          style={{ transform: "translateX(-200vw)" }}
-        >
-          {selected.map((card) => (
-            <div
-              key={card.id}
-              data-export-card
-              style={{
-                width: EXPORT_WIDTH,
-                height: Math.round(EXPORT_WIDTH / FORMAT_RATIOS[format]),
-              }}
-            >
-              <CardArt card={card} theme={theme} format={format} />
-            </div>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+        {exporting && (
+          <div className="space-y-1.5">
+            <Progress value={(done / selected.length) * 100} />
+            <p className="text-xs text-muted-foreground tabular-nums">
+              {t("editor.export.progress", {
+                done,
+                total: selected.length,
+              })}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Palco fora da tela: os mesmos cards, no tamanho de publicação. */}
+      <div
+        ref={stage}
+        aria-hidden
+        className="pointer-events-none fixed top-0 left-0 -z-10"
+        style={{ transform: "translateX(-200vw)" }}
+      >
+        {selected.map((card) => (
+          <div
+            key={card.id}
+            data-export-card
+            style={{
+              width: EXPORT_WIDTH,
+              height: Math.round(EXPORT_WIDTH / FORMAT_RATIOS[format]),
+            }}
+          >
+            <CardArt card={card} theme={theme} format={format} />
+          </div>
+        ))}
+      </div>
+    </ResponsiveDialog>
   )
 }
 

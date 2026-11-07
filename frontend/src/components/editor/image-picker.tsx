@@ -10,13 +10,7 @@ import {
   ProgressIndicator,
   ProgressTrack,
 } from "@/components/ui/progress"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { ResponsiveDialog } from "@/components/shared"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -64,42 +58,37 @@ export function ImagePicker({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl">
-            {t("editor.imagePicker.title")}
-          </DialogTitle>
-          <DialogDescription>
-            {t("editor.imagePicker.description")}
-          </DialogDescription>
-        </DialogHeader>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      size="xl"
+      title={t("editor.imagePicker.title")}
+      description={t("editor.imagePicker.description")}
+    >
+      <Tabs defaultValue={source.kind === "art" ? "art" : source.kind}>
+        <TabsList>
+          <TabsTrigger value="upload">
+            {t("editor.imagePicker.tabs.upload")}
+          </TabsTrigger>
+          <TabsTrigger value="library">
+            {t("editor.imagePicker.tabs.library")}
+          </TabsTrigger>
+          <TabsTrigger value="art">
+            {t("editor.imagePicker.tabs.art")}
+          </TabsTrigger>
+        </TabsList>
 
-        <Tabs defaultValue={source.kind === "art" ? "art" : source.kind}>
-          <TabsList>
-            <TabsTrigger value="upload">
-              {t("editor.imagePicker.tabs.upload")}
-            </TabsTrigger>
-            <TabsTrigger value="library">
-              {t("editor.imagePicker.tabs.library")}
-            </TabsTrigger>
-            <TabsTrigger value="art">
-              {t("editor.imagePicker.tabs.art")}
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="upload">
-            <UploadPane onPick={pick} />
-          </TabsContent>
-          <TabsContent value="library">
-            <LibraryPane source={source} onPick={pick} />
-          </TabsContent>
-          <TabsContent value="art">
-            <ArtPane theme={theme} source={source} onPick={pick} />
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+        <TabsContent value="upload">
+          <UploadPane onPick={pick} />
+        </TabsContent>
+        <TabsContent value="library">
+          <LibraryPane source={source} onPick={pick} />
+        </TabsContent>
+        <TabsContent value="art">
+          <ArtPane theme={theme} source={source} onPick={pick} />
+        </TabsContent>
+      </Tabs>
+    </ResponsiveDialog>
   )
 }
 

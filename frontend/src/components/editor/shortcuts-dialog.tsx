@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { ResponsiveDialog } from "@/components/shared"
 import { cn } from "@/lib/utils"
 
 // A lista de atalhos, aberta por "?" — o editor tem muitos, e um editor que
@@ -66,45 +60,40 @@ export function ShortcutsDialog() {
   }, [])
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl">
-            {t("editor.shortcuts.title")}
-          </DialogTitle>
-          <DialogDescription>
-            {t("editor.shortcuts.description")}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-5">
-          {GROUPS.map((group) => (
-            <section key={group.id} className="space-y-1.5">
-              <h3 className="text-xs font-medium text-muted-foreground">
-                {t(`editor.shortcuts.groups.${group.id}`)}
-              </h3>
-              <dl className="divide-y">
-                {group.rows.map((row) => (
-                  <div
-                    key={row.id}
-                    className="flex items-center justify-between gap-4 py-1.5"
-                  >
-                    <dt className="text-sm">
-                      {t(`editor.shortcuts.actions.${row.id}`)}
-                    </dt>
-                    <dd className="flex shrink-0 items-center gap-1">
-                      {row.keys.map((key, i) => (
-                        <Key key={i}>{key}</Key>
-                      ))}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={setOpen}
+      size="lg"
+      title={t("editor.shortcuts.title")}
+      description={t("editor.shortcuts.description")}
+    >
+      <div className="space-y-5">
+        {GROUPS.map((group) => (
+          <section key={group.id} className="space-y-1.5">
+            <h3 className="text-xs font-medium text-muted-foreground">
+              {t(`editor.shortcuts.groups.${group.id}`)}
+            </h3>
+            <dl className="divide-y">
+              {group.rows.map((row) => (
+                <div
+                  key={row.id}
+                  className="flex items-center justify-between gap-4 py-1.5"
+                >
+                  <dt className="text-sm">
+                    {t(`editor.shortcuts.actions.${row.id}`)}
+                  </dt>
+                  <dd className="flex shrink-0 items-center gap-1">
+                    {row.keys.map((key, i) => (
+                      <Key key={i}>{key}</Key>
+                    ))}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
+      </div>
+    </ResponsiveDialog>
   )
 }
 

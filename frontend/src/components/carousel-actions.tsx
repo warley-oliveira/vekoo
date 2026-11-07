@@ -11,15 +11,8 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -201,38 +194,39 @@ function RenameDialog({
   }
 
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (next) setTitle(carousel.title)
         onOpenChange(next)
       }}
-    >
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("carousels.actions.renameTitle")}</DialogTitle>
-          <DialogDescription className="sr-only">
-            {t("carousels.actions.renameDescription", { title: carousel.title })}
-          </DialogDescription>
-        </DialogHeader>
-        <Input
-          autoFocus
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submit()
-          }}
-          aria-label={t("carousels.actions.renameFieldAria")}
-        />
-        <DialogFooter>
+      size="sm"
+      title={t("carousels.actions.renameTitle")}
+      description={
+        <span className="sr-only">
+          {t("carousels.actions.renameDescription", { title: carousel.title })}
+        </span>
+      }
+      footer={
+        <>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {t("common.cancel")}
           </Button>
           <Button disabled={!valid} onClick={submit}>
             {t("common.rename")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <Input
+        autoFocus
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") submit()
+        }}
+        aria-label={t("carousels.actions.renameFieldAria")}
+      />
+    </ResponsiveDialog>
   )
 }

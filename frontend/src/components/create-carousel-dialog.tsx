@@ -4,14 +4,8 @@ import { useTranslation } from "react-i18next"
 import { ArrowRight, Loader2, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
+import { ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 
 // A porta de entrada da geração. Descrever o assunto cria o carrossel de
 // verdade e abre o editor já gerando — a espera acontece lá, onde os cards
@@ -104,58 +98,55 @@ export function CreateCarouselDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl">
-            {t("create.title")}
-          </DialogTitle>
-          <DialogDescription>{t("create.description")}</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-3">
-          <textarea
-            autoFocus
-            value={idea}
-            onChange={(e) => setIdea(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                submit()
-              }
-            }}
-            rows={3}
-            placeholder={t("create.placeholder")}
-            className="w-full resize-none rounded-lg border bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-          <div className="flex flex-wrap gap-1.5">
-            {createSuggestions().map((suggestion) => (
-              <button
-                key={suggestion}
-                type="button"
-                onClick={() => setIdea(suggestion)}
-                className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors outline-none hover:border-ring/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      size="lg"
+      title={t("create.title")}
+      description={t("create.description")}
+      footer={
+        <Button disabled={!valid} onClick={submit}>
+          {creating ? (
+            <>
+              <Loader2 className="animate-spin" /> {t("create.submitting")}
+            </>
+          ) : (
+            <>
+              <Sparkles /> {t("create.submit")} <ArrowRight />
+            </>
+          )}
+        </Button>
+      }
+    >
+      <div className="space-y-3">
+        <textarea
+          autoFocus
+          value={idea}
+          onChange={(e) => setIdea(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault()
+              submit()
+            }
+          }}
+          rows={3}
+          placeholder={t("create.placeholder")}
+          aria-label={t("create.title")}
+          className="w-full resize-none rounded-lg border bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        />
+        <div className="flex flex-wrap gap-1.5">
+          {createSuggestions().map((suggestion) => (
+            <button
+              key={suggestion}
+              type="button"
+              onClick={() => setIdea(suggestion)}
+              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors outline-none hover:border-ring/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:py-2"
+            >
+              {suggestion}
+            </button>
+          ))}
         </div>
-
-        <div className="flex justify-end">
-          <Button disabled={!valid} onClick={submit}>
-            {creating ? (
-              <>
-                <Loader2 className="animate-spin" /> {t("create.submitting")}
-              </>
-            ) : (
-              <>
-                <Sparkles /> {t("create.submit")} <ArrowRight />
-              </>
-            )}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </ResponsiveDialog>
   )
 }
