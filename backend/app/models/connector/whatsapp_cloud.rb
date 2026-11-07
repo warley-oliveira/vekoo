@@ -537,7 +537,7 @@ class Connector::WhatsappCloud < Connector::Base
     converted_file_path = "#{file_path}.mp3"
 
     # ffmpeg -i input.ogg -ac 1 -ar 16000 -b:a 96k output.mp3
-    converted = system('ffmpeg', '-y', '-loglevel', 'error', '-i', file_path.to_s, '-ac', '1', '-ar', '16000', '-b:a', '96k', converted_file_path)
+    converted = system('ffmpeg', '-y', '-loglevel', 'error', *Media::Ffmpeg::AUDIO_INPUT, '-i', file_path.to_s, '-ac', '1', '-ar', '16000', '-b:a', '96k', converted_file_path)
     return file_path unless converted && File.exist?(converted_file_path)
 
     File.delete(file_path)

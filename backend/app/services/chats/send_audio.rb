@@ -86,8 +86,8 @@ module Chats
     # regra do áudio recebido na WABA. O ffmpeg que roda e falha é outra coisa: o arquivo não presta.
     def transcode(extension, content_type, codec_args)
       target = Rails.root.join("tmp", "audio-#{SecureRandom.hex(8)}#{extension}").to_s
-      command = [ "ffmpeg", "-y", "-loglevel", "error", "-i", file.tempfile.path, "-map", "0:a:0", "-ac", "1", "-ar", "48000",
-                  *codec_args, "-avoid_negative_ts", "make_zero", target ]
+      command = [ "ffmpeg", "-y", "-loglevel", "error", *Media::Ffmpeg::AUDIO_INPUT, "-i", file.tempfile.path,
+                  "-map", "0:a:0", "-ac", "1", "-ar", "48000", *codec_args, "-avoid_negative_ts", "make_zero", target ]
 
       _output, status = Open3.capture2e(*command)
       unless status.success?
