@@ -3,6 +3,7 @@ import {
   Background,
   BackgroundVariant,
   ConnectionLineType,
+  getViewportForBounds,
   MarkerType,
   MiniMap,
   Panel,
@@ -15,8 +16,8 @@ import {
 import "@xyflow/react/dist/style.css"
 import { useTranslation } from "react-i18next"
 
-import { BLOCK_CATALOG } from "@/lib/flows/catalog"
-import { BLOCK_WIDTH, FIT_OPTIONS } from "@/lib/flows/layout"
+import { BLOCK_CATALOG, isTrigger } from "@/lib/flows/catalog"
+import { BLOCK_BASE_HEIGHT, BLOCK_WIDTH, FIT_OPTIONS, READABLE_ZOOM } from "@/lib/flows/layout"
 
 import { BLOCK_DRAG_TYPE } from "./block-picker"
 import { CanvasToolbar } from "./canvas-toolbar"
@@ -48,6 +49,9 @@ const VIRTUALIZE_FROM = 80
 const MINIMAP_FROM = 12
 /** O inspetor e a folga para o "+" do bloco: o que está selecionado não fica escondido atrás dele. */
 const INSPECTOR_SPACE = 470
+const MIN_ZOOM = 0.2
+/** A folga à esquerda do primeiro bloco, quando o fluxo abre no começo. */
+const OPEN_MARGIN = 56
 
 export function FlowCanvas() {
   const { t } = useTranslation()
@@ -146,9 +150,28 @@ export function FlowCanvas() {
     api.getState().closePicker()
   }, [api])
 
+  // Abre no fluxo inteiro, se ele couber legível. Comprido demais, abre no começo: é de lá que se lê, a linha saindo
+  // pela direita convida a seguir, e "Ajustar à tela" mostra o todo. No celular o mapa é só conferência: sempre o todo.
   const onInit = useCallback(() => {
+    const { nodes: blocks, readOnly: viewOnly } = api.getState()
+    const rect = wrapperRef.current?.getBoundingClientRect()
+    if (rect && blocks.length > 0 && !viewOnly) {
+      const bounds = reactFlow.getNodesBounds(blocks)
+      const { zoom } = getViewportForBounds(bounds, rect.width, rect.height, MIN_ZOOM, FIT_OPTIONS.maxZoom, FIT_OPTIONS.padding)
+      if (zoom < READABLE_ZOOM) {
+        const start =
+          blocks.find((node) => isTrigger(node.type)) ??
+          blocks.reduce((first, node) => (node.position.x < first.position.x ? node : first))
+        void reactFlow.setViewport({
+          x: OPEN_MARGIN - start.position.x * READABLE_ZOOM,
+          y: rect.height / 2 - (start.position.y + BLOCK_BASE_HEIGHT / 2) * READABLE_ZOOM,
+          zoom: READABLE_ZOOM,
+        })
+        return
+      }
+    }
     void reactFlow.fitView(FIT_OPTIONS)
-  }, [reactFlow])
+  }, [api, reactFlow])
 
   return (
     <div
@@ -176,7 +199,7 @@ export function FlowCanvas() {
         onSelectionDragStop={endDrag}
         onPaneClick={onPaneClick}
         onInit={onInit}
-        minZoom={0.2}
+        minZoom={MIN_ZOOM}
         maxZoom={1.5}
         snapToGrid
         snapGrid={SNAP_GRID}

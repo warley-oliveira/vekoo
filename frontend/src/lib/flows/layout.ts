@@ -18,6 +18,9 @@ export const OUTPUT_ROW_HEIGHT = 28
  */
 export const FIT_OPTIONS = { padding: 0.25, maxZoom: 1, includeHiddenNodes: true }
 
+/** Abaixo disto o texto de um bloco não se lê: fluxo comprido abre no começo, e não inteiro e minúsculo. */
+export const READABLE_ZOOM = 0.7
+
 type NodeLike = {
   id: string
   type?: string
