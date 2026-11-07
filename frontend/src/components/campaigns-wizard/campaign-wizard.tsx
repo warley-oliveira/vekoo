@@ -616,7 +616,7 @@ function MobileHeader() {
           <X />
         </Button>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{t(`campaignsWizard.steps.${step}.label`)}</p>
+          <h1 className="truncate text-sm font-medium">{t(`campaignsWizard.steps.${step}.label`)}</h1>
           <SaveIndicator className="-mt-0.5" />
         </div>
         <span className="px-1 text-xs text-muted-foreground tabular-nums">

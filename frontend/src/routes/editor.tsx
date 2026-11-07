@@ -116,6 +116,7 @@ function EditorShell() {
   return (
     <>
       <EditorHotkeys onToggleAi={toggleAi} />
+      <h1 className="sr-only">{state.doc.title}</h1>
       <div className="flex h-dvh flex-col bg-background">
         <EditorTopbar onOpenAi={() => setAiOpen(true)} />
         <div className="flex min-h-0 flex-1">
