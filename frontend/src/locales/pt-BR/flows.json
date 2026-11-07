@@ -508,13 +508,13 @@
         "moved_left": "Bloco movido para a esquerda.",
         "moved_right": "Bloco movido para a direita.",
         "link": "Enter seleciona a ligação, e Delete desfaz.",
-        "controls": "Controles do quadro",
-        "minimap": "Mapa do fluxo",
+        "controls": "Controles do mapa",
+        "minimap": "Miniatura do mapa",
         "handle": "Ponto de ligação"
       }
     },
     "toolbar": {
-      "label": "Ferramentas do quadro",
+      "label": "Ferramentas do mapa",
       "add": "Adicionar bloco",
       "undo": "Desfazer",
       "redo": "Refazer",
@@ -553,7 +553,7 @@
       "emptyTitle": "Nenhum bloco com esse nome",
       "emptyHint": "Tente outra palavra, como \"mensagem\", \"etiqueta\" ou \"código\".",
       "footerConnect": "O bloco já nasce ligado.",
-      "footerDrag": "Clique para adicionar, ou arraste para o quadro."
+      "footerDrag": "Clique para adicionar, ou arraste para o mapa."
     },
     "inspector": {
       "advanced": "Mais opções",
@@ -562,7 +562,7 @@
       "nameLabel": "Nome do bloco",
       "close": "Fechar",
       "nextTitle": "Para onde vai",
-      "nextHint": "Escolha o próximo bloco aqui, ou puxe a linha no quadro.",
+      "nextHint": "Escolha o próximo bloco aqui, ou puxe a linha no mapa.",
       "nextBlock": "Próximo passo",
       "linkTo": "Próximo bloco de {{name}}",
       "linkPlaceholder": "Termina aqui",
@@ -1241,7 +1241,7 @@
       "restart": "Testar de novo",
       "close": "Fechar o teste",
       "realCost": "A conversa é de mentira, e nada sai pelos canais. Mas a IA e as funções são de verdade, e gastam créditos.",
-      "empty": "Escreva como se fosse o contato. Os blocos acendem no quadro conforme o fluxo anda.",
+      "empty": "Escreva como se fosse o contato. Os blocos acendem no mapa conforme o fluxo anda.",
       "typing": "O fluxo está rodando...",
       "attachment": "Arquivo",
       "placeholder": "Escreva como se fosse o contato",

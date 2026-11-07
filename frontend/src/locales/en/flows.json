@@ -508,13 +508,13 @@
         "moved_left": "Block moved left.",
         "moved_right": "Block moved right.",
         "link": "Enter selects the link, and Delete removes it.",
-        "controls": "Board controls",
-        "minimap": "Flow map",
+        "controls": "Map controls",
+        "minimap": "Map overview",
         "handle": "Connection point"
       }
     },
     "toolbar": {
-      "label": "Board tools",
+      "label": "Map tools",
       "add": "Add block",
       "undo": "Undo",
       "redo": "Redo",
@@ -553,7 +553,7 @@
       "emptyTitle": "No block with that name",
       "emptyHint": "Try another word, like \"message\", \"tag\" or \"code\".",
       "footerConnect": "The block comes already connected.",
-      "footerDrag": "Click to add, or drag it onto the board."
+      "footerDrag": "Click to add, or drag it onto the map."
     },
     "inspector": {
       "advanced": "More options",
@@ -562,7 +562,7 @@
       "nameLabel": "Block name",
       "close": "Close",
       "nextTitle": "Where it goes",
-      "nextHint": "Choose the next block here, or pull the line on the board.",
+      "nextHint": "Choose the next block here, or pull the line on the map.",
       "nextBlock": "Next step",
       "linkTo": "Next block for {{name}}",
       "linkPlaceholder": "Ends here",
@@ -1241,7 +1241,7 @@
       "restart": "Test again",
       "close": "Close the test",
       "realCost": "The conversation is pretend, and nothing goes out through the channels. But the AI and the functions are real, and they use credits.",
-      "empty": "Write as if you were the contact. The blocks light up on the board as the flow moves.",
+      "empty": "Write as if you were the contact. The blocks light up on the map as the flow moves.",
       "typing": "The flow is running...",
       "attachment": "File",
       "placeholder": "Write as if you were the contact",
