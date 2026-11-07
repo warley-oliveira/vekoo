@@ -103,6 +103,7 @@ export function MoveCardEditor({ index }: EditorProps) {
       hint={t("pipelinesAdmin.triggers.actionForm.move.hint")}
       options={stageOptions}
       placeholder={t("pipelinesAdmin.triggers.actionForm.move.placeholder")}
+      disabled={stageOptions.length === 0}
     />
   )
 }
@@ -224,6 +225,7 @@ function ConnectorField({
         label={t("pipelinesAdmin.triggers.actionForm.whatsapp.connector")}
         options={options}
         placeholder={t("pipelinesAdmin.triggers.actionForm.whatsapp.connectorPlaceholder")}
+        disabled={options.length === 0}
       />
     </div>
   )
@@ -340,6 +342,7 @@ export function WhatsappTemplateEditor({ index }: EditorProps) {
           }
           options={templateOptions}
           placeholder={t("pipelinesAdmin.triggers.actionForm.template.placeholder")}
+          disabled={templateOptions.length === 0}
         />
       ) : null}
       {body ? (

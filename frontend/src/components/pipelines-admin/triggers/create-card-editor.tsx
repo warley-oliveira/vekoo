@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useController, useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { ChevronDown } from "lucide-react"
@@ -79,6 +79,8 @@ export function CreateCardEditor({ index }: { index: number }) {
       action?.cardContactPhoneTemplate ||
       Object.values(action?.cardCustomFieldValues ?? {}).some(Boolean)
   )
+  // Abre sozinho só quem já chega preenchido. Depois disso, quem manda é a pessoa.
+  const [startsOpen] = useState(hasAdvanced)
 
   return (
     <div className="flex flex-col gap-3">
@@ -94,6 +96,7 @@ export function CreateCardEditor({ index }: { index: number }) {
           label={t("pipelinesAdmin.triggers.actionForm.createCard.board")}
           options={boardOptions}
           placeholder={t("pipelinesAdmin.triggers.actionForm.createCard.boardPlaceholder")}
+          disabled={boardOptions.length === 0}
         />
         <SelectField
           control={control}
@@ -114,7 +117,7 @@ export function CreateCardEditor({ index }: { index: number }) {
         preview
       />
 
-      <Collapsible defaultOpen={hasAdvanced} className="flex flex-col gap-3">
+      <Collapsible defaultOpen={startsOpen} className="flex flex-col gap-3">
         <CollapsibleTrigger
           render={
             <Button
