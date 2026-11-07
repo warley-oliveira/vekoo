@@ -80,7 +80,7 @@ const BASE_COLUMNS = [
 
 type BaseColumn = (typeof BASE_COLUMNS)[number]
 
-const DEFAULT_COLUMNS: string[] = ["stage", "assignee", "priority", "labels", "dueDate", "value", "createdAt"]
+const DEFAULT_COLUMNS: string[] = ["stage", "assignee", "priority", "labels", "dueDate", "value"]
 const STANDARD_HIDDEN = new Set<BaseColumn>(["probability", "expectedClose", "company", "leadScore"])
 
 const customColumnId = (key: string) => `cf:${key}`
@@ -308,6 +308,8 @@ function useListColumns({
         accessorFn: (card) => card.dueDate ?? 0,
         header: t("pipelines.list.column.dueDate"),
         enableSorting: true,
+        // O primeiro clique traz o prazo mais perto: número começaria pelo mais distante.
+        sortDescFirst: false,
         meta: {
           label: t("pipelines.list.column.dueDate"),
           className: "w-28",

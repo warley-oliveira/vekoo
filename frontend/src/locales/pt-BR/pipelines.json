@@ -139,7 +139,7 @@
       "deleteTitle": "Excluir este card?",
       "deleteHint": "\"{{title}}\" e tudo que há nele, comentários e anexos, somem para sempre. Para só tirar do quadro, arquive.",
       "deleted": "Card excluído",
-      "deletedElsewhere": "Este card foi excluído por outra pessoa.",
+      "deletedElsewhere": "Este card não está mais disponível para você.",
       "notFound": "Card não encontrado",
       "notFoundHint": "Ele pode ter sido excluído, ou você não tem acesso a ele.",
       "backToBoard": "Voltar ao quadro",

@@ -139,7 +139,7 @@
       "deleteTitle": "Delete this card?",
       "deleteHint": "\"{{title}}\" and everything in it, comments and attachments, are gone for good. To only take it off the board, archive it.",
       "deleted": "Card deleted",
-      "deletedElsewhere": "This card was deleted by someone else.",
+      "deletedElsewhere": "This card is no longer available to you.",
       "notFound": "Card not found",
       "notFoundHint": "It may have been deleted, or you don't have access to it.",
       "backToBoard": "Back to the board",
