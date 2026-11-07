@@ -245,7 +245,8 @@
         "parameterNameTaken": "There's already a parameter with this name here.",
         "parameterDescription": "Say what goes here: that's what the AI reads."
       },
-      "saveShort": "Save"
+      "saveShort": "Save",
+      "lockedTitleUnknown": "This function came from a tool"
     },
     "catalogCopy": {
       "appointments": {

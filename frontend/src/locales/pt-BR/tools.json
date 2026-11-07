@@ -245,7 +245,8 @@
         "parameterNameTaken": "Já existe um parâmetro com este nome aqui.",
         "parameterDescription": "Diga o que vai aqui: é o que a IA lê."
       },
-      "saveShort": "Salvar"
+      "saveShort": "Salvar",
+      "lockedTitleUnknown": "Esta função veio de uma ferramenta"
     },
     "catalogCopy": {
       "appointments": {

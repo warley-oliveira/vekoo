@@ -155,7 +155,7 @@ function LockedFunction({ fn }: { fn: ToolFunction }) {
 
       <Callout
         icon={<Lock />}
-        title={t("tools.editor.lockedTitle", { name: fn.tool ? texts.name(fn.tool) : "" })}
+        title={fn.tool ? t("tools.editor.lockedTitle", { name: texts.name(fn.tool) }) : t("tools.editor.lockedTitleUnknown")}
         action={
           <Button type="button" variant="outline" size="sm" disabled={busy} className="pointer-coarse:h-10" onClick={() => void start()}>
             {t("tools.personalize.action")}
