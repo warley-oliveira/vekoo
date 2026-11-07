@@ -69,13 +69,12 @@ const CELL_WIDTHS = ["w-2/3", "w-1/2", "w-3/4", "w-2/5", "w-3/5"]
 const NO_ROWS: never[] = []
 
 // A coluna de ações fica à vista quando a tabela rola de lado. Com fundo opaco, para o que passa por
-// baixo não aparecer através dela, e o mesmo tom que a linha tem em cada estado. Em célula presa à
-// lateral, o fio da linha não acompanha: quem desenha é a própria célula. O fio da esquerda só
+// baixo não aparecer através dela, e o mesmo tom que a linha tem em cada estado. O fio da esquerda só
 // aparece quando há o que passar por baixo.
 const STICKY_ACTIONS =
   "sticky right-0 z-[1] bg-background before:absolute before:inset-y-0 before:left-0 before:hidden before:w-px before:bg-border [[data-overflowing]_&]:before:block"
 const STICKY_ACTIONS_HEAD = `${STICKY_ACTIONS} shadow-[inset_0_-1px_0_var(--border)]`
-const STICKY_ACTIONS_CELL = `${STICKY_ACTIONS} transition-colors [@media(hover:hover)]:[tr:hover>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr:has([aria-expanded=true])>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr[data-state=selected]>&]:bg-[color-mix(in_oklab,var(--accent)_60%,var(--background))] [tr:not(:last-child)>&]:shadow-[inset_0_-1px_0_var(--border)]`
+const STICKY_ACTIONS_CELL = `${STICKY_ACTIONS} transition-colors [@media(hover:hover)]:[tr:hover>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr:has([aria-expanded=true])>&]:bg-[color-mix(in_oklab,var(--muted)_50%,var(--background))] [tr[data-state=selected]>&]:bg-[color-mix(in_oklab,var(--accent)_60%,var(--background))]`
 
 const FILTER_FNS = {
   text: textFilter,
@@ -608,7 +607,9 @@ export function DataTable<TData>({
           data-slot="table"
           aria-label={ariaLabel}
           aria-busy={isLoading || isFetching}
-          className="w-full caption-bottom text-sm"
+          // Bordas separadas, com o fio em cada célula: com bordas colapsadas, o fio é da tabela, a
+          // célula presa à lateral o cobre, e o da coluna de ações saía 1 px acima dos outros.
+          className="w-full caption-bottom border-separate border-spacing-0 text-sm"
         >
           <TableHeader className="sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_var(--border)] [&_tr]:border-b-0">
             {table.getHeaderGroups().map((group) => (
@@ -649,7 +650,12 @@ export function DataTable<TData>({
             ))}
           </TableHeader>
 
-          <TableBody className={cn(isFetching && "opacity-60 transition-opacity")}>
+          <TableBody
+            className={cn(
+              "[&>tr:not(:last-child)>td]:border-b",
+              isFetching && "opacity-60 transition-opacity"
+            )}
+          >
             {isLoading ? (
               Array.from({ length: SKELETON_ROWS }, (_, rowIndex) => (
                 <TableRow key={rowIndex} className="hover:bg-transparent">
