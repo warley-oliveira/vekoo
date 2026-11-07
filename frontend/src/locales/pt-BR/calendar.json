@@ -19,7 +19,9 @@
       "retry": "Tentar de novo",
       "close": "Fechar",
       "back": "Voltar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "yes": "Sim",
+      "no": "Não"
     },
     "page": {
       "create": "Criar agendamento",
@@ -71,7 +73,8 @@
       "pending": "Pendentes",
       "show": "Compareceu",
       "no_show": "Faltou",
-      "canceled": "Cancelado"
+      "canceled": "Cancelado",
+      "scheduled": "Agendado"
     },
     "event": {
       "untitled": "Sem título",
@@ -182,7 +185,10 @@
       },
       "edit": {
         "submit": "Salvar alterações",
-        "rescheduleHint": "Ao salvar, os lembretes são refeitos e o colaborador é avisado do novo horário."
+        "rescheduleHint": "Ao salvar, os lembretes são refeitos e o colaborador é avisado do novo horário.",
+        "action": "Editar",
+        "discard": "Descartar alterações",
+        "description": "Mude o que precisar. Salvar volta para o resumo."
       },
       "created": "Agendamento criado.",
       "saved": "Agendamento salvo.",
@@ -197,12 +203,12 @@
         "done": "Agendamento cancelado."
       },
       "archive": {
-        "action": "Arquivar",
-        "title": "Arquivar este agendamento?",
-        "description": "Ele some da agenda e do Google Agenda. Fica guardado, com o histórico, mas não volta para a tela.",
-        "confirm": "Arquivar",
+        "action": "Excluir agendamento",
+        "title": "Excluir este agendamento?",
+        "description": "Ele sai da agenda e do Google Agenda, e os lembretes param. O histórico fica guardado, mas o agendamento não volta para a tela.",
+        "confirm": "Excluir agendamento",
         "back": "Voltar",
-        "done": "Agendamento arquivado."
+        "done": "Agendamento excluído."
       },
       "tabs": {
         "details": "Detalhes",
@@ -258,7 +264,7 @@
         "noAttributes": "Nenhum dado preenchido.",
         "none": {
           "title": "Sem contato neste agendamento",
-          "description": "Escolha um contato em Detalhes para ligar a conversa e os lembretes."
+          "description": "Em Editar, escolha um contato para ligar a conversa e os lembretes."
         }
       },
       "messages": {
@@ -279,7 +285,14 @@
         "titleTooLong": "Use até 255 caracteres.",
         "descriptionTooLong": "Use até 500 caracteres.",
         "needsSomething": "Escolha um contato ou um serviço, ou escreva um título."
-      }
+      },
+      "summary": {
+        "when": "Quando",
+        "zone": "No fuso {{zone}}",
+        "noContact": "Sem contato. Em Editar, escolha um para ligar a conversa e os lembretes."
+      },
+      "menu": "Mais ações do agendamento",
+      "context": "Contato, mensagens e histórico"
     },
     "history": {
       "automation": "Automação",
@@ -290,7 +303,7 @@
       "events": {
         "create": "Criado",
         "canceled": "Cancelado",
-        "archived": "Arquivado",
+        "archived": "Excluído",
         "timeUpdate": "Remarcado",
         "titleUpdate": "Título alterado",
         "show": "Compareceu",
@@ -450,7 +463,8 @@
           "description": "Crie a turma primeiro. Depois, as aulas aparecem aqui sozinhas.",
           "action": "Ir para Turmas"
         }
-      }
+      },
+      "menu": "Mais ações da aula"
     },
     "errors": {
       "generic": "Não deu para concluir. Tente de novo.",

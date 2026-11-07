@@ -22,6 +22,7 @@ import type { AgendaCalendar, AgendaService, BookingEvent, Professional } from "
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import type { BookingFormValues } from "./booking-form"
+import { formatMinutes } from "./duration"
 
 const PRESETS = [30, 60, 90, 120]
 const MAX_SAME_DAY_OPTION = 8 * 60
@@ -57,23 +58,6 @@ function withTime(date: Date, time: string): Date {
   const next = new Date(date)
   next.setHours(hours || 0, minutes || 0, 0, 0)
   return next
-}
-
-function formatMinutes(minutes: number, language: string): string {
-  const hours = Math.floor(minutes / 60)
-  const rest = minutes % 60
-  const parts: string[] = []
-  if (hours) {
-    parts.push(
-      new Intl.NumberFormat(language, { style: "unit", unit: "hour", unitDisplay: "narrow" }).format(hours)
-    )
-  }
-  if (rest || !hours) {
-    parts.push(
-      new Intl.NumberFormat(language, { style: "unit", unit: "minute", unitDisplay: "short" }).format(rest)
-    )
-  }
-  return parts.join(" ")
 }
 
 /**

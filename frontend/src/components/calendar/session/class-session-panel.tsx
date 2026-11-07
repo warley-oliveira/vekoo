@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Ban, Check, ChevronDown, Pencil, Plus, UserMinus, X } from "lucide-react"
+import { Ban, Check, ChevronDown, GraduationCap, MapPin, Pencil, Plus, UserMinus, X } from "lucide-react"
 import { Link } from "react-router"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -14,7 +14,6 @@ import {
   EmptyState,
   ErrorState,
   FormError,
-  KeyValueList,
   ListSkeleton,
   ResponsiveDialog,
   StatusBadge,
@@ -89,6 +88,8 @@ export function ClassSessionPanel({
   const [bulkBusy, setBulkBusy] = useState(false)
 
   const canceled = isCanceled(session)
+  // Como no agendamento: presença só depois de começar. Antes disso, só desfazer o que já foi marcado.
+  const started = session.start <= Date.now()
   // A API põe primeiro quem já tem registro: sem ordem própria, a linha fugiria do dedo a cada
   // marcação. Por nome, ela fica onde está.
   const list = useMemo(
@@ -180,57 +181,91 @@ export function ClassSessionPanel({
     }
   }
 
-  const metadata = [
-    { label: t("calendar.session.fields.instructor"), value: session.instructorName },
-    { label: t("calendar.session.fields.room"), value: session.room },
-    { label: t("calendar.session.fields.location"), value: session.location },
-  ].filter((item) => item.value)
+  const place = [session.room, session.location].filter(Boolean).join(" · ")
 
   return (
     <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       size="xl"
-      title={<EventTitle color={session.color}>{title}</EventTitle>}
+      title={
+        <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
+          <EventTitle color={session.color}>{title}</EventTitle>
+          <EventSituationBadge event={session} />
+        </span>
+      }
       description={formatEventWhen(session.start, session.end, zone, language)}
+      headerActions={
+        <ActionsMenu
+          label={t("calendar.session.menu")}
+          actions={[
+            {
+              label: t("calendar.session.cancel.action"),
+              icon: <Ban />,
+              destructive: true,
+              hidden: canceled,
+              onSelect: () => void cancelClass(),
+            },
+          ]}
+        />
+      }
       footer={
-        !canceled && list.length > 0 ? (
-          <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
-            <Button
-              type="button"
-              variant="ghost"
-              className="pointer-coarse:h-10 sm:mr-auto"
-              onClick={() => onOpenChange(false)}
-            >
-              {t("calendar.common.close")}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="pointer-coarse:h-10"
-              disabled={bulkBusy}
-              onClick={() => void markAll("no_show")}
-            >
-              <X />
-              {t("calendar.session.bulk.allNoShow")}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="pointer-coarse:h-10"
-              disabled={bulkBusy}
-              onClick={() => void markAll("show")}
-            >
-              <Check />
-              {t("calendar.session.bulk.allShow")}
-            </Button>
-          </div>
-        ) : undefined
+        <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
+          {!canceled && started && list.length > 0 ? (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                className="pointer-coarse:h-10"
+                disabled={bulkBusy}
+                onClick={() => void markAll("no_show")}
+              >
+                <X />
+                {t("calendar.session.bulk.allNoShow")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="pointer-coarse:h-10"
+                disabled={bulkBusy}
+                onClick={() => void markAll("show")}
+              >
+                <Check />
+                {t("calendar.session.bulk.allShow")}
+              </Button>
+            </>
+          ) : null}
+          <Button
+            type="button"
+            variant="outline"
+            className="pointer-coarse:h-10 sm:ml-auto"
+            onClick={() => onOpenChange(false)}
+          >
+            {t("calendar.common.close")}
+          </Button>
+        </div>
       }
     >
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2 empty:hidden">
-          <EventSituationBadge event={session} />
+          {session.instructorName || place ? (
+            <div className="flex flex-col gap-1.5 text-sm">
+              {session.instructorName ? (
+                <span className="flex items-center gap-2">
+                  <GraduationCap aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+                  <span className="sr-only">{t("calendar.session.fields.instructor")}</span>
+                  {session.instructorName}
+                </span>
+              ) : null}
+              {place ? (
+                <span className="flex items-center gap-2">
+                  <MapPin aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+                  <span className="sr-only">{t("calendar.session.fields.location")}</span>
+                  {place}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
           <TimeZoneNote zones={[zone]} />
           {session.notes ? <p className="text-sm text-pretty">{session.notes}</p> : null}
         </div>
@@ -240,8 +275,6 @@ export function ClassSessionPanel({
             {t("calendar.session.canceledNotice")}
           </Callout>
         ) : null}
-
-        {metadata.length > 0 ? <KeyValueList items={metadata} /> : null}
 
         {session.maxStudents ? (
           <div className="flex flex-col gap-1.5">
@@ -273,7 +306,7 @@ export function ClassSessionPanel({
             )}
           </div>
 
-          {list.length > 0 ? (
+          {list.length > 0 && (started || counts.show + counts.noShow > 0) ? (
             <div className="flex flex-wrap gap-1.5">
               <StatusBadge tone="success">
                 {t("calendar.session.counts.show", { count: counts.show })}
@@ -310,6 +343,7 @@ export function ClassSessionPanel({
                   key={attendance.id}
                   attendance={attendance}
                   readOnly={canceled}
+                  canMark={started}
                   disabled={bulkBusy}
                   onToggle={(status) => void toggleStatus(attendance, status)}
                   onRemove={() => void removeParticipant(attendance)}
@@ -345,16 +379,6 @@ export function ClassSessionPanel({
                 onDone={() => setEditing(false)}
               />
             ) : null}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="-ml-2 self-start text-muted-foreground hover:text-destructive pointer-coarse:h-10"
-              onClick={() => void cancelClass()}
-            >
-              <Ban />
-              {t("calendar.session.cancel.action")}
-            </Button>
           </section>
         )}
       </div>
@@ -376,12 +400,15 @@ export function ClassSessionPanel({
 function ParticipantRow({
   attendance,
   readOnly,
+  canMark,
   disabled,
   onToggle,
   onRemove,
 }: {
   attendance: ClassAttendance
   readOnly: boolean
+  /** A aula já começou. Antes, só aparece o botão do que já está marcado, para desfazer. */
+  canMark: boolean
   disabled: boolean
   onToggle: (status: AttendanceStatus) => void
   onRemove: () => void
@@ -431,28 +458,32 @@ function ParticipantRow({
         ) : null
       ) : (
         <div className="flex shrink-0 items-center gap-0.5">
-          <MarkButton
-            active={attendance.attendanceStatus === "show"}
-            tone="show"
-            label={t(
-              attendance.attendanceStatus === "show"
-                ? "calendar.session.mark.clearShow"
-                : "calendar.session.mark.show"
-            )}
-            disabled={disabled}
-            onClick={() => onToggle("show")}
-          />
-          <MarkButton
-            active={attendance.attendanceStatus === "no_show"}
-            tone="no_show"
-            label={t(
-              attendance.attendanceStatus === "no_show"
-                ? "calendar.session.mark.clearNoShow"
-                : "calendar.session.mark.noShow"
-            )}
-            disabled={disabled}
-            onClick={() => onToggle("no_show")}
-          />
+          {canMark || attendance.attendanceStatus === "show" ? (
+            <MarkButton
+              active={attendance.attendanceStatus === "show"}
+              tone="show"
+              label={t(
+                attendance.attendanceStatus === "show"
+                  ? "calendar.session.mark.clearShow"
+                  : "calendar.session.mark.show"
+              )}
+              disabled={disabled}
+              onClick={() => onToggle("show")}
+            />
+          ) : null}
+          {canMark || attendance.attendanceStatus === "no_show" ? (
+            <MarkButton
+              active={attendance.attendanceStatus === "no_show"}
+              tone="no_show"
+              label={t(
+                attendance.attendanceStatus === "no_show"
+                  ? "calendar.session.mark.clearNoShow"
+                  : "calendar.session.mark.noShow"
+              )}
+              disabled={disabled}
+              onClick={() => onToggle("no_show")}
+            />
+          ) : null}
           {canRemove ? (
             <ActionsMenu
               label={t("calendar.session.participants.moreFor", { name })}

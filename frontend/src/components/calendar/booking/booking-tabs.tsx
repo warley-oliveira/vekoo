@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button"
 import { useCan } from "@/hooks/use-can"
 import { useBookingPreviewMessages } from "@/hooks/calendar/use-attendance-sequences"
 import { ApiError, apiAssetUrl } from "@/lib/api"
-import { formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
+import { formatDayKey, formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
 import type { BookingEvent, BookingHistoryEntry } from "@/lib/calendar/types"
 import { contactLine } from "@/lib/calendar/contact"
 import { useLanguage } from "@/lib/i18n"
@@ -47,14 +47,24 @@ function isFilled(value: unknown): boolean {
   return value !== null && value !== undefined && value !== ""
 }
 
-function attributeValue(value: unknown): string {
-  return typeof value === "string" || typeof value === "number" || typeof value === "boolean"
-    ? String(value)
-    : JSON.stringify(value)
+function attributeValue(value: unknown, t: (key: string) => string, language: string): string {
+  // Sim/não, e não "true"/"false": quem lê é gente, não o banco. Data também, no jeito do idioma.
+  if (typeof value === "boolean") return t(value ? "calendar.common.yes" : "calendar.common.no")
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return formatDayKey(value, language, { day: "numeric", month: "long", year: "numeric" })
+  }
+  return typeof value === "string" || typeof value === "number" ? String(value) : JSON.stringify(value)
 }
 
 /** Quem é o contato deste agendamento, e o que já se sabe sobre ele. Trocar é no formulário. */
-export function BookingContactTab({ event }: { event: BookingEvent }) {
+export function BookingContactTab({
+  event,
+  showIdentity = false,
+}: {
+  event: BookingEvent
+  /** Quem já mostra nome e foto do contato ao lado passa `false`: aqui ficam os dados e a conversa. */
+  showIdentity?: boolean
+}) {
   const { t } = useTranslation()
   const canChat = useCan("chat")
   const language = useLanguage()
@@ -80,24 +90,26 @@ export function BookingContactTab({ event }: { event: BookingEvent }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <UserAvatar
-          name={event.userName}
-          src={event.profilePictureUrl ? apiAssetUrl(event.profilePictureUrl) : null}
-          size="lg"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-medium">{event.userName || t("calendar.booking.contact.fallback")}</p>
-          {event.contactExternalId ? (
-            <p className="truncate text-sm text-muted-foreground tabular-nums">
-              {contactLine(event.contactExternalId)}
-            </p>
+      {showIdentity ? (
+        <div className="flex items-center gap-3">
+          <UserAvatar
+            name={event.userName}
+            src={event.profilePictureUrl ? apiAssetUrl(event.profilePictureUrl) : null}
+            size="lg"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium">{event.userName || t("calendar.booking.contact.fallback")}</p>
+            {event.contactExternalId ? (
+              <p className="truncate text-sm text-muted-foreground tabular-nums">
+                {contactLine(event.contactExternalId)}
+              </p>
+            ) : null}
+          </div>
+          {event.contactExternalId && /^\d+$/.test(event.contactExternalId) ? (
+            <CopyButton value={event.contactExternalId} />
           ) : null}
         </div>
-        {event.contactExternalId && /^\d+$/.test(event.contactExternalId) ? (
-          <CopyButton value={event.contactExternalId} />
-        ) : null}
-      </div>
+      ) : null}
 
       {canChat ? (
         <Button
@@ -126,7 +138,7 @@ export function BookingContactTab({ event }: { event: BookingEvent }) {
           <KeyValueList
             items={attributes.map(([name, value]) => ({
               label: attributeLabel(name),
-              value: isFilled(value) ? attributeValue(value) : null,
+              value: isFilled(value) ? attributeValue(value, t, language) : null,
             }))}
           />
         )}

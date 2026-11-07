@@ -19,7 +19,9 @@
       "retry": "Try again",
       "close": "Close",
       "back": "Back",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "yes": "Yes",
+      "no": "No"
     },
     "page": {
       "create": "Create booking",
@@ -71,7 +73,8 @@
       "pending": "Pending",
       "show": "Showed up",
       "no_show": "No-show",
-      "canceled": "Canceled"
+      "canceled": "Canceled",
+      "scheduled": "Scheduled"
     },
     "event": {
       "untitled": "Untitled",
@@ -182,7 +185,10 @@
       },
       "edit": {
         "submit": "Save changes",
-        "rescheduleHint": "When you save, reminders are rebuilt and the staff member is told about the new time."
+        "rescheduleHint": "When you save, reminders are rebuilt and the staff member is told about the new time.",
+        "action": "Edit",
+        "discard": "Discard changes",
+        "description": "Change what you need. Saving takes you back to the summary."
       },
       "created": "Booking created.",
       "saved": "Booking saved.",
@@ -197,12 +203,12 @@
         "done": "Booking canceled."
       },
       "archive": {
-        "action": "Archive",
-        "title": "Archive this booking?",
-        "description": "It leaves the agenda and Google Calendar. It stays stored, with its history, but doesn't come back to the screen.",
-        "confirm": "Archive",
+        "action": "Delete booking",
+        "title": "Delete this booking?",
+        "description": "It leaves the calendar and Google Calendar, and reminders stop. The history is kept, but the booking does not come back to the screen.",
+        "confirm": "Delete booking",
         "back": "Back",
-        "done": "Booking archived."
+        "done": "Booking deleted."
       },
       "tabs": {
         "details": "Details",
@@ -258,7 +264,7 @@
         "noAttributes": "No details filled in.",
         "none": {
           "title": "No contact on this booking",
-          "description": "Choose a contact in Details to link the conversation and reminders."
+          "description": "Pick a contact in Edit to link the chat and the reminders."
         }
       },
       "messages": {
@@ -279,7 +285,14 @@
         "titleTooLong": "Use up to 255 characters.",
         "descriptionTooLong": "Use up to 500 characters.",
         "needsSomething": "Choose a contact or a service, or write a title."
-      }
+      },
+      "summary": {
+        "when": "When",
+        "zone": "In {{zone}}",
+        "noContact": "No contact. Pick one in Edit to link the chat and the reminders."
+      },
+      "menu": "More booking actions",
+      "context": "Contact, messages and history"
     },
     "history": {
       "automation": "Automation",
@@ -290,7 +303,7 @@
       "events": {
         "create": "Created",
         "canceled": "Canceled",
-        "archived": "Archived",
+        "archived": "Deleted",
         "timeUpdate": "Rescheduled",
         "titleUpdate": "Title changed",
         "show": "Showed up",
@@ -450,7 +463,8 @@
           "description": "Create the group first. Then its classes show up here on their own.",
           "action": "Go to Classes"
         }
-      }
+      },
+      "menu": "More class actions"
     },
     "errors": {
       "generic": "Couldn't finish. Try again.",

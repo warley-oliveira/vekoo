@@ -229,63 +229,68 @@ export function BookingFields({
         )}
       </FormField>
 
-      {loadingServices && !services ? (
-        <div aria-hidden className="space-y-2">
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-9 w-full" />
-        </div>
-      ) : (
-        <PickField
-          form={form}
-          name="serviceId"
-          label={t("calendar.booking.fields.service")}
-          options={serviceOptions}
-          clearLabel={t("calendar.booking.fields.noService")}
-          placeholder={
-            noServices
-              ? t("calendar.booking.fields.noServicesYet")
-              : t("calendar.booking.fields.servicePlaceholder")
-          }
-          disabled={noServices || !calendarId}
-          onPicked={afterServiceChange}
-        />
-      )}
+      {/* O quê e com quem, lado a lado: os dois se escolhem juntos e cabem numa linha. */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {loadingServices && !services ? (
+          <div aria-hidden className="space-y-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+        ) : (
+          <PickField
+            form={form}
+            name="serviceId"
+            label={t("calendar.booking.fields.service")}
+            options={serviceOptions}
+            clearLabel={t("calendar.booking.fields.noService")}
+            placeholder={
+              noServices
+                ? t("calendar.booking.fields.noServicesYet")
+                : t("calendar.booking.fields.servicePlaceholder")
+            }
+            disabled={noServices || !calendarId}
+            onPicked={afterServiceChange}
+          />
+        )}
 
-      {loadingProfessionals && !professionals ? (
-        <div aria-hidden className="space-y-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-9 w-full" />
-        </div>
-      ) : (
-        <PickField
-          form={form}
-          name="professionalId"
-          label={t("calendar.booking.fields.professional")}
-          options={professionalOptions}
-          clearLabel={
-            service
-              ? t("calendar.booking.fields.professionalTurn")
-              : t("calendar.booking.fields.noProfessional")
-          }
-          placeholder={
-            noProfessionals
-              ? t("calendar.booking.fields.noProfessionalsYet")
-              : service
+        {loadingProfessionals && !professionals ? (
+          <div aria-hidden className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+        ) : (
+          <PickField
+            form={form}
+            name="professionalId"
+            label={t("calendar.booking.fields.professional")}
+            options={professionalOptions}
+            clearLabel={
+              service
                 ? t("calendar.booking.fields.professionalTurn")
-                : t("calendar.booking.fields.professionalPlaceholder")
-          }
-          disabled={noProfessionals || !calendarId}
-        />
-      )}
+                : t("calendar.booking.fields.noProfessional")
+            }
+            placeholder={
+              noProfessionals
+                ? t("calendar.booking.fields.noProfessionalsYet")
+                : service
+                  ? t("calendar.booking.fields.professionalTurn")
+                  : t("calendar.booking.fields.professionalPlaceholder")
+            }
+            disabled={noProfessionals || !calendarId}
+          />
+        )}
+      </div>
 
-      <BookingWhen
-        form={form}
-        calendar={calendar}
-        service={service}
-        professional={professional}
-        event={event}
-        resolvedProfessional={resolvedProfessional}
-      />
+      <div className="border-t pt-4">
+        <BookingWhen
+          form={form}
+          calendar={calendar}
+          service={service}
+          professional={professional}
+          event={event}
+          resolvedProfessional={resolvedProfessional}
+        />
+      </div>
 
       {calendar ? <TimeZoneNote zones={[calendar.timeZone]} /> : null}
 
