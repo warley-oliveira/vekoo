@@ -1,0 +1,1709 @@
+{
+  "flows": {
+    "status": {
+      "draft": "Draft",
+      "published": "On",
+      "archived": "Archived",
+      "publishedChanged": "On, with changes"
+    },
+    "triggers": {
+      "message_received": "When any message arrives",
+      "first_message": "When someone sends their first message",
+      "keyword": "When the message has a keyword",
+      "contact_created": "When a new contact appears",
+      "human_handoff": "When a team member takes over the conversation",
+      "manual": "When a team member starts it in a conversation",
+      "webhook": "When another system sends a webhook"
+    },
+    "groups": {
+      "popular": { "title": "Most used" },
+      "start": { "title": "How the flow starts" },
+      "talk": { "title": "Talk to the contact" },
+      "ai": { "title": "Let the AI handle it" },
+      "decide": { "title": "Decide and wait" },
+      "organize": { "title": "Organize the conversation" },
+      "pipeline": { "title": "Cards and deals" },
+      "connect": { "title": "Other systems and code" },
+      "finish": { "title": "Wrap up" }
+    },
+    "blocks": {
+      "trigger_message_received": {
+        "label": "A message arrived",
+        "description": "Starts with every message from the contact",
+        "keywords": "trigger start received any message gatilho inicio recebida qualquer"
+      },
+      "trigger_first_message": {
+        "label": "First message",
+        "description": "Starts when someone talks to you for the first time",
+        "keywords": "trigger start welcome new first gatilho inicio boas-vindas novo"
+      },
+      "trigger_keyword": {
+        "label": "Message with a keyword",
+        "description": "Starts when the message has one of these words",
+        "keywords": "trigger start keyword word term gatilho inicio palavra termo"
+      },
+      "trigger_contact_created": {
+        "label": "New contact",
+        "description": "Starts when a new contact appears",
+        "keywords": "trigger start signup created contact gatilho inicio cadastro criado"
+      },
+      "trigger_human_handoff": {
+        "label": "A team member took over",
+        "description": "Starts when a person takes over the conversation",
+        "keywords": "trigger start transfer human handoff team member gatilho inicio transferencia humano atendente"
+      },
+      "trigger_manual": {
+        "label": "You start it",
+        "description": "Starts when a team member starts it in a conversation",
+        "keywords": "trigger start manual button gatilho inicio manual botao"
+      },
+      "trigger_webhook": {
+        "label": "Another system sent a notice",
+        "description": "Starts when an outside webhook arrives",
+        "keywords": "trigger start webhook api integration gatilho inicio integracao"
+      },
+      "send_text": {
+        "label": "Send message",
+        "description": "Sends a text to the contact",
+        "keywords": "text talk reply welcome whatsapp texto falar responder boas-vindas"
+      },
+      "ask_question": {
+        "label": "Ask a question",
+        "description": "Sends a question and waits for the answer",
+        "keywords": "question answer collect wait pergunta resposta coletar esperar"
+      },
+      "send_interactive": {
+        "label": "Ask with options",
+        "description": "Offers numbered options and follows the one chosen",
+        "keywords": "buttons list menu options interactive botoes lista opcoes interativa"
+      },
+      "send_media": {
+        "label": "Send file",
+        "description": "Sends an image, audio, video or document",
+        "keywords": "attachment media image photo pdf video audio document anexo midia imagem foto documento"
+      },
+      "send_template": {
+        "label": "WhatsApp template",
+        "description": "Sends a template approved by Meta",
+        "keywords": "template hsm waba official meta modelo oficial"
+      },
+      "ai_assistant": {
+        "label": "Chat with AI",
+        "description": "The AI talks to the contact and decides when to move on",
+        "keywords": "ai artificial intelligence assistant agent chatbot support model ia inteligencia artificial assistente agente atendimento modelo"
+      },
+      "ai_intent_classification": {
+        "label": "Understand what the person wants",
+        "description": "Reads the message and follows the matching topic",
+        "keywords": "intent classify routing route topic ai intencao classificar roteamento encaminhar assunto ia"
+      },
+      "ai_sentiment": {
+        "label": "Sense the tone of the message",
+        "description": "Tells if the person is happy, neutral or upset",
+        "keywords": "sentiment mood satisfaction tone ai sentimento humor satisfacao ia"
+      },
+      "ai_parameter_extractor": {
+        "label": "Note details from the message",
+        "description": "Pulls the name, email or whatever you ask for out of the text",
+        "keywords": "extract parameters fields data ai extrair parametros campos dados ia"
+      },
+      "ai_audio_transcription": {
+        "label": "Transcribe audio",
+        "description": "Turns an audio message into text",
+        "keywords": "audio voice whisper transcription voz transcricao"
+      },
+      "condition": {
+        "label": "Condition",
+        "description": "Takes one path if the rule holds, and another if not",
+        "keywords": "if else rule yes no branch compare se regra sim nao ramificar comparar"
+      },
+      "switch": {
+        "label": "Choose by value",
+        "description": "One path for each possible value",
+        "keywords": "switch case cases options value opcoes valor"
+      },
+      "wait": {
+        "label": "Wait for a while",
+        "description": "Pauses before moving on",
+        "keywords": "wait time delay minutes hours days esperar tempo minutos horas dias"
+      },
+      "wait_for_message": {
+        "label": "Wait for a reply",
+        "description": "Stops until the contact sends the next message",
+        "keywords": "wait message reply esperar mensagem resposta"
+      },
+      "loop": {
+        "label": "Repeat for each item",
+        "description": "Goes through a list, one item at a time",
+        "keywords": "loop for each iterate list laco lista para cada iterar"
+      },
+      "set_variable": {
+        "label": "Save a piece of information",
+        "description": "Creates variables to use in the next blocks",
+        "keywords": "variable set assign value variavel definir atribuir valor"
+      },
+      "add_tag": {
+        "label": "Add tag",
+        "description": "Marks the conversation with a tag",
+        "keywords": "tag label mark etiqueta marcar"
+      },
+      "remove_tag": {
+        "label": "Remove tag",
+        "description": "Takes a tag off the conversation",
+        "keywords": "tag label unmark remove etiqueta desmarcar"
+      },
+      "set_custom_attribute": {
+        "label": "Fill in a contact field",
+        "description": "Saves a value in a contact field",
+        "keywords": "attribute field custom attribute atributo campo personalizado"
+      },
+      "assign_agent": {
+        "label": "Assign a team member",
+        "description": "Hands the conversation to a team member",
+        "keywords": "assignee agent person user raffle round robin responsavel atendente pessoa usuario sorteio"
+      },
+      "assign_team": {
+        "label": "Assign a department",
+        "description": "Hands the conversation to a department",
+        "keywords": "department team sector departamento equipe time setor"
+      },
+      "transfer_to_human": {
+        "label": "Hand over to a person",
+        "description": "Stops the automation and calls a team member",
+        "keywords": "human agent transfer handoff humano atendente transferir"
+      },
+      "set_funnel_stage": {
+        "label": "Change funnel stage",
+        "description": "Moves the conversation to another stage of a funnel",
+        "keywords": "funnel stage move funil etapa estagio mover"
+      },
+      "pause_automation": {
+        "label": "Pause automation",
+        "description": "Turns off the automation in this conversation",
+        "keywords": "stop turn off automation parar desligar automacao"
+      },
+      "resume_automation": {
+        "label": "Resume automation",
+        "description": "Turns the automation back on in this conversation",
+        "keywords": "back turn on automation voltar ligar automacao"
+      },
+      "pipeline_create_card": {
+        "label": "Create card",
+        "description": "Creates a card in a pipeline, linked to the conversation",
+        "keywords": "card pipeline kanban board new quadro novo"
+      },
+      "pipeline_move_card": {
+        "label": "Move card",
+        "description": "Moves the card to another stage",
+        "keywords": "card pipeline kanban stage move etapa mover"
+      },
+      "pipeline_update_card": {
+        "label": "Update card",
+        "description": "Changes the title, value, priority and contact",
+        "keywords": "card pipeline edit change editar alterar"
+      },
+      "pipeline_set_custom_field": {
+        "label": "Fill in a card field",
+        "description": "Saves a value in a custom field",
+        "keywords": "card pipeline custom field campo personalizado"
+      },
+      "pipeline_mark_won": {
+        "label": "Mark as won",
+        "description": "Closes the deal as won",
+        "keywords": "card deal sale won close negocio venda ganho fechar"
+      },
+      "pipeline_mark_lost": {
+        "label": "Mark as lost",
+        "description": "Closes the deal, with the reason",
+        "keywords": "card deal loss lost negocio perda perdido"
+      },
+      "pipeline_reopen_deal": {
+        "label": "Reopen deal",
+        "description": "Undoes the win or the loss",
+        "keywords": "card deal reopen negocio reabrir"
+      },
+      "pipeline_add_label": {
+        "label": "Label card",
+        "description": "Puts a label on the card",
+        "keywords": "card label tag etiqueta"
+      },
+      "pipeline_remove_label": {
+        "label": "Remove label from card",
+        "description": "Takes a label off the card",
+        "keywords": "card label tag remove etiqueta remover"
+      },
+      "pipeline_add_comment": {
+        "label": "Comment on card",
+        "description": "Adds a note to the card",
+        "keywords": "card comment note comentario nota"
+      },
+      "pipeline_add_checklist": {
+        "label": "Add checklist",
+        "description": "Creates a task list on the card",
+        "keywords": "card checklist tasks list tarefas lista"
+      },
+      "pipeline_archive_card": {
+        "label": "Archive card",
+        "description": "Takes the card off the board",
+        "keywords": "card archive arquivar"
+      },
+      "pipeline_create_deal": {
+        "label": "Create deal",
+        "description": "Creates a deal with a value, on any board",
+        "keywords": "deal sale value opportunity negocio venda valor oportunidade"
+      },
+      "pipeline_update_deal": {
+        "label": "Update deal",
+        "description": "Changes the deal created earlier in this flow",
+        "keywords": "deal update value negocio atualizar valor"
+      },
+      "http_request": {
+        "label": "Call another system",
+        "description": "Makes an HTTP request and follows the result",
+        "keywords": "http api rest request get post webhook integration requisicao integracao"
+      },
+      "execute_tool": {
+        "label": "Run function",
+        "description": "Runs a piece of JavaScript code",
+        "keywords": "code javascript js script function tool codigo funcao ferramenta"
+      },
+      "catalog_search": {
+        "label": "Search the catalog",
+        "description": "Looks up products and saves what it finds",
+        "keywords": "catalog product search catalogo produto busca"
+      },
+      "goto_flow": {
+        "label": "Call another flow",
+        "description": "Starts another flow, without waiting for it to finish",
+        "keywords": "subflow flow go to subfluxo fluxo ir para"
+      },
+      "finalize_chat": {
+        "label": "Close conversation",
+        "description": "Closes the conversation and ends the flow",
+        "keywords": "close end finish fechar encerrar concluir"
+      },
+      "end": {
+        "label": "End",
+        "description": "Ends the flow here",
+        "keywords": "end finish stop fim terminar parar"
+      }
+    },
+    "outputs": {
+      "next": "Next step",
+      "true": "Yes",
+      "false": "No",
+      "each": "For each item",
+      "done": "When finished",
+      "success": "It worked",
+      "error": "It failed",
+      "found": "Found it",
+      "notFound": "Didn't find it",
+      "default": "None of the cases",
+      "noneOfThem": "None of the above",
+      "otherReply": "Other reply",
+      "maxTurns": "Went over the limit",
+      "onError": "If something fails",
+      "positive": "Positive",
+      "neutral": "Neutral",
+      "negative": "Negative"
+    },
+    "operators": {
+      "equals": "is equal to",
+      "not_equals": "is different from",
+      "contains": "contains",
+      "not_contains": "doesn't contain",
+      "starts_with": "starts with",
+      "ends_with": "ends with",
+      "greater_than": "is greater than",
+      "less_than": "is less than",
+      "is_empty": "is empty",
+      "is_not_empty": "is not empty",
+      "exists": "exists",
+      "not_exists": "doesn't exist",
+      "in": "is in the list",
+      "not_in": "is not in the list"
+    },
+    "units": {
+      "seconds": "seconds",
+      "minutes": "minutes",
+      "hours": "hours",
+      "days": "days"
+    },
+    "variables": {
+      "title": "Variables",
+      "insert": "Insert variable",
+      "groups": {
+        "contact": "Contact",
+        "conversation": "Conversation",
+        "flow": "From this flow"
+      },
+      "builtin": {
+        "contact_name": "Contact name",
+        "contact_phone": "Contact phone",
+        "contact_id": "Contact ID",
+        "message_text": "Message text",
+        "message_role": "Who sent the message",
+        "chat_id": "Conversation ID",
+        "chat_status": "Conversation status"
+      },
+      "known": {
+        "last_choice": "Last option chosen",
+        "last_http_status": "Result of the last call",
+        "last_transcription": "Last transcription",
+        "last_intent": "Last topic understood",
+        "last_sentiment": "Last message tone",
+        "pipeline_card_id": "Card created",
+        "pipeline_error": "Reason for the card error",
+        "last_deal_id": "Deal created",
+        "catalog_results": "What was found in the catalog",
+        "catalog_results_total": "How many were found in the catalog",
+        "item": "Item in the repeat",
+        "index": "Position in the repeat"
+      }
+    },
+    "missing": {
+      "keywords": "Add the keywords",
+      "text": "Write the message",
+      "media": "Choose the file",
+      "template": "Choose the template",
+      "buttons": "Add the options",
+      "prompt": "Say how the AI should act",
+      "intents": "Add the topics",
+      "extractFields": "Say what to note down",
+      "rules": "Complete the rule",
+      "switchField": "Say what to compare",
+      "cases": "Add the cases",
+      "wait": "Say how long",
+      "assignments": "Say what to save",
+      "loopSource": "Say which list",
+      "tag": "Choose the tag",
+      "attributeKey": "Choose the field",
+      "agent": "Choose who handles it",
+      "team": "Choose the department",
+      "funnelStage": "Choose the funnel and the stage",
+      "boardStage": "Choose the board and the stage",
+      "dealStage": "Choose the stage",
+      "url": "Enter the address",
+      "tool": "Choose the function",
+      "targetFlow": "Choose the flow",
+      "cardSource": "Say which card",
+      "moveStage": "Choose the destination stage",
+      "customField": "Choose the field",
+      "label": "Choose the label",
+      "comment": "Write the comment",
+      "checklist": "Name the checklist"
+    },
+    "issues": {
+      "noTrigger": "The flow needs a start. Add a trigger.",
+      "multipleTriggers": "A flow can only have one trigger. Delete this one.",
+      "unknownBlock": "This block no longer exists. Delete it and use another.",
+      "missingNodeId": "A block has no ID. Open the flow again and save.",
+      "duplicatedNodeId": "Two blocks have the same ID. Delete one of them.",
+      "brokenEdge": "A link doesn't lead anywhere. Save again and check the lines.",
+      "triggerAlone": "Connect the trigger to the first step, or the flow starts and does nothing.",
+      "unreachable": "No path reaches this block, so it won't run.",
+      "loopBody": "Connect the \"For each item\" output to what should repeat.",
+      "aiLoose_one": "1 output with no link: the AI won't pick it.",
+      "aiLoose_other": "{{count}} outputs with no link: the AI won't pick them.",
+      "aiNoOutputs": "To decide, the AI needs at least one output.",
+      "conditionLoose": "Neither \"Yes\" nor \"No\" is connected: the flow ends here."
+    },
+    "summary": {
+      "keywords": "Words: {{words}}",
+      "sendText": "Sends: {{text}}",
+      "askQuestion": "Asks: {{text}}",
+      "interactive_one": "Asks with 1 option: {{text}}",
+      "interactive_other": "Asks with {{count}} options: {{text}}",
+      "media": "Sends: {{name}}",
+      "template": "Sends the template: {{name}}",
+      "aiTalk": "Chats: {{text}}",
+      "aiDecide": "Decides: {{text}}",
+      "intent_one": "1 topic",
+      "intent_other": "{{count}} topics",
+      "sentiment": "Positive, neutral or negative",
+      "extract": "Notes: {{names}}",
+      "transcribe": "Saves in {{name}}",
+      "conditionRule": "If {{field}} {{operator}} {{value}}",
+      "conditionMore_one": "{{text}} and 1 more rule",
+      "conditionMore_other": "{{text}} and {{count}} more rules",
+      "switch_one": "Compares {{field}} with 1 case",
+      "switch_other": "Compares {{field}} with {{count}} cases",
+      "wait_seconds_one": "Waits 1 second",
+      "wait_seconds_other": "Waits {{count}} seconds",
+      "wait_minutes_one": "Waits 1 minute",
+      "wait_minutes_other": "Waits {{count}} minutes",
+      "wait_hours_one": "Waits 1 hour",
+      "wait_hours_other": "Waits {{count}} hours",
+      "wait_days_one": "Waits 1 day",
+      "wait_days_other": "Waits {{count}} days",
+      "waitMessage": "Waits for the contact to reply",
+      "setVariable": "Saves: {{names}}",
+      "loop": "For each item in {{source}}",
+      "addTag": "Tag: {{name}}",
+      "removeTag": "Removes the tag: {{name}}",
+      "attribute": "{{key}}: {{value}}",
+      "assignAgent": "To {{name}}",
+      "assignPool_one": "Picks at random from 1 person",
+      "assignPool_other": "Picks at random from {{count}} people",
+      "assignTeam": "To {{name}}",
+      "transfer": "Stops the automation and calls the team",
+      "transferTo": "Stops the automation and calls {{name}}",
+      "finalize": "Closes the conversation",
+      "pause_minutes_one": "Pauses for 1 minute",
+      "pause_minutes_other": "Pauses for {{count}} minutes",
+      "pause_hours_one": "Pauses for 1 hour",
+      "pause_hours_other": "Pauses for {{count}} hours",
+      "pause_days_one": "Pauses for 1 day",
+      "pause_days_other": "Pauses for {{count}} days",
+      "pauseForever": "Pauses until someone turns it back on",
+      "resume": "Turns the automation back on",
+      "funnelStage": "{{funnel}}: {{stage}}",
+      "createCard": "{{board}}: {{stage}}",
+      "moveCard": "To {{stage}}",
+      "updateCard_one": "Changes 1 field",
+      "updateCard_other": "Changes {{count}} fields",
+      "customField": "{{field}}: {{value}}",
+      "markWon": "Closes as won",
+      "markLost": "Closes as lost",
+      "markLostReason": "Lost: {{reason}}",
+      "reopen": "Undoes the win or the loss",
+      "addLabel": "Label: {{name}}",
+      "removeLabel": "Removes the label: {{name}}",
+      "comment": "Comments: {{text}}",
+      "checklist_one": "{{name}}, with 1 item",
+      "checklist_other": "{{name}}, with {{count}} items",
+      "archiveCard": "Takes the card off the board",
+      "createDeal": "In {{stage}}",
+      "updateDeal": "Changes the last deal created",
+      "tool": "Runs {{name}}",
+      "goto": "Calls {{name}}",
+      "catalogQuery": "Searches: {{query}}",
+      "catalog": "Searches for what the contact wrote",
+      "end": "Ends here"
+    },
+    "block": {
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "unknown": "Unknown block",
+      "noName": "No name",
+      "unlink": "Disconnect",
+      "addAfter": "Add the next step",
+      "addAfterOutput": "Add the next step on {{name}}",
+      "cardFromChat": "Conversation card on {{board}}",
+      "cardFrom": "Card from {{name}}",
+      "cardCreatorGone": "The chosen \"Create card\" was deleted"
+    },
+    "canvas": {
+      "firstStep": "Click the + on the block to say what happens next.",
+      "emptyTitle": "Start with the trigger",
+      "emptyHint": "Every flow starts with something happening: a message, a keyword, a webhook.",
+      "a11y": {
+        "blockRole": "block",
+        "linkRole": "link",
+        "block": "Enter selects the block, arrow keys move it, and Delete removes it.",
+        "blockMove": "Enter selects the block. Then arrow keys move it and Delete removes it.",
+        "moved": "Block moved.",
+        "moved_up": "Block moved up.",
+        "moved_down": "Block moved down.",
+        "moved_left": "Block moved left.",
+        "moved_right": "Block moved right.",
+        "link": "Enter selects the link, and Delete removes it.",
+        "controls": "Board controls",
+        "minimap": "Flow map",
+        "handle": "Connection point"
+      }
+    },
+    "toolbar": {
+      "label": "Board tools",
+      "add": "Add block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomReset": "Back to 100%",
+      "fit": "See the whole flow",
+      "arrange": "Tidy up the blocks",
+      "arranged": "Blocks tidied up",
+      "outline": "View as list"
+    },
+    "shortcuts": {
+      "title": "Shortcuts",
+      "add": "Add block",
+      "save": "Save now",
+      "undo": "Undo",
+      "redo": "Redo",
+      "duplicate": "Duplicate",
+      "copy": "Copy",
+      "paste": "Paste",
+      "delete": "Delete",
+      "close": "Close the panel",
+      "fit": "See the whole flow",
+      "outline": "View as list",
+      "test": "Test",
+      "box": "Select several by dragging"
+    },
+    "picker": {
+      "title": "Add block",
+      "placeholder": "What does this flow need to do?",
+      "placeholderNext": "What happens next?",
+      "clear": "Clear the search",
+      "groupsLabel": "Filter the blocks",
+      "allGroups": "All",
+      "emptyTitle": "No block with that name",
+      "emptyHint": "Try another word, like \"message\", \"tag\" or \"code\".",
+      "footerConnect": "The block comes already connected.",
+      "footerDrag": "Click to add, or drag it onto the board."
+    },
+    "inspector": {
+      "readOnlyTitle": "What this block does",
+      "readOnlyNext": "Where it goes",
+      "readOnlyEnds": "Ends here",
+      "advanced": "More options",
+      "optional": "Optional",
+      "loading": "Loading...",
+      "nameLabel": "Block name",
+      "close": "Close",
+      "nextTitle": "Where it goes",
+      "nextHint": "Choose the next block here, or pull the line on the board.",
+      "nextBlock": "Next step",
+      "linkTo": "Next block for {{name}}",
+      "linkPlaceholder": "Ends here",
+      "selection_one": "1 block selected",
+      "selection_other": "{{count}} blocks selected"
+    },
+    "fields": {
+      "text": {
+        "label": "Message",
+        "placeholder": "Hi! So glad to have you here."
+      },
+      "sender_name": {
+        "label": "Name to sign with",
+        "hint": "Shows before the message. Without it, the channel name is used."
+      },
+      "save_to": {
+        "label": "Save the answer as",
+        "placeholder": "answer",
+        "hint": "It becomes a variable the next blocks can use."
+      },
+      "invalid_text": {
+        "label": "If the answer isn't one of the options",
+        "hint": "Without it, the flow follows \"Other reply\"."
+      },
+      "caption": {
+        "label": "Caption"
+      },
+      "media_url": {
+        "label": "File address",
+        "placeholder": "https://"
+      },
+      "media_type": {
+        "label": "File type"
+      },
+      "file_name": {
+        "label": "File name"
+      },
+      "attachment_id": {
+        "label": "File",
+        "placeholder": "Choose from the library"
+      },
+      "template_name": {
+        "label": "Template",
+        "placeholder": "Choose a template"
+      },
+      "field": {
+        "label": "What to compare",
+        "placeholder": "For example, the variable with the answer"
+      },
+      "amount": {
+        "label": "How much"
+      },
+      "unit": {
+        "label": "Unit"
+      },
+      "source": {
+        "label": "The list",
+        "placeholder": "The name of the variable with the list"
+      },
+      "loop_variable": {
+        "label": "Item name",
+        "hint": "Inside the repeat, this is what you call the current item."
+      },
+      "index_variable": {
+        "label": "Position name"
+      },
+      "max_iterations": {
+        "label": "Maximum repeats",
+        "hint": "Up to 100."
+      },
+      "tag_id": {
+        "label": "Tag",
+        "placeholder": "Choose a tag"
+      },
+      "tag_name": {
+        "label": "Or create a new tag"
+      },
+      "key": {
+        "label": "Field",
+        "placeholder": "Choose a field"
+      },
+      "value": {
+        "label": "Value"
+      },
+      "account_id": {
+        "label": "Person",
+        "placeholder": "Choose a person"
+      },
+      "account_pool": {
+        "label": "Who to pick from"
+      },
+      "team_id": {
+        "label": "Department",
+        "placeholder": "Choose a department"
+      },
+      "period": {
+        "label": "For how long"
+      },
+      "funnel_id": {
+        "label": "Funnel",
+        "placeholder": "Choose a funnel"
+      },
+      "stage_id": {
+        "label": "Stage",
+        "placeholder": "Choose a stage",
+        "pick": "Choose a stage",
+        "pickBoard": "Choose the board first"
+      },
+      "method": {
+        "label": "Method"
+      },
+      "url": {
+        "label": "Address",
+        "placeholder": "https://api.example.com/orders"
+      },
+      "body": {
+        "label": "Request body",
+        "placeholder": "{ \"phone\": \"\" }"
+      },
+      "save_response_to": {
+        "label": "Save the result as",
+        "placeholder": "result",
+        "hint": "It becomes a variable the next blocks can use."
+      },
+      "timeout": {
+        "label": "Maximum time, in seconds",
+        "hint": "Up to 30."
+      },
+      "tool_id": {
+        "label": "Function",
+        "placeholder": "Choose a function"
+      },
+      "target_flow_id": {
+        "label": "Flow",
+        "placeholder": "Choose a flow"
+      },
+      "merge_variables": {
+        "label": "Bring the variables back",
+        "hint": "Whatever the other flow saves becomes available here."
+      },
+      "query": {
+        "label": "What to search for",
+        "hint": "Without it, it searches for what the contact wrote."
+      },
+      "limit": {
+        "label": "How many results",
+        "hint": "Up to 20."
+      },
+      "keywords": {
+        "label": "Keywords",
+        "hint": "Ignores capitals and accents, and matches whole words only. Separate with a comma or Enter.",
+        "placeholder": "quote, price"
+      },
+      "system_prompt": {
+        "label": "How the AI should act"
+      },
+      "min_turns": {
+        "label": "Exchanges before it can leave",
+        "hint": "Contact replies in this block."
+      },
+      "max_turns": {
+        "label": "Reply limit",
+        "hint": "Creates the \"Went over the limit\" output."
+      },
+      "use_history": {
+        "label": "Read the conversation history",
+        "hint": "Uses the last 30 messages as context."
+      },
+      "audio_url": {
+        "label": "Audio address",
+        "hint": "Without it, it uses the audio the contact sent."
+      },
+      "model_size": {
+        "label": "Model",
+        "main": "Main",
+        "fast": "Fast",
+        "fastHint": "Faster and cheaper. It doesn't use the flow's general instructions, only this block's."
+      },
+      "board_id": {
+        "label": "Board",
+        "placeholder": "Choose a board",
+        "empty": "No active board. Create one in Pipelines."
+      },
+      "title": {
+        "label": "Title",
+        "placeholder": "Without it, the contact's name"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "priority": {
+        "label": "Priority",
+        "default": "Default",
+        "keep": "Don't change",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "deal_value": {
+        "label": "Deal value",
+        "placeholder": "1500"
+      },
+      "deal_probability": {
+        "label": "Chance of closing, from 0 to 100"
+      },
+      "company_name": {
+        "label": "Company"
+      },
+      "contact_email": {
+        "label": "Email"
+      },
+      "contact_phone": {
+        "label": "Phone"
+      },
+      "due_date": {
+        "label": "Due date"
+      },
+      "expected_close_date": {
+        "label": "Expected close date"
+      },
+      "link_chat": {
+        "label": "Link to the conversation",
+        "hint": "The card shows up in the chat, and the next blocks can find it."
+      },
+      "reuse_existing": {
+        "label": "Reuse the open card",
+        "hint": "If it runs again in this conversation, it keeps using the same card."
+      },
+      "position": {
+        "label": "Where in the stage",
+        "top": "At the top",
+        "bottom": "At the bottom"
+      },
+      "field_key": {
+        "label": "Field",
+        "placeholder": "Choose a field"
+      },
+      "reason": {
+        "label": "Reason",
+        "placeholder": "No budget right now"
+      },
+      "label": {
+        "label": "Label",
+        "placeholder": "Hot lead"
+      },
+      "label_id": {
+        "label": "Label",
+        "placeholder": "Choose a label"
+      },
+      "body_comment": {
+        "label": "Comment"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "Documents"
+      },
+      "assigned_to_id": {
+        "label": "Owner",
+        "placeholder": "Choose a person"
+      },
+      "card_id": {
+        "label": "Which deal",
+        "hint": "Without it, the last one created in this flow."
+      },
+      "trigger": {
+        "title": "How this flow starts",
+        "hint": "You can change it any time: what's already connected stays in place."
+      },
+      "trigger_webhook": {
+        "note": "Create a webhook and, in its actions, choose \"Start flow\" and this flow. Whatever arrives becomes available in the variables.",
+        "open": "Open webhooks"
+      },
+      "trigger_manual": {
+        "note": "This flow only starts when a team member starts it in a conversation."
+      },
+      "trigger_human_handoff": {
+        "note": "Runs with the automation paused: use it to let the contact know a person took over."
+      },
+      "channels": {
+        "label": "On which channels",
+        "hint": "If you pick none, it applies to all of them.",
+        "all": "All channels",
+        "failed": "Couldn't change the channels. Try again."
+      },
+      "ask_question": {
+        "note": "The flow stops here until the contact replies.",
+        "text": {
+          "label": "Question",
+          "placeholder": "What's your name?"
+        },
+        "save_to": {
+          "placeholder": "name"
+        }
+      },
+      "wait_for_message": {
+        "note": "The flow stops here until the contact sends the next message."
+      },
+      "send_interactive": {
+        "text": {
+          "label": "Question",
+          "placeholder": "How can I help?"
+        },
+        "buttonsTitle": "Options",
+        "buttonsHint": "The contact replies with the number or the text. Each option becomes an output of the block.",
+        "newButton": "opcao",
+        "buttonPlaceholder": "See products",
+        "buttonLabel": "Option {{number}}",
+        "removeButton": "Remove option {{number}}",
+        "addButton": "Add option"
+      },
+      "send_media": {
+        "sourceLabel": "Where the file comes from",
+        "library": "From the library",
+        "libraryHint": "A file already uploaded in Attachments.",
+        "link": "From an address",
+        "linkHint": "A link, which can come from a variable.",
+        "types": {
+          "image": "Image",
+          "audio": "Audio",
+          "video": "Video",
+          "document": "Document"
+        }
+      },
+      "send_template": {
+        "note": "Only works on official WhatsApp. On other channels, the flow moves on without sending.",
+        "connector": "Channel",
+        "noConnector": "No official WhatsApp channel connected. Type the template name, or connect a channel.",
+        "parametersTitle": "Parameters",
+        "parametersHint": "In the order they appear in the template.",
+        "parameter": "Parameter {{number}}",
+        "removeParameter": "Remove the parameter",
+        "addParameter": "Add parameter",
+        "template_name": {
+          "label": "Template name"
+        }
+      },
+      "condition": {
+        "rulesTitle": "Rules",
+        "rulesHint": "If it holds, the flow follows \"Yes\". If not, \"No\".",
+        "all": "All hold",
+        "any": "Any one holds",
+        "match": {
+          "label": "How to combine"
+        },
+        "operator": "How to compare",
+        "field": "What to compare",
+        "fieldPlaceholder": "Choose what to compare",
+        "customField": "A variable...",
+        "useList": "Use the list",
+        "value": "Compared with",
+        "valuePlaceholder": "Value",
+        "values": "Values",
+        "valuesPlaceholder": "Separate with commas",
+        "removeRule": "Remove the rule",
+        "addRule": "Add rule"
+      },
+      "switch": {
+        "caseValue": "Value of case {{number}}",
+        "casePlaceholder": "Value",
+        "removeCase": "Remove the case",
+        "addCase": "Add case",
+        "note": "Each case becomes an output. If none matches, the flow follows \"None of the cases\"."
+      },
+      "wait": {
+        "note": "The flow continues on its own after this time, up to 30 days. If a team member takes over, the wait is canceled."
+      },
+      "set_variable": {
+        "note": "Each variable becomes available in the next blocks.",
+        "name": "Variable name",
+        "namePlaceholder": "city",
+        "value": "Value",
+        "valuePlaceholder": "Value",
+        "remove": "Remove the variable",
+        "add": "Add variable"
+      },
+      "loop": {
+        "note": "Connect \"For each item\" to what should repeat, and the last block back here. Up to 100 rounds."
+      },
+      "add_tag": {
+        "note": "The conversation gets this tag. If it doesn't exist, it's created.",
+        "nameHint": "If you type here, it's created right away."
+      },
+      "remove_tag": {
+        "note": "The conversation loses this tag, if it has it."
+      },
+      "set_custom_attribute": {
+        "note": "Saves in a contact field, which shows up in the conversation.",
+        "useList": "Choose from the list",
+        "typeKey": "Type the field name",
+        "key": {
+          "label": "Field name"
+        }
+      },
+      "assign_agent": {
+        "modeLabel": "To whom",
+        "one": "One person",
+        "oneHint": "The conversation always goes to them.",
+        "pool": "Pick at random from several",
+        "poolHint": "Each conversation goes to one of the chosen people."
+      },
+      "transfer_to_human": {
+        "note": "The automation stops in this conversation for the time set in the settings. Choosing a department or person is optional.",
+        "account_id": {
+          "label": "Person"
+        }
+      },
+      "pause_automation": {
+        "note": "Nothing else runs in this conversation while it's paused.",
+        "forever": "Until someone turns it back on",
+        "period": {
+          "label": "For how long"
+        }
+      },
+      "set_funnel_stage": {
+        "note": "The conversation shows up in this funnel stage. If the funnel or stage disappears later, the flow moves on and the organization gets a notice.",
+        "pickFunnel": "Choose the funnel first"
+      },
+      "http_request": {
+        "note": "Follows \"It worked\" if the system replies well, and \"It failed\" if not.",
+        "headers": "Headers",
+        "headerName": "Header name",
+        "headerValue": "Header value",
+        "removeHeader": "Remove the header",
+        "addHeader": "Add header"
+      },
+      "execute_tool": {
+        "note": "Runs an organization function: written here or installed from a tool.",
+        "fromTool": "From {{name}}",
+        "seeTool": "See the function",
+        "editCode": "Edit the code",
+        "newTool": "New function",
+        "paramsTitle": "What to send to the function",
+        "paramsHint": "They accept variables."
+      },
+      "goto_flow": {
+        "note": "The other flow starts and this one moves on, without waiting. If the other one stops at a question, this one keeps going."
+      },
+      "catalog_search": {
+        "note": "Saves what it finds in a variable, with the image ready to send.",
+        "tags": "Only with these tags",
+        "categories": "Only in these categories",
+        "listPlaceholder": "Separate with commas",
+        "save_to": {
+          "placeholder": "catalog_results"
+        }
+      },
+      "finalize_chat": {
+        "note": "Closes the conversation and ends the flow. Nothing else runs after this block."
+      },
+      "resume_automation": {
+        "note": "Turns the automation back on in this conversation."
+      },
+      "end": {
+        "note": "The flow ends here. If the conversation needs to be closed, use \"Close conversation\"."
+      },
+      "ai_shared": {
+        "errorExit": "The AI call failed, or you're out of credits."
+      },
+      "outputs": {
+        "remove": "Remove",
+        "saves": "Saves in the conversation: {{names}}",
+        "saveData": "Save data in the conversation when following this way",
+        "required": "Required",
+        "requiredHint": "The AI only follows this way after filling in this piece of data.",
+        "removeField": "Remove {{name}}",
+        "pickField": "Choose or add a piece of data",
+        "manage": "Manage conversation data"
+      },
+      "ai_assistant": {
+        "modeLabel": "What the AI does",
+        "interactive": "Chats with the contact",
+        "interactiveHint": "Replies, can use functions, and follows an output when it recognizes the situation.",
+        "processing": "Only picks the path",
+        "processingHint": "Doesn't reply to the contact: reads the conversation and picks an output right away.",
+        "inheritsHint": "These add to the flow's general instructions.",
+        "promptPlaceholder": "You help customers of the store. Keep answers short and friendly...",
+        "decidePlaceholder": "Check whether the person wants to buy or just has questions.",
+        "outputsTitle": "When to move on",
+        "outputsHint": "After each reply from the contact, the AI checks whether one of these situations happened. If unsure, the conversation continues.",
+        "outputsDecideHint": "The AI picks one of these outputs based on the conversation.",
+        "outputName": "Output name",
+        "outputWhen": "When to follow this way",
+        "outputWhenPlaceholder": "The person confirmed the order and said how they want to pay",
+        "addOutput": "Add output",
+        "newOutput": "saida",
+        "maxTurnsExit_one": "After 1 reply from the contact with none of this happening. If not connected, the conversation continues.",
+        "maxTurnsExit_other": "After {{count}} replies from the contact with none of this happening. If not connected, the conversation continues.",
+        "errorExit": "The AI call failed, or you're out of credits. If not connected here, the run stops.",
+        "modelTitle": "Model"
+      },
+      "tool_ids": {
+        "title": "Functions the AI can use",
+        "hint": "Only the ones you choose: check stock, shipping, price...",
+        "placeholder": "No functions",
+        "empty": "The organization has no functions yet. Create them in Flows, Tools.",
+        "gone": "Function that no longer exists"
+      },
+      "ai_intent_classification": {
+        "note": "Reads the last message and follows the topic that fits best. Uses the fast model, without the history.",
+        "promptPlaceholder": "Exchange requests count as support.",
+        "outputsTitle": "Topics",
+        "outputsHint": "Each topic becomes an output of the block.",
+        "outputName": "Topic",
+        "outputWhen": "How to recognize it",
+        "outputWhenPlaceholder": "Wants to know the price, deadline or availability",
+        "addOutput": "Add topic",
+        "newOutput": "assunto",
+        "noneHint": "When the message doesn't match any topic.",
+        "system_prompt": {
+          "label": "What helps tell them apart"
+        }
+      },
+      "ai_sentiment": {
+        "note": "Reads the tone of the last message and follows the output that fits. Uses the fast model.",
+        "outputsTitle": "Tones",
+        "outputsHint": "The name of each one is what the AI uses to classify: be direct, like \"Annoyed\".",
+        "outputName": "Tone",
+        "addOutput": "Add tone",
+        "newOutput": "tom"
+      },
+      "ai_parameter_extractor": {
+        "fieldsTitle": "What to note down",
+        "fieldsHint": "Data that doesn't show up in the message doesn't erase what was already saved.",
+        "promptPlaceholder": "Dates in YYYY-MM-DD format. Phone numbers with digits only.",
+        "system_prompt": {
+          "label": "Rules for interpreting"
+        }
+      },
+      "ai_audio_transcription": {
+        "note": "Transcribes the audio of the last message. With no audio, it follows \"If something fails\".",
+        "saveHint": "It becomes a variable the next blocks can use.",
+        "save_to": {
+          "label": "Save the text as"
+        }
+      },
+      "card_source": {
+        "title": "Which card",
+        "hint": "Where the card comes from. The choice also holds when the flow runs again in the conversation.",
+        "placeholder": "Choose the card",
+        "entersIn": "Goes into {{stage}}",
+        "latest": "The most recent card in the conversation",
+        "latestHint": "On a board you choose",
+        "useCreator": "Use the card from \"{{name}}\"",
+        "noCreator": "No \"Create card\" comes before this block. Connect one before it, or use the most recent card in the conversation.",
+        "creatorGone": "The chosen \"Create card\" was deleted. Choose another.",
+        "notUpstream": "The chosen \"Create card\" doesn't come before this block: it may not have created the card yet.",
+        "errorNote": "If the operation is blocked (checklist or required fields, card not found), the flow follows \"If something fails\". If not connected there, the run stops."
+      },
+      "pipeline_create_card": {
+        "where": "Where to create",
+        "card": "The card",
+        "note": "The card created is available to the next blocks.",
+        "description": {
+          "placeholder": "Without it, the contact, the phone and the conversation status"
+        }
+      },
+      "pipeline_move_card": {
+        "destination": "Where to",
+        "hint": "When moving forward, the current stage's checklist and required fields apply.",
+        "stage_id": {
+          "label": "Move to"
+        }
+      },
+      "pipeline_update_card": {
+        "fields": "What to change",
+        "hint": "Only the fields you fill in change."
+      },
+      "pipeline_set_custom_field": {
+        "title": "Custom field",
+        "pickCard": "Choose the card first",
+        "empty": "This board has no custom fields.",
+        "options": "Options: {{options}}"
+      },
+      "pipeline_mark_won": {
+        "note": "Closes the deal as won. If the board requires fields, they must be filled in."
+      },
+      "pipeline_reopen_deal": {
+        "note": "Undoes the win or the loss, and the deal goes back on the board."
+      },
+      "pipeline_archive_card": {
+        "note": "The card leaves the board, but stays in the history."
+      },
+      "pipeline_add_label": {
+        "note": "If the label doesn't exist, it's created with this name.",
+        "existing": "Already exist: {{names}}"
+      },
+      "pipeline_add_comment": {
+        "body": {
+          "label": "Comment",
+          "placeholder": "The customer asked for a quote."
+        }
+      },
+      "pipeline_add_checklist": {
+        "note": "If the card already has a checklist with this name, the items go into it.",
+        "item": "Item {{number}}",
+        "removeItem": "Remove the item",
+        "addItem": "Add item"
+      },
+      "pipeline_create_deal": {
+        "note": "Creates it directly, on any board, without the stage's locks. If something doesn't fit, it's logged in the history and the flow moves on."
+      },
+      "pipeline_update_deal": {
+        "note": "Updates the last deal created in this flow. Changing stage doesn't check the locks."
+      }
+    },
+    "save": {
+      "saving": "Saving...",
+      "dirty": "Unsaved changes",
+      "saved": "All saved",
+      "savedNow": "Saved",
+      "failed": "Not saved. Try again",
+      "conflict": "Changed elsewhere"
+    },
+    "toast": {
+      "deleted_one": "Block deleted",
+      "deleted_other": "{{count}} blocks deleted",
+      "copied_one": "1 block copied",
+      "copied_other": "{{count}} blocks copied"
+    },
+    "conflict": {
+      "title": "This flow changed elsewhere",
+      "description": "Someone saved another version, or you opened it in another tab. Autosave stopped until you decide.",
+      "reload": "Load the newest",
+      "keep": "Keep mine"
+    },
+    "leave": {
+      "title": "Leave without saving?",
+      "description": "We couldn't save your last change. If you leave now, it will be lost.",
+      "confirm": "Leave anyway",
+      "stay": "Stay here"
+    },
+    "replay": {
+      "showing": "Path of {{name}}",
+      "clear": "Clear the path"
+    },
+    "mobile": {
+      "readOnly": "To edit the blocks, open this on a bigger screen. Here you can check, test and publish.",
+      "views": "How to view the flow",
+      "list": "List",
+      "map": "Map"
+    },
+    "outline": {
+      "title": "The flow, in order",
+      "close": "Close the list",
+      "backTo": "Goes back to {{name}}",
+      "loose": "No path leads here"
+    },
+    "menu": {
+      "label": "More flow actions",
+      "details": "Name and channels",
+      "fields": "Conversation data",
+      "basePrompt": "General AI instructions",
+      "versions": "Versions",
+      "executions": "See runs",
+      "duplicate": "Duplicate flow",
+      "delete": "Delete flow"
+    },
+    "toggle": {
+      "on": "Turn on",
+      "off": "Turn off",
+      "draftHint": "Publish to turn on",
+      "turnedOn": "\"{{name}}\" turned on",
+      "turnedOff": "\"{{name}}\" turned off and archived",
+      "confirmTitle": "Turn off \"{{name}}\"?",
+      "confirmDescription": "The flow is archived: it stops replying, and the conversations in progress in it are ended. You can turn it back on whenever you want.",
+      "confirmAction": "Turn off"
+    },
+    "test": {
+      "open": "Test",
+      "title": "Test the flow",
+      "tabs": "What to see from the test",
+      "tabChat": "Conversation",
+      "tabSteps": "What each block did",
+      "stop": "Stop the test",
+      "restart": "Test again",
+      "close": "Close the test",
+      "realCost": "The conversation is pretend, and nothing goes out through the channels. But the AI and the functions are real, and they use credits.",
+      "empty": "Write as if you were the contact. The blocks light up on the board as the flow moves.",
+      "typing": "The flow is running...",
+      "attachment": "File",
+      "placeholder": "Write as if you were the contact",
+      "send": "Send",
+      "saveFailed": "We couldn't save the flow to test it. Try again.",
+      "stepsEmpty": "The blocks that run show up here, in order, with the time each one took.",
+      "ms": "{{value}} ms",
+      "seconds": "{{value}} s",
+      "stepFailed": "It failed",
+      "stepWaiting": "Waiting",
+      "stepSkippedBoard": "In a test, it doesn't touch the board",
+      "stepStayed": "Kept the conversation going. {{reason}}",
+      "stepLeft": "Followed \"{{name}}\". {{reason}}",
+      "status": {
+        "idle": "Stopped",
+        "starting": "Starting",
+        "running": "Running",
+        "waiting": "Your turn",
+        "waitingTime": "Waiting for the time",
+        "completed": "Finished",
+        "failed": "Failed",
+        "stopped": "Stopped"
+      },
+      "notes": {
+        "templateSent": "WhatsApp template sent: {{name}}. In a test, nothing really goes out.",
+        "pipelineSkipped": "\"{{name}}\" doesn't touch the board during a test. To see a card get created, test in a real conversation.",
+        "attachmentMissing": "An attachment mentioned in the text no longer exists, and was left out of the message. {{reason}}",
+        "event": "Event: {{name}}",
+        "aiLeft": "The AI followed \"{{name}}\". {{reason}}",
+        "waitingTime": "The flow is waiting for time to pass. Send a message to move on without waiting.",
+        "completed": "The flow finished.",
+        "failed": "The flow stopped: {{message}}",
+        "stopped": "Test stopped.",
+        "startFailed": "Couldn't start the test. Try again.",
+        "notWaiting": "The flow is still running. Wait for it to finish before sending another message.",
+        "sendFailed": "The message didn't go through. Try again."
+      }
+    },
+    "publish": {
+      "action": "Publish",
+      "title": "Publish \"{{name}}\"",
+      "descriptionFirst": "After you publish, this flow starts handling conversations.",
+      "descriptionUpdate": "Version {{version}} goes offline, and this one takes its place. Anything already in progress finishes on the version it started with.",
+      "starts": "Starts:",
+      "allGood": "All set to publish.",
+      "errorsTitle_one": "1 thing is stopping you from publishing",
+      "errorsTitle_other": "{{count}} things are stopping you from publishing",
+      "warningsTitle_one": "1 thing to check",
+      "warningsTitle_other": "{{count}} things to check",
+      "cancel": "Go back",
+      "confirm": "Publish now",
+      "done": "\"{{name}}\" published",
+      "failed": "Couldn't publish. Try again.",
+      "saveFailed": "We couldn't save the draft. Check your connection and try again.",
+      "nothing": "Nothing new to publish"
+    },
+    "details": {
+      "title": "Name and channels",
+      "name": "Flow name",
+      "nameRequired": "Give the flow a name",
+      "nameTooLong": "Use up to 120 characters",
+      "description": "Description",
+      "descriptionTooLong": "Use up to 2,000 characters",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Saved"
+    },
+    "dataFields": {
+      "title": "Conversation data",
+      "count_zero": "No data added",
+      "count_one": "1 piece of data added",
+      "count_other": "{{count}} pieces of data added",
+      "explain": "What this flow collects. The value stays in each conversation, and comes back filled in when the flow runs again in it. It doesn't show up in the contact fields.",
+      "name": "Name",
+      "namePlaceholder": "Product chosen",
+      "type": "Type",
+      "types": {
+        "string": "Text",
+        "integer": "Whole number",
+        "number": "Number",
+        "boolean": "Yes or no",
+        "array": "List"
+      },
+      "description": "What it is, for the AI",
+      "descriptionPlaceholder": "The product the customer chose, as it appears in the catalog",
+      "needsName": "Give it a name to create the variable",
+      "usedIn_one": "Used in 1 block",
+      "usedIn_other": "Used in {{count}} blocks",
+      "unused": "Not used yet",
+      "add": "Add data",
+      "delete": "Delete",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteDescription_one": "It's in 1 block, and will stop being collected. What was already saved in the conversations stays there.",
+      "deleteDescription_other": "It's in {{count}} blocks, and will stop being collected. What was already saved in the conversations stays there."
+    },
+    "basePrompt": {
+      "title": "General AI instructions",
+      "description_zero": "They apply to all AI blocks on the main model. There are none in this flow yet.",
+      "description_one": "They apply to the AI block in this flow that uses the main model.",
+      "description_other": "They apply to the {{count}} AI blocks in this flow that use the main model.",
+      "placeholder": "You help customers of Doma Store, a home and decor shop. Be warm and informal. Never make up a price or a deadline.",
+      "emptyHint": "Nothing set. Use it for what holds across all AI blocks: who is speaking, tone of voice and rules.",
+      "edit": "Edit the general instructions",
+      "add": "Write the general instructions",
+      "fastHint": "The fast model doesn't use these instructions.",
+      "chars_one": "{{value}} character",
+      "chars_other": "{{value}} characters",
+      "cancel": "Cancel",
+      "apply": "Apply"
+    },
+    "versions": {
+      "title": "Versions",
+      "description": "Every publication is kept. Restoring brings it back to the draft: nothing goes live without publishing.",
+      "number": "Version {{number}}",
+      "lineDraft": "Draft v{{number}}",
+      "linePublished": "published v{{number}}",
+      "draft": "Draft",
+      "live": "Live",
+      "savedAt": "Saved",
+      "publishedAt": "Published",
+      "restore": "Restore",
+      "restoreTitle": "Restore version {{number}}?",
+      "restoreDescription": "The current draft is replaced by this version. You can undo it right after.",
+      "restored": "Version {{number}} in the draft",
+      "restoreFailed": "Couldn't restore. Try again."
+    },
+    "start": {
+      "action": "Start in a conversation",
+      "title": "Start \"{{name}}\"",
+      "description": "The flow starts in the conversation you pick. If it's already running there, nothing changes.",
+      "pick": "Search by name or phone",
+      "empty": "No conversation found",
+      "done": "\"{{name}}\" started",
+      "failed": "Couldn't start it. Try again.",
+      "cancel": "Cancel"
+    },
+    "toolPanel": {
+      "title": "Function",
+      "newTitle": "New function",
+      "description": "The code the block runs, in JavaScript.",
+      "shared": "This function belongs to the organization: changing it here changes it in every flow that uses it.",
+      "lockedTitle": "Came from the tool {{name}}",
+      "lockedDescription": "The code of an installed tool can't be edited. To change it, customize it: it stops receiving updates from the catalog.",
+      "personalize": "Customize",
+      "personalizeTitle": "Customize this function?",
+      "personalizeDescription": "The code appears and becomes editable, but it stops receiving the tool's updates.",
+      "personalized": "Custom function",
+      "name": "Name",
+      "nameHint": "It's what the AI sees. Letters, numbers, _ and -.",
+      "nameInvalid": "Use only letters, numbers, _ and -, with no spaces.",
+      "descriptionLabel": "What it does",
+      "descriptionPlaceholder": "Calculates shipping for a ZIP code.",
+      "parameters": "What it receives",
+      "parametersHint": "It becomes `params` in the code. Fill in an example to test.",
+      "parameterName": "Name",
+      "parameterType": "Type",
+      "parameterDescription": "Description",
+      "parameterTest": "Test value",
+      "parameterRequired": "Required",
+      "parameterRemove": "Remove",
+      "parameterAdd": "Add parameter",
+      "types": {
+        "string": "Text",
+        "number": "Number",
+        "integer": "Whole number",
+        "boolean": "Yes or no",
+        "array": "List",
+        "object": "Object"
+      },
+      "codeLabel": "Function code",
+      "testChat": "Test in a conversation",
+      "testChatHint": "Optional. Without a conversation, anything that depends on the contact (getContactInfo, tag) fails in the test.",
+      "save": "Save function",
+      "saved": "Function saved",
+      "saveFailed": "Couldn't save. Try again.",
+      "runFailed": "Couldn't run it. Try again.",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "codeEditor": {
+      "toolbar": "Code tools",
+      "format": "Format",
+      "wrapOn": "Wrap lines: on",
+      "wrapOff": "Wrap lines: off",
+      "referenceToggle": "API reference",
+      "referenceSearch": "Search the API",
+      "maximize": "Full screen",
+      "restore": "Exit full screen",
+      "run": "Save and run",
+      "running": "Running...",
+      "insert": "Insert into the code",
+      "noProblems": "No problems",
+      "errors_one": "1 error",
+      "errors_other": "{{count}} errors",
+      "warnings_one": "1 warning",
+      "warnings_other": "{{count}} warnings",
+      "lineColumn": "Line {{line}}, column {{column}}",
+      "line": "line {{line}}",
+      "createParameter": "Create the parameter \"{{name}}\"",
+      "resultDone": "Ran",
+      "resultFailed": "Failed",
+      "resultPending": "Not finished yet",
+      "pendingHint": "Running depends on the scripts process. If it's stopped, the result doesn't arrive.",
+      "duration": "{{value}} ms",
+      "response": "What it returned",
+      "noResponse": "Nothing",
+      "calls_one": "1 call",
+      "calls_other": "{{count}} calls",
+      "reference": {
+        "params": { "title": "Parameters", "hint": "What arrives from the caller, and the tool's keys." },
+        "network": { "title": "Network", "hint": "Call other systems. Up to 50 calls per run." },
+        "contact": { "title": "Contact", "hint": "Who is in the conversation, and the data saved on them." },
+        "tags": { "title": "Tags and assignment", "hint": "Mark the conversation and hand it to someone." },
+        "collection": { "title": "Tables", "hint": "Free-form organization tables, created on the fly." },
+        "catalog": { "title": "Catalog", "hint": "Search and read products." },
+        "kanban": { "title": "Pipelines", "hint": "Boards, stages and cards." },
+        "agenda": { "title": "Schedule", "hint": "Services, times and classes." },
+        "utilities": { "title": "Utilities", "hint": "Logging, waiting, routes and encryption." }
+      }
+    },
+    "editor": {
+      "loading": "Loading the flow",
+      "notFound": "This flow no longer exists",
+      "notFoundHint": "It may have been deleted. Go back to the list of flows."
+    },
+    "list": {
+      "description": "A flow looks after your conversations: what happens when someone sends a message, step by step.",
+      "settings": "Settings",
+      "create": "New flow",
+      "createShort": "New",
+      "statusLabel": "Filter by status",
+      "tabActive": "All",
+      "tabPublished": "On",
+      "tabDraft": "Drafts",
+      "tabArchived": "Archived",
+      "search": "Search flows",
+      "triggerFilter": "How it starts",
+      "count_one": "1 flow",
+      "count_other": "{{count}} flows",
+      "sortRecent": "Recently edited",
+      "sortUsed": "Recently used",
+      "sortName": "Name, A to Z",
+      "noResults": "No flows found",
+      "noResultsHint": "Try another word, or clear the filters.",
+      "clearFilters": "Clear filters",
+      "emptyTab": {
+        "active": "No flows here",
+        "published": "No flows turned on",
+        "draft": "No drafts",
+        "archived": "Nothing archived"
+      },
+      "neverUsed": "Never ran",
+      "lastUsed": "Ran",
+      "week_one": "1 in 7 days",
+      "week_other": "{{count}} in 7 days",
+      "recentLabel_one": "1 run in 7 days, {{failed}} failed. See runs.",
+      "recentLabel_other": "{{count}} runs in 7 days, {{failed}} failed. See runs.",
+      "waiting_one": "1 waiting for a reply",
+      "waiting_other": "{{count}} waiting for a reply",
+      "actionsOf": "Actions for {{name}}",
+      "edit": "Open",
+      "open": "Open",
+      "executions": "See runs",
+      "duplicate": "Duplicate",
+      "duplicated": "Copy created",
+      "copyName": "{{name}} (copy)",
+      "archiveAction": "Archive",
+      "archiveTitle": "Archive \"{{name}}\"?",
+      "archiveDescription": "The draft leaves the main list, and stays in the archive.",
+      "archived": "\"{{name}}\" archived",
+      "restore": "Unarchive",
+      "restored": "Back in drafts",
+      "deleteAction": "Delete",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteDescription": "This also removes its versions and run history. It can't be undone.",
+      "deleted": "\"{{name}}\" deleted",
+      "actionFailed": "It didn't work. Try again."
+    },
+    "welcome": {
+      "eyebrow": "Start here",
+      "title": "Let a flow handle the first messages",
+      "description": "A flow is the path of a conversation: welcome people, ask what they want, hand over to a team member. Pick a ready-made template, test it and adjust whatever you like.",
+      "blank": "Start from scratch"
+    },
+    "create": {
+      "title": "New flow",
+      "description": "From a ready-made template or from scratch. Everything can change later.",
+      "fromTemplate": "Use a template",
+      "fromScratch": "Start from scratch",
+      "templateHint": "Double-click to create it right away.",
+      "useTemplate": "Use this template",
+      "name": "What it will be called",
+      "namePlaceholder": "Store welcome",
+      "nameRequired": "Give the flow a name",
+      "nameTooLong": "Use up to 120 characters",
+      "triggerQuestion": "When does this flow start?",
+      "submit": "Create flow",
+      "cancel": "Cancel",
+      "failed": "Couldn't create it. Try again."
+    },
+    "templates": {
+      "categoriesLabel": "Filter the templates",
+      "all": "All",
+      "categories": {
+        "atendimento": "Customer service",
+        "vendas": "Sales",
+        "suporte": "Support",
+        "ia": "With AI"
+      }
+    },
+    "executions": {
+      "routeTitle": "Runs",
+      "title": "Runs of {{name}}",
+      "description": "Who went through this flow, who is waiting, and what went wrong. The editor's test doesn't show up here.",
+      "openFlow": "Open the flow",
+      "filterLabel": "Filter runs",
+      "filter": {
+        "all": "All",
+        "waiting_for_message": "Waiting for a reply",
+        "failed": "Failed",
+        "completed": "Completed"
+      },
+      "empty": {
+        "all": "This flow hasn't run yet",
+        "waiting_for_message": "No one waiting for a reply",
+        "failed": "No failures",
+        "completed": "None completed"
+      },
+      "emptyHint": "When someone goes through it in a real conversation, it shows up here. To try it now, use Test in the editor.",
+      "unknownContact": "Unnamed contact",
+      "detailTitle": "Run",
+      "startedAt": "Started",
+      "failedTitle": "What went wrong",
+      "failedUnknown": "The run stopped without saying why.",
+      "waitingTitle": "Waiting for {{name}} to reply",
+      "waitingAt": "The flow is stopped at \"{{name}}\", and moves on when the next message arrives.",
+      "waitingHint": "The flow moves on when the next message arrives.",
+      "waitingTimeTitle": "Waiting for time to pass",
+      "waitingTimeHint": "The flow moves on by itself when the wait is over. If a team member takes over, it's canceled.",
+      "seeInFlow": "See in the flow",
+      "openChat": "Open the conversation",
+      "noSteps": "No block has run yet.",
+      "rawDetails": "See details",
+      "status": {
+        "pending": "Queued",
+        "running": "Running",
+        "waiting": "Waiting for the time",
+        "waiting_for_message": "Waiting for a reply",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Canceled"
+      }
+    },
+    "steps": {
+      "failed": "It failed",
+      "failedKept": "It failed, and the flow moved on",
+      "skipped": "Skipped this block",
+      "skippedReason": {
+        "no_chat": "There was no conversation.",
+        "no_tag_id": "No tag chosen.",
+        "tag_not_found": "The tag no longer exists.",
+        "no_key": "No field chosen.",
+        "no_account": "No one available.",
+        "no_team": "No department chosen.",
+        "team_not_found": "The department no longer exists.",
+        "no_attachment": "No file chosen.",
+        "no_connector_support": "This channel doesn't accept WhatsApp templates.",
+        "template_not_found": "The template doesn't exist, or wasn't approved.",
+        "no_target": "No flow chosen.",
+        "flow_not_found": "The chosen flow no longer exists.",
+        "too_deep": "Too many flows calling flows.",
+        "already_running": "The other flow was already running in this conversation.",
+        "no_funnel_stage": "No stage chosen.",
+        "funnel_stage_not_found": "The funnel or the stage no longer exists.",
+        "playground": "In the editor's test, nothing touches a board.",
+        "empty": "The text was empty.",
+        "nothing_after": "There was nothing after the wait.",
+        "invalid_or_missing_stage": "The stage no longer exists.",
+        "no_card": "No card found.",
+        "card_not_found": "The card no longer exists.",
+        "invalid_stage": "The stage no longer exists.",
+        "invalid_action": "Unknown action."
+      },
+      "started": "Started",
+      "sent": "Sent",
+      "asked": "Asked and waited",
+      "answered": "Got the reply",
+      "offered": "Offered the options and waited",
+      "invalidChoice": "The reply wasn't one of the options",
+      "chose": "The contact chose",
+      "mediaSent": "Sent a file",
+      "mediaFailed": "The channel refused the file",
+      "templateSent": "Sent the template",
+      "waited": "Started waiting",
+      "waitingMessage": "Waited for the next message",
+      "receivedMessage": "Got the message",
+      "conditionTrue": "The rule held: followed Yes",
+      "conditionFalse": "The rule didn't hold: followed No",
+      "switched": "Compared the value",
+      "saved": "Saved",
+      "loopRound": "Round {{count}} of the repeat",
+      "loopDone": "The repeat finished",
+      "aiLeft": "The AI decided to move on",
+      "aiReplied": "The AI replied and waited",
+      "aiDecided": "The AI picked the path",
+      "sentiment": "Message tone",
+      "intent": "The topic understood",
+      "extracted": "Noted",
+      "transcribed": "Transcribed the audio",
+      "tagged": "Added the tag",
+      "untagged": "Removed the tag",
+      "attribute": "Filled in the field",
+      "assignedAgent": "Handed to a person",
+      "assignedTeam": "Handed to the department",
+      "transferred": "Handed over to the team",
+      "finalized": "Closed the conversation",
+      "paused": "Paused the automation",
+      "resumed": "Turned the automation back on",
+      "funnelMoved": "Changed the funnel stage",
+      "funnelSame": "The conversation was already at this stage",
+      "httpDone": "Called the other system, and got {{status}}",
+      "toolDone": "Ran the function",
+      "subflow": "Called another flow",
+      "catalog_one": "Found 1 item in the catalog",
+      "catalog_other": "Found {{count}} items in the catalog",
+      "ended": "Finished",
+      "pipelineDone": "Made the change in the pipeline",
+      "done": "Done"
+    },
+    "settings": {
+      "title": "Automation settings",
+      "description": "How the automation behaves in conversations, across all flows.",
+      "readOnly": "Only people who manage the organization's settings can change this.",
+      "saved": "Saved",
+      "failed": "Couldn't save. Check the details and try again.",
+      "save": "Save",
+      "mainTitle": "Turn on and off",
+      "mainHint": "Takes effect right away, for the whole organization.",
+      "enabled": "Automation on",
+      "enabledHint": "When it's off, no flow fires in any conversation.",
+      "defaultEnabled": "On in new conversations",
+      "defaultEnabledHint": "Each conversation can turn its own automation on and off. This is how it starts.",
+      "pauseTitle": "When a team member replies",
+      "pauseHint": "How long the automation stays paused in the conversation, so it doesn't talk over anyone.",
+      "pausePeriod": "Pause time",
+      "pauseForever": "Until someone turns it back on",
+      "pauseAmount": "How much",
+      "hoursTitle": "Business hours",
+      "hoursHint": "Outside business hours, the trigger waits for the next opening. Time zone: {{timezone}}.",
+      "hoursEnabled": "Follow business hours",
+      "hoursClosed": "Closed",
+      "hoursStart": "Opens at",
+      "hoursEnd": "Closes at",
+      "hoursTo": "to",
+      "hoursAdd": "Add hours",
+      "hoursRemove": "Remove the hours",
+      "clearTitle": "Clear the context",
+      "clearHint": "After a while with no messages, the conversation starts over from zero for the AI.",
+      "clearEnabled": "Clear automatically",
+      "clearInterval": "Hours without a message"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useReactFlow } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
 import { ArrowUp, Check, CircleAlert, CircleStop, Clock, FlaskConical, Info, Loader2, RotateCcw, TriangleAlert, X } from "lucide-react"
@@ -11,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { usePlayground, type TestItem, type TestStatus, type TestStep } from "@/hooks/flows/use-playground"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { blockFamily, blockIcon } from "@/lib/flows/catalog"
+import { BLOCK_WIDTH } from "@/lib/flows/layout"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { useMotionPreset } from "@/lib/motion"
@@ -24,6 +26,9 @@ import { useFocusBlock } from "./use-editor-shortcuts"
 
 // O teste do editor: uma conversa de mentira, com o caminho aceso no quadro e o que cada bloco fez. Fica à direita,
 // sem cobrir o quadro, porque ver o fluxo andando é a graça. O modelo e as funções são de verdade, e a tela avisa.
+
+/** A largura do painel e a folga: é o que sobra do quadro à direita. */
+const TEST_PANEL_SPACE = 448
 
 const STATUS_TONE: Record<TestStatus, StatusTone> = {
   idle: "neutral",
@@ -64,18 +69,48 @@ function TestBody() {
   const { t } = useTranslation()
   const { flow } = useFlowContext()
   const runApi = useRunApi()
+  const reactFlow = useReactFlow()
+  const preset = useMotionPreset()
   const setOpen = useEditorUi((state) => state.setTestOpen)
   const [tab, setTab] = useState<"chat" | "steps">("chat")
 
+  // O bloco que está rodando precisa estar à vista, e não atrás deste painel.
+  const follow = useCallback(
+    (id: string) => {
+      const node = reactFlow.getNode(id)
+      const container = document.querySelector<HTMLElement>(".flow-canvas")
+      if (!node || !container) return
+      const { width, height } = container.getBoundingClientRect()
+      const { x, y, zoom } = reactFlow.getViewport()
+      const blockWidth = (node.measured?.width ?? BLOCK_WIDTH) * zoom
+      const left = node.position.x * zoom + x
+      const top = node.position.y * zoom + y
+      const visibleRight = width - TEST_PANEL_SPACE
+      if (left >= 24 && left + blockWidth <= visibleRight && top >= 24 && top <= height - 96) return
+      void reactFlow.setViewport(
+        {
+          x: visibleRight / 2 - (node.position.x * zoom + blockWidth / 2),
+          y: height / 2 - node.position.y * zoom,
+          zoom,
+        },
+        { duration: preset.reduced ? 0 : 250 }
+      )
+    },
+    [preset.reduced, reactFlow]
+  )
+
   const handlers = useMemo(
     () => ({
-      onEnter: (id: string) => runApi.getState().enter(id),
+      onEnter: (id: string) => {
+        runApi.getState().enter(id)
+        follow(id)
+      },
       onComplete: (id: string, status: "success" | "suspended" | "error") =>
         runApi.getState().complete(id, status === "error" ? "failed" : status === "suspended" ? "waiting" : "done"),
       onFinish: () => runApi.getState().finish(),
       onReset: () => runApi.getState().reset(),
     }),
-    [runApi]
+    [follow, runApi]
   )
   const { status, items, steps, start, send, stop } = usePlayground(flow.id, handlers)
 
@@ -330,7 +365,7 @@ function Composer({
 
   if (finished) {
     return (
-      <div className="shrink-0 border-t p-3 pb-[max(0.75rem,calc(env(safe-area-inset-bottom)+var(--app-bottom-nav-total,0px)))] md:pb-3">
+      <div className="shrink-0 border-t p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom)+var(--app-bottom-nav-total,0px))] md:pb-3">
         <Button type="button" variant="outline" className="w-full" onClick={onRestart}>
           <RotateCcw />
           {t("flows.test.restart")}
@@ -341,7 +376,7 @@ function Composer({
 
   return (
     <form
-      className="flex shrink-0 items-end gap-2 border-t p-2.5 pb-[max(0.625rem,calc(env(safe-area-inset-bottom)+var(--app-bottom-nav-total,0px)))] md:pb-2.5"
+      className="flex shrink-0 items-end gap-2 border-t p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom)+var(--app-bottom-nav-total,0px))] md:pb-2.5"
       onSubmit={(event) => {
         event.preventDefault()
         submit()
@@ -412,7 +447,7 @@ function StepRow({ step }: { step: TestStep }) {
               <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
                 {step.durationMs < 1000
                   ? t("flows.test.ms", { value: formatNumber(step.durationMs, language) })
-                  : t("flows.test.seconds", { value: formatNumber(step.durationMs / 1000, language) })}
+                  : t("flows.test.seconds", { value: formatNumber(Math.round(step.durationMs / 100) / 10, language) })}
               </span>
             ) : null}
             {step.status === "success" ? <Check className="size-3.5 shrink-0 text-status-success" aria-hidden /> : null}
@@ -422,6 +457,7 @@ function StepRow({ step }: { step: TestStep }) {
           <span className="block text-xs text-pretty text-muted-foreground">
             {step.status === "error" ? (step.error ?? t("flows.test.stepFailed")) : null}
             {step.status === "suspended" ? t("flows.test.stepWaiting") : null}
+            {step.status === "success" && step.nodeType.startsWith("pipeline_") ? t("flows.test.stepSkippedBoard") : null}
             {step.status === "decision" && step.decision
               ? step.decision.stay
                 ? t("flows.test.stepStayed", { reason: step.decision.reason ?? "" })

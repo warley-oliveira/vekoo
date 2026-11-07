@@ -359,7 +359,7 @@ function MobileBody() {
         </div>
       </div>
       {view === "map" ? (
-        <div className="relative min-h-0 flex-1">
+        <div className="relative min-h-0 flex-1 pb-(--app-bottom-nav-total)">
           <FlowCanvas />
         </div>
       ) : (

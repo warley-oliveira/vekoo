@@ -95,6 +95,9 @@ export default defineConfig(({ mode }) => {
             "**/node_modules/**/*",
             "**/opus-decoder-chunk-*.js",
             "**/opus-ml-*.js",
+            // O Monaco (editor de código) pesa alguns MB e só desce em quem abre um editor.
+            "**/assets/monaco/**",
+            "**/*.worker-*.js",
             "sw-push.js",
           ],
         },
@@ -130,7 +133,10 @@ export default defineConfig(({ mode }) => {
             const isOpusMl = chunk.moduleIds?.some((id) =>
               id.includes("@wasm-audio-decoders/opus-ml")
             )
-            return isOpusMl ? "assets/opus-ml-[hash].js" : "assets/[name]-[hash].js"
+            if (isOpusMl) return "assets/opus-ml-[hash].js"
+            // Tudo do Monaco numa pasta só, para o `globIgnores` deixar fora do precache.
+            const isMonaco = chunk.moduleIds?.some((id) => id.includes("/monaco-editor/"))
+            return isMonaco ? "assets/monaco/[name]-[hash].js" : "assets/[name]-[hash].js"
           },
         },
       },

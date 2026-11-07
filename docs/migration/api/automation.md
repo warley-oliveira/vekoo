@@ -48,6 +48,8 @@ Sempre `{ error: { code, field?, message, details? } }`.
 
 `?status=draft|published|archived`, `?triggerType=`, `?q=` (no nome). Do mais recente para o mais antigo.
 
+Cada fluxo traz `stats`, com o que a lista mostra: `lastExecutedAt`, `recent` (os 8 últimos resultados, do mais novo para o mais antigo) e `last7Days: { total, failed, waiting }`. Fluxo que nunca rodou vem com `null`, e o teste do editor não conta. Uma consulta por página (`Flows::ListStats`), e não uma por fluxo.
+
 Resposta `200`:
 
 ```json
@@ -255,9 +257,17 @@ Resposta `422`:
 
 `status: archived`, e o que estava em andamento é cancelado: um fluxo arquivado não continua falando com ninguém.
 
+### `POST /flows/:id/unarchive`
+
+Liga de novo o que foi arquivado, **na versão que estava publicada**: `status: published`, ou `draft` se nunca foi publicado. O rascunho aberto continua sendo rascunho, e é por isso que não é a mesma coisa que publicar. Em fluxo que não está arquivado, não muda nada.
+
 ### `DELETE /flows/:id`
 
 `204`. Leva as versões, as execuções e os logs. Confirme na tela.
+
+### `GET /flows/:id/versions` e `GET /flows/:id/versions/:versionId`
+
+As versões do fluxo, da mais nova para a mais antiga: `{ versions: [{ id, versionNumber, publishedAt, updatedAt }], meta }`, com `publishedAt` nulo no rascunho. O detalhe traz `definition`, e é o que a tela usa para restaurar: grava no rascunho com `PUT /flows/:id/definition`. A retenção apaga versões antigas sem uso (`Flows::PruneExecutionsJob`).
 
 ---
 
@@ -394,7 +404,7 @@ Com mais de uma parte, a conversa guarda a mensagem inteira (`hasSpan`, fora da 
 
 ### `GET /flows/:flowId/executions`
 
-`?status=`, `?chatId=`. As do teste do editor ficam de fora.
+`?status=`, `?chatId=`. As do teste do editor ficam de fora. Cada uma traz `contactName`, o nome da conversa (`null` se ela sumiu), e a resposta traz `counts`, a contagem de todas por `status`, para os filtros da tela.
 
 Resposta `200`:
 

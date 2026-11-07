@@ -1254,6 +1254,7 @@
       "seconds": "{{value}} s",
       "stepFailed": "Não deu certo",
       "stepWaiting": "Esperando",
+      "stepSkippedBoard": "No teste, não mexe no quadro",
       "stepStayed": "Continuou a conversa. {{reason}}",
       "stepLeft": "Seguiu por \"{{name}}\". {{reason}}",
       "status": {
