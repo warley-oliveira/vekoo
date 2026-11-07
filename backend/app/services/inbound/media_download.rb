@@ -32,7 +32,7 @@ module Inbound
       Result.new(path: with_real_extension(path))
     end
 
-    # Meta e Z-API própria baixam para `.bin`: o tipo real sai do conteúdo.
+    # A Meta baixa para `.bin`: o tipo real sai do conteúdo.
     def with_real_extension(path)
       return path unless path.present? && File.extname(path.to_s) == ".bin" && File.exist?(path)
 

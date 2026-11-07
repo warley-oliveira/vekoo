@@ -12,16 +12,13 @@ module Inbound
       Rails.logger.error("[Inbound::ProcessWebhookJob] #{job.arguments.first} #{error.class}: #{error.message}")
     end
 
-    def perform(provider, body, connector_id = nil, event = nil)
+    def perform(provider, body, connector_id = nil)
       payload = parse(body)
 
       case provider
       when "whatsapp_cloud"
         connector = Connector::WhatsappCloud.where(id: connector_id).take
         WhatsappCloudEvents.new(payload, connector: connector).call if connector
-      when "zapi"
-        connector = zapi_connector(connector_id)
-        ZapiEvents.new(payload, connector: connector).public_send(event) if connector
       when "evolution"
         EvolutionEvents.for_codename(payload, connector_id)&.call
       when "meta_messaging"
@@ -39,10 +36,6 @@ module Inbound
     def parse(body)
       parsed = JSON.parse(body.presence || "{}")
       parsed.is_a?(Hash) ? parsed.with_indifferent_access : {}.with_indifferent_access
-    end
-
-    def zapi_connector(connector_id)
-      Connector::Base.where(id: connector_id, :_type.in => %w[Connector::WhatsappWeb Connector::Zapi]).take
     end
   end
 end

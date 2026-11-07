@@ -771,8 +771,8 @@ class Connector::WhatsappCloud < Connector::Base
 
   private
 
-  # Todos os demais integradores devolvem o id externo como String — ZApi
-  # (`response&.dig('messageId')`), os providers de WhatsappApi (`dig('key','id')`)
+  # Todos os demais integradores devolvem o id externo como String — os providers
+  # de WhatsappApi (`dig('key','id')`)
   # e WebWidget (uuid). É o contrato que `ChatMessage#message_id` (type: String)
   # espera. O SDK da Meta devolve um objeto de resposta; sem desempacotar aqui, o
   # Mongoid persistia o `to_s` desse objeto e nenhum webhook de status conseguia

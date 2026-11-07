@@ -10,7 +10,7 @@ RSpec.describe "Argumentos de job no log" do
     original = ActiveJob::Base.logger
     ActiveJob::Base.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(output))
 
-    Inbound::ProcessWebhookJob.perform_later("zapi", { phone: "5531971810932", text: { message: "meu CPF é 123" } }.to_json, "ID", "on_message_received")
+    Inbound::ProcessWebhookJob.perform_later("lead_chat", { phone: "5531971810932", text: { message: "meu CPF é 123" } }.to_json, "ID")
 
     expect(output.string).to include("Inbound::ProcessWebhookJob")
     expect(output.string).not_to include("5531971810932")

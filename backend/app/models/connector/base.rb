@@ -1,5 +1,5 @@
 # Um canal de atendimento ligado à organização (origem: Integration::Base). Subclasses:
-# WhatsappCloud, WhatsappWeb (com providers), Zapi, InstagramDirect, FacebookMessenger,
+# WhatsappCloud, WhatsappWeb (com providers), InstagramDirect, FacebookMessenger,
 # LeadChat e WebWidget.
 #
 # Contrato de envio, igual para todo conector (é por ele que os outros domínios falam
@@ -29,9 +29,9 @@ class Connector::Base
   # Reativar pela tela não liga: lá a falha do provedor precisa chegar à pessoa.
   attr_accessor :tolerate_profile_failure
 
-  # Evolution, Z-API e LeadChat não assinam o que mandam, e essas rotas não têm sessão. WhatsApp oficial,
+  # Evolution e LeadChat não assinam o que mandam, e essas rotas não têm sessão. WhatsApp oficial,
   # Messenger e Instagram são assinados pela Meta, e o Google manda o token do canal.
-  TOKEN_ROUTES = %i[evolution lead_chat_event zapi_message_received zapi_message_send zapi_disconnected zapi_connected].freeze
+  TOKEN_ROUTES = %i[evolution lead_chat_event].freeze
 
   validates :organization_id, presence: true
 

@@ -11,8 +11,6 @@ class Connector::WhatsappWeb < Connector::Base
   encrypted_field :api_key
 
   field :provider_api, type: String, default: -> { ENV.fetch("WHATSAPP_WEB_DEFAULT_PROVIDER", "evolution_api") }
-  field :zapi_instance_id, type: String
-  encrypted_field :zapi_token
 
   PREFIX_INSTANCE = "IWA-".freeze
 
@@ -20,8 +18,7 @@ class Connector::WhatsappWeb < Connector::Base
   # documented in `Providers::Base`. Adding a new provider = one module file
   # + one entry here.
   PROVIDERS = {
-    "aiva_api" => Providers::AivaApi, # Providers::AivaApi,
-    "zapi" => Providers::Zapi,
+    "aiva_api" => Providers::AivaApi,
     "evolution_api" => Providers::EvolutionApi
   }.freeze
 
@@ -30,14 +27,11 @@ class Connector::WhatsappWeb < Connector::Base
   validates :provider_api, inclusion: { in: PROVIDERS.keys }, allow_nil: true
 
   before_create do
-    # When the caller (frontend) passes `provider_api` explicitly, the organization's
-    # `zapi` feature flag must NOT silently overwrite it.
-    self.provider_api = "zapi" if provider_api.blank? && organization&.features.to_h["zapi"]
     self.base_url = self.class.default_base_url(provider_api) if base_url.blank?
   end
 
   before_update do
-    if status_cd_changed? && active? && !zapi_provider?
+    if status_cd_changed? && active?
       tolerate_profile_failure ? refresh_profile : fetch_current_information
       migrate_chats
     end
@@ -71,10 +65,6 @@ class Connector::WhatsappWeb < Connector::Base
 
   def provider
     PROVIDERS.fetch(provider_api) { PROVIDERS.fetch("aiva_api") }
-  end
-
-  def zapi_provider?
-    provider_api == "zapi"
   end
 
   def evolution_provider?
@@ -168,8 +158,7 @@ class Connector::WhatsappWeb < Connector::Base
   end
 
   # Lifecycle methods route through the dispatcher so each provider implements
-  # them as needed. Providers that have no analogue (e.g. Z-API for the
-  # Evolution-style setup_webhook!) are free to no-op their version.
+  # them as needed. Providers that have no analogue are free to no-op their version.
 
   def setup_webhook!
     provider.setup_webhook!(self)
@@ -195,109 +184,6 @@ class Connector::WhatsappWeb < Connector::Base
 
   def retriever_media_message_complete(id, message, msg_type = :audio, resp_base64 = nil)
     provider.retriever_media_message_complete(self, id, message, msg_type, resp_base64)
-  end
-
-  # ============================================================================
-  # Z-API-specific public methods
-  # ============================================================================
-  # These have no AIVA equivalent today. Each guards on `zapi_provider?` and
-  # delegates straight to `ZapiClient` to preserve the original error class
-  # callers depend on.
-
-  def zapi_get_qr_code
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Getting QR Code for instance: #{zapi_instance_id}")
-    zapi_client.get_qr_code
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to get QR Code: #{e.message}")
-    raise e
-  end
-
-  def zapi_get_qr_code_image
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Getting QR Code image for instance: #{zapi_instance_id}")
-    zapi_client.get_qr_code_image
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to get QR Code image: #{e.message}")
-    raise e
-  end
-
-  def zapi_get_phone_code(phone)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Getting phone code for: #{phone}")
-    zapi_client.get_phone_code(phone)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to get phone code: #{e.message}")
-    raise e
-  end
-
-  # Revokes a message at the provider. Only supported on Z-API — the WABA
-  # Cloud API does not expose a delete endpoint, so callers must check the
-  # provider before invoking this method.
-  def delete_message(phone:, message_id:, owner: true)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Deleting message #{message_id} for #{phone} (owner=#{owner})")
-    zapi_client.delete_message(phone: phone, message_id: message_id, owner: owner)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to delete message: #{e.message}")
-    raise e
-  end
-
-  def zapi_update_notify_sent_by_me(enabled: true)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Updating notifySentByMe=#{enabled} for instance: #{zapi_instance_id}")
-    zapi_client.update_notify_sent_by_me(enabled: enabled)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to update notifySentByMe: #{e.message}")
-    raise e
-  end
-
-  def sign_zapi_instance
-    require_zapi!
-    raise ZapiClient::Error, "Z-API account token is required" unless zapi_account_token.present?
-
-    Rails.logger.info("[ZapiClient] Signing instance: #{zapi_instance_id}")
-    ZapiClient.sign_instance(zapi_instance_id, zapi_token, account_token: zapi_account_token)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to sign instance: #{e.message}")
-    raise e
-  end
-
-  def metadata(phone)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Getting metadata for: #{phone}")
-    zapi_client.metadata(phone)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to get metadata: #{e.message}")
-    raise e
-  end
-
-  def list_contacts
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Listing contacts for instance: #{zapi_instance_id}")
-    zapi_client.list_contacts
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to list contacts: #{e.message}")
-    raise e
-  end
-
-  def contact_metadata(phone)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Getting contact metadata for: #{phone}")
-    zapi_client.contact_metadata(phone)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to get contact metadata: #{e.message}")
-    raise e
-  end
-
-  # `zapi_`: `chats` são as conversas do conector (a associação).
-  def zapi_chats(page: 1, page_size: 20)
-    require_zapi!
-    Rails.logger.info("[ZapiClient] Listing chats for instance: #{zapi_instance_id}")
-    zapi_client.chats(page: page, page_size: page_size)
-  rescue ZapiClient::Error => e
-    Rails.logger.error("[ZapiClient] Failed to list chats: #{e.message}")
-    raise e
   end
 
   # ============================================================================
@@ -438,14 +324,6 @@ class Connector::WhatsappWeb < Connector::Base
     }
   end
 
-  def zapi_client
-    @zapi_client ||= ZapiClient.new(zapi_instance_id, zapi_token, account_token: ENV["ZAPI_CLIENT_TOKEN"])
-  end
-
-  def zapi_account_token
-    @zapi_account_token ||= ENV["ZAPI_ACCOUNT_TOKEN"]
-  end
-
   private
 
   # O `jid` é a forma canônica, mas pode vir como `@lid` (cache da Evolution);
@@ -453,9 +331,5 @@ class Connector::WhatsappWeb < Connector::Base
   def whatsapp_number_from(result, candidate)
     jid = result["jid"].to_s
     jid.end_with?(BrPhoneVariants::JID_SUFFIX) ? BrPhoneVariants.digits_of(jid) : candidate
-  end
-
-  def require_zapi!
-    raise ZapiClient::Error, "Z-API credentials are required" unless zapi_provider?
   end
 end

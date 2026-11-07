@@ -29,7 +29,7 @@ RSpec.describe "Controladores de webhook", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to be_empty
-      expect_enqueued("whatsapp_cloud", connector.id.to_s, nil)
+      expect_enqueued("whatsapp_cloud", connector.id.to_s)
     end
 
     it "não processa nada na thread da requisição" do
@@ -173,7 +173,7 @@ RSpec.describe "Controladores de webhook", type: :request do
       post path, params: body, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect_enqueued("meta_messaging", nil, nil)
+      expect_enqueued("meta_messaging", nil)
     end
 
     describe "verificação da Meta" do
@@ -216,7 +216,7 @@ RSpec.describe "Controladores de webhook", type: :request do
       post inbound_path(connector, :evolution, codename), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect_enqueued("evolution", codename, nil)
+      expect_enqueued("evolution", codename)
     end
 
     it "aceita instância que está com o provedor AIVA" do
@@ -257,7 +257,7 @@ RSpec.describe "Controladores de webhook", type: :request do
       post inbound_path(connector, :lead_chat_event, connector.id), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect_enqueued("lead_chat", connector.id.to_s, nil)
+      expect_enqueued("lead_chat", connector.id.to_s)
     end
 
     it "responde 404 para conector que não existe" do
@@ -273,60 +273,14 @@ RSpec.describe "Controladores de webhook", type: :request do
     end
   end
 
-  describe "POST /inbound/zapi/:connector_id/..." do
-    let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
+  # A Z-API saiu: webhook antigo configurado no painel dela cai na rota que não existe.
+  it "responde 404 nas rotas antigas da Z-API, sem enfileirar nada" do
+    connector = create(:connector_whatsapp_web, organization: organization)
 
-    {
-      "on-message-received" => "on_message_received",
-      "on-whatsapp-disconnected" => "on_whatsapp_disconnected",
-      "on-whatsapp-connected" => "on_whatsapp_connected"
-    }.each do |route, event|
-      describe route do
-        it "responde 200 e enfileira o evento" do
-          post "/inbound/zapi/#{connector.id}/#{route}?token=#{connector.inbound_token}", params: body, as: :json
+    post "/inbound/zapi/#{connector.id}/on-message-received?token=#{connector.inbound_token}", params: body, as: :json
 
-          expect(response).to have_http_status(:ok)
-          expect_enqueued("zapi", connector.id.to_s, event)
-        end
-
-        it "responde 404 para conector que não existe" do
-          post "/inbound/zapi/#{BSON::ObjectId.new}/#{route}", params: body, as: :json
-
-          expect(response).to have_http_status(:not_found)
-          expect(Inbound::ProcessWebhookJob).not_to have_been_enqueued
-        end
-
-        it "responde 404 para conector de outro tipo" do
-          post "/inbound/zapi/#{create(:connector_whatsapp_cloud, organization: organization).id}/#{route}", params: body, as: :json
-
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-    end
-
-    it "aceita o conector próprio da Z-API" do
-      own = create(:connector_zapi, organization: organization)
-
-      post inbound_path(own, :zapi_message_received, own.id), params: body, as: :json
-
-      expect(response).to have_http_status(:ok)
-      expect_enqueued("zapi", own.id.to_s, "on_message_received")
-    end
-
-    describe "on-message-send" do
-      it "responde 200 e não faz nada: o eco vem em received" do
-        post inbound_path(connector, :zapi_message_send, connector.id), params: body, as: :json
-
-        expect(response).to have_http_status(:ok)
-        expect(Inbound::ProcessWebhookJob).not_to have_been_enqueued
-      end
-
-      it "responde 404 para conector que não existe" do
-        post "/inbound/zapi/#{BSON::ObjectId.new}/on-message-send", params: body, as: :json
-
-        expect(response).to have_http_status(:not_found)
-      end
-    end
+    expect(response).to have_http_status(:not_found)
+    expect(Inbound::ProcessWebhookJob).not_to have_been_enqueued
   end
 
   it "não exige sessão, e sessão de outra organização não muda nada" do

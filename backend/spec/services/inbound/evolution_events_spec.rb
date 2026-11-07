@@ -1017,14 +1017,6 @@ RSpec.describe Inbound::EvolutionEvents do
         end
       end
 
-      it "CCTX zera o freio de contato" do
-        Rails.cache.write(Chats::InboundThrottle.counter_key(chat), 20)
-
-        upsert(message: { conversation: "CCTX" })
-
-        expect(Rails.cache.read(Chats::InboundThrottle.counter_key(chat))).to be_nil
-      end
-
       it "--RE-ACTIVE-ME-- religa a automação e confirma" do
         upsert(message: { conversation: "--RE-ACTIVE-ME--" })
 

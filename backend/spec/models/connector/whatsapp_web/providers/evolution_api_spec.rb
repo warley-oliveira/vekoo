@@ -827,10 +827,4 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
       expect(a_request(:post, url)).not_to have_been_made
     end
   end
-
-  describe "o que a Evolution não tem" do
-    it "apagar mensagem é só da Z-API" do
-      expect { connector.delete_message(phone: "1", message_id: "m") }.to raise_error(ZapiClient::Error)
-    end
-  end
 end

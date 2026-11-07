@@ -1,6 +1,6 @@
 require "rails_helper"
 
-# Evolution, Z-API e LeadChat não assinam o que mandam, e as rotas não têm sessão. Sem nada que só o
+# Evolution e LeadChat não assinam o que mandam, e as rotas não têm sessão. Sem nada que só o
 # provedor saiba, conhecer o id do conector bastava para falar em nome dele.
 RSpec.describe "Webhook de provedor forjado", type: :request do
   include ActiveJob::TestHelper
@@ -54,38 +54,7 @@ RSpec.describe "Webhook de provedor forjado", type: :request do
       post connector.inbound_url(:evolution, codename).delete_prefix(Media::Storage.backend_url), params: fake_qr_code, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect(Inbound::ProcessWebhookJob).to have_been_enqueued.with("evolution", anything, codename, nil)
-    end
-  end
-
-  describe "Z-API" do
-    let(:connector) { create(:connector_zapi, organization: organization) }
-
-    # A desconexão forjada derruba o canal de quem não tem nada a ver com isso.
-    %w[on-message-received on-message-send on-whatsapp-disconnected on-whatsapp-connected].each do |route|
-      it "#{route} sem o token não passa" do
-        post "/inbound/zapi/#{connector.id}/#{route}", params: { phone: "5531971810932" }, as: :json
-
-        expect_refused
-      end
-    end
-
-    it "o canal segue no ar depois de uma desconexão forjada" do
-      connector.update!(status: :active)
-
-      perform_enqueued_jobs do
-        post "/inbound/zapi/#{connector.id}/on-whatsapp-disconnected", params: { error: "forjado" }, as: :json
-      end
-
-      expect(connector.reload).to be_active
-    end
-
-    it "o endereço que entregamos ao provedor funciona" do
-      post connector.inbound_url(:zapi_message_received, connector.id).delete_prefix(Media::Storage.backend_url),
-        params: { phone: "5531971810932" }, as: :json
-
-      expect(response).to have_http_status(:ok)
-      expect(Inbound::ProcessWebhookJob).to have_been_enqueued
+      expect(Inbound::ProcessWebhookJob).to have_been_enqueued.with("evolution", anything, codename)
     end
   end
 
@@ -107,8 +76,8 @@ RSpec.describe "Webhook de provedor forjado", type: :request do
 
   describe "o token" do
     it "é fixo por conector e diferente entre eles" do
-      one = create(:connector_zapi, organization: organization)
-      other = create(:connector_zapi, organization: organization)
+      one = create(:connector_lead_chat, organization: organization)
+      other = create(:connector_lead_chat, organization: organization)
 
       expect(one.inbound_token).to eq(Connector::Base.find(one.id).inbound_token)
       expect(one.inbound_token).not_to eq(other.inbound_token)
@@ -116,8 +85,7 @@ RSpec.describe "Webhook de provedor forjado", type: :request do
 
     # Só quem cola o endereço no painel do provedor precisa dele: é o caso do LeadChat, na criação.
     it "não sai na leitura do conector, que qualquer conta da organização faz" do
-      [ create(:connector_zapi, organization: organization),
-        create(:connector_whatsapp_web, organization: organization),
+      [ create(:connector_whatsapp_web, organization: organization),
         create(:connector_lead_chat, organization: organization) ].each do |connector|
         expect(ConnectorSerializer.one(connector).to_json).not_to include(connector.inbound_token)
       end

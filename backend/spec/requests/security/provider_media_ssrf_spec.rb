@@ -4,8 +4,6 @@ require "rails_helper"
 # não precisa de sessão. Baixando sem filtro, bastava forjar um webhook apontando para a rede interna:
 # o servidor buscava o endereço e guardava a resposta como mídia da conversa, onde quem forjou lia.
 RSpec.describe "SSRF por URL de mídia de provedor", type: :request do
-  include ActiveJob::TestHelper
-
   INTERNAL_URL = "http://169.254.169.254/latest/meta-data/iam/security-credentials/app".freeze
 
   let(:organization) { create(:organization) }
@@ -28,38 +26,9 @@ RSpec.describe "SSRF por URL de mídia de provedor", type: :request do
     end
   end
 
-  describe "ponta a ponta: webhook forjado da Z-API direta" do
-    let(:connector) { create(:connector_zapi, organization: organization) }
-
-    it "a imagem que aponta para dentro não é baixada" do
-      perform_enqueued_jobs do
-        post connector.inbound_url(:zapi_message_received, connector.id).delete_prefix(Media::Storage.backend_url),
-          params: { messageId: "FORJADA-1", phone: "5531971810932", image: { imageUrl: INTERNAL_URL, mimeType: "image/png" } },
-          as: :json
-      end
-
-      expect(internal).not_to have_been_requested
-      expect(media_blobs).to be_empty
-      expect(ChatMessage::Media.where(message_id: "FORJADA-1").exists?).to be(false)
-    end
-  end
-
-  describe "Connector::Zapi#download_media" do
-    let(:action) { create(:connector_zapi, organization: organization).download_media(INTERNAL_URL) }
-
-    it_behaves_like "não busca o endereço interno"
-  end
-
   describe "Evolution: mediaUrl no trecho do webhook" do
     let(:connector) { create(:connector_whatsapp_web, organization: organization) }
     let(:action) { connector.retriever_media_message("M1", :image, false, { message: { mediaUrl: INTERNAL_URL } }) }
-
-    it_behaves_like "não busca o endereço interno"
-  end
-
-  describe "WhatsApp Web pela Z-API" do
-    let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-    let(:action) { connector.retriever_media_message("M1", :image, false, { image: { imageUrl: INTERNAL_URL } }) }
 
     it_behaves_like "não busca o endereço interno"
   end
@@ -89,25 +58,25 @@ RSpec.describe "SSRF por URL de mídia de provedor", type: :request do
   end
 
   describe "redirecionamento para dentro" do
-    let(:connector) { create(:connector_zapi, organization: organization) }
+    let(:connector) { create(:connector_lead_chat, organization: organization) }
 
     it "um endereço público não leva o servidor até a rede interna" do
       stub_public_dns("cdn.exemplo.test")
-      stub_request(:get, "https://cdn.exemplo.test/foto.png").to_return(status: 302, headers: { "Location" => INTERNAL_URL })
+      stub_request(:get, "https://cdn.exemplo.test/audio.mp3").to_return(status: 302, headers: { "Location" => INTERNAL_URL })
 
-      expect(connector.download_media("https://cdn.exemplo.test/foto.png")).to be_nil
+      expect { connector.retrieve_audio_message("https://cdn.exemplo.test/audio.mp3") }.to raise_error(StandardError)
       expect(internal).not_to have_been_requested
     end
   end
 
   describe "mídia de verdade" do
-    let(:connector) { create(:connector_zapi, organization: organization) }
+    let(:connector) { create(:connector_lead_chat, organization: organization) }
 
     it "continua sendo baixada" do
       stub_public_dns("cdn.exemplo.test")
-      stub_request(:get, "https://cdn.exemplo.test/foto.png").to_return(status: 200, body: "BYTES")
+      stub_request(:get, "https://cdn.exemplo.test/audio.mp3").to_return(status: 200, body: "BYTES")
 
-      path = connector.download_media("https://cdn.exemplo.test/foto.png")
+      path = connector.retrieve_audio_message("https://cdn.exemplo.test/audio.mp3")
 
       expect(File.binread(path)).to eq("BYTES")
     ensure

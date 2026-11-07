@@ -159,44 +159,6 @@ RSpec.describe "Webhooks de entrada", type: :request do
     end
   end
 
-  describe "Z-API" do
-    let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-    it "persiste a mensagem de texto e chama o dispatcher" do
-      perform_enqueued_jobs do
-        post inbound_path(connector, :zapi_message_received, connector.id),
-             params: { messageId: "Z1", phone: "5531971810932", fromMe: false, senderName: "Ana", text: { message: "Tem horário?" } },
-             as: :json
-      end
-
-      chat = Chat.where(connector_id: connector.id).take
-      expect(chat).to have_attributes(external_id: "5531971810932", user_name: "Ana")
-      expect_delivered(chat, text: "Tem horário?")
-    end
-
-    it "ignora grupo" do
-      perform_enqueued_jobs do
-        post inbound_path(connector, :zapi_message_received, connector.id),
-             params: { messageId: "Z2", phone: "5531971810932", isGroup: true, text: { message: "oi" } },
-             as: :json
-      end
-
-      expect(response).to have_http_status(:ok)
-      expect(Chat.where(connector_id: connector.id).count).to eq(0)
-    end
-
-    it "fecha o conector e registra o motivo na desconexão" do
-      perform_enqueued_jobs do
-        post inbound_path(connector, :zapi_disconnected, connector.id),
-             params: { error: "the number was disconnected by a possible whatsapp number blocking" },
-             as: :json
-      end
-
-      expect(connector.reload).to be_closed
-      expect(Connector::DisconnectionLog.where(connector_id: connector.id.to_s).take.translated_reason).to include("bloqueio")
-    end
-  end
-
   describe "Messenger e Instagram" do
     let(:connector) { create(:connector_messenger, organization: organization) }
 

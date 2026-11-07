@@ -36,7 +36,6 @@ class ConnectorSerializer < ApplicationSerializer
     case connector
     when Connector::WhatsappCloud then whatsapp_cloud(connector)
     when Connector::WhatsappWeb then whatsapp_web(connector)
-    when Connector::Zapi then zapi(connector)
     when Connector::InstagramDirect then instagram(connector)
     when Connector::FacebookMessenger then messenger(connector)
     when Connector::LeadChat then lead_chat(connector)
@@ -76,17 +75,7 @@ class ConnectorSerializer < ApplicationSerializer
       profilePictureUrl: connector.profile_picture_url,
       numberId: connector.number_id,
       numberFormatted: connector.number_formated,
-      reactionsSupported: connector.evolution_provider?,
-      deleteForEveryoneSupported: connector.zapi_provider?
-    }
-  end
-
-  def self.zapi(connector)
-    {
-      instanceId: connector.instance_id,
-      profileName: connector.profile_name,
-      profilePictureUrl: connector.profile_picture_url,
-      numberFormatted: connector.number_formated
+      reactionsSupported: connector.evolution_provider?
     }
   end
 

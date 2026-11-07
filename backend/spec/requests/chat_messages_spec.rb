@@ -210,74 +210,26 @@ RSpec.describe "Chat: mensagens", type: :request do
     end
   end
 
-  describe "DELETE /chats/:chat_id/messages/:id" do
-    let(:zapi) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-    let(:zapi_chat) { create(:chat, organization: organization, connector: zapi, external_id: "5531971810932") }
-    let(:message) { create(:chat_text_message, chat: zapi_chat, role: "assistant", message_id: "ZAP-1") }
-    let(:delete_url) { /api\.z-api\.io.*messages/ }
-
-    it "apaga para todos no canal que deixa" do
-      stub_request(:delete, delete_url).to_return(json_reply({ status: "ok" }))
-
-      delete "/chats/#{zapi_chat.id}/messages/#{message.id}", headers: headers
-
-      expect(response).to have_http_status(:ok)
-      expect(json["id"]).to eq(message.id.to_s)
-      expect(json["deletedAt"]).to be_a(Integer)
-      expect(message.reload.deleted_scope).to eq("everyone")
-    end
-
-    it "tira a mensagem apagada da prévia da lista, sem mudar a conversa de lugar" do
-      stub_request(:delete, delete_url).to_return(json_reply({ status: "ok" }))
-      create(:chat_text_message, chat: zapi_chat, role: "user", content: "Quero a bolsa", created_at: 2.minutes.ago)
-      message.update!(content: "Mandei o endereço errado")
-      moment = zapi_chat.reload.last_message_at
-
-      delete "/chats/#{zapi_chat.id}/messages/#{message.id}", headers: headers
-
-      expect(response).to have_http_status(:ok)
-      expect(zapi_chat.reload).to have_attributes(last_message_content: "Quero a bolsa", last_message_by: "user", last_message_at: moment)
-    end
-
-    it "responde 422 com o motivo no canal que não deixa" do
-      message = text
-
-      delete "/chats/#{chat.id}/messages/#{message.id}", headers: headers
-
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(json["error"]["message"]).to eq(I18n.t("connectors.messages.delete_unsupported", locale: "pt-BR"))
-      expect(message.reload.deleted_at).to be_nil
-    end
-
-    it "responde 404 para mensagem de outra conversa" do
-      other = text(create(:chat, organization: organization))
-
-      delete "/chats/#{chat.id}/messages/#{other.id}", headers: headers
-
-      expect(response).to have_http_status(:not_found)
-    end
-
-    it "apaga também nota do histórico, que o escopo padrão esconde" do
-      stub_request(:delete, delete_url).to_return(json_reply({ status: "ok" }))
-      note = ChatMessage::Text.create!(chat: zapi_chat, role: "base", content: "nota")
-
-      delete "/chats/#{zapi_chat.id}/messages/#{note.id}", headers: headers
-
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "POST /chats/:chat_id/messages/bulk-delete" do
     let!(:first) { text }
     let!(:second) { text }
 
-    it "sem provedor que revogue, apaga só daqui e diz isso" do
-      post "/chats/#{chat.id}/messages/bulk-delete", params: { messageIds: [ first.id.to_s, second.id.to_s ], scope: "everyone" }, headers: headers, as: :json
+    it "apaga só daqui e devolve os ids apagados" do
+      post "/chats/#{chat.id}/messages/bulk-delete", params: { messageIds: [ first.id.to_s, second.id.to_s ] }, headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect(json).to include("scopeApplied" => "me", "revokedIds" => [])
+      expect(json.keys).to eq([ "deletedIds" ])
       expect(json["deletedIds"]).to contain_exactly(first.id.to_s, second.id.to_s)
       expect(ChatMessage::Base.unscoped.where(chat_id: chat.id).count).to eq(0)
+    end
+
+    it "apaga também nota do histórico, que o escopo padrão esconde" do
+      note = ChatMessage::Text.create!(chat: chat, role: "base", content: "nota")
+
+      post "/chats/#{chat.id}/messages/bulk-delete", params: { messageIds: [ note.id.to_s ] }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(ChatMessage::Base.unscoped.where(id: note.id).exists?).to be(false)
     end
 
     it "limpa a prévia quando não sobra mensagem nenhuma" do
@@ -293,12 +245,6 @@ RSpec.describe "Chat: mensagens", type: :request do
       expect {
         post "/chats/#{chat.id}/messages/bulk-delete", params: { messageIds: [ second.id.to_s ] }, headers: headers, as: :json
       }.to have_broadcasted_to(stream).with(hash_including("action" => "upsert"))
-    end
-
-    it "escopo desconhecido vale como `me`, o que não fala com o provedor" do
-      post "/chats/#{chat.id}/messages/bulk-delete", params: { messageIds: [ first.id.to_s ], scope: "todos" }, headers: headers, as: :json
-
-      expect(json["scopeApplied"]).to eq("me")
     end
 
     it "não apaga mensagem de outra conversa" do

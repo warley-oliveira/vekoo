@@ -5,7 +5,7 @@ class Connector::WhatsappWeb
     # Abstract contract every provider module honors. Each method here is the
     # public surface the facade ([Connector::WhatsappWeb]) delegates to via
     # `provider.<method>(connector, ...)`. Implementations live in sibling
-    # modules under this namespace (e.g. `Providers::AivaApi`, `Providers::Zapi`).
+    # modules under this namespace (`Providers::AivaApi`, `Providers::EvolutionApi`).
     #
     # New providers add one file under this directory + register the class in
     # `Connector::WhatsappWeb::PROVIDERS`.

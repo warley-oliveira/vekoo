@@ -338,15 +338,13 @@ RSpec.describe ImageMessageJob do
     end
 
     it "provedor que devolve caminho nenhum também conta como falha" do
-      zapi_connector = create(:connector_zapi, organization: organization)
-      zapi_chat = create(:chat, connector: zapi_connector, external_id: "5531900000000")
-      stub_request(:get, media_url).to_return(status: 404)
+      allow(Inbound::MediaDownload).to receive(:media).and_return(Inbound::MediaDownload::Result.new(path: nil))
 
       perform_enqueued_jobs(only: described_class) do
-        described_class.perform_later(zapi_chat.id.to_s, organization.id, media_url, message_id, false, { mimetype: "image" }.to_json)
+        described_class.perform_later(chat.id.to_s, organization.id, media_url, message_id, false, { mimetype: "image" }.to_json)
       end
 
-      expect(notes_of(zapi_chat, "error").count).to eq(1)
+      expect(notes_of(chat, "error").count).to eq(1)
     end
 
     it "conversa apagada no meio das tentativas não levanta" do

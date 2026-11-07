@@ -98,28 +98,15 @@ RSpec.describe ConnectorSerializer do
         profilePictureUrl: "https://cdn.exemplo.com/a.jpg",
         numberId: "5531971810932",
         numberFormatted: "(31) 97181-0932",
-        reactionsSupported: true,
-        deleteForEveryoneSupported: false
+        reactionsSupported: true
       )
     end
 
     it "diz o que cada provider do WhatsApp Web suporta" do
-      connector = create(:connector_whatsapp_web, :zapi, organization: organization)
+      connector = create(:connector_whatsapp_web, :aiva, organization: organization)
 
-      expect(described_class.one(connector)).to include(providerApi: "zapi", reactionsSupported: false, deleteForEveryoneSupported: true)
-    end
-
-    it "serializa a Z-API" do
-      connector = create(:connector_zapi, organization: organization, instance_id: "ZINST", profile_name: "Padaria", profile_picture_url: "https://cdn.exemplo.com/p.jpg", phone_number: "5531971810932")
-
-      expect(described_class.one(connector)).to include(
-        type: "zapi",
-        name: "Padaria",
-        instanceId: "ZINST",
-        profileName: "Padaria",
-        profilePictureUrl: "https://cdn.exemplo.com/p.jpg",
-        numberFormatted: "+55 (31) 97181-0932"
-      )
+      expect(described_class.one(connector)).to include(providerApi: "aiva_api", reactionsSupported: false)
+      expect(described_class.one(connector)).not_to have_key(:deleteForEveryoneSupported)
     end
 
     it "serializa o Instagram" do
@@ -201,8 +188,7 @@ RSpec.describe ConnectorSerializer do
     it "não traz credencial em tipo nenhum" do
       [
         create(:connector_whatsapp_cloud, organization: organization, user_access_token: "SEGREDO"),
-        create(:connector_whatsapp_web, organization: organization, instance_api_key: "SEGREDO", zapi_token: "SEGREDO"),
-        create(:connector_zapi, organization: organization, account_token: "SEGREDO"),
+        create(:connector_whatsapp_web, organization: organization, instance_api_key: "SEGREDO"),
         create(:connector_instagram, organization: organization, page_access_token: "SEGREDO"),
         create(:connector_messenger, organization: organization, instagram_user_access_token: "SEGREDO"),
         create(:connector_lead_chat, organization: organization, access_token: "SEGREDO"),
@@ -210,7 +196,7 @@ RSpec.describe ConnectorSerializer do
       ].each do |connector|
         serialized = described_class.one(connector)
 
-        expect(serialized.to_json).not_to include("SEGREDO", "chave-evolution", "ig-token", "token-da-meta", "ZTOKEN", "page-token", "lead-token")
+        expect(serialized.to_json).not_to include("SEGREDO", "chave-evolution", "ig-token", "token-da-meta", "page-token", "lead-token")
         expect(deep_keys(serialized).grep(secret_keys)).to eq([])
       end
     end
@@ -218,9 +204,9 @@ RSpec.describe ConnectorSerializer do
 
   describe ".many" do
     it "serializa a lista" do
-      connectors = [ create(:connector_web_widget, organization: organization), create(:connector_zapi, organization: organization) ]
+      connectors = [ create(:connector_web_widget, organization: organization), create(:connector_lead_chat, organization: organization) ]
 
-      expect(described_class.many(connectors).map { |connector| connector[:type] }).to eq(%w[web_widget zapi])
+      expect(described_class.many(connectors).map { |connector| connector[:type] }).to eq(%w[web_widget lead_chat])
     end
   end
 
@@ -253,7 +239,7 @@ RSpec.describe ConnectorSerializer do
     end
 
     it "não traz nada a mais nos canais em que a configuração é automática" do
-      [ create(:connector_whatsapp_web, organization: organization), create(:connector_zapi, organization: organization), create(:connector_web_widget, organization: organization) ].each do |connector|
+      [ create(:connector_whatsapp_web, organization: organization), create(:connector_web_widget, organization: organization) ].each do |connector|
         expect(described_class.created(connector).keys).not_to include(:webhookUrl, :verificationToken)
       end
     end

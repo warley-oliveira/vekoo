@@ -27,29 +27,10 @@ FactoryBot.define do
     number_id { "5531971810932" }
     profile_name { "Loja da Ana" }
 
-    trait :zapi do
-      provider_api { "zapi" }
-      base_url { nil }
-      api_key { nil }
-      zapi_instance_id { "INST123" }
-      zapi_token { "TOKABC" }
-    end
-
     trait :aiva do
       provider_api { "aiva_api" }
       base_url { "http://aiva.test" }
     end
-  end
-
-  factory :connector_zapi, class: "Connector::Zapi" do
-    transient { organization { nil } }
-
-    organization_id { organization&.id || association(:organization).id }
-    status { :active }
-    instance_id { "ZINST" }
-    token { "ZTOKEN" }
-    profile_name { "Padaria Pão Quente" }
-    phone_number { "5531971810932" }
   end
 
   factory :connector_instagram, class: "Connector::InstagramDirect" do

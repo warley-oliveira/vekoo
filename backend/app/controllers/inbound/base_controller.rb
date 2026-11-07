@@ -8,8 +8,8 @@ module Inbound
 
     private
 
-    def enqueue(provider, connector_id = nil, event = nil)
-      ProcessWebhookJob.perform_later(provider, utf8_body, connector_id&.to_s, event)
+    def enqueue(provider, connector_id = nil)
+      ProcessWebhookJob.perform_later(provider, utf8_body, connector_id&.to_s)
       head :ok
     end
 

@@ -30,30 +30,6 @@ RSpec.describe Inbound::ProcessWebhookJob do
       expect(Chat.where(connector_id: connector.id, external_id: "5531971810932").take.user_name).to eq("Maria")
     end
 
-    it "zapi, no evento pedido" do
-      connector = create(:connector_whatsapp_web, :zapi, organization: organization)
-
-      described_class.perform_now("zapi", { messageId: "Z1", phone: "5531971810932", senderName: "Ana", text: { message: "Oi" } }.to_json, connector.id.to_s, "on_message_received")
-
-      expect(Chat.where(connector_id: connector.id, external_id: "5531971810932").exists?).to be(true)
-    end
-
-    it "zapi, na desconexão" do
-      connector = create(:connector_whatsapp_web, :zapi, organization: organization)
-
-      described_class.perform_now("zapi", { error: "x" }.to_json, connector.id.to_s, "on_whatsapp_disconnected")
-
-      expect(connector.reload.status).to eq(:closed)
-    end
-
-    it "zapi, no conector próprio" do
-      connector = create(:connector_zapi, organization: organization)
-
-      described_class.perform_now("zapi", { error: "x" }.to_json, connector.id.to_s, "on_whatsapp_disconnected")
-
-      expect(connector.reload.status).to eq(:closed)
-    end
-
     it "evolution, pelo nome da instância" do
       connector = create(:connector_whatsapp_web, organization: organization)
       body = { event: "messages.upsert", data: { key: { remoteJid: "5531971810932@s.whatsapp.net", id: "E1", fromMe: false }, message: { conversation: "Oi" } } }.to_json
@@ -86,22 +62,10 @@ RSpec.describe Inbound::ProcessWebhookJob do
   end
 
   describe "o que não acha destino" do
-    let(:body) { { messageId: "Z1", phone: "5531971810932", text: { message: "Oi" } }.to_json }
-
     after { expect(Chat.count).to eq(0) }
 
     it "whatsapp_cloud com conector que não existe" do
       described_class.perform_now("whatsapp_cloud", "{}", BSON::ObjectId.new.to_s)
-    end
-
-    it "zapi com conector que não existe" do
-      described_class.perform_now("zapi", body, BSON::ObjectId.new.to_s, "on_message_received")
-    end
-
-    it "zapi com conector de outro tipo" do
-      cloud = create(:connector_whatsapp_cloud, organization: organization)
-
-      described_class.perform_now("zapi", body, cloud.id.to_s, "on_message_received")
     end
 
     it "evolution com instância que não é nossa" do

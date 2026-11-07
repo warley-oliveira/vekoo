@@ -9,11 +9,11 @@ class ChatsController < PlatformController
 
   # Os tipos que conversam. Calendário é conector na origem, mas não é canal de atendimento.
   CHAT_CONNECTOR_TYPES = %w[
-    Connector::WhatsappWeb Connector::WhatsappCloud Connector::Zapi Connector::InstagramDirect
+    Connector::WhatsappWeb Connector::WhatsappCloud Connector::InstagramDirect
     Connector::FacebookMessenger Connector::LeadChat Connector::WebWidget
   ].freeze
   # Quem começa conversa pelo número: Instagram, Messenger e widget só respondem.
-  PHONE_CONNECTOR_TYPES = %w[Connector::WhatsappWeb Connector::WhatsappCloud Connector::Zapi].freeze
+  PHONE_CONNECTOR_TYPES = %w[Connector::WhatsappWeb Connector::WhatsappCloud].freeze
 
   LOOKUP_LIMIT = 10
   MAX_ATTRIBUTES = 200

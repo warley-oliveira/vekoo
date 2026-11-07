@@ -11,8 +11,7 @@ RSpec.describe Connectors::SendFailure do
       EOFError.new("end of file reached"),
       OpenSSL::SSL::SSLError.new("SSL_connect returned=1"),
       Faraday::ConnectionFailed.new("connection failed"),
-      Faraday::TimeoutError.new,
-      ZapiClient::ConnectionError.new("Z-API connection error: execution expired")
+      Faraday::TimeoutError.new
     ].each do |error|
       it "troca #{error.class} por uma frase para quem está atendendo" do
         expect(described_class.reason(error)).to eq(I18n.t("connectors.messages.channel_unreachable"))

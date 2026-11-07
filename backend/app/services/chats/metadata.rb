@@ -16,9 +16,9 @@ module Chats
       end
     end
 
-    # O que a tela usa para liberar recursos por provedor: `evolution_api`, `aiva_api`, `zapi`,
-    # `whatsapp_cloud`, `instagram_direct`... `reactionsSupported` e `deleteForEveryoneSupported`
-    # vêm no próprio conector, em /chats/self-filter.
+    # O que a tela usa para liberar recursos por provedor: `evolution_api`, `aiva_api`,
+    # `whatsapp_cloud`, `instagram_direct`... `reactionsSupported` vem no próprio conector, em
+    # /chats/self-filter.
     def connector_provider(chat)
       connector = chat.connector
       return nil if connector.blank?

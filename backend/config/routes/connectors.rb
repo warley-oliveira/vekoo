@@ -39,11 +39,6 @@ scope :inbound, module: :inbound, as: :inbound do
 
   post "evolution/:codename", to: "evolution#receive", as: :evolution
   post "lead-chat/:id/event", to: "lead_chat#event", as: :lead_chat_event
-
-  post "zapi/:connector_id/on-message-received", to: "zapi#on_message_received", as: :zapi_message_received
-  post "zapi/:connector_id/on-message-send", to: "zapi#on_message_send", as: :zapi_message_send
-  post "zapi/:connector_id/on-whatsapp-disconnected", to: "zapi#on_whatsapp_disconnected", as: :zapi_disconnected
-  post "zapi/:connector_id/on-whatsapp-connected", to: "zapi#on_whatsapp_connected", as: :zapi_connected
 end
 
 # --- widget de chat nos sites dos clientes -----------------------------------

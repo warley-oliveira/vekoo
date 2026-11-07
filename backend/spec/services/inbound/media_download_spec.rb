@@ -175,56 +175,6 @@ RSpec.describe Inbound::MediaDownload do
       end
     end
 
-    context "WhatsApp Web pela Z-API" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-      def download(raw)
-        downloaded(described_class.media(connector, "https://z/ignorada", message_id: "Z1", properties: {}.with_indifferent_access, raw: raw.with_indifferent_access))
-      end
-
-      {
-        "imagem" => { image: { imageUrl: "https://z/a" } },
-        "vídeo" => { video: { videoUrl: "https://z/a" } },
-        "documento" => { document: { documentUrl: "https://z/a" } }
-      }.each do |type, raw|
-        it "acha a URL de #{type} no trecho do webhook" do
-          stub_request(:get, "https://z/a").to_return(status: 200, body: "bytes")
-
-          expect(File.binread(download(raw).path)).to eq("bytes")
-        end
-      end
-
-      it "sem URL no trecho, devolve caminho nenhum" do
-        expect(download({}).path).to be_nil
-      end
-
-      it "download que falha devolve caminho nenhum, para o job tentar de novo" do
-        stub_request(:get, "https://z/a").to_return(status: 500)
-
-        expect(download(image: { imageUrl: "https://z/a" }).path).to be_nil
-      end
-    end
-
-    context "Z-API, conector próprio" do
-      let(:connector) { create(:connector_zapi, organization: organization) }
-
-      def download
-        downloaded(described_class.media(connector, "https://z/a", message_id: "Z1", properties: {}.with_indifferent_access, raw: {}))
-      end
-
-      it "baixa pela URL recebida" do
-        stub_request(:get, "https://z/a").to_return(status: 200, body: "bytes")
-
-        expect(File.binread(download.path)).to eq("bytes")
-      end
-
-      it "download que falha devolve caminho nenhum" do
-        stub_request(:get, "https://z/a").to_return(status: 404)
-
-        expect(download.path).to be_nil
-      end
-    end
-
     [ :connector_messenger, :connector_instagram ].each do |factory|
       context factory.to_s do
         let(:connector) { create(factory, organization: organization) }
@@ -353,26 +303,6 @@ RSpec.describe Inbound::MediaDownload do
         stub_request(:get, "https://bucket.exemplo.com/a.ogg").to_return(status: 200, body: "ogg")
 
         result = downloaded(described_class.audio(connector, "https://bucket.exemplo.com/a.ogg", message_id: "E1", raw: nil))
-
-        expect(File.binread(result.path)).to eq("ogg")
-      end
-    end
-
-    context "WhatsApp Web pela Z-API" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-      it "usa a URL do áudio no trecho do webhook" do
-        stub_request(:get, "https://z/a.ogg").to_return(status: 200, body: "ogg")
-
-        result = downloaded(described_class.audio(connector, "https://z/ignorada", message_id: "Z1", raw: { audio: { audioUrl: "https://z/a.ogg" } }.with_indifferent_access))
-
-        expect(File.binread(result.path)).to eq("ogg")
-      end
-
-      it "sem o trecho, a URL recebida faz o papel dele" do
-        stub_request(:get, "https://z/a.ogg").to_return(status: 200, body: "ogg")
-
-        result = downloaded(described_class.audio(connector, "https://z/a.ogg", message_id: "Z1", raw: nil))
 
         expect(File.binread(result.path)).to eq("ogg")
       end

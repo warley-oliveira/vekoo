@@ -2,7 +2,7 @@ module Connectors
   # Cria e conecta um canal, conforme o tipo. As cotas por plano da origem saíram: planos
   # e pacotes estão fora do escopo.
   class Creator
-    TYPES = %w[whatsapp_cloud whatsapp_web zapi lead_chat meta_channels instagram_direct web_widget].freeze
+    TYPES = %w[whatsapp_cloud whatsapp_web lead_chat meta_channels instagram_direct web_widget].freeze
 
     # `connector` é o criado, mesmo quando a ativação no provedor falhou: ele fica `failed` com
     # o motivo, para a pessoa ver e tentar de novo em `POST /connectors/:id/activate`, em vez de
@@ -24,7 +24,6 @@ module Connectors
       case params[:connector_type]
       when "whatsapp_cloud" then whatsapp_cloud
       when "whatsapp_web" then whatsapp_web
-      when "zapi" then zapi
       when "lead_chat" then lead_chat
       when "meta_channels" then meta_channels
       when "instagram_direct" then instagram_direct
@@ -71,24 +70,12 @@ module Connectors
     end
 
     # O plano padrão ("aiva_api" na tela de escolha da origem) roda hoje sobre a Evolution.
-    # Sem provider explícito vale a flag `zapi` da organização, ou o padrão do modelo. A flag
-    # é decidida aqui porque o padrão do campo já vem preenchido no `before_create` do modelo.
+    # Sem provider explícito vale o padrão do modelo.
     def provider_attributes
       provider = params[:provider_api].presence
-      return organization.features.to_h["zapi"] ? { provider_api: "zapi" } : {} unless provider
+      return {} unless provider
 
       { provider_api: provider == "aiva_api" ? "evolution_api" : provider }
-    end
-
-    def zapi
-      connector = Connector::Zapi.create!(
-        **base_attributes,
-        instance_id: params[:instance_id],
-        token: params[:token],
-        account_token: params[:account_token]
-      )
-      activating(connector) { connector.activate }
-      Result.new(connector: connector)
     end
 
     def lead_chat

@@ -9,7 +9,7 @@
 #      frequentemente sem o 9 (`553171810932`), enquanto a base guarda o número
 #      completo (`5531971810932`). As comparações no código são igualdade exata de
 #      String, então sem as duas formas o lookup falha silenciosamente.
-#   2. sufixo `@s.whatsapp.net` — conversas originadas em Z-API/Evolution guardam o
+#   2. sufixo `@s.whatsapp.net` — conversas originadas na Evolution guardam o
 #      JID completo em `Chat#external_id`, enquanto as de campanha guardam
 #      só os dígitos.
 #

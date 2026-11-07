@@ -1,51 +1,38 @@
 require "rails_helper"
 
-# A fachada: escolha do provedor, callbacks, formatação, manutenção e os métodos que só
-# existem na Z-API. O que cada provedor fala com a API dele está em whatsapp_web/providers/.
+# A fachada: escolha do provedor, callbacks, formatação e manutenção. O que cada provedor fala
+# com a API dele está em whatsapp_web/providers/.
 RSpec.describe Connector::WhatsappWeb do
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }
   let(:evolution) { create(:connector_whatsapp_web, organization: organization, instance_name: "WS-EVO") }
   let(:aiva) { create(:connector_whatsapp_web, :aiva, organization: organization, instance_name: "WS-AIVA") }
-  let(:zapi) { create(:connector_whatsapp_web, :zapi, organization: organization, instance_name: "WS-ZAPI") }
-  let(:zapi_base) { "https://api.z-api.io/instances/INST123/token/TOKABC" }
 
   describe "escolha do provedor ao criar" do
     def create_connector(**attributes)
       described_class.create!(organization_id: organization.id, instance_name: "WS-1", **attributes)
     end
 
-    context "com a flag zapi da organização ligada" do
-      before { organization.update!(features: { "zapi" => true }) }
-
-      it "aplica zapi quando provider_api vem em branco" do
-        expect(create_connector(provider_api: nil).provider_api).to eq("zapi")
-      end
-
-      it "não sobrescreve um provider_api explícito" do
-        expect(create_connector(provider_api: "aiva_api").provider_api).to eq("aiva_api")
-      end
+    it "fica com o padrão do modelo quando ninguém informa (na origem era aiva_api; aqui, evolution_api)" do
+      expect(create_connector.provider_api).to eq("evolution_api")
     end
 
-    context "com a flag desligada" do
-      it "fica com o padrão do modelo quando ninguém informa (na origem era aiva_api; aqui, evolution_api)" do
-        expect(create_connector.provider_api).to eq("evolution_api")
-      end
+    it "respeita o provedor explícito" do
+      expect(create_connector(provider_api: "aiva_api").provider_api).to eq("aiva_api")
+    end
 
-      it "respeita zapi explícito" do
-        expect(create_connector(provider_api: "zapi").provider_api).to eq("zapi")
-      end
+    it "recusa um provedor que não existe" do
+      connector = described_class.new(organization_id: organization.id, provider_api: "sumiu")
+
+      expect(connector).not_to be_valid
+      expect(connector.errors[:provider_api]).to be_present
     end
 
     it "lê o padrão do ambiente" do
       with_env("WHATSAPP_WEB_DEFAULT_PROVIDER" => "aiva_api") do
         expect(create_connector.provider_api).to eq("aiva_api")
       end
-    end
-
-    it "não quebra quando a organização não existe mais" do
-      expect(described_class.create!(organization_id: SecureRandom.uuid, provider_api: nil).provider_api).to be_nil
     end
   end
 
@@ -55,10 +42,6 @@ RSpec.describe Connector::WhatsappWeb do
         expect(described_class.create!(organization_id: organization.id, provider_api: "evolution_api").base_url).to eq("http://evo.interno")
         expect(described_class.create!(organization_id: organization.id, provider_api: "aiva_api").base_url).to eq("http://aiva.interno")
       end
-    end
-
-    it "não inventa base_url para a Z-API, que tem URL própria" do
-      expect(described_class.create!(organization_id: organization.id, provider_api: "zapi").base_url).to be_nil
     end
 
     it "não troca uma base_url informada" do
@@ -85,21 +68,21 @@ RSpec.describe Connector::WhatsappWeb do
 
   describe "tokens em repouso" do
     let(:connector) do
-      create(:connector_whatsapp_web, :zapi, organization: organization, api_key: "api-key-secreta", zapi_token: "zapi-token-secreto", instance_api_key: "instancia-secreta")
+      create(:connector_whatsapp_web, organization: organization, api_key: "api-key-secreta", instance_api_key: "instancia-secreta")
     end
 
     it "guarda só o texto cifrado no Mongo" do
       raw = stored_document(connector)
 
-      expect(raw.to_json).not_to include("api-key-secreta", "zapi-token-secreto", "instancia-secreta")
-      expect(raw.keys).to include("api_key_ciphertext", "zapi_token_ciphertext", "instance_api_key_ciphertext")
-      expect(raw.keys).not_to include("api_key", "zapi_token", "instance_api_key")
+      expect(raw.to_json).not_to include("api-key-secreta", "instancia-secreta")
+      expect(raw.keys).to include("api_key_ciphertext", "instance_api_key_ciphertext")
+      expect(raw.keys).not_to include("api_key", "instance_api_key")
     end
 
     it "devolve o valor original ao ler do banco" do
       loaded = Connector::Base.find(connector.id)
 
-      expect(loaded).to have_attributes(api_key: "api-key-secreta", zapi_token: "zapi-token-secreto", instance_api_key: "instancia-secreta")
+      expect(loaded).to have_attributes(api_key: "api-key-secreta", instance_api_key: "instancia-secreta")
     end
   end
 
@@ -107,7 +90,6 @@ RSpec.describe Connector::WhatsappWeb do
     it "despacha para o módulo do provedor" do
       expect(evolution.provider).to eq(described_class::Providers::EvolutionApi)
       expect(aiva.provider).to eq(described_class::Providers::AivaApi)
-      expect(zapi.provider).to eq(described_class::Providers::Zapi)
     end
 
     it "cai na AIVA quando o provedor gravado não existe mais" do
@@ -115,12 +97,7 @@ RSpec.describe Connector::WhatsappWeb do
     end
   end
 
-  describe "#zapi_provider? e #evolution_provider?" do
-    it "reconhece a Z-API" do
-      expect(zapi.zapi_provider?).to be(true)
-      expect(aiva.zapi_provider?).to be(false)
-    end
-
+  describe "#evolution_provider?" do
     it "reconhece a Evolution" do
       expect(evolution.evolution_provider?).to be(true)
       expect(aiva.evolution_provider?).to be(false)
@@ -189,14 +166,6 @@ RSpec.describe Connector::WhatsappWeb do
       connector.update!(status: :failed)
 
       expect(a_request(:get, /fetchInstances/)).not_to have_been_made
-    end
-
-    it "não consulta nada na Z-API, que não tem esse endpoint" do
-      pending_zapi = create(:connector_whatsapp_web, :zapi, organization: organization, status: :pending)
-
-      pending_zapi.update!(status: :active)
-
-      expect(pending_zapi.reload).to be_active
     end
   end
 
@@ -411,148 +380,6 @@ RSpec.describe Connector::WhatsappWeb do
       deduplicate(/Found 0 duplicate groups/)
 
       expect(Chat.where(connector_id: connector.id).count).to eq(2)
-    end
-  end
-
-  describe "métodos que só existem na Z-API" do
-    around { |example| with_env("ZAPI_CLIENT_TOKEN" => "CLIENTE") { example.run } }
-
-    describe "#zapi_get_qr_code" do
-      it "devolve os bytes do QR code" do
-        stub_request(:get, "#{zapi_base}/qr-code")
-          .with(headers: { "Client-Token" => "CLIENTE" })
-          .to_return(status: 200, body: "QR-BYTES")
-
-        expect(zapi.zapi_get_qr_code).to eq("QR-BYTES")
-      end
-
-      it "recusa outro provedor" do
-        expect { aiva.zapi_get_qr_code }.to raise_error(ZapiClient::Error, /credentials are required/)
-      end
-
-      it "propaga a falha do provedor como ZapiClient::Error" do
-        stub_request(:get, "#{zapi_base}/qr-code").to_return(status: 400, body: "já conectado")
-
-        expect { zapi.zapi_get_qr_code }.to raise_error(ZapiClient::Error, /400/)
-      end
-    end
-
-    describe "#zapi_get_qr_code_image" do
-      it "devolve a imagem em base64" do
-        stub_request(:get, "#{zapi_base}/qr-code/image").to_return(json_reply({ value: "b64" }))
-
-        expect(zapi.zapi_get_qr_code_image).to eq("value" => "b64")
-      end
-
-      it "recusa outro provedor" do
-        expect { evolution.zapi_get_qr_code_image }.to raise_error(ZapiClient::Error, /credentials are required/)
-      end
-    end
-
-    describe "#zapi_get_phone_code" do
-      it "pede o código de pareamento para o telefone" do
-        stub_request(:get, "#{zapi_base}/phone-code/5511999999999").to_return(json_reply({ code: "ABC123" }))
-
-        expect(zapi.zapi_get_phone_code("+55 11 99999-9999")).to eq("code" => "ABC123")
-      end
-    end
-
-    describe "#delete_message" do
-      it "apaga para todos na Z-API" do
-        request = stub_request(:delete, "#{zapi_base}/messages?messageId=MID&owner=true&phone=55119").to_return(status: 200, body: "")
-
-        zapi.delete_message(phone: "55119", message_id: "MID", owner: true)
-
-        expect(request).to have_been_requested
-      end
-
-      it "manda owner=false para mensagem que não é nossa" do
-        request = stub_request(:delete, "#{zapi_base}/messages?messageId=MID&owner=false&phone=55119").to_return(status: 200, body: "")
-
-        zapi.delete_message(phone: "55119", message_id: "MID", owner: false)
-
-        expect(request).to have_been_requested
-      end
-
-      it "recusa AIVA e Evolution: nenhum dos dois apaga mensagem" do
-        expect { aiva.delete_message(phone: "1", message_id: "m") }.to raise_error(ZapiClient::Error, /credentials are required/)
-        expect { evolution.delete_message(phone: "1", message_id: "m") }.to raise_error(ZapiClient::Error, /credentials are required/)
-      end
-
-      it "propaga a recusa do provedor" do
-        stub_request(:delete, /#{zapi_base}\/messages/).to_return(status: 404, body: "não achei")
-
-        expect { zapi.delete_message(phone: "55119", message_id: "MID") }.to raise_error(ZapiClient::Error, /404/)
-      end
-    end
-
-    describe "#zapi_update_notify_sent_by_me" do
-      it "repassa a escolha" do
-        request = stub_request(:put, "#{zapi_base}/update-notify-sent-by-me")
-          .with(body: { notifySentByMe: false }.to_json)
-          .to_return(json_reply({ value: true }))
-
-        zapi.zapi_update_notify_sent_by_me(enabled: false)
-
-        expect(request).to have_been_requested
-      end
-    end
-
-    describe "#sign_zapi_instance" do
-      it "levanta sem o token da conta" do
-        with_env("ZAPI_ACCOUNT_TOKEN" => nil) do
-          expect { zapi.sign_zapi_instance }.to raise_error(ZapiClient::Error, /account token is required/)
-        end
-      end
-
-      it "assina com as credenciais guardadas" do
-        request = stub_request(:post, "#{zapi_base}/integrator/on-demand/subscription")
-          .with(headers: { "Authorization" => "Bearer CONTA" })
-          .to_return(status: 201, body: "")
-
-        with_env("ZAPI_ACCOUNT_TOKEN" => "CONTA") { expect(zapi.sign_zapi_instance).to be(true) }
-
-        expect(request).to have_been_requested
-      end
-
-      it "recusa outro provedor" do
-        expect { evolution.sign_zapi_instance }.to raise_error(ZapiClient::Error, /credentials are required/)
-      end
-    end
-
-    describe "consultas" do
-      it "#metadata lê os dados da conversa" do
-        stub_request(:get, "#{zapi_base}/chats/55119").to_return(json_reply({ phone: "55119" }))
-
-        expect(zapi.metadata("55119")).to eq("phone" => "55119")
-      end
-
-      it "#list_contacts lista os contatos" do
-        stub_request(:get, "#{zapi_base}/contacts").to_return(json_reply([ { phone: "55119" } ]))
-
-        expect(zapi.list_contacts).to eq([ { "phone" => "55119" } ])
-      end
-
-      it "#contact_metadata lê um contato" do
-        stub_request(:get, "#{zapi_base}/contacts/55119").to_return(json_reply({ name: "Maria" }))
-
-        expect(zapi.contact_metadata("55119")).to eq("name" => "Maria")
-      end
-
-      it "#zapi_chats pagina (`chats` aqui são as conversas do conector)" do
-        stub_request(:get, "#{zapi_base}/chats?page=2&pageSize=50").to_return(json_reply([]))
-
-        expect(zapi.zapi_chats(page: 2, page_size: 50)).to eq([])
-      end
-
-      it "todas recusam outro provedor" do
-        expect { evolution.metadata("1") }.to raise_error(ZapiClient::Error)
-        expect { evolution.list_contacts }.to raise_error(ZapiClient::Error)
-        expect { evolution.contact_metadata("1") }.to raise_error(ZapiClient::Error)
-        expect { evolution.zapi_chats }.to raise_error(ZapiClient::Error)
-        expect { evolution.zapi_get_phone_code("1") }.to raise_error(ZapiClient::Error)
-        expect { evolution.zapi_update_notify_sent_by_me }.to raise_error(ZapiClient::Error)
-      end
     end
   end
 end

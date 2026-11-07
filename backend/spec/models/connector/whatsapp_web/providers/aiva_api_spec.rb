@@ -488,9 +488,5 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
       expect(connector.resolve_whatsapp_number("+55 48 98831-4715")).to eq("5548988314715")
       expect(a_request(:any, /aiva\.test/)).not_to have_been_made
     end
-
-    it "apagar mensagem é só da Z-API" do
-      expect { connector.delete_message(phone: "1", message_id: "m") }.to raise_error(ZapiClient::Error)
-    end
   end
 end

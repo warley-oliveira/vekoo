@@ -30,7 +30,6 @@ module Chats
 
     def clear_context(chat, connector, to)
       chat.clear_context!
-      InboundThrottle.reset(chat)
       connector.send_text_message(to, I18n.t("connectors.notes.context_cleared"), chat)
     end
     private_class_method :clear_context

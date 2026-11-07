@@ -64,7 +64,7 @@ RSpec.describe Connector::WebWidget do
 
       it "não impede os outros tipos de conector, que não têm token" do
         expect {
-          create(:connector_zapi, organization: organization)
+          create(:connector_whatsapp_web, organization: organization)
           create(:connector_lead_chat, organization: organization)
         }.not_to raise_error
       end

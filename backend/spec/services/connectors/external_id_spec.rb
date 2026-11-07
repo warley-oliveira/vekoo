@@ -43,10 +43,6 @@ RSpec.describe Connectors::ExternalId do
         expect(described_class.from(response(json_reply({ key: { id: "3EB0" } })))).to eq("3EB0")
       end
 
-      it "lê messageId: Z-API" do
-        expect(described_class.from(response(json_reply({ messageId: "Z1" })))).to eq("Z1")
-      end
-
       it "lê message_id: Messenger e Instagram" do
         expect(described_class.from(response(json_reply({ message_id: "mid.1" })))).to eq("mid.1")
       end
@@ -75,10 +71,6 @@ RSpec.describe Connectors::ExternalId do
         expect(described_class.from("key" => { "id" => "3EB0NEW" })).to eq("3EB0NEW")
       end
 
-      it "lê messageId: o cliente da Z-API devolve o corpo já interpretado" do
-        expect(described_class.from("messageId" => "Z1")).to eq("Z1")
-      end
-
       it "lê id em símbolo: o cliente do LeadChat simboliza as chaves" do
         expect(described_class.from(id: "L1")).to eq("L1")
       end
@@ -95,7 +87,7 @@ RSpec.describe Connectors::ExternalId do
     it "devolve nil para o que não é resposta de provedor" do
       expect(described_class.from(true)).to be_nil
       expect(described_class.from(:erro)).to be_nil
-      expect(described_class.from(Connector::Zapi.new.errors.add(:base, "x"))).to be_nil
+      expect(described_class.from(Connector::LeadChat.new.errors.add(:base, "x"))).to be_nil
     end
   end
 
@@ -116,20 +108,6 @@ RSpec.describe Connectors::ExternalId do
       stub_request(:post, "http://evolution.test/message/sendMedia/W").to_return(json_reply({ key: { id: "E1" } }, status: 201))
 
       expect(described_class.from(connector.send_media_message("553199999", media_dto))).to eq("E1")
-    end
-
-    it "Z-API pelo WhatsApp Web" do
-      connector = create(:connector_whatsapp_web, :zapi, organization: organization)
-      stub_request(:post, "https://api.z-api.io/instances/INST123/token/TOKABC/send-image").to_return(json_reply({ messageId: "Z1" }))
-
-      expect(described_class.from(connector.send_media_message("553199999", media_dto))).to eq("Z1")
-    end
-
-    it "Z-API própria" do
-      connector = create(:connector_zapi, organization: organization, instance_id: "I", token: "T")
-      stub_request(:post, "https://api.z-api.io/instances/I/token/T/send-image").to_return(json_reply({ messageId: "Z2" }))
-
-      expect(described_class.from(connector.send_media_message("553199999", media_dto))).to eq("Z2")
     end
 
     it "Messenger" do

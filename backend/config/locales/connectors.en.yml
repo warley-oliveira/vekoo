@@ -44,7 +44,6 @@ en:
       reactivated: "Ok, your conversation is active again."
       waiting_message: "Waiting for message"
       ad_greeting: "Automatic greeting message"
-      rate_limited: "This contact sent too many messages in a short time. The automation replies again in 10 minutes."
       red_flag_quota: "Automation turned off for this contact. Warning quota reached."
       media_failed: "A media file arrived that could not be downloaded."
     messages:
@@ -52,9 +51,6 @@ en:
       none_found: "No message found."
       chat_not_found: "Conversation not found."
       connector_not_found: "Connector not found."
-      delete_unsupported: "This channel does not allow deleting for everyone."
-      delete_window_expired: "The time to delete this message has passed."
-      delete_failed: "The message could not be deleted on the channel."
       reaction_unsupported: "This channel does not allow reactions."
       reaction_no_external_id: "This message has no identifier on the channel yet."
       reaction_deleted: "A deleted message cannot receive a reaction."
@@ -71,8 +67,6 @@ en:
       blocked: "Account blocked: %{name}"
       manual_shutdown: "Channel \"%{name}\" was shut down manually."
       manual_disconnect: "Channel \"%{name}\" was disconnected manually."
-      number_blocked: "The number was disconnected by a possible WhatsApp block"
-      session_expired: "The session could not be restored with the current token. Connect again."
     automation:
       invalid_pause_period: "Invalid automation pause period"
     business_work:

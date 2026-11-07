@@ -188,12 +188,6 @@ RSpec.describe Messages::ReactionService do
       end
     end
 
-    context "com a Z-API" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-      it_behaves_like "canal sem reação"
-    end
-
     context "com a AIVA" do
       let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
 

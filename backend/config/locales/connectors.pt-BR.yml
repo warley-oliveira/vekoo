@@ -44,7 +44,6 @@ pt-BR:
       reactivated: "Certo, sua conversa está ativa de novo."
       waiting_message: "Aguardando mensagem"
       ad_greeting: "Mensagem de saudação automática"
-      rate_limited: "Esse contato enviou muitas mensagens em pouco tempo. A automação volta a responder em 10 minutos."
       red_flag_quota: "Automação desativada para esse contato. Cota de advertências atingida."
       media_failed: "Chegou uma mídia que não foi possível baixar."
     messages:
@@ -52,9 +51,6 @@ pt-BR:
       none_found: "Nenhuma mensagem encontrada."
       chat_not_found: "Conversa não encontrada."
       connector_not_found: "Conector não encontrado."
-      delete_unsupported: "Este canal não permite apagar para todos."
-      delete_window_expired: "O prazo para apagar esta mensagem já passou."
-      delete_failed: "Não foi possível apagar a mensagem no canal."
       reaction_unsupported: "Este canal não permite reagir."
       reaction_no_external_id: "Esta mensagem ainda não tem identificador no canal."
       reaction_deleted: "Mensagem apagada não pode receber reação."
@@ -71,8 +67,6 @@ pt-BR:
       blocked: "Conta bloqueada: %{name}"
       manual_shutdown: "O canal \"%{name}\" foi desligado manualmente."
       manual_disconnect: "O canal \"%{name}\" foi desconectado manualmente."
-      number_blocked: "O número foi desconectado por um possível bloqueio do WhatsApp"
-      session_expired: "Não foi possível restaurar a sessão com o token atual. Conecte de novo."
     automation:
       invalid_pause_period: "Período de pausa da automação inválido"
     business_work:

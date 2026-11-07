@@ -5,7 +5,7 @@ module Connectors
   module SendFailure
     NETWORK_ERRORS = [
       SocketError, SystemCallError, IOError, Timeout::Error, OpenSSL::SSL::SSLError,
-      Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError, ZapiClient::ConnectionError
+      Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError
     ].freeze
 
     module_function

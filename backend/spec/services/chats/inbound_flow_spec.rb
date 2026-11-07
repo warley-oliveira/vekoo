@@ -141,29 +141,6 @@ RSpec.describe Chats::InboundFlow do
     end
   end
 
-  describe "freio de contato (Z-API)" do
-    let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-    it "com advertências demais desliga a automação com nota, sem dispatcher" do
-      chat.set(red_flag_count: 5)
-
-      expect { run }.to change { ChatMessage::Base.unscoped.where(chat_id: chat.id, role_base_type: "automation-stopped").count }.by(1)
-
-      expect(chat.reload.automation_enabled).to be(false)
-      expect(Flows::InboundDispatcher).not_to have_received(:call)
-    end
-
-    it "em produção, passando do limite, adia 10 minutos e registra advertência" do
-      allow(Rails.env).to receive(:production?).and_return(true)
-      Rails.cache.write(Chats::InboundThrottle.counter_key(chat), Chats::InboundThrottle::RATE_LIMIT)
-
-      expect { run }.to have_enqueued_job(Chats::DispatchInboundJob)
-
-      expect(chat.reload.red_flag_count).to eq(1)
-      expect(Flows::InboundDispatcher).not_to have_received(:call)
-    end
-  end
-
   describe Chats::DispatchInboundJob do
     it "entrega para os fluxos e limpa o agendamento" do
       chat.set(scheduled_outside_business_work: Time.current)

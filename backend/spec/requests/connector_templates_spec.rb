@@ -357,7 +357,7 @@ RSpec.describe "ConnectorTemplates", type: :request do
     end
 
     it "responde 422 em conector de outro tipo" do
-      patch template_path(connector_id: create(:connector_zapi, organization: organization).id), params: {}, headers: headers, as: :json
+      patch template_path(connector_id: create(:connector_lead_chat, organization: organization).id), params: {}, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json.dig("error", "code")).to eq("connectorTypeMismatch")

@@ -8,7 +8,6 @@ module ConnectorProviderStubs
   GRAPH_FACEBOOK = "https://graph.facebook.com/v22.0".freeze
   GRAPH_INSTAGRAM = "https://graph.instagram.com/v22.0".freeze
   LEAD_CHAT_SUBSCRIPTIONS = "https://api.web.leadchat.app/core/v1/webhook/subscription".freeze
-  ZAPI = "https://api.z-api.io".freeze
 
   def provider_json(body, status: 200)
     { status: status, body: body.to_json, headers: { "Content-Type" => "application/json" } }
@@ -194,27 +193,6 @@ module ConnectorProviderStubs
   def stub_evolution_create(apikey: "chave-da-instancia", qrcode: "QR-EM-BASE64")
     stub_request(:post, evolution_url("/instance/create"))
       .to_return(provider_json({ instance: { instanceName: "IWA-1" }, hash: apikey, qrcode: { base64: qrcode } }, status: 201))
-  end
-
-  def stub_zapi_on_demand(instance_id: "INST-NOVA", token: "TOKEN-NOVO")
-    stub_request(:post, "#{ZAPI}/instances/integrator/on-demand")
-      .to_return(provider_json({ id: instance_id, token: token, due: "2026-12-01" }))
-    stub_request(:put, "#{ZAPI}/instances/#{instance_id}/token/#{token}/update-notify-sent-by-me")
-      .to_return(provider_json({ value: true }))
-  end
-
-  # --- Z-API -------------------------------------------------------------------
-
-  def stub_zapi_webhooks(instance_id, token)
-    stub_request(:put, %r{\A#{ZAPI}/instances/#{instance_id}/token/#{token}/update-webhook-})
-      .to_return(provider_json({ value: true }))
-  end
-
-  def stub_zapi_device(instance_id, token, phone: "5531971810932", name: "Padaria Pão Quente")
-    stub_request(:get, "#{ZAPI}/instances/#{instance_id}/token/#{token}/device")
-      .to_return(provider_json({ phone: phone, displayName: name }))
-    stub_request(:get, "#{ZAPI}/instances/#{instance_id}/token/#{token}/profile-picture")
-      .to_return(provider_json({ link: "https://cdn.exemplo.com/padaria.jpg" }))
   end
 
   # --- LeadChat ----------------------------------------------------------------

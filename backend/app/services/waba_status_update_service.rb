@@ -23,9 +23,8 @@ class WabaStatusUpdateService
 
   FAILED = "failed"
 
-  # Ordem de progressão de um envio. Espelha o consumidor Z-API
-  # (`RabbitmqConsumerService#messages_update_event`) para que webhooks fora de
-  # ordem — que a Meta reentrega com frequência — não regridam o status.
+  # Ordem de progressão de um envio, para que webhooks fora de ordem — que a Meta
+  # reentrega com frequência — não regridam o status.
   STATUS_RANK = { "pending" => 0, "server_ack" => 1, "delivery_ack" => 2, "read" => 3 }.freeze
 
   # Backoff para o caso em que o webhook chega antes de o envio persistir o wamid.

@@ -4,7 +4,7 @@ module Chats
   # igualdade exata de String, e o mesmo número chega em formas diferentes:
   #
   #   * 9º dígito: a Meta devolve `553171810932`, a base guarda `5531971810932`;
-  #   * sufixo: Z-API e Evolution podem guardar `...@s.whatsapp.net`.
+  #   * sufixo: a Evolution pode guardar `...@s.whatsapp.net`.
   #
   # `BrPhoneVariants` gera as formas equivalentes e a busca cobre todas, sempre pelo
   # prefixo do índice `{connector_id: 1, external_id: 1}`.

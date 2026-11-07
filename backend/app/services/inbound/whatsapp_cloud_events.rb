@@ -161,8 +161,8 @@ module Inbound
     end
 
     # Anúncio Click-to-WhatsApp: quando o lead chega por um anúncio, a Meta anexa um bloco
-    # `referral` na mensagem. Vira uma nota informativa (cartão do anúncio + saudação),
-    # no mesmo formato do fluxo Z-API. Role 'base' mantém fora do contexto da IA.
+    # `referral` na mensagem. Vira uma nota informativa (cartão do anúncio + saudação).
+    # Role 'base' mantém fora do contexto da IA.
     def handle_ad_greeting(chat, message)
       referral = message[:referral]
       return if referral.blank?
@@ -194,8 +194,8 @@ module Inbound
       diagnostics[:processed] << "ad_greeting:#{referral[:source_id]}"
     end
 
-    # Subconjunto do `referral`, no mesmo formato que o fluxo Z-API grava em
-    # `external_ad_reply`: a tela monta o cartão igual em qualquer canal.
+    # Subconjunto do `referral`, gravado em `external_ad_reply`: é dele que a tela monta o
+    # cartão do anúncio.
     def normalized_referral(referral)
       {
         title: referral[:headline],

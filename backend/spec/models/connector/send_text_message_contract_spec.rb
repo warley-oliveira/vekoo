@@ -10,8 +10,8 @@ require "rails_helper"
 # O contrato é: **devolver o id externo da mensagem como String, ou nil se o envio não
 # produziu um id.** Um objeto rico quebra os dois usos em silêncio: o Mongoid persiste o
 # `to_s` dele, e nenhum webhook de status acha a mensagem depois, e a checagem de verdade
-# nunca vira `failed`. Foi o que acontecia na origem com o WhatsApp Cloud, com Messenger e
-# Instagram e com a Z-API desconectada.
+# nunca vira `failed`. Foi o que acontecia na origem com o WhatsApp Cloud e com Messenger e
+# Instagram.
 #
 # Este spec percorre todas as implementações para que um conector novo, ou uma alteração num
 # existente, não volte a divergir sem quebrar o build.
@@ -85,50 +85,10 @@ RSpec.describe "Contrato de Connector#send_text_message" do
       end
     end
 
-    context "com o provedor zapi" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-      let(:url) { "https://api.z-api.io/instances/INST123/token/TOKABC/send-text" }
-
-      it "devolve o id do provedor como String" do
-        stub_request(:post, url).to_return(json_reply({ messageId: "OUT-Z" }))
-
-        expect(connector.send_text_message("5511999999999", "oi")).to eq("OUT-Z")
-      end
-
-      it "devolve nil sem o id" do
-        stub_request(:post, url).to_return(json_reply({}))
-
-        expect(connector.send_text_message("5511999999999", "oi")).to be_nil
-      end
-    end
-
     it "devolve nil desconectado" do
       closed = create(:connector_whatsapp_web, :aiva, organization: organization, status: :closed)
 
       expect(closed.send_text_message("5511999999999", "oi")).to be_nil
-    end
-  end
-
-  describe Connector::Zapi do
-    let(:connector) { create(:connector_zapi, organization: organization, instance_id: "Z", token: "T") }
-    let(:url) { "https://api.z-api.io/instances/Z/token/T/send-text" }
-
-    it "devolve o id como String" do
-      stub_request(:post, url).to_return(json_reply({ messageId: "Z-1" }))
-
-      expect(connector.send_text_message("5511999999999", "oi")).to eq("Z-1")
-    end
-
-    it "devolve nil sem o id" do
-      stub_request(:post, url).to_return(json_reply({}))
-
-      expect(connector.send_text_message("5511999999999", "oi")).to be_nil
-    end
-
-    it "devolve nil desconectado, nunca o ActiveModel::Error" do
-      connector.update!(status: :closed)
-
-      expect(connector.send_text_message("5511999999999", "oi")).to be_nil
     end
   end
 
@@ -213,7 +173,7 @@ RSpec.describe "Contrato de Connector#send_text_message" do
     Rails.application.eager_load! unless Rails.application.config.eager_load
 
     known = [
-      Connector::WhatsappCloud, Connector::WhatsappWeb, Connector::Zapi, Connector::FacebookMessenger,
+      Connector::WhatsappCloud, Connector::WhatsappWeb, Connector::FacebookMessenger,
       Connector::InstagramDirect, Connector::LeadChat, Connector::WebWidget
     ]
 

@@ -892,7 +892,7 @@ RSpec.describe Inbound::WhatsappCloudEvents do
       expect(reply.with(body: hash_including("to" => from_number.to_i, "text" => { "body" => "Contexto limpo" }))).to have_been_requested
     end
 
-    # Só Z-API e Evolution tinham este comando na origem.
+    # Só o WhatsApp do celular tinha este comando na origem.
     it "--RE-ACTIVE-ME-- é mensagem comum aqui" do
       receive_text(body: "--RE-ACTIVE-ME--")
 

@@ -142,8 +142,6 @@ env:
     - EVOLUTION_API_KEY
     - WHATSAPP_API_URL              # provedor AIVA: sem as duas, só ele para
     - WHATSAPP_API_KEY
-    - ZAPI_ACCOUNT_TOKEN            # Z-API: sem ele, criar instância falha
-    - ZAPI_CLIENT_TOKEN
     - GOOGLE_CALENDAR_CLIENT_ID     # Google Agenda: sem as duas, conectar responde googleNotConfigured
     - GOOGLE_CALENDAR_CLIENT_SECRET
     - GOOGLE_SHEETS_CLIENT_ID       # importar do Sheets: sem ela, a opção fica indisponível

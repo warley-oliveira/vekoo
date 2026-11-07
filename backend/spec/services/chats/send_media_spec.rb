@@ -92,17 +92,6 @@ RSpec.describe Chats::SendMedia do
       expect(send).to have_been_requested
     end
 
-    context "com a Z-API" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-      it "guarda o messageId" do
-        stub_request(:post, "https://api.z-api.io/instances/INST123/token/TOKABC/send-image")
-          .to_return(json_reply({ messageId: "ZAPI-1" }, status: 200))
-
-        expect(send_media.reload).to have_attributes(message_id: "ZAPI-1", status: "delivery_ack")
-      end
-    end
-
     context "com a WABA" do
       let(:connector) { create(:connector_whatsapp_cloud, organization: organization) }
       let(:graph_url) { "https://graph.facebook.com/v19.0/#{connector.phone_number_id}/messages" }

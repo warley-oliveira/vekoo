@@ -50,14 +50,6 @@ RSpec.describe Chats::InboundCommands do
       expect(ChatMessage::Base.where(chat_id: chat.id).exists?).to be(false)
     end
 
-    it "zera o freio de contato" do
-      Rails.cache.write(Chats::InboundThrottle.counter_key(chat), 20)
-
-      handle("CCTX")
-
-      expect(Rails.cache.read(Chats::InboundThrottle.counter_key(chat))).to be_nil
-    end
-
     it "responde para o destino informado" do
       handle("CCTX", to: "5531900000000")
 
@@ -77,13 +69,10 @@ RSpec.describe Chats::InboundCommands do
     end
 
     it "se o canal falhar, o erro sobe para o job tentar de novo" do
-      zapi = create(:connector_whatsapp_web, :zapi, organization: organization)
-      zapi_chat = create(:chat, connector: zapi, external_id: "5531971810932")
-      stub_request(:post, "https://api.z-api.io/instances/INST123/token/TOKABC/send-text").to_return(status: 500, body: "fora")
+      allow(Connector::WhatsappWeb::Providers::Base).to receive(:sleep)
+      stub_request(:post, "http://evolution.test/message/sendText/#{connector.instance_name}").to_return(status: 500, body: "fora")
 
-      expect {
-        described_class.handle(chat: zapi_chat, connector: zapi, text: "CCTX", to: "5531971810932")
-      }.to raise_error(ZapiClient::Error, /500/)
+      expect { handle("CCTX") }.to raise_error(/Failed to send message/)
     end
   end
 

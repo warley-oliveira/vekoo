@@ -8,10 +8,8 @@ module Agenda
   #
   #   Agenda::ProfessionalWhatsappNotifier.new(booking, template: text).call
   class ProfessionalWhatsappNotifier
-    NON_OFFICIAL_CONNECTORS = [ Connector::WhatsappWeb, Connector::Zapi ].freeze
-
     def self.deliverable_connector?(connector)
-      NON_OFFICIAL_CONNECTORS.any? { |type| connector.is_a?(type) } && connector.active?
+      connector.is_a?(Connector::WhatsappWeb) && connector.active?
     end
 
     def initialize(booking, template:, label: nil)

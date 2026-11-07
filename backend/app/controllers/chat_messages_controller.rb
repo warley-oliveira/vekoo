@@ -5,12 +5,11 @@ class ChatMessagesController < PlatformController
   include InboxAccess
 
   MAX_BULK_DELETE = 100
-  DELETE_SCOPES = %w[me everyone].freeze
 
   require_permission :chat
 
   before_action :set_chat
-  before_action :set_message, only: %i[destroy reaction]
+  before_action :set_message, only: :reaction
 
   # GET /chats/:chat_id/messages?beforeId=&limit=&initial=
   #
@@ -31,32 +30,19 @@ class ChatMessagesController < PlatformController
     render_error(status: :unprocessable_content, code: "invalidCursor", field: "beforeId")
   end
 
-  # DELETE /chats/:chat_id/messages/:id: apaga para todos, onde o provedor deixa.
-  def destroy
-    result = Messages::DeletionService.new(message: @message).call
-    return render_message_refusal(result) unless result.success?
-
-    @chat.refresh_last_message_preview!
-    render json: { id: @message.id.to_s, deletedAt: ApplicationSerializer.epoch_ms(@message.deleted_at) }
-  end
-
-  # POST /chats/:chat_id/messages/bulk-delete { messageIds: [...], scope: "me" | "everyone" }
-  #
-  # POST, e não DELETE com corpo como na origem: proxies e clientes podem descartar o corpo de um
-  # DELETE. Sem provedor que revogue, `everyone` vira `me`: olhe `scopeApplied`.
+  # POST /chats/:chat_id/messages/bulk-delete { messageIds: [...] }: apaga só daqui, o contato
+  # continua vendo. POST, e não DELETE com corpo como na origem: proxies e clientes podem descartar
+  # o corpo de um DELETE.
   def bulk_destroy
     ids = Array(params[:message_ids]).map(&:to_s).compact_blank
     return render_error(status: :unprocessable_content, code: "unprocessable", field: "messageIds", message: t("connectors.messages.none_given")) if ids.empty?
     return render_error(status: :unprocessable_content, code: "tooManyMessages", field: "messageIds") if ids.size > MAX_BULK_DELETE
 
-    # Escopo desconhecido cai em `me`, o que não fala com o provedor. Vem da origem.
-    scope = params[:scope].to_s.presence_in(DELETE_SCOPES) || "me"
-
-    result = Messages::BulkDeletionService.new(chat: @chat, message_ids: ids, scope: scope, account: current_account).call
+    result = Messages::BulkDeletionService.new(chat: @chat, message_ids: ids).call
     return render_message_refusal(result) unless result.success?
 
     @chat.refresh_last_message_preview!
-    render json: { scopeApplied: result.scope_applied, deletedIds: result.deleted_ids, revokedIds: result.revoked_ids }
+    render json: { deletedIds: result.deleted_ids }
   end
 
   # POST /chats/:chat_id/messages/:id/reaction { emoji }. Emoji vazio remove.

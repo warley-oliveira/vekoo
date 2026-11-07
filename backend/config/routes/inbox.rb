@@ -17,7 +17,7 @@ resources :chats, only: %i[index show create update destroy] do
     post "suggest-reply", action: :suggest_reply
   end
 
-  resources :messages, only: %i[index destroy], controller: "chat_messages" do
+  resources :messages, only: :index, controller: "chat_messages" do
     collection do
       post "bulk-delete", action: :bulk_destroy
       post :audio

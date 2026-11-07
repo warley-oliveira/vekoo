@@ -253,21 +253,6 @@ RSpec.describe Chats::SendOperatorMessage do
 
       expect(send_message("Oi", reply_to_message_id: "").reply_to_message_id).to be_nil
     end
-
-    context "na Z-API" do
-      let(:connector) { create(:connector_whatsapp_web, :zapi, organization: organization) }
-
-      it "manda o id da citada em messageId" do
-        replied
-        send_text = stub_request(:post, "https://api.z-api.io/instances/INST123/token/TOKABC/send-text")
-                    .with(body: hash_including("messageId" => "WAID-PARENT", "phone" => "5511999999999"))
-                    .to_return(status: 200, body: { messageId: "OUT-1" }.to_json, headers: { "Content-Type" => "application/json" })
-
-        send_message("Resposta", reply_to_message_id: replied.id.to_s)
-
-        expect(send_text).to have_been_requested
-      end
-    end
   end
 
   describe "nome do colaborador" do

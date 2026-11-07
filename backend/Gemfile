@@ -60,7 +60,7 @@ gem "mongoid", "~> 9.1"
 # Tempo real e agendamento de jobs.
 gem "sidekiq-scheduler", "~> 6.0"
 
-# Clientes HTTP dos provedores (WhatsApp, Z-API, Meta, Apify, webhooks de saída).
+# Clientes HTTP dos provedores (WhatsApp, Meta, Apify, webhooks de saída).
 gem "httparty", "~> 0.24"
 gem "faraday", "~> 2.15"
 gem "whatsapp_sdk", "~> 0.12"
