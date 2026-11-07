@@ -22,7 +22,7 @@ class ScheduledActionsController < PlatformController
   private
 
   def set_chat
-    @chat = Chat.scoped(current_organization.id, params[:chat_id])
+    @chat = Chat.visible_to(current_account).where(id: params[:chat_id].to_s).take
     render_not_found unless @chat
   end
 end
