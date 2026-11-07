@@ -21,7 +21,7 @@ module Push
     end
 
     def perform(device_id, payload)
-      device = PushDevice.includes(:account).find_by(id: device_id)
+      device = PushDevice.includes(:user).find_by(id: device_id)
       return unless device
 
       Push::Delivery.deliver(device, payload)

@@ -10,7 +10,7 @@
 # o Products::BackfillEmbeddingsJob recorrente.
 #
 #   bin/rails runner 'load "db/seeds/products.rb"'
-organization = Account.find_by(email: "marina.duarte@exemplo.com.br")&.organization
+organization = Account.for_email("marina.duarte@exemplo.com.br", role: "owner")&.organization
 
 if organization.nil?
   puts "Catálogo: conta de demonstração não encontrada. Rode db/seeds.rb inteiro."

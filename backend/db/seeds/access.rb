@@ -29,6 +29,22 @@ module VekooAccessSeeds
     }
   }.freeze
 
+  # A segunda organização da Marina: ela cuida das redes de uma clínica, onde entra como gerente.
+  # É o que deixa a demonstração exercitar a escolha de organização e duas abas ao mesmo tempo.
+  SECOND_ORGANIZATION = {
+    name: "Clínica Bem Viver",
+    owner: { name: "Patrícia Gomes", email: "patricia.gomes@exemplo.com.br", phone: "5511932109876" },
+    quick_replies: [
+      [ "Horários", "Atendemos de segunda a sexta, das 8h às 19h, e aos sábados até o meio-dia." ],
+      [ "Endereço", "Rua Pamplona, 1200, conjunto 42 — Jardim Paulista, São Paulo." ],
+      [ "Convênios", "Atendemos particular e emitimos recibo para reembolso do seu plano." ]
+    ]
+  }.freeze
+
+  # O suporte do Vekoo da demonstração: entra em qualquer organização. Nunca em produção, nem com
+  # SEED_DEMO_DATA: é uma senha conhecida que daria acesso a tudo.
+  SUPPORT = { name: "Suporte Vekoo", email: "suporte@vekoo.com.br", password: "suporte-vekoo-123" }.freeze
+
   PEOPLE = [
     { name: "Rafael Nunes", email: "rafael.nunes@exemplo.com.br", phone: "5511987654321",
       group: "Gerente", teams: %w[Comercial] },
@@ -77,7 +93,7 @@ module VekooAccessSeeds
   module_function
 
   def call
-    owner = Account.find_by(email: DEMO_EMAIL)
+    owner = Account.for_email(DEMO_EMAIL, role: "owner")
     return unless owner
 
     organization = owner.organization
@@ -88,6 +104,8 @@ module VekooAccessSeeds
     seed_settings(organization)
     seed_notices(owner)
     seed_alerts(organization)
+    seed_second_organization(owner)
+    seed_support unless Rails.env.production?
 
     organization
   end
@@ -103,19 +121,50 @@ module VekooAccessSeeds
     TEAMS.each { |team| organization.teams.find_or_create_by!(name: team[:name]) }
   end
 
+  # A pessoa é achada pelo e-mail; a senha só na primeira vez: rodar de novo não desfaz uma senha
+  # trocada em /profile.
+  def user!(name:, email:, phone: nil, password: PASSWORD)
+    user = User.find_or_initialize_by(email: email)
+    user.assign_attributes(name: name, phone: phone)
+    user.password = password if user.new_record?
+    user.save!
+    user
+  end
+
   def seed_person(organization, person)
-    account = organization.accounts.find_or_initialize_by(email: person[:email])
+    user = user!(name: person[:name], email: person[:email], phone: person[:phone])
+    account = organization.accounts.find_or_initialize_by(user: user)
     account.assign_attributes(
-      name: person[:name],
-      phone: person[:phone],
       role: "member",
       setup_only: person.fetch(:setup_only, false),
       access_role: organization.access_roles.find_by!(name: person[:group]),
       teams: organization.teams.where(name: person[:teams])
     )
-    # Só na primeira vez: rodar de novo não desfaz uma senha trocada em /profile.
-    account.password = PASSWORD if account.new_record?
     account.save!
+  end
+
+  def seed_second_organization(marina)
+    spec = SECOND_ORGANIZATION
+    organization = Organization.find_or_create_by!(name: spec[:name]) { |created| created.created_at = 20.days.ago }
+    AccessRole.seed_defaults_for(organization)
+
+    owner = user!(**spec[:owner])
+    organization.accounts.find_or_initialize_by(user: owner).update!(role: "owner")
+    organization.accounts.find_or_initialize_by(user: marina.user).update!(
+      role: "member", access_role: organization.access_roles.find_by!(name: "Gerente")
+    )
+
+    spec[:quick_replies].each do |name, content|
+      QuickReply.find_or_create_by!(organization_id: organization.id, trigger: name.parameterize) do |reply|
+        reply.assign_attributes(name: name, content: content)
+      end
+    end
+    organization
+  end
+
+  def seed_support
+    user = user!(name: SUPPORT[:name], email: SUPPORT[:email], password: SUPPORT[:password])
+    user.update!(master: true)
   end
 
   def seed_settings(organization)

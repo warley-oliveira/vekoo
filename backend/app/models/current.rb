@@ -1,5 +1,6 @@
-# O contexto da requisição (ou do job que o restabelece). Em Vekoo o workspace é
-# a `Organization` e a pessoa é a `Account`.
+# O contexto da requisição (ou do job que o restabelece). A pessoa é o `User` da sessão; o
+# vínculo dela com a organização desta aba é a `Account` (cabeçalho `X-Account`), e a
+# organização vem dele.
 class Current < ActiveSupport::CurrentAttributes
-  attribute :account, :organization, :session
+  attribute :user, :account, :organization, :session
 end

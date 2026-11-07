@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe PushDevice do
   let(:account) { create(:account, role: "member") }
 
-  it "herda a organização da pessoa" do
+  it "é da pessoa, e não do vínculo: vale em todas as organizações dela" do
     device = create(:push_device, account: account)
 
-    expect(device.organization_id).to eq(account.organization_id)
+    expect(device.user).to eq(account.user)
   end
 
   it "exige endpoint e as duas chaves" do
@@ -67,34 +67,34 @@ RSpec.describe PushDevice do
     let(:attributes) { { endpoint: "https://fcm.googleapis.com/fcm/send/abc", p256dh_key: "p", auth_key: "a", user_agent: "Chrome" } }
 
     it "cria a assinatura" do
-      device = described_class.register!(account: account, **attributes)
+      device = described_class.register!(user: account.user, **attributes)
 
       expect(device).to be_persisted
-      expect(device).to have_attributes(account: account, p256dh_key: "p", auth_key: "a", user_agent: "Chrome")
+      expect(device).to have_attributes(user: account.user, p256dh_key: "p", auth_key: "a", user_agent: "Chrome")
     end
 
     it "atualiza a assinatura do mesmo navegador, sem duplicar" do
-      device = described_class.register!(account: account, **attributes)
+      device = described_class.register!(user: account.user, **attributes)
 
       expect {
-        described_class.register!(account: account, **attributes, p256dh_key: "nova")
+        described_class.register!(user: account.user, **attributes, p256dh_key: "nova")
       }.not_to change(described_class, :count)
 
       expect(device.reload.p256dh_key).to eq("nova")
     end
 
-    it "troca o dono, e a organização junto, quando outra pessoa entra no mesmo navegador" do
-      device = described_class.register!(account: account, **attributes)
+    it "troca o dono quando outra pessoa entra no mesmo navegador" do
+      device = described_class.register!(user: account.user, **attributes)
       other = create(:account, role: "member")
 
-      described_class.register!(account: other, **attributes)
+      described_class.register!(user: other.user, **attributes)
 
-      expect(device.reload).to have_attributes(account_id: other.id, organization_id: other.organization_id)
+      expect(device.reload).to have_attributes(user_id: other.user_id)
     end
 
     it "levanta o erro de validação" do
       expect {
-        described_class.register!(account: account, **attributes, auth_key: "")
+        described_class.register!(user: account.user, **attributes, auth_key: "")
       }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end

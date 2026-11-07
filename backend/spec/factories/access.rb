@@ -30,8 +30,13 @@ FactoryBot.define do
     metadata { {} }
   end
 
+  # O aparelho é da pessoa. `account:` continua aceito: vale a pessoa dele.
   factory :push_device do
-    account
+    transient do
+      account { nil }
+    end
+
+    user { account&.user || association(:user) }
     sequence(:endpoint) { |n| "https://push.exemplo.com.br/assinatura-#{n}" }
     p256dh_key { "chave-p256dh" }
     auth_key { "chave-auth" }

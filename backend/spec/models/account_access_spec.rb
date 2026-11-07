@@ -192,13 +192,14 @@ RSpec.describe Account do
       expect(AccountNotice.where(id: other.id).exists?).to be(true)
     end
 
-    it "leva junto os dispositivos de push e os vínculos com departamentos" do
+    it "leva junto os vínculos com departamentos, e deixa a pessoa e os aparelhos dela" do
       device = create(:push_device, account: account)
       membership = create(:team_membership, account: account, team: create(:team, organization: organization))
 
       account.destroy!
 
-      expect(PushDevice.exists?(device.id)).to be(false)
+      expect(PushDevice.exists?(device.id)).to be(true)
+      expect(User.exists?(account.user_id)).to be(true)
       expect(TeamMembership.exists?(membership.id)).to be(false)
     end
   end

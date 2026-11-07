@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_003801) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -28,20 +28,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "access_role_id"
     t.datetime "created_at", null: false
-    t.string "email", null: false
     t.datetime "last_seen_at"
-    t.string "locale"
-    t.string "name", null: false
     t.uuid "organization_id", null: false
-    t.string "password_digest", null: false
-    t.string "phone"
     t.datetime "revoked_at"
     t.string "role", default: "member", null: false
     t.boolean "setup_only", default: false, null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.boolean "support", default: false, null: false
+    t.bigserial "number", null: false
     t.index ["access_role_id"], name: "index_accounts_on_access_role_id"
-    t.index ["email"], name: "index_accounts_on_email", unique: true
+    t.index ["number"], name: "index_accounts_on_number", unique: true
     t.index ["organization_id"], name: "index_accounts_on_organization_id"
+    t.index ["user_id", "organization_id"], name: "index_accounts_on_user_id_and_organization_id", unique: true
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -360,14 +359,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   end
 
   create_table "password_resets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
     t.string "token_digest", null: false
     t.datetime "updated_at", null: false
     t.datetime "used_at"
-    t.index ["account_id"], name: "index_password_resets_on_account_id"
+    t.uuid "user_id", null: false
     t.index ["token_digest"], name: "index_password_resets_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
   create_table "pipeline_board_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -805,17 +804,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   end
 
   create_table "push_devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
     t.text "auth_key", null: false
     t.datetime "created_at", null: false
     t.text "endpoint", null: false
-    t.uuid "organization_id", null: false
     t.text "p256dh_key", null: false
     t.datetime "updated_at", null: false
     t.text "user_agent"
-    t.index ["account_id"], name: "index_push_devices_on_account_id"
+    t.uuid "user_id", null: false
     t.index ["endpoint"], name: "index_push_devices_on_endpoint", unique: true
-    t.index ["organization_id"], name: "index_push_devices_on_organization_id"
+    t.index ["user_id"], name: "index_push_devices_on_user_id"
   end
 
   create_table "quick_replies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -830,7 +827,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   end
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
     t.string "ip_address"
@@ -838,8 +834,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
     t.string "token_digest", null: false
     t.datetime "updated_at", null: false
     t.string "user_agent"
-    t.index ["account_id"], name: "index_sessions_on_account_id"
+    t.uuid "user_id", null: false
     t.index ["token_digest"], name: "index_sessions_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "support_accesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "organization_id", null: false
+    t.uuid "account_id"
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.index ["account_id"], name: "index_support_accesses_on_account_id"
+    t.index ["created_at"], name: "index_support_accesses_on_created_at"
+    t.index ["organization_id"], name: "index_support_accesses_on_organization_id"
+    t.index ["user_id"], name: "index_support_accesses_on_user_id"
   end
 
   create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -886,9 +896,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
     t.index ["organization_id"], name: "index_uploads_on_organization_id"
   end
 
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.string "name", null: false
+    t.string "phone"
+    t.string "locale"
+    t.boolean "master", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
   add_foreign_key "access_roles", "organizations", on_delete: :cascade
   add_foreign_key "accounts", "access_roles", on_delete: :nullify
   add_foreign_key "accounts", "organizations"
+  add_foreign_key "accounts", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attachments", "organizations", on_delete: :cascade
@@ -915,7 +938,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   add_foreign_key "notifications", "organizations"
   add_foreign_key "oauth_credentials", "organizations", on_delete: :cascade
   add_foreign_key "organization_alerts", "organizations", on_delete: :cascade
-  add_foreign_key "password_resets", "accounts"
+  add_foreign_key "password_resets", "users"
   add_foreign_key "pipeline_boards", "organizations", on_delete: :cascade
   add_foreign_key "pipeline_card_activities", "accounts", on_delete: :nullify
   add_foreign_key "pipeline_card_activities", "pipeline_cards", column: "card_id", on_delete: :cascade
@@ -971,10 +994,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_001101) do
   add_foreign_key "product_item_categories", "product_categories", on_delete: :cascade
   add_foreign_key "product_item_categories", "product_items", on_delete: :cascade
   add_foreign_key "product_items", "organizations", on_delete: :cascade
-  add_foreign_key "push_devices", "accounts", on_delete: :cascade
-  add_foreign_key "push_devices", "organizations", on_delete: :cascade
+  add_foreign_key "push_devices", "users", on_delete: :cascade
   add_foreign_key "quick_replies", "organizations", on_delete: :cascade
-  add_foreign_key "sessions", "accounts"
+  add_foreign_key "sessions", "users"
+  add_foreign_key "support_accesses", "accounts", on_delete: :nullify
+  add_foreign_key "support_accesses", "organizations", on_delete: :cascade
+  add_foreign_key "support_accesses", "users", on_delete: :cascade
   add_foreign_key "team_memberships", "accounts", on_delete: :cascade
   add_foreign_key "team_memberships", "teams", on_delete: :cascade
   add_foreign_key "teams", "organizations", on_delete: :cascade

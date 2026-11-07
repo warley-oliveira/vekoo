@@ -87,7 +87,7 @@ RSpec.describe "Dispositivos de push", type: :request do
         p256dh_key: "chave-publica",
         auth_key: "segredo",
         user_agent: "Chrome de teste",
-        organization_id: organization.id
+        user_id: account.user_id
       )
       expect(json).to include("id" => device.id, "endpoint" => subscription[:endpoint], "userAgent" => "Chrome de teste")
     end
@@ -108,7 +108,7 @@ RSpec.describe "Dispositivos de push", type: :request do
 
       post "/push-devices", params: { subscription: subscription }, headers: headers, as: :json
 
-      expect(device.reload.account).to eq(account)
+      expect(device.reload.user).to eq(account.user)
     end
 
     it "passa a assinatura também entre organizações" do
@@ -116,7 +116,7 @@ RSpec.describe "Dispositivos de push", type: :request do
 
       post "/push-devices", params: { subscription: subscription }, headers: headers, as: :json
 
-      expect(device.reload).to have_attributes(account_id: account.id, organization_id: organization.id)
+      expect(device.reload).to have_attributes(user_id: account.user_id)
     end
 
     it "responde 400 sem a assinatura" do

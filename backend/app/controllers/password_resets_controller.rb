@@ -14,8 +14,8 @@ class PasswordResetsController < ApplicationController
     with: -> { render_too_many_requests }
 
   def create
-    account = Account.find_by(email: params.require(:passwordReset)[:email].to_s.strip.downcase)
-    reset = account && PasswordReset.open!(account)
+    user = User.find_by_login(params.require(:passwordReset)[:email])
+    reset = user && PasswordReset.open!(user)
 
     payload = { status: "accepted" }
     # Sem serviço de e-mail nesta etapa, o token volta na resposta em
@@ -30,18 +30,18 @@ class PasswordResetsController < ApplicationController
     reset = PasswordReset.find_usable(params[:token])
     return render_error(status: :not_found, code: "resetTokenInvalid", message: t("auth.reset_token_invalid")) if reset.nil?
 
-    account = reset.account
-    account.password = params.require(:passwordReset)[:password]
+    user = reset.user
+    user.password = params.require(:passwordReset)[:password]
 
-    if account.save
+    if user.save
       reset.use!
       # Os outros pedidos abertos valeriam por até 2 horas, depois de a pessoa já ter trocado a senha.
-      account.password_resets.usable.update_all(used_at: Time.current)
+      user.password_resets.usable.update_all(used_at: Time.current)
       # Inclui o WebSocket: quem estava com a sessão antiga não fica escutando.
-      account.end_sessions!
+      user.end_sessions!
       head :no_content
     else
-      render_invalid(account)
+      render_invalid(user)
     end
   end
 end

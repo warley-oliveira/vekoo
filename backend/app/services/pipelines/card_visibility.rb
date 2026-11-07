@@ -12,7 +12,7 @@ module Pipelines
       return true unless @board.card_visibility_restricted?
       # Na origem, o `super_user`. Aqui, "dono vê tudo" (`Account#permission_level`), e o dono não
       # tem grupo: sem esta linha, ele não conseguiria nem salvar a própria regra.
-      return true if @account.owner?
+      return true if @account.full_access?
 
       @board.card_visibility_bypass_role_ids.include?(@account.access_role_id)
     end

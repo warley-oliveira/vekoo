@@ -48,7 +48,7 @@ class ProcessContactImportJob < ApplicationJob
   end
 
   def process_rows(rows, connector, organization)
-    assignees = lookup(Chats::Assignment.assignable_accounts(organization))
+    assignees = lookup(Chats::Assignment.assignable_accounts(organization).joins(:user), name: "users.name", id: "accounts.id")
     teams = lookup(organization.teams)
 
     invalid, valid = rows.partition { |row| BrPhoneVariants.digits_of(row.phone).blank? }
@@ -78,8 +78,8 @@ class ProcessContactImportJob < ApplicationJob
     ContactImportRow.where(id: valid.map(&:id)).update_all(status: "completed", processed_at: Time.current, updated_at: Time.current)
   end
 
-  def lookup(scope)
-    scope.pluck(:name, :id).to_h { |name, id| [ name.to_s.strip.downcase, id.to_s ] }
+  def lookup(scope, name: :name, id: :id)
+    scope.pluck(name, id).to_h { |value, key| [ value.to_s.strip.downcase, key.to_s ] }
   end
 
   # Nome que não acha ninguém é ignorado: a conversa entra, sem atribuição.

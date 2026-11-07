@@ -149,7 +149,7 @@ class ChatsController < PlatformController
   # não atende: não aparece, e atribuir a essa pessoa responde 422.
   def people
     accounts = Chats::Assignment.assignable_accounts(current_organization)
-                                .includes(:team_memberships).with_attached_avatar.order(:name, :id)
+                                .includes(:team_memberships).with_attached_avatar.by_name
 
     render json: { people: accounts.map { |account| PersonSerializer.directory_entry(account) } }
   end

@@ -123,7 +123,7 @@ module VekooInsightsSeeds
   module_function
 
   def call
-    owner = Account.find_by(email: DEMO_EMAIL)
+    owner = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless owner
 
     organization = owner.organization
@@ -140,7 +140,7 @@ module VekooInsightsSeeds
   # O que já existe fica: `insert_all` pula o dia que já tem linha, e o que o job gravou continua lá.
   def seed_daily_stats(organization)
     today = organization.reporting_zone.today
-    people = organization.accounts.active.where(setup_only: false).order(:name).pluck(:id)
+    people = organization.accounts.active.where(setup_only: false).by_name.pluck("accounts.id")
     days = ((today - (HISTORY_DAYS - 1).days)..today).to_a
 
     rows = days.each_with_index.map do |day, index|

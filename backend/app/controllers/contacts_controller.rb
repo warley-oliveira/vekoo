@@ -11,6 +11,7 @@ class ContactsController < PlatformController
   # `download_export` é aberto pelo navegador num link: quem autoriza é o token assinado.
   skip_before_action :require_session, only: :download_export
   skip_before_action :set_current_context, only: :download_export
+  skip_account_requirement only: :download_export
 
   BULK_ACTIONS = %i[bulk_add_tags bulk_remove_tags bulk_assign_user bulk_update_status bulk_toggle_automation].freeze
 
@@ -134,7 +135,7 @@ class ContactsController < PlatformController
   def filter_users
     assignable = Chats::Assignment.assignable_accounts(current_organization).pluck(:id).to_set
 
-    current_organization.accounts.active.order(:name, :id).pluck(:id, :name).map do |id, name|
+    current_organization.accounts.active.by_name.pluck("accounts.id", "users.name").map do |id, name|
       { id: id, name: name, assignable: assignable.include?(id) }
     end
   end

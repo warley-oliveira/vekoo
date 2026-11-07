@@ -16,7 +16,7 @@ module Pipelines
 
     # Para `includes` de quem lista muitas pessoas: é o que evita duas consultas por avatar.
     def preload
-      { avatar_attachment: :blob }
+      { user: { avatar_attachment: :blob } }
     end
   end
 end

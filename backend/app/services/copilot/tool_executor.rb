@@ -148,7 +148,7 @@ module Copilot
       if args["assigned_to_me"]
         scope = scope.where(assigned_account_id: account.id.to_s)
       elsif args["assigned_to_user"].present?
-        person = organization.accounts.find_by(email: args["assigned_to_user"].to_s.strip.downcase)
+        person = organization.accounts.with_email(args["assigned_to_user"]).take
         return { error: I18n.t("inbox.copilot.person_not_found") } unless person
 
         scope = scope.where(assigned_account_id: person.id.to_s)
@@ -284,7 +284,7 @@ module Copilot
         if args["assign_to_me"]
           account.id.to_s
         elsif args["user_email"].present?
-          Chats::Assignment.assignable_accounts(organization).find_by(email: args["user_email"].to_s.strip.downcase)&.id&.to_s ||
+          Chats::Assignment.assignable_accounts(organization).with_email(args["user_email"]).take&.id&.to_s ||
             (return { error: I18n.t("inbox.copilot.person_not_found") })
         end
 
@@ -474,7 +474,7 @@ module Copilot
       from = parse_date(args["date_from"])&.beginning_of_day
       to = parse_date(args["date_to"])&.end_of_day
 
-      members = organization.accounts.active.includes(:teams).order(:name).map do |person|
+      members = organization.accounts.active.includes(:teams).by_name.map do |person|
         total = visible_chats.where(assigned_account_id: person.id.to_s)
         total = total.where(:last_message_at.gte => from, :last_message_at.lte => to) if from && to
 
@@ -499,12 +499,12 @@ module Copilot
 
       people =
         if args["user_email"].present?
-          person = organization.accounts.find_by(email: args["user_email"].to_s.strip.downcase)
+          person = organization.accounts.with_email(args["user_email"]).take
           return { error: I18n.t("inbox.copilot.person_not_found") } unless person
 
           [ person ]
         else
-          organization.accounts.active.order(:name).to_a
+          organization.accounts.active.by_name.to_a
         end
 
       {
@@ -517,7 +517,7 @@ module Copilot
       from = parse_date(args["date_from"])&.beginning_of_day || 30.days.ago.beginning_of_day
       to = parse_date(args["date_to"])&.end_of_day || current_time
 
-      rankings = organization.accounts.active.order(:name).map do |person|
+      rankings = organization.accounts.active.by_name.map do |person|
         metrics = agent_metrics(person, from, to)
         metrics.merge(performance_score: performance_score(metrics))
       end

@@ -360,15 +360,15 @@ module VekooSeeds
     )
     organization.save!
 
+    # A pessoa pelo e-mail (na produção migrada, ela já existe com o id da conta antiga), e o
+    # vínculo dela com a organização pelo id fixo.
+    user = User.find_or_initialize_by(email: DEMO_EMAIL)
+    user.assign_attributes(name: "Marina Duarte", password: DEMO_PASSWORD)
+    user.created_at ||= organization.created_at
+    user.save!
+
     account = Account.find_or_initialize_by(id: id_for("conta-marina"))
-    account.assign_attributes(
-      organization: organization,
-      name: "Marina Duarte",
-      email: DEMO_EMAIL,
-      password: DEMO_PASSWORD,
-      role: "owner",
-      created_at: organization.created_at
-    )
+    account.assign_attributes(organization: organization, user: user, role: "owner", created_at: organization.created_at)
     account.save!
 
     organization
