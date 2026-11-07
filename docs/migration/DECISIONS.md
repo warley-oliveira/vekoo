@@ -393,3 +393,10 @@ Encontrados ao portar o motor de scripts. Aqui estão corrigidos; **na origem, s
 - Sem organização no contexto, `collection.*` cai num espaço de tabelas compartilhado; e `$where` chega ao Mongo pelo filtro.
 
 Os dois de portal mais simples: a tabela de métodos HTTP e o `any_of` em `search_records`. Ver "Buracos que a origem tinha" em `docs/migration/api/script-engine.md`.
+
+Encontrados na revisão de segurança (sec-review). Confirmados lendo o código, sem executar nada lá.
+
+- `app/models/integration/z_api.rb:207`, `lib/zapi_client/media.rb:68`, `app/sidekiq/audio_message_job.rb:510`, `app/models/integration/lead_chat.rb:75`, `app/models/integration/whatsapp_api/providers/evolution_api.rb:441`: `HTTParty.get` em URL que vem do corpo do webhook. `app/controllers/api/v1/zapi_controller.rb` não confere nada além de o conector existir, então um webhook forjado faz o servidor buscar qualquer endereço interno e guardar a resposta como mídia da conversa. `app/models/integration/whatsapp_business.rb:732` faz o mesmo com a URL do cabeçalho de modelo.
+- `app/controllers/concerns/audio_processing.rb` e `app/models/integration/whatsapp_business.rb:575`: `ffmpeg -i` sem lista de formatos. Uma playlist HLS enviada como áudio lê outro arquivo do servidor. Em `whatsapp_business.rb:575` o comando ainda é texto, passando por shell.
+- `Gemfile.lock`: Active Storage 7.0.8.4 com `ruby-vips` e `load_defaults 7.0`. É a combinação da CVE-2026-66066, e as versões corrigidas começam na linha 7.2.
+- As rotas do Active Storage não foram desligadas lá, e o upload direto (`/rails/active_storage/direct_uploads`) não confere sessão. Não confirmado em execução: lá a aplicação não é só de API, e o CSRF pode barrar.
