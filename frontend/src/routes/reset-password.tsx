@@ -89,6 +89,7 @@ export function ResetPasswordPage() {
         }
       >
         <Button
+          nativeButton={false}
           render={<Link to="/forgot-password" />}
           className="w-full"
           size="lg"

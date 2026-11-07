@@ -93,6 +93,7 @@ export function ForgotPasswordPage() {
               variant="ghost"
               size="sm"
               className="mt-1.5 -ml-1.5 text-accent-foreground"
+              nativeButton={false}
               render={<Link to={`/reset-password/${devToken}`} />}
             >
               <KeyRound /> {t("auth.forgot.devTokenOpen")}
@@ -102,6 +103,7 @@ export function ForgotPasswordPage() {
         <Button
           variant="outline"
           className="mt-4 h-10 w-full"
+          nativeButton={false}
           render={<Link to="/login" />}
         >
           <ArrowLeft /> {t("auth.forgot.backToLogin")}
