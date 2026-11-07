@@ -1,6 +1,6 @@
 # Contrato da API: domínio "connectors"
 
-O coração do atendimento: conversa, mensagem e canais (WhatsApp Cloud, WhatsApp Web com os provedores Evolution, AIVA e Z-API, Z-API direta, Instagram Direct, Messenger, LeadChat e widget do site), webhooks de entrada, mídia e tempo real.
+O coração do atendimento: conversa, mensagem e canais (WhatsApp Cloud, WhatsApp Web com os provedores Evolution e AIVA, Instagram Direct, Messenger, LeadChat e widget do site), webhooks de entrada, mídia e tempo real.
 
 **A listagem de conversas e de mensagens por REST não está aqui:** é do domínio inbox, em cima de `ChatSerializer` e `ChatMessageSerializer` (formatos em [Conversa e mensagem](#conversa-e-mensagem)). Aqui ficam os canais de tempo real, que já enviam e recebem.
 
@@ -72,14 +72,13 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 | `connectorType` | `type` na resposta | Corpo | Depois de criar |
 |---|---|---|---|
 | `whatsapp_cloud` | `whatsapp_cloud` | `code` (Embedded Signup) ou `accessToken`; `phoneNumberId`, `wabaId`, `businessId` | `active`, ou `failed` com o motivo |
-| `whatsapp_web` | `whatsapp_web` | `providerApi?` (`evolution_api`, `aiva_api`, `zapi`), `phoneNumberPairing?` | `pending`: o QR code chega por `ConnectorsChannel` |
-| `zapi` | `zapi` | `instanceId`, `token`, `accountToken` | `pending` |
+| `whatsapp_web` | `whatsapp_web` | `providerApi?` (`evolution_api`, `aiva_api`), `phoneNumberPairing?` | `pending`: o QR code chega por `ConnectorsChannel` |
 | `lead_chat` | `lead_chat` | `phoneNumberId`, `accessToken` | `active`, ou `failed` |
 | `meta_channels` | `facebook_messenger`, e `instagramConnector` se a página tiver conta profissional | `code` (Facebook Login) | `active` |
 | `instagram_direct` | `instagram_direct` | `code` (Instagram Login), `redirectUri` | `active` |
 | `web_widget` | `web_widget` | nada | `inactive`: a pessoa personaliza e liga em `PATCH /connectors/:id/widget` |
 
-`aiva_api` em `providerApi` cria sobre a Evolution, como a tela de escolha da origem fazia. Sem `providerApi`, vale a flag `zapi` da organização ou `WHATSAPP_WEB_DEFAULT_PROVIDER`.
+`aiva_api` em `providerApi` cria sobre a Evolution, como a tela de escolha da origem fazia. Sem `providerApi`, vale `WHATSAPP_WEB_DEFAULT_PROVIDER`. Tipo ou provedor que não existe responde `422`: `invalidConnectorType` em `connectorType`, ou `unprocessable` em `providerApi`.
 
 **Se a ativação falhar, a resposta continua `201`,** com `status: "failed"` e o motivo em `errorMessage`: o canal fica criado para a pessoa ver e tentar de novo em `POST /connectors/:id/activate`, em vez de sobrar um órfão a cada tentativa.
 
@@ -97,18 +96,18 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 
 ### O que cada canal faz
 
-| Ação | Cloud | Web | Z-API | Instagram | Messenger | LeadChat | Widget |
-|---|---|---|---|---|---|---|---|
-| `activate` | sim, com `code` | sim, gera QR | sim, gera QR | sim, com `code` | sim, com `code` | sim | sim |
-| `pause` | sim | sim | sim | sim | sim | sim | sim |
-| `reload` | falha¹ | sim | nada a fazer | não² | não² | nada a fazer | nada a fazer |
-| `shutdown` | falha¹ | sim | sim | não² | não² | sim | sim |
-| `disconnect` | não² | não² | sim | sim | sim | não² | sim |
+| Ação | Cloud | Web | Instagram | Messenger | LeadChat | Widget |
+|---|---|---|---|---|---|---|
+| `activate` | sim, com `code` | sim, gera QR | sim, com `code` | sim, com `code` | sim | sim |
+| `pause` | sim | sim | sim | sim | sim | sim |
+| `reload` | falha¹ | sim | não² | não² | nada a fazer | nada a fazer |
+| `shutdown` | falha¹ | sim | não² | não² | sim | sim |
+| `disconnect` | não² | não² | sim | sim | não² | sim |
 
 ¹ Responde `422 connectorActionFailed`: a WABA não tem instância para reiniciar, como na origem. Não ofereça.
 ² Responde `422 connectorTypeMismatch`.
 
-Diferenças úteis por provedor em `whatsapp_web`: `reactionsSupported` (só Evolution) e `deleteForEveryoneSupported` (só Z-API) vêm no próprio conector. A tela esconde o que não existe.
+Diferença útil por provedor em `whatsapp_web`: `reactionsSupported` (só Evolution) vem no próprio conector. A tela esconde o que não existe.
 
 ### `GET /connectors`
 
@@ -151,8 +150,7 @@ Resposta `200`:
       "profilePictureUrl": null,
       "numberId": "5541930001234",
       "numberFormatted": "(41) 93000-1234",
-      "reactionsSupported": true,
-      "deleteForEveryoneSupported": false
+      "reactionsSupported": true
     }
   ],
   "meta": {
@@ -222,8 +220,7 @@ Resposta `200`:
     "profilePictureUrl": null,
     "numberId": null,
     "numberFormatted": null,
-    "reactionsSupported": true,
-    "deleteForEveryoneSupported": false
+    "reactionsSupported": true
   },
   "extras": {
     "qrCode": "data:image/png;base64,QRDETESTE"
@@ -264,8 +261,7 @@ Resposta `201`:
     "profilePictureUrl": null,
     "numberId": null,
     "numberFormatted": null,
-    "reactionsSupported": true,
-    "deleteForEveryoneSupported": false
+    "reactionsSupported": true
   },
   "instagramConnector": null
 }
@@ -437,8 +433,7 @@ Resposta `200`:
     "profilePictureUrl": null,
     "numberId": "5541930001234",
     "numberFormatted": "(41) 93000-1234",
-    "reactionsSupported": true,
-    "deleteForEveryoneSupported": false
+    "reactionsSupported": true
   }
 }
 ```
@@ -497,8 +492,7 @@ Resposta `200`:
     "profilePictureUrl": null,
     "numberId": "5541930001234",
     "numberFormatted": "(41) 93000-1234",
-    "reactionsSupported": true,
-    "deleteForEveryoneSupported": false
+    "reactionsSupported": true
   }
 }
 ```
@@ -1070,9 +1064,8 @@ Quem chama é o provedor, nunca a tela. Sem sessão. Respondem `200` sem corpo e
 | `GET`, `POST /inbound/meta-messaging` | Instagram e Messenger | Desafio com `META_MESSAGING_VERIFY_TOKEN`. Assinatura `X-Hub-Signature-256`. |
 | `POST /inbound/evolution/:codename?token=` | Evolution e AIVA | `codename` é `IWA-<id do conector>`. `token`, abaixo. |
 | `POST /inbound/lead-chat/:id/event?token=` | LeadChat | `token`, abaixo. |
-| `POST /inbound/zapi/:connectorId/on-message-received`, `on-message-send`, `on-whatsapp-disconnected`, `on-whatsapp-connected`, todas com `?token=` | Z-API | `token`, abaixo. |
 
-Evolution, Z-API e LeadChat não assinam o que mandam. O `token` é um HMAC do id do conector, derivado de `secret_key_base` (`Connector::Base#inbound_token`), e vai na URL que a ativação entrega ao provedor. Token ausente ou errado responde `404`, igual a conector que não existe. Conector criado antes disso precisa ter o webhook configurado de novo no provedor. Trocar `secret_key_base` invalida todos, como já invalida os tokens cifrados.
+Evolution e LeadChat não assinam o que mandam. O `token` é um HMAC do id do conector, derivado de `secret_key_base` (`Connector::Base#inbound_token`), e vai na URL que a ativação entrega ao provedor. Token ausente ou errado responde `404`, igual a conector que não existe. Conector criado antes disso precisa ter o webhook configurado de novo no provedor. Trocar `secret_key_base` invalida todos, como já invalida os tokens cifrados.
 
 A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois, em desenvolvimento não há o que conferir, e em produção responde `403 invalidSignature`. Como o webhook de aplicativo da Meta é um só, o `entry.id` do evento escolhe o conector da WABA, e só conta quem a Meta já confirmou: `waba_verified_at`, gravado na ativação. Conector ativado antes disso precisa ser ativado de novo para receber por essa rota. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
 
@@ -1563,7 +1556,6 @@ A conexão de um canal. Params: `{ "connectorId" }`. Exige `core_settings`, porq
 | `qr_updated` | `{ status, base64, pairCode }` | QR code novo. `pairCode` só vem quando a conexão pediu código de pareamento. Na Evolution ele chega como `qrcode.pairingCode`, tanto na resposta de criar a instância quanto no webhook. |
 | `success_scan` | `{ status, base64: "" }` | Leu e conectou. Releia o conector. |
 | `qr_timeout` | `{ status, base64: "" }` | Expirou. O conector fica `failed`. |
-| `qr_error` | `{ status, error }` | Z-API recusou gerar o QR code. |
 
 ```json
 {
@@ -1579,8 +1571,6 @@ A conexão de um canal. Params: `{ "connectorId" }`. Exige `core_settings`, porq
   "base64": ""
 }
 ```
-
-**Envia:** `generate_qr_code`, sem dados, a cada 8 segundos na tela de QR da Z-API, que invalida o código em 20. Nos outros provedores não faz nada.
 
 ### `Widget::ChatChannel`
 
@@ -1779,11 +1769,10 @@ A automação volta sozinha por `EnableContactJob`, que confere um token: pausa 
 
 ```ruby
 Messages::ReactionService.new(message: message, emoji: "👍", account: account).call
-Messages::DeletionService.new(message: message).call                                     # para todos
-Messages::BulkDeletionService.new(chat: chat, message_ids: ids, scope: "everyone", account: account).call
+Messages::BulkDeletionService.new(chat: chat, message_ids: ids).call                     # só daqui
 ```
 
-Todos devolvem um resultado com `success?` e `errors`, já traduzidos. Em lote, se alguma mensagem não puder ser apagada para todos (só Z-API, só as nossas, em até 60 horas), o lote inteiro cai para `me`, que apaga só daqui: olhe `scope_applied`.
+Os dois devolvem um resultado com `success?` e `errors`, já traduzidos. Apagar é sempre só daqui: nenhum canal ligado hoje revoga a mensagem no aplicativo do contato.
 
 ### Receber: o ponto de entrada da automação
 
@@ -1853,7 +1842,6 @@ A semente não preenche `DailyChatStat`: o formato de `metrics` é do domínio i
 | `EVOLUTION_API_URL`, `EVOLUTION_API_KEY` | Servidor da Evolution. |
 | `WHATSAPP_API_URL`, `WHATSAPP_API_KEY` | Servidor do provider AIVA. |
 | `WHATSAPP_WEB_DEFAULT_PROVIDER` | Provedor padrão do WhatsApp Web. |
-| `ZAPI_ACCOUNT_TOKEN`, `ZAPI_CLIENT_TOKEN` | Conta da Z-API. |
 | `OPENAI_ACCESS_TOKEN` | Transcrição de áudio pelo Whisper. Sem ela, o áudio fica sem transcrição. |
 | `MEDIA_PROXY_ALLOWED_HOSTS` | Hosts externos aceitos em `/media/*`. |
 | `WIDGET_BASE_URL`, `WIDGET_API_BASE_URL`, `WIDGET_ASSETS_BASE_URL` | De onde o snippet do widget carrega o script e fala com a API. |

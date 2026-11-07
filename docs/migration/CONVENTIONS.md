@@ -40,7 +40,7 @@ Ele reescreve os nomes e aponta o que exige decisão. **Não renomeie à mão de
 | Origem | Vekoo |
 |---|---|
 | `Conversation` / `MessageHistory::*` / `ConversationTag` | `Chat` / `ChatMessage::{Base,Text,Image,Audio,Media}` / `ChatTag` |
-| `Integration::*` | `Connector::*` (`WhatsappBusiness`→`WhatsappCloud`, `WhatsappApi`→`WhatsappWeb`, `ZApi`→`Zapi`, `WebBubble`→`WebWidget`) |
+| `Integration::*` | `Connector::*` (`WhatsappBusiness`→`WhatsappCloud`, `WhatsappApi`→`WhatsappWeb`, `WebBubble`→`WebWidget`) |
 | `MessageTemplate` | `WhatsappTemplate` |
 | `ChatSnippet` / `ChatAttachment` / `ChatFilter` | `QuickReply` / `Attachment` / `ChatView` |
 | `InstanceVariable::Definition` / `Value` | `CustomField` / `CustomFieldValue` |

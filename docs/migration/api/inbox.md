@@ -309,7 +309,7 @@ Pelo corpo:
 
 ### `GET /chats/:id`
 
-A conversa, a lista de campos personalizados que a tela mostra e o provedor do canal. `connectorProvider`: `evolution_api`, `aiva_api` ou `zapi` no WhatsApp Web, e o tipo do canal nos outros (`whatsapp_cloud`, `instagram_direct`...). **É `zapi`, e não `z_api` como na origem:** `canDeleteMessage.js` e `BulkDeleteDialog.tsx` comparam com o valor antigo. Para decidir o que oferecer, prefira `deleteForEveryoneSupported` e `reactionsSupported`, em `GET /chats/self-filter`.
+A conversa, a lista de campos personalizados que a tela mostra e o provedor do canal. `connectorProvider`: `evolution_api` ou `aiva_api` no WhatsApp Web, e o tipo do canal nos outros (`whatsapp_cloud`, `instagram_direct`...). Para decidir o que oferecer, prefira `reactionsSupported`, em `GET /chats/self-filter`.
 
 Resposta `200`:
 
@@ -383,7 +383,7 @@ Resposta `200`:
 
 ### `POST /chats`
 
-Começa uma conversa pelo número, só em canal de WhatsApp (`whatsapp_web`, `whatsapp_cloud`, `zapi`). Corpo: `connectorId`, `externalId`, `userName` e, no WhatsApp Cloud com vários números, `phoneNumberId`. `201` se criou. **Se a conversa já existe, sobe na lista e responde `200`:** a busca entende as formas de um número brasileiro, com ou sem o nono dígito.
+Começa uma conversa pelo número, só em canal de WhatsApp (`whatsapp_web`, `whatsapp_cloud`). Corpo: `connectorId`, `externalId`, `userName` e, no WhatsApp Cloud com vários números, `phoneNumberId`. `201` se criou. **Se a conversa já existe, sobe na lista e responde `200`:** a busca entende as formas de um número brasileiro, com ou sem o nono dígito.
 
 `POST /chats`:
 
@@ -561,7 +561,7 @@ Resposta `200`:
 
 ### `GET /chats/self-filter`
 
-Os canais de atendimento, para os filtros e o seletor do chat, no formato de `ConnectorSerializer` (ver [connectors.md](connectors.md)). `reactionsSupported` e `deleteForEveryoneSupported` dizem o que o canal permite. Calendário não entra, porque não conversa.
+Os canais de atendimento, para os filtros e o seletor do chat, no formato de `ConnectorSerializer` (ver [connectors.md](connectors.md)). `reactionsSupported` diz se o canal permite reagir. Calendário não entra, porque não conversa.
 
 Resposta `200`:
 
@@ -600,8 +600,7 @@ Resposta `200`:
       "profilePictureUrl": null,
       "numberId": "5541930001234",
       "numberFormatted": "(41) 93000-1234",
-      "reactionsSupported": true,
-      "deleteForEveryoneSupported": false
+      "reactionsSupported": true
     }
   ]
 }
@@ -830,29 +829,9 @@ Resposta `422`:
 }
 ```
 
-### `DELETE /:id`
-
-Apaga para todos, onde o provedor deixa: hoje, só Z-API, em até 60 horas. A mensagem que a loja enviou é revogada no WhatsApp, e a que o contato enviou some só daqui. Responde `{ "id", "deletedAt" }`. A prévia da conversa na lista passa a mostrar a mensagem anterior, sem a conversa mudar de lugar. Nos outros canais:
-
-Resposta `422`:
-
-```json
-{
-  "error": {
-    "code": "unprocessable",
-    "message": "Este canal não permite apagar para todos.",
-    "details": {
-      "base": [
-        "Este canal não permite apagar para todos."
-      ]
-    }
-  }
-}
-```
-
 ### `POST /bulk-delete`
 
-`messageIds` (até 100) e `scope`: `me` (padrão, some só daqui) ou `everyone`. **Sem provedor que revogue, `everyone` vira `me`: olhe `scopeApplied`.** É `POST`, e não `DELETE` com corpo como na origem, porque proxies e clientes podem descartar o corpo de um `DELETE`.
+`messageIds` (até 100). Apaga só daqui: o contato continua vendo, porque nenhum canal ligado hoje revoga a mensagem. A prévia da conversa na lista passa a mostrar a mensagem anterior. É `POST`, e não `DELETE` com corpo como na origem, porque proxies e clientes podem descartar o corpo de um `DELETE`.
 
 `POST /chats/:id/messages/bulk-delete`:
 
@@ -861,8 +840,7 @@ Resposta `422`:
   "messageIds": [
     "6aee25255e6b67d74a2d025f",
     "6aee25255e6b67d74a2d0260"
-  ],
-  "scope": "everyone"
+  ]
 }
 ```
 
@@ -870,12 +848,10 @@ Resposta `200`:
 
 ```json
 {
-  "scopeApplied": "me",
   "deletedIds": [
     "6aee25255e6b67d74a2d025f",
     "6aee25255e6b67d74a2d0260"
-  ],
-  "revokedIds": []
+  ]
 }
 ```
 
@@ -2050,7 +2026,7 @@ As linhas viram conversas em segundo plano, no canal escolhido: `ProcessContactI
 
 ### `POST /contact-imports`
 
-`connectorId` (só canal que começa conversa por número: WhatsApp e Z-API; nos outros, `connectorTypeMismatch`), `contacts` (até 1000), `includeCountryCode` (acrescenta o 55 a quem não tem, sem confundir com o DDD 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
+`connectorId` (só canal que começa conversa por número, o WhatsApp; nos outros, `connectorTypeMismatch`), `contacts` (até 1000), `includeCountryCode` (acrescenta o 55 a quem não tem, sem confundir com o DDD 55), `batchIndex`, `totalBatches`, `fileName` (o arquivo que a tela leu, para o histórico). Cada contato: `externalId`, `userName`, `assignedUserName`, `departmentName`, estes dois resolvidos pelo nome. Quem está em `setupOnly` não é atribuído. Listas maiores vão em vários lotes, um `POST` por lote, como na tela da origem.
 
 `POST /contact-imports`:
 
@@ -2557,7 +2533,6 @@ Os campos ficam preenchidos nas conversas que já existem (sempre como texto), a
 Com Puma, Sidekiq e cliente real, foram exercitadas todas as rotas e os dois canais deste contrato, com três níveis de visibilidade e uma segunda organização. Ficou de fora, ou só em spec:
 
 - **Provedor de verdade.** Áudio, arquivo, reação e o envio do copiloto foram até um servidor falso, que imita a resposta da Evolution. O WhatsApp não recebeu nada, e a conversão por `ffmpeg` rodou, mas ninguém ouviu o resultado.
-- **Apagar para todos com sucesso.** Só a Z-API revoga, e o endereço dela é fixo no código. O caminho feliz de `DELETE .../messages/:id`, e `everyone` em `bulk-delete`, estão só em spec, com a Z-API simulada. Pela API de verdade foi exercitada a recusa da Evolution.
 - **Exportação e importação grandes.** Rodaram com dezenas de linhas. Os limites (5000 ids, 1000 por lote) estão em spec, sem volume real.
 - **Link de download vencido** (`410`) e o job que remove o arquivo: só em spec, para não esperar 1 hora.
 - **Sem créditos, `busy` e falha do modelo** na resposta sugerida e no copiloto: só em spec. O caminho feliz foi com a API da Anthropic de verdade.
@@ -2590,8 +2565,7 @@ Conferido contra `aiva-frontend/src/api`. Na origem o id da conta ia na URL, e a
 | | alterar e apagar | `PATCH` e `DELETE /chat-tags/:id` |
 | `use-auto-remove-waiting-tag.ts` | `useAutoRemoveWaitingTag` | `DELETE /chat-tags/:id/chats/:chatId`. A regra é da tela, e a chave fica em `organization.settings.chatSettings.autoRemoveWaitingOperatorTag`. |
 | `use-chat-messages.ts` | `useGetChatMessages`: histórico | `GET /chats/:id/messages` |
-| | apagar uma | `DELETE /chats/:id/messages/:id` |
-| | apagar em lote | `POST /chats/:id/messages/bulk-delete` (na origem, `DELETE` com corpo) |
+| | apagar, uma ou várias | `POST /chats/:id/messages/bulk-delete` (na origem, `DELETE` com corpo) |
 | | enviar, reagir e receber | `ChatChannel`. Reagir também em `POST .../messages/:id/reaction`. |
 | `use-infinite-unified-contacts.ts` | `useInfiniteUnifiedContacts` | `GET /unified-contacts`, `ChatListChannel` |
 | `use-unified-contact-messages.ts` | `useUnifiedContactMessages` | `GET /unified-contacts/:externalId/messages`, `ChatChannel` por conversa |
@@ -2634,7 +2608,7 @@ Tudo em camelCase e com data em milissegundos. Além disso, mudou de nome:
 | Na origem | Aqui |
 |---|---|
 | `integration_id` | `connectorId` |
-| `integration_provider` (`z_api`) | `connectorProvider` (`zapi`) |
+| `integration_provider` | `connectorProvider` |
 | `integrations` em `self_filter` | `connectors` |
 | `assigned_user_id` | `assignedAccountId` |
 | `department_id` | `teamId` |

@@ -121,7 +121,6 @@ RENAMES = [
   # --- conectores (Integration) ------------------------------------------------
   [/Integration::WhatsappBusiness/, 'Connector::WhatsappCloud'],
   [/Integration::WhatsappApi/, 'Connector::WhatsappWeb'],
-  [/Integration::ZApi/, 'Connector::Zapi'],
   [/Integration::WebBubble/, 'Connector::WebWidget'],
   [/Integration::/, 'Connector::'],
   [/WhatsappBusiness/, 'WhatsappCloud'],

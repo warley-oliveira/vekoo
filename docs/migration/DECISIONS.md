@@ -98,10 +98,10 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 ### Integrações: tela (fe-connectors)
 
 - **Conexão:** no celular, o código de pareamento é o padrão, e não o QR. O diálogo pode ser fechado durante a espera, com aviso; só fica travado enquanto há pedido em andamento.
-- **Linguagem:** "Z-API" saiu da escolha e da etiqueta do canal, e fica só em "Conexão", nos dados. `IWA-...` é trocado na tela pelo nome do tipo, inclusive nos avisos da API.
-- **Ações por tipo:** widget só tem ligar e desligar, porque o site exige `active`; Z-API direta só oferece "Desconectar". Canal sem provedor gravado também avisa do descarte na pausa, porque o back-end usa AIVA nesse caso.
+- **Linguagem:** `IWA-...` é trocado na tela pelo nome do tipo, inclusive nos avisos da API.
+- **Ações por tipo:** widget só tem ligar e desligar, porque o site exige `active`. Canal sem provedor gravado também avisa do descarte na pausa, porque o back-end usa AIVA nesse caso.
 - **Messenger foi ligado** (estava comentado na origem) e usa `VITE_FB_APP_ID`, porque o back troca o código com `META_APP_ID`.
-- **Criar Z-API direta e LeadChat não é oferecido**, como na origem; os que já existem funcionam.
+- **Criar LeadChat não é oferecido**, como na origem; os que já existem funcionam.
 - **Modelos:** variáveis detectadas do texto; máximo de 3 botões, sendo 1 de telefone e 2 de URL; URL dinâmica pede exemplo. A mídia do cabeçalho é um campo de URL pública por enquanto.
 - **De fora:** histórico de desconexão (a API não expõe), e a documentação completa do widget virou um guia resumido, porque depende do bundle.
 - **CSP:** `connect.facebook.net` em `script-src`; `www.facebook.com` e `web.facebook.com` em `connect-src` e `frame-src`. O `frame-src` é precaução: nenhum frame foi observado em teste.
@@ -298,7 +298,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - **"Respondidos" é dado novo**, que nem a API nem a origem tinham: a primeira mensagem do contato depois do envio conta (`Chat#outreach_recipient_id`, `Recipient#replied_at`, `Campaign#replied_count`), e quem recebeu duas campanhas responde à última. Toca uma linha em `Chats::InboundFlow`; erro ali não bloqueia a mensagem.
 - **Pausar não confirma:** o aviso traz "Retomar". Na origem confirmava. Cancelar e excluir confirmam.
-- **Veredito do monitor:** só falha pesa, porque a Z-API não avisa entrega. "Algumas falhas" é ≥ 5% e ≥ 2; "muitas" é ≥ 20% e ≥ 3.
+- **Veredito do monitor:** só falha pesa, porque entregue e lido chegam atrasados, e há canal que nem avisa. "Algumas falhas" é ≥ 5% e ≥ 2; "muitas" é ≥ 20% e ≥ 3.
 - **Clique em rascunho** vai direto para `/edit`. Lote no cliente, 4 por vez; "Duplicar" só com uma campanha selecionada. "Cancelada" em tom neutro.
 - **Lista própria de campanhas**, em vez de `DataTable`, para só a linha que mudou redesenhar.
 - **Fora:** `FeatureLocked`, `PackageLimitAlert` e `UpgradePromptDialog` (planos fora do escopo; a permissão decide); vídeo "Ver como funciona", que a CSP bloqueia e mostra o produto antigo. `NewCampaignFab` virou botão no cabeçalho, e o anel de progresso virou barra.
@@ -364,7 +364,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 Corrigidos, cada um com spec que falhava antes:
 
 - **SSRF com leitura por URL de mídia** em todos os provedores: conta nova forjava webhook com endereço interno e lia a resposta como mídia.
-- **Webhooks de provedor sem autenticação** (Evolution, Z-API, LeadChat): agora há token por conector na URL. **Quem já tem conector precisa reconfigurar o webhook no provedor.** A Meta passa a recusar em produção sem segredo configurado.
+- **Webhooks de provedor sem autenticação** (Evolution, LeadChat): agora há token por conector na URL. **Quem já tem conector precisa reconfigurar o webhook no provedor.** A Meta passa a recusar em produção sem segredo configurado.
 - **Sequestro de WABA em `reroute_by_entry`:** só vale conector com `waba_verified_at`. **WABA existente precisa ser reativado.**
 - **Limites por IP burláveis** pelo cabeçalho `Forwarded`, e a Cloudflare não era proxy confiável.
 - **Upload direto do Active Storage aberto sem conta**; bloqueio do libvips; sem `ffprobe` em anexo.
@@ -400,6 +400,15 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Erro de rede não mostra o endereço do provedor** em execução, alerta, gatilho e canal.
 - **Campanha recusa fluxo de outra organização.**
 
+### Z-API removido (rm-zapi)
+
+- **O provedor Z-API saiu por inteiro**, por decisão de produto: o conector próprio (`Connector::Zapi`), o provedor `zapi` do WhatsApp Web (`Providers::Zapi`, `zapi_instance_id`, `zapi_token`, a flag `features["zapi"]`), o cliente `lib/zapi_client`, as rotas `/inbound/zapi/...` e `Inbound::ZapiEvents`, `Connector::DisconnectionLog` (só a Z-API gravava), `ZAPI_ACCOUNT_TOKEN` e `ZAPI_CLIENT_TOKEN`. WhatsApp Cloud, Evolution, AIVA e os outros canais não mudam.
+- **Pedir o que saiu responde o erro de validação de sempre:** `connectorType: "zapi"` dá `422 invalidConnectorType`, e `providerApi: "zapi"` dá `422 unprocessable` em `providerApi`. Webhook antigo apontado para `/inbound/zapi/...` responde `404` e não enfileira nada.
+- **"Apagar para todos" saiu junto**, porque só a Z-API revogava mensagem. `DELETE /chats/:id/messages/:id` e `Messages::DeletionService` não existem mais; `bulk-delete` recebe só `messageIds`, apaga só daqui e responde `{ deletedIds }`; o evento `messages_deleted` perdeu `scope`; o conector perdeu `deleteForEveryoneSupported`. A tela oferece só "Excluir para mim". `deletedAt` e `deletedScope` continuam na mensagem, para o que já foi apagado.
+- **Freio de contato:** a contagem por período (25 mensagens em 4 minutos adiam a automação em 10 minutos e somam advertência) só valia na Z-API, e saiu. A regra das advertências (`red_flag_count` ≥ 5 desliga a automação) continua no WhatsApp Web, como antes, em `Chats::InboundThrottle`.
+- **Tela de conexão:** saiu a opção "WhatsApp do celular, com mais recursos" e o pedido de QR novo a cada 8 segundos (`generate_qr_code`, `qr_error` em `ConnectorsChannel`).
+- **Para quem lê o código:** `Inbound::ProcessWebhookJob` perdeu o argumento `event`, que só a Z-API usava. Nada cria mais conector Z-API, nem a semente nem `platform:sync`, e a produção nunca teve um. Num banco antigo, porém: um documento `_type: "Connector::Zapi"` faz qualquer consulta que o alcance levantar `Mongoid::Errors::UnknownModel`, inclusive a lista de canais da organização inteira; e um `Connector::WhatsappWeb` com `provider_api: "zapi"` carrega, cai na AIVA para falar com o provedor e não salva mais (validação de `provider_api`). Os dois devem ser apagados, com as conversas deles: `Connector::Base.collection.find("$or" => [{ _type: "Connector::Zapi" }, { provider_api: "zapi" }])`.
+
 ## 2. Pendências por frente
 
 ### Ponta a ponta e varredura: precisam de decisão
@@ -425,7 +434,7 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Visão geral × painel personalizado:** 154 contra 14 conversas na demonstração, porque a semente sorteia `DailyChatStat` e o painel consulta conversas. Na rodada ponta a ponta, com o rollup real, os números bateram (13 = 13), mas nunca numa base real.
 - **Semente:** alertas citam canais que não existem; webhook diz "Nenhuma requisição ainda" com 90 no histórico; anexos são PNGs de cor chapada. O banco compartilhado só perde o aviso de modelos e o gatilho "negócio ganho" depois de `db:seed`.
 - **Acabamento:** "(sem valor)" cru em "Conversas por atendente"; alvos de toque menores em "2 execuções em 7 dias", "Ver histórico" e "Renomear carrossel"; conversa no celular sem `h1`, porque o nome fica dentro de um botão.
-- **Não exercitado:** Evolution, Z-API, Meta, OpenAI, Whisper, Google e Apify reais; geração de carrossel por IA de ponta a ponta; Puma com vários processos, volume, reinício do Postgres, `kamal-proxy`, Cloudflare, Safari, Firefox e aparelho físico.
+- **Não exercitado:** Evolution, Meta, OpenAI, Whisper, Google e Apify reais; geração de carrossel por IA de ponta a ponta; Puma com vários processos, volume, reinício do Postgres, `kamal-proxy`, Cloudflare, Safari, Firefox e aparelho físico.
 
 ### Segurança: precisam de decisão
 
@@ -433,9 +442,9 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **`backend/config/master.key` versionado desde o primeiro commit**, e no GitHub. Trocar a chave, tirar do git e pôr no `.gitignore`. Antes, conferir se `.env.deploy` tem `SECRET_KEY_BASE` próprio; com o valor do repositório, quem lê o repositório forja links assinados e decifra tokens de conector. `.env.deploy.example` manda copiar desse arquivo.
 - **Copiloto `send_messages`:** a aprovação humana existe só no prompt, sem trava no servidor. Uma mensagem de contato pode induzir o envio para até 50 conversas.
 - **`/campaigns/:id/import-contacts` ignora `chat_list_to`:** quem tem `campaigns` importa a base inteira e lê os telefones em `recipients`.
-- **Comandos no canal:** qualquer contato com `--RE-ACTIVE-ME--` religa a automação durante atendimento humano, e com `CCTX` zera o limite de mensagens.
+- **Comandos no canal:** qualquer contato com `--RE-ACTIVE-ME--` religa a automação durante atendimento humano.
 - **WABA sem dono:** evento de `entry.id` desconhecido fica no conector da URL, ou seja, em outra organização.
-- **Mídia enviada por URL:** Evolution e Z-API baixam o endereço do lado delas. Se a Evolution estiver na rede interna, é SSRF por tabela: precisa de regra de saída no host.
+- **Mídia enviada por URL:** a Evolution baixa o endereço do lado dela. Se ela estiver na rede interna, é SSRF por tabela: precisa de regra de saída no host.
 - **Token de 30 dias em `?token=` no WebSocket:** o Rails filtra; proxy e Cloudflare não foram conferidos. Um ticket curto resolveria.
 - **Sem cota por organização:** cadastro grátis usa Apify, Maps, embeddings, Whisper e a instância Evolution por conta do servidor, enche disco (`/attachments` aceita 100 MB por arquivo) e a fila `scripts`.
 - **Segredos sem cifra em repouso** em `hook_actions` e `pipeline_triggers`; cabeçalhos em claro em `GET /flows/:id` para quem tem `flows`; corpo e query da ação sem máscara.
@@ -450,14 +459,13 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - Revisão de segurança: `ffmpeg` processa arquivo enviado pelo usuário em `Chats::SendAudio` (sem shell, mas demuxers de playlist podem ler arquivo local); conferir `Chats::Filters` e os operadores das agregações.
 - Filtros de contato por `team_id` e `custom_attributes` não têm índice, e não foram medidos em base grande. Exportação: se a aba fechar, o link se perde, porque só o canal avisa; uma notificação resolveria.
 - Teto de 16 MB no `$facet` do quadro de funil não foi reproduzido: passar dele vira 500.
-- `Inbound::ZapiEvents` não trata status, então o destinatário de campanha pela Z-API fica em `sent`.
 - Rubocop: os arquivos reciclados do `be-core` têm ofensas de estilo (aspas simples); rodar `rubocop -a` no back-end inteiro ao final.
 - Copiloto: seis rodadas de verificação usaram a chave real da Anthropic do `.env`, sem medir o gasto de tokens (be-inbox e be-agenda).
 - Semente do catálogo usa fotos genéricas de paisagem em itens de roupa: só afeta a demonstração.
 - Não testado até aqui: OpenAI real, jobs recorrentes disparando no Sidekiq, importação em alto volume, push em navegador de verdade, Safari e Firefox, arrastar arquivo de verdade para o `FileDropzone`, aparelho real (iOS e Android: área segura, teclado virtual, arrastar folha), clique em notificação do sistema, pedido real de permissão, deploy no Cloudflare.
 - Revisão de segurança: `/media` não confere a organização (o acesso é por chave ou id assinado); `has_one :proxy` tem `destroy` em instância em memória.
 - Não confirmados com a Meta: textos do `WabaErrorHandler` para 132005, 132007, 132015 e 132016. Nenhum provedor real foi exercitado, por falta de credenciais.
-- Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION, pareamento na Z-API (`zapi_get_phone_code` existe, mas nenhum fluxo chama).
+- Não confirmados contra provedor real: Embedded Signup até o fim, modelos COPY_CODE e AUTHENTICATION.
 - Bundle embutível do widget (`aiva-frontend/widget`): fora desta migração; precisa se adaptar ao novo contrato e atualizar o SRI em `config/widget_releases.yml`.
 - Dashboard: faceta por `flow_id` em `MessageVolumeDaily`, `flow_id` em `MessageAuthorship.projection` e o card de ranking por fluxo, agora que a mensagem guarda o fluxo. A fonte `messages` não expõe `usage_*`. `aiCosts` em `/catalog` ainda não lista os créditos dos blocos.
 - Processo de scripts com concorrência 2 pode virar gargalo em IA com ferramenta.

@@ -1033,8 +1033,7 @@ Resposta `200`:
       "profilePictureUrl": null,
       "numberId": "5541300000001",
       "numberFormatted": "(41) 30000-0001",
-      "reactionsSupported": true,
-      "deleteForEveryoneSupported": false
+      "reactionsSupported": true
     }
   ]
 }
@@ -1952,7 +1951,7 @@ O preço do "no máximo uma vez": quem cair no meio de um envio, ou tiver o envi
 
 - **automation:** `Flows::InboundDispatcher` precisa ler `chat.outreach_flow_id` para saber qual fluxo atende quem respondeu a uma campanha. É um id guardado sem validação, porque `Flow` ainda não existia: **confira a organização** e trate o que não existir como "sem fluxo". E preencher `Outreach::AvailableFlows.for(organization)`, mantendo a forma `{ id:, name: }`.
 - **inbox:** a mídia depende de `Attachment`, por `Media::AttachmentLookup`, usando `file_url`, `name` e `file.blob` (`content_type`, `filename`). Até lá, `POST /campaigns` com mídia responde `mediaNotFound`. `import-contacts` recebe ids de conversa: se `/contacts` devolver outro id, é preciso ajustar.
-- **connectors:** há duas alterações pontuais em arquivos de lá. `Inbound::EvolutionEvents#messages_update_event` chama `Outreach::RecipientStatus` nas mensagens de campanha: na origem, o destinatário só era atualizado quando a mensagem não era encontrada, então entregue e lido quase nunca chegavam a ele. E `Providers::Base.with_retry` respeita `send_once`. `Inbound::ZapiEvents` não trata status de entrega: quem envia pela Z-API fica em `sent`.
+- **connectors:** há duas alterações pontuais em arquivos de lá. `Inbound::EvolutionEvents#messages_update_event` chama `Outreach::RecipientStatus` nas mensagens de campanha: na origem, o destinatário só era atualizado quando a mensagem não era encontrada, então entregue e lido quase nunca chegavam a ele. E `Providers::Base.with_retry` respeita `send_once`.
 
 ## Para o deploy
 

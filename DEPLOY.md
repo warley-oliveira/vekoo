@@ -328,7 +328,7 @@ Quem acrescentar SDK externo ajusta o `_headers` no mesmo commit, e confere o co
 | Google Cloud, cliente do **Sheets** | Origem JavaScript `https://my.vekoo.app`, escopo `drive.file`, Picker API ligada | Importar do Sheets falha |
 | Cloudflare, zona `vekoo.app` | *Network → WebSockets* ligado (é o padrão). Regra de WAF ou Bot Fight Mode não pode barrar `/inbound/*` | Sem tempo real / sem webhook |
 
-Evolution, Z-API e LeadChat não pedem nada: a ativação do canal configura o webhook, a partir de `BACKEND_URL`.
+Evolution e LeadChat não pedem nada: a ativação do canal configura o webhook, a partir de `BACKEND_URL`.
 
 ## 8. O que conferir depois do deploy
 
@@ -420,7 +420,7 @@ Não é configuração que falta: é código, ou decisão. A lista completa est�
 - **E-mail.** Nenhum mailer envia nada. `POST /password-resets` responde 202 em produção e **a pessoa não recebe o link**: "esqueci a senha" não funciona até um serviço de e-mail entrar.
 - **CSP do Google Sheets.** O assistente de campanha carrega scripts do Google, e o `_headers` não os libera. Sem isso, o erro só aparece em produção. Ao integrar a frente, acrescente, depois de a revisão de segurança olhar: `script-src https://accounts.google.com https://apis.google.com`; `connect-src https://sheets.googleapis.com`; `frame-src https://accounts.google.com https://docs.google.com`.
 - **Bundle embutível do widget.** A API `/widget/v1` e o `/widget-cable` estão no ar, mas o script que o cliente cola no site, em `WIDGET_BASE_URL`, não faz parte desta migração.
-- **`features` da organização** (`zapi`, `sync_message_history`) só se ligam pelo console.
+- **`features` da organização** (`sync_message_history`) só se ligam pelo console.
 - **Armazenamento de anexos** é disco local, no volume: não dá para ter dois hosts da aplicação sem trocar por S3.
 
 ## 12. O que foi verificado
@@ -461,7 +461,7 @@ Não é configuração que falta: é código, ou decisão. A lista completa est�
   Tem que imprimir as duas versões e `42`.
 - **`kamal-proxy`:** nada passou por ele nesta versão, nem `buffering.responses: false` nem WebSocket. Os ensaios pararam no Thruster.
 - **Cloudflare:** WebSocket e SSE atravessando, front publicado, CSP com as telas novas.
-- **Provedores reais:** Meta, Evolution, Z-API, Google, OpenAI, Apify, push em navegador. Ver `docs/migration/DECISIONS.md`.
+- **Provedores reais:** Meta, Evolution, Google, OpenAI, Apify, push em navegador. Ver `docs/migration/DECISIONS.md`.
 - **Produção:** o `datcollversion` do volume de verdade, e a memória sob carga.
 
 **A versão só de carrosséis, em produção desde 25/08/2026:** `ghcr.io/warley-oliveira/vekoo-api:329c216`, com `/up`, `/catalog`, login, carrosséis, CORS e Sidekiq conferidos de fora, pela Cloudflare. O restore do backup nunca foi testado lá.

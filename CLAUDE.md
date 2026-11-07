@@ -120,7 +120,7 @@ tela nem sempre usa o nome do código:
 | Código | Na tela | Contrato |
 |---|---|---|
 | `Organization` (o workspace, vem da sessão), `Account`, `AccessRole`, `Team` | Organização, Usuário, Grupo, Departamento | `access` |
-| `Connector::*` (`WhatsappCloud`, `WhatsappWeb`, `Zapi`, `WebWidget`…), `WhatsappTemplate` | Integrações | `connectors` |
+| `Connector::*` (`WhatsappCloud`, `WhatsappWeb`, `WebWidget`…), `WhatsappTemplate` | Integrações | `connectors` |
 | `Chat`, `ChatMessage::*`, `ChatTag`, `QuickReply`, `Attachment`, `CustomField`, `Copilot` | Chat, Contatos, Etiquetas, Mensagens Rápidas | `inbox` |
 | `Flow`, `Tool`, `ToolFunction::*`, `Hook` | Fluxos, Ferramentas, Webhooks | `automation` |
 | `Pipelines::*` (`Board`, `Stage`, `Card`) | Pipelines (o kanban) | `pipelines` |

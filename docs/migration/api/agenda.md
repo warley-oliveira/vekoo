@@ -190,7 +190,7 @@ Canal de tempo real: `AgendaChannel`. E dois eventos novos em `ChatChannel`.
 - `professionalNotificationsSettings`: `push` e `whatsapp` ausentes valem ligado.
 - `schedulingNotificationEnabled` falso pausa, sem apagar as regras. Vale também para lembrete já agendado.
 - Por padrão o lembrete só sai com a automação ligada na organização e na conversa. `...ReactivateAutomation` religa a conversa antes de enviar. `...IgnoreAutomationPaused` envia sem religar, passando também por cima da organização.
-- `professionalWhatsappConnectorId`: canal dos avisos ao profissional. Só canal não oficial entrega (WhatsApp Web ou Z-API): a WABA recusa texto livre fora da janela de 24 horas, e o profissional nunca escreve primeiro. Vazio, usa o canal da conversa do agendamento, se servir. Canal de outra organização fica `null`.
+- `professionalWhatsappConnectorId`: canal dos avisos ao profissional. Só canal não oficial entrega (WhatsApp Web): a WABA recusa texto livre fora da janela de 24 horas, e o profissional nunca escreve primeiro. Vazio, usa o canal da conversa do agendamento, se servir. Canal de outra organização fica `null`.
 
 ### Variáveis das mensagens
 
