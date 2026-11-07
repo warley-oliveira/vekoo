@@ -34,15 +34,15 @@ module Messages
     end
 
     def call
-      return failure(I18n.t('connectors.messages.none_given')) if @message_ids.empty?
-      return failure(I18n.t('connectors.messages.chat_not_found')) if @chat.blank?
+      return failure(I18n.t("connectors.messages.none_given")) if @message_ids.empty?
+      return failure(I18n.t("connectors.messages.chat_not_found")) if @chat.blank?
 
       messages = load_messages
-      return failure(I18n.t('connectors.messages.none_found')) if messages.empty?
+      return failure(I18n.t("connectors.messages.none_found")) if messages.empty?
 
       effective_scope = resolve_effective_scope
 
-      if effective_scope == 'me'
+      if effective_scope == "me"
         hard_delete_all(messages)
       else
         revoked_ids = revoke_at_provider(messages)
@@ -63,10 +63,10 @@ module Messages
     # soft-deleted locally without the Z-API call (or have the Z-API error
     # swallowed).
     def resolve_effective_scope
-      return 'me' if @scope == 'me'
-      return 'me' unless connector_supports_revoke?
+      return "me" if @scope == "me"
+      return "me" unless connector_supports_revoke?
 
-      'everyone'
+      "everyone"
     end
 
     def connector_supports_revoke?
@@ -86,10 +86,10 @@ module Messages
     def hard_delete_all(messages)
       ids = messages.map { |m| m.id.to_s }
       messages.each(&:destroy)
-      broadcast(ids, 'me')
+      broadcast(ids, "me")
       Result.new(
         success: true,
-        scope_applied: 'me',
+        scope_applied: "me",
         deleted_ids: ids,
         revoked_ids: [],
         errors: []
@@ -102,10 +102,10 @@ module Messages
     # and ignored — the message is still soft-deleted locally afterwards.
     # Returns the array of ids that were actually revoked (for telemetry).
     def revoke_at_provider(messages)
-      phone = @chat.external_id.to_s.split('@').first
+      phone = @chat.external_id.to_s.split("@").first
       revoked = []
       messages.each do |msg|
-        next if msg.role != 'assistant'
+        next if msg.role != "assistant"
         next if msg.message_id.blank?
 
         begin
@@ -132,12 +132,12 @@ module Messages
       ids = messages.map { |m| m.id.to_s }
       now = Time.current
       messages.each do |m|
-        m.update!(deleted_at: now, deleted_scope: 'everyone')
+        m.update!(deleted_at: now, deleted_scope: "everyone")
       end
-      broadcast(ids, 'everyone')
+      broadcast(ids, "everyone")
       Result.new(
         success: true,
-        scope_applied: 'everyone',
+        scope_applied: "everyone",
         deleted_ids: ids,
         revoked_ids: revoked_ids,
         errors: []
@@ -145,7 +145,7 @@ module Messages
     end
 
     def broadcast(ids, scope)
-      payload = { event: 'messages_deleted', messageIds: ids, scope: scope }
+      payload = { event: "messages_deleted", messageIds: ids, scope: scope }
       ActionCable.server.broadcast(ChatMessage::Base.stream_for(@chat), payload)
     rescue StandardError => e
       Rails.logger.warn("[Messages::BulkDeletionService] broadcast failed: #{e.message}")

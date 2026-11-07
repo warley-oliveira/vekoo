@@ -34,8 +34,8 @@ class MetaApiClient
   include Messaging
   include Graph
 
-  FACEBOOK_GRAPH_URL = 'https://graph.facebook.com/v22.0'
-  INSTAGRAM_GRAPH_URL = 'https://graph.instagram.com/v22.0'
+  FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v22.0"
+  INSTAGRAM_GRAPH_URL = "https://graph.instagram.com/v22.0"
 
   attr_reader :token, :endpoint_id, :base_url
 

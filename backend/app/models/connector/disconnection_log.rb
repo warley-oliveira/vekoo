@@ -13,7 +13,7 @@ class Connector::DisconnectionLog
   # Identificação da integração
   # ------------------------------------------------------------------
   field :connector_id,       type: String  # Connector::WhatsappWeb#id (BSON)
-  field :connector_type,     type: String, default: 'whatsapp_api'
+  field :connector_type,     type: String, default: "whatsapp_api"
   field :instance_name,        type: String  # nome legível da instância Z-API
   field :instance_id,          type: String  # zapi_instance_id / params[:instance_id]
   field :phone_number,         type: String  # número conectado no momento da desconexão
@@ -65,7 +65,7 @@ class Connector::DisconnectionLog
       organization_name: organization&.name,
       raw_error: raw_error,
       translated_reason: translated_reason,
-      payload_snapshot: payload.to_h.slice('type', 'instanceId', 'phone', 'momment', 'disconnected', 'error'),
+      payload_snapshot: payload.to_h.slice("type", "instanceId", "phone", "momment", "disconnected", "error"),
       expires_at: 1.year.from_now
     )
   rescue StandardError => e

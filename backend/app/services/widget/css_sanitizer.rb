@@ -34,10 +34,10 @@ module Widget
     end
 
     def call
-      return '' if @css.blank?
+      return "" if @css.blank?
 
-      cleaned = @css.to_s.gsub(CONTROL_CHARS, '')
-      DANGEROUS.each { |pattern| cleaned = cleaned.gsub(pattern, '') }
+      cleaned = @css.to_s.gsub(CONTROL_CHARS, "")
+      DANGEROUS.each { |pattern| cleaned = cleaned.gsub(pattern, "") }
       cleaned.strip.slice(0, MAX_LENGTH).to_s
     end
   end

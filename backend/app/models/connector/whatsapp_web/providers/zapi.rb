@@ -20,7 +20,7 @@ class Connector::WhatsappWeb
         Rails.logger.info(
           "[ZapiClient] Text message sent to #{phone}: #{message[0..50]}...\nResponse: #{response.inspect}"
         )
-        response.try(:dig, 'messageId')
+        response.try(:dig, "messageId")
       rescue ZapiClient::Error => e
         Rails.logger.error("[ZapiClient] Failed to send text: #{e.message}")
         raise e
@@ -29,16 +29,16 @@ class Connector::WhatsappWeb
       def send_media_message(connector, to, media_dto)
         phone      = sanitize_phone(to)
         media_url  = media_dto.media_url
-        media_type = media_dto.media_type || 'image'
+        media_type = media_dto.media_type || "image"
         caption    = media_dto.caption.presence
         file_name  = media_dto.file_name
 
         Rails.logger.info("[ZapiClient] Sending #{media_type} to #{phone}")
 
         case media_type.to_s.downcase
-        when 'image'              then connector.zapi_client.send_image(phone, media_url, caption: caption)
-        when 'video'              then connector.zapi_client.send_video(phone, media_url, caption: caption)
-        when 'document', 'file'   then connector.zapi_client.send_document(phone, media_url, file_name: file_name)
+        when "image"              then connector.zapi_client.send_image(phone, media_url, caption: caption)
+        when "video"              then connector.zapi_client.send_video(phone, media_url, caption: caption)
+        when "document", "file"   then connector.zapi_client.send_document(phone, media_url, file_name: file_name)
         else                           connector.zapi_client.send_image(phone, media_url, caption: caption)
         end
       rescue ZapiClient::Error => e
@@ -79,7 +79,7 @@ class Connector::WhatsappWeb
       def retriever_media_message(connector, _id, msg_type = :audio, base64 = false, payload = nil)
         download_url = extract_media_url(payload)
         unless download_url.present?
-          Rails.logger.warn('[ZapiClient] retrieve_media requires a URL for Z-API')
+          Rails.logger.warn("[ZapiClient] retrieve_media requires a URL for Z-API")
           return nil
         end
 
@@ -87,8 +87,8 @@ class Connector::WhatsappWeb
         content = connector.zapi_client.retrieve_media(download_url)
         return Base64.strict_encode64(content) if base64
 
-        file_path = Rails.root.join('tmp', "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
-        File.write(file_path, content, mode: 'wb')
+        file_path = Rails.root.join("tmp", "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
+        File.write(file_path, content, mode: "wb")
         file_path
       rescue ZapiClient::Error => e
         Rails.logger.error("[ZapiClient] Failed to retrieve media: #{e.message}")
@@ -105,7 +105,7 @@ class Connector::WhatsappWeb
 
       def create_instance(connector, name, **options)
         account_token = connector.zapi_account_token
-        raise ZapiClient::Error, 'Z-API account token is required' unless account_token.present?
+        raise ZapiClient::Error, "Z-API account token is required" unless account_token.present?
 
         return if connector.zapi_instance_id.present? && connector.zapi_token.present?
 
@@ -120,8 +120,8 @@ class Connector::WhatsappWeb
 
         result = ZapiClient.create_instance(name, account_token: account_token, **default_callbacks.merge(options))
 
-        connector.zapi_instance_id = result['id']
-        connector.zapi_token       = result['token']
+        connector.zapi_instance_id = result["id"]
+        connector.zapi_token       = result["token"]
         connector.save!
 
         connector.zapi_client.update_notify_sent_by_me(enabled: true)
@@ -141,12 +141,12 @@ class Connector::WhatsappWeb
       # provider contract so the facade can dispatch uniformly.
 
       def setup_webhook!(_connector)
-        Rails.logger.info('[ZapiClient] setup_webhook! is a no-op — webhook callbacks are set at instance creation')
+        Rails.logger.info("[ZapiClient] setup_webhook! is a no-op — webhook callbacks are set at instance creation")
         true
       end
 
       def reload_instance(_connector)
-        Rails.logger.info('[ZapiClient] reload_instance has no Z-API equivalent — no-op')
+        Rails.logger.info("[ZapiClient] reload_instance has no Z-API equivalent — no-op")
         nil
       end
 
@@ -160,7 +160,7 @@ class Connector::WhatsappWeb
       end
 
       def fetch_current_information(_connector)
-        Rails.logger.info('[ZapiClient] fetch_current_information has no Z-API equivalent — no-op')
+        Rails.logger.info("[ZapiClient] fetch_current_information has no Z-API equivalent — no-op")
         nil
       end
 
@@ -175,9 +175,9 @@ class Connector::WhatsappWeb
       # ---- helpers -------------------------------------------------------------
 
       def sanitize_phone(phone)
-        sanitized_phone = phone.to_s.remove('@s.whatsapp.net')
+        sanitized_phone = phone.to_s.remove("@s.whatsapp.net")
 
-        if sanitized_phone.size > 13 && !sanitized_phone.start_with?('55') && !sanitized_phone.include?('@lid')
+        if sanitized_phone.size > 13 && !sanitized_phone.start_with?("55") && !sanitized_phone.include?("@lid")
           return "#{sanitized_phone}@lid"
         end
 
@@ -188,10 +188,10 @@ class Connector::WhatsappWeb
       def extract_media_url(payload)
         return nil unless payload
 
-        audio_url    = payload.dig('audio', 'audioUrl')       || payload.dig(:audio, :audioUrl)
-        image_url    = payload.dig('image', 'imageUrl')       || payload.dig(:image, :imageUrl)
-        video_url    = payload.dig('video', 'videoUrl')       || payload.dig(:video, :videoUrl)
-        document_url = payload.dig('document', 'documentUrl') || payload.dig(:document, :documentUrl)
+        audio_url    = payload.dig("audio", "audioUrl")       || payload.dig(:audio, :audioUrl)
+        image_url    = payload.dig("image", "imageUrl")       || payload.dig(:image, :imageUrl)
+        video_url    = payload.dig("video", "videoUrl")       || payload.dig(:video, :videoUrl)
+        document_url = payload.dig("document", "documentUrl") || payload.dig(:document, :documentUrl)
 
         audio_url || image_url || document_url || video_url
       end

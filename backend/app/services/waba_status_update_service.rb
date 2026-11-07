@@ -14,22 +14,22 @@
 class WabaStatusUpdateService
   # Status da Meta → status aceitos na plataforma
   STATUS_MAP = {
-    'sent' => 'server_ack',
-    'delivered' => 'delivery_ack',
-    'read' => 'read',
-    'failed' => 'failed',
-    'pending' => 'pending'
+    "sent" => "server_ack",
+    "delivered" => "delivery_ack",
+    "read" => "read",
+    "failed" => "failed",
+    "pending" => "pending"
   }.freeze
 
-  FAILED = 'failed'
+  FAILED = "failed"
 
   # Ordem de progressão de um envio. Espelha o consumidor Z-API
   # (`RabbitmqConsumerService#messages_update_event`) para que webhooks fora de
   # ordem — que a Meta reentrega com frequência — não regridam o status.
-  STATUS_RANK = { 'pending' => 0, 'server_ack' => 1, 'delivery_ack' => 2, 'read' => 3 }.freeze
+  STATUS_RANK = { "pending" => 0, "server_ack" => 1, "delivery_ack" => 2, "read" => 3 }.freeze
 
   # Backoff para o caso em que o webhook chega antes de o envio persistir o wamid.
-  RETRY_DELAYS = [5.seconds, 30.seconds, 2.minutes].freeze
+  RETRY_DELAYS = [ 5.seconds, 30.seconds, 2.minutes ].freeze
 
   # Um disparo de campanha com erro de conta gera um webhook `failed` por
   # destinatário; sem isto seria um alerta (e um broadcast de badge) por mensagem.

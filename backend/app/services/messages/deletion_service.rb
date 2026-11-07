@@ -33,12 +33,12 @@ module Messages
       return failure(error) if error
 
       revoke_at_provider if outgoing? && message.message_id.present?
-      message.update!(deleted_at: Time.current, deleted_scope: 'everyone')
+      message.update!(deleted_at: Time.current, deleted_scope: "everyone")
 
       success_result
     rescue ZapiClient::Error => e
       Rails.logger.error("[Messages::DeletionService] Z-API failed: #{e.message}")
-      failure(I18n.t('connectors.messages.delete_failed'))
+      failure(I18n.t("connectors.messages.delete_failed"))
     end
 
     private
@@ -46,10 +46,10 @@ module Messages
     attr_reader :message, :chat, :connector
 
     def validate
-      return I18n.t('connectors.messages.chat_not_found') if chat.blank?
-      return I18n.t('connectors.messages.connector_not_found') if connector.blank?
-      return I18n.t('connectors.messages.delete_unsupported') unless provider_supports_delete?
-      return I18n.t('connectors.messages.delete_window_expired') if window_expired?
+      return I18n.t("connectors.messages.chat_not_found") if chat.blank?
+      return I18n.t("connectors.messages.connector_not_found") if connector.blank?
+      return I18n.t("connectors.messages.delete_unsupported") unless provider_supports_delete?
+      return I18n.t("connectors.messages.delete_window_expired") if window_expired?
 
       nil
     end
@@ -66,7 +66,7 @@ module Messages
     end
 
     def outgoing?
-      message.role == 'assistant'
+      message.role == "assistant"
     end
 
     def revoke_at_provider
@@ -79,7 +79,7 @@ module Messages
 
     def recipient_phone
       raw = chat.external_id.to_s
-      raw.split('@').first
+      raw.split("@").first
     end
 
     def success_result

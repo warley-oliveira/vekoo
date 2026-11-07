@@ -17,7 +17,7 @@ class ZapiClient
       payload[:delayTyping] = delay_typing if delay_typing
       payload[:messageId] = message_id if message_id.to_s.strip.length.positive?
 
-      request(:post, 'send-text', body: payload)
+      request(:post, "send-text", body: payload)
     end
 
     def metadata(phone)
@@ -25,7 +25,7 @@ class ZapiClient
     end
 
     def list_contacts
-      request(:get, 'contacts')
+      request(:get, "contacts")
     end
 
     def contact_metadata(phone)

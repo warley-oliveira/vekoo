@@ -42,7 +42,7 @@ module WidgetThrottling
   #
   #   throttle!(scope: 'widget:session:ip', limit: 30, period: 1.minute, key: ip)
   def throttle!(scope:, limit:, period:, key:)
-    return true if Rails.env.test? && !ENV['WIDGET_THROTTLE_TESTS']
+    return true if Rails.env.test? && !ENV["WIDGET_THROTTLE_TESTS"]
     return true if key.blank? || limit.to_i <= 0
 
     cache_key = "throttle:#{scope}:#{key}"
@@ -53,7 +53,7 @@ module WidgetThrottling
     end
 
     if count.to_i > limit
-      render_error(status: :too_many_requests, code: 'rateLimited', details: { retryAfter: period.to_i })
+      render_error(status: :too_many_requests, code: "rateLimited", details: { retryAfter: period.to_i })
       return false
     end
     true

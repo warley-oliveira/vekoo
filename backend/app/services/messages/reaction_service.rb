@@ -37,7 +37,7 @@ module Messages
         send_at_provider
       rescue StandardError => e
         Rails.logger.error("[Messages::ReactionService] Falha no provedor: #{e.message}")
-        return failure(I18n.t('connectors.messages.reaction_failed'))
+        return failure(I18n.t("connectors.messages.reaction_failed"))
       end
 
       # O before_update de ChatMessage::Base transmite a mensagem atualizada
@@ -45,7 +45,7 @@ module Messages
       message.update!(
         reactions: message.apply_reaction(
           emoji,
-          from: 'assistant',
+          from: "assistant",
           sender_name: account&.name,
           account_id: account&.id
         )
@@ -59,12 +59,12 @@ module Messages
     attr_reader :message, :emoji, :account, :chat, :connector
 
     def validate
-      return I18n.t('connectors.messages.chat_not_found') if chat.blank?
-      return I18n.t('connectors.messages.connector_not_found') if connector.blank?
-      return I18n.t('connectors.messages.reaction_unsupported') unless provider_supports_reaction?
-      return I18n.t('connectors.messages.reaction_no_external_id') if message.message_id.blank?
-      return I18n.t('connectors.messages.reaction_deleted') if message.deleted?
-      return I18n.t('connectors.messages.reaction_single_emoji') unless valid_emoji?
+      return I18n.t("connectors.messages.chat_not_found") if chat.blank?
+      return I18n.t("connectors.messages.connector_not_found") if connector.blank?
+      return I18n.t("connectors.messages.reaction_unsupported") unless provider_supports_reaction?
+      return I18n.t("connectors.messages.reaction_no_external_id") if message.message_id.blank?
+      return I18n.t("connectors.messages.reaction_deleted") if message.deleted?
+      return I18n.t("connectors.messages.reaction_single_emoji") unless valid_emoji?
 
       nil
     end
@@ -88,11 +88,11 @@ module Messages
 
     # `key.fromMe` descreve a mensagem ALVO: true quando fomos nós que a enviamos.
     def outgoing?
-      message.role == 'assistant'
+      message.role == "assistant"
     end
 
     def recipient_phone
-      chat.external_id.to_s.split('@').first
+      chat.external_id.to_s.split("@").first
     end
 
     def success_result

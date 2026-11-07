@@ -23,14 +23,14 @@ class Connector::InstagramDirect < Connector::Base
   # Activate via Facebook Login (Page-linked)
   # Receives the page_access_token and page_id from the linked FacebookMessenger connector
   def activate_via_facebook(fb_page_id:, fb_page_token:)
-    self.auth_provider = 'facebook_login'
+    self.auth_provider = "facebook_login"
     self.page_id = fb_page_id
     self.page_access_token = fb_page_token
 
     # Fetch Instagram Business Account linked to the Page
     ig_account_id = fetch_instagram_account_for_page(fb_page_id, fb_page_token)
     unless ig_account_id
-      self.error_message = 'No Instagram Business Account linked to this Facebook Page'
+      self.error_message = "No Instagram Business Account linked to this Facebook Page"
       Rails.logger.error "[InstagramDirect#activate_via_facebook] #{error_message}"
       failed! && save!
       return
@@ -54,7 +54,7 @@ class Connector::InstagramDirect < Connector::Base
 
   # Activate via Instagram Login (standalone, no Facebook Page)
   def activate_via_instagram(code:, redirect_uri:)
-    self.auth_provider = 'instagram_login'
+    self.auth_provider = "instagram_login"
 
     # Exchange code for long-lived Instagram token
     result = exchange_instagram_oauth_code(code: code, redirect_uri: redirect_uri)
@@ -84,14 +84,14 @@ class Connector::InstagramDirect < Connector::Base
   # Can be called standalone: connector.resolve_instagram_identity!
   def resolve_instagram_identity!
     token = instagram_user_access_token
-    raise 'No Instagram user access token available' unless token.present?
+    raise "No Instagram user access token available" unless token.present?
 
     me = fetch_instagram_me(token)
-    if me && me['user_id'].present?
-      self.instagram_account_id = me['user_id']
+    if me && me["user_id"].present?
+      self.instagram_account_id = me["user_id"]
       apply_profile_fields(me)
     else
-      Rails.logger.warn '[InstagramDirect#resolve_instagram_identity!] /me returned no data, falling back to fetch_instagram_profile'
+      Rails.logger.warn "[InstagramDirect#resolve_instagram_identity!] /me returned no data, falling back to fetch_instagram_profile"
       profile = fetch_instagram_profile(instagram_account_id, token)
       apply_profile_fields(profile) if profile
     end
@@ -103,13 +103,13 @@ class Connector::InstagramDirect < Connector::Base
   # Used by the frontend "account info" modal to expose live data to Meta reviewers.
   def refresh_profile!
     case auth_provider
-    when 'instagram_login'
+    when "instagram_login"
       resolve_instagram_identity!
-    when 'facebook_login'
-      raise 'No page access token available' unless page_access_token.present?
+    when "facebook_login"
+      raise "No page access token available" unless page_access_token.present?
 
       profile = fetch_instagram_profile(instagram_account_id, page_access_token)
-      raise 'Failed to fetch Instagram profile' unless profile
+      raise "Failed to fetch Instagram profile" unless profile
 
       apply_profile_fields(profile)
       save!
@@ -122,16 +122,16 @@ class Connector::InstagramDirect < Connector::Base
 
   # Subscribe the Instagram account to receive webhook events (e.g. messages).
   # Can be called standalone for a specific connector.
-  def subscribe_to_webhooks(fields: 'messages')
+  def subscribe_to_webhooks(fields: "messages")
     token = retrieve_current_token
-    raise 'No access token available for webhook subscription' unless token.present?
+    raise "No access token available for webhook subscription" unless token.present?
 
     url = "#{api_base_url}/me/subscribed_apps"
     response = HTTParty.post(url, query: { subscribed_fields: fields, access_token: token })
     parsed = response.parsed_response
 
-    unless response.success? && parsed.is_a?(Hash) && parsed['success']
-      error_detail = parsed.is_a?(Hash) ? parsed.dig('error', 'message') : parsed.to_s
+    unless response.success? && parsed.is_a?(Hash) && parsed["success"]
+      error_detail = parsed.is_a?(Hash) ? parsed.dig("error", "message") : parsed.to_s
       Rails.logger.error "[InstagramDirect#subscribe_to_webhooks] Failed: #{error_detail}"
       return { success: false, error: error_detail }
     end
@@ -142,7 +142,7 @@ class Connector::InstagramDirect < Connector::Base
 
   def activate(code = nil)
     # Default activation delegates based on auth_provider
-    return unless auth_provider == 'instagram_login' && code.present?
+    return unless auth_provider == "instagram_login" && code.present?
 
     activate_via_instagram(code: code, redirect_uri: nil)
   end
@@ -154,9 +154,9 @@ class Connector::InstagramDirect < Connector::Base
   # 4. Mark the connector as inactive so the UI reflects the disconnected state
   def deactivate
     case auth_provider
-    when 'instagram_login'
+    when "instagram_login"
       revoke_via_instagram_login
-    when 'facebook_login'
+    when "facebook_login"
       revoke_via_facebook_login
     end
 
@@ -198,14 +198,14 @@ class Connector::InstagramDirect < Connector::Base
   def apply_profile_fields(data)
     return unless data.is_a?(Hash)
 
-    self.instagram_username = data['username'] if data['username'].present?
-    self.account_name       = data['name']     if data['name'].present?
-    self.profile_picture_url = data['profile_picture_url'] if data['profile_picture_url'].present?
-    self.biography       = data['biography']
-    self.followers_count = data['followers_count']
-    self.follows_count   = data['follows_count']
-    self.media_count     = data['media_count']
-    self.website         = data['website']
-    self.account_type    = data['account_type']
+    self.instagram_username = data["username"] if data["username"].present?
+    self.account_name       = data["name"]     if data["name"].present?
+    self.profile_picture_url = data["profile_picture_url"] if data["profile_picture_url"].present?
+    self.biography       = data["biography"]
+    self.followers_count = data["followers_count"]
+    self.follows_count   = data["follows_count"]
+    self.media_count     = data["media_count"]
+    self.website         = data["website"]
+    self.account_type    = data["account_type"]
   end
 end

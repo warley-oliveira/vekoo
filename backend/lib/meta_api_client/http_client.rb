@@ -72,7 +72,7 @@ class MetaApiClient
     # @param timeout [Integer] Seconds before the request times out
     # @return [String, nil] Absolute path to the temp file, or nil on failure
     def self.stream_download(url, timeout: 60)
-      tmp_file = Tempfile.create(['meta_media_', '.bin'])
+      tmp_file = Tempfile.create([ "meta_media_", ".bin" ])
 
       response = HTTParty.get(url, stream_body: true, timeout: timeout) do |fragment|
         tmp_file.write(fragment)

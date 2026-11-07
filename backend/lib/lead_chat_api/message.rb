@@ -57,8 +57,8 @@ module LeadChatApi
     # @param [String] id The ID of the session
     # @return [Hash] The response from the API parsed as a hash
     def get_session(id, include_details = [])
-      parameters = '?'
-      parameters += include_details.map { |i| "includeDetails=#{i}" }.join('&') if include_details
+      parameters = "?"
+      parameters += include_details.map { |i| "includeDetails=#{i}" }.join("&") if include_details
       fetch_or_cache("leadchat-session-#{id}") do
         @client.get_request("#{Endpoints::SESSION_SLUG}/#{id}#{parameters}")
         # @client.get_request("#{Endpoints::SESSION_SLUG}/#{id}", { includeDetails: include_details })

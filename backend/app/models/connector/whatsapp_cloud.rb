@@ -1,10 +1,10 @@
 class Connector::WhatsappCloud < Connector::Base
-  FACEBOOK_OAUTH_URL = 'https://graph.facebook.com/v22.0/oauth/access_token'.freeze
+  FACEBOOK_OAUTH_URL = "https://graph.facebook.com/v22.0/oauth/access_token".freeze
 
   # Hosts da Meta que exigem o Bearer token no download de mídia. A CDN de
   # destino (scontent/fbcdn) usa URLs pré-assinadas e NÃO deve receber o token.
   META_MEDIA_AUTH_HOSTS = %w[lookaside.fbsbx.com graph.facebook.com facebook.com].freeze
-  META_MEDIA_USER_AGENT = 'Vekoo/1.0 (+https://my.vekoo.app)'.freeze
+  META_MEDIA_USER_AGENT = "Vekoo/1.0 (+https://my.vekoo.app)".freeze
 
   # Resultado do download de mídia. Usamos Struct (métodos de acesso reais e
   # garantidos) em vez de OpenStruct: em produção o acessor `.file_path` do
@@ -17,11 +17,11 @@ class Connector::WhatsappCloud < Connector::Base
 
   # Códigos de erro da Meta que indicam que o template existe mas não naquele
   # idioma (ou que o par nome+idioma não foi encontrado).
-  TEMPLATE_TRANSLATION_ERROR_CODES = [132_001].freeze
+  TEMPLATE_TRANSLATION_ERROR_CODES = [ 132_001 ].freeze
 
   # Listagem de templates: versão da Graph API, tamanho de página e teto de
   # páginas (trava contra loop de paginação).
-  TEMPLATES_API_VERSION = 'v24.0'.freeze
+  TEMPLATES_API_VERSION = "v24.0".freeze
   TEMPLATES_PAGE_SIZE = 100
   TEMPLATES_MAX_PAGES = 50
 
@@ -32,20 +32,20 @@ class Connector::WhatsappCloud < Connector::Base
     correct_category rejected_reason quality_score components
     parameter_format message_send_ttl_seconds library_template_name
     cta_url_link_tracking_opted_out
-  ].join(',').freeze
+  ].join(",").freeze
 
   # Locales irmãos tentados quando não conseguimos consultar a lista real de
   # templates na Meta. A ordem importa: o primeiro que a API aceitar vence.
   LANGUAGE_FALLBACKS = {
-    'pt_BR' => %w[pt pt_PT],
-    'pt' => %w[pt_BR pt_PT],
-    'pt_PT' => %w[pt_BR pt],
-    'en_US' => %w[en en_GB],
-    'en' => %w[en_US en_GB],
-    'en_GB' => %w[en en_US],
-    'es_ES' => %w[es es_MX es_AR],
-    'es' => %w[es_ES es_MX es_AR],
-    'es_MX' => %w[es es_ES es_AR]
+    "pt_BR" => %w[pt pt_PT],
+    "pt" => %w[pt_BR pt_PT],
+    "pt_PT" => %w[pt_BR pt],
+    "en_US" => %w[en en_GB],
+    "en" => %w[en_US en_GB],
+    "en_GB" => %w[en en_US],
+    "es_ES" => %w[es es_MX es_AR],
+    "es" => %w[es_ES es_MX es_AR],
+    "es_MX" => %w[es es_ES es_AR]
   }.freeze
 
   field :verification_token, type: String
@@ -66,7 +66,7 @@ class Connector::WhatsappCloud < Connector::Base
   field :phone_number_details, type: Hash, default: {}
   field :phone_number_list, type: Array, default: []
 
-  has_many :whatsapp_templates, class_name: 'WhatsappTemplate', inverse_of: :connector, dependent: :destroy
+  has_many :whatsapp_templates, class_name: "WhatsappTemplate", inverse_of: :connector, dependent: :destroy
 
   before_create do
     self.verification_token = SecureRandom.base36(32)
@@ -126,7 +126,7 @@ class Connector::WhatsappCloud < Connector::Base
     numbers = phone_numbers_api.registered_numbers(bid)
     has_pending = false
     numbers.data.phone_numbers.map do |phone|
-      if phone.status.eql?('PENDING')
+      if phone.status.eql?("PENDING")
         register_number(phone.id.to_i)
         has_pending = true
       end
@@ -167,7 +167,7 @@ class Connector::WhatsappCloud < Connector::Base
 
   def refresh_all_phone_details!
     phone_number_list.each do |phone|
-      refresh_details((phone['id'] || phone[:id]).to_i)
+      refresh_details((phone["id"] || phone[:id]).to_i)
     rescue StandardError => e
       Rails.logger.error "[refresh_all_phone_details!] Error for phone #{phone['id'] || phone[:id]}: #{e.message}"
     end
@@ -175,7 +175,7 @@ class Connector::WhatsappCloud < Connector::Base
   end
 
   def setup_webhook!
-    raise 'Not implemented'
+    raise "Not implemented"
   end
 
   # O SDK não levanta quando a Meta recusa: a recusa vem na resposta, e aqui o retorno é nil como
@@ -223,7 +223,7 @@ class Connector::WhatsappCloud < Connector::Base
     seen_ids = []
 
     remote_templates.each do |payload|
-      template_id = payload['id'].to_s
+      template_id = payload["id"].to_s
       next if template_id.blank?
 
       seen_ids << template_id
@@ -272,7 +272,7 @@ class Connector::WhatsappCloud < Connector::Base
 
       Rails.logger.warn(
         "[sync_templates] Template '#{template.name}' (#{template.language}/#{template.template_id}) " \
-        'não existe mais na WABA — marcando como removido'
+        "não existe mais na WABA — marcando como removido"
       )
       template.mark_as_removed!
     end
@@ -285,7 +285,7 @@ class Connector::WhatsappCloud < Connector::Base
   # @raise [StandardError] se qualquer página falhar
   def fetch_remote_templates
     bid = waba_id.present? ? waba_id : business_id
-    raise 'WABA/business id ausente na integração' if bid.blank?
+    raise "WABA/business id ausente na integração" if bid.blank?
 
     url = "https://graph.facebook.com/#{TEMPLATES_API_VERSION}/#{bid}/message_templates"
     query = {
@@ -297,9 +297,9 @@ class Connector::WhatsappCloud < Connector::Base
     collected = []
     TEMPLATES_MAX_PAGES.times do
       body = request_templates_page(url, query)
-      collected.concat(Array(body['data']))
+      collected.concat(Array(body["data"]))
 
-      url = body.dig('paging', 'next')
+      url = body.dig("paging", "next")
       break if url.blank?
 
       # A URL de `paging.next` já carrega access_token, cursor e fields
@@ -313,20 +313,20 @@ class Connector::WhatsappCloud < Connector::Base
   def request_templates_page(url, query)
     response = HTTParty.get(
       url,
-      headers: { 'Accept' => 'application/json' },
+      headers: { "Accept" => "application/json" },
       query: query,
       timeout: 30
     )
     body = response.parsed_response
 
     # Field inválido para a versão da API: refaz sem `fields` e usa o default
-    if !response.success? && query&.key?(:fields) && body.dig('error', 'code') == 100
+    if !response.success? && query&.key?(:fields) && body.dig("error", "code") == 100
       Rails.logger.warn "[fetch_remote_templates] Fields rejeitados pela Graph API, repetindo sem `fields`: #{body}"
       return request_templates_page(url, query.except(:fields))
     end
 
     unless response.success?
-      error_message = body.dig('error', 'message') || "HTTP #{response.code}"
+      error_message = body.dig("error", "message") || "HTTP #{response.code}"
       raise "Falha ao listar templates da WABA: #{error_message}"
     end
 
@@ -377,7 +377,7 @@ class Connector::WhatsappCloud < Connector::Base
 
     Rails.logger.error(
       "[send_template_message] Nenhum idioma disponível para o template '#{template.name}' " \
-      "(tentados: #{[template.language, *candidates].inspect})"
+      "(tentados: #{[ template.language, *candidates ].inspect})"
     )
     original_response
   end
@@ -387,16 +387,16 @@ class Connector::WhatsappCloud < Connector::Base
   def fallback_languages_for(template)
     remote = remote_template_languages(template.name)
     fallbacks = remote.presence || LANGUAGE_FALLBACKS.fetch(template.language.to_s, [])
-    (fallbacks - [template.language]).uniq
+    (fallbacks - [ template.language ]).uniq
   end
 
   # Idiomas aprovados disponíveis na WABA para um nome de template.
   def remote_template_languages(template_name)
     fetch_remote_templates.filter_map do |payload|
-      next unless payload['name'] == template_name
-      next unless payload['status'].to_s.casecmp('APPROVED').zero?
+      next unless payload["name"] == template_name
+      next unless payload["status"].to_s.casecmp("APPROVED").zero?
 
-      payload['language']
+      payload["language"]
     end
   rescue StandardError => e
     Rails.logger.error "[remote_template_languages] Falha ao consultar templates na Meta: #{e.message}"
@@ -440,7 +440,7 @@ class Connector::WhatsappCloud < Connector::Base
     components = frontend_components.deep_dup || []
 
     return components unless template.has_media_header?
-    return components if components.any? { |c| c['type']&.upcase == 'HEADER' }
+    return components if components.any? { |c| c["type"]&.upcase == "HEADER" }
 
     media_url = template.resolved_header_media_url
 
@@ -448,7 +448,7 @@ class Connector::WhatsappCloud < Connector::Base
       Rails.logger.error(
         "[prepare_template_components] Template '#{template.name}' tem header " \
         "#{template.header_format} mas nenhuma URL pública de mídia — o attachment de origem " \
-        'não está vinculado. Reenvie a mídia pelo formulário do template.'
+        "não está vinculado. Reenvie a mídia pelo formulário do template."
       )
       return components
     end
@@ -456,11 +456,11 @@ class Connector::WhatsappCloud < Connector::Base
     header_format = template.header_format.downcase # 'image', 'video', 'document'
 
     components.unshift(
-      'type' => 'header',
-      'parameters' => [
+      "type" => "header",
+      "parameters" => [
         {
-          'type' => header_format,
-          header_format => { 'link' => media_url }
+          "type" => header_format,
+          header_format => { "link" => media_url }
         }
       ]
     )
@@ -490,26 +490,26 @@ class Connector::WhatsappCloud < Connector::Base
     # WhatsappSdk::Api::Medias.new.get(media_id: media_dto.media_id) ###
 
     case media_dto.media_type
-    when 'image'
+    when "image"
       @messages_sdk.send_image(
         sender_id: chat&.sender_phone_number_id || phone_number_id,
         recipient_number: to.to_i,
         link: media_dto.media_url,
-        caption: ''
+        caption: ""
       )
-    when 'video'
+    when "video"
       @messages_sdk.send_video(
         sender_id: chat&.sender_phone_number_id || phone_number_id,
         recipient_number: to.to_i,
         link: media_dto.media_url,
-        caption: ''
+        caption: ""
       )
     else
       @messages_sdk.send_document(
         sender_id: chat&.sender_phone_number_id || phone_number_id,
         recipient_number: to.to_i,
         link: media_dto.media_url,
-        caption: ''
+        caption: ""
       )
     end
   end
@@ -527,41 +527,41 @@ class Connector::WhatsappCloud < Connector::Base
   end
 
   def retriever_media_message(media_id, msg_type = :image, _resp_base64 = false, _payload = nil) # rubocop:disable Style/OptionalBooleanParameter
-    download_media(media_id: media_id, format: msg_type == :image ? 'jpg' : 'bin')
+    download_media(media_id: media_id, format: msg_type == :image ? "jpg" : "bin")
   end
 
   def retriever_image_message(media_id)
-    download_media(media_id: media_id, format: 'jpg')
+    download_media(media_id: media_id, format: "jpg")
   end
 
   def reload_instance
-    raise 'Not implemented'
+    raise "Not implemented"
   end
 
   # /instance/logout/104-h0jhorpywtju1bw1
   def logout_instance
-    raise 'Not implemented'
+    raise "Not implemented"
   end
 
   # Mp3 toca em qualquer navegador; ogg/opus, não. Sem ffmpeg na máquina (ou se ele
   # falhar) fica o arquivo original: melhor um formato ruim do que perder a mensagem.
   def retrieve_audio_message(media_id)
-    file_path = download_media(media_id: media_id, format: 'ogg')
+    file_path = download_media(media_id: media_id, format: "ogg")
     converted_file_path = "#{file_path}.mp3"
 
     # ffmpeg -i input.ogg -ac 1 -ar 16000 -b:a 96k output.mp3
-    converted = system('ffmpeg', '-y', '-loglevel', 'error', *Media::Ffmpeg::AUDIO_INPUT, '-i', file_path.to_s, '-ac', '1', '-ar', '16000', '-b:a', '96k', converted_file_path)
+    converted = system("ffmpeg", "-y", "-loglevel", "error", *Media::Ffmpeg::AUDIO_INPUT, "-i", file_path.to_s, "-ac", "1", "-ar", "16000", "-b:a", "96k", converted_file_path)
     return file_path unless converted && File.exist?(converted_file_path)
 
     File.delete(file_path)
     converted_file_path
   end
 
-  def download_media(media_id:, format: 'ogg')
+  def download_media(media_id:, format: "ogg")
     download_media_object(media_id: media_id, format: format).file_path
   end
 
-  def download_media_object(media_id:, format: 'ogg')
+  def download_media_object(media_id:, format: "ogg")
     obj = WhatsappSdk::Api::Medias.new(whatsapp_client)
     response_media = obj.media(media_id: media_id)
 
@@ -574,7 +574,7 @@ class Connector::WhatsappCloud < Connector::Base
     end
 
     # `media_id` vem do webhook: nunca entra cru em caminho de arquivo.
-    file_path = File.join(Rails.root, 'tmp', "wab-#{media_id.to_s.gsub(/[^\w-]/, '')}-#{SecureRandom.hex(4)}#{format ? ".#{format}" : ''}")
+    file_path = File.join(Rails.root, "tmp", "wab-#{media_id.to_s.gsub(/[^\w-]/, '')}-#{SecureRandom.hex(4)}#{format ? ".#{format}" : ''}")
     download_media_binary!(url: media_url, file_path: file_path, media_id: media_id)
 
     MediaDownloadResult.new(
@@ -594,12 +594,12 @@ class Connector::WhatsappCloud < Connector::Base
   def exchange_oauth_code_for_token(code:)
     response = HTTParty.post(
       FACEBOOK_OAUTH_URL,
-      headers: { 'Content-Type' => 'application/json' },
+      headers: { "Content-Type" => "application/json" },
       body: {
-        client_id: ENV['META_APP_ID'],
-        client_secret: ENV['META_APP_SECRET'],
+        client_id: ENV["META_APP_ID"],
+        client_secret: ENV["META_APP_SECRET"],
         code: code,
-        grant_type: 'authorization_code'
+        grant_type: "authorization_code"
       }.to_json,
       timeout: 30
     )
@@ -608,13 +608,13 @@ class Connector::WhatsappCloud < Connector::Base
 
     if response.success?
       parsed_response = response.parsed_response
-      self.user_access_token = parsed_response['access_token']
+      self.user_access_token = parsed_response["access_token"]
       save!
 
-      Rails.logger.info '[exchange_oauth_code_for_token] Token exchanged and saved successfully'
-      { success: true, token_type: parsed_response['token_type'] }
+      Rails.logger.info "[exchange_oauth_code_for_token] Token exchanged and saved successfully"
+      { success: true, token_type: parsed_response["token_type"] }
     else
-      error_message = response.parsed_response&.dig('error', 'message') || 'Unknown error'
+      error_message = response.parsed_response&.dig("error", "message") || "Unknown error"
       Rails.logger.error "[exchange_oauth_code_for_token] Error: #{response.parsed_response}"
       { success: false, error: error_message }
     end
@@ -645,7 +645,7 @@ class Connector::WhatsappCloud < Connector::Base
 
     response = HTTParty.get(
       url,
-      headers: { 'Accept' => 'application/json' },
+      headers: { "Accept" => "application/json" },
       query: { access_token: retrieve_current_token },
       timeout: 30
     )
@@ -653,10 +653,10 @@ class Connector::WhatsappCloud < Connector::Base
     Rails.logger.info "[get_subscribed_apps] Response status: #{response.code}"
 
     if response.success?
-      Rails.logger.info '[get_subscribed_apps] Subscribed apps retrieved successfully'
+      Rails.logger.info "[get_subscribed_apps] Subscribed apps retrieved successfully"
       { success: true, data: response.parsed_response }
     else
-      error_message = response.parsed_response&.dig('error', 'message') || 'Unknown error'
+      error_message = response.parsed_response&.dig("error", "message") || "Unknown error"
       Rails.logger.error "[get_subscribed_apps] Error: #{response.parsed_response}"
       { success: false, error: error_message }
     end
@@ -670,13 +670,13 @@ class Connector::WhatsappCloud < Connector::Base
   # @param app_id [String] The app ID to subscribe (defaults to the WABA app ID from credentials)
   # @return [Hash] The response containing success status or error details
   # @raise [StandardError] If the HTTP request fails
-  def subscribe_app!(app_id = ENV['META_APP_ID'])
+  def subscribe_app!(app_id = ENV["META_APP_ID"])
     waba = waba_id.present? ? waba_id : business_id
     url = "https://graph.facebook.com/v24.0/#{waba}/subscribed_apps"
 
     response = HTTParty.post(
       url,
-      headers: { 'Accept' => 'application/json' },
+      headers: { "Accept" => "application/json" },
       query: {
         access_token: retrieve_current_token,
         app_id: app_id
@@ -690,7 +690,7 @@ class Connector::WhatsappCloud < Connector::Base
       Rails.logger.info "[subscribe_app] App #{app_id} subscribed successfully"
       { success: true, data: response.parsed_response }
     else
-      error_message = response.parsed_response&.dig('error', 'message') || 'Unknown error'
+      error_message = response.parsed_response&.dig("error", "message") || "Unknown error"
       Rails.logger.error "[subscribe_app] Error: #{response.parsed_response}"
       { success: false, error: error_message }
     end
@@ -722,10 +722,10 @@ class Connector::WhatsappCloud < Connector::Base
     Rails.logger.info "[upload_media_for_template] File size: #{file_length}, Type: #{content_type}, Name: #{file_name}"
 
     # Step 1: Create upload session
-    app_id = ENV['META_APP_ID']
+    app_id = ENV["META_APP_ID"]
     session_response = HTTParty.post(
       "https://graph.facebook.com/v22.0/#{app_id}/uploads",
-      headers: { 'Content-Type' => 'application/json' },
+      headers: { "Content-Type" => "application/json" },
       query: {
         file_name: file_name,
         file_length: file_length,
@@ -740,16 +740,16 @@ class Connector::WhatsappCloud < Connector::Base
       return nil
     end
 
-    upload_session_id = session_response.parsed_response['id']
+    upload_session_id = session_response.parsed_response["id"]
     Rails.logger.info "[upload_media_for_template] Created upload session: #{upload_session_id}"
 
     # Step 2: Upload the file
     upload_response = HTTParty.post(
       "https://graph.facebook.com/v22.0/#{upload_session_id}",
       headers: {
-        'Authorization' => "OAuth #{retrieve_current_token}",
-        'file_offset' => '0',
-        'Content-Type' => 'application/octet-stream'
+        "Authorization" => "OAuth #{retrieve_current_token}",
+        "file_offset" => "0",
+        "Content-Type" => "application/octet-stream"
       },
       body: file_content,
       timeout: 120
@@ -760,7 +760,7 @@ class Connector::WhatsappCloud < Connector::Base
       return nil
     end
 
-    header_handle = upload_response.parsed_response['h']
+    header_handle = upload_response.parsed_response["h"]
     Rails.logger.info "[upload_media_for_template] Upload complete. Header handle: #{header_handle}"
 
     header_handle
@@ -838,7 +838,7 @@ class Connector::WhatsappCloud < Connector::Base
     return body unless body.empty?
 
     parsed = response.parsed_response
-    parsed.is_a?(String) ? parsed : ''
+    parsed.is_a?(String) ? parsed : ""
   end
 
   # A mídia da Meta vem em dois saltos: a URL do lookaside.fbsbx.com exige o
@@ -849,17 +849,17 @@ class Connector::WhatsappCloud < Connector::Base
   # headers ao seguir redirect, então percorremos a cadeia manualmente e só
   # enviamos auth para hosts da Meta.
   def fetch_media_response(url, redirect_limit: 5)
-    raise 'WABA media download exceeded redirect limit' if redirect_limit.negative?
+    raise "WABA media download exceeded redirect limit" if redirect_limit.negative?
 
     uri = URI.parse(url)
-    headers = { 'User-Agent' => META_MEDIA_USER_AGENT }
-    headers['Authorization'] = "Bearer #{retrieve_current_token}" if meta_auth_host?(uri.host)
+    headers = { "User-Agent" => META_MEDIA_USER_AGENT }
+    headers["Authorization"] = "Bearer #{retrieve_current_token}" if meta_auth_host?(uri.host)
 
     response = HTTParty.get(url, headers: headers, follow_redirects: false, timeout: 60)
     Rails.logger.info "[fetch_media_response] #{response.code} for #{uri.host} (auth=#{headers.key?('Authorization')})"
-    return response unless [301, 302, 303, 307, 308].include?(response.code)
+    return response unless [ 301, 302, 303, 307, 308 ].include?(response.code)
 
-    location = response.headers['location']
+    location = response.headers["location"]
     return response if location.blank?
 
     fetch_media_response(location, redirect_limit: redirect_limit - 1)
@@ -872,29 +872,29 @@ class Connector::WhatsappCloud < Connector::Base
   def detect_content_type(url)
     extension = File.extname(URI.parse(url).path).downcase
     case extension
-    when '.jpg', '.jpeg' then 'image/jpeg'
-    when '.png' then 'image/png'
-    when '.mp4' then 'video/mp4'
-    when '.pdf' then 'application/pdf'
-    when '.doc' then 'application/msword'
-    when '.docx' then 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    else 'application/octet-stream'
+    when ".jpg", ".jpeg" then "image/jpeg"
+    when ".png" then "image/png"
+    when ".mp4" then "video/mp4"
+    when ".pdf" then "application/pdf"
+    when ".doc" then "application/msword"
+    when ".docx" then "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    else "application/octet-stream"
     end
   end
 
   def extract_file_name(url, content_type)
     uri = URI.parse(url)
     name = File.basename(uri.path)
-    return name if name.include?('.')
+    return name if name.include?(".")
 
     # Add extension based on content type if missing
     extension = case content_type
-                when 'image/jpeg' then '.jpg'
-                when 'image/png' then '.png'
-                when 'video/mp4' then '.mp4'
-                when 'application/pdf' then '.pdf'
-                else ''
-                end
+    when "image/jpeg" then ".jpg"
+    when "image/png" then ".png"
+    when "video/mp4" then ".mp4"
+    when "application/pdf" then ".pdf"
+    else ""
+    end
     "media_#{SecureRandom.hex(4)}#{extension}"
   end
 
@@ -914,7 +914,7 @@ class Connector::WhatsappCloud < Connector::Base
       return
     end
 
-    humanized = WabaErrorHandler.humanize(error_code, 'Simulated billing error for testing')
+    humanized = WabaErrorHandler.humanize(error_code, "Simulated billing error for testing")
     update(error_message: humanized)
 
     Connectors::Alerts.error(

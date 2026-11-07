@@ -26,9 +26,9 @@ class ZapiClient
     def self.create_instance(name, account_token:, **options)
       url = "#{ZapiClient::BASE_URL}/instances/integrator/on-demand"
       payload = build_create_instance_payload(name, options)
-      headers = { 'Content-Type' => 'application/json', 'Authorization' => "Bearer #{account_token}" }
+      headers = { "Content-Type" => "application/json", "Authorization" => "Bearer #{account_token}" }
 
-      execute_with_retries('create instance') do
+      execute_with_retries("create instance") do
         response = HTTParty.post(url, headers: headers, body: payload.to_json, timeout: 15)
 
         if response.success?
@@ -50,9 +50,9 @@ class ZapiClient
     # @raise [ZapiClient::Error] On subscription failure
     def self.sign_instance(instance_id, token, account_token:)
       url = "#{ZapiClient::BASE_URL}/instances/#{instance_id}/token/#{token}/integrator/on-demand/subscription"
-      headers = { 'Content-Type' => 'application/json', 'Authorization' => "Bearer #{account_token}" }
+      headers = { "Content-Type" => "application/json", "Authorization" => "Bearer #{account_token}" }
 
-      execute_with_retries('sign instance') do
+      execute_with_retries("sign instance") do
         response = HTTParty.post(url, headers: headers, timeout: 15)
 
         if response.success? || response.code == 201

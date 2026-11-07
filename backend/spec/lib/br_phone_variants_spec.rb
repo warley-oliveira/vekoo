@@ -35,13 +35,13 @@ RSpec.describe BrPhoneVariants do
     it 'does not add a 9th digit to a landline' do
       # 3131100074 → nacional '31100074' começa com 3, não é celular.
       expect(described_class.call('553131100074')).to eq(
-        ['553131100074', '553131100074@s.whatsapp.net']
+        [ '553131100074', '553131100074@s.whatsapp.net' ]
       )
     end
 
     it 'returns the number unchanged for non-BR input' do
       expect(described_class.call('14155552671')).to eq(
-        ['14155552671', '14155552671@s.whatsapp.net']
+        [ '14155552671', '14155552671@s.whatsapp.net' ]
       )
     end
 

@@ -14,7 +14,7 @@ module ContentProcessing
     #
     # @return [Boolean] Returns true if the last three user contents are similar, false otherwise.
     def last_three_user_contents_similar?
-      user_contents = @array.select { _1[:role] == 'user' }.map { _1[:content] }
+      user_contents = @array.select { _1[:role] == "user" }.map { _1[:content] }
       last_three = user_contents.last(3)
 
       return false if last_three.size < 3
@@ -23,7 +23,7 @@ module ContentProcessing
       similarity2 = self.class.similarity(last_three[1], last_three[2])
       similarity3 = self.class.similarity(last_three[0], last_three[2])
 
-      [similarity1, similarity2, similarity3].min > 0.9
+      [ similarity1, similarity2, similarity3 ].min > 0.9
     end
 
     # Coeficiente de White: 2 × pares de letras em comum ÷ total de pares, por palavra.
@@ -51,7 +51,7 @@ module ContentProcessing
 
     def self.letter_pairs(text)
       text.to_s.upcase.split(/\s+/).flat_map do |word|
-        (0...[word.length - 1, 0].max).map { |index| word[index, 2] }
+        (0...[ word.length - 1, 0 ].max).map { |index| word[index, 2] }
       end
     end
     private_class_method :letter_pairs

@@ -48,10 +48,10 @@ module Widget
       raise ContextTooLargeError if input.to_json.bytesize > MAX_SERIALIZED_BYTES
 
       {
-        'page' => input['page'].is_a?(Hash) ? sanitize_page(input['page']) : nil,
-        'product' => input['product'].is_a?(Hash) ? sanitize_product(input['product']) : nil,
-        'visitor' => input['visitor'].is_a?(Hash) ? sanitize_visitor(input['visitor']) : nil,
-        'events' => input['events'].is_a?(Array) ? sanitize_events(input['events']) : nil
+        "page" => input["page"].is_a?(Hash) ? sanitize_page(input["page"]) : nil,
+        "product" => input["product"].is_a?(Hash) ? sanitize_product(input["product"]) : nil,
+        "visitor" => input["visitor"].is_a?(Hash) ? sanitize_visitor(input["visitor"]) : nil,
+        "events" => input["events"].is_a?(Array) ? sanitize_events(input["events"]) : nil
       }.compact.presence
     end
 
@@ -68,37 +68,37 @@ module Widget
 
     def sanitize_page(page)
       stamped(
-        'url' => http_url(page['url']),
-        'title' => clean_text(page['title'], LIMITS[:title]),
-        'referrer' => clean_text(page['referrer'], LIMITS[:url])
+        "url" => http_url(page["url"]),
+        "title" => clean_text(page["title"], LIMITS[:title]),
+        "referrer" => clean_text(page["referrer"], LIMITS[:url])
       )
     end
 
     def sanitize_product(product)
       stamped(
-        'name' => clean_text(product['name'], LIMITS[:name]),
-        'price' => clean_text(product['price'], LIMITS[:priceish]),
-        'currency' => clean_text(product['currency'], LIMITS[:priceish]),
-        'url' => http_url(product['url']),
-        'image_url' => http_url(product['image_url']),
-        'description' => clean_text(product['description'], LIMITS[:description]),
-        'sku' => clean_text(product['sku'], LIMITS[:sku]),
-        'extra' => sanitize_pairs(product['extra'])
+        "name" => clean_text(product["name"], LIMITS[:name]),
+        "price" => clean_text(product["price"], LIMITS[:priceish]),
+        "currency" => clean_text(product["currency"], LIMITS[:priceish]),
+        "url" => http_url(product["url"]),
+        "image_url" => http_url(product["image_url"]),
+        "description" => clean_text(product["description"], LIMITS[:description]),
+        "sku" => clean_text(product["sku"], LIMITS[:sku]),
+        "extra" => sanitize_pairs(product["extra"])
       )
     end
 
     def sanitize_visitor(visitor)
-      external_id = clean_text(visitor['external_id'], LIMITS[:external_id])
+      external_id = clean_text(visitor["external_id"], LIMITS[:external_id])
       data = {
-        'external_id' => external_id,
-        'name' => clean_text(visitor['name'], LIMITS[:name]),
-        'email' => clean_text(visitor['email'], LIMITS[:email]),
-        'phone' => clean_text(visitor['phone'], LIMITS[:phone])
+        "external_id" => external_id,
+        "name" => clean_text(visitor["name"], LIMITS[:name]),
+        "email" => clean_text(visitor["email"], LIMITS[:email]),
+        "phone" => clean_text(visitor["phone"], LIMITS[:phone])
       }.compact
       return nil if data.empty?
 
-      data['verified'] = verified_identity?(external_id, visitor['hash'])
-      data.merge('captured_at' => Time.current.iso8601)
+      data["verified"] = verified_identity?(external_id, visitor["hash"])
+      data.merge("captured_at" => Time.current.iso8601)
     end
 
     def sanitize_events(events)
@@ -106,15 +106,15 @@ module Widget
         next unless event.is_a?(Hash)
 
         event = event.deep_stringify_keys
-        name = clean_text(event['name'], LIMITS[:event_name])
+        name = clean_text(event["name"], LIMITS[:event_name])
         next if name.blank?
 
         entry = {
-          'name' => name,
-          'at' => clean_text(event['at'], LIMITS[:event_at]) || Time.current.iso8601
+          "name" => name,
+          "at" => clean_text(event["at"], LIMITS[:event_at]) || Time.current.iso8601
         }
-        props = sanitize_pairs(event['props'])
-        entry['props'] = props if props.present?
+        props = sanitize_pairs(event["props"])
+        entry["props"] = props if props.present?
         entry
       end.presence
     end
@@ -137,7 +137,7 @@ module Widget
       return nil unless value.is_a?(String) || value.is_a?(Numeric)
 
       value.to_s
-           .gsub(CONTROL_CHARS, '')
+           .gsub(CONTROL_CHARS, "")
            .gsub('"""', '"')
            .strip
            .presence
@@ -164,7 +164,7 @@ module Widget
       provided = hash.to_s.downcase
       return false unless provided.match?(/\A[0-9a-f]{64}\z/)
 
-      expected = OpenSSL::HMAC.hexdigest('SHA256', connector.signing_secret, external_id)
+      expected = OpenSSL::HMAC.hexdigest("SHA256", connector.signing_secret, external_id)
       ActiveSupport::SecurityUtils.secure_compare(expected, provided)
     end
 
@@ -174,7 +174,7 @@ module Widget
       cleaned = data.compact
       return nil if cleaned.empty?
 
-      cleaned.merge('captured_at' => Time.current.iso8601)
+      cleaned.merge("captured_at" => Time.current.iso8601)
     end
   end
 end

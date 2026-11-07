@@ -33,9 +33,9 @@ module Widget
       changed = changed_sections(current)
 
       merged = current.merge(sanitized)
-      if sanitized['events'].present?
-        combined = (current['events'] || []) + sanitized['events']
-        merged['events'] = combined.uniq { |e| [e['name'], e['at']] }.last(EVENTS_KEPT)
+      if sanitized["events"].present?
+        combined = (current["events"] || []) + sanitized["events"]
+        merged["events"] = combined.uniq { |e| [ e["name"], e["at"] ] }.last(EVENTS_KEPT)
       end
 
       chat.widget_context = merged
@@ -55,33 +55,33 @@ module Widget
       changed = %w[page product visitor].select do |section|
         sanitized.key?(section) && strip_stamp(sanitized[section]) != strip_stamp(current[section])
       end
-      changed << 'events' if new_events?(current)
+      changed << "events" if new_events?(current)
       changed
     end
 
     def strip_stamp(section)
-      section.is_a?(Hash) ? section.except('captured_at') : {}
+      section.is_a?(Hash) ? section.except("captured_at") : {}
     end
 
     def new_events?(current)
-      incoming = sanitized['events'] || []
+      incoming = sanitized["events"] || []
       return false if incoming.empty?
 
-      known = (current['events'] || []).map { |e| [e['name'], e['at']] }
-      incoming.any? { |e| known.exclude?([e['name'], e['at']]) }
+      known = (current["events"] || []).map { |e| [ e["name"], e["at"] ] }
+      incoming.any? { |e| known.exclude?([ e["name"], e["at"] ]) }
     end
 
     def apply_verified_identity
-      visitor = sanitized['visitor']
-      return unless visitor.is_a?(Hash) && visitor['verified']
+      visitor = sanitized["visitor"]
+      return unless visitor.is_a?(Hash) && visitor["verified"]
 
-      if visitor['name'].present? && (chat.user_name.blank? || chat.user_name == 'Visitante')
-        chat.user_name = visitor['name']
+      if visitor["name"].present? && (chat.user_name.blank? || chat.user_name == "Visitante")
+        chat.user_name = visitor["name"]
       end
 
       attrs = chat.custom_attributes || {}
-      attrs['email'] = visitor['email'] if visitor['email'].present?
-      attrs['phone'] = visitor['phone'] if visitor['phone'].present?
+      attrs["email"] = visitor["email"] if visitor["email"].present?
+      attrs["phone"] = visitor["phone"] if visitor["phone"].present?
       chat.custom_attributes = attrs
     end
   end

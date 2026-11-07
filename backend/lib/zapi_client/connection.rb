@@ -8,7 +8,7 @@ class ZapiClient
     # @return [String] QR Code bytes that can be rendered in a QR Code component
     # @raise [ZapiClient::Error] On request failure or if already connected
     def get_qr_code
-      request(:get, 'qr-code')
+      request(:get, "qr-code")
     end
 
     # Gets the QR Code as a Base64 image.
@@ -16,7 +16,7 @@ class ZapiClient
     # @return [Hash] Response containing the Base64 image data
     # @raise [ZapiClient::Error] On request failure or if already connected
     def get_qr_code_image
-      request(:get, 'qr-code/image')
+      request(:get, "qr-code/image")
     end
 
     # Gets a pairing code for connecting without QR Code scanning.
@@ -35,7 +35,7 @@ class ZapiClient
     # @return [Hash, Boolean] Response from the API or true on success
     # @raise [ZapiClient::Error] On request failure
     def disconnect
-      request(:get, 'disconnect')
+      request(:get, "disconnect")
     end
 
     # Enables or disables notification of messages sent by the instance itself.
@@ -44,7 +44,7 @@ class ZapiClient
     # @return [Hash] Response from the API
     # @raise [ZapiClient::Error] On request failure
     def update_notify_sent_by_me(enabled: true)
-      request(:put, 'update-notify-sent-by-me', body: { notifySentByMe: enabled })
+      request(:put, "update-notify-sent-by-me", body: { notifySentByMe: enabled })
     end
 
     private
@@ -53,7 +53,7 @@ class ZapiClient
     # @param phone [String] Phone number
     # @return [String] Sanitized phone number
     def sanitize_phone(phone)
-      phone.to_s.gsub(/\D/, '')
+      phone.to_s.gsub(/\D/, "")
     end
   end
 end

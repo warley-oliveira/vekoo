@@ -10,11 +10,11 @@ class ZapiClient
     # @param view_once [Boolean] If true, image can only be viewed once
     # @return [Hash] API response
     def send_image(phone, image, caption: nil, view_once: false)
-      image_param = FileHandler.prepare_file_param(image, 'image')
+      image_param = FileHandler.prepare_file_param(image, "image")
       payload = { phone: phone, image: image_param, viewOnce: !!view_once }
       payload[:caption] = caption if caption
 
-      request(:post, 'send-image', body: payload)
+      request(:post, "send-image", body: payload)
     end
 
     # Sends a video to the specified number.
@@ -24,11 +24,11 @@ class ZapiClient
     # @param view_once [Boolean] If true, video can only be viewed once
     # @return [Hash] API response
     def send_video(phone, video, caption: nil, view_once: false)
-      video_param = FileHandler.prepare_file_param(video, 'video')
+      video_param = FileHandler.prepare_file_param(video, "video")
       payload = { phone: phone, video: video_param, viewOnce: !!view_once }
       payload[:caption] = caption if caption
 
-      request(:post, 'send-video', body: payload)
+      request(:post, "send-video", body: payload)
     end
 
     # Sends an audio file to the specified number.
@@ -38,11 +38,11 @@ class ZapiClient
     # @param view_once [Boolean] If true, audio can only be played once
     # @return [Hash] API response
     def send_audio(phone, audio, waveform: false, view_once: false)
-      audio_param = FileHandler.prepare_file_param(audio, 'audio')
+      audio_param = FileHandler.prepare_file_param(audio, "audio")
       payload = { phone: phone, audio: audio_param, viewOnce: !!view_once }
       payload[:waveform] = true if waveform
 
-      request(:post, 'send-audio', body: payload)
+      request(:post, "send-audio", body: payload)
     end
 
     # Sends a document (PDF, DOC, etc.) to the specified number.
@@ -52,7 +52,7 @@ class ZapiClient
     # @return [Hash] API response
     def send_document(phone, document, file_name: nil)
       ext, file_name = FileHandler.extract_document_info(document, file_name)
-      doc_param = FileHandler.prepare_file_param(document, 'document')
+      doc_param = FileHandler.prepare_file_param(document, "document")
 
       payload = { phone: phone, document: doc_param }
       payload[:fileName] = file_name if file_name

@@ -24,14 +24,14 @@ class Connector::LeadChat < Connector::Base
 
     leadchat_message = LeadChatApi::Message.new(leadchat_client)
     response = leadchat_message.send_text_message_to_session(
-      session_id: chat.external_fields['session_id'],
+      session_id: chat.external_fields["session_id"],
       message: message
     )
     response.is_a?(Hash) ? response[:id].to_s.presence : nil
   end
 
-  def send_template_message(_sender_id, _template, _language: 'en_US')
-    raise 'Not implemented'
+  def send_template_message(_sender_id, _template, _language: "en_US")
+    raise "Not implemented"
   end
 
   def send_media_message(_to, media_dto, chat = nil)
@@ -40,7 +40,7 @@ class Connector::LeadChat < Connector::Base
 
     Rails.logger.info("[LeadChat Model] Sending file: #{media_dto.as_json}")
     LeadChatApi::Message.new(leadchat_client).send_file_message_to_session(
-      session_id: chat.external_fields['session_id'],
+      session_id: chat.external_fields["session_id"],
       file_url: file_url
     )
   end
@@ -49,7 +49,7 @@ class Connector::LeadChat < Connector::Base
     return if audio_url.blank? || chat.nil?
 
     LeadChatApi::Message.new(leadchat_client).send_file_message_to_session(
-      session_id: chat.external_fields['session_id'],
+      session_id: chat.external_fields["session_id"],
       file_url: Media::Storage.public_url(audio_url)
     )
   end
@@ -61,7 +61,7 @@ class Connector::LeadChat < Connector::Base
   def send_presence(_number, _presence) = true
 
   def retrieve_audio_message(file_url)
-    file_path = Rails.root.join('tmp', "#{SecureRandom.hex}.mp3")
+    file_path = Rails.root.join("tmp", "#{SecureRandom.hex}.mp3")
     response = Media::RemoteFile.get(file_url)
     raise "LeadChat audio download failed (HTTP #{response.status})" unless response.success?
 
@@ -94,10 +94,10 @@ class Connector::LeadChat < Connector::Base
 
   def setup_webhook!
     webhook = LeadChatApi::Webhook.new(leadchat_client)
-    response = webhook.create_subscription('Vekoo', webhook_url)
+    response = webhook.create_subscription("Vekoo", webhook_url)
 
     # O cliente devolve nil em timeout: sem assinatura, o canal não está de pé.
-    raise LeadChatApi::Error.new(nil, 'sem resposta') unless response.is_a?(Hash)
+    raise LeadChatApi::Error.new(nil, "sem resposta") unless response.is_a?(Hash)
     raise LeadChatApi::Error.new(response.dig(:error, :code), response.dig(:error, :message)) if response[:error]
 
     self.external_subscription_id = response[:id]

@@ -18,7 +18,7 @@ class MetaApiClient
         headers: bearer_headers,
         body: {
           recipient: { id: recipient_id },
-          messaging_type: 'RESPONSE',
+          messaging_type: "RESPONSE",
           message: { text: text }
         }
       )
@@ -26,7 +26,7 @@ class MetaApiClient
       Rails.logger.info "[MetaApiClient#send_text] Response: #{response.code}"
 
       unless response.success?
-        error = response.parsed_response&.dig('error', 'message') || 'Unknown error'
+        error = response.parsed_response&.dig("error", "message") || "Unknown error"
         Rails.logger.error "[MetaApiClient#send_text] Error: #{error}"
       end
 
@@ -47,7 +47,7 @@ class MetaApiClient
         headers: bearer_headers,
         body: {
           recipient: { id: recipient_id },
-          messaging_type: 'RESPONSE',
+          messaging_type: "RESPONSE",
           message: {
             attachment: {
               type: attachment_type,
@@ -69,7 +69,7 @@ class MetaApiClient
       HttpClient.post(
         "#{@base_url}/#{@endpoint_id}/messages",
         headers: bearer_headers,
-        body: { recipient: { id: recipient_id }, sender_action: 'typing_on' },
+        body: { recipient: { id: recipient_id }, sender_action: "typing_on" },
         timeout: 10
       )
     end
@@ -82,7 +82,7 @@ class MetaApiClient
       HttpClient.post(
         "#{@base_url}/#{@endpoint_id}/messages",
         headers: bearer_headers,
-        body: { recipient: { id: recipient_id }, sender_action: 'mark_seen' },
+        body: { recipient: { id: recipient_id }, sender_action: "mark_seen" },
         timeout: 10
       )
     end
@@ -92,7 +92,7 @@ class MetaApiClient
     # @param url [String] Public URL of the media to download
     # @return [String, nil] Absolute path to the temp file, or nil on failure
     def download_media(url)
-      Rails.logger.info '[MetaApiClient] Downloading media'
+      Rails.logger.info "[MetaApiClient] Downloading media"
       HttpClient.stream_download(url)
     end
 
@@ -100,8 +100,8 @@ class MetaApiClient
 
     def bearer_headers
       {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Bearer #{@token}"
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{@token}"
       }
     end
   end

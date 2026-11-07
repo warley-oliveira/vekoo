@@ -39,11 +39,11 @@ class Connector::WhatsappWeb
       # ---- messaging -----------------------------------------------------------
 
       def send_text_message(connector, to, message, reply_to_external_id: nil)
-        to = "#{to}@s.whatsapp.net" unless to.end_with?('@s.whatsapp.net')
-        payload = { number: to, text: message, delay: 0, presence: 'available' }
+        to = "#{to}@s.whatsapp.net" unless to.end_with?("@s.whatsapp.net")
+        payload = { number: to, text: message, delay: 0, presence: "available" }
         payload[:quoted] = quoted_payload(reply_to_external_id, to) if reply_to_external_id.present?
 
-        Base.with_retry(label: 'Send Text Message', idempotent: false) do
+        Base.with_retry(label: "Send Text Message", idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendText/#{connector.instance_name}",
             body: payload.to_json,
@@ -60,7 +60,7 @@ class Connector::WhatsappWeb
       end
 
       def send_media_message(connector, to, media_dto)
-        file_name = (media_dto.file_name || 'image.jpg').unicode_normalize(:nfkd).gsub(/[^\x00-\x7F]/, '')
+        file_name = (media_dto.file_name || "image.jpg").unicode_normalize(:nfkd).gsub(/[^\x00-\x7F]/, "")
         media_value = resolve_media_value(media_dto)
 
         if media_value.blank?
@@ -69,10 +69,10 @@ class Connector::WhatsappWeb
 
         sent_after = Time.current.to_i - SENT_MESSAGE_CLOCK_SKEW
 
-        Base.with_retry(label: 'Send Media Message', idempotent: false) do
+        Base.with_retry(label: "Send Media Message", idempotent: false) do
           payload = {
             number: to,
-            mediatype: media_dto.media_type || 'image',
+            mediatype: media_dto.media_type || "image",
             media: media_value,
             mimetype: mimetype_for(media_dto),
             fileName: file_name
@@ -88,7 +88,7 @@ class Connector::WhatsappWeb
           Rails.logger.info("HTTParty Response (send_media_message): #{response.body}")
 
           raise_if_number_not_found!(response)
-          raise "Failed to send message: #{response.body}" unless [200, 201].include?(response.code)
+          raise "Failed to send message: #{response.body}" unless [ 200, 201 ].include?(response.code)
           return response if response.body.present?
 
           recover_sent_message(connector, to, sent_after) || response
@@ -105,12 +105,12 @@ class Connector::WhatsappWeb
           body: { where: { key: { remoteJid: jid_for(to), fromMe: true } }, offset: 5 }.to_json,
           headers: connector.headers
         )
-        records = Array(response.parsed_response.try(:dig, 'messages', 'records'))
-        record = records.find { |r| r['messageTimestamp'].to_i >= sent_after }
+        records = Array(response.parsed_response.try(:dig, "messages", "records"))
+        record = records.find { |r| r["messageTimestamp"].to_i >= sent_after }
         Rails.logger.warn(
           "[EvolutionApi] sendMedia returned empty body for #{to}; recovered id=#{record&.dig('key', 'id').inspect}"
         )
-        record&.slice('key')
+        record&.slice("key")
       rescue StandardError => e
         Rails.logger.warn("[EvolutionApi] Could not recover sent media id for #{to}: #{e.message}")
         nil
@@ -119,7 +119,7 @@ class Connector::WhatsappWeb
       def send_audio_message_by_url(connector, to, audio_url)
         payload = { number: to, audio: audio_url, encoding: true }
 
-        Base.with_retry(label: 'Send Audio', idempotent: false) do
+        Base.with_retry(label: "Send Audio", idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendWhatsAppAudio/#{connector.instance_name}",
             body: payload.to_json,
@@ -127,7 +127,7 @@ class Connector::WhatsappWeb
           )
           Rails.logger.info("HTTParty Response (send_audio_message_by_url): #{response.body}")
 
-          unless [200, 201].include?(response.code)
+          unless [ 200, 201 ].include?(response.code)
             Rails.logger.error("Failed to send audio message with payload: #{payload}")
             raise "Failed to send message: #{response.body} "
           end
@@ -147,7 +147,7 @@ class Connector::WhatsappWeb
       def check_whatsapp_numbers(connector, numbers)
         payload = { numbers: numbers.map { |number| jid_for(number) } }
 
-        Base.with_retry(label: 'Check WhatsApp Numbers') do
+        Base.with_retry(label: "Check WhatsApp Numbers") do
           response = HTTParty.post(
             "#{connector.base_url}/chat/whatsappNumbers/#{connector.instance_name}",
             body: payload.to_json,
@@ -169,28 +169,28 @@ class Connector::WhatsappWeb
         body = response.parsed_response
         return unless body.is_a?(Hash)
 
-        entries = Array(body.dig('response', 'message'))
-        return unless entries.any? { |entry| entry.is_a?(Hash) && entry['exists'] == false }
+        entries = Array(body.dig("response", "message"))
+        return unless entries.any? { |entry| entry.is_a?(Hash) && entry["exists"] == false }
 
         raise WhatsappNumberNotFoundError, "Number not on WhatsApp: #{response.body}"
       end
 
       def jid_for(number)
         number = number.to_s
-        number.end_with?('@s.whatsapp.net') ? number : "#{number}@s.whatsapp.net"
+        number.end_with?("@s.whatsapp.net") ? number : "#{number}@s.whatsapp.net"
       end
 
       # `key` descreve a mensagem ALVO — `fromMe` diz se fomos nós que a
       # enviamos, não quem está reagindo. `emoji` vazio remove a reação
       # (convenção do protocolo; a Evolution valida "um emoji ou string vazia").
       def send_reaction(connector, to, external_message_id, from_me, emoji)
-        to = "#{to}@s.whatsapp.net" unless to.end_with?('@s.whatsapp.net')
+        to = "#{to}@s.whatsapp.net" unless to.end_with?("@s.whatsapp.net")
         payload = {
           key: { remoteJid: to, fromMe: from_me, id: external_message_id },
           reaction: emoji.to_s
         }
 
-        Base.with_retry(label: 'Send Reaction', idempotent: false) do
+        Base.with_retry(label: "Send Reaction", idempotent: false) do
           response = HTTParty.post(
             "#{connector.base_url}/message/sendReaction/#{connector.instance_name}",
             body: payload.to_json,
@@ -198,16 +198,16 @@ class Connector::WhatsappWeb
           )
           Rails.logger.info("HTTParty Response (send_reaction): #{response.body}")
 
-          raise "Failed to send reaction: #{response.body}" unless [200, 201].include?(response.code)
+          raise "Failed to send reaction: #{response.body}" unless [ 200, 201 ].include?(response.code)
 
           Connectors::ExternalId.from(response)
         end
       end
 
       def mark_read_message(connector, remote_jid, id)
-        payload = { readMessages: [{ remoteJid: remote_jid, fromMe: false, id: id }] }
+        payload = { readMessages: [ { remoteJid: remote_jid, fromMe: false, id: id } ] }
 
-        Base.with_retry(label: 'Mark Read') do
+        Base.with_retry(label: "Mark Read") do
           response = HTTParty.post(
             "#{connector.base_url}/chat/markMessageAsRead/#{connector.instance_name}",
             body: payload.to_json,
@@ -215,7 +215,7 @@ class Connector::WhatsappWeb
           )
           Rails.logger.info("HTTParty Response (mark_read_message): #{response.body}")
 
-          raise "Failed to send message: #{response.body}" unless [200, 201].include?(response.code)
+          raise "Failed to send message: #{response.body}" unless [ 200, 201 ].include?(response.code)
         end
       end
 
@@ -223,7 +223,7 @@ class Connector::WhatsappWeb
         payload = { number: number, delay: 120, presence: presence,
                     options: { delay: 120, presence: presence, number: number } }
 
-        Base.with_retry(label: 'Send Presence') do
+        Base.with_retry(label: "Send Presence") do
           response = HTTParty.post(
             "#{connector.base_url}/chat/sendPresence/#{connector.instance_name}",
             body: payload.to_json,
@@ -248,22 +248,22 @@ class Connector::WhatsappWeb
 
         body = { message: { key: { id: id } }, convertToMp4: false }
 
-        Base.with_retry(label: 'Retriever media') do
+        Base.with_retry(label: "Retriever media") do
           response = HTTParty.post(
             "#{connector.base_url}/chat/getBase64FromMediaMessage/#{connector.instance_name}",
             body: body.to_json,
             headers: connector.headers
           )
 
-          unless [200, 201].include?(response.code)
+          unless [ 200, 201 ].include?(response.code)
             raise "A requisição falhou com o código de resposta #{response.code}\nRetorno: #{response.body}"
           end
 
-          base64_content = response.parsed_response['base64']
+          base64_content = response.parsed_response["base64"]
           return base64_content if base64
 
-          file_path = Rails.root.join('tmp', "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
-          File.write(file_path, Base64.decode64(base64_content), mode: 'wb')
+          file_path = Rails.root.join("tmp", "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
+          File.write(file_path, Base64.decode64(base64_content), mode: "wb")
           file_path
         end
       end
@@ -276,7 +276,7 @@ class Connector::WhatsappWeb
         body = {
           instanceName: connector.instance_name,
           # Campo do contrato da Evolution, não o nosso "conector": sem ele a instância não nasce.
-          integration: 'WHATSAPP-BAILEYS',
+          integration: "WHATSAPP-BAILEYS",
           qrcode: true,
           webhook: {
             enabled: true,
@@ -297,13 +297,13 @@ class Connector::WhatsappWeb
         Rails.logger.info("HTTParty Response (activate - create): #{instance_response.code}")
 
         # Antes de ler o corpo: erro de gateway vem em HTML, e a tela não deve receber QR vazio.
-        unless [200, 201].include?(instance_response.code)
+        unless [ 200, 201 ].include?(instance_response.code)
           Rails.logger.error("Failed to create instance: #{instance_response.body}")
           raise "Failed to create instance: #{instance_response.code}"
         end
 
-        qrcode_base64 = instance_response.parsed_response.dig('qrcode', 'base64')
-        pair_code = instance_response.parsed_response.dig('qrcode', 'pairingCode').presence
+        qrcode_base64 = instance_response.parsed_response.dig("qrcode", "base64")
+        pair_code = instance_response.parsed_response.dig("qrcode", "pairingCode").presence
 
         # Armazena o novo QrCode no cache (será usado na próxima vez)
         Rails.cache.write(
@@ -323,8 +323,8 @@ class Connector::WhatsappWeb
         # In v2 the instance apikey is at the top-level `hash` field (string).
         # We fall back to the v1 nested `hash.apikey` shape so a server still
         # running the older response format doesn't break activation.
-        hash_value = instance_response.parsed_response['hash']
-        connector.instance_api_key = hash_value.is_a?(Hash) ? hash_value['apikey'] : hash_value
+        hash_value = instance_response.parsed_response["hash"]
+        connector.instance_api_key = hash_value.is_a?(Hash) ? hash_value["apikey"] : hash_value
 
         connector.status = :pending
         connector.save!
@@ -354,7 +354,7 @@ class Connector::WhatsappWeb
         )
         Rails.logger.info("HTTParty Response (reload_instance): #{response.body}")
 
-        raise "Failed to reload instance: #{response.body}" unless [200, 201].include?(response.code)
+        raise "Failed to reload instance: #{response.body}" unless [ 200, 201 ].include?(response.code)
 
         response
       end
@@ -366,7 +366,7 @@ class Connector::WhatsappWeb
         )
         Rails.logger.info("HTTParty Response (logout_instance): #{response.body}")
 
-        raise "Failed to logout instance: #{response.body}" unless [200, 201, 404, 401].include?(response.code)
+        raise "Failed to logout instance: #{response.body}" unless [ 200, 201, 404, 401 ].include?(response.code)
 
         connector.update(status: :closed)
         response
@@ -382,7 +382,7 @@ class Connector::WhatsappWeb
         # Só o status: a listagem da v2 traz o token de cada instância.
         Rails.logger.info("HTTParty Response (fetch_current_information): #{instance_response.code}")
 
-        unless [200, 201].include?(instance_response.code)
+        unless [ 200, 201 ].include?(instance_response.code)
           Rails.logger.error("Failed to retrieve instance: #{instance_response.body}")
           return
         end
@@ -394,22 +394,22 @@ class Connector::WhatsappWeb
         return if list.blank?
 
         current_instance = list.find do |entry|
-          name = if entry.is_a?(Hash) && entry['instance'].is_a?(Hash)
-                   entry.dig('instance',
-                             'instanceName')
-                 else
-                   entry['name']
-                 end
+          name = if entry.is_a?(Hash) && entry["instance"].is_a?(Hash)
+                   entry.dig("instance",
+                             "instanceName")
+          else
+                   entry["name"]
+          end
           name.eql?(connector.instance_name)
         end
         return if current_instance.nil?
 
-        current_instance = current_instance['instance'] if current_instance['instance'].is_a?(Hash)
+        current_instance = current_instance["instance"] if current_instance["instance"].is_a?(Hash)
 
-        owner = current_instance['owner'] || current_instance['ownerJid']
-        connector.number_id           = owner&.split('@')&.first
-        connector.profile_picture_url = current_instance['profilePictureUrl'] || current_instance['profilePicUrl']
-        connector.profile_name        = current_instance['profileName']
+        owner = current_instance["owner"] || current_instance["ownerJid"]
+        connector.number_id           = owner&.split("@")&.first
+        connector.profile_picture_url = current_instance["profilePictureUrl"] || current_instance["profilePicUrl"]
+        connector.profile_name        = current_instance["profileName"]
       end
 
       def retriever_media_message_complete(connector, id, _message, msg_type = :audio, resp_base64 = nil)
@@ -451,8 +451,8 @@ class Connector::WhatsappWeb
         binary = response.body
         return Base64.strict_encode64(binary) if as_base64
 
-        file_path = Rails.root.join('tmp', "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
-        File.write(file_path, binary, mode: 'wb')
+        file_path = Rails.root.join("tmp", "#{SecureRandom.hex}.#{Base.file_extension_for(msg_type)}")
+        File.write(file_path, binary, mode: "wb")
         file_path
       end
       private_class_method :fetch_media_from_url
@@ -463,11 +463,11 @@ class Connector::WhatsappWeb
         return by_name unless by_name == Marcel::MimeType::BINARY
 
         case media_dto.media_type.to_s.downcase
-        when 'image' then 'image/jpeg'
-        when 'video' then 'video/mp4'
-        when 'audio' then 'audio/ogg'
-        when 'document', 'file' then 'application/octet-stream'
-        else 'application/octet-stream'
+        when "image" then "image/jpeg"
+        when "video" then "video/mp4"
+        when "audio" then "audio/ogg"
+        when "document", "file" then "application/octet-stream"
+        else "application/octet-stream"
         end
       end
       private_class_method :mimetype_for

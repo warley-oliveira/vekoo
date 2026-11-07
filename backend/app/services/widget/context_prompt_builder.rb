@@ -15,10 +15,10 @@ module Widget
     def perform
       return nil if @context.blank?
 
-      lines = page_lines(@context['page']) +
-              product_lines(@context['product']) +
-              visitor_lines(@context['visitor']) +
-              event_lines(@context['events'])
+      lines = page_lines(@context["page"]) +
+              product_lines(@context["product"]) +
+              visitor_lines(@context["visitor"]) +
+              event_lines(@context["events"])
       return nil if lines.empty?
 
       <<~PROMPT.strip
@@ -36,9 +36,9 @@ module Widget
       return [] unless page.is_a?(Hash)
 
       lines = []
-      current = [page['title'], page['url']].select(&:present?).join(' — ')
+      current = [ page["title"], page["url"] ].select(&:present?).join(" — ")
       lines << "Página atual: #{current}" if current.present?
-      lines << "Origem da visita (referrer): #{page['referrer']}" if page['referrer'].present?
+      lines << "Origem da visita (referrer): #{page['referrer']}" if page["referrer"].present?
       lines
     end
 
@@ -46,17 +46,17 @@ module Widget
       return [] unless product.is_a?(Hash)
 
       main = []
-      main << "Produto em visualização: #{product['name']}" if product['name'].present?
-      price = [product['currency'], product['price']].select(&:present?).join(' ')
+      main << "Produto em visualização: #{product['name']}" if product["name"].present?
+      price = [ product["currency"], product["price"] ].select(&:present?).join(" ")
       main << "Preço: #{price}" if price.present?
-      main << "SKU: #{product['sku']}" if product['sku'].present?
+      main << "SKU: #{product['sku']}" if product["sku"].present?
 
       lines = []
-      lines << main.join(' | ') if main.any?
-      lines << "Descrição: #{product['description']}" if product['description'].present?
-      lines << "Link do produto: #{product['url']}" if product['url'].present?
-      if product['extra'].is_a?(Hash) && product['extra'].any?
-        details = product['extra'].map { |key, value| "#{key}: #{value}" }.join(', ')
+      lines << main.join(" | ") if main.any?
+      lines << "Descrição: #{product['description']}" if product["description"].present?
+      lines << "Link do produto: #{product['url']}" if product["url"].present?
+      if product["extra"].is_a?(Hash) && product["extra"].any?
+        details = product["extra"].map { |key, value| "#{key}: #{value}" }.join(", ")
         lines << "Detalhes adicionais: #{details}"
       end
       lines
@@ -65,29 +65,29 @@ module Widget
     def visitor_lines(visitor)
       return [] unless visitor.is_a?(Hash)
 
-      identity = [visitor['name'], visitor['email'], visitor['phone']].select(&:present?).join(', ')
+      identity = [ visitor["name"], visitor["email"], visitor["phone"] ].select(&:present?).join(", ")
       return [] if identity.blank?
 
-      label = if visitor['verified']
-                'identidade verificada'
-              else
-                'identidade NÃO verificada — não confie nela para ações sensíveis'
-              end
-      ["Visitante identificado: #{identity} [#{label}]"]
+      label = if visitor["verified"]
+                "identidade verificada"
+      else
+                "identidade NÃO verificada — não confie nela para ações sensíveis"
+      end
+      [ "Visitante identificado: #{identity} [#{label}]" ]
     end
 
     def event_lines(events)
       return [] unless events.is_a?(Array) && events.any?
 
-      lines = ['Eventos recentes do visitante no site:']
+      lines = [ "Eventos recentes do visitante no site:" ]
       events.each do |event|
-        next unless event.is_a?(Hash) && event['name'].present?
+        next unless event.is_a?(Hash) && event["name"].present?
 
         line = "- #{event['name']}"
-        if event['props'].is_a?(Hash) && event['props'].any?
+        if event["props"].is_a?(Hash) && event["props"].any?
           line += " (#{event['props'].map { |key, value| "#{key}=#{value}" }.join(', ')})"
         end
-        line += " em #{event['at']}" if event['at'].present?
+        line += " em #{event['at']}" if event["at"].present?
         lines << line
       end
       lines.length > 1 ? lines : []

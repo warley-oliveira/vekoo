@@ -30,23 +30,23 @@ class ZapiClient
     def extract_document_info(document, file_name = nil)
       ext = nil
 
-      if document.is_a?(String) && document.strip.start_with?('http')
+      if document.is_a?(String) && document.strip.start_with?("http")
         ext, file_name = extract_from_url(document, file_name)
-      elsif document.is_a?(String) && document.strip.start_with?('data:')
+      elsif document.is_a?(String) && document.strip.start_with?("data:")
         ext = extract_from_data_uri(document)
       elsif document.is_a?(String) || document.respond_to?(:path)
         ext, file_name = extract_from_filepath(document, file_name)
       end
 
       ext = normalize_extension(ext)
-      [ext, file_name]
+      [ ext, file_name ]
     end
 
     # Checks if the string is a URL or Data URI
     # @param str [String] String to check
     # @return [Boolean]
     def url_or_data_uri?(str)
-      str.start_with?('http://', 'https://', 'data:')
+      str.start_with?("http://", "https://", "data:")
     end
 
     # Extracts file path from various input types
@@ -93,26 +93,26 @@ class ZapiClient
       file_name ||= File.basename(uri.path) if uri && !uri.path.empty?
 
       ext = File.extname(file_name).downcase if file_name
-      [ext, file_name]
+      [ ext, file_name ]
     end
 
     private_class_method def self.extract_from_data_uri(document)
       return nil unless document =~ /data:([^;]+);base64/
 
       mime = Regexp.last_match(1)
-      MimeTypes.extension_for_mime(mime) || ''
+      MimeTypes.extension_for_mime(mime) || ""
     end
 
     private_class_method def self.extract_from_filepath(document, file_name)
       filepath = document.is_a?(String) ? document : document.path
       file_name ||= File.basename(filepath) if filepath
       ext = File.extname(filepath).downcase if filepath
-      [ext, file_name]
+      [ ext, file_name ]
     end
 
     private_class_method def self.normalize_extension(ext)
-      ext = ext.to_s.sub('.', '')
-      ext.nil? || ext.empty? ? 'pdf' : ext
+      ext = ext.to_s.sub(".", "")
+      ext.nil? || ext.empty? ? "pdf" : ext
     end
   end
 end

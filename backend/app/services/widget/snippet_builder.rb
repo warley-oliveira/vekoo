@@ -23,25 +23,25 @@ module Widget
   class SnippetBuilder
     def self.widget_base_url
       Rails.application.config.try(:widget_base_url) ||
-        ENV.fetch('WIDGET_BASE_URL', 'https://widget.vekoo.app')
+        ENV.fetch("WIDGET_BASE_URL", "https://widget.vekoo.app")
     end
 
     # Origem que o widget contacta em runtime (API + ActionCable). Precisa
     # bater com DEFAULT_API_BASE do bundle (widget/src/index.ts).
     def self.api_base_url
       Rails.application.config.try(:widget_api_base_url) ||
-        ENV.fetch('WIDGET_API_BASE_URL') { Media::Storage.backend_url }
+        ENV.fetch("WIDGET_API_BASE_URL") { Media::Storage.backend_url }
     end
 
     # Origem dos anexos/avatares servidos ao widget.
     def self.assets_base_url
       Rails.application.config.try(:widget_assets_base_url) ||
-        ENV.fetch('WIDGET_ASSETS_BASE_URL') { Media::Storage.backend_url }
+        ENV.fetch("WIDGET_ASSETS_BASE_URL") { Media::Storage.backend_url }
     end
 
     def initialize(connector, base_url: self.class.widget_base_url)
       @connector = connector
-      @base_url = base_url.to_s.chomp('/')
+      @base_url = base_url.to_s.chomp("/")
     end
 
     # nil quando a integração ainda não tem token (nada a instalar).
@@ -83,18 +83,18 @@ module Widget
 
       api = self.class.api_base_url
       {
-        'script-src' => [base_url, csp_script_hash].compact.join(' '),
-        'connect-src' => "#{api} #{api.sub(/\Ahttp/i, 'ws')}",
-        'img-src' => "#{self.class.assets_base_url} data:",
-        'media-src' => "#{self.class.assets_base_url} data:",
-        'style-src' => "'unsafe-inline'"
+        "script-src" => [ base_url, csp_script_hash ].compact.join(" "),
+        "connect-src" => "#{api} #{api.sub(/\Ahttp/i, 'ws')}",
+        "img-src" => "#{self.class.assets_base_url} data:",
+        "media-src" => "#{self.class.assets_base_url} data:",
+        "style-src" => "'unsafe-inline'"
       }
     end
 
     def csp_header
       return nil unless public_token
 
-      csp_directives.map { |directive, value| "#{directive} #{value}" }.join('; ')
+      csp_directives.map { |directive, value| "#{directive} #{value}" }.join("; ")
     end
 
     private
@@ -150,7 +150,7 @@ module Widget
       "\n  #{STUB_JS}\n"
     end
 
-    STUB_JS = 'window.aiva = window.aiva || function(){(window.aiva.q = window.aiva.q || []).push(arguments)};'
+    STUB_JS = "window.aiva = window.aiva || function(){(window.aiva.q = window.aiva.q || []).push(arguments)};"
 
     # Conteúdo do primeiro bloco <script> do snippet, extraído da saída real.
     def inline_script_body

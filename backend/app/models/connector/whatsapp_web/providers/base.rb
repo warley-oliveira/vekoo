@@ -65,7 +65,7 @@ class Connector::WhatsappWeb
       AMBIGUOUS_ERRORS = [ Net::ReadTimeout, Net::WriteTimeout, Errno::ECONNRESET, Errno::EPIPE, EOFError ].freeze
 
       # Erros em que repetir a chamada não muda o resultado.
-      PERMANENT_ERRORS = [WhatsappNumberNotFoundError].freeze
+      PERMANENT_ERRORS = [ WhatsappNumberNotFoundError ].freeze
 
       # Wraps a provider HTTP call in the retry pattern the legacy code used:
       # on StandardError, sleep `wait_seconds`, retry up to `max_retries` times,
@@ -106,10 +106,10 @@ class Connector::WhatsappWeb
       # retrievers expect when persisting to `tmp/`.
       def file_extension_for(msg_type)
         case msg_type
-        when :mp3   then 'mp3'
-        when :audio then 'ogg'
-        when :image then 'jpg'
-        else 'bin'
+        when :mp3   then "mp3"
+        when :audio then "ogg"
+        when :image then "jpg"
+        else "bin"
         end
       end
     end

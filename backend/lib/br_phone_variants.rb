@@ -17,7 +17,7 @@
 # `ContactFormatHelper#format_whatsapp_number`, que só *remove* o 9): entradas fora
 # do padrão BR voltam apenas normalizadas, nunca vazias.
 module BrPhoneVariants
-  JID_SUFFIX = '@s.whatsapp.net'
+  JID_SUFFIX = "@s.whatsapp.net"
 
   # `55` + DDD (2 dígitos) + número nacional (8 ou 9 dígitos)
   BR_MSISDN = /\A55(\d{2})(\d{8,9})\z/
@@ -33,12 +33,12 @@ module BrPhoneVariants
     digits = digits_of(msisdn)
     return [] if digits.empty?
 
-    with_jid_suffix([digits, *ninth_digit_variants(digits)].uniq)
+    with_jid_suffix([ digits, *ninth_digit_variants(digits) ].uniq)
   end
 
   # Descarta o sufixo de JID antes de limpar, para não concatenar os dígitos do domínio.
   def digits_of(msisdn)
-    msisdn.to_s.split('@').first.to_s.gsub(/\D/, '')
+    msisdn.to_s.split("@").first.to_s.gsub(/\D/, "")
   end
 
   def ninth_digit_variants(digits)
@@ -47,16 +47,16 @@ module BrPhoneVariants
 
     ddd, national = match.captures
 
-    if national.length == 9 && national.start_with?('9')
-      ["55#{ddd}#{national[1..]}"]
+    if national.length == 9 && national.start_with?("9")
+      [ "55#{ddd}#{national[1..]}" ]
     elsif national.length == 8 && MOBILE_PREFIX.match?(national)
-      ["55#{ddd}9#{national}"]
+      [ "55#{ddd}9#{national}" ]
     else
       []
     end
   end
 
   def with_jid_suffix(forms)
-    forms.flat_map { |form| [form, "#{form}#{JID_SUFFIX}"] }
+    forms.flat_map { |form| [ form, "#{form}#{JID_SUFFIX}" ] }
   end
 end

@@ -10,19 +10,19 @@ class Connector::WhatsappWeb < Connector::Base
   # Vazio: vale a chave global do servidor do provedor (ver #provider_api_key).
   encrypted_field :api_key
 
-  field :provider_api, type: String, default: -> { ENV.fetch('WHATSAPP_WEB_DEFAULT_PROVIDER', 'evolution_api') }
+  field :provider_api, type: String, default: -> { ENV.fetch("WHATSAPP_WEB_DEFAULT_PROVIDER", "evolution_api") }
   field :zapi_instance_id, type: String
   encrypted_field :zapi_token
 
-  PREFIX_INSTANCE = 'IWA-'.freeze
+  PREFIX_INSTANCE = "IWA-".freeze
 
   # Provider strategy modules. Each value must respond to the same surface
   # documented in `Providers::Base`. Adding a new provider = one module file
   # + one entry here.
   PROVIDERS = {
-    'aiva_api' => Providers::AivaApi, # Providers::AivaApi,
-    'zapi' => Providers::Zapi,
-    'evolution_api' => Providers::EvolutionApi
+    "aiva_api" => Providers::AivaApi, # Providers::AivaApi,
+    "zapi" => Providers::Zapi,
+    "evolution_api" => Providers::EvolutionApi
   }.freeze
 
   # Sem isto, um provider desconhecido cairia no AIVA sem `base_url`, e a ativação sairia para
@@ -32,7 +32,7 @@ class Connector::WhatsappWeb < Connector::Base
   before_create do
     # When the caller (frontend) passes `provider_api` explicitly, the organization's
     # `zapi` feature flag must NOT silently overwrite it.
-    self.provider_api = 'zapi' if provider_api.blank? && organization&.features.to_h['zapi']
+    self.provider_api = "zapi" if provider_api.blank? && organization&.features.to_h["zapi"]
     self.base_url = self.class.default_base_url(provider_api) if base_url.blank?
   end
 
@@ -56,8 +56,8 @@ class Connector::WhatsappWeb < Connector::Base
 
   def self.default_base_url(provider_api)
     case provider_api.to_s
-    when 'evolution_api' then ENV.fetch('EVOLUTION_API_URL', 'http://localhost:8089')
-    when 'aiva_api' then ENV.fetch('WHATSAPP_API_URL', 'http://localhost:8080')
+    when "evolution_api" then ENV.fetch("EVOLUTION_API_URL", "http://localhost:8089")
+    when "aiva_api" then ENV.fetch("WHATSAPP_API_URL", "http://localhost:8080")
     end
   end
 
@@ -66,19 +66,19 @@ class Connector::WhatsappWeb < Connector::Base
   end
 
   def provider_api_key
-    api_key.presence || ENV[evolution_provider? ? 'EVOLUTION_API_KEY' : 'WHATSAPP_API_KEY']
+    api_key.presence || ENV[evolution_provider? ? "EVOLUTION_API_KEY" : "WHATSAPP_API_KEY"]
   end
 
   def provider
-    PROVIDERS.fetch(provider_api) { PROVIDERS.fetch('aiva_api') }
+    PROVIDERS.fetch(provider_api) { PROVIDERS.fetch("aiva_api") }
   end
 
   def zapi_provider?
-    provider_api == 'zapi'
+    provider_api == "zapi"
   end
 
   def evolution_provider?
-    provider_api == 'evolution_api'
+    provider_api == "evolution_api"
   end
 
   # ============================================================================
@@ -87,7 +87,7 @@ class Connector::WhatsappWeb < Connector::Base
 
   def send_text_message(to, message, _origin_phone_number = nil, reply_to_external_id: nil)
     if closed?
-      errors.add(:not_connected, 'not connected')
+      errors.add(:not_connected, "not connected")
       return
     end
 
@@ -129,13 +129,13 @@ class Connector::WhatsappWeb < Connector::Base
   # @return [String] dígitos do número que existe no WhatsApp
   # @return [nil] quando nenhuma forma existe
   def resolve_whatsapp_number(phone)
-    candidates = BrPhoneVariants.call(phone).reject { |form| form.include?('@') }
+    candidates = BrPhoneVariants.call(phone).reject { |form| form.include?("@") }
     return BrPhoneVariants.digits_of(phone) unless verifies_whatsapp_numbers? && candidates.any?
 
     results = provider.check_whatsapp_numbers(self, candidates)
     candidates.each do |candidate|
       match = results.find do |result|
-        result['exists'] == true && BrPhoneVariants.digits_of(result['number']) == candidate
+        result["exists"] == true && BrPhoneVariants.digits_of(result["number"]) == candidate
       end
       return whatsapp_number_from(match, candidate) if match
     end
@@ -254,7 +254,7 @@ class Connector::WhatsappWeb < Connector::Base
 
   def sign_zapi_instance
     require_zapi!
-    raise ZapiClient::Error, 'Z-API account token is required' unless zapi_account_token.present?
+    raise ZapiClient::Error, "Z-API account token is required" unless zapi_account_token.present?
 
     Rails.logger.info("[ZapiClient] Signing instance: #{zapi_instance_id}")
     ZapiClient.sign_instance(zapi_instance_id, zapi_token, account_token: zapi_account_token)
@@ -307,7 +307,7 @@ class Connector::WhatsappWeb < Connector::Base
   def number_formated
     return number_id unless number_id
 
-    digits = number_id.gsub(/\D/, '')
+    digits = number_id.gsub(/\D/, "")
 
     case digits.length
     when 12
@@ -329,7 +329,7 @@ class Connector::WhatsappWeb < Connector::Base
     unloaded_instance_ids = Connector::WhatsappWeb.where(
       organization_id: organization_id,
       number_id: number_id
-    ).where.not(status_cd: 'active').pluck(:id)
+    ).where.not(status_cd: "active").pluck(:id)
 
     return unless unloaded_instance_ids.present?
 
@@ -348,11 +348,11 @@ class Connector::WhatsappWeb < Connector::Base
       external_id: /@s\.whatsapp\.net$/
     )
 
-    puts '=== Step 1: Stripping @s.whatsapp.net ==='
+    puts "=== Step 1: Stripping @s.whatsapp.net ==="
     puts "Found #{dirty_chats.count} chats with @s.whatsapp.net"
 
     dirty_chats.each do |conv|
-      clean_id = conv.external_id.gsub('@s.whatsapp.net', '')
+      clean_id = conv.external_id.gsub("@s.whatsapp.net", "")
       puts "  #{conv.id}: #{conv.external_id} -> #{clean_id}"
       conv.set(external_id: clean_id)
     end
@@ -361,13 +361,13 @@ class Connector::WhatsappWeb < Connector::Base
     puts "\n=== Step 2: Finding duplicates ==="
 
     pipeline = [
-      { '$match' => { organization_id: account_id, connector_id: id } },
-      { '$group' => {
-        _id: '$external_id',
-        count: { '$sum' => 1 },
-        ids: { '$push' => '$_id' }
+      { "$match" => { organization_id: account_id, connector_id: id } },
+      { "$group" => {
+        _id: "$external_id",
+        count: { "$sum" => 1 },
+        ids: { "$push" => "$_id" }
       } },
-      { '$match' => { count: { '$gt' => 1 } } }
+      { "$match" => { count: { "$gt" => 1 } } }
     ]
 
     duplicates = Chat.collection.aggregate(pipeline).to_a
@@ -380,7 +380,7 @@ class Connector::WhatsappWeb < Connector::Base
       convs = Chat.where(
         organization_id: account_id,
         connector_id: id,
-        external_id: dup['_id']
+        external_id: dup["_id"]
       ).order_by(created_at: :asc).to_a
 
       oldest = convs.first
@@ -402,7 +402,7 @@ class Connector::WhatsappWeb < Connector::Base
         end
         update_fields[:last_message_content] = recent.last_message_content if recent.last_message_content.present?
         update_fields[:last_message_type] = recent.last_message_type if recent.last_message_type.present?
-        update_fields[:status] = recent.status if recent.status.present? && recent.status != 'closed'
+        update_fields[:status] = recent.status if recent.status.present? && recent.status != "closed"
         update_fields[:chat_tag_ids] = (oldest.chat_tag_ids + recent.chat_tag_ids).uniq if recent.chat_tag_ids.present?
 
         if update_fields.any?
@@ -433,17 +433,17 @@ class Connector::WhatsappWeb < Connector::Base
   # The provider modules call this on the connector; expose as public.
   def headers
     @headers ||= {
-      'Content-Type': 'application/json',
+      'Content-Type': "application/json",
       apikey: provider_api_key
     }
   end
 
   def zapi_client
-    @zapi_client ||= ZapiClient.new(zapi_instance_id, zapi_token, account_token: ENV['ZAPI_CLIENT_TOKEN'])
+    @zapi_client ||= ZapiClient.new(zapi_instance_id, zapi_token, account_token: ENV["ZAPI_CLIENT_TOKEN"])
   end
 
   def zapi_account_token
-    @zapi_account_token ||= ENV['ZAPI_ACCOUNT_TOKEN']
+    @zapi_account_token ||= ENV["ZAPI_ACCOUNT_TOKEN"]
   end
 
   private
@@ -451,11 +451,11 @@ class Connector::WhatsappWeb < Connector::Base
   # O `jid` é a forma canônica, mas pode vir como `@lid` (cache da Evolution);
   # nesse caso os dígitos não são telefone e vale a forma consultada.
   def whatsapp_number_from(result, candidate)
-    jid = result['jid'].to_s
+    jid = result["jid"].to_s
     jid.end_with?(BrPhoneVariants::JID_SUFFIX) ? BrPhoneVariants.digits_of(jid) : candidate
   end
 
   def require_zapi!
-    raise ZapiClient::Error, 'Z-API credentials are required' unless zapi_provider?
+    raise ZapiClient::Error, "Z-API credentials are required" unless zapi_provider?
   end
 end

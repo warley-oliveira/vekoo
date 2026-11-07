@@ -10,19 +10,19 @@ module BusinessWorkWindow
       return business_work unless data.is_a?(Hash)
 
       data = data.deep_stringify_keys
-      data['days'] = days(data['days']) if data.key?('days')
+      data["days"] = days(data["days"]) if data.key?("days")
       data
     end
 
     def days(days)
       days = days.values if days.is_a?(Hash)
       Array(days).filter_map do |day|
-        next unless day.is_a?(Hash) && day['day_of_week'].present?
+        next unless day.is_a?(Hash) && day["day_of_week"].present?
 
         {
-          'day_of_week' => day['day_of_week'].to_s,
-          'enabled' => day['enabled'].to_s == 'true' ? 'true' : 'false',
-          'windows' => windows(day['windows'])
+          "day_of_week" => day["day_of_week"].to_s,
+          "enabled" => day["enabled"].to_s == "true" ? "true" : "false",
+          "windows" => windows(day["windows"])
         }
       end
     end
@@ -30,9 +30,9 @@ module BusinessWorkWindow
     def windows(windows)
       windows = windows.values if windows.is_a?(Hash)
       Array(windows).filter_map do |window|
-        next unless window.is_a?(Hash) && window['start'].present? && window['end'].present?
+        next unless window.is_a?(Hash) && window["start"].present? && window["end"].present?
 
-        { 'start' => window['start'].to_s.strip, 'end' => window['end'].to_s.strip }
+        { "start" => window["start"].to_s.strip, "end" => window["end"].to_s.strip }
       end
     end
   end

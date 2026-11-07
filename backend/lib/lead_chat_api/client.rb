@@ -16,8 +16,8 @@ module LeadChatApi
 
     def post_request(endpoint, payload)
       response = @connection.post(endpoint) do |req|
-        req.headers['Authorization'] = "Bearer #{@api_key}"
-        req.headers['Content-Type'] = 'application/json'
+        req.headers["Authorization"] = "Bearer #{@api_key}"
+        req.headers["Content-Type"] = "application/json"
         req.body = payload.to_json
       end
       log_request(endpoint, payload, response)
@@ -32,8 +32,8 @@ module LeadChatApi
 
     def post_request_ignore_timeout(endpoint, payload)
       response = @connection_small_timeout.post(endpoint) do |req|
-        req.headers['Authorization'] = "Bearer #{@api_key}"
-        req.headers['Content-Type'] = 'application/json'
+        req.headers["Authorization"] = "Bearer #{@api_key}"
+        req.headers["Content-Type"] = "application/json"
         req.body = payload.to_json
       end
       log_request(endpoint, payload, response)
@@ -50,8 +50,8 @@ module LeadChatApi
       response = HTTParty.get(
         "#{Config::API_BASE_URL}#{endpoint}",
         headers: {
-          'Authorization' => "Bearer #{@api_key}",
-          'Content-Type' => 'application/json'
+          "Authorization" => "Bearer #{@api_key}",
+          "Content-Type" => "application/json"
         }
         # query: params
       )
@@ -62,8 +62,8 @@ module LeadChatApi
 
     def delete_request(endpoint)
       response = @connection.delete(endpoint) do |req|
-        req.headers['Authorization'] = "Bearer #{@api_key}"
-        req.headers['Content-Type'] = 'application/json'
+        req.headers["Authorization"] = "Bearer #{@api_key}"
+        req.headers["Content-Type"] = "application/json"
       end
       log_request(endpoint, {}, response)
       handle_response(response)

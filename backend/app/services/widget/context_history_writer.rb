@@ -9,8 +9,8 @@ module Widget
   # context card via role_base_type 'widget-context' + context_message; the
   # widget visitor never sees it (widget endpoints filter user/assistant).
   class ContextHistoryWriter
-    MESSAGE_ORIGIN = 'widget_context'.freeze
-    ROLE_BASE_TYPE = 'widget-context'.freeze
+    MESSAGE_ORIGIN = "widget_context".freeze
+    ROLE_BASE_TYPE = "widget-context".freeze
 
     # Backdated so the snapshot orders before the user message (and before a
     # replied proactive bubble, which is backdated 1 second) in the same POST.
@@ -30,7 +30,7 @@ module Widget
       return nil if content.blank?
 
       message = ChatMessage::Text.new(
-        role: 'system',
+        role: "system",
         role_base_type: ROLE_BASE_TYPE,
         content: content,
         chat: chat,
@@ -50,7 +50,7 @@ module Widget
     # captured_at é carimbo interno de frescor — ruído para o cartão do chat.
     def display_context
       context.transform_values do |section|
-        section.is_a?(Hash) ? section.except('captured_at') : section
+        section.is_a?(Hash) ? section.except("captured_at") : section
       end
     end
   end

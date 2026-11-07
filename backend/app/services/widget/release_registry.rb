@@ -8,11 +8,11 @@ module Widget
   # o hash correspondente revisado em código. Se a versão não está aqui, ela
   # não é oferecida.
   class ReleaseRegistry
-    CONFIG_PATH = Rails.root.join('config/widget_releases.yml')
+    CONFIG_PATH = Rails.root.join("config/widget_releases.yml")
 
-    ROLLING = 'rolling'
-    PINNED  = 'pinned'
-    DELIVERY_MODES = [ROLLING, PINNED].freeze
+    ROLLING = "rolling"
+    PINNED  = "pinned"
+    DELIVERY_MODES = [ ROLLING, PINNED ].freeze
 
     # Formato do hash SRI aceito. Só sha384 — sha256 é fraco demais para o uso
     # e sha512 não traz ganho prático aqui; fixar um formato evita entrada torta.
@@ -20,7 +20,7 @@ module Widget
 
     class << self
       def releases
-        data['releases'] || {}
+        data["releases"] || {}
       end
 
       # Versões conhecidas, da mais nova para a mais antiga.
@@ -39,18 +39,18 @@ module Widget
       end
 
       def sri(version)
-        release(version)&.fetch('sri', nil)
+        release(version)&.fetch("sri", nil)
       end
 
       # Versão sugerida como padrão no admin. Cai para a mais recente se o
       # `stable` do YAML apontar para algo que não existe.
       def stable_version
-        candidate = data['stable'].to_s
+        candidate = data["stable"].to_s
         known?(candidate) ? candidate : versions.first
       end
 
       def rolling_filename
-        data['rolling_filename'].presence || 'widget.v1.js'
+        data["rolling_filename"].presence || "widget.v1.js"
       end
 
       # Caminho relativo do artefato imutável. Espelha o layout produzido por
@@ -66,9 +66,9 @@ module Widget
           entry = release(version)
           {
             version: version,
-            sri: entry['sri'],
-            released_at: entry['released_at'],
-            notes: entry['notes']
+            sri: entry["sri"],
+            released_at: entry["released_at"],
+            notes: entry["notes"]
           }
         end
       end
@@ -87,7 +87,7 @@ module Widget
       def load_config
         return {} unless CONFIG_PATH.exist?
 
-        parsed = YAML.safe_load(CONFIG_PATH.read, permitted_classes: [Date]) || {}
+        parsed = YAML.safe_load(CONFIG_PATH.read, permitted_classes: [ Date ]) || {}
         validate!(parsed)
         parsed
       end
@@ -95,8 +95,8 @@ module Widget
       # Falha alto e cedo: um SRI malformado no YAML viraria um `integrity`
       # quebrado na página do cliente, e o sintoma seria "o widget sumiu".
       def validate!(parsed)
-        (parsed['releases'] || {}).each do |version, entry|
-          sri = entry.is_a?(Hash) ? entry['sri'].to_s : ''
+        (parsed["releases"] || {}).each do |version, entry|
+          sri = entry.is_a?(Hash) ? entry["sri"].to_s : ""
           next if sri.match?(SRI_FORMAT)
 
           raise "widget_releases.yml: SRI inválido para a versão #{version.inspect} (#{sri.inspect})"

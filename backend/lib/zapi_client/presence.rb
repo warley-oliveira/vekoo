@@ -11,7 +11,7 @@ class ZapiClient
     # @return [Boolean] true on success
     def mark_as_read(phone, message_id)
       payload = { phone: phone, messageId: message_id }
-      response = request(:post, 'read-message', body: payload)
+      response = request(:post, "read-message", body: payload)
 
       # The endpoint returns 204 No Content on success
       return true if response.nil? || (response.respond_to?(:empty?) && response.empty?)

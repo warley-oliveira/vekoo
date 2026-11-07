@@ -14,7 +14,7 @@ module Media
     MAX_BYTES     = 100.megabytes
     OPEN_TIMEOUT  = 5
     READ_TIMEOUT  = 30
-    FALLBACK_TYPE = 'application/octet-stream'
+    FALLBACK_TYPE = "application/octet-stream"
 
     Result = Struct.new(:success, :body, :asset, :error, keyword_init: true) do
       def success?

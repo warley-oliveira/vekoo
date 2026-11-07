@@ -7,8 +7,8 @@ class MetaApiClient
   # Module-level (self.*) methods accept explicit credentials and are called as
   # MetaApiClient::Graph.method_name(...) without needing a client instance.
   module Graph
-    FACEBOOK_GRAPH_URL = 'https://graph.facebook.com/v22.0'
-    INSTAGRAM_GRAPH_URL = 'https://graph.instagram.com/v22.0'
+    FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v22.0"
+    INSTAGRAM_GRAPH_URL = "https://graph.instagram.com/v22.0"
 
     # -------------------------------------------------------------------------
     # Instance methods
@@ -23,7 +23,7 @@ class MetaApiClient
       response = HttpClient.get(
         "#{@base_url}/#{ig_account_id}",
         query: {
-          fields: 'username,profile_picture_url,name,biography,followers_count,follows_count,media_count,website,account_type',
+          fields: "username,profile_picture_url,name,biography,followers_count,follows_count,media_count,website,account_type",
           access_token: @token
         }
       )
@@ -41,7 +41,7 @@ class MetaApiClient
     def fetch_instagram_sender_profile(sender_id)
       response = HttpClient.get(
         "#{INSTAGRAM_GRAPH_URL}/#{sender_id}",
-        query: { fields: 'name,username,profile_pic', access_token: @token },
+        query: { fields: "name,username,profile_pic", access_token: @token },
         timeout: 15
       )
 
@@ -67,7 +67,7 @@ class MetaApiClient
 
       return nil unless response.success?
 
-      response.parsed_response['data'].presence&.first
+      response.parsed_response["data"].presence&.first
     end
 
     # Fetches the Instagram Business Account ID linked to a Facebook page.
@@ -78,12 +78,12 @@ class MetaApiClient
     def self.fetch_instagram_account_for_page(page_id, token)
       response = HttpClient.get(
         "#{FACEBOOK_GRAPH_URL}/#{page_id}",
-        query: { fields: 'instagram_business_account', access_token: token }
+        query: { fields: "instagram_business_account", access_token: token }
       )
 
       return nil unless response.success?
 
-      response.parsed_response.dig('instagram_business_account', 'id')
+      response.parsed_response.dig("instagram_business_account", "id")
     end
 
     # Calls GET /me on the Instagram Graph API.
@@ -95,7 +95,7 @@ class MetaApiClient
       response = HttpClient.get(
         "#{INSTAGRAM_GRAPH_URL}/me",
         query: {
-          fields: 'id,user_id,username,name,profile_picture_url,biography,followers_count,follows_count,media_count,website,account_type',
+          fields: "id,user_id,username,name,profile_picture_url,biography,followers_count,follows_count,media_count,website,account_type",
           access_token: token
         }
       )
@@ -121,7 +121,7 @@ class MetaApiClient
       if response.success?
         { success: true }
       else
-        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig('error', 'message') : nil
+        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig("error", "message") : nil
         { success: false, error: error || "HTTP #{response.code}" }
       end
     end
@@ -142,7 +142,7 @@ class MetaApiClient
       if response.success?
         { success: true }
       else
-        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig('error', 'message') : nil
+        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig("error", "message") : nil
         { success: false, error: error || "HTTP #{response.code}" }
       end
     end
@@ -164,7 +164,7 @@ class MetaApiClient
       if response.success?
         { success: true }
       else
-        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig('error', 'message') : nil
+        error = response.parsed_response.is_a?(Hash) ? response.parsed_response.dig("error", "message") : nil
         { success: false, error: error || "HTTP #{response.code}" }
       end
     end
@@ -179,7 +179,7 @@ class MetaApiClient
         "#{FACEBOOK_GRAPH_URL}/#{page_id}/subscribed_apps",
         headers: {},
         query: {
-          subscribed_fields: 'messages,messaging_postbacks,message_deliveries,message_reads',
+          subscribed_fields: "messages,messaging_postbacks,message_deliveries,message_reads",
           access_token: token
         },
         timeout: 30
@@ -190,7 +190,7 @@ class MetaApiClient
       if response.success?
         { success: true }
       else
-        error = response.parsed_response&.dig('error', 'message') || 'Unknown error'
+        error = response.parsed_response&.dig("error", "message") || "Unknown error"
         Rails.logger.error "[MetaApiClient::Graph.subscribe_page_webhooks] Error: #{error}"
         { success: false, error: error }
       end

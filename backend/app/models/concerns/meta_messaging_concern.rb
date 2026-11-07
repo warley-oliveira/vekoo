@@ -7,7 +7,7 @@ module MetaMessagingConcern
   INSTAGRAM_GRAPH_URL = MetaApiClient::INSTAGRAM_GRAPH_URL
   FACEBOOK_OAUTH_URL = MetaApiClient::OAuth::FACEBOOK_OAUTH_URL
   INSTAGRAM_OAUTH_URL = MetaApiClient::OAuth::INSTAGRAM_OAUTH_URL
-  META_ATTACHMENT_TYPES = { 'image' => 'image', 'video' => 'video', 'audio' => 'audio' }.freeze
+  META_ATTACHMENT_TYPES = { "image" => "image", "video" => "video", "audio" => "audio" }.freeze
 
   included do
     field :verification_token, type: String
@@ -26,7 +26,7 @@ module MetaMessagingConcern
 
   def retrieve_current_token
     case auth_provider
-    when 'instagram_login'
+    when "instagram_login"
       instagram_user_access_token
     else
       page_access_token
@@ -35,7 +35,7 @@ module MetaMessagingConcern
 
   def api_base_url
     case auth_provider
-    when 'instagram_login'
+    when "instagram_login"
       MetaApiClient::INSTAGRAM_GRAPH_URL
     else
       MetaApiClient::FACEBOOK_GRAPH_URL
@@ -44,7 +44,7 @@ module MetaMessagingConcern
 
   def messaging_endpoint_id
     case auth_provider
-    when 'instagram_login'
+    when "instagram_login"
       respond_to?(:instagram_account_id) ? instagram_account_id : page_id
     else
       page_id
@@ -63,7 +63,7 @@ module MetaMessagingConcern
   # polimorficamente mandava um DTO como `attachment_type`.
   def send_media_message(recipient_id, media_or_type, media_url_or_chat = nil, _chat = nil)
     if media_or_type.respond_to?(:media_url)
-      attachment_type = META_ATTACHMENT_TYPES.fetch(media_or_type.media_type.to_s, 'file')
+      attachment_type = META_ATTACHMENT_TYPES.fetch(media_or_type.media_type.to_s, "file")
       media_url = media_or_type.media_url
     else
       attachment_type = media_or_type
@@ -75,7 +75,7 @@ module MetaMessagingConcern
   end
 
   def send_audio_message_by_url(recipient_id, audio_url, _chat = nil)
-    external_message_id(meta_api_client.send_media(recipient_id, 'audio', audio_url))
+    external_message_id(meta_api_client.send_media(recipient_id, "audio", audio_url))
   end
 
   def send_typing_indicator(recipient_id)
@@ -92,19 +92,19 @@ module MetaMessagingConcern
   end
 
   def send_presence(recipient_id, presence)
-    send_typing_indicator(recipient_id) if presence.to_s == 'composing'
+    send_typing_indicator(recipient_id) if presence.to_s == "composing"
   end
 
   def download_media(url)
-    Rails.logger.info '[MetaMessaging] Downloading media from URL'
+    Rails.logger.info "[MetaMessaging] Downloading media from URL"
     meta_api_client.download_media(url)
   end
 
   def exchange_facebook_oauth_code(code:)
     MetaApiClient::OAuth.exchange_facebook_code(
       code: code,
-      app_id: ENV['META_APP_ID'],
-      app_secret: ENV['META_APP_SECRET']
+      app_id: ENV["META_APP_ID"],
+      app_secret: ENV["META_APP_SECRET"]
     )
   end
 
@@ -112,14 +112,14 @@ module MetaMessagingConcern
     MetaApiClient::OAuth.exchange_instagram_code(
       code: code,
       redirect_uri: redirect_uri,
-      app_id: ENV['INSTAGRAM_APP_ID'],
-      app_secret: ENV['INSTAGRAM_APP_SECRET']
+      app_id: ENV["INSTAGRAM_APP_ID"],
+      app_secret: ENV["INSTAGRAM_APP_SECRET"]
     )
   end
 
   # Refresh the long-lived Instagram token and persist the new value on the record.
   def refresh_instagram_token!
-    return false unless auth_provider == 'instagram_login'
+    return false unless auth_provider == "instagram_login"
     return false if instagram_user_access_token.blank?
 
     result = MetaApiClient::OAuth.refresh_instagram_token(instagram_user_access_token)
@@ -188,7 +188,7 @@ module MetaMessagingConcern
     return nil unless response.respond_to?(:success?) && response.success?
 
     parsed = response.parsed_response
-    parsed.is_a?(Hash) ? parsed['message_id'] : nil
+    parsed.is_a?(Hash) ? parsed["message_id"] : nil
   end
 
   # Memoised MetaApiClient instance built from the current record's credentials.

@@ -7,7 +7,7 @@ class ConnectorEvent
   field :description, type: String
   field :method, type: String
   field :url, type: String
-  field :headers, type: Array, default: [['Content-Type', 'application/json']]
+  field :headers, type: Array, default: [ [ "Content-Type", "application/json" ] ]
   field :organization_id, type: String
   # variables_path contains the path of the
   # variables to be persisted on response
@@ -65,7 +65,7 @@ class ConnectorEvent
     JSON.parse(validate_parameters_json)
 
     to_parsed_json.gsub!(/\{(\w+|\w+\.\w+)\}/) do |_match|
-      var_type, var_name = ::Regexp.last_match(1).split('.')
+      var_type, var_name = ::Regexp.last_match(1).split(".")
 
       if %w[system user].include?(var_type)
         variable = custom_field(caption: var_name, type: var_type)
@@ -82,7 +82,7 @@ class ConnectorEvent
     end
     self.parsed_json = to_parsed_json unless errors.any?
   rescue JSON::ParserError
-    errors.add(:parameters_json, 'is not a valid JSON')
+    errors.add(:parameters_json, "is not a valid JSON")
   end
 
   # Execute the event
@@ -103,19 +103,19 @@ class ConnectorEvent
 
   def make_request(payload)
     case method&.downcase&.strip
-    when 'get'
+    when "get"
       Rails.logger.info("[ConnectorEvent] GET #{url}\nPayload: #{payload}")
       HTTParty.get(url, headers: headers.to_h)
-    when 'post'
+    when "post"
       Rails.logger.info("[ConnectorEvent] POST #{url}\nPayload: #{payload}")
       HTTParty.post(url, headers: headers.to_h, body: payload)
-    when 'put'
+    when "put"
       Rails.logger.info("[ConnectorEvent] PUT #{url}\nPayload: #{payload}")
       HTTParty.put(url, headers: headers.to_h, body: payload)
-    when 'patch'
+    when "patch"
       Rails.logger.info("[ConnectorEvent] PATCH #{url}\nPayload: #{payload}")
       HTTParty.patch(url, headers: headers.to_h, body: payload)
-    when 'delete'
+    when "delete"
       Rails.logger.info("[ConnectorEvent] DELETE #{url}\nPayload: #{payload}")
       HTTParty.delete(url, headers: headers.to_h)
     end

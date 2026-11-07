@@ -41,7 +41,7 @@ RSpec.describe Ai::Chat do
 
     def converse(&block)
       described_class.new(client: client).converse(
-        system: "estável", context: "de hoje", messages: [ { role: "user", content: "Oi" } ], tools: [ { name: "x" } ], &(block || proc {})
+        system: "estável", context: "de hoje", messages: [ { role: "user", content: "Oi" } ], tools: [ { name: "x" } ], &(block || proc { })
       )
     end
 

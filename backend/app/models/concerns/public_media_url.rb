@@ -29,7 +29,7 @@ module PublicMediaUrl
   def decode_escaped_url(url)
     return nil if url.blank?
 
-    url.to_s.gsub(/\\u([0-9a-fA-F]{4})/) { [::Regexp.last_match(1).hex].pack('U') }
+    url.to_s.gsub(/\\u([0-9a-fA-F]{4})/) { [ ::Regexp.last_match(1).hex ].pack("U") }
   end
 
   def meta_cdn_url?(url)

@@ -19,7 +19,7 @@ class ZapiClient
   include Presence
   include Connection
 
-  BASE_URL = 'https://api.z-api.io'
+  BASE_URL = "https://api.z-api.io"
   MAX_RETRIES = 3
 
   attr_reader :instance_id, :token, :account_token
@@ -51,7 +51,7 @@ class ZapiClient
   # @return [Boolean] true on success
   # @raise [ZapiClient::Error] If account_token is not configured
   def sign_instance
-    raise Error, 'Account token is required to sign an instance' unless @account_token
+    raise Error, "Account token is required to sign an instance" unless @account_token
 
     self.class.sign_instance(@instance_id, @token, account_token: @account_token)
   end
@@ -61,8 +61,8 @@ class ZapiClient
   # Default headers for API requests
   # @return [Hash] Headers including Content-Type and optional Client-Token
   def default_headers
-    headers = { 'Content-Type' => 'application/json' }
-    headers['Client-Token'] = @account_token if @account_token
+    headers = { "Content-Type" => "application/json" }
+    headers["Client-Token"] = @account_token if @account_token
     headers
   end
 
@@ -106,7 +106,7 @@ class ZapiClient
     else
       log_error("Z-API request failed: HTTP #{response.code} - #{response.body}")
     end
-    
+
     # Na origem o 5xx devolvia o retorno do logger (`true`), e quem chamava quebrava
     # depois com "undefined method dig for true" em vez de ver a falha do provedor.
     raise Error, "Z-API request failed (HTTP #{response.code})"

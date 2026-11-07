@@ -11,7 +11,7 @@ module Media
   class AssetResolver
     OPEN_TIMEOUT = 5
     READ_TIMEOUT = 10
-    FALLBACK_TYPE = 'application/octet-stream'
+    FALLBACK_TYPE = "application/octet-stream"
 
     Asset = Struct.new(
       :key, :filename, :content_type, :byte_size, :checksum,
@@ -63,10 +63,10 @@ module Media
         byte_size: blob.byte_size,
         checksum: blob.checksum,
         created_at: blob.created_at,
-        width: metadata['width'],
-        height: metadata['height'],
-        duration: metadata['duration'],
-        source: 'active_storage',
+        width: metadata["width"],
+        height: metadata["height"],
+        duration: metadata["duration"],
+        source: "active_storage",
         blob: blob
       )
     end
@@ -81,10 +81,10 @@ module Media
         key: key,
         filename: synthesized_filename(key, content_type),
         content_type: content_type,
-        byte_size: response.headers['content-length']&.to_i,
-        checksum: response.headers['etag']&.delete('"'),
-        created_at: parse_time(response.headers['last-modified']),
-        source: 'origin'
+        byte_size: response.headers["content-length"]&.to_i,
+        checksum: response.headers["etag"]&.delete('"'),
+        created_at: parse_time(response.headers["last-modified"]),
+        source: "origin"
       )
     # Qualquer falha de rede ou TLS, não só as mais comuns: uma conexão derrubada no meio
     # (ECONNRESET, EOFError) ou um certificado ruim não podem virar 500.
@@ -94,7 +94,7 @@ module Media
     end
 
     def header_content_type(response)
-      response.headers['content-type'].to_s.split(';').first.presence || FALLBACK_TYPE
+      response.headers["content-type"].to_s.split(";").first.presence || FALLBACK_TYPE
     end
 
     # A key do armazenamento não tem extensão; sem ela o

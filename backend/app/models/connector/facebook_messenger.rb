@@ -5,7 +5,7 @@ class Connector::FacebookMessenger < Connector::Base
   field :linked_instagram_connector_id, type: String
 
   after_initialize do
-    self.auth_provider = 'facebook_login' if auth_provider.blank?
+    self.auth_provider = "facebook_login" if auth_provider.blank?
   end
 
   def instance_name
@@ -27,23 +27,23 @@ class Connector::FacebookMessenger < Connector::Base
     # Get Page info (first page the user manages)
     page_info = fetch_page_info(user_token)
     unless page_info
-      self.error_message = 'No Facebook Pages found for this account'
+      self.error_message = "No Facebook Pages found for this account"
       Rails.logger.error "[FacebookMessenger#activate] #{error_message}"
       failed! && save!
       return
     end
 
-    self.page_id = page_info['id']
-    self.page_name = page_info['name']
-    self.page_access_token = page_info['access_token']
+    self.page_id = page_info["id"]
+    self.page_name = page_info["name"]
+    self.page_access_token = page_info["access_token"]
 
     # Get page profile picture
     pic_response = HTTParty.get(
       "#{FACEBOOK_GRAPH_URL}/#{page_id}/picture",
-      query: { redirect: false, type: 'large' },
+      query: { redirect: false, type: "large" },
       timeout: 15
     )
-    self.profile_picture_url = pic_response.parsed_response.dig('data', 'url') if pic_response.success?
+    self.profile_picture_url = pic_response.parsed_response.dig("data", "url") if pic_response.success?
 
     # Subscribe to webhooks
     sub_result = subscribe_page_webhooks!(page_id, page_access_token)

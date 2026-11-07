@@ -3,8 +3,8 @@
 # Model para integração com Z-API (WhatsApp não oficial)
 # Documentação: https://developer.z-api.io
 class Connector::Zapi < Connector::Base
-  BASE_URL = 'https://api.z-api.io'
-  PREFIX_INSTANCE = 'IZA-'
+  BASE_URL = "https://api.z-api.io"
+  PREFIX_INSTANCE = "IZA-"
 
   field :instance_id, type: String
   encrypted_field :token
@@ -62,22 +62,22 @@ class Connector::Zapi < Connector::Base
   end
 
   def setup_webhooks!
-    update_webhook('update-webhook-received', inbound_url(:zapi_message_received, id))
-    update_webhook('update-webhook-received-delivery', inbound_url(:zapi_message_received, id))
-    update_webhook('update-webhook-send', inbound_url(:zapi_message_send, id))
-    update_webhook('update-webhook-disconnected', inbound_url(:zapi_disconnected, id))
-    update_webhook('update-webhook-connected', inbound_url(:zapi_connected, id))
+    update_webhook("update-webhook-received", inbound_url(:zapi_message_received, id))
+    update_webhook("update-webhook-received-delivery", inbound_url(:zapi_message_received, id))
+    update_webhook("update-webhook-send", inbound_url(:zapi_message_send, id))
+    update_webhook("update-webhook-disconnected", inbound_url(:zapi_disconnected, id))
+    update_webhook("update-webhook-connected", inbound_url(:zapi_connected, id))
   end
 
   def fetch_current_information
-    response = api_request(:get, 'device')
+    response = api_request(:get, "device")
     return unless response
 
-    self.phone_number = response['phone']
-    self.profile_name = response['displayName']
+    self.phone_number = response["phone"]
+    self.profile_name = response["displayName"]
 
-    profile_response = api_request(:get, 'profile-picture')
-    self.profile_picture_url = profile_response['link'] if profile_response
+    profile_response = api_request(:get, "profile-picture")
+    self.profile_picture_url = profile_response["link"] if profile_response
   end
 
   # ============================================================================
@@ -92,11 +92,11 @@ class Connector::Zapi < Connector::Base
     payload[:delayTyping] = delay_typing if delay_typing
     payload[:messageId] = reply_to_external_id if reply_to_external_id.present?
 
-    response = api_request(:post, 'send-text', body: payload)
+    response = api_request(:post, "send-text", body: payload)
     @retry_count = 0
 
     Rails.logger.info("[ZApi] Message sent to #{phone}: #{message[0..50]}...")
-    response.try(:dig, 'messageId')
+    response.try(:dig, "messageId")
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send text message: #{e.message}")
     handle_retry(e) do
@@ -114,8 +114,8 @@ class Connector::Zapi < Connector::Base
     }
     payload[:caption] = caption if caption
 
-    response = api_request(:post, 'send-image', body: payload)
-    response.try(:dig, 'messageId')
+    response = api_request(:post, "send-image", body: payload)
+    response.try(:dig, "messageId")
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send image message: #{e.message}")
     nil
@@ -127,8 +127,8 @@ class Connector::Zapi < Connector::Base
     caption = media_dto.caption.presence
 
     case media_dto.media_type.to_s
-    when 'video' then send_video_message(phone, url, caption: caption)
-    when 'document', 'file' then send_document_message(phone, url, file_name: media_dto.file_name)
+    when "video" then send_video_message(phone, url, caption: caption)
+    when "document", "file" then send_document_message(phone, url, file_name: media_dto.file_name)
     else send_image_message(phone, url, caption: caption)
     end
   end
@@ -150,7 +150,7 @@ class Connector::Zapi < Connector::Base
   end
 
   def zapi_get_qr_code_image
-    api_request(:get, 'qr-code/image')
+    api_request(:get, "qr-code/image")
   end
 
   # Instância própria: não há assinatura de integrador nem conversa para migrar.
@@ -174,8 +174,8 @@ class Connector::Zapi < Connector::Base
       waveform: waveform
     }
 
-    response = api_request(:post, 'send-audio', body: payload)
-    response.try(:dig, 'messageId')
+    response = api_request(:post, "send-audio", body: payload)
+    response.try(:dig, "messageId")
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send audio message: #{e.message}")
     nil
@@ -193,7 +193,7 @@ class Connector::Zapi < Connector::Base
     payload[:fileName] = file_name if file_name
 
     response = api_request(:post, "send-document/#{ext}", body: payload)
-    response.try(:dig, 'messageId')
+    response.try(:dig, "messageId")
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send document message: #{e.message}")
     nil
@@ -209,8 +209,8 @@ class Connector::Zapi < Connector::Base
     }
     payload[:caption] = caption if caption
 
-    response = api_request(:post, 'send-video', body: payload)
-    response.try(:dig, 'messageId')
+    response = api_request(:post, "send-video", body: payload)
+    response.try(:dig, "messageId")
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to send video message: #{e.message}")
     nil
@@ -218,7 +218,7 @@ class Connector::Zapi < Connector::Base
 
   def mark_as_read(phone, message_id)
     payload = { phone: sanitize_phone(phone), messageId: message_id }
-    api_request(:post, 'read-message', body: payload)
+    api_request(:post, "read-message", body: payload)
     true
   rescue StandardError => e
     Rails.logger.error("[ZApi] Failed to mark as read: #{e.message}")
@@ -250,7 +250,7 @@ class Connector::Zapi < Connector::Base
     content = retrieve_media(media_url)
     return nil if content.blank?
 
-    file_path = Rails.root.join('tmp', "zapi-#{SecureRandom.hex}.bin")
+    file_path = Rails.root.join("tmp", "zapi-#{SecureRandom.hex}.bin")
     File.binwrite(file_path, content)
     file_path
   end
@@ -274,7 +274,7 @@ class Connector::Zapi < Connector::Base
 
   # Contrato de envio: id externo ou nil. `errors.add` sozinho devolveria o objeto de erro.
   def not_connected
-    errors.add(:not_connected, 'não conectado')
+    errors.add(:not_connected, "não conectado")
     nil
   end
 
@@ -283,8 +283,8 @@ class Connector::Zapi < Connector::Base
   end
 
   def default_headers
-    headers = { 'Content-Type' => 'application/json' }
-    headers['Client-Token'] = account_token if account_token.present?
+    headers = { "Content-Type" => "application/json" }
+    headers["Client-Token"] = account_token if account_token.present?
     headers
   end
 
@@ -315,15 +315,15 @@ class Connector::Zapi < Connector::Base
   end
 
   def sanitize_phone(phone)
-    phone.to_s.gsub(/\D/, '')
+    phone.to_s.gsub(/\D/, "")
   end
 
   def detect_extension(url, file_name)
     name = file_name || File.basename(URI.parse(url).path)
-    ext = File.extname(name).to_s.delete('.')
-    ext.presence || 'pdf'
+    ext = File.extname(name).to_s.delete(".")
+    ext.presence || "pdf"
   rescue StandardError
-    'pdf'
+    "pdf"
   end
 
   def handle_retry(error, max_retries: 2, &block)

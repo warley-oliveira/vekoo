@@ -1,7 +1,7 @@
-require 'jwt'
+require "jwt"
 
 class Connector::WebWidget < Connector::Base
-  TOKEN_PREFIX = 'pk_widget_'.freeze
+  TOKEN_PREFIX = "pk_widget_".freeze
   POSITIONS = %w[bottom-right bottom-left].freeze
   PRE_CHAT_FIELDS = %w[off name name_phone name_phone_email].freeze
 
@@ -9,23 +9,23 @@ class Connector::WebWidget < Connector::Base
   COLOR_FORMAT = /\A#[0-9A-Fa-f]{6}\z/.freeze
   # Whitelist de famílias de fonte (stacks seguros, disponíveis no dispositivo
   # do visitante — fontes web próprias entram via custom_css/@font-face).
-  FONT_FAMILIES = ['', 'system', 'inter', 'roboto', 'georgia', 'mono', 'rounded'].freeze
+  FONT_FAMILIES = [ "", "system", "inter", "roboto", "georgia", "mono", "rounded" ].freeze
   MAX_CUSTOM_CSS = 8_192
 
   field :public_token,       type: String
   encrypted_field :signing_secret
   field :allowed_origins,    type: Array,   default: []
-  field :primary_color,      type: String,  default: '#5B93FF'
-  field :position,           type: String,  default: 'bottom-right'
-  field :welcome_message,    type: String,  default: 'Olá! Como posso ajudar?'
+  field :primary_color,      type: String,  default: "#5B93FF"
+  field :position,           type: String,  default: "bottom-right"
+  field :welcome_message,    type: String,  default: "Olá! Como posso ajudar?"
   field :bot_avatar_url,     type: String
-  field :bot_display_name,   type: String,  default: 'Assistente'
-  field :launcher_icon,      type: String,  default: 'chat'
-  field :locale,             type: String,  default: 'pt-BR'
+  field :bot_display_name,   type: String,  default: "Assistente"
+  field :launcher_icon,      type: String,  default: "chat"
+  field :locale,             type: String,  default: "pt-BR"
   field :rate_limit_per_min, type: Integer, default: 20
   field :daily_message_cap,  type: Integer, default: 0   # 0 = unlimited
   field :daily_visitor_cap,  type: Integer, default: 0   # 0 = unlimited
-  field :pre_chat_fields,    type: String,  default: 'name_phone'
+  field :pre_chat_fields,    type: String,  default: "name_phone"
   field :auto_page_context,  type: Boolean, default: true
   field :proactive_enabled,  type: Boolean, default: true
 
@@ -50,8 +50,8 @@ class Connector::WebWidget < Connector::Base
   field :message_area_bg,             type: String
   field :bubble_radius,               type: Integer, default: 16
   field :panel_radius,                type: Integer, default: 18
-  field :font_family,                 type: String,  default: ''
-  field :custom_css,                  type: String,  default: ''
+  field :font_family,                 type: String,  default: ""
+  field :custom_css,                  type: String,  default: ""
 
   # `sparse`: a coleção é de todos os conectores, e nos outros tipos o campo nem existe. Sem
   # isso o segundo conector que não é widget bate em `public_token: null` e não é criado.
@@ -111,8 +111,8 @@ class Connector::WebWidget < Connector::Base
     ActionCable.server.broadcast(
       chat_stream(chat),
       {
-        type: 'message',
-        role: 'assistant',
+        type: "message",
+        role: "assistant",
         messageId: message_id,
         content: message,
         senderName: bot_display_name,
@@ -143,7 +143,7 @@ class Connector::WebWidget < Connector::Base
     chat ||= chat_for(external_id)
     return nil unless chat && audio_url.present?
 
-    broadcast_media(chat, 'audio', audio_url, '')
+    broadcast_media(chat, "audio", audio_url, "")
   end
 
   def mark_read_message(*) = true
@@ -153,7 +153,7 @@ class Connector::WebWidget < Connector::Base
 
     ActionCable.server.broadcast(
       chat_stream(chat),
-      { type: 'presence', value: presence.to_s }
+      { type: "presence", value: presence.to_s }
     )
     true
   end
@@ -182,13 +182,13 @@ class Connector::WebWidget < Connector::Base
       connector_id: id.to_s,
       exp: ttl.from_now.to_i
     }
-    JWT.encode(payload, signing_secret, 'HS256')
+    JWT.encode(payload, signing_secret, "HS256")
   end
 
   def decode_visitor_jwt(token)
     return nil if token.blank? || signing_secret.blank?
 
-    JWT.decode(token, signing_secret, true, algorithm: 'HS256').first
+    JWT.decode(token, signing_secret, true, algorithm: "HS256").first
   rescue JWT::DecodeError, JWT::ExpiredSignature
     nil
   end
@@ -228,7 +228,7 @@ class Connector::WebWidget < Connector::Base
     return unless pinned?
 
     if pinned_version.blank?
-      errors.add(:pinned_version, 'é obrigatório quando delivery_mode é pinned')
+      errors.add(:pinned_version, "é obrigatório quando delivery_mode é pinned")
     elsif !Widget::ReleaseRegistry.known?(pinned_version)
       errors.add(:pinned_version, "versão desconhecida: #{pinned_version}")
     end
@@ -245,8 +245,8 @@ class Connector::WebWidget < Connector::Base
     ActionCable.server.broadcast(
       chat_stream(chat),
       {
-        type: 'message',
-        role: 'assistant',
+        type: "message",
+        role: "assistant",
         messageId: message_id,
         mediaType: media_type,
         mediaUrl: media_url,
