@@ -109,18 +109,22 @@ export function useCustomDashboardTabs(): DashboardExtraTabs {
 
     return {
       tabs,
-      create: {
-        label: t("customDashboards.tab.create"),
-        onClick: () =>
-          setSearchParams(
-            (current) => {
-              const next = new URLSearchParams(current)
-              next.set("tab", NEW_TAB)
-              return next
+      // Com a aba de criar aberta, o botão ao lado dela não levaria a lugar nenhum.
+      create:
+        param === NEW_TAB
+          ? undefined
+          : {
+              label: t("customDashboards.tab.create"),
+              onClick: () =>
+                setSearchParams(
+                  (current) => {
+                    const next = new URLSearchParams(current)
+                    next.set("tab", NEW_TAB)
+                    return next
+                  },
+                  { replace: true }
+                ),
             },
-            { replace: true }
-          ),
-      },
     }
   }, [can, dashboards, dirtyIds, error, param, reload, setSearchParams, t])
 }

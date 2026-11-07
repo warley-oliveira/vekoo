@@ -62,8 +62,9 @@ export default function DashboardPage() {
   return (
     <PageBody variant="wide">
       <Tabs value={activeTab} onValueChange={(value) => setTab(String(value))} className="gap-6">
-        {/* Uma linha só a partir de `xl`. Antes disso, abas e datas em cima, e os atalhos embaixo. */}
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 [grid-template-areas:'tabs_picker''presets_presets'] xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:[grid-template-areas:'tabs_presets_picker']">
+        {/* Abas e datas em cima, e os atalhos embaixo. Uma linha só em tela bem larga: as abas crescem
+            com os dashboards da pessoa e, espremidas, cortavam a primeira em "são geral". */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 [grid-template-areas:'tabs_picker''presets_presets'] min-[1700px]:grid-cols-[minmax(0,1fr)_auto_auto] min-[1700px]:[grid-template-areas:'tabs_presets_picker']">
           <div className="overflow-x-auto [grid-area:tabs] [scrollbar-width:none]">
             <TabsList
               variant="line"
@@ -100,7 +101,7 @@ export default function DashboardPage() {
               ) : null}
             </TabsList>
           </div>
-          <PeriodPresets period={period} onPreset={setPreset} className="[grid-area:presets] xl:justify-self-end" />
+          <PeriodPresets period={period} onPreset={setPreset} className="[grid-area:presets] min-[1700px]:justify-self-end" />
           <PeriodPicker
             period={period}
             onRange={setRange}
