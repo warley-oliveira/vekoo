@@ -261,6 +261,26 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Acrescentado:** aula avulsa, cancelar e remarcar aula, arquivar, horários livres e conflito, desfazer depois de arrastar.
 - **Acréscimos na API:** `SchedulerBalancer` não escolhe quem tem 0% na distribuição. `Ai::Run`: quem recebia `busy` soltava a vaga de quem estava gerando.
 
+### Pipelines: quadro e card (fe-pipelines-board)
+
+- **Filtros:** rápidos no cliente no quadro; avançados no servidor; na lista, tudo compilado em um `filter`.
+- **Soma da etapa sem os perdidos** (a origem somava). **Perdido abre diálogo de motivo opcional** (a origem marcava na hora pelo card).
+- **Abrir card entra no histórico:** Voltar fecha o card; a origem não criava entrada. **Criar na etapa mantém o campo aberto**, para criar vários em sequência.
+- **"Negócio" saiu da tela:** a seção virou "Venda", e os presets dizem "cards" ("Cards parados"), diferente dos textos da origem no contrato.
+- **Comentário só com arquivo:** o corpo vira o nome do arquivo, porque a API exige corpo. Só comentário raiz se fixa.
+- **Card de vendas:** título em destaque e empresa ou contato abaixo (a origem fazia o inverso); prazo tem preferência sobre fechamento previsto. "Criado em" fora das colunas padrão, para a lista caber em 1440 px.
+- **Fora ou menor que a origem:** conversa embutida no card (é link para `/chat/:chatId`, como pedido); barra de comandos do editor, tabela, cor, realce e título 1, porque as extensões não estão instaladas (conteúdo antigo abre e volta igual); grupos recolhíveis na lista (viraram coluna e ordem por etapa, por causa da paginação no servidor); no card, dias na etapa quando não está parado, "Sem valor", data de ganho ou perda; "Etapa N de M" e barra de probabilidade no painel.
+- **Acréscimos na API:** `GET cards` com `sort` e `direction` (`Pipelines::CardSort`), `GET activities` com `type` por vírgula, e o texto puro da descrição corrigido (negrito partia a frase em duas linhas, e dois parágrafos saíam colados).
+
+### Pipelines: administração (fe-pipelines-admin)
+
+- **Metas, regra de fechamento, `required` e filtro de situação** só aparecem em quadro de vendas.
+- **Quem não tem `flows`** liga, desliga e exclui gatilho com código, mas não edita. O integrador fechou também a leitura: a API não devolve mais o texto do código a quem não tem `flows`.
+- **Condições que a tela não conhece** são preservadas ao salvar. `create_card` só aponta para outros quadros, como na origem. Tirar um quadro do arquivo não pede confirmação.
+- **Sem contador "Disparou Nx"**, que a API não devolve: a tela mostra a última execução. Filtro "Ignorado" saiu, porque o motor novo nunca grava `skipped`. `CodeRunnerPopover` não veio: o contrato não tem rota para testar gatilho.
+- **Acrescentado:** `run_code` nos gatilhos, condições na frase, filtro de período, ranking e excluir arquivados.
+- **Acréscimos na API:** `Pipelines::BoardPeriodMetrics`, `?from&to` em `metrics` (com `422 invalidPeriod`) e `?status&triggerId` no histórico.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -310,6 +330,8 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - Kit: `BulkActionsBar` escreve "3 selecionados" no masculino, inclusive para conversas. `SortableArea` por teclado não funciona dentro de `SidePanel` ou `ResponsiveDialog`: o `Dialog` do Base UI para a propagação das setas antes do sensor do dnd-kit. `fe-dashboard-funnels` contornou com setas no pegador.
 - Kit: `MultiSelectField` desativado não muda de aparência (contornado na ficha da pessoa); `EmptyState` aceita uma ação só; `TablePagination` só tem anterior e próxima; `DataTable` sem coluna de ações fixa e sem `columnVisibility`; `NumberInput` e `SearchableSelect` ignoram `aria-label`; `Progress` indeterminado aparece vazio.
 - Download de mídia pelo proxy do be-core: passar em `downloadFile({ fetchBlob })`.
+- `fe-polish`: pílula e popover de metas no topo do quadro (`goals-header-control` e `metas-popover` da origem), que cada frente de pipelines deixou para a outra; `?card=` abrir card arquivado; "Todos os quadros" no menu vai para `/pipelines?all=1` e diz "pipelines"; `aria-label` em `SearchableSelect`, `NumberInput`, `MultiSelectInput` e `ChipsInput`, tirando o contorno `components/pipelines/hidden-label.tsx`; `AreaNav` rolar até a aba ativa.
+- `fe-flows` ao integrar: `components/pipelines-admin/triggers/code-editor-panel.tsx` usa o Monaco do CDN, que a CSP bloqueia em produção. Trocar pelo `components/code-editor/`, que traz o Monaco no próprio pacote.
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
 - `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
 - `fe-chat-mobile`: o voltar do aparelho ainda não fecha o painel; o cabeçalho em 390 px corta o nome; falta segurar para selecionar.
