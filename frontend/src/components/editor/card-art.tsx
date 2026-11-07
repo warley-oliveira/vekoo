@@ -21,6 +21,7 @@ import {
   type CarouselTheme,
   type VerticalAlign,
 } from "@/lib/doc"
+import { emptyCard } from "@/lib/doc"
 import { cn } from "@/lib/utils"
 
 // O renderizador do card — a arte real, do thumbnail da busca ao canvas do
@@ -180,14 +181,19 @@ export function CardBlockView({
 }
 
 type CardArtProps = {
-  card: CarouselCard
+  /** Vazio é um carrossel sem nenhum card: o editor deixa apagar o último, e ele continua existindo. */
+  card: CarouselCard | undefined
   theme: CarouselTheme
   format?: CarouselFormat
   className?: string
 }
 
+const NO_CARD = emptyCard("no-card")
+
 /** Modo estático: trilha, miniaturas da biblioteca, prévias futuras. */
-export function CardArt({ card, theme, format = "4:5", className }: CardArtProps) {
+export function CardArt({ card: shown, theme, format = "4:5", className }: CardArtProps) {
+  // Sem isto, um carrossel sem cards derrubava a biblioteca inteira, a lixeira e a busca.
+  const card = shown ?? NO_CARD
   return (
     <CardShell card={card} theme={theme} format={format} className={className}>
       <CardImageRegions

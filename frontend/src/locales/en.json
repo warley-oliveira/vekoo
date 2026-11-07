@@ -81,7 +81,8 @@
     "deleteFailed": "We couldn't delete the folder. Try again."
   },
   "carousels": {
-    "cardCount_one": "1 card",
+    "cardCount_zero": "No cards",
+    "cardCount_one": "{{count}} card",
     "cardCount_other": "{{count}} cards",
     "editedAt": "edited {{when}}",
     "tabs": {
@@ -479,7 +480,8 @@
       "stop": "Stop",
       "close": "Close generation",
       "cost": "{{count}} credits",
-      "generating_one": "Writing… 1 card ready.",
+      "generating_zero": "Writing the cards…",
+      "generating_one": "Writing… {{count}} card ready.",
       "generating_other": "Writing… {{count}} cards ready.",
       "doneToast_one": "1 card generated. It's yours to edit now.",
       "doneToast_other": "{{count}} cards generated. They're yours to edit now.",

@@ -81,7 +81,8 @@
     "deleteFailed": "Não deu para apagar a pasta. Tente de novo."
   },
   "carousels": {
-    "cardCount_one": "1 card",
+    "cardCount_zero": "Sem cards",
+    "cardCount_one": "{{count}} card",
     "cardCount_other": "{{count}} cards",
     "editedAt": "editado {{when}}",
     "tabs": {
@@ -479,7 +480,8 @@
       "stop": "Parar",
       "close": "Fechar a geração",
       "cost": "{{count}} créditos",
-      "generating_one": "Escrevendo… 1 card pronto.",
+      "generating_zero": "Escrevendo os cards…",
+      "generating_one": "Escrevendo… {{count}} card pronto.",
       "generating_other": "Escrevendo… {{count}} cards prontos.",
       "doneToast_one": "1 card gerado. Agora é seu para editar.",
       "doneToast_other": "{{count}} cards gerados. Agora são seus para editar.",
