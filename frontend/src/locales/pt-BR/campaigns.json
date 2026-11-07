@@ -438,7 +438,7 @@
       },
       "unavailable": {
         "title": "A busca de estabelecimentos não está ligada",
-        "description": "Ela depende de um serviço externo, que quem cuida da plataforma ainda não configurou (APIFY_API_TOKEN). O que já foi encontrado continua aqui e pode ser usado em campanhas."
+        "description": "Ela depende de um serviço externo, que quem cuida da plataforma ainda não configurou. O que já foi encontrado continua aqui e pode ser usado em campanhas."
       },
       "view": {
         "label": "O que ver",

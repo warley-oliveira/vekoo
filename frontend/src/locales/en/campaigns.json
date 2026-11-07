@@ -438,7 +438,7 @@
       },
       "unavailable": {
         "title": "The business search isn't turned on",
-        "description": "It depends on an external service that whoever runs the platform hasn't set up yet (APIFY_API_TOKEN). What was already found stays here and can be used in campaigns."
+        "description": "It depends on an external service that whoever runs the platform hasn't set up yet. What was already found stays here and can be used in campaigns."
       },
       "view": {
         "label": "What to see",
