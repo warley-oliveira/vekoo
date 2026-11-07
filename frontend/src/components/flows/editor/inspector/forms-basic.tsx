@@ -6,6 +6,7 @@ import { Code2, ExternalLink, Pencil } from "lucide-react"
 import { MultiSelectInput, SelectInput, type SelectOption } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useCan } from "@/hooks/use-can"
 import { useChatTags, useCustomFields } from "@/hooks/chat/use-chat-refs"
 import { useConnectors } from "@/hooks/connectors/use-connectors"
 import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
@@ -1030,6 +1031,8 @@ export function NoteOnlyForm() {
 export function WebhookLink() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const canManage = useCan("core_settings")
+  if (!canManage) return null
   return (
     <Button type="button" variant="outline" size="sm" className="self-start" onClick={() => navigate("/settings/webhooks")}>
       <ExternalLink />

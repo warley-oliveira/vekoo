@@ -28,6 +28,7 @@ import {
   type TimelineItem,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useCan } from "@/hooks/use-can"
 import { useBookingPreviewMessages } from "@/hooks/calendar/use-attendance-sequences"
 import { ApiError, apiAssetUrl } from "@/lib/api"
 import { formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
@@ -55,6 +56,7 @@ function attributeValue(value: unknown): string {
 /** Quem é o contato deste agendamento, e o que já se sabe sobre ele. Trocar é no formulário. */
 export function BookingContactTab({ event }: { event: BookingEvent }) {
   const { t } = useTranslation()
+  const canChat = useCan("chat")
   const language = useLanguage()
 
   const attributes = useMemo(() => {
@@ -97,15 +99,17 @@ export function BookingContactTab({ event }: { event: BookingEvent }) {
         ) : null}
       </div>
 
-      <Button
-        variant="outline"
-        nativeButton={false}
-        className="self-start pointer-coarse:h-10"
-        render={<Link to={`/chat/${event.chatId}`} />}
-      >
-        <MessageCircle />
-        {t("calendar.booking.contact.openChat")}
-      </Button>
+      {canChat ? (
+        <Button
+          variant="outline"
+          nativeButton={false}
+          className="self-start pointer-coarse:h-10"
+          render={<Link to={`/chat/${event.chatId}`} />}
+        >
+          <MessageCircle />
+          {t("calendar.booking.contact.openChat")}
+        </Button>
+      ) : null}
 
       <section className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
@@ -136,6 +140,7 @@ export function BookingContactTab({ event }: { event: BookingEvent }) {
 /** As últimas mensagens da conversa, só para ler. Responder é no chat. */
 export function BookingMessagesTab({ event, timeZone }: { event: BookingEvent; timeZone: string }) {
   const { t } = useTranslation()
+  const canChat = useCan("chat")
   const language = useLanguage()
   const { messages, error, isLoading, reload } = useBookingPreviewMessages(
     event.calendarId,
@@ -190,7 +195,7 @@ export function BookingMessagesTab({ event, timeZone }: { event: BookingEvent; t
           )
         })}
       </ol>
-      {event.chatId ? (
+      {event.chatId && canChat ? (
         <Button
           variant="outline"
           nativeButton={false}

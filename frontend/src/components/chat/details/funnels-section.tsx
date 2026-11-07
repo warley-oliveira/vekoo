@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { SearchableSelect, type SelectOption } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useCan } from "@/hooks/use-can"
 import { useFunnels } from "@/hooks/chat-details/use-chat-details-data"
 import { useChatFields } from "@/hooks/chat-details/use-chat-fields"
 import { ApiError } from "@/lib/api"
@@ -76,6 +77,7 @@ function FunnelRow({
 /** A etapa da conversa em cada funil. Sem a permissão `funnel`, a seção nem existe. */
 export const FunnelsSection = memo(function FunnelsSection({ chatId }: { chatId: string }) {
   const { t } = useTranslation()
+  const canManageFunnels = useCan("funnel")
   const chat = useChatFields(chatId, FIELDS)
   const { allowed, funnels, error, isLoading, retry } = useFunnels()
   const [expanded, setExpanded] = useState(false)
@@ -98,16 +100,18 @@ export const FunnelsSection = memo(function FunnelsSection({ chatId }: { chatId:
       ) : funnels.length === 0 ? (
         <SectionEmpty
           action={
-            <Button
-              variant="ghost"
-              size="sm"
-              className="-mr-2 pointer-coarse:h-10"
-              nativeButton={false}
-              render={<Link to="/funnels" />}
-            >
-              <Filter />
-              {t("chatDetails.funnels.create")}
-            </Button>
+            canManageFunnels ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="-mr-2 pointer-coarse:h-10"
+                nativeButton={false}
+                render={<Link to="/funnels" />}
+              >
+                <Filter />
+                {t("chatDetails.funnels.create")}
+              </Button>
+            ) : undefined
           }
         >
           {t("chatDetails.funnels.empty")}

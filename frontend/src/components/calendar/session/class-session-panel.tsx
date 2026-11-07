@@ -25,6 +25,7 @@ import {
   UserAvatar,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useCan } from "@/hooks/use-can"
 import { useRevalidateEvents } from "@/hooks/calendar/use-calendar-events"
 import type { BookingActions } from "@/hooks/calendar/use-booking-actions"
 import {
@@ -386,6 +387,7 @@ function ParticipantRow({
   onRemove: () => void
 }) {
   const { t } = useTranslation()
+  const canChat = useCan("chat")
   const name = attendance.userName || t("calendar.session.participants.noName")
   const canRemove = attendance.guest
     ? !attendance.id.startsWith("ve_")
@@ -400,7 +402,7 @@ function ParticipantRow({
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          {attendance.chatId ? (
+          {attendance.chatId && canChat ? (
             <Link
               to={`/chat/${attendance.chatId}`}
               className="truncate rounded text-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:underline"

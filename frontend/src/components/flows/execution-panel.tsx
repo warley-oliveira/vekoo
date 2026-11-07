@@ -6,6 +6,7 @@ import { ChevronRight, MessageCircle, Waypoints } from "lucide-react"
 import { Callout, DetailSkeleton, ErrorState, RelativeTime, SidePanel, StatusBadge, Timeline, type TimelineItem } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { useCan } from "@/hooks/use-can"
 import { useFlowExecution } from "@/hooks/flows/use-flows"
 import { useRetained } from "@/hooks/use-panel-session"
 import { blockIcon } from "@/lib/flows/catalog"
@@ -62,6 +63,7 @@ function ExecutionBody({
   definition?: FlowDefinition
 }) {
   const { t } = useTranslation()
+  const canChat = useCan("chat")
 
   const nodes = useMemo(() => new Map((definition?.nodes ?? []).map((node) => [node.id, node])), [definition])
   const blockName = (log: { nodeId: string; nodeType: string }) => {
@@ -132,7 +134,7 @@ function ExecutionBody({
           <Waypoints />
           {t("flows.executions.seeInFlow")}
         </Button>
-        {execution.chatId ? (
+        {execution.chatId && canChat ? (
           <Button variant="outline" size="sm" nativeButton={false} render={<Link to={`/chat/${execution.chatId}`} />}>
             <MessageCircle />
             {t("flows.executions.openChat")}

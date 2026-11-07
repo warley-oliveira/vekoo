@@ -4,6 +4,7 @@ import { Ban, GraduationCap, ListChecks, MapPin, MessageCircle, User } from "luc
 import { Link } from "react-router"
 
 import { Button } from "@/components/ui/button"
+import { useCan } from "@/hooks/use-can"
 import type { BookingActions } from "@/hooks/calendar/use-booking-actions"
 import { eventHeadline, isCanceled } from "@/lib/calendar/event-status"
 import { formatEventWhen, safeTimeZone } from "@/lib/calendar/timezone"
@@ -128,6 +129,7 @@ function BookingPreview({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const canChat = useCan("chat")
   const canceled = isCanceled(event)
 
   return (
@@ -142,7 +144,7 @@ function BookingPreview({
         {event.userName ? (
           <Line icon={<MessageCircle aria-hidden />}>
             <span className="text-muted-foreground">{t("calendar.preview.contact")}</span>{" "}
-            {event.chatId ? (
+            {event.chatId && canChat ? (
               <Link
                 to={`/chat/${event.chatId}`}
                 className="underline-offset-4 outline-none hover:underline focus-visible:underline"

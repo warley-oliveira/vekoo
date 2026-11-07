@@ -15,6 +15,7 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useCan } from "@/hooks/use-can"
 import { useApi } from "@/hooks/use-api"
 import { useTriggerContext } from "@/hooks/pipelines-admin/use-trigger-context"
 import {
@@ -233,20 +234,23 @@ function ConnectorField({
 
 function NoConnectorNotice() {
   const { t } = useTranslation()
+  const canManage = useCan("core_settings")
   return (
     <Callout
       tone="neutral"
       icon={<Info />}
       action={
-        <Button
-          nativeButton={false}
-          variant="outline"
-          size="sm"
-          className="pointer-coarse:h-10"
-          render={<Link to="/settings/integrations" />}
-        >
-          {t("pipelinesAdmin.triggers.actionForm.whatsapp.connectAction")}
-        </Button>
+        canManage ? (
+          <Button
+            nativeButton={false}
+            variant="outline"
+            size="sm"
+            className="pointer-coarse:h-10"
+            render={<Link to="/settings/integrations" />}
+          >
+            {t("pipelinesAdmin.triggers.actionForm.whatsapp.connectAction")}
+          </Button>
+        ) : undefined
       }
     >
       {t("pipelinesAdmin.triggers.actionForm.whatsapp.noConnector")}
