@@ -110,6 +110,30 @@ RSpec.describe "Pipelines: gatilhos", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
 
+      describe "a leitura do código, que pode conter segredo" do
+        let!(:coded) { board.triggers.create!(name: "Código", event_type: "card_moved", actions: [ { "type" => "run_code", "code" => "return 'segredo';" } ]) }
+
+        it "vem para quem tem fluxos" do
+          get triggers_path, headers: auth_headers(member_with(pipelines: "all", flows: "all"))
+
+          expect(json["triggers"].first["actions"].first).to include("type" => "run_code", "code" => "return 'segredo';")
+        end
+
+        it "não vem para quem tem só pipelines, nem na lista, nem no quadro aberto, nem ao ligar e desligar" do
+          get triggers_path, headers: auth_headers(pipelines_member)
+          expect(json["triggers"].first["actions"].first).to include("type" => "run_code")
+          expect(response.body).not_to include("segredo")
+
+          get "/pipelines/boards/#{board.id}", headers: auth_headers(pipelines_member)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).not_to include("segredo")
+
+          post "#{triggers_path}/#{coded.id}/toggle", headers: auth_headers(pipelines_member)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).not_to include("segredo")
+        end
+      end
+
       it "quem tem fluxos escreve" do
         member = member_with(pipelines: "all", flows: "all")
 

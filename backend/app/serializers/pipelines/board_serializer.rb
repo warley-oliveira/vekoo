@@ -22,7 +22,7 @@ module Pipelines
           )
         end,
         customFields: CustomFieldSerializer.many(board.custom_fields),
-        triggers: TriggerSerializer.many(board.triggers.ordered),
+        triggers: TriggerSerializer.many(board.triggers.ordered, viewer: viewer),
         appliedFilter: applied_filter
       )
     end

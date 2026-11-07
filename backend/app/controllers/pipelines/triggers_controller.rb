@@ -7,14 +7,14 @@ module Pipelines
     def index
       triggers = @board.triggers.ordered
 
-      render json: { triggers: TriggerSerializer.many(triggers), meta: { total: triggers.size } }
+      render json: { triggers: TriggerSerializer.many(triggers, viewer: current_account), meta: { total: triggers.size } }
     end
 
     def create
       trigger = @board.triggers.build(trigger_params)
 
       if trigger.save
-        render json: TriggerSerializer.one(trigger), status: :created
+        render json: TriggerSerializer.one(trigger, viewer: current_account), status: :created
       else
         render_invalid(trigger)
       end
@@ -22,7 +22,7 @@ module Pipelines
 
     def update
       if @trigger.update(trigger_params)
-        render json: TriggerSerializer.one(@trigger)
+        render json: TriggerSerializer.one(@trigger, viewer: current_account)
       else
         render_invalid(@trigger)
       end
@@ -35,7 +35,7 @@ module Pipelines
 
     def toggle
       @trigger.toggle!
-      render json: TriggerSerializer.one(@trigger)
+      render json: TriggerSerializer.one(@trigger, viewer: current_account)
     end
 
     private

@@ -19,6 +19,7 @@ import { devRoutes } from "@/routes/dev-routes"
 import { flowsRoutes } from "@/routes/flows"
 import { funnelsRoutes } from "@/routes/funnels"
 import { pipelinesRoutes } from "@/routes/pipelines"
+import { pipelineAdminRoutes } from "@/routes/pipelines/admin"
 import { settingsRoutes } from "@/routes/settings"
 import { instagramCallbackRoute } from "@/routes/settings/integrations"
 
@@ -123,6 +124,7 @@ export default function App() {
           {dashboardRoutes}
           {flowsRoutes}
           {calendarRoutes}
+          {pipelineAdminRoutes}
           {pipelinesRoutes}
           {chatRoutes}
           {contactsRoutes}

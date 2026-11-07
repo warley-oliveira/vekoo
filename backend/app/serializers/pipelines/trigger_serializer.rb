@@ -1,17 +1,25 @@
 module Pipelines
   class TriggerSerializer < ApplicationSerializer
-    def self.one(trigger)
+    # @param viewer [Account] o código de `run_code` pode conter segredo, e escrevê-lo é de quem tem
+    #   acesso aos fluxos (ver TriggersController): sem esse acesso, a ação vem sem o texto.
+    def self.one(trigger, viewer:)
+      reads_code = viewer.can?(:flows)
+
       {
         id: trigger.id,
         name: trigger.name,
         eventType: trigger.event_type,
         conditions: camel_keys(trigger.conditions),
-        actions: Array(trigger.actions).map { |action| camel_keys(action) },
+        actions: Array(trigger.actions).map { |action| camel_keys(reads_code ? action : without_code(action)) },
         active: trigger.active,
         stageId: trigger.stage_id,
         createdAt: epoch_ms(trigger.created_at),
         updatedAt: epoch_ms(trigger.updated_at)
       }
+    end
+
+    def self.many(triggers, viewer:)
+      triggers.map { |trigger| one(trigger, viewer: viewer) }
     end
 
     def self.execution(execution)
@@ -27,6 +35,11 @@ module Pipelines
         cardTitle: execution.card&.title
       }
     end
+
+    def self.without_code(action)
+      action.is_a?(Hash) ? action.reject { |key, _value| key.to_s == "code" } : action
+    end
+    private_class_method :without_code
 
     # Só o primeiro nível: o que vem por baixo das chaves conhecidas é dado do usuário
     # (`Trigger::OPAQUE_ACTION_KEYS`) ou `{ operator, value }`, que não muda.
