@@ -304,6 +304,18 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Fora:** `FeatureLocked`, `PackageLimitAlert` e `UpgradePromptDialog` (planos fora do escopo; a permissão decide); vídeo "Ver como funciona", que a CSP bloqueia e mostra o produto antigo. `NewCampaignFab` virou botão no cabeçalho, e o anel de progresso virou barra.
 - **Acréscimos na API:** `GET /campaigns?sort=`, listas em `status` e `connectorId`, `recipients?status=replied`, `place-extractions?status=a,b`.
 
+### Chat no celular (fe-chat-mobile)
+
+- **Mesma tela, mesmos stores:** a árvore separada da origem não veio. As peças móveis entram por um contexto de variante, e a tela larga não baixa nenhum arquivo delas.
+- **Voltar do aparelho desfaz um passo de cada vez:** painel, conversa, lista. Cada camada é uma entrada no histórico. Por enquanto só no chat.
+- **Emoji não é folha:** é um painel encaixado no lugar do teclado, porque uma folha cobriria o composer. Anexos, mensagens rápidas e ações são folhas.
+- **Celular deitado acima de 768 px** continua em uma coluna. O painel do contato entra pela direita, como a conversa; na origem subia de baixo.
+- **Áudio:** soltar envia, deslizar para a esquerda descarta, para cima trava. Voltar com menos de 5 s descarta direto, com 5 s ou mais pergunta. Lixeira e deslizar para cancelar não confirmam, porque o gesto é deliberado.
+- **Conversa desmonta ao sair**, e reabrir não faz pedido, porque o histórico mora no store. Na origem ficava montada.
+- **Acrescentado:** deslizar para responder, apagar por grafema no painel de emoji, selo "API" na linha, gesto na foto.
+- **Cortado como enfeite:** paralaxe da lista, troca animada enviar/microfone, negrito no trecho buscado. `use-fill-viewport-height` não veio: a conversa fica presa ao viewport visual por `--app-vh` e `--app-vv-top`.
+- **Fora da área:** `BottomSheet` usa `useSheetFocus`, e abrir folha com busca não sobe mais o teclado, no app todo.
+
 ## 2. Pendências por frente
 
 ### Integrador (Fase 5)
@@ -340,6 +352,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `GOOGLE_CALENDAR_REDIRECT_URI` em produção deve apontar para `https://<front>/calendar/google-callback`.
 - `ContactNotificationJob` acha a regra pela posição: excluir um lembrete do meio pode trocar o texto de um já na fila. A correção pede id nas regras. Não há `GET /calendar-events/:id`, então `?event=` só abre o que está no período aberto.
 - Sugestão de produto: `wait_for_message` não tem tempo limite, então "se não responder em 24 h, lembrar de novo" não dá para montar. O modelo de carrinho abandonado perdeu essa parte por isso.
+- Não testado em aparelho: teclado virtual (simulado), botão voltar físico, gesto de sistema do Android, háptico, permissão do microfone durante o segurar, zoom no visualizador, intervenção de histórico do Chrome em link direto.
 - Registrar no `CLAUDE.md` que carrosséis agora ficam em `/carousels`. VAPID em produção. Se o domínio da API mudar, `connect-src` em `_headers` está fixo em `syco.vekoo.app`.
 
 ### Front (fases 3 e 4)
@@ -359,8 +372,6 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - `fe-polish` (continuação): `components/pipelines-admin/triggers/code-editor-panel.tsx` duplica o editor, e os dois configuram o mesmo estado global do Monaco: trocar pelo `components/code-editor/`; `flow_debounce_seconds` em `/automation-settings` (API e tela); `RelativeTime` diz "há 1 minuto" logo depois de salvar; o editor de fluxos chama a tela de "quadro" no desktop e de "mapa" no celular, e "quadro" é a visão de pipelines: usar "mapa".
 - `fe-custom-dashboards`: entra pelo encaixe `hooks/insights/use-dashboard-extra-tabs.ts`, trocando o corpo do hook; devolve `{ tabs: [{ id, label, icon, render(period) }], create? }`. Tokens de gráfico em `components/dashboard/viz-tokens.css`.
 - `fe-tools-webhooks`: reaproveitar `components/code-editor/`, que nasce em `fe-flows`, e montar a partir de `docs/migration/api/automation.md`.
-- `fe-chat-mobile`: o voltar do aparelho ainda não fecha o painel; o cabeçalho em 390 px corta o nome; falta segurar para selecionar.
-- `fe-chat-mobile`: `use-fill-viewport-height` da origem não foi portado.
 
 ### Back (Fase 2)
 

@@ -140,7 +140,7 @@ Dividida em duas levas, para cada frente poder testar de verdade o que usa, em v
 | # | Frente | Origem principal | Status |
 |---|---|---|---|
 | 19 | **fe-chat-details**: painel do contato, atribuição, etiquetas, notas, templates, agendados, copiloto, ações em lote | `sections/apps/chat/{UserDetails,…}`, `components/{chat-assistant,chat}` | ✅ |
-| 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | 🔄 |
+| 20 | **fe-chat-mobile**: experiência móvel completa do chat | `sections/apps/chat-mobile`, `pages/apps/chat-mobile` | ✅ |
 | 21 | **fe-pipelines-board**: quadro, lista, card, comentários, checklist, arrastar, filtros e filtros salvos | `components/kanban-v2/{board,column,card,filter}`, `pages/apps/kanban-v2` | ✅ |
 | 22 | **fe-pipelines-admin**: gatilhos, metas, campos, etiquetas, ajustes do quadro, modelos, métricas, arquivados | `components/kanban-v2/{trigger,goals}`, `use-kanban-*` | ✅ |
 | 23 | **fe-calendar**: agenda, eventos, turmas, serviços, colaboradores, sequências, Google | `sections/apps/calendar`, `pages/apps/calendar*`, `pages/assistants/apps/scheduling`, `components/appointments` | ✅ |
