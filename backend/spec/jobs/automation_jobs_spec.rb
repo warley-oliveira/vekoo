@@ -143,6 +143,19 @@ RSpec.describe "Jobs de automação" do
       expect { described_class.perform_now }.to have_enqueued_job(Flows::DebouncedDispatchJob)
     end
 
+    # O job do debounce mora no Redis. Se ele sumiu, a mensagem ficava na caixa, e o contato sem resposta, até escrever de novo.
+    it "entrega a caixa cujo job do debounce sumiu, mesmo sem execução nenhuma" do
+      chat.set(flow_inbox: [ { "text" => "oi" } ], flow_inbox_deadline: 6.minutes.ago)
+
+      expect { described_class.perform_now }.to have_enqueued_job(Flows::DebouncedDispatchJob).with(chat.id.to_s, organization.id.to_s).once
+    end
+
+    it "não mexe na caixa que ainda pode ter job agendado" do
+      chat.set(flow_inbox: [ { "text" => "oi" } ], flow_inbox_deadline: 1.minute.ago)
+
+      expect { described_class.perform_now }.not_to have_enqueued_job(Flows::DebouncedDispatchJob)
+    end
+
     it "reagenda a espera vencida cujo job sumiu, com o mesmo token" do
       atrasada = create(:flow_execution, flow: flow, status: "waiting", resume_token: "tk", resume_at: 1.hour.ago)
       create(:flow_execution, flow: create(:flow, organization: organization), status: "waiting", resume_token: "tk2", resume_at: 1.hour.from_now)

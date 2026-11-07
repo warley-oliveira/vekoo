@@ -41,7 +41,7 @@ module Connectors
       yield
     rescue StandardError => e
       Rails.logger.error("[Connectors::Creator] #{connector.class}: #{e.class}: #{e.message}")
-      connector.set(status_cd: "failed", error_message: e.message.truncate(255))
+      connector.set(status_cd: "failed", error_message: Connectors::SendFailure.reason(e).truncate(255))
     end
 
     def base_attributes

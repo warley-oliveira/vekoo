@@ -252,6 +252,40 @@ RSpec.describe ChatListChannel, type: :channel do
       end
     end
   end
+  # Quem vê só o que é seu e perdeu a conversa não recebe mais nada dela: a linha ficava na lista até recarregar, e abrir dava 404.
+  describe "quem perde a conversa por reatribuição" do
+    let(:member) { member_with("assigned") }
+    let(:team) { create(:team, organization: organization) }
+    let!(:chat) { create(:chat, organization: organization, assigned_account_id: member.id) }
+    let(:removal) { { action: "remove", event: { id: chat.id.to_s } } }
+
+    it "recebe `remove` na própria stream" do
+      expect { chat.update!(assigned_account_id: owner.id) }
+        .to have_broadcasted_to(stream("chat-list-account-#{member.id}")).with(removal)
+    end
+
+    it "quem recebeu a conversa não recebe `remove`" do
+      expect { chat.update!(assigned_account_id: owner.id) }
+        .not_to have_broadcasted_to(stream("chat-list-account-#{owner.id}")).with(removal)
+    end
+
+    it "sair para um departamento, sem responsável, também tira da lista" do
+      expect { chat.update!(assigned_account_id: nil, team_id: team.id) }
+        .to have_broadcasted_to(stream("chat-list-account-#{member.id}")).with(removal)
+    end
+
+    it "sem responsável e sem departamento, continua na lista dela, pela stream de sem dono" do
+      expect { chat.update!(assigned_account_id: nil) }
+        .not_to have_broadcasted_to(stream("chat-list-account-#{member.id}"))
+      expect(Chat.visible_to(member).where(id: chat.id).take).to eq(chat)
+    end
+
+    it "mudar outro campo não mexe na lista dela" do
+      expect { chat.update!(notes: "Prefere de manhã") }
+        .not_to have_broadcasted_to(stream("chat-list-account-#{member.id}")).with(removal)
+    end
+  end
+
   # A lista em tempo real e a API REST precisam concordar: `Chat.visible_to` mostra a quem vê
   # por departamento a conversa sem departamento, mesmo já tendo dono.
   describe "o que cada nível recebe, igual à API REST" do

@@ -1076,7 +1076,7 @@ Evolution, Z-API e LeadChat não assinam o que mandam. O `token` é um HMAC do i
 
 A assinatura vale contra `META_APP_SECRET` ou `INSTAGRAM_APP_SECRET`. Sem nenhum dos dois, em desenvolvimento não há o que conferir, e em produção responde `403 invalidSignature`. Como o webhook de aplicativo da Meta é um só, o `entry.id` do evento escolhe o conector da WABA, e só conta quem a Meta já confirmou: `waba_verified_at`, gravado na ativação. Conector ativado antes disso precisa ser ativado de novo para receber por essa rota. Quem configura o webhook é a própria ativação do canal, exceto Meta, onde a pessoa cola `webhookUrl` e `verificationToken` no painel.
 
-O que acontece com a mensagem recebida, em todos os canais: acha ou cria a conversa pelas variantes do telefone, grava, reabre se a organização pediu, atualiza `lastMessage*`, transmite por `ChatChannel` e `ChatListChannel` e chama `Flows::InboundDispatcher`.
+O que acontece com a mensagem recebida, em todos os canais: acha ou cria a conversa pelas variantes do telefone, grava, reabre se a organização pediu, atualiza `lastMessage*`, transmite por `ChatChannel` e `ChatListChannel` e chama `Flows::InboundDispatcher`. Falhou depois de gravar, o resto tenta de novo em `Chats::RetryInboundFlowJob`, 3 vezes, porque a nova tentativa do webhook pararia em "já existe".
 
 ---
 
@@ -1311,7 +1311,7 @@ Validado de ponta a ponta contra o Redis: o webhook entra no Puma, o Sidekiq pro
 
 ### `ChatChannel`
 
-A conversa aberta. Params: `{ "chatId" }`. Exige `chat`. Conversa que não existe ou é de outra organização é recusada.
+A conversa aberta. Params: `{ "chatId" }`. Exige `chat`. Conversa que não existe ou é de outra organização é recusada. Quem perde a conversa com ela aberta, por reatribuição ou troca de departamento, para de receber eventos, sem aviso próprio: a assinatura continua de pé e fica muda, e `send_message` não sai. Com `chat_list_to: assigned`, a lista recebe `remove`.
 
 **Recebe**, uma mensagem nova ou alterada (status, reação, apagada, conteúdo que chegou depois). **Funda por `id`**, sem tratar como evento à parte.
 
@@ -1492,6 +1492,8 @@ Reação recusada, para reverter a atualização otimista. É o único evento co
 | `send_reaction` | `{ chatId, messageId, emoji }` | Emoji vazio remove. Só Evolution (`reactionsSupported`). Sucesso volta como mensagem com `reactions`. Falha, como `message_reaction_failed`. |
 | `send_template_message` | `{ chatId, templateId, components }` | `templateId` é o `templateId` da Meta. Pausa a automação e envia o modelo. |
 
+As três enfileiram `Chats::OperatorActionJob` (fila `critical`, sem nova tentativa), e quem fala com o provedor é o job: o pool de threads do canal é o mesmo que aceita conexões e entrega eventos de todas as organizações. O efeito continua voltando por este canal. Sem Sidekiq no ar, nada sai.
+
 `components` vai no formato da Meta. Variável com nome leva `parameter_name`: `{ "type": "body", "parameters": [{ "type": "text", "parameter_name": "nome", "text": "Ana" }] }`. Cabeçalho de texto com variável é `{ "type": "header", "parameters": [...] }`, botão de link dinâmico é `{ "type": "button", "sub_type": "url", "index": "0", "parameters": [...] }`, e cabeçalho de mídia o servidor preenche sozinho.
 
 Falha no envio de texto ou de modelo volta na própria mensagem, com `status: "failed"` e o motivo em `statusMessage`.
@@ -1505,7 +1507,7 @@ A lista de conversas. Sem params. Exige `chat`. `chat_list_to` decide o que cheg
 | Evento | Payload |
 |---|---|
 | Criada ou alterada | `{ "action": "upsert", "event": <Conversa> }` |
-| Removida da lista | `{ "action": "remove", "event": { "id" } }` |
+| Removida da lista: apagada, ou a pessoa com `assigned` deixou de ser a responsável | `{ "action": "remove", "event": { "id" } }` |
 | Resposta de `request_recent` | `{ "action": "recent_chats", "events": [<Conversa>] }` |
 
 ```json

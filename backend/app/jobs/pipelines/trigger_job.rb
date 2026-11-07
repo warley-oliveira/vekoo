@@ -53,7 +53,7 @@ module Pipelines
       { type: action[:type], status: "success" }.merge(detail.is_a?(Hash) ? detail : {})
     rescue StandardError => e
       Rails.logger.warn("[Pipelines::TriggerJob] #{action[:type]} no gatilho #{trigger.id}: #{e.class}: #{e.message}")
-      { type: action[:type], status: "failure", error: e.message.to_s.truncate(MAX_STORED_ERROR) }
+      { type: action[:type], status: "failure", error: Connectors::SendFailure.reason(e).to_s.truncate(MAX_STORED_ERROR) }
     end
 
     def execute_action(action, index, card, board, context, trigger)

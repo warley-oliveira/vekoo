@@ -310,6 +310,13 @@ module Outreach
       validate_phone_number_ids if phone_number_ids_changed? || waba_connector_id_changed?
       validate_template_ids if template_ids_changed? || waba_connector_id_changed?
       validate_chat_tag_ids if chat_tag_ids_changed?
+      validate_flow if flow_id_changed?
+    end
+
+    # `Flows::Dispatch` já ignora o fluxo de outra organização ao atender quem respondeu, mas guardar o
+    # id mostraria um fluxo que nunca roda.
+    def validate_flow
+      errors.add(:flow_id, :not_found) if flow_id.present? && Flow.scoped(organization_id, flow_id).nil?
     end
 
     def validate_connector_ids

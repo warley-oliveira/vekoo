@@ -4,6 +4,10 @@ require "rails_helper"
 # provedores por WebMock. Nada aqui passa por dublê de conector.
 RSpec.describe ChatChannel, type: :channel do
   include AttachmentHelpers
+  include ActiveJob::TestHelper
+
+  # O canal só enfileira (ver chat_channel_provider_isolation_spec.rb). Aqui vale o que a pessoa vê, com o job rodando.
+  around { |example| perform_enqueued_jobs(only: Chats::OperatorActionJob) { example.run } }
 
   let(:organization) { create(:organization) }
   let(:account) { create(:account, organization: organization, name: "Alice Prado") }
@@ -89,6 +93,63 @@ RSpec.describe ChatChannel, type: :channel do
       expect(Chats::SendOperatorMessage).not_to receive(:call)
 
       perform :send_message, { "chatId" => foreign_chat.id.to_s, "message" => "oi" }
+    end
+  end
+
+  # A permissão é conferida ao assinar. Quem perdia a conversa com ela aberta seguia ouvindo as mensagens do contato até sair dela.
+  describe "quem perde a conversa com ela aberta" do
+    let(:restricted) { member_with("chat" => "all", "chat_list_to" => "assigned") }
+    let(:other_person) { create(:account, organization: organization) }
+    let(:own_chat) { create(:chat, connector: connector, external_id: "5511777777777@s.whatsapp.net", assigned_account_id: restricted.id.to_s) }
+    let(:own_stream) { ChatMessage::Base.stream_for(own_chat) }
+
+    before do
+      stub_connection current_account: restricted
+      subscribe(chatId: own_chat.id.to_s)
+    end
+
+    # O que o Action Cable chama a cada transmissão: o dublê de teste guarda a stream, mas não roda o bloco.
+    def arrive_from_stream(message)
+      subscription.send(:deliver_from_stream, message)
+    end
+
+    it "reatribuir avisa a stream da conversa" do
+      expect { own_chat.update!(assigned_account_id: other_person.id.to_s) }
+        .to have_broadcasted_to(own_stream).with(event: Chat::ACCESS_CHANGED_EVENT)
+    end
+
+    it "mudar de departamento também" do
+      expect { own_chat.update!(team_id: create(:team, organization: organization).id) }
+        .to have_broadcasted_to(own_stream).with(event: Chat::ACCESS_CHANGED_EVENT)
+    end
+
+    it "mudar outro campo não avisa" do
+      expect { own_chat.update!(notes: "Prefere de manhã") }
+        .not_to have_broadcasted_to(own_stream).with(event: Chat::ACCESS_CHANGED_EVENT)
+    end
+
+    it "para de ouvir quando deixou de enxergar" do
+      own_chat.update!(assigned_account_id: other_person.id.to_s)
+
+      arrive_from_stream("event" => Chat::ACCESS_CHANGED_EVENT)
+
+      expect(subscription).not_to have_stream_from(own_stream)
+      expect(transmissions).to be_empty
+    end
+
+    it "continua ouvindo quando ainda enxerga, e o aviso não chega à tela" do
+      own_chat.update!(team_id: create(:team, organization: organization).id)
+
+      arrive_from_stream("event" => Chat::ACCESS_CHANGED_EVENT)
+
+      expect(subscription).to have_stream_from(own_stream)
+      expect(transmissions).to be_empty
+    end
+
+    it "o resto passa como sempre" do
+      arrive_from_stream("id" => "abc", "content" => "Oi")
+
+      expect(transmissions.last).to include("content" => "Oi")
     end
   end
 

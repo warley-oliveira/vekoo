@@ -1,3 +1,10 @@
+<%
+  # Ao perder o Redis, o Listener do Action Cable tenta de novo uma vez por item desta lista, dormindo o valor em segundos, e depois
+  # desiste sem avisar: a thread morre, e o processo nunca mais recebe evento nem confirma assinatura, com os WebSockets abertos, até
+  # reiniciar. O padrão é uma tentativa só, sem espera: qualquer reinício do Redis derrubava o tempo real de todo mundo. Aqui, um dia.
+  # A conexão de quem transmite não herda isto: ver config/initializers/action_cable_redis.rb.
+  reconnect_attempts = ([ 0.5, 1, 2, 3 ] + Array.new(17_280, 5)).to_json
+%>
 # Redis também em desenvolvimento: quem transmite quase sempre é o Sidekiq, outro
 # processo — o adaptador `async` só alcança quem está no mesmo processo do Puma.
 development:
@@ -6,6 +13,7 @@ development:
   # Pub/sub do Redis ignora o número do banco. Com o prefixo por banco, dois
   # back-ends na mesma máquina não recebem os eventos um do outro.
   channel_prefix: <%= ENV.fetch("POSTGRES_DB", "vekoo_development") %>
+  reconnect_attempts: <%= reconnect_attempts %>
 
 test:
   adapter: test
@@ -16,3 +24,4 @@ production:
   # ActionCable vai parar dentro do banco 0 — o mesmo da fila.
   url: <%= ENV.fetch("CABLE_REDIS_URL") { ENV.fetch("REDIS_URL", "redis://localhost:6379/1") } %>
   channel_prefix: vekoo_production
+  reconnect_attempts: <%= reconnect_attempts %>

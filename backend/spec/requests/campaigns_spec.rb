@@ -368,11 +368,27 @@ RSpec.describe "Campanhas", type: :request do
       end
 
       it "guarda o fluxo que responde" do
-        flow_id = SecureRandom.uuid
+        flow = create(:flow, organization: organization)
 
-        post "/campaigns", params: payload(flowId: flow_id), headers: headers, as: :json
+        post "/campaigns", params: payload(flowId: flow.id), headers: headers, as: :json
 
-        expect(json.dig("campaign", "flowId")).to eq(flow_id)
+        expect(json.dig("campaign", "flowId")).to eq(flow.id)
+      end
+
+      it "recusa o fluxo de outra organização, como recusa o canal" do
+        foreign_flow = create(:flow, organization: create(:organization))
+
+        post "/campaigns", params: payload(flowId: foreign_flow.id), headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json.dig("error", "field")).to eq("flowId")
+      end
+
+      it "recusa o fluxo que não existe" do
+        post "/campaigns", params: payload(flowId: SecureRandom.uuid), headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json.dig("error", "field")).to eq("flowId")
       end
 
       it "os parâmetros do modelo só aceitam id de modelo e posição" do
@@ -636,6 +652,17 @@ RSpec.describe "Campanhas", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "code")).to eq("campaignNotEditable")
       end
+    end
+
+    it "recusa o fluxo de outra organização também ao editar" do
+      campaign = campaign_of
+      foreign_flow = create(:flow, organization: create(:organization))
+
+      patch "/campaigns/#{campaign.id}", params: { flowId: foreign_flow.id }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "field")).to eq("flowId")
+      expect(campaign.reload.flow_id).to be_nil
     end
 
     it "valida" do

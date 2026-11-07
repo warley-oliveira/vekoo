@@ -29,6 +29,8 @@ class Chat
   STATUSES = %w[open closed].freeze
   # Conversa de teste que não entra nas listas. Veio da origem.
   TEST_EXTERNAL_ID = "9999999999@whatsapp".freeze
+  # Aviso interno na stream da conversa: quem assina confere de novo se ainda enxerga. Não chega à tela (ver `ChatChannel`).
+  ACCESS_CHANGED_EVENT = "access_changed".freeze
 
   field :organization_id, type: String
 
@@ -126,6 +128,7 @@ class Chat
   before_update :log_automation_toggle
   before_update :log_assignment_change
   after_update :dispatch_event!
+  after_update :announce_access_change
 
   # A única forma de carregar uma conversa por id: escopada pela organização.
   def self.scoped(organization_id, id)
@@ -430,6 +433,30 @@ class Chat
     list_streams.each do |name|
       ActionCable.server.broadcast(ApplicationCable::Channel.organization_stream(organization_id, name), payload)
     end
+  end
+
+  # A permissão é conferida ao assinar. Mudou quem atende, ou o departamento: quem está com a conversa aberta confere de novo, e quem
+  # era o responsável sai da lista.
+  def announce_access_change
+    return if ignore_events
+    return unless (previous_changes.keys & %w[assigned_account_id team_id]).any?
+
+    ActionCable.server.broadcast(ChatMessage::Base.stream_for(self), { event: ACCESS_CHANGED_EVENT })
+    remove_from_previous_assignee_list
+  end
+
+  # Só a stream pessoal de quem era o responsável: ela não ouve mais nada desta conversa, então não há evento com que se confundir.
+  # Sem responsável e sem departamento, a conversa continua na lista dessa pessoa, pela stream de sem dono. A saída das outras streams
+  # (sem dono, departamento) fica de fora: quem acabou de receber a conversa também as ouve, e o `remove` poderia chegar depois do `upsert`.
+  def remove_from_previous_assignee_list
+    previous = previous_changes["assigned_account_id"]&.first
+    return if previous.blank? || previous == assigned_account_id
+    return if assigned_account_id.nil? && team_id.nil?
+
+    ActionCable.server.broadcast(
+      ApplicationCable::Channel.organization_stream(organization_id, "chat-list-account-#{previous}"),
+      { action: :remove, event: { id: id.to_s } }
+    )
   end
 
   def assign_or_create_audience

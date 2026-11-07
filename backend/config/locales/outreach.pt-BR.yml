@@ -89,6 +89,7 @@ pt-BR:
         phone_number_ids: "Números"
         template_ids: "Modelos"
         chat_tag_ids: "Etiquetas"
+        flow_id: "Fluxo"
         send_start_hour: "Início da janela"
         send_end_hour: "Fim da janela"
         send_days: "Dias de envio"
@@ -128,5 +129,7 @@ pt-BR:
               not_found: "têm um canal que não existe nesta organização"
             chat_tag_ids:
               not_found: "têm uma etiqueta que não existe nesta organização"
+            flow_id:
+              not_found: "não existe nesta organização"
             buffer_max_seconds:
               less_than_minimum: "não pode ser menor que o intervalo mínimo"

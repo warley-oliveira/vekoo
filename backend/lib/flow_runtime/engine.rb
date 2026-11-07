@@ -140,9 +140,11 @@ module FlowRuntime
       result
     rescue StandardError => e
       Rails.logger.error("[FlowRuntime] bloco #{node['id']} (#{node['type']}) falhou: #{e.class}: #{e.message}\n#{Array(e.backtrace).first(5).join("\n")}")
-      log_failure(node, e)
-      broadcast_playground(:node_completed, nodeId: node["id"], nodeType: node["type"], status: "error", error: e.message)
-      NodeResult.failure(e.message)
+      # O motivo vai para a tela e para o alerta: erro de rede dizia, em inglês, o endereço do provedor.
+      reason = Connectors::SendFailure.reason(e)
+      log_failure(node, reason)
+      broadcast_playground(:node_completed, nodeId: node["id"], nodeType: node["type"], status: "error", error: reason)
+      NodeResult.failure(reason)
     end
 
     def advance(result)
@@ -179,14 +181,14 @@ module FlowRuntime
       )
     end
 
-    def log_failure(node, error)
+    def log_failure(node, reason)
       FlowExecutionLog.create!(
         flow_execution: execution,
         node_id: node["id"],
         node_type: node["type"],
         duration_ms: 0,
         status: "error",
-        error_message: error.message.to_s.truncate(2_000)
+        error_message: reason.to_s.truncate(2_000)
       )
     end
 
