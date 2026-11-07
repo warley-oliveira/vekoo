@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import { connectorTypeKey, hasRealName, pauseDiscardsMessages } from "@/lib/connectors/channels"
+import { hasRealName, pauseDiscardsMessages } from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 
 /**
@@ -11,7 +11,7 @@ export function useConnectorTexts() {
   const { t } = useTranslation()
 
   function typeLabel(connector: Connector) {
-    return t(`connectors.types.${connectorTypeKey(connector)}`)
+    return t(`connectors.types.${connector.type}`)
   }
 
   function title(connector: Connector) {

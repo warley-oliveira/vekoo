@@ -11,7 +11,6 @@ import { InstagramGlyph, MessengerGlyph, WhatsappGlyph } from "./channel-glyphs"
 function ChannelGlyph({ type, className }: { type: ConnectorType; className?: string }) {
   switch (type) {
     case "whatsapp_web":
-    case "zapi":
     case "whatsapp_cloud":
       return <WhatsappGlyph className={className} />
     case "instagram_direct":

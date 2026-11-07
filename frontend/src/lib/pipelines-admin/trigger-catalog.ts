@@ -114,8 +114,8 @@ export const MAX_CODE_TIMEOUT_MS = 60_000
 export const DEFAULT_CODE_TIMEOUT_MS = 15_000
 
 /** Canais que recebem mensagem livre. O WhatsApp Cloud só manda modelo. */
-export const MESSAGE_CONNECTOR_TYPES = ["whatsapp_web", "zapi", "facebook_messenger", "instagram_direct"]
-export const PHONE_CONNECTOR_TYPES = ["whatsapp_web", "zapi", "whatsapp_cloud"]
+export const MESSAGE_CONNECTOR_TYPES = ["whatsapp_web", "facebook_messenger", "instagram_direct"]
+export const PHONE_CONNECTOR_TYPES = ["whatsapp_web", "whatsapp_cloud"]
 
 export type TokenDefinition = {
   /** `{{card.title}}` */

@@ -105,9 +105,7 @@ function ConnectorBody({ connector }: { connector: Connector }) {
         <div className="flex flex-col gap-6 md:gap-8">
           <GeneralSection connector={connector} />
           <ConnectorActionsSection connector={connector} />
-          {connector.type === "whatsapp_web" || connector.type === "zapi" ? (
-            <TipsSection />
-          ) : null}
+          {connector.type === "whatsapp_web" ? <TipsSection /> : null}
         </div>
       )
   }

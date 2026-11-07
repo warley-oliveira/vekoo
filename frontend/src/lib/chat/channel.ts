@@ -9,14 +9,12 @@ import type { Chat } from "./types"
 export type ChatConnector = Connector & {
   /** Em `GET /chats/self-filter`, no WhatsApp pelo celular. */
   reactionsSupported?: boolean
-  deleteForEveryoneSupported?: boolean
 }
 
 export type ChannelKey = "whatsapp" | "whatsapp_cloud" | "instagram" | "messenger" | "web" | "other"
 
 const TYPE_TO_KEY: Partial<Record<ConnectorType, ChannelKey>> = {
   whatsapp_web: "whatsapp",
-  zapi: "whatsapp",
   whatsapp_cloud: "whatsapp_cloud",
   instagram_direct: "instagram",
   facebook_messenger: "messenger",
@@ -94,7 +92,6 @@ export function connectorNumber(
       )
     }
     case "whatsapp_web":
-    case "zapi":
       return connector.numberFormatted || null
     case "instagram_direct":
       return connector.instagramUsername ? `@${connector.instagramUsername}` : null

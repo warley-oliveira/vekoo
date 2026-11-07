@@ -3,12 +3,7 @@ import { useTranslation } from "react-i18next"
 
 import { useChannel } from "@/hooks/use-channel"
 import { apiPost } from "@/lib/api"
-import {
-  connectorErrorMessage,
-  isWhatsappWeb,
-  qrImageSource,
-  usesZapi,
-} from "@/lib/connectors/channels"
+import { connectorErrorMessage, isWhatsappWeb, qrImageSource } from "@/lib/connectors/channels"
 import type { Connector, ConnectionEvent } from "@/lib/connectors/types"
 import { refreshConnectorAlerts } from "./use-connector-alerts"
 import { reloadConnectors, storeConnector, useConnector } from "./use-connectors"
@@ -22,8 +17,6 @@ import { reloadConnectors, storeConnector, useConnector } from "./use-connectors
  */
 export type ConnectionPhase = "starting" | "waiting" | "expired" | "failed" | "connected"
 
-/** A Z-API invalida o QR code em 20 s. O contrato pede um novo a cada 8. */
-const ZAPI_REFRESH_MS = 8_000
 /** Rede de segurança: se o WebSocket cair, é a leitura que descobre que conectou. */
 const POLL_MS = 4_000
 /** Sem código até aqui, a tela admite a demora e oferece outra saída. */
@@ -55,7 +48,6 @@ export function useWhatsappConnection({
 }: Options) {
   const { t } = useTranslation()
   const id = initial.id
-  const zapi = usesZapi(initial)
 
   const [phase, setPhase] = useState<ConnectionPhase>(() => initialPhase(initial, activateOnStart))
   const [qrCode, setQrCode] = useState<string | null>(null)
@@ -112,7 +104,7 @@ export function useWhatsappConnection({
     void restart()
   }, [activateOnStart, restart])
 
-  const { connected: cableConnected, perform } = useChannel<ConnectionEvent>(
+  const { connected: cableConnected } = useChannel<ConnectionEvent>(
     "ConnectorsChannel",
     { connectorId: id },
     (event) => {
@@ -130,10 +122,6 @@ export function useWhatsappConnection({
           setQrCode(null)
           setPairCode(null)
           setPhase((current) => (current === "connected" ? current : "expired"))
-          break
-        case "qr_error":
-          setFailure(event.error ?? null)
-          setPhase("failed")
           break
       }
     }
@@ -174,13 +162,6 @@ export function useWhatsappConnection({
     // Só na volta da conexão, não a cada mudança do que está sendo acompanhado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cableConnected])
-
-  useEffect(() => {
-    if (!zapi || !cableConnected || !watching) return
-    perform("generate_qr_code")
-    const timer = setInterval(() => perform("generate_qr_code"), ZAPI_REFRESH_MS)
-    return () => clearInterval(timer)
-  }, [zapi, cableConnected, watching, perform])
 
   // Terminou, bem ou mal: a lista atrás do diálogo e o número do menu precisam saber. Ao
   // conectar, o perfil e o número só existem agora, e o aviso de desconexão foi resolvido.

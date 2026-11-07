@@ -12,7 +12,6 @@ import {
 import { applyDeleted, applyOwnReaction, patchMessage, useThreadStore } from "./thread-store"
 import type {
   BulkDeleteResponse,
-  BulkDeleteScope,
   Chat,
   ChatMessage,
   ChatResponse,
@@ -87,20 +86,12 @@ export async function reactToMessage(
   }
 }
 
-/**
- * Apaga em lote: é o mesmo caminho para uma mensagem só. `everyone` pode voltar como `me`, quando o
- * canal não revoga: o que vale é `scopeApplied`.
- */
-export async function deleteMessages(
-  chatId: string,
-  messageIds: string[],
-  scope: BulkDeleteScope
-): Promise<BulkDeleteResponse> {
+/** Apaga em lote, só daqui: é o mesmo caminho para uma mensagem só. O contato continua vendo. */
+export async function deleteMessages(chatId: string, messageIds: string[]): Promise<BulkDeleteResponse> {
   const response = await apiPost<BulkDeleteResponse>(`/chats/${chatId}/messages/bulk-delete`, {
     messageIds,
-    scope,
   })
-  applyDeleted(chatId, response.deletedIds, response.scopeApplied)
+  applyDeleted(chatId, response.deletedIds)
   return response
 }
 

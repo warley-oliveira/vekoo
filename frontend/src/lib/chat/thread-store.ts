@@ -214,8 +214,8 @@ export function applyChannelMessage(key: string, payload: ChatChannelMessage): v
       const { id, reactions } = payload as { id: string; reactions: MessageReaction[] }
       patchMessage(key, id, { reactions: reactions ?? [] })
     } else if (payload.event === "messages_deleted") {
-      const { messageIds, scope } = payload as { messageIds: string[]; scope: "me" | "everyone" }
-      applyDeleted(key, messageIds ?? [], scope ?? "everyone")
+      const { messageIds } = payload as { messageIds: string[] }
+      applyDeleted(key, messageIds ?? [])
     } else if (payload.event === "presence") {
       setTyping(key, (payload as { value?: string }).value === "composing")
     }
@@ -259,23 +259,13 @@ export function patchMessage(key: string, id: string, changes: Partial<ChatMessa
   })
 }
 
-export function applyDeleted(key: string, ids: string[], scope: "me" | "everyone"): void {
+export function applyDeleted(key: string, ids: string[]): void {
   const set = new Set(ids)
   if (set.size === 0) return
 
-  patch(key, (thread) => {
-    if (scope === "me") {
-      return { messages: thread.messages.filter((message) => !set.has(message.id)) }
-    }
-    const now = Date.now()
-    return {
-      messages: thread.messages.map((message) =>
-        set.has(message.id) && !message.deletedAt
-          ? { ...message, deletedAt: now, deletedScope: "everyone" }
-          : message
-      ),
-    }
-  })
+  patch(key, (thread) => ({
+    messages: thread.messages.filter((message) => !set.has(message.id)),
+  }))
 }
 
 /** Só uma reação por lado: a nossa substitui a anterior, e emoji vazio tira. */

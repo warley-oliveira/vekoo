@@ -14,7 +14,6 @@ export type ConnectorStatus =
 export type ConnectorType =
   | "whatsapp_cloud"
   | "whatsapp_web"
-  | "zapi"
   | "lead_chat"
   | "facebook_messenger"
   | "instagram_direct"
@@ -72,7 +71,7 @@ export type WhatsappCloudConnector = ConnectorBase<"whatsapp_cloud"> & {
   phoneNumberList: WhatsappPhoneNumber[]
 }
 
-export type WhatsappProvider = "evolution_api" | "aiva_api" | "zapi"
+export type WhatsappProvider = "evolution_api" | "aiva_api"
 
 export type WhatsappWebConnector = ConnectorBase<"whatsapp_web"> & {
   providerApi: WhatsappProvider | null
@@ -81,14 +80,6 @@ export type WhatsappWebConnector = ConnectorBase<"whatsapp_web"> & {
   numberId: string | null
   numberFormatted: string | null
   reactionsSupported: boolean
-  deleteForEveryoneSupported: boolean
-}
-
-export type ZapiConnector = ConnectorBase<"zapi"> & {
-  instanceId: string | null
-  profileName: string | null
-  profilePictureUrl: string | null
-  numberFormatted: string | null
 }
 
 export type InstagramConnector = ConnectorBase<"instagram_direct"> & {
@@ -133,7 +124,6 @@ export type WidgetConnector = ConnectorBase<"web_widget"> & {
 export type Connector =
   | WhatsappCloudConnector
   | WhatsappWebConnector
-  | ZapiConnector
   | InstagramConnector
   | MessengerConnector
   | LeadChatConnector
@@ -164,7 +154,6 @@ export type ConnectionEvent =
   | { status: "qr_updated"; base64?: string | null; pairCode?: string | null }
   | { status: "success_scan"; base64?: string }
   | { status: "qr_timeout"; base64?: string }
-  | { status: "qr_error"; error?: string }
 
 export type ConnectorAlert = {
   id: string

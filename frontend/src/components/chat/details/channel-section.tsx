@@ -94,7 +94,6 @@ function useChannelItems(
     }
 
     case "whatsapp_web":
-    case "zapi":
       return [{ label: t("chatDetails.channel.accountNumber"), value: connector.numberFormatted }]
 
     case "instagram_direct":

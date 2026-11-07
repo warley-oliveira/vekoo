@@ -39,8 +39,6 @@
     },
     "types": {
       "whatsapp_web": "WhatsApp on your phone",
-      "whatsapp_web_zapi": "WhatsApp on your phone, with more features",
-      "zapi": "WhatsApp on your phone, with more features",
       "whatsapp_cloud": "Official WhatsApp",
       "instagram_direct": "Instagram",
       "facebook_messenger": "Messenger",
@@ -161,10 +159,6 @@
           "title": "WhatsApp on your phone",
           "description": "Use the number you already have, like WhatsApp Web. You scan a QR code or type a code on your phone."
         },
-        "whatsapp_zapi": {
-          "title": "WhatsApp on your phone, with more features",
-          "description": "The same way to connect, with more media and template features. This one connects by QR code only."
-        },
         "whatsapp_cloud": {
           "title": "Official WhatsApp",
           "description": "Meta's official connection, for businesses with a business account. Lets you send approved message templates."
@@ -196,8 +190,6 @@
       "phoneHint": "With area code. Outside Brazil, start with + and the country code.",
       "phoneInvalid": "Check the number: some digits are missing.",
       "need": "Keep your phone nearby, with WhatsApp open and online. It takes less than a minute.",
-      "zapi": "On this connection you scan a QR code: point your phone's camera at this screen.",
-      "zapiMobile": "On this connection you scan a QR code, and a phone can't scan a code shown on itself. Open this page on a computer to show the code.",
       "submitQr": "Generate QR code",
       "submitCode": "Generate code"
     },
@@ -387,8 +379,6 @@
       "profileName": "Name on WhatsApp",
       "provider": "Connection",
       "providerDefault": "Vekoo default",
-      "providerZapi": "Z-API",
-      "instance": "Instance",
       "numberId": "Number ID",
       "page": "Page",
       "pageId": "Page ID",

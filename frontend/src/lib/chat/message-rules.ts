@@ -1,24 +1,13 @@
 import type { ChatConnector } from "./channel"
-import type { BulkDeleteScope, ChatMessage } from "./types"
+import type { ChatMessage } from "./types"
 
 // O que dá para fazer com uma mensagem. Antes de tudo, o que o canal diz que permite
-// (`reactionsSupported`, `deleteForEveryoneSupported`, em `GET /chats/self-filter`); o
-// provedor (`connectorProvider`) só decide quando o canal não informa. Atenção: é `zapi`
-// aqui, e não `z_api` como na origem.
-
-/** A janela do WhatsApp para apagar para todos: 60 horas. */
-const DELETE_WINDOW_MS = 60 * 60 * 60 * 1000
+// (`reactionsSupported`, em `GET /chats/self-filter`); o provedor (`connectorProvider`)
+// só decide quando o canal não informa.
 
 export type MessageCapabilities = {
   connector: ChatConnector | undefined
   provider: string | null
-}
-
-export function deleteForEveryoneSupported({ connector, provider }: MessageCapabilities): boolean {
-  if (connector && "deleteForEveryoneSupported" in connector) {
-    return Boolean(connector.deleteForEveryoneSupported)
-  }
-  return provider === "zapi"
 }
 
 export function reactionsSupported({ connector, provider }: MessageCapabilities): boolean {
@@ -40,27 +29,6 @@ export function canReactToMessage(
   if (message.deletedAt || !isUserFacing(message)) return false
   // A reação vai pelo id do provedor: mensagem que nunca chegou lá não tem em que reagir.
   return Boolean(message.messageId)
-}
-
-/**
- * "Para mim" sempre existe. "Para todos" só se o canal revoga e todas as mensagens do lote são
- * nossas, estão dentro da janela e ainda não foram apagadas. O servidor rebaixa o lote inteiro
- * para "para mim" se não puder revogar: quem chama olha `scopeApplied`.
- */
-export function availableDeleteScopes(
-  messages: ChatMessage[],
-  capabilities: MessageCapabilities
-): BulkDeleteScope[] {
-  if (messages.length === 0 || !deleteForEveryoneSupported(capabilities)) return ["me"]
-
-  const now = Date.now()
-  const eligible = messages.every(
-    (message) =>
-      message.role === "assistant" &&
-      !message.deletedAt &&
-      now - message.createdAt < DELETE_WINDOW_MS
-  )
-  return eligible ? ["me", "everyone"] : ["me"]
 }
 
 export type MessageKind = "text" | "image" | "video" | "audio" | "sticker" | "document"

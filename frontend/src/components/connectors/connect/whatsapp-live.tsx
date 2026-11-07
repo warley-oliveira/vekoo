@@ -9,7 +9,7 @@ import { CopyButton, SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useWhatsappConnection } from "@/hooks/connectors/use-whatsapp-connection"
-import { connectorHandle, connectorPath, formatPairCode, usesZapi } from "@/lib/connectors/channels"
+import { connectorHandle, connectorPath, formatPairCode } from "@/lib/connectors/channels"
 import type { Connector } from "@/lib/connectors/types"
 import { useMotionPreset } from "@/lib/motion"
 import { ConnectOutcome } from "./connect-outcome"
@@ -54,8 +54,7 @@ export function WhatsappLive({
 
   const [view, setView] = useState<ConnectMethod>(method)
   const [platform, setPlatform] = useState<Platform>(detectPlatform)
-  const zapi = usesZapi(connector)
-  const showingCode = view === "code" && !zapi
+  const showingCode = view === "code"
 
   const header = useMemo(() => {
     if (phase === "connected") return { title: t("connectors.live.connectedTitle") }
@@ -143,7 +142,7 @@ export function WhatsappLive({
                   <QrCode />
                   {t("connectors.live.useQr")}
                 </Button>
-              ) : !showingCode && !zapi && (pairCode || onChooseCode) ? (
+              ) : !showingCode && (pairCode || onChooseCode) ? (
                 <Button
                   variant="link"
                   size="sm"

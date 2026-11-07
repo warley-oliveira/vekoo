@@ -6,8 +6,8 @@ import type { Campaign } from "./types"
 // A pergunta da tela, em uma frase: "está indo bem?". O veredito vem daqui, sem texto: quem traduz é
 // a tela, por `campaigns.health.<kind>`.
 //
-// Só a falha pesa. Entregue e lido chegam atrasados, e a Z-API nem avisa: julgar por eles faria uma
-// campanha saudável parecer doente.
+// Só a falha pesa. Entregue e lido chegam atrasados, e há canal que nem avisa: julgar por eles faria
+// uma campanha saudável parecer doente.
 
 export type HealthKind =
   | "draft"

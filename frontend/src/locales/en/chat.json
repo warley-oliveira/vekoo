@@ -33,7 +33,6 @@
     "channel": {
       "whatsapp": "WhatsApp",
       "whatsapp_web": "WhatsApp",
-      "zapi": "WhatsApp",
       "whatsapp_cloud": "Official WhatsApp API",
       "instagram": "Instagram",
       "instagram_direct": "Instagram",
@@ -257,16 +256,12 @@
     "delete": {
       "title_one": "Delete this message?",
       "title_other": "Delete these {{count}} messages?",
-      "hintEveryone_one": "For everyone, it also disappears from the contact's WhatsApp. It only works for what was sent less than 60 hours ago.",
-      "hintEveryone_other": "For everyone, they also disappear from the contact's WhatsApp. It only works for what was sent less than 60 hours ago.",
       "hintMe_one": "It only leaves this conversation. Whoever received it still sees it.",
       "hintMe_other": "They only leave this conversation. Whoever received them still sees them.",
       "forMe": "Delete for me",
-      "forEveryone": "Delete for everyone",
       "cancel": "Cancel",
       "done_one": "Message deleted",
       "done_other": "{{count}} messages deleted",
-      "downgraded": "This channel didn't allow deleting for everyone: the messages only left here.",
       "failed": "We couldn't delete them. Try again."
     },
     "media": {

@@ -43,7 +43,6 @@ export type ConnectionKind = "qr" | "meta" | "messenger" | "instagram" | "direct
 export function connectionKind(connector: Connector): ConnectionKind {
   switch (connector.type) {
     case "whatsapp_web":
-    case "zapi":
       return "qr"
     case "whatsapp_cloud":
       return "meta"
@@ -56,13 +55,6 @@ export function connectionKind(connector: Connector): ConnectionKind {
     default:
       return "direct"
   }
-}
-
-export function usesZapi(connector: Connector): boolean {
-  return (
-    connector.type === "zapi" ||
-    (connector.type === "whatsapp_web" && connector.providerApi === "zapi")
-  )
 }
 
 /** A ação que resolve o estado atual: o botão principal da linha e do detalhe. */
@@ -87,10 +79,9 @@ export function mainAction(connector: Connector): MainAction | null {
  * O que oferecer além do botão principal. Só com o canal ligado: desligar um WhatsApp
  * parado não faz nada no provedor e ainda abriria um aviso de desconexão.
  *
- * Z-API direta e widget têm `shutdown` e `disconnect`, mas os dois fazem a mesma coisa
- * (`logout_instance` chama `deactivate`): oferecer só um evita a pergunta "qual a
- * diferença?". O widget se liga e desliga pelo interruptor da própria tela, e pausar
- * nele é o mesmo que desligar, porque o site só conversa com o canal `active`.
+ * O widget tem `shutdown` e `disconnect`, mas os dois fazem a mesma coisa: ele se liga e
+ * desliga pelo interruptor da própria tela, e pausar nele é o mesmo que desligar, porque
+ * o site só conversa com o canal `active`.
  */
 export function availableActions(connector: Connector) {
   const on = connector.status === "active"
@@ -101,23 +92,21 @@ export function availableActions(connector: Connector) {
     shutdown: on && (connector.type === "whatsapp_web" || connector.type === "lead_chat"),
     disconnect:
       on &&
-      (connector.type === "zapi" ||
-        connector.type === "instagram_direct" ||
-        connector.type === "facebook_messenger"),
+      (connector.type === "instagram_direct" || connector.type === "facebook_messenger"),
   }
 }
 
 /**
  * Evolution e AIVA jogam fora o que chega durante a pausa, e não há como recuperar. É
  * regra do provedor, e a confirmação precisa dizer com todas as letras. Sem provedor
- * gravado, o back-end usa a AIVA: no WhatsApp do celular, só a Z-API não descarta.
+ * gravado, o back-end usa a AIVA, que também descarta.
  */
 export function pauseDiscardsMessages(connector: Connector): boolean {
-  return connector.type === "whatsapp_web" && connector.providerApi !== "zapi"
+  return connector.type === "whatsapp_web"
 }
 
 /** Enquanto não há perfil, o `name` é o nome interno da instância ou do registro. */
-const INTERNAL_NAME = /^(IWA-|IZA-|Instagram [0-9a-f]{24}$|LeadChat [0-9a-f]{24}$|[0-9a-f]{24}$)/
+const INTERNAL_NAME = /^(IWA-|Instagram [0-9a-f]{24}$|LeadChat [0-9a-f]{24}$|[0-9a-f]{24}$)/
 
 export function hasRealName(connector: Connector): boolean {
   return !INTERNAL_NAME.test(connector.name)
@@ -128,7 +117,7 @@ export function hasRealName(connector: Connector): boolean {
  * bloqueado na primeira conexão leria "Conta bloqueada: IWA-6aee...".
  */
 export function withoutInstanceName(text: string, typeLabel: string): string {
-  return text.replace(/\b(?:IWA|IZA)-[0-9a-zA-Z]+/g, typeLabel)
+  return text.replace(/\bIWA-[0-9a-zA-Z]+/g, typeLabel)
 }
 
 /** O número ou o endereço que identifica o canal para a pessoa. */
@@ -137,7 +126,6 @@ export function connectorHandle(connector: Connector): string | null {
     case "whatsapp_cloud":
       return connector.displayPhoneNumber
     case "whatsapp_web":
-    case "zapi":
       return connector.numberFormatted
     case "instagram_direct":
       return connector.instagramUsername ? `@${connector.instagramUsername}` : null
@@ -151,7 +139,6 @@ export function connectorHandle(connector: Connector): string | null {
 export function connectorPicture(connector: Connector): string | null {
   switch (connector.type) {
     case "whatsapp_web":
-    case "zapi":
     case "instagram_direct":
     case "facebook_messenger":
       return connector.profilePictureUrl
@@ -162,21 +149,13 @@ export function connectorPicture(connector: Connector): string | null {
   }
 }
 
-/** A chave de tradução do tipo, em linguagem de gente. */
-export function connectorTypeKey(connector: Connector): string {
-  if (connector.type === "whatsapp_web" && connector.providerApi === "zapi") {
-    return "whatsapp_web_zapi"
-  }
-  return connector.type
-}
-
 /** Provedor do WhatsApp que a origem mostrava como "Powered by". */
 export function isWhatsappWeb(connector: Connector): connector is WhatsappWebConnector {
   return connector.type === "whatsapp_web"
 }
 
 /**
- * O QR code chega com o prefixo `data:` na Evolution, mas não é garantido na Z-API.
+ * O QR code chega com o prefixo `data:` na Evolution, mas não é garantido em todo provedor.
  * Vazio vira `null`: a tela volta a mostrar "gerando", em vez de uma imagem quebrada.
  */
 export function qrImageSource(base64: string | null | undefined): string | null {

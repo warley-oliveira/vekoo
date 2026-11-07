@@ -76,22 +76,7 @@ export function ConnectorFacts({ connector }: { connector: Connector }) {
       items = [
         { label: t("connectors.facts.number"), value: connector.numberFormatted, copyValue: connector.numberId ?? undefined },
         { label: t("connectors.facts.profileName"), value: connector.profileName },
-        {
-          label: t("connectors.facts.provider"),
-          value: t(
-            connector.providerApi === "zapi"
-              ? "connectors.facts.providerZapi"
-              : "connectors.facts.providerDefault"
-          ),
-        },
-        created,
-      ]
-      break
-    case "zapi":
-      items = [
-        { label: t("connectors.facts.number"), value: connector.numberFormatted },
-        { label: t("connectors.facts.profileName"), value: connector.profileName },
-        { label: t("connectors.facts.instance"), value: connector.instanceId, copyValue: connector.instanceId ?? undefined },
+        { label: t("connectors.facts.provider"), value: t("connectors.facts.providerDefault") },
         created,
       ]
       break

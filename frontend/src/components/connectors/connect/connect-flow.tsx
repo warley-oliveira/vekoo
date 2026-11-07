@@ -72,7 +72,7 @@ function ExistingChannel({
   }
 }
 
-type OptionKey = "whatsapp" | "whatsapp_zapi" | "whatsapp_cloud" | "instagram" | "messenger" | "widget"
+type OptionKey = "whatsapp" | "whatsapp_cloud" | "instagram" | "messenger" | "widget"
 
 type Option = {
   key: OptionKey
@@ -82,7 +82,6 @@ type Option = {
 
 const OPTIONS: Option[] = [
   { key: "whatsapp", type: "whatsapp_web", available: true },
-  { key: "whatsapp_zapi", type: "whatsapp_web", available: true },
   { key: "whatsapp_cloud", type: "whatsapp_cloud", available: Boolean(whatsappLoginConfig) },
   { key: "instagram", type: "instagram_direct", available: Boolean(instagramAppId) },
   { key: "messenger", type: "facebook_messenger", available: Boolean(messengerLoginConfig) },
@@ -100,10 +99,7 @@ function NewChannel({ instagramLogin }: { instagramLogin?: () => InstagramLogin 
   let content: ReactNode
   switch (selected) {
     case "whatsapp":
-      content = <WhatsappPanel provider="aiva_api" stepLabel={stepLabel} onBack={back} />
-      break
-    case "whatsapp_zapi":
-      content = <WhatsappPanel provider="zapi" stepLabel={stepLabel} onBack={back} />
+      content = <WhatsappPanel stepLabel={stepLabel} onBack={back} />
       break
     case "whatsapp_cloud":
       content = <MetaPanel channel="whatsapp" stepLabel={stepLabel} onBack={back} />

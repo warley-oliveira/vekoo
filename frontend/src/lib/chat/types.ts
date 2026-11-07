@@ -163,17 +163,13 @@ export type ChatChannelEnvelope =
       reactions: MessageReaction[]
       errors?: string[]
     }
-  | { event: "messages_deleted"; messageIds: string[]; scope: "me" | "everyone" }
+  | { event: "messages_deleted"; messageIds: string[] }
   | { event: string; [key: string]: unknown }
 
 export type ChatChannelMessage = ChatMessage | ChatChannelEnvelope
 
-export type BulkDeleteScope = "me" | "everyone"
-
 export type BulkDeleteResponse = {
-  scopeApplied: BulkDeleteScope
   deletedIds: string[]
-  revokedIds: string[]
 }
 
 export type UnifiedContactChat = {

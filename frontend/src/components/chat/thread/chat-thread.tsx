@@ -126,7 +126,7 @@ const Conversation = memo(function Conversation({
         } else {
           // A tentativa nova toma o lugar da que falhou: sem isto, a conversa guardaria as duas, e
           // a falha continuaria pedindo uma ação que já foi feita. Tirar é só para quem vê.
-          void deleteMessages(chatId, [message.id], "me").catch(() => {})
+          void deleteMessages(chatId, [message.id]).catch(() => {})
           send(input)
         }
         list.current?.scrollToBottom()
@@ -214,7 +214,6 @@ const Conversation = memo(function Conversation({
         <DeleteMessagesDialog
           chatId={chatId}
           messages={deleting}
-          capabilities={capabilities}
           onClose={() => setDeleting(null)}
         />
       ) : null}

@@ -6,7 +6,6 @@ import { useConfirm } from "@/components/shared"
 import { apiPatch, apiPost } from "@/lib/api"
 import {
   connectorErrorMessage,
-  connectorTypeKey,
   hasRealName,
   pauseDiscardsMessages,
 } from "@/lib/connectors/channels"
@@ -26,7 +25,7 @@ export function useConnectorActions() {
   const confirm = useConfirm()
 
   function nameOf(connector: Connector) {
-    return hasRealName(connector) ? connector.name : t(`connectors.types.${connectorTypeKey(connector)}`)
+    return hasRealName(connector) ? connector.name : t(`connectors.types.${connector.type}`)
   }
 
   async function post(connector: Connector, action: string) {

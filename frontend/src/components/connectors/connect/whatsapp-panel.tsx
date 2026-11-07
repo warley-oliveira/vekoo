@@ -10,19 +10,15 @@ import { Button } from "@/components/ui/button"
 import { reloadConnectors, storeConnector } from "@/hooks/connectors/use-connectors"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { apiPost } from "@/lib/api"
-import { usesZapi } from "@/lib/connectors/channels"
 import type { Connector, ConnectorCreated } from "@/lib/connectors/types"
 import { isValidPhone } from "@/lib/format-phone"
 import { ConnectFooter } from "./connect-shell"
 import { useConnectStep } from "./connect-step"
 import { WhatsappLive, type ConnectMethod } from "./whatsapp-live"
 
-type Provider = "aiva_api" | "zapi"
-
 export type WhatsappPanelProps = {
-  /** Reconectando. Sem isto, cria um canal novo com este provedor. */
+  /** Reconectando. Sem isto, cria um canal novo. */
   connector?: Connector
-  provider?: Provider
   stepLabel?: string
   onBack?: () => void
 }
@@ -55,10 +51,9 @@ type Started = {
  * Conectar um WhatsApp pelo celular: escolher como e acompanhar a leitura.
  *
  * No celular o padrão é o código de pareamento: não dá para ler com a câmera um QR code
- * que está na tela do próprio aparelho. A Z-API não tem esse caminho, porque nenhum fluxo
- * do back pede o código a ela: fica só o QR, e a tela avisa que precisa de outra tela.
+ * que está na tela do próprio aparelho.
  */
-export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onBack }: WhatsappPanelProps) {
+export function WhatsappPanel({ connector, stepLabel, onBack }: WhatsappPanelProps) {
   // Já está esperando: não há o que escolher, é só voltar para o código.
   const [started, setStarted] = useState<Started | null>(() =>
     connector?.status === "pending"
@@ -87,7 +82,6 @@ export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onB
   return (
     <MethodStep
       connector={connector}
-      provider={provider}
       stepLabel={stepLabel}
       onBack={onBack}
       preferCode={startedCode}
@@ -98,14 +92,12 @@ export function WhatsappPanel({ connector, provider = "aiva_api", stepLabel, onB
 
 function MethodStep({
   connector,
-  provider,
   stepLabel,
   onBack,
   preferCode,
   onStarted,
 }: {
   connector?: Connector
-  provider: Provider
   stepLabel?: string
   onBack?: () => void
   preferCode: boolean
@@ -113,13 +105,12 @@ function MethodStep({
 }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
-  const zapi = connector ? usesZapi(connector) : provider === "zapi"
   const schema = useMemo(() => buildSchema(t), [t])
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      method: (isMobile || preferCode) && !zapi ? "code" : "qr",
+      method: isMobile || preferCode ? "code" : "qr",
       phone: connector?.type === "whatsapp_web" ? connector.numberId : null,
     },
     mode: "onBlur",
@@ -137,9 +128,10 @@ function MethodStep({
 
     // Vem `201` mesmo se o provedor recusar: o canal fica criado, `failed`, e a tela
     // seguinte mostra o motivo. Tentar de novo ativa este mesmo canal, em vez de outro.
+    // `aiva_api` é o plano padrão da tela de escolha da origem: o back-end cria sobre a Evolution.
     const { connector: created } = await apiPost<ConnectorCreated>("/connectors", {
       connectorType: "whatsapp_web",
-      providerApi: provider,
+      providerApi: "aiva_api",
       ...(phone ? { phoneNumberPairing: phone } : {}),
     })
     storeConnector(created)
@@ -157,42 +149,34 @@ function MethodStep({
 
   return (
     <form id="whatsapp-method" onSubmit={submit} noValidate className="flex flex-col gap-4">
-      {zapi ? (
-        <p className="rounded-lg bg-muted px-3 py-2 text-sm text-pretty text-muted-foreground">
-          {t(isMobile ? "connectors.method.zapiMobile" : "connectors.method.zapi")}
-        </p>
-      ) : (
-        <>
-          <RadioField
-            control={form.control}
-            name="method"
-            label={t("connectors.method.label")}
-            variant="cards"
-            options={[
-              {
-                value: "qr",
-                icon: <QrCode />,
-                label: t("connectors.method.qr"),
-                description: t(isMobile ? "connectors.method.qrHintMobile" : "connectors.method.qrHint"),
-              },
-              {
-                value: "code",
-                icon: <Smartphone />,
-                label: t("connectors.method.code"),
-                description: t("connectors.method.codeHint"),
-              },
-            ]}
-          />
-          {method === "code" ? (
-            <PhoneField
-              control={form.control}
-              name="phone"
-              label={t("connectors.method.phone")}
-              hint={t("connectors.method.phoneHint")}
-            />
-          ) : null}
-        </>
-      )}
+      <RadioField
+        control={form.control}
+        name="method"
+        label={t("connectors.method.label")}
+        variant="cards"
+        options={[
+          {
+            value: "qr",
+            icon: <QrCode />,
+            label: t("connectors.method.qr"),
+            description: t(isMobile ? "connectors.method.qrHintMobile" : "connectors.method.qrHint"),
+          },
+          {
+            value: "code",
+            icon: <Smartphone />,
+            label: t("connectors.method.code"),
+            description: t("connectors.method.codeHint"),
+          },
+        ]}
+      />
+      {method === "code" ? (
+        <PhoneField
+          control={form.control}
+          name="phone"
+          label={t("connectors.method.phone")}
+          hint={t("connectors.method.phoneHint")}
+        />
+      ) : null}
 
       <p className="text-sm text-pretty text-muted-foreground">{t("connectors.method.need")}</p>
       <FormError form={form} />
@@ -214,7 +198,7 @@ function MethodStep({
           className="pointer-coarse:h-10"
           disabled={isSubmitting}
         >
-          {t(method === "code" && !zapi ? "connectors.method.submitCode" : "connectors.method.submitQr")}
+          {t(method === "code" ? "connectors.method.submitCode" : "connectors.method.submitQr")}
         </Button>
       </ConnectFooter>
     </form>

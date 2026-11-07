@@ -42,7 +42,7 @@ import { RuleRow } from "./rule-row"
 
 /** Só canal não oficial entrega: a API oficial recusa texto livre fora da janela de 24 horas. */
 function isDeliverable(connector: Connector): boolean {
-  return (connector.type === "whatsapp_web" || connector.type === "zapi") && connector.status === "active"
+  return connector.type === "whatsapp_web" && connector.status === "active"
 }
 
 function channelLabel(connector: Connector, t: TFunction): string {

@@ -39,8 +39,6 @@
     },
     "types": {
       "whatsapp_web": "WhatsApp do celular",
-      "whatsapp_web_zapi": "WhatsApp do celular, com mais recursos",
-      "zapi": "WhatsApp do celular, com mais recursos",
       "whatsapp_cloud": "WhatsApp oficial",
       "instagram_direct": "Instagram",
       "facebook_messenger": "Messenger",
@@ -161,10 +159,6 @@
           "title": "WhatsApp do celular",
           "description": "Use o número que você já tem, como no WhatsApp Web. Você lê um QR code ou digita um código no celular."
         },
-        "whatsapp_zapi": {
-          "title": "WhatsApp do celular, com mais recursos",
-          "description": "O mesmo jeito de conectar, com mais recursos de mídia e modelos. Aqui a conexão é só por QR code."
-        },
         "whatsapp_cloud": {
           "title": "WhatsApp oficial",
           "description": "A conexão oficial da Meta, para quem tem conta comercial. Permite enviar modelos de mensagem aprovados."
@@ -196,8 +190,6 @@
       "phoneHint": "Com DDD. Se for de fora do Brasil, comece com + e o código do país.",
       "phoneInvalid": "Confira o número: faltam dígitos.",
       "need": "Deixe o celular por perto, com o WhatsApp aberto e com internet. Leva menos de um minuto.",
-      "zapi": "Nesta conexão você lê um QR code: aponte a câmera do celular para esta tela.",
-      "zapiMobile": "Nesta conexão você lê um QR code, e o celular não lê um código que está nele mesmo. Abra esta página no computador para mostrar o código.",
       "submitQr": "Gerar QR code",
       "submitCode": "Gerar código"
     },
@@ -387,8 +379,6 @@
       "profileName": "Nome no WhatsApp",
       "provider": "Conexão",
       "providerDefault": "Padrão do Vekoo",
-      "providerZapi": "Z-API",
-      "instance": "Instância",
       "numberId": "ID do número",
       "page": "Página",
       "pageId": "ID da página",

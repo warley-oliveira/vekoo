@@ -31,7 +31,7 @@ type Values = {
 }
 
 /** Só WhatsApp começa conversa pelo número: Instagram, Messenger e widget só respondem. */
-const PHONE_TYPES = new Set(["whatsapp_web", "whatsapp_cloud", "zapi"])
+const PHONE_TYPES = new Set(["whatsapp_web", "whatsapp_cloud"])
 
 /**
  * Falar com alguém que ainda não escreveu. Se a conversa com esse número já existe nesse canal, a API

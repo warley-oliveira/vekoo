@@ -7,16 +7,11 @@ import type { Contact } from "./types"
 const PHONE_CONNECTORS: readonly ConnectorType[] = [
   "whatsapp_web",
   "whatsapp_cloud",
-  "zapi",
   "lead_chat",
 ]
 
 /** Canais que começam conversa por número: são os únicos para onde uma planilha faz sentido. */
-export const IMPORTABLE_CONNECTORS: readonly ConnectorType[] = [
-  "whatsapp_web",
-  "whatsapp_cloud",
-  "zapi",
-]
+export const IMPORTABLE_CONNECTORS: readonly ConnectorType[] = ["whatsapp_web", "whatsapp_cloud"]
 
 /** O nome como a pessoa o reconhece. Sem nenhum, a tela escreve "Sem nome". */
 export function contactName(contact: Pick<Contact, "displayName" | "userName">): string | null {
