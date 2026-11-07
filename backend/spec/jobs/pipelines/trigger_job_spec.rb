@@ -230,6 +230,16 @@ RSpec.describe Pipelines::TriggerJob do
       expect(last_execution.executed_actions.map { |action| action["status"] }).to eq(%w[failure success])
       expect(card.reload.assigned_to_id).to eq(owner.id)
     end
+
+    it "com a rede fora do ar, a execução mostra a frase, sem o endereço do provedor" do
+      allow_any_instance_of(Connector::WhatsappWeb).to receive(:send_text_message)
+        .and_raise(Errno::ECONNREFUSED, "Failed to open TCP connection to evolution.interna:8080")
+
+      perform(trigger_with({ "type" => "send_whatsapp_message", "connector_id" => connector.id.to_s, "message" => "Oi" }))
+
+      expect(last_execution).to have_attributes(status: "failure", error_message: I18n.t("connectors.messages.channel_unreachable"))
+      expect(last_execution.executed_actions.first["error"]).not_to include("evolution.interna")
+    end
   end
 
   describe "send_whatsapp_template" do

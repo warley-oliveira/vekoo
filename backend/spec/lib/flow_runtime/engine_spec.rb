@@ -223,6 +223,33 @@ RSpec.describe FlowRuntime::Engine do
     end
   end
 
+  # A execução e o alerta aparecem na tela: o erro cru dizia, em inglês, o endereço do provedor.
+  describe "o canal fora do ar" do
+    let(:flow) { published_flow(organization, [ node("t", "trigger_manual"), node("a", "send_text", text: "olá") ], [ edge("t", "a") ]) }
+    let(:phrase) { I18n.t("connectors.messages.channel_unreachable") }
+
+    before do
+      stub_request(:post, /sendText/).to_raise(Errno::ECONNREFUSED.new("Failed to open TCP connection to evolution.interna:8080"))
+    end
+
+    it "para com a frase, na execução, no log do bloco e no alerta" do
+      execution = run_flow(flow, chat: chat).reload
+
+      expect(execution).to have_attributes(status: "failed", error_message: phrase)
+      expect(log_of(execution, "a")).to have_attributes(status: "error", error_message: phrase)
+
+      alert = organization.organization_alerts.active.for_origin("Flow", flow.id).take
+      expect(alert.message).to include(phrase)
+      expect(alert.message).not_to include("evolution.interna")
+    end
+
+    it "recusa do provedor continua como veio: é ela que explica o que fazer" do
+      stub_request(:post, /sendText/).to_return(status: 400, body: { message: "Instância desconectada" }.to_json)
+
+      expect(run_flow(flow, chat: chat).reload.error_message).to include("Instância desconectada")
+    end
+  end
+
   describe "o processo de scripts" do
     let(:tool) { create(:tool_function, organization: organization) }
     let(:flow) do

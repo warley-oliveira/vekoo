@@ -175,6 +175,14 @@ RSpec.describe Connectors::Creator do
       expect(connector.error_message).to include("Failed to create instance")
     end
 
+    it "com a rede fora do ar, o motivo é a frase, sem o endereço do provedor" do
+      stub_request(:post, evolution_url("/instance/create")).to_raise(Errno::ECONNREFUSED.new("Failed to open TCP connection to evolution.interna:8080"))
+
+      connector = create_connector(connector_type: "whatsapp_web").connector
+
+      expect(connector.reload).to have_attributes(status: :failed, error_message: I18n.t("connectors.messages.channel_unreachable"))
+    end
+
     context "com a flag zapi na organização" do
       before { organization.update!(features: { "zapi" => true }) }
 
