@@ -12,6 +12,7 @@ resources :campaigns, only: %i[index show create update destroy] do
   end
 
   member do
+    post :schedule
     post :launch
     post :pause
     post :resume
@@ -20,6 +21,9 @@ resources :campaigns, only: %i[index show create update destroy] do
     get :recipients
     post "import-contacts", to: "campaign_imports#contacts"
     post "import-csv-contacts", to: "campaign_imports#csv_contacts"
+    get "recipient-summary", to: "campaign_imports#recipient_summary"
+    delete :recipients, to: "campaign_imports#remove_recipients"
+    delete "recipients/:recipient_id", to: "campaign_imports#remove_recipient"
   end
 end
 

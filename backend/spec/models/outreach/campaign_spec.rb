@@ -52,11 +52,18 @@ RSpec.describe Outreach::Campaign, type: :model do
       expect(build(:outreach_campaign, organization_id: nil)).not_to be_valid
     end
 
-    it "no modo texto exige ao menos uma mensagem preenchida" do
-      campaign = build_campaign(messages: [ "", "  " ])
+    it "fora do rascunho, no modo texto exige ao menos uma mensagem preenchida" do
+      campaign = build_campaign(messages: [ "", "  " ], status_cd: "scheduled")
 
       expect(campaign).not_to be_valid
       expect(campaign.errors[:messages]).to be_present
+    end
+
+    # O assistente salva sozinho desde o primeiro toque. Quem cobra o que falta é quem lança.
+    it "o rascunho pode estar incompleto" do
+      expect(build_campaign(messages: [])).to be_valid
+      expect(build_campaign(message_type_cd: "media", messages: [])).to be_valid
+      expect(build_campaign(campaign_mode_cd: "template", messages: [])).to be_valid
     end
 
     it "limita o lote a 200" do
@@ -121,8 +128,8 @@ RSpec.describe Outreach::Campaign, type: :model do
     end
 
     context "com mídia" do
-      it "exige anexo, endereço, tipo e nome" do
-        campaign = build_campaign(message_type_cd: "media", messages: [])
+      it "fora do rascunho, exige anexo, endereço, tipo e nome" do
+        campaign = build_campaign(message_type_cd: "media", messages: [], status_cd: "scheduled")
 
         expect(campaign).not_to be_valid
         expect(campaign.errors.attribute_names).to include(:attachment_id, :media_url, :media_content_type, :media_file_name)
@@ -141,15 +148,15 @@ RSpec.describe Outreach::Campaign, type: :model do
     end
 
     context "no modo modelo" do
-      it "exige conta, número e modelo" do
-        campaign = build_campaign(campaign_mode_cd: "template", messages: [])
+      it "fora do rascunho, exige conta, número e modelo" do
+        campaign = build_campaign(campaign_mode_cd: "template", messages: [], status_cd: "scheduled")
 
         expect(campaign).not_to be_valid
         expect(campaign.errors.attribute_names).to include(:template_ids, :waba_connector_id, :phone_number_ids)
       end
 
       it "não conta número em branco" do
-        campaign = build_campaign(campaign_mode_cd: "template", messages: [], phone_number_ids: [ "", nil ])
+        campaign = build_campaign(campaign_mode_cd: "template", messages: [], phone_number_ids: [ "", nil ], status_cd: "scheduled")
 
         campaign.valid?
 

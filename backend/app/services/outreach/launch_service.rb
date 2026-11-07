@@ -34,6 +34,16 @@ module Outreach
       Result.new(warnings: warnings_for(channels), estimated_completion_at: campaign.reload.estimated_completion_at)
     end
 
+    # O que precisa estar pronto para lançar. Agendar confere o mesmo: é melhor recusar agora do que a
+    # pessoa descobrir no horário marcado.
+    #
+    # @raise [RefusedError]
+    def check!
+      validate!
+      available_channels
+      true
+    end
+
     private
 
     attr_reader :campaign, :account_id

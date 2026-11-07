@@ -395,6 +395,149 @@ RSpec.describe "Importações de campanha", type: :request do
     end
   end
 
+  describe "GET /campaigns/:id/recipient-summary" do
+    def summary(target = campaign)
+      get "/campaigns/#{target.id}/recipient-summary", headers: headers, as: :json
+      json["summary"]
+    end
+
+    it "sem ninguém, tudo zerado" do
+      expect(summary).to eq("total" => 0, "fromContacts" => 0, "imported" => 0, "variables" => [], "sample" => nil)
+    end
+
+    it "diz de onde cada um veio" do
+      create(:outreach_recipient, campaign: campaign, contact_id: "conversa-1")
+      create(:outreach_recipient, campaign: campaign)
+      create(:outreach_recipient, campaign: campaign)
+
+      expect(summary).to include("total" => 3, "fromContacts" => 1, "imported" => 2)
+    end
+
+    # Uma coluna da planilha não existe para quem veio da base de contatos: a tela avisa com a contagem.
+    it "conta quantos têm cada variável" do
+      create(:outreach_recipient, campaign: campaign, custom_variables: { "cidade" => "Curitiba", "cupom" => "A1" })
+      create(:outreach_recipient, campaign: campaign, custom_variables: { "cidade" => "Londrina" })
+      create(:outreach_recipient, campaign: campaign)
+
+      expect(summary["variables"]).to eq([ { "name" => "cidade", "count" => 2 }, { "name" => "cupom", "count" => 1 } ])
+    end
+
+    it "traz o primeiro da lista, para a prévia" do
+      create(:outreach_recipient, campaign: campaign, name: "Ana", phone: "5541999990001", custom_variables: { "cidade" => "Curitiba" })
+      create(:outreach_recipient, campaign: campaign, name: "Bia")
+
+      expect(summary["sample"]).to eq("name" => "Ana", "phone" => "5541999990001", "variables" => { "cidade" => "Curitiba" })
+    end
+
+    it "não mistura as campanhas" do
+      other = create(:outreach_campaign, organization: organization)
+      create(:outreach_recipient, campaign: other, custom_variables: { "cupom" => "A1" })
+
+      expect(summary).to include("total" => 0, "variables" => [])
+    end
+
+    it "sem sessão, responde 401" do
+      get "/campaigns/#{campaign.id}/recipient-summary", as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "sem a permissão de campanhas, responde 403" do
+      role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
+      member = create(:account, organization: organization, role: "member", access_role: role)
+
+      get "/campaigns/#{campaign.id}/recipient-summary", headers: auth_headers(member), as: :json
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "campanha de outra organização, responde 404" do
+      foreign = create(:outreach_campaign, organization: create(:organization))
+
+      get "/campaigns/#{foreign.id}/recipient-summary", headers: headers, as: :json
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "DELETE /campaigns/:id/recipients" do
+    let!(:from_contacts) { create(:outreach_recipient, campaign: campaign, contact_id: "conversa-1") }
+    let!(:imported) { create(:outreach_recipient, campaign: campaign) }
+
+    it "tira todos, e o total acompanha" do
+      delete "/campaigns/#{campaign.id}/recipients", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json).to eq("removedCount" => 2, "totalRecipients" => 0)
+      expect(campaign.recipients.count).to eq(0)
+    end
+
+    it "tira só os que vieram da base" do
+      delete "/campaigns/#{campaign.id}/recipients?origin=contacts", headers: headers, as: :json
+
+      expect(json).to eq("removedCount" => 1, "totalRecipients" => 1)
+      expect(Outreach::Recipient.where(campaign_id: campaign.id).pluck(:id)).to eq([ imported.id ])
+    end
+
+    it "tira só os importados" do
+      delete "/campaigns/#{campaign.id}/recipients?origin=imported", headers: headers, as: :json
+
+      expect(json).to eq("removedCount" => 1, "totalRecipients" => 1)
+      expect(Outreach::Recipient.where(campaign_id: campaign.id).pluck(:id)).to eq([ from_contacts.id ])
+    end
+
+    it "tira uma pessoa" do
+      delete "/campaigns/#{campaign.id}/recipients/#{imported.id}", headers: headers, as: :json
+
+      expect(json).to eq("removedCount" => 1, "totalRecipients" => 1)
+    end
+
+    it "pessoa que não está na campanha, responde 404" do
+      other = create(:outreach_recipient, campaign: create(:outreach_campaign, organization: organization))
+
+      delete "/campaigns/#{campaign.id}/recipients/#{other.id}", headers: headers, as: :json
+
+      expect(response).to have_http_status(:not_found)
+      expect(other.reload).to be_persisted
+    end
+
+    it "depois de lançada, a lista fica fechada" do
+      campaign.set(status_cd: "running")
+
+      delete "/campaigns/#{campaign.id}/recipients", headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("campaignNotImportable")
+      expect(campaign.recipients.count).to eq(2)
+    end
+
+    it "sem sessão, responde 401" do
+      delete "/campaigns/#{campaign.id}/recipients", as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "sem a permissão de campanhas, responde 403" do
+      role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
+      member = create(:account, organization: organization, role: "member", access_role: role)
+
+      delete "/campaigns/#{campaign.id}/recipients", headers: auth_headers(member), as: :json
+
+      expect(response).to have_http_status(:forbidden)
+      expect(campaign.recipients.count).to eq(2)
+    end
+
+    it "campanha de outra organização, responde 404" do
+      foreign = create(:outreach_campaign, organization: create(:organization))
+      create(:outreach_recipient, campaign: foreign)
+
+      delete "/campaigns/#{foreign.id}/recipients", headers: headers, as: :json
+
+      expect(response).to have_http_status(:not_found)
+      expect(foreign.recipients.count).to eq(1)
+    end
+  end
+
   describe "o que o assistente oferece" do
     it "lista os canais que disparam, sem segredo nenhum" do
       web = create(:connector_whatsapp_web, organization: organization, api_key: "segredo-evolution")

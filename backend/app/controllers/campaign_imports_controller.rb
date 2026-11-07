@@ -10,7 +10,7 @@ class CampaignImportsController < PlatformController
     by: -> { current_organization.id },
     with: -> { render_too_many_requests }
 
-  before_action :set_importable_campaign, only: %i[contacts csv_contacts]
+  before_action :set_importable_campaign, only: %i[contacts csv_contacts remove_recipients remove_recipient]
 
   rescue_from Outreach::RefusedError do |error|
     render_error(status: :unprocessable_content, code: error.code, field: error.field, details: error.details)
@@ -35,6 +35,31 @@ class CampaignImportsController < PlatformController
 
     result = Outreach::RecipientImporter.new(@campaign).import(rows.filter_map { |row| csv_row(row) })
     render_import(result)
+  end
+
+  # GET /campaigns/:id/recipient-summary: quantos, de onde vieram e que variáveis eles têm.
+  def recipient_summary
+    campaign = Outreach::Campaign.scoped(current_organization.id, params[:id])
+    return render_not_found unless campaign
+
+    render json: { summary: Outreach::RecipientSummary.new(campaign).as_json }
+  end
+
+  # DELETE /campaigns/:id/recipients?origin=contacts|imported. Sem `origin`, todos.
+  def remove_recipients
+    scope = @campaign.recipients
+    scope = scope.where(:contact_id.ne => nil) if params[:origin] == "contacts"
+    scope = scope.where(contact_id: nil) if params[:origin] == "imported"
+
+    render_removed(scope.delete_all)
+  end
+
+  # DELETE /campaigns/:id/recipients/:recipient_id
+  def remove_recipient
+    removed = @campaign.recipients.where(id: params[:recipient_id]).delete_all
+    return render_not_found if removed.zero?
+
+    render_removed(removed)
   end
 
   # POST /campaigns/import-google-sheet
@@ -128,6 +153,12 @@ class CampaignImportsController < PlatformController
       invalidCount: result.invalid,
       totalRecipients: @campaign.reload.total_recipients
     }
+  end
+
+  def render_removed(removed)
+    @campaign.inc(recipients_count: -removed) if removed.positive?
+
+    render json: { removedCount: removed, totalRecipients: @campaign.reload.total_recipients }
   end
 
   def render_too_many

@@ -46,7 +46,7 @@ class CampaignsController < PlatformController
     scheduled_at = parse_schedule(campaign)
     return if performed?
 
-    schedule(campaign, scheduled_at) if scheduled_at
+    mark_scheduled(campaign, scheduled_at) if scheduled_at
     return render_invalid(campaign) unless campaign.save
 
     campaign.log_activity!("created", account_id: current_account.id)
@@ -80,6 +80,25 @@ class CampaignsController < PlatformController
       warnings: result.warnings,
       estimatedCompletionAt: Outreach::CampaignSerializer.epoch_ms(result.estimated_completion_at)
     }
+  end
+
+  # O rascunho salvo pelo assistente só vira agendada aqui: `PATCH` não muda estado. Confere o mesmo
+  # que lançar, e no passado recusa, em vez de ficar em rascunho como em `POST /campaigns`: quem pede
+  # esta rota está esperando a campanha agendada.
+  def schedule
+    return render_error(status: :unprocessable_content, code: "campaignNotEditable") unless @campaign.draft?
+
+    scheduled_at = parse_schedule(@campaign)
+    return if performed?
+    return render_error(status: :unprocessable_content, code: "invalidScheduledAt", field: "scheduledAt") unless scheduled_at
+
+    Outreach::LaunchService.new(@campaign, account_id: current_account.id).check!
+    changed = @campaign.transition!(from: :draft, to: :scheduled, scheduled_at: scheduled_at, run_token: @campaign.new_run_token)
+    return render_error(status: :unprocessable_content, code: "campaignNotEditable") unless changed
+
+    enqueue_scheduled_launch(@campaign)
+    Outreach::MonitorEvents.status(@campaign)
+    render_campaign
   end
 
   def pause
@@ -240,7 +259,7 @@ class CampaignsController < PlatformController
     nil
   end
 
-  def schedule(campaign, scheduled_at)
+  def mark_scheduled(campaign, scheduled_at)
     campaign.status = :scheduled
     campaign.scheduled_at = scheduled_at
     campaign.run_token = campaign.new_run_token

@@ -66,6 +66,15 @@ RSpec.describe Outreach::ChatAudience do
       expect(phones(described_class.by_filters(organization, { q: "0002" }))).to eq([ "5531900000002" ])
     end
 
+    # A mesma busca da lista de contatos, para "todos os que aparecem aqui" trazer o que aparece.
+    it "busca como a lista de contatos: nome de exibição e telefone com máscara" do
+      chat(external_id: "5531900000001", user_name: "Ana", display_name: "Ana da Doma")
+      chat(external_id: "5531900000002", user_name: "Bia")
+
+      expect(phones(described_class.by_filters(organization, { q: "doma" }))).to eq([ "5531900000001" ])
+      expect(phones(described_class.by_filters(organization, { q: "(31) 90000-0002" }))).to eq([ "5531900000002" ])
+    end
+
     it "filtra por etiqueta" do
       tag = create(:chat_tag, organization_id: organization.id)
       chat(external_id: "5531900000001", chat_tag_ids: [ tag.id ])

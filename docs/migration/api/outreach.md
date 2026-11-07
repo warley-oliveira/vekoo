@@ -738,6 +738,20 @@ Resposta `200`, resumida:
 
 Só em rascunho. Leva destinatários e atividade. Responde `204`, sem corpo.
 
+### Rascunho incompleto
+
+O assistente salva sozinho desde o primeiro toque, e quem começa pelo público ainda não tem mensagem. Por isso **rascunho só exige `name`** e o que for preenchido precisa ser válido (canal da organização, intervalo, dias). O que falta para enviar (`messages`, anexo, modelo, conta e números) é cobrado ao lançar e ao agendar, com os mesmos códigos de sempre (`messagesRequired`, `mediaRequired`, `wabaRequired`, `phoneNumbersRequired`, `templatesRequired`, `connectorsRequired`, `noRecipients`). `POST /campaigns` com `scheduledAt` no futuro continua validando tudo, porque nasce agendada.
+
+### `POST /campaigns/:id/schedule`
+
+Agenda um rascunho. `{ "scheduledAt": 1793992855852 }`, em milissegundos ou ISO; sem fuso no texto, vale o `timezone` da campanha. Devolve `{ "campaign": ... }`, com o detalhe. Confere o mesmo que lançar, inclusive canal conectado. Cancelar continua sendo `POST /campaigns/:id/cancel`.
+
+| Erro | Quando |
+|---|---|
+| `invalidScheduledAt` | Sem data, ilegível, ou no passado. Aqui não fica em rascunho calado, como em `POST /campaigns`. |
+| `campaignNotEditable` | Não está em rascunho. É também a resposta do segundo clique. |
+| Os de lançar | O que falta. A campanha continua em rascunho. |
+
 ### `POST /campaigns/:id/launch`
 
 Sem corpo. Põe no ar e devolve a campanha, os avisos e a previsão. Canal desconectado fica de fora e vira aviso, em `warnings`: `{ code: "connectorsSkipped", connectorIds, message }`.
@@ -1155,6 +1169,41 @@ Resposta `200`:
   "invalidCount": 0,
   "totalRecipients": 51
 }
+```
+
+### `GET /campaigns/:id/recipient-summary`
+
+O resumo do público: quantos, de onde vieram e que variáveis têm. **É o que faz o aviso de variável inexistente funcionar num rascunho retomado**, em que a tela não viu a importação. `variables` diz quantas pessoas têm cada uma, porque a coluna de uma planilha não existe para quem veio da base. `sample` é o primeiro da lista, para a prévia. Até 100 variáveis.
+
+Resposta `200`:
+
+```json
+{
+  "summary": {
+    "total": 3,
+    "fromContacts": 1,
+    "imported": 2,
+    "variables": [
+      { "name": "cidade", "count": 2 },
+      { "name": "cupom", "count": 1 }
+    ],
+    "sample": {
+      "name": "Ana",
+      "phone": "5541999990001",
+      "variables": { "cidade": "Curitiba", "cupom": "A1" }
+    }
+  }
+}
+```
+
+### `DELETE /campaigns/:id/recipients` e `DELETE /campaigns/:id/recipients/:recipientId`
+
+Tira do público, em rascunho ou agendada (`campaignNotImportable` depois de lançada). Sem parâmetro, todos; `?origin=contacts` só os que vieram da base; `?origin=imported` só os de arquivo, planilha ou busca. Pessoa que não está na campanha responde `404`.
+
+Resposta `200`:
+
+```json
+{ "removedCount": 1, "totalRecipients": 2 }
 ```
 
 ### `POST /campaigns/import-google-sheet`

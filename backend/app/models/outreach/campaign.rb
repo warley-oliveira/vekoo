@@ -98,10 +98,13 @@ module Outreach
     validates :send_start_hour, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 23 }
     validates :send_end_hour, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 24 }
     validate :enums_are_known
-    validate :messages_present
-    validate :media_attachment_present
+    # O que falta para enviar só é cobrado fora do rascunho: o assistente salva sozinho desde o primeiro
+    # toque, e quem escolhe o público antes de escrever a mensagem não pode perder o trabalho. Lançar e
+    # agendar conferem tudo em `LaunchService#check!`.
+    validate :messages_present, unless: :draft?
+    validate :media_attachment_present, unless: :draft?
     validate :media_content_type_supported
-    validate :template_mode_present
+    validate :template_mode_present, unless: :draft?
     validate :buffer_max_gte_min
     validate :send_days_are_valid
     validate :timezone_is_known

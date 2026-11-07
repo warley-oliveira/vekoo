@@ -19,10 +19,9 @@ module Outreach
     end
 
     def self.apply_filters(scope, filters)
-      if filters[:q].present?
-        pattern = /#{Regexp.escape(filters[:q].to_s)}/i
-        scope = scope.any_of({ external_id: pattern }, { user_name: pattern })
-      end
+      # A mesma busca da lista de contatos: "todos os que aparecem aqui" não pode trazer outra coisa.
+      search = Chats::SearchTerm.clause(filters[:q])
+      scope = scope.where("$and" => [ search ]) if search
 
       tag_ids = Array(filters[:tag_ids]).filter_map(&CONVERTIBLE_ID)
       scope = scope.where(:chat_tag_ids.in => tag_ids) if tag_ids.any?

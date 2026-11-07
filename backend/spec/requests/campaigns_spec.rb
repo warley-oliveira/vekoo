@@ -463,7 +463,6 @@ RSpec.describe "Campanhas", type: :request do
       end
 
       it("sem nome") { expect_invalid("name", name: "") }
-      it("sem mensagem") { expect_invalid("messages", messages: [ "  " ]) }
       it("intervalo invertido") { expect_invalid("bufferMaxSeconds", intervalMin: 10, intervalMax: 5) }
       it("intervalo zerado") { expect_invalid("bufferMinSeconds", intervalMin: 0) }
       it("limite diário zerado") { expect_invalid("dailyLimitPerConnector", dailyLimitPerConnector: 0) }
@@ -488,9 +487,55 @@ RSpec.describe "Campanhas", type: :request do
       end
 
       it "a mensagem de erro vem traduzida" do
-        post "/campaigns", params: payload(messages: []), headers: headers.merge("Accept-Language" => "en"), as: :json
+        post "/campaigns", params: payload(messages: [], scheduledAt: 1.day.from_now.iso8601), headers: headers.merge("Accept-Language" => "en"), as: :json
 
         expect(json.dig("error", "message")).to eq("Messages need at least one message")
+      end
+
+      it "agendada sem mensagem é recusada" do
+        expect_invalid("messages", messages: [ "  " ], scheduledAt: 1.day.from_now.iso8601)
+      end
+    end
+
+    # O assistente salva sozinho desde o primeiro toque: quem começa pelo público não tem mensagem ainda.
+    describe "rascunho incompleto" do
+      it "aceita sem mensagem nem canal" do
+        post "/campaigns", params: { name: "Rascunho" }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json["campaign"]).to include("status" => "draft", "messages" => [], "connectorIds" => [])
+      end
+
+      it "aceita o modo de modelo sem modelo escolhido" do
+        post "/campaigns", params: { name: "Rascunho", campaignMode: "template" }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json.dig("campaign", "campaignMode")).to eq("template")
+      end
+
+      it "aceita a mídia sem anexo escolhido" do
+        post "/campaigns", params: { name: "Rascunho", messageType: "media" }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json.dig("campaign", "messageType")).to eq("media")
+      end
+
+      it "continua exigindo o nome" do
+        post "/campaigns", params: { name: "" }, headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json.dig("error", "field")).to eq("name")
+      end
+
+      it "lançar continua recusando o que falta" do
+        campaign = create(:outreach_campaign, organization: organization, messages: [], connector_ids: [ connector.id.to_s ])
+        create(:outreach_recipient, campaign: campaign)
+
+        post "/campaigns/#{campaign.id}/launch", headers: headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json["error"]).to include("code" => "messagesRequired", "field" => "messages")
+        expect(campaign.reload.status_cd).to eq("draft")
       end
     end
 
@@ -521,8 +566,8 @@ RSpec.describe "Campanhas", type: :request do
         expect(json["error"]).to include("code" => "mediaNotFound", "field" => "attachmentId")
       end
 
-      it "sem anexo, a validação recusa" do
-        post "/campaigns", params: payload(messageType: "media", messages: []), headers: headers, as: :json
+      it "agendada sem anexo, a validação recusa" do
+        post "/campaigns", params: payload(messageType: "media", messages: [], scheduledAt: 1.day.from_now.iso8601), headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json.dig("error", "field")).to eq("attachmentId")
@@ -720,6 +765,25 @@ RSpec.describe "Campanhas", type: :request do
       expect(json["error"]).to include("code" => "connectorsRequired", "field" => "connectorIds")
     end
 
+    it "rascunho de modelo sem modelo escolhido, recusa" do
+      waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
+      draft = create(:outreach_campaign, organization: organization, campaign_mode_cd: "template", messages: [], waba_connector_id: waba.id.to_s, phone_number_ids: [ "111" ])
+      create(:outreach_recipient, campaign: draft)
+
+      post "/campaigns/#{draft.id}/launch", headers: headers, as: :json
+
+      expect(json["error"]).to include("code" => "templatesRequired", "field" => "templateIds")
+    end
+
+    it "rascunho de mídia sem anexo, recusa" do
+      draft = campaign_of(message_type_cd: "media", messages: [])
+      create(:outreach_recipient, campaign: draft)
+
+      post "/campaigns/#{draft.id}/launch", headers: headers, as: :json
+
+      expect(json["error"]).to include("code" => "mediaRequired", "field" => "attachmentId")
+    end
+
     it "com todos os canais desconectados, recusa, e a campanha fica como está" do
       connector.set(status_cd: "closed")
 
@@ -795,6 +859,110 @@ RSpec.describe "Campanhas", type: :request do
       post "/campaigns/#{empty.id}/launch", headers: headers.merge("Accept-Language" => "en"), as: :json
 
       expect(json.dig("error", "message")).to eq("Add at least one contact before launching.")
+    end
+  end
+
+  describe "POST /campaigns/:id/schedule" do
+    let(:campaign) { campaign_of }
+    let(:scheduled_at) { 1.day.from_now.change(usec: 0) }
+
+    before { create(:outreach_recipient, campaign: campaign) }
+
+    def schedule(at = scheduled_at.to_i * 1000, target: campaign)
+      post "/campaigns/#{target.id}/schedule", params: { scheduledAt: at }, headers: headers, as: :json
+    end
+
+    it "agenda o rascunho, com o job marcado para a hora e a atividade registrada" do
+      expect { schedule }.to have_enqueued_job(Outreach::ScheduledLaunchJob).at(scheduled_at).on_queue("campaigns")
+
+      expect(response).to have_http_status(:ok)
+      expect(json["campaign"]).to include("status" => "scheduled", "scheduledAt" => scheduled_at.to_i * 1000)
+      expect(campaign.reload.run_token).to be_present
+      expect(campaign.activity_logs.pluck(:action)).to include("scheduled")
+    end
+
+    it "sem fuso no texto, vale o da campanha" do
+      schedule("2030-01-15T10:00")
+
+      expect(json.dig("campaign", "scheduledAt")).to eq(ActiveSupport::TimeZone["America/Sao_Paulo"].local(2030, 1, 15, 10).to_i * 1000)
+    end
+
+    it "no passado, recusa e continua em rascunho" do
+      schedule(1.hour.ago.to_i * 1000)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["error"]).to include("code" => "invalidScheduledAt", "field" => "scheduledAt")
+      expect(campaign.reload.status_cd).to eq("draft")
+    end
+
+    it "sem a data, recusa" do
+      post "/campaigns/#{campaign.id}/schedule", headers: headers, as: :json
+
+      expect(json["error"]).to include("code" => "invalidScheduledAt", "field" => "scheduledAt")
+    end
+
+    it "com o que falta para lançar, recusa antes da hora" do
+      campaign.set(messages: [])
+
+      schedule
+
+      expect(json["error"]).to include("code" => "messagesRequired", "field" => "messages")
+      expect(campaign.reload.status_cd).to eq("draft")
+    end
+
+    it "sem destinatários, recusa" do
+      schedule(target: campaign_of)
+
+      expect(json.dig("error", "code")).to eq("noRecipients")
+    end
+
+    it "com todos os canais desconectados, recusa" do
+      connector.set(status_cd: "closed")
+
+      schedule
+
+      expect(json["error"]).to include("code" => "connectorsDisconnected", "field" => "connectorIds")
+    end
+
+    it "segundo clique não agenda duas vezes" do
+      schedule
+      expect { schedule }.not_to have_enqueued_job(Outreach::ScheduledLaunchJob)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("campaignNotEditable")
+    end
+
+    it "cancelar depois faz o job morrer ao executar" do
+      schedule
+      token = campaign.reload.run_token
+
+      post "/campaigns/#{campaign.id}/cancel", headers: headers, as: :json
+
+      Outreach::ScheduledLaunchJob.new.perform(campaign.id.to_s, campaign.organization_id, token)
+      expect(campaign.reload.status_cd).to eq("cancelled")
+    end
+
+    it "sem sessão, responde 401" do
+      post "/campaigns/#{campaign.id}/schedule", params: { scheduledAt: scheduled_at.to_i * 1000 }, as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "sem a permissão de campanhas, responde 403" do
+      role = create(:access_role, organization: organization, permissions: AccessRole::BLANK_PERMISSIONS)
+      member = create(:account, organization: organization, role: "member", access_role: role)
+
+      post "/campaigns/#{campaign.id}/schedule", params: { scheduledAt: scheduled_at.to_i * 1000 }, headers: auth_headers(member), as: :json
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "campanha de outra organização, responde 404" do
+      foreign = create(:outreach_campaign, organization: create(:organization))
+
+      schedule(target: foreign)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 
