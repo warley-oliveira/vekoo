@@ -15,7 +15,7 @@ import { toast } from "sonner"
 import {
   DragHandle,
   FormActions,
-  SidePanel,
+  ResponsiveDialog,
   SortableArea,
   SwitchField,
   TextField,
@@ -130,7 +130,7 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
   )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -199,7 +199,7 @@ export function TriggerPanel({ trigger, seed, open, onOpenChange, onDelete }: Tr
           </div>
         </div>
       </FormProvider>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

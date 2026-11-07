@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { CodeEditor, type CodeEditorInstance } from "@/components/code-editor"
-import { Callout, CopyButton, SidePanel } from "@/components/shared"
+import { Callout, CopyButton, ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { TRIGGER_PARAMS_DEFINITION } from "@/lib/pipelines-admin/script-globals"
 import { SCRIPT_REFERENCE, SCRIPT_SNIPPETS } from "@/lib/pipelines-admin/script-reference"
@@ -70,11 +70,10 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
   const tooLong = value.length > MAX_CODE_LENGTH
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
-      size="xl"
-      className="data-[side=right]:sm:max-w-[min(76rem,100vw)]"
+      size="full"
       title={t("pipelinesAdmin.code.panelTitle")}
       description={title}
       bodyClassName="flex min-h-0 flex-col overflow-hidden p-0"
@@ -110,7 +109,7 @@ export default function CodeEditorPanel({ open, onOpenChange, value, onChange, t
 
         <CodeReference onInsert={insert} onInsertSnippet={insertSnippet} />
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

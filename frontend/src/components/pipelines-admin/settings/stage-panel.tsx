@@ -11,7 +11,7 @@ import {
   ColorField,
   FormActions,
   NumberField,
-  SidePanel,
+  ResponsiveDialog,
   TagChip,
   TextField,
   UnsavedChangesDialog,
@@ -159,7 +159,7 @@ export function StagePanel({
   const color = form.watch("color")
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -261,6 +261,6 @@ export function StagePanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
