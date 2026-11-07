@@ -273,17 +273,19 @@ export const BookingsSection = memo(function BookingsSection({ chatId }: { chatI
       title={t("chatDetails.bookings.title")}
       count={all.length}
       action={
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label={t("chatDetails.bookings.schedule")}
-          title={t("chatDetails.bookings.schedule")}
-          className="text-muted-foreground pointer-coarse:size-10"
-          nativeButton={false}
-          render={scheduleLink}
-        >
-          <Plus />
-        </Button>
+        all.length > 0 ? (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("chatDetails.bookings.schedule")}
+            title={t("chatDetails.bookings.schedule")}
+            className="text-muted-foreground pointer-coarse:size-10"
+            nativeButton={false}
+            render={scheduleLink}
+          >
+            <Plus />
+          </Button>
+        ) : undefined
       }
     >
       {error ? (
