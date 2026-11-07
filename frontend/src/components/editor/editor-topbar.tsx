@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence } from "motion/react"
 import {
@@ -28,8 +28,14 @@ import { cn } from "@/lib/utils"
 export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
   const { t } = useTranslation()
   const { state, dispatch, saveState, retrySave, folderId } = useEditor()
+  const location = useLocation()
   const [previewing, setPreviewing] = useState(false)
-  const [exporting, setExporting] = useState(false)
+  // Vindo de "Exportar", no menu do carrossel. Só ao abrir: recarregar não reabre o diálogo.
+  const [exporting, setExporting] = useState(() => {
+    if (!(location.state as { export?: boolean } | null)?.export) return false
+    window.history.replaceState({}, "")
+    return true
+  })
 
   const backTo = folderId ? `/folders/${folderId}` : "/carousels"
   const active = activeCard(state)

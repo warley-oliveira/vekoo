@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from "react"
+import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
   Copy,
@@ -52,6 +53,7 @@ export function CarouselActionsMenu({
   const { t } = useTranslation()
   const { folders } = useFolders()
   const actions = useCarouselMutations()
+  const navigate = useNavigate()
   const [renameOpen, setRenameOpen] = useState(false)
 
   // O nome da cópia é escolha do servidor (`carousels.copy_suffix`, no idioma
@@ -147,7 +149,8 @@ export function CarouselActionsMenu({
           </DropdownMenuSub>
           <DropdownMenuItem
             onClick={() =>
-              toast(t("carousels.actions.exportToast"))
+              // Quem desenha os cards para exportar é o editor: ele abre direto no diálogo.
+              navigate(`/carousels/${carousel.id}/edit`, { state: { export: true } })
             }
           >
             <Download /> {t("common.export")}

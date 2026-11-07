@@ -45,8 +45,8 @@ export function useCreateCarousel() {
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
 
-  const run = useCallback(
-    async (idea: string, folderId: string | null = null) => {
+  const start = useCallback(
+    async (idea: string, folderId: string | null) => {
       setCreating(true)
       try {
         const carousel = await create({
@@ -56,7 +56,7 @@ export function useCreateCarousel() {
           cards: [emptyCard(newId("card"))],
           folderId,
         })
-        navigate(`/carousels/${carousel.id}/edit`, { state: { generate: idea } })
+        navigate(`/carousels/${carousel.id}/edit`, idea ? { state: { generate: idea } } : undefined)
         return carousel
       } catch {
         toast.error(i18n.t("carousels.actions.createFailed"))
@@ -68,7 +68,14 @@ export function useCreateCarousel() {
     [create, navigate]
   )
 
-  return { create: run, creating }
+  const run = useCallback(
+    (idea: string, folderId: string | null = null) => start(idea, folderId),
+    [start]
+  )
+  /** Sem ideia nenhuma: o editor abre com um card vazio, sem gerar nada e sem gastar crédito. */
+  const blank = useCallback((folderId: string | null = null) => start("", folderId), [start])
+
+  return { create: run, createBlank: blank, creating }
 }
 
 type CreateCarouselDialogProps = {

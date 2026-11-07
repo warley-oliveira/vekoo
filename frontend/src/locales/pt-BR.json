@@ -20,7 +20,6 @@
   },
   "shell": {
     "createBlank": "Começar em branco",
-    "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
     "createCarousel": "Criar carrossel"
   },
   "notifications": {
@@ -49,7 +48,7 @@
     "aria": "{{remaining}} de {{total}} créditos",
     "used": "Créditos usados",
     "upgrade": "Melhorar plano",
-    "upgradeToast": "Planos e upgrade chegam em uma próxima etapa.",
+    "upgradeToast": "A troca de plano chega em breve.",
     "loadFailed": "Não deu para carregar seus créditos."
   },
   "folders": {
@@ -138,7 +137,6 @@
       "removedFromFolderToast": "Carrossel tirado da pasta.",
       "trashedToast": "“{{title}}” foi para a lixeira.",
       "trashedDescription": "Itens na lixeira somem após 30 dias.",
-      "exportToast": "A exportação chega mais adiante nesta etapa.",
       "createFailed": "Não deu para criar o carrossel. Tente de novo.",
       "renameFailed": "Não deu para renomear. Tente de novo.",
       "duplicateFailed": "Não deu para duplicar. Tente de novo.",
@@ -472,7 +470,7 @@
       "doneToast_one": "1 imagem baixada.",
       "doneToast_other": "{{count}} imagens baixadas.",
       "failedToast": "Não foi possível gerar as imagens.",
-      "note": "ZIP e PDF chegam com o servidor."
+      "note": "ZIP e PDF chegam em breve."
     },
     "ai": {
       "trigger": "Gerar",
@@ -645,7 +643,7 @@
       "passwordHint": "Pelo menos 8 caracteres.",
       "organizationHint": "Aparece no menu do app. Depois você poderá convidar pessoas para ela.",
       "organizationSuffix": "Conteúdo",
-      "ownerNote": "Você entra como dono da conta. Convidar o time chega em uma próxima etapa.",
+      "ownerNote": "Você entra como dono da conta. Depois, é só adicionar a equipe em Configurações.",
       "submit": "Criar conta",
       "submitting": "Criando conta…",
       "createdToast": "Conta criada! {{organization}} é toda sua.",

@@ -20,7 +20,6 @@
   },
   "shell": {
     "createBlank": "Start from scratch",
-    "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
     "createCarousel": "Create carousel"
   },
   "notifications": {
@@ -49,7 +48,7 @@
     "aria": "{{remaining}} of {{total}} credits",
     "used": "Credits used",
     "upgrade": "Upgrade plan",
-    "upgradeToast": "Plans and upgrades arrive in a next stage.",
+    "upgradeToast": "Changing plans is coming soon.",
     "loadFailed": "We couldn't load your credits."
   },
   "folders": {
@@ -138,7 +137,6 @@
       "removedFromFolderToast": "Carousel removed from the folder.",
       "trashedToast": "“{{title}}” moved to the trash.",
       "trashedDescription": "Items in the trash disappear after 30 days.",
-      "exportToast": "Exporting arrives later in this stage.",
       "createFailed": "We couldn't create the carousel. Try again.",
       "renameFailed": "We couldn't rename it. Try again.",
       "duplicateFailed": "We couldn't duplicate it. Try again.",
@@ -472,7 +470,7 @@
       "doneToast_one": "1 image downloaded.",
       "doneToast_other": "{{count}} images downloaded.",
       "failedToast": "The images could not be generated.",
-      "note": "ZIP and PDF arrive with the server."
+      "note": "ZIP and PDF are coming soon."
     },
     "ai": {
       "trigger": "Generate",
@@ -645,7 +643,7 @@
       "passwordHint": "At least 8 characters.",
       "organizationHint": "Shows up in the app menu. Later you'll be able to invite people to it.",
       "organizationSuffix": "Studio",
-      "ownerNote": "You join as the account owner. Inviting your team arrives in a next stage.",
+      "ownerNote": "You join as the account owner. You can add your team later in Settings.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "createdToast": "Account created! {{organization}} is all yours.",

@@ -13,7 +13,6 @@ import {
   SquarePen,
   Star,
 } from "lucide-react"
-import { toast } from "sonner"
 
 import { useShell } from "@/components/app-shell"
 import { CarouselGridCard } from "@/components/carousel-grid-card"
@@ -57,15 +56,18 @@ const RECENT_WINDOW = 7 * 24 * 3_600_000
 function CreateActions() {
   const { t } = useTranslation()
   const { openCreate } = useShell()
+  const { folderId } = useParams()
+  const { createBlank, creating } = useCreateCarousel()
 
   return (
     <>
       <Button
         variant="outline"
         className="hidden sm:inline-flex"
-        onClick={() => toast(t("shell.createBlankToast"))}
+        disabled={creating}
+        onClick={() => void createBlank(folderId ?? null)}
       >
-        <SquarePen /> {t("shell.createBlank")}
+        {creating ? <Loader2 className="animate-spin" /> : <SquarePen />} {t("shell.createBlank")}
       </Button>
       <Button onClick={openCreate}>
         <Plus /> {t("shell.createCarousel")}
