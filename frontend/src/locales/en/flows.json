@@ -1584,7 +1584,7 @@
       "waitingTimeTitle": "Waiting for time to pass",
       "waitingTimeHint": "The flow moves on by itself when the wait is over. If a team member takes over, it's canceled.",
       "seeInFlow": "See in the flow",
-      "openChat": "Open the conversation",
+      "openChat": "Open conversation",
       "noSteps": "No block has run yet.",
       "rawDetails": "See details",
       "status": {

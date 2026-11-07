@@ -1,7 +1,7 @@
 {
   "customDashboards": {
     "tab": {
-      "create": "Criar",
+      "create": "Criar painel",
       "loading": "Painel",
       "unsaved": "Alterações não salvas",
       "notFound": "Este painel não existe mais",

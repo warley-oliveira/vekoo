@@ -1584,7 +1584,7 @@
       "waitingTimeTitle": "Esperando o tempo passar",
       "waitingTimeHint": "O fluxo segue sozinho no fim da espera. Se alguém da equipe assumir, ela é cancelada.",
       "seeInFlow": "Ver no fluxo",
-      "openChat": "Abrir a conversa",
+      "openChat": "Abrir conversa",
       "noSteps": "Nenhum bloco rodou ainda.",
       "rawDetails": "Ver detalhes",
       "status": {

@@ -1,7 +1,7 @@
 {
   "customDashboards": {
     "tab": {
-      "create": "Create",
+      "create": "Create dashboard",
       "loading": "Dashboard",
       "unsaved": "Unsaved changes",
       "notFound": "This dashboard no longer exists",

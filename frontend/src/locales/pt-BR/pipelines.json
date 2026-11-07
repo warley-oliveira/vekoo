@@ -36,7 +36,7 @@
       "pageDescription": "Cada pipeline é um caminho que os cards percorrem, do primeiro contato ao fim.",
       "new": "Criar pipeline",
       "create": "Criar pipeline",
-      "createFirst": "Criar o primeiro pipeline",
+      "createFirst": "Criar primeiro pipeline",
       "createTitle": "Novo pipeline",
       "createHint": "Comece em branco ou use um modelo, que já traz as etapas e os campos.",
       "created": "Pipeline criado",
