@@ -3,6 +3,8 @@ require "rails_helper"
 # A Z-API com instância própria: o cliente cola o id e o token dele. O provider `zapi` do
 # WhatsApp Web, com instância criada por nós, está em whatsapp_web/providers/zapi_spec.rb.
 RSpec.describe Connector::Zapi do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }

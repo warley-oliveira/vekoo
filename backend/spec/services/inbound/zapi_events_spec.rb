@@ -4,6 +4,8 @@ require "rails_helper"
 # e o cartão de anúncio, chamando método privado do controlador; aqui o evento inteiro passa
 # pelo banco de verdade, e cobre o que lá só existia no código.
 RSpec.describe Inbound::ZapiEvents do
+  before { stub_every_host_as_public }
+
   include ActiveJob::TestHelper
   include ActiveSupport::Testing::TimeHelpers
   include InboundHelpers

@@ -3,6 +3,8 @@ require "rails_helper"
 # WhatsApp Cloud sem dublê do SDK: `whatsapp_sdk` fala com graph.facebook.com de verdade, e o
 # WebMock responde. Templates estão em whatsapp_cloud_templates_spec.rb.
 RSpec.describe Connector::WhatsappCloud do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }

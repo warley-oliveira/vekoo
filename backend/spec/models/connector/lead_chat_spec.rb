@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Connector::LeadChat do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }

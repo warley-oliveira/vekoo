@@ -62,8 +62,8 @@ class Connector::LeadChat < Connector::Base
 
   def retrieve_audio_message(file_url)
     file_path = Rails.root.join('tmp', "#{SecureRandom.hex}.mp3")
-    response = HTTParty.get(file_url)
-    raise "LeadChat audio download failed (HTTP #{response.code})" unless response.success?
+    response = Media::RemoteFile.get(file_url)
+    raise "LeadChat audio download failed (HTTP #{response.status})" unless response.success?
 
     File.binwrite(file_path, response.body)
     file_path

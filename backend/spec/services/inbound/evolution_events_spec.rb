@@ -4,6 +4,8 @@ require "rails_helper"
 # `Api::V1::WapiController`; aqui chegam por webhook e rodam no job. As specs de lá eram quase
 # todas dublê: estas passam pelo banco de verdade e só o provedor é stub.
 RSpec.describe Inbound::EvolutionEvents do
+  before { stub_every_host_as_public }
+
   include ActiveJob::TestHelper
   include ActiveSupport::Testing::TimeHelpers
   include InboundHelpers

@@ -2,6 +2,8 @@ require "rails_helper"
 
 # O que muda da AIVA (v1) para a Evolution v2: caminhos e formato dos corpos.
 RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
   include ActiveSupport::Testing::TimeHelpers
 

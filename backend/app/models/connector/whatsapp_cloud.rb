@@ -694,8 +694,8 @@ class Connector::WhatsappCloud < Connector::Base
   def upload_media_for_template(file_url)
     Rails.logger.info "[upload_media_for_template] Starting upload for URL: #{file_url}"
 
-    # Download the file from URL
-    file_response = HTTParty.get(file_url, follow_redirects: true, timeout: 60)
+    # Download the file from URL. A URL vem de quem cria o modelo.
+    file_response = Media::RemoteFile.get(file_url)
     unless file_response.success?
       Rails.logger.error "[upload_media_for_template] Failed to download file from URL: #{file_url}"
       return nil
@@ -703,7 +703,7 @@ class Connector::WhatsappCloud < Connector::Base
 
     file_content = file_response.body
     file_length = file_content.bytesize
-    content_type = file_response.headers['content-type'] || detect_content_type(file_url)
+    content_type = file_response.content_type.presence || detect_content_type(file_url)
     file_name = extract_file_name(file_url, content_type)
 
     Rails.logger.info "[upload_media_for_template] File size: #{file_length}, Type: #{content_type}, Name: #{file_name}"

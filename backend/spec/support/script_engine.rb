@@ -8,6 +8,11 @@ module ScriptEngineHelpers
     hosts.each { |host| allow(SafeHttp).to receive(:resolve).with(host).and_return([ ip ]) }
   end
 
+  # Para as specs de mídia recebida: o host é detalhe delas, e sem isto dependeriam de DNS de verdade.
+  def stub_every_host_as_public(ip: PUBLIC_IP)
+    allow(SafeHttp).to receive(:resolve).and_return([ ip ])
+  end
+
   def script_session(organization: nil, chat: nil)
     MiniRacerEngine::SessionContext.new.tap do |context|
       context.set(:organization, organization)
