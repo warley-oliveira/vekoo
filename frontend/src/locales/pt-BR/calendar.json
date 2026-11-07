@@ -264,17 +264,28 @@
         "noAttributes": "Nenhum dado preenchido.",
         "none": {
           "title": "Sem contato neste agendamento",
-          "description": "Em Editar, escolha um contato para ligar a conversa e os lembretes."
-        }
+          "description": "Escolha um contato para ligar a conversa e os lembretes a este agendamento.",
+          "canceled": "Este agendamento foi marcado sem contato.",
+          "action": "Escolher contato"
+        },
+        "phone": "Telefone"
       },
       "messages": {
         "empty": {
           "title": "Sem mensagens por aqui",
-          "description": "As mensagens de texto desta conversa aparecem nesta aba."
+          "description": "Quando a conversa tiver mensagens, as últimas aparecem aqui."
         },
         "outOfReach": {
           "title": "Você não vê esta conversa",
           "description": "Ela está fora do que o seu acesso ao chat alcança."
+        },
+        "loading": "Carregando mensagens",
+        "kinds": {
+          "audio": "Áudio",
+          "image": "Foto",
+          "video": "Vídeo",
+          "sticker": "Figurinha",
+          "document": "Arquivo"
         }
       },
       "errors": {
@@ -288,11 +299,10 @@
       },
       "summary": {
         "when": "Quando",
-        "zone": "No fuso {{zone}}",
-        "noContact": "Sem contato. Em Editar, escolha um para ligar a conversa e os lembretes."
+        "zone": "No fuso {{zone}}"
       },
       "menu": "Mais ações do agendamento",
-      "context": "Contato, mensagens e histórico"
+      "context": "Contato e mensagens"
     },
     "history": {
       "automation": "Automação",

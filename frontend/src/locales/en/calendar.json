@@ -264,17 +264,28 @@
         "noAttributes": "No details filled in.",
         "none": {
           "title": "No contact on this booking",
-          "description": "Pick a contact in Edit to link the chat and the reminders."
-        }
+          "description": "Pick a contact to link the conversation and the reminders to this booking.",
+          "canceled": "This booking was made without a contact.",
+          "action": "Pick a contact"
+        },
+        "phone": "Phone"
       },
       "messages": {
         "empty": {
           "title": "No messages here",
-          "description": "Text messages from this conversation show up in this tab."
+          "description": "Once the conversation has messages, the latest ones show up here."
         },
         "outOfReach": {
           "title": "You can't see this conversation",
           "description": "It's outside what your chat access reaches."
+        },
+        "loading": "Loading messages",
+        "kinds": {
+          "audio": "Audio",
+          "image": "Photo",
+          "video": "Video",
+          "sticker": "Sticker",
+          "document": "File"
         }
       },
       "errors": {
@@ -288,11 +299,10 @@
       },
       "summary": {
         "when": "When",
-        "zone": "In {{zone}}",
-        "noContact": "No contact. Pick one in Edit to link the chat and the reminders."
+        "zone": "In {{zone}}"
       },
       "menu": "More booking actions",
-      "context": "Contact, messages and history"
+      "context": "Contact and messages"
     },
     "history": {
       "automation": "Automation",

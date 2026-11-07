@@ -414,6 +414,9 @@ export type PreviewMessage = {
   role: "user" | "assistant"
   content: string
   createdAt: number
+  /** Como no chat: áudio sem transcrição guarda só "-" em `content`, e o tipo diz o que é. */
+  typeElement?: "text" | "image" | "audio" | "media" | string
+  mediaType?: string | null
 }
 
 /* ---------- conversa (busca) ---------- */

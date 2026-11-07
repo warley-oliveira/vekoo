@@ -41,14 +41,19 @@ export function AttendanceSection({
 
   return (
     <section aria-labelledby="attendance-title" className="flex flex-col gap-2">
-      <h3 id="attendance-title" className="text-sm font-medium">
-        {t("calendar.attendance.title")}
-      </h3>
-      <AttendanceToggle
-        event={event}
-        size="labeled"
-        onToggle={(booking, status) => void actions.toggleAttendance(booking, status)}
-      />
+      {/* Uma linha: a pergunta à esquerda, a resposta à direita. Dois botões de largura total
+          disputavam o olhar com a data, que é o que a pessoa veio ver. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <h3 id="attendance-title" className="text-sm text-muted-foreground">
+          {t("calendar.attendance.title")}
+        </h3>
+        <AttendanceToggle
+          event={event}
+          size="labeled"
+          fill={false}
+          onToggle={(booking, status) => void actions.toggleAttendance(booking, status)}
+        />
+      </div>
 
       {event.enrolledSequenceId ? (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg bg-muted/60 px-3 py-2 text-sm">

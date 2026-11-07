@@ -1,14 +1,11 @@
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Ban, CalendarDays, Clock, Globe, MessageCircle, NotebookText, ClipboardList, User } from "lucide-react"
-import { Link } from "react-router"
+import { Ban, CalendarDays, ClipboardList, Clock, Globe, NotebookText, User } from "lucide-react"
 
 import { Callout, UserAvatar } from "@/components/shared"
 import type { BookingActions } from "@/hooks/calendar/use-booking-actions"
-import { useCan } from "@/hooks/use-can"
 import { apiAssetUrl } from "@/lib/api"
 import { relativeDayLabel, todayKey } from "@/lib/calendar/calendar-view"
-import { contactLine } from "@/lib/calendar/contact"
 import { isAllDayEvent, isCanceled } from "@/lib/calendar/event-status"
 import {
   dayKeyOf,
@@ -34,7 +31,8 @@ function Row({ icon, label, children }: { icon: ReactNode; label: string; childr
 }
 
 /**
- * O agendamento para ler: quando, com quem, o quê, onde e como está. É o que abre primeiro; editar
+ * O agendamento para ler: quando, o quê, com quem atende, onde e como está. O contato fica no
+ * título e na coluna ao lado, para não aparecer três vezes. É o que abre primeiro; editar
  * é um passo a mais, de propósito, para ninguém remarcar sem querer ao só conferir um horário.
  */
 export function BookingSummary({
@@ -48,7 +46,6 @@ export function BookingSummary({
 }) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const canChat = useCan("chat")
   const zone = calendar?.timeZone ?? "UTC"
   const canceled = isCanceled(event)
 
@@ -56,7 +53,6 @@ export function BookingSummary({
   const dayLabel = relativeDayLabel(day, todayKey(zone), language, t)
   const allDay = isAllDayEvent(event.start, event.end, zone)
   const minutes = Math.round((Math.max(event.end, event.start) - event.start) / 60_000)
-  const phone = contactLine(event.contactExternalId)
 
   return (
     <div className="flex flex-col gap-5">
@@ -94,37 +90,6 @@ export function BookingSummary({
       <AttendanceSection event={event} calendar={calendar} actions={actions} />
 
       <dl className="flex flex-col divide-y divide-border/60 border-y border-border/60">
-        <Row icon={<MessageCircle aria-hidden />} label={t("calendar.booking.fields.contact")}>
-          {event.chatId ? (
-            <div className="flex items-center gap-2.5">
-              <UserAvatar
-                name={event.userName}
-                src={event.profilePictureUrl ? apiAssetUrl(event.profilePictureUrl) : null}
-                size="sm"
-              />
-              <div className="min-w-0 flex-1">
-                {canChat ? (
-                  <Link
-                    to={`/chat/${event.chatId}`}
-                    className="block truncate font-medium underline-offset-4 outline-none hover:underline focus-visible:underline"
-                  >
-                    {event.userName || t("calendar.booking.contact.fallback")}
-                  </Link>
-                ) : (
-                  <span className="block truncate font-medium">
-                    {event.userName || t("calendar.booking.contact.fallback")}
-                  </span>
-                )}
-                {phone ? (
-                  <span className="block truncate text-xs text-muted-foreground tabular-nums">{phone}</span>
-                ) : null}
-              </div>
-            </div>
-          ) : (
-            <span className="text-muted-foreground">{t("calendar.booking.summary.noContact")}</span>
-          )}
-        </Row>
-
         <Row icon={<ClipboardList aria-hidden />} label={t("calendar.booking.fields.service")}>
           {event.serviceName ?? (
             <span className="text-muted-foreground">{t("calendar.booking.fields.noService")}</span>

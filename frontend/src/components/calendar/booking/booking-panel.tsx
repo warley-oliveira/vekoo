@@ -1,24 +1,38 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Ban, CalendarDays, GraduationCap, PencilLine, Trash2 } from "lucide-react"
+import {
+  Ban,
+  CalendarDays,
+  GraduationCap,
+  MessageCircle,
+  PencilLine,
+  Trash2,
+  UserRound,
+} from "lucide-react"
+import { Link } from "react-router"
 
 import {
   ActionsMenu,
+  EmptyState,
   FormActions,
   ResponsiveDialog,
   SegmentedControl,
   StatusBadge,
   UnsavedChangesDialog,
+  UserAvatar,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { BookingActions } from "@/hooks/calendar/use-booking-actions"
+import { useCan } from "@/hooks/use-can"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { useGuardedClose } from "@/hooks/use-panel-session"
-import { eventHeadline, isCanceled, isPastEvent } from "@/lib/calendar/event-status"
-import { safeTimeZone } from "@/lib/calendar/timezone"
+import { apiAssetUrl } from "@/lib/api"
+import { eventHeadline, hasCustomTitle, isCanceled, isPastEvent } from "@/lib/calendar/event-status"
+import { formatInZone, safeTimeZone } from "@/lib/calendar/timezone"
 import type { AgendaCalendar, BookingEvent, CalendarEvent, ClassSessionEvent } from "@/lib/calendar/types"
-import { EventSituationBadge, EventTitle } from "../event-badges"
+import { useLanguage } from "@/lib/i18n"
+import { EventSituationBadge } from "../event-badges"
 import { useBookingForm, type BookingDraft } from "./booking-form"
 import { BookingFields } from "./booking-fields"
 import { BookingSummary } from "./booking-summary"
@@ -27,6 +41,10 @@ import { useNewSessionForm } from "./new-session-form"
 import { NewSessionFields } from "./session-form"
 
 type NewKind = "booking" | "session"
+
+/** O painel de cada aba: no celular, ao menos a altura útil da tela; na tela larga, rola sozinho. */
+const PANEL =
+  "min-h-[calc(var(--app-vh,100dvh)-14rem)] p-4 md:min-h-0 md:overflow-y-auto md:px-6 md:py-5"
 
 /**
  * Marcar na agenda: um agendamento ou, quando há calendário de turmas, uma aula avulsa. A escolha
@@ -184,7 +202,10 @@ export function BookingPanel({
   const close = () => onOpenChange(false)
   const canceled = isCanceled(event)
   const [editing, setEditing] = useState(false)
-  const [tab, setTab] = useState(event.chatId ? "contact" : "history")
+  const [tab, setTab] = useState("contact")
+  const language = useLanguage()
+  const canChat = useCan("chat")
+  const chatLink = event.chatId && canChat ? `/chat/${event.chatId}` : null
 
   const { form, submit, resolvedProfessional } = useBookingForm({
     event,
@@ -207,7 +228,7 @@ export function BookingPanel({
   }, [canceled, editing, form])
 
   // O kit foca o primeiro controle, que aqui seria o menu "…" do topo. Quem abre para ler cai em
-  // "Editar", a ação principal (ou em "Fechar", no cancelado): Enter age, e Tab segue para o resto.
+  // "Editar", a ação principal: Enter age, e Tab segue para o resto. No cancelado, vale o do kit.
   // Com dedo, nada ganha foco sozinho: um anel no botão, ou o teclado subindo, só atrapalha.
   const isTouch = useIsTouch()
   const editButton = useRef<HTMLButtonElement>(null)
@@ -235,22 +256,46 @@ export function BookingPanel({
   }
 
   const headline = eventHeadline(event)
+  const customTitle = hasCustomTitle(event)
+  // Com o título padrão, o título já é o contato: a foto vem junto e o subtítulo some, porque
+  // serviço e colaborador estão logo abaixo. Com título próprio, o contato vai no subtítulo.
+  const titleIsContact = Boolean(event.chatId && event.userName && !customTitle)
 
   return (
     <ResponsiveDialog
       size="2xl"
+      // Altura fixa, e não a do conteúdo: cada aba tem um tamanho, e a caixa pulava ao trocar.
+      // O teto é menor que o padrão do 2xl (60rem) para a aba curta não virar um vão; o que passa
+      // dele rola dentro da própria coluna. No celular o modal já é a tela inteira.
+      fixedHeight
+      className="md:h-[min(90dvh,42rem)]"
+      bodyClassName="p-0"
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
       }}
       title={
         <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-          <EventTitle color={event.color}>{headline.title || t("calendar.event.untitled")}</EventTitle>
+          <span className="flex min-w-0 items-center gap-2.5">
+            {titleIsContact ? (
+              <UserAvatar
+                aria-hidden
+                name={event.userName}
+                src={event.profilePictureUrl ? apiAssetUrl(event.profilePictureUrl) : null}
+                size="sm"
+              />
+            ) : null}
+            <span className="min-w-0 truncate">{headline.title || t("calendar.event.untitled")}</span>
+          </span>
           <BookingStatus event={event} />
         </span>
       }
       description={
-        editing ? t("calendar.booking.edit.description") : (headline.detail ?? undefined)
+        editing
+          ? t("calendar.booking.edit.description")
+          : customTitle && event.userName
+            ? event.userName
+            : undefined
       }
       headerActions={
         <ActionsMenu
@@ -281,17 +326,21 @@ export function BookingPanel({
             onCancel={stopEditing}
             requireChanges
           />
-        ) : (
+        ) : canceled && !chatLink ? undefined : (
           <>
-            <Button
-              ref={canceled ? editButton : undefined}
-              type="button"
-              variant="outline"
-              className="pointer-coarse:h-10"
-              onClick={close}
-            >
-              {t("calendar.common.close")}
-            </Button>
+            {/* A conversa abre daqui, e só daqui: o mesmo lugar em qualquer aba. "Fechar" saiu,
+                porque o X do topo, o Esc e o clique fora já fecham. */}
+            {chatLink ? (
+              <Button
+                variant="outline"
+                nativeButton={false}
+                className="pointer-coarse:h-10 sm:mr-auto"
+                render={<Link to={chatLink} />}
+              >
+                <MessageCircle />
+                {t("calendar.booking.contact.openChat")}
+              </Button>
+            ) : null}
             {canceled ? null : (
               <Button
                 ref={editButton}
@@ -309,8 +358,10 @@ export function BookingPanel({
     >
       <UnsavedChangesDialog when={open && isDirty} />
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_17rem] md:gap-8">
-        <div className="min-w-0">
+      {/* Na tela larga, duas colunas da mesma altura, cada uma rolando por dentro: à esquerda o
+          agendamento, à direita a pessoa. No celular, uma coluna só, rolando inteira. */}
+      <div className="flex flex-col md:grid md:h-full md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="min-w-0 p-4 md:min-h-0 md:overflow-y-auto md:px-6 md:py-5">
           {editing ? (
             <div className="flex flex-col gap-4">
               <BookingFields
@@ -326,37 +377,74 @@ export function BookingPanel({
               ) : null}
             </div>
           ) : (
-            <BookingSummary event={event} calendar={calendar} actions={actions} />
+            <div className="flex flex-col gap-6">
+              <BookingSummary event={event} calendar={calendar} actions={actions} />
+              {/* O histórico é do agendamento, não da pessoa: mora com ele, e ocupa a coluna que
+                  antes sobrava enquanto a do lado transbordava. */}
+              <section aria-labelledby="booking-history-title" className="flex flex-col gap-3">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                  <h3 id="booking-history-title" className="text-sm font-medium">
+                    {t("calendar.booking.tabs.history")}
+                  </h3>
+                  <span className="text-xs text-muted-foreground">
+                    {t("calendar.history.createdOn", {
+                      date: formatInZone(event.createdAt, zone, language, { dateStyle: "short" }),
+                    })}
+                  </span>
+                </div>
+                <BookingHistory event={event} timeZone={zone} />
+              </section>
+            </div>
           )}
         </div>
 
         <aside
           aria-label={t("calendar.booking.context")}
-          className="min-w-0 md:border-l md:pl-6"
+          className="flex min-w-0 flex-col border-t md:min-h-0 md:border-t-0 md:border-l"
         >
-          <Tabs value={tab} onValueChange={(next) => setTab(String(next))}>
-            <TabsList
-              variant="line"
-              className="w-full justify-start overflow-x-auto [scrollbar-width:none]"
+          {event.chatId ? (
+            <Tabs
+              value={tab}
+              onValueChange={(next) => setTab(String(next))}
+              className="gap-0 md:min-h-0 md:flex-1"
             >
-              <TabsTrigger value="contact">{t("calendar.booking.tabs.contact")}</TabsTrigger>
-              {event.chatId ? (
-                <TabsTrigger value="messages">{t("calendar.booking.tabs.messages")}</TabsTrigger>
-              ) : null}
-              <TabsTrigger value="history">{t("calendar.booking.tabs.history")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="contact" className="pt-3">
-              <BookingContactTab event={event} />
-            </TabsContent>
-            {event.chatId ? (
-              <TabsContent value="messages" className="pt-3">
+              {/* No celular a barra de abas gruda no topo ao rolar, e o painel tem ao menos a
+                  altura útil da tela: trocar de aba não puxa a página para cima. */}
+              <div className="sticky top-0 z-10 border-b bg-background px-4 md:static md:px-6">
+                <TabsList variant="line" className="h-11 gap-4 group-data-horizontal/tabs:h-11">
+                  <TabsTrigger value="contact" className="flex-none px-0.5">
+                    {t("calendar.booking.tabs.contact")}
+                  </TabsTrigger>
+                  <TabsTrigger value="messages" className="flex-none px-0.5">
+                    {t("calendar.booking.tabs.messages")}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="contact" data-booking-scroll className={PANEL}>
+                <BookingContactTab event={event} />
+              </TabsContent>
+              <TabsContent value="messages" data-booking-scroll className={PANEL}>
                 <BookingMessagesTab event={event} timeZone={zone} />
               </TabsContent>
-            ) : null}
-            <TabsContent value="history" className="pt-3">
-              <BookingHistory event={event} timeZone={zone} />
-            </TabsContent>
-          </Tabs>
+            </Tabs>
+          ) : (
+            <div className="flex flex-1 flex-col justify-center p-4 md:px-6">
+              <EmptyState
+                icon={<UserRound aria-hidden className="size-5" />}
+                title={t("calendar.booking.contact.none.title")}
+                description={t(
+                  canceled
+                    ? "calendar.booking.contact.none.canceled"
+                    : "calendar.booking.contact.none.description"
+                )}
+                action={
+                  canceled
+                    ? undefined
+                    : { label: t("calendar.booking.contact.none.action"), onClick: () => setEditing(true) }
+                }
+              />
+            </div>
+          )}
         </aside>
       </div>
     </ResponsiveDialog>

@@ -74,11 +74,14 @@ export function AttendanceToggle({
   event,
   onToggle,
   size = "icon",
+  fill = true,
   className,
 }: {
   event: BookingEvent
   onToggle: (event: BookingEvent, status: AttendanceStatus) => void
   size?: "icon" | "labeled"
+  /** Com rótulo, os dois botões dividem a largura. `false` deixa cada um do tamanho do texto. */
+  fill?: boolean
   className?: string
 }) {
   const { t } = useTranslation()
@@ -103,7 +106,7 @@ export function AttendanceToggle({
             className={cn(
               "relative z-10 pointer-coarse:h-10",
               size === "icon" && "pointer-coarse:w-10",
-              size === "labeled" && "flex-1",
+              size === "labeled" && fill && "flex-1",
               active && status === "show" && "bg-status-success-soft text-status-success hover:bg-status-success-soft",
               active && status === "no_show" && "bg-status-danger-soft text-status-danger hover:bg-status-danger-soft"
             )}

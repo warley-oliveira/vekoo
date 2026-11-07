@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useLayoutEffect, useMemo, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import {
   ArrowRight,
@@ -6,76 +6,97 @@ import {
   CalendarClock,
   CalendarPlus,
   CircleSlash,
+  FileText,
+  ImageIcon,
   ListChecks,
   ListX,
-  MessageCircle,
+  Mic,
   PencilLine,
+  Sticker,
   UserCheck,
   UserX,
+  Video,
+  type LucideIcon,
 } from "lucide-react"
-import { Link } from "react-router"
 
 import {
-  CopyButton,
   EmptyState,
   ErrorState,
   KeyValueList,
-  ListSkeleton,
-  StatusBadge,
   Timeline,
-  UserAvatar,
   type StatusTone,
   type TimelineItem,
 } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { useCan } from "@/hooks/use-can"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useBookingPreviewMessages } from "@/hooks/calendar/use-attendance-sequences"
-import { ApiError, apiAssetUrl } from "@/lib/api"
-import { formatDayKey, formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
-import type { BookingEvent, BookingHistoryEntry } from "@/lib/calendar/types"
+import { useCustomFields } from "@/hooks/content/use-custom-fields"
+import { ApiError } from "@/lib/api"
 import { contactLine } from "@/lib/calendar/contact"
+import { formatEventWhen, formatInZone, formatTimeInZone } from "@/lib/calendar/timezone"
+import type { BookingEvent, BookingHistoryEntry, PreviewMessage } from "@/lib/calendar/types"
+import { humanizeKey, isFilled, parseStoredDate } from "@/lib/chat-details/field-values"
+import { meaningfulContent, messageKind, type MessageKind } from "@/lib/chat/message-rules"
+import type { CustomField } from "@/lib/content/types"
+import { formatDate } from "@/lib/date-format"
+import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
 /* ---------- contato ---------- */
 
-function attributeLabel(name: string): string {
-  return name.replaceAll("_", " ")
-}
+type DisplayField = Pick<CustomField, "name" | "valueType">
 
-function isFilled(value: unknown): boolean {
-  return value !== null && value !== undefined && value !== ""
-}
-
-function attributeValue(value: unknown, t: (key: string) => string, language: string): string {
-  // Sim/não, e não "true"/"false": quem lê é gente, não o banco. Data também, no jeito do idioma.
-  if (typeof value === "boolean") return t(value ? "calendar.common.yes" : "calendar.common.no")
-  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return formatDayKey(value, language, { day: "numeric", month: "long", year: "numeric" })
+/**
+ * O valor como gente lê, pelo tipo do campo cadastrado, como no chat e em Contatos: número no
+ * jeito do idioma, data por extenso, sim ou não. O que um fluxo gravou sem campo vai como veio.
+ */
+function attributeValue(
+  field: DisplayField | undefined,
+  value: unknown,
+  t: (key: string) => string,
+  language: string
+): string {
+  const raw = typeof value === "string" ? value : typeof value === "number" ? String(value) : null
+  if (typeof value === "boolean" || field?.valueType === "checkbox") {
+    return t(value === true || raw === "true" ? "calendar.common.yes" : "calendar.common.no")
   }
-  return typeof value === "string" || typeof value === "number" ? String(value) : JSON.stringify(value)
+  if (raw === null) return JSON.stringify(value)
+  if (field?.valueType === "number" || typeof value === "number") {
+    const parsed = Number(raw)
+    if (Number.isFinite(parsed)) return formatNumber(parsed, language)
+  }
+  if (field?.valueType === "date" || /^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    const date = parseStoredDate(raw)
+    if (date) return formatDate(date, language, "long")
+  }
+  return raw
 }
 
-/** Quem é o contato deste agendamento, e o que já se sabe sobre ele. Trocar é no formulário. */
-export function BookingContactTab({
-  event,
-  showIdentity = false,
-}: {
-  event: BookingEvent
-  /** Quem já mostra nome e foto do contato ao lado passa `false`: aqui ficam os dados e a conversa. */
-  showIdentity?: boolean
-}) {
+/**
+ * O que se sabe do contato deste agendamento: telefone e os campos da conversa. Nome e foto já
+ * estão no título do modal, e a conversa abre pelo rodapé, no mesmo lugar em qualquer aba.
+ */
+export function BookingContactTab({ event }: { event: BookingEvent }) {
   const { t } = useTranslation()
-  const canChat = useCan("chat")
   const language = useLanguage()
+  const { customFields } = useCustomFields()
+
+  const fieldsByKey = useMemo(
+    () => new Map((customFields ?? []).map((field) => [field.key, field])),
+    [customFields]
+  )
 
   const attributes = useMemo(() => {
-    const entries = Object.entries(event.customAttributes ?? {})
-    return entries.sort(([nameA, valueA], [nameB, valueB]) => {
-      const filled = Number(isFilled(valueB)) - Number(isFilled(valueA))
-      return filled || nameA.localeCompare(nameB, language)
-    })
-  }, [event.customAttributes, language])
+    return Object.entries(event.customAttributes ?? {})
+      .map(([key, value]) => {
+        const field = fieldsByKey.get(key)
+        return { key, value, field, label: field?.name ?? humanizeKey(key) }
+      })
+      .sort((a, b) => {
+        const filled = Number(isFilled(b.value)) - Number(isFilled(a.value))
+        return filled || a.label.localeCompare(b.label, language)
+      })
+  }, [event.customAttributes, fieldsByKey, language])
 
   if (!event.chatId) {
     return (
@@ -86,59 +107,34 @@ export function BookingContactTab({
     )
   }
 
-  const filledCount = attributes.filter(([, value]) => isFilled(value)).length
+  const phone = contactLine(event.contactExternalId)
+  const copyable = Boolean(event.contactExternalId && /^\d+$/.test(event.contactExternalId))
 
   return (
-    <div className="flex flex-col gap-4">
-      {showIdentity ? (
-        <div className="flex items-center gap-3">
-          <UserAvatar
-            name={event.userName}
-            src={event.profilePictureUrl ? apiAssetUrl(event.profilePictureUrl) : null}
-            size="lg"
-          />
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-medium">{event.userName || t("calendar.booking.contact.fallback")}</p>
-            {event.contactExternalId ? (
-              <p className="truncate text-sm text-muted-foreground tabular-nums">
-                {contactLine(event.contactExternalId)}
-              </p>
-            ) : null}
-          </div>
-          {event.contactExternalId && /^\d+$/.test(event.contactExternalId) ? (
-            <CopyButton value={event.contactExternalId} />
-          ) : null}
-        </div>
+    <div className="flex flex-col gap-5">
+      {phone ? (
+        <KeyValueList
+          items={[
+            {
+              label: t("calendar.booking.contact.phone"),
+              value: <span className="tabular-nums">{phone}</span>,
+              copyValue: copyable ? (event.contactExternalId ?? undefined) : undefined,
+            },
+          ]}
+        />
       ) : null}
 
-      {canChat ? (
-        <Button
-          variant="outline"
-          nativeButton={false}
-          className="self-start pointer-coarse:h-10"
-          render={<Link to={`/chat/${event.chatId}`} />}
-        >
-          <MessageCircle />
-          {t("calendar.booking.contact.openChat")}
-        </Button>
-      ) : null}
-
-      <section className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <h3 className="text-sm font-medium">{t("calendar.booking.contact.attributes")}</h3>
-          {filledCount > 0 ? (
-            <StatusBadge tone="neutral">
-              {filledCount}/{attributes.length}
-            </StatusBadge>
-          ) : null}
-        </div>
+      <section aria-labelledby="booking-contact-fields" className="flex flex-col gap-3">
+        <h3 id="booking-contact-fields" className="text-sm font-medium">
+          {t("calendar.booking.contact.attributes")}
+        </h3>
         {attributes.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("calendar.booking.contact.noAttributes")}</p>
         ) : (
           <KeyValueList
-            items={attributes.map(([name, value]) => ({
-              label: attributeLabel(name),
-              value: isFilled(value) ? attributeValue(value, t, language) : null,
+            items={attributes.map(({ value, field, label }) => ({
+              label,
+              value: isFilled(value) ? attributeValue(field, value, t, language) : null,
             }))}
           />
         )}
@@ -149,15 +145,86 @@ export function BookingContactTab({
 
 /* ---------- mensagens ---------- */
 
-/** As últimas mensagens da conversa, só para ler. Responder é no chat. */
+const KIND_ICONS: Record<Exclude<MessageKind, "text">, LucideIcon> = {
+  audio: Mic,
+  image: ImageIcon,
+  video: Video,
+  sticker: Sticker,
+  document: FileText,
+}
+
+/** Mídia diz o que é ("Áudio", "Foto"), como no chat; a legenda, se houver, vem embaixo. */
+function PreviewBubble({ message, timeZone }: { message: PreviewMessage; timeZone: string }) {
+  const { t } = useTranslation()
+  const language = useLanguage()
+  const fromContact = message.role === "user"
+  const kind = messageKind({
+    typeElement: message.typeElement ?? "text",
+    mediaType: message.mediaType ?? null,
+  })
+  const text = meaningfulContent(message.content)
+  const Icon = kind === "text" ? null : KIND_ICONS[kind]
+
+  return (
+    <li
+      className={cn(
+        "max-w-[85%] rounded-lg px-3 py-2 text-sm",
+        fromContact ? "self-start bg-muted" : "self-end bg-accent text-accent-foreground"
+      )}
+    >
+      {Icon ? (
+        <p className="flex items-center gap-1.5 opacity-80">
+          <Icon aria-hidden className="size-3.5 shrink-0" />
+          {t(`calendar.booking.messages.kinds.${kind}`)}
+        </p>
+      ) : null}
+      {text ? <p className="break-words whitespace-pre-wrap">{text}</p> : null}
+      <time className="mt-0.5 block text-right text-[0.6875rem] opacity-70 tabular-nums">
+        {formatInZone(message.createdAt, timeZone, language, {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </time>
+    </li>
+  )
+}
+
+/** Bolhas alternadas, da forma das de verdade. */
+function MessagesSkeleton() {
+  const { t } = useTranslation()
+  const widths = ["w-3/5", "w-2/3", "w-2/5", "w-1/2", "w-3/5"]
+  return (
+    <div role="status" aria-label={t("calendar.booking.messages.loading")} className="flex flex-col gap-2">
+      {widths.map((width, index) => (
+        <Skeleton
+          key={index}
+          className={cn("h-14 rounded-lg", width, index % 2 === 0 ? "self-start" : "self-end")}
+        />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * As últimas mensagens da conversa, só para ler: responder é no chat, pelo rodapé. Na coluna que
+ * rola sozinha (tela larga), abre no fim, onde está o que foi dito por último.
+ */
 export function BookingMessagesTab({ event, timeZone }: { event: BookingEvent; timeZone: string }) {
   const { t } = useTranslation()
-  const canChat = useCan("chat")
-  const language = useLanguage()
   const { messages, error, isLoading, reload } = useBookingPreviewMessages(
     event.calendarId,
     event.id
   )
+  const listRef = useRef<HTMLOListElement>(null)
+  const count = messages?.length ?? 0
+
+  useLayoutEffect(() => {
+    const scroller = listRef.current?.closest<HTMLElement>("[data-booking-scroll]")
+    if (!scroller || getComputedStyle(scroller).overflowY !== "auto") return
+    scroller.scrollTop = scroller.scrollHeight
+  }, [count])
 
   if (error) {
     // A conversa pode estar fora do que esta pessoa alcança no chat.
@@ -171,7 +238,7 @@ export function BookingMessagesTab({ event, timeZone }: { event: BookingEvent; t
     }
     return <ErrorState error={error} onRetry={() => void reload()} />
   }
-  if (isLoading && !messages) return <ListSkeleton rows={4} />
+  if (isLoading && !messages) return <MessagesSkeleton />
   if (!messages?.length) {
     return (
       <EmptyState
@@ -182,43 +249,11 @@ export function BookingMessagesTab({ event, timeZone }: { event: BookingEvent; t
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <ol className="flex flex-col gap-2">
-        {messages.map((message) => {
-          const fromContact = message.role === "user"
-          return (
-            <li
-              key={message.id}
-              className={cn(
-                "max-w-[85%] rounded-lg px-3 py-2 text-sm",
-                fromContact ? "self-start bg-muted" : "self-end bg-accent text-accent-foreground"
-              )}
-            >
-              <p className="break-words whitespace-pre-wrap">{message.content}</p>
-              <time className="mt-0.5 block text-right text-[0.6875rem] opacity-70 tabular-nums">
-                {formatInZone(message.createdAt, timeZone, language, {
-                  day: "2-digit",
-                  month: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </time>
-            </li>
-          )
-        })}
-      </ol>
-      {event.chatId && canChat ? (
-        <Button
-          variant="outline"
-          nativeButton={false}
-          className="self-center pointer-coarse:h-10"
-          render={<Link to={`/chat/${event.chatId}`} />}
-        >
-          <MessageCircle />
-          {t("calendar.booking.contact.openChat")}
-        </Button>
-      ) : null}
-    </div>
+    <ol ref={listRef} className="flex flex-col gap-2">
+      {messages.map((message) => (
+        <PreviewBubble key={message.id} message={message} timeZone={timeZone} />
+      ))}
+    </ol>
   )
 }
 
@@ -299,14 +334,5 @@ export function BookingHistory({ event, timeZone }: { event: BookingEvent; timeZ
     return <p className="text-sm text-muted-foreground">{t("calendar.history.empty")}</p>
   }
 
-  return (
-    <div className="flex flex-col gap-3">
-      <p className="text-xs text-muted-foreground">
-        {t("calendar.history.createdOn", {
-          date: formatInZone(event.createdAt, timeZone, language, { dateStyle: "short" }),
-        })}
-      </p>
-      <Timeline items={items} />
-    </div>
-  )
+  return <Timeline items={items} />
 }
