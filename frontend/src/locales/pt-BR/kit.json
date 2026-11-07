@@ -143,7 +143,7 @@
       "sortBy": "Ordenar por {{column}}",
       "filterBy": "Filtrar {{column}}",
       "range": "{{from}}–{{to}} de {{total}}",
-      "perPage": "Linhas por página",
+      "perPage": "Por página",
       "pagination": "Páginas",
       "previous": "Página anterior",
       "next": "Próxima página",
