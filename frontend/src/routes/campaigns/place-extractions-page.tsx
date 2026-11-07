@@ -21,6 +21,7 @@ import {
   TablePagination,
 } from "@/components/shared"
 import { useCampaignCapabilities } from "@/hooks/campaigns/use-campaigns"
+import { useScrollPageTop } from "@/hooks/campaigns/use-scroll-page-top"
 import {
   PLACES_PER_PAGE_OPTIONS,
   usePlaceContacts,
@@ -45,6 +46,15 @@ export default function PlaceExtractionsPage() {
   const { filters, setView, setQuery, setStatuses, setPage, setPerPage, clear, openResults } = usePlacesQuery()
   const capabilities = useCampaignCapabilities()
   const unavailable = capabilities?.placeExtractions.available === false
+
+  const scrollTop = useScrollPageTop()
+  const goToPage = useCallback(
+    (page: number) => {
+      setPage(page)
+      scrollTop()
+    },
+    [scrollTop, setPage]
+  )
 
   const closeResults = useCallback(() => openResults(null), [openResults])
   const showResults = useCallback((id: string) => openResults(id), [openResults])
@@ -76,7 +86,7 @@ export default function PlaceExtractionsPage() {
           unavailable={unavailable}
           onQuery={setQuery}
           onStatuses={setStatuses}
-          onPage={setPage}
+          onPage={goToPage}
           onPerPage={setPerPage}
           onClear={clear}
           onOpen={showResults}
@@ -86,7 +96,7 @@ export default function PlaceExtractionsPage() {
           filters={filters}
           unavailable={unavailable}
           onQuery={setQuery}
-          onPage={setPage}
+          onPage={goToPage}
           onPerPage={setPerPage}
           onClear={clear}
         />

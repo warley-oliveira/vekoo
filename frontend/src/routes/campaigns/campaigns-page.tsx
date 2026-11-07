@@ -35,6 +35,7 @@ import {
   useCampaignFilters,
 } from "@/hooks/campaigns/use-campaign-filters"
 import { useCampaignListLive } from "@/hooks/campaigns/use-campaign-list-live"
+import { useScrollPageTop } from "@/hooks/campaigns/use-scroll-page-top"
 import {
   useCampaignConnectors,
   useCampaignList,
@@ -62,6 +63,7 @@ export default function CampaignsPage() {
   const { data: summaryData } = useCampaignSummary()
   const { connectors, byId } = useCampaignConnectors()
   const actions = useCampaignActions()
+  const scrollTop = useScrollPageTop()
   useCampaignListLive()
 
   const campaigns = data?.campaigns ?? NO_CAMPAIGNS
@@ -305,7 +307,10 @@ export default function CampaignsPage() {
                 total={meta.total}
                 perPage={meta.perPage}
                 perPageOptions={CAMPAIGN_PER_PAGE_OPTIONS}
-                onPageChange={setPage}
+                onPageChange={(page) => {
+                  setPage(page)
+                  scrollTop()
+                }}
                 onPerPageChange={setPerPage}
               />
             ) : null}

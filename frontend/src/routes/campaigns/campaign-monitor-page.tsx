@@ -38,6 +38,10 @@ export default function CampaignMonitorPage() {
   const recipients = useRef<HTMLElement>(null)
   const reducedMotion = useReducedMotion()
 
+  const showRecipients = useCallback(() => {
+    recipients.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })
+  }, [reducedMotion])
+
   // Tocar num número leva à lista já filtrada. O filtro mora na URL, onde a lista o lê.
   const filterRecipients = useCallback(
     (statuses: string[]) => {
@@ -52,9 +56,9 @@ export default function CampaignMonitorPage() {
         },
         { replace: true }
       )
-      recipients.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" })
+      showRecipients()
     },
-    [reducedMotion, setParams]
+    [setParams, showRecipients]
   )
 
   const editAction = useCallback(() => navigate(`/campaigns/${campaignId}/edit`), [campaignId, navigate])
@@ -88,7 +92,12 @@ export default function CampaignMonitorPage() {
       <MonitorHero campaign={campaign} connected={connected} onFilterRecipients={filterRecipients} />
 
       <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
-        <RecipientsSection ref={recipients} campaignId={campaignId} emptyAction={emptyAction} />
+        <RecipientsSection
+          ref={recipients}
+          campaignId={campaignId}
+          onPageChanged={showRecipients}
+          emptyAction={emptyAction}
+        />
         <aside className="flex min-w-0 flex-col gap-6">
           <ActivityCard events={campaign.activityEvents} />
           <ConfigCard campaign={campaign} />

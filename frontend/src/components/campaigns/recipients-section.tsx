@@ -81,6 +81,8 @@ function latestStep(recipient: Recipient): number | null {
 
 type RecipientsSectionProps = {
   campaignId: string
+  /** Trocou de página: quem está de fora traz a seção de volta à vista. */
+  onPageChanged?: () => void
   /** Sem contatos ainda, um rascunho pode ir adicionar. */
   emptyAction?: { label: string; onClick: () => void }
 }
@@ -91,7 +93,7 @@ type RecipientsSectionProps = {
  */
 export const RecipientsSection = memo(
   forwardRef<HTMLElement, RecipientsSectionProps>(function RecipientsSection(
-    { campaignId, emptyAction },
+    { campaignId, onPageChanged, emptyAction },
     ref
   ) {
     const { t } = useTranslation()
@@ -250,7 +252,10 @@ export const RecipientsSection = memo(
           isFetching={isLoading && !firstLoad}
           error={error}
           onRetry={() => void mutate()}
-          onPageChange={setPage}
+          onPageChange={(page) => {
+            setPage(page)
+            onPageChanged?.()
+          }}
           onPerPageChange={setPerPage}
           perPageOptions={RECIPIENT_PER_PAGE_OPTIONS}
           isFiltered={Boolean(filters.q || filters.statuses.length)}
