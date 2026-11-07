@@ -742,7 +742,22 @@ export default function CardPanel({ board, cardId, open, onClose }: CardPanelPro
       ) : (
         <>
           {card.archived ? (
-            <Callout tone="warning" className="mx-4 mt-3">
+            <Callout
+              tone="warning"
+              className="mx-4 mt-3"
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="pointer-coarse:h-10"
+                  onClick={() => void actions.unarchive(card.id)}
+                >
+                  <ArchiveRestore />
+                  {t("pipelines.card.unarchive")}
+                </Button>
+              }
+            >
               {t("pipelines.card.archivedNotice")}
             </Callout>
           ) : null}
