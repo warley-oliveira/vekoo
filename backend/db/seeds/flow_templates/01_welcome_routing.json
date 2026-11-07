@@ -1,7 +1,7 @@
 {
   "slug": "welcome_routing",
-  "name": "Boas-vindas + roteamento por intenção",
-  "description": "Saúda o usuário na primeira mensagem, classifica a intenção e roteia para vendas, suporte ou outros.",
+  "name": "Boas-vindas e encaminhamento",
+  "description": "Dá boas-vindas na primeira mensagem, entende o que a pessoa quer e encaminha para vendas, suporte ou outros.",
   "category": "atendimento",
   "trigger_type": "first_message",
   "tags": ["boas-vindas", "ia", "roteamento"],

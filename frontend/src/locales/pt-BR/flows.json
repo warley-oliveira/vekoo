@@ -1,0 +1,1692 @@
+{
+  "flows": {
+    "status": {
+      "draft": "Rascunho",
+      "published": "Ligado",
+      "archived": "Arquivado",
+      "publishedChanged": "Ligado, com alterações"
+    },
+    "triggers": {
+      "message_received": "Quando chega qualquer mensagem",
+      "first_message": "Quando alguém manda a primeira mensagem",
+      "keyword": "Quando a mensagem tem uma palavra-chave",
+      "contact_created": "Quando aparece um contato novo",
+      "human_handoff": "Quando alguém da equipe assume a conversa",
+      "manual": "Quando alguém da equipe inicia numa conversa",
+      "webhook": "Quando outro sistema avisa, por webhook"
+    },
+    "groups": {
+      "popular": { "title": "Mais usados" },
+      "start": { "title": "Como o fluxo começa" },
+      "talk": { "title": "Falar com o contato" },
+      "ai": { "title": "Deixar a IA cuidar" },
+      "decide": { "title": "Decidir e esperar" },
+      "organize": { "title": "Organizar a conversa" },
+      "pipeline": { "title": "Cards e negócios" },
+      "connect": { "title": "Outros sistemas e código" },
+      "finish": { "title": "Encerrar" }
+    },
+    "blocks": {
+      "trigger_message_received": {
+        "label": "Chegou uma mensagem",
+        "description": "Começa a cada mensagem do contato",
+        "keywords": "gatilho inicio recebida qualquer"
+      },
+      "trigger_first_message": {
+        "label": "Primeira mensagem",
+        "description": "Começa quando alguém fala com você pela primeira vez",
+        "keywords": "gatilho inicio boas-vindas novo"
+      },
+      "trigger_keyword": {
+        "label": "Mensagem com palavra-chave",
+        "description": "Começa quando a mensagem tem uma destas palavras",
+        "keywords": "gatilho inicio palavra termo"
+      },
+      "trigger_contact_created": {
+        "label": "Novo contato",
+        "description": "Começa quando aparece um contato novo",
+        "keywords": "gatilho inicio cadastro criado"
+      },
+      "trigger_human_handoff": {
+        "label": "Alguém da equipe assumiu",
+        "description": "Começa quando uma pessoa assume a conversa",
+        "keywords": "gatilho inicio transferencia humano atendente"
+      },
+      "trigger_manual": {
+        "label": "Você inicia",
+        "description": "Começa quando alguém da equipe inicia numa conversa",
+        "keywords": "gatilho inicio manual botao"
+      },
+      "trigger_webhook": {
+        "label": "Outro sistema avisou",
+        "description": "Começa quando chega um webhook de fora",
+        "keywords": "gatilho inicio webhook api integracao"
+      },
+      "send_text": {
+        "label": "Enviar mensagem",
+        "description": "Manda um texto para o contato",
+        "keywords": "texto falar responder boas-vindas whatsapp"
+      },
+      "ask_question": {
+        "label": "Perguntar",
+        "description": "Manda uma pergunta e espera a resposta",
+        "keywords": "pergunta resposta coletar esperar"
+      },
+      "send_interactive": {
+        "label": "Perguntar com opções",
+        "description": "Oferece opções numeradas e segue pela escolhida",
+        "keywords": "botoes lista menu opcoes interativa"
+      },
+      "send_media": {
+        "label": "Enviar arquivo",
+        "description": "Manda imagem, áudio, vídeo ou documento",
+        "keywords": "anexo midia imagem foto pdf video audio documento"
+      },
+      "send_template": {
+        "label": "Modelo do WhatsApp",
+        "description": "Manda um modelo aprovado pela Meta",
+        "keywords": "template hsm waba oficial meta"
+      },
+      "ai_assistant": {
+        "label": "Conversa com IA",
+        "description": "A IA conversa com o contato e decide quando seguir",
+        "keywords": "ia inteligencia artificial assistente agente chatbot atendimento modelo"
+      },
+      "ai_intent_classification": {
+        "label": "Entender o que a pessoa quer",
+        "description": "Lê a mensagem e segue pelo assunto que combina",
+        "keywords": "intencao classificar roteamento encaminhar assunto ia"
+      },
+      "ai_sentiment": {
+        "label": "Sentir o tom da mensagem",
+        "description": "Diz se a pessoa está contente, neutra ou chateada",
+        "keywords": "sentimento humor satisfacao ia"
+      },
+      "ai_parameter_extractor": {
+        "label": "Anotar dados da mensagem",
+        "description": "Tira nome, e-mail ou o que você pedir do texto",
+        "keywords": "extrair parametros campos dados ia"
+      },
+      "ai_audio_transcription": {
+        "label": "Transcrever áudio",
+        "description": "Transforma um áudio em texto",
+        "keywords": "audio voz whisper transcricao"
+      },
+      "condition": {
+        "label": "Condição",
+        "description": "Segue por um caminho se a regra valer, e por outro se não",
+        "keywords": "se if else regra sim nao ramificar comparar"
+      },
+      "switch": {
+        "label": "Escolher por valor",
+        "description": "Um caminho para cada valor possível",
+        "keywords": "switch case casos opcoes valor"
+      },
+      "wait": {
+        "label": "Aguardar um tempo",
+        "description": "Pausa antes de seguir",
+        "keywords": "esperar tempo delay minutos horas dias"
+      },
+      "wait_for_message": {
+        "label": "Aguardar resposta",
+        "description": "Para até o contato mandar a próxima mensagem",
+        "keywords": "esperar mensagem resposta"
+      },
+      "loop": {
+        "label": "Repetir para cada item",
+        "description": "Passa por uma lista, um item de cada vez",
+        "keywords": "loop laco lista para cada iterar"
+      },
+      "set_variable": {
+        "label": "Guardar uma informação",
+        "description": "Cria variáveis para usar nos próximos blocos",
+        "keywords": "variavel definir atribuir valor"
+      },
+      "add_tag": {
+        "label": "Adicionar etiqueta",
+        "description": "Marca a conversa com uma etiqueta",
+        "keywords": "tag etiqueta marcar"
+      },
+      "remove_tag": {
+        "label": "Remover etiqueta",
+        "description": "Tira uma etiqueta da conversa",
+        "keywords": "tag etiqueta desmarcar"
+      },
+      "set_custom_attribute": {
+        "label": "Preencher campo do contato",
+        "description": "Grava um valor num campo do contato",
+        "keywords": "atributo campo personalizado custom attribute"
+      },
+      "assign_agent": {
+        "label": "Atribuir atendente",
+        "description": "Passa a conversa para uma pessoa da equipe",
+        "keywords": "responsavel atendente pessoa usuario sorteio round robin"
+      },
+      "assign_team": {
+        "label": "Atribuir departamento",
+        "description": "Passa a conversa para um departamento",
+        "keywords": "departamento equipe time setor"
+      },
+      "transfer_to_human": {
+        "label": "Transferir para uma pessoa",
+        "description": "Para a automação e chama alguém da equipe",
+        "keywords": "humano atendente transferir handoff"
+      },
+      "set_funnel_stage": {
+        "label": "Mudar etapa do funil",
+        "description": "Leva a conversa para outra etapa de um funil",
+        "keywords": "funil etapa estagio mover"
+      },
+      "pause_automation": {
+        "label": "Pausar automação",
+        "description": "Desliga a automação nesta conversa",
+        "keywords": "parar desligar automacao"
+      },
+      "resume_automation": {
+        "label": "Retomar automação",
+        "description": "Liga de novo a automação nesta conversa",
+        "keywords": "voltar ligar automacao"
+      },
+      "pipeline_create_card": {
+        "label": "Criar card",
+        "description": "Cria um card num pipeline, ligado à conversa",
+        "keywords": "card pipeline kanban quadro novo"
+      },
+      "pipeline_move_card": {
+        "label": "Mover card",
+        "description": "Leva o card para outra etapa",
+        "keywords": "card pipeline kanban etapa mover"
+      },
+      "pipeline_update_card": {
+        "label": "Atualizar card",
+        "description": "Muda título, valor, prioridade e contato",
+        "keywords": "card pipeline editar alterar"
+      },
+      "pipeline_set_custom_field": {
+        "label": "Preencher campo do card",
+        "description": "Grava um valor num campo personalizado",
+        "keywords": "card pipeline campo personalizado"
+      },
+      "pipeline_mark_won": {
+        "label": "Marcar como ganho",
+        "description": "Fecha o negócio como ganho",
+        "keywords": "card negocio venda ganho fechar"
+      },
+      "pipeline_mark_lost": {
+        "label": "Marcar como perdido",
+        "description": "Fecha o negócio, com o motivo",
+        "keywords": "card negocio perda perdido"
+      },
+      "pipeline_reopen_deal": {
+        "label": "Reabrir negócio",
+        "description": "Desfaz o ganho ou a perda",
+        "keywords": "card negocio reabrir"
+      },
+      "pipeline_add_label": {
+        "label": "Etiquetar card",
+        "description": "Aplica uma etiqueta ao card",
+        "keywords": "card etiqueta label tag"
+      },
+      "pipeline_remove_label": {
+        "label": "Tirar etiqueta do card",
+        "description": "Remove uma etiqueta do card",
+        "keywords": "card etiqueta label tag remover"
+      },
+      "pipeline_add_comment": {
+        "label": "Comentar no card",
+        "description": "Registra uma nota no card",
+        "keywords": "card comentario nota"
+      },
+      "pipeline_add_checklist": {
+        "label": "Adicionar checklist",
+        "description": "Cria uma lista de tarefas no card",
+        "keywords": "card checklist tarefas lista"
+      },
+      "pipeline_archive_card": {
+        "label": "Arquivar card",
+        "description": "Tira o card do quadro",
+        "keywords": "card arquivar"
+      },
+      "pipeline_create_deal": {
+        "label": "Criar negócio",
+        "description": "Cria um negócio com valor, em qualquer quadro",
+        "keywords": "negocio deal venda valor oportunidade"
+      },
+      "pipeline_update_deal": {
+        "label": "Atualizar negócio",
+        "description": "Muda o negócio criado antes neste fluxo",
+        "keywords": "negocio deal atualizar valor"
+      },
+      "http_request": {
+        "label": "Chamar outro sistema",
+        "description": "Faz uma requisição HTTP e segue pelo resultado",
+        "keywords": "http api rest requisicao get post webhook integracao"
+      },
+      "execute_tool": {
+        "label": "Executar função",
+        "description": "Roda um código em JavaScript",
+        "keywords": "codigo javascript js script funcao ferramenta tool"
+      },
+      "catalog_search": {
+        "label": "Buscar no catálogo",
+        "description": "Procura produtos e guarda o que achou",
+        "keywords": "catalogo produto busca"
+      },
+      "goto_flow": {
+        "label": "Chamar outro fluxo",
+        "description": "Começa outro fluxo, sem esperar ele terminar",
+        "keywords": "subfluxo fluxo ir para"
+      },
+      "finalize_chat": {
+        "label": "Finalizar atendimento",
+        "description": "Fecha a conversa e termina o fluxo",
+        "keywords": "fechar encerrar concluir"
+      },
+      "end": {
+        "label": "Fim",
+        "description": "Termina o fluxo aqui",
+        "keywords": "fim terminar parar"
+      }
+    },
+    "outputs": {
+      "next": "Próximo passo",
+      "true": "Sim",
+      "false": "Não",
+      "each": "Para cada item",
+      "done": "Quando acabar",
+      "success": "Deu certo",
+      "error": "Deu errado",
+      "found": "Encontrou",
+      "notFound": "Não encontrou",
+      "default": "Nenhum dos casos",
+      "noneOfThem": "Nenhuma das anteriores",
+      "otherReply": "Outra resposta",
+      "maxTurns": "Passou do limite",
+      "onError": "Se der erro",
+      "positive": "Positivo",
+      "neutral": "Neutro",
+      "negative": "Negativo"
+    },
+    "operators": {
+      "equals": "é igual a",
+      "not_equals": "é diferente de",
+      "contains": "contém",
+      "not_contains": "não contém",
+      "starts_with": "começa com",
+      "ends_with": "termina com",
+      "greater_than": "é maior que",
+      "less_than": "é menor que",
+      "is_empty": "está vazio",
+      "is_not_empty": "não está vazio",
+      "exists": "existe",
+      "not_exists": "não existe",
+      "in": "está na lista",
+      "not_in": "não está na lista"
+    },
+    "units": {
+      "seconds": "segundos",
+      "minutes": "minutos",
+      "hours": "horas",
+      "days": "dias"
+    },
+    "variables": {
+      "title": "Variáveis",
+      "insert": "Inserir variável",
+      "groups": {
+        "contact": "Contato",
+        "conversation": "Conversa",
+        "flow": "Deste fluxo"
+      },
+      "builtin": {
+        "contact_name": "Nome do contato",
+        "contact_phone": "Telefone do contato",
+        "contact_id": "Id do contato",
+        "message_text": "Texto da mensagem",
+        "message_role": "Quem mandou a mensagem",
+        "chat_id": "Id da conversa",
+        "chat_status": "Situação da conversa"
+      },
+      "known": {
+        "last_choice": "Última opção escolhida",
+        "last_http_status": "Resultado da última chamada",
+        "last_transcription": "Última transcrição",
+        "last_intent": "Último assunto entendido",
+        "last_sentiment": "Último tom da mensagem",
+        "pipeline_card_id": "Card criado",
+        "pipeline_error": "Motivo do erro no card",
+        "last_deal_id": "Negócio criado",
+        "catalog_results": "O que achou no catálogo",
+        "catalog_results_total": "Quantos achou no catálogo",
+        "item": "Item da repetição",
+        "index": "Posição na repetição"
+      }
+    },
+    "missing": {
+      "keywords": "Diga as palavras-chave",
+      "text": "Escreva a mensagem",
+      "media": "Escolha o arquivo",
+      "template": "Escolha o modelo",
+      "buttons": "Adicione as opções",
+      "prompt": "Diga como a IA deve agir",
+      "intents": "Adicione os assuntos",
+      "extractFields": "Diga o que anotar",
+      "rules": "Complete a regra",
+      "switchField": "Diga o que comparar",
+      "cases": "Adicione os casos",
+      "wait": "Diga quanto tempo",
+      "assignments": "Diga o que guardar",
+      "loopSource": "Diga qual é a lista",
+      "tag": "Escolha a etiqueta",
+      "attributeKey": "Escolha o campo",
+      "agent": "Escolha quem atende",
+      "team": "Escolha o departamento",
+      "funnelStage": "Escolha o funil e a etapa",
+      "boardStage": "Escolha o quadro e a etapa",
+      "dealStage": "Escolha a etapa",
+      "url": "Informe o endereço",
+      "tool": "Escolha a função",
+      "targetFlow": "Escolha o fluxo",
+      "cardSource": "Diga qual card",
+      "moveStage": "Escolha a etapa de destino",
+      "customField": "Escolha o campo",
+      "label": "Escolha a etiqueta",
+      "comment": "Escreva o comentário",
+      "checklist": "Dê um nome ao checklist"
+    },
+    "issues": {
+      "noTrigger": "O fluxo precisa de um começo. Adicione um gatilho.",
+      "multipleTriggers": "Um fluxo só pode ter um gatilho. Exclua este.",
+      "unknownBlock": "Este bloco não existe mais. Exclua e use outro.",
+      "missingNodeId": "Há um bloco sem identificação. Abra o fluxo de novo e salve.",
+      "duplicatedNodeId": "Há dois blocos com a mesma identificação. Exclua um deles.",
+      "brokenEdge": "Há uma ligação que não leva a lugar nenhum. Salve de novo e confira as linhas.",
+      "triggerAlone": "Ligue o gatilho ao primeiro passo, senão o fluxo começa e não faz nada.",
+      "unreachable": "Nenhum caminho chega neste bloco, então ele não vai rodar.",
+      "loopBody": "Ligue a saída \"Para cada item\" ao que deve repetir.",
+      "aiLoose_one": "1 saída sem ligação: a IA não vai escolhê-la.",
+      "aiLoose_other": "{{count}} saídas sem ligação: a IA não vai escolhê-las.",
+      "aiNoOutputs": "Para decidir, a IA precisa de pelo menos uma saída.",
+      "conditionLoose": "Nem \"Sim\" nem \"Não\" estão ligados: o fluxo termina aqui."
+    },
+    "summary": {
+      "keywords": "Palavras: {{words}}",
+      "sendText": "Envia: {{text}}",
+      "askQuestion": "Pergunta: {{text}}",
+      "interactive_one": "Pergunta com 1 opção: {{text}}",
+      "interactive_other": "Pergunta com {{count}} opções: {{text}}",
+      "media": "Envia: {{name}}",
+      "template": "Envia o modelo: {{name}}",
+      "aiTalk": "Conversa: {{text}}",
+      "aiDecide": "Decide: {{text}}",
+      "intent_one": "1 assunto",
+      "intent_other": "{{count}} assuntos",
+      "sentiment": "Positivo, neutro ou negativo",
+      "extract": "Anota: {{names}}",
+      "transcribe": "Guarda em {{name}}",
+      "conditionRule": "Se {{field}} {{operator}} {{value}}",
+      "conditionMore_one": "{{text}} e mais 1 regra",
+      "conditionMore_other": "{{text}} e mais {{count}} regras",
+      "switch_one": "Compara {{field}} com 1 caso",
+      "switch_other": "Compara {{field}} com {{count}} casos",
+      "wait_seconds_one": "Espera 1 segundo",
+      "wait_seconds_other": "Espera {{count}} segundos",
+      "wait_minutes_one": "Espera 1 minuto",
+      "wait_minutes_other": "Espera {{count}} minutos",
+      "wait_hours_one": "Espera 1 hora",
+      "wait_hours_other": "Espera {{count}} horas",
+      "wait_days_one": "Espera 1 dia",
+      "wait_days_other": "Espera {{count}} dias",
+      "waitMessage": "Espera o contato responder",
+      "setVariable": "Guarda: {{names}}",
+      "loop": "Para cada item de {{source}}",
+      "addTag": "Etiqueta: {{name}}",
+      "removeTag": "Tira a etiqueta: {{name}}",
+      "attribute": "{{key}}: {{value}}",
+      "assignAgent": "Para {{name}}",
+      "assignPool_one": "Sorteia entre 1 pessoa",
+      "assignPool_other": "Sorteia entre {{count}} pessoas",
+      "assignTeam": "Para {{name}}",
+      "transfer": "Para a automação e chama a equipe",
+      "transferTo": "Para a automação e chama {{name}}",
+      "finalize": "Fecha a conversa",
+      "pause_minutes_one": "Pausa por 1 minuto",
+      "pause_minutes_other": "Pausa por {{count}} minutos",
+      "pause_hours_one": "Pausa por 1 hora",
+      "pause_hours_other": "Pausa por {{count}} horas",
+      "pause_days_one": "Pausa por 1 dia",
+      "pause_days_other": "Pausa por {{count}} dias",
+      "pauseForever": "Pausa até alguém ligar de novo",
+      "resume": "Liga a automação de novo",
+      "funnelStage": "{{funnel}}: {{stage}}",
+      "createCard": "{{board}}: {{stage}}",
+      "moveCard": "Para {{stage}}",
+      "updateCard_one": "Muda 1 campo",
+      "updateCard_other": "Muda {{count}} campos",
+      "customField": "{{field}}: {{value}}",
+      "markWon": "Fecha como ganho",
+      "markLost": "Fecha como perdido",
+      "markLostReason": "Perdido: {{reason}}",
+      "reopen": "Desfaz o ganho ou a perda",
+      "addLabel": "Etiqueta: {{name}}",
+      "removeLabel": "Tira a etiqueta: {{name}}",
+      "comment": "Comenta: {{text}}",
+      "checklist_one": "{{name}}, com 1 item",
+      "checklist_other": "{{name}}, com {{count}} itens",
+      "archiveCard": "Tira o card do quadro",
+      "createDeal": "Em {{stage}}",
+      "updateDeal": "Muda o último negócio criado",
+      "tool": "Executa {{name}}",
+      "goto": "Chama {{name}}",
+      "catalogQuery": "Busca: {{query}}",
+      "catalog": "Busca pelo que o contato escreveu",
+      "end": "Termina aqui"
+    },
+    "block": {
+      "duplicate": "Duplicar",
+      "delete": "Excluir",
+      "unknown": "Bloco desconhecido",
+      "noName": "Sem nome",
+      "unlink": "Desligar",
+      "addAfter": "Adicionar o próximo passo",
+      "addAfterOutput": "Adicionar o próximo passo em {{name}}"
+    },
+    "canvas": {
+      "firstStep": "Clique no + do bloco para dizer o que acontece depois.",
+      "a11y": {
+        "blockRole": "bloco",
+        "linkRole": "ligação",
+        "block": "Enter seleciona o bloco, as setas movem, e Delete exclui.",
+        "blockMove": "Enter seleciona o bloco. Depois, as setas movem e Delete exclui.",
+        "moved": "Bloco movido.",
+        "moved_up": "Bloco movido para cima.",
+        "moved_down": "Bloco movido para baixo.",
+        "moved_left": "Bloco movido para a esquerda.",
+        "moved_right": "Bloco movido para a direita.",
+        "link": "Enter seleciona a ligação, e Delete desfaz.",
+        "controls": "Controles do quadro",
+        "minimap": "Mapa do fluxo",
+        "handle": "Ponto de ligação"
+      }
+    },
+    "toolbar": {
+      "label": "Ferramentas do quadro",
+      "add": "Adicionar bloco",
+      "undo": "Desfazer",
+      "redo": "Refazer",
+      "zoomIn": "Aproximar",
+      "zoomOut": "Afastar",
+      "zoomReset": "Voltar para 100%",
+      "fit": "Ver o fluxo inteiro",
+      "arrange": "Organizar os blocos",
+      "arranged": "Blocos organizados",
+      "outline": "Ver como lista"
+    },
+    "shortcuts": {
+      "title": "Atalhos",
+      "add": "Adicionar bloco",
+      "save": "Salvar agora",
+      "undo": "Desfazer",
+      "redo": "Refazer",
+      "duplicate": "Duplicar",
+      "copy": "Copiar",
+      "paste": "Colar",
+      "delete": "Excluir",
+      "close": "Fechar o painel",
+      "fit": "Ver o fluxo inteiro",
+      "outline": "Ver como lista",
+      "test": "Testar",
+      "box": "Selecionar vários, arrastando"
+    },
+    "picker": {
+      "title": "Adicionar bloco",
+      "placeholder": "O que este fluxo precisa fazer?",
+      "placeholderNext": "O que acontece depois?",
+      "clear": "Limpar a busca",
+      "emptyTitle": "Nenhum bloco com esse nome",
+      "emptyHint": "Tente outra palavra, como \"mensagem\", \"etiqueta\" ou \"código\".",
+      "footerConnect": "Setas para navegar, Enter para escolher. O bloco já nasce ligado.",
+      "footerDrag": "Clique para adicionar, ou arraste para o quadro."
+    },
+    "inspector": {
+      "advanced": "Mais opções",
+      "optional": "Opcional",
+      "loading": "Carregando...",
+      "nameLabel": "Nome do bloco",
+      "close": "Fechar",
+      "nextTitle": "Para onde vai",
+      "nextHint": "Escolha o próximo bloco aqui, ou puxe a linha no quadro.",
+      "nextBlock": "Próximo passo",
+      "linkTo": "Próximo bloco de {{name}}",
+      "linkPlaceholder": "Termina aqui",
+      "selection_one": "1 bloco selecionado",
+      "selection_other": "{{count}} blocos selecionados"
+    },
+    "fields": {
+      "text": {
+        "label": "Mensagem",
+        "placeholder": "Olá! Que bom ter você por aqui."
+      },
+      "sender_name": {
+        "label": "Nome de quem assina",
+        "hint": "Aparece antes da mensagem. Sem isto, sai o nome do canal."
+      },
+      "save_to": {
+        "label": "Guardar a resposta como",
+        "placeholder": "resposta",
+        "hint": "Vira uma variável que os próximos blocos podem usar."
+      },
+      "invalid_text": {
+        "label": "Se a resposta não for uma das opções",
+        "hint": "Sem isto, o fluxo segue por \"Outra resposta\"."
+      },
+      "caption": {
+        "label": "Legenda"
+      },
+      "media_url": {
+        "label": "Endereço do arquivo",
+        "placeholder": "https://"
+      },
+      "media_type": {
+        "label": "Tipo do arquivo"
+      },
+      "file_name": {
+        "label": "Nome do arquivo"
+      },
+      "attachment_id": {
+        "label": "Arquivo",
+        "placeholder": "Escolha da biblioteca"
+      },
+      "template_name": {
+        "label": "Modelo",
+        "placeholder": "Escolha um modelo"
+      },
+      "field": {
+        "label": "O que comparar",
+        "placeholder": "Por exemplo, a variável com a resposta"
+      },
+      "amount": {
+        "label": "Quanto"
+      },
+      "unit": {
+        "label": "Unidade"
+      },
+      "source": {
+        "label": "A lista",
+        "placeholder": "O nome da variável com a lista"
+      },
+      "loop_variable": {
+        "label": "Nome do item",
+        "hint": "Dentro da repetição, é assim que você chama o item da vez."
+      },
+      "index_variable": {
+        "label": "Nome da posição"
+      },
+      "max_iterations": {
+        "label": "Máximo de repetições",
+        "hint": "Até 100."
+      },
+      "tag_id": {
+        "label": "Etiqueta",
+        "placeholder": "Escolha uma etiqueta"
+      },
+      "tag_name": {
+        "label": "Ou crie uma etiqueta nova"
+      },
+      "key": {
+        "label": "Campo",
+        "placeholder": "Escolha um campo"
+      },
+      "value": {
+        "label": "Valor"
+      },
+      "account_id": {
+        "label": "Pessoa",
+        "placeholder": "Escolha uma pessoa"
+      },
+      "account_pool": {
+        "label": "Entre quem sortear"
+      },
+      "team_id": {
+        "label": "Departamento",
+        "placeholder": "Escolha um departamento"
+      },
+      "period": {
+        "label": "Por quanto tempo"
+      },
+      "funnel_id": {
+        "label": "Funil",
+        "placeholder": "Escolha um funil"
+      },
+      "stage_id": {
+        "label": "Etapa",
+        "placeholder": "Escolha uma etapa",
+        "pick": "Escolha uma etapa",
+        "pickBoard": "Escolha o quadro primeiro"
+      },
+      "method": {
+        "label": "Método"
+      },
+      "url": {
+        "label": "Endereço",
+        "placeholder": "https://api.exemplo.com.br/pedidos"
+      },
+      "body": {
+        "label": "Corpo da requisição",
+        "placeholder": "{ \"telefone\": \"\" }"
+      },
+      "save_response_to": {
+        "label": "Guardar o resultado como",
+        "placeholder": "resultado",
+        "hint": "Vira uma variável que os próximos blocos podem usar."
+      },
+      "timeout": {
+        "label": "Tempo máximo, em segundos",
+        "hint": "Até 30."
+      },
+      "tool_id": {
+        "label": "Função",
+        "placeholder": "Escolha uma função"
+      },
+      "target_flow_id": {
+        "label": "Fluxo",
+        "placeholder": "Escolha um fluxo"
+      },
+      "merge_variables": {
+        "label": "Trazer as variáveis de volta",
+        "hint": "O que o outro fluxo guardar fica disponível aqui."
+      },
+      "query": {
+        "label": "O que buscar",
+        "hint": "Sem isto, busca pelo que o contato escreveu."
+      },
+      "limit": {
+        "label": "Quantos resultados",
+        "hint": "Até 20."
+      },
+      "keywords": {
+        "label": "Palavras-chave",
+        "hint": "Sem caixa e sem acento, e só palavra inteira. Separe com vírgula ou Enter.",
+        "placeholder": "orçamento, preço"
+      },
+      "system_prompt": {
+        "label": "Como a IA deve agir"
+      },
+      "min_turns": {
+        "label": "Trocas antes de poder sair",
+        "hint": "Respostas do contato neste bloco."
+      },
+      "max_turns": {
+        "label": "Limite de respostas",
+        "hint": "Cria a saída \"Passou do limite\"."
+      },
+      "use_history": {
+        "label": "Ler o histórico da conversa",
+        "hint": "Usa as últimas 30 mensagens como contexto."
+      },
+      "audio_url": {
+        "label": "Endereço do áudio",
+        "hint": "Sem isto, usa o áudio que o contato mandou."
+      },
+      "model_size": {
+        "label": "Modelo",
+        "main": "Principal",
+        "fast": "Rápido",
+        "fastHint": "Mais rápido e barato. Não usa as instruções gerais do fluxo, só as deste bloco."
+      },
+      "board_id": {
+        "label": "Quadro",
+        "placeholder": "Escolha um quadro",
+        "empty": "Nenhum quadro ativo. Crie um em Pipelines."
+      },
+      "title": {
+        "label": "Título",
+        "placeholder": "Sem isto, o nome do contato"
+      },
+      "description": {
+        "label": "Descrição"
+      },
+      "priority": {
+        "label": "Prioridade",
+        "default": "Padrão",
+        "keep": "Não mudar",
+        "low": "Baixa",
+        "medium": "Média",
+        "high": "Alta",
+        "urgent": "Urgente"
+      },
+      "deal_value": {
+        "label": "Valor do negócio",
+        "placeholder": "1500"
+      },
+      "deal_probability": {
+        "label": "Chance de fechar, de 0 a 100"
+      },
+      "company_name": {
+        "label": "Empresa"
+      },
+      "contact_email": {
+        "label": "E-mail"
+      },
+      "contact_phone": {
+        "label": "Telefone"
+      },
+      "due_date": {
+        "label": "Prazo"
+      },
+      "expected_close_date": {
+        "label": "Previsão de fechamento"
+      },
+      "link_chat": {
+        "label": "Ligar à conversa",
+        "hint": "O card aparece no chat, e os próximos blocos encontram."
+      },
+      "reuse_existing": {
+        "label": "Reaproveitar o card em aberto",
+        "hint": "Rodando de novo nesta conversa, continua no mesmo card."
+      },
+      "position": {
+        "label": "Em que ponto da etapa",
+        "top": "No topo",
+        "bottom": "No fim"
+      },
+      "field_key": {
+        "label": "Campo",
+        "placeholder": "Escolha um campo"
+      },
+      "reason": {
+        "label": "Motivo",
+        "placeholder": "Sem orçamento no momento"
+      },
+      "label": {
+        "label": "Etiqueta",
+        "placeholder": "Lead quente"
+      },
+      "label_id": {
+        "label": "Etiqueta",
+        "placeholder": "Escolha uma etiqueta"
+      },
+      "body_comment": {
+        "label": "Comentário"
+      },
+      "name": {
+        "label": "Nome",
+        "placeholder": "Documentos"
+      },
+      "assigned_to_id": {
+        "label": "Responsável",
+        "placeholder": "Escolha uma pessoa"
+      },
+      "card_id": {
+        "label": "Qual negócio",
+        "hint": "Sem isto, o último criado neste fluxo."
+      },
+      "trigger": {
+        "title": "Como este fluxo começa",
+        "hint": "Dá para trocar a qualquer momento: o que já está ligado continua no lugar."
+      },
+      "trigger_webhook": {
+        "note": "Crie um webhook e, nas ações dele, escolha \"Iniciar fluxo\" e este fluxo. O que chegar fica disponível nas variáveis.",
+        "open": "Abrir webhooks"
+      },
+      "trigger_manual": {
+        "note": "Este fluxo só começa quando alguém da equipe inicia numa conversa."
+      },
+      "trigger_human_handoff": {
+        "note": "Roda com a automação pausada: serve para avisar o contato de que uma pessoa assumiu."
+      },
+      "channels": {
+        "label": "Em quais canais",
+        "hint": "Sem escolher nenhum, vale em todos.",
+        "all": "Todos os canais",
+        "failed": "Não foi possível mudar os canais. Tente de novo."
+      },
+      "ask_question": {
+        "note": "O fluxo para aqui até o contato responder.",
+        "text": {
+          "label": "Pergunta",
+          "placeholder": "Qual é o seu nome?"
+        },
+        "save_to": {
+          "placeholder": "nome"
+        }
+      },
+      "wait_for_message": {
+        "note": "O fluxo para aqui até o contato mandar a próxima mensagem."
+      },
+      "send_interactive": {
+        "text": {
+          "label": "Pergunta",
+          "placeholder": "Como posso ajudar?"
+        },
+        "buttonsTitle": "Opções",
+        "buttonsHint": "O contato responde pelo número ou pelo texto. Cada opção vira uma saída do bloco.",
+        "newButton": "opcao",
+        "buttonPlaceholder": "Ver produtos",
+        "buttonLabel": "Opção {{number}}",
+        "removeButton": "Remover a opção {{number}}",
+        "addButton": "Adicionar opção"
+      },
+      "send_media": {
+        "sourceLabel": "De onde vem o arquivo",
+        "library": "Da biblioteca",
+        "libraryHint": "Um arquivo já enviado em Anexos.",
+        "link": "De um endereço",
+        "linkHint": "Um link, que pode vir de uma variável.",
+        "types": {
+          "image": "Imagem",
+          "audio": "Áudio",
+          "video": "Vídeo",
+          "document": "Documento"
+        }
+      },
+      "send_template": {
+        "note": "Só funciona no WhatsApp oficial. Nos outros canais, o fluxo segue adiante sem enviar.",
+        "connector": "Canal",
+        "noConnector": "Nenhum canal do WhatsApp oficial conectado. Escreva o nome do modelo, ou conecte um canal.",
+        "parametersTitle": "Parâmetros",
+        "parametersHint": "Na ordem em que aparecem no modelo.",
+        "parameter": "Parâmetro {{number}}",
+        "removeParameter": "Remover o parâmetro",
+        "addParameter": "Adicionar parâmetro",
+        "template_name": {
+          "label": "Nome do modelo"
+        }
+      },
+      "condition": {
+        "rulesTitle": "Regras",
+        "rulesHint": "Se valer, o fluxo segue por \"Sim\". Se não, por \"Não\".",
+        "all": "Todas valem",
+        "any": "Qualquer uma vale",
+        "match": {
+          "label": "Como combinar"
+        },
+        "operator": "Como comparar",
+        "field": "O que comparar",
+        "fieldPlaceholder": "Escolha o que comparar",
+        "customField": "Uma variável...",
+        "useList": "Usar a lista",
+        "value": "Com o quê",
+        "valuePlaceholder": "Valor",
+        "values": "Valores",
+        "valuesPlaceholder": "Separe com vírgula",
+        "removeRule": "Remover a regra",
+        "addRule": "Adicionar regra"
+      },
+      "switch": {
+        "caseValue": "Valor do caso {{number}}",
+        "casePlaceholder": "Valor",
+        "removeCase": "Remover o caso",
+        "addCase": "Adicionar caso",
+        "note": "Cada caso vira uma saída. Se nenhum combinar, o fluxo segue por \"Nenhum dos casos\"."
+      },
+      "wait": {
+        "note": "O fluxo continua sozinho depois deste tempo, até 30 dias. Se alguém da equipe assumir, a espera é cancelada."
+      },
+      "set_variable": {
+        "note": "Cada variável fica disponível nos próximos blocos.",
+        "name": "Nome da variável",
+        "namePlaceholder": "cidade",
+        "value": "Valor",
+        "valuePlaceholder": "Valor",
+        "remove": "Remover a variável",
+        "add": "Adicionar variável"
+      },
+      "loop": {
+        "note": "Ligue \"Para cada item\" ao que deve repetir, e o último bloco de volta aqui. Até 100 voltas."
+      },
+      "add_tag": {
+        "note": "A conversa ganha esta etiqueta. Se não existir, é criada.",
+        "nameHint": "Se escrever aqui, ela é criada na hora."
+      },
+      "remove_tag": {
+        "note": "A conversa perde esta etiqueta, se tiver."
+      },
+      "set_custom_attribute": {
+        "note": "Grava num campo do contato, que aparece na conversa.",
+        "useList": "Escolher da lista",
+        "typeKey": "Escrever o nome do campo",
+        "key": {
+          "label": "Nome do campo"
+        }
+      },
+      "assign_agent": {
+        "modeLabel": "Para quem",
+        "one": "Uma pessoa",
+        "oneHint": "A conversa vai sempre para ela.",
+        "pool": "Sortear entre várias",
+        "poolHint": "A cada conversa, uma das escolhidas."
+      },
+      "transfer_to_human": {
+        "note": "A automação para nesta conversa pelo período das configurações. Escolher departamento ou pessoa é opcional.",
+        "account_id": {
+          "label": "Pessoa"
+        }
+      },
+      "pause_automation": {
+        "note": "Nada mais roda nesta conversa enquanto estiver pausada.",
+        "forever": "Até alguém ligar de novo",
+        "period": {
+          "label": "Por quanto tempo"
+        }
+      },
+      "set_funnel_stage": {
+        "note": "A conversa aparece nesta etapa do funil. Se o funil ou a etapa sumirem depois, o fluxo segue e a organização recebe um aviso.",
+        "pickFunnel": "Escolha o funil primeiro"
+      },
+      "http_request": {
+        "note": "Segue por \"Deu certo\" se o sistema responder bem, e por \"Deu errado\" se não.",
+        "headers": "Cabeçalhos",
+        "headerName": "Nome do cabeçalho",
+        "headerValue": "Valor do cabeçalho",
+        "removeHeader": "Remover o cabeçalho",
+        "addHeader": "Adicionar cabeçalho"
+      },
+      "execute_tool": {
+        "note": "Roda uma função da organização: escrita aqui ou instalada de uma ferramenta.",
+        "fromTool": "De {{name}}",
+        "seeTool": "Ver a função",
+        "editCode": "Editar o código",
+        "newTool": "Nova função",
+        "paramsTitle": "O que mandar para a função",
+        "paramsHint": "Aceitam variáveis."
+      },
+      "goto_flow": {
+        "note": "O outro fluxo começa e este segue, sem esperar. Se o outro parar numa pergunta, este continua."
+      },
+      "catalog_search": {
+        "note": "Guarda o que achou numa variável, com a imagem pronta para enviar.",
+        "tags": "Só com estas etiquetas",
+        "categories": "Só nestas categorias",
+        "listPlaceholder": "Separe com vírgula",
+        "save_to": {
+          "placeholder": "catalog_results"
+        }
+      },
+      "finalize_chat": {
+        "note": "Fecha a conversa e termina o fluxo. Nada mais roda depois deste bloco."
+      },
+      "resume_automation": {
+        "note": "Liga a automação de novo nesta conversa."
+      },
+      "end": {
+        "note": "O fluxo termina aqui. Se a conversa precisar ser fechada, use \"Finalizar atendimento\"."
+      },
+      "ai_shared": {
+        "errorExit": "Falha na chamada à IA, ou falta de créditos."
+      },
+      "outputs": {
+        "remove": "Remover",
+        "saves": "Guarda na conversa: {{names}}",
+        "saveData": "Guardar dados na conversa ao seguir por aqui",
+        "required": "Obrigatório",
+        "requiredHint": "A IA só segue por aqui depois de preencher este dado.",
+        "removeField": "Remover {{name}}",
+        "pickField": "Escolher ou cadastrar um dado",
+        "manage": "Gerenciar os dados da conversa"
+      },
+      "ai_assistant": {
+        "modeLabel": "O que a IA faz",
+        "interactive": "Conversa com o contato",
+        "interactiveHint": "Responde, pode usar funções e segue por uma saída quando identifica a situação.",
+        "processing": "Só decide o caminho",
+        "processingHint": "Não responde ao contato: lê a conversa e escolhe uma saída na hora.",
+        "inheritsHint": "Somam-se às instruções gerais do fluxo.",
+        "promptPlaceholder": "Você atende a loja. Responda curto e com simpatia...",
+        "decidePlaceholder": "Veja se a pessoa quer comprar ou só tirar dúvidas.",
+        "outputsTitle": "Quando seguir",
+        "outputsHint": "A cada resposta do contato, a IA confere se alguma destas situações aconteceu. Na dúvida, continua a conversa.",
+        "outputsDecideHint": "A IA escolhe uma destas saídas com base na conversa.",
+        "outputName": "Nome da saída",
+        "outputWhen": "Quando seguir por aqui",
+        "outputWhenPlaceholder": "A pessoa confirmou o pedido e disse como quer pagar",
+        "addOutput": "Adicionar saída",
+        "newOutput": "saida",
+        "maxTurnsExit_one": "Depois de 1 resposta do contato sem nada disso acontecer. Sem ligação, a conversa continua.",
+        "maxTurnsExit_other": "Depois de {{count}} respostas do contato sem nada disso acontecer. Sem ligação, a conversa continua.",
+        "errorExit": "Falha na chamada à IA, ou falta de créditos. Sem ligação aqui, a execução para.",
+        "modelTitle": "Modelo"
+      },
+      "tool_ids": {
+        "title": "Funções que a IA pode usar",
+        "hint": "Só as escolhidas: consultar estoque, frete, preço...",
+        "placeholder": "Nenhuma função",
+        "empty": "A organização ainda não tem funções. Crie em Fluxos, Ferramentas.",
+        "gone": "Função que não existe mais"
+      },
+      "ai_intent_classification": {
+        "note": "Lê a última mensagem e segue pelo assunto que mais combina. Usa o modelo rápido, sem o histórico.",
+        "promptPlaceholder": "Pedidos de troca contam como suporte.",
+        "outputsTitle": "Assuntos",
+        "outputsHint": "Cada assunto vira uma saída do bloco.",
+        "outputName": "Assunto",
+        "outputWhen": "Como reconhecer",
+        "outputWhenPlaceholder": "Quer saber preço, prazo ou disponibilidade",
+        "addOutput": "Adicionar assunto",
+        "newOutput": "assunto",
+        "noneHint": "Quando a mensagem não combina com nenhum assunto.",
+        "system_prompt": {
+          "label": "O que ajuda a diferenciar"
+        }
+      },
+      "ai_sentiment": {
+        "note": "Lê o tom da última mensagem e segue pela saída que combina. Usa o modelo rápido.",
+        "outputsTitle": "Tons",
+        "outputsHint": "O nome de cada um é o que a IA usa para classificar: seja direto, como \"Irritado\".",
+        "outputName": "Tom",
+        "addOutput": "Adicionar tom",
+        "newOutput": "tom"
+      },
+      "ai_parameter_extractor": {
+        "fieldsTitle": "O que anotar",
+        "fieldsHint": "Dado que não aparecer na mensagem não apaga o que já estava guardado.",
+        "promptPlaceholder": "Datas no formato AAAA-MM-DD. Telefones só com números.",
+        "system_prompt": {
+          "label": "Regras para interpretar"
+        }
+      },
+      "ai_audio_transcription": {
+        "note": "Transcreve o áudio da última mensagem. Sem áudio, segue por \"Se der erro\".",
+        "saveHint": "Vira uma variável que os próximos blocos podem usar.",
+        "save_to": {
+          "label": "Guardar o texto como"
+        }
+      },
+      "card_source": {
+        "title": "Qual card",
+        "hint": "De onde vem o card. A escolha vale também quando o fluxo roda de novo na conversa.",
+        "placeholder": "Escolha o card",
+        "entersIn": "Entra em {{stage}}",
+        "latest": "O card mais recente da conversa",
+        "latestHint": "Num quadro que você escolhe",
+        "useCreator": "Usar o card de \"{{name}}\"",
+        "noCreator": "Nenhum \"Criar card\" vem antes deste bloco. Ligue um antes, ou use o card mais recente da conversa.",
+        "creatorGone": "O \"Criar card\" escolhido foi excluído. Escolha outro.",
+        "notUpstream": "O \"Criar card\" escolhido não vem antes deste bloco: ele pode ainda não ter criado o card.",
+        "errorNote": "Se a operação for travada (checklist ou campos obrigatórios, card não encontrado), o fluxo segue por \"Se der erro\". Sem ligação ali, a execução para."
+      },
+      "pipeline_create_card": {
+        "where": "Onde criar",
+        "card": "O card",
+        "note": "O card criado fica à disposição dos próximos blocos.",
+        "description": {
+          "placeholder": "Sem isto, o contato, o telefone e a situação da conversa"
+        }
+      },
+      "pipeline_move_card": {
+        "destination": "Para onde",
+        "hint": "Ao avançar, valem o checklist e os campos obrigatórios da etapa atual.",
+        "stage_id": {
+          "label": "Mover para"
+        }
+      },
+      "pipeline_update_card": {
+        "fields": "O que mudar",
+        "hint": "Só os campos preenchidos mudam."
+      },
+      "pipeline_set_custom_field": {
+        "title": "Campo personalizado",
+        "pickCard": "Escolha o card primeiro",
+        "empty": "Este quadro não tem campos personalizados.",
+        "options": "Opções: {{options}}"
+      },
+      "pipeline_mark_won": {
+        "note": "Fecha o negócio como ganho. Se o quadro exigir campos, eles precisam estar preenchidos."
+      },
+      "pipeline_reopen_deal": {
+        "note": "Desfaz o ganho ou a perda, e o negócio volta para o quadro."
+      },
+      "pipeline_archive_card": {
+        "note": "O card sai do quadro, mas continua no histórico."
+      },
+      "pipeline_add_label": {
+        "note": "Se a etiqueta não existir, é criada com este nome.",
+        "existing": "Já existem: {{names}}"
+      },
+      "pipeline_add_comment": {
+        "body": {
+          "label": "Comentário",
+          "placeholder": "O cliente pediu orçamento."
+        }
+      },
+      "pipeline_add_checklist": {
+        "note": "Se o card já tiver um checklist com este nome, os itens entram nele.",
+        "item": "Item {{number}}",
+        "removeItem": "Remover o item",
+        "addItem": "Adicionar item"
+      },
+      "pipeline_create_deal": {
+        "note": "Cria direto, em qualquer quadro, sem as travas da etapa. Se algo não servir, fica no histórico e o fluxo segue."
+      },
+      "pipeline_update_deal": {
+        "note": "Atualiza o último negócio criado neste fluxo. Mudar de etapa não confere as travas."
+      }
+    },
+    "save": {
+      "saving": "Salvando...",
+      "dirty": "Alterações não salvas",
+      "saved": "Tudo salvo",
+      "savedPrefix": "Salvo",
+      "savedNow": "Salvo",
+      "failed": "Não salvou. Tentar de novo",
+      "conflict": "Alterado em outro lugar"
+    },
+    "toast": {
+      "deleted_one": "Bloco excluído",
+      "deleted_other": "{{count}} blocos excluídos",
+      "copied_one": "1 bloco copiado",
+      "copied_other": "{{count}} blocos copiados"
+    },
+    "conflict": {
+      "title": "Este fluxo mudou em outro lugar",
+      "description": "Alguém salvou outra versão, ou você abriu em outra aba. O salvamento automático parou até você decidir.",
+      "reload": "Carregar a mais nova",
+      "keep": "Manter a minha"
+    },
+    "leave": {
+      "title": "Sair sem salvar?",
+      "description": "Não conseguimos salvar a última alteração. Se sair agora, ela se perde.",
+      "confirm": "Sair mesmo assim",
+      "stay": "Ficar aqui"
+    },
+    "replay": {
+      "showing": "Caminho de {{name}}",
+      "clear": "Limpar o caminho"
+    },
+    "mobile": {
+      "readOnly": "Para editar os blocos, abra numa tela maior. Aqui dá para conferir, testar e publicar.",
+      "views": "Como ver o fluxo",
+      "list": "Lista",
+      "map": "Mapa"
+    },
+    "outline": {
+      "title": "O fluxo, em ordem",
+      "close": "Fechar a lista",
+      "backTo": "Volta para {{name}}",
+      "loose": "Sem caminho até aqui"
+    },
+    "menu": {
+      "label": "Mais ações do fluxo",
+      "details": "Nome e canais",
+      "fields": "Dados da conversa",
+      "basePrompt": "Instruções gerais da IA",
+      "versions": "Versões",
+      "executions": "Ver execuções",
+      "duplicate": "Duplicar fluxo",
+      "delete": "Excluir fluxo"
+    },
+    "toggle": {
+      "on": "Ligar",
+      "off": "Desligar",
+      "draftHint": "Publique para ligar",
+      "turnedOn": "\"{{name}}\" ligado",
+      "turnedOff": "\"{{name}}\" desligado e arquivado",
+      "confirmTitle": "Desligar \"{{name}}\"?",
+      "confirmDescription": "O fluxo é arquivado: para de responder, e as conversas em andamento nele são encerradas. Dá para ligar de novo quando quiser.",
+      "confirmAction": "Desligar"
+    },
+    "test": {
+      "open": "Testar",
+      "title": "Testar o fluxo",
+      "tabs": "O que ver do teste",
+      "tabChat": "Conversa",
+      "tabSteps": "O que cada bloco fez",
+      "stop": "Parar o teste",
+      "restart": "Testar de novo",
+      "close": "Fechar o teste",
+      "realCost": "A conversa é de mentira, e nada sai pelos canais. Mas a IA e as funções são de verdade, e gastam créditos.",
+      "empty": "Escreva como se fosse o contato. Os blocos acendem no quadro conforme o fluxo anda.",
+      "typing": "O fluxo está rodando...",
+      "attachment": "Arquivo",
+      "placeholder": "Escreva como se fosse o contato",
+      "send": "Enviar",
+      "saveFailed": "Não conseguimos salvar o fluxo para testar. Tente de novo.",
+      "stepsEmpty": "Os blocos que rodarem aparecem aqui, em ordem, com o tempo de cada um.",
+      "ms": "{{value}} ms",
+      "seconds": "{{value}} s",
+      "stepFailed": "Não deu certo",
+      "stepWaiting": "Esperando",
+      "stepStayed": "Continuou a conversa. {{reason}}",
+      "stepLeft": "Seguiu por \"{{name}}\". {{reason}}",
+      "status": {
+        "idle": "Parado",
+        "starting": "Começando",
+        "running": "Rodando",
+        "waiting": "Sua vez",
+        "waitingTime": "Aguardando o tempo",
+        "completed": "Terminou",
+        "failed": "Com erro",
+        "stopped": "Parado"
+      },
+      "notes": {
+        "templateSent": "Modelo do WhatsApp enviado: {{name}}. No teste, nada sai de verdade.",
+        "pipelineSkipped": "\"{{name}}\" não mexe no quadro durante o teste. Para ver um card nascer, teste numa conversa de verdade.",
+        "attachmentMissing": "Um anexo citado no texto não existe mais, e saiu da mensagem. {{reason}}",
+        "event": "Evento: {{name}}",
+        "aiLeft": "A IA seguiu por \"{{name}}\". {{reason}}",
+        "waitingTime": "O fluxo está esperando o tempo passar. Mande uma mensagem para seguir sem esperar.",
+        "completed": "O fluxo terminou.",
+        "failed": "O fluxo parou: {{message}}",
+        "stopped": "Teste parado.",
+        "startFailed": "Não foi possível começar o teste. Tente de novo.",
+        "notWaiting": "O fluxo ainda está rodando. Espere ele terminar para mandar outra mensagem.",
+        "sendFailed": "A mensagem não foi. Tente de novo."
+      }
+    },
+    "publish": {
+      "action": "Publicar",
+      "title": "Publicar \"{{name}}\"",
+      "descriptionFirst": "Depois de publicar, este fluxo passa a cuidar das conversas.",
+      "descriptionUpdate": "A versão {{version}} sai do ar, e esta entra no lugar. O que já está em andamento termina na versão em que começou.",
+      "starts": "Começa:",
+      "allGood": "Tudo certo para publicar.",
+      "errorsTitle_one": "1 coisa impede de publicar",
+      "errorsTitle_other": "{{count}} coisas impedem de publicar",
+      "warningsTitle_one": "1 ponto para conferir",
+      "warningsTitle_other": "{{count}} pontos para conferir",
+      "cancel": "Voltar",
+      "confirm": "Publicar agora",
+      "done": "\"{{name}}\" publicado",
+      "failed": "Não foi possível publicar. Tente de novo.",
+      "saveFailed": "Não conseguimos salvar o rascunho. Confira a conexão e tente de novo.",
+      "nothing": "Nada novo para publicar"
+    },
+    "details": {
+      "title": "Nome e canais",
+      "name": "Nome do fluxo",
+      "nameRequired": "Dê um nome ao fluxo",
+      "nameTooLong": "Use até 120 letras",
+      "description": "Descrição",
+      "descriptionTooLong": "Use até 2.000 letras",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "saved": "Salvo"
+    },
+    "dataFields": {
+      "title": "Dados da conversa",
+      "count_zero": "Nenhum dado cadastrado",
+      "count_one": "1 dado cadastrado",
+      "count_other": "{{count}} dados cadastrados",
+      "explain": "O que este fluxo coleta. O valor fica em cada conversa, e volta preenchido quando o fluxo roda de novo nela. Não aparece nos campos do contato.",
+      "name": "Nome",
+      "namePlaceholder": "Produto escolhido",
+      "type": "Tipo",
+      "types": {
+        "string": "Texto",
+        "integer": "Inteiro",
+        "number": "Número",
+        "boolean": "Sim ou não",
+        "array": "Lista"
+      },
+      "description": "O que é, para a IA",
+      "descriptionPlaceholder": "O produto que o cliente escolheu, como aparece no catálogo",
+      "needsName": "Dê um nome para criar a variável",
+      "usedIn_one": "Usado em 1 bloco",
+      "usedIn_other": "Usado em {{count}} blocos",
+      "unused": "Ainda não usado",
+      "add": "Cadastrar dado",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir \"{{name}}\"?",
+      "deleteDescription_one": "Está em 1 bloco, e deixa de ser coletado. O que já foi salvo nas conversas continua lá.",
+      "deleteDescription_other": "Está em {{count}} blocos, e deixa de ser coletado. O que já foi salvo nas conversas continua lá."
+    },
+    "basePrompt": {
+      "title": "Instruções gerais da IA",
+      "description_zero": "Valem para todos os blocos de IA no modelo principal. Ainda não há nenhum neste fluxo.",
+      "description_one": "Valem para o bloco de IA deste fluxo que usa o modelo principal.",
+      "description_other": "Valem para os {{count}} blocos de IA deste fluxo que usam o modelo principal.",
+      "placeholder": "Você atende a Doma Store, uma loja de casa e decoração. Fale com simpatia e sem formalidade. Nunca invente preço ou prazo.",
+      "emptyHint": "Nada definido. Use para o que vale em todos os blocos de IA: quem fala, tom de voz e regras.",
+      "edit": "Editar as instruções gerais",
+      "add": "Escrever as instruções gerais",
+      "fastHint": "O modelo rápido não usa estas instruções.",
+      "chars_one": "{{value}} letra",
+      "chars_other": "{{value}} letras",
+      "cancel": "Cancelar",
+      "apply": "Aplicar"
+    },
+    "versions": {
+      "title": "Versões",
+      "description": "Cada publicação fica guardada. Restaurar traz para o rascunho: nada vai para o ar sem publicar.",
+      "number": "Versão {{number}}",
+      "draft": "Rascunho",
+      "live": "No ar",
+      "savedAt": "Salva",
+      "publishedAt": "Publicada",
+      "restore": "Restaurar",
+      "restoreTitle": "Restaurar a versão {{number}}?",
+      "restoreDescription": "O rascunho atual é trocado por esta versão. Dá para desfazer logo depois.",
+      "restored": "Versão {{number}} no rascunho",
+      "restoreFailed": "Não foi possível restaurar. Tente de novo."
+    },
+    "start": {
+      "action": "Iniciar numa conversa",
+      "title": "Iniciar \"{{name}}\"",
+      "description": "O fluxo começa na conversa escolhida. Se ele já estiver rodando lá, nada muda.",
+      "pick": "Busque pelo nome ou telefone",
+      "empty": "Nenhuma conversa encontrada",
+      "done": "\"{{name}}\" iniciado",
+      "failed": "Não foi possível iniciar. Tente de novo.",
+      "cancel": "Cancelar"
+    },
+    "toolPanel": {
+      "title": "Função",
+      "newTitle": "Nova função",
+      "description": "O código que o bloco roda, em JavaScript.",
+      "shared": "Esta função é da organização: mudar aqui muda em todos os fluxos que a usam.",
+      "lockedTitle": "Veio da ferramenta {{name}}",
+      "lockedDescription": "O código de uma ferramenta instalada não se edita. Para mudar, personalize: ela deixa de receber o que vier do catálogo.",
+      "personalize": "Personalizar",
+      "personalizeTitle": "Personalizar esta função?",
+      "personalizeDescription": "O código aparece e fica editável, mas ela deixa de receber as atualizações da ferramenta.",
+      "personalized": "Função personalizada",
+      "name": "Nome",
+      "nameHint": "É o que a IA vê. Letras, números, _ e -.",
+      "nameInvalid": "Use só letras, números, _ e -, sem espaços.",
+      "descriptionLabel": "O que ela faz",
+      "descriptionPlaceholder": "Calcula o frete para um CEP.",
+      "parameters": "O que ela recebe",
+      "parametersHint": "Vira `params` no código. Preencha um exemplo para testar.",
+      "parameterName": "Nome",
+      "parameterType": "Tipo",
+      "parameterDescription": "Descrição",
+      "parameterTest": "Valor de teste",
+      "parameterRequired": "Obrigatório",
+      "parameterRemove": "Remover",
+      "parameterAdd": "Adicionar parâmetro",
+      "types": {
+        "string": "Texto",
+        "number": "Número",
+        "integer": "Inteiro",
+        "boolean": "Sim ou não",
+        "array": "Lista",
+        "object": "Objeto"
+      },
+      "codeLabel": "Código da função",
+      "save": "Salvar função",
+      "saved": "Função salva",
+      "saveFailed": "Não foi possível salvar. Tente de novo.",
+      "runFailed": "Não foi possível executar. Tente de novo.",
+      "cancel": "Cancelar",
+      "close": "Fechar"
+    },
+    "codeEditor": {
+      "toolbar": "Ferramentas do código",
+      "format": "Formatar",
+      "wrapOn": "Quebrar linhas: ligado",
+      "wrapOff": "Quebrar linhas: desligado",
+      "referenceToggle": "Referência da API",
+      "referenceSearch": "Buscar na API",
+      "maximize": "Tela cheia",
+      "restore": "Sair da tela cheia",
+      "run": "Salvar e executar",
+      "running": "Executando...",
+      "insert": "Inserir no código",
+      "noProblems": "Sem problemas",
+      "errors_one": "1 erro",
+      "errors_other": "{{count}} erros",
+      "warnings_one": "1 aviso",
+      "warnings_other": "{{count}} avisos",
+      "lineColumn": "Linha {{line}}, coluna {{column}}",
+      "line": "linha {{line}}",
+      "createParameter": "Criar o parâmetro \"{{name}}\"",
+      "resultDone": "Executou",
+      "resultFailed": "Com erro",
+      "resultPending": "Ainda não terminou",
+      "pendingHint": "A execução depende do processo de scripts. Se ele estiver parado, o resultado não chega.",
+      "duration": "{{value}} ms",
+      "response": "O que devolveu",
+      "noResponse": "Nada",
+      "calls_one": "1 chamada",
+      "calls_other": "{{count}} chamadas",
+      "reference": {
+        "params": { "title": "Parâmetros", "hint": "O que chega de quem chamou, e as chaves da ferramenta." },
+        "network": { "title": "Rede", "hint": "Chamar outros sistemas. Até 50 chamadas por execução." },
+        "contact": { "title": "Contato", "hint": "Quem está na conversa, e os dados guardados nela." },
+        "tags": { "title": "Etiquetas e atribuição", "hint": "Marcar a conversa e passar para alguém." },
+        "collection": { "title": "Tabelas", "hint": "Tabelas livres da organização, criadas na hora." },
+        "catalog": { "title": "Catálogo", "hint": "Busca e leitura dos produtos." },
+        "kanban": { "title": "Pipelines", "hint": "Quadros, etapas e cards." },
+        "agenda": { "title": "Agenda", "hint": "Serviços, horários e turmas." },
+        "utilities": { "title": "Utilidades", "hint": "Registro, espera, rotas e criptografia." }
+      }
+    },
+    "editor": {
+      "loading": "Carregando o fluxo",
+      "notFound": "Este fluxo não existe mais",
+      "notFoundHint": "Ele pode ter sido excluído. Volte para a lista de fluxos."
+    },
+    "list": {
+      "description": "Quem cuida das conversas é um fluxo: o que acontece quando alguém manda mensagem, passo a passo.",
+      "settings": "Configurações",
+      "create": "Novo fluxo",
+      "createShort": "Novo",
+      "statusLabel": "Filtrar pela situação",
+      "tabActive": "Todos",
+      "search": "Buscar fluxo",
+      "triggerFilter": "Como começa",
+      "count_one": "1 fluxo",
+      "count_other": "{{count}} fluxos",
+      "sortRecent": "Editados há pouco",
+      "sortUsed": "Usados há pouco",
+      "sortName": "Nome, de A a Z",
+      "noResults": "Nenhum fluxo encontrado",
+      "noResultsHint": "Tente outra palavra, ou limpe os filtros.",
+      "clearFilters": "Limpar filtros",
+      "emptyTab": {
+        "active": "Nenhum fluxo por aqui",
+        "published": "Nenhum fluxo ligado",
+        "draft": "Nenhum rascunho",
+        "archived": "Nada arquivado"
+      },
+      "neverUsed": "Nunca rodou",
+      "lastUsed": "Rodou",
+      "week_one": "1 em 7 dias",
+      "week_other": "{{count}} em 7 dias",
+      "recentLabel_one": "1 execução em 7 dias, {{failed}} com falha. Ver execuções.",
+      "recentLabel_other": "{{count}} execuções em 7 dias, {{failed}} com falha. Ver execuções.",
+      "waiting_one": "1 esperando resposta",
+      "waiting_other": "{{count}} esperando resposta",
+      "actionsOf": "Ações de {{name}}",
+      "edit": "Abrir",
+      "open": "Abrir",
+      "executions": "Ver execuções",
+      "duplicate": "Duplicar",
+      "duplicated": "Cópia criada",
+      "copyName": "{{name}} (cópia)",
+      "archiveAction": "Arquivar",
+      "archiveTitle": "Arquivar \"{{name}}\"?",
+      "archiveDescription": "O rascunho sai da lista principal, e continua nos arquivados.",
+      "archived": "\"{{name}}\" arquivado",
+      "restore": "Tirar do arquivo",
+      "restored": "De volta aos rascunhos",
+      "deleteAction": "Excluir",
+      "deleteTitle": "Excluir \"{{name}}\"?",
+      "deleteDescription": "Leva junto as versões e o histórico de execuções. Não dá para desfazer.",
+      "deleted": "\"{{name}}\" excluído",
+      "actionFailed": "Não deu certo. Tente de novo."
+    },
+    "welcome": {
+      "eyebrow": "Comece por aqui",
+      "title": "Deixe um fluxo cuidar das primeiras mensagens",
+      "description": "Um fluxo é o caminho de uma conversa: dar boas-vindas, perguntar o que a pessoa quer, passar para alguém da equipe. Escolha um modelo pronto, teste e ajuste o que quiser.",
+      "blank": "Começar do zero"
+    },
+    "create": {
+      "title": "Novo fluxo",
+      "description": "De um modelo pronto ou do zero. Tudo pode mudar depois.",
+      "fromTemplate": "Usar um modelo",
+      "fromScratch": "Começar do zero",
+      "templateHint": "Clique duas vezes para criar direto.",
+      "useTemplate": "Usar este modelo",
+      "name": "Como vai se chamar",
+      "namePlaceholder": "Boas-vindas da loja",
+      "nameRequired": "Dê um nome ao fluxo",
+      "nameTooLong": "Use até 120 letras",
+      "triggerQuestion": "Quando este fluxo começa?",
+      "submit": "Criar fluxo",
+      "cancel": "Cancelar",
+      "failed": "Não foi possível criar. Tente de novo."
+    },
+    "templates": {
+      "categoriesLabel": "Filtrar os modelos",
+      "all": "Todos",
+      "categories": {
+        "atendimento": "Atendimento",
+        "vendas": "Vendas",
+        "suporte": "Suporte",
+        "ia": "Com IA"
+      }
+    },
+    "executions": {
+      "routeTitle": "Execuções",
+      "title": "Execuções de {{name}}",
+      "description": "Quem passou por este fluxo, quem está esperando, e o que deu errado. O teste do editor não entra aqui.",
+      "openFlow": "Abrir o fluxo",
+      "filterLabel": "Filtrar execuções",
+      "filter": {
+        "all": "Todas",
+        "waiting_for_message": "Esperando resposta",
+        "failed": "Com falha",
+        "completed": "Concluídas"
+      },
+      "empty": {
+        "all": "Este fluxo ainda não rodou",
+        "waiting_for_message": "Ninguém esperando resposta",
+        "failed": "Nenhuma falha",
+        "completed": "Nenhuma concluída"
+      },
+      "emptyHint": "Quando alguém passar por ele numa conversa de verdade, aparece aqui. Para experimentar agora, use Testar no editor.",
+      "unknownContact": "Contato sem nome",
+      "detailTitle": "Execução",
+      "startedAt": "Começou",
+      "failedTitle": "O que deu errado",
+      "failedUnknown": "A execução parou sem dizer o motivo.",
+      "waitingTitle": "Esperando {{name}} responder",
+      "waitingAt": "O fluxo está parado em \"{{name}}\", e segue quando chegar a próxima mensagem.",
+      "waitingHint": "O fluxo segue quando chegar a próxima mensagem.",
+      "waitingTimeTitle": "Esperando o tempo passar",
+      "waitingTimeHint": "O fluxo segue sozinho no fim da espera. Se alguém da equipe assumir, ela é cancelada.",
+      "seeInFlow": "Ver no fluxo",
+      "openChat": "Abrir a conversa",
+      "noSteps": "Nenhum bloco rodou ainda.",
+      "rawDetails": "Ver detalhes",
+      "status": {
+        "pending": "Na fila",
+        "running": "Rodando",
+        "waiting": "Aguardando o tempo",
+        "waiting_for_message": "Esperando resposta",
+        "completed": "Concluída",
+        "failed": "Com falha",
+        "cancelled": "Cancelada"
+      }
+    },
+    "steps": {
+      "failed": "Não deu certo",
+      "failedKept": "Não deu certo, e o fluxo seguiu",
+      "skipped": "Pulou este bloco",
+      "skippedReason": {
+        "no_chat": "Não havia conversa.",
+        "no_tag_id": "Nenhuma etiqueta escolhida.",
+        "tag_not_found": "A etiqueta não existe mais.",
+        "no_key": "Nenhum campo escolhido.",
+        "no_account": "Nenhuma pessoa disponível.",
+        "no_team": "Nenhum departamento escolhido.",
+        "team_not_found": "O departamento não existe mais.",
+        "no_attachment": "Nenhum arquivo escolhido.",
+        "no_connector_support": "Este canal não aceita modelos do WhatsApp.",
+        "template_not_found": "O modelo não existe, ou não foi aprovado.",
+        "no_target": "Nenhum fluxo escolhido.",
+        "flow_not_found": "O fluxo escolhido não existe mais.",
+        "too_deep": "Fluxos chamando fluxos demais.",
+        "already_running": "O outro fluxo já estava rodando nesta conversa.",
+        "no_funnel_stage": "Nenhuma etapa escolhida.",
+        "funnel_stage_not_found": "O funil ou a etapa não existem mais.",
+        "playground": "No teste do editor, nada mexe em quadro.",
+        "empty": "O texto ficou vazio.",
+        "nothing_after": "Não havia nada depois da espera.",
+        "invalid_or_missing_stage": "A etapa não existe mais.",
+        "no_card": "Nenhum card encontrado.",
+        "card_not_found": "O card não existe mais.",
+        "invalid_stage": "A etapa não existe mais.",
+        "invalid_action": "Ação desconhecida."
+      },
+      "started": "Começou",
+      "sent": "Enviou",
+      "asked": "Perguntou e ficou esperando",
+      "answered": "Recebeu a resposta",
+      "offered": "Ofereceu as opções e ficou esperando",
+      "invalidChoice": "A resposta não era uma das opções",
+      "chose": "O contato escolheu",
+      "mediaSent": "Enviou um arquivo",
+      "mediaFailed": "O canal recusou o arquivo",
+      "templateSent": "Enviou o modelo",
+      "waited": "Começou a esperar",
+      "waitingMessage": "Ficou esperando a próxima mensagem",
+      "receivedMessage": "Recebeu a mensagem",
+      "conditionTrue": "A regra valeu: seguiu por Sim",
+      "conditionFalse": "A regra não valeu: seguiu por Não",
+      "switched": "Comparou o valor",
+      "saved": "Guardou",
+      "loopRound": "Volta {{count}} da repetição",
+      "loopDone": "Acabou a repetição",
+      "aiLeft": "A IA decidiu seguir",
+      "aiReplied": "A IA respondeu e ficou esperando",
+      "aiDecided": "A IA escolheu o caminho",
+      "sentiment": "Tom da mensagem",
+      "intent": "O assunto entendido",
+      "extracted": "Anotou",
+      "transcribed": "Transcreveu o áudio",
+      "tagged": "Adicionou a etiqueta",
+      "untagged": "Tirou a etiqueta",
+      "attribute": "Preencheu o campo",
+      "assignedAgent": "Passou para uma pessoa",
+      "assignedTeam": "Passou para o departamento",
+      "transferred": "Transferiu para a equipe",
+      "finalized": "Fechou a conversa",
+      "paused": "Pausou a automação",
+      "resumed": "Ligou a automação de novo",
+      "funnelMoved": "Mudou a etapa do funil",
+      "funnelSame": "A conversa já estava nesta etapa",
+      "httpDone": "Chamou o outro sistema, e recebeu {{status}}",
+      "toolDone": "Executou a função",
+      "subflow": "Chamou outro fluxo",
+      "catalog_one": "Achou 1 item no catálogo",
+      "catalog_other": "Achou {{count}} itens no catálogo",
+      "ended": "Terminou",
+      "pipelineDone": "Fez a mudança no pipeline",
+      "done": "Concluiu"
+    },
+    "settings": {
+      "title": "Configurações da automação",
+      "description": "Como a automação se comporta nas conversas, em todos os fluxos.",
+      "readOnly": "Só quem cuida das configurações da organização pode mudar.",
+      "saved": "Salvo",
+      "failed": "Não foi possível salvar. Confira os dados e tente de novo.",
+      "save": "Salvar",
+      "mainTitle": "Ligar e desligar",
+      "mainHint": "Vale na hora, para a organização inteira.",
+      "enabled": "Automação ligada",
+      "enabledHint": "Desligada, nenhum fluxo dispara em nenhuma conversa.",
+      "defaultEnabled": "Ligada nas conversas novas",
+      "defaultEnabledHint": "Cada conversa pode ligar e desligar a própria automação. É assim que ela nasce.",
+      "pauseTitle": "Quando alguém da equipe responde",
+      "pauseHint": "Por quanto tempo a automação fica pausada na conversa, para não falar por cima de ninguém.",
+      "pausePeriod": "Tempo de pausa",
+      "pauseForever": "Até alguém ligar de novo",
+      "pauseAmount": "Quanto",
+      "hoursTitle": "Horário de atendimento",
+      "hoursHint": "Fora do horário, o disparo espera a próxima abertura. Fuso: {{timezone}}.",
+      "hoursEnabled": "Respeitar o horário",
+      "hoursClosed": "Fechado",
+      "hoursStart": "Abre às",
+      "hoursEnd": "Fecha às",
+      "hoursTo": "até",
+      "hoursAdd": "Adicionar horário",
+      "hoursRemove": "Remover o horário",
+      "clearTitle": "Limpar o contexto",
+      "clearHint": "Depois de um tempo sem mensagens, a conversa recomeça do zero para a IA.",
+      "clearEnabled": "Limpar sozinho",
+      "clearInterval": "Horas sem mensagem"
+    }
+  }
+}

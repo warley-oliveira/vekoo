@@ -1,7 +1,7 @@
 {
   "slug": "faq_support",
-  "name": "Suporte com FAQ",
-  "description": "IA tenta responder com base em uma tool de busca em FAQ. Se não conseguir, transfere para humano.",
+  "name": "Suporte com perguntas frequentes",
+  "description": "A IA responde com uma função de busca nas perguntas frequentes. Se não encontrar a resposta, transfere para uma pessoa.",
   "category": "suporte",
   "trigger_type": "message_received",
   "tags": ["suporte", "ia", "faq"],
@@ -12,7 +12,7 @@
       { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": {} },
       { "id": "ai", "type": "ai_assistant", "position": { "x": 320, "y": 0 }, "data": {
         "mode": "interactive",
-        "system_prompt": "Você é um agente de suporte. Use a tool buscar_faq para encontrar respostas. Se não encontrar resposta confiável após 2 tentativas, chame __exit_escalar.",
+        "system_prompt": "Você é a pessoa de suporte. Use a função buscar_faq para encontrar respostas. Se não encontrar resposta confiável após 2 tentativas, chame __exit_escalar.",
         "model_size": "main",
         "temperature": 0.2,
         "use_history": true,

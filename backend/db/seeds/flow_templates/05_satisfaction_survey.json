@@ -1,7 +1,7 @@
 {
   "slug": "satisfaction_survey",
-  "name": "Pesquisa de satisfação pós-atendimento",
-  "description": "Após o atendente humano assumir, envia pesquisa rápida e salva resposta em custom_attributes.",
+  "name": "Pesquisa de satisfação",
+  "description": "Depois que alguém da equipe assume, envia uma pesquisa rápida e guarda a resposta no contato.",
   "category": "atendimento",
   "trigger_type": "human_handoff",
   "tags": ["pesquisa", "csat"],

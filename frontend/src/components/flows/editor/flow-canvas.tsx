@@ -24,6 +24,7 @@ import { FlowBlock } from "./flow-block"
 import { LinkEdgeView } from "./link-edge"
 import { useEditor, useEditorApi, type BlockNode, type LinkEdge } from "./store"
 import { useEditorUi } from "./ui-store"
+import "../flow-tokens.css"
 import "./flows.css"
 
 // O quadro. As peças do xyflow vêm prontas para um quadro grande: cada bloco e cada linha são memorizados

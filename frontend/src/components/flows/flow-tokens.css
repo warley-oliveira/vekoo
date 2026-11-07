@@ -1,0 +1,37 @@
+/*
+ * As famílias de bloco: a cor distingue poucas famílias, e só no ícone. Fica à parte do quadro porque a
+ * lista e os modelos também desenham blocos, e o quadro mora num chunk que eles não carregam.
+ */
+:root {
+  --flow-family-start: var(--status-success);
+  --flow-family-start-soft: var(--status-success-soft);
+  --flow-family-talk: var(--status-info);
+  --flow-family-talk-soft: var(--status-info-soft);
+  --flow-family-ai: oklch(0.46 0.09 340);
+  --flow-family-ai-soft: oklch(0.96 0.016 340);
+  --flow-family-decide: var(--status-warning);
+  --flow-family-decide-soft: var(--status-warning-soft);
+  --flow-family-neutral: var(--status-neutral);
+  --flow-family-neutral-soft: var(--status-neutral-soft);
+}
+
+.flow-block[data-family="start"] {
+  --block-tint: var(--flow-family-start);
+  --block-tint-soft: var(--flow-family-start-soft);
+}
+.flow-block[data-family="talk"] {
+  --block-tint: var(--flow-family-talk);
+  --block-tint-soft: var(--flow-family-talk-soft);
+}
+.flow-block[data-family="ai"] {
+  --block-tint: var(--flow-family-ai);
+  --block-tint-soft: var(--flow-family-ai-soft);
+}
+.flow-block[data-family="decide"] {
+  --block-tint: var(--flow-family-decide);
+  --block-tint-soft: var(--flow-family-decide-soft);
+}
+.flow-block[data-family="neutral"] {
+  --block-tint: var(--flow-family-neutral);
+  --block-tint-soft: var(--flow-family-neutral-soft);
+}

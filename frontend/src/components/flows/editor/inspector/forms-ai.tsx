@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 
 import { useEditor, useEditorApi } from "../store"
 import { useEditorUi } from "../ui-store"
+import { str, useBlockForm } from "./form-context"
 import {
   AddButton,
   Advanced,
@@ -23,10 +24,8 @@ import {
   Note,
   Section,
   Segmented,
-  str,
   TextInput,
   Toggle,
-  useBlockForm,
   VarField,
 } from "./parts"
 
@@ -398,7 +397,7 @@ function ToolsPicker() {
   const { t } = useTranslation()
   const { data, set } = useBlockForm()
   const { tools, isLoading } = useToolOptions()
-  const ids = Array.isArray(data.tool_ids) ? (data.tool_ids as string[]) : []
+  const ids = useMemo(() => (Array.isArray(data.tool_ids) ? (data.tool_ids as string[]) : []), [data.tool_ids])
   const options = useMemo<SelectOption[]>(() => {
     const known = tools.map((tool) => ({ value: tool.id, label: tool.name, description: tool.description ?? undefined }))
     // Função que saiu da organização continua à vista, para poder ser tirada daqui.

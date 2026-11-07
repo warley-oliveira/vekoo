@@ -1,7 +1,7 @@
 {
   "slug": "audio_capture",
-  "name": "Coleta de áudio + transcrição",
-  "description": "Pede um áudio, transcreve via Whisper e classifica intenção para roteamento.",
+  "name": "Áudio com transcrição",
+  "description": "Pede um áudio, transcreve e entende o que a pessoa quer para encaminhar.",
   "category": "ia",
   "trigger_type": "message_received",
   "tags": ["audio", "ia", "whisper"],

@@ -1,7 +1,7 @@
 {
   "slug": "lead_qualification",
-  "name": "Qualificação de lead",
-  "description": "Coleta nome, email e empresa via IA, cria card no kanban e atribui um vendedor.",
+  "name": "Qualificação de contato",
+  "description": "Coleta nome, e-mail e empresa com IA, cria um card no pipeline e atribui a um vendedor.",
   "category": "vendas",
   "trigger_type": "first_message",
   "tags": ["lead", "ia", "kanban"],

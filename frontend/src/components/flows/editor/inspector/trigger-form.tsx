@@ -12,7 +12,15 @@ import { useFlowContext } from "../flow-context"
 import { useEditorApi } from "../store"
 import { useEditorUi } from "../ui-store"
 import { WebhookLink } from "./forms-basic"
-import { Advanced, ChipsBox, ChoiceCards, Field, Note, Section, useBlockForm } from "./parts"
+import { useBlockForm } from "./form-context"
+import {
+  Advanced,
+  ChipsBox,
+  ChoiceCards,
+  Field,
+  Note,
+  Section,
+} from "./parts"
 import { Button } from "@/components/ui/button"
 
 // O gatilho, em linguagem de gente: "Quando alguém mandar a primeira mensagem". Trocar é no próprio bloco,

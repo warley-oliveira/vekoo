@@ -56,6 +56,8 @@ export type EditorState = Snapshot & {
   future: Snapshot[]
   /** Sobe a cada alteração de conteúdo. O salvamento compara com o que já foi gravado. */
   revision: number
+  /** Quantos blocos já foram excluídos. É o que dispara o "Desfazer" na tela. */
+  deletions: number
   /** Saídas ligadas de cada bloco, "next|true". Um valor por bloco: é o que evita varrer as conexões. */
   outlets: Record<string, string>
   picker: PickerRequest | null
@@ -199,6 +201,7 @@ export function createEditorStore(
       past: [],
       future: [],
       revision: 0,
+      deletions: 0,
       outlets: outletsOf(initialEdges),
       picker: null,
       clipboard: null,
@@ -219,7 +222,12 @@ export function createEditorStore(
           nodes,
           selectedId: selected.length === 1 ? selected[0].id : null,
           selectionCount: selected.length,
-          ...(removing ? { revision: bump() } : null),
+          ...(removing
+            ? {
+                revision: bump(),
+                deletions: get().deletions + changes.filter((change) => change.type === "remove").length,
+              }
+            : null),
         })
       },
 
@@ -379,6 +387,7 @@ export function createEditorStore(
           selectedId: selectedId && removable.has(selectedId) ? null : selectedId,
           selectionCount: stillSelected,
           revision: bump(),
+          deletions: get().deletions + removable.size,
         })
       },
 

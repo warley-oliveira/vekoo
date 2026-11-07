@@ -6,7 +6,7 @@ import { AlertCircle, Copy, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { blockFamily, blockIcon, isTrigger } from "@/lib/flows/catalog"
-import { blockOutputs, DEFAULT_OUTPUT, hasSingleOutput, type BlockOutput } from "@/lib/flows/outputs"
+import { blockOutputs, DEFAULT_OUTPUT, hasSingleOutput, outputLabel } from "@/lib/flows/outputs"
 import { blockSummary } from "@/lib/flows/summary"
 import { cn } from "@/lib/utils"
 
@@ -15,7 +15,7 @@ import { useEditor, useEditorApi, type BlockNode } from "./store"
 
 // Um bloco do quadro: título forte e o resumo em uma linha do que ele faz. Só redesenha quando o que é
 // dele mudou (`memo`, e cada leitura do store é um valor simples), e é isso que mantém o editor fluido
-// com 100 blocos. `import.meta.env.DEV` conta os renders para a medição em `routes/dev/flow-perf`.
+// com 100 blocos. Em desenvolvimento, conta os renders: a medição fica em `routes/dev/flow-perf`.
 
 /** Tela de conferência em desenvolvimento: `window.__flowRenders`. Some do build de produção. */
 function countRender(id: string) {
@@ -23,10 +23,6 @@ function countRender(id: string) {
   const counters = window as unknown as { __flowRenders?: Record<string, number> }
   counters.__flowRenders ??= {}
   counters.__flowRenders[id] = (counters.__flowRenders[id] ?? 0) + 1
-}
-
-export function outputLabel(output: BlockOutput, t: (key: string) => string): string {
-  return output.label || (output.labelKey ? t(output.labelKey) : output.id)
 }
 
 export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: NodeProps<BlockNode>) {

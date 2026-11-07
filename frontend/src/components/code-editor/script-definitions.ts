@@ -1,7 +1,7 @@
 /**
- * Gera as definições de tipo globais para o ambiente de execução
- * do editor JavaScript (Monaco). Essas definições fornecem autocomplete
- * e validação de tipos para as APIs disponíveis no MiniRacer.
+ * As definições de tipo do que um script enxerga no motor (docs/migration/api/script-engine.md): é o que
+ * dá autocompletar e validação no Monaco. É contrato de quem escreve script: `kanban.*` e `appointment.*`
+ * ficam com estes nomes.
  *
  * @param paramsDefinition       interfaces e `declare const params` gerados a
  *                                partir dos parâmetros da função.
@@ -10,7 +10,7 @@
  *                                instalada. Quando ausente, emite um Record
  *                                permissivo de strings.
  */
-export function generateGlobalDefinitions(
+export function scriptDefinitions(
   paramsDefinition: string,
   credentialsDefinition?: string,
 ): string {
@@ -1078,15 +1078,15 @@ interface KanbanResult<T = Record<string, any>> {
 }
 
 interface KanbanBoardSummary {
-  id: number;
+  id: string;
   name: string;
   board_type: 'standard' | 'crm';
   archived: boolean;
-  columns: Array<{ id: number; name: string; position: number }>;
+  columns: Array<{ id: string; name: string; position: number }>;
 }
 
 interface KanbanColumnInfo {
-  id: number;
+  id: string;
   name: string;
   position: number;
   color: string | null;
@@ -1095,13 +1095,13 @@ interface KanbanColumnInfo {
 }
 
 interface KanbanLabelInfo {
-  id: number;
+  id: string;
   name: string;
   color: string;
 }
 
 interface KanbanCustomFieldDefinition {
-  id: number;
+  id: string;
   key: string;
   name: string;
   field_type: 'text' | 'number' | 'date' | 'select' | 'checkbox' | 'url' | 'user';
@@ -1112,15 +1112,15 @@ interface KanbanCustomFieldDefinition {
 }
 
 interface KanbanCardInfo {
-  id: number;
+  id: string;
   title: string;
   description: string | null;
   status: string | null;
   priority: 'low' | 'medium' | 'high' | 'urgent' | null;
   due_date: string | null;
   position: number;
-  kanban_column_id: number;
-  assigned_to_id: number | null;
+  kanban_column_id: string;
+  assigned_to_id: string | null;
   conversation_id: string | null;
   tags: string[];
   color_label: string | null;
@@ -1139,23 +1139,23 @@ interface KanbanCardInfo {
 }
 
 interface KanbanChecklistItemInfo {
-  id: number;
+  id: string;
   title: string;
   completed: boolean;
   position: number;
 }
 
 interface KanbanChecklistInfo {
-  id: number;
+  id: string;
   name: string;
   position: number;
   items: KanbanChecklistItemInfo[];
 }
 
 interface KanbanCommentInfo {
-  id: number;
+  id: string;
   body: string;
-  admin_user_id: number | null;
+  admin_user_id: string | null;
   pinned: boolean;
   created_at: string;
   edited_at: string | null;
@@ -1172,7 +1172,7 @@ interface KanbanBoardDetail extends KanbanBoardSummary {
 type KanbanRef = number | string;
 
 interface KanbanCardFilters {
-  /** Por padrão lista apenas cards vinculados à conversation atual. Passe true para todos. */
+  /** Por padrão lista apenas cards vinculados à conversa atual. Passe true para todos. */
   allConversations?: boolean;
   /** Filtra para apenas cards de uma coluna específica do board. */
   column_id?: number;
@@ -1199,7 +1199,7 @@ interface KanbanCreateCardAttrs {
   custom_field_values?: Record<string, any>;
   color_label?: string;
   assigned_to_id?: number;
-  /** Padrão true: usa Kanban::CardCreatorFromConversation e linka conversation_id. */
+  /** Padrão true: usa o criador de card da conversa e liga à conversa. */
   linkConversation?: boolean;
 }
 
@@ -1221,7 +1221,7 @@ interface KanbanUpdateCardAttrs {
 interface Kanban {
   // ── Discovery ────────────────────────────────────────────────
   /**
-   * Lista os boards ativos do workspace.
+   * Lista os boards ativos da organização.
    * Resultado fica cacheado no contexto da sessão de IA.
    * @example const boards = kanban.listBoards()
    */
@@ -1242,7 +1242,7 @@ interface Kanban {
   listColumns(boardRef: KanbanRef): KanbanResult<KanbanColumnInfo[]>;
 
   /**
-   * Lista cards de um board. Por padrão filtra pela conversation atual.
+   * Lista cards de um board. Por padrão filtra pela conversa atual.
    * Aceita id ou nome do board.
    * @example kanban.listCards('Pipeline Vendas') // apenas cards desta conversa
    * @example kanban.listCards(123, { allConversations: true, priority: 'high' })
@@ -1250,33 +1250,33 @@ interface Kanban {
   listCards(boardRef: KanbanRef, filters?: KanbanCardFilters): KanbanResult<KanbanCardInfo[]>;
 
   /**
-   * Retorna todos os cards do workspace vinculados à conversation atual.
+   * Retorna todos os cards da organização vinculados à conversa atual.
    * @example const myCards = kanban.findCardsForConversation()
    */
   findCardsForConversation(): KanbanResult<KanbanCardInfo[]>;
 
   /**
-   * Lista as labels do workspace.
+   * Lista as labels da organização.
    * @example kanban.listLabels()
    */
   listLabels(): KanbanResult<KanbanLabelInfo[]>;
 
   // ── CRUD de cards ────────────────────────────────────────────
   /**
-   * Cria um card. Por padrão linka conversation_id automaticamente.
+   * Cria um card. Por padrão liga à conversa automaticamente.
    * Aceita id ou nome em board e coluna.
    * @example kanban.createCard('Pipeline Vendas', 'Novos', { title: 'Lead interessado', priority: 'high' })
    */
   createCard(boardRef: KanbanRef, columnRef: KanbanRef, attrs?: KanbanCreateCardAttrs): KanbanResult<KanbanCardInfo>;
 
-  /** Retorna um card específico do workspace. */
-  getCard(cardId: number): KanbanResult<KanbanCardInfo>;
+  /** Retorna um card específico da organização. */
+  getCard(cardId: string): KanbanResult<KanbanCardInfo>;
 
   /**
    * Atualiza campos de um card (whitelist em KanbanUpdateCardAttrs).
    * @example kanban.updateCard(789, { priority: 'urgent', deal_value: 1500 })
    */
-  updateCard(cardId: number, attrs: KanbanUpdateCardAttrs): KanbanResult<KanbanCardInfo>;
+  updateCard(cardId: string, attrs: KanbanUpdateCardAttrs): KanbanResult<KanbanCardInfo>;
 
   /**
    * Move o card para outra coluna (e opcionalmente posição).
@@ -1288,40 +1288,40 @@ interface Kanban {
    * @example kanban.moveCard(789, 'Fechado')
    * @example kanban.moveCard(789, 'Fechado', true) // ao fim da coluna
    */
-  moveCard(cardId: number, columnRef: KanbanRef, atEnd?: boolean): KanbanResult<KanbanCardInfo>;
+  moveCard(cardId: string, columnRef: KanbanRef, atEnd?: boolean): KanbanResult<KanbanCardInfo>;
 
   /**
    * Arquiva ou desarquiva um card.
    * @example kanban.archiveCard(789)
    * @example kanban.archiveCard(789, true) // desarquiva
    */
-  archiveCard(cardId: number, undo?: boolean): KanbanResult<KanbanCardInfo>;
+  archiveCard(cardId: string, undo?: boolean): KanbanResult<KanbanCardInfo>;
 
   // ── CRM (deals) ──────────────────────────────────────────────
   /** Marca o deal como ganho. */
-  markWon(cardId: number): KanbanResult<KanbanCardInfo>;
+  markWon(cardId: string): KanbanResult<KanbanCardInfo>;
   /** Marca o deal como perdido, com motivo opcional. */
-  markLost(cardId: number, reason?: string): KanbanResult<KanbanCardInfo>;
+  markLost(cardId: string, reason?: string): KanbanResult<KanbanCardInfo>;
   /** Reabre um deal já fechado (won ou lost). */
-  reopenDeal(cardId: number): KanbanResult<KanbanCardInfo>;
+  reopenDeal(cardId: string): KanbanResult<KanbanCardInfo>;
 
   // ── Labels ───────────────────────────────────────────────────
   /**
-   * Anexa uma label ao card. Aceita id numérico OU nome (cria a label no workspace se não existir).
+   * Anexa uma label ao card. Aceita id OU nome (cria a label na organização se não existir).
    * @example kanban.addLabel(789, 'quente')
    * @example kanban.addLabel(789, 42)
    */
-  addLabel(cardId: number, labelIdOrName: number | string): KanbanResult<KanbanLabelInfo>;
+  addLabel(cardId: string, labelIdOrName: number | string): KanbanResult<KanbanLabelInfo>;
 
   /** Remove uma label do card. */
-  removeLabel(cardId: number, labelId: number): KanbanResult;
+  removeLabel(cardId: string, labelId: string): KanbanResult;
 
   // ── Custom fields ────────────────────────────────────────────
   /**
    * Define o valor de um custom field do card (chave é o atributo key do field definition).
    * @example kanban.setCustomField(789, 'origem_lead', 'instagram_ads')
    */
-  setCustomField(cardId: number, key: string, value: any): KanbanResult<KanbanCardInfo>;
+  setCustomField(cardId: string, key: string, value: any): KanbanResult<KanbanCardInfo>;
 
   /** Lista as definições de custom fields de um board (id ou nome). */
   getCustomFields(boardRef: KanbanRef): KanbanResult<KanbanCustomFieldDefinition[]>;
@@ -1330,28 +1330,28 @@ interface Kanban {
    * Lê um custom field de um card resolvendo a referência por key OU nome
    * (case-insensitive e acento-insensitive).
    */
-  getCustomField(cardId: number, key: string): KanbanResult<{ key: string; value: any }>;
+  getCustomField(cardId: string, key: string): KanbanResult<{ key: string; value: any }>;
 
   // ── Checklists ───────────────────────────────────────────────
   /** Cria um novo checklist no card. */
-  addChecklist(cardId: number, name: string): KanbanResult<KanbanChecklistInfo>;
+  addChecklist(cardId: string, name: string): KanbanResult<KanbanChecklistInfo>;
   /** Adiciona um item a um checklist existente. */
-  addChecklistItem(checklistId: number, title: string): KanbanResult<KanbanChecklistItemInfo>;
+  addChecklistItem(checklistId: string, title: string): KanbanResult<KanbanChecklistItemInfo>;
   /** Alterna o estado de um item de checklist. */
-  toggleChecklistItem(itemId: number): KanbanResult<KanbanChecklistItemInfo>;
+  toggleChecklistItem(itemId: string): KanbanResult<KanbanChecklistItemInfo>;
   /** Lista checklists e itens de um card. */
-  listChecklists(cardId: number): KanbanResult<KanbanChecklistInfo[]>;
+  listChecklists(cardId: string): KanbanResult<KanbanChecklistInfo[]>;
 
   // ── Comments ─────────────────────────────────────────────────
   /**
    * Adiciona um comentário ao card. Autor herda do usuário atribuído da conversa
-   * (fallback: primeiro usuário do workspace).
+   * (fallback: primeiro usuário da organização).
    * @example kanban.addComment(789, 'Lead pediu retorno na sexta')
    */
-  addComment(cardId: number, body: string): KanbanResult<KanbanCommentInfo>;
+  addComment(cardId: string, body: string): KanbanResult<KanbanCommentInfo>;
 
   /** Lista os comentários de um card (mais recentes primeiro). */
-  listComments(cardId: number, limit?: number): KanbanResult<KanbanCommentInfo[]>;
+  listComments(cardId: string, limit?: number): KanbanResult<KanbanCommentInfo[]>;
 
   // ── Fluent API ───────────────────────────────────────────────
   /**
@@ -1364,18 +1364,18 @@ interface Kanban {
   board(ref: KanbanRef): KanbanBoardFluent | null;
 
   /**
-   * Atalho fluent que devolve todos os boards do workspace como objetos com métodos.
+   * Atalho fluent que devolve todos os boards da organização como objetos com métodos.
    * Equivalente a kanban.listBoards().data.map(...) com helpers acoplados.
    */
   boards(): KanbanBoardFluent[];
 
   /** Atalho fluent para um card específico (id). */
-  card(id: number): KanbanCardFluent | null;
+  card(id: string): KanbanCardFluent | null;
 
-  /** Cards desta conversation (em qualquer board do workspace), com métodos fluent. */
+  /** Cards desta conversa (em qualquer board da organização), com métodos fluent. */
   cardsForConversation(): KanbanCardFluent[];
 
-  /** Atalho fluent para labels do workspace. */
+  /** Atalho fluent para labels da organização. */
   labels(): KanbanLabelInfo[];
 }
 
@@ -1408,7 +1408,7 @@ interface KanbanCardFluent extends KanbanCardInfo {
   reopen(): KanbanCardFluent | null;
   /** Anexa label (id ou nome — cria se não existir). */
   addLabel(labelRef: KanbanRef): KanbanLabelInfo | null;
-  removeLabel(labelId: number): KanbanResult;
+  removeLabel(labelId: string): KanbanResult;
   /**
    * Atualiza um custom field e devolve o card refletindo a mudança.
    * A key resolve por nome OU key (case-insensitive, acento-insensitive).
@@ -1431,7 +1431,7 @@ interface KanbanCardFluent extends KanbanCardInfo {
 interface KanbanColumnFluent extends KanbanColumnInfo {
   /** Lista cards desta coluna (já aplica filtro column_id). Combina filtros adicionais. */
   cards(filters?: KanbanCardFilters): KanbanCardFluent[];
-  /** Cria um card direto nesta coluna (vincula à conversation atual por padrão). */
+  /** Cria um card direto nesta coluna (vincula à conversa atual por padrão). */
   createCard(attrs?: KanbanCreateCardAttrs): KanbanCardFluent | null;
 }
 
@@ -1441,7 +1441,7 @@ interface KanbanBoardFluent extends Omit<KanbanBoardDetail, 'columns'> {
   column(ref: KanbanRef): KanbanColumnFluent | undefined;
   /** Lista cards do board (filtros opcionais). */
   cards(filters?: KanbanCardFilters): KanbanCardFluent[];
-  /** Cards deste board vinculados à conversation atual (atalho equivalente a cards()). */
+  /** Cards deste board vinculados à conversa atual (atalho equivalente a cards()). */
   cardsForConversation(): KanbanCardFluent[];
   /** Cria um card no board. columnRef é id ou nome de coluna deste board. */
   createCard(columnRef: KanbanRef, attrs?: KanbanCreateCardAttrs): KanbanCardFluent | KanbanResult;
@@ -1452,6 +1452,57 @@ interface KanbanBoardFluent extends Omit<KanbanBoardDetail, 'columns'> {
 }
 
 declare const kanban: Kanban;
+
+// ============================================
+// catalog: o catálogo de produtos, só leitura
+// ============================================
+
+interface CatalogItem {
+  id: string;
+  sku: string | null;
+  title: string;
+  summary: string | null;
+  url: string | null;
+  tags: string[];
+  /** URL absoluta, pronta para enviar como mídia. */
+  image: string | null;
+  images: string[];
+  fields: Record<string, any>;
+}
+
+interface CatalogResult<T> {
+  ok: boolean;
+  data?: T;
+  error?: string;
+  total?: number;
+  strategy?: string;
+}
+
+interface CatalogSearchOptions {
+  categories?: string[];
+  tags?: string[];
+  custom?: Record<string, any>;
+  /** Padrão 5, até 20. */
+  limit?: number;
+  includeInactive?: boolean;
+}
+
+interface Catalog {
+  /**
+   * Busca no catálogo, com a mesma busca da tela. Conta na cota de rede.
+   * @example catalog.Search('caneca', { limit: 3 })
+   */
+  Search(query: string, options?: CatalogSearchOptions): CatalogResult<CatalogItem[]>;
+  /** Um item, pelo id ou pelo SKU. */
+  Get(idOrSku: string): CatalogResult<CatalogItem & { description: string | null; categories: string[] }>;
+  /** As categorias, com a quantidade de itens. */
+  Categories(): CatalogResult<{ path: string; name: string; items: number }[]>;
+  /** Os valores de 'tags' ou de um campo personalizado. */
+  Facets(field: string): CatalogResult<{ value: string; count: number }[]>;
+  /** Itens parecidos, por proximidade de embedding. */
+  Similar(idOrSku: string, limit?: number): CatalogResult<CatalogItem[]>;
+}
+declare const catalog: Catalog;
 
 // ============================================
 // Gerenciamento de Usuários
@@ -1467,19 +1518,19 @@ interface User {
  * Atribui um usuário ao contato.
  * @example assignUser(userId)
  */
-declare function assignUser(userId: string): void;
+declare function assignUser(departmentName: string): boolean;
 
 /**
  * Atribui um usuário ao contato via email.
  * @example assignUserByEmail('user@example.com')
  */
-declare function assignUserByEmail(email: string): void;
+declare function assignUserByEmail(email: string | null): boolean;
 
 /**
  * Atribui um departamento ao contato.
  * @example assignDepartmentByName(departmentName)
  */
-declare function assignDepartmentByName(departmentName: string): void;
+declare function assignDepartmentByName(departmentName: string): boolean;
 
 /**
  * Recupera o usuário atribuído ao contato.
@@ -1494,15 +1545,15 @@ declare function assignedUser(): User | null;
 declare function userList(): User[];
 
 /**
- * Ativa a automação de IA para o contato atual.
+ * Liga a automação para o contato atual.
  * @example enableAutomation()
  */
-declare function enableAutomation(): void;
+declare function enableAutomation(): boolean;
 
 /**
- * Desativa a automação de IA para o contato atual.
+ * Desliga a automação para o contato atual.
  * @example disableAutomation()
  */
-declare function disableAutomation(): void;
+declare function disableAutomation(): boolean;
 `
 }

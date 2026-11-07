@@ -10,6 +10,7 @@ import { usePeople } from "@/hooks/people/use-people"
 import type { PipelineBoardOption } from "@/lib/flows/types"
 
 import { useEditor, useEditorApi, type BlockNode, type LinkEdge } from "../store"
+import { str, useBlockForm } from "./form-context"
 import {
   AddButton,
   Advanced,
@@ -21,10 +22,8 @@ import {
   Section,
   Segmented,
   SelectBox,
-  str,
   TextInput,
   Toggle,
-  useBlockForm,
   VarField,
 } from "./parts"
 

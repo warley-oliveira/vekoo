@@ -1,0 +1,9 @@
+/* A linha que fez a chamada, ao passar o mouse no resultado da execução. */
+.code-editor .code-editor-called-line {
+  background: var(--status-warning-soft);
+}
+
+/* A fonte de ícones do Monaco é da própria biblioteca: aqui só garante que a árvore do editor não herde o que o app define. */
+.code-editor .monaco-editor {
+  --vscode-focusBorder: var(--ring);
+}

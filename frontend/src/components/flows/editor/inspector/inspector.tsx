@@ -7,12 +7,11 @@ import { useShallow } from "zustand/react/shallow"
 import { Callout, SearchableSelect, type SelectOption } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { blockEntry, blockFamily, blockIcon, isTrigger } from "@/lib/flows/catalog"
-import { blockOutputs, DEFAULT_OUTPUT, normalizeHandle, type BlockOutput } from "@/lib/flows/outputs"
+import { blockOutputs, DEFAULT_OUTPUT, normalizeHandle, outputLabel, type BlockOutput } from "@/lib/flows/outputs"
 import { missingKey } from "@/lib/flows/summary"
 import type { BlockData } from "@/lib/flows/types"
 import { useMotionPreset } from "@/lib/motion"
 
-import { outputLabel } from "../flow-block"
 import { useEditor, useEditorApi } from "../store"
 import { useEditorUi } from "../ui-store"
 import {
@@ -55,7 +54,8 @@ import {
   UpdateCardForm,
   UpdateDealForm,
 } from "./forms-pipeline"
-import { BlockFormProvider, Section, str, type BlockSet } from "./parts"
+import { BlockFormProvider, str, type BlockSet } from "./form-context"
+import { Section } from "./parts"
 import { TriggerForm } from "./trigger-form"
 
 // O inspetor: um painel à direita com o essencial à vista e o avançado recolhido. Assina só o `data` do

@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useState, type ReactNode } from "react"
+import { useId, useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { ChevronRight, Plus, Trash2 } from "lucide-react"
 
@@ -15,39 +15,16 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import type { BlockData } from "@/lib/flows/types"
 import { toVariableName } from "@/lib/flows/variables"
 import { cn } from "@/lib/utils"
 
+import { str, useBlockForm } from "./form-context"
 import { VariableField } from "./variable-field"
 
 // As peças de um formulário do inspetor. Cada campo se liga ao bloco pelo nome (`name`), e o texto vem do
 // mesmo lugar: `flows.fields.<tipo>.<campo>` ou, se o bloco não disser nada de especial,
 // `flows.fields.<campo>`. O inspetor não usa react-hook-form de propósito: cada tecla já vale, porque o
 // bloco no quadro acompanha e o salvamento é automático.
-
-export type BlockSet = (patch: BlockData, options?: { coalesce?: string; renames?: Record<string, string> }) => void
-
-export type BlockForm = {
-  id: string
-  type: string
-  data: BlockData
-  set: BlockSet
-}
-
-const FormContext = createContext<BlockForm | null>(null)
-
-export function BlockFormProvider({ value, children }: { value: BlockForm; children: ReactNode }) {
-  return <FormContext.Provider value={value}>{children}</FormContext.Provider>
-}
-
-export function useBlockForm(): BlockForm {
-  const form = useContext(FormContext)
-  if (!form) throw new Error("Campo do inspetor fora de um bloco")
-  return form
-}
-
-export const str = (value: unknown): string => (value == null ? "" : String(value))
 
 /** O texto de um campo: rótulo, dica e exemplo. */
 function useFieldCopy(name: string, override?: { label?: string; hint?: string; placeholder?: string }) {

@@ -23,29 +23,13 @@ import { toast } from "sonner"
 import { ActionsMenu, RelativeTime, StatusBadge, useConfirm, type RowAction } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { flowKey, useFlowMutations } from "@/hooks/flows/use-flows"
-import { usePageTitle, useHeaderSlot } from "@/hooks/use-header-slot"
-import { useIsMobile } from "@/hooks/use-is-mobile"
 import { STATUS_TONES } from "@/components/flows/flow-status"
 
-import { useFlowContext } from "./flow-context"
 import { useEditorUi } from "./ui-store"
 import { useSWRConfig } from "swr"
 
 // O que o editor põe na barra superior: situação, salvamento e as ações do fluxo. O elemento monta dentro do
 // cabeçalho, fora da árvore do editor; por isso só lê stores globais e o que recebe por prop.
-
-export function useEditorHeader() {
-  const { t } = useTranslation()
-  const { flow } = useFlowContext()
-  const isMobile = useIsMobile()
-
-  usePageTitle(flow.name, { backTo: "/flows", parentTitle: t("navigation.flows") })
-
-  const actions = <HeaderActions flowId={flow.id} flowName={flow.name} status={flow.status} published={flow.published} triggerType={flow.triggerType} compact={false} />
-  const mobileActions = <HeaderActions flowId={flow.id} flowName={flow.name} status={flow.status} published={flow.published} triggerType={flow.triggerType} compact />
-
-  useHeaderSlot(actions, { mobileNode: mobileActions, mobilePlacement: isMobile ? "inline" : "overflow" })
-}
 
 function SaveIndicator() {
   const { t } = useTranslation()
@@ -95,7 +79,7 @@ function SaveIndicator() {
   )
 }
 
-function HeaderActions({
+export function HeaderActions({
   flowId,
   flowName,
   status,

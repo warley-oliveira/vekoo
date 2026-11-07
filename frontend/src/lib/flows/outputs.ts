@@ -15,6 +15,11 @@ export type BlockOutput = {
   tone?: "danger"
 }
 
+/** O que a pessoa lê numa saída: o texto que ela escreveu, ou o rótulo fixo. */
+export function outputLabel(output: BlockOutput, t: (key: string) => string): string {
+  return output.label || (output.labelKey ? t(output.labelKey) : output.id)
+}
+
 export function normalizeHandle(handle: string | null | undefined): string {
   return handle || DEFAULT_OUTPUT
 }

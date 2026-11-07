@@ -19,6 +19,7 @@ import { uniqueOutputId } from "@/lib/flows/outputs"
 
 import { useFlowContext } from "../flow-context"
 import { useEditorUi } from "../ui-store"
+import { str, useBlockForm } from "./form-context"
 import {
   AddButton,
   Advanced,
@@ -31,10 +32,8 @@ import {
   Section,
   Segmented,
   SelectBox,
-  str,
   TextInput,
   Toggle,
-  useBlockForm,
   VarField,
 } from "./parts"
 import { VariableField } from "./variable-field"
@@ -255,7 +254,7 @@ export function SendTemplateForm() {
   const options = useMemo<SelectOption[]>(
     () =>
       templates
-        .filter((template) => template.status === "APPROVED" || template.name === data.template_name)
+        .filter((template) => template.status === "approved" || template.name === data.template_name)
         .map((template) => ({ value: template.name, label: template.name, description: template.language })),
     [data.template_name, templates]
   )

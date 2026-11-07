@@ -18,10 +18,9 @@ import type { FlowDefinition, FlowDetail } from "@/lib/flows/types"
 import { BasePromptDialog } from "./base-prompt-dialog"
 import { BlockPicker } from "./block-picker"
 import { FlowDetailsDialog } from "./details-dialog"
-import { useEditorHeader } from "./editor-header"
 import { FieldsPanel } from "./fields-panel"
 import { FlowCanvas } from "./flow-canvas"
-import { FlowContext } from "./flow-context"
+import { FlowContext, useFlowContext } from "./flow-context"
 import { Inspector } from "./inspector/inspector"
 import { OutlinePanel } from "./outline-panel"
 import { PublishDialog } from "./publish-dialog"
@@ -31,6 +30,7 @@ import { createEditorStore, EditorStoreContext, useEditor, useEditorApi } from "
 import { TestPanel } from "./test-panel"
 import { useEditorUi } from "./ui-store"
 import { useAutosave } from "./use-autosave"
+import { useEditorHeader } from "./use-editor-header"
 import { useEditorShortcuts } from "./use-editor-shortcuts"
 import { VersionsPanel } from "./versions-panel"
 
@@ -127,7 +127,7 @@ function ShortcutEffects() {
 }
 
 function EditorEffects() {
-  const { flow } = useContextFlow()
+  const { flow } = useFlowContext()
   const { loadServer, keepMine } = useAutosave(flow)
   const { t } = useTranslation()
   const status = useEditorUi((state) => state.saveStatus)
@@ -174,13 +174,6 @@ function EditorEffects() {
     </>
   )
 }
-
-function useContextFlow() {
-  const value = useEditorContext()
-  return value
-}
-
-import { useFlowContext as useEditorContext } from "./flow-context"
 
 /**
  * Sair com algo pendente: grava primeiro, e só pergunta se não conseguiu gravar. Na maioria das vezes a
@@ -293,7 +286,7 @@ function FirstStepHint() {
 
 function ReplayFromUrl() {
   const { t } = useTranslation()
-  const { flow } = useEditorContext()
+  const { flow } = useFlowContext()
   const [params] = useSearchParams()
   const executionId = params.get("execution")
   const { execution } = useFlowExecution(executionId ? flow.id : null, executionId)

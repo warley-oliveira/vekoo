@@ -1,10 +1,10 @@
 {
   "slug": "sales_agent",
-  "name": "Agente de vendas com tools",
-  "description": "Conversa interativa com IA usando tools do workspace para consultar catálogo e finalizar pedido. Saídas: pedido pronto ou falar com humano.",
+  "name": "Vendas com IA",
+  "description": "Uma conversa com IA que usa as funções da organização para consultar o catálogo e fechar o pedido. Segue quando o pedido fica pronto ou quando a pessoa pede para falar com alguém.",
   "category": "vendas",
   "trigger_type": "message_received",
-  "tags": ["vendas", "ia", "tools"],
+  "tags": ["vendas", "ia", "funcoes"],
   "thumbnail_url": "",
   "definition": {
     "viewport": { "x": 0, "y": 0, "zoom": 1 },
@@ -12,7 +12,7 @@
       { "id": "trigger", "type": "trigger_message_received", "position": { "x": 0, "y": 0 }, "data": { "label": "Mensagem recebida" } },
       { "id": "ai", "type": "ai_assistant", "position": { "x": 320, "y": 0 }, "data": {
         "mode": "interactive",
-        "system_prompt": "Você é um vendedor consultivo. Use as tools disponíveis para consultar produto/preço. Quando o cliente fechar o pedido, chame __exit_pedido_pronto. Se ele pedir humano, chame __exit_falar_humano.",
+        "system_prompt": "Você é um vendedor consultivo. Use as funções disponíveis para consultar produto/preço. Quando o cliente fechar o pedido, chame __exit_pedido_pronto. Se ele pedir humano, chame __exit_falar_humano.",
         "model_size": "main",
         "temperature": 0.4,
         "use_history": true,
