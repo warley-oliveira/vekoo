@@ -91,7 +91,7 @@ export function ChipsInput({
     <div
       className={cn(
         "flex min-h-8 w-full flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent px-1.5 py-1 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-3 has-aria-invalid:ring-destructive/20 pointer-coarse:min-h-10",
-        disabled && "opacity-60",
+        disabled && "cursor-not-allowed bg-input/50 opacity-50",
         className
       )}
     >
@@ -122,7 +122,7 @@ export function ChipsInput({
           add(text)
           onBlur?.()
         }}
-        className="min-w-20 flex-1 bg-transparent px-1 text-base outline-none placeholder:text-muted-foreground md:text-sm"
+        className="min-w-20 flex-1 bg-transparent px-1 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed md:text-sm"
       />
     </div>
   )

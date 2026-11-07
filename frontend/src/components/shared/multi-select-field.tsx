@@ -75,7 +75,12 @@ export function MultiSelectInput({
     >
       <ComboboxChips
         ref={anchor}
-        className={cn("w-full pointer-coarse:min-h-10", className)}
+        className={cn(
+          "w-full pointer-coarse:min-h-10",
+          // A mesma aparência do `Input` desativado: a primitiva não muda sozinha.
+          disabled && "cursor-not-allowed bg-input/50 opacity-50",
+          className
+        )}
         onClick={(event) => {
           if (event.target === event.currentTarget) {
             event.currentTarget.querySelector("input")?.focus()
@@ -109,7 +114,7 @@ export function MultiSelectInput({
                     ? undefined
                     : (placeholder ?? t("kit.form.selectPlaceholder"))
                 }
-                className="bg-transparent text-base placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-8"
+                className="bg-transparent text-base placeholder:text-muted-foreground disabled:cursor-not-allowed md:text-sm pointer-coarse:min-h-8"
               />
             </>
           )}
