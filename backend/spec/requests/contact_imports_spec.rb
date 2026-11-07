@@ -141,6 +141,19 @@ RSpec.describe "Importação de contatos", type: :request do
   end
 
   describe "POST /contact-imports/file" do
+    it "recusa arquivo acima do teto, sem ler nem criar nada" do
+      stub_const("ContactImportsController::MAX_FILE_BYTES", 10)
+
+      expect {
+        post "/contact-imports/file",
+             params: { connectorId: connector.id.to_s, file: csv_file("external_id,user_name\n5531971810932,Fernanda\n") },
+             headers: headers
+      }.not_to change(ContactImport, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json.dig("error", "code")).to eq("fileTooLarge")
+    end
+
     it "lê o CSV e manda processar" do
       expect {
         post "/contact-imports/file",
