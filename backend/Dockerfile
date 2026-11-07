@@ -11,10 +11,17 @@ WORKDIR /rails
 #   libvips           -> image_processing / variantes do Active Storage
 #   libyaml-0-2       -> psych
 #   libjemalloc2      -> RSS menor sob carga de Puma + Sidekiq
+#   libstdc++6        -> extensão C++ do mini_racer (o V8 vem estático na gem libv8-node)
+#   ffmpeg            -> áudio do chat: gravado na tela (Chats::SendAudio) e recebido na WABA
+#                        (Connector::WhatsappCloud). Sem ele o arquivo segue como veio, em ogg,
+#                        que nem todo navegador toca.
 #   postgresql-client -> pg_isready/psql no entrypoint e em `kamal shell`
+#
+# O pgvector não pede nada aqui: a extensão mora na imagem do Postgres (ver deploy.yml), e a gem
+# neighbor só fala SQL.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      curl libjemalloc2 libpq5 libvips libyaml-0-2 postgresql-client && \
+      curl ffmpeg libjemalloc2 libpq5 libstdc++6 libvips libyaml-0-2 postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 ENV RAILS_ENV=production \
@@ -25,6 +32,8 @@ ENV RAILS_ENV=production \
 # --- build -----------------------------------------------------------------
 FROM base AS build
 
+# build-essential também compila mini_racer e bson. O libv8-node vem pré-compilado para
+# x86_64-linux (Gemfile.lock), e por isso o build não compila o V8, que levaria horas.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential git libpq-dev libyaml-dev pkg-config && \
