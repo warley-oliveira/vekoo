@@ -288,6 +288,11 @@
   box-shadow: inset 3px 0 0 0 var(--fc-event-color, var(--muted-foreground));
 }
 
+/* O texto não encosta no fio. */
+.vk-calendar .vk-fc-event .vk-event {
+  padding-inline-start: 0.1875rem;
+}
+
 .vk-calendar .vk-fc-event.vk-fc-pulse {
   animation: vk-event-pulse-striped 900ms ease-out 2;
 }
