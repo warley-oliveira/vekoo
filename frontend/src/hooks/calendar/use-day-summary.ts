@@ -64,7 +64,9 @@ export function useDaySummary({
     })
     const ofDay = ofWeek.filter((event) => dayKeyOf(event.start, zoneFor(event)) === day)
     const counts = countSituations(ofDay)
-    const next = active.find((event) => event.start > now) ?? null
+    // Só a semana aberta foi lida: fora da semana de hoje, "próximo" seria uma meia-verdade.
+    const isCurrentWeek = range !== null && now >= range.start && now < range.end
+    const next = isCurrentWeek ? (active.find((event) => event.start > now) ?? null) : null
 
     return {
       dayCount: ofDay.length,
@@ -76,5 +78,5 @@ export function useDaySummary({
       isLoading: isLoading && !events,
       failed: Boolean(error) && !events,
     }
-  }, [day, error, events, isLoading, now, primaryZone, weekStart, zones])
+  }, [day, error, events, isLoading, now, primaryZone, range, weekStart, zones])
 }

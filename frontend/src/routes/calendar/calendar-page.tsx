@@ -49,9 +49,9 @@ import {
   dayKeyOf,
   fieldDateOf,
   fieldDateOfGrid,
+  gridDateOf,
   localDateOfDayKey,
   safeTimeZone,
-  wallClockOf,
 } from "@/lib/calendar/timezone"
 import type { CalendarEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
@@ -684,7 +684,9 @@ export default function CalendarPage() {
             const zone = safeTimeZone(screen.zones.get(event.calendarId), screen.primaryZone)
             const day = dayKeyOf(event.start, zone)
             if (day < screen.days.start || day >= screen.days.end) screen.goToDay(day)
-            setFocusTime({ time: `${wallClockOf(Math.max(event.start - 30 * 60_000, 0), zone)}:00` })
+            // Uma hora antes, para ver o que vem antes dele. Às 00:00, fica no começo do dia.
+            const hour = Math.max(gridDateOf(event.start, zone).getUTCHours() - 1, 0)
+            setFocusTime({ time: `${String(hour).padStart(2, "0")}:00:00` })
             pulse(event.id)
           }}
         />
