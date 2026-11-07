@@ -38,6 +38,11 @@ function mergeLabels(results: QueryResult[]) {
   return merged
 }
 
+/** Nenhum passo achou nada. Dá zero na conta, mas não é um resultado: "0%" de comparecimento leria como notícia ruim. */
+export function allStepsEmpty(stepResults: Record<string, QueryResult>, steps: FormulaStep[]): boolean {
+  return steps.every((step) => scalarOf(stepResults[step.id]) === 0)
+}
+
 /** Sem agrupar: uma linha, com um número. */
 export function evaluateCompoundScalar(formula: string, stepResults: Record<string, QueryResult>, steps: FormulaStep[]): QueryResult {
   const values: Record<string, number> = {}

@@ -17,6 +17,8 @@ import {
   adaptToType,
   describeEditor,
   editorToWidget,
+  hasRules,
+  isFilterFilled,
   widgetToEditor,
   type EditorValues,
 } from "@/lib/custom-dashboards/editor-model"
@@ -29,8 +31,7 @@ import { useWidgetView } from "../use-widget-view"
 import { WidgetCard } from "../widget-card"
 import { AppearanceSection } from "./appearance-section"
 import { DataSection } from "./data-section"
-import { isFilterFilled } from "./filters-editor"
-import { hasRules, RulesSection } from "./rules-section"
+import { RulesSection } from "./rules-section"
 
 export type EditorTarget =
   | { kind: "edit"; widget: DashboardWidget }
@@ -280,38 +281,41 @@ function EditorForm({
       }
     >
       <FormProvider {...form}>
-        {/* No celular e em telas médias, a prévia vem antes dos campos: é o resultado que orienta a escolha. */}
-        <div className="border-b bg-muted/30 p-4 lg:order-2 lg:border-b-0 lg:border-l">
-          <EditorPreview widget={preview} period={period} sources={sources} />
-        </div>
-
-        <div className="min-w-0 p-4 lg:order-1 lg:overflow-y-auto">
-          <Tabs value={tab} onValueChange={(next) => setTab(next as EditorTab)} className="gap-4">
-            <TabsList variant="line" aria-label={t("customDashboards.editor.sections")} className="justify-start p-0 group-data-horizontal/tabs:h-9">
-              <TabsTrigger value="data" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
-                {t("customDashboards.editor.tabData")}
-              </TabsTrigger>
-              <TabsTrigger value="appearance" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
-                {t("customDashboards.editor.tabAppearance")}
-              </TabsTrigger>
-              {showRules ? (
-                <TabsTrigger value="rules" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
-                  {t("customDashboards.editor.tabRules")}
+        {/* Em telas estreitas, a prévia aparece antes dos campos: é o resultado que orienta a escolha. No DOM, os campos vêm
+            primeiro: é neles que o teclado começa. */}
+        <div className="flex min-h-full flex-col lg:contents">
+          <div className="order-2 min-w-0 flex-1 p-4 lg:order-none lg:overflow-y-auto">
+            <Tabs value={tab} onValueChange={(next) => setTab(next as EditorTab)} className="gap-4">
+              <TabsList variant="line" aria-label={t("customDashboards.editor.sections")} className="justify-start p-0 group-data-horizontal/tabs:h-9">
+                <TabsTrigger value="data" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
+                  {t("customDashboards.editor.tabData")}
                 </TabsTrigger>
-              ) : null}
-            </TabsList>
-            <TabsContent value="data">
-              <DataSection sources={sources} />
-            </TabsContent>
-            <TabsContent value="appearance">
-              <AppearanceSection />
-            </TabsContent>
-            {showRules ? (
-              <TabsContent value="rules">
-                <RulesSection sources={sources} />
+                <TabsTrigger value="appearance" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
+                  {t("customDashboards.editor.tabAppearance")}
+                </TabsTrigger>
+                {showRules ? (
+                  <TabsTrigger value="rules" className="h-9 flex-none px-2.5 after:bg-primary group-data-horizontal/tabs:after:bottom-0">
+                    {t("customDashboards.editor.tabRules")}
+                  </TabsTrigger>
+                ) : null}
+              </TabsList>
+              <TabsContent value="data">
+                <DataSection sources={sources} />
               </TabsContent>
-            ) : null}
-          </Tabs>
+              <TabsContent value="appearance">
+                <AppearanceSection />
+              </TabsContent>
+              {showRules ? (
+                <TabsContent value="rules">
+                  <RulesSection sources={sources} />
+                </TabsContent>
+              ) : null}
+            </Tabs>
+          </div>
+
+          <div className="order-1 border-b bg-muted/30 p-4 lg:order-none lg:border-b-0 lg:border-l">
+            <EditorPreview widget={preview} period={period} sources={sources} />
+          </div>
         </div>
       </FormProvider>
     </SidePanel>

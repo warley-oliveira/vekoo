@@ -1,11 +1,13 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, ListFilter, Plus, X } from "lucide-react"
 
+import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { SearchableSelect, SegmentedControl, SelectInput, TextField } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { useMeasureOptions } from "@/hooks/custom-dashboards/use-editor-options"
 import { columnLetter, MAX_METRIC_FILTERS, MAX_METRICS, MAX_TABLE_COLUMNS } from "@/lib/custom-dashboards/catalog"
 import { emptyMetric, type EditorMetric, type EditorValues } from "@/lib/custom-dashboards/editor-model"
 import { validateFormula } from "@/lib/custom-dashboards/formula-engine"
@@ -14,30 +16,6 @@ import { cn } from "@/lib/utils"
 
 import { useFormulaErrorMessage } from "../use-formula-error"
 import { FiltersEditor } from "./filters-editor"
-
-const AGGREGATIONS: Aggregation[] = ["count", "sum", "avg", "max", "min"]
-
-/** As contas que a fonte aceita e para as quais ela tem campo. "Quantidade" é o que quase todo mundo quer. */
-export function useMeasureOptions(source: DataSourceMeta | undefined) {
-  const { t } = useTranslation()
-  return useMemo(() => {
-    const numbers = source?.fields.filter((field) => field.type === "number") ?? []
-    const dates = source?.fields.filter((field) => field.type === "date") ?? []
-    const allowed = source?.allowedMetrics ?? ["count"]
-
-    const fieldsFor = (aggregation: Aggregation) =>
-      (aggregation === "sum" || aggregation === "avg" ? numbers : [...numbers, ...dates]).map((field) => ({
-        value: field.key,
-        label: field.label,
-      }))
-
-    const aggregations = AGGREGATIONS.filter(
-      (aggregation) => allowed.includes(aggregation) && (aggregation === "count" || fieldsFor(aggregation).length > 0)
-    ).map((aggregation) => ({ value: aggregation, label: t(`customDashboards.measure.${aggregation}`) }))
-
-    return { aggregations, fieldsFor }
-  }, [source, t])
-}
 
 type MetricsEditorProps = {
   source: DataSourceMeta | undefined
@@ -180,14 +158,19 @@ function MetricRow({
         )}
 
         {!isFormula && metric.aggregation !== "count" ? (
-          <SearchableSelect
-            value={metric.field}
-            onChange={(next) => setValue(`metrics.${index}.field`, next, dirty)}
-            options={options}
-            placeholder={t("customDashboards.measure.field")}
-            aria-invalid={Boolean(fieldError)}
-            className="min-w-0 flex-1 bg-background"
-          />
+          <HiddenLabel text={t("customDashboards.measure.field")}>
+            {(id) => (
+              <SearchableSelect
+                id={id}
+                value={metric.field}
+                onChange={(next) => setValue(`metrics.${index}.field`, next, dirty)}
+                options={options}
+                placeholder={t("customDashboards.measure.field")}
+                aria-invalid={Boolean(fieldError)}
+                className="min-w-0 flex-1 bg-background"
+              />
+            )}
+          </HiddenLabel>
         ) : null}
 
         {columns && total > 1 ? (

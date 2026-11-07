@@ -25,11 +25,26 @@
       "missing_other": "{{count}} left out: you don't have access to the sources"
     },
     "templates": {
-      "service": { "name": "Customer service", "description": "Conversations, contacts and how the team is responding." },
-      "agenda": { "name": "Bookings", "description": "Schedule, attendance and cancellations." },
-      "automation": { "name": "Automation", "description": "What flows resolve on their own, and the time that saves." },
-      "sales": { "name": "Sales", "description": "Deals won, open value and where stages get stuck." },
-      "operations": { "name": "Operations", "description": "Message volume and webhook health." }
+      "service": {
+        "name": "Customer service",
+        "description": "Conversations, contacts and how the team is responding."
+      },
+      "agenda": {
+        "name": "Bookings",
+        "description": "Schedule, attendance and cancellations."
+      },
+      "automation": {
+        "name": "Automation",
+        "description": "What flows resolve on their own, and the time that saves."
+      },
+      "sales": {
+        "name": "Sales",
+        "description": "Deals won, open value and where stages get stuck."
+      },
+      "operations": {
+        "name": "Operations",
+        "description": "Message volume and webhook health."
+      }
     },
     "toolbar": {
       "more": "More dashboard actions",
@@ -121,21 +136,25 @@
       "radarNeedsMoreHint": "A radar needs three or more. Try another split, or bars.",
       "truncated": "Showing the first rows: there are more than this card's limit.",
       "folded_one": "{{count}} smaller value went into \"Other\".",
-      "folded_other": "{{count}} smaller values went into \"Other\"."
+      "folded_other": "{{count}} smaller values went into \"Other\".",
+      "csvPrevious": "Previous period"
     },
     "chart": {
       "total": "Total: {{value}}",
       "measure": "Measure",
       "less": "Less",
       "more": "More",
-      "heatmapSummary": "Intensity grid with {{rows}} rows and {{columns}} columns. Highest value: {{max}}."
+      "heatmapSummary": "Intensity grid with {{rows}} rows and {{columns}} columns. Highest value: {{max}}.",
+      "summaryOne": "{{series}}: the highest value is {{max}}, at {{maxAt}}. The card's table shows every value.",
+      "summaryMany": "{{names}}. The highest value is {{max}}, from {{series}}, at {{maxAt}}. The card's table shows every value."
     },
     "figure": {
       "vsPrevious": "vs. previous period",
       "noBase": "Nothing to compare in the previous period",
       "trend": "Trend: started at {{first}} and ended at {{last}}",
       "goal": "{{label}}: {{value}}",
-      "goalDefault": "Goal"
+      "goalDefault": "Goal",
+      "noData": "No data in this period"
     },
     "values": {
       "none": "(no value)",
@@ -180,14 +199,30 @@
       "pickSource": "Choose where the data comes from"
     },
     "sources": {
-      "conversations": { "howMany": "How many conversations" },
-      "contacts": { "howMany": "How many contacts" },
-      "messages": { "howMany": "How many messages" },
-      "agenda_bookings": { "howMany": "How many bookings" },
-      "campaigns": { "howMany": "How many campaigns" },
-      "daily_stats": { "howMany": "How many days with numbers" },
-      "hook_logs": { "howMany": "How many webhook logs" },
-      "pipelines": { "howMany": "How many cards" }
+      "conversations": {
+        "howMany": "How many conversations"
+      },
+      "contacts": {
+        "howMany": "How many contacts"
+      },
+      "messages": {
+        "howMany": "How many messages"
+      },
+      "agenda_bookings": {
+        "howMany": "How many bookings"
+      },
+      "campaigns": {
+        "howMany": "How many campaigns"
+      },
+      "daily_stats": {
+        "howMany": "How many days with numbers"
+      },
+      "hook_logs": {
+        "howMany": "How many webhook logs"
+      },
+      "pipelines": {
+        "howMany": "How many cards"
+      }
     },
     "measure": {
       "count": "Count",
@@ -457,21 +492,81 @@
         "tables": "Lists",
         "layout": "Layout"
       },
-      "kpi": { "name": "Number", "short": "Number", "description": "One highlighted value." },
-      "number_trend": { "name": "Number with trend", "short": "Trend", "description": "The value and the period's line." },
-      "gauge": { "name": "Gauge", "short": "Gauge", "description": "How far from the goal, on an arc." },
-      "progress_bar": { "name": "Progress bar", "short": "Progress", "description": "How far from the goal, on a line." },
-      "line_chart": { "name": "Line", "short": "Line", "description": "How something changes over time." },
-      "bar_chart": { "name": "Bars", "short": "Bars", "description": "Compare categories or periods." },
-      "area_chart": { "name": "Area", "short": "Area", "description": "Volume over time." },
-      "pie_chart": { "name": "Pie", "short": "Pie", "description": "Parts of a whole, up to six." },
-      "donut_chart": { "name": "Donut", "short": "Donut", "description": "Parts of a whole, with the total inside." },
-      "radar": { "name": "Radar", "short": "Radar", "description": "Several aspects of one thing." },
-      "heatmap": { "name": "Heat map", "short": "Heat", "description": "Intensity on a grid." },
-      "table": { "name": "Table", "short": "Table", "description": "Rows and columns, with totals and formulas." },
-      "funnel": { "name": "Funnel", "short": "Funnel", "description": "From largest to smallest, in steps." },
-      "rich_text": { "name": "Text", "short": "Text", "description": "A note, an explanation." },
-      "section_divider": { "name": "Section", "short": "Section", "description": "A heading to separate topics." }
+      "kpi": {
+        "name": "Number",
+        "short": "Number",
+        "description": "One highlighted value."
+      },
+      "number_trend": {
+        "name": "Number with trend",
+        "short": "Trend",
+        "description": "The value and the period's line."
+      },
+      "gauge": {
+        "name": "Gauge",
+        "short": "Gauge",
+        "description": "How far from the goal, on an arc."
+      },
+      "progress_bar": {
+        "name": "Progress bar",
+        "short": "Progress",
+        "description": "How far from the goal, on a line."
+      },
+      "line_chart": {
+        "name": "Line",
+        "short": "Line",
+        "description": "How something changes over time."
+      },
+      "bar_chart": {
+        "name": "Bars",
+        "short": "Bars",
+        "description": "Compare categories or periods."
+      },
+      "area_chart": {
+        "name": "Area",
+        "short": "Area",
+        "description": "Volume over time."
+      },
+      "pie_chart": {
+        "name": "Pie",
+        "short": "Pie",
+        "description": "Parts of a whole, up to six."
+      },
+      "donut_chart": {
+        "name": "Donut",
+        "short": "Donut",
+        "description": "Parts of a whole, with the total inside."
+      },
+      "radar": {
+        "name": "Radar",
+        "short": "Radar",
+        "description": "Several aspects of one thing."
+      },
+      "heatmap": {
+        "name": "Heat map",
+        "short": "Heat",
+        "description": "Intensity on a grid."
+      },
+      "table": {
+        "name": "Table",
+        "short": "Table",
+        "description": "Rows and columns, with totals and formulas."
+      },
+      "funnel": {
+        "name": "Funnel",
+        "short": "Funnel",
+        "description": "From largest to smallest, in steps."
+      },
+      "rich_text": {
+        "name": "Text",
+        "short": "Text",
+        "description": "A note, an explanation."
+      },
+      "section_divider": {
+        "name": "Section",
+        "short": "Section",
+        "description": "A heading to separate topics."
+      }
     },
     "colors": {
       "cat-1": "Violet",
@@ -563,49 +658,178 @@
         "noteContent": "Explain here what each number means, or what changed."
       },
       "items": {
-        "conversationsTotal": { "title": "Total conversations", "description": "How many new conversations, against the previous period." },
-        "conversationsTrend": { "title": "Conversations in the period", "description": "The total and each day's line." },
-        "conversationsByDay": { "title": "Conversations per day", "description": "How activity changes over time." },
-        "conversationsByStatus": { "title": "Conversations by status", "description": "Open and closed." },
-        "conversationsByChannel": { "title": "Conversations by channel", "description": "Where conversations come from." },
-        "conversationsWeeklyByChannel": { "title": "Conversations per week, by channel", "description": "Each week's volume, split by channel." },
-        "conversationsByAgent": { "title": "Conversations by agent", "description": "Table with total, open, unread and share." },
-        "topTags": { "title": "Most used tags", "description": "The ten that show up the most." },
-        "contactsNew": { "title": "New contacts", "description": "How many contacts arrived in the period." },
-        "contactsByOrigin": { "title": "Contacts by origin", "description": "How each contact arrived." },
-        "latestConversations": { "title": "Latest conversations", "description": "List of the most recent conversations." },
-        "bookingsTotal": { "title": "Total bookings", "description": "How many bookings in the period." },
-        "bookingsAttended": { "title": "Attended", "description": "Bookings where the person came." },
-        "bookingsCanceled": { "title": "Canceled", "description": "Canceled bookings." },
-        "attendanceRate": { "title": "Attendance rate", "description": "Attendances over the total." },
-        "bookingsByDay": { "title": "Bookings per day", "description": "How the schedule fills up over time." },
-        "bookingsByStatus": { "title": "Bookings by attendance", "description": "Who came, who didn't, who's still unmarked." },
-        "bookingsByProfessional": { "title": "Bookings by professional", "description": "How the schedule is divided." },
-        "messagesByDay": { "title": "Messages per day", "description": "Message volume, day by day." },
-        "messagesByAuthor": { "title": "Messages by author", "description": "Received, from automation and from the team." },
-        "automationTrend": { "title": "Handled by automation", "description": "The total and each day's line." },
-        "hoursSaved": { "title": "Hours saved", "description": "An estimate of what automation saved." },
-        "firstResponse": { "title": "Team response time", "description": "Average first response, as time." },
-        "automationShare": { "title": "Resolved by automation", "description": "Share of conversations with no person involved." },
-        "goalConversations": { "title": "Conversation goal", "description": "Gauge against a goal, with ranges." },
-        "goalBookings": { "title": "Booking goal", "description": "Progress bar against a goal." },
-        "goalSales": { "title": "Sales goal", "description": "Value won against a goal." },
-        "wonValue": { "title": "Value won", "description": "The sum of deals won in the period." },
-        "openValue": { "title": "Open value", "description": "The sum of deals still open." },
-        "winRate": { "title": "Win rate", "description": "Won over won and lost." },
-        "dealsByStatus": { "title": "Deals by status", "description": "Open, won and lost." },
-        "cardsByStage": { "title": "Cards by stage", "description": "Where active cards are sitting." },
-        "valueByStage": { "title": "Value by stage", "description": "How much money is in each stage." },
-        "wonByMonth": { "title": "Sales per month", "description": "Value won, month by month." },
-        "campaignsSent": { "title": "Campaign messages", "description": "How many campaigns sent." },
-        "campaignReadRate": { "title": "Read rate", "description": "Read over delivered, in campaigns." },
-        "campaignFunnel": { "title": "Campaign funnel", "description": "Recipients, sent, delivered and read." },
-        "webhookErrors": { "title": "Webhooks with errors", "description": "How many failed in the period." },
-        "webhooksByStatus": { "title": "Webhooks by status", "description": "Success, error and skipped." },
-        "webhookTime": { "title": "Webhook time", "description": "Average processing time, per day." },
-        "latestWebhooks": { "title": "Latest webhooks", "description": "List of what arrived last." },
-        "note": { "title": "How to read this dashboard", "description": "Free text, in markdown." },
-        "section": { "title": "New section", "description": "A heading to separate topics." }
+        "conversationsTotal": {
+          "title": "Total conversations",
+          "description": "How many new conversations, against the previous period."
+        },
+        "conversationsTrend": {
+          "title": "Conversations in the period",
+          "description": "The total and each day's line."
+        },
+        "conversationsByDay": {
+          "title": "Conversations per day",
+          "description": "How activity changes over time."
+        },
+        "conversationsByStatus": {
+          "title": "Conversations by status",
+          "description": "Open and closed."
+        },
+        "conversationsByChannel": {
+          "title": "Conversations by channel",
+          "description": "Where conversations come from."
+        },
+        "conversationsWeeklyByChannel": {
+          "title": "Conversations per week, by channel",
+          "description": "Each week's volume, split by channel."
+        },
+        "conversationsByAgent": {
+          "title": "Conversations by agent",
+          "description": "Table with total, open, unread and share."
+        },
+        "topTags": {
+          "title": "Most used tags",
+          "description": "The ten that show up the most."
+        },
+        "contactsNew": {
+          "title": "New contacts",
+          "description": "How many contacts arrived in the period."
+        },
+        "contactsByOrigin": {
+          "title": "Contacts by origin",
+          "description": "How each contact arrived."
+        },
+        "latestConversations": {
+          "title": "Latest conversations",
+          "description": "List of the most recent conversations."
+        },
+        "bookingsTotal": {
+          "title": "Total bookings",
+          "description": "How many bookings in the period."
+        },
+        "bookingsAttended": {
+          "title": "Attended",
+          "description": "Bookings where the person came."
+        },
+        "bookingsCanceled": {
+          "title": "Canceled",
+          "description": "Canceled bookings."
+        },
+        "attendanceRate": {
+          "title": "Attendance rate",
+          "description": "Attendances over the total."
+        },
+        "bookingsByDay": {
+          "title": "Bookings per day",
+          "description": "How the schedule fills up over time."
+        },
+        "bookingsByStatus": {
+          "title": "Bookings by attendance",
+          "description": "Who came, who didn't, who's still unmarked."
+        },
+        "bookingsByProfessional": {
+          "title": "Bookings by professional",
+          "description": "How the schedule is divided."
+        },
+        "messagesByDay": {
+          "title": "Messages per day",
+          "description": "Message volume, day by day."
+        },
+        "messagesByAuthor": {
+          "title": "Messages by author",
+          "description": "Received, from automation and from the team."
+        },
+        "automationTrend": {
+          "title": "Handled by automation",
+          "description": "The total and each day's line."
+        },
+        "hoursSaved": {
+          "title": "Hours saved",
+          "description": "An estimate of what automation saved."
+        },
+        "firstResponse": {
+          "title": "Team response time",
+          "description": "Average first response, as time."
+        },
+        "automationShare": {
+          "title": "Resolved by automation",
+          "description": "Share of conversations with no person involved."
+        },
+        "goalConversations": {
+          "title": "Conversation goal",
+          "description": "Gauge against a goal, with ranges."
+        },
+        "goalBookings": {
+          "title": "Booking goal",
+          "description": "Progress bar against a goal."
+        },
+        "goalSales": {
+          "title": "Sales goal",
+          "description": "Value won against a goal."
+        },
+        "wonValue": {
+          "title": "Value won",
+          "description": "The sum of deals won in the period."
+        },
+        "openValue": {
+          "title": "Open value",
+          "description": "The sum of deals still open."
+        },
+        "winRate": {
+          "title": "Win rate",
+          "description": "Won over won and lost."
+        },
+        "dealsByStatus": {
+          "title": "Deals by status",
+          "description": "Open, won and lost."
+        },
+        "cardsByStage": {
+          "title": "Cards by stage",
+          "description": "Where active cards are sitting."
+        },
+        "valueByStage": {
+          "title": "Value by stage",
+          "description": "How much money is in each stage."
+        },
+        "wonByMonth": {
+          "title": "Sales per month",
+          "description": "Value won, month by month."
+        },
+        "campaignsSent": {
+          "title": "Campaign messages",
+          "description": "How many campaigns sent."
+        },
+        "campaignReadRate": {
+          "title": "Read rate",
+          "description": "Read over delivered, in campaigns."
+        },
+        "campaignFunnel": {
+          "title": "Campaign funnel",
+          "description": "Recipients, sent, delivered and read."
+        },
+        "webhookErrors": {
+          "title": "Webhooks with errors",
+          "description": "How many failed in the period."
+        },
+        "webhooksByStatus": {
+          "title": "Webhooks by status",
+          "description": "Success, error and skipped."
+        },
+        "webhookTime": {
+          "title": "Webhook time",
+          "description": "Average processing time, per day."
+        },
+        "latestWebhooks": {
+          "title": "Latest webhooks",
+          "description": "List of what arrived last."
+        },
+        "note": {
+          "title": "How to read this dashboard",
+          "description": "Free text, in markdown."
+        },
+        "section": {
+          "title": "New section",
+          "description": "A heading to separate topics."
+        }
       }
     }
   }

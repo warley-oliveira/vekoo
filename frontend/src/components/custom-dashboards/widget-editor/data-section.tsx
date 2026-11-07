@@ -26,7 +26,7 @@ import {
   type EditorValues,
   type PeriodMode,
 } from "@/lib/custom-dashboards/editor-model"
-import { categoryDimensions, dateFields, defaultDateField } from "@/lib/custom-dashboards/query"
+import { categoryDimensions, dateFields, DEFAULT_ROWS, defaultDateField } from "@/lib/custom-dashboards/query"
 import type { DataSourceMeta, FormulaStep, Granularity } from "@/lib/custom-dashboards/types"
 
 import { EditorSection } from "./editor-parts"
@@ -268,7 +268,7 @@ function GroupingSection({
     <EditorSection title={t("customDashboards.editor.howToGroup")}>
       {showTime ? (
         <div className="flex flex-col gap-1.5">
-          <p id="cd-time" className="text-sm font-medium">
+          <p className="text-sm font-medium">
             {t("customDashboards.editor.overTime")}
           </p>
           <SegmentedControl
@@ -301,23 +301,27 @@ function GroupingSection({
       ) : null}
 
       {showBreakdown ? (
-        <div className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium">
-            {t(grouping === "category" ? "customDashboards.editor.divideBy" : "customDashboards.editor.splitBy")}
-          </p>
-          <SearchableSelect
-            value={breakdown}
-            onChange={(next) => {
-              setValue("breakdown", next, dirty)
-              if (shouldStack({ widgetType, granularity, breakdown: next })) setValue("visual.stacked", true, dirty)
-            }}
-            options={breakdownOptions}
-            clearable={grouping !== "category"}
-            placeholder={t(
-              grouping === "category" ? "customDashboards.editor.divideByPlaceholder" : "customDashboards.editor.splitByPlaceholder"
-            )}
-          />
-        </div>
+        <FormField
+          control={control}
+          name="breakdown"
+          label={t(grouping === "category" ? "customDashboards.editor.divideBy" : "customDashboards.editor.splitBy")}
+        >
+          {({ controlProps }) => (
+            <SearchableSelect
+              {...controlProps}
+              value={breakdown}
+              onChange={(next) => {
+                setValue("breakdown", next, { shouldDirty: true, shouldValidate: true })
+                if (shouldStack({ widgetType, granularity, breakdown: next })) setValue("visual.stacked", true, dirty)
+              }}
+              options={breakdownOptions}
+              clearable={grouping !== "category"}
+              placeholder={t(
+                grouping === "category" ? "customDashboards.editor.divideByPlaceholder" : "customDashboards.editor.splitByPlaceholder"
+              )}
+            />
+          )}
+        </FormField>
       ) : null}
 
       {multipleMetrics && hasTime && breakdown && metricCount > 1 ? (
@@ -379,10 +383,18 @@ function SortSection({ source }: { source: DataSourceMeta }) {
             { value: "asc", label: t("customDashboards.editor.orderAsc") },
           ]}
         />
-        <div className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium">{t("customDashboards.editor.limit")}</p>
-          <NumberInput value={limit} onChange={(next) => setValue("limit", next, dirty)} min={1} max={MAX_ROWS} placeholder="100" />
-        </div>
+        <FormField control={control} name="limit" label={t("customDashboards.editor.limit")}>
+          {({ controlProps }) => (
+            <NumberInput
+              {...controlProps}
+              value={limit}
+              onChange={(next) => setValue("limit", next, { shouldDirty: true, shouldValidate: true })}
+              min={1}
+              max={MAX_ROWS}
+              placeholder={String(DEFAULT_ROWS)}
+            />
+          )}
+        </FormField>
       </div>
     </EditorSection>
   )

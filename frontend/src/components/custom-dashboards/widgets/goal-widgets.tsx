@@ -7,7 +7,9 @@ import { formatCompactValue, formatValue } from "@/lib/custom-dashboards/format"
 import { resolveColor } from "@/lib/custom-dashboards/palette"
 import type { VisualConfig } from "@/lib/custom-dashboards/types"
 
-import { matchRule, RuleBadge } from "./figure-parts"
+import { matchRule } from "@/lib/custom-dashboards/rules"
+
+import { RuleBadge } from "./figure-parts"
 
 type GoalProps = { value: number | null; config: VisualConfig }
 

@@ -1,8 +1,8 @@
-import { useMemo } from "react"
 import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { ListFilter, Plus, X } from "lucide-react"
 
+import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import {
   ChipsInput,
   DatePicker,
@@ -14,15 +14,14 @@ import {
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { CUSTOM_ATTRIBUTE_PREFIX, useFilterFieldOptions } from "@/hooks/custom-dashboards/use-editor-options"
 import { parseDay } from "@/hooks/insights/use-dashboard-period"
 import { toDateInputValue } from "@/lib/date-format"
-import type { EditorValues } from "@/lib/custom-dashboards/editor-model"
-import type { DataSourceMeta, FilterOperator, FilterOptions, QueryFilter } from "@/lib/custom-dashboards/types"
+import { VALUELESS_OPERATORS, type EditorValues } from "@/lib/custom-dashboards/editor-model"
+import type { DataSourceMeta, FilterOperator, FilterOptions } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
-const CUSTOM_PREFIX = "custom_attributes."
 const MULTI: FilterOperator[] = ["in", "nin"]
-const VALUELESS: FilterOperator[] = ["exists", "not_exists"]
 const SET_OPERATORS: FilterOperator[] = ["eq", "ne", "in", "nin"]
 const COMPARISONS: FilterOperator[] = ["gt", "gte", "lt", "lte"]
 
@@ -36,8 +35,8 @@ type FieldInfo = {
 
 /** O que a tela sabe de um campo: como se escolhe o valor, e quais comparações a API aceita para ele. */
 function fieldInfo(name: string, source: DataSourceMeta | undefined, filterOptions: FilterOptions | undefined): FieldInfo {
-  if (name.startsWith(CUSTOM_PREFIX)) {
-    const definition = filterOptions?.custom_attributes?.find((item) => `${CUSTOM_PREFIX}${item.value}` === name)
+  if (name.startsWith(CUSTOM_ATTRIBUTE_PREFIX)) {
+    const definition = filterOptions?.custom_attributes?.find((item) => `${CUSTOM_ATTRIBUTE_PREFIX}${item.value}` === name)
     const options = (definition?.optionValues ?? []).map((value) => ({ value, label: value }))
     const numeric = definition?.valueType === "number"
     return {
@@ -75,28 +74,6 @@ function fieldInfo(name: string, source: DataSourceMeta | undefined, filterOptio
     return { kind: "options", operators: ["eq", "ne", "in", "nin", "exists", "not_exists"], options }
   }
   return { kind: "text", operators: ["eq", "ne", "in", "nin", "contains", "exists", "not_exists"], options: [] }
-}
-
-export function isFilterFilled(filter: QueryFilter) {
-  if (VALUELESS.includes(filter.operator)) return true
-  if (Array.isArray(filter.value)) return filter.value.length > 0
-  return filter.value !== "" && filter.value !== null && filter.value !== undefined
-}
-
-/** Os campos para escolher: os da fonte, com cada campo personalizado como um campo de verdade. */
-export function useFilterFieldOptions(source: DataSourceMeta | undefined, filterOptions: FilterOptions | undefined) {
-  const { t } = useTranslation()
-  return useMemo<SelectOption[]>(() => {
-    const fields = (source?.fields ?? [])
-      .filter((field) => field.type !== "custom_attribute")
-      .map((field) => ({ value: field.key, label: field.label }))
-    const custom = (filterOptions?.custom_attributes ?? []).map((item) => ({
-      value: `${CUSTOM_PREFIX}${item.value}`,
-      label: item.label,
-      description: t("customDashboards.editor.customField"),
-    }))
-    return [...fields, ...custom]
-  }, [filterOptions, source, t])
 }
 
 type FiltersEditorProps = {
@@ -196,13 +173,18 @@ function FilterRow({
   return (
     <div className="flex flex-col gap-1.5 rounded-lg bg-muted/40 p-2">
       <div className="flex items-center gap-1.5">
-        <SearchableSelect
-          value={field}
-          onChange={changeField}
-          options={fieldOptions}
-          placeholder={t("customDashboards.filters.field")}
-          className="min-w-0 flex-1 bg-background"
-        />
+        <HiddenLabel text={t("customDashboards.filters.field")}>
+          {(id) => (
+            <SearchableSelect
+              id={id}
+              value={field}
+              onChange={changeField}
+              options={fieldOptions}
+              placeholder={t("customDashboards.filters.field")}
+              className="min-w-0 flex-1 bg-background"
+            />
+          )}
+        </HiddenLabel>
         <div className="w-40 shrink-0">
           <SelectInput
             aria-label={t("customDashboards.filters.operator")}
@@ -223,7 +205,7 @@ function FilterRow({
           <X />
         </Button>
       </div>
-      {VALUELESS.includes(operator) ? null : (
+      {VALUELESS_OPERATORS.includes(operator) ? null : (
         <FilterValue
           info={info}
           multi={multi}
@@ -260,16 +242,23 @@ function FilterValue({
   const text = typeof value === "string" || typeof value === "number" ? String(value) : ""
 
   if (multi) {
-    return info.options.length ? (
-      <MultiSelectInput
-        options={info.options}
-        value={list}
-        onChange={onChange}
-        placeholder={t("customDashboards.filters.pickMany")}
-        className={className}
-      />
-    ) : (
-      <ChipsInput value={list} onChange={onChange} placeholder={t("customDashboards.filters.typeMany")} className={className} />
+    return (
+      <HiddenLabel text={label}>
+        {(id) =>
+          info.options.length ? (
+            <MultiSelectInput
+              id={id}
+              options={info.options}
+              value={list}
+              onChange={onChange}
+              placeholder={t("customDashboards.filters.pickMany")}
+              className={className}
+            />
+          ) : (
+            <ChipsInput id={id} value={list} onChange={onChange} placeholder={t("customDashboards.filters.typeMany")} className={className} />
+          )
+        }
+      </HiddenLabel>
     )
   }
 
@@ -286,24 +275,34 @@ function FilterValue({
 
   if (info.kind === "number" || (info.kind === "customNumber" && COMPARISONS.includes(operator))) {
     return (
-      <NumberInput
-        value={text === "" ? null : Number(text)}
-        onChange={(next) => onChange(next ?? "")}
-        placeholder={label}
-        className={className}
-      />
+      <HiddenLabel text={label}>
+        {(id) => (
+          <NumberInput
+            id={id}
+            value={text === "" ? null : Number(text)}
+            onChange={(next) => onChange(next ?? "")}
+            placeholder={label}
+            className={className}
+          />
+        )}
+      </HiddenLabel>
     )
   }
 
   if (info.options.length && operator !== "contains") {
     return info.options.length > 8 ? (
-      <SearchableSelect
-        value={text}
-        onChange={(next) => onChange(next ?? "")}
-        options={info.options}
-        placeholder={t("customDashboards.filters.pick")}
-        className={className}
-      />
+      <HiddenLabel text={label}>
+        {(id) => (
+          <SearchableSelect
+            id={id}
+            value={text}
+            onChange={(next) => onChange(next ?? "")}
+            options={info.options}
+            placeholder={t("customDashboards.filters.pick")}
+            className={className}
+          />
+        )}
+      </HiddenLabel>
     ) : (
       <SelectInput
         aria-label={label}

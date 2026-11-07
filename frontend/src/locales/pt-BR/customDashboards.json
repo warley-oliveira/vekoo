@@ -25,11 +25,26 @@
       "missing_other": "{{count}} ficam de fora: você não tem acesso às fontes"
     },
     "templates": {
-      "service": { "name": "Atendimento", "description": "Conversas, contatos e como a equipe está respondendo." },
-      "agenda": { "name": "Agendamentos", "description": "Agenda, comparecimento e cancelamentos." },
-      "automation": { "name": "Automação", "description": "O que os fluxos resolvem sozinhos, e o tempo que isso poupa." },
-      "sales": { "name": "Vendas", "description": "Negócios ganhos, valor em aberto e onde as etapas travam." },
-      "operations": { "name": "Operação", "description": "Volume de mensagens e a saúde dos webhooks." }
+      "service": {
+        "name": "Atendimento",
+        "description": "Conversas, contatos e como a equipe está respondendo."
+      },
+      "agenda": {
+        "name": "Agendamentos",
+        "description": "Agenda, comparecimento e cancelamentos."
+      },
+      "automation": {
+        "name": "Automação",
+        "description": "O que os fluxos resolvem sozinhos, e o tempo que isso poupa."
+      },
+      "sales": {
+        "name": "Vendas",
+        "description": "Negócios ganhos, valor em aberto e onde as etapas travam."
+      },
+      "operations": {
+        "name": "Operação",
+        "description": "Volume de mensagens e a saúde dos webhooks."
+      }
     },
     "toolbar": {
       "more": "Mais ações do painel",
@@ -121,21 +136,25 @@
       "radarNeedsMoreHint": "O radar precisa de três ou mais. Tente outra separação, ou barras.",
       "truncated": "Mostrando as primeiras linhas: há mais do que o limite deste card.",
       "folded_one": "{{count}} valor menor ficou em \"Outros\".",
-      "folded_other": "{{count}} valores menores ficaram em \"Outros\"."
+      "folded_other": "{{count}} valores menores ficaram em \"Outros\".",
+      "csvPrevious": "Período anterior"
     },
     "chart": {
       "total": "Total: {{value}}",
       "measure": "Medida",
       "less": "Menos",
       "more": "Mais",
-      "heatmapSummary": "Grade de intensidade com {{rows}} linhas e {{columns}} colunas. Maior valor: {{max}}."
+      "heatmapSummary": "Grade de intensidade com {{rows}} linhas e {{columns}} colunas. Maior valor: {{max}}.",
+      "summaryOne": "{{series}}: o maior valor é {{max}}, em {{maxAt}}. A tabela do card mostra todos os valores.",
+      "summaryMany": "{{names}}. O maior valor é {{max}}, de {{series}}, em {{maxAt}}. A tabela do card mostra todos os valores."
     },
     "figure": {
       "vsPrevious": "vs. período anterior",
       "noBase": "Sem base no período anterior",
       "trend": "Tendência: começou em {{first}} e terminou em {{last}}",
       "goal": "{{label}}: {{value}}",
-      "goalDefault": "Meta"
+      "goalDefault": "Meta",
+      "noData": "Sem dados neste período"
     },
     "values": {
       "none": "(sem valor)",
@@ -180,14 +199,30 @@
       "pickSource": "Escolha de onde vêm os dados"
     },
     "sources": {
-      "conversations": { "howMany": "Quantas conversas" },
-      "contacts": { "howMany": "Quantos contatos" },
-      "messages": { "howMany": "Quantas mensagens" },
-      "agenda_bookings": { "howMany": "Quantos agendamentos" },
-      "campaigns": { "howMany": "Quantas campanhas" },
-      "daily_stats": { "howMany": "Quantos dias com número" },
-      "hook_logs": { "howMany": "Quantos registros de webhook" },
-      "pipelines": { "howMany": "Quantos cards" }
+      "conversations": {
+        "howMany": "Quantas conversas"
+      },
+      "contacts": {
+        "howMany": "Quantos contatos"
+      },
+      "messages": {
+        "howMany": "Quantas mensagens"
+      },
+      "agenda_bookings": {
+        "howMany": "Quantos agendamentos"
+      },
+      "campaigns": {
+        "howMany": "Quantas campanhas"
+      },
+      "daily_stats": {
+        "howMany": "Quantos dias com número"
+      },
+      "hook_logs": {
+        "howMany": "Quantos registros de webhook"
+      },
+      "pipelines": {
+        "howMany": "Quantos cards"
+      }
     },
     "measure": {
       "count": "Quantidade",
@@ -457,21 +492,81 @@
         "tables": "Listas",
         "layout": "Organização"
       },
-      "kpi": { "name": "Número", "short": "Número", "description": "Um valor em destaque." },
-      "number_trend": { "name": "Número com tendência", "short": "Tendência", "description": "O valor e a linha do período." },
-      "gauge": { "name": "Medidor", "short": "Medidor", "description": "Quanto falta para a meta, num arco." },
-      "progress_bar": { "name": "Barra de progresso", "short": "Progresso", "description": "Quanto falta para a meta, em linha." },
-      "line_chart": { "name": "Linha", "short": "Linha", "description": "Como algo muda com o tempo." },
-      "bar_chart": { "name": "Barras", "short": "Barras", "description": "Comparar categorias ou períodos." },
-      "area_chart": { "name": "Área", "short": "Área", "description": "Volume ao longo do tempo." },
-      "pie_chart": { "name": "Pizza", "short": "Pizza", "description": "Partes de um todo, até seis." },
-      "donut_chart": { "name": "Rosca", "short": "Rosca", "description": "Partes de um todo, com o total no meio." },
-      "radar": { "name": "Radar", "short": "Radar", "description": "Vários aspectos de uma coisa." },
-      "heatmap": { "name": "Mapa de calor", "short": "Calor", "description": "Intensidade numa grade." },
-      "table": { "name": "Tabela", "short": "Tabela", "description": "Linhas e colunas, com soma e fórmulas." },
-      "funnel": { "name": "Funil", "short": "Funil", "description": "Do maior para o menor, em etapas." },
-      "rich_text": { "name": "Texto", "short": "Texto", "description": "Uma nota, uma explicação." },
-      "section_divider": { "name": "Seção", "short": "Seção", "description": "Um título para separar os assuntos." }
+      "kpi": {
+        "name": "Número",
+        "short": "Número",
+        "description": "Um valor em destaque."
+      },
+      "number_trend": {
+        "name": "Número com tendência",
+        "short": "Tendência",
+        "description": "O valor e a linha do período."
+      },
+      "gauge": {
+        "name": "Medidor",
+        "short": "Medidor",
+        "description": "Quanto falta para a meta, num arco."
+      },
+      "progress_bar": {
+        "name": "Barra de progresso",
+        "short": "Progresso",
+        "description": "Quanto falta para a meta, em linha."
+      },
+      "line_chart": {
+        "name": "Linha",
+        "short": "Linha",
+        "description": "Como algo muda com o tempo."
+      },
+      "bar_chart": {
+        "name": "Barras",
+        "short": "Barras",
+        "description": "Comparar categorias ou períodos."
+      },
+      "area_chart": {
+        "name": "Área",
+        "short": "Área",
+        "description": "Volume ao longo do tempo."
+      },
+      "pie_chart": {
+        "name": "Pizza",
+        "short": "Pizza",
+        "description": "Partes de um todo, até seis."
+      },
+      "donut_chart": {
+        "name": "Rosca",
+        "short": "Rosca",
+        "description": "Partes de um todo, com o total no meio."
+      },
+      "radar": {
+        "name": "Radar",
+        "short": "Radar",
+        "description": "Vários aspectos de uma coisa."
+      },
+      "heatmap": {
+        "name": "Mapa de calor",
+        "short": "Calor",
+        "description": "Intensidade numa grade."
+      },
+      "table": {
+        "name": "Tabela",
+        "short": "Tabela",
+        "description": "Linhas e colunas, com soma e fórmulas."
+      },
+      "funnel": {
+        "name": "Funil",
+        "short": "Funil",
+        "description": "Do maior para o menor, em etapas."
+      },
+      "rich_text": {
+        "name": "Texto",
+        "short": "Texto",
+        "description": "Uma nota, uma explicação."
+      },
+      "section_divider": {
+        "name": "Seção",
+        "short": "Seção",
+        "description": "Um título para separar os assuntos."
+      }
     },
     "colors": {
       "cat-1": "Violeta",
@@ -563,49 +658,178 @@
         "noteContent": "Explique aqui o que cada número quer dizer, ou o que mudou."
       },
       "items": {
-        "conversationsTotal": { "title": "Total de conversas", "description": "Quantas conversas novas, contra o período anterior." },
-        "conversationsTrend": { "title": "Conversas no período", "description": "O total e a linha de cada dia." },
-        "conversationsByDay": { "title": "Conversas por dia", "description": "Como o movimento muda ao longo do tempo." },
-        "conversationsByStatus": { "title": "Conversas por situação", "description": "Abertas e fechadas." },
-        "conversationsByChannel": { "title": "Conversas por canal", "description": "De onde as conversas vêm." },
-        "conversationsWeeklyByChannel": { "title": "Conversas por semana, por canal", "description": "O volume de cada semana, separado por canal." },
-        "conversationsByAgent": { "title": "Conversas por atendente", "description": "Tabela com total, abertas, não lidas e percentual." },
-        "topTags": { "title": "Etiquetas mais usadas", "description": "As dez que mais aparecem." },
-        "contactsNew": { "title": "Contatos novos", "description": "Quantos contatos chegaram no período." },
-        "contactsByOrigin": { "title": "Contatos por origem", "description": "Como cada contato chegou." },
-        "latestConversations": { "title": "Últimas conversas", "description": "Lista das conversas mais recentes." },
-        "bookingsTotal": { "title": "Total de agendamentos", "description": "Quantos agendamentos no período." },
-        "bookingsAttended": { "title": "Compareceram", "description": "Agendamentos em que a pessoa veio." },
-        "bookingsCanceled": { "title": "Cancelados", "description": "Agendamentos cancelados." },
-        "attendanceRate": { "title": "Taxa de comparecimento", "description": "Comparecimentos sobre o total." },
-        "bookingsByDay": { "title": "Agendamentos por dia", "description": "Como a agenda enche ao longo do tempo." },
-        "bookingsByStatus": { "title": "Agendamentos por presença", "description": "Quem veio, quem faltou, quem falta marcar." },
-        "bookingsByProfessional": { "title": "Agendamentos por profissional", "description": "Como a agenda se divide." },
-        "messagesByDay": { "title": "Mensagens por dia", "description": "O volume de mensagens, dia a dia." },
-        "messagesByAuthor": { "title": "Mensagens por autor", "description": "Recebidas, da automação e da equipe." },
-        "automationTrend": { "title": "Atendidas pela automação", "description": "O total e a linha de cada dia." },
-        "hoursSaved": { "title": "Horas economizadas", "description": "Estimativa do que a automação poupou." },
-        "firstResponse": { "title": "Tempo de resposta da equipe", "description": "Média da primeira resposta, em tempo." },
-        "automationShare": { "title": "Resolvidas pela automação", "description": "Percentual das conversas sem nenhuma pessoa." },
-        "goalConversations": { "title": "Meta de conversas", "description": "Medidor contra uma meta, com faixas." },
-        "goalBookings": { "title": "Meta de agendamentos", "description": "Barra de progresso contra uma meta." },
-        "goalSales": { "title": "Meta de vendas", "description": "O valor ganho contra uma meta." },
-        "wonValue": { "title": "Valor ganho", "description": "A soma dos negócios ganhos no período." },
-        "openValue": { "title": "Valor em aberto", "description": "A soma dos negócios ainda em aberto." },
-        "winRate": { "title": "Taxa de ganho", "description": "Ganhos sobre ganhos e perdidos." },
-        "dealsByStatus": { "title": "Negócios por situação", "description": "Em aberto, ganhos e perdidos." },
-        "cardsByStage": { "title": "Cards por etapa", "description": "Onde os cards ativos estão parados." },
-        "valueByStage": { "title": "Valor por etapa", "description": "Quanto dinheiro está em cada etapa." },
-        "wonByMonth": { "title": "Vendas por mês", "description": "O valor ganho, mês a mês." },
-        "campaignsSent": { "title": "Mensagens de campanha", "description": "Quantas as campanhas enviaram." },
-        "campaignReadRate": { "title": "Taxa de leitura", "description": "Lidas sobre entregues, nas campanhas." },
-        "campaignFunnel": { "title": "Funil de campanhas", "description": "Destinatários, enviadas, entregues e lidas." },
-        "webhookErrors": { "title": "Webhooks com erro", "description": "Quantos falharam no período." },
-        "webhooksByStatus": { "title": "Webhooks por situação", "description": "Sucesso, erro e ignorados." },
-        "webhookTime": { "title": "Tempo dos webhooks", "description": "Média do tempo de processamento, por dia." },
-        "latestWebhooks": { "title": "Últimos webhooks", "description": "Lista do que chegou por último." },
-        "note": { "title": "Como ler este painel", "description": "Um texto livre, em markdown." },
-        "section": { "title": "Nova seção", "description": "Um título para separar os assuntos." }
+        "conversationsTotal": {
+          "title": "Total de conversas",
+          "description": "Quantas conversas novas, contra o período anterior."
+        },
+        "conversationsTrend": {
+          "title": "Conversas no período",
+          "description": "O total e a linha de cada dia."
+        },
+        "conversationsByDay": {
+          "title": "Conversas por dia",
+          "description": "Como o movimento muda ao longo do tempo."
+        },
+        "conversationsByStatus": {
+          "title": "Conversas por situação",
+          "description": "Abertas e fechadas."
+        },
+        "conversationsByChannel": {
+          "title": "Conversas por canal",
+          "description": "De onde as conversas vêm."
+        },
+        "conversationsWeeklyByChannel": {
+          "title": "Conversas por semana, por canal",
+          "description": "O volume de cada semana, separado por canal."
+        },
+        "conversationsByAgent": {
+          "title": "Conversas por atendente",
+          "description": "Tabela com total, abertas, não lidas e percentual."
+        },
+        "topTags": {
+          "title": "Etiquetas mais usadas",
+          "description": "As dez que mais aparecem."
+        },
+        "contactsNew": {
+          "title": "Contatos novos",
+          "description": "Quantos contatos chegaram no período."
+        },
+        "contactsByOrigin": {
+          "title": "Contatos por origem",
+          "description": "Como cada contato chegou."
+        },
+        "latestConversations": {
+          "title": "Últimas conversas",
+          "description": "Lista das conversas mais recentes."
+        },
+        "bookingsTotal": {
+          "title": "Total de agendamentos",
+          "description": "Quantos agendamentos no período."
+        },
+        "bookingsAttended": {
+          "title": "Compareceram",
+          "description": "Agendamentos em que a pessoa veio."
+        },
+        "bookingsCanceled": {
+          "title": "Cancelados",
+          "description": "Agendamentos cancelados."
+        },
+        "attendanceRate": {
+          "title": "Taxa de comparecimento",
+          "description": "Comparecimentos sobre o total."
+        },
+        "bookingsByDay": {
+          "title": "Agendamentos por dia",
+          "description": "Como a agenda enche ao longo do tempo."
+        },
+        "bookingsByStatus": {
+          "title": "Agendamentos por presença",
+          "description": "Quem veio, quem faltou, quem falta marcar."
+        },
+        "bookingsByProfessional": {
+          "title": "Agendamentos por profissional",
+          "description": "Como a agenda se divide."
+        },
+        "messagesByDay": {
+          "title": "Mensagens por dia",
+          "description": "O volume de mensagens, dia a dia."
+        },
+        "messagesByAuthor": {
+          "title": "Mensagens por autor",
+          "description": "Recebidas, da automação e da equipe."
+        },
+        "automationTrend": {
+          "title": "Atendidas pela automação",
+          "description": "O total e a linha de cada dia."
+        },
+        "hoursSaved": {
+          "title": "Horas economizadas",
+          "description": "Estimativa do que a automação poupou."
+        },
+        "firstResponse": {
+          "title": "Tempo de resposta da equipe",
+          "description": "Média da primeira resposta, em tempo."
+        },
+        "automationShare": {
+          "title": "Resolvidas pela automação",
+          "description": "Percentual das conversas sem nenhuma pessoa."
+        },
+        "goalConversations": {
+          "title": "Meta de conversas",
+          "description": "Medidor contra uma meta, com faixas."
+        },
+        "goalBookings": {
+          "title": "Meta de agendamentos",
+          "description": "Barra de progresso contra uma meta."
+        },
+        "goalSales": {
+          "title": "Meta de vendas",
+          "description": "O valor ganho contra uma meta."
+        },
+        "wonValue": {
+          "title": "Valor ganho",
+          "description": "A soma dos negócios ganhos no período."
+        },
+        "openValue": {
+          "title": "Valor em aberto",
+          "description": "A soma dos negócios ainda em aberto."
+        },
+        "winRate": {
+          "title": "Taxa de ganho",
+          "description": "Ganhos sobre ganhos e perdidos."
+        },
+        "dealsByStatus": {
+          "title": "Negócios por situação",
+          "description": "Em aberto, ganhos e perdidos."
+        },
+        "cardsByStage": {
+          "title": "Cards por etapa",
+          "description": "Onde os cards ativos estão parados."
+        },
+        "valueByStage": {
+          "title": "Valor por etapa",
+          "description": "Quanto dinheiro está em cada etapa."
+        },
+        "wonByMonth": {
+          "title": "Vendas por mês",
+          "description": "O valor ganho, mês a mês."
+        },
+        "campaignsSent": {
+          "title": "Mensagens de campanha",
+          "description": "Quantas as campanhas enviaram."
+        },
+        "campaignReadRate": {
+          "title": "Taxa de leitura",
+          "description": "Lidas sobre entregues, nas campanhas."
+        },
+        "campaignFunnel": {
+          "title": "Funil de campanhas",
+          "description": "Destinatários, enviadas, entregues e lidas."
+        },
+        "webhookErrors": {
+          "title": "Webhooks com erro",
+          "description": "Quantos falharam no período."
+        },
+        "webhooksByStatus": {
+          "title": "Webhooks por situação",
+          "description": "Sucesso, erro e ignorados."
+        },
+        "webhookTime": {
+          "title": "Tempo dos webhooks",
+          "description": "Média do tempo de processamento, por dia."
+        },
+        "latestWebhooks": {
+          "title": "Últimos webhooks",
+          "description": "Lista do que chegou por último."
+        },
+        "note": {
+          "title": "Como ler este painel",
+          "description": "Um texto livre, em markdown."
+        },
+        "section": {
+          "title": "Nova seção",
+          "description": "Um título para separar os assuntos."
+        }
       }
     }
   }

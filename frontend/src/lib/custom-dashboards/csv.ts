@@ -34,6 +34,11 @@ export function tableModelCsv(columns: TableColumn[], rows: TableModel["rows"]):
   )
 }
 
+/** Card de número: o número, e o do período anterior quando o card compara. */
+export function figureCsv(title: string, value: number | null, previous: number | null | undefined, previousLabel: string): string {
+  return previous === undefined ? toCsv([title], [[value]]) : toCsv([title, previousLabel], [[value, previous]])
+}
+
 /** Com a marca de UTF-8: sem ela, o Excel embaralha os acentos. */
 export function downloadCsv(csv: string, title: string) {
   const name = title.trim().replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, "_") || "card"

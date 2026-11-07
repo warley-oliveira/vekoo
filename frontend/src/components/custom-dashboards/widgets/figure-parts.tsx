@@ -10,22 +10,6 @@ import { cn } from "@/lib/utils"
 // As peças dos cards de número. A cor nunca fica no número: ele é lido em tinta, e o que muda é o selo ao lado, com ícone e
 // texto, para ninguém depender de distinguir verde de vermelho.
 
-/** A primeira faixa que casa, na ordem em que foi escrita. */
-export function matchRule(rules: ConditionalRule[] | undefined, value: number | null): ConditionalRule | null {
-  if (!rules?.length || value === null || !Number.isFinite(value)) return null
-
-  for (const rule of rules) {
-    const hit =
-      (rule.operator === "gt" && value > rule.value) ||
-      (rule.operator === "gte" && value >= rule.value) ||
-      (rule.operator === "lt" && value < rule.value) ||
-      (rule.operator === "lte" && value <= rule.value) ||
-      (rule.operator === "eq" && value === rule.value)
-    if (hit) return rule
-  }
-  return null
-}
-
 const TONES: Record<string, { tone: StatusTone; icon: typeof CircleCheck; label: string }> = {
   "tone-success": { tone: "success", icon: CircleCheck, label: "good" },
   "tone-warning": { tone: "warning", icon: TriangleAlert, label: "attention" },

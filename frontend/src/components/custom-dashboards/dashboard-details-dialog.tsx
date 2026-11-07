@@ -3,28 +3,20 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { z } from "zod"
 
 import { FormActions, FormField, ResponsiveDialog, TextareaField, TextField, useFormSubmit } from "@/components/shared"
 import { useDashboardMutations } from "@/hooks/custom-dashboards/use-custom-dashboards"
 import { useOpenCount } from "@/hooks/use-panel-session"
+import {
+  dashboardDetailsSchema,
+  MAX_DASHBOARD_DESCRIPTION,
+  MAX_DASHBOARD_NAME,
+  type DashboardDetailsValues,
+} from "@/lib/custom-dashboards/dashboard-details"
 import type { CustomDashboardSummary } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
 import { DASHBOARD_ICON_KEYS, ICONS } from "./icons"
-
-const MAX_NAME = 120
-const MAX_DESCRIPTION = 1000
-
-export function dashboardDetailsSchema(t: (key: string) => string) {
-  return z.object({
-    name: z.string().trim().min(1, t("customDashboards.validation.name")).max(MAX_NAME),
-    description: z.string().trim().max(MAX_DESCRIPTION),
-    icon: z.string(),
-  })
-}
-
-export type DashboardDetailsValues = z.infer<ReturnType<typeof dashboardDetailsSchema>>
 
 /** Os ícones do painel, em botões: a aba mostra um deles. */
 export function IconField({ control, label }: { control: ReturnType<typeof useForm<DashboardDetailsValues>>["control"]; label: string }) {
@@ -106,13 +98,13 @@ function DetailsForm({ dashboard, open, onOpenChange }: DashboardDetailsDialogPr
       }
     >
       <div className="flex flex-col gap-4">
-        <TextField control={form.control} name="name" label={t("customDashboards.details.name")} maxLength={MAX_NAME} autoFocus />
+        <TextField control={form.control} name="name" label={t("customDashboards.details.name")} maxLength={MAX_DASHBOARD_NAME} autoFocus />
         <TextareaField
           control={form.control}
           name="description"
           label={t("customDashboards.details.descriptionLabel")}
           rows={2}
-          maxLength={MAX_DESCRIPTION}
+          maxLength={MAX_DASHBOARD_DESCRIPTION}
           optional
         />
         <IconField control={form.control} label={t("customDashboards.details.icon")} />

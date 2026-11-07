@@ -23,7 +23,7 @@ import { parseDay, type DashboardPeriod } from "@/hooks/insights/use-dashboard-p
 import { formatDateInterval } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { WIDGET_SPECS } from "@/lib/custom-dashboards/catalog"
-import { chartModelCsv, downloadCsv, tableModelCsv } from "@/lib/custom-dashboards/csv"
+import { chartModelCsv, downloadCsv, figureCsv, tableModelCsv } from "@/lib/custom-dashboards/csv"
 import { hasOwnPeriod } from "@/lib/custom-dashboards/query"
 import type { DashboardWidget } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
@@ -100,7 +100,8 @@ export const WidgetCard = memo(function WidgetCard({
   const config = widget.visualConfig
   const locked = Boolean(config.locked)
   const canTwin = Boolean(view.chart) && !view.isEmpty && widget.widgetType !== "number_trend"
-  const hasRows = Boolean(view.chart || view.table) && !view.isEmpty
+  const hasFigure = spec.figure && view.figure !== null
+  const hasRows = hasFigure || (Boolean(view.chart || view.table) && !view.isEmpty)
   const notes = config.annotations ?? []
   const Icon = config.icon ? iconFor(config.icon) : null
   const editingHere = editing && onDashboard
@@ -108,6 +109,7 @@ export const WidgetCard = memo(function WidgetCard({
   function exportCsv() {
     if (view.table) downloadCsv(tableModelCsv(view.table.columns, view.table.rows), widget.title)
     else if (view.chart) downloadCsv(chartModelCsv(view.chart), widget.title)
+    else if (hasFigure) downloadCsv(figureCsv(widget.title, view.figure, view.previous, t("customDashboards.card.csvPrevious")), widget.title)
   }
 
   function onHandleKey(event: KeyboardEvent<HTMLButtonElement>) {
@@ -259,7 +261,7 @@ export const WidgetCard = memo(function WidgetCard({
             <h3 className="flex items-start gap-1.5 text-sm font-medium">
               {Icon ? <Icon aria-hidden className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" /> : null}
               {/* No celular a linha é estreita e o card é de ler: o título pode quebrar. */}
-              <span title={widget.title} className={presentation === "stack" ? "line-clamp-2" : "truncate"}>
+              <span title={widget.title} className={presentation === "stack" ? "line-clamp-2 min-w-0 wrap-anywhere hyphens-auto" : "truncate"}>
                 {widget.title}
               </span>
               {view.error && view.data ? (
@@ -290,8 +292,8 @@ export const WidgetCard = memo(function WidgetCard({
               className={cn(
                 "cd-no-drag flex shrink-0 items-center gap-0.5 transition-opacity",
                 // Com mouse, as ações aparecem por cima, ao passar: o título usa a largura toda enquanto ninguém mexe.
-                "pointer-fine:absolute pointer-fine:top-2 pointer-fine:right-2 pointer-fine:rounded-md pointer-fine:bg-card pointer-fine:pl-1",
-                "pointer-fine:opacity-0 pointer-fine:group-focus-within/card:opacity-100 pointer-fine:group-hover/card:opacity-100 pointer-fine:has-data-popup-open:opacity-100"
+                "absolute top-2 right-2 rounded-md bg-card pl-1 opacity-0 group-focus-within/card:opacity-100 group-hover/card:opacity-100 has-data-popup-open:opacity-100",
+                "pointer-coarse:static pointer-coarse:bg-transparent pointer-coarse:pl-0 pointer-coarse:opacity-100"
               )}
             >
               {!editing && canTwin ? (

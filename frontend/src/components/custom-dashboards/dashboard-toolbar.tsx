@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react"
 import type { CustomDashboard } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
-export const REFRESH_OPTIONS = [0, 30, 60, 300] as const
+const REFRESH_OPTIONS = [0, 30, 60, 300] as const
 
 type DashboardToolbarProps = {
   dashboard: CustomDashboard

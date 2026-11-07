@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Plus, Trash2, WandSparkles } from "lucide-react"
 
+import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { NumberInput, SelectInput } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,12 +15,6 @@ import type { DataSourceMeta } from "@/lib/custom-dashboards/types"
 import { ColorChoice, EditorSection } from "./editor-parts"
 
 const RULE_OPERATORS = ["gte", "gt", "lte", "lt", "eq"] as const
-
-/** O que entra na aba: só o que o tipo usa. Sem nada, a aba nem aparece. */
-export function hasRules(values: Pick<EditorValues, "widgetType" | "breakdown">) {
-  const spec = WIDGET_SPECS[values.widgetType]
-  return spec.figure || spec.axes || Boolean(values.breakdown)
-}
 
 export function RulesSection({ sources }: { sources: DataSourceMeta[] }) {
   const { control } = useFormContext<EditorValues>()
@@ -176,12 +171,17 @@ function ThresholdsEditor() {
         <div key={index} className="flex flex-col gap-1.5 rounded-lg bg-muted/40 p-2">
           <div className="flex items-center gap-1.5">
             <div className="w-28 shrink-0">
-              <NumberInput
-                value={line.value}
-                placeholder={t("customDashboards.rules.value")}
-                onChange={(value) => update(thresholds.map((item, position) => (position === index ? { ...item, value } : item)))}
-                className="bg-background"
-              />
+              <HiddenLabel text={t("customDashboards.rules.value")}>
+                {(id) => (
+                  <NumberInput
+                    id={id}
+                    value={line.value}
+                    placeholder={t("customDashboards.rules.value")}
+                    onChange={(value) => update(thresholds.map((item, position) => (position === index ? { ...item, value } : item)))}
+                    className="bg-background"
+                  />
+                )}
+              </HiddenLabel>
             </div>
             <Input
               aria-label={t("customDashboards.rules.lineLabel")}
@@ -258,12 +258,17 @@ function ConditionalRulesEditor() {
                 className="bg-background"
               />
             </div>
-            <NumberInput
-              value={rule.value}
-              placeholder={t("customDashboards.rules.value")}
-              onChange={(value) => update(rules.map((item, position) => (position === index ? { ...item, value } : item)))}
-              className="min-w-0 flex-1 bg-background"
-            />
+            <HiddenLabel text={t("customDashboards.rules.value")}>
+              {(id) => (
+                <NumberInput
+                  id={id}
+                  value={rule.value}
+                  placeholder={t("customDashboards.rules.value")}
+                  onChange={(value) => update(rules.map((item, position) => (position === index ? { ...item, value } : item)))}
+                  className="min-w-0 flex-1 bg-background"
+                />
+              )}
+            </HiddenLabel>
             <Button
               type="button"
               variant="ghost"

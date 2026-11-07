@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react"
+import { memo, useId, useMemo, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { CircleAlert, Lock, RefreshCw, SquarePen } from "lucide-react"
 
@@ -10,10 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ApiError } from "@/lib/api"
 import { useLanguage } from "@/lib/i18n"
 import type { ChartModel } from "@/lib/custom-dashboards/chart-model"
+import { chartSummary } from "@/lib/custom-dashboards/chart-summary"
 import { formatValue } from "@/lib/custom-dashboards/format"
 import { FormulaError } from "@/lib/custom-dashboards/formula-engine"
 import { hasOwnPeriod } from "@/lib/custom-dashboards/query"
-import type { DashboardWidget, VisualConfig } from "@/lib/custom-dashboards/types"
+import type { DashboardWidget, VisualConfig, WidgetType } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
 import { useFormulaErrorMessage } from "./use-formula-error"
@@ -101,13 +102,38 @@ export const WidgetBody = memo(function WidgetBody({ widget, view, editing, anim
 
   return (
     <div className={cn("flex h-full min-h-0 flex-col gap-1.5", dim)}>
-      <div className="min-h-0 flex-1">
+      <WidgetFigure widget={widget} model={view.chart}>
         <WidgetVisual widget={widget} view={view} animate={animate} />
-      </div>
+      </WidgetFigure>
       <PartialNote model={view.chart} truncated={view.table?.truncated} />
     </div>
   )
 })
+
+// Os outros tipos já se explicam: número e lista são texto, e medidor, tendência e calor têm o nome deles.
+const DESCRIBED_TYPES = new Set<WidgetType>(["line_chart", "bar_chart", "area_chart", "pie_chart", "donut_chart", "radar"])
+
+function WidgetFigure({ widget, model, children }: { widget: DashboardWidget; model: ChartModel | null; children: ReactNode }) {
+  const { t } = useTranslation()
+  const language = useLanguage()
+  const captionId = useId()
+  const config = widget.visualConfig
+  const summary = useMemo(
+    () => (model && DESCRIBED_TYPES.has(widget.widgetType) ? chartSummary(model, config, language, t) : undefined),
+    [config, language, model, t, widget.widgetType]
+  )
+
+  return (
+    <figure aria-describedby={summary ? captionId : undefined} className="m-0 min-h-0 flex-1">
+      {summary ? (
+        <figcaption id={captionId} className="sr-only">
+          {summary}
+        </figcaption>
+      ) : null}
+      {children}
+    </figure>
+  )
+}
 
 function WidgetVisual({ widget, view, animate }: Pick<WidgetBodyProps, "widget" | "view" | "animate">) {
   const { t } = useTranslation()

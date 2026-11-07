@@ -5,7 +5,7 @@ import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { apiPost } from "@/lib/api"
 import { MAX_FORMULA_STEPS, WIDGET_SPECS } from "@/lib/custom-dashboards/catalog"
 import { FormulaError } from "@/lib/custom-dashboards/formula-engine"
-import { evaluateCompound, evaluateCompoundScalar, FORMULA_VALUE } from "@/lib/custom-dashboards/formula-series"
+import { allStepsEmpty, evaluateCompound, evaluateCompoundScalar, FORMULA_VALUE } from "@/lib/custom-dashboards/formula-series"
 import {
   buildCompoundSteps,
   buildQueryPayload,
@@ -21,6 +21,7 @@ import {
 import type {
   DashboardWidget,
   DataSourceMeta,
+  FormulaStep,
   QueryResult,
   VisualConfig,
   WidgetQuery,
@@ -36,11 +37,14 @@ const COMPOUND_PATH = "/custom-dashboards/compound-query"
 const SWR_OPTIONS = {
   revalidateOnFocus: false,
   revalidateOnReconnect: true,
-  // Curto, para o "atualizar a cada 30 s" não ser engolido; dois cards iguais na mesma tela continuam pedindo uma vez.
-  dedupingInterval: 5_000,
   // 403, 422 e prazo estourado não melhoram sozinhos. Quem insiste é a pessoa, no "tentar de novo" do card.
   shouldRetryOnError: false,
 }
+
+// Um card que chega à tela, ou a prévia que abre, com a mesma consulta de outro não pergunta de novo: esmaeceria os dois à
+// toa. Com o "atualizar a cada 30 s" ligado, a janela encurta, senão ela engoliria a própria atualização.
+const DEDUPE_MS = 60_000
+const DEDUPE_REFRESHING_MS = 5_000
 
 type CompoundResponse = { results: Record<string, QueryResult> }
 type WidgetResponse = QueryResult | CompoundResponse
@@ -161,6 +165,11 @@ function groupOf(results: Record<string, QueryResult>, prefix: string) {
 
 const EMPTY_RESULT: QueryResult = { rows: [], columns: [], meta: { total: 0, truncated: false } }
 
+function formulaFigure(result: QueryResult, stepResults: Record<string, QueryResult>, steps: FormulaStep[]): number | null {
+  const value = scalarValue(result, FORMULA_VALUE)
+  return value === 0 && allStepsEmpty(stepResults, steps) ? null : value
+}
+
 function readFormula(query: WidgetQuery, results: Record<string, QueryResult>): WidgetData {
   const formula = query.formula ?? ""
   const steps = query.formulaSteps ?? []
@@ -168,7 +177,8 @@ function readFormula(query: WidgetQuery, results: Record<string, QueryResult>): 
 
   const currentResults = groupOf(results, CURRENT)
   if (Object.keys(currentResults).length === 0) {
-    return { result: evaluateCompound(formula, results, steps, dimension) }
+    const result = evaluateCompound(formula, results, steps, dimension)
+    return dimension ? { result } : { result, current: formulaFigure(result, results, steps) }
   }
 
   const current = evaluateCompoundScalar(formula, currentResults, steps)
@@ -177,9 +187,9 @@ function readFormula(query: WidgetQuery, results: Record<string, QueryResult>): 
 
   return {
     result: Object.keys(seriesResults).length ? evaluateCompound(formula, seriesResults, steps, dimension) : current,
-    current: scalarValue(current, FORMULA_VALUE),
+    current: formulaFigure(current, currentResults, steps),
     ...(Object.keys(previousResults).length
-      ? { previous: scalarValue(evaluateCompoundScalar(formula, previousResults, steps), FORMULA_VALUE) }
+      ? { previous: formulaFigure(evaluateCompoundScalar(formula, previousResults, steps), previousResults, steps) }
       : {}),
   }
 }
@@ -244,6 +254,7 @@ export function useWidgetData(
   const swr = useSWR<WidgetResponse>(enabled && request ? request.key : null, () => runRequest(request as WidgetRequest), {
     ...SWR_OPTIONS,
     refreshInterval,
+    dedupingInterval: refreshInterval ? DEDUPE_REFRESHING_MS : DEDUPE_MS,
   })
 
   // Trocou a consulta (outro período, outro campo): o desenho anterior fica até o novo chegar, esmaecido. Ele foi feito

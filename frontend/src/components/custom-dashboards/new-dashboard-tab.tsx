@@ -12,6 +12,7 @@ import { useDashboardMutations, useDataSources } from "@/hooks/custom-dashboards
 import { useEditorStore } from "@/hooks/custom-dashboards/use-editor-store"
 import { ApiError } from "@/lib/api"
 import { GRID_COLS } from "@/lib/custom-dashboards/catalog"
+import { dashboardDetailsSchema, type DashboardDetailsValues } from "@/lib/custom-dashboards/dashboard-details"
 import {
   DASHBOARD_TEMPLATES,
   instantiateTemplate,
@@ -21,7 +22,7 @@ import {
 import type { DataSourceMeta } from "@/lib/custom-dashboards/types"
 import { cn } from "@/lib/utils"
 
-import { dashboardDetailsSchema, IconField, type DashboardDetailsValues } from "./dashboard-details-dialog"
+import { IconField } from "./dashboard-details-dialog"
 import { iconFor } from "./icons"
 
 /**

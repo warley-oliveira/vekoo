@@ -3,12 +3,14 @@ import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-
 import { useTranslation } from "react-i18next"
 import { CircleHelp, Plus, X } from "lucide-react"
 
+import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { SearchableSelect, SelectInput } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useFilterOptions } from "@/hooks/custom-dashboards/use-custom-dashboards"
+import { useMeasureOptions } from "@/hooks/custom-dashboards/use-editor-options"
 import { columnLetter, MAX_FILTERS, MAX_FORMULA_STEPS } from "@/lib/custom-dashboards/catalog"
 import type { EditorValues } from "@/lib/custom-dashboards/editor-model"
 import { validateFormula } from "@/lib/custom-dashboards/formula-engine"
@@ -17,7 +19,6 @@ import { cn } from "@/lib/utils"
 
 import { useFormulaErrorMessage } from "../use-formula-error"
 import { FiltersEditor } from "./filters-editor"
-import { useMeasureOptions } from "./metrics-editor"
 
 const QUICK_FUNCTIONS: { label: string; snippet: string; cursor: number }[] = [
   { label: "ROUND", snippet: "ROUND(, 2)", cursor: 6 },
@@ -275,13 +276,19 @@ function FormulaStepRow({
           className="bg-background"
         />
         {step.aggregation !== "count" ? (
-          <SearchableSelect
-            value={step.metric ?? null}
-            onChange={(next) => setValue(`formulaSteps.${index}.metric`, next ?? undefined, dirty)}
-            options={fieldsFor(step.aggregation)}
-            placeholder={t("customDashboards.measure.field")}
-            className="bg-background"
-          />
+          <HiddenLabel text={t("customDashboards.measure.field")}>
+            {(id) => (
+              <SearchableSelect
+                id={id}
+                value={step.metric ?? null}
+                onChange={(next) => setValue(`formulaSteps.${index}.metric`, next ?? undefined, dirty)}
+                options={fieldsFor(step.aggregation)}
+                placeholder={t("customDashboards.measure.field")}
+                aria-invalid={Boolean(fieldError)}
+                className="bg-background"
+              />
+            )}
+          </HiddenLabel>
         ) : null}
       </div>
       {fieldError ? <p className="text-xs text-destructive">{fieldError}</p> : null}

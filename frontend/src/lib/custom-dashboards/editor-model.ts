@@ -7,6 +7,7 @@ import type {
   Aggregation,
   DashboardWidget,
   DataSourceMeta,
+  FilterOperator,
   FormulaStep,
   Granularity,
   QueryFilter,
@@ -455,4 +456,19 @@ export function describeEditor(
 /** A tabela de registros pede colunas para escolher: o que é da fonte e sai nas linhas. */
 export function recordFields(source: DataSourceMeta | undefined) {
   return source?.fields.filter((field) => field.type !== "custom_attribute" && !field.virtual) ?? []
+}
+
+/** O que entra na aba de regras: só o que o tipo usa. Sem nada, a aba nem aparece. */
+export function hasRules(values: Pick<EditorValues, "widgetType" | "breakdown">) {
+  const spec = WIDGET_SPECS[values.widgetType]
+  return spec.figure || spec.axes || Boolean(values.breakdown)
+}
+
+/** Comparações que não pedem valor: "está preenchido", "está vazio". */
+export const VALUELESS_OPERATORS: FilterOperator[] = ["exists", "not_exists"]
+
+export function isFilterFilled(filter: QueryFilter) {
+  if (VALUELESS_OPERATORS.includes(filter.operator)) return true
+  if (Array.isArray(filter.value)) return filter.value.length > 0
+  return filter.value !== "" && filter.value !== null && filter.value !== undefined
 }

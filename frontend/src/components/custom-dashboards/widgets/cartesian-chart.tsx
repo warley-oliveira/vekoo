@@ -1,4 +1,4 @@
-import { memo, useMemo, type ReactNode } from "react"
+import { memo, useCallback, useMemo, useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { useReducedMotion } from "motion/react"
 import {
@@ -39,6 +39,41 @@ const CHART_CLASS =
 
 /** Até aqui cabe um número em cada barra. Passou disso, só o maior: um número em cada ponto ninguém lê. */
 const MAX_LABELLED_BARS = 16
+
+/** O que o eixo e as margens tomam da largura do card. Não precisa ser exato: só decide a folga das barras. */
+const AXIS_WIDTH = 36
+const WIDTH_STEP = 8
+const CROWDED_BELOW = 10
+
+/** A largura do gráfico, em degraus: decide a folga sem redesenhar a cada pixel de um redimensionamento. */
+function useSteppedWidth(active: boolean) {
+  const [width, setWidth] = useState(0)
+
+  const ref = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || !active) return
+      const measure = () => setWidth(Math.round(node.clientWidth / WIDTH_STEP) * WIDTH_STEP)
+      measure()
+      const observer = new ResizeObserver(measure)
+      observer.observe(node)
+      return () => observer.disconnect()
+    },
+    [active]
+  )
+
+  return { ref, width }
+}
+
+/**
+ * A folga das barras. O Recharts trunca a largura de cada barra para inteiro: com 90 dias no celular, os 22% de folga e os
+ * 2 px entre barras deixariam um fio de 1 px. Com pouco lugar, a folga encolhe e o que sobra vai para a barra.
+ */
+function barSpacing(width: number, slots: number, marksPerSlot: number) {
+  const slot = width > AXIS_WIDTH && slots > 0 ? (width - AXIS_WIDTH) / slots : Number.POSITIVE_INFINITY
+  const perMark = slot / marksPerSlot
+  if (perMark >= CROWDED_BELOW) return { barCategoryGap: "22%", barGap: GAP }
+  return { barCategoryGap: slot < 2 ? 0 : slot < 8 ? 0.5 : 1, barGap: perMark < 3 ? 0 : 1 }
+}
 
 type ChartRow = { id: string; tick: string; title: string } & Record<string, unknown>
 
@@ -110,6 +145,7 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
   const perCategoryColor = series.length === 1 && categories.some((category) => valueMap?.[category.id]?.color)
   const thresholds = config.thresholds ?? []
   const allPositive = series.every((item) => item.values.every((value) => (value ?? 0) >= 0))
+  const measured = useSteppedWidth(type === "bar_chart" && !horizontal)
 
   const rows = useMemo<ChartRow[]>(
     () =>
@@ -281,14 +317,13 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
   return (
     <div className="flex h-full min-h-0 flex-col gap-2">
       {legend}
-      <div className="min-h-0 flex-1">
+      <div ref={measured.ref} className="min-h-0 flex-1">
         <ChartContainer config={chartConfig} className={CHART_CLASS}>
           <ComposedChart
             data={rows}
             layout={horizontal ? "vertical" : "horizontal"}
             margin={{ top: config.showValues ? 18 : 6, right: horizontal && config.showValues ? 36 : 6, bottom: 0, left: 0 }}
-            barCategoryGap="22%"
-            barGap={GAP}
+            {...(horizontal ? { barCategoryGap: "22%", barGap: GAP } : barSpacing(measured.width, categories.length, stacked ? 1 : series.length))}
           >
             {config.showGrid !== false ? <CartesianGrid vertical={horizontal} horizontal={!horizontal} stroke={GRID_STROKE} /> : null}
             {horizontal ? (

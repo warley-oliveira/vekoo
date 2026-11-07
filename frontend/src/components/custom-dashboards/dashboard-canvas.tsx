@@ -6,7 +6,7 @@ import type { Snapshot } from "@/hooks/custom-dashboards/use-editor-store"
 import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { GRID_COLS, GRID_MARGIN, GRID_ROW_HEIGHT } from "@/lib/custom-dashboards/catalog"
-import { readingOrder, stackHeight, stackSpans } from "@/lib/custom-dashboards/layout"
+import { readingOrder, stackSize, stackSpans } from "@/lib/custom-dashboards/layout"
 import { cn } from "@/lib/utils"
 
 import type { GridApi } from "./dashboard-grid"
@@ -47,25 +47,18 @@ function StackedCanvas({ snapshot, editing, period, refreshInterval, selectedId 
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      {widgets.map((widget, index) => {
-        const height = stackHeight(widget)
-        return (
-          <div
-            key={widget.id}
-            className={cn("min-w-0", spans[index] === 2 && "col-span-2")}
-            style={height === "auto" ? undefined : { height }}
-          >
-            <WidgetCard
-              widget={snapshot.widgets[widget.id]}
-              period={period}
-              editing={editing}
-              refreshInterval={refreshInterval}
-              presentation="stack"
-              selected={selectedId === widget.id}
-            />
-          </div>
-        )
-      })}
+      {widgets.map((widget, index) => (
+        <div key={widget.id} className={cn("min-w-0", spans[index] === 2 && "col-span-2")} style={stackSize(widget)}>
+          <WidgetCard
+            widget={snapshot.widgets[widget.id]}
+            period={period}
+            editing={editing}
+            refreshInterval={refreshInterval}
+            presentation="stack"
+            selected={selectedId === widget.id}
+          />
+        </div>
+      ))}
     </div>
   )
 }

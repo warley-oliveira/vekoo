@@ -7,7 +7,9 @@ import { formatCompactValue, formatValue } from "@/lib/custom-dashboards/format"
 import type { VisualConfig } from "@/lib/custom-dashboards/types"
 import { resolveColor } from "@/lib/custom-dashboards/palette"
 
-import { DeltaLine, matchRule, RuleBadge } from "./figure-parts"
+import { matchRule } from "@/lib/custom-dashboards/rules"
+
+import { DeltaLine, RuleBadge } from "./figure-parts"
 
 type NumberTrendWidgetProps = {
   value: number | null

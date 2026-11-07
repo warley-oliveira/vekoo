@@ -51,17 +51,25 @@ export function sanitizeLayout(layout: Partial<WidgetLayout> | null | undefined,
 }
 
 /** O que a pilha do celular reserva para cada tipo, em pixels. Nada aqui depende do tamanho guardado na grade. */
-const STACK_HEIGHT: Partial<Record<WidgetType, number>> = {
-  kpi: 132,
-  number_trend: 148,
-  progress_bar: 148,
-  gauge: 240,
-}
-
-export function stackHeight(widget: Pick<DashboardWidget, "widgetType">): number | "auto" {
-  // Tabela vira lista empilhada no celular, e cresce com ela.
-  if (widget.widgetType === "rich_text" || widget.widgetType === "section_divider" || widget.widgetType === "table") return "auto"
-  return STACK_HEIGHT[widget.widgetType] ?? 320
+export function stackSize(widget: Pick<DashboardWidget, "widgetType">): { height?: number; minHeight?: number } {
+  switch (widget.widgetType) {
+    // Listas crescem com o conteúdo: rolagem dentro da rolagem é onde o dedo se perde.
+    case "rich_text":
+    case "section_divider":
+    case "table":
+    case "funnel":
+      return {}
+    // O título pode quebrar e a faixa ocupa lugar. O mínimo é só para o card não dançar ao carregar.
+    case "kpi":
+      return { minHeight: 132 }
+    case "number_trend":
+    case "progress_bar":
+      return { height: 148 }
+    case "gauge":
+      return { height: 240 }
+    default:
+      return { height: 320 }
+  }
 }
 
 /** KPIs vizinhos dividem a linha no celular; um número sozinho ocupa a largura toda. */

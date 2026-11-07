@@ -1,68 +1,22 @@
-import { lazy, Suspense, useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useSearchParams } from "react-router"
 import { Plus } from "lucide-react"
 
 import { ErrorState } from "@/components/shared"
 import { confirm } from "@/components/shared/use-confirm"
-import { Skeleton } from "@/components/ui/skeleton"
-import { iconFor } from "@/components/custom-dashboards/icons"
+import { DashboardTabContent, DashboardTabIcon, NewDashboardTabContent } from "@/components/custom-dashboards/dashboard-tab-parts"
 import type { DashboardExtraTab, DashboardExtraTabs } from "@/hooks/insights/use-dashboard-extra-tabs"
-import type { DashboardPeriod } from "@/hooks/insights/use-dashboard-period"
 import { useCan } from "@/hooks/use-can"
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes"
 import { sortDashboards } from "@/lib/custom-dashboards/templates"
-import type { CustomDashboardSummary } from "@/lib/custom-dashboards/types"
 
 import { useCustomDashboardList } from "./use-custom-dashboards"
 import { useDirtyDashboardIds, useEditorStore } from "./use-editor-store"
 
-// O construtor fica num pedaço próprio: quem só olha a Visão geral não baixa nada disto. Nem a grade, nem os gráficos.
-const DashboardTab = lazy(() => import("@/components/custom-dashboards/dashboard-tab"))
-const NewDashboardTab = lazy(() => import("@/components/custom-dashboards/new-dashboard-tab"))
-
 const NEW_TAB = "new"
 const RESERVED = new Set(["overview", "agenda", NEW_TAB])
 const NO_TABS: DashboardExtraTabs = { tabs: [] }
-
-function TabFallback() {
-  return (
-    <div className="flex flex-col gap-3">
-      <Skeleton className="h-8 w-full max-w-md" />
-      <div className="grid gap-3 lg:grid-cols-4">
-        {Array.from({ length: 4 }, (_, index) => (
-          <Skeleton key={index} className="h-44 rounded-xl" />
-        ))}
-      </div>
-      <Skeleton className="h-96 rounded-xl" />
-    </div>
-  )
-}
-
-function renderDashboard(id: string, period: DashboardPeriod) {
-  return (
-    <Suspense fallback={<TabFallback />}>
-      <DashboardTab key={id} dashboardId={id} period={period} />
-    </Suspense>
-  )
-}
-
-function TabIcon({ dashboard, dirty }: { dashboard: Pick<CustomDashboardSummary, "icon">; dirty: boolean }) {
-  const { t } = useTranslation()
-  const Icon = iconFor(dashboard.icon)
-
-  return (
-    <>
-      <Icon aria-hidden />
-      {dirty ? (
-        // Um rascunho esperando: a aba avisa, mesmo com a pessoa em outra.
-        <span title={t("customDashboards.tab.unsaved")} className="absolute top-1.5 left-1 size-1.5 rounded-full bg-primary">
-          <span className="sr-only">{t("customDashboards.tab.unsaved")}</span>
-        </span>
-      ) : null}
-    </>
-  )
-}
 
 /**
  * A fileira de abas rola de lado, sem barra, e a página não sabe trazer a aba ativa para a vista. Com vários painéis, ou
@@ -133,8 +87,8 @@ export function useCustomDashboardTabs(): DashboardExtraTabs {
     const tabs: DashboardExtraTab[] = sortDashboards(dashboards ?? []).map((dashboard) => ({
       id: dashboard.id,
       label: dashboard.name,
-      icon: <TabIcon dashboard={dashboard} dirty={dirty.has(dashboard.id)} />,
-      render: (period) => renderDashboard(dashboard.id, period),
+      icon: <DashboardTabIcon dashboard={dashboard} dirty={dirty.has(dashboard.id)} />,
+      render: (period) => <DashboardTabContent dashboardId={dashboard.id} period={period} />,
     }))
 
     if (param === NEW_TAB) {
@@ -142,18 +96,14 @@ export function useCustomDashboardTabs(): DashboardExtraTabs {
         id: NEW_TAB,
         label: t("customDashboards.newDashboard.tab"),
         icon: <Plus aria-hidden />,
-        render: () => (
-          <Suspense fallback={<TabFallback />}>
-            <NewDashboardTab />
-          </Suspense>
-        ),
+        render: () => <NewDashboardTabContent />,
       })
     } else if (param && !RESERVED.has(param) && !dashboards) {
       tabs.push({
         id: param,
         label: t("customDashboards.tab.loading"),
         render: (period) =>
-          error ? <ErrorState error={error} onRetry={() => void reload()} /> : renderDashboard(param, period),
+          error ? <ErrorState error={error} onRetry={() => void reload()} /> : <DashboardTabContent dashboardId={param} period={period} />,
       })
     }
 
