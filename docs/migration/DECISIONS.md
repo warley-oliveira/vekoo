@@ -380,7 +380,7 @@ Integrador: Rails 8.1.4.1, rack 3.2.8, nokogiri, loofah, rails-html-sanitizer, c
 
 74 rotas em 1440 px e 74 em 390 px. Mudanças que a pessoa pode vetar:
 
-- **Conteúdo preso à esquerda em todas as telas** (`238b04b`), alinhado ao título. Centrado, as abas pulavam 192 px em 1920 px. Em monitor largo sobra espaço à direita.
+- **Conteúdo centrado, com uma largura por área** (decisão da pessoa, desfazendo `238b04b`, que prendia tudo à esquerda). Preso à esquerda, o monitor largo sobrava vazio só de um lado. As abas pulavam porque as abas de uma área usavam larguras diferentes, então Webhooks e a administração do pipeline ficam inteiras em `default`. Esticar (`full`) só em trabalho denso: chat, quadro, calendário e dashboard.
 - **Busca global (Ctrl K) acha contatos e telas**, além de carrosséis, e respeita permissão. É acréscimo, sobre endpoints que já existiam. Ainda não acha item de catálogo, fluxo ou card.
 - **"Novos contatos" virou "Conversas novas":** o número conta conversas criadas.
 - **Favorito em violeta:** era o único âmbar solto na interface.

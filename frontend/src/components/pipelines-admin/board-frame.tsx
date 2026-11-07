@@ -12,7 +12,6 @@ import {
   PageBody,
   PageHeader,
   type AreaNavItem,
-  type PageBodyProps,
   type PageHeaderProps,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -36,7 +35,6 @@ export type BoardArea =
 
 type BoardFrameProps = {
   area: BoardArea
-  variant?: PageBodyProps["variant"]
   /** Espelha a tela enquanto o quadro carrega. */
   skeleton: ReactNode
   /** Frase de apoio, ações na barra superior. Pode depender do quadro. */
@@ -63,7 +61,7 @@ const LIVE_REFRESH_DELAY_MS = 400
  * A moldura de toda tela de administração de um quadro: lê o quadro, cuida de não encontrado e de
  * erro, põe o nome e o voltar na barra superior, as abas da área e o recado de quadro arquivado.
  */
-export function BoardFrame({ area, variant, skeleton, header, children }: BoardFrameProps) {
+export function BoardFrame({ area, skeleton, header, children }: BoardFrameProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { boardId } = useParams<{ boardId: string }>()
@@ -101,13 +99,13 @@ export function BoardFrame({ area, variant, skeleton, header, children }: BoardF
   }
 
   if (isLoading || !board) {
-    return <PageBody variant={variant}>{skeleton}</PageBody>
+    return <PageBody>{skeleton}</PageBody>
   }
 
   const headerProps = header?.(board)
 
   return (
-    <PageBody variant={variant}>
+    <PageBody>
       <BoardAreaNav board={board} />
       <PageHeader
         title={board.name}

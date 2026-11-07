@@ -180,7 +180,7 @@ export default function WebhookLogsPage() {
   }
 
   return (
-    <PageBody variant="wide">
+    <PageBody>
       <PageHeader
         description={t("webhooks.logs.description")}
         mobilePlacement="inline"

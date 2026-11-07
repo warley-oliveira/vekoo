@@ -47,7 +47,7 @@ export function TrashPage() {
   }
 
   return (
-    <div className="mr-auto max-w-3xl px-4 py-6 md:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-6 md:px-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Info className="size-4 shrink-0" />

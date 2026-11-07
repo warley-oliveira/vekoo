@@ -38,7 +38,7 @@ Antes de criar um componente, procure aqui. Se faltar algo genérico, é melhor 
 
 ### `PageBody` e `PageHeader`
 
-Toda rota começa assim. `PageBody` dá largura e respiro (`default`, `wide`, `full`) e impede a rolagem dupla na página.
+Toda rota começa assim. `PageBody` dá largura e respiro (`default`, `wide`, `full`) e impede a rolagem dupla na página. O corpo é centrado. `default` vale para listas curtas, configurações e formulários; `wide`, para coleções com muitos itens; `full`, só para trabalho denso (chat, quadro, calendário, dashboard). Todas as abas de uma mesma `AreaNav` usam a mesma variante.
 
 **Cada tela tem um título só, e ele mora na barra superior.** `RouteFrame` já declara o título da rota: não repita um título grande no conteúdo. O `PageHeader` leva título e ações para a barra superior e deixa no conteúdo só a descrição e o breadcrumb, quando houver. Sem nada disso, ele não desenha nada.
 

@@ -37,7 +37,6 @@ export default function ArchivedPage() {
   return (
     <BoardFrame
       area="archived"
-      variant="wide"
       skeleton={
         <div className="flex flex-col gap-4" aria-hidden>
           <Skeleton className="h-10 w-full max-w-xl" />

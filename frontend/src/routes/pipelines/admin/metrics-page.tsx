@@ -52,7 +52,6 @@ export default function MetricsPage() {
   return (
     <BoardFrame
       area="metrics"
-      variant="wide"
       skeleton={<MetricsSkeleton />}
       header={() => ({ description: t("pipelinesAdmin.metrics.description") })}
     >
