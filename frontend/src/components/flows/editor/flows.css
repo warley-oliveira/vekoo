@@ -1,0 +1,188 @@
+/*
+ * O quadro de fluxos. Fundo quase branco, pontos discretos, blocos claros. A cor distingue poucas
+ * famílias de bloco, e só no ícone; o violeta é da seleção e da ação principal. O caminho aceso de um
+ * teste usa os tons sóbrios de status, para não se confundir com o que está selecionado.
+ */
+.flow-canvas {
+  --flow-canvas-bg: oklch(0.985 0.002 285);
+  --flow-dots: oklch(0.87 0.004 285);
+  --flow-line: oklch(0.72 0.008 285);
+
+  --flow-family-start: var(--status-success);
+  --flow-family-start-soft: var(--status-success-soft);
+  --flow-family-talk: var(--status-info);
+  --flow-family-talk-soft: var(--status-info-soft);
+  --flow-family-ai: oklch(0.46 0.09 340);
+  --flow-family-ai-soft: oklch(0.96 0.016 340);
+  --flow-family-decide: var(--status-warning);
+  --flow-family-decide-soft: var(--status-warning-soft);
+  --flow-family-neutral: var(--status-neutral);
+  --flow-family-neutral-soft: var(--status-neutral-soft);
+}
+
+.flow-canvas .react-flow {
+  --xy-background-color: var(--flow-canvas-bg);
+  --xy-background-pattern-color: var(--flow-dots);
+  --xy-edge-stroke: var(--flow-line);
+  --xy-edge-stroke-width: 1.5;
+  --xy-edge-stroke-selected: var(--primary);
+  --xy-connectionline-stroke: var(--primary);
+  --xy-connectionline-stroke-width: 2;
+  --xy-selection-background-color: color-mix(in oklch, var(--primary) 8%, transparent);
+  --xy-selection-border: 1px dashed color-mix(in oklch, var(--primary) 45%, transparent);
+  --xy-handle: var(--card);
+  --xy-handle-border-color: var(--flow-line);
+  font-family: var(--font-sans);
+}
+
+/* O anel de foco e de seleção é do próprio bloco: o xyflow não desenha nada por fora. */
+.flow-canvas .react-flow__node {
+  border-radius: var(--radius-xl);
+  outline: none;
+}
+
+.flow-canvas .react-flow__node:focus-visible .flow-block {
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+.flow-canvas .react-flow__edge:focus-visible .react-flow__edge-path {
+  stroke: var(--ring);
+  stroke-width: 2.5;
+}
+
+.flow-canvas .react-flow__edge-path {
+  transition: stroke 150ms ease;
+}
+
+.flow-canvas .react-flow__edge:hover .react-flow__edge-path,
+.flow-canvas .react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.flow-canvas .react-flow__edge[data-lit="true"] .react-flow__edge-path {
+  stroke: var(--status-success);
+  stroke-width: 2.25;
+}
+
+/* As bolinhas de ligar. A área de pegar é maior do que o desenho. */
+.flow-canvas .react-flow__handle {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--flow-line);
+  background: var(--card);
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.flow-canvas .react-flow__handle::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 9999px;
+}
+
+.flow-canvas .react-flow__handle:hover,
+.flow-canvas .react-flow__handle.connectingfrom,
+.flow-canvas .react-flow__handle.connectingto.valid {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translate(var(--handle-x, 0), -50%) scale(1.25);
+}
+
+.flow-canvas .react-flow__handle-right {
+  --handle-x: 50%;
+  right: 0;
+}
+
+.flow-canvas .react-flow__handle-left {
+  --handle-x: -50%;
+  left: 0;
+}
+
+.flow-canvas .flow-block__output[data-tone="danger"] .react-flow__handle {
+  border-color: color-mix(in oklch, var(--status-danger) 55%, var(--flow-line));
+}
+
+.flow-canvas[data-readonly="true"] .react-flow__handle {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* A família pinta só o ícone. */
+.flow-block[data-family="start"] {
+  --block-tint: var(--flow-family-start);
+  --block-tint-soft: var(--flow-family-start-soft);
+}
+.flow-block[data-family="talk"] {
+  --block-tint: var(--flow-family-talk);
+  --block-tint-soft: var(--flow-family-talk-soft);
+}
+.flow-block[data-family="ai"] {
+  --block-tint: var(--flow-family-ai);
+  --block-tint-soft: var(--flow-family-ai-soft);
+}
+.flow-block[data-family="decide"] {
+  --block-tint: var(--flow-family-decide);
+  --block-tint-soft: var(--flow-family-decide-soft);
+}
+.flow-block[data-family="neutral"] {
+  --block-tint: var(--flow-family-neutral);
+  --block-tint-soft: var(--flow-family-neutral-soft);
+}
+
+/* O caminho aceso. O anel é a informação; o pulso só diz que ainda está rodando. */
+.flow-block[data-run="done"] {
+  border-color: color-mix(in oklch, var(--status-success) 55%, var(--border));
+}
+.flow-block[data-run="waiting"] {
+  border-color: var(--status-warning);
+  box-shadow: 0 0 0 3px var(--status-warning-soft);
+}
+.flow-block[data-run="failed"] {
+  border-color: var(--status-danger);
+  box-shadow: 0 0 0 3px var(--status-danger-soft);
+}
+.flow-block[data-run="active"] {
+  border-color: var(--status-info);
+  box-shadow: 0 0 0 3px var(--status-info-soft);
+}
+
+.flow-block__pulse {
+  animation: flow-block-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes flow-block-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-block__pulse {
+    animation: none;
+  }
+  .flow-canvas .react-flow__handle,
+  .flow-canvas .react-flow__edge-path {
+    transition: none;
+  }
+}
+
+/* O texto com variáveis: o realce fica atrás de um campo transparente. */
+.flow-var-mirror {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: transparent;
+  pointer-events: none;
+}
+
+.flow-var-mirror mark {
+  border-radius: 3px;
+  background: var(--accent);
+  color: transparent;
+  box-shadow: 0 0 0 1px var(--accent);
+}
