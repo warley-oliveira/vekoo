@@ -14,7 +14,6 @@ import {
 import { FacetedFilter, FilterPopover, SegmentedControl, type FacetOption } from "@/components/shared"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { CalendarScreenFilters } from "@/hooks/calendar/use-calendar-screen"
 import { CALENDAR_VIEWS, PHONE_VIEWS, type CalendarView } from "@/lib/calendar/calendar-view"
 import { SITUATIONS, type Situation } from "@/lib/calendar/event-status"
@@ -138,38 +137,21 @@ export function TimeZoneNote({
   if (!differs) return null
 
   const mixed = zones.length > 1
-  const now = Date.now()
   const label = mixed
     ? t("calendar.zone.mixed")
-    : t("calendar.zone.single", { zone: zoneDisplayName(zones[0], language) })
+    : t("calendar.zone.single", {
+        zone: zoneDisplayName(zones[0], language),
+        time: formatInZone(Date.now(), zones[0], language, { hour: "2-digit", minute: "2-digit" }),
+      })
 
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <span
-            tabIndex={0}
-            className={cn(
-              "inline-flex min-w-0 items-center gap-1 rounded text-xs text-muted-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-              className
-            )}
-          />
-        }
-      >
-        <Globe aria-hidden className="size-3.5 shrink-0" />
-        <span className="truncate">{label}</span>
-      </TooltipTrigger>
-      <TooltipContent>
-        {zones
-          .map((zone) =>
-            t("calendar.zone.tooltip", {
-              zone,
-              time: formatInZone(now, zone, language, { hour: "2-digit", minute: "2-digit" }),
-            })
-          )
-          .join(" · ")}
-      </TooltipContent>
-    </Tooltip>
+    <p
+      title={zones.join(" · ")}
+      className={cn("inline-flex min-w-0 items-center gap-1 text-xs text-muted-foreground", className)}
+    >
+      <Globe aria-hidden className="size-3.5 shrink-0" />
+      <span className="truncate">{label}</span>
+    </p>
   )
 }
 

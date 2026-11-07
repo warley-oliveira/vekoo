@@ -108,7 +108,7 @@ export function useAgendaChannel({ onRemoteCreate, onEventChange }: AgendaChanne
           const { event } = message
           // Aula cancelada também chega aqui, e continua na tela, marcada como cancelada.
           if (event.type === "class_session" && event.status === "canceled") {
-            write((events, key) => upsertEvent(events, event, key))
+            write((events, key) => swapMaterialized(events, event, null, key))
           } else {
             write((events) => removeEvent(events, event.id))
           }

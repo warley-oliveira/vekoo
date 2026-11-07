@@ -111,11 +111,14 @@ export function useBookingForm({
   event,
   draft,
   calendars,
+  active,
   onDone,
 }: {
   event: BookingEvent | null
   draft: BookingDraft | null
   calendars: AgendaCalendar[]
+  /** O painel está aberto, com este formulário na tela: é quando o atalho de salvar vale. */
+  active: boolean
   onDone: (saved: BookingEvent) => void
 }) {
   const { t } = useTranslation()
@@ -188,6 +191,7 @@ export function useBookingForm({
     submitRef.current = submit
   })
   useEffect(() => {
+    if (!active) return
     function onKeyDown(keyEvent: KeyboardEvent) {
       if ((keyEvent.ctrlKey || keyEvent.metaKey) && keyEvent.key.toLowerCase() === "s") {
         keyEvent.preventDefault()
@@ -196,7 +200,7 @@ export function useBookingForm({
     }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [])
+  }, [active])
 
   return { form, submit, resolvedProfessional }
 }

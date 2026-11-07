@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils"
 import type { BookingFormValues } from "./booking-form"
 
 const PRESETS = [30, 60, 90, 120]
+const MAX_SAME_DAY_OPTION = 8 * 60
 const MINUTE = 60_000
 
 function minutesBetween(start: Date | null, end: Date | null): number | null {
@@ -103,11 +104,18 @@ export function BookingWhen({
   // Cancelado não ocupa ninguém: horários livres e conflito não têm o que dizer.
   const isLive = event?.status !== "canceled"
 
+  // A duração com que o agendamento abriu também vira opção: "45 min" não pode cair em "Outra".
+  const [initialDuration] = useState(() =>
+    duration && duration > 0 && duration <= MAX_SAME_DAY_OPTION && start && end && sameDay(start, end)
+      ? duration
+      : null
+  )
   const durationOptions = useMemo(() => {
     const values = new Set(PRESETS)
     if (service?.duration) values.add(service.duration)
+    if (initialDuration) values.add(initialDuration)
     return [...values].sort((a, b) => a - b)
-  }, [service?.duration])
+  }, [initialDuration, service?.duration])
 
   // "Outro" é escolha da pessoa. Se a duração não bate com nenhuma opção, ele já abre sozinho.
   const [customWanted, setCustomWanted] = useState(false)
@@ -344,7 +352,8 @@ function AvailableSlots({
     )
   }
 
-  if (isLoading && !availability) {
+  // Com a resposta do dia anterior guardada, sem isto apareceria "sem horário" por um instante.
+  if (isLoading) {
     return (
       <div aria-hidden className="flex flex-wrap gap-1.5">
         {Array.from({ length: 8 }, (_, index) => (

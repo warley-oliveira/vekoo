@@ -54,9 +54,8 @@
       }
     },
     "zone": {
-      "single": "Fuso: {{zone}}",
-      "mixed": "Cada calendário no próprio fuso",
-      "tooltip": "{{zone}}: agora são {{time}}"
+      "single": "Fuso: {{zone}}, agora {{time}}",
+      "mixed": "Cada calendário no próprio fuso"
     },
     "filters": {
       "title": "Filtros",

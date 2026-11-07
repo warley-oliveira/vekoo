@@ -297,6 +297,7 @@ export default function CalendarPage() {
   // A grade entende um gesto dentro da mesma coluna como toque: sem isto, trocar de dia abriria
   // um agendamento novo junto. O toque chega à grade depois daqui.
   const ignoreTapUntil = useRef(0)
+  const isDragging = useRef(false)
 
   const nudge = useCallback(
     (direction: 1 | -1) => {
@@ -331,7 +332,7 @@ export default function CalendarPage() {
   function onTouchEnd(touchEvent: React.TouchEvent) {
     const start = swipeStart.current
     swipeStart.current = null
-    if (!start) return
+    if (!start || isDragging.current) return
     const touch = touchEvent.changedTouches[0]
     const dx = touch.clientX - start.x
     const dy = touch.clientY - start.y
@@ -485,6 +486,10 @@ export default function CalendarPage() {
         onMoveEvent={(event, start, end, revert) => void actions.move(event, start, end, revert)}
         onHoverEvent={screen.isPhone ? undefined : hover}
         onOpenDay={screen.openDay}
+        onDragChange={(dragging) => {
+          isDragging.current = dragging
+          if (dragging) ignoreTapUntil.current = Date.now() + 600
+        }}
       />
     </Suspense>
   )

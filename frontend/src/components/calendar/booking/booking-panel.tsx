@@ -18,7 +18,6 @@ import { formatEventWhen, safeTimeZone } from "@/lib/calendar/timezone"
 import type { AgendaCalendar, BookingEvent, CalendarEvent, ClassSessionEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
 import { EventSituationBadge, EventTitle, MeetLink } from "../event-badges"
-import { TimeZoneNote } from "../calendar-toolbar"
 import { AttendanceSection } from "./attendance-section"
 import { useBookingForm, type BookingDraft } from "./booking-form"
 import { BookingFields } from "./booking-fields"
@@ -82,6 +81,7 @@ export function NewEventPanel({
     event: null,
     draft: bookingDraft,
     calendars: staffCalendars,
+    active: open && kind === "booking",
     onDone: done,
   })
   const session = useNewSessionForm({ calendars: classCalendars, draft, onDone: done })
@@ -173,6 +173,7 @@ export function BookingPanel({
     event,
     draft: null,
     calendars,
+    active: open,
     onDone: close,
   })
   const isDirty = form.formState.isDirty
@@ -220,7 +221,6 @@ export function BookingPanel({
             <span className="text-xs text-muted-foreground">{calendar.name}</span>
           ) : null}
         </div>
-        <TimeZoneNote zones={[zone]} />
 
         {canceled ? (
           <Callout tone="neutral" icon={<Ban aria-hidden className="size-4" />}>

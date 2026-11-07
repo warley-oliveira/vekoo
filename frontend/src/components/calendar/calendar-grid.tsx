@@ -78,6 +78,8 @@ export type CalendarGridProps = {
   onMoveEvent: (event: CalendarEvent, start: number, end: number, revert: () => void) => void
   onHoverEvent?: (event: CalendarEvent | null, element: HTMLElement | null) => void
   onOpenDay: (dayKey: string) => void
+  /** Um bloco começou ou parou de ser arrastado: nessa hora, o gesto de trocar de dia não vale. */
+  onDragChange?: (dragging: boolean) => void
 }
 
 function sourceOf(info: { event: { extendedProps: Record<string, unknown> } }): CalendarEvent {
@@ -236,6 +238,7 @@ export default function CalendarGrid({
   onMoveEvent,
   onHoverEvent,
   onOpenDay,
+  onDragChange,
 }: CalendarGridProps) {
   const { t } = useTranslation()
   const language = useLanguage()
@@ -343,6 +346,7 @@ export default function CalendarGrid({
   )
 
   const bareMonth = isPhone && view === "month"
+  const isPhoneDay = isPhone && view === "day"
 
   const eventContent = useCallback(
     (info: EventDisplayInfo) => {
@@ -358,126 +362,135 @@ export default function CalendarGrid({
     [bareMonth]
   )
 
-  function handleMove(info: EventDropInfo | EventResizeDoneInfo) {
-    const source = sourceOf(info)
-    const zone = zoneFor(source.calendarId)
-    const { start: gridStart, end: gridEnd } = info.event
-    if (!gridStart) return
+  // As opções só mudam quando a grade muda de verdade. A página se redesenha a cada passada de
+  // mouse (a prévia mora nela), e opção nova a cada vez faria o FullCalendar refazer tudo, até no
+  // meio de um arraste. Quem muda sempre, os retornos, é lido daqui na hora de usar.
+  const latest = useRef({ onSelectRange, onOpenEvent, onMoveEvent, onHoverEvent, onOpenDay, onDragChange, zoneFor })
+  useEffect(() => {
+    latest.current = { onSelectRange, onOpenEvent, onMoveEvent, onHoverEvent, onOpenDay, onDragChange, zoneFor }
+  })
 
-    const start = instantFromGrid(gridStart, zone)
-    // Só o arraste mantém a duração em tempo real: atravessar a virada do horário de verão não
-    // pode encurtar nem esticar o atendimento.
-    const moved = "delta" in info
-    const end =
-      moved || !gridEnd ? start + (source.end - source.start) : instantFromGrid(gridEnd, zone)
-
-    onMoveEvent(source, start, end, info.revert)
-  }
-
-  const options: CalendarOptions = {
-    plugins: PLUGINS,
-    locales: LOCALES,
-    locale: language === "en" ? "en" : "pt-br",
-    timeZone: "UTC",
-    now,
-    initialView: initial.current.view,
-    initialDate: gridDateOfDayKey(initial.current.anchor),
-    headerToolbar: false,
-    height: "100%",
-    nowIndicator: true,
-    editable: !bareMonth,
-    eventResizableFromStart: !isTouch,
-    eventDurationEditable: !isTouch,
-    // No toque, a seleção por arraste brigaria com a rolagem: tocar num horário basta.
-    selectable: !isTouch,
-    selectMirror: true,
-    unselectAuto: true,
-    longPressDelay: 350,
-    eventLongPressDelay: 350,
-    eventInteractive: true,
-    navLinks: true,
-    navLinkDayClick: (date: Date) => onOpenDay(dayKeyOfGrid(date)),
-    scrollTime: MORNING,
-    scrollTimeReset: false,
-    slotDuration: "00:30:00",
-    slotHeaderFormat: { hour: "2-digit", minute: "2-digit" },
-    eventTimeFormat: { hour: "2-digit", minute: "2-digit" },
-    expandRows: true,
-    allDaySlot: hasAllDay,
-    allDayText: t("calendar.grid.allDay"),
-    noEventsText: t("calendar.grid.noEvents"),
-    // O dia já está no título e na faixa da semana, no celular.
-    dayHeaders: !(isPhone && view === "day"),
-    eventDisplay: "block",
-    dayMaxEventRows: isPhone ? 4 : 3,
-    moreLinkClick: isPhone ? "day" : "popover",
-    moreLinkText: (count: number) => t("calendar.grid.more", { count }),
-    rerenderDelay: 10,
-    events: inputs,
-    eventClass,
-    eventContent,
-    select: (info: DateSelectInfo) => {
-      calendarRef.current?.getApi().unselect()
-      onSelectRange({ start: info.start, end: info.end, allDay: info.allDay })
-    },
-    // Com mouse, `select` já cobre o clique. No toque, ele não está ligado.
-    dateClick: isTouch
-      ? (info: DateClickInfo) => {
-          // O mês do celular é mapa: tocar leva ao dia, onde dá para ver e marcar.
-          if (bareMonth) {
-            onOpenDay(dayKeyOfGrid(info.date))
-            return
-          }
-          const start = info.date
-          onSelectRange({
-            start,
-            end: new Date(start.getTime() + (info.allDay ? DAY_MS : 30 * 60_000)),
-            allDay: info.allDay,
-          })
-        }
-      : undefined,
-    eventClick: (info: EventClickInfo) => {
-      info.jsEvent.preventDefault()
-      onHoverEvent?.(null, null)
-      if (bareMonth) {
-        const source = sourceOf(info)
-        onOpenDay(dayKeyOfGrid(gridDateOf(source.start, zoneFor(source.calendarId))))
-        return
-      }
-      onOpenEvent(sourceOf(info))
-    },
-    eventDragStart: () => {
+  const options = useMemo<CalendarOptions>(() => {
+    const startMoving = () => {
       isMoving.current = true
-      onHoverEvent?.(null, null)
-    },
-    eventDragStop: () => {
+      latest.current.onDragChange?.(true)
+      latest.current.onHoverEvent?.(null, null)
+    }
+    const stopMoving = () => {
+      latest.current.onDragChange?.(false)
       // O ponteiro termina em cima do bloco: a prévia não pode abrir como se fosse um pedido.
       setTimeout(() => {
         isMoving.current = false
       }, AFTER_MOVE_MS)
-    },
-    eventResizeStart: () => {
-      isMoving.current = true
-      onHoverEvent?.(null, null)
-    },
-    eventResizeStop: () => {
-      setTimeout(() => {
-        isMoving.current = false
-      }, AFTER_MOVE_MS)
-    },
-    eventDrop: handleMove,
-    eventResize: handleMove,
-    eventMouseEnter: isTouch
-      ? undefined
-      : (info: EventHoveringInfo) => {
-          if (!isMoving.current) onHoverEvent?.(sourceOf(info), info.el)
-        },
-    eventMouseLeave: isTouch ? undefined : () => onHoverEvent?.(null, null),
-  }
+    }
+    const handleMove = (info: EventDropInfo | EventResizeDoneInfo) => {
+      const source = sourceOf(info)
+      const zone = latest.current.zoneFor(source.calendarId)
+      const { start: gridStart, end: gridEnd } = info.event
+      if (!gridStart) return
+
+      const start = instantFromGrid(gridStart, zone)
+      // Só o arraste mantém a duração em tempo real: atravessar a virada do horário de verão não
+      // pode encurtar nem esticar o atendimento.
+      const moved = "delta" in info
+      const end =
+        moved || !gridEnd ? start + (source.end - source.start) : instantFromGrid(gridEnd, zone)
+
+      latest.current.onMoveEvent(source, start, end, info.revert)
+    }
+
+    return {
+      plugins: PLUGINS,
+      locales: LOCALES,
+      locale: language === "en" ? "en" : "pt-br",
+      timeZone: "UTC",
+      now,
+      initialView: initial.current.view,
+      initialDate: gridDateOfDayKey(initial.current.anchor),
+      headerToolbar: false,
+      height: "100%",
+      nowIndicator: true,
+      editable: !bareMonth,
+      eventResizableFromStart: !isTouch,
+      eventDurationEditable: !isTouch,
+      // No toque, a seleção por arraste brigaria com a rolagem: tocar num horário basta.
+      selectable: !isTouch,
+      selectMirror: true,
+      unselectAuto: true,
+      longPressDelay: 350,
+      eventLongPressDelay: 350,
+      eventInteractive: true,
+      navLinks: true,
+      navLinkDayClick: (date: Date) => latest.current.onOpenDay(dayKeyOfGrid(date)),
+      scrollTime: MORNING,
+      scrollTimeReset: false,
+      slotDuration: "00:30:00",
+      slotHeaderFormat: { hour: "2-digit", minute: "2-digit" },
+      eventTimeFormat: { hour: "2-digit", minute: "2-digit" },
+      expandRows: true,
+      allDaySlot: hasAllDay,
+      allDayText: t("calendar.grid.allDay"),
+      noEventsText: t("calendar.grid.noEvents"),
+      // O dia já está no título e na faixa da semana, no celular.
+      dayHeaders: !isPhoneDay,
+      eventDisplay: "block",
+      eventShortHeight: 40,
+      dayMaxEventRows: isPhone ? 4 : 3,
+      moreLinkClick: isPhone ? "day" : "popover",
+      moreLinkText: (count: number) => t("calendar.grid.more", { count }),
+      rerenderDelay: 10,
+      eventClass,
+      eventContent,
+      select: (info: DateSelectInfo) => {
+        calendarRef.current?.getApi().unselect()
+        latest.current.onSelectRange({ start: info.start, end: info.end, allDay: info.allDay })
+      },
+      // Com mouse, `select` já cobre o clique. No toque, ele não está ligado.
+      dateClick: isTouch
+        ? (info: DateClickInfo) => {
+            // O mês do celular é mapa: tocar leva ao dia, onde dá para ver e marcar.
+            if (bareMonth) {
+              latest.current.onOpenDay(dayKeyOfGrid(info.date))
+              return
+            }
+            const start = info.date
+            latest.current.onSelectRange({
+              start,
+              end: new Date(start.getTime() + (info.allDay ? DAY_MS : 30 * 60_000)),
+              allDay: info.allDay,
+            })
+          }
+        : undefined,
+      eventClick: (info: EventClickInfo) => {
+        info.jsEvent.preventDefault()
+        latest.current.onHoverEvent?.(null, null)
+        const source = sourceOf(info)
+        if (bareMonth) {
+          latest.current.onOpenDay(
+            dayKeyOfGrid(gridDateOf(source.start, latest.current.zoneFor(source.calendarId)))
+          )
+          return
+        }
+        latest.current.onOpenEvent(source)
+      },
+      eventDragStart: startMoving,
+      eventDragStop: stopMoving,
+      eventResizeStart: startMoving,
+      eventResizeStop: stopMoving,
+      eventDrop: handleMove,
+      eventResize: handleMove,
+      eventMouseEnter: isTouch
+        ? undefined
+        : (info: EventHoveringInfo) => {
+            if (!isMoving.current) latest.current.onHoverEvent?.(sourceOf(info), info.el)
+          },
+      eventMouseLeave: isTouch ? undefined : () => latest.current.onHoverEvent?.(null, null),
+    }
+  }, [bareMonth, eventClass, eventContent, hasAllDay, isPhone, isPhoneDay, isTouch, language, now, t])
 
   return (
     <div className="vk-calendar">
-      <FullCalendar ref={calendarRef} {...options} />
+      <FullCalendar ref={calendarRef} {...options} events={inputs} />
     </div>
   )
 }

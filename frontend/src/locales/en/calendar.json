@@ -54,9 +54,8 @@
       }
     },
     "zone": {
-      "single": "Time zone: {{zone}}",
-      "mixed": "Each calendar in its own time zone",
-      "tooltip": "{{zone}}: it's {{time}} now"
+      "single": "Time zone: {{zone}}, now {{time}}",
+      "mixed": "Each calendar in its own time zone"
     },
     "filters": {
       "title": "Filters",
