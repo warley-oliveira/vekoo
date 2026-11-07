@@ -157,8 +157,8 @@ RSpec.describe "db/seeds.rb" do
   end
 
   it "traz os avisos guardando só a chave de tradução" do
-    expect(organization.notifications.recent_first.pluck(:key)).to eq(%w[templates folders welcome])
-    expect(organization.notifications.unread.count).to eq(2)
+    expect(organization.notifications.recent_first.pluck(:key)).to eq(%w[folders welcome])
+    expect(organization.notifications.unread.count).to eq(1)
   end
 
   it "começa sem pastas — é assim que a tela convida a criar a primeira" do
