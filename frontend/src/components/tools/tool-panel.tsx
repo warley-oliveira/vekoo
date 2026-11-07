@@ -296,9 +296,19 @@ function LoadedPanel({
         ) : null}
 
         <section className="flex flex-col gap-2">
-          <div>
-            <h3 className="text-sm font-medium">{t("tools.panel.functionsTitle")}</h3>
-            <p className="mt-0.5 text-xs text-pretty text-muted-foreground">{t("tools.panel.functionsHint")}</p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-medium">{t("tools.panel.functionsTitle")}</h3>
+              <p className="mt-0.5 text-xs text-pretty text-muted-foreground">{t("tools.panel.functionsHint")}</p>
+            </div>
+            {installation ? (
+              <Link
+                to={`/tools/functions?origin=${tool.id}`}
+                className="shrink-0 rounded text-xs text-muted-foreground underline underline-offset-2 outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                {t("tools.panel.seeInFunctions")}
+              </Link>
+            ) : null}
           </div>
           {loadingTemplates && rows.length === 0 ? (
             <DetailSkeleton rows={3} />

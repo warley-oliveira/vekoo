@@ -55,7 +55,7 @@ export function LogStats({ stats, loading, onRetry }: { stats: WebhookLogStats |
       <StatTile
         label={t("webhooks.logs.stats.total")}
         value={total}
-        sparkline={series.map((day) => day.total)}
+        sparkline={total > 0 ? series.map((day) => day.total) : undefined}
         hint={stats.skippedCount > 0 ? t("webhooks.logs.stats.skipped", { count: stats.skippedCount }) : undefined}
       />
       <StatTile
@@ -66,7 +66,7 @@ export function LogStats({ stats, loading, onRetry }: { stats: WebhookLogStats |
       <StatTile
         label={t("webhooks.logs.stats.errors")}
         value={stats.errorCount}
-        sparkline={series.map((day) => day.error)}
+        sparkline={stats.errorCount > 0 ? series.map((day) => day.error) : undefined}
         formatSparklineValue={(value) => formatNumber(value, language)}
         hint={stats.errorCount === 0 && total > 0 ? t("webhooks.logs.stats.noErrors") : undefined}
       />

@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { ToolLogo } from "@/components/tools/tool-logo"
 import { useToolTexts } from "@/components/tools/tool-texts"
+import { FunctionListSkeleton } from "@/components/tools/tools-skeletons"
 import { ToolsNav } from "@/components/tools/tools-nav"
 import { usePersonalize } from "@/components/tools/use-personalize"
 import {
@@ -15,7 +16,6 @@ import {
   ErrorState,
   FacetedFilter,
   FilterBar,
-  ListSkeleton,
   PageBody,
   PageHeader,
   RelativeTime,
@@ -126,7 +126,7 @@ export default function FunctionsPage() {
       {error && !hasData ? (
         <ErrorState error={error} onRetry={() => void reload()} />
       ) : isLoading && !hasData ? (
-        <ListSkeleton rows={6} />
+        <FunctionListSkeleton />
       ) : functions.length === 0 ? (
         <EmptyState
           icon={<Code2 className="size-5" />}
@@ -194,7 +194,7 @@ function GroupSection({ group, collapsed, onToggle }: { group: FunctionGroup; co
             <span className="block truncate font-heading text-base leading-snug font-medium">
               {group.tool ? texts.name(group.tool) : t("tools.functions.customGroup")}
             </span>
-            <span className="block truncate text-xs text-muted-foreground">
+            <span className="block text-xs text-pretty text-muted-foreground">
               {t(group.tool ? "tools.functions.toolGroupHint" : "tools.functions.customGroupHint", { count: group.functions.length })}
             </span>
           </span>

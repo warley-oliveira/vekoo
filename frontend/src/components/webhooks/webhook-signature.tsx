@@ -139,8 +139,8 @@ function HowToSign({ address, secretVariable }: { address: string; secretVariabl
         value={language}
         onChange={setLanguage}
         options={[
-          { value: "curl", label: "curl" },
-          { value: "node", label: "Node.js" },
+          { value: "curl", label: t("webhooks.signature.languageCurl") },
+          { value: "node", label: t("webhooks.signature.languageNode") },
         ]}
       />
       <CodeSnippet

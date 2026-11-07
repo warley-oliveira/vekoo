@@ -167,7 +167,8 @@
         "blockText": "Escreva o texto.",
         "blockAttachment": "Escolha o anexo.",
         "blockUrl": "Falta o endereço da mídia."
-      }
+      },
+      "saveShort": "Salvar"
     },
     "actions": {
       "step": "Passo {{step}}",
@@ -340,7 +341,9 @@
       "secretDescription": "É com ela que o outro sistema assina cada requisição.",
       "secretWarning": "É a única vez que ela aparece inteira. Se perder, o jeito é renovar, e aí a anterior para de valer.",
       "secretCopy": "Copiar a chave",
-      "secretDone": "Já guardei a chave"
+      "secretDone": "Já guardei a chave",
+      "languageCurl": "curl",
+      "languageNode": "Node.js"
     },
     "alerts": {
       "dismiss": "Dispensar",

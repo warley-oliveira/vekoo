@@ -9,6 +9,7 @@ import { WebhookAlertNotice } from "@/components/webhooks/webhook-alert"
 import { WebhookNameDialog } from "@/components/webhooks/webhook-name-dialog"
 import { WEBHOOK_STATUS_TONES } from "@/components/webhooks/webhook-status"
 import { WebhooksNav } from "@/components/webhooks/webhooks-nav"
+import { WebhookListSkeleton } from "@/components/webhooks/webhooks-skeletons"
 import {
   ActionsMenu,
   CopyButton,
@@ -16,7 +17,6 @@ import {
   ErrorState,
   FacetedFilter,
   FilterBar,
-  ListSkeleton,
   PageBody,
   PageHeader,
   RelativeTime,
@@ -140,7 +140,7 @@ export default function WebhooksPage() {
       {error && !hasData ? (
         <ErrorState error={error} onRetry={() => void reload()} />
       ) : isLoading && !hasData ? (
-        <ListSkeleton rows={4} />
+        <WebhookListSkeleton />
       ) : webhooks.length === 0 && orphanAlerts.length === 0 ? (
         <EmptyState
           icon={<WebhookIcon className="size-5" />}

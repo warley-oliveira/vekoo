@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router"
 import { Download, Loader2, PackageOpen, Search } from "lucide-react"
 import { toast } from "sonner"
 
@@ -8,7 +9,8 @@ import { ToolCard } from "@/components/tools/tool-card"
 import { ToolPanel } from "@/components/tools/tool-panel"
 import { useToolTexts } from "@/components/tools/tool-texts"
 import { ToolsNav } from "@/components/tools/tools-nav"
-import { CardGridSkeleton, EmptyState, ErrorState, FacetedFilter, FilterBar, PageBody, PageHeader } from "@/components/shared"
+import { ToolGridSkeleton } from "@/components/tools/tools-skeletons"
+import { EmptyState, ErrorState, FacetedFilter, FilterBar, PageBody, PageHeader } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -34,6 +36,7 @@ export default function ToolsPage() {
   const { functions, hasData: functionsLoaded } = useToolFunctions()
   const { install, toggle } = useToolInstallationMutations()
   const panel = usePanelParam("tool")
+  const navigate = useNavigate()
 
   const [query, setQuery] = useState("")
   const [categories, setCategories] = useState<string[]>([])
@@ -143,14 +146,13 @@ export default function ToolsPage() {
           }}
         />
       ) : loading ? (
-        <div className="flex flex-col gap-6">
-          <CardGridSkeleton cards={6} />
-        </div>
+        <ToolGridSkeleton />
       ) : total === 0 && installed.installations.length === 0 ? (
         <EmptyState
           icon={<PackageOpen className="size-5" />}
           title={t("tools.page.emptyTitle")}
           description={t("tools.page.emptyDescription")}
+          action={{ label: t("tools.page.emptyAction"), onClick: () => navigate("/tools/functions") }}
         />
       ) : (
         <div className="flex flex-col gap-8">
@@ -188,6 +190,7 @@ export default function ToolsPage() {
                           categoryLabel={categoryLabel(tool)}
                           functionCount={functionCountOf(installation)}
                           needsCredentials={tool.credentialsSchema.length > 0 && !installation.hasCredentials}
+                          credentialsSaved={installation.hasCredentials}
                           off={!installation.enabled}
                           onOpen={() => panel.open(tool.id)}
                           control={

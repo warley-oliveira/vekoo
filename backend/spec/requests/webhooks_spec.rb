@@ -165,6 +165,17 @@ RSpec.describe "Webhooks", type: :request do
   end
 
   describe "DELETE /webhooks/:id" do
+    it "leva o aviso do webhook, que ninguém mais conseguiria resolver" do
+      hook = create(:hook, organization: organization)
+      hook.alert_failure!("A última entrega falhou")
+      expect(organization.organization_alerts.active.for_origin("Hook", hook.id)).to exist
+
+      delete "/webhooks/#{hook.id}", headers: headers, as: :json
+
+      expect(response).to have_http_status(:no_content)
+      expect(organization.organization_alerts.active.for_origin("Hook", hook.id)).not_to exist
+    end
+
     it "apaga, com as ações e os logs" do
       hook = create(:hook, organization: organization)
       action = create(:hook_action_contact, hook: hook)

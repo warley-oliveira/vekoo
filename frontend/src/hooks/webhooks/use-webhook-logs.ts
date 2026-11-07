@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react"
+
 import { useApi } from "@/hooks/use-api"
 import type { PaginationMeta } from "@/lib/api"
 import type { WebhookLog, WebhookLogStats, WebhookLogStatus } from "@/lib/webhooks/types"
@@ -24,11 +26,20 @@ function logsPath(filters: LogFilters) {
 
 /** Na primeira página, confere de tempos em tempos: é o que faz a requisição que acabou de chegar aparecer sozinha. */
 export function useWebhookLogs(filters: LogFilters) {
-  const { data, error, isLoading, isValidating, mutate } = useApi<{ logs: WebhookLog[]; meta: PaginationMeta }>(logsPath(filters), {
+  const path = logsPath(filters)
+  const { data, error, isLoading, isValidating, mutate } = useApi<{ logs: WebhookLog[]; meta: PaginationMeta }>(path, {
     keepPreviousData: true,
     refreshInterval: filters.page === 1 ? 10_000 : 0,
   })
-  return { logs: data?.logs ?? NO_LOGS, meta: data?.meta, error, isLoading, isValidating, reload: () => mutate() }
+
+  // A conferência de fundo não mexe na tela; trocar de filtro ou de página, sim.
+  const settled = useRef(path)
+  useEffect(() => {
+    if (!isValidating) settled.current = path
+  }, [isValidating, path])
+  const changing = isValidating && settled.current !== path
+
+  return { logs: data?.logs ?? NO_LOGS, meta: data?.meta, error, isLoading, changing, reload: () => mutate() }
 }
 
 /** O detalhe vem da lista quando dá; por aqui só quem abriu o endereço de um registro direto. */

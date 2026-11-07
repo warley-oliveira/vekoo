@@ -70,7 +70,7 @@ export default function WebhookLogsPage() {
     setParam(name, value)
   }
 
-  const { logs, meta, error, isLoading, isValidating, reload } = useWebhookLogs({
+  const { logs, meta, error, isLoading, changing, reload } = useWebhookLogs({
     webhookId,
     status,
     from: range?.from ?? null,
@@ -126,7 +126,7 @@ export default function WebhookLogsPage() {
         accessorKey: "requestIp",
         header: t("webhooks.logs.columns.ip"),
         enableSorting: false,
-        meta: { className: "w-36" },
+        meta: { mobile: "hidden", className: "w-36" },
         cell: ({ row }) => <span className="font-mono text-xs text-muted-foreground">{row.original.requestIp ?? t("webhooks.common.none")}</span>,
       },
       {
@@ -171,7 +171,12 @@ export default function WebhookLogsPage() {
     )
   }
 
-  const refreshing = isValidating && Boolean(meta)
+  const [refreshing, setRefreshing] = useState(false)
+  const refresh = async () => {
+    setRefreshing(true)
+    await Promise.allSettled([reload(), stats.reload()])
+    setRefreshing(false)
+  }
 
   return (
     <PageBody variant="wide">
@@ -186,10 +191,7 @@ export default function WebhookLogsPage() {
             aria-label={t("webhooks.logs.refresh")}
             disabled={refreshing}
             className="pointer-coarse:size-10"
-            onClick={() => {
-              void reload()
-              void stats.reload()
-            }}
+            onClick={() => void refresh()}
           >
             <RefreshCw className={cn(refreshing && "animate-spin motion-reduce:animate-none")} />
           </Button>
@@ -257,7 +259,7 @@ export default function WebhookLogsPage() {
           getRowId={(log) => log.id}
           meta={meta}
           isLoading={isLoading && !meta}
-          isFetching={refreshing}
+          isFetching={changing || refreshing}
           error={meta ? undefined : error}
           onRetry={() => void reload()}
           onPageChange={setPage}

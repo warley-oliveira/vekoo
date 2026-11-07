@@ -23,7 +23,8 @@
       "functions_one": "{{count}} function",
       "functions_other": "{{count}} functions",
       "needsCredentials": "Needs an access key",
-      "off": "Off"
+      "off": "Off",
+      "credentialsSaved": "Key saved"
     },
     "page": {
       "description": "What the AI in your flows can do beyond talking: look up a postal code, book a slot, take a note about a customer. Install what makes sense, without writing code.",
@@ -45,7 +46,8 @@
       "noResultsTitle": "No tools found",
       "noResultsDescription": "Try another word, or clear the filters.",
       "availableTitle": "Available",
-      "count_zero": "No tools"
+      "count_zero": "No tools",
+      "emptyAction": "See functions"
     },
     "panel": {
       "loading": "Tool",
@@ -67,7 +69,8 @@
       "reversible": "You can uninstall it whenever you want.",
       "personalized": "Personalized",
       "test": "Test",
-      "openFunction": "Open the function"
+      "openFunction": "Open the function",
+      "seeInFunctions": "See in Functions"
     },
     "credentials": {
       "title": "Access keys",
@@ -93,7 +96,7 @@
       "origin": "Source",
       "sortName": "Name, A to Z",
       "sortRecent": "Last changed",
-      "customGroup": "Written here",
+      "customGroup": "Your functions",
       "customGroupHint_one": "{{count}} function, editable",
       "customGroupHint_other": "{{count}} functions, editable",
       "toolGroupHint_one": "{{count}} function, kept by the tool",
@@ -151,7 +154,7 @@
       },
       "description": "Description",
       "descriptionHint": "This is what the AI reads to know what to send here.",
-      "descriptionPlaceholder": "The delivery postal code, digits only",
+      "descriptionPlaceholder": "For example: the delivery postal code, digits only",
       "enum": "Allowed values",
       "enumHint": "Leave blank to accept any text.",
       "enumPlaceholder": "Type and press Enter",
@@ -195,7 +198,7 @@
       "jsonLabel": "What the function receives, in JSON",
       "jsonInvalid": "It must be a valid JSON object, like { \"zip\": \"80010000\" }.",
       "chat": "Test in a conversation",
-      "chatHint": "Optional. Without a conversation, anything that depends on the contact (getContactInfo, tag) fails in the test.",
+      "chatHint": "Optional. Some functions need a contact: without a conversation, they fail in the test.",
       "chatPlaceholder": "Search by name or number",
       "chatEmpty": "No conversations found"
     },
@@ -241,7 +244,8 @@
         "parameterNameInvalid": "Use only letters, numbers and _.",
         "parameterNameTaken": "There's already a parameter with this name here.",
         "parameterDescription": "Say what goes here: that's what the AI reads."
-      }
+      },
+      "saveShort": "Save"
     },
     "catalogCopy": {
       "appointments": {

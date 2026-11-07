@@ -11,11 +11,11 @@ import { FunctionTester, StandaloneFunctionTester, type FunctionTesterHandle } f
 import { GatedCodeEditor } from "@/components/tools/gated-code-editor"
 import { ParametersEditor, ParametersSummary } from "@/components/tools/parameters-editor"
 import { useToolTexts } from "@/components/tools/tool-texts"
+import { FunctionEditorSkeleton } from "@/components/tools/tools-skeletons"
 import { usePersonalize } from "@/components/tools/use-personalize"
 import {
   ActionsMenu,
   Callout,
-  DetailSkeleton,
   EmptyState,
   ErrorState,
   FormError,
@@ -113,7 +113,7 @@ export default function FunctionEditorPage() {
       <PageBody>
         <PageHeader backTo={LIST_PATH} parentTitle={t("tools.nav.functions")} />
         {isLoading ? (
-          <DetailSkeleton rows={6} />
+          <FunctionEditorSkeleton />
         ) : error instanceof ApiError && error.status === 404 ? (
           <EmptyState
             icon={<Code2 className="size-5" />}
@@ -332,7 +332,8 @@ function FunctionForm({ fn }: { fn: ToolFunction | null }) {
             ) : null}
             <Button type="button" size="sm" disabled={!isDirty || isSubmitting} className="pointer-coarse:h-10" onClick={() => void submit()}>
               {isSubmitting ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : null}
-              {t("tools.editor.save")}
+              <span className="max-md:hidden">{t("tools.editor.save")}</span>
+              <span className="md:hidden">{t("tools.editor.saveShort")}</span>
             </Button>
             {savedId ? (
               <ActionsMenu

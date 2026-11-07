@@ -23,7 +23,8 @@
       "functions_one": "{{count}} função",
       "functions_other": "{{count}} funções",
       "needsCredentials": "Pede chave de acesso",
-      "off": "Desligada"
+      "off": "Desligada",
+      "credentialsSaved": "Chave guardada"
     },
     "page": {
       "description": "O que a IA dos seus fluxos pode fazer além de conversar: consultar um CEP, marcar um horário, anotar algo sobre o cliente. Instale o que fizer sentido, sem escrever código.",
@@ -45,7 +46,8 @@
       "noResultsTitle": "Nenhuma ferramenta encontrada",
       "noResultsDescription": "Tente outra palavra, ou limpe os filtros.",
       "availableTitle": "Disponíveis",
-      "count_zero": "Nenhuma ferramenta"
+      "count_zero": "Nenhuma ferramenta",
+      "emptyAction": "Ver funções"
     },
     "panel": {
       "loading": "Ferramenta",
@@ -67,7 +69,8 @@
       "reversible": "Dá para desinstalar quando quiser.",
       "personalized": "Personalizada",
       "test": "Testar",
-      "openFunction": "Abrir a função"
+      "openFunction": "Abrir a função",
+      "seeInFunctions": "Ver em Funções"
     },
     "credentials": {
       "title": "Chaves de acesso",
@@ -93,7 +96,7 @@
       "origin": "Origem",
       "sortName": "Nome de A a Z",
       "sortRecent": "Alteradas por último",
-      "customGroup": "Escritas aqui",
+      "customGroup": "Suas funções",
       "customGroupHint_one": "{{count}} função, editável",
       "customGroupHint_other": "{{count}} funções, editáveis",
       "toolGroupHint_one": "{{count}} função, mantida pela ferramenta",
@@ -151,7 +154,7 @@
       },
       "description": "Descrição",
       "descriptionHint": "É o que a IA lê para saber o que mandar aqui.",
-      "descriptionPlaceholder": "O CEP de entrega, só com os números",
+      "descriptionPlaceholder": "Por exemplo: o CEP de entrega, só com os números",
       "enum": "Valores permitidos",
       "enumHint": "Em branco, aceita qualquer texto.",
       "enumPlaceholder": "Digite e aperte Enter",
@@ -195,7 +198,7 @@
       "jsonLabel": "O que a função recebe, em JSON",
       "jsonInvalid": "Precisa ser um objeto JSON válido, como { \"cep\": \"80010000\" }.",
       "chat": "Testar numa conversa",
-      "chatHint": "Opcional. Sem conversa, o que depende do contato (getContactInfo, tag) dá erro no teste.",
+      "chatHint": "Opcional. Algumas funções precisam de um contato: sem conversa, elas dão erro no teste.",
       "chatPlaceholder": "Buscar por nome ou número",
       "chatEmpty": "Nenhuma conversa encontrada"
     },
@@ -241,7 +244,8 @@
         "parameterNameInvalid": "Use só letras, números e _.",
         "parameterNameTaken": "Já existe um parâmetro com este nome aqui.",
         "parameterDescription": "Diga o que vai aqui: é o que a IA lê."
-      }
+      },
+      "saveShort": "Salvar"
     },
     "catalogCopy": {
       "appointments": {

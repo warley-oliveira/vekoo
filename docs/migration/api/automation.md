@@ -995,7 +995,7 @@ PATCH /webhooks/:id:
 
 ### `DELETE /webhooks/:id`
 
-`204`. Leva as ações e os logs.
+`204`. Leva as ações, os logs e o aviso aberto do webhook.
 
 ### Assinatura
 

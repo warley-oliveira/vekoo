@@ -16,6 +16,8 @@ export type ToolCardProps = {
   functionCount: number
   /** Precisa de chave de outro sistema: quem instala fica sabendo antes de abrir. */
   needsCredentials?: boolean
+  /** Já tem a chave guardada: nunca mostramos qual, só que existe. */
+  credentialsSaved?: boolean
   /** Instalada e desligada: a IA não usa. */
   off?: boolean
   /** O interruptor ou o botão de instalar. Fica acima da área clicável do cartão. */
@@ -27,7 +29,7 @@ export type ToolCardProps = {
  * Uma ferramenta: o cartão inteiro abre o painel, e o botão de verdade é o título, para o teclado e o leitor de tela
  * o acharem.
  */
-export function ToolCard({ tool, categoryLabel, functionCount, needsCredentials, off, control, onOpen }: ToolCardProps) {
+export function ToolCard({ tool, categoryLabel, functionCount, needsCredentials, credentialsSaved, off, control, onOpen }: ToolCardProps) {
   const { t } = useTranslation()
   const texts = useToolTexts()
 
@@ -52,10 +54,10 @@ export function ToolCard({ tool, categoryLabel, functionCount, needsCredentials,
             <span>{categoryLabel}</span>
             <span aria-hidden>·</span>
             <span>{t("tools.card.functions", { count: functionCount })}</span>
-            {needsCredentials ? (
+            {needsCredentials || credentialsSaved ? (
               <span className="inline-flex items-center gap-1">
                 <KeyRound className="size-3" aria-hidden />
-                {t("tools.card.needsCredentials")}
+                {t(credentialsSaved ? "tools.card.credentialsSaved" : "tools.card.needsCredentials")}
               </span>
             ) : null}
           </p>

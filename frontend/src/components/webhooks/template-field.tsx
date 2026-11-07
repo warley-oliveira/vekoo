@@ -209,7 +209,7 @@ export function TemplateInput({
           title={t("webhooks.template.insert")}
           onMouseDown={(event) => event.preventDefault()}
           onClick={openFromButton}
-          className="absolute top-1.5 right-1.5 flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground pointer-coarse:size-8"
+          className="absolute top-1 right-1 flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors after:absolute after:-inset-1.5 hover:bg-muted hover:text-foreground"
         >
           <Braces className="size-3.5" aria-hidden />
         </button>

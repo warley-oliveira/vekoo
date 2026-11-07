@@ -15,11 +15,11 @@ import { WebhookAlertNotice } from "@/components/webhooks/webhook-alert"
 import { WebhookNameDialog } from "@/components/webhooks/webhook-name-dialog"
 import { WebhookSignature } from "@/components/webhooks/webhook-signature"
 import { WebhookTest } from "@/components/webhooks/webhook-test"
+import { WebhookDetailSkeleton } from "@/components/webhooks/webhooks-skeletons"
 import {
   ActionsMenu,
   Callout,
   CopyButton,
-  DetailSkeleton,
   EmptyState,
   ErrorState,
   FormError,
@@ -61,7 +61,7 @@ export default function WebhookPage() {
       <PageBody>
         <PageHeader backTo={LIST_PATH} parentTitle={t("navigation.webhooks")} />
         {isLoading ? (
-          <DetailSkeleton rows={6} />
+          <WebhookDetailSkeleton />
         ) : error instanceof ApiError && error.status === 404 ? (
           <EmptyState
             icon={<Unplug className="size-5" />}
@@ -211,7 +211,8 @@ function WebhookDetail({ webhook, reload }: { webhook: Webhook; reload: () => vo
             ) : null}
             <Button type="button" size="sm" disabled={!isDirty || isSubmitting} className="pointer-coarse:h-10" onClick={() => void submit()}>
               {isSubmitting ? <Loader2 className="animate-spin motion-reduce:animate-none" /> : null}
-              {t("webhooks.form.save")}
+              <span className="max-md:hidden">{t("webhooks.form.save")}</span>
+              <span className="md:hidden">{t("webhooks.form.saveShort")}</span>
             </Button>
             <ActionsMenu
               className="pointer-coarse:size-10"

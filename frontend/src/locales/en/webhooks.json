@@ -167,7 +167,8 @@
         "blockText": "Write the text.",
         "blockAttachment": "Choose the attachment.",
         "blockUrl": "The media address is missing."
-      }
+      },
+      "saveShort": "Save"
     },
     "actions": {
       "step": "Step {{step}}",
@@ -340,7 +341,9 @@
       "secretDescription": "The other system signs every request with it.",
       "secretWarning": "This is the only time it shows in full. If you lose it, the way out is to renew, and then the previous one stops working.",
       "secretCopy": "Copy the key",
-      "secretDone": "I've saved the key"
+      "secretDone": "I've saved the key",
+      "languageCurl": "curl",
+      "languageNode": "Node.js"
     },
     "alerts": {
       "dismiss": "Dismiss",
