@@ -17,7 +17,7 @@ import {
   FormField,
   NumberField,
   SelectField,
-  ResponsiveDialog,
+  SidePanel,
   SwitchField,
   TextareaField,
   TextField,
@@ -306,7 +306,7 @@ export function ClassGroupPanel({
   }
 
   return (
-    <ResponsiveDialog
+    <SidePanel
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -694,6 +694,6 @@ export function ClassGroupPanel({
           </div>
         ) : null}
       </div>
-    </ResponsiveDialog>
+    </SidePanel>
   )
 }

@@ -11,7 +11,7 @@ import {
   FormActions,
   NumberField,
   SelectField,
-  ResponsiveDialog,
+  SidePanel,
   UnsavedChangesDialog,
   useFormSubmit,
 } from "@/components/shared"
@@ -112,7 +112,7 @@ export function ReminderRulePanel({ calendar, rule, open, onOpenChange, onDelete
   }
 
   return (
-    <ResponsiveDialog
+    <SidePanel
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -175,6 +175,6 @@ export function ReminderRulePanel({ calendar, rule, open, onOpenChange, onDelete
           if (!next) setTesting(null)
         }}
       />
-    </ResponsiveDialog>
+    </SidePanel>
   )
 }

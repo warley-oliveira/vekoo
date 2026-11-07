@@ -16,7 +16,7 @@ import {
   FormError,
   KeyValueList,
   ListSkeleton,
-  ResponsiveDialog,
+  SidePanel,
   StatusBadge,
   TextareaField,
   TextField,
@@ -187,7 +187,7 @@ export function ClassSessionPanel({
   ].filter((item) => item.value)
 
   return (
-    <ResponsiveDialog
+    <SidePanel
       open={open}
       onOpenChange={onOpenChange}
       size="lg"
@@ -369,7 +369,7 @@ export function ClassSessionPanel({
           void revalidateEvents()
         }}
       />
-    </ResponsiveDialog>
+    </SidePanel>
   )
 }
 

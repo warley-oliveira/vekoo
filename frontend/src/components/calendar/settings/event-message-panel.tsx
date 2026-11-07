@@ -7,7 +7,7 @@ import { z } from "zod"
 
 import {
   FormActions,
-  ResponsiveDialog,
+  SidePanel,
   UnsavedChangesDialog,
   useFormSubmit,
 } from "@/components/shared"
@@ -57,7 +57,7 @@ export function EventMessagePanel({ rule, open, onOpenChange, onSave }: EventMes
   })
 
   return (
-    <ResponsiveDialog
+    <SidePanel
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -83,6 +83,6 @@ export function EventMessagePanel({ rule, open, onOpenChange, onSave }: EventMes
         maxLength={NOTICE_MESSAGE_MAX}
         showCount
       />
-    </ResponsiveDialog>
+    </SidePanel>
   )
 }

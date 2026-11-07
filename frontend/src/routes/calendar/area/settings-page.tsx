@@ -6,7 +6,7 @@ import { GoogleSection } from "@/components/calendar/settings/google-section"
 
 /**
  * As configurações de um calendário. Cada seção salva sozinha: dados com botão, interruptores na
- * hora, regras em modal. Calendário de turmas não tem colaboradores, então não há o que
+ * hora, regras no painel lateral. Calendário de turmas não tem colaboradores, então não há o que
  * distribuir nem a quem avisar. Excluir calendário não é oferecido: a API não tem essa rota.
  */
 export default function SettingsPage() {

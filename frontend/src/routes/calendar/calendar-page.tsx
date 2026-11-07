@@ -29,7 +29,7 @@ import { EnrollSequenceDialog } from "@/components/calendar/enroll-sequence-dial
 import { EventPreview } from "@/components/calendar/event-preview"
 import { ClassSessionPanel } from "@/components/calendar/session/class-session-panel"
 import { WeekStrip } from "@/components/calendar/week-strip"
-import { EmptyState, ErrorState, ResponsiveDialog } from "@/components/shared"
+import { EmptyState, ErrorState, SidePanel } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useAgendaChannel } from "@/hooks/calendar/use-agenda-channel"
 import { useBookingActions } from "@/hooks/calendar/use-booking-actions"
@@ -656,7 +656,7 @@ export default function CalendarPage() {
       </div>
 
       {/* Painéis */}
-      <ResponsiveDialog
+      <SidePanel
         open={sidebarOpen}
         onOpenChange={setSidebarOpen}
         title={t("calendar.sidebar.title")}
@@ -673,7 +673,7 @@ export default function CalendarPage() {
           }}
           calendarList={calendarListProps}
         />
-      </ResponsiveDialog>
+      </SidePanel>
 
       {newPanelKey > 0 && calendars ? (
         <NewEventPanel

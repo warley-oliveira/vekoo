@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Um assunto dentro de um formulário comprido de modal. O fio separa um do outro, e o
+ * Um assunto dentro de um formulário comprido de painel lateral. O fio separa um do outro, e o
  * título é pequeno: quem manda na hierarquia é o título do painel.
  */
 export function FormSection({

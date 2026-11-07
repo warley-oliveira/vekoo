@@ -11,7 +11,7 @@ import {
   Callout,
   FormActions,
   NumberField,
-  ResponsiveDialog,
+  SidePanel,
   TextareaField,
   TextField,
   UnsavedChangesDialog,
@@ -151,7 +151,7 @@ export function ServicePanel({
   const requestClose = useGuardedClose(isDirty, close)
 
   return (
-    <ResponsiveDialog
+    <SidePanel
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -325,6 +325,6 @@ export function ServicePanel({
           </div>
         ) : null}
       </div>
-    </ResponsiveDialog>
+    </SidePanel>
   )
 }
