@@ -65,11 +65,11 @@ class ZapiClient
     # @return [String] Binary content of the media file
     # @raise [ZapiClient::Error] On download failure
     def retrieve_media(media_url)
-      response = HTTParty.get(media_url, timeout: 20)
-      return response.body if response.code == 200
+      response = ::Media::RemoteFile.get(media_url)
+      return response.body if response.status == 200
 
-      Rails.logger.error("Failed to download media: HTTP #{response.code}") if defined?(Rails)
-      raise Error, "Failed to download media (HTTP #{response.code})"
+      Rails.logger.error("Failed to download media: HTTP #{response.status}") if defined?(Rails)
+      raise Error, "Failed to download media (HTTP #{response.status})"
     rescue StandardError => e
       Rails.logger.error("Error retrieving media: #{e.message}") if defined?(Rails)
       raise Error, "Error retrieving media: #{e.message}"

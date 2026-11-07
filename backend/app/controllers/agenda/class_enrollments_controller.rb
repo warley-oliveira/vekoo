@@ -18,7 +18,7 @@ module Agenda
     end
 
     def create
-      chat = Chat.scoped(current_organization.id, params.require(:chat_id).to_s)
+      chat = Chat.visible_to(current_account).where(id: params.require(:chat_id).to_s).take
       return render_not_found unless chat
 
       if @class_group.active_enrollment_count >= @class_group.max_students.to_i

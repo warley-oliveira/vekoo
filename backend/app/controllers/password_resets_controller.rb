@@ -35,7 +35,10 @@ class PasswordResetsController < ApplicationController
 
     if account.save
       reset.use!
-      account.sessions.destroy_all
+      # Os outros pedidos abertos valeriam por até 2 horas, depois de a pessoa já ter trocado a senha.
+      account.password_resets.usable.update_all(used_at: Time.current)
+      # Inclui o WebSocket: quem estava com a sessão antiga não fica escutando.
+      account.end_sessions!
       head :no_content
     else
       render_invalid(account)

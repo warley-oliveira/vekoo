@@ -52,6 +52,9 @@ class Connector::WhatsappCloud < Connector::Base
   field :phone_number_id, type: Integer
   field :waba_id, type: Integer
   field :business_id, type: Integer
+  # Quando a Meta confirmou que o token deste conector enxerga o WABA (ver #activate). `waba_id` é escrito
+  # por quem cria o conector, e o estado não prova nada: pausar e reativar leva qualquer conector a `active`.
+  field :waba_verified_at, type: Time
   encrypted_field :access_token
   encrypted_field :user_access_token
 
@@ -67,6 +70,15 @@ class Connector::WhatsappCloud < Connector::Base
 
   before_create do
     self.verification_token = SecureRandom.base36(32)
+  end
+
+  # O dono do WABA de um evento: só quem provou que enxerga o WABA. Sem isto, cadastrar o id de outra
+  # organização bastava para receber as mensagens dela, porque o webhook de aplicativo da Meta é um só.
+  # `business_id` só vale em conector sem `waba_id`: é o único caso em que foi ele que a Meta conferiu.
+  def self.owner_of_entry(entry_id)
+    verified = where(:waba_verified_at.ne => nil)
+
+    verified.where(waba_id: entry_id).take || verified.where(waba_id: nil, business_id: entry_id).take
   end
 
   def instance_name
@@ -86,6 +98,7 @@ class Connector::WhatsappCloud < Connector::Base
       return
     end
     self.phone_number_list = fetch_registered_numbers
+    self.waba_verified_at = Time.current
     self.display_phone_number = registered_number.data.display_phone_number
     self.verified_name = registered_number.data.verified_name
     self.fb_status = registered_number.data.status
@@ -537,7 +550,7 @@ class Connector::WhatsappCloud < Connector::Base
     converted_file_path = "#{file_path}.mp3"
 
     # ffmpeg -i input.ogg -ac 1 -ar 16000 -b:a 96k output.mp3
-    converted = system('ffmpeg', '-y', '-loglevel', 'error', '-i', file_path.to_s, '-ac', '1', '-ar', '16000', '-b:a', '96k', converted_file_path)
+    converted = system('ffmpeg', '-y', '-loglevel', 'error', *Media::Ffmpeg::AUDIO_INPUT, '-i', file_path.to_s, '-ac', '1', '-ar', '16000', '-b:a', '96k', converted_file_path)
     return file_path unless converted && File.exist?(converted_file_path)
 
     File.delete(file_path)
@@ -694,8 +707,8 @@ class Connector::WhatsappCloud < Connector::Base
   def upload_media_for_template(file_url)
     Rails.logger.info "[upload_media_for_template] Starting upload for URL: #{file_url}"
 
-    # Download the file from URL
-    file_response = HTTParty.get(file_url, follow_redirects: true, timeout: 60)
+    # Download the file from URL. A URL vem de quem cria o modelo.
+    file_response = Media::RemoteFile.get(file_url)
     unless file_response.success?
       Rails.logger.error "[upload_media_for_template] Failed to download file from URL: #{file_url}"
       return nil
@@ -703,7 +716,7 @@ class Connector::WhatsappCloud < Connector::Base
 
     file_content = file_response.body
     file_length = file_content.bytesize
-    content_type = file_response.headers['content-type'] || detect_content_type(file_url)
+    content_type = file_response.content_type.presence || detect_content_type(file_url)
     file_name = extract_file_name(file_url, content_type)
 
     Rails.logger.info "[upload_media_for_template] File size: #{file_length}, Type: #{content_type}, Name: #{file_name}"

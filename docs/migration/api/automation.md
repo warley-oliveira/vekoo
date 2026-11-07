@@ -785,7 +785,7 @@ Resposta `200`:
 
 ### `GET /tool-catalog` e `GET /tool-catalog/:id`
 
-`?category=`. O detalhe traz `functionTemplates`.
+`?category=`. O detalhe traz `functionTemplates`, sem o código: `name`, `description` e `parameters`.
 
 Resposta `200`:
 
@@ -863,6 +863,8 @@ As ações rodam nesta ordem: `ContactHandling` (fixa, é ela que acha a convers
 | `HookAction::HttpRequest` | `url`, `httpMethod`, `headers[]: { key, value }`, `body`: texto ou mapa | Repassa para outra URL, por `SafeHttp`: nunca para a rede interna. **Não existia na origem.** |
 
 `messageBlocks[]`: `{ id, type: text|image|video|document|audio, content, mediaUrl, fileName, caption, mediaSource: url|attachment, attachmentId }`.
+
+Em `headers`, o valor de cabeçalho cujo nome parece segredo (`authorization`, `cookie`, `token`, `secret`, `api-key`, `password`, `senha`) é só de escrita: a resposta traz `••••••••`. Mandar de volta a máscara mantém o que estava. Se a URL mudar de esquema, host ou porta, ou o cabeçalho mudar de nome, não há o que manter, e a resposta é `422 secretHeaderNeedsRetyping`, com o nome do cabeçalho na mensagem.
 
 Canal, fluxo e campo precisam ser da organização, senão 422. Falha de envio ou de HTTP não para as ações seguintes: vira o alerta `webhook_delivery_failed`, que a próxima entrega sem falha resolve, ou salvar o webhook.
 

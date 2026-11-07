@@ -4,6 +4,7 @@ require "rails_helper"
 # mensagem recebida percorre. Os detalhes de cada canal ficam em spec/services/inbound/.
 RSpec.describe "Webhooks de entrada", type: :request do
   include ActiveJob::TestHelper
+  include InboundHelpers
 
   let(:organization) { create(:organization) }
 
@@ -114,7 +115,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "persiste a mensagem sem o sufixo do JID e chama o dispatcher" do
       perform_enqueued_jobs do
-        post "/inbound/evolution/#{codename}", params: upsert(message: { conversation: "Bom dia" }), as: :json
+        post inbound_path(connector, :evolution, codename), params: upsert(message: { conversation: "Bom dia" }), as: :json
       end
 
       chat = Chat.where(connector_id: connector.id).take
@@ -124,7 +125,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "pausa a automação quando a mensagem é nossa, de outro aparelho" do
       perform_enqueued_jobs do
-        post "/inbound/evolution/#{codename}", params: upsert(message: { conversation: "Já te respondo" }, from_me: true), as: :json
+        post inbound_path(connector, :evolution, codename), params: upsert(message: { conversation: "Já te respondo" }, from_me: true), as: :json
       end
 
       chat = Chat.where(connector_id: connector.id).take
@@ -138,7 +139,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
       stub_request(:get, "https://bucket.exemplo.com/foto.jpg").to_return(status: 200, body: "fake-jpeg")
 
       perform_enqueued_jobs do
-        post "/inbound/evolution/#{codename}",
+        post inbound_path(connector, :evolution, codename),
              params: upsert(message: { mediaUrl: "https://bucket.exemplo.com/foto.jpg", imageMessage: { url: "https://cdn/enc", caption: "Olha" } }),
              as: :json
       end
@@ -163,7 +164,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "persiste a mensagem de texto e chama o dispatcher" do
       perform_enqueued_jobs do
-        post "/inbound/zapi/#{connector.id}/on-message-received",
+        post inbound_path(connector, :zapi_message_received, connector.id),
              params: { messageId: "Z1", phone: "5531971810932", fromMe: false, senderName: "Ana", text: { message: "Tem horário?" } },
              as: :json
       end
@@ -175,7 +176,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "ignora grupo" do
       perform_enqueued_jobs do
-        post "/inbound/zapi/#{connector.id}/on-message-received",
+        post inbound_path(connector, :zapi_message_received, connector.id),
              params: { messageId: "Z2", phone: "5531971810932", isGroup: true, text: { message: "oi" } },
              as: :json
       end
@@ -186,7 +187,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "fecha o conector e registra o motivo na desconexão" do
       perform_enqueued_jobs do
-        post "/inbound/zapi/#{connector.id}/on-whatsapp-disconnected",
+        post inbound_path(connector, :zapi_disconnected, connector.id),
              params: { error: "the number was disconnected by a possible whatsapp number blocking" },
              as: :json
       end
@@ -235,7 +236,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
 
     it "lê a sessão, persiste e chama o dispatcher" do
       perform_enqueued_jobs do
-        post "/inbound/lead-chat/#{connector.id}/event",
+        post inbound_path(connector, :lead_chat_event, connector.id),
              params: { eventType: "MESSAGE_RECEIVED", content: { id: "L1", type: "TEXT", text: "Quero um orçamento", sessionId: "S1", origin: "GATEWAY" } },
              as: :json
       end

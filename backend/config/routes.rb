@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # O upload direto do Active Storage nasce aberto, sem sessão e, numa aplicação só de API, sem CSRF:
+  # guardaria arquivo de qualquer pessoa no disco do servidor. Ninguém aqui usa: todo upload passa por
+  # uma rota com sessão. Vem antes das rotas do engine, que são desenhadas depois destas.
+  match "rails/active_storage/direct_uploads", via: :all, to: ->(_env) { [ 404, {}, [] ] }
+
   # Toda URL da plataforma é em inglês, kebab-case — igual às rotas do front.
 
   # --- entrada e conta ------------------------------------------------------

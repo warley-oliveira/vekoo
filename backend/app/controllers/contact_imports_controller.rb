@@ -8,6 +8,9 @@ class ContactImportsController < PlatformController
   include InboxAccess
 
   BATCH_SIZE = 1_000
+  # O arquivo inteiro é lido e interpretado aqui, na thread do Puma. Dá umas 200 mil linhas, e a tela não
+  # passa por esta rota: ela lê a planilha no navegador e manda em lotes.
+  MAX_FILE_BYTES = 10.megabytes
 
   require_any_permission :contacts, :core_settings
 
@@ -50,6 +53,7 @@ class ContactImportsController < PlatformController
     file = params[:file]
     return render_error(status: :unprocessable_content, code: "fileRequired", field: "file") unless file.respond_to?(:read)
     return render_error(status: :unprocessable_content, code: "invalidCsv", field: "file") unless csv_file?(file)
+    return render_error(status: :unprocessable_content, code: "fileTooLarge", field: "file") if file.size > MAX_FILE_BYTES
 
     contacts = ContactImports::CsvParser.parse(file.read)
     return render_no_valid_contacts if contacts.empty?

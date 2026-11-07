@@ -3,6 +3,8 @@ require "rails_helper"
 # A Z-API com instância própria: o cliente cola o id e o token dele. O provider `zapi` do
 # WhatsApp Web, com instância criada por nós, está em whatsapp_web/providers/zapi_spec.rb.
 RSpec.describe Connector::Zapi do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }
@@ -84,7 +86,7 @@ RSpec.describe Connector::Zapi do
     let(:connector) { create(:connector_zapi, organization: organization, instance_id: "ZINST", token: "ZTOKEN", status: :inactive) }
 
     def webhook(endpoint, path)
-      a_request(:put, "#{base}/#{endpoint}").with(body: { value: "https://api.vekoo.test/inbound/zapi/#{connector.id}/#{path}" }.to_json)
+      a_request(:put, "#{base}/#{endpoint}").with(body: { value: "https://api.vekoo.test/inbound/zapi/#{connector.id}/#{path}?token=#{connector.inbound_token}" }.to_json)
     end
 
     it "aponta os cinco webhooks para /inbound/zapi e fica pendente" do

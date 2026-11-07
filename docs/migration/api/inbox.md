@@ -2130,7 +2130,7 @@ Resposta `422`:
 
 ### `POST /contact-imports/file`
 
-Multipart: `file` (CSV), `connectorId`, `includeCountryCode`. O arquivo é dividido em lotes de 1000 aqui. Separador `,` ou `;`, com ou sem BOM, em UTF-8 ou Latin-1. Cabeçalhos aceitos, sem diferença de maiúsculas ou acentos: `telefone`, `phone`, `whatsapp`, `celular`, `numero`, `external_id`; `nome`, `name`, `user_name`; `responsavel`, `assigned_user_name`; `departamento`, `department`, `department_name`.
+Multipart: `file` (CSV, até 10 MB; acima disso, `422 fileTooLarge`), `connectorId`, `includeCountryCode`. O arquivo é dividido em lotes de 1000 aqui. Separador `,` ou `;`, com ou sem BOM, em UTF-8 ou Latin-1. Cabeçalhos aceitos, sem diferença de maiúsculas ou acentos: `telefone`, `phone`, `whatsapp`, `celular`, `numero`, `external_id`; `nome`, `name`, `user_name`; `responsavel`, `assigned_user_name`; `departamento`, `department`, `department_name`.
 
 Resposta `201`:
 

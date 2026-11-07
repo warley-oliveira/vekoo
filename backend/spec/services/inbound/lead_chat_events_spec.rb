@@ -3,6 +3,8 @@ require "rails_helper"
 # Webhook do LeadChat. Não havia spec disto na origem: os cenários vêm de
 # `Api::V1::LeadchatController`, e os dois payloads são os de exemplo que ficam no fim dele.
 RSpec.describe Inbound::LeadChatEvents do
+  before { stub_every_host_as_public }
+
   include ActiveJob::TestHelper
   include ActiveSupport::Testing::TimeHelpers
   include InboundHelpers

@@ -8,6 +8,7 @@ pt-BR:
     not_found: "Não encontrado."
     unauthorized: "Você precisa entrar para continuar."
     too_many_requests: "Tentativas demais. Espere alguns minutos e tente de novo."
+    secret_header_needs_retyping: "Digite de novo o valor de %{name}: ele não fica guardado para outro endereço nem para outro cabeçalho."
     unprocessable: "Não foi possível salvar. Confira os campos."
     parameter_missing: "Faltou informar %{param}."
     # Mensagens de validação do Active Record (o produto não usa o rails-i18n).

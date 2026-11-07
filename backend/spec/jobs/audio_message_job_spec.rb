@@ -5,6 +5,8 @@ require "rails_helper"
 # O download de cada canal fica em spec/services/inbound/media_download_spec.rb, e a transcrição
 # em spec/services/chats/audio_transcriber_spec.rb.
 RSpec.describe AudioMessageJob do
+  before { stub_every_host_as_public }
+
   include ActiveJob::TestHelper
   include InboundHelpers
 

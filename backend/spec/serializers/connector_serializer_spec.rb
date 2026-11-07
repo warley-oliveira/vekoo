@@ -247,7 +247,7 @@ RSpec.describe ConnectorSerializer do
       connector = create(:connector_lead_chat, organization: organization)
 
       expect(described_class.created(connector)).to include(
-        webhookUrl: "#{Media::Storage.backend_url}/inbound/lead-chat/#{connector.id}/event",
+        webhookUrl: "#{Media::Storage.backend_url}/inbound/lead-chat/#{connector.id}/event?token=#{connector.inbound_token}",
         verificationToken: connector.verification_token
       )
     end

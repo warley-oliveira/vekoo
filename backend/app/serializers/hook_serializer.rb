@@ -35,6 +35,7 @@ class HookSerializer < ApplicationSerializer
 
   def self.config_of(action)
     action.config.to_h.each_with_object({}) do |(key, value), result|
+      value = SecretHeaders.mask(value) if key.to_s == "headers"
       result[key.to_s.camelize(:lower)] = OPAQUE_CONFIG.include?(key.to_s) ? value : camelized(value)
     end
   end

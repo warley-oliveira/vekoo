@@ -24,7 +24,7 @@ module Inbound
     private
 
     def set_connector
-      @connector = Connector::Base.where(id: params[:connector_id], :_type.in => %w[Connector::WhatsappWeb Connector::Zapi]).take
+      @connector = authenticated_connector(Connector::Base.where(id: params[:connector_id], :_type.in => %w[Connector::WhatsappWeb Connector::Zapi]).take)
       render_not_found unless @connector
     end
   end

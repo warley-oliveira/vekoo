@@ -10,7 +10,7 @@ module Pipelines
         name: trigger.name,
         eventType: trigger.event_type,
         conditions: camel_keys(trigger.conditions),
-        actions: Array(trigger.actions).map { |action| camel_keys(reads_code ? action : without_code(action)) },
+        actions: Array(trigger.actions).map { |action| camel_keys(masked_headers(reads_code ? action : without_code(action))) },
         active: trigger.active,
         stageId: trigger.stage_id,
         createdAt: epoch_ms(trigger.created_at),
@@ -35,6 +35,12 @@ module Pipelines
         cardTitle: execution.card&.title
       }
     end
+
+    # O valor sai para ninguém: quem tem só `pipelines` lia a chave de quem configurou o gatilho.
+    def self.masked_headers(action)
+      action.is_a?(Hash) && action["headers"].present? ? action.merge("headers" => SecretHeaders.mask(action["headers"])) : action
+    end
+    private_class_method :masked_headers
 
     def self.without_code(action)
       action.is_a?(Hash) ? action.reject { |key, _value| key.to_s == "code" } : action

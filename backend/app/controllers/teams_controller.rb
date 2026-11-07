@@ -31,7 +31,10 @@ class TeamsController < PlatformController
   end
 
   def destroy
+    people = @team.accounts.to_a
     @team.destroy!
+    # Quem vê por departamento escutava a stream deste.
+    people.each(&:reconnect_realtime)
     head :no_content
   end
 

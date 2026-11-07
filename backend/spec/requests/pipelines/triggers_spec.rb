@@ -49,7 +49,9 @@ RSpec.describe "Pipelines: gatilhos", type: :request do
       expect(json["actions"][0]).to include("type" => "notify", "accountIds" => [ owner.id ])
       expect(json["actions"][1]).to include("type" => "move_card", "stageId" => stage.id)
       # Cabeçalho e valores de campo são dados: as chaves passam como vieram.
-      expect(json["actions"][2]["headers"]).to eq("X-Chave_Secreta" => "abc")
+      # Cabeçalho que parece segredo é só de escrita. O nome continua como veio, sem virar camelCase.
+      expect(json["actions"][2]["headers"]).to eq("X-Chave_Secreta" => "••••••••")
+      expect(Pipelines::Trigger.find(json["id"]).actions[2]["headers"]).to eq("X-Chave_Secreta" => "abc")
       expect(json["actions"][3]["cardCustomFieldValues"]).to eq("cor_Preferida" => "Azul")
 
       stored = Pipelines::Trigger.find(json["id"])

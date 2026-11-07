@@ -2,6 +2,8 @@ require "rails_helper"
 
 # O que muda da AIVA (v1) para a Evolution v2: caminhos e formato dos corpos.
 RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
   include ActiveSupport::Testing::TimeHelpers
 
@@ -518,7 +520,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
 
       webhook = {
         "enabled" => true,
-        "url" => "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}",
+        "url" => "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}?token=#{connector.inbound_token}",
         "byEvents" => false,
         "base64" => false,
         "events" => %w[MESSAGES_UPSERT MESSAGES_UPDATE SEND_MESSAGE CONNECTION_UPDATE QRCODE_UPDATED PRESENCE_UPDATE CONTACTS_UPSERT CONTACTS_UPDATE]
@@ -641,7 +643,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::EvolutionApi do
     # Na origem era no-op; aqui reconfigura uma instância existente (a URL do backend mudou).
     it "reconfigura o webhook da instância" do
       request = stub_request(:post, url)
-        .with(body: hash_including("webhook" => hash_including("enabled" => true, "url" => "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}")))
+        .with(body: hash_including("webhook" => hash_including("enabled" => true, "url" => "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}?token=#{connector.inbound_token}")))
         .to_return(json_reply({}, status: 201))
 
       expect(connector.setup_webhook!).to be(true)

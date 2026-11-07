@@ -130,9 +130,18 @@ RSpec.describe Connector::Base do
 
     around { |example| with_env("BACKEND_URL" => "https://api.vekoo.test/") { example.run } }
 
+    # A Meta assina o corpo: não há token na URL.
     {
       [ :whatsapp_cloud, "ID" ] => "/inbound/whatsapp-cloud/ID",
-      [ :meta_messaging ] => "/inbound/meta-messaging",
+      [ :meta_messaging ] => "/inbound/meta-messaging"
+    }.each do |args, path|
+      it "monta #{path} sobre a URL pública do backend" do
+        expect(connector.inbound_url(*args)).to eq("https://api.vekoo.test#{path}")
+      end
+    end
+
+    # Estes provedores não assinam nada: o token é o que prova quem chama.
+    {
       [ :evolution, "IWA-1" ] => "/inbound/evolution/IWA-1",
       [ :lead_chat_event, "ID" ] => "/inbound/lead-chat/ID/event",
       [ :zapi_message_received, "ID" ] => "/inbound/zapi/ID/on-message-received",
@@ -140,8 +149,8 @@ RSpec.describe Connector::Base do
       [ :zapi_disconnected, "ID" ] => "/inbound/zapi/ID/on-whatsapp-disconnected",
       [ :zapi_connected, "ID" ] => "/inbound/zapi/ID/on-whatsapp-connected"
     }.each do |args, path|
-      it "monta #{path} sobre a URL pública do backend" do
-        expect(connector.inbound_url(*args)).to eq("https://api.vekoo.test#{path}")
+      it "monta #{path} com o token do conector" do
+        expect(connector.inbound_url(*args)).to eq("https://api.vekoo.test#{path}?token=#{connector.inbound_token}")
       end
     end
   end

@@ -19,6 +19,15 @@ class WebhooksController < PlatformController
 
   before_action :set_hook, only: %i[show update destroy enable_signature rotate_signing_secret disable_signature]
 
+  rescue_from SecretHeaders::NeedsRetyping do |error|
+    render_error(
+      status: :unprocessable_content,
+      code: "secretHeaderNeedsRetyping",
+      field: "webhookActions",
+      message: t("errors.secret_header_needs_retyping", name: error.header)
+    )
+  end
+
   def index
     records, meta = paginate(Hook.for_organization(current_organization.id).includes(:hook_actions).order(:created_at), per_page: Paginated::MAX_PER_PAGE)
     render json: { webhooks: HookSerializer.many(records), meta: meta }
@@ -101,8 +110,15 @@ class WebhooksController < PlatformController
     raise UnknownActionType if allowed.nil?
 
     action ||= @hook.hook_actions.build(type: type)
-    action.config = action.config.to_h.merge(permitted_config(attributes, allowed))
+    action.config = with_kept_secret_headers(action.config.to_h, action.config.to_h.merge(permitted_config(attributes, allowed)))
     action.save!
+  end
+
+  def with_kept_secret_headers(before, after)
+    return after unless after.key?("headers")
+
+    same_destination = SecretHeaders.same_destination?(before["url"], after["url"])
+    after.merge("headers" => SecretHeaders.restore(after["headers"], stored: before["headers"], same_destination: same_destination))
   end
 
   # A ação do contato é fixa: é ela que acha a conversa, e as demais dependem disso.

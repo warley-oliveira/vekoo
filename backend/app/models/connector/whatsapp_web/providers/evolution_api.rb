@@ -445,8 +445,8 @@ class Connector::WhatsappWeb
       private_class_method :quoted_payload
 
       def fetch_media_from_url(url, msg_type, as_base64)
-        response = HTTParty.get(url)
-        raise "Failed to fetch media from URL (#{response.code}): #{url}" unless (200..299).cover?(response.code)
+        response = ::Media::RemoteFile.get(url)
+        raise "Failed to fetch media from URL (#{response.status}): #{url}" unless response.success?
 
         binary = response.body
         return Base64.strict_encode64(binary) if as_base64

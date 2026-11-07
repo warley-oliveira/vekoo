@@ -3,6 +3,8 @@ require "rails_helper"
 # Cada provedor entrega a mídia de um jeito. A regressão que motivou boa parte disto veio da
 # origem: a CDN da Meta recusa o Bearer que o lookaside exige, e o SDK não segue redirect.
 RSpec.describe Inbound::MediaDownload do
+  before { stub_every_host_as_public }
+
   include InboundHelpers
 
   let(:organization) { create(:organization) }

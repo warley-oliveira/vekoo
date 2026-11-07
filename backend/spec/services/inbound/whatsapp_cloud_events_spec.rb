@@ -221,7 +221,9 @@ RSpec.describe Inbound::WhatsappCloudEvents do
       expect(chat_of).to be_nil
     end
 
-    it "aceita o id do business" do
+    it "aceita o id do business, no conector sem WABA" do
+      other_connector.update!(waba_id: nil)
+
       receive_webhook(webhook(messages: [ text_message ], entry_id: other_connector.business_id))
 
       expect(Chat.where(connector_id: other_connector.id).take.organization_id).to eq(other_connector.organization_id)

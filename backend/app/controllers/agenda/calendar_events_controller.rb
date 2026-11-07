@@ -38,6 +38,7 @@ module Agenda
     def create
       calendar = Calendar.scoped(current_organization.id, event_params[:calendar_id])
       booking = Booking.new(booking_attributes(calendar&.zone).merge(calendar: calendar, organization_id: current_organization.id))
+      return render_unknown_chat if chat_out_of_reach?(booking)
 
       if booking.save
         render json: BookingSerializer.one(booking), status: :created
@@ -47,7 +48,10 @@ module Agenda
     end
 
     def update
-      if @booking.update(booking_attributes(@booking.zone))
+      @booking.assign_attributes(booking_attributes(@booking.zone))
+      return render_unknown_chat if chat_out_of_reach?(@booking)
+
+      if @booking.save
         render json: BookingSerializer.one(@booking)
       else
         render_invalid(@booking)
@@ -88,6 +92,18 @@ module Agenda
     def set_booking
       @booking = Booking.scoped(current_organization.id, params[:id])
       render_not_found unless @booking
+    end
+
+    # O modelo confere a organização, e aqui entra quem pede: o agendamento mostra o contato, e ligar um a
+    # uma conversa fora do `chat_list_to` da pessoa seria um jeito de ler a ficha dele. Só quando muda: o
+    # agendamento que já estava ligado continua editável por quem atende a agenda.
+    def chat_out_of_reach?(booking)
+      booking.chat_id_changed? && booking.chat_id.present? && !Chat.visible_to(current_account).where(id: booking.chat_id).exists?
+    end
+
+    # O mesmo 422 de conversa de outra organização.
+    def render_unknown_chat
+      render_error(status: :unprocessable_entity, code: "unprocessable", field: "chatId", message: t("agenda.validations.unknown_chat"))
     end
 
     def option(record)

@@ -256,10 +256,10 @@ class Connector::Zapi < Connector::Base
   end
 
   def retrieve_media(media_url)
-    response = HTTParty.get(media_url, timeout: 20)
-    return response.body if response.code == 200
+    response = Media::RemoteFile.get(media_url)
+    return response.body if response.status == 200
 
-    Rails.logger.error("[ZApi] Failed to retrieve media: HTTP #{response.code}")
+    Rails.logger.error("[ZApi] Failed to retrieve media: HTTP #{response.status}")
     nil
   rescue StandardError => e
     Rails.logger.error("[ZApi] Error retrieving media: #{e.message}")

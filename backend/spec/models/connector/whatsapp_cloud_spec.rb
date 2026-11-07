@@ -3,6 +3,8 @@ require "rails_helper"
 # WhatsApp Cloud sem dublê do SDK: `whatsapp_sdk` fala com graph.facebook.com de verdade, e o
 # WebMock responde. Templates estão em whatsapp_cloud_templates_spec.rb.
 RSpec.describe Connector::WhatsappCloud do
+  before { stub_every_host_as_public }
+
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }
@@ -553,6 +555,25 @@ RSpec.describe Connector::WhatsappCloud do
           status_cd: "active", display_phone_number: "+55 31 3333-0000", verified_name: "Clínica Vida", fb_status: "CONNECTED", quality_rating: "GREEN"
         )
         expect(a_request(:post, subscribe_url).with(query: hash_including("app_id" => "APP"))).to have_been_made
+      end
+
+      it "só a ativação que a Meta confirmou prova que o WABA é deste conector" do
+        connector.update!(waba_verified_at: nil)
+        stub_everything
+
+        connector.activate
+
+        expect(connector.reload.waba_verified_at).to be_present
+      end
+
+      it "a ativação recusada não prova nada" do
+        connector.update!(waba_verified_at: nil)
+        stub_request(:get, number_url).to_return(json_reply(phone))
+        stub_request(:get, numbers_url).to_return(json_reply({ error: { message: "sem acesso", code: 100 } }, status: 400))
+
+        expect { connector.activate }.to raise_error(StandardError)
+
+        expect(connector.reload.waba_verified_at).to be_nil
       end
 
       it "guarda a lista de números e o perfil de cada um" do

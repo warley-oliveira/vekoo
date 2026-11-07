@@ -228,7 +228,8 @@ RSpec.describe "Ferramentas", type: :request do
 
       get "/tool-catalog/#{tool.id}", headers: headers, as: :json
 
-      expect(json["tool"]["functionTemplates"].first).to include("name" => "consultar_cep", "jsCode" => a_string_including("credentials"))
+      expect(json["tool"]["functionTemplates"].first).to include("name" => "consultar_cep")
+      expect(json["tool"]["functionTemplates"].first).not_to have_key("jsCode")
     end
 
     it "404, 403 e 401" do

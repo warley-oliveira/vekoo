@@ -34,8 +34,7 @@ module Inbound
       entry_id = entry[:id].to_i
       return if entry_id.zero? || [ connector.waba_id, connector.business_id ].include?(entry_id)
 
-      other = Connector::WhatsappCloud.where(waba_id: entry_id).take ||
-              Connector::WhatsappCloud.where(business_id: entry_id).take
+      other = Connector::WhatsappCloud.owner_of_entry(entry_id)
       @connector = other if other
     end
 

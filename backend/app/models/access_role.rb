@@ -38,6 +38,11 @@ class AccessRole < ApplicationRecord
   validate :permissions_are_known
   validate :default_keeps_its_name, on: :update, if: :name_changed?
 
+  # Quem está no grupo pode estar com o WebSocket aberto, com a permissão de antes (ver
+  # `Account#reconnect_realtime`). Ao apagar, as pessoas saem do grupo antes dos callbacks de depois.
+  before_destroy :remember_members, prepend: true
+  after_commit :reconnect_members, on: %i[update destroy], if: -> { destroyed? || saved_change_to_permissions? }
+
   # Apagar a organização leva tudo junto; só o pedido direto é recusado.
   before_destroy :keep_default_role, unless: :destroyed_by_association
 
@@ -60,6 +65,14 @@ class AccessRole < ApplicationRecord
   end
 
   private
+
+  def remember_members
+    @members_to_reconnect = accounts.to_a
+  end
+
+  def reconnect_members
+    (@members_to_reconnect || accounts).each(&:reconnect_realtime)
+  end
 
   def permissions_are_known
     return errors.add(:permissions, :invalid) unless permissions.is_a?(Hash)

@@ -9,6 +9,7 @@ FactoryBot.define do
     sequence(:phone_number_id) { |n| 100_000_000 + n }
     sequence(:waba_id) { |n| 200_000_000 + n }
     sequence(:business_id) { |n| 300_000_000 + n }
+    waba_verified_at { Time.current }
     access_token { "token-da-meta" }
     verified_name { "Clínica Vida" }
     display_phone_number { "+55 31 3333-0000" }

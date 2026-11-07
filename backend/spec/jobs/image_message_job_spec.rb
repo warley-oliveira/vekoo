@@ -4,6 +4,8 @@ require "rails_helper"
 # ficou é baixar, guardar, gravar a mensagem e seguir para `Chats::InboundFlow`. A origem não
 # tinha spec dele. O download de cada canal fica em spec/services/inbound/media_download_spec.rb.
 RSpec.describe ImageMessageJob do
+  before { stub_every_host_as_public }
+
   include ActiveJob::TestHelper
   include InboundHelpers
 

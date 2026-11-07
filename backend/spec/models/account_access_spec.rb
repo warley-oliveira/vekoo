@@ -99,12 +99,14 @@ RSpec.describe Account do
       expect(Session.where(id: sessions.map(&:id))).to be_empty
     end
 
-    it "poupa a sessão pedida, e aí o WebSocket dela fica" do
+    # O WebSocket é identificado pela conta, então não dá para derrubar só o da sessão que saiu: cai o de
+    # todos os aparelhos, e o de quem tem token que ainda vale volta sozinho.
+    it "poupa a sessão pedida, e o WebSocket dela volta sozinho" do
       kept = Session.start!(account)
       gone = Session.start!(account)
 
       expect { account.end_sessions!(except: kept) }
-        .not_to have_broadcasted_to("action_cable/#{account.to_gid_param}")
+        .to have_broadcasted_to("action_cable/#{account.to_gid_param}").with(type: "disconnect", reconnect: true)
 
       expect(Session.exists?(kept.id)).to be(true)
       expect(Session.exists?(gone.id)).to be(false)

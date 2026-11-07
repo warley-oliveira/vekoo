@@ -482,9 +482,14 @@ RSpec.describe "ConnectorWidgets", type: :request do
       expect(connector.launcher_image_url).to be_nil
     end
 
-    %w[image/jpeg image/webp image/gif].each do |type|
+    # O tipo sai dos bytes: basta a assinatura de cada formato.
+    {
+      "image/jpeg" => "\xFF\xD8\xFF\xE0".b,
+      "image/webp" => "RIFF\x24\x00\x00\x00WEBPVP8 ".b,
+      "image/gif" => "GIF89a".b
+    }.each do |type, signature|
       it "aceita #{type}" do
-        upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new("bytes"), type, original_filename: "imagem"))
+        upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new(signature), type, original_filename: "imagem"))
 
         expect(response).to have_http_status(:ok)
       end
@@ -543,8 +548,9 @@ RSpec.describe "ConnectorWidgets", type: :request do
 
     it "aceita até 2 MB" do
       limit = ConnectorWidgetsController::MAX_IMAGE_SIZE
+      signature = "\x89PNG\r\n\x1A\n".b
 
-      upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new("a" * limit), "image/png", original_filename: "cheia.png"))
+      upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new(signature + ("a" * (limit - signature.size))), "image/png", original_filename: "cheia.png"))
 
       expect(response).to have_http_status(:ok)
     end
@@ -553,7 +559,7 @@ RSpec.describe "ConnectorWidgets", type: :request do
       limit = ConnectorWidgetsController::MAX_IMAGE_SIZE
 
       expect {
-        upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new("a" * (limit + 1)), "image/png", original_filename: "grande.png"))
+        upload(slot: "launcher", file: Rack::Test::UploadedFile.new(StringIO.new("\x89PNG\r\n\x1A\n".b + ("a" * limit)), "image/png", original_filename: "grande.png"))
       }.not_to change(ActiveStorage::Blob, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
