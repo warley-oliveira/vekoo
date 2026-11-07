@@ -47,6 +47,7 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
       <Button
         variant="ghost"
         size="icon-sm"
+        className="pointer-coarse:size-10"
         nativeButton={false}
         render={<Link to={backTo} aria-label={t("editor.topbar.backAria")} />}
       >

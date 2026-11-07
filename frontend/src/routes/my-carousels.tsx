@@ -333,7 +333,7 @@ function FirstCarouselHero() {
               key={suggestion}
               type="button"
               onClick={() => setIdea(suggestion)}
-              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors outline-none hover:border-ring/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors pointer-coarse:py-2 outline-none hover:border-ring/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               {suggestion}
             </button>
