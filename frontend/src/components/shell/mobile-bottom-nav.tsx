@@ -283,6 +283,7 @@ function TabButton({
       aria-label={ariaLabel}
       aria-haspopup="dialog"
       aria-expanded={expanded}
+      aria-current={active ? "page" : undefined}
       className={cn(TAB_CLASS, tabColor(active))}
     >
       <TabContent
