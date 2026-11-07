@@ -83,8 +83,10 @@ what is still open. The rules that apply everywhere:
   *user's work*, not UI — it stays pt-BR on purpose.
 - **Frontend:** data through `useApi` (SWR) over the typed client in `@/lib/api`, realtime through
   `useChannel`, permissions through `useCan`. **Read `src/components/shared/README.md` before building a
-  screen:** `@/components/shared` is the kit, with a live showcase at `/dev/kit`. `ResponsiveDialog` and
-  `SidePanel`, not `Dialog` or `Sheet` directly. One title per screen, in the top bar, declared by
+  screen:** `@/components/shared` is the kit, with a live showcase at `/dev/kit`. **Every task, edit or
+  detail opens in a modal (`ResponsiveDialog`) sized by its content; a drawer only for low-relevance
+  information** (action menus, pickers, filters, notifications). Never `Dialog` or `Sheet` directly, no
+  side panels. One title per screen, in the top bar, declared by
   `RouteFrame`. shadcn primitives live untouched in `@/components/ui`; domain components in
   `@/components/<domain>`. Add primitives with `npx shadcn@latest add <component>`. It is a PWA: every
   screen must work at 390 px.
