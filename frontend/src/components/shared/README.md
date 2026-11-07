@@ -463,6 +463,8 @@ Histórico em ordem: atividades, passos de um envio. O marcador usa os tons de s
 
 ## Sobreposições
 
+**O voltar do aparelho** fecha o que está por cima, um passo de cada vez, sem a tela precisar pedir: `lib/back-stack.ts`, ligado pela casca abaixo de 1024 px. Vale para tudo que vem do Base UI. Camada que não é um popup (seleção, painel feito à mão) se declara com `useBackLayer(ativa, fechar)`, de `@/hooks/use-back-layer`. Navegar de dentro de uma folha pede `replace`.
+
 ### `SidePanel`
 
 Detalhe ou edição sem sair da lista. **É a escolha padrão no lugar de um modal grande.** Corpo rolável, cabeçalho e rodapé fixos, largura toda no celular. `size`: `md`, `lg`, `xl`. Com dedo, abrir não sobe o teclado.

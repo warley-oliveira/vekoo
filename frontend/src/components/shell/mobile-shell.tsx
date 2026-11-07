@@ -9,6 +9,7 @@ import { PipelinesSheet } from "@/components/shell/pipelines-sheet"
 import { useAppShell } from "@/hooks/use-app-shell"
 import { useMobileNav } from "@/hooks/use-mobile-nav"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
+import { installBackStack } from "@/lib/back-stack"
 
 const BOTTOM_NAV_TOTAL_VAR = "--app-bottom-nav-total"
 const BOTTOM_NAV_TOTAL = "calc(var(--app-bottom-nav-h) + var(--app-safe-bottom))"
@@ -39,6 +40,9 @@ export function MobileShell({ onOpenSearch }: { onOpenSearch: () => void }) {
       root.style.removeProperty(BOTTOM_NAV_TOTAL_VAR)
     }
   }, [immersive, isKeyboardOpen])
+
+  // O voltar do aparelho fecha o que está por cima, um passo de cada vez, no app todo.
+  useEffect(() => installBackStack(), [])
 
   // Encadeia a troca de folha: espera a atual sair antes de abrir a próxima. O atraso
   // não é cosmético: abrir no mesmo tick faria o `history.back()` de quem saiu cair em

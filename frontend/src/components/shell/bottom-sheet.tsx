@@ -42,36 +42,6 @@ function isInteractive(target: EventTarget | null): boolean {
   return Boolean((target as HTMLElement | null)?.closest?.(INTERACTIVE_SELECTOR))
 }
 
-/**
- * O voltar do Android fecha a folha em vez de sair da tela: ao abrir, ela empilha uma
- * entrada no histórico; ao fechar, desfaz a sua, se ainda estiver no topo.
- *
- * Quem navega de dentro de uma folha usa `replace`: assim a entrada dela vira a rota
- * nova, em vez de ficar órfã e exigir um voltar a mais depois.
- */
-function useCloseOnBack(open: boolean, onClose: () => void) {
-  // Por ref, fora das dependências: quase todo mundo passa uma arrow nova. Com ela nas
-  // dependências, cada re-render do pai refazia o ciclo: o `back()` (assíncrono)
-  // derrubava o `pushState` (síncrono) recém-feito, e a folha fechava sozinha.
-  const onCloseRef = useRef(onClose)
-  useEffect(() => {
-    onCloseRef.current = onClose
-  })
-
-  useEffect(() => {
-    if (!open) return
-
-    window.history.pushState({ ...window.history.state, vekooSheet: true }, "")
-    const handlePop = () => onCloseRef.current()
-    window.addEventListener("popstate", handlePop)
-
-    return () => {
-      window.removeEventListener("popstate", handlePop)
-      if (window.history.state?.vekooSheet) window.history.back()
-    }
-  }, [open])
-}
-
 type BottomSheetProps = {
   open: boolean
   onClose: () => void
@@ -88,7 +58,9 @@ type BottomSheetProps = {
 /**
  * Folha de baixo, o contêiner de painéis no celular. A transição de entrada é do
  * Sheet (no popup); o arraste é do `motion.div` de dentro. Nunca os dois transformando
- * o mesmo nó.
+ * o mesmo nó. O voltar do aparelho fecha a folha sem ninguém precisar pedir: ver
+ * `lib/back-stack.ts`. Quem navega de dentro de uma folha usa `replace`: assim a entrada
+ * dela vira a rota nova, em vez de ficar órfã e exigir um voltar a mais depois.
  */
 export function BottomSheet({
   open,
@@ -107,8 +79,6 @@ export function BottomSheet({
   const bodyRef = useRef<HTMLDivElement>(null)
   // Folha com campo de busca: com dedo, abrir não sobe o teclado por cima dela.
   const { popupRef, initialFocus } = useSheetFocus()
-
-  useCloseOnBack(open, onClose)
 
   // Reabrir depois de um arraste que dispensou: a folha precisa nascer no lugar.
   useEffect(() => {

@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatNavigation } from "@/hooks/chat-mobile/use-chat-navigation"
-import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
+import { useBackLayer } from "@/hooks/use-back-layer"
 import { useAppShell } from "@/hooks/use-app-shell"
 import { useRetained } from "@/hooks/use-panel-session"
 import { useDetailsPanel } from "@/lib/chat/stores"
 import { useDetailsPrefs } from "@/lib/chat-details/panel-store"
-import { installBackStack, openLayerCount } from "@/lib/chat-mobile/back-stack"
+import { openLayerCount } from "@/lib/back-stack"
 import { ChatVariantContext } from "../chat-variant"
 import { ChatDetailsPanel, HAS_DETAILS_PANEL } from "../extension-points"
 import { MessagesSkeleton } from "../thread/thread-skeleton"
@@ -69,7 +69,6 @@ export default function MobileChatLayout({
 
   const shownChat = useRetained(chatId)
 
-  useEffect(() => installBackStack(), [])
   useBackLayer(showDetails, closeDetails)
 
   useEffect(() => {

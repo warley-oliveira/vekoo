@@ -5,7 +5,7 @@ import { MoreHorizontal, X } from "lucide-react"
 
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { Button } from "@/components/ui/button"
-import { useBackLayer } from "@/hooks/chat-mobile/use-back-layer"
+import { useBackLayer } from "@/hooks/use-back-layer"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"

@@ -7,6 +7,8 @@ import './index.css'
 import App from './App.tsx'
 import { PwaUpdatePrompt } from '@/components/shell/pwa-update-prompt'
 import { TooltipProvider } from '@/components/ui/tooltip'
+// Antes do roteador montar: quem ouve o voltar primeiro é quem decide. Ver o módulo.
+import '@/lib/back-stack'
 import '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
 import { CatalogProvider } from '@/lib/catalog'
