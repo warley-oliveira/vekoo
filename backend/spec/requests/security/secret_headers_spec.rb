@@ -73,6 +73,14 @@ RSpec.describe "Cabeçalho com segredo", type: :request do
       expect(action.reload.config["url"]).to eq("https://api.exemplo.test/pedidos")
     end
 
+    # A configuração é somada, então o pedido que só traz a URL levaria junto o que está guardado.
+    it "trocar o endereço sem mandar os cabeçalhos também não leva o segredo junto" do
+      update(url: "https://servidor-de-quem-quer-o-token.test/")
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(action.reload.config["url"]).to eq("https://api.exemplo.test/pedidos")
+    end
+
     it "trocar o endereço só de http para https e vice-versa também exige digitar de novo" do
       update(url: "http://api.exemplo.test/pedidos", headers: [ { key: "Authorization", value: mask } ])
 
