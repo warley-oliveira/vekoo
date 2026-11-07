@@ -28,10 +28,12 @@ import {
 import { useBoardMutations } from "@/hooks/pipelines/use-boards"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { ALL_PIPELINES_PATH } from "@/lib/navigation"
+import { hasGoals } from "@/lib/pipelines-admin/board-rules"
 import { pipelineErrorText } from "@/lib/pipelines/errors"
 import { boardViewUrl, type BoardView } from "@/lib/pipelines/paths"
 import type { Board } from "@/lib/pipelines/types"
 import { BoardCreateDialog } from "./board-create-dialog"
+import { BoardGoalsControl } from "./board-goals-control"
 
 /** Quadro, lista e previsão. A previsão só existe em pipeline de vendas. */
 export function BoardViewToggle({
@@ -178,6 +180,7 @@ export function BoardHeaderActions({
 
   return (
     <>
+      {hasGoals(board) ? <BoardGoalsControl board={board} compact={isMobile} /> : null}
       {isMobile ? null : (
         <BoardViewToggle boardId={board.id} view={view} isCrm={board.boardType === "crm"} />
       )}

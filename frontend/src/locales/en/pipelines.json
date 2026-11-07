@@ -6,6 +6,16 @@
       "cancel": "Cancel",
       "retry": "Try again"
     },
+    "goals": {
+      "title": "Goals",
+      "monthly": "Monthly goal",
+      "define": "Set a goal",
+      "pill": "Goals for {{month}}: {{percent}} of the pipeline goal",
+      "pillEmpty": "Goals for {{month}}: no pipeline goal",
+      "editBoard": "Edit the pipeline goal",
+      "editOf": "Edit {{name}}'s goal",
+      "manage": "See all goals"
+    },
     "views": {
       "label": "How to see the cards",
       "board": "Board",

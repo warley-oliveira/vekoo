@@ -6,6 +6,16 @@
       "cancel": "Cancelar",
       "retry": "Tentar de novo"
     },
+    "goals": {
+      "title": "Metas",
+      "monthly": "Meta do mês",
+      "define": "Definir meta",
+      "pill": "Metas de {{month}}: {{percent}} da meta do pipeline",
+      "pillEmpty": "Metas de {{month}}: sem meta do pipeline",
+      "editBoard": "Editar a meta do pipeline",
+      "editOf": "Editar a meta de {{name}}",
+      "manage": "Ver todas as metas"
+    },
     "views": {
       "label": "Como ver os cards",
       "board": "Quadro",
