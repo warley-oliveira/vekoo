@@ -45,6 +45,7 @@ let traversing = false
 let traversalTimer = 0
 /** Até onde o histórico estava: é o que separa o voltar do aparelho da folha da casca se desfazendo. */
 let knownDepth = 0
+let sheetWaitSince = 0
 let afterSettled: (() => void) | null = null
 
 function historyState(): Record<string, unknown> | null {
@@ -101,8 +102,18 @@ function reconcile() {
 
   const state = historyState()
   // A folha da casca já pediu para desfazer a entrada dela e o `popstate` ainda vem. Agir agora
-  // cairia em cima dessa travessia: quem chega depois é o `popstate`, que chama aqui de novo.
-  if (state?.vekooSheet && !hasOpenShellSheet()) return
+  // cairia em cima dessa travessia: quem chega depois é o `popstate`, que chama aqui de novo. Se ele
+  // não vier, a entrada é velha (recarregaram a página com a folha aberta), e a conta segue.
+  if (state?.vekooSheet && !hasOpenShellSheet()) {
+    const now = performance.now()
+    if (!sheetWaitSince) {
+      sheetWaitSince = now
+      window.setTimeout(schedule, TRAVERSAL_TIMEOUT_MS)
+      return
+    }
+    if (now - sheetWaitSince < TRAVERSAL_TIMEOUT_MS) return
+  }
+  sheetWaitSince = 0
 
   const wanted = openLayerCount()
   const have = currentDepth()
