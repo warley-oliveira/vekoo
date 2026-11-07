@@ -363,7 +363,7 @@ export function AiTrigger({ onClick }: { onClick: () => void }) {
   const { busy } = useAi()
 
   return (
-    <Button variant="ghost" size="sm" onClick={onClick}>
+    <Button variant="ghost" size="sm" aria-label={t("editor.ai.trigger")} onClick={onClick}>
       {busy ? <Loader2 className="animate-spin" /> : <Sparkles />}
       <span className="hidden sm:inline">{t("editor.ai.trigger")}</span>
     </Button>

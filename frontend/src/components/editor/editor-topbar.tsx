@@ -119,12 +119,18 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
           variant="ghost"
           size="sm"
           disabled={!hasCards}
+          aria-label={t("editor.topbar.preview")}
           onClick={() => setPreviewing(true)}
         >
           <Eye />
           <span className="hidden sm:inline">{t("editor.topbar.preview")}</span>
         </Button>
-        <Button size="sm" disabled={!hasCards} onClick={() => setExporting(true)}>
+        <Button
+          size="sm"
+          disabled={!hasCards}
+          aria-label={t("editor.topbar.export")}
+          onClick={() => setExporting(true)}
+        >
           <Download />
           <span className="hidden sm:inline">{t("editor.topbar.export")}</span>
         </Button>
