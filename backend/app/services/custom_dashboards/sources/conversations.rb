@@ -31,7 +31,9 @@ module CustomDashboards
         },
         # Só filtro: vira `_id $in [...]`, resolvido em CustomDashboards::DocumentIdResolvers.
         document_id_filters: {
-          "booking_attendance" => { resolver: :booking_attendance_ids, permission: :calendar, options: %w[show no_show] }
+          "booking_attendance" => { resolver: :booking_attendance_ids, permission: :calendar, options: %w[show no_show] },
+          "pipeline_status" => { resolver: :pipeline_status_ids, permission: :pipelines, options: %w[won lost open] },
+          "pipeline_stage" => { resolver: :pipeline_stage_ids, permission: :pipelines, options_from: :crm_pipeline_stages }
         }
       }.freeze
     end

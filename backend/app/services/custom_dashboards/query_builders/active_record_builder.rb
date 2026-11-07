@@ -9,8 +9,9 @@ module CustomDashboards
     # nome interno; e o nome da métrica fica em Ruby. Na origem ele virava `AS <nome>`, e `sort.field` ia
     # cru para o `ORDER BY`.
     #
-    # Campo com `jsonb:` mora dentro daquela coluna, como número. Os outros são colunas de verdade, então
-    # uma fonte nova em Postgres entra sem mexer aqui.
+    # Campo com `jsonb:` mora dentro daquela coluna, como número. Campo com `sql:` é uma expressão fixa, escrita
+    # na definição da fonte, e nunca algo que veio do cliente. Os outros são colunas de verdade, então uma fonte
+    # nova em Postgres entra sem mexer aqui.
     class ActiveRecordBuilder
       def initialize(source, account, query, time_range:, zone:, max_time_ms:)
         @source = source
@@ -55,6 +56,8 @@ module CustomDashboards
       end
 
       def arel(field)
+        return Arel.sql(field.sql) if field.sql
+
         model.arel_table[field.db_column]
       end
 
@@ -68,6 +71,7 @@ module CustomDashboards
 
       # O campo como expressão de SQL.
       def expression(field)
+        return field.sql if field.sql
         return "(#{quoted_column(field.jsonb)}->>#{connection.quote(field.key)})::float" if field.jsonb
 
         quoted_column(field.db_column)
@@ -143,7 +147,7 @@ module CustomDashboards
       end
 
       def build_raw_result
-        records = base_scope.order(raw_order).limit(raw_limit + 1).to_a
+        records = raw_scope.order(raw_order).limit(raw_limit + 1).to_a
 
         rows = records.first(raw_limit).map do |record|
           values = record.attributes
@@ -151,6 +155,14 @@ module CustomDashboards
         end
 
         { rows: rows, columns: source.allowed_fields, truncated: records.size > raw_limit }
+      end
+
+      # Campo com `sql:` não é coluna da tabela: precisa vir no `SELECT`, com o nome dele.
+      def raw_scope
+        computed = source.fields.select(&:sql)
+        return base_scope if computed.empty?
+
+        base_scope.select(model.arel_table[Arel.star], *computed.map { |field| Arel.sql("#{field.sql} AS #{connection.quote_column_name(field.db_column)}") })
       end
 
       def raw_order

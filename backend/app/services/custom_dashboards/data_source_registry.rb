@@ -11,7 +11,7 @@ module CustomDashboards
   #
   # O escopo de cada fonte (`scope`) recebe a pessoa que consulta e é o que garante a organização.
   class DataSourceRegistry
-    SOURCE_NAMES = %w[Conversations Contacts Messages AgendaBookings Campaigns DailyStats HookLogs].freeze
+    SOURCE_NAMES = %w[Conversations Contacts Messages AgendaBookings Campaigns DailyStats HookLogs Pipelines].freeze
 
     DataSource = Struct.new(
       :key, :model_class, :orm, :permission, :default_time_field, :scope, :fields, :allowed_metrics,
@@ -52,8 +52,9 @@ module CustomDashboards
     # ObjectId. `labels`: os valores que têm tradução. `label_from` e `options_from`: de onde vêm o nome do
     # id e as opções do filtro (`NAMED`). `relationship`: o campo é uma lista de ids filtrada pelo nome.
     # `index`: num campo de data, o índice com a organização, dito ao Mongo por `hint` quando o período é
-    # por este campo (ver `Insights::ChatIndexes`).
-    Field = Struct.new(:key, :type, :enum_values, :column, :jsonb, :cast, :labels, :label_from, :options_from, :relationship, :index, keyword_init: true) do
+    # por este campo (ver `Insights::ChatIndexes`). `sql`: a expressão fixa, escrita na definição da fonte, de
+    # um campo que não é coluna da tabela (só Postgres).
+    Field = Struct.new(:key, :type, :enum_values, :column, :jsonb, :sql, :cast, :labels, :label_from, :options_from, :relationship, :index, keyword_init: true) do
       def db_column
         column || key
       end
@@ -91,7 +92,13 @@ module CustomDashboards
       agenda_professionals: ->(organization) { named_documents(organization.agenda_professionals, :name) },
       agenda_services: ->(organization) { named_documents(organization.agenda_services, :name) },
       agenda_calendars: ->(organization) { named_documents(organization.agenda_calendars, :name) },
-      chat_tag_names: ->(organization) { organization.chat_tags.order_by(name: :asc).pluck(:name).map { |name| [ name, name ] } }
+      chat_tag_names: ->(organization) { organization.chat_tags.order_by(name: :asc).pluck(:name).map { |name| [ name, name ] } },
+      # Todos para dar nome ao que já está nos números; só os ativos para escolher num filtro.
+      pipeline_boards: ->(organization) { named_boards(organization) },
+      active_pipeline_boards: ->(organization) { named_boards(organization, archived: false) },
+      pipeline_stages: ->(organization) { named_stages(organization) },
+      active_pipeline_stages: ->(organization) { named_stages(organization, archived: false) },
+      crm_pipeline_stages: ->(organization) { named_stages(organization, archived: false, board_type: "crm") }
     }.freeze
 
     class << self
@@ -126,7 +133,12 @@ module CustomDashboards
         organization = account.organization
 
         result = source.fields.select(&:options_from).to_h do |field|
-          [ field.key, named(field.options_from, organization).map { |value, label| { value: value, label: label } } ]
+          [ field.key, named_options(field.options_from, organization) ]
+        end
+
+        # Os valores que têm nome: sem isto, a tela só teria `whatsapp_api` e `open` para mostrar num filtro.
+        source.fields.select(&:labels).each do |field|
+          result[field.key] = value_labels(source, field).map { |value, label| { value: value, label: label } }
         end
 
         if source.custom_attributes?
@@ -136,7 +148,12 @@ module CustomDashboards
         end
 
         document_filters_for(source, account).each do |key, config|
-          result[key] = config[:options].map { |value| { value: value, label: document_filter_value_label(source, key, value) } }
+          result[key] =
+            if config[:options_from]
+              named_options(config[:options_from], organization)
+            else
+              config[:options].map { |value| { value: value, label: document_filter_value_label(source, key, value) } }
+            end
         end
 
         result
@@ -203,6 +220,22 @@ module CustomDashboards
         NAMED.fetch(kind).call(organization)
       end
 
+      def named_options(kind, organization)
+        named(kind, organization).map { |value, label| { value: value, label: label } }
+      end
+
+      def named_boards(organization, **conditions)
+        organization.pipeline_boards.where(conditions).reorder(:name).pluck(:id, :name)
+      end
+
+      # "Comercial · Proposta": a mesma etapa pode existir em dois quadros.
+      def named_stages(organization, **conditions)
+        ::Pipelines::Stage.unscoped.joins(:board).where(pipeline_boards: { organization_id: organization.id, **conditions })
+          .order("pipeline_boards.name", "pipeline_stages.position")
+          .pluck("pipeline_stages.id", "pipeline_stages.name", "pipeline_boards.name")
+          .map { |id, stage, board| [ id, "#{board} · #{stage}" ] }
+      end
+
       def source_meta(source, account)
         {
           key: source.key,
@@ -211,7 +244,9 @@ module CustomDashboards
           allowedMetrics: source.allowed_metrics,
           allowedDimensions: source.allowed_dimensions,
           relatedDimensions: source.related_dimensions.keys.map { |key| { key: key, label: source.field_label(key) } },
-          supportsCustomAttributeDimensions: source.custom_attributes?
+          supportsCustomAttributeDimensions: source.custom_attributes?,
+          # `metrics[].filters` só existe no Mongo: no Postgres é `metricFiltersUnsupported`.
+          supportsMetricFilters: source.orm == :mongoid
         }
       end
 

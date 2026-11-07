@@ -819,7 +819,7 @@ RSpec.describe "Dashboards personalizados", type: :request do
     it "traz as fontes, com campos, métricas e dimensões, no idioma da requisição" do
       get "/custom-dashboards/data-sources", headers: headers
 
-      expect(json["dataSources"].map { |source| source["key"] }).to eq(%w[conversations contacts messages agenda_bookings campaigns daily_stats hook_logs])
+      expect(json["dataSources"].map { |source| source["key"] }).to eq(%w[conversations contacts messages agenda_bookings campaigns daily_stats hook_logs pipelines])
 
       conversations = json["dataSources"].first
       expect(conversations).to include("label" => "Conversas", "supportsCustomAttributeDimensions" => true)

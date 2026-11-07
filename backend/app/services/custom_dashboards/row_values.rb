@@ -17,6 +17,8 @@ module CustomDashboards
       when BSON::ObjectId then value.to_s
       when Time, DateTime, ActiveSupport::TimeWithZone then ApplicationSerializer.epoch_ms(value.to_time)
       when Date then ApplicationSerializer.epoch_ms(zone.local(value.year, value.month, value.day))
+      # `SUM` e `AVG` de coluna `numeric`: em JSON, o `BigDecimal` sairia como texto.
+      when BigDecimal then value.to_f
       when Array then value.map { |item| json_value(item, zone) }
       when Hash then value.to_h { |key, item| [ key.to_s, json_value(item, zone) ] }
       else value
@@ -45,6 +47,7 @@ module CustomDashboards
       when BSON::ObjectId then labels&.fetch(value.to_s, nil) || value.to_s
       when Time, DateTime, ActiveSupport::TimeWithZone then value.to_time.in_time_zone(zone).strftime("%d/%m/%Y %H:%M")
       when Date then value.strftime("%d/%m/%Y")
+      when BigDecimal then value.to_s("F")
       when Array then value.map { |item| csv_value(item, nil, zone) }.join(", ")
       when Hash then value.to_json
       else labels&.fetch(value.to_s, nil) || value

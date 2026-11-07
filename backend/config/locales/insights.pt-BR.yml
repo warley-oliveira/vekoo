@@ -103,6 +103,8 @@ pt-BR:
             custom_attributes: "Campo personalizado"
             chat_tag_name: "Etiqueta"
             booking_attendance: "Presença em agendamento"
+            pipeline_status: "Situação no pipeline (CRM)"
+            pipeline_stage: "Etapa no pipeline (CRM)"
           values:
             status:
               open: "Aberta"
@@ -119,6 +121,10 @@ pt-BR:
             booking_attendance:
               show: "Compareceu"
               no_show: "Não compareceu"
+            pipeline_status:
+              won: "Ganho"
+              lost: "Perdido"
+              open: "Em aberto"
         contacts:
           label: "Contatos"
           fields:
@@ -239,3 +245,38 @@ pt-BR:
             first_response_human_count: "Primeiras respostas da equipe"
             first_response_automation_seconds_sum: "Soma do tempo de 1ª resposta da automação (s)"
             first_response_human_seconds_sum: "Soma do tempo de 1ª resposta da equipe (s)"
+        pipelines:
+          label: "Pipelines"
+          fields:
+            title: "Título do card"
+            board_id: "Quadro"
+            stage_id: "Etapa"
+            assigned_to_id: "Responsável"
+            deal_status: "Situação do negócio"
+            priority: "Prioridade"
+            archived: "Arquivado"
+            company_name: "Empresa"
+            lost_reason: "Motivo da perda"
+            deal_value: "Valor do negócio"
+            deal_probability: "Probabilidade (%)"
+            created_at: "Data de criação"
+            updated_at: "Última atualização"
+            stage_entered_at: "Entrada na etapa"
+            won_at: "Data do ganho"
+            lost_at: "Data da perda"
+            completed_at: "Data de conclusão"
+            due_date: "Prazo"
+            expected_close_date: "Previsão de fechamento"
+          values:
+            deal_status:
+              open: "Em aberto"
+              won: "Ganho"
+              lost: "Perdido"
+            priority:
+              low: "Baixa"
+              medium: "Média"
+              high: "Alta"
+              urgent: "Urgente"
+            archived:
+              "yes": "Sim"
+              "no": "Não"

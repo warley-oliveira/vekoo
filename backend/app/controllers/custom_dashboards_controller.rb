@@ -163,7 +163,7 @@ class CustomDashboardsController < PlatformController
     return nil if dashboard_params[:widgets].nil?
 
     Array(dashboard_params[:widgets]).select { |widget| widget.respond_to?(:permit) }.map do |widget|
-      widget.permit(:widget_type, :title, :data_source, :position, query: {}, visual_config: {}, layout: {}).to_h
+      widget.permit(:id, :widget_type, :title, :data_source, :position, query: {}, visual_config: {}, layout: {}).to_h
     end
   end
 

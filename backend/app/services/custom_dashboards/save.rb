@@ -28,12 +28,11 @@ module CustomDashboards
     # @raise [InvalidWidgets]
     def call
       dashboard.assign_attributes(attributes)
-      built = widgets&.map { |widget| CustomDashboardWidget.new(widget) }
+      built = build_widgets
 
       check_widgets!(built) if built
       dashboard.save!
-      # Em documento salvo, a atribuição grava a lista de uma vez, num `$set` só.
-      dashboard.widgets = built if built
+      replace_widgets(built) if built
 
       dashboard
     end
@@ -41,6 +40,36 @@ module CustomDashboards
     private
 
     attr_reader :dashboard, :attributes, :widgets
+
+    # O card mantém o `id` entre um salvar e outro, e a tela consegue dar o id a um card novo: sem isso, salvar
+    # recriaria todos os cards na tela. O widget mora dentro do documento: o id só precisa valer aqui dentro.
+    def build_widgets
+      return nil unless widgets
+
+      used = Set.new
+      widgets.map do |widget|
+        attributes = widget.to_h.with_indifferent_access
+        id = attributes.delete(:id).to_s
+        attributes[:_id] = BSON::ObjectId.from_string(id) if BSON::ObjectId.legal?(id) && used.add?(id)
+
+        CustomDashboardWidget.new(attributes)
+      end
+    end
+
+    # A lista inteira de uma vez, num `$set` só. Não por `dashboard.widgets =`: o Mongoid compara documento
+    # pelo id, e uma lista de cards com os mesmos ids passaria por igual e não seria gravada. E o dashboard
+    # muda de `updated_at`, para a tela saber que alguém salvou por cima.
+    def replace_widgets(built)
+      now = Time.current
+      documents = built.map do |widget|
+        widget.created_at ||= now
+        widget.updated_at = now
+        widget.as_document
+      end
+
+      dashboard.collection.update_one({ _id: dashboard.id }, { "$set" => { widgets: documents, updated_at: now } })
+      dashboard.reload
+    end
 
     def check_widgets!(built)
       if built.size > CustomDashboard::MAX_WIDGETS

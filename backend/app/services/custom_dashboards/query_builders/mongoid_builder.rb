@@ -575,7 +575,7 @@ module CustomDashboards
       def document_filter_ids(name, values)
         @document_filter_ids ||= {}
         cache_key = [ name, Array(values).map(&:to_s).sort ]
-        @document_filter_ids[cache_key] ||= DocumentIdResolvers.resolve(source, name, organization_id, values)
+        @document_filter_ids[cache_key] ||= DocumentIdResolvers.resolve(source, name, account, values)
       end
 
       module MessageGuards

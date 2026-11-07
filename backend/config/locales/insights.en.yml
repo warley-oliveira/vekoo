@@ -103,6 +103,8 @@ en:
             custom_attributes: "Custom field"
             chat_tag_name: "Tag"
             booking_attendance: "Booking attendance"
+            pipeline_status: "Pipeline status (CRM)"
+            pipeline_stage: "Pipeline stage (CRM)"
           values:
             status:
               open: "Open"
@@ -119,6 +121,10 @@ en:
             booking_attendance:
               show: "Attended"
               no_show: "Did not attend"
+            pipeline_status:
+              won: "Won"
+              lost: "Lost"
+              open: "Open"
         contacts:
           label: "Contacts"
           fields:
@@ -239,3 +245,38 @@ en:
             first_response_human_count: "First responses by the team"
             first_response_automation_seconds_sum: "Sum of automation first response time (s)"
             first_response_human_seconds_sum: "Sum of team first response time (s)"
+        pipelines:
+          label: "Pipelines"
+          fields:
+            title: "Card title"
+            board_id: "Board"
+            stage_id: "Stage"
+            assigned_to_id: "Assignee"
+            deal_status: "Deal status"
+            priority: "Priority"
+            archived: "Archived"
+            company_name: "Company"
+            lost_reason: "Loss reason"
+            deal_value: "Deal value"
+            deal_probability: "Probability (%)"
+            created_at: "Created on"
+            updated_at: "Last updated"
+            stage_entered_at: "Entered the stage"
+            won_at: "Won on"
+            lost_at: "Lost on"
+            completed_at: "Completed on"
+            due_date: "Due date"
+            expected_close_date: "Expected close"
+          values:
+            deal_status:
+              open: "Open"
+              won: "Won"
+              lost: "Lost"
+            priority:
+              low: "Low"
+              medium: "Medium"
+              high: "High"
+              urgent: "Urgent"
+            archived:
+              "yes": "Yes"
+              "no": "No"
