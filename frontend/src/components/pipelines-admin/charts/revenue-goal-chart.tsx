@@ -103,7 +103,7 @@ export default function RevenueGoalChart({
 
   return (
     <div style={{ height: HEIGHT }} className="w-full">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 320, height: 200 }}>
         <ComposedChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barCategoryGap="30%">
           <CartesianGrid vertical={false} stroke={CHART_COLORS.grid} />
           <XAxis

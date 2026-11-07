@@ -85,7 +85,7 @@ export default function PeriodSeriesChart({
 
   return (
     <div style={{ height: HEIGHT }} className="w-full">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 320, height: 200 }}>
         <AreaChart data={points} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid vertical={false} stroke={CHART_COLORS.grid} />
           <XAxis
