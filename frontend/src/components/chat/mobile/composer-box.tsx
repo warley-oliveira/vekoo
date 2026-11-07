@@ -10,6 +10,7 @@ import {
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
+  ChevronLeft,
   Delete,
   Keyboard,
   Loader2,
@@ -237,7 +238,8 @@ export default function MobileComposerBox({
         )}
       >
         <QuickRepliesPrefetch />
-        <div className="px-1 empty:hidden">
+        {/* Deitado, cada linha conta: o aviso continua na conversa e no painel, mas sai daqui. */}
+        <div className="px-1 empty:hidden landscape:hidden">
           <AutomationHint chat={chat} short />
         </div>
         <div className="px-1">
@@ -379,9 +381,10 @@ export default function MobileComposerBox({
                     {recordMode === "hold" ? (
                       <span
                         ref={cancelHint}
-                        className="min-w-0 flex-1 truncate text-center text-xs text-muted-foreground"
+                        className="flex min-w-0 flex-1 items-center justify-center gap-0.5 text-xs text-muted-foreground"
                       >
-                        {t("chatMobile.composer.slideToCancel")}
+                        <ChevronLeft aria-hidden className="size-3.5 shrink-0" />
+                        <span className="truncate">{t("chatMobile.composer.slideToCancel")}</span>
                       </span>
                     ) : (
                       <RecorderWaveform analyser={recorder.analyser} active={recorder.isRecording} />

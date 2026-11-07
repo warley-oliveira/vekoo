@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useRowEngaged } from "@/hooks/chat/use-row-engaged"
 import { useLongPress } from "@/hooks/use-long-press"
-import { haptic } from "@/lib/chat-mobile/haptics"
+import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
 import { useMotionPreset } from "@/lib/motion"
 import { bubbleText, meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import { useMessageSelection, useThreadUi } from "@/lib/chat/stores"
@@ -173,20 +173,14 @@ function BubbleContent({ message, own }: { message: ChatMessage; own: boolean })
 function useTouchActions(id: string, inSheet: boolean) {
   const active = useThreadUi((state) => state.activeMessageId === id)
   const show = useCallback(() => {
-    if (inSheet) haptic()
+    if (inSheet) {
+      haptic()
+      swallowReleaseClick()
+    }
     useThreadUi.setState({ activeMessageId: id })
   }, [id, inSheet])
   const { handlers, didFire } = useLongPress(show, { delay: 450 })
   return { active, handlers, didFire }
-}
-
-/** Soltar logo depois de segurar ainda gera um clique: ele não pode abrir a foto ou tocar o áudio. */
-function swallowClickAfterHold(didFire: () => boolean) {
-  return (event: MouseEvent) => {
-    if (!didFire()) return
-    event.preventDefault()
-    event.stopPropagation()
-  }
 }
 
 /** No celular a bolha é um alvo de segurar: nem seleção de texto, nem o menu do sistema por cima. */
@@ -276,9 +270,7 @@ const MessageBubble = memo(function MessageBubble({
       {selecting ? <SelectionCheckbox id={message.id} /> : null}
       <div
         className={cn("flex min-w-0 flex-1 items-end gap-1", own ? "justify-end" : "justify-start")}
-        onClickCapture={
-          onClickCapture ?? (sheetActions ? swallowClickAfterHold(touch.didFire) : undefined)
-        }
+        onClickCapture={onClickCapture}
         onPointerEnter={sheetActions ? undefined : engage}
         {...(selecting || (sheetActions && !chatId) ? {} : touch.handlers)}
       >
@@ -430,7 +422,6 @@ const MediaGroupRow = memo(function MediaGroupRow({
           "flex w-[min(20rem,82%)] flex-col",
           own ? "items-end" : "items-start"
         )}
-        onClickCapture={holdable ? swallowClickAfterHold(touch.didFire) : undefined}
         {...(holdable ? touch.handlers : {})}
       >
         {renderOrigin ? <div className="mb-0.5 px-1">{renderOrigin(first)}</div> : null}

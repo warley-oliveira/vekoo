@@ -185,7 +185,11 @@ export const MessageList = memo(function MessageList({
   const preset = useMotionPreset()
   const { sheetActions } = useThreadContext()
   const [scroller, setScroller] = useState<HTMLElement | null>(null)
-  useBottomAnchor(sheetActions ? scroller : null)
+  const captureScroller = useCallback(
+    (node: HTMLElement | Window | null) => setScroller(node instanceof HTMLElement ? node : null),
+    []
+  )
+  useBottomAnchor(scroller)
 
   const status = useThreadStore((state) => state.threads[threadKey]?.status ?? "loading")
   const error = useThreadStore((state) => state.threads[threadKey]?.error)
@@ -387,7 +391,7 @@ export const MessageList = memo(function MessageList({
       <Virtuoso<ThreadRow, ListContext>
         key={threadKey}
         ref={virtuoso}
-        scrollerRef={sheetActions ? (node) => setScroller(node as HTMLElement | null) : undefined}
+        scrollerRef={sheetActions ? captureScroller : undefined}
         onScroll={onScroll}
         aria-label={t("chat.thread.history")}
         className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"

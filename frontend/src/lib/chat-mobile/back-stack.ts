@@ -135,10 +135,13 @@ function closeTop() {
   }
 
   closing.add(popup)
-  // O Base UI ouve no `document`: Esc é o caminho que todo popup já respeita, inclusive o painel
-  // que pergunta antes de perder o que foi digitado. `isTrusted` falso é o que permite a quem ouve
-  // Esc para outra coisa, como sair da seleção, saber que não é com ele.
-  popup.dispatchEvent(
+  // Esc é o caminho que todo popup já respeita, inclusive o painel que pergunta antes de perder o
+  // que foi digitado. Sai de onde a tecla sairia: do que tem o foco, se estiver no portal (um seletor
+  // com busca fecha pelo próprio campo, e o painel em volta dele continua aberto). `isTrusted` falso é
+  // o que permite a quem ouve Esc para outra coisa, como sair da seleção, saber que não é com ele.
+  const focused = document.activeElement
+  const inPortal = focused && portalRoots().some((root) => root.contains(focused))
+  ;(inPortal ? focused : popup).dispatchEvent(
     new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true, cancelable: true })
   )
 

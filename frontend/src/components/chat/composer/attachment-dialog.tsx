@@ -267,7 +267,8 @@ export const AttachmentDialog = memo(function AttachmentDialog({
             </div>
           ) : null}
 
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          {/* A folga é do anel de seleção e do X de cada miniatura: a rolagem cortaria os dois. */}
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pt-2 pb-1">
             {items.map((item) => (
               <div key={item.id} className="group/tile relative shrink-0">
                 <button

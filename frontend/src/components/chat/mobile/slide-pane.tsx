@@ -94,6 +94,9 @@ export function SlidePane({
         if (token === run.current) element.style.transform = ""
       })
       if (scrim.current) scrim.current.style.opacity = "1"
+      // Quem usa leitor de tela precisa ser levado junto para a tela nova. Não sobe teclado: o foco
+      // fica no painel, e não num campo.
+      if (!element.contains(document.activeElement)) element.focus({ preventScroll: true })
     }
     if (!isOpen) setMounted(false)
     latest.current.onSettled?.(isOpen)
@@ -274,8 +277,9 @@ export function SlidePane({
       <section
         ref={pane}
         aria-label={label}
+        tabIndex={-1}
         onPointerDown={onPointerDown}
-        className="chat-pane chat-touch fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe shadow-[-8px_0_24px_-8px_color-mix(in_oklch,var(--foreground)_14%,transparent)] [overscroll-behavior-x:none]"
+        className="chat-pane chat-touch fixed inset-x-0 flex min-h-0 flex-col overflow-hidden bg-background pr-safe pl-safe outline-none shadow-[-8px_0_24px_-8px_color-mix(in_oklch,var(--foreground)_14%,transparent)] [overscroll-behavior-x:none]"
         style={{
           top: "var(--app-vv-top, 0px)",
           height: "var(--app-vh, 100dvh)",

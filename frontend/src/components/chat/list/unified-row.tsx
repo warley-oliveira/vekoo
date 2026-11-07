@@ -12,7 +12,7 @@ import {
 import { useOpenChatStore } from "@/lib/chat/stores"
 import type { UnifiedContact } from "@/lib/chat/types"
 import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
-import { haptic } from "@/lib/chat-mobile/haptics"
+import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
 import { cn } from "@/lib/utils"
 import { ChannelBadge, ChannelIcon } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
@@ -67,6 +67,7 @@ export const UnifiedRow = memo(function UnifiedRow({
         holdToSelect
           ? () => {
               haptic()
+              swallowReleaseClick()
               useChatSelection.getState().enter()
               useChatSelection.getState().toggle(chatIds)
             }

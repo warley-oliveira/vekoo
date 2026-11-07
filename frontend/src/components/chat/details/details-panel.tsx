@@ -41,7 +41,7 @@ export default function DetailsPanel({
         className={cn(
           "flex shrink-0 items-center gap-2 border-b",
           // No celular é uma tela a mais, com a mesma seta e o mesmo gesto de voltar da conversa.
-          mobile ? "h-14 pr-3 pl-1 landscape:h-11" : "h-16 px-3"
+          mobile ? "h-14 pr-3 pl-1" : "h-16 px-3"
         )}
       >
         {mobile ? (

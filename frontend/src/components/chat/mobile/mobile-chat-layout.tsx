@@ -80,6 +80,16 @@ export default function MobileChatLayout({
     }
   }, [])
 
+  const inThread = Boolean(chatId)
+  useEffect(() => {
+    if (!inThread) return
+    const root = document.documentElement
+    root.dataset.chatThread = ""
+    return () => {
+      delete root.dataset.chatThread
+    }
+  }, [inThread])
+
   // O painel cobre a conversa: cada conversa abre nela, mesmo que ele tenha ficado aberto da última
   // vez. Antes de pintar, para não piscar.
   useLayoutEffect(() => {

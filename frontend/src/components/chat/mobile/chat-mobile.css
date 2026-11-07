@@ -53,3 +53,12 @@ html[data-chat-mobile][data-keyboard="open"] [data-slot="sheet-content"][data-si
   bottom: var(--kb-inset, 0px);
   max-height: calc(var(--app-vh, 100dvh) * 0.9);
 }
+
+/*
+ * Com a conversa aberta não há barra inferior para subir os avisos: sem isto, eles cobririam o
+ * composer, e no iOS ficariam atrás do teclado.
+ */
+html[data-chat-thread] [data-sonner-toaster] {
+  --mobile-offset-bottom: calc(var(--kb-inset, 0px) + 4.5rem) !important;
+  --offset-bottom: calc(var(--kb-inset, 0px) + 4.5rem) !important;
+}

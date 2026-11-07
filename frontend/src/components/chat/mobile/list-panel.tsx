@@ -164,7 +164,7 @@ export const MobileListPanel = memo(function MobileListPanel({ connected }: { co
   return (
     <div className="relative flex h-full min-h-0 flex-col">
       <div className="flex shrink-0 flex-col pt-2 landscape:flex-row landscape:items-center landscape:pt-0">
-        <div className="flex min-w-0 items-center gap-0.5 pr-1 pl-3 landscape:w-96 landscape:shrink-0">
+        <div className="flex min-w-0 items-center gap-0.5 pr-1 pl-3 landscape:w-96 landscape:shrink-0 landscape:py-1.5">
           <SearchInput
             value={search}
             onChange={setSearch}

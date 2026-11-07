@@ -10,7 +10,7 @@ import { useOpenChatStore } from "@/lib/chat/stores"
 import type { ChatPerson, ChatTag } from "@/lib/chat/types"
 import { useChatListPrefs } from "@/lib/chat-details/list-prefs"
 import { useChatSelection } from "@/lib/chat-details/selection"
-import { haptic } from "@/lib/chat-mobile/haptics"
+import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
 import { ChannelBadge } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
 
@@ -71,6 +71,7 @@ export const ChatRow = memo(function ChatRow({
         holdToSelect
           ? () => {
               haptic()
+              swallowReleaseClick()
               useChatSelection.getState().enter()
               useChatSelection.getState().toggle([chatId])
             }
