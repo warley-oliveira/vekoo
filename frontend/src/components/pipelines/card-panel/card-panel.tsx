@@ -650,7 +650,14 @@ export default function CardPanel({ board, cardId, open, onClose }: CardPanelPro
       }
       description={
         card
-          ? t("pipelines.card.createdAt", { date: formatDate(card.createdAt, language) })
+          ? [
+              t("pipelines.card.createdAt", { date: formatDate(card.createdAt, language) }),
+              card.completedAt
+                ? t("pipelines.card.completedAt", { date: formatDate(card.completedAt, language) })
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")
           : undefined
       }
       headerActions={

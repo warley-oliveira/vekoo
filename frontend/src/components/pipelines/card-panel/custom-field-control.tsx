@@ -21,8 +21,8 @@ export function CustomFieldControl({ field, value, onChange, id }: CustomFieldCo
   const { t } = useTranslation()
   const { assignable } = usePeopleOptions()
 
-  // O texto só vai para o servidor ao sair do campo. Enquanto isso, um evento não pode apagar o
-  // que está sendo digitado, então a edição fica aqui.
+  // Texto e número só vão para o servidor ao sair do campo: um pedido por dígito, não. Enquanto
+  // isso, um evento não pode apagar o que está sendo digitado, então a edição fica aqui.
   const [draft, setDraft] = useState(String(value ?? ""))
   useEffect(() => {
     setDraft(String(value ?? ""))
@@ -35,8 +35,11 @@ export function CustomFieldControl({ field, value, onChange, id }: CustomFieldCo
       return (
         <NumberInput
           id={id}
-          value={isBlankValue(value) ? null : Number(value)}
-          onChange={(next) => onChange(next)}
+          value={draft === "" ? null : Number(draft)}
+          onChange={(next) => setDraft(next === null ? "" : String(next))}
+          onBlur={() => {
+            if (draft !== String(value ?? "")) onChange(draft === "" ? null : Number(draft))
+          }}
         />
       )
     case "date":

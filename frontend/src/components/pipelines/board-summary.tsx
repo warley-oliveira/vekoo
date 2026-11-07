@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
-import { formatCurrency, formatPercent } from "@/lib/format-number"
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/format-number"
 import { boardSummary } from "@/lib/pipelines/card-meta"
 import { formatDealValue } from "@/lib/pipelines/format"
 import type { StageWithCards } from "@/lib/pipelines/types"
@@ -34,6 +34,11 @@ export const BoardSummaryStrip = memo(function BoardSummaryStrip({
       aria-label={t("pipelines.summary.title")}
       className="flex min-w-0 items-baseline gap-x-5 overflow-x-auto [scrollbar-width:none]"
     >
+      <Item
+        label={t("pipelines.summary.openCards")}
+        value={formatNumber(summary.openCount, language)}
+        hint={t("pipelines.summary.openCardsHint")}
+      />
       <Item
         label={t("pipelines.summary.open")}
         value={formatCurrency(summary.openValue, language, { maximumFractionDigits: 0 })}

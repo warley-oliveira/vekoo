@@ -57,6 +57,7 @@ import type {
   Stage,
 } from "@/lib/pipelines/types"
 import { cn } from "@/lib/utils"
+import { LeadScoreValue } from "./pipeline-card"
 
 const COLUMNS_KEY = "vekoo.pipelines.columns.v1"
 const PER_PAGE_OPTIONS = [25, 50, 100]
@@ -391,8 +392,8 @@ function useListColumns({
         meta: { label: t("pipelines.list.column.leadScore"), align: "right", className: "w-24" },
         cell: ({ row }) => {
           const score = leadScoreOf(row.original, leadScore)
-          return score !== null ? (
-            <span className="tabular-nums">{Math.round(score)}</span>
+          return score !== null && leadScore ? (
+            <LeadScoreValue score={score} config={leadScore} />
           ) : (
             <span className="text-muted-foreground">{t("pipelines.list.empty")}</span>
           )

@@ -77,6 +77,17 @@ export function ChatLink({ card, onLink }: ChatLinkProps) {
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <MessageCircle className="size-4 shrink-0" aria-hidden />
         <span className="min-w-0 flex-1">{t("pipelines.chat.hidden")}</span>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0 pointer-coarse:size-10"
+          aria-label={t("pipelines.chat.unlink")}
+          title={t("pipelines.chat.unlink")}
+          onClick={() => onLink(null)}
+        >
+          <Unlink />
+        </Button>
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { getSchema } from "@tiptap/core"
 import { Image } from "@tiptap/extension-image"
 import { Placeholder } from "@tiptap/extension-placeholder"
 import { TaskItem } from "@tiptap/extension-task-item"
@@ -24,8 +25,21 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { keepKnownContent, LEGACY_EXTENSIONS } from "./description-schema"
 
 // Em chunk próprio: o Tiptap é grande, e só quem abre o card paga por ele.
+
+const EXTENSIONS = [
+  StarterKit.configure({
+    heading: { levels: [2, 3] },
+    link: { openOnClick: false, autolink: true },
+  }),
+  TaskList,
+  TaskItem.configure({ nested: true }),
+  Image,
+  ...LEGACY_EXTENSIONS,
+]
+const SCHEMA = getSchema(EXTENSIONS)
 
 const SAVE_DELAY_MS = 1_200
 
@@ -159,7 +173,7 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
 
   const content = useMemo<JSONContent | null>(() => {
-    if (value) return value as JSONContent
+    if (value) return keepKnownContent(value as JSONContent, SCHEMA)
     return fallbackText ? plainTextToDoc(fallbackText) : null
   }, [fallbackText, value])
 
@@ -183,13 +197,7 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        heading: { levels: [2, 3] },
-        link: { openOnClick: false, autolink: true },
-      }),
-      TaskList,
-      TaskItem.configure({ nested: true }),
-      Image,
+      ...EXTENSIONS,
       Placeholder.configure({ placeholder: t("pipelines.description.placeholder") }),
     ],
     content,
@@ -211,8 +219,11 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
 
   // Outra pessoa mudou a descrição. Com edição em andamento, quem está digitando vence.
   useEffect(() => {
-    if (!editor || editor.isFocused || pending.current || !content) return
-    if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
+    // `isDestroyed`: o Tiptap solta a instância de um render que o React descartou, e ela ainda
+    // chega até aqui uma vez. `eq`, e não o texto do JSON: o banco devolve as chaves em outra ordem,
+    // e regravar o conteúdo à toa apagaria o desfazer.
+    if (!editor || editor.isDestroyed || editor.isFocused || pending.current || !content) return
+    if (!editor.state.doc.eq(editor.schema.nodeFromJSON(content))) {
       editor.commands.setContent(content, { emitUpdate: false })
     }
   }, [content, editor])
@@ -236,7 +247,8 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
             "[&_.ProseMirror_ul[data-type=taskList]]:list-none [&_.ProseMirror_ul[data-type=taskList]]:pl-0.5 [&_.ProseMirror_li[data-checked]]:flex [&_.ProseMirror_li[data-checked]]:gap-2 [&_.ProseMirror_li[data-checked=true]>div]:text-muted-foreground [&_.ProseMirror_li[data-checked=true]>div]:line-through",
             "[&_.ProseMirror_blockquote]:my-2 [&_.ProseMirror_blockquote]:border-l-2 [&_.ProseMirror_blockquote]:pl-3 [&_.ProseMirror_blockquote]:text-muted-foreground",
             "[&_.ProseMirror_pre]:my-2 [&_.ProseMirror_pre]:overflow-x-auto [&_.ProseMirror_pre]:rounded-md [&_.ProseMirror_pre]:bg-muted [&_.ProseMirror_pre]:p-2 [&_.ProseMirror_pre]:font-mono [&_.ProseMirror_pre]:text-xs [&_.ProseMirror_code]:rounded [&_.ProseMirror_code]:bg-muted [&_.ProseMirror_code]:px-1 [&_.ProseMirror_code]:font-mono [&_.ProseMirror_code]:text-xs",
-            "[&_.ProseMirror_a]:text-primary [&_.ProseMirror_a]:underline [&_.ProseMirror_img]:my-2 [&_.ProseMirror_img]:max-h-72 [&_.ProseMirror_img]:rounded-md"
+            "[&_.ProseMirror_a]:text-primary [&_.ProseMirror_a]:underline [&_.ProseMirror_img]:my-2 [&_.ProseMirror_img]:max-h-72 [&_.ProseMirror_img]:rounded-md",
+            "[&_.ProseMirror_table]:my-2 [&_.ProseMirror_table]:w-full [&_.ProseMirror_table]:border-collapse [&_.ProseMirror_td]:border [&_.ProseMirror_td]:px-2 [&_.ProseMirror_td]:py-1 [&_.ProseMirror_th]:border [&_.ProseMirror_th]:bg-muted [&_.ProseMirror_th]:px-2 [&_.ProseMirror_th]:py-1 [&_.ProseMirror_th]:text-left [&_.ProseMirror_th]:font-medium"
           )}
         />
       </div>

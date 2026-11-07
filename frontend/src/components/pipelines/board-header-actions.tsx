@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
@@ -29,6 +30,7 @@ import { useIsMobile } from "@/hooks/use-is-mobile"
 import { pipelineErrorText } from "@/lib/pipelines/errors"
 import { boardViewUrl, type BoardView } from "@/lib/pipelines/paths"
 import type { Board } from "@/lib/pipelines/types"
+import { BoardCreateDialog } from "./board-create-dialog"
 
 /** Quadro, lista e previsão. A previsão só existe em pipeline de vendas. */
 export function BoardViewToggle({
@@ -76,6 +78,7 @@ export function BoardMenu({ board, onRename }: { board: Board; onRename: () => v
   const navigate = useNavigate()
   const confirm = useConfirm()
   const { archiveBoard } = useBoardMutations()
+  const [creating, setCreating] = useState(false)
 
   async function toggleArchive() {
     if (board.archived) {
@@ -102,51 +105,58 @@ export function BoardMenu({ board, onRename }: { board: Board; onRename: () => v
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground pointer-coarse:size-10"
-            aria-label={t("pipelines.boards.menu")}
-          />
-        }
-      >
-        <MoreHorizontal />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem onClick={onRename}>
-          <Pencil />
-          {t("pipelines.boards.rename")}
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/settings`} />}>
-          <Settings2 />
-          {t("pipelines.boards.settings")}
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/metrics`} />}>
-          <BarChart3 />
-          {t("pipelines.boards.metrics")}
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/archived`} />}>
-          <Archive />
-          {t("pipelines.boards.archivedCards")}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link to="/pipelines?all=1" />}>
-          <LayoutGrid />
-          {t("pipelines.boards.all")}
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          variant={board.archived ? "default" : "destructive"}
-          onClick={() => void toggleArchive()}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground pointer-coarse:size-10"
+              aria-label={t("pipelines.boards.menu")}
+            />
+          }
         >
-          {board.archived ? <ArchiveRestore /> : <Archive />}
-          {board.archived ? t("pipelines.boards.restore") : t("pipelines.boards.archive")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <MoreHorizontal />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuItem onClick={onRename}>
+            <Pencil />
+            {t("pipelines.boards.rename")}
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/settings`} />}>
+            <Settings2 />
+            {t("pipelines.boards.settings")}
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/metrics`} />}>
+            <BarChart3 />
+            {t("pipelines.boards.metrics")}
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link to={`/pipelines/${board.id}/archived`} />}>
+            <Archive />
+            {t("pipelines.boards.archivedCards")}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem render={<Link to="/pipelines?all=1" />}>
+            <LayoutGrid />
+            {t("pipelines.boards.all")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setCreating(true)}>
+            <Plus />
+            {t("pipelines.boards.new")}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            variant={board.archived ? "default" : "destructive"}
+            onClick={() => void toggleArchive()}
+          >
+            {board.archived ? <ArchiveRestore /> : <Archive />}
+            {board.archived ? t("pipelines.boards.restore") : t("pipelines.boards.archive")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {creating ? <BoardCreateDialog open onOpenChange={setCreating} /> : null}
+    </>
   )
 }
 

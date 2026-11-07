@@ -22,6 +22,7 @@ import { useCardActions } from "@/hooks/pipelines/use-card-actions"
 import { useBoardUi } from "@/hooks/pipelines/use-board-ui"
 import { apiAssetUrl } from "@/lib/api"
 import {
+  contactNameOf,
   agingDays,
   dealStatusOf,
   isCloseOverdue,
@@ -144,6 +145,20 @@ function CardActionsBar({ card, isCrm }: { card: Card; isCrm: boolean }) {
   )
 }
 
+/** A pontuação, com a cor da faixa em que está. O quadro e a lista mostram igual. */
+export function LeadScoreValue({ score, config }: { score: number; config: LeadScoreConfig }) {
+  const { t } = useTranslation()
+  return (
+    <span
+      className="inline-flex items-center gap-1 tabular-nums"
+      title={t("pipelines.card.meta.leadScore", { value: Math.round(score) })}
+    >
+      <TrendingUp className={cn("size-3", SCORE_TONE[leadScoreTone(score, config)])} aria-hidden />
+      {Math.round(score)}
+    </span>
+  )
+}
+
 function CardMeta({ card, meta }: { card: Card; meta: BoardMeta }) {
   const { t } = useTranslation()
   const { language } = meta
@@ -246,16 +261,7 @@ function CardMeta({ card, meta }: { card: Card; meta: BoardMeta }) {
         ) : null}
 
         {score !== null && meta.leadScore ? (
-          <span
-            className="inline-flex items-center gap-1"
-            title={t("pipelines.card.meta.leadScore", { value: Math.round(score) })}
-          >
-            <TrendingUp
-              className={cn("size-3", SCORE_TONE[leadScoreTone(score, meta.leadScore)])}
-              aria-hidden
-            />
-            {Math.round(score)}
-          </span>
+          <LeadScoreValue score={score} config={meta.leadScore} />
         ) : null}
       </div>
 
@@ -301,12 +307,9 @@ export const CardBody = memo(function CardBody({
   const status = dealStatusOf(card)
   const labels = card.labels.slice(0, MAX_LABELS)
   const hiddenLabels = card.labels.length - labels.length
-  const subtitle =
-    meta.isCrm && card.companyName && card.companyName !== card.title
-      ? card.companyName
-      : !meta.isCrm
-        ? card.description
-        : null
+  // Em vendas, com quem é o negócio: a empresa ou, sem ela, o contato. Nos outros, a descrição.
+  const contact = meta.isCrm ? card.companyName || contactNameOf(card) : null
+  const subtitle = meta.isCrm ? (contact !== card.title ? contact : null) : card.description
 
   return (
     <div

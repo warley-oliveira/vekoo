@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useBoardMutations } from "@/hooks/pipelines/use-boards"
 import { useBoardHandle } from "@/hooks/pipelines/board-handle"
+import { useIsTouch } from "@/hooks/use-media-query"
 import { useBoardUi } from "@/hooks/pipelines/use-board-ui"
 import { useCardActions } from "@/hooks/pipelines/use-card-actions"
 import { usePeopleOptions } from "@/hooks/pipelines/use-people-options"
@@ -139,6 +140,7 @@ export function MoveCardDialog({ stages }: { stages: Stage[] }) {
 
 export function LostReasonDialog() {
   const { t } = useTranslation()
+  const isTouch = useIsTouch()
   const actions = useCardActions()
   const cardId = useBoardUi((state) => state.lostRequest)
   const requestLost = useBoardUi((state) => state.requestLost)
@@ -193,6 +195,13 @@ export function LostReasonDialog() {
         aria-label={t("pipelines.deal.lostReason")}
         placeholder={t("pipelines.deal.lostReasonPlaceholder")}
         onChange={(event) => setReason(event.target.value)}
+        onKeyDown={(event) => {
+          // É uma frase, não um texto: Enter confirma. No toque, o teclado pula linha.
+          if (event.key === "Enter" && !event.shiftKey && !isTouch) {
+            event.preventDefault()
+            event.currentTarget.form?.requestSubmit()
+          }
+        }}
         className="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
       />
     </ResponsiveDialog>

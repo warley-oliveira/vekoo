@@ -158,7 +158,8 @@
         "comments_other": "{{count}} comments",
         "chat": "Linked to a chat",
         "leadScore": "Score: {{value}}"
-      }
+      },
+      "completedAt": "Completed on {{date}}"
     },
     "priority": {
       "none": "No priority",
@@ -284,7 +285,9 @@
       "conversionHint": "Won over all won and lost cards",
       "noConversion": "—",
       "won": "Won",
-      "wonHint": "Total value of won cards"
+      "wonHint": "Total value of won cards",
+      "openCards": "Open",
+      "openCardsHint": "Cards not yet won or lost"
     },
     "forecast": {
       "empty": "No open cards to forecast",

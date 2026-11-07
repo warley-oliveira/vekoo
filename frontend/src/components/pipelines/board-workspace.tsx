@@ -380,7 +380,14 @@ export function BoardWorkspace({ boardId, view }: BoardWorkspaceProps) {
     <BoardHandleContext.Provider value={handle}>
       <CardActionsProvider value={actions}>
         <div className="flex h-full min-h-0 flex-col">
-          <div className="flex shrink-0 flex-col gap-2 px-4 pt-3 pb-3 md:px-6">
+          <div className="relative flex shrink-0 flex-col gap-2 px-4 pt-3 pb-3 md:px-6">
+            {/* O filtro é do servidor: o quadro anterior fica na tela, e este fio diz que vem coisa nova. */}
+            {isValidating && advanced !== null && view !== "list" ? (
+              <div
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-0.5 animate-pulse bg-primary/40 motion-reduce:animate-none"
+              />
+            ) : null}
             <BoardFilterBar
               api={barApi}
               stages={board.stages}
