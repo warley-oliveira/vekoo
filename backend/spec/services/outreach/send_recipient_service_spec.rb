@@ -50,6 +50,12 @@ RSpec.describe Outreach::SendRecipientService do
       expect(recipient.reload.chat_id).to eq(Chat.where(connector_id: connector.id).take.id.to_s)
     end
 
+    it "aponta a conversa para o destinatário, para a resposta contar nesta campanha" do
+      deliver
+
+      expect(Chat.where(connector_id: connector.id).take.outreach_recipient_id).to eq(recipient.id.to_s)
+    end
+
     it "sobe a conversa na lista" do
       chat = create(:chat, connector: connector, organization_id: organization.id, external_id: phone, last_message_at: 3.days.ago)
 

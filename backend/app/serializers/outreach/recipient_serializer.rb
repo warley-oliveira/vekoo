@@ -10,6 +10,7 @@ module Outreach
         sentAt: epoch_ms(recipient.sent_at),
         deliveredAt: epoch_ms(recipient.delivered_at),
         readAt: epoch_ms(recipient.read_at),
+        repliedAt: epoch_ms(recipient.replied_at),
         errorCode: recipient.error_code,
         errorMessage: error_message(recipient)
       }

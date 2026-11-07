@@ -98,6 +98,7 @@ module VekooOutreachSeeds
         status_cd: "completed",
         started_days_ago: 21, completed_days_ago: 20,
         mix: { read: 34, delivered: 18, sent: 6, failed: 4 },
+        replied: 13,
         log: %w[created launched completed]
       },
       {
@@ -109,6 +110,7 @@ module VekooOutreachSeeds
         status_cd: "running",
         started_days_ago: 0,
         mix: { read: 12, delivered: 16, sent: 8, failed: 2, pending: 52 },
+        replied: 5,
         log: %w[created launched]
       },
       {
@@ -118,6 +120,7 @@ module VekooOutreachSeeds
         status_cd: "paused",
         started_days_ago: 2,
         mix: { read: 9, delivered: 11, sent: 3, pending: 37 },
+        replied: 3,
         log: %w[created launched paused]
       },
       {
@@ -154,6 +157,7 @@ module VekooOutreachSeeds
         status_cd: "cancelled",
         started_days_ago: 9, completed_days_ago: 9,
         mix: { read: 3, delivered: 4, sent: 2, skipped: 31 },
+        replied: 1,
         log: %w[created launched cancelled]
       }
     ]
@@ -168,7 +172,7 @@ module VekooOutreachSeeds
     mix = spec.fetch(:mix)
 
     campaign = organization.campaigns.create!(
-      spec.except(:started_days_ago, :completed_days_ago, :scheduled_in_days, :mix, :log).merge(
+      spec.except(:started_days_ago, :completed_days_ago, :scheduled_in_days, :mix, :replied, :log).merge(
         created_by_account_id: account.id,
         run_token: SecureRandom.hex(12),
         started_at: started_at,
@@ -177,11 +181,13 @@ module VekooOutreachSeeds
         scheduled_at: spec[:scheduled_in_days] && (now + spec[:scheduled_in_days].days).change(hour: 9),
         estimated_completion_at: estimated_completion(spec, now, mix),
         created_at: (started_at || now) - 1.hour,
+        replied_count: spec[:replied].to_i,
         **counters_for(mix)
       )
     )
 
     insert_recipients(campaign, mix, started_at, random)
+    mark_replies(campaign, spec[:replied].to_i, random)
     insert_batches(campaign, spec) if spec[:status_cd] == "running"
     record_activity(campaign, account, spec, started_at, completed_at)
     campaign
@@ -213,6 +219,15 @@ module VekooOutreachSeeds
     end
 
     Outreach::Recipient.collection.insert_many(docs) if docs.any?
+  end
+
+  # Quem respondeu é alguém que leu: o contador e os destinatários precisam bater.
+  def mark_replies(campaign, amount, random)
+    return if amount.zero? # `limit(0)`, para o Mongo, é sem limite.
+
+    campaign.recipients.status_read.order_by(_id: 1).limit(amount).each do |recipient|
+      recipient.set(replied_at: recipient.read_at + random.rand(1..90).minutes)
+    end
   end
 
   def recipient_doc(campaign, status, started_at, random, used)

@@ -33,6 +33,7 @@ module Chats
     def call
       return register_from_me if from_me
 
+      Outreach::RecipientReply.record(chat)
       sync_preview(unread_messages: chat.unread_messages.to_i + (count_unread ? 1 : 0))
       return unless dispatch && automation_can_run?
 

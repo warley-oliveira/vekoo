@@ -13,6 +13,7 @@ module Outreach
         delivered: delivered,
         read: campaign.read_count,
         failed: campaign.failed_count,
+        replied: campaign.replied_count,
         deliveryRate: rate(delivered, sent),
         openRate: rate(campaign.read_count, delivered),
         messagesPerHour: messages_per_hour(campaign),

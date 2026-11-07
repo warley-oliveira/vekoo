@@ -5,6 +5,17 @@
 class CampaignsController < PlatformController
   require_permission :campaigns
 
+  # A ordem da lista, em nome de quem lê. Nome com colação: "Água" vem antes de "Zebra", e caixa não conta.
+  SORTS = {
+    "recent" => { order: { created_at: :desc } },
+    "oldest" => { order: { created_at: :asc } },
+    "name" => { order: { name: :asc }, collation: { locale: "pt", strength: 1 } },
+    "largest" => { order: { recipients_count: :desc, created_at: :desc } },
+    "failures" => { order: { failed_count: :desc, created_at: :desc } }
+  }.freeze
+  # Filtro de destinatário que não é status: quem respondeu continua `read`, `delivered` ou `sent`.
+  REPLIED_FILTER = "replied".freeze
+
   # Dados: as chaves são ids de modelo e posições de parâmetro.
   self.opaque_params += %w[template_params]
 
@@ -15,7 +26,7 @@ class CampaignsController < PlatformController
   end
 
   def index
-    records, meta = paginate(filtered_campaigns.recent)
+    records, meta = paginate(sorted(filtered_campaigns))
     render json: { campaigns: Outreach::CampaignSerializer.many(records), meta: meta }
   end
 
@@ -91,8 +102,7 @@ class CampaignsController < PlatformController
   end
 
   def recipients
-    scope = @campaign.recipients.order_by(_id: 1)
-    scope = scope.where(status_cd: params[:status].to_s) if params[:status].present?
+    scope = recipients_by_status(@campaign.recipients.order_by(_id: 1))
     scope = scope.matching(params[:q]) if params[:q].present?
 
     records, meta = paginate(scope)
@@ -116,15 +126,35 @@ class CampaignsController < PlatformController
 
   def filtered_campaigns
     scope = current_organization.campaigns
-    scope = scope.where(status_cd: params[:status].to_s) if params[:status].present?
+    statuses = list_param(:status)
+    connector_ids = list_param(:connector_id)
+    scope = scope.where(:status_cd.in => statuses) if statuses.any?
     scope = scope.where(name: /#{Regexp.escape(params[:q].to_s)}/i) if params[:q].present?
-
-    if params[:connector_id].present?
-      connector_id = params[:connector_id].to_s
-      scope = scope.any_of({ connector_ids: connector_id }, { waba_connector_id: connector_id })
-    end
+    scope = scope.any_of({ :connector_ids.in => connector_ids }, { :waba_connector_id.in => connector_ids }) if connector_ids.any?
 
     scope
+  end
+
+  def sorted(scope)
+    sort = SORTS.fetch(params[:sort].to_s, SORTS["recent"])
+    scope = scope.order_by(sort[:order])
+    sort[:collation] ? scope.collation(sort[:collation]) : scope
+  end
+
+  def recipients_by_status(scope)
+    statuses = list_param(:status)
+    return scope if statuses.empty?
+
+    replied = statuses.delete(REPLIED_FILTER)
+    conditions = []
+    conditions << { :status_cd.in => statuses } if statuses.any?
+    conditions << { :replied_at.ne => nil } if replied
+    scope.any_of(*conditions)
+  end
+
+  # Um valor, ou vários separados por vírgula: `?status=running,paused`.
+  def list_param(name)
+    params[name].to_s.split(",").map(&:strip).compact_blank
   end
 
   # A tela fala em janela "09:00" e intervalo; o modelo, em horas e segundos.

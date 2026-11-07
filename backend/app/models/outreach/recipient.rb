@@ -46,6 +46,9 @@ module Outreach
     field :sent_at, type: Time
     field :delivered_at, type: Time
     field :read_at, type: Time
+    # A primeira mensagem do contato depois do envio. Não é um status: quem respondeu continua sendo
+    # alguém que recebeu e leu, e o canal pode nem avisar a leitura.
+    field :replied_at, type: Time
 
     # Código que a tela traduz (`whatsappError`, `numberNotFound`, `interrupted`).
     field :error_code, type: String
@@ -69,6 +72,7 @@ module Outreach
 
     scope :unsent, -> { where(:status_cd.in => UNSENT_STATUSES) }
     scope :terminal, -> { where(:status_cd.in => TERMINAL_STATUSES) }
+    scope :replied, -> { where(:replied_at.ne => nil) }
 
     # Texto de busca da lista do monitor.
     scope :matching, lambda { |query|

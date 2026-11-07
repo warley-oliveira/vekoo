@@ -25,6 +25,29 @@ RSpec.describe Chats::InboundFlow do
       )
     end
 
+    it "conta como resposta da campanha que alcançou a conversa" do
+      campaign = create(:outreach_campaign, :running, organization: organization)
+      recipient = create(:outreach_recipient, campaign: campaign, status_cd: "delivered")
+      chat.set(outreach_recipient_id: recipient.id.to_s)
+
+      run
+
+      expect(recipient.reload.replied_at).to be_present
+      expect(campaign.reload.replied_count).to eq(1)
+      expect(chat.reload.unread_messages).to eq(1)
+    end
+
+    it "mensagem nossa, feita fora da plataforma, não é resposta" do
+      campaign = create(:outreach_campaign, :running, organization: organization)
+      recipient = create(:outreach_recipient, campaign: campaign, status_cd: "delivered")
+      chat.set(outreach_recipient_id: recipient.id.to_s)
+
+      run(from_me: true)
+
+      expect(recipient.reload.replied_at).to be_nil
+      expect(chat.reload.outreach_recipient_id).to eq(recipient.id.to_s)
+    end
+
     it "avisa message_received nas mensagens seguintes" do
       run(first_message: false)
 

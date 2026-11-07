@@ -202,6 +202,7 @@ O que mudou de nome em relação a `types/api/campaign.ts`:
 | `batchSize` | Só no detalhe. De 1 a 200, 50 por padrão. A tela da origem não oferecia. |
 | `totalContacts` | Já calculado: não custa uma consulta por linha da lista. |
 | `sentCount`, `deliveredCount`, `readCount`, `failedCount` | Cumulativos: lido também conta como entregue e como enviado. **Uma falha depois de aceita conta em `sentCount` e em `failedCount`**, porque a Meta avisa depois. Na barra de progresso, use `(sentCount + failedCount) / totalContacts` limitado a 1. |
+| `repliedCount` | Quantas pessoas responderam. Ver [Quem respondeu](#quem-respondeu). Acrescentado depois da captura dos exemplos, que por isso não o mostram. |
 | `estimatedCompletionAt` | Previsão, recalculada ao lançar e ao retomar. |
 | `activityEvents` | Só no detalhe, os 100 mais recentes. Ver abaixo. |
 
@@ -211,7 +212,17 @@ O que mudou de nome em relação a `types/api/campaign.ts`:
 
 ### `GET /campaigns`
 
-Da mais nova para a mais antiga. Parâmetros: `status`, `connectorId`, `q` (no nome), `page` e `perPage`. Exemplo com a semente, resumido a uma campanha:
+Da mais nova para a mais antiga, ou na ordem de `sort`. Parâmetros: `status` e `connectorId` (um valor ou vários, separados por vírgula: `?status=running,paused`), `q` (no nome), `sort`, `page` e `perPage`.
+
+| `sort` | Ordem |
+|---|---|
+| `recent` | A mais nova primeiro. É a padrão, e também o que vale para um valor desconhecido. |
+| `oldest` | A mais antiga primeiro. |
+| `name` | Nome de A a Z, sem caixa nem acento atrapalharem. |
+| `largest` | A maior lista primeiro. |
+| `failures` | Mais falhas primeiro. |
+
+Exemplo com a semente, resumido a uma campanha:
 
 Resposta `200`:
 
@@ -280,7 +291,7 @@ Resposta `200`:
 
 ### `GET /campaigns/summary`
 
-Os números do topo da lista, da organização inteira. A origem somava só a página aberta. `openRate` é `read / sent`, de 0 a 1.
+Os números do topo da lista, da organização inteira. A origem somava só a página aberta. `openRate` é `read / sent`, de 0 a 1. Traz também `replied`, acrescentado depois da captura.
 
 Resposta `200`:
 
@@ -805,7 +816,7 @@ Retomar sem canal:
 
 ### `GET /campaigns/:id/stats`
 
-Os números do monitor. `deliveryRate` é `delivered / sent` e `openRate` é `read / delivered`, de 0 a 1. `pending` conta quem falta, inclusive quem está em `sending`, e `skipped`, quem o cancelamento deixou de fora. Esses dois só saem aqui, não no evento `progress`.
+Os números do monitor. `deliveryRate` é `delivered / sent` e `openRate` é `read / delivered`, de 0 a 1. `replied` é quantas pessoas responderam, aqui e no evento `progress` (acrescentado depois da captura). `pending` conta quem falta, inclusive quem está em `sending`, e `skipped`, quem o cancelamento deixou de fora. Esses dois só saem aqui, não no evento `progress`.
 
 Resposta `200`:
 
@@ -829,7 +840,7 @@ Resposta `200`:
 
 ### `GET /campaigns/:id/recipients`
 
-Na ordem de entrada. Parâmetros: `status`, `q` (nome ou telefone), `page` e `perPage`.
+Na ordem de entrada. Parâmetros: `status` (um ou vários, separados por vírgula, e `replied` para quem respondeu), `q` (nome ou telefone), `page` e `perPage`. Cada destinatário traz também `repliedAt`, acrescentado depois da captura.
 
 | `status` | Significa |
 |---|---|
@@ -936,6 +947,12 @@ Interrompido por uma queda no meio do envio. **Pode ter saído**, e por isso nã
   }
 }
 ```
+
+### Quem respondeu
+
+Resposta é a primeira mensagem do contato depois do envio, em qualquer canal. **Não é um status:** quem respondeu continua `sent`, `delivered` ou `read`, por isso o filtro é `?status=replied` e o dado é `repliedAt`. Quem recebeu duas campanhas responde à última. Quem falhou não conta.
+
+Ao responder, o monitor recebe `recipient` e `progress`, como em qualquer outra mudança. Quem escreve é `Outreach::RecipientReply`, chamado por `Chats::InboundFlow`, com o ponteiro `Chat#outreach_recipient_id`, gravado ao despachar: conversa sem campanha não paga consulta nenhuma, e as mensagens seguintes do mesmo contato também não.
 
 ### O que o assistente de criação oferece
 

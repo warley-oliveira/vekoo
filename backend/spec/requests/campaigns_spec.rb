@@ -184,6 +184,68 @@ RSpec.describe "Campanhas", type: :request do
       expect(json["campaigns"].map { |item| item["name"] }).to eq([ "No ar" ])
     end
 
+    it "filtra por mais de uma situação" do
+      campaign_of(name: "Rascunho")
+      campaign_of(name: "No ar", status_cd: "running", created_at: 1.hour.ago)
+      campaign_of(name: "Parada", status_cd: "paused", created_at: 2.hours.ago)
+
+      get "/campaigns", params: { status: "running,paused" }, headers: headers
+
+      expect(json["campaigns"].map { |item| item["name"] }).to eq([ "No ar", "Parada" ])
+    end
+
+    it "filtra por mais de um canal" do
+      other = create(:connector_whatsapp_web, organization: organization)
+      third = create(:connector_whatsapp_web, organization: organization)
+      campaign_of(name: "Pelo meu", created_at: 2.hours.ago)
+      create(:outreach_campaign, organization: organization, name: "Pelo outro", connector_ids: [ other.id.to_s ], created_at: 1.hour.ago)
+      create(:outreach_campaign, organization: organization, name: "Pelo terceiro", connector_ids: [ third.id.to_s ])
+
+      get "/campaigns", params: { connectorId: "#{connector.id},#{other.id}" }, headers: headers
+
+      expect(json["campaigns"].map { |item| item["name"] }).to eq([ "Pelo outro", "Pelo meu" ])
+    end
+
+    describe "ordem" do
+      def names_for(sort)
+        get "/campaigns", params: { sort: sort }, headers: headers
+        json["campaigns"].map { |item| item["name"] }
+      end
+
+      before do
+        campaign_of(name: "Zebra", created_at: 3.days.ago, recipients_count: 10, failed_count: 0)
+        campaign_of(name: "água fresca", created_at: 2.days.ago, recipients_count: 30, failed_count: 1)
+        campaign_of(name: "Bolo", created_at: 1.day.ago, recipients_count: 20, failed_count: 5)
+      end
+
+      it "pela mais antiga" do
+        expect(names_for("oldest")).to eq([ "Zebra", "água fresca", "Bolo" ])
+      end
+
+      it "pelo nome, sem caixa nem acento atrapalharem" do
+        expect(names_for("name")).to eq([ "água fresca", "Bolo", "Zebra" ])
+      end
+
+      it "pela maior lista" do
+        expect(names_for("largest")).to eq([ "água fresca", "Bolo", "Zebra" ])
+      end
+
+      it "por mais falhas" do
+        expect(names_for("failures")).to eq([ "Bolo", "água fresca", "Zebra" ])
+      end
+
+      it "ordem desconhecida fica na padrão, a mais nova primeiro" do
+        expect(names_for("qualquer")).to eq([ "Bolo", "água fresca", "Zebra" ])
+      end
+
+      it "a ordem pelo nome pagina certo" do
+        get "/campaigns", params: { sort: "name", perPage: 1, page: 2 }, headers: headers
+
+        expect(json["campaigns"].map { |item| item["name"] }).to eq([ "Bolo" ])
+        expect(json["meta"]).to include("total" => 3)
+      end
+    end
+
     it "filtra por canal, inclusive a conta oficial" do
       other = create(:connector_whatsapp_web, organization: organization)
       waba = create(:connector_whatsapp_cloud, organization: organization, phone_number_id: 111)
@@ -229,10 +291,10 @@ RSpec.describe "Campanhas", type: :request do
 
   describe "GET /campaigns/summary" do
     it "soma a organização inteira, não só a página" do
-      campaign_of(status_cd: "running", sent_count: 10, read_count: 5, delivered_count: 8, failed_count: 1)
-      campaign_of(status_cd: "completed", sent_count: 30, read_count: 15, delivered_count: 20)
+      campaign_of(status_cd: "running", sent_count: 10, read_count: 5, delivered_count: 8, failed_count: 1, replied_count: 2)
+      campaign_of(status_cd: "completed", sent_count: 30, read_count: 15, delivered_count: 20, replied_count: 4)
       campaign_of(status_cd: "draft")
-      create(:outreach_campaign, organization: create(:organization), sent_count: 999)
+      create(:outreach_campaign, organization: create(:organization), sent_count: 999, replied_count: 999)
 
       get "/campaigns/summary", headers: headers, as: :json
 
@@ -242,6 +304,7 @@ RSpec.describe "Campanhas", type: :request do
         "delivered" => 28,
         "read" => 20,
         "failed" => 1,
+        "replied" => 6,
         "openRate" => 0.5,
         "byStatus" => { "draft" => 1, "scheduled" => 0, "running" => 1, "paused" => 0, "completed" => 1, "cancelled" => 0 }
       )
@@ -860,7 +923,7 @@ RSpec.describe "Campanhas", type: :request do
 
   describe "GET /campaigns/:id/stats" do
     let(:campaign) do
-      campaign_of(status_cd: "running", sent_count: 10, delivered_count: 8, read_count: 4, failed_count: 1, recipients_count: 12, started_at: 2.hours.ago, estimated_completion_at: Time.utc(2030, 1, 1))
+      campaign_of(status_cd: "running", sent_count: 10, delivered_count: 8, read_count: 4, failed_count: 1, replied_count: 3, recipients_count: 12, started_at: 2.hours.ago, estimated_completion_at: Time.utc(2030, 1, 1))
     end
 
     it "calcula as taxas" do
@@ -873,6 +936,7 @@ RSpec.describe "Campanhas", type: :request do
         "delivered" => 8,
         "read" => 4,
         "failed" => 1,
+        "replied" => 3,
         "deliveryRate" => 0.8,
         "openRate" => 0.5,
         "messagesPerHour" => 5.0,
@@ -918,6 +982,39 @@ RSpec.describe "Campanhas", type: :request do
       get "/campaigns/#{campaign.id}/recipients", params: { status: "failed" }, headers: headers
 
       expect(json["recipients"].map { |item| item["contactName"] }).to eq([ "Falhou" ])
+    end
+
+    it "filtra por mais de uma situação" do
+      create(:outreach_recipient, campaign: campaign, status_cd: "failed", name: "Falhou")
+      create(:outreach_recipient, campaign: campaign, status_cd: "skipped", name: "Ficou de fora")
+      create(:outreach_recipient, campaign: campaign, status_cd: "sent", name: "Foi")
+
+      get "/campaigns/#{campaign.id}/recipients", params: { status: "failed,skipped" }, headers: headers
+
+      expect(json["recipients"].map { |item| item["contactName"] }).to eq([ "Falhou", "Ficou de fora" ])
+    end
+
+    it "filtra por quem respondeu, que não é um status" do
+      replied_at = Time.utc(2026, 11, 6, 12)
+      create(:outreach_recipient, campaign: campaign, status_cd: "read", name: "Respondeu", replied_at: replied_at)
+      create(:outreach_recipient, campaign: campaign, status_cd: "read", name: "Só leu")
+
+      get "/campaigns/#{campaign.id}/recipients", params: { status: "replied" }, headers: headers
+
+      expect(json["recipients"].map { |item| item["contactName"] }).to eq([ "Respondeu" ])
+      expect(json["recipients"].first).to include("status" => "read", "repliedAt" => replied_at.to_i * 1000)
+    end
+
+    it "soma quem respondeu com as outras situações, e a busca vale para todos" do
+      create(:outreach_recipient, campaign: campaign, status_cd: "read", name: "Ana respondeu", replied_at: Time.current)
+      create(:outreach_recipient, campaign: campaign, status_cd: "failed", name: "Ana falhou")
+      create(:outreach_recipient, campaign: campaign, status_cd: "failed", name: "Bia falhou")
+      create(:outreach_recipient, campaign: campaign, status_cd: "read", name: "Ana só leu")
+
+      get "/campaigns/#{campaign.id}/recipients", params: { status: "replied,failed", q: "ana" }, headers: headers
+
+      expect(json["recipients"].map { |item| item["contactName"] }).to eq([ "Ana respondeu", "Ana falhou" ])
+      expect(json["meta"]).to include("total" => 2)
     end
 
     it "busca por nome ou telefone" do

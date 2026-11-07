@@ -9,6 +9,9 @@ module ChatRelations
       # origem a campanha trocava o assistente da conversa. Quem lê é `Flows::InboundDispatcher`,
       # sempre conferindo a organização: é um id guardado, sem garantia de ainda existir.
       field :outreach_flow_id, type: String
+      # O último destinatário de campanha que alcançou esta conversa e ainda não respondeu. Sai na
+      # primeira resposta: ver `Outreach::RecipientReply`.
+      field :outreach_recipient_id, type: String
     end
   end
 end

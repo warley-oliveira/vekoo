@@ -65,6 +65,7 @@ module Outreach
     field :delivered_count, type: Integer, default: 0
     field :read_count, type: Integer, default: 0
     field :failed_count, type: Integer, default: 0
+    field :replied_count, type: Integer, default: 0
 
     field :scheduled_at, type: Time
     field :started_at, type: Time

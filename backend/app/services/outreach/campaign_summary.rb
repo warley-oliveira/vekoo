@@ -16,7 +16,8 @@ module Outreach
             sent: { "$sum" => "$sent_count" },
             delivered: { "$sum" => "$delivered_count" },
             read: { "$sum" => "$read_count" },
-            failed: { "$sum" => "$failed_count" }
+            failed: { "$sum" => "$failed_count" },
+            replied: { "$sum" => "$replied_count" }
           }
         }
       ]).to_a
@@ -28,6 +29,7 @@ module Outreach
         delivered: sum(groups, "delivered"),
         read: sum(groups, "read"),
         failed: sum(groups, "failed"),
+        replied: sum(groups, "replied"),
         openRate: open_rate(groups)
       }
     end

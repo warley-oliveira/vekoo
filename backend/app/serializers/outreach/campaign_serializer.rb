@@ -17,6 +17,7 @@ module Outreach
         deliveredCount: campaign.delivered_count,
         readCount: campaign.read_count,
         failedCount: campaign.failed_count,
+        repliedCount: campaign.replied_count,
         connectorIds: campaign.connector_ids,
         wabaConnectorId: campaign.waba_connector_id,
         phoneNumberIds: campaign.phone_number_ids,

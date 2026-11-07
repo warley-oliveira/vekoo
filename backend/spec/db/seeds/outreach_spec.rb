@@ -38,7 +38,15 @@ RSpec.describe "db/seeds/outreach.rb" do
       expect(campaign.delivered_count).to eq(statuses.fetch("read", 0) + statuses.fetch("delivered", 0)), campaign.name
       expect(campaign.sent_count).to eq(statuses.slice("read", "delivered", "sent").values.sum), campaign.name
       expect(campaign.failed_count).to eq(statuses.fetch("failed", 0)), campaign.name
+      expect(campaign.replied_count).to eq(campaign.recipients.replied.count), campaign.name
     end
+  end
+
+  it "quem respondeu é alguém que leu, e tem campanha com resposta para mostrar" do
+    replied = Outreach::Recipient.where(:campaign_id.in => campaigns.pluck(:_id)).replied
+
+    expect(replied.count).to be_positive
+    expect(replied.pluck(:status_cd).uniq).to eq([ "read" ])
   end
 
   it "traz destinatários em cada situação, menos os que só existem no meio de um envio" do

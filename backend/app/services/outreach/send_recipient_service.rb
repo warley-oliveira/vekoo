@@ -152,7 +152,10 @@ module Outreach
         return false
       end
 
-      recipient.mark_dispatched!(chat.id)
+      return false unless recipient.mark_dispatched!(chat.id)
+
+      chat.set(outreach_recipient_id: recipient.id.to_s)
+      true
     end
 
     def finish_with(message, show_reason: true)
