@@ -1,12 +1,11 @@
 import type { ReactNode } from "react"
 
+import { useCustomDashboardTabs } from "@/hooks/custom-dashboards/use-custom-dashboard-tabs"
+
 import type { DashboardPeriod } from "./use-dashboard-period"
 
-// Ponto de encaixe dos dashboards personalizados (`components/custom-dashboards`, outra frente).
-//
-// Cada dashboard vira uma aba depois de "Visão geral" e "Agenda", com `?tab=<id>` na URL, sob o mesmo
-// filtro de período. Quem constrói o módulo troca o corpo deste hook: ler `GET /custom-dashboards`
-// (só com `useCan("custom_dashboards")`) e devolver as abas. A página não muda.
+// Ponto de encaixe dos dashboards personalizados: cada painel vira uma aba depois de "Visão geral" e "Agenda", com
+// `?tab=<id>` na URL, sob o mesmo filtro de período. A lógica mora em `hooks/custom-dashboards`, e a página não muda.
 
 export type DashboardExtraTab = {
   /** Vai em `?tab=`. `overview` e `agenda` são reservados. */
@@ -22,8 +21,6 @@ export type DashboardExtraTabs = {
   create?: { label: string; onClick: () => void }
 }
 
-const NO_EXTRA_TABS: DashboardExtraTabs = { tabs: [] }
-
 export function useDashboardExtraTabs(): DashboardExtraTabs {
-  return NO_EXTRA_TABS
+  return useCustomDashboardTabs()
 }

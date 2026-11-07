@@ -260,7 +260,7 @@ module CustomDashboards
       # Campos virtuais: só filtro, nunca métrica nem dimensão.
       def virtual_fields_meta(source, account)
         document_filters_for(source, account).keys.map do |key|
-          { key: key, label: source.field_label(key), type: "string", enumValues: nil, filterType: "relationship" }
+          { key: key, label: source.field_label(key), type: "string", enumValues: nil, filterType: "relationship", virtual: true }
         end
       end
 

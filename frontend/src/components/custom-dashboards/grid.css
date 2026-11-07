@@ -1,0 +1,55 @@
+/* A grade só em edição: o que o `react-grid-layout` desenha, na linguagem do produto. */
+
+.cd-grid .react-grid-item > .react-resizable-handle {
+  opacity: 0;
+  width: 28px;
+  height: 28px;
+  right: 2px;
+  bottom: 2px;
+  background: none;
+  cursor: nwse-resize;
+  transition: opacity 150ms ease;
+}
+
+.cd-grid .react-grid-item > .react-resizable-handle::after {
+  right: 6px;
+  bottom: 6px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--muted-foreground);
+  border-bottom: 2px solid var(--muted-foreground);
+  border-radius: 0 0 2px 0;
+}
+
+.cd-grid .react-grid-item:hover > .react-resizable-handle,
+.cd-grid .react-grid-item:focus-within > .react-resizable-handle,
+.cd-grid .react-grid-item.resizing > .react-resizable-handle {
+  opacity: 1;
+}
+
+@media (pointer: coarse) {
+  .cd-grid .react-grid-item > .react-resizable-handle {
+    opacity: 1;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.cd-grid .react-grid-item.react-grid-placeholder {
+  background: var(--primary);
+  opacity: 0.08;
+  border-radius: 0.75rem;
+}
+
+.cd-grid .react-grid-item.react-draggable-dragging {
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  border-radius: 0.75rem;
+}
+
+/* Quem pediu menos movimento não vê os cards deslizando. */
+@media (prefers-reduced-motion: reduce) {
+  .cd-grid.react-grid-layout,
+  .cd-grid .react-grid-item {
+    transition: none !important;
+  }
+}

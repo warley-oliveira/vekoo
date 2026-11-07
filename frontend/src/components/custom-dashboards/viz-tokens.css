@@ -1,0 +1,22 @@
+/*
+ * A paleta dos cards personalizados, somando às cores de `components/dashboard/viz-tokens.css`. Só entra quando as séries
+ * são o assunto do gráfico: uma série só continua em tinta neutra ou no acento, como no resto do Dashboard.
+ *
+ * Categórica, ordem fixa, e a nona série nunca ganha cor: vira "Outros" (`--viz-context`). Saiu de busca exaustiva das
+ * ordens, com `dataviz/scripts/validate_palette.js`, contra a superfície dos cards (`--card`, branco), com o violeta do
+ * produto na frente e o vermelho por último, para não ser lido como erro:
+ *   vizinhos: CVD pior par 12,2 (deuteranopia); visão normal 21,6; todas no faixa de luz e acima do piso de croma.
+ *   as três primeiras, todos os pares: CVD 8,0; visão normal 17,4.
+ *   âmbar fica em 2,25:1 sobre o card, com legenda e tabela como alívio, que é a condição da skill para ficar abaixo de 3:1.
+ * Ao trocar um valor, rode de novo. O produto só tem tema claro: não há par escuro para validar.
+ */
+:root {
+  --viz-cat-1: var(--primary); /* violeta, #7132e0 */
+  --viz-cat-2: oklch(0.62 0.13 50); /* terracota, o mesmo de --viz-series-campaign */
+  --viz-cat-3: oklch(0.56 0.14 250); /* azul */
+  --viz-cat-4: oklch(0.52 0.12 140); /* verde */
+  --viz-cat-5: oklch(0.6 0.19 350); /* magenta */
+  --viz-cat-6: oklch(0.75 0.14 80); /* âmbar */
+  --viz-cat-7: oklch(0.62 0.11 175); /* verde-azulado, o mesmo de --viz-series-human */
+  --viz-cat-8: oklch(0.5 0.17 27); /* vermelho */
+}
