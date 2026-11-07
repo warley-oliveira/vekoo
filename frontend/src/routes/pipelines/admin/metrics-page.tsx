@@ -289,7 +289,7 @@ function PeriodTiles({ period, isCrm }: { period: PeriodMetrics; isCrm: boolean 
   const money = (value: number) => formatCurrency(value, language, { maximumFractionDigits: 0 })
 
   return (
-    <div className={cn("grid grid-cols-2 gap-3", isCrm && "lg:grid-cols-4")}>
+    <div className={cn("grid gap-3", isCrm && "grid-cols-2 lg:grid-cols-4")}>
       <StatTile
         label={t("pipelinesAdmin.metrics.tiles.created")}
         value={summary.createdCount}

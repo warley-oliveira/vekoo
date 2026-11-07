@@ -114,7 +114,9 @@
         "scoreOrder": "Precisa ser maior que o limite de frio.",
         "scorePreview": "Abaixo de {{low}}: frio. De {{low}} a {{high}}: morno. Acima de {{high}}: quente.",
         "submit": "Salvar pontuação",
-        "saved": "Pontuação e negócios salvos."
+        "saved": "Pontuação e negócios salvos.",
+        "titleScore": "Pontuação",
+        "descriptionScore": "O que chama a atenção no card: a pontuação de cada contato."
       },
       "visibility": {
         "title": "Quem vê os cards",

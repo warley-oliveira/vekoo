@@ -114,7 +114,9 @@
         "scoreOrder": "Must be higher than the cold limit.",
         "scorePreview": "Below {{low}}: cold. From {{low}} to {{high}}: warm. Above {{high}}: hot.",
         "submit": "Save score",
-        "saved": "Score and deals saved."
+        "saved": "Score and deals saved.",
+        "titleScore": "Score",
+        "descriptionScore": "What draws attention on the card: each contact's score."
       },
       "visibility": {
         "title": "Who sees the cards",

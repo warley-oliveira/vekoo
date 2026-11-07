@@ -91,8 +91,12 @@ export function DealsSection({ board, onDirtyChange }: SectionProps) {
 
   return (
     <SettingsSection
-      title={t("pipelinesAdmin.settings.deals.title")}
-      description={t("pipelinesAdmin.settings.deals.description")}
+      title={board.boardType === "crm" ? t("pipelinesAdmin.settings.deals.title") : t("pipelinesAdmin.settings.deals.titleScore")}
+      description={
+        board.boardType === "crm"
+          ? t("pipelinesAdmin.settings.deals.description")
+          : t("pipelinesAdmin.settings.deals.descriptionScore")
+      }
     >
       <Form
         form={form}
