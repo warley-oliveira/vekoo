@@ -375,8 +375,10 @@ module VekooSeeds
   end
 
   def seed_notifications!(organization)
+    # "Chegaram 6 modelos" prometia o que /templates ainda diz que está chegando.
+    Notification.where(id: id_for("not-templates")).delete_all
+
     [
-      [ "not-templates", "templates", 5.hours.ago, false ],
       [ "not-folders", "folders", 2.days.ago, false ],
       [ "not-welcome", "welcome", 6.days.ago, true ]
     ].each do |slug, key, at, read|

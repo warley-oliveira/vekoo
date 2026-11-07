@@ -54,6 +54,13 @@ function categoryOf(notification: AppNotification): string {
   return category in CATEGORY_ICONS ? category : "general"
 }
 
+/** Os avisos do produto chegam só com a chave: é aqui que eles ganham para onde levar. */
+const KEY_URLS: Record<string, string> = {
+  welcome: "/carousels",
+  folders: "/carousels",
+  templates: "/templates",
+}
+
 function isExternalUrl(url: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/i.test(url) || url.startsWith("//")
 }
@@ -307,7 +314,8 @@ function NotificationRow({
 
   function handleClick() {
     markAsRead()
-    if (notification.url) openUrl(notification.url)
+    const url = notification.url ?? (notification.key ? KEY_URLS[notification.key] : undefined)
+    if (url) openUrl(url)
   }
 
   function handleAction(action: NotificationAction) {
