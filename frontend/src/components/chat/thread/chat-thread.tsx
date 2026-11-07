@@ -1,5 +1,6 @@
 import {
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -43,6 +44,7 @@ import type { ChatChannelMessage, ChatMessage, UnifiedContactChat } from "@/lib/
 import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { ChannelIcon } from "../channel-icon"
+import { useChatVariant } from "../chat-variant"
 import { Composer, ReadOnlyNotice, type ComposerHandle } from "../composer/composer"
 import { MediaViewer } from "../media/media-viewer"
 import { DeleteMessagesDialog } from "./delete-messages-dialog"
@@ -75,6 +77,9 @@ const Conversation = memo(function Conversation({
   const senderName = useAuth().session?.account.name
   const list = useRef<MessageListHandle>(null)
   const composer = useRef<ComposerHandle>(null)
+  const history = useRef<HTMLDivElement>(null)
+  const variant = useChatVariant()
+  const sheetActions = Boolean(variant)
 
   const { connected, retry: retryLoad } = useChatThread(chatId)
   const { send, retryOutgoing } = useSendMessage(chatId)
@@ -95,6 +100,7 @@ const Conversation = memo(function Conversation({
       contactName,
       contactPicture,
       capabilities,
+      sheetActions,
       reply: (message) => {
         useReplyTo.getState().setReplyTo(chatId, message)
         composer.current?.focus()
@@ -127,7 +133,7 @@ const Conversation = memo(function Conversation({
       },
       scrollToMessage: (id) => void list.current?.scrollToMessage(id),
     }),
-    [capabilities, chatId, contactName, contactPicture, retryOutgoing, send, senderName, t]
+    [capabilities, chatId, contactName, contactPicture, retryOutgoing, send, senderName, sheetActions, t]
   )
 
   // Quem envia quer ver o que enviou, mesmo tendo rolado para cima.
@@ -167,7 +173,8 @@ const Conversation = memo(function Conversation({
       >
         {!connected ? <ReconnectingNotice /> : null}
 
-        <motion.div key={chatId} {...preset.fade} className="min-h-0 flex-1">
+        {/* No celular quem anima é o painel inteiro: duas animações juntas seriam só mais trabalho. */}
+        <motion.div ref={history} key={chatId} {...(variant ? {} : preset.fade)} className="min-h-0 flex-1">
           <MessageList ref={list} threadKey={chatId} onRetry={retryLoad} />
         </motion.div>
 
@@ -190,11 +197,18 @@ const Conversation = memo(function Conversation({
           mode={mode}
           contactName={contactName}
           onSent={onSent}
+          Box={variant?.ComposerBox}
         />
       </div>
 
       <SelectionBar threadKey={chatId} onDelete={setDeleting} />
       <MediaViewer />
+      {variant ? (
+        <Suspense fallback={null}>
+          <variant.MessageSheet />
+          <variant.SwipeReply containerRef={history} onReply={context.reply} />
+        </Suspense>
+      ) : null}
 
       {deleting ? (
         <DeleteMessagesDialog
@@ -273,6 +287,7 @@ const AllChannelsTimeline = memo(function AllChannelsTimeline({
 }) {
   const threadKey = `contact:${externalId}`
   const list = useRef<MessageListHandle>(null)
+  const sheetActions = Boolean(useChatVariant())
 
   useEffect(() => {
     setOpenThread(threadKey)
@@ -296,6 +311,7 @@ const AllChannelsTimeline = memo(function AllChannelsTimeline({
       contactName,
       contactPicture,
       capabilities: { connector: undefined, provider: null },
+      sheetActions,
       reply: () => {},
       react: () => {},
       requestDelete: () => {},
@@ -318,7 +334,7 @@ const AllChannelsTimeline = memo(function AllChannelsTimeline({
         )
       },
     }),
-    [connectors, contactName, contactPicture, threadKey, unmatched]
+    [connectors, contactName, contactPicture, sheetActions, threadKey, unmatched]
   )
 
   return (
@@ -357,15 +373,15 @@ function ThreadNotFound({ onBack }: { onBack: () => void }) {
  */
 export default memo(function ChatThread({
   chatId,
-  singleColumn,
   onBack,
 }: {
   chatId: string
-  singleColumn: boolean
   onBack: () => void
 }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const variant = useChatVariant()
+  const Header = variant?.ThreadHeader ?? ThreadHeader
   const [searchParams] = useSearchParams()
   const { chat, error, retry } = useOpenChat(chatId)
   const { byId: connectors } = useChatConnectors()
@@ -392,16 +408,18 @@ export default memo(function ChatThread({
     : ""
   useDocumentTitle(contactName || null)
 
+  // No celular, trocar de aba substitui: voltar significa a lista, e não cada canal por onde passou.
+  const replace = Boolean(variant)
   const onTabChange = useCallback(
     (tab: string) => {
       if (tab === ALL_CHATS_TAB) {
-        navigate(`/chat/${chatId}?${TIMELINE_PARAM}=${TIMELINE_ALL}`)
+        navigate(`/chat/${chatId}?${TIMELINE_PARAM}=${TIMELINE_ALL}`, { replace })
         return
       }
       if (chat) useLastChannel.getState().remember(chat.externalId, tab)
-      navigate(`/chat/${tab}`)
+      navigate(`/chat/${tab}`, { replace })
     },
-    [chat, chatId, navigate]
+    [chat, chatId, navigate, replace]
   )
 
   const mode = composerMode(chat?.partial ? undefined : chat, connector)
@@ -410,11 +428,14 @@ export default memo(function ChatThread({
 
   if (error && !chat) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-        <p className="text-sm text-muted-foreground">{t("chat.thread.loadFailed")}</p>
-        <Button type="button" variant="outline" size="sm" onClick={retry}>
-          {t("chat.thread.retry")}
-        </Button>
+      <div className="flex h-full min-h-0 flex-col">
+        {variant ? <variant.ThreadHeaderSkeleton onBack={onBack} /> : null}
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
+          <p className="text-sm text-muted-foreground">{t("chat.thread.loadFailed")}</p>
+          <Button type="button" variant="outline" size="sm" className="pointer-coarse:h-10" onClick={retry}>
+            {t("chat.thread.retry")}
+          </Button>
+        </div>
       </div>
     )
   }
@@ -422,7 +443,7 @@ export default memo(function ChatThread({
   if (!chat) {
     return (
       <div className="flex h-full min-h-0 flex-col">
-        <ThreadHeaderSkeleton />
+        {variant ? <variant.ThreadHeaderSkeleton onBack={onBack} /> : <ThreadHeaderSkeleton />}
         <div className="min-h-0 flex-1">
           <MessagesSkeleton />
         </div>
@@ -432,7 +453,7 @@ export default memo(function ChatThread({
 
   return (
     <div className="relative flex h-full min-h-0 flex-col">
-      <ThreadHeader chat={chat} connector={connector} singleColumn={singleColumn} onBack={onBack} />
+      <Header chat={chat} connector={connector} onBack={onBack} />
 
       {showTabs ? (
         <ThreadTabs

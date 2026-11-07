@@ -15,6 +15,8 @@ export type ThreadContextValue = {
   contactName: string
   contactPicture: string | null
   capabilities: MessageCapabilities
+  /** No celular as ações da bolha abrem em folha, ao segurar, em vez de ficarem ao lado dela. */
+  sheetActions: boolean
   reply: (message: ChatMessage) => void
   react: (message: ChatMessage, emoji: string) => void
   requestDelete: (messages: ChatMessage[]) => void

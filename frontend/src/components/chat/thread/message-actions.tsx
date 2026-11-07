@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
-import { bubbleText, canReactToMessage, meaningfulContent } from "@/lib/chat/message-rules"
+import { canReactToMessage, copyableText, QUICK_REACTIONS } from "@/lib/chat/message-rules"
 import { useMessageSelection } from "@/lib/chat/stores"
 import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
@@ -21,9 +21,6 @@ import { useThreadContext } from "./thread-context"
 
 // `emoji-picker-react` é grande: só desce quando alguém pede "mais emojis".
 const EmojiPicker = lazy(() => import("../composer/emoji-picker"))
-
-/** As mesmas seis do menu rápido do WhatsApp, na mesma ordem. */
-const QUICK_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"]
 
 const actionButton = "size-7 text-muted-foreground pointer-coarse:size-9"
 
@@ -113,8 +110,7 @@ function MoreMenu({
 }) {
   const { t } = useTranslation()
   const { requestDelete } = useThreadContext()
-  // Copiar é levar o que foi escrito, com as quebras de linha.
-  const text = message.caption ? meaningfulContent(message.caption) : bubbleText(message)
+  const text = copyableText(message)
 
   return (
     <DropdownMenu>
@@ -165,13 +161,21 @@ function MoreMenu({
 }
 
 /** Sem isto, quem navega por teclado não alcançaria as ações, que ainda nem existem. */
-export function ActionsSentinel({ onFocus }: { onFocus: () => void }) {
+export function ActionsSentinel({
+  onFocus,
+  onClick,
+}: {
+  onFocus?: () => void
+  /** No celular, é por aqui que quem usa leitor de tela chega à folha: segurar não existe para ele. */
+  onClick?: () => void
+}) {
   const { t } = useTranslation()
   return (
     <button
       type="button"
       aria-label={t("chat.message.more")}
       onFocus={onFocus}
+      onClick={onClick}
       className="sr-only"
     />
   )

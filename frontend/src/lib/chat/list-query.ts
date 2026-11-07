@@ -6,6 +6,8 @@ import type { Chat, FilterCondition, UnifiedContact, UnifiedContactChat } from "
 
 export type StatusFilter = "open" | "closed" | "all"
 
+export const STATUS_OPTIONS: StatusFilter[] = ["all", "open", "closed"]
+
 export type ChatListQuery = {
   search: string
   status: StatusFilter

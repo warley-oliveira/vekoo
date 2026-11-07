@@ -12,6 +12,7 @@ import {
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { LoadingRegion } from "@/components/shared"
+import { useLongPress } from "@/hooks/use-long-press"
 import { formatDate, formatTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { meaningfulContent, messageKind } from "@/lib/chat/message-rules"
@@ -19,6 +20,9 @@ import { formatNumber } from "@/lib/format-number"
 import { cn } from "@/lib/utils"
 
 const DAY_MS = 24 * 60 * 60 * 1000
+const HOLD_MS = 450
+
+const NOTHING = () => {}
 
 /** "14:32" hoje, "ontem", o dia da semana até uma semana atrás, e depois a data. */
 function useListTime(at: number | null | undefined): string {
@@ -53,6 +57,7 @@ export function ListRow({
   children,
   "aria-label": ariaLabel,
   selection,
+  onHold,
 }: {
   href: string
   selected: boolean
@@ -64,8 +69,26 @@ export function ListRow({
   "aria-label"?: string
   /** Escolhendo conversas: a linha deixa de abrir, e tocar nela marca. */
   selection?: { checked: boolean; onToggle: () => void; label: string }
+  /** Segurar a linha, no celular: é como se entra na escolha de conversas. */
+  onHold?: () => void
 }) {
+  const hold = useLongPress(onHold ?? NOTHING, { delay: HOLD_MS })
+  // Só o toque: em tela larga, segurar o botão do mouse continua sendo arrastar ou selecionar.
+  const holdHandlers = onHold
+    ? {
+        onTouchStart: hold.handlers.onTouchStart,
+        onTouchMove: hold.handlers.onTouchMove,
+        onTouchEnd: hold.handlers.onTouchEnd,
+        onTouchCancel: hold.handlers.onTouchCancel,
+        onContextMenu: hold.handlers.onContextMenu,
+      }
+    : undefined
+
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (onHold && hold.didFire()) {
+      event.preventDefault()
+      return
+    }
     if (event.defaultPrevented || event.button !== 0) return
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
     event.preventDefault()
@@ -82,7 +105,7 @@ export function ListRow({
           aria-label={selection.label}
           onClick={selection.onToggle}
           className={cn(
-            "flex min-h-[3.75rem] w-full items-start gap-3 rounded-lg px-2.5 py-2 text-left transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+            "flex min-h-[4.25rem] w-full items-start gap-3 rounded-lg px-2.5 py-2.5 text-left transition-colors outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 md:min-h-[3.75rem] md:py-2 md:select-auto",
             selection.checked ? "bg-accent text-accent-foreground" : "hover:bg-muted/70"
           )}
         >
@@ -118,9 +141,11 @@ export function ListRow({
         onClick={handleClick}
         aria-current={selected ? "true" : undefined}
         aria-label={ariaLabel}
+        {...holdHandlers}
         className={cn(
-          "flex min-h-[3.75rem] items-start gap-3 rounded-lg px-2.5 py-2 transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-          selected ? "bg-accent text-accent-foreground" : "hover:bg-muted/70"
+          "flex min-h-[4.25rem] items-start gap-3 rounded-lg px-2.5 py-2.5 transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:active:bg-muted/70 md:min-h-[3.75rem] md:py-2",
+          selected ? "bg-accent text-accent-foreground" : "hover:bg-muted/70",
+          onHold && "select-none [-webkit-touch-callout:none]"
         )}
       >
         <span className="relative mt-0.5 shrink-0">{avatar}</span>

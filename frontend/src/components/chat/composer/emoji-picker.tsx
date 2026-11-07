@@ -31,7 +31,13 @@ const CATEGORIES = [
  * O seletor completo, em chunk próprio: é pesado demais para descer com o chat. Emoji nativo, para
  * não buscar imagens em CDN a cada abertura e para combinar com o que o contato vê.
  */
-export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => void }) {
+export default function EmojiPicker({
+  onPick,
+  height = 340,
+}: {
+  onPick: (emoji: string) => void
+  height?: number
+}) {
   const { t } = useTranslation()
   const language = useLanguage()
 
@@ -79,7 +85,7 @@ export default function EmojiPicker({ onPick }: { onPick: (emoji: string) => voi
       autoFocusSearch={false}
       previewConfig={{ showPreview: false }}
       width="100%"
-      height={340}
+      height={height}
       style={{ border: "none", minWidth: "18rem" }}
     />
   )

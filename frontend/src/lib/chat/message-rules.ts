@@ -112,3 +112,11 @@ export function bubbleText(
   const automated = message.messageOrigin !== "frontend"
   return withoutCitations(automated ? text.replace(/<audio>(.*?)<\/audio>/g, "$1") : text)
 }
+
+/** As mesmas seis do menu rápido do WhatsApp, na mesma ordem. */
+export const QUICK_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"]
+
+/** Copiar é levar o que foi escrito, com as quebras de linha. */
+export function copyableText(message: ChatMessage): string | null {
+  return message.caption ? meaningfulContent(message.caption) : bubbleText(message)
+}

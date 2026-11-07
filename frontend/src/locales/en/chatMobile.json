@@ -1,0 +1,52 @@
+{
+  "chatMobile": {
+    "panes": {
+      "thread": "Conversation",
+      "details": "Conversation details"
+    },
+    "list": {
+      "allChannels": "All channels",
+      "copilotHint": "Ask for a summary or a reply idea",
+      "selectHint": "You can also press and hold a conversation in the list",
+      "preferencesHint": "What shows on each row of the list"
+    },
+    "selection": {
+      "none": "Tap the conversations",
+      "all": "Select all",
+      "clear": "Clear",
+      "actions": "Actions for the selected",
+      "more": "More"
+    },
+    "thread": {
+      "openDetails": "See details of {{name}}",
+      "open": "Open",
+      "closed": "Closed",
+      "openHint": "This conversation is open",
+      "closedHint": "This conversation is closed"
+    },
+    "rename": {
+      "label": "Contact name",
+      "hint": "Only your team sees it. With no name, the one from the channel comes back.",
+      "save": "Save name",
+      "tooLong": "Use up to 120 characters."
+    },
+    "message": {
+      "title": "Message actions"
+    },
+    "composer": {
+      "actions": "Attach and more options",
+      "camera": "Camera",
+      "gallery": "Gallery",
+      "document": "Document",
+      "suggest": "Suggest a reply",
+      "suggestCost_one": "{{count}} credit",
+      "suggestCost_other": "{{count}} credits",
+      "searchReplies": "Search quick replies",
+      "keyboard": "Back to the keyboard",
+      "deleteBackward": "Delete",
+      "automationOn": "Automation is on: replying pauses it.",
+      "slideToCancel": "Slide to cancel",
+      "slideToLock": "Lock"
+    }
+  }
+}

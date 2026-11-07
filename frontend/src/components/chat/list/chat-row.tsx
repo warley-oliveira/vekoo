@@ -10,6 +10,7 @@ import { useOpenChatStore } from "@/lib/chat/stores"
 import type { ChatPerson, ChatTag } from "@/lib/chat/types"
 import { useChatListPrefs } from "@/lib/chat-details/list-prefs"
 import { useChatSelection } from "@/lib/chat-details/selection"
+import { haptic } from "@/lib/chat-mobile/haptics"
 import { ChannelBadge } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
 
@@ -21,6 +22,8 @@ export type ChatRowProps = {
   tags: Map<string, ChatTag>
   people: Map<string, ChatPerson>
   onOpen: (chatId: string) => void
+  /** No celular, segurar a linha entra na escolha de conversas, já com esta marcada. */
+  holdToSelect?: boolean
 }
 
 /**
@@ -33,6 +36,7 @@ export const ChatRow = memo(function ChatRow({
   tags,
   people,
   onOpen,
+  holdToSelect = false,
 }: ChatRowProps) {
   const { t } = useTranslation()
   const chat = useChat(chatId)
@@ -63,6 +67,15 @@ export const ChatRow = memo(function ChatRow({
       href={`/chat/${chat.id}`}
       selected={selected}
       onOpen={() => onOpen(chat.id)}
+      onHold={
+        holdToSelect
+          ? () => {
+              haptic()
+              useChatSelection.getState().enter()
+              useChatSelection.getState().toggle([chatId])
+            }
+          : undefined
+      }
       selection={
         selecting
           ? {

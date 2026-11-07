@@ -2,7 +2,6 @@ import { memo, useCallback, useRef } from "react"
 import { useNavigate } from "react-router"
 import { useTranslation } from "react-i18next"
 import {
-  ArrowLeft,
   Bot,
   BotOff,
   CheckCircle2,
@@ -12,9 +11,8 @@ import {
   RotateCcw,
   Trash2,
 } from "lucide-react"
-import { toast } from "sonner"
 
-import { useConfirm, UserAvatar } from "@/components/shared"
+import { UserAvatar } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,80 +22,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useThreadActions } from "@/hooks/chat/use-thread-actions"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { apiAssetUrl } from "@/lib/api"
-import { deleteChat, updateChat } from "@/lib/chat/actions"
 import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
 import { toggleContactDetails } from "@/lib/chat-details/panel-store"
 import { useThreadStore } from "@/lib/chat/thread-store"
 import type { Chat } from "@/lib/chat/types"
-import { formatRelative } from "@/lib/format"
-import { useLanguage } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { ChannelBadge } from "../channel-icon"
 import { HAS_DETAILS_PANEL, ThreadHeaderExtras, ThreadMenuExtras } from "../extension-points"
 import { EditableName, type EditableNameHandle } from "./editable-name"
 
-/** Automação ligada ou pausada, e quando volta. Clicar alterna. */
-function AutomationButton({ chat }: { chat: Chat }) {
-  const { t } = useTranslation()
-  const language = useLanguage()
-  const on = chat.automationEnabled
-
-  const label = on
-    ? t("chat.automation.on")
-    : chat.automationResumeAt
-      ? t("chat.automation.pausedUntil", {
-          when: formatRelative(chat.automationResumeAt, language),
-        })
-      : t("chat.automation.paused")
-
-  const toggle = () => {
-    updateChat(chat.id, { automationEnabled: !on })
-      .then(() => toast.success(on ? t("chat.automation.pausedDone") : t("chat.automation.resumedDone")))
-      .catch(() => toast.error(t("chat.automation.failed")))
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-pressed={on}
-            aria-label={`${label}. ${on ? t("chat.automation.pause") : t("chat.automation.resume")}`}
-            className={cn("pointer-coarse:size-10", !on && "text-muted-foreground")}
-            onClick={toggle}
-          />
-        }
-      >
-        {on ? <Bot /> : <BotOff />}
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  )
+/** O que todo cabeçalho de conversa recebe: o da tela larga e o do celular. */
+export type ThreadHeaderProps = {
+  chat: Chat
+  connector: ChatConnector | undefined
+  onBack: () => void
 }
 
 /**
  * O cabeçalho da conversa: quem é, por qual canal e o que dá para fazer. As ações mais usadas ficam
  * à mão; o resto, no menu. Ações novas entram por `ThreadHeaderExtras` e `ThreadMenuExtras`.
  */
-export const ThreadHeader = memo(function ThreadHeader({
-  chat,
-  connector,
-  singleColumn,
-  onBack,
-}: {
-  chat: Chat
-  connector: ChatConnector | undefined
-  singleColumn: boolean
-  onBack: () => void
-}) {
+export const ThreadHeader = memo(function ThreadHeader({ chat, connector }: ThreadHeaderProps) {
   const { t } = useTranslation()
-  const confirm = useConfirm()
   const navigate = useNavigate()
   const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
   const nameField = useRef<EditableNameHandle>(null)
@@ -110,49 +60,21 @@ export const ThreadHeader = memo(function ThreadHeader({
   })
   const handle = contactHandle(chat, channel)
   const channelName = connector?.name ?? t(`chat.channel.${channel}`)
-  const closed = chat.status === "closed"
   const ready = !chat.partial
 
-  const toggleStatus = useCallback(() => {
-    const next = closed ? "open" : "closed"
-    updateChat(chat.id, { status: next })
-      .then(() => toast.success(next === "closed" ? t("chat.status.closedDone") : t("chat.status.openedDone")))
-      .catch(() => toast.error(t("chat.status.failed")))
-  }, [chat.id, closed, t])
-
-  const remove = useCallback(async () => {
-    const confirmed = await confirm({
-      title: t("chat.remove.title", { name }),
-      description: t("chat.remove.hint"),
-      confirmLabel: t("chat.remove.confirm"),
-      destructive: true,
-      onConfirm: async () => {
-        await deleteChat(chat.id)
-      },
-    })
-    if (confirmed) {
-      toast.success(t("chat.remove.done"))
-      navigate("/chat", { replace: true })
-    }
-  }, [chat.id, confirm, name, navigate, t])
-
-  const statusLabel = closed ? t("chat.status.open") : t("chat.status.close")
+  const onRemoved = useCallback(() => navigate("/chat", { replace: true }), [navigate])
+  const {
+    closed,
+    automationOn,
+    automationLabel,
+    statusLabel,
+    toggleStatus,
+    toggleAutomation,
+    remove,
+  } = useThreadActions(chat, { onRemoved })
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3 md:px-4">
-      {singleColumn ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="-ml-1 shrink-0 pointer-coarse:size-10"
-          aria-label={t("chat.header.back")}
-          onClick={onBack}
-        >
-          <ArrowLeft />
-        </Button>
-      ) : null}
-
       <span className="relative shrink-0">
         <UserAvatar
           size="lg"
@@ -177,7 +99,24 @@ export const ThreadHeader = memo(function ThreadHeader({
         <div className="flex shrink-0 items-center gap-0.5">
           <ThreadHeaderExtras chat={chat} />
 
-          <AutomationButton chat={chat} />
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-pressed={automationOn}
+                  aria-label={`${automationLabel}. ${automationOn ? t("chat.automation.pause") : t("chat.automation.resume")}`}
+                  className={cn("pointer-coarse:size-10", !automationOn && "text-muted-foreground")}
+                  onClick={toggleAutomation}
+                />
+              }
+            >
+              {automationOn ? <Bot /> : <BotOff />}
+            </TooltipTrigger>
+            <TooltipContent>{automationLabel}</TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger

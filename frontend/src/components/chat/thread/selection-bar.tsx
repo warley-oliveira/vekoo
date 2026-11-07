@@ -8,6 +8,8 @@ import { useMotionPreset } from "@/lib/motion"
 import { useMessageSelection } from "@/lib/chat/stores"
 import { getThreadMessages } from "@/lib/chat/thread-store"
 import type { ChatMessage } from "@/lib/chat/types"
+import { cn } from "@/lib/utils"
+import { useThreadContext } from "./thread-context"
 
 /** A barra de quando se escolhe várias mensagens, por cima do cabeçalho. Esc sai. */
 export const SelectionBar = memo(function SelectionBar({
@@ -19,6 +21,7 @@ export const SelectionBar = memo(function SelectionBar({
 }) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
+  const { sheetActions } = useThreadContext()
   const active = useMessageSelection((state) => state.active)
   const count = useMessageSelection((state) => state.ids.size)
   const clear = useMessageSelection((state) => state.clear)
@@ -26,7 +29,8 @@ export const SelectionBar = memo(function SelectionBar({
   useEffect(() => {
     if (!active) return
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") clear()
+      // `isTrusted`: o voltar do celular fecha o diálogo de cima com um Esc sintético, e não é com ela.
+      if (event.key === "Escape" && event.isTrusted) clear()
     }
     document.addEventListener("keydown", onKeyDown)
     return () => document.removeEventListener("keydown", onKeyDown)
@@ -38,7 +42,13 @@ export const SelectionBar = memo(function SelectionBar({
         <motion.div
           key="selection"
           {...preset.fade}
-          className="absolute inset-x-0 top-0 z-10 flex h-16 items-center gap-2 border-b bg-background px-3"
+          className={cn(
+            "absolute inset-x-0 top-0 z-10 flex items-center gap-2 border-b bg-background px-3",
+            // Por cima do cabeçalho do celular, que tem outra altura e a área segura.
+            sheetActions
+              ? "h-[calc(3.5rem+var(--app-safe-top)+1px)] pt-safe landscape:h-[calc(2.75rem+var(--app-safe-top)+1px)]"
+              : "h-16"
+          )}
         >
           <Button
             type="button"
@@ -56,6 +66,7 @@ export const SelectionBar = memo(function SelectionBar({
           <Button
             type="button"
             variant="destructive"
+            className="pointer-coarse:h-10"
             disabled={count === 0}
             onClick={() => {
               const { ids } = useMessageSelection.getState()

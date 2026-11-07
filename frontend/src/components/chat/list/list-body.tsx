@@ -17,6 +17,7 @@ import { resolveInitialChat, type ChatListQuery } from "@/lib/chat/list-query"
 import { useLastChannel, useListFilters, useOpenChatStore } from "@/lib/chat/stores"
 import type { Chat, UnifiedContact } from "@/lib/chat/types"
 import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
+import { useChatVariant } from "../chat-variant"
 import { ChatRow } from "./chat-row"
 import { ChatListSkeleton } from "./row-parts"
 import { UnifiedRow } from "./unified-row"
@@ -54,6 +55,13 @@ function useOpenChat() {
     if (current !== chatId) navigateRef.current(`/chat/${chatId}`)
   }, [])
 }
+
+/**
+ * No celular a lista não tem altura mínima (deitado, com o teclado, sobra pouco), e o fim dela deixa
+ * folga para a última linha não ficar atrás do botão de nova conversa.
+ */
+const MOBILE_LIST_STYLE = { minHeight: 0 }
+const MOBILE_LIST_END = <span aria-hidden className="block h-14" />
 
 function useEmptyState(query: ChatListQuery, onCreate: () => void) {
   const { t } = useTranslation()
@@ -99,6 +107,7 @@ const ChannelChats = memo(function ChannelChats({
   const { byId: people } = useChatPeople()
   const openChat = useOpenChat()
   const empty = useEmptyState(query, onCreate)
+  const mobile = Boolean(useChatVariant())
 
   useEffect(() => {
     useChatSelection.getState().setLoaded(list.items)
@@ -111,7 +120,14 @@ const ChannelChats = memo(function ChannelChats({
       items={list.items}
       getItemKey={(id) => id}
       renderItem={(id) => (
-        <ChatRow chatId={id} connectors={connectors} tags={tags} people={people} onOpen={openChat} />
+        <ChatRow
+          chatId={id}
+          connectors={connectors}
+          tags={tags}
+          people={people}
+          onOpen={openChat}
+          holdToSelect={mobile}
+        />
       )}
       hasMore={list.hasMore}
       loading={list.loading}
@@ -121,7 +137,8 @@ const ChannelChats = memo(function ChannelChats({
       onRetry={list.retry}
       empty={empty}
       skeleton={<ChatListSkeleton />}
-      endLabel={false}
+      endLabel={mobile ? MOBILE_LIST_END : false}
+      style={mobile ? MOBILE_LIST_STYLE : undefined}
     />
   )
 })
@@ -179,6 +196,7 @@ const AllContacts = memo(function AllContacts({
   const { byId: connectors } = useChatConnectors()
   const openChat = useOpenChat()
   const empty = useEmptyState(query, onCreate)
+  const mobile = Boolean(useChatVariant())
 
   useEffect(() => {
     useChatSelection
@@ -208,7 +226,12 @@ const AllContacts = memo(function AllContacts({
       items={list.items}
       getItemKey={(contact) => contact.externalId}
       renderItem={(contact) => (
-        <UnifiedRow contact={contact} connectors={connectors} onOpen={openContact} />
+        <UnifiedRow
+          contact={contact}
+          connectors={connectors}
+          onOpen={openContact}
+          holdToSelect={mobile}
+        />
       )}
       hasMore={list.hasMore}
       loading={list.loading}
@@ -218,7 +241,8 @@ const AllContacts = memo(function AllContacts({
       onRetry={list.retry}
       empty={empty}
       skeleton={<ChatListSkeleton />}
-      endLabel={false}
+      endLabel={mobile ? MOBILE_LIST_END : false}
+      style={mobile ? MOBILE_LIST_STYLE : undefined}
     />
   )
 })

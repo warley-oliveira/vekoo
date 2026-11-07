@@ -1,20 +1,22 @@
-import { lazy, memo, Suspense, useCallback, useLayoutEffect } from "react"
+import { lazy, memo, Suspense, useCallback } from "react"
 import { useNavigate } from "react-router"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { MessagesSquare } from "lucide-react"
 
-import { MOBILE_QUERY, useIsMobile } from "@/hooks/use-is-mobile"
+import { useChatMobile } from "@/hooks/chat-mobile/use-chat-mobile"
 import { useDetailsPanel } from "@/lib/chat/stores"
 import { useDetailsPrefs } from "@/lib/chat-details/panel-store"
 import { useMotionPreset } from "@/lib/motion"
-import { cn } from "@/lib/utils"
 import { ChatDetailsPanel, HAS_DETAILS_PANEL } from "./extension-points"
 import { ListPanel } from "./list/list-panel"
+import { ChatListSkeleton } from "./list/row-parts"
 import { ThreadSkeleton } from "./thread/thread-skeleton"
 
 // A conversa pesa (lista virtual, player, composer) e nem sempre é aberta no primeiro segundo.
 const ChatThread = lazy(() => import("./thread/chat-thread"))
+// Dedo e polegar: só desce para quem está no celular.
+const MobileChatLayout = lazy(() => import("./mobile/mobile-chat-layout"))
 
 function NoChatSelected() {
   const { t } = useTranslation()
@@ -35,11 +37,10 @@ function NoChatSelected() {
 }
 
 /**
- * As colunas: lista, conversa e o painel lateral. Em tablet para cima, lista e conversa ficam lado
- * a lado. No celular é uma coluna só, alternando as duas; a lista continua montada por baixo, para
- * voltar da conversa exatamente onde estava.
+ * As colunas da tela larga: lista, conversa e o painel lateral. A partir do tablet, lista e conversa
+ * ficam lado a lado.
  */
-export const ChatLayout = memo(function ChatLayout({
+const WideChatLayout = memo(function WideChatLayout({
   chatId,
   connected,
 }: {
@@ -47,7 +48,6 @@ export const ChatLayout = memo(function ChatLayout({
   connected: boolean
 }) {
   const navigate = useNavigate()
-  const singleColumn = useIsMobile()
   const detailsOpen = useDetailsPanel((state) => state.open)
   const setDetailsOpen = useDetailsPanel((state) => state.setOpen)
   // O copiloto é o único assunto do painel que não precisa de conversa aberta.
@@ -55,12 +55,6 @@ export const ChatLayout = memo(function ChatLayout({
 
   const closeDetails = useCallback(() => setDetailsOpen(false), [setDetailsOpen])
   const goToList = useCallback(() => navigate("/chat"), [navigate])
-
-  // No celular o painel cobre a conversa: cada conversa abre nela, mesmo que ele tenha ficado aberto
-  // da última vez. Antes de pintar, para não piscar. Só ao abrir: estreitar a janela não fecha nada.
-  useLayoutEffect(() => {
-    if (window.matchMedia(MOBILE_QUERY).matches) setDetailsOpen(false)
-  }, [chatId, setDetailsOpen])
 
   const showDetails = HAS_DETAILS_PANEL && detailsOpen && (Boolean(chatId) || showsCopilot)
 
@@ -79,22 +73,15 @@ export const ChatLayout = memo(function ChatLayout({
       className="@container/chat flex h-full min-h-0 [contain:layout_paint_style]"
       style={{ paddingBottom: "max(var(--app-bottom-nav-total, 0px), var(--kb-inset, 0px))" }}
     >
-      <aside
-        className={cn(
-          "min-h-0 w-full shrink-0 border-r md:w-[20rem] lg:w-[22.5rem]",
-          singleColumn && chatId && "hidden"
-        )}
-      >
+      <aside className="min-h-0 w-full shrink-0 border-r md:w-[20rem] lg:w-[22.5rem]">
         {/* Com uma conversa aberta, quem avisa da conexão é ela: duas faixas iguais só fariam barulho. */}
         <ListPanel connected={connected || Boolean(chatId)} />
       </aside>
 
-      <section
-        className={cn("min-h-0 min-w-0 flex-1 bg-background", singleColumn && !chatId && "hidden")}
-      >
+      <section className="min-h-0 min-w-0 flex-1 bg-background">
         {chatId ? (
           <Suspense fallback={<ThreadSkeleton withHeader />}>
-            <ChatThread chatId={chatId} singleColumn={singleColumn} onBack={goToList} />
+            <ChatThread chatId={chatId} onBack={goToList} />
           </Suspense>
         ) : (
           <NoChatSelected />
@@ -108,7 +95,7 @@ export const ChatLayout = memo(function ChatLayout({
           <motion.aside
             key="details"
             {...panelMotion}
-            className="min-h-0 w-full shrink-0 border-l bg-background max-md:absolute max-md:inset-0 max-md:z-20 md:w-[22rem] @max-[62rem]/chat:absolute @max-[62rem]/chat:inset-y-0 @max-[62rem]/chat:right-0 @max-[62rem]/chat:z-20 @max-[62rem]/chat:shadow-lg"
+            className="min-h-0 w-full shrink-0 border-l bg-background md:w-[22rem] @max-[62rem]/chat:absolute @max-[62rem]/chat:inset-y-0 @max-[62rem]/chat:right-0 @max-[62rem]/chat:z-20 @max-[62rem]/chat:shadow-lg"
           >
             <ChatDetailsPanel chatId={chatId} onClose={closeDetails} />
           </motion.aside>
@@ -116,4 +103,25 @@ export const ChatLayout = memo(function ChatLayout({
       </AnimatePresence>
     </div>
   )
+})
+
+/** Tela larga ou celular. Cruzar o corte remonta a tela: o estado mora nos stores e sobrevive. */
+export const ChatLayout = memo(function ChatLayout({
+  chatId,
+  connected,
+}: {
+  chatId: string | null
+  connected: boolean
+}) {
+  const mobile = useChatMobile()
+
+  if (mobile) {
+    return (
+      <Suspense fallback={<ChatListSkeleton />}>
+        <MobileChatLayout chatId={chatId} connected={connected} />
+      </Suspense>
+    )
+  }
+
+  return <WideChatLayout chatId={chatId} connected={connected} />
 })

@@ -31,6 +31,7 @@ import type { ChatMessage } from "@/lib/chat/types"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
 import { MessageRow } from "./message-row"
+import { useThreadContext } from "./thread-context"
 import { MessagesSkeleton } from "./thread-skeleton"
 
 /**
@@ -122,6 +123,26 @@ const LIST_COMPONENTS: Components<ThreadRow, ListContext> = {
   Footer: BottomEdge,
 }
 
+/**
+ * No celular a área do histórico muda de altura o tempo todo: o teclado, o composer crescendo, a
+ * resposta citada. A referência é a borda de baixo: o que estava colado no composer continua colado,
+ * e o que some é o de cima. A conta roda antes de pintar, então nada salta na tela.
+ */
+function useBottomAnchor(scroller: HTMLElement | null) {
+  useEffect(() => {
+    if (!scroller) return
+
+    let height = scroller.clientHeight
+    const observer = new ResizeObserver(() => {
+      const next = scroller.clientHeight
+      if (next !== height) scroller.scrollTop += height - next
+      height = next
+    })
+    observer.observe(scroller)
+    return () => observer.disconnect()
+  }, [scroller])
+}
+
 /** A data do que está no alto, enquanto rola: situa quem desce por um histórico longo. */
 const FloatingDay = memo(function FloatingDay({ day }: { day: number }) {
   const label = useDayLabel(day)
@@ -162,6 +183,9 @@ export const MessageList = memo(function MessageList({
   const language = useLanguage()
   const reduced = useReducedMotion()
   const preset = useMotionPreset()
+  const { sheetActions } = useThreadContext()
+  const [scroller, setScroller] = useState<HTMLElement | null>(null)
+  useBottomAnchor(sheetActions ? scroller : null)
 
   const status = useThreadStore((state) => state.threads[threadKey]?.status ?? "loading")
   const error = useThreadStore((state) => state.threads[threadKey]?.error)
@@ -329,14 +353,14 @@ export const MessageList = memo(function MessageList({
   // No toque, as ações de uma bolha ficam à mostra até tocar em outro lugar.
   const activeMessageId = useThreadUi((state) => state.activeMessageId)
   useEffect(() => {
-    if (!activeMessageId) return
+    if (!activeMessageId || sheetActions) return
     const dismiss = () => useThreadUi.setState({ activeMessageId: null })
     const timer = window.setTimeout(() => document.addEventListener("pointerdown", dismiss), 0)
     return () => {
       window.clearTimeout(timer)
       document.removeEventListener("pointerdown", dismiss)
     }
-  }, [activeMessageId])
+  }, [activeMessageId, sheetActions])
 
   if (status === "loading" && rows.length === 0) return <MessagesSkeleton />
 
@@ -363,6 +387,7 @@ export const MessageList = memo(function MessageList({
       <Virtuoso<ThreadRow, ListContext>
         key={threadKey}
         ref={virtuoso}
+        scrollerRef={sheetActions ? (node) => setScroller(node as HTMLElement | null) : undefined}
         onScroll={onScroll}
         aria-label={t("chat.thread.history")}
         className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"

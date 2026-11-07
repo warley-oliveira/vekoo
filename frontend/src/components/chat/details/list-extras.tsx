@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useEffect, useState } from "react"
+import { memo } from "react"
 import { useTranslation } from "react-i18next"
 import { CheckSquare, MoreHorizontal, Settings2, Sparkles } from "lucide-react"
 
@@ -9,11 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { disconnectCopilot } from "@/lib/chat-details/copilot-store"
+import { useChatPreferencesPanel, useListCleanup } from "@/hooks/chat-details/use-list-extras"
 import { toggleCopilot } from "@/lib/chat-details/panel-store"
 import { useChatSelection } from "@/lib/chat-details/selection"
-
-const ChatPreferences = lazy(() => import("./chat-preferences"))
 
 /**
  * Copiloto à mão, e o resto num menu: escolher conversas e preferências são coisas de vez em quando.
@@ -22,16 +20,8 @@ const ChatPreferences = lazy(() => import("./chat-preferences"))
 export const ListActions = memo(function ListActions() {
   const { t } = useTranslation()
   const enterSelection = useChatSelection((state) => state.enter)
-  const [preferencesOpen, setPreferencesOpen] = useState(false)
-  const [preferencesEverOpen, setPreferencesEverOpen] = useState(false)
-
-  useEffect(
-    () => () => {
-      disconnectCopilot()
-      useChatSelection.getState().exit()
-    },
-    []
-  )
+  const preferences = useChatPreferencesPanel()
+  useListCleanup()
 
   return (
     <>
@@ -67,23 +57,14 @@ export const ListActions = memo(function ListActions() {
             <CheckSquare />
             {t("chatDetails.list.select")}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              setPreferencesEverOpen(true)
-              setPreferencesOpen(true)
-            }}
-          >
+          <DropdownMenuItem onClick={preferences.open}>
             <Settings2 />
             {t("chatDetails.list.preferences")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {preferencesEverOpen ? (
-        <Suspense fallback={null}>
-          <ChatPreferences open={preferencesOpen} onOpenChange={setPreferencesOpen} />
-        </Suspense>
-      ) : null}
+      {preferences.panel}
     </>
   )
 })

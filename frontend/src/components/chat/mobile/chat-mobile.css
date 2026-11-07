@@ -1,0 +1,55 @@
+/*
+ * O que o chat do celular precisa de CSS e não dá para dizer com utilitário. Desce só com
+ * `mobile-chat-layout.tsx`: em tela larga, este arquivo nem chega.
+ */
+
+/*
+ * Rolar na vertical fica com o navegador; o eixo horizontal fica livre para os gestos (voltar pela
+ * borda, deslizar a bolha para responder). Precisa valer em todo descendente até a área que rola:
+ * o navegador só olha do elemento tocado até o scroller mais próximo.
+ */
+.chat-pane,
+.chat-pane * {
+  touch-action: pan-y pinch-zoom;
+}
+
+/* O que rola de lado (abas de canal, miniaturas) continua rolando de lado. */
+.chat-pane .overflow-x-auto,
+.chat-pane .overflow-x-auto * {
+  touch-action: auto;
+}
+
+/* O dedo do botão de gravar é dele: nem rola, nem dá zoom. */
+.chat-pane [data-record-button] {
+  touch-action: none;
+}
+
+/* A conversa e o painel não puxam a página nem disparam "puxar para atualizar". */
+.chat-pane [data-virtuoso-scroller],
+.chat-list [data-virtuoso-scroller] {
+  overscroll-behavior: contain;
+}
+
+/*
+ * Alvo de toque de 44 px em tudo que é botão do chat. O kit dá 40 px com o `::after` invisível, em
+ * `index.css`, e é esta mesma área que cresce aqui: nada muda de tamanho na tela.
+ */
+@media (pointer: coarse) {
+  .chat-touch button[data-slot]:not([data-slot="switch"], [data-slot="tabs-trigger"])::after {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .chat-touch [data-slot="tabs-trigger"] {
+    min-height: 2.75rem;
+  }
+}
+
+/*
+ * Folha com campo de texto, no iOS: o teclado cobre a tela sem mexer no layout, e a folha ficaria
+ * atrás dele. No Android `--kb-inset` é zero, porque lá a tela encolhe de verdade.
+ */
+html[data-chat-mobile][data-keyboard="open"] [data-slot="sheet-content"][data-side="bottom"] {
+  bottom: var(--kb-inset, 0px);
+  max-height: calc(var(--app-vh, 100dvh) * 0.9);
+}

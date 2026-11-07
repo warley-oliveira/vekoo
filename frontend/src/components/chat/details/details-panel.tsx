@@ -1,10 +1,12 @@
 import { lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
-import { Sparkles, UserRound, X } from "lucide-react"
+import { ArrowLeft, Sparkles, UserRound, X } from "lucide-react"
 
 import { SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useDetailsPrefs, type DetailsTab } from "@/lib/chat-details/panel-store"
+import { cn } from "@/lib/utils"
+import { useChatVariant } from "../chat-variant"
 import { ContactDetails } from "./contact-details"
 import { DetailsSkeleton } from "./details-skeleton"
 
@@ -23,6 +25,7 @@ export default function DetailsPanel({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const mobile = Boolean(useChatVariant())
   const storedTab = useDetailsPrefs((state) => state.tab)
   const setTab = useDetailsPrefs((state) => state.setTab)
   const tab: DetailsTab = chatId ? storedTab : "copilot"
@@ -34,7 +37,25 @@ export default function DetailsPanel({
       // Por cima da conversa, o painel ocupa também a folga que a tela reserva para a barra e o teclado.
       className="flex h-full min-h-0 flex-col bg-background @max-[62rem]/chat:pb-[max(var(--app-bottom-nav-total,0px),var(--kb-inset,0px))]"
     >
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3">
+      <header
+        className={cn(
+          "flex shrink-0 items-center gap-2 border-b",
+          // No celular é uma tela a mais, com a mesma seta e o mesmo gesto de voltar da conversa.
+          mobile ? "h-14 pr-3 pl-1 landscape:h-11" : "h-16 px-3"
+        )}
+      >
+        {mobile ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t("chatDetails.close")}
+            className="size-11 shrink-0 [&_svg]:size-5"
+            onClick={onClose}
+          >
+            <ArrowLeft />
+          </Button>
+        ) : null}
         {chatId ? (
           <SegmentedControl<DetailsTab>
             aria-label={t("chatDetails.tabsLabel")}
@@ -53,17 +74,19 @@ export default function DetailsPanel({
             <span className="truncate">{t("chatDetails.tabs.copilot")}</span>
           </h2>
         )}
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={t("chatDetails.close")}
-          title={t("chatDetails.close")}
-          className="shrink-0 pointer-coarse:size-10"
-          onClick={onClose}
-        >
-          <X />
-        </Button>
+        {mobile ? null : (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t("chatDetails.close")}
+            title={t("chatDetails.close")}
+            className="shrink-0 pointer-coarse:size-10"
+            onClick={onClose}
+          >
+            <X />
+          </Button>
+        )}
       </header>
 
       {tab === "contact" && chatId ? (

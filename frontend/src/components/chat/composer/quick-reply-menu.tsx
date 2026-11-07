@@ -2,7 +2,6 @@ import {
   memo,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
   type KeyboardEvent,
@@ -10,14 +9,13 @@ import {
 } from "react"
 import { useTranslation } from "react-i18next"
 import { Paperclip } from "lucide-react"
-import { useSWRConfig } from "swr"
 
 import { QuickReplyPreview } from "@/components/content/quick-reply-preview"
 import { InlineError } from "@/components/shared"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Kbd } from "@/components/ui/kbd"
-import { ATTACHMENT_LIBRARY_KEY, useAttachmentLibrary } from "@/hooks/content/use-attachments"
-import { QUICK_REPLIES_KEY, useQuickReplies } from "@/hooks/content/use-quick-replies"
+import { useQuickReplyItems } from "@/hooks/chat/use-quick-reply-items"
+import { useAttachmentLibrary } from "@/hooks/content/use-attachments"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { meaningfulContent } from "@/lib/chat/message-rules"
 import {
@@ -26,13 +24,7 @@ import {
   type QuickReplyContext,
 } from "@/lib/content/quick-reply-content"
 import type { QuickReply } from "@/lib/content/types"
-import { matchesSearch } from "@/lib/search-text"
 import { cn } from "@/lib/utils"
-
-/** A lista rola: o limite só poupa desenho numa organização com centenas de mensagens. */
-const MAX_ITEMS = 50
-
-const NO_REPLIES: QuickReply[] = []
 
 export type QuickReplyMenuHandle = {
   /** O composer passa as teclas para cá. `true` quer dizer que o menu cuidou. */
@@ -65,31 +57,18 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
   query,
   context,
   onPick,
+  className,
   ref,
 }: {
   query: string
   context: QuickReplyContext
   onPick: (reply: QuickReply) => void
+  className?: string
   ref?: Ref<QuickReplyMenuHandle>
 }) {
   const { t } = useTranslation()
   const isTouch = useIsTouch()
-  const { quickReplies = NO_REPLIES, isLoading, error, reload } = useQuickReplies()
-
-  // Abriu: mostra o que já tem, e confere por trás se alguém mudou alguma coisa.
-  const { mutate } = useSWRConfig()
-  useEffect(() => {
-    void mutate(QUICK_REPLIES_KEY)
-    void mutate(ATTACHMENT_LIBRARY_KEY)
-  }, [mutate])
-
-  const items = useMemo(
-    () =>
-      quickReplies
-        .filter((reply) => !query || matchesSearch(`${reply.trigger} ${reply.name}`, query))
-        .slice(0, MAX_ITEMS),
-    [query, quickReplies]
-  )
+  const { items, total, isLoading, error, reload } = useQuickReplyItems(query)
 
   const [highlight, setHighlight] = useState(0)
   const [lastQuery, setLastQuery] = useState(query)
@@ -134,7 +113,10 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
     <div
       role="listbox"
       aria-label={t("chat.quickReplies.title")}
-      className="absolute inset-x-0 bottom-full z-20 mb-2 flex max-h-[min(24rem,60dvh)] overflow-hidden rounded-xl border bg-popover shadow-md"
+      className={cn(
+        "absolute inset-x-0 bottom-full z-20 mb-2 flex max-h-[min(24rem,60dvh)] overflow-hidden rounded-xl border bg-popover shadow-md",
+        className
+      )}
     >
       <div className="flex min-w-0 flex-1 flex-col">
         <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto p-1">
@@ -148,7 +130,7 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
             <InlineError onRetry={() => void reload()} />
           ) : items.length === 0 ? (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-              {quickReplies.length === 0 ? t("chat.quickReplies.empty") : t("chat.quickReplies.noMatch")}
+              {total === 0 ? t("chat.quickReplies.empty") : t("chat.quickReplies.noMatch")}
             </p>
           ) : (
             items.map((reply, index) => {

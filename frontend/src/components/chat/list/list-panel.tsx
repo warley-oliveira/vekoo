@@ -1,11 +1,12 @@
-import { lazy, memo, Suspense, useEffect, useState } from "react"
+import { lazy, memo, Suspense, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ListFilter, Plus, WifiOff } from "lucide-react"
 
 import { SearchInput, SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useOfflineNotice } from "@/hooks/chat/use-offline-notice"
 import { toQueryConditions } from "@/lib/chat/filters"
-import type { StatusFilter } from "@/lib/chat/list-query"
+import { STATUS_OPTIONS, type StatusFilter } from "@/lib/chat/list-query"
 import { useListFilters } from "@/lib/chat/stores"
 import { cn } from "@/lib/utils"
 import { ListHeaderExtras, ListSelection } from "../extension-points"
@@ -17,26 +18,6 @@ import { ListBody } from "./list-body"
 // formulário inteiro. Só descem quando alguém pede.
 const FilterPanel = lazy(() => import("./filter-panel"))
 const NewChatDialog = lazy(() => import("./new-chat-dialog"))
-
-/** Só avisa depois desse tempo: uma reconexão rápida não merece aparecer. */
-const OFFLINE_NOTICE_DELAY_MS = 4_000
-
-function useOfflineNotice(connected: boolean): boolean {
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    if (connected) {
-      setShow(false)
-      return
-    }
-    const timer = setTimeout(() => setShow(true), OFFLINE_NOTICE_DELAY_MS)
-    return () => clearTimeout(timer)
-  }, [connected])
-
-  return show
-}
-
-const STATUS_OPTIONS: StatusFilter[] = ["all", "open", "closed"]
 
 export const ListPanel = memo(function ListPanel({ connected }: { connected: boolean }) {
   const { t } = useTranslation()

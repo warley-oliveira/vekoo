@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { memo, Suspense, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
   CircleCheck,
@@ -15,7 +15,6 @@ import { toast } from "sonner"
 import { ActionsMenu, BulkActionsBar, useConfirm, type RowAction } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useIsMobile } from "@/hooks/use-is-mobile"
 import { ApiError } from "@/lib/api"
 import { applyBulkChange, type BulkChange } from "@/lib/chat-details/bulk"
 import { useChatSelection } from "@/lib/chat-details/selection"
@@ -23,6 +22,7 @@ import type { BulkResult } from "@/lib/chat-details/types"
 import { useListFilters } from "@/lib/chat/stores"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
+import { useChatVariant } from "../chat-variant"
 import { BulkAssignDialog, BulkTagsDialog } from "./bulk-dialogs"
 
 type OpenDialog = "addTags" | "removeTags" | "assign" | null
@@ -35,7 +35,7 @@ type OpenDialog = "addTags" | "removeTags" | "assign" | null
 export const ListSelectionStrip = memo(function ListSelectionStrip() {
   const { t } = useTranslation()
   const language = useLanguage()
-  const isMobile = useIsMobile()
+  const variant = useChatVariant()
   const confirm = useConfirm()
   const active = useChatSelection((state) => state.active)
   const count = useChatSelection((state) => state.ids.size)
@@ -161,38 +161,50 @@ export const ListSelectionStrip = memo(function ListSelectionStrip() {
 
   return (
     <>
-      <div className="flex shrink-0 items-center gap-2 border-b bg-muted/40 px-3 py-1.5 text-[0.8125rem]">
-        <label className="flex min-h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 pl-2.5 pointer-coarse:min-h-10">
-          <Checkbox
-            checked={allChecked}
-            disabled={loadedCount === 0}
-            onCheckedChange={(checked) => (checked ? selectLoaded() : clear())}
+      {variant ? (
+        <Suspense fallback={null}>
+          <variant.SelectionChrome
+            count={count}
+            loadedCount={loadedCount}
+            primary={primary}
+            secondary={secondary}
+            onExit={exit}
+            onClear={clear}
+            onSelectLoaded={selectLoaded}
           />
-          <span className="truncate">
-            {count > 0
-              ? t("chatDetails.bulk.selected", amount)
-              : t("chatDetails.bulk.selectLoaded", {
-                  count: loadedCount,
-                  formatted: formatNumber(loadedCount, language),
-                })}
-          </span>
-        </label>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="shrink-0 pointer-coarse:h-10"
-          onClick={exit}
-        >
-          <X />
-          {t("chatDetails.bulk.exit")}
-        </Button>
-      </div>
+        </Suspense>
+      ) : (
+        <>
+          <div className="flex shrink-0 items-center gap-2 border-b bg-muted/40 px-3 py-1.5 text-[0.8125rem]">
+            <label className="flex min-h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 pl-2.5 pointer-coarse:min-h-10">
+              <Checkbox
+                checked={allChecked}
+                disabled={loadedCount === 0}
+                onCheckedChange={(checked) => (checked ? selectLoaded() : clear())}
+              />
+              <span className="truncate">
+                {count > 0
+                  ? t("chatDetails.bulk.selected", amount)
+                  : t("chatDetails.bulk.selectLoaded", {
+                      count: loadedCount,
+                      formatted: formatNumber(loadedCount, language),
+                    })}
+              </span>
+            </label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="shrink-0 pointer-coarse:h-10"
+              onClick={exit}
+            >
+              <X />
+              {t("chatDetails.bulk.exit")}
+            </Button>
+          </div>
 
-      <BulkActionsBar count={count} onClear={clear}>
-        {isMobile
-          ? null
-          : primary.map((action) => (
+          <BulkActionsBar count={count} onClear={clear}>
+            {primary.map((action) => (
               <Button
                 key={action.label}
                 type="button"
@@ -204,11 +216,10 @@ export const ListSelectionStrip = memo(function ListSelectionStrip() {
                 {action.label}
               </Button>
             ))}
-        <ActionsMenu
-          label={t("chatDetails.bulk.actions.more")}
-          actions={isMobile ? [...primary, ...secondary] : secondary}
-        />
-      </BulkActionsBar>
+            <ActionsMenu label={t("chatDetails.bulk.actions.more")} actions={secondary} />
+          </BulkActionsBar>
+        </>
+      )}
 
       {dialog === "addTags" || dialog === "removeTags" ? (
         <BulkTagsDialog

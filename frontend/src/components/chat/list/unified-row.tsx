@@ -12,6 +12,7 @@ import {
 import { useOpenChatStore } from "@/lib/chat/stores"
 import type { UnifiedContact } from "@/lib/chat/types"
 import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
+import { haptic } from "@/lib/chat-mobile/haptics"
 import { cn } from "@/lib/utils"
 import { ChannelBadge, ChannelIcon } from "../channel-icon"
 import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
@@ -20,13 +21,20 @@ export type UnifiedRowProps = {
   contact: UnifiedContact
   connectors: Map<string, ChatConnector>
   onOpen: (contact: UnifiedContact) => void
+  /** No celular, segurar a linha entra na escolha de conversas, já com esta marcada. */
+  holdToSelect?: boolean
 }
 
 /**
  * Um contato, com todas as suas conversas: uma marca por canal. A conversa de um canal que não
  * casou com o filtro fica em cinza, para mostrar que existe sem parecer resultado.
  */
-export const UnifiedRow = memo(function UnifiedRow({ contact, connectors, onOpen }: UnifiedRowProps) {
+export const UnifiedRow = memo(function UnifiedRow({
+  contact,
+  connectors,
+  onOpen,
+  holdToSelect = false,
+}: UnifiedRowProps) {
   const { t } = useTranslation()
   const selected = useOpenChatStore((state) => state.externalId === contact.externalId)
   const selecting = useChatSelection((state) => state.active)
@@ -55,6 +63,15 @@ export const UnifiedRow = memo(function UnifiedRow({ contact, connectors, onOpen
       href={main ? `/chat/${main.chatId}` : "/chat"}
       selected={selected}
       onOpen={() => onOpen(contact)}
+      onHold={
+        holdToSelect
+          ? () => {
+              haptic()
+              useChatSelection.getState().enter()
+              useChatSelection.getState().toggle(chatIds)
+            }
+          : undefined
+      }
       selection={
         selecting
           ? {

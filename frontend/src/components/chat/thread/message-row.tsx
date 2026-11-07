@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useRowEngaged } from "@/hooks/chat/use-row-engaged"
 import { useLongPress } from "@/hooks/use-long-press"
+import { haptic } from "@/lib/chat-mobile/haptics"
 import { useMotionPreset } from "@/lib/motion"
 import { bubbleText, meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import { useMessageSelection, useThreadUi } from "@/lib/chat/stores"
@@ -169,12 +170,27 @@ function BubbleContent({ message, own }: { message: ChatMessage; own: boolean })
 }
 
 /** Segurar a bolha, no toque, mostra as ações. Uma de cada vez: tocar fora esconde. */
-function useTouchActions(id: string) {
+function useTouchActions(id: string, inSheet: boolean) {
   const active = useThreadUi((state) => state.activeMessageId === id)
-  const show = useCallback(() => useThreadUi.setState({ activeMessageId: id }), [id])
+  const show = useCallback(() => {
+    if (inSheet) haptic()
+    useThreadUi.setState({ activeMessageId: id })
+  }, [id, inSheet])
   const { handlers, didFire } = useLongPress(show, { delay: 450 })
   return { active, handlers, didFire }
 }
+
+/** Soltar logo depois de segurar ainda gera um clique: ele não pode abrir a foto ou tocar o áudio. */
+function swallowClickAfterHold(didFire: () => boolean) {
+  return (event: MouseEvent) => {
+    if (!didFire()) return
+    event.preventDefault()
+    event.stopPropagation()
+  }
+}
+
+/** No celular a bolha é um alvo de segurar: nem seleção de texto, nem o menu do sistema por cima. */
+const HOLD_TARGET = "select-none [-webkit-touch-callout:none]"
 
 function SelectionCheckbox({ id, disabled }: { id: string; disabled?: boolean }) {
   const { t } = useTranslation()
@@ -215,7 +231,7 @@ const MessageBubble = memo(function MessageBubble({
 }) {
   const { t } = useTranslation()
   const { message, startsGroup, endsGroup } = row
-  const { chatId, threadKey, contactName, react, retry, scrollToMessage, renderOrigin } =
+  const { chatId, threadKey, contactName, sheetActions, react, retry, scrollToMessage, renderOrigin } =
     useThreadContext()
   const own = message.role === "assistant"
 
@@ -229,9 +245,9 @@ const MessageBubble = memo(function MessageBubble({
   )
 
   const { selecting, selected, onClickCapture } = useRowSelection(message.id)
-  const touch = useTouchActions(message.id)
+  const touch = useTouchActions(message.id, sheetActions)
   const { engaged, engage } = useRowEngaged()
-  const showActions = engaged || touch.active
+  const showActions = !sheetActions && (engaged || touch.active)
   const flash = useThreadUi((state) => state.flashId === message.id)
 
   const kind = messageKind(message)
@@ -252,17 +268,29 @@ const MessageBubble = memo(function MessageBubble({
         startsGroup ? "pt-3" : "pt-0.5",
         hasReactions && "pb-2.5",
         selecting && "cursor-pointer",
-        selected && "bg-accent/60"
+        selected && "bg-accent/60",
+        sheetActions && HOLD_TARGET,
+        sheetActions && touch.active && "bg-accent/60"
       )}
     >
       {selecting ? <SelectionCheckbox id={message.id} /> : null}
       <div
         className={cn("flex min-w-0 flex-1 items-end gap-1", own ? "justify-end" : "justify-start")}
-        onClickCapture={onClickCapture}
-        onPointerEnter={engage}
-        {...(selecting ? {} : touch.handlers)}
+        onClickCapture={
+          onClickCapture ?? (sheetActions ? swallowClickAfterHold(touch.didFire) : undefined)
+        }
+        onPointerEnter={sheetActions ? undefined : engage}
+        {...(selecting || (sheetActions && !chatId) ? {} : touch.handlers)}
       >
-        {!showActions && chatId && !selecting ? <ActionsSentinel onFocus={engage} /> : null}
+        {!showActions && chatId && !selecting ? (
+          sheetActions ? (
+            <ActionsSentinel
+              onClick={() => useThreadUi.setState({ activeMessageId: message.id })}
+            />
+          ) : (
+            <ActionsSentinel onFocus={engage} />
+          )
+        ) : null}
         {own && showActions ? <MessageActions message={message} own visible={touch.active} /> : null}
 
         <div
@@ -368,31 +396,42 @@ const MediaGroupRow = memo(function MediaGroupRow({
 }: {
   row: Extract<ThreadRow, { kind: "media-group" }>
 }) {
-  const { threadKey, renderOrigin } = useThreadContext()
+  const { threadKey, renderOrigin, chatId, sheetActions } = useThreadContext()
   const first = row.messages[0]
   const last = row.messages[row.messages.length - 1]
   const own = first.role === "assistant"
   const selecting = useMessageSelection((state) => state.active)
   const { engaged, engage } = useRowEngaged()
+  const touch = useTouchActions(last.id, sheetActions)
+  const holdable = sheetActions && Boolean(chatId) && !selecting
 
   return (
     <FreshEntry
       createdAt={last.createdAt}
       own={own}
+      data-message-id={sheetActions ? last.id : undefined}
       className={cn(
         "group/message flex items-end gap-1 px-3 md:px-5",
         own ? "justify-end" : "justify-start",
-        row.startsGroup ? "pt-3" : "pt-0.5"
+        row.startsGroup ? "pt-3" : "pt-0.5",
+        sheetActions && HOLD_TARGET,
+        sheetActions && touch.active && "bg-accent/60"
       )}
-      onPointerEnter={engage}
+      onPointerEnter={sheetActions ? undefined : engage}
     >
-      {!engaged && !selecting ? <ActionsSentinel onFocus={engage} /> : null}
-      {own && engaged ? <MessageActions message={last} own visible={false} /> : null}
+      {holdable ? (
+        <ActionsSentinel onClick={() => useThreadUi.setState({ activeMessageId: last.id })} />
+      ) : !sheetActions && !engaged && !selecting ? (
+        <ActionsSentinel onFocus={engage} />
+      ) : null}
+      {!sheetActions && own && engaged ? <MessageActions message={last} own visible={false} /> : null}
       <div
         className={cn(
           "flex w-[min(20rem,82%)] flex-col",
           own ? "items-end" : "items-start"
         )}
+        onClickCapture={holdable ? swallowClickAfterHold(touch.didFire) : undefined}
+        {...(holdable ? touch.handlers : {})}
       >
         {renderOrigin ? <div className="mb-0.5 px-1">{renderOrigin(first)}</div> : null}
         {own && row.startsGroup && first.senderName ? (
@@ -408,7 +447,9 @@ const MediaGroupRow = memo(function MediaGroupRow({
         </div>
         {row.notice ? <SendNotice text={row.notice} /> : null}
       </div>
-      {!own && engaged ? <MessageActions message={last} own={false} visible={false} /> : null}
+      {!sheetActions && !own && engaged ? (
+        <MessageActions message={last} own={false} visible={false} />
+      ) : null}
     </FreshEntry>
   )
 })
