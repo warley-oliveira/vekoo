@@ -171,6 +171,16 @@ RSpec.describe "Extrações de estabelecimentos", type: :request do
       expect(json["extractions"].map { |item| item["searchQuery"] }).to eq([ "pronta" ])
     end
 
+    it "filtra por mais de uma situação" do
+      extraction_of(:completed, search_query: "pronta", created_at: 1.hour.ago)
+      extraction_of(search_query: "na fila")
+      extraction_of(status: "running", search_query: "buscando", created_at: 2.hours.ago)
+
+      get "/place-extractions", params: { status: "completed,running" }, headers: headers
+
+      expect(json["extractions"].map { |item| item["searchQuery"] }).to eq([ "pronta", "buscando" ])
+    end
+
     it "busca pelo texto, tratando o texto como texto" do
       extraction_of(search_query: "padaria (centro)")
       extraction_of(search_query: "oficina")

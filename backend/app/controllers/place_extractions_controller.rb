@@ -9,7 +9,8 @@ class PlaceExtractionsController < PlatformController
 
   def index
     scope = current_organization.place_extractions.without_results.recent
-    scope = scope.where(status: params[:status].to_s) if params[:status].present?
+    statuses = params[:status].to_s.split(",").map(&:strip).compact_blank
+    scope = scope.where(:status.in => statuses) if statuses.any?
     scope = scope.where(search_query: /#{Regexp.escape(params[:search].to_s)}/i) if params[:search].present?
 
     records, meta = paginate(scope)

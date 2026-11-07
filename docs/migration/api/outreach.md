@@ -1442,7 +1442,7 @@ Sem a chave do Apify, `422` (WebMock):
 
 ### `GET /place-extractions`
 
-Da mais nova para a mais antiga, sem os resultados. Parâmetros: `status`, `search`, `page` e `perPage`.
+Da mais nova para a mais antiga, sem os resultados. Parâmetros: `status` (um ou vários, separados por vírgula), `search`, `page` e `perPage`.
 
 Resposta `200`:
 

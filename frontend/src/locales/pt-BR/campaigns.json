@@ -1,0 +1,481 @@
+{
+  "campaigns": {
+    "status": {
+      "draft": "Rascunho",
+      "scheduled": "Agendada",
+      "running": "Em andamento",
+      "paused": "Pausada",
+      "completed": "Concluída",
+      "cancelled": "Cancelada"
+    },
+    "recipientStatus": {
+      "pending": "Na fila",
+      "sending": "Enviando",
+      "sent": "Enviada",
+      "delivered": "Entregue",
+      "read": "Lida",
+      "failed": "Não chegou",
+      "skipped": "Ficou de fora",
+      "replied": "Respondeu"
+    },
+    "area": {
+      "label": "Partes de campanhas",
+      "campaigns": "Campanhas",
+      "places": "Estabelecimentos"
+    },
+    "when": {
+      "today": "hoje às {{time}}",
+      "tomorrow": "amanhã às {{time}}",
+      "weekday": "{{weekday}} às {{time}}",
+      "date": "{{date}} às {{time}}"
+    },
+    "channel": {
+      "whatsapp": "WhatsApp",
+      "official": "WhatsApp oficial",
+      "one": "{{kind}} · {{name}}",
+      "many": "{{kind}} · {{name}} +{{others}}"
+    },
+    "bar": {
+      "label": "{{sent}} enviadas, {{delivered}} entregues, {{read}} lidas e {{failed}} que não chegaram, de {{total}} mensagens"
+    },
+    "numbers": {
+      "sent": "Enviadas",
+      "delivered": "Entregues",
+      "read": "Lidas",
+      "replied": "Responderam",
+      "failed": "Não chegaram",
+      "pending": "Na fila",
+      "skipped": "Ficaram de fora",
+      "ofList": "{{share}} da lista",
+      "ofSent": "{{share}} das enviadas",
+      "ofDelivered": "{{share}} das entregues"
+    },
+    "actions": {
+      "view": "Ver andamento",
+      "continueEditing": "Continuar editando",
+      "pause": "Pausar",
+      "resume": "Retomar",
+      "cancel": "Cancelar campanha",
+      "delete": "Excluir rascunho",
+      "duplicate": "Duplicar",
+      "select": "Selecionar",
+      "seeChannels": "Ver canais"
+    },
+    "confirm": {
+      "keep": "Manter",
+      "cancel": {
+        "title": "Cancelar “{{name}}”?",
+        "description": "O que ainda não saiu não sai mais, e isso não tem volta. O que já saiu continua valendo."
+      },
+      "cancelScheduled": {
+        "title": "Cancelar o agendamento de “{{name}}”?",
+        "description": "A campanha não será enviada, e isso não tem volta. Se quiser enviar depois, é só duplicar."
+      },
+      "delete": {
+        "title": "Excluir “{{name}}”?",
+        "description": "O rascunho, os contatos e o histórico saem juntos, e isso não tem volta."
+      }
+    },
+    "feedback": {
+      "paused": "“{{name}}” pausada",
+      "resumed": "“{{name}}” retomada",
+      "cancelled": "“{{name}}” cancelada",
+      "deleted": "“{{name}}” excluída",
+      "pauseFailed": "Não deu para pausar. Tente de novo.",
+      "resumeFailed": "Não deu para retomar. Tente de novo."
+    },
+    "bulk": {
+      "actions": {
+        "pause": "Pausar ({{count}})",
+        "resume": "Retomar ({{count}})",
+        "cancel": "Cancelar ({{count}})",
+        "delete": "Excluir ({{count}})"
+      },
+      "done": {
+        "pause_one": "Campanha pausada",
+        "pause_other": "{{count}} campanhas pausadas",
+        "resume_one": "Campanha retomada",
+        "resume_other": "{{count}} campanhas retomadas",
+        "cancel_one": "Campanha cancelada",
+        "cancel_other": "{{count}} campanhas canceladas",
+        "delete_one": "Rascunho excluído",
+        "delete_other": "{{count}} rascunhos excluídos"
+      },
+      "partial": "{{done}} de {{count}} deram certo",
+      "confirm": {
+        "cancel": {
+          "title_one": "Cancelar esta campanha?",
+          "title_other": "Cancelar {{count}} campanhas?",
+          "description": "O que ainda não saiu não sai mais, e isso não tem volta.",
+          "confirm_one": "Cancelar campanha",
+          "confirm_other": "Cancelar campanhas"
+        },
+        "delete": {
+          "title_one": "Excluir este rascunho?",
+          "title_other": "Excluir {{count}} rascunhos?",
+          "description": "Os contatos e o histórico saem juntos, e isso não tem volta.",
+          "confirm_one": "Excluir rascunho",
+          "confirm_other": "Excluir rascunhos"
+        },
+        "skipped_one": "{{count}} campanha selecionada não aceita esta ação e fica como está.",
+        "skipped_other": "{{count}} campanhas selecionadas não aceitam esta ação e ficam como estão."
+      }
+    },
+    "list": {
+      "create": "Criar campanha",
+      "search": "Buscar pelo nome",
+      "count_one": "{{formatted}} campanha",
+      "count_other": "{{formatted}} campanhas",
+      "selectRow": "Selecionar {{name}}",
+      "selectPage": "Selecionar as campanhas desta página",
+      "actionsOf": "Ações de {{name}}",
+      "disconnectedChannel": "{{name}} (desconectado)",
+      "filters": {
+        "status": "Situação",
+        "channel": "Canal"
+      },
+      "sort": {
+        "recent": "Mais recentes",
+        "oldest": "Mais antigas",
+        "name": "Nome de A a Z",
+        "largest": "Maior lista",
+        "failures": "Mais falhas"
+      },
+      "noResults": {
+        "title": "Nenhuma campanha com esses filtros",
+        "description": "Tente outra situação ou outro canal."
+      },
+      "columns": {
+        "campaign": "Campanha",
+        "status": "Situação",
+        "progress": "Envio",
+        "result": "Resultado"
+      }
+    },
+    "row": {
+      "startsAt": "Começa <time/>",
+      "endsAt": "Termina <time/>",
+      "startedAt": "Começou <time/>",
+      "finishedAt": "Terminou <time/>",
+      "cancelledAt": "Cancelada <time/>",
+      "pausedAt": "Pausada <time/>",
+      "createdAt": "Criada <time/>",
+      "contacts_one": "{{formatted}} contato na lista",
+      "contacts_other": "{{formatted}} contatos na lista",
+      "progress": "{{processed}} de {{total}}",
+      "readShare": "{{share}} leram",
+      "readTooltip": "{{read}} lidas de {{sent}} enviadas",
+      "replied_one": "{{formatted}} respondeu",
+      "replied_other": "{{formatted}} responderam",
+      "failed_one": "{{formatted}} não chegou",
+      "failed_other": "{{formatted}} não chegaram"
+    },
+    "summary": {
+      "running": "Em andamento",
+      "runningHint_one": "de {{formatted}} campanha",
+      "runningHint_other": "de {{formatted}} campanhas",
+      "sent": "Mensagens enviadas",
+      "sentHint_one": "{{formatted}} entregue",
+      "sentHint_other": "{{formatted}} entregues",
+      "read": "Foram lidas",
+      "readHint": "{{read}} de {{sent}} enviadas",
+      "replied": "Responderam",
+      "repliedHint": "{{share}} das enviadas",
+      "failed": "Não chegaram",
+      "failedHint": "{{share}} das tentativas"
+    },
+    "attention": {
+      "one": "“{{name}}” parou sozinha",
+      "many_one": "{{count}} campanha parou sozinha",
+      "many_other": "{{count}} campanhas pararam sozinhas",
+      "see": "Ver campanha",
+      "seeAll": "Ver pausadas",
+      "reason": {
+        "noActiveConnectors": "O canal desconectou. Ninguém foi perdido: quem faltava continua na fila.",
+        "channelFailing": "O canal falhou várias vezes seguidas. Quem faltava continua na fila."
+      }
+    },
+    "empty": {
+      "title": "Mande sua mensagem para muita gente, sem arriscar o seu número",
+      "description": "Uma campanha envia a mensagem pelo WhatsApp para uma lista de contatos, aos poucos e no horário que você escolher. Você acompanha tudo por aqui.",
+      "steps": {
+        "write": {
+          "title": "Escreva a mensagem",
+          "description": "Dá para personalizar com o nome de cada pessoa."
+        },
+        "choose": {
+          "title": "Escolha quem recebe",
+          "description": "Da sua base, de uma planilha ou de uma busca por estabelecimentos."
+        },
+        "follow": {
+          "title": "Acompanhe o envio",
+          "description": "Veja quem recebeu, quem leu e quem respondeu, ao vivo."
+        }
+      }
+    },
+    "health": {
+      "draft": {
+        "title": "Ainda é um rascunho",
+        "description": "Nada foi enviado. Termine de preparar a campanha e lance quando quiser."
+      },
+      "scheduled": {
+        "title": "Agendada",
+        "description_one": "Começa {{when}}, para {{total}} pessoa. Nada saiu ainda.",
+        "description_other": "Começa {{when}}, para {{total}} pessoas. Nada saiu ainda."
+      },
+      "starting": {
+        "title": "Começando",
+        "description": "As primeiras mensagens saem em instantes."
+      },
+      "healthy": {
+        "title": "Está indo bem",
+        "description": "{{processed}} de {{total}} mensagens já saíram."
+      },
+      "someFailures": {
+        "title": "Está indo, com algumas falhas",
+        "description": "{{processed}} de {{total}} mensagens já saíram, e {{failed}} não chegaram. O resto segue normalmente."
+      },
+      "manyFailures": {
+        "title": "Muitas mensagens não estão chegando",
+        "description": "{{failed}} de {{processed}} não chegaram. Veja os motivos abaixo e, se preferir, pause para conferir o canal."
+      },
+      "outsideWindow": {
+        "title": "Esperando o horário de envio",
+        "description": "{{processed}} de {{total}} mensagens já saíram. O resto sai a partir de {{when}}."
+      },
+      "pausedByPerson": {
+        "title": "Pausada",
+        "description_one": "Nada sai até você retomar. {{pending}} pessoa continua na fila.",
+        "description_other": "Nada sai até você retomar. {{pending}} pessoas continuam na fila."
+      },
+      "pausedNoChannel": {
+        "title": "Parou sozinha: o canal desconectou",
+        "description_one": "Ninguém foi perdido: {{pending}} pessoa continua na fila. Reconecte o canal e retome.",
+        "description_other": "Ninguém foi perdido: {{pending}} pessoas continuam na fila. Reconecte o canal e retome."
+      },
+      "pausedChannelFailing": {
+        "title": "Parou sozinha: o canal falhou várias vezes seguidas",
+        "description_one": "{{pending}} pessoa continua na fila. Confira a conexão do canal e retome.",
+        "description_other": "{{pending}} pessoas continuam na fila. Confira a conexão do canal e retome."
+      },
+      "finished": {
+        "title": "Terminou",
+        "description": "{{sent}} de {{total}} mensagens saíram, e {{read}} já foram lidas."
+      },
+      "finishedWithFailures": {
+        "title": "Terminou, com falhas",
+        "description": "{{sent}} de {{total}} mensagens saíram, e {{failed}} não chegaram."
+      },
+      "cancelled": {
+        "title": "Cancelada",
+        "description": "{{sent}} mensagens saíram antes do cancelamento, e {{skipped}} pessoas ficaram de fora."
+      }
+    },
+    "monitor": {
+      "live": {
+        "label": "Atualização",
+        "on": "Ao vivo",
+        "polling": "A cada 15 segundos"
+      },
+      "rate": {
+        "label": "Ritmo",
+        "value": "{{rate}} por hora"
+      },
+      "eta": "Previsão de término",
+      "seeFailures": "Ver quem não recebeu",
+      "moreActions": "Mais ações",
+      "notFound": {
+        "title": "Esta campanha não existe mais",
+        "description": "Ela pode ter sido excluída, ou o link está errado.",
+        "action": "Ver campanhas"
+      }
+    },
+    "recipients": {
+      "title": "Quem recebe",
+      "search": "Buscar por nome ou telefone",
+      "count_one": "{{formatted}} pessoa",
+      "count_other": "{{formatted}} pessoas",
+      "noName": "Sem nome",
+      "skippedHint": "A campanha foi cancelada antes de chegar aqui.",
+      "phoneCopied": "Telefone copiado",
+      "copyFailed": "Não deu para copiar. Selecione o número e copie à mão.",
+      "openChat": "Abrir conversa",
+      "copyPhone": "Copiar telefone",
+      "columns": {
+        "contact": "Contato",
+        "phone": "Telefone",
+        "status": "Situação",
+        "sentAt": "Enviada",
+        "deliveredAt": "Entregue",
+        "readAt": "Lida",
+        "latest": "Último passo"
+      },
+      "empty": {
+        "title": "Ainda não há contatos nesta campanha",
+        "description": "Os contatos aparecem aqui assim que forem adicionados."
+      }
+    },
+    "failure": {
+      "whatsappError": "O WhatsApp não aceitou o envio.",
+      "numberNotFound": "Este número não existe no WhatsApp. Confira se está certo, com o DDD.",
+      "noPhoneNumber": "A campanha ficou sem número para enviar.",
+      "mediaUnsupported": "Este canal não envia imagem ou arquivo em campanhas.",
+      "mediaUnavailable": "O arquivo da campanha não está mais disponível.",
+      "templateUnavailable": "O modelo de mensagem da campanha não existe mais.",
+      "interrupted": "O envio foi interrompido e pode ter saído. Não tentamos de novo, para não mandar duas vezes.",
+      "serverDefault": "O WhatsApp não aceitou o envio.",
+      "channelSaid": "Motivo informado pelo canal: {{reason}}"
+    },
+    "activity": {
+      "title": "O que aconteceu",
+      "empty": "Nada aconteceu ainda.",
+      "showAll": "Ver tudo ({{count}})",
+      "showLess": "Ver menos",
+      "created": "Campanha criada",
+      "scheduled": "Campanha agendada",
+      "launched": "Campanha lançada",
+      "paused": "Campanha pausada",
+      "resumed": "Campanha retomada",
+      "cancelled": "Campanha cancelada",
+      "completed": "Campanha concluída",
+      "launch_failed": "Não foi lançada no horário",
+      "channel_stopped": "Um canal parou",
+      "channel_resumed": "Um canal voltou"
+    },
+    "config": {
+      "title": "Como foi preparada",
+      "allDay": "o dia todo",
+      "windowValue": "das {{start}} às {{end}}",
+      "windowLabel": "Horário de envio",
+      "everyDay": "Todos os dias",
+      "workingDays": "De segunda a sexta",
+      "interval": "Intervalo",
+      "intervalMinutes_one": "A cada {{count}} minuto",
+      "intervalMinutes_other": "A cada {{count}} minutos",
+      "intervalMinutesRange": "A cada {{min}} a {{max}} minutos",
+      "intervalSeconds_one": "A cada {{count}} segundo",
+      "intervalSeconds_other": "A cada {{count}} segundos",
+      "intervalSecondsRange": "A cada {{min}} a {{max}} segundos",
+      "channels": "Canal",
+      "unknownChannel": "Canal excluído",
+      "dailyLimit": "Limite por canal",
+      "dailyLimitValue_one": "{{formatted}} mensagem por dia",
+      "dailyLimitValue_other": "{{formatted}} mensagens por dia",
+      "templates": "Modelos",
+      "templatesValue_one": "{{count}} modelo de mensagem",
+      "templatesValue_other": "{{count}} modelos de mensagem",
+      "phoneNumbers": "Números",
+      "phoneNumbersValue_one": "{{count}} número",
+      "phoneNumbersValue_other": "{{count}} números",
+      "flow": "Quem responde",
+      "tags": "Etiquetas",
+      "createdAt": "Criada em",
+      "scheduledAt": "Agendada para",
+      "startedAt": "Lançada em",
+      "completedAt": "Encerrada em",
+      "messages_one": "Mensagem",
+      "messages_other": "Mensagens",
+      "rotation": "Os contatos de cada canal alternam entre as mensagens."
+    },
+    "places": {
+      "title": "Estabelecimentos",
+      "seeResults": "Ver resultados",
+      "useInCampaign": "Usar numa campanha",
+      "viewOnMap": "Ver no mapa",
+      "showMore": "Ver mais",
+      "showLess": "Ver menos",
+      "fromSearch": "Da busca “{{query}}”",
+      "fromSearchIn": "Da busca “{{query}}”, em {{location}}",
+      "reviews_one": "({{formatted}} avaliação)",
+      "reviews_other": "({{formatted}} avaliações)",
+      "status": {
+        "pending": "Na fila",
+        "running": "Buscando",
+        "completed": "Concluída",
+        "failed": "Não deu certo"
+      },
+      "fields": {
+        "street": "Rua",
+        "neighborhood": "Bairro",
+        "cityState": "Cidade",
+        "postalCode": "CEP",
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "categories": "Categorias",
+        "hours": "Horários",
+        "score": "Nota"
+      },
+      "results": {
+        "title": "Resultados",
+        "description_one": "{{count}} estabelecimento com telefone",
+        "description_other": "{{count}} estabelecimentos com telefone",
+        "descriptionLocated_one": "{{count}} estabelecimento com telefone, em {{location}}",
+        "descriptionLocated_other": "{{count}} estabelecimentos com telefone, em {{location}}",
+        "search": "Buscar nos resultados",
+        "empty": {
+          "title": "Nenhum estabelecimento com telefone",
+          "description": "A busca terminou, mas sem ninguém para quem dê para mandar mensagem."
+        },
+        "noMatch": {
+          "title": "Nenhum resultado com esse texto"
+        }
+      },
+      "delete": {
+        "action": "Excluir busca",
+        "title": "Excluir a busca “{{query}}”?",
+        "description": "Os estabelecimentos encontrados nela saem daqui. Campanhas que já usaram esses contatos não mudam.",
+        "confirm": "Excluir busca",
+        "done": "Busca excluída"
+      },
+      "feedback": {
+        "failed": "A busca “{{query}}” não deu certo",
+        "completed_one": "A busca “{{query}}” encontrou {{count}} estabelecimento",
+        "completed_other": "A busca “{{query}}” encontrou {{count}} estabelecimentos"
+      },
+      "unavailable": {
+        "title": "A busca de estabelecimentos não está ligada",
+        "description": "Ela depende de um serviço externo, que quem cuida da plataforma ainda não configurou (APIFY_API_TOKEN). O que já foi encontrado continua aqui e pode ser usado em campanhas."
+      },
+      "view": {
+        "label": "O que ver",
+        "searches": "Buscas",
+        "places": "Estabelecimentos"
+      },
+      "empty": {
+        "title": "Nenhuma busca de estabelecimentos ainda",
+        "description": "Ao criar uma campanha, você pode procurar estabelecimentos no Google Maps, como padarias em Curitiba, e mandar a mensagem para eles. O que encontrar fica guardado aqui.",
+        "unavailable": "Quando a busca for ligada, o que você encontrar ficará guardado aqui."
+      },
+      "searches": {
+        "search": "Buscar pelo que foi procurado",
+        "count_one": "{{formatted}} busca",
+        "count_other": "{{formatted}} buscas",
+        "status": "Situação",
+        "noResults": "Nenhuma busca com esses filtros"
+      },
+      "grid": {
+        "search": "Buscar por nome, endereço, telefone ou categoria",
+        "count_one": "{{formatted}} estabelecimento",
+        "count_other": "{{formatted}} estabelecimentos",
+        "noResults": "Nenhum estabelecimento com esse texto"
+      },
+      "row": {
+        "meta": "Por {{name}}, <time/>",
+        "metaLocated": "Em {{location}}. Por {{name}}, <time/>",
+        "someone": "alguém",
+        "working": "Pode levar alguns minutos. Você pode sair desta tela: a busca continua.",
+        "results_one": "{{formatted}} estabelecimento",
+        "results_other": "{{formatted}} estabelecimentos",
+        "actionsOf": "Ações da busca {{query}}"
+      },
+      "errors": {
+        "apifyNotConfigured": "A busca de estabelecimentos não está configurada.",
+        "apifyInvalidToken": "A chave do serviço de busca não é válida. Quem cuida da plataforma precisa conferir.",
+        "apifyQuotaExceeded": "Os créditos do serviço de busca acabaram.",
+        "apifyTimeout": "A busca demorou demais. Tente com menos resultados.",
+        "apifyFailed": "Não deu para buscar os estabelecimentos. Tente de novo.",
+        "interrupted": "A busca foi interrompida. Tente de novo."
+      }
+    }
+  }
+}
