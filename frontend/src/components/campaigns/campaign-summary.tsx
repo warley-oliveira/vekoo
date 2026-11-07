@@ -31,9 +31,9 @@ export const CampaignSummaryTiles = memo(function CampaignSummaryTiles() {
   const sent = summary?.sent ?? 0
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
       <StatTile
-        className="col-span-2 lg:col-span-1"
+        className="col-span-2 xl:col-span-1"
         loading={loading}
         label={t("campaigns.summary.running")}
         value={summary?.byStatus.running ?? 0}

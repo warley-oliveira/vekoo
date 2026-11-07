@@ -14,10 +14,10 @@ import {
 } from "@/components/shared"
 import { useCampaignRecipients, RECIPIENT_PER_PAGE_OPTIONS } from "@/hooks/campaigns/use-campaign-recipients"
 import { useCan } from "@/hooks/use-can"
-import { formatShortDateTime } from "@/lib/campaigns/format"
+import { formatShortDate } from "@/lib/campaigns/format"
 import { RECIPIENT_TONES } from "@/lib/campaigns/status"
 import { RECIPIENT_STATUSES, type Recipient } from "@/lib/campaigns/types"
-import { formatFullDateTime } from "@/lib/date-format"
+import { formatFullDateTime, formatTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
 import { formatPhone } from "@/lib/format-phone"
 import { useLanguage } from "@/lib/i18n"
@@ -66,9 +66,10 @@ function StepTime({ value }: { value: number | null | undefined }) {
     <time
       dateTime={new Date(value).toISOString()}
       title={formatFullDateTime(value, language)}
-      className="tabular-nums"
+      className="flex gap-x-1.5 tabular-nums md:flex-col"
     >
-      {formatShortDateTime(value, language)}
+      <span>{formatShortDate(value, language)}</span>
+      <span className="text-xs text-muted-foreground md:leading-tight">{formatTime(value, language)}</span>
     </time>
   )
 }
@@ -157,19 +158,19 @@ export const RecipientsSection = memo(
         {
           id: "sentAt",
           header: t("campaigns.recipients.columns.sentAt"),
-          meta: { mobile: "hidden", className: "w-28" },
+          meta: { mobile: "hidden", className: "w-20" },
           cell: ({ row }) => <StepTime value={row.original.sentAt} />,
         },
         {
           id: "deliveredAt",
           header: t("campaigns.recipients.columns.deliveredAt"),
-          meta: { mobile: "hidden", className: "w-28" },
+          meta: { mobile: "hidden", className: "w-20" },
           cell: ({ row }) => <StepTime value={row.original.deliveredAt} />,
         },
         {
           id: "readAt",
           header: t("campaigns.recipients.columns.readAt"),
-          meta: { mobile: "hidden", className: "w-28" },
+          meta: { mobile: "hidden", className: "w-20" },
           cell: ({ row }) => <StepTime value={row.original.readAt} />,
         },
         {

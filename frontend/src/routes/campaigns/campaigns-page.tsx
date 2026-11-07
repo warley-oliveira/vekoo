@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState, type ComponentProps, type Ref } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
@@ -11,6 +11,7 @@ import {
   CampaignRow,
   CampaignRowSkeleton,
 } from "@/components/campaigns/campaign-row"
+import { DeliveryLegend } from "@/components/campaigns/delivery-bar"
 import { CampaignSummaryTiles } from "@/components/campaigns/campaign-summary"
 import { CampaignsAreaNav } from "@/components/campaigns/campaigns-area-nav"
 import { CampaignsEmpty } from "@/components/campaigns/campaigns-empty"
@@ -40,6 +41,7 @@ import {
   useCampaignSummary,
 } from "@/hooks/campaigns/use-campaigns"
 import { channelLabel, connectorLabel } from "@/lib/campaigns/format"
+import { hasNotStarted } from "@/lib/campaigns/status"
 import { CAMPAIGN_STATUSES, type Campaign } from "@/lib/campaigns/types"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
@@ -49,26 +51,10 @@ import { cn } from "@/lib/utils"
 const SKELETON_ROWS = 6
 const NO_CAMPAIGNS: Campaign[] = []
 
-/**
- * Memorizado inteiro, com o `motion.li`: um lote de eventos de uma campanha não passa pelas outras. O
- * `ref` é do `AnimatePresence`, para a linha sair sem empurrar as vizinhas.
- */
-const CampaignListItem = memo(function CampaignListItem({
-  ref,
-  ...props
-}: ComponentProps<typeof CampaignRow> & { ref?: Ref<HTMLLIElement> }) {
-  const preset = useMotionPreset()
-
-  return (
-    <motion.li ref={ref} layout={!preset.reduced} {...preset.listItem}>
-      <CampaignRow {...props} />
-    </motion.li>
-  )
-})
-
 export default function CampaignsPage() {
   const { t } = useTranslation()
   const language = useLanguage()
+  const preset = useMotionPreset()
 
   const { filters, listPath, isFiltered, activeCount, setQuery, setStatuses, setConnectorIds, setSort, setPage, setPerPage, clear } =
     useCampaignFilters()
@@ -294,20 +280,23 @@ export default function CampaignsPage() {
                 <ul className="divide-y">
                   <AnimatePresence initial={false} mode="popLayout">
                     {campaigns.map((campaign) => (
-                      <CampaignListItem
-                        key={campaign.id}
-                        campaign={campaign}
-                        channel={channelLabel(campaign, byId, t)}
-                        actions={actions}
-                        selected={Boolean(selection[campaign.id])}
-                        selecting={selecting}
-                        onToggleSelect={toggleSelected}
-                      />
+                      <motion.li key={campaign.id} layout={!preset.reduced} {...preset.listItem}>
+                        <CampaignRow
+                          campaign={campaign}
+                          channel={channelLabel(campaign, byId, t)}
+                          actions={actions}
+                          selected={Boolean(selection[campaign.id])}
+                          selecting={selecting}
+                          onToggleSelect={toggleSelected}
+                        />
+                      </motion.li>
                     ))}
                   </AnimatePresence>
                 </ul>
               </div>
             )}
+
+            {campaigns.some((campaign) => !hasNotStarted(campaign.status)) ? <DeliveryLegend /> : null}
 
             {meta && total > 0 ? (
               <TablePagination

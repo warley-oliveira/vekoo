@@ -59,7 +59,8 @@
       "delete": "Excluir rascunho",
       "duplicate": "Duplicar",
       "select": "Selecionar",
-      "seeChannels": "Ver canais"
+      "seeChannels": "Ver canais",
+      "deselect": "Tirar da seleção"
     },
     "confirm": {
       "keep": "Manter",
@@ -261,7 +262,7 @@
       },
       "finished": {
         "title": "Terminou",
-        "description": "{{sent}} de {{total}} mensagens saíram, e {{read}} já foram lidas."
+        "description": "{{sent}} de {{total}} mensagens saíram. Lidas até agora: {{read}}."
       },
       "finishedWithFailures": {
         "title": "Terminou, com falhas",
@@ -269,7 +270,7 @@
       },
       "cancelled": {
         "title": "Cancelada",
-        "description": "{{sent}} mensagens saíram antes do cancelamento, e {{skipped}} pessoas ficaram de fora."
+        "description": "Mensagens enviadas antes do cancelamento: {{sent}}. Pessoas que ficaram de fora: {{skipped}}."
       }
     },
     "monitor": {

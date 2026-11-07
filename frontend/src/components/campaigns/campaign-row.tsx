@@ -32,7 +32,7 @@ import { LiveNumber } from "./live-number"
 // linha é um card empilhado. Até o `xl`, com o menu lateral, não cabe uma coluna de resultado: ela desce
 // para baixo do envio, para o nome não ficar espremido.
 export const CAMPAIGN_ROW_GRID =
-  "md:grid md:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(12rem,16rem)_2rem] md:items-center md:gap-x-4 xl:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(10rem,15rem)_11rem_2rem]"
+  "md:grid md:grid-cols-[1.25rem_minmax(0,1fr)_9.5rem_minmax(12rem,16rem)_2rem] md:items-center md:gap-x-4 xl:grid-cols-[1.25rem_minmax(0,1fr)_11rem_minmax(10rem,15rem)_11rem_2rem]"
 const SPANS_BOTH_ROWS = "md:row-span-2 xl:row-span-1"
 const RESULT_CELL = "md:col-start-4 md:row-start-2 md:mt-1 xl:col-start-5 xl:row-start-1 xl:mt-0"
 const MENU_CELL = "md:col-start-5 md:row-span-2 md:row-start-1 xl:col-start-6 xl:row-span-1"
@@ -50,6 +50,7 @@ type CampaignRowProps = {
 function useRowActions(
   campaign: Campaign,
   actions: CampaignActions,
+  selected: boolean,
   onToggleSelect: (campaign: Campaign) => void
 ): RowAction[] {
   const { t } = useTranslation()
@@ -88,7 +89,7 @@ function useRowActions(
         onSelect: () => actions.duplicate(campaign),
       },
       {
-        label: t("campaigns.actions.select"),
+        label: t(selected ? "campaigns.actions.deselect" : "campaigns.actions.select"),
         icon: <SquareCheck />,
         onSelect: () => onToggleSelect(campaign),
       },
@@ -109,7 +110,7 @@ function useRowActions(
         onSelect: () => void actions.remove(campaign),
       },
     ],
-    [actions, campaign, navigate, onToggleSelect, status, t]
+    [actions, campaign, navigate, onToggleSelect, selected, status, t]
   )
 }
 
@@ -158,7 +159,7 @@ export const CampaignRow = memo(function CampaignRow({
   const isTouch = useIsTouch()
   const { handlers, didFire } = useLongPress(() => onToggleSelect(campaign))
 
-  const rowActions = useRowActions(campaign, actions, onToggleSelect)
+  const rowActions = useRowActions(campaign, actions, selected, onToggleSelect)
   const path = campaignPath(campaign.id, campaign.status)
   const numbers = numbersFromCampaign(campaign)
   const notStarted = hasNotStarted(campaign.status)
@@ -279,9 +280,7 @@ export const CampaignRow = memo(function CampaignRow({
                   })}
                 </TooltipContent>
               </Tooltip>
-            ) : (
-              <span className="text-muted-foreground">{t("kit.noValue")}</span>
-            )}
+            ) : null}
             {numbers.replied ? (
               <span className="text-muted-foreground">
                 {t("campaigns.row.replied", {

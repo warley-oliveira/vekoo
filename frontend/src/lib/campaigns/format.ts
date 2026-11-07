@@ -26,14 +26,9 @@ export function formatWhen(value: number, language: string, t: TFunction, now = 
   return t("campaigns.when.date", { date: day, time })
 }
 
-/** Data curta, para colunas: "06/11, 14:02". */
-export function formatShortDateTime(value: number, language: string): string {
-  return new Intl.DateTimeFormat(language, {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(value)
+/** Data curta, para colunas: "06/11". */
+export function formatShortDate(value: number, language: string): string {
+  return new Intl.DateTimeFormat(language, { day: "2-digit", month: "2-digit" }).format(value)
 }
 
 /** "das 09:00 às 18:00", ou "o dia todo". */

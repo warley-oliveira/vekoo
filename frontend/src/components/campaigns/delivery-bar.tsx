@@ -84,6 +84,34 @@ export function DeliveryBar({ numbers, size = "md", onClick, className }: Delive
   )
 }
 
+/** A legenda das barras de uma lista: uma para todas, na ordem em que as partes aparecem. */
+export function DeliveryLegend({ className }: { className?: string }) {
+  const { t } = useTranslation()
+
+  const parts = [
+    { key: "read", color: DELIVERY_COLORS.read },
+    { key: "delivered", color: DELIVERY_COLORS.delivered },
+    { key: "sent", color: DELIVERY_COLORS.sent },
+    { key: "failed", color: DELIVERY_COLORS.failed },
+    { key: "pending", color: DELIVERY_COLORS.pending },
+  ]
+
+  return (
+    <ul className={cn("flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground", className)}>
+      {parts.map((part) => (
+        <li key={part.key} className="flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className="size-2 shrink-0 rounded-[2px] ring-1 ring-foreground/10"
+            style={{ backgroundColor: part.color }}
+          />
+          {t(`campaigns.numbers.${part.key}`)}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function TooltipRow({ color, label, value }: { color: string; label: string; value: string }) {
   return (
     <span className="flex items-center gap-2">

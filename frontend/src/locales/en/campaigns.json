@@ -59,7 +59,8 @@
       "delete": "Delete draft",
       "duplicate": "Duplicate",
       "select": "Select",
-      "seeChannels": "See channels"
+      "seeChannels": "See channels",
+      "deselect": "Remove from selection"
     },
     "confirm": {
       "keep": "Keep",
@@ -261,7 +262,7 @@
       },
       "finished": {
         "title": "Finished",
-        "description": "{{sent}} of {{total}} messages went out, and {{read}} have been read."
+        "description": "{{sent}} of {{total}} messages went out. Read so far: {{read}}."
       },
       "finishedWithFailures": {
         "title": "Finished, with failures",
@@ -269,7 +270,7 @@
       },
       "cancelled": {
         "title": "Cancelled",
-        "description": "{{sent}} messages went out before the cancellation, and {{skipped}} people were left out."
+        "description": "Messages sent before the cancellation: {{sent}}. People left out: {{skipped}}."
       }
     },
     "monitor": {
