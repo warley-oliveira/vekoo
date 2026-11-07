@@ -3,7 +3,6 @@ import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hoo
 import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, ListFilter, Plus, X } from "lucide-react"
 
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { SearchableSelect, SegmentedControl, SelectInput, TextField } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -158,19 +157,15 @@ function MetricRow({
         )}
 
         {!isFormula && metric.aggregation !== "count" ? (
-          <HiddenLabel text={t("customDashboards.measure.field")}>
-            {(id) => (
-              <SearchableSelect
-                id={id}
-                value={metric.field}
-                onChange={(next) => setValue(`metrics.${index}.field`, next, dirty)}
-                options={options}
-                placeholder={t("customDashboards.measure.field")}
-                aria-invalid={Boolean(fieldError)}
-                className="min-w-0 flex-1 bg-background"
-              />
-            )}
-          </HiddenLabel>
+          <SearchableSelect
+            aria-label={t("customDashboards.measure.field")}
+            value={metric.field}
+            onChange={(next) => setValue(`metrics.${index}.field`, next, dirty)}
+            options={options}
+            placeholder={t("customDashboards.measure.field")}
+            aria-invalid={Boolean(fieldError)}
+            className="min-w-0 flex-1 bg-background"
+          />
         ) : null}
 
         {columns && total > 1 ? (

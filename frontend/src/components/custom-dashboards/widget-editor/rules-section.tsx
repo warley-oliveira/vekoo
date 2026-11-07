@@ -3,7 +3,6 @@ import { useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Plus, Trash2, WandSparkles } from "lucide-react"
 
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { NumberInput, SelectInput } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -171,17 +170,13 @@ function ThresholdsEditor() {
         <div key={index} className="flex flex-col gap-1.5 rounded-lg bg-muted/40 p-2">
           <div className="flex items-center gap-1.5">
             <div className="w-28 shrink-0">
-              <HiddenLabel text={t("customDashboards.rules.value")}>
-                {(id) => (
-                  <NumberInput
-                    id={id}
-                    value={line.value}
-                    placeholder={t("customDashboards.rules.value")}
-                    onChange={(value) => update(thresholds.map((item, position) => (position === index ? { ...item, value } : item)))}
-                    className="bg-background"
-                  />
-                )}
-              </HiddenLabel>
+              <NumberInput
+                aria-label={t("customDashboards.rules.value")}
+                value={line.value}
+                placeholder={t("customDashboards.rules.value")}
+                onChange={(value) => update(thresholds.map((item, position) => (position === index ? { ...item, value } : item)))}
+                className="bg-background"
+              />
             </div>
             <Input
               aria-label={t("customDashboards.rules.lineLabel")}
@@ -258,17 +253,13 @@ function ConditionalRulesEditor() {
                 className="bg-background"
               />
             </div>
-            <HiddenLabel text={t("customDashboards.rules.value")}>
-              {(id) => (
-                <NumberInput
-                  id={id}
-                  value={rule.value}
-                  placeholder={t("customDashboards.rules.value")}
-                  onChange={(value) => update(rules.map((item, position) => (position === index ? { ...item, value } : item)))}
-                  className="min-w-0 flex-1 bg-background"
-                />
-              )}
-            </HiddenLabel>
+            <NumberInput
+              aria-label={t("customDashboards.rules.value")}
+              value={rule.value}
+              placeholder={t("customDashboards.rules.value")}
+              onChange={(value) => update(rules.map((item, position) => (position === index ? { ...item, value } : item)))}
+              className="min-w-0 flex-1 bg-background"
+            />
             <Button
               type="button"
               variant="ghost"

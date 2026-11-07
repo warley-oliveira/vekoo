@@ -2,7 +2,6 @@ import { useFieldArray, useFormContext, useFormState, useWatch } from "react-hoo
 import { useTranslation } from "react-i18next"
 import { ListFilter, Plus, X } from "lucide-react"
 
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import {
   ChipsInput,
   DatePicker,
@@ -175,18 +174,14 @@ function FilterRow({
     <div className="flex flex-col gap-1.5 rounded-lg bg-muted/40 p-2">
       {/* No celular, o campo fica numa linha só dele: dividindo com a comparação, o nome não caberia. */}
       <div className="flex flex-wrap items-center gap-1.5 sm:flex-nowrap">
-        <HiddenLabel text={t("customDashboards.filters.field")}>
-          {(id) => (
-            <SearchableSelect
-              id={id}
-              value={field}
-              onChange={changeField}
-              options={fieldOptions}
-              placeholder={t("customDashboards.filters.field")}
-              className="min-w-0 flex-1 basis-full bg-background sm:basis-0"
-            />
-          )}
-        </HiddenLabel>
+        <SearchableSelect
+          aria-label={t("customDashboards.filters.field")}
+          value={field}
+          onChange={changeField}
+          options={fieldOptions}
+          placeholder={t("customDashboards.filters.field")}
+          className="min-w-0 flex-1 basis-full bg-background sm:basis-0"
+        />
         <div className="min-w-0 flex-1 sm:w-40 sm:flex-none sm:shrink-0">
           <SelectInput
             aria-label={t("customDashboards.filters.operator")}
@@ -245,22 +240,18 @@ function FilterValue({
 
   if (multi) {
     return (
-      <HiddenLabel text={label}>
-        {(id) =>
-          info.options.length ? (
-            <MultiSelectInput
-              id={id}
-              options={info.options}
-              value={list}
-              onChange={onChange}
-              placeholder={t("customDashboards.filters.pickMany")}
-              className={className}
-            />
-          ) : (
-            <ChipsInput id={id} value={list} onChange={onChange} placeholder={t("customDashboards.filters.typeMany")} className={className} />
-          )
-        }
-      </HiddenLabel>
+      info.options.length ? (
+        <MultiSelectInput
+          aria-label={label}
+          options={info.options}
+          value={list}
+          onChange={onChange}
+          placeholder={t("customDashboards.filters.pickMany")}
+          className={className}
+        />
+      ) : (
+        <ChipsInput aria-label={label} value={list} onChange={onChange} placeholder={t("customDashboards.filters.typeMany")} className={className} />
+      )
     )
   }
 
@@ -277,34 +268,26 @@ function FilterValue({
 
   if (info.kind === "number" || (info.kind === "customNumber" && COMPARISONS.includes(operator))) {
     return (
-      <HiddenLabel text={label}>
-        {(id) => (
-          <NumberInput
-            id={id}
-            value={text === "" ? null : Number(text)}
-            onChange={(next) => onChange(next ?? "")}
-            placeholder={label}
-            className={className}
-          />
-        )}
-      </HiddenLabel>
+      <NumberInput
+        aria-label={label}
+        value={text === "" ? null : Number(text)}
+        onChange={(next) => onChange(next ?? "")}
+        placeholder={label}
+        className={className}
+      />
     )
   }
 
   if (info.options.length && operator !== "contains") {
     return info.options.length > 8 ? (
-      <HiddenLabel text={label}>
-        {(id) => (
-          <SearchableSelect
-            id={id}
-            value={text}
-            onChange={(next) => onChange(next ?? "")}
-            options={info.options}
-            placeholder={t("customDashboards.filters.pick")}
-            className={className}
-          />
-        )}
-      </HiddenLabel>
+      <SearchableSelect
+        aria-label={label}
+        value={text}
+        onChange={(next) => onChange(next ?? "")}
+        options={info.options}
+        placeholder={t("customDashboards.filters.pick")}
+        className={className}
+      />
     ) : (
       <SelectInput
         aria-label={label}

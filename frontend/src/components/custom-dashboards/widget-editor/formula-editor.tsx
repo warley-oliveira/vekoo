@@ -3,7 +3,6 @@ import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-
 import { useTranslation } from "react-i18next"
 import { CircleHelp, Plus, X } from "lucide-react"
 
-import { HiddenLabel } from "@/components/pipelines/hidden-label"
 import { SearchableSelect, SelectInput } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -276,19 +275,15 @@ function FormulaStepRow({
           className="bg-background"
         />
         {step.aggregation !== "count" ? (
-          <HiddenLabel text={t("customDashboards.measure.field")}>
-            {(id) => (
-              <SearchableSelect
-                id={id}
-                value={step.metric ?? null}
-                onChange={(next) => setValue(`formulaSteps.${index}.metric`, next ?? undefined, dirty)}
-                options={fieldsFor(step.aggregation)}
-                placeholder={t("customDashboards.measure.field")}
-                aria-invalid={Boolean(fieldError)}
-                className="bg-background"
-              />
-            )}
-          </HiddenLabel>
+          <SearchableSelect
+            aria-label={t("customDashboards.measure.field")}
+            value={step.metric ?? null}
+            onChange={(next) => setValue(`formulaSteps.${index}.metric`, next ?? undefined, dirty)}
+            options={fieldsFor(step.aggregation)}
+            placeholder={t("customDashboards.measure.field")}
+            aria-invalid={Boolean(fieldError)}
+            className="bg-background"
+          />
         ) : null}
       </div>
       {fieldError ? <p className="text-xs text-destructive">{fieldError}</p> : null}
