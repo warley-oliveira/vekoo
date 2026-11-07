@@ -30,7 +30,11 @@ export function CodeEditor(props: CodeEditorProps) {
   return (
     <Suspense
       fallback={
-        <div className={cn("overflow-hidden rounded-lg border", props.className)} style={{ height: height + 36 }} aria-busy>
+        <div
+          className={cn("overflow-hidden rounded-lg border", props.className)}
+          style={props.fill ? undefined : { height: height + 36 }}
+          aria-busy
+        >
           <Skeleton className="size-full rounded-none" />
         </div>
       }
@@ -40,4 +44,11 @@ export function CodeEditor(props: CodeEditorProps) {
   )
 }
 
-export type { CodeEditorProps, CodeRunResult, CredentialField, ScriptEvent, ScriptParameter } from "./types"
+export type {
+  CodeEditorInstance,
+  CodeEditorProps,
+  CodeRunResult,
+  CredentialField,
+  ScriptEvent,
+  ScriptParameter,
+} from "./types"
