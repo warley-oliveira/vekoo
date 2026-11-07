@@ -368,7 +368,9 @@ export default function CalendarGrid({
     (info: EventDisplayInfo) => {
       const source = sourceOf(info)
       if (!source) return "vk-fc-selection"
-      const classes: string[] = []
+      // O fio de cor só nos blocos da grade de horas: no mês, a linha é baixa e ele cobriria a hora.
+      const classes: string[] =
+        info.view.type.startsWith("timeGrid") && !info.event.allDay ? ["vk-fc-event"] : []
       if (isCanceled(source)) classes.push("vk-fc-canceled")
       else if (source.type === "booking" && source.attendanceStatus === "no_show") {
         classes.push("vk-fc-no-show")

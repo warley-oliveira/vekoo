@@ -278,3 +278,35 @@
   outline: 1px dashed color-mix(in oklab, var(--primary) 55%, transparent);
   outline-offset: -1px;
 }
+
+/*
+ * O fio da cor do colaborador (ou do evento) na borda esquerda dos blocos da grade de horas. O
+ * fundo continua o tom claro do tema, e o fio reforça "de quem é": dois blocos vizinhos da mesma
+ * cor clara se separam, e o texto escuro lê bem mesmo nos blocos de 30 minutos.
+ */
+.vk-calendar .vk-fc-event {
+  box-shadow: inset 3px 0 0 0 var(--fc-event-color, var(--muted-foreground));
+}
+
+.vk-calendar .vk-fc-event.vk-fc-pulse {
+  animation: vk-event-pulse-striped 900ms ease-out 2;
+}
+
+@keyframes vk-event-pulse-striped {
+  0% {
+    box-shadow:
+      inset 3px 0 0 0 var(--fc-event-color, var(--muted-foreground)),
+      0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  100% {
+    box-shadow:
+      inset 3px 0 0 0 var(--fc-event-color, var(--muted-foreground)),
+      0 0 0 10px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-calendar .vk-fc-event.vk-fc-pulse {
+    animation: none;
+  }
+}

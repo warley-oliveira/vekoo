@@ -131,6 +131,8 @@ function BookingPreview({
   const { t } = useTranslation()
   const canChat = useCan("chat")
   const canceled = isCanceled(event)
+  // Como na agenda e no modal: presença só depois de começar, ou para desfazer o que foi marcado.
+  const canMark = !canceled && (event.start <= Date.now() || Boolean(event.attendanceStatus))
 
   return (
     <>
@@ -172,12 +174,16 @@ function BookingPreview({
 
       {canceled ? null : (
         <div className="flex items-center gap-1.5">
-          <AttendanceToggle
-            event={event}
-            size="labeled"
-            className="flex-1"
-            onToggle={(booking, status) => void actions.toggleAttendance(booking, status)}
-          />
+          {canMark ? (
+            <AttendanceToggle
+              event={event}
+              size="labeled"
+              className="flex-1"
+              onToggle={(booking, status) => void actions.toggleAttendance(booking, status)}
+            />
+          ) : (
+            <span className="flex-1" />
+          )}
           <Button
             type="button"
             variant="ghost"
