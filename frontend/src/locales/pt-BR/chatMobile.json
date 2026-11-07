@@ -8,14 +8,17 @@
       "allChannels": "Todos os canais",
       "copilotHint": "Peça um resumo ou uma ideia de resposta",
       "selectHint": "Dá também para segurar uma conversa da lista",
-      "preferencesHint": "O que aparece em cada linha da lista"
+      "preferencesHint": "O que aparece em cada linha da lista",
+      "officialApi": "API"
     },
     "selection": {
       "none": "Toque nas conversas",
       "all": "Selecionar todas",
       "clear": "Limpar",
       "actions": "Ações para as selecionadas",
-      "more": "Mais"
+      "more": "Mais",
+      "count_one": "{{formatted}} selecionada",
+      "count_other": "{{formatted}} selecionadas"
     },
     "thread": {
       "openDetails": "Ver detalhes de {{name}}",

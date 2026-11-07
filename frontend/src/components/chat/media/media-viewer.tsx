@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type TouchEvent } from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
@@ -12,8 +12,12 @@ import { useThreadUi } from "@/lib/chat/stores"
 import { useThreadStore } from "@/lib/chat/thread-store"
 import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
+import { useChatVariant } from "../chat-variant"
 
 const NO_MESSAGES: ChatMessage[] = []
+
+/** Quanto o dedo anda até valer: para o lado troca de mídia, e para baixo fecha. */
+const SWIPE_PX = 60
 
 function isViewable(message: ChatMessage): boolean {
   if (message.deletedAt || !message.mediaUrl) return false
@@ -55,6 +59,8 @@ function ViewerContent({
 
   const [currentId, setCurrentId] = useState(startId)
   const [downloading, setDownloading] = useState(false)
+  const swipe = useRef<{ x: number; y: number } | null>(null)
+  const mobile = Boolean(useChatVariant())
 
   const index = Math.max(
     items.findIndex((item) => item.id === currentId),
@@ -90,7 +96,29 @@ function ViewerContent({
   }
 
   const iconButton =
-    "text-background hover:bg-background/15 hover:text-background pointer-coarse:size-10"
+    "text-background hover:bg-background/15 hover:text-background pointer-coarse:size-11"
+
+  // No celular, as setas são para quem não enxerga o gesto: o dedo passa de uma foto para a outra e
+  // puxa para baixo para sair. Dois dedos é zoom, e fica com o navegador.
+  const swipeHandlers = mobile
+    ? {
+        onTouchStart: (event: TouchEvent) => {
+          const touch = event.touches.length === 1 ? event.touches[0] : null
+          swipe.current = touch ? { x: touch.clientX, y: touch.clientY } : null
+        },
+        onTouchEnd: (event: TouchEvent) => {
+          const start = swipe.current
+          swipe.current = null
+          const touch = event.changedTouches[0]
+          if (!start || !touch) return
+
+          const dx = touch.clientX - start.x
+          const dy = touch.clientY - start.y
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_PX) go(dx < 0 ? 1 : -1)
+          else if (dy > SWIPE_PX * 2) onClose()
+        },
+      }
+    : undefined
 
   return (
     <DialogPrimitive.Popup
@@ -135,7 +163,10 @@ function ViewerContent({
         </DialogPrimitive.Close>
       </div>
 
-      <div className="relative flex min-h-0 flex-1 items-center justify-center px-2 md:px-14">
+      <div
+        className="relative flex min-h-0 flex-1 items-center justify-center px-2 md:px-14"
+        {...swipeHandlers}
+      >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={current.id}

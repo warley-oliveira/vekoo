@@ -176,10 +176,31 @@ export function ListRow({
   )
 }
 
-export function RowName({ children, unread }: { children: ReactNode; unread: boolean }) {
+export function RowName({
+  children,
+  unread,
+  officialApi = false,
+}: {
+  children: ReactNode
+  unread: boolean
+  /** No celular, o selo de WhatsApp oficial: a marca do canal é a mesma nos dois tipos de número. */
+  officialApi?: boolean
+}) {
+  const { t } = useTranslation()
   return (
-    <span className={cn("truncate text-sm", unread ? "font-semibold" : "font-medium")}>
-      {children}
+    <span className="flex min-w-0 items-center gap-1.5">
+      <span className={cn("truncate text-sm", unread ? "font-semibold" : "font-medium")}>
+        {children}
+      </span>
+      {officialApi ? (
+        <span
+          aria-label={t("chat.channel.whatsapp_cloud")}
+          title={t("chat.channel.whatsapp_cloud")}
+          className="shrink-0 rounded-sm bg-muted px-1 text-[0.625rem] leading-4 font-medium text-muted-foreground"
+        >
+          {t("chatMobile.list.officialApi")}
+        </span>
+      ) : null}
     </span>
   )
 }

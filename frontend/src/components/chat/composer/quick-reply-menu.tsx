@@ -8,7 +8,7 @@ import {
   type Ref,
 } from "react"
 import { useTranslation } from "react-i18next"
-import { Paperclip } from "lucide-react"
+import { ChevronDown, Paperclip } from "lucide-react"
 
 import { QuickReplyPreview } from "@/components/content/quick-reply-preview"
 import { InlineError } from "@/components/shared"
@@ -58,18 +58,22 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
   context,
   onPick,
   className,
+  inlinePreview = false,
   ref,
 }: {
   query: string
   context: QuickReplyContext
   onPick: (reply: QuickReply) => void
   className?: string
+  /** Sem espaço para a coluna de prévia: abre embaixo da própria linha, ao tocar na seta. */
+  inlinePreview?: boolean
   ref?: Ref<QuickReplyMenuHandle>
 }) {
   const { t } = useTranslation()
   const isTouch = useIsTouch()
   const { items, total, isLoading, error, reload } = useQuickReplyItems(query)
 
+  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [highlight, setHighlight] = useState(0)
   const [lastQuery, setLastQuery] = useState(query)
   if (query !== lastQuery) {
@@ -135,7 +139,7 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
           ) : (
             items.map((reply, index) => {
               const attachments = citedAttachmentIds(reply.content).length
-              return (
+              const row = (
                 <button
                   key={reply.id}
                   type="button"
@@ -171,6 +175,34 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
                   ) : null}
                 </button>
               )
+
+              if (!inlinePreview) return row
+
+              const expanded = expandedId === reply.id
+              return (
+                <div key={reply.id} role="presentation">
+                  <div role="presentation" className="flex items-center gap-0.5">
+                    <div role="presentation" className="min-w-0 flex-1">
+                      {row}
+                    </div>
+                    <button
+                      type="button"
+                      data-slot="preview-toggle"
+                      aria-expanded={expanded}
+                      aria-label={t("chat.quickReplies.preview")}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => setExpandedId(expanded ? null : reply.id)}
+                      className="flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:bg-muted"
+                    >
+                      <ChevronDown
+                        aria-hidden
+                        className={cn("size-4 transition-transform", expanded && "rotate-180")}
+                      />
+                    </button>
+                  </div>
+                  {expanded ? <ReplyPreview reply={reply} context={context} /> : null}
+                </div>
+              )
             })
           )}
         </div>
@@ -193,7 +225,7 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
         ) : null}
       </div>
 
-      {active ? (
+      {active && !inlinePreview ? (
         <div className="hidden w-72 shrink-0 overflow-y-auto border-l lg:block">
           <ReplyPreview reply={active} context={context} />
         </div>

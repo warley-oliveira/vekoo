@@ -48,6 +48,7 @@ export function useChatRecorder({
   const startedAt = useRef(0)
   const tick = useRef<ReturnType<typeof setInterval> | null>(null)
   const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const starting = useRef(false)
 
   const statusRef = useRef<RecorderStatus>("idle")
   const applyStatus = useCallback((next: RecorderStatus) => {
@@ -120,6 +121,9 @@ export function useChatRecorder({
 
   const start = useCallback(async () => {
     if (statusRef.current === "recording" || statusRef.current === "sending") return
+    // O aviso de permissão pode levar segundos: outro toque não pode abrir um segundo microfone.
+    if (starting.current) return
+    starting.current = true
     if (noticeTimer.current) clearTimeout(noticeTimer.current)
 
     const recordedFor = latest.current.chatId
@@ -176,6 +180,8 @@ export function useChatRecorder({
       releaseDevices()
       applyStatus(denied ? "denied" : "error")
       scheduleNoticeDismiss()
+    } finally {
+      starting.current = false
     }
   }, [applyStatus, clearTick, finalize, releaseDevices, scheduleNoticeDismiss, stopAndSend])
 

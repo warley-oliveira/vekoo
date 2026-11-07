@@ -8,14 +8,17 @@
       "allChannels": "All channels",
       "copilotHint": "Ask for a summary or a reply idea",
       "selectHint": "You can also press and hold a conversation in the list",
-      "preferencesHint": "What shows on each row of the list"
+      "preferencesHint": "What shows on each row of the list",
+      "officialApi": "API"
     },
     "selection": {
       "none": "Tap the conversations",
       "all": "Select all",
       "clear": "Clear",
       "actions": "Actions for the selected",
-      "more": "More"
+      "more": "More",
+      "count_one": "{{formatted}} selected",
+      "count_other": "{{formatted}} selected"
     },
     "thread": {
       "openDetails": "See details of {{name}}",

@@ -61,7 +61,7 @@ export default function SelectionChrome({
             className="min-w-0 flex-1 truncate pl-1 font-heading text-base font-semibold tracking-tight"
           >
             {count > 0
-              ? t("chatDetails.bulk.selected", { count, formatted: formatNumber(count, language) })
+              ? t("chatMobile.selection.count", { count, formatted: formatNumber(count, language) })
               : t("chatMobile.selection.none")}
           </p>
           <Button

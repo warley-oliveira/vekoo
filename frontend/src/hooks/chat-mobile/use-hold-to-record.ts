@@ -9,6 +9,8 @@ const TAP_MS = 700
 const CANCEL_PX = 110
 /** Deslizar para cima até aqui trava: dá para soltar o dedo e continuar gravando. */
 const LOCK_PX = 72
+/** O clique que o navegador gera depois de soltar o dedo chega logo em seguida. */
+const CLICK_AFTER_RELEASE_MS = 400
 
 export type HoldMode = "idle" | "hold" | "locked"
 
@@ -29,6 +31,7 @@ export function useHoldToRecord(
   const [mode, setMode] = useState<HoldMode>("idle")
   const press = useRef<{ id: number; x: number; y: number; at: number } | null>(null)
   const pointerHandled = useRef(false)
+  const releaseTimer = useRef(0)
 
   const latest = useRef({ recorder, onLock, mode })
   useEffect(() => {
@@ -63,9 +66,18 @@ export function useHoldToRecord(
     latest.current.onLock()
   }, [])
 
+  useEffect(() => () => window.clearTimeout(releaseTimer.current), [])
+
+  const expectClick = useCallback(() => {
+    window.clearTimeout(releaseTimer.current)
+    releaseTimer.current = window.setTimeout(() => {
+      pointerHandled.current = false
+    }, CLICK_AFTER_RELEASE_MS)
+  }, [])
+
   const onPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
-    pointerHandled.current = true
     if (event.pointerType === "mouse") return
+    pointerHandled.current = true
 
     event.currentTarget.setPointerCapture(event.pointerId)
     press.current = { id: event.pointerId, x: event.clientX, y: event.clientY, at: performance.now() }
@@ -99,6 +111,7 @@ export function useHoldToRecord(
   const onPointerUp = useCallback(
     (event: PointerEvent<HTMLButtonElement>) => {
       const held = press.current
+      expectClick()
       if (!held || held.id !== event.pointerId) return
       press.current = null
       paintHint(0)
@@ -110,28 +123,43 @@ export function useHoldToRecord(
       if (performance.now() - held.at < TAP_MS) lock()
       else current.stopAndSend()
     },
-    [lock, paintHint]
+    [expectClick, lock, paintHint]
   )
 
   // O sistema tomou o dedo (ligação, gesto da barra): não vale como soltar, e nada se perde.
   const onPointerCancel = useCallback(() => {
+    expectClick()
     if (!press.current) return
     paintHint(0)
     if (latest.current.recorder.isRecording) lock()
     else press.current = null
-  }, [lock, paintHint])
+  }, [expectClick, lock, paintHint])
 
   /** Mouse, teclado e leitor de tela não seguram: para eles é sempre um toque. */
   const onClick = useCallback(() => {
-    const viaTouch = pointerHandled.current && !press.current
-    pointerHandled.current = false
-    if (viaTouch && latest.current.recorder.isBusy) return
-    if (latest.current.recorder.isBusy) return
-    void latest.current.recorder.start()
+    // O dedo já começou a gravar lá no toque: este é só o clique que vem depois dele.
+    if (pointerHandled.current) {
+      pointerHandled.current = false
+      return
+    }
+    if (!latest.current.recorder.isBusy) void latest.current.recorder.start()
+  }, [])
+
+  /**
+   * Enviar: toma o lugar do microfone no mesmo botão. O clique do toque que começou a gravar pode
+   * chegar depois da troca, e esse não pode enviar o áudio que acabou de nascer.
+   */
+  const send = useCallback(() => {
+    if (pointerHandled.current) {
+      pointerHandled.current = false
+      return
+    }
+    latest.current.recorder.stopAndSend()
   }, [])
 
   return {
     mode,
+    send,
     handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel, onClick },
   }
 }

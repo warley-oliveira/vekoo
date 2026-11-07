@@ -116,7 +116,11 @@ export default function MobileComposerBox({
   const keyboardOpen = useKeyboardOpen()
 
   const blurInput = useCallback(() => textarea.current?.blur(), [textarea])
-  const { mode: recordMode, handlers: recordHandlers } = useHoldToRecord(recorder, {
+  const {
+    mode: recordMode,
+    send: sendRecording,
+    handlers: recordHandlers,
+  } = useHoldToRecord(recorder, {
     hint: cancelHint,
     onLock: blurInput,
   })
@@ -164,11 +168,12 @@ export default function MobileComposerBox({
       if (!target.closest("[data-virtuoso-scroller]")) return
       if (target.closest('a, button, video, audio, input, [role="slider"]')) return
       closeEmoji()
+      setSlash(null)
       textarea.current?.blur()
     }
     document.addEventListener("click", onClick)
     return () => document.removeEventListener("click", onClick)
-  }, [closeEmoji, textarea])
+  }, [closeEmoji, setSlash, textarea])
 
   const onFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     attachments.current?.add(Array.from(event.target.files ?? []))
@@ -268,6 +273,7 @@ export default function MobileComposerBox({
               query={slash.query}
               context={fillContext}
               onPick={pickQuickReply}
+              inlinePreview
               className="max-h-[min(20rem,calc(var(--app-vh,100dvh)*0.45))]"
             />
           ) : null}
@@ -418,7 +424,7 @@ export default function MobileComposerBox({
                   disabled={sending}
                   className="size-11 rounded-full [&_svg]:size-5"
                   aria-label={t("chat.recorder.send")}
-                  onClick={recorder.stopAndSend}
+                  onClick={sendRecording}
                 >
                   {sending ? <Loader2 className="animate-spin" /> : <SendHorizontal />}
                 </Button>

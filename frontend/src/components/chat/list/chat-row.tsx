@@ -95,7 +95,11 @@ export const ChatRow = memo(function ChatRow({
           <ChannelBadge channel={channel} label={t(`chat.channel.${channel}`)} />
         </>
       }
-      title={<RowName unread={unread}>{name}</RowName>}
+      title={
+        <RowName unread={unread} officialApi={holdToSelect && connector?.type === "whatsapp_cloud"}>
+          {name}
+        </RowName>
+      }
       meta={
         <>
           {chat.automationEnabled ? (

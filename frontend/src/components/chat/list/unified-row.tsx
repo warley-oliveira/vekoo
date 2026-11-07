@@ -93,7 +93,14 @@ export const UnifiedRow = memo(function UnifiedRow({
           ) : null}
         </>
       }
-      title={<RowName unread={unread}>{name}</RowName>}
+      title={
+        <RowName
+          unread={unread}
+          officialApi={holdToSelect && contact.chats.length === 1 && mainConnector?.type === "whatsapp_cloud"}
+        >
+          {name}
+        </RowName>
+      }
       meta={<RowTime at={contact.lastMessageAt} unread={unread} />}
     >
       <span className="flex items-center justify-between gap-2">
