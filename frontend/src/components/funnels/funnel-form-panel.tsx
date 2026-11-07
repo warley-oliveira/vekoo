@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useMemo } from "react"
 import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
@@ -313,20 +313,6 @@ function StageList({ form, fields, onRemove, onMove, onInsert }: StageListProps)
   const { t } = useTranslation()
   const items = useMemo(() => fields.map((field) => ({ ...field, id: field.key })), [fields])
   const stageErrors = form.formState.errors.stages
-  const listRef = useRef<HTMLOListElement>(null)
-  const [announcement, setAnnouncement] = useState("")
-
-  /** Pelo teclado: uma posição de cada vez, com o foco indo junto e o leitor de tela avisando. */
-  function shift(index: number, delta: -1 | 1) {
-    const target = index + delta
-    if (target < 0 || target >= items.length) return
-    const name = form.getValues(`stages.${index}.name`) || t("funnels.form.newStage")
-    onMove(index, target)
-    setAnnouncement(t("funnels.form.stageMoved", { name, position: target + 1, total: items.length }))
-    requestAnimationFrame(() => {
-      listRef.current?.querySelectorAll<HTMLElement>("[data-stage-handle]")[target]?.focus()
-    })
-  }
 
   return (
     <SortableArea
@@ -341,7 +327,7 @@ function StageList({ form, fields, onRemove, onMove, onInsert }: StageListProps)
         else onMove(first, ordered.findIndex((item) => item.id === items[first].id))
       }}
     >
-      <ol ref={listRef} className="flex flex-col gap-1.5">
+      <ol className="flex flex-col gap-1.5">
         {items.map((item, index) => (
           <StageRow
             key={item.id}
@@ -352,13 +338,9 @@ function StageList({ form, fields, onRemove, onMove, onInsert }: StageListProps)
             error={stageErrors?.[index]?.name?.message}
             onRemove={() => onRemove(index)}
             onEnter={() => onInsert(index + 1)}
-            onShift={(delta) => shift(index, delta)}
           />
         ))}
       </ol>
-      <p role="status" className="sr-only">
-        {announcement}
-      </p>
     </SortableArea>
   )
 }
@@ -371,10 +353,9 @@ type StageRowProps = {
   error?: string
   onRemove: () => void
   onEnter: () => void
-  onShift: (delta: -1 | 1) => void
 }
 
-function StageRow({ id, index, total, form, error, onRemove, onEnter, onShift }: StageRowProps) {
+function StageRow({ id, index, total, form, error, onRemove, onEnter }: StageRowProps) {
   const { t } = useTranslation()
   const { setNodeRef, style, handleProps, isDragging } = useSortableEntry(id)
   const position = index + 1
@@ -382,23 +363,7 @@ function StageRow({ id, index, total, form, error, onRemove, onEnter, onShift }:
   return (
     <li ref={setNodeRef} style={style} className={cn("rounded-lg bg-popover", isDragging && "shadow-md")}>
       <div className="flex items-center gap-1">
-        {/*
-          O pegador daqui não usa o teclado do dnd-kit. O painel (`Dialog` do Base UI) para a propagação
-          das setas, e o sensor, que escuta no `document`, nunca as receberia: a pessoa pegava a etapa
-          com Espaço e ficava sem como movê-la. Aqui as setas movem direto, sem pegar antes.
-        */}
-        <DragHandle
-          {...handleProps}
-          data-stage-handle
-          label={t("funnels.form.dragStage", { position })}
-          aria-describedby={undefined}
-          aria-roledescription={undefined}
-          onKeyDown={(event) => {
-            if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return
-            event.preventDefault()
-            onShift(event.key === "ArrowUp" ? -1 : 1)
-          }}
-        />
+        <DragHandle {...handleProps} label={t("funnels.form.dragStage", { position })} />
         <span aria-hidden className="w-5 shrink-0 text-center text-xs text-muted-foreground tabular-nums">
           {position}
         </span>
