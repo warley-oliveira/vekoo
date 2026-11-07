@@ -153,10 +153,10 @@ export function BookingFields({
     []
   )
 
-  const hasCustomExtras = Boolean(
-    form.getValues("title") || form.getValues("description") || event?.color
+  // A cor sempre vem preenchida da API: abre sozinho só com o que a pessoa escreveu.
+  const [showMore, setShowMore] = useState(
+    Boolean(form.getValues("title") || form.getValues("description"))
   )
-  const [showMore, setShowMore] = useState(hasCustomExtras)
 
   // Serviço e colaborador são de cada calendário. A hora de parede fica como está.
   function afterCalendarChange() {

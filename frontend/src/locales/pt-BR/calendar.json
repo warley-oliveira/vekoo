@@ -54,7 +54,7 @@
       }
     },
     "zone": {
-      "single": "Horários em {{zone}}",
+      "single": "Fuso: {{zone}}",
       "mixed": "Cada calendário no próprio fuso",
       "tooltip": "{{zone}}: agora são {{time}}"
     },
@@ -116,7 +116,7 @@
         "heavy": "pesado"
       },
       "attendance": "Presença",
-      "attendanceValue": "{{show}} vieram, {{noShow}} faltaram, {{pending}} pendentes",
+      "attendanceValue": "Vieram: {{show}} · Faltaram: {{noShow}} · Pendentes: {{pending}}",
       "week": "Na semana",
       "next": "Próximo"
     },
@@ -346,8 +346,8 @@
       "fallbackTitle": "Aula",
       "occupancy": "Ocupação",
       "occupancyLabel": "{{count}} de {{max}} vagas ocupadas",
-      "summaryShort": "{{show}} vieram, {{noShow}} faltaram",
-      "summaryLong": "{{show}} vieram, {{noShow}} faltaram, {{pending}} pendentes",
+      "summaryShort": "Vieram: {{show}} · Faltaram: {{noShow}}",
+      "summaryLong": "Vieram: {{show}} · Faltaram: {{noShow}} · Pendentes: {{pending}}",
       "canceledNotice": "Esta aula foi cancelada. A lista fica aqui só para consulta.",
       "fields": {
         "instructor": "Instrutor",

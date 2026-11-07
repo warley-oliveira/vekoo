@@ -23,7 +23,7 @@ import "@fullcalendar/react/skeleton.css"
 import "@fullcalendar/react/themes/breezy/theme.css"
 import "./calendar-theme.css"
 
-import { FULLCALENDAR_VIEW, type CalendarView } from "@/lib/calendar/calendar-view"
+import { FULLCALENDAR_VIEW, visibleDays, type CalendarView } from "@/lib/calendar/calendar-view"
 import {
   eventHeadline,
   isAllDayEvent,
@@ -33,6 +33,7 @@ import {
   occupancyTone,
 } from "@/lib/calendar/event-status"
 import {
+  dayKeyOf,
   dayKeyOfGrid,
   gridDateOf,
   gridDateOfDayKey,
@@ -46,6 +47,8 @@ import { useLanguage } from "@/lib/i18n"
 const PLUGINS = [breezyPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin]
 const LOCALES = [ptBrLocale]
 const DAY_MS = 86_400_000
+const MORNING = "08:00:00"
+const AFTER_MOVE_MS = 700
 
 export type GridRange = {
   /** Datas de grade: os campos em UTC são a hora de parede. */
@@ -65,6 +68,8 @@ export type CalendarGridProps = {
   nowZone: string
   /** Pisca uma vez o evento que acabou de chegar. */
   pulseId?: string | null
+  /** Rola até esta hora ("HH:MM:SS"). Um objeto novo a cada pedido. */
+  focusTime?: { time: string } | null
   isTouch: boolean
   isPhone: boolean
   onSelectRange: (range: GridRange) => void
@@ -164,12 +169,12 @@ function EventChip({
   ) : null
 
   if (short) {
+    // Numa linha só, vale o nome: do horário fica só o começo.
+    const startText = info.timeText.split(/\s[–-]\s/)[0]
     return (
       <div className="vk-event">
         <div className="vk-event-row">
-          {info.timeText ? (
-            <span className="vk-event-time vk-event-time--whole">{info.timeText}</span>
-          ) : null}
+          {startText ? <span className="vk-event-time vk-event-time--whole">{startText}</span> : null}
           <span className="vk-event-title">{title}</span>
           {canceledLabel}
           {mark}
@@ -221,6 +226,7 @@ export default function CalendarGrid({
   zones,
   nowZone,
   pulseId,
+  focusTime,
   isTouch,
   isPhone,
   onSelectRange,
@@ -232,6 +238,7 @@ export default function CalendarGrid({
   const { t } = useTranslation()
   const language = useLanguage()
   const calendarRef = useRef<CalendarRef>(null)
+  const isMoving = useRef(false)
 
   const zoneFor = useCallback(
     (calendarId: string) => safeTimeZone(zones.get(calendarId), nowZone),
@@ -264,10 +271,15 @@ export default function CalendarGrid({
   // A faixa de dia inteiro só ocupa espaço quando há o que mostrar nela.
   const hasAllDay = useMemo(() => inputs.some((input) => input.allDay), [inputs])
 
-  // A primeira hora visível nasce perto de agora: abrir o dia já mostra o que importa.
-  const initialScroll = useRef(
-    `${String(Math.max(new Date(gridDateOf(Date.now(), nowZone)).getUTCHours() - 1, 0)).padStart(2, "0")}:00:00`
-  )
+  // Abre onde importa: perto de agora, se hoje está na tela; senão, no começo do expediente.
+  const scrollTarget = useCallback(() => {
+    const today = dayKeyOf(Date.now(), nowZone)
+    const { start, end } = visibleDays(view, anchor)
+    if (today < start || today >= end) return MORNING
+    const hour = Math.max(gridDateOf(Date.now(), nowZone).getUTCHours() - 1, 0)
+    return `${String(hour).padStart(2, "0")}:00:00`
+  }, [anchor, nowZone, view])
+  const initialScroll = useRef(scrollTarget())
 
   const fullCalendarView = FULLCALENDAR_VIEW[view]
   const initial = useRef({ view: fullCalendarView, anchor })
@@ -279,10 +291,21 @@ export default function CalendarGrid({
     // Fora do ciclo do React: o FullCalendar se redesenha de forma síncrona ao trocar de visão.
     queueMicrotask(() => {
       const date = gridDateOfDayKey(anchor)
-      if (api.view.type !== fullCalendarView) api.changeView(fullCalendarView, date)
+      const viewChanged = api.view.type !== fullCalendarView
+      if (viewChanged) api.changeView(fullCalendarView, date)
       else if (dayKeyOfGrid(api.getDate()) !== anchor) api.gotoDate(date)
+      else return
+      if (fullCalendarView !== "dayGridMonth") api.scrollToTime(scrollTarget())
     })
-  }, [anchor, fullCalendarView])
+  }, [anchor, fullCalendarView, scrollTarget])
+
+  // Acabou de marcar: a grade vai até o horário, mesmo que ele esteja fora da parte visível.
+  useEffect(() => {
+    if (!focusTime) return
+    const api = calendarRef.current?.getApi()
+    if (!api || fullCalendarView === "dayGridMonth") return
+    queueMicrotask(() => api.scrollToTime(focusTime.time))
+  }, [focusTime, fullCalendarView])
 
   const now = useCallback(() => gridDateOf(Date.now(), nowZone), [nowZone])
 
@@ -405,12 +428,32 @@ export default function CalendarGrid({
       }
       onOpenEvent(sourceOf(info))
     },
-    eventDragStart: () => onHoverEvent?.(null, null),
+    eventDragStart: () => {
+      isMoving.current = true
+      onHoverEvent?.(null, null)
+    },
+    eventDragStop: () => {
+      // O ponteiro termina em cima do bloco: a prévia não pode abrir como se fosse um pedido.
+      setTimeout(() => {
+        isMoving.current = false
+      }, AFTER_MOVE_MS)
+    },
+    eventResizeStart: () => {
+      isMoving.current = true
+      onHoverEvent?.(null, null)
+    },
+    eventResizeStop: () => {
+      setTimeout(() => {
+        isMoving.current = false
+      }, AFTER_MOVE_MS)
+    },
     eventDrop: handleMove,
     eventResize: handleMove,
     eventMouseEnter: isTouch
       ? undefined
-      : (info: EventHoveringInfo) => onHoverEvent?.(sourceOf(info), info.el),
+      : (info: EventHoveringInfo) => {
+          if (!isMoving.current) onHoverEvent?.(sourceOf(info), info.el)
+        },
     eventMouseLeave: isTouch ? undefined : () => onHoverEvent?.(null, null),
   }
 

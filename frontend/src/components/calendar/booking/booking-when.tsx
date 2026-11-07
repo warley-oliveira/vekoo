@@ -100,6 +100,8 @@ export function BookingWhen({
   const end = useWatch({ control: form.control, name: "end" })
   const duration = minutesBetween(start, end)
   const allDay = isAllDayRange(start, end)
+  // Cancelado não ocupa ninguém: horários livres e conflito não têm o que dizer.
+  const isLive = event?.status !== "canceled"
 
   const durationOptions = useMemo(() => {
     const values = new Set(PRESETS)
@@ -263,7 +265,7 @@ export function BookingWhen({
         onChange={toggleAllDay}
       />
 
-      {calendar && service && start && !allDay ? (
+      {calendar && service && start && !allDay && isLive ? (
         <AvailableSlots
           calendar={calendar}
           service={service}
@@ -276,7 +278,7 @@ export function BookingWhen({
         />
       ) : null}
 
-      {calendar && start && end && !allDay ? (
+      {calendar && start && end && !allDay && isLive ? (
         <ConflictNotice
           calendar={calendar}
           professionalId={professional?.id ?? resolvedProfessional.current}

@@ -52,6 +52,7 @@ import {
   fieldDateOfGrid,
   localDateOfDayKey,
   safeTimeZone,
+  wallClockOf,
 } from "@/lib/calendar/timezone"
 import type { CalendarEvent } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
@@ -273,6 +274,13 @@ export default function CalendarPage() {
   const [pulseId, setPulseId] = useState<string | null>(null)
   const pulseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => () => clearTimeout(pulseTimer.current), [])
+  const pulse = useCallback((id: string) => {
+    setPulseId(id)
+    clearTimeout(pulseTimer.current)
+    pulseTimer.current = setTimeout(() => setPulseId(null), PULSE_MS)
+  }, [])
+
+  const [focusTime, setFocusTime] = useState<{ time: string } | null>(null)
 
   useAgendaChannel({
     onRemoteCreate: (event) => {
@@ -283,9 +291,7 @@ export default function CalendarPage() {
         }),
         { action: { label: t("calendar.realtime.open"), onClick: () => openEvent(event) } }
       )
-      setPulseId(event.id)
-      clearTimeout(pulseTimer.current)
-      pulseTimer.current = setTimeout(() => setPulseId(null), PULSE_MS)
+      pulse(event.id)
     },
   })
 
@@ -471,6 +477,7 @@ export default function CalendarPage() {
         zones={screen.zones}
         nowZone={screen.primaryZone}
         pulseId={pulseId}
+        focusTime={focusTime}
         isTouch={isTouch}
         isPhone={screen.isPhone}
         onSelectRange={newFromRange}
@@ -668,9 +675,12 @@ export default function CalendarPage() {
           draft={draft ?? nextSlotDraft(screen.anchor, screen.today, screen.primaryZone, defaultCalendarId)}
           calendars={calendars}
           onCreated={(event) => {
-            setPulseId(event.id)
-            clearTimeout(pulseTimer.current)
-            pulseTimer.current = setTimeout(() => setPulseId(null), PULSE_MS)
+            // A tela vai até o que acabou de ser marcado: a confirmação é ver o evento ali.
+            const zone = safeTimeZone(screen.zones.get(event.calendarId), screen.primaryZone)
+            const day = dayKeyOf(event.start, zone)
+            if (day < screen.days.start || day >= screen.days.end) screen.goToDay(day)
+            setFocusTime({ time: `${wallClockOf(Math.max(event.start - 30 * 60_000, 0), zone)}:00` })
+            pulse(event.id)
           }}
         />
       ) : null}

@@ -54,7 +54,7 @@
       }
     },
     "zone": {
-      "single": "Times in {{zone}}",
+      "single": "Time zone: {{zone}}",
       "mixed": "Each calendar in its own time zone",
       "tooltip": "{{zone}}: it's {{time}} now"
     },
@@ -116,7 +116,7 @@
         "heavy": "heavy"
       },
       "attendance": "Attendance",
-      "attendanceValue": "{{show}} came, {{noShow}} missed, {{pending}} pending",
+      "attendanceValue": "Came: {{show}} · Missed: {{noShow}} · Pending: {{pending}}",
       "week": "This week",
       "next": "Next"
     },
@@ -346,8 +346,8 @@
       "fallbackTitle": "Class",
       "occupancy": "Occupancy",
       "occupancyLabel": "{{count}} of {{max}} spots taken",
-      "summaryShort": "{{show}} came, {{noShow}} missed",
-      "summaryLong": "{{show}} came, {{noShow}} missed, {{pending}} pending",
+      "summaryShort": "Came: {{show}} · Missed: {{noShow}}",
+      "summaryLong": "Came: {{show}} · Missed: {{noShow}} · Pending: {{pending}}",
       "canceledNotice": "This class was canceled. The list stays here for reference.",
       "fields": {
         "instructor": "Instructor",
