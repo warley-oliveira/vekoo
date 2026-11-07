@@ -1,7 +1,18 @@
 import type { SelectOption } from "@/components/shared"
 
+/** O id IANA não tem acento: "Sao_Paulo". Nome de cidade, igual em qualquer idioma. */
+const CITY_NAMES: Record<string, string> = {
+  "America/Sao_Paulo": "São Paulo",
+  "America/Araguaina": "Araguaína",
+  "America/Belem": "Belém",
+  "America/Cuiaba": "Cuiabá",
+  "America/Eirunepe": "Eirunepé",
+  "America/Maceio": "Maceió",
+  "America/Santarem": "Santarém",
+}
+
 function zoneLabel(zone: string, language: string): { label: string; offset: number } {
-  const city = zone.split("/").slice(1).join(" / ").replaceAll("_", " ") || zone
+  const city = CITY_NAMES[zone] ?? (zone.split("/").slice(1).join(" / ").replaceAll("_", " ") || zone)
 
   try {
     const parts = new Intl.DateTimeFormat(language, {
