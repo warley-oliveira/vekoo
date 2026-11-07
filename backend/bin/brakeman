@@ -2,6 +2,7 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
-
+# Sem o `--ensure-latest` do binstub padrão: com ele, cada versão nova do Brakeman faz
+# `bin/ci` falhar (código 5) sem que o código tenha mudado. Atualizar a gem é decisão do
+# Gemfile.lock, e o que este passo responde é só se o código tem aviso novo.
 load Gem.bin_path("brakeman", "brakeman")
