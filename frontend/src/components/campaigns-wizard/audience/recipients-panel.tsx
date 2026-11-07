@@ -8,7 +8,7 @@ import {
   ErrorState,
   ListSkeleton,
   SearchInput,
-  SidePanel,
+  ResponsiveDialog,
   TablePagination,
   UserAvatar,
   useConfirm,
@@ -90,7 +90,7 @@ export default function RecipientsPanel({
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) close()
@@ -178,6 +178,6 @@ export default function RecipientsPanel({
           />
         )}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
