@@ -79,7 +79,7 @@ const GROUPS: { id: string; entries: Entry[] }[] = [
     entries: [
       { signature: "kanban.listBoards()", insert: "kanban.listBoards()" },
       { signature: "kanban.findCardsForConversation()", insert: "kanban.findCardsForConversation()" },
-      { signature: "kanban.createCard(quadro, coluna, dados)", insert: "kanban.createCard(boardId, columnId, { title: 'Novo' });\n" },
+      { signature: "kanban.createCard(pipeline, coluna, dados)", insert: "kanban.createCard(boardId, columnId, { title: 'Novo' });\n" },
       { signature: "kanban.moveCard(card, coluna)", insert: "kanban.moveCard(cardId, columnId);\n" },
       { signature: "kanban.addComment(card, texto)", insert: "kanban.addComment(cardId, 'texto');\n" },
     ],

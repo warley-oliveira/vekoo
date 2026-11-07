@@ -256,7 +256,7 @@ RSpec.describe "Pipelines: quadros", type: :request do
       expect(json).to include("name" => "Vendas", "templateKey" => "vendas", "boardType" => "crm")
       expect(json["stages"].map { |stage| stage["name"] }).to include("Fechado/Ganho")
       expect(json["customFields"].map { |field| field["key"] }).to include("empresa", "fonte")
-      expect(json["triggers"].first).to include("name" => "Avisar ao fechar negócio")
+      expect(json["triggers"].first).to include("name" => "Avisar ao fechar a venda")
     end
 
     it "responde 404 para modelo que não existe" do

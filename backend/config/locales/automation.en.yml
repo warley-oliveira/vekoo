@@ -67,8 +67,8 @@ en:
       defaults:
         start: "Start"
         playground_contact: "John Doe"
-        new_deal: "New deal"
-        deal_of: "Deal: %{name}"
+        new_deal: "New sale"
+        deal_of: "Sale: %{name}"
       judge:
         no_outputs: "no output connected"
         min_turns: "minimum of %{count} exchange(s) in this block not reached yet"
@@ -106,8 +106,8 @@ en:
         pipelines_checklist: "Pipelines: the stage's required checklist is incomplete (%{names})."
         pipelines_fields: "Pipelines: required fields not filled in (%{names})."
         pipelines_not_found:
-          board: "Pipelines: board \"%{reference}\" doesn't exist in this organization."
-          stage: "Pipelines: stage \"%{reference}\" doesn't exist in this board."
+          board: "Pipelines: pipeline \"%{reference}\" doesn't exist in this organization."
+          stage: "Pipelines: stage \"%{reference}\" doesn't exist in this pipeline."
           card: "Pipelines: card \"%{reference}\" doesn't exist in this organization."
           label: "Pipelines: label \"%{reference}\" doesn't exist in this organization."
           checklist: "Pipelines: checklist \"%{reference}\" doesn't exist in this card."

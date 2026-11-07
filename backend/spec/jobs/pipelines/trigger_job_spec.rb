@@ -57,7 +57,7 @@ RSpec.describe Pipelines::TriggerJob do
       perform(trigger_with({ "type" => "notify", "account_ids" => [ english.id ] }))
 
       notice = AccountNotice.where(account_id: english.id).take
-      expect(notice.description).to eq("The card \"Atacado\" was updated on the board \"Vendas\".")
+      expect(notice.description).to eq("The card \"Atacado\" was updated in the pipeline \"Vendas\".")
     end
 
     it "não avisa quem é de outra organização, nem quem perdeu o acesso" do
@@ -453,7 +453,7 @@ RSpec.describe Pipelines::TriggerJob do
 
       expect { perform(trigger_with({ "type" => "create_card", "target_board_id" => foreign_board.id, "card_title_template" => "X" })) }
         .not_to change(Pipelines::Card.where(stage_id: foreign_board.stages.select(:id)), :count)
-      expect(last_execution.error_message).to eq("O quadro escolhido não existe mais.")
+      expect(last_execution.error_message).to eq("O pipeline escolhido não existe mais.")
 
       perform(trigger_with({ "type" => "create_card", "target_board_id" => target_board.id, "card_assigned_to_id" => create(:account).id }))
       expect(last_execution.status).to eq("failure")

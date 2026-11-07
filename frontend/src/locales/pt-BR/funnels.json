@@ -2,7 +2,7 @@
   "funnels": {
     "select": "Escolher funil",
     "actionsOf": "Ações do funil {{name}}",
-    "refresh": "Atualizar quadro",
+    "refresh": "Atualizar funil",
     "count_one": "{{value}} conversa",
     "count_other": "{{value}} conversas",
     "countNone": "Nenhuma conversa",

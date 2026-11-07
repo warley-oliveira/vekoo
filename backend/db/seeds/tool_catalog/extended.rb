@@ -173,7 +173,7 @@ pipelines_tool = Tool.find_or_initialize_by(slug: 'pipelines')
 pipelines_tool.assign_attributes(
   name: 'Pipelines',
   description: 'CRM dentro do atendimento: qualifica o lead atual em um pipeline, avança, ' \
-               'preenche dados de negócio e fecha como ganho ou perdido. Todas as ações ' \
+               'preenche dados da venda e fecha como ganho ou perdido. Todas as ações ' \
                'agem sobre o card do lead em atendimento (nunca em cards de outros leads).',
   image_url: nil,
   icon: 'solar:planet-bold-duotone',
@@ -243,7 +243,7 @@ pipelines_tool.assign_attributes(
         { 'name' => 'priority',     'type' => 'string', 'required' => false,
           'description' => 'Prioridade do card', 'enum' => %w[low medium high urgent] },
         { 'name' => 'deal_value',   'type' => 'number', 'required' => false,
-          'description' => 'Valor estimado do negócio em reais' },
+          'description' => 'Valor estimado da venda em reais' },
         { 'name' => 'company_name', 'type' => 'string', 'required' => false,
           'description' => 'Empresa/conta do lead' },
         { 'name' => 'contact_email', 'type' => 'string', 'required' => false,
@@ -346,7 +346,7 @@ pipelines_tool.assign_attributes(
         { 'name' => 'priority',           'type' => 'string', 'required' => false,
           'description' => 'low | medium | high | urgent', 'enum' => %w[low medium high urgent] },
         { 'name' => 'deal_value',         'type' => 'number', 'required' => false,
-          'description' => 'Valor atualizado do negócio em reais' },
+          'description' => 'Valor atualizado da venda em reais' },
         { 'name' => 'deal_probability',   'type' => 'number', 'required' => false,
           'description' => 'Probabilidade de fechar (0–100)' },
         { 'name' => 'company_name',       'type' => 'string', 'required' => false,
@@ -387,7 +387,7 @@ pipelines_tool.assign_attributes(
     },
     {
       'name' => 'mark_lead_won',
-      'description' => 'Fecha o negócio do LEAD ATUAL como GANHO. Aceita opcionalmente valor final e ' \
+      'description' => 'Fecha a venda do LEAD ATUAL como GANHA. Aceita opcionalmente valor final e ' \
                        'comentário. Define probabilidade em 100% automaticamente.',
       'parameters' => [
         { 'name' => 'final_value', 'type' => 'number', 'required' => false,
@@ -406,7 +406,7 @@ pipelines_tool.assign_attributes(
         const result = card.markWon();
         if (!result) return { ok: false, error: 'Falha ao marcar como ganho' };
 
-        const note = params.note || 'Negócio fechado (won) registrado pela IA.';
+        const note = params.note || 'Venda fechada (won) registrada pela IA.';
         card.addComment(note);
 
         return { ok: true, status: 'won', card_id: result.id };
@@ -414,7 +414,7 @@ pipelines_tool.assign_attributes(
     },
     {
       'name' => 'mark_lead_lost',
-      'description' => 'Fecha o negócio do LEAD ATUAL como PERDIDO. Sempre informe `reason` para ' \
+      'description' => 'Fecha a venda do LEAD ATUAL como PERDIDA. Sempre informe `reason` para ' \
                        'rastreabilidade — o motivo é registrado no card e em comentário.',
       'parameters' => [
         { 'name' => 'reason', 'type' => 'string', 'required' => true,
@@ -427,7 +427,7 @@ pipelines_tool.assign_attributes(
         const result = card.markLost(params.reason);
         if (!result) return { ok: false, error: 'Falha ao marcar como perdido' };
 
-        card.addComment('Negócio perdido (lost) — motivo: ' + params.reason);
+        card.addComment('Venda perdida (lost) — motivo: ' + params.reason);
         return { ok: true, status: 'lost', card_id: result.id, reason: params.reason };
       JS
     },

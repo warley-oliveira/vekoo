@@ -1,7 +1,7 @@
 {
   "pipelinesAdmin": {
     "routes": {
-      "settings": "Board settings",
+      "settings": "Pipeline settings",
       "triggers": "Triggers",
       "goals": "Goals",
       "fields": "Fields",
@@ -28,26 +28,26 @@
     },
     "errors": {
       "generic": "That didn't work. Try again in a moment.",
-      "forbidden": "You don't have permission to do this on this board.",
+      "forbidden": "You don't have permission to do this in this pipeline.",
       "network": "Can't reach the server. Check your connection and try again."
     },
     "boardTypes": {
-      "standard": "Standard board",
-      "crm": "Sales board"
+      "standard": "Standard pipeline",
+      "crm": "Sales pipeline"
     },
     "frame": {
       "notFound": {
-        "title": "Board not found",
+        "title": "Pipeline not found",
         "description": "It may have been deleted, or the address is wrong.",
-        "action": "See boards"
+        "action": "See pipelines"
       },
       "archived": {
-        "title": "This board is archived",
-        "description": "It left the menu, and triggers and auto-archiving don't run on an archived board."
+        "title": "This pipeline is archived",
+        "description": "It left the menu, and triggers and auto-archiving don't run on an archived pipeline."
       }
     },
     "icons": {
-      "kanban": "Board",
+      "kanban": "Columns",
       "hand-coins": "Money in hand",
       "trending-up": "Growth",
       "target": "Target",
@@ -81,32 +81,32 @@
       "house": "House"
     },
     "settings": {
-      "pageDescription": "What this board is and how it works. Each topic saves on its own.",
+      "pageDescription": "What this pipeline is and how it works. Each topic saves on its own.",
       "identity": {
         "title": "Identity",
-        "description": "How the board shows up in the menu and in lists.",
+        "description": "How the pipeline shows up in the menu and in lists.",
         "name": "Name",
         "namePlaceholder": "E.g. Wholesale sales",
-        "nameRequired": "Give the board a name.",
+        "nameRequired": "Give the pipeline a name.",
         "nameTooLong": "Use up to 120 characters.",
         "noName": "No name",
         "descriptionLabel": "Description",
-        "descriptionPlaceholder": "What is this board for?",
+        "descriptionPlaceholder": "What is this pipeline for?",
         "color": "Color",
         "noColor": "No color",
         "clearColor": "Remove color",
         "icon": "Icon",
         "submit": "Save identity",
-        "saved": "Board identity saved."
+        "saved": "Pipeline identity saved."
       },
       "deals": {
-        "title": "Score and deals",
-        "description": "What draws attention on the card: the deal that went cold and each contact's score.",
-        "rotting": "A deal goes cold after how many days?",
-        "rottingHint": "Time stuck in the same stage, with the deal still open. Empty: never goes cold.",
+        "title": "Score and sales",
+        "description": "What draws attention on the card: the sale that went cold and each contact's score.",
+        "rotting": "A sale goes cold after how many days?",
+        "rottingHint": "Time stuck in the same stage, with the sale still open. Empty: never goes cold.",
         "wholeDays": "Use a whole number of days.",
         "scoreField": "Score field",
-        "scoreHint": "A number field from this board. The card shows a badge with the range it falls into.",
+        "scoreHint": "A number field from this pipeline. The card shows a badge with the range it falls into.",
         "scoreNoFields": "Create a number field under Fields to use the score.",
         "scoreOff": "No score",
         "scoreLow": "Cold up to",
@@ -114,16 +114,16 @@
         "scoreOrder": "Must be higher than the cold limit.",
         "scorePreview": "Below {{low}}: cold. From {{low}} to {{high}}: warm. Above {{high}}: hot.",
         "submit": "Save score",
-        "saved": "Score and deals saved.",
+        "saved": "Score and sales saved.",
         "titleScore": "Score",
         "descriptionScore": "What draws attention on the card: each contact's score."
       },
       "visibility": {
         "title": "Who sees the cards",
         "description": "Applies to the board, the list, the metrics and the triggers. The organization owner always sees everything.",
-        "mode": "On this board",
+        "mode": "In this pipeline",
         "modeAll": "Everyone sees all cards",
-        "modeAllHint": "Anyone with access to pipelines sees the whole board.",
+        "modeAllHint": "Anyone with access to pipelines sees the whole pipeline.",
         "modeAssigned": "Each person sees only their own cards",
         "modeAssignedHint": "Only the groups allowed below keep seeing everything.",
         "roles": "Groups that keep seeing everything",
@@ -131,30 +131,30 @@
         "rolesPlaceholder": "Choose the groups",
         "rolesRequired": "Choose at least one group.",
         "unassignedNotice": "Cards with no owner show up only for the allowed groups. A restricted person becomes the owner of any card they create without assigning.",
-        "noRolesLeft": "The last allowed group was deleted. The board stays restricted, and only the organization owner sees everything. Choose a group to let other people in.",
-        "restrictedViewer": "On this board, you see only the cards assigned to you. Only people who see all cards can change this rule.",
+        "noRolesLeft": "The last allowed group was deleted. The pipeline stays restricted, and only the organization owner sees everything. Choose a group to let other people in.",
+        "restrictedViewer": "In this pipeline, you see only the cards assigned to you. Only people who see all cards can change this rule.",
         "needsSettings": "To change this rule you need access to the organization settings, which is where groups live.",
         "submit": "Save visibility",
         "saved": "Visibility saved."
       },
       "archive": {
         "title": "Auto-archive",
-        "description": "What leaves the board on its own. Nothing is deleted: it goes to Archived and can be restored.",
+        "description": "What leaves the pipeline on its own. Nothing is deleted: it goes to Archived and can be restored.",
         "staleLabel": "Archive a card idle for how many days?",
         "staleHint": "Counted from the last change on the card. Empty: never archives on its own.",
         "never": "Never",
         "stalePreview_one": "Today, {{count}} card would match this rule and be archived on the next sweep.",
         "stalePreview_other": "Today, {{count}} cards would match this rule and be archived on the next sweep.",
         "daysRange": "Use a whole number from 1 to {{max}}.",
-        "dealLabel": "When a deal is marked as won or lost",
+        "dealLabel": "When a sale is marked as won or lost",
         "deal": {
           "manual": {
-            "label": "Keep it on the board",
+            "label": "Keep it in the pipeline",
             "hint": "The card stays visible until someone archives it."
           },
           "immediate": {
             "label": "Archive right away",
-            "hint": "The card leaves the board as soon as the deal closes."
+            "hint": "The card leaves the pipeline as soon as the sale closes."
           },
           "auto_archive_days": {
             "label": "Archive after a few days",
@@ -167,17 +167,17 @@
         "saved": "Auto-archive saved."
       },
       "danger": {
-        "title": "Taking the board away",
+        "title": "Taking the pipeline away",
         "description": "Archiving can be undone. Deleting can't.",
-        "archive": "Archive board",
+        "archive": "Archive pipeline",
         "archiveHint": "It leaves the menu and stops running triggers. Nothing is lost.",
         "archiveTitle": "Archive {{name}}?",
-        "archiveDescription": "The board leaves the menu and triggers stop running. Cards stay stored, and you can unarchive it at any time.",
+        "archiveDescription": "The pipeline leaves the menu and triggers stop running. Cards stay stored, and you can unarchive it at any time.",
         "archived": "{{name}} was archived.",
         "unarchive": "Unarchive",
-        "unarchiveHint": "The board returns to the menu, with everything as it was.",
+        "unarchiveHint": "The pipeline returns to the menu, with everything as it was.",
         "unarchived": "{{name}} is back in the menu.",
-        "delete": "Delete board",
+        "delete": "Delete pipeline",
         "deleteHint": "Takes stages, cards, triggers, goals and filters with it. There is no way back.",
         "deleteTitle": "Delete {{name}}?",
         "deleteDescription": "This also removes {{stages}}, {{cards}}, the triggers, the goals and the saved filters. There is no way back.",
@@ -204,7 +204,7 @@
       "drag": "Change the position of {{name}}",
       "actionsOf": "Actions for {{name}}",
       "empty": {
-        "title": "This board has no stages yet",
+        "title": "This pipeline has no stages yet",
         "description": "Stages are the steps of the work: for example, New, In progress and Done."
       },
       "row": {
@@ -229,7 +229,7 @@
         "slaHours": "Maximum time in the stage, in hours",
         "slaHoursHint": "Past this without leaving the stage, the owner is told and time-limit triggers run.",
         "wipLimit": "Card limit",
-        "wipLimitHint": "Just a warning on the board: the stage doesn't refuse cards beyond this.",
+        "wipLimitHint": "Just a warning: the stage doesn't refuse cards beyond this.",
         "noLimit": "No limit",
         "wholeNumber": "Use a whole number above zero."
       },
@@ -273,7 +273,7 @@
       }
     },
     "fields": {
-      "description": "What each card on this board stores beyond the basics. Drag to change the order.",
+      "description": "What each card in this pipeline stores beyond the basics. Drag to change the order.",
       "create": "Create field",
       "search": "Search fields",
       "count_one": "{{count}} field",
@@ -292,7 +292,7 @@
         "description": "Check the spelling or clear the search."
       },
       "groups": {
-        "board": "Across the board",
+        "board": "Across the pipeline",
         "stage": "Only on stage {{name}}"
       },
       "badges": {
@@ -325,7 +325,7 @@
         "optionsPlaceholder": "E.g. Cash, Transfer, Card",
         "optionsRequired": "Include at least one option.",
         "scope": "Where it shows",
-        "scopeBoard": "Across the board",
+        "scopeBoard": "Across the pipeline",
         "scopeBoardHint": "Applies to any card, in any stage.",
         "scopeStage": "On one stage only",
         "scopeStageHint": "Shows when the card is in that stage.",
@@ -334,8 +334,8 @@
         "stageRequired": "Choose the stage.",
         "requiredToLeave": "Must be filled to move forward",
         "requiredToLeaveHint": "The card doesn't move forward from this stage with the field empty.",
-        "required": "Required to close a deal",
-        "requiredHint": "Required when marking as won or lost, if the board asks for it (see above).",
+        "required": "Required to close a sale",
+        "requiredHint": "Required when marking as won or lost, if the pipeline asks for it (see above).",
         "preview": "How it looks on the card",
         "previewName": "Field name",
         "previewOption": "First option",
@@ -348,13 +348,13 @@
         "action": "Delete field",
         "title": "Delete the field {{name}}?",
         "description": "It disappears from every card, and filled-in values stop showing.",
-        "descriptionScore": "It disappears from every card, and filled-in values stop showing. The board's score uses this field and will be turned off.",
+        "descriptionScore": "It disappears from every card, and filled-in values stop showing. The pipeline's score uses this field and will be turned off.",
         "confirm": "Delete field",
         "done": "Field {{name}} deleted."
       },
       "dealClose": {
-        "title": "When closing a deal",
-        "description": "Require the mandatory fields before marking the deal. Takes effect right away.",
+        "title": "When closing a sale",
+        "description": "Require the mandatory fields before marking the sale. Takes effect right away.",
         "won": "Require when marking as won",
         "lost": "Require when marking as lost",
         "affected": "Fields that will be required",
@@ -364,7 +364,7 @@
       "count_zero": "No fields"
     },
     "labels": {
-      "description": "They mark cards so you can find and filter them. They apply to every board in the organization.",
+      "description": "They mark cards so you can find and filter them. They apply to every pipeline in the organization.",
       "create": "Create label",
       "search": "Search labels",
       "count_one": "{{count}} label",
@@ -391,7 +391,7 @@
       "form": {
         "createTitle": "New label",
         "editTitle": "Edit label",
-        "hint": "It applies to every board in the organization.",
+        "hint": "It applies to every pipeline in the organization.",
         "name": "Name",
         "namePlaceholder": "E.g. Hot",
         "nameRequired": "Give the label a name.",
@@ -406,14 +406,14 @@
       "delete": {
         "action": "Delete label",
         "title": "Delete the label {{name}}?",
-        "description": "It comes off every card, on every board.",
+        "description": "It comes off every card, in every pipeline.",
         "confirm": "Delete label",
         "done": "Label {{name}} deleted."
       },
       "count_zero": "No labels"
     },
     "archived": {
-      "description": "Cards off the board: the archived ones and closed deals.",
+      "description": "Cards out of the pipeline: the archived ones and closed sales.",
       "search": "Search by title",
       "tableLabel": "Archived cards",
       "filterStatus": "Status",
@@ -421,8 +421,8 @@
       "count_other": "{{count}} cards",
       "open": "Open card",
       "restore": "Restore",
-      "restored": "{{title}} is back on the board.",
-      "seeOnBoard": "See on board",
+      "restored": "{{title}} is back in the pipeline.",
+      "seeOnBoard": "See in pipeline",
       "filters": {
         "all": "All",
         "archived": "Archived",
@@ -444,13 +444,13 @@
       },
       "empty": {
         "title": "Nothing archived here",
-        "description": "When a card is archived or a deal closes, it shows up in this list and can be restored."
+        "description": "When a card is archived or a sale closes, it shows up in this list and can be restored."
       },
       "reopen": {
-        "action": "Reopen deal",
-        "title": "Reopen the deal {{title}}?",
-        "description": "It stops being won or lost, returns to the board and the label leaves the conversation.",
-        "confirm": "Reopen deal",
+        "action": "Reopen sale",
+        "title": "Reopen the sale {{title}}?",
+        "description": "It stops being won or lost, returns to the pipeline and the label leaves the conversation.",
+        "confirm": "Reopen sale",
         "done": "{{title}} was reopened."
       },
       "delete": {
@@ -461,8 +461,8 @@
         "done": "{{title}} was deleted."
       },
       "bulk": {
-        "restored_one": "{{count}} card is back on the board.",
-        "restored_other": "{{count}} cards are back on the board.",
+        "restored_one": "{{count}} card is back in the pipeline.",
+        "restored_other": "{{count}} cards are back in the pipeline.",
         "deleteTitle_one": "Delete {{count}} card?",
         "deleteTitle_other": "Delete {{count}} cards?",
         "deleted_one": "{{count}} card deleted.",
@@ -490,7 +490,7 @@
       "date": "Date"
     },
     "triggers": {
-      "description": "The board works on its own: when something happens to a card, the trigger does what you asked.",
+      "description": "The pipeline works on its own: when something happens to a card, the trigger does what you asked.",
       "create": "Create trigger",
       "viewLabel": "What to see",
       "viewList": "Triggers",
@@ -533,7 +533,7 @@
           "message": "The due date of {{cardTitle}} has passed."
         },
         "dealWon": {
-          "sentence": "When a deal is won, tell the team.",
+          "sentence": "When a sale is won, tell the team.",
           "message": "{{cardTitle}} closed for {{dealValue}}."
         }
       },
@@ -585,12 +585,12 @@
         "chatId": "Conversation ID",
         "tags": "Tags",
         "labels": "Labels",
-        "dealValue": "Deal value",
+        "dealValue": "Sale value",
         "companyName": "Company",
         "contactEmail": "Contact email",
         "contactPhone": "Contact phone",
-        "boardId": "Board ID",
-        "boardName": "Board name",
+        "boardId": "Pipeline ID",
+        "boardName": "Pipeline name",
         "stageId": "Stage ID",
         "stageName": "Stage name",
         "stagePosition": "Stage position",
@@ -598,8 +598,8 @@
       },
       "tokenGroups": {
         "card": "From the card",
-        "deal": "From the deal",
-        "board": "From the board",
+        "deal": "From the sale",
+        "board": "From the pipeline",
         "custom": "Custom fields"
       },
       "conditionFields": {
@@ -612,7 +612,7 @@
         "fromStageName": "the source stage name",
         "toStageName": "the destination stage name",
         "slaHours": "the stage's maximum time",
-        "dealValue": "the deal value",
+        "dealValue": "the sale value",
         "dealProbability": "the probability",
         "companyName": "the company",
         "contactEmail": "the contact email",
@@ -656,18 +656,18 @@
           "preposition": "in"
         },
         "deal_won": {
-          "label": "a deal is won",
+          "label": "a sale is won",
           "hint": "When the card is marked as won.",
           "preposition": "in"
         },
         "deal_lost": {
-          "label": "a deal is lost",
+          "label": "a sale is lost",
           "hint": "When the card is marked as lost.",
           "preposition": "in"
         },
         "deal_reopened": {
-          "label": "a deal is reopened",
-          "hint": "When a closed deal is reopened.",
+          "label": "a sale is reopened",
+          "hint": "When a closed sale is reopened.",
           "preposition": "in"
         }
       },
@@ -678,14 +678,14 @@
         },
         "move_card": {
           "label": "Move the card",
-          "hint": "Takes the card to another stage on this board."
+          "hint": "Takes the card to another stage in this pipeline."
         },
         "assign_user": {
           "label": "Share the card",
           "hint": "In turns, among the people you choose."
         },
         "create_card": {
-          "label": "Create a card on another board",
+          "label": "Create a card in another pipeline",
           "hint": "Opens a new card with information from this one."
         },
         "send_whatsapp_message": {
@@ -710,7 +710,7 @@
         }
       },
       "actionGroups": {
-        "board": "On the board",
+        "board": "In the pipeline",
         "contact": "With the contact",
         "integrations": "Integrations"
       },
@@ -744,16 +744,16 @@
             "stage": "When a card goes over the maximum time in <b>{{stage}}</b>"
           },
           "deal_won": {
-            "any": "When a deal is won",
-            "stage": "When a deal in <b>{{stage}}</b> is won"
+            "any": "When a sale is won",
+            "stage": "When a sale in <b>{{stage}}</b> is won"
           },
           "deal_lost": {
-            "any": "When a deal is lost",
-            "stage": "When a deal in <b>{{stage}}</b> is lost"
+            "any": "When a sale is lost",
+            "stage": "When a sale in <b>{{stage}}</b> is lost"
           },
           "deal_reopened": {
-            "any": "When a deal is reopened",
-            "stage": "When a deal in <b>{{stage}}</b> is reopened"
+            "any": "When a sale is reopened",
+            "stage": "When a sale in <b>{{stage}}</b> is reopened"
           }
         },
         "actions": {
@@ -784,7 +784,7 @@
           },
           "create_card": {
             "board": "create a card in <b>{{board}}</b>",
-            "any": "create a card on another board"
+            "any": "create a card in another pipeline"
           },
           "fire_webhook": {
             "host": "call <b>{{host}}</b>",
@@ -837,7 +837,7 @@
         "template": "Choose the template.",
         "url": "Enter an address starting with http:// or https://.",
         "duration": "Say for how long.",
-        "targetBoard": "Choose the board.",
+        "targetBoard": "Choose the pipeline.",
         "cardTitle": "Write the new card's title.",
         "code": "Write the code.",
         "codeTooLong": "The code is over 100,000 characters.",
@@ -913,13 +913,13 @@
           "addHeader": "Add header",
           "removeHeader": "Remove this header",
           "body": "Body",
-          "bodyHint": "With no body, it sends everything the trigger knows about the card, board and stage.",
+          "bodyHint": "With no body, it sends everything the trigger knows about the card, pipeline and stage.",
           "bodyPlaceholder": "{\"card\": \"{{cardTitle}}\", \"stage\": \"{{stageName}}\"}"
         },
         "createCard": {
-          "noBoards": "There's no other board to receive the card. Create a board first.",
-          "board": "On which board",
-          "boardPlaceholder": "Choose the board",
+          "noBoards": "There's no other pipeline to receive the card. Create a pipeline first.",
+          "board": "In which pipeline",
+          "boardPlaceholder": "Choose the pipeline",
           "stage": "On which stage",
           "stageFirst": "First stage",
           "title": "New card's title",
@@ -939,7 +939,7 @@
           "labelsPlaceholder": "Choose the labels",
           "tags": "Tags",
           "tagsPlaceholder": "Separate with commas",
-          "dealValue": "Deal value",
+          "dealValue": "Sale value",
           "companyName": "Company",
           "contactEmail": "Contact email",
           "contactPhone": "Contact phone",
@@ -1005,23 +1005,23 @@
       "snippets": {
         "score": "Add points to the score field",
         "webhook": "Send the card to an external system",
-        "label": "Label deals above a value"
+        "label": "Label sales above a value"
       },
       "insert": "Insert",
       "reference": {
         "params": {
           "title": "What the script receives",
           "card": "The card that fired it, with the kanban API fields.",
-          "board": "The board's ID and name.",
+          "board": "The pipeline's ID and name.",
           "trigger": "This trigger's ID and name.",
           "event": "The event and what came with it (from which stage to which)."
         },
         "find": {
           "title": "Find",
           "card": "A card, with the actions below.",
-          "board": "A board, by ID or name, ignoring accents and case.",
-          "boards": "All boards.",
-          "cardsForConversation": "The conversation's cards, on any board.",
+          "board": "A pipeline, by ID or name, ignoring accents and case.",
+          "boards": "All pipelines.",
+          "cardsForConversation": "The conversation's cards, in any pipeline.",
           "labels": "The organization's labels."
         },
         "card": {
@@ -1030,7 +1030,7 @@
           "moveTo": "Moves to the stage, respecting the locks. If blocked, returns ok: false.",
           "markWon": "Marks as won.",
           "markLost": "Marks as lost, with the reason.",
-          "reopen": "Reopens the deal.",
+          "reopen": "Reopens the sale.",
           "archive": "Archives.",
           "unarchive": "Unarchives.",
           "addLabel": "Adds a label. A name that doesn't exist is created.",
@@ -1045,11 +1045,11 @@
           "refresh": "Reloads the card from the database."
         },
         "board": {
-          "title": "On the board",
+          "title": "In the pipeline",
           "column": "A stage, by ID or name.",
           "cards": "The cards, with filters.",
           "createCard": "Creates a card in a stage.",
-          "customFields": "The board's fields."
+          "customFields": "The pipeline's fields."
         },
         "contact": {
           "title": "In the card's conversation",
@@ -1080,36 +1080,36 @@
       "linesCount_zero": "Empty"
     },
     "goals": {
-      "description": "How much you want to sell each month. Actual is the sum of the deals won that month.",
+      "description": "How much you want to sell each month. Actual is the sum of the sales won that month.",
       "of": "of",
       "meterText": "{{percent}} of the goal",
-      "boardGoal": "Board goal",
-      "boardGoalHint": "The total the whole board wants to sell in the month.",
+      "boardGoal": "Pipeline goal",
+      "boardGoalHint": "The total the whole pipeline wants to sell in the month.",
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
       "thisMonth": "This month",
       "actionsOf": "Actions for {{name}}",
       "edit": "Edit",
-      "setBoardGoal": "Set board goal",
+      "setBoardGoal": "Set pipeline goal",
       "setGoal": "Set goal",
       "setForOther": "Set a goal for someone else",
       "byPerson": "By person",
       "byPersonHint": "Anyone who owns a card shows up here, even without a goal.",
-      "noPeople": "Nobody owns a card on this board yet.",
+      "noPeople": "Nobody owns a card in this pipeline yet.",
       "goalOf": "{{name}}'s goal",
       "noGoalThisMonth": "No goal this month",
       "notSales": {
-        "title": "Goals are for sales boards",
-        "description": "A goal compares what you wanted to sell with the deals won, and this board has no deals.",
-        "action": "See board settings"
+        "title": "Goals are for sales pipelines",
+        "description": "A goal compares what you wanted to sell with the sales won, and this pipeline has no sales.",
+        "action": "See pipeline settings"
       },
       "noBoardGoal": {
         "title": "No goal for {{month}}",
-        "description": "For example: $45,000 in sales for the month. Actual updates itself with each deal won."
+        "description": "For example: $45,000 in sales for the month. Actual updates itself with each sale won."
       },
       "history": {
         "title": "Last {{count}} months",
-        "description": "Revenue won each month, against the board goal."
+        "description": "Revenue won each month, against the pipeline goal."
       },
       "form": {
         "createTitle": "Set goal",
@@ -1128,18 +1128,18 @@
       "delete": {
         "action": "Delete goal",
         "title": "Delete {{name}} for {{month}}?",
-        "description": "Deals won keep counting. Only the month's goal goes away.",
+        "description": "Sales won keep counting. Only the month's goal goes away.",
         "confirm": "Delete goal",
         "done": "Goal deleted."
       }
     },
     "metrics": {
-      "description": "How the board is doing: what came in, what closed and where cards get stuck.",
-      "restricted": "On this board you see only your own cards, and the numbers count only those.",
+      "description": "How the pipeline is doing: what came in, what closed and where cards get stuck.",
+      "restricted": "In this pipeline you see only your own cards, and the numbers count only those.",
       "periodSection": "In the period",
       "period": "Period",
       "versusPrevious": "vs. previous period",
-      "nowSection": "On the board now",
+      "nowSection": "In the pipeline now",
       "nowHint": "Today's snapshot. It doesn't change with the period.",
       "priority": "By priority",
       "priorityNone": "No priority",
@@ -1149,27 +1149,27 @@
       },
       "empty": {
         "title": "Nothing to measure yet",
-        "description": "When the board has cards, the numbers show up here.",
-        "action": "Open the board"
+        "description": "When the pipeline has cards, the numbers show up here.",
+        "action": "Open the pipeline"
       },
       "tiles": {
         "created": "New cards",
         "won": "Won",
         "lost": "Lost",
         "conversion": "Conversion",
-        "deals_one": "{{count}} deal",
-        "deals_other": "{{count}} deals",
+        "deals_one": "{{count}} sale",
+        "deals_other": "{{count}} sales",
         "nothingClosed": "Nothing closed in this period",
         "active": "Active cards",
-        "totalValue": "Value on the board",
+        "totalValue": "Value in the pipeline",
         "weighted": "Weighted value",
         "weightedHint": "Open value times the probability",
         "overdue": "Overdue",
-        "deals_zero": "No deals"
+        "deals_zero": "No sales"
       },
       "series": {
         "createdCount": "New cards",
-        "wonCount": "Deals won",
+        "wonCount": "Sales won",
         "wonValue": "Revenue"
       },
       "trend": {
@@ -1206,7 +1206,7 @@
       "ranking": {
         "title": "Who closed the most",
         "description": "By value won in the period.",
-        "empty": "No deals closed with an owner in this period.",
+        "empty": "No sales closed with an owner in this period.",
         "detail": "{{won}} · {{lost}} · {{rate}} conversion",
         "won_one": "{{count}} won",
         "won_other": "{{count}} won",
@@ -1228,20 +1228,20 @@
         "value": "Value"
       },
       "deals": {
-        "title": "Deals",
-        "description": "Since the board began.",
-        "empty": "No deals recorded.",
+        "title": "Sales",
+        "description": "Since the pipeline began.",
+        "empty": "No sales recorded.",
         "open": "Open",
         "won": "Won",
         "lost": "Lost"
       },
       "forecast": {
         "title": "Closing forecast",
-        "description": "Open deals, by the month they should close. Tap a month to see which.",
-        "empty": "No open deals with a value.",
+        "description": "Open sales, by the month they should close. Tap a month to see which.",
+        "empty": "No open sales with a value.",
         "noDate": "No forecast",
-        "count_one": "{{count}} deal",
-        "count_other": "{{count}} deals",
+        "count_one": "{{count}} sale",
+        "count_other": "{{count}} sales",
         "weighted": "Weighted:"
       }
     }

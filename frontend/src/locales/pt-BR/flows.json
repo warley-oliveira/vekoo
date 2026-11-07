@@ -22,7 +22,7 @@
       "ai": { "title": "Deixar a IA cuidar" },
       "decide": { "title": "Decidir e esperar" },
       "organize": { "title": "Organizar a conversa" },
-      "pipeline": { "title": "Cards e negócios" },
+      "pipeline": { "title": "Cards e vendas" },
       "connect": { "title": "Outros sistemas e código" },
       "finish": { "title": "Encerrar" }
     },
@@ -209,16 +209,16 @@
       },
       "pipeline_mark_won": {
         "label": "Marcar como ganho",
-        "description": "Fecha o negócio como ganho",
+        "description": "Fecha a venda como ganha",
         "keywords": "card negocio venda ganho fechar"
       },
       "pipeline_mark_lost": {
         "label": "Marcar como perdido",
-        "description": "Fecha o negócio, com o motivo",
+        "description": "Fecha a venda, com o motivo",
         "keywords": "card negocio perda perdido"
       },
       "pipeline_reopen_deal": {
-        "label": "Reabrir negócio",
+        "label": "Reabrir venda",
         "description": "Desfaz o ganho ou a perda",
         "keywords": "card negocio reabrir"
       },
@@ -244,17 +244,17 @@
       },
       "pipeline_archive_card": {
         "label": "Arquivar card",
-        "description": "Tira o card do quadro",
+        "description": "Tira o card do pipeline",
         "keywords": "card arquivar"
       },
       "pipeline_create_deal": {
-        "label": "Criar negócio",
-        "description": "Cria um negócio com valor, em qualquer quadro",
+        "label": "Criar venda",
+        "description": "Cria uma venda com valor, em qualquer pipeline",
         "keywords": "negocio deal venda valor oportunidade"
       },
       "pipeline_update_deal": {
-        "label": "Atualizar negócio",
-        "description": "Muda o negócio criado antes neste fluxo",
+        "label": "Atualizar venda",
+        "description": "Muda a venda criada antes neste fluxo",
         "keywords": "negocio deal atualizar valor"
       },
       "http_request": {
@@ -354,7 +354,7 @@
         "last_sentiment": "Último tom da mensagem",
         "pipeline_card_id": "Card criado",
         "pipeline_error": "Motivo do erro no card",
-        "last_deal_id": "Negócio criado",
+        "last_deal_id": "Venda criada",
         "catalog_results": "O que achou no catálogo",
         "catalog_results_total": "Quantos achou no catálogo",
         "item": "Item da repetição",
@@ -381,7 +381,7 @@
       "agent": "Escolha quem atende",
       "team": "Escolha o departamento",
       "funnelStage": "Escolha o funil e a etapa",
-      "boardStage": "Escolha o quadro e a etapa",
+      "boardStage": "Escolha o pipeline e a etapa",
       "dealStage": "Escolha a etapa",
       "url": "Informe o endereço",
       "tool": "Escolha a função",
@@ -472,9 +472,9 @@
       "comment": "Comenta: {{text}}",
       "checklist_one": "{{name}}, com 1 item",
       "checklist_other": "{{name}}, com {{count}} itens",
-      "archiveCard": "Tira o card do quadro",
+      "archiveCard": "Tira o card do pipeline",
       "createDeal": "Em {{stage}}",
-      "updateDeal": "Muda o último negócio criado",
+      "updateDeal": "Muda a última venda criada",
       "tool": "Executa {{name}}",
       "goto": "Chama {{name}}",
       "catalogQuery": "Busca: {{query}}",
@@ -669,7 +669,7 @@
         "label": "Etapa",
         "placeholder": "Escolha uma etapa",
         "pick": "Escolha uma etapa",
-        "pickBoard": "Escolha o quadro primeiro"
+        "pickBoard": "Escolha o pipeline primeiro"
       },
       "method": {
         "label": "Método"
@@ -742,9 +742,9 @@
         "fastHint": "Mais rápido e barato. Não usa as instruções gerais do fluxo, só as deste bloco."
       },
       "board_id": {
-        "label": "Quadro",
-        "placeholder": "Escolha um quadro",
-        "empty": "Nenhum quadro ativo. Crie um em Pipelines."
+        "label": "Pipeline",
+        "placeholder": "Escolha um pipeline",
+        "empty": "Nenhum pipeline ativo. Crie um em Pipelines."
       },
       "title": {
         "label": "Título",
@@ -763,7 +763,7 @@
         "urgent": "Urgente"
       },
       "deal_value": {
-        "label": "Valor do negócio",
+        "label": "Valor da venda",
         "placeholder": "1500"
       },
       "deal_probability": {
@@ -825,7 +825,7 @@
         "placeholder": "Escolha uma pessoa"
       },
       "card_id": {
-        "label": "Qual negócio",
+        "label": "Qual venda",
         "hint": "Sem isto, o último criado neste fluxo."
       },
       "trigger": {
@@ -1105,7 +1105,7 @@
         "placeholder": "Escolha o card",
         "entersIn": "Entra em {{stage}}",
         "latest": "O card mais recente da conversa",
-        "latestHint": "Num quadro que você escolhe",
+        "latestHint": "Num pipeline que você escolhe",
         "useCreator": "Usar o card de \"{{name}}\"",
         "noCreator": "Nenhum \"Criar card\" vem antes deste bloco. Ligue um antes, ou use o card mais recente da conversa.",
         "creatorGone": "O \"Criar card\" escolhido foi excluído. Escolha outro.",
@@ -1134,17 +1134,17 @@
       "pipeline_set_custom_field": {
         "title": "Campo personalizado",
         "pickCard": "Escolha o card primeiro",
-        "empty": "Este quadro não tem campos personalizados.",
+        "empty": "Este pipeline não tem campos personalizados.",
         "options": "Opções: {{options}}"
       },
       "pipeline_mark_won": {
-        "note": "Fecha o negócio como ganho. Se o quadro exigir campos, eles precisam estar preenchidos."
+        "note": "Fecha a venda como ganha. Se o pipeline exigir campos, eles precisam estar preenchidos."
       },
       "pipeline_reopen_deal": {
-        "note": "Desfaz o ganho ou a perda, e o negócio volta para o quadro."
+        "note": "Desfaz o ganho ou a perda, e a venda volta para o pipeline."
       },
       "pipeline_archive_card": {
-        "note": "O card sai do quadro, mas continua no histórico."
+        "note": "O card sai do pipeline, mas continua no histórico."
       },
       "pipeline_add_label": {
         "note": "Se a etiqueta não existir, é criada com este nome.",
@@ -1163,10 +1163,10 @@
         "addItem": "Adicionar item"
       },
       "pipeline_create_deal": {
-        "note": "Cria direto, em qualquer quadro, sem as travas da etapa. Se algo não servir, fica no histórico e o fluxo segue."
+        "note": "Cria direto, em qualquer pipeline, sem as travas da etapa. Se algo não servir, fica no histórico e o fluxo segue."
       },
       "pipeline_update_deal": {
-        "note": "Atualiza o último negócio criado neste fluxo. Mudar de etapa não confere as travas."
+        "note": "Atualiza a última venda criada neste fluxo. Mudar de etapa não confere as travas."
       }
     },
     "save": {
@@ -1252,7 +1252,7 @@
       "seconds": "{{value}} s",
       "stepFailed": "Não deu certo",
       "stepWaiting": "Esperando",
-      "stepSkippedBoard": "No teste, não mexe no quadro",
+      "stepSkippedBoard": "No teste, não mexe no pipeline",
       "stepStayed": "Continuou a conversa. {{reason}}",
       "stepLeft": "Seguiu por \"{{name}}\". {{reason}}",
       "status": {
@@ -1267,7 +1267,7 @@
       },
       "notes": {
         "templateSent": "Modelo do WhatsApp enviado: {{name}}. No teste, nada sai de verdade.",
-        "pipelineSkipped": "\"{{name}}\" não mexe no quadro durante o teste. Para ver um card nascer, teste numa conversa de verdade.",
+        "pipelineSkipped": "\"{{name}}\" não mexe no pipeline durante o teste. Para ver um card nascer, teste numa conversa de verdade.",
         "attachmentMissing": "Um anexo citado no texto não existe mais, e saiu da mensagem. {{reason}}",
         "event": "Evento: {{name}}",
         "aiLeft": "A IA seguiu por \"{{name}}\". {{reason}}",
@@ -1457,7 +1457,7 @@
         "tags": { "title": "Etiquetas e atribuição", "hint": "Marcar a conversa e passar para alguém." },
         "collection": { "title": "Tabelas", "hint": "Tabelas livres da organização, criadas na hora." },
         "catalog": { "title": "Catálogo", "hint": "Busca e leitura dos produtos." },
-        "kanban": { "title": "Pipelines", "hint": "Quadros, etapas e cards." },
+        "kanban": { "title": "Pipelines", "hint": "Pipelines, etapas e cards." },
         "agenda": { "title": "Agenda", "hint": "Serviços, horários e turmas." },
         "utilities": { "title": "Utilidades", "hint": "Registro, espera, rotas e criptografia." }
       }
@@ -1616,7 +1616,7 @@
         "already_running": "O outro fluxo já estava rodando nesta conversa.",
         "no_funnel_stage": "Nenhuma etapa escolhida.",
         "funnel_stage_not_found": "O funil ou a etapa não existem mais.",
-        "playground": "No teste do editor, nada mexe em quadro.",
+        "playground": "No teste do editor, nada mexe em pipeline.",
         "empty": "O texto ficou vazio.",
         "nothing_after": "Não havia nada depois da espera.",
         "invalid_or_missing_stage": "A etapa não existe mais.",

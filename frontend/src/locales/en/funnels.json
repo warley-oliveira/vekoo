@@ -2,7 +2,7 @@
   "funnels": {
     "select": "Choose funnel",
     "actionsOf": "Actions for funnel {{name}}",
-    "refresh": "Refresh board",
+    "refresh": "Refresh funnel",
     "count_one": "{{value}} conversation",
     "count_other": "{{value}} conversations",
     "countNone": "No conversations",

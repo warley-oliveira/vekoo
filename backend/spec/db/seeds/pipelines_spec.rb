@@ -69,7 +69,7 @@ RSpec.describe "db/seeds/pipelines.rb" do
     expect(commercial.custom_fields.pluck(:key)).to include("origem_do_contato", "lead_score", "forma_de_pagamento", "validade_da_proposta")
     expect(commercial.lead_score_field_key).to eq("lead_score")
     expect(commercial.stages.second.checklist_items.count).to eq(3)
-    expect(commercial.saved_filters.pluck(:name)).to contain_exactly("Negócios acima de R$ 5 mil", "Atacado quente")
+    expect(commercial.saved_filters.pluck(:name)).to contain_exactly("Vendas acima de R$ 5 mil", "Atacado quente")
     expect(commercial.saved_filters.map(&:valid?)).to all(be(true))
   end
 

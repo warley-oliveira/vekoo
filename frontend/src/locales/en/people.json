@@ -321,7 +321,7 @@
         },
         "pipelines": {
           "label": "Pipelines",
-          "description": "Follow and move cards on the boards."
+          "description": "Follow and move cards in the pipelines."
         },
         "chat": {
           "label": "Chat",

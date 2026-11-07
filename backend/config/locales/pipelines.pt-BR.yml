@@ -17,7 +17,7 @@ pt-BR:
         - "Perdido"
     boards:
       visibility_lockout: "Inclua o seu grupo de permissão: sem ele, você perderia o acesso a estes cards."
-      invalid_lead_score_field: "A pontuação precisa usar um campo de número deste quadro."
+      invalid_lead_score_field: "A pontuação precisa usar um campo de número deste pipeline."
       invalid_period: "Escolha um período válido, de até três anos."
     cards:
       unnamed_contact: "Contato sem nome"
@@ -34,7 +34,7 @@ pt-BR:
         flow: "Fluxo"
     notices:
       trigger_title: "Pipeline"
-      trigger_default: "O card \"%{card}\" foi atualizado no quadro \"%{board}\"."
+      trigger_default: "O card \"%{card}\" foi atualizado no pipeline \"%{board}\"."
       sla_title: "Tempo da etapa esgotado"
       sla_body: "O card \"%{card}\" passou de %{hours}h na etapa \"%{stage}\"."
     webhook:
@@ -42,7 +42,7 @@ pt-BR:
     triggers:
       failures:
         stage_not_found: "A etapa escolhida não existe mais."
-        board_not_found: "O quadro escolhido não existe mais."
+        board_not_found: "O pipeline escolhido não existe mais."
         no_accounts: "Nenhuma das pessoas escolhidas está ativa."
         connector_not_found: "O canal escolhido não existe mais."
         connector_not_waba: "Modelo de mensagem só funciona em canal do WhatsApp Business."
@@ -95,13 +95,13 @@ pt-BR:
       pipelines/board:
         name: "Nome"
         organization: "Organização"
-        board_type: "Tipo do quadro"
-        deal_close_behavior: "Comportamento ao fechar negócio"
+        board_type: "Tipo do pipeline"
+        deal_close_behavior: "Comportamento ao fechar a venda"
         card_visibility: "Visibilidade dos cards"
         card_visibility_bypass_role_ids: "Grupos liberados"
         auto_archive_days: "Dias para arquivar"
-        deal_close_archive_days: "Dias para arquivar negócio fechado"
-        deal_rotting_days: "Dias para o negócio esfriar"
+        deal_close_archive_days: "Dias para arquivar a venda fechada"
+        deal_rotting_days: "Dias para a venda esfriar"
         lead_score_low: "Pontuação baixa"
         lead_score_high: "Pontuação alta"
       pipelines/stage:
@@ -220,4 +220,4 @@ pt-BR:
               code_blank: "está sem código na posição %{index}"
               code_too_long: "tem código com mais de %{count} caracteres na posição %{index}"
             event_type:
-              crm_only: "só vale em quadros de negócios"
+              crm_only: "só vale em pipelines de vendas"

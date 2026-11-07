@@ -1,7 +1,7 @@
 {
   "pipelinesAdmin": {
     "routes": {
-      "settings": "Ajustes do quadro",
+      "settings": "Ajustes do pipeline",
       "triggers": "Gatilhos",
       "goals": "Metas",
       "fields": "Campos",
@@ -28,26 +28,26 @@
     },
     "errors": {
       "generic": "Não deu certo. Tente de novo em instantes.",
-      "forbidden": "Você não tem permissão para fazer isso neste quadro.",
+      "forbidden": "Você não tem permissão para fazer isso neste pipeline.",
       "network": "Sem conexão com o servidor. Confira a internet e tente de novo."
     },
     "boardTypes": {
-      "standard": "Quadro padrão",
-      "crm": "Quadro de vendas"
+      "standard": "Pipeline padrão",
+      "crm": "Pipeline de vendas"
     },
     "frame": {
       "notFound": {
-        "title": "Quadro não encontrado",
+        "title": "Pipeline não encontrado",
         "description": "Ele pode ter sido excluído, ou o endereço está errado.",
-        "action": "Ver quadros"
+        "action": "Ver pipelines"
       },
       "archived": {
-        "title": "Este quadro está arquivado",
-        "description": "Ele saiu do menu, e os gatilhos e o auto-arquivamento não rodam em quadro arquivado."
+        "title": "Este pipeline está arquivado",
+        "description": "Ele saiu do menu, e os gatilhos e o auto-arquivamento não rodam em pipeline arquivado."
       }
     },
     "icons": {
-      "kanban": "Quadro",
+      "kanban": "Colunas",
       "hand-coins": "Dinheiro na mão",
       "trending-up": "Crescimento",
       "target": "Alvo",
@@ -81,32 +81,32 @@
       "house": "Casa"
     },
     "settings": {
-      "pageDescription": "O que este quadro é e como ele funciona. Cada assunto salva sozinho.",
+      "pageDescription": "O que este pipeline é e como ele funciona. Cada assunto salva sozinho.",
       "identity": {
         "title": "Identidade",
-        "description": "Como o quadro aparece no menu e nas listas.",
+        "description": "Como o pipeline aparece no menu e nas listas.",
         "name": "Nome",
         "namePlaceholder": "Ex.: Vendas no atacado",
-        "nameRequired": "Dê um nome ao quadro.",
+        "nameRequired": "Dê um nome ao pipeline.",
         "nameTooLong": "Use até 120 caracteres.",
         "noName": "Sem nome",
         "descriptionLabel": "Descrição",
-        "descriptionPlaceholder": "Para que serve este quadro?",
+        "descriptionPlaceholder": "Para que serve este pipeline?",
         "color": "Cor",
         "noColor": "Sem cor",
         "clearColor": "Tirar a cor",
         "icon": "Ícone",
         "submit": "Salvar identidade",
-        "saved": "Identidade do quadro salva."
+        "saved": "Identidade do pipeline salva."
       },
       "deals": {
-        "title": "Pontuação e negócios",
-        "description": "O que chama a atenção no card: o negócio que esfriou e a pontuação de cada contato.",
-        "rotting": "Negócio esfria depois de quantos dias?",
-        "rottingHint": "Tempo parado na mesma etapa, sem negócio fechado. Vazio: nunca esfria.",
+        "title": "Pontuação e vendas",
+        "description": "O que chama a atenção no card: a venda que esfriou e a pontuação de cada contato.",
+        "rotting": "A venda esfria depois de quantos dias?",
+        "rottingHint": "Tempo parado na mesma etapa, sem a venda fechar. Vazio: nunca esfria.",
         "wholeDays": "Use um número inteiro de dias.",
         "scoreField": "Campo da pontuação",
-        "scoreHint": "Um campo de número do quadro. O card mostra uma marca com a faixa em que ele está.",
+        "scoreHint": "Um campo de número do pipeline. O card mostra uma marca com a faixa em que ele está.",
         "scoreNoFields": "Crie um campo de número em Campos para usar a pontuação.",
         "scoreOff": "Sem pontuação",
         "scoreLow": "Até aqui é frio",
@@ -114,16 +114,16 @@
         "scoreOrder": "Precisa ser maior que o limite de frio.",
         "scorePreview": "Abaixo de {{low}}: frio. De {{low}} a {{high}}: morno. Acima de {{high}}: quente.",
         "submit": "Salvar pontuação",
-        "saved": "Pontuação e negócios salvos.",
+        "saved": "Pontuação e vendas salvas.",
         "titleScore": "Pontuação",
         "descriptionScore": "O que chama a atenção no card: a pontuação de cada contato."
       },
       "visibility": {
         "title": "Quem vê os cards",
         "description": "Vale para o quadro, a lista, as métricas e os gatilhos. A dona da organização sempre vê tudo.",
-        "mode": "Neste quadro",
+        "mode": "Neste pipeline",
         "modeAll": "Todo mundo vê todos os cards",
-        "modeAllHint": "Quem tem acesso a pipelines vê o quadro inteiro.",
+        "modeAllHint": "Quem tem acesso a pipelines vê o pipeline inteiro.",
         "modeAssigned": "Cada pessoa vê só os cards dela",
         "modeAssignedHint": "Só os grupos liberados abaixo continuam vendo tudo.",
         "roles": "Grupos que continuam vendo tudo",
@@ -131,30 +131,30 @@
         "rolesPlaceholder": "Escolha os grupos",
         "rolesRequired": "Escolha ao menos um grupo.",
         "unassignedNotice": "Cards sem responsável aparecem só para os grupos liberados. Quem está restrito passa a ser o responsável pelo card que cria sem atribuir.",
-        "noRolesLeft": "O último grupo liberado foi apagado. O quadro continua restrito, e só a dona da organização vê tudo. Escolha um grupo para liberar outras pessoas.",
-        "restrictedViewer": "Neste quadro, você vê só os cards atribuídos a você. Quem vê todos os cards é que pode mudar esta regra.",
+        "noRolesLeft": "O último grupo liberado foi apagado. O pipeline continua restrito, e só a dona da organização vê tudo. Escolha um grupo para liberar outras pessoas.",
+        "restrictedViewer": "Neste pipeline, você vê só os cards atribuídos a você. Quem vê todos os cards é que pode mudar esta regra.",
         "needsSettings": "Para mudar esta regra, é preciso ter acesso às configurações da organização: é lá que os grupos moram.",
         "submit": "Salvar visibilidade",
         "saved": "Visibilidade salva."
       },
       "archive": {
         "title": "Arquivamento automático",
-        "description": "O que sai do quadro sozinho. Nada é apagado: fica em Arquivados, e dá para restaurar.",
+        "description": "O que sai do pipeline sozinho. Nada é apagado: fica em Arquivados, e dá para restaurar.",
         "staleLabel": "Arquivar card parado há quantos dias?",
         "staleHint": "Conta da última alteração no card. Vazio: nunca arquiva sozinho.",
         "never": "Nunca",
         "stalePreview_one": "Hoje, {{count}} card passaria dessa regra e seria arquivado na próxima varredura.",
         "stalePreview_other": "Hoje, {{count}} cards passariam dessa regra e seriam arquivados na próxima varredura.",
         "daysRange": "Use um número inteiro de 1 a {{max}}.",
-        "dealLabel": "Ao marcar um negócio como ganho ou perdido",
+        "dealLabel": "Ao marcar uma venda como ganha ou perdida",
         "deal": {
           "manual": {
-            "label": "Deixar no quadro",
+            "label": "Deixar no pipeline",
             "hint": "O card continua à vista até alguém arquivar."
           },
           "immediate": {
             "label": "Arquivar na hora",
-            "hint": "O card sai do quadro assim que o negócio fecha."
+            "hint": "O card sai do pipeline assim que a venda fecha."
           },
           "auto_archive_days": {
             "label": "Arquivar depois de alguns dias",
@@ -167,17 +167,17 @@
         "saved": "Arquivamento salvo."
       },
       "danger": {
-        "title": "Tirar o quadro de cena",
+        "title": "Tirar o pipeline de cena",
         "description": "Arquivar tem volta. Excluir, não.",
-        "archive": "Arquivar quadro",
+        "archive": "Arquivar pipeline",
         "archiveHint": "Sai do menu e para de rodar gatilhos. Nada se perde.",
         "archiveTitle": "Arquivar {{name}}?",
-        "archiveDescription": "O quadro sai do menu e os gatilhos param de rodar. Os cards ficam guardados, e dá para tirar do arquivo quando quiser.",
+        "archiveDescription": "O pipeline sai do menu e os gatilhos param de rodar. Os cards ficam guardados, e dá para tirar do arquivo quando quiser.",
         "archived": "{{name}} foi para o arquivo.",
         "unarchive": "Tirar do arquivo",
-        "unarchiveHint": "O quadro volta para o menu, com tudo como estava.",
+        "unarchiveHint": "O pipeline volta para o menu, com tudo como estava.",
         "unarchived": "{{name}} voltou para o menu.",
-        "delete": "Excluir quadro",
+        "delete": "Excluir pipeline",
         "deleteHint": "Leva etapas, cards, gatilhos, metas e filtros. Não tem volta.",
         "deleteTitle": "Excluir {{name}}?",
         "deleteDescription": "Vão junto {{stages}}, {{cards}}, os gatilhos, as metas e os filtros salvos. Isso não tem volta.",
@@ -204,7 +204,7 @@
       "drag": "Mudar a posição de {{name}}",
       "actionsOf": "Ações de {{name}}",
       "empty": {
-        "title": "Este quadro ainda não tem etapas",
+        "title": "Este pipeline ainda não tem etapas",
         "description": "Etapas são os passos do trabalho: por exemplo, Novo, Em andamento e Concluído."
       },
       "row": {
@@ -229,7 +229,7 @@
         "slaHours": "Tempo máximo na etapa, em horas",
         "slaHoursHint": "Passou disso sem sair da etapa, o responsável é avisado e os gatilhos de tempo esgotado rodam.",
         "wipLimit": "Limite de cards",
-        "wipLimitHint": "É só um aviso no quadro: a etapa não recusa card além disso.",
+        "wipLimitHint": "É só um aviso: a etapa não recusa card além disso.",
         "noLimit": "Sem limite",
         "wholeNumber": "Use um número inteiro maior que zero."
       },
@@ -273,7 +273,7 @@
       }
     },
     "fields": {
-      "description": "O que cada card deste quadro guarda além do básico. Arraste para mudar a ordem.",
+      "description": "O que cada card deste pipeline guarda além do básico. Arraste para mudar a ordem.",
       "create": "Criar campo",
       "search": "Buscar campo",
       "count_one": "{{count}} campo",
@@ -292,7 +292,7 @@
         "description": "Confira a escrita ou limpe a busca."
       },
       "groups": {
-        "board": "Em todo o quadro",
+        "board": "Em todo o pipeline",
         "stage": "Só na etapa {{name}}"
       },
       "badges": {
@@ -325,7 +325,7 @@
         "optionsPlaceholder": "Ex.: Pix, Boleto, Cartão",
         "optionsRequired": "Inclua ao menos uma opção.",
         "scope": "Onde aparece",
-        "scopeBoard": "Em todo o quadro",
+        "scopeBoard": "Em todo o pipeline",
         "scopeBoardHint": "Vale para qualquer card, em qualquer etapa.",
         "scopeStage": "Só em uma etapa",
         "scopeStageHint": "Aparece quando o card está nessa etapa.",
@@ -334,8 +334,8 @@
         "stageRequired": "Escolha a etapa.",
         "requiredToLeave": "Precisa estar preenchido para avançar",
         "requiredToLeaveHint": "O card não sai desta etapa para a frente com o campo vazio.",
-        "required": "Obrigatório ao fechar negócio",
-        "requiredHint": "Exigido ao marcar como ganho ou perdido, se o quadro pedir (veja acima).",
+        "required": "Obrigatório ao fechar a venda",
+        "requiredHint": "Exigido ao marcar como ganho ou perdido, se o pipeline pedir (veja acima).",
         "preview": "Como aparece no card",
         "previewName": "Nome do campo",
         "previewOption": "Primeira opção",
@@ -348,13 +348,13 @@
         "action": "Excluir campo",
         "title": "Excluir o campo {{name}}?",
         "description": "Ele some de todos os cards, e os valores preenchidos deixam de aparecer.",
-        "descriptionScore": "Ele some de todos os cards, e os valores preenchidos deixam de aparecer. A pontuação do quadro usa este campo e será desligada.",
+        "descriptionScore": "Ele some de todos os cards, e os valores preenchidos deixam de aparecer. A pontuação do pipeline usa este campo e será desligada.",
         "confirm": "Excluir campo",
         "done": "Campo {{name}} excluído."
       },
       "dealClose": {
-        "title": "Ao fechar um negócio",
-        "description": "Exigir os campos obrigatórios antes de marcar o negócio. Vale na hora.",
+        "title": "Ao fechar uma venda",
+        "description": "Exigir os campos obrigatórios antes de marcar a venda. Vale na hora.",
         "won": "Exigir ao marcar como ganho",
         "lost": "Exigir ao marcar como perdido",
         "affected": "Campos que serão exigidos",
@@ -364,7 +364,7 @@
       "count_zero": "Nenhum campo"
     },
     "labels": {
-      "description": "Marcam os cards para achar e filtrar. Valem para todos os quadros da organização.",
+      "description": "Marcam os cards para achar e filtrar. Valem para todos os pipelines da organização.",
       "create": "Criar etiqueta",
       "search": "Buscar etiqueta",
       "count_one": "{{count}} etiqueta",
@@ -391,7 +391,7 @@
       "form": {
         "createTitle": "Nova etiqueta",
         "editTitle": "Editar etiqueta",
-        "hint": "Vale para todos os quadros da organização.",
+        "hint": "Vale para todos os pipelines da organização.",
         "name": "Nome",
         "namePlaceholder": "Ex.: Quente",
         "nameRequired": "Dê um nome à etiqueta.",
@@ -406,14 +406,14 @@
       "delete": {
         "action": "Excluir etiqueta",
         "title": "Excluir a etiqueta {{name}}?",
-        "description": "Ela sai de todos os cards, em todos os quadros.",
+        "description": "Ela sai de todos os cards, em todos os pipelines.",
         "confirm": "Excluir etiqueta",
         "done": "Etiqueta {{name}} excluída."
       },
       "count_zero": "Nenhuma etiqueta"
     },
     "archived": {
-      "description": "Cards fora do quadro: os arquivados e os negócios fechados.",
+      "description": "Cards fora do pipeline: os arquivados e as vendas fechadas.",
       "search": "Buscar pelo título",
       "tableLabel": "Cards arquivados",
       "filterStatus": "Situação",
@@ -421,8 +421,8 @@
       "count_other": "{{count}} cards",
       "open": "Abrir card",
       "restore": "Restaurar",
-      "restored": "{{title}} voltou para o quadro.",
-      "seeOnBoard": "Ver no quadro",
+      "restored": "{{title}} voltou para o pipeline.",
+      "seeOnBoard": "Ver no pipeline",
       "filters": {
         "all": "Todos",
         "archived": "Arquivados",
@@ -444,14 +444,14 @@
       },
       "empty": {
         "title": "Nada arquivado por aqui",
-        "description": "Quando um card for arquivado ou um negócio fechar, ele aparece nesta lista e dá para restaurar."
+        "description": "Quando um card for arquivado ou uma venda fechar, ele aparece nesta lista e dá para restaurar."
       },
       "reopen": {
-        "action": "Reabrir negócio",
-        "title": "Reabrir o negócio {{title}}?",
-        "description": "Ele deixa de ser ganho ou perdido, volta para o quadro e a etiqueta sai da conversa.",
-        "confirm": "Reabrir negócio",
-        "done": "{{title}} foi reaberto."
+        "action": "Reabrir venda",
+        "title": "Reabrir a venda {{title}}?",
+        "description": "Ela deixa de ser ganha ou perdida, volta para o pipeline e a etiqueta sai da conversa.",
+        "confirm": "Reabrir venda",
+        "done": "A venda {{title}} foi reaberta."
       },
       "delete": {
         "action": "Excluir",
@@ -461,8 +461,8 @@
         "done": "{{title}} foi excluído."
       },
       "bulk": {
-        "restored_one": "{{count}} card voltou para o quadro.",
-        "restored_other": "{{count}} cards voltaram para o quadro.",
+        "restored_one": "{{count}} card voltou para o pipeline.",
+        "restored_other": "{{count}} cards voltaram para o pipeline.",
         "deleteTitle_one": "Excluir {{count}} card?",
         "deleteTitle_other": "Excluir {{count}} cards?",
         "deleted_one": "{{count}} card excluído.",
@@ -490,7 +490,7 @@
       "date": "Data"
     },
     "triggers": {
-      "description": "O quadro trabalha sozinho: quando algo acontece com um card, o gatilho faz o que você pediu.",
+      "description": "O pipeline trabalha sozinho: quando algo acontece com um card, o gatilho faz o que você pediu.",
       "create": "Criar gatilho",
       "viewLabel": "O que ver",
       "viewList": "Gatilhos",
@@ -533,7 +533,7 @@
           "message": "O prazo de {{cardTitle}} venceu."
         },
         "dealWon": {
-          "sentence": "Quando um negócio for ganho, avisar a equipe.",
+          "sentence": "Quando uma venda for ganha, avisar a equipe.",
           "message": "{{cardTitle}} fechou por R$ {{dealValue}}."
         }
       },
@@ -585,12 +585,12 @@
         "chatId": "Código da conversa",
         "tags": "Tags",
         "labels": "Etiquetas",
-        "dealValue": "Valor do negócio",
+        "dealValue": "Valor da venda",
         "companyName": "Empresa",
         "contactEmail": "E-mail do contato",
         "contactPhone": "Telefone do contato",
-        "boardId": "Código do quadro",
-        "boardName": "Nome do quadro",
+        "boardId": "Código do pipeline",
+        "boardName": "Nome do pipeline",
         "stageId": "Código da etapa",
         "stageName": "Nome da etapa",
         "stagePosition": "Posição da etapa",
@@ -598,8 +598,8 @@
       },
       "tokenGroups": {
         "card": "Do card",
-        "deal": "Do negócio",
-        "board": "Do quadro",
+        "deal": "Da venda",
+        "board": "Do pipeline",
         "custom": "Campos personalizados"
       },
       "conditionFields": {
@@ -612,7 +612,7 @@
         "fromStageName": "o nome da etapa de origem",
         "toStageName": "o nome da etapa de destino",
         "slaHours": "o tempo máximo da etapa",
-        "dealValue": "o valor do negócio",
+        "dealValue": "o valor da venda",
         "dealProbability": "a probabilidade",
         "companyName": "a empresa",
         "contactEmail": "o e-mail do contato",
@@ -656,18 +656,18 @@
           "preposition": "em"
         },
         "deal_won": {
-          "label": "um negócio for ganho",
+          "label": "uma venda for ganha",
           "hint": "Ao marcar o card como ganho.",
           "preposition": "em"
         },
         "deal_lost": {
-          "label": "um negócio for perdido",
+          "label": "uma venda for perdida",
           "hint": "Ao marcar o card como perdido.",
           "preposition": "em"
         },
         "deal_reopened": {
-          "label": "um negócio for reaberto",
-          "hint": "Ao reabrir um negócio já fechado.",
+          "label": "uma venda for reaberta",
+          "hint": "Ao reabrir uma venda já fechada.",
           "preposition": "em"
         }
       },
@@ -678,14 +678,14 @@
         },
         "move_card": {
           "label": "Mover o card",
-          "hint": "Leva o card para outra etapa deste quadro."
+          "hint": "Leva o card para outra etapa deste pipeline."
         },
         "assign_user": {
           "label": "Distribuir o card",
           "hint": "Em rodízio, entre as pessoas que você escolher."
         },
         "create_card": {
-          "label": "Criar um card em outro quadro",
+          "label": "Criar um card em outro pipeline",
           "hint": "Abre um card novo, com informações deste."
         },
         "send_whatsapp_message": {
@@ -710,7 +710,7 @@
         }
       },
       "actionGroups": {
-        "board": "No quadro",
+        "board": "No pipeline",
         "contact": "Com o contato",
         "integrations": "Integrações"
       },
@@ -744,16 +744,16 @@
             "stage": "Quando um card passar do tempo máximo em <b>{{stage}}</b>"
           },
           "deal_won": {
-            "any": "Quando um negócio for ganho",
-            "stage": "Quando um negócio em <b>{{stage}}</b> for ganho"
+            "any": "Quando uma venda for ganha",
+            "stage": "Quando uma venda em <b>{{stage}}</b> for ganha"
           },
           "deal_lost": {
-            "any": "Quando um negócio for perdido",
-            "stage": "Quando um negócio em <b>{{stage}}</b> for perdido"
+            "any": "Quando uma venda for perdida",
+            "stage": "Quando uma venda em <b>{{stage}}</b> for perdida"
           },
           "deal_reopened": {
-            "any": "Quando um negócio for reaberto",
-            "stage": "Quando um negócio em <b>{{stage}}</b> for reaberto"
+            "any": "Quando uma venda for reaberta",
+            "stage": "Quando uma venda em <b>{{stage}}</b> for reaberta"
           }
         },
         "actions": {
@@ -784,7 +784,7 @@
           },
           "create_card": {
             "board": "criar um card em <b>{{board}}</b>",
-            "any": "criar um card em outro quadro"
+            "any": "criar um card em outro pipeline"
           },
           "fire_webhook": {
             "host": "chamar <b>{{host}}</b>",
@@ -837,7 +837,7 @@
         "template": "Escolha o modelo.",
         "url": "Informe um endereço que comece com http:// ou https://.",
         "duration": "Diga por quanto tempo.",
-        "targetBoard": "Escolha o quadro.",
+        "targetBoard": "Escolha o pipeline.",
         "cardTitle": "Escreva o título do card novo.",
         "code": "Escreva o código.",
         "codeTooLong": "O código passou de 100 mil caracteres.",
@@ -913,13 +913,13 @@
           "addHeader": "Adicionar cabeçalho",
           "removeHeader": "Tirar este cabeçalho",
           "body": "Corpo",
-          "bodyHint": "Sem corpo, vai tudo o que o gatilho sabe do card, do quadro e da etapa.",
+          "bodyHint": "Sem corpo, vai tudo o que o gatilho sabe do card, do pipeline e da etapa.",
           "bodyPlaceholder": "{\"card\": \"{{cardTitle}}\", \"etapa\": \"{{stageName}}\"}"
         },
         "createCard": {
-          "noBoards": "Não há outro quadro para receber o card. Crie um quadro antes.",
-          "board": "Em qual quadro",
-          "boardPlaceholder": "Escolha o quadro",
+          "noBoards": "Não há outro pipeline para receber o card. Crie um pipeline antes.",
+          "board": "Em qual pipeline",
+          "boardPlaceholder": "Escolha o pipeline",
           "stage": "Em qual etapa",
           "stageFirst": "Primeira etapa",
           "title": "Título do card novo",
@@ -939,7 +939,7 @@
           "labelsPlaceholder": "Escolha as etiquetas",
           "tags": "Tags",
           "tagsPlaceholder": "Separe por vírgula",
-          "dealValue": "Valor do negócio",
+          "dealValue": "Valor da venda",
           "companyName": "Empresa",
           "contactEmail": "E-mail do contato",
           "contactPhone": "Telefone do contato",
@@ -1005,23 +1005,23 @@
       "snippets": {
         "score": "Somar pontos no campo de pontuação",
         "webhook": "Mandar o card para um sistema externo",
-        "label": "Etiquetar negócio acima de um valor"
+        "label": "Etiquetar venda acima de um valor"
       },
       "insert": "Inserir",
       "reference": {
         "params": {
           "title": "O que o script recebe",
           "card": "O card que disparou, com os campos da API kanban.",
-          "board": "Id e nome do quadro.",
+          "board": "Id e nome do pipeline.",
           "trigger": "Id e nome deste gatilho.",
           "event": "O evento, e o que veio com ele (de qual etapa para qual)."
         },
         "find": {
           "title": "Achar",
           "card": "Um card, com as ações abaixo.",
-          "board": "Um quadro, por id ou nome, sem ligar para acento e caixa.",
-          "boards": "Todos os quadros.",
-          "cardsForConversation": "Os cards da conversa, em qualquer quadro.",
+          "board": "Um pipeline, por id ou nome, sem ligar para acento e caixa.",
+          "boards": "Todos os pipelines.",
+          "cardsForConversation": "Os cards da conversa, em qualquer pipeline.",
           "labels": "As etiquetas da organização."
         },
         "card": {
@@ -1030,7 +1030,7 @@
           "moveTo": "Move para a etapa, respeitando as travas. Bloqueado, volta ok: false.",
           "markWon": "Marca como ganho.",
           "markLost": "Marca como perdido, com o motivo.",
-          "reopen": "Reabre o negócio.",
+          "reopen": "Reabre a venda.",
           "archive": "Arquiva.",
           "unarchive": "Tira do arquivo.",
           "addLabel": "Põe uma etiqueta. Nome que não existe cria.",
@@ -1045,11 +1045,11 @@
           "refresh": "Relê o card do banco."
         },
         "board": {
-          "title": "No quadro",
+          "title": "No pipeline",
           "column": "Uma etapa, por id ou nome.",
           "cards": "Os cards, com filtros.",
           "createCard": "Cria um card em uma etapa.",
-          "customFields": "Os campos do quadro."
+          "customFields": "Os campos do pipeline."
         },
         "contact": {
           "title": "Na conversa do card",
@@ -1080,36 +1080,36 @@
       "linesCount_zero": "Vazio"
     },
     "goals": {
-      "description": "Quanto se quer vender por mês. O realizado é a soma dos negócios ganhos no mês.",
+      "description": "Quanto se quer vender por mês. O realizado é a soma das vendas ganhas no mês.",
       "of": "de",
       "meterText": "{{percent}} da meta",
-      "boardGoal": "Meta do quadro",
-      "boardGoalHint": "O total que o quadro inteiro quer vender no mês.",
+      "boardGoal": "Meta do pipeline",
+      "boardGoalHint": "O total que o pipeline inteiro quer vender no mês.",
       "previousMonth": "Mês anterior",
       "nextMonth": "Próximo mês",
       "thisMonth": "Este mês",
       "actionsOf": "Ações de {{name}}",
       "edit": "Editar",
-      "setBoardGoal": "Definir meta do quadro",
+      "setBoardGoal": "Definir meta do pipeline",
       "setGoal": "Definir meta",
       "setForOther": "Definir meta para outra pessoa",
       "byPerson": "Por pessoa",
       "byPersonHint": "Quem é responsável por algum card aparece aqui, mesmo sem meta.",
-      "noPeople": "Ninguém é responsável por um card deste quadro ainda.",
+      "noPeople": "Ninguém é responsável por um card deste pipeline ainda.",
       "goalOf": "Meta de {{name}}",
       "noGoalThisMonth": "Sem meta neste mês",
       "notSales": {
-        "title": "Metas são de quadro de vendas",
-        "description": "A meta compara o que se quis vender com os negócios ganhos, e este quadro não tem negócios.",
-        "action": "Ver ajustes do quadro"
+        "title": "Metas são de pipeline de vendas",
+        "description": "A meta compara o que se quis vender com as vendas ganhas, e este pipeline não tem vendas.",
+        "action": "Ver ajustes do pipeline"
       },
       "noBoardGoal": {
         "title": "Sem meta para {{month}}",
-        "description": "Por exemplo: R$ 45.000 em vendas no mês. O realizado se atualiza sozinho, a cada negócio ganho."
+        "description": "Por exemplo: R$ 45.000 em vendas no mês. O realizado se atualiza sozinho, a cada venda ganha."
       },
       "history": {
         "title": "Últimos {{count}} meses",
-        "description": "A receita ganha em cada mês, contra a meta do quadro."
+        "description": "A receita ganha em cada mês, contra a meta do pipeline."
       },
       "form": {
         "createTitle": "Definir meta",
@@ -1128,18 +1128,18 @@
       "delete": {
         "action": "Excluir meta",
         "title": "Excluir {{name}} de {{month}}?",
-        "description": "Os negócios ganhos continuam contando. Só a meta do mês some.",
+        "description": "As vendas ganhas continuam contando. Só a meta do mês some.",
         "confirm": "Excluir meta",
         "done": "Meta excluída."
       }
     },
     "metrics": {
-      "description": "Como o quadro está indo: o que entrou, o que fechou e onde os cards ficam parados.",
-      "restricted": "Neste quadro, você vê só os seus cards, e os números contam só eles.",
+      "description": "Como o pipeline está indo: o que entrou, o que fechou e onde os cards ficam parados.",
+      "restricted": "Neste pipeline, você vê só os seus cards, e os números contam só eles.",
       "periodSection": "No período",
       "period": "Período",
       "versusPrevious": "vs. período anterior",
-      "nowSection": "Agora no quadro",
+      "nowSection": "Agora no pipeline",
       "nowHint": "A fotografia de hoje. Não muda com o período.",
       "priority": "Por prioridade",
       "priorityNone": "Sem prioridade",
@@ -1149,27 +1149,27 @@
       },
       "empty": {
         "title": "Ainda não há o que medir",
-        "description": "Quando o quadro tiver cards, os números aparecem aqui.",
-        "action": "Abrir o quadro"
+        "description": "Quando o pipeline tiver cards, os números aparecem aqui.",
+        "action": "Abrir o pipeline"
       },
       "tiles": {
         "created": "Novos cards",
-        "won": "Ganhos",
-        "lost": "Perdidos",
+        "won": "Vendas ganhas",
+        "lost": "Vendas perdidas",
         "conversion": "Conversão",
-        "deals_one": "{{count}} negócio",
-        "deals_other": "{{count}} negócios",
+        "deals_one": "{{count}} venda",
+        "deals_other": "{{count}} vendas",
         "nothingClosed": "Nada fechou neste período",
         "active": "Cards ativos",
-        "totalValue": "Valor no quadro",
+        "totalValue": "Valor no pipeline",
         "weighted": "Valor ponderado",
         "weightedHint": "Valor em aberto vezes a probabilidade",
         "overdue": "Atrasados",
-        "deals_zero": "Nenhum negócio"
+        "deals_zero": "Nenhuma venda"
       },
       "series": {
         "createdCount": "Novos cards",
-        "wonCount": "Negócios ganhos",
+        "wonCount": "Vendas ganhas",
         "wonValue": "Receita"
       },
       "trend": {
@@ -1182,7 +1182,7 @@
         },
         "options": {
           "createdCount": "Novos cards",
-          "wonCount": "Ganhos",
+          "wonCount": "Vendas ganhas",
           "wonValue": "Receita"
         }
       },
@@ -1206,14 +1206,14 @@
       "ranking": {
         "title": "Quem mais fechou",
         "description": "Pelo valor ganho no período.",
-        "empty": "Nenhum negócio fechado com responsável neste período.",
+        "empty": "Nenhuma venda fechada com responsável neste período.",
         "detail": "{{won}} · {{lost}} · {{rate}} de conversão",
-        "won_one": "{{count}} ganho",
-        "won_other": "{{count}} ganhos",
-        "lost_one": "{{count}} perdido",
-        "lost_other": "{{count}} perdidos",
-        "won_zero": "nenhum ganho",
-        "lost_zero": "nenhum perdido"
+        "won_one": "{{count}} venda ganha",
+        "won_other": "{{count}} vendas ganhas",
+        "lost_one": "{{count}} perdida",
+        "lost_other": "{{count}} perdidas",
+        "won_zero": "nenhuma venda ganha",
+        "lost_zero": "nenhuma perdida"
       },
       "goal": {
         "section": "Meta",
@@ -1228,20 +1228,20 @@
         "value": "Valor"
       },
       "deals": {
-        "title": "Negócios",
-        "description": "Desde o começo do quadro.",
-        "empty": "Nenhum negócio registrado.",
+        "title": "Vendas",
+        "description": "Desde o começo do pipeline.",
+        "empty": "Nenhuma venda registrada.",
         "open": "Em aberto",
-        "won": "Ganhos",
-        "lost": "Perdidos"
+        "won": "Ganhas",
+        "lost": "Perdidas"
       },
       "forecast": {
         "title": "Previsão de fechamento",
-        "description": "Os negócios abertos, pelo mês em que devem fechar. Toque em um mês para ver quais.",
-        "empty": "Nenhum negócio aberto com valor.",
+        "description": "As vendas abertas, pelo mês em que devem fechar. Toque em um mês para ver quais.",
+        "empty": "Nenhuma venda aberta com valor.",
         "noDate": "Sem previsão",
-        "count_one": "{{count}} negócio",
-        "count_other": "{{count}} negócios",
+        "count_one": "{{count}} venda",
+        "count_other": "{{count}} vendas",
         "weighted": "Ponderado:"
       }
     }

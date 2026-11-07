@@ -321,7 +321,7 @@
         },
         "pipelines": {
           "label": "Pipelines",
-          "description": "Acompanhar e mover cards nos quadros."
+          "description": "Acompanhar e mover cards nos pipelines."
         },
         "chat": {
           "label": "Chat",

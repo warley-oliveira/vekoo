@@ -17,7 +17,7 @@ en:
         - "Lost"
     boards:
       visibility_lockout: "Include your own permission group: without it you would lose access to these cards."
-      invalid_lead_score_field: "The score must use a number field from this board."
+      invalid_lead_score_field: "The score must use a number field from this pipeline."
       invalid_period: "Choose a valid period, of up to three years."
     cards:
       unnamed_contact: "Unnamed contact"
@@ -34,7 +34,7 @@ en:
         flow: "Flow"
     notices:
       trigger_title: "Pipeline"
-      trigger_default: "The card \"%{card}\" was updated on the board \"%{board}\"."
+      trigger_default: "The card \"%{card}\" was updated in the pipeline \"%{board}\"."
       sla_title: "Stage time is up"
       sla_body: "The card \"%{card}\" has been over %{hours}h in the stage \"%{stage}\"."
     webhook:
@@ -42,7 +42,7 @@ en:
     triggers:
       failures:
         stage_not_found: "The chosen stage no longer exists."
-        board_not_found: "The chosen board no longer exists."
+        board_not_found: "The chosen pipeline no longer exists."
         no_accounts: "None of the chosen people is active."
         connector_not_found: "The chosen channel no longer exists."
         connector_not_waba: "Message templates only work on WhatsApp Business channels."
@@ -95,13 +95,13 @@ en:
       pipelines/board:
         name: "Name"
         organization: "Organization"
-        board_type: "Board type"
-        deal_close_behavior: "Deal closing behavior"
+        board_type: "Pipeline type"
+        deal_close_behavior: "Sale closing behavior"
         card_visibility: "Card visibility"
         card_visibility_bypass_role_ids: "Allowed groups"
         auto_archive_days: "Days to archive"
-        deal_close_archive_days: "Days to archive a closed deal"
-        deal_rotting_days: "Days for a deal to go cold"
+        deal_close_archive_days: "Days to archive a closed sale"
+        deal_rotting_days: "Days for a sale to go cold"
         lead_score_low: "Low score"
         lead_score_high: "High score"
       pipelines/stage:
@@ -220,4 +220,4 @@ en:
               code_blank: "has no code at position %{index}"
               code_too_long: "has code over %{count} characters at position %{index}"
             event_type:
-              crm_only: "only applies to deal boards"
+              crm_only: "only applies to sales pipelines"

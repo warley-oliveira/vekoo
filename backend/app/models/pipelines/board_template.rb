@@ -27,10 +27,10 @@ module Pipelines
         ],
         triggers_config: [
           {
-            name: "Avisar ao fechar negócio",
+            name: "Avisar ao fechar a venda",
             event_type: "card_moved",
             conditions: { to_stage_name: "Fechado/Ganho" },
-            actions: [ { type: "notify", message: "Negócio fechado com sucesso!" } ]
+            actions: [ { type: "notify", message: "Venda fechada com sucesso!" } ]
           }
         ]
       },
