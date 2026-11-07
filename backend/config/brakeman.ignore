@@ -1,1408 +1,27 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "02412a5afaa3be2c79b810a3b36f1788a5b432e4e0f7fc9d470d325aaee56d36",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 106,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NULL OR #{column} = ''\")",
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "af6940ed14339857dc01d8813ec41b353bc5f04e2575295af17743fd8dce249e",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/controllers/unified_contacts_controller.rb",
+      "line": 27,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "pipeline((params[:page] or 1).to_i.clamp(1, 100000), Chats::Filters.expression(Chats::Filters.conditions((params[:filter] or params[:filters])), :time_zone => organization_time_zone))",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
+        "class": "UnifiedContactsController",
+        "method": "index"
       },
-      "user_input": "column",
-      "confidence": "Medium",
+      "user_input": "params[:page]",
+      "confidence": "High",
       "cwe_id": [
-        89
+        77
       ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "02537cc3436c6be18d9f097bd9a4418cc16ab9075c4c735ed5d3eb7cd13e2ef9",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 227,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} BETWEEN ? AND ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", parse_date(value[0]), parse_date(value[1]))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "05da24cb96f17e3c8960d2b2b1c43072bc2229440c34aefa0d2605429ab82545",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 194,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} ILIKE ?\", \"#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0867569c8600010bc201399dcbaac5454097075f4fc15fc1b1ddcb98507aec3e",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 107,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} IS NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "09006fbd3e1ba4fb3e78fadd1d220cd1481a1ab588113032853e94d0b3ffaf41",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 225,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} > ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_point(value).to_date)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0a030b42033cfdc20e246f5d0542a8c6340bfee48a5e68bd2674079db6d05f5e",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 249,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} IN ('true','t','1')\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_checkbox"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0b34b52e51392287b97f49688a655acc64f465839fe658a78e20afec9c51b44d",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 149,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} NOT IN (?) OR #{column} IS NULL\", Array(value).map(&:to_s))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0c3259306e5ad45783aa74b56904948f510910f9ea0bfb33a00c7351638d8dd3",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 215,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "custom_blank_sql(accessor)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0c3af6394ec33f1e7db1dda5df3f2a95bff40ac07c9305e87db728238d5dd2c4",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 157,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} = ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "user_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "0d54f0426908cad91847d6dc76ce3185b64c02e54acd23c38282127e5a9153da",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 224,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} < ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_point(value).to_date)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "Dangerous Eval",
-      "warning_code": 13,
-      "fingerprint": "104da17cfebc2663477423dda73d3bfbb75bfb1a74da2bffde724c42084a5793",
-      "check_name": "Evaluation",
-      "message": "Dynamic code evaluation",
-      "file": "lib/mini_racer_engine/worker.rb",
-      "line": 181,
-      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "::MiniRacer::Context.new(:timeout => Budget.new(:timeout_ms => timeout_ms).timeout_ms, :max_memory => Limits.max_memory(max_memory)).eval(script_source(code, params), :filename => \"user-code.js\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "MiniRacerEngine::Worker",
-        "method": "perform"
-      },
-      "user_input": null,
-      "confidence": "Weak",
-      "cwe_id": [
-        913,
-        95
-      ],
-      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "13083910447b60616a4e14f82f4106ea348f580d51953530caa9bd7a86b8cff3",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 159,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IN (?)\", Array(value))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "user_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "160ebc96e7b7a9b24ee82ab6252f2c40e5b39a958454083d21c0dcd6bd95e629",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 223,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} = ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", parse_date(value))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "16f8da7a7acf5e539274ff6d7aa601aa99b6148016405f3bdffef61b68550fe2",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 138,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} < ? OR #{column} > ? OR #{column} IS NULL\", resolve_date_range(value).begin, resolve_date_range(value).end)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "18bdd6c50b77ed4c26ad920015a0d3d45fd993e00ac3b2ec71f1bb011390bd61",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 150,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NULL OR #{column} = ''\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "199290dd25915f375e1d49dda6a5fe25b8e14b57d9195b260425c1ba715a3810",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 101,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS DISTINCT FROM ?\", value.to_s)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1a42a190c586ad18118a027f80162031f5349ca2bf863f09c5cfd87365e32b19",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 158,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Arel.sql(\"#{expression(source.field(time_range.field))} DESC\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "raw_order"
-      },
-      "user_input": "expression(source.field(time_range.field))",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1ad7cf7a1d8bfa6384a08348ae07f933a4c8ac8bba51b7798fdcc72fdc20ccd9",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/insights/rollups/operational_metrics_backfill.rb",
-      "line": 63,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "DailyChatStat.connection.execute(\"INSERT INTO daily_chat_stats\\n  (id, organization_id, day, metrics, hourly_breakdown, created_at, updated_at)\\nVALUES #{batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")}\\nON CONFLICT (organization_id, day) DO UPDATE\\n  SET metrics = daily_chat_stats.metrics || EXCLUDED.metrics,\\n      hourly_breakdown = EXCLUDED.hourly_breakdown,\\n      updated_at = NOW()\\n\".squish)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Insights::Rollups::OperationalMetricsBackfill",
-        "method": "write"
-      },
-      "user_input": "batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: cada linha de values sai de sanitize_sql_array, com o valor como parâmetro. O SQL é cru porque upsert_all não aceita expressão no DO UPDATE."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1e1345664dbf6b680dabd21cf7cdb8caee915b7a7acf4f80d9c5e853188eda84",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 190,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} = ?\", value.to_s)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1f4f8f049e1bf17de2d2387dfadd69de5f182b3670942de22e51c9e05068eca6",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 252,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Arel.sql(\"#{sort_alias(query[\"sort\"].to_h[\"field\"], renames)} #{direction(query[\"sort\"].to_h)}\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_order"
-      },
-      "user_input": "sort_alias(query[\"sort\"].to_h[\"field\"], renames)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: sort_alias só devolve nome interno (metric_N, dimension_N), e direction só devolve ASC ou DESC. O que o cliente manda nunca entra."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1f75e827b1173ecc24a7af0de1a5f28c542274c282d6c9bf9005c00dfeb18a07",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 105,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} NOT ILIKE ? OR #{column} IS NULL\", \"#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "1ffbe480859c9b30fe75496009bfbdb9adef8a1637641634997c50e5f3a29e3c",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 119,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} BETWEEN ? AND ?\", value[0], value[1])",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "20c7ae3ee27a2eb5019d4492f70f635cac878f3144eba0203a127742800d422c",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 209,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} > ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "2389f195e5923ef6a90a0d1e7591c0a9458e84bfc67aee5134dbda917e4e3086",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 162,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NOT NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "user_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "2707d9b878a10038a480841eb25c61d4dfe624fdcae9528266cb334ba40c737d",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 120,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "2c22de42476e6cc45f40ef062c415b00aefcc00bbafdc3bb57e7ea17764b914c",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 117,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} < ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "322c8baeeedd59445ce9fb156d075b2e45c6abad55a721527f19c00c4c3a7a28",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 212,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} <= ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "34abee42c4ca3090217d58fb5720da4a0f025fe8227897595764bfa3d077c5ad",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 102,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} ILIKE ?\", \"%#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "354d6a445b7d0a9c452ba6fd8d00aa19d7b177dbce023d8ad4c986c3a90bb15d",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 170,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"NOT (#{column} && ARRAY[?]::varchar[])\", Array(value).map(&:to_s))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "array_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "399a0d9fba6a520c494fb55ee9cff63cb4721afbefc5b9074930e2fe489c6395",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 193,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} NOT ILIKE ? OR #{accessor} IS NULL\", \"%#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "3e44f3c5b79fbbeef76c9845d7d23d930f3e355fa459bdded951c4ca4115b468",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 191,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} IS DISTINCT FROM ?\", value.to_s)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "40ab46d5761f2adf7dc72838bc8fe4a3edd87882437d4aadae932fd59444147f",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 208,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} IS NULL OR NOT (#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"} = ?)\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "4228a1fdd927cf3f4d0a5fec3cf3ce715405d97d2e7339a0f6e6053c56c3ab66",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 169,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} @> ARRAY[?]::varchar[]\", Array(value).map(&:to_s))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "array_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "42593b4731ee4e069315d974526787ac95d2429ead371929f40b7c6564b03fc5",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 147,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS DISTINCT FROM ?\", value.to_s)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "42e464a647bad0231aa0f89603ec4cef8eda3e7eb4504bcf0e52c0967f72cc7d",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_attributes/normalization_service.rb",
-      "line": 88,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Chat.where(:organization_id => definition.organization_id.to_s, \"custom_attributes.#{definition.key}\" => value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomAttributes::NormalizationService",
-        "method": "scoped_chats"
-      },
-      "user_input": "definition.key",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: é Mongoid, não SQL. A chave sai da definição do campo, que a gera com parameterize (sem ponto nem cifrão), o valor é texto, e a consulta é presa à organização."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "4402d4459013557787d9d4793d77a721c3836f853252325417bbc13df93d4541",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 101,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} >= ?\", filter[\"value\"].to_f)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "456fc638562ddd12d4f5801c5b96737f61cbecbd8e649c4e3e4cdad97faf60c8",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 172,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} <> '{}'\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "array_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "458a24e1dc11efefcfc572392c7c346f324d1908b1f33e99f47041a189c68eb9",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 102,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} < ?\", filter[\"value\"].to_f)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "48a52d104c690cb5f9bbeb0e1abd6f004b48a61ffe956390af694562591bd3f6",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 195,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} NOT ILIKE ? OR #{accessor} IS NULL\", \"#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "5452c3cd63533c6cad34327b3250f4c89de753674a303d122655de869a921cc4",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 135,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} BETWEEN ? AND ?\", resolve_date_range(value).begin, resolve_date_range(value).end)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "571be8ea18141e9d66baa3cbc465cf274aa43af4920998790b0add658771124f",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 99,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} != ?\", filter[\"value\"].to_f)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "601547cfdbfaeefebf70c23edbc6e1c6b9bc28db57e5de61da8c721abc197969",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 254,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Arel.sql(\"#{dimension_alias(0)} ASC\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_order"
-      },
-      "user_input": "dimension_alias(0)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: alias interno (dimension_0) e ASC fixo. Nada vem do cliente."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "61ba0982dffb766d166f51387ce309fcad29c4cac9de7545ff353575493b1b86",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 114,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS DISTINCT FROM ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "624638eec8bbadb46d096d98c61dd220931c860e68f12e9bf28ac0fdf9c13c7b",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 160,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} NOT IN (?) OR #{column} IS NULL\", Array(value))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "user_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "65fd5c42ea76e2c2318c0ac51c439f2b9c0640cdcab116fb09556c1c89f5e8a9",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 207,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} = ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "67bbd2baf19184fae4d5ae2264370a0669628c2e15e79ca77baa47d136f1bd1d",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 230,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} BETWEEN ? AND ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_range(value).begin.to_date, resolve_date_range(value).end.to_date)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "687b9ccbbe03f37e4522bea8ca487aa4c3b1b15c63d7ef0b928640d0dcbbfb34",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 121,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NOT NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "6d630c8cea4113553c160e03a4cd1e165593598b558a06843ed2e13d807dff33",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 106,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} IS NOT NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "6f1088634623d4e3e158ff4c7d009b72927e2252d2ef6a00965ebec76ee7dcd5",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 199,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "custom_blank_sql(accessor)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "7a2d75a311b772464a2eced36b83076b196b80e1936dfdcc9edddc062f2c7c7e",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 116,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} >= ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "7eb4ea1a5eae0d7efd3b02c548a32ead074d3a4039fce2f1941ad7a1cfd09ece",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 115,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} > ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "7f3171e6f0789751fbbfa2b97778c7b3cfbd4b202df96eabba93cb9f9da36b39",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 129,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} BETWEEN ? AND ?\", parse_date(value).in_time_zone.beginning_of_day, parse_date(value).in_time_zone.end_of_day)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "7f867fc8380b36d9fb8ce32c64c1d668270d0b18a5d5589db50b06f45aa6a629",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 236,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "custom_blank_sql(accessor)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "7fd4e1ef524101d3e085aafb565ac7a12612ec4745cfdab7f19aceab14e89a02",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 211,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} < ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "81030b4c08562a3604585cfa18dc8b159757230fd0b4c49cdea172e20545a4a1",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 139,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "81dd9259dea9ea9bac5dab6882eb5a0dfec9c9db673444916d70e653626e05a1",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 130,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} < ?\", resolve_date_point(value))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "8a98b427a9ecdfca98465bd8541201bef5e59d9783ae97b09b630de83d6852ff",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 192,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} ILIKE ?\", \"%#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "8bc0027b767b764c0f25f4a3eff1e0e21063aee31f3e7891d9ff9e557cd2eec3",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 98,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} = ?\", filter[\"value\"].to_f)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
-      },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "9014c5bd9fb46e8820e5b617ab20e7d46d4908355b78c48bc61f59d1c6c7b649",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 210,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} >= ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "91650cc50edf6588648a98425ae6c3fd963851860079e976752d7775fb64521a",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 213,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"} BETWEEN ? AND ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value[0], value[1])",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_number"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "9c8d011bf73d8d8d6f44a9a6868a3a728c9d00839a70fb9295dcc09ac35507b8",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 100,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} = ?\", value.to_s)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+      "note": "Falso positivo: `pipeline` é um método privado deste controlador, que monta a agregação do Mongo. O Brakeman o confunde com Open3.pipeline. Nenhum comando é executado, e os filtros passam pela lista de Chats::Filters."
     },
     {
       "warning_type": "Command Injection",
@@ -1430,105 +49,59 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "a07cd1be7400b8de097ffe8624635108964aca96797e05bb94ba9456a953f5a6",
+      "fingerprint": "42e464a647bad0231aa0f89603ec4cef8eda3e7eb4504bcf0e52c0967f72cc7d",
       "check_name": "SQL",
       "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 168,
+      "file": "app/services/custom_attributes/normalization_service.rb",
+      "line": 88,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} && ARRAY[?]::varchar[]\", Array(value).map(&:to_s))",
+      "code": "Chat.where(:organization_id => definition.organization_id.to_s, \"custom_attributes.#{definition.key}\" => value)",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "array_condition"
+        "class": "CustomAttributes::NormalizationService",
+        "method": "scoped_chats"
       },
-      "user_input": "column",
-      "confidence": "Medium",
+      "user_input": "definition.key",
+      "confidence": "Weak",
       "cwe_id": [
         89
       ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+      "note": "Falso positivo: é Mongoid, não SQL. A chave sai da definição do campo, que a gera com parameterize (sem ponto nem cifrão), o valor é texto, e a consulta é presa à organização."
     },
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "a2e11f0d1fc52891cc43eefd40d14a7c1837f1c2b21c5819c1780365684ecb1a",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 132,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} BETWEEN ? AND ?\", parse_time(value[0]), parse_time(value[1]))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "adf351284c352c781d221b022c7f49c288336c1ec0211906184e74b7b7a71f54",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 246,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_checkbox"
-      },
-      "user_input": "custom_blank_sql(accessor)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "Command Injection",
-      "warning_code": 14,
-      "fingerprint": "af6940ed14339857dc01d8813ec41b353bc5f04e2575295af17743fd8dce249e",
-      "check_name": "Execute",
-      "message": "Possible command injection",
-      "file": "app/controllers/unified_contacts_controller.rb",
-      "line": 27,
-      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
-      "code": "pipeline((params[:page] or 1).to_i.clamp(1, 100000), Chats::Filters.expression(Chats::Filters.conditions((params[:filter] or params[:filters])), :time_zone => organization_time_zone))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "UnifiedContactsController",
-        "method": "index"
-      },
-      "user_input": "params[:page]",
-      "confidence": "High",
-      "cwe_id": [
-        77
-      ],
-      "note": "Falso positivo: `pipeline` é um método privado deste controlador, que monta a agregação do Mongo. O Brakeman o confunde com Open3.pipeline. Nenhum comando é executado, e os filtros passam pela lista de Chats::Filters."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "b50a2c902c823609ec144eaa6f7760fb420891e64ff26e65199fe79be66a88d7",
+      "fingerprint": "8bc0027b767b764c0f25f4a3eff1e0e21063aee31f3e7891d9ff9e557cd2eec3",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 104,
+      "line": 98,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} IN (?)\", Array(filter[\"value\"]).map(&:to_f))",
+      "code": "scope.where(\"#{expression(field)} = ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "571be8ea18141e9d66baa3cbc465cf274aa43af4920998790b0add658771124f",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 99,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} != ?\", filter[\"value\"].to_f)",
       "render_path": null,
       "location": {
         "type": "method",
@@ -1568,186 +141,94 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "ba9e92715b866d9cafa21f1a5241fdf282d7a1cab8fe7f2640267288d5b98965",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 233,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} IS NULL OR NOT (#{accessor} ~ ? AND #{\"(#{accessor})::date\"} BETWEEN ? AND ?)\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_range(value).begin.to_date, resolve_date_range(value).end.to_date)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_date"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "bfc33e693dc935c6d76bf1cd081f5743c39b9e8b09dc3fbb4005f97fb6fb00b8",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 151,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NOT NULL AND #{column} <> ''\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "c1adf2fb816da15e8693a112dc2e573ea0af343385c9d4b9e23fd757822c027b",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 113,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} = ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "c5dac8a9ace78296c4aac716cdec7d6ebee3aed4566f075f911fd2e96d9ccb58",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 171,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} = '{}'\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "array_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "c74a28226c39585e2120b773dec18eec15db7c856f37ba03a31100d6fb77a6bb",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 131,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} > ?\", resolve_date_point(value))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "c87bdf44b644620132a044d8b3fdc01978835a51c676db046dac87c56363dbdd",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 148,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IN (?)\", Array(value).map(&:to_s))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "c93c54a5fad8d845deb8ab70aa641fcdd30c93d994304733030c3ca5a4781010",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 140,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NOT NULL\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "date_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "cbf691ba56e6df849968f3565d637740fe5def4654d3c07802f755dc3019f271",
+      "fingerprint": "4402d4459013557787d9d4793d77a721c3836f853252325417bbc13df93d4541",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 163,
+      "line": 101,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Arel.sql(\"#{expression(source.field(query[\"sort\"].to_h[\"field\"]))} #{direction(query[\"sort\"].to_h)}\")",
+      "code": "scope.where(\"#{expression(field)} >= ?\", filter[\"value\"].to_f)",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "raw_order"
+        "method": "apply_jsonb_filter"
       },
-      "user_input": "expression(source.field(query[\"sort\"].to_h[\"field\"]))",
-      "confidence": "Medium",
+      "user_input": "expression(field)",
+      "confidence": "Weak",
       "cwe_id": [
         89
       ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "458a24e1dc11efefcfc572392c7c346f324d1908b1f33e99f47041a189c68eb9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 102,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} < ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "e6deffeba95f49e06cc1f57f60ebe97742e9175550bac61b3a43a20b1fc286c8",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 103,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} <= ?\", filter[\"value\"].to_f)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "b50a2c902c823609ec144eaa6f7760fb420891e64ff26e65199fe79be66a88d7",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 104,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IN (?)\", Array(filter[\"value\"]).map(&:to_f))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
     },
     {
       "warning_type": "SQL Injection",
@@ -1775,6 +256,167 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
+      "fingerprint": "6d630c8cea4113553c160e03a4cd1e165593598b558a06843ed2e13d807dff33",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 106,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IS NOT NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0867569c8600010bc201399dcbaac5454097075f4fc15fc1b1ddcb98507aec3e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 107,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "scope.where(\"#{expression(field)} IS NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_jsonb_filter"
+      },
+      "user_input": "expression(field)",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1a42a190c586ad18118a027f80162031f5349ca2bf863f09c5cfd87365e32b19",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 158,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{expression(source.field(time_range.field))} DESC\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_order"
+      },
+      "user_input": "expression(source.field(time_range.field))",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "cbf691ba56e6df849968f3565d637740fe5def4654d3c07802f755dc3019f271",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 163,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{expression(source.field(query[\"sort\"].to_h[\"field\"]))} #{direction(query[\"sort\"].to_h)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_order"
+      },
+      "user_input": "expression(source.field(query[\"sort\"].to_h[\"field\"]))",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A direção só pode ser ASC ou DESC."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "a24508f3042454e11e5319f811a3cdac62f4048e42e894b2d22251411cc41d75",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 165,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{field.sql} AS #{connection.quote_column_name(field.db_column)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_scope"
+      },
+      "user_input": "field.sql",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que entra no SQL não vem da requisição. O campo sai de `source.field`, uma lista fechada no registro de fontes (com `sql:` constante, coluna citada por `quote_column_name` e chave jsonb por `connection.quote`); a direção só pode ser ASC ou DESC; `sort_alias` e `dimension_alias` devolvem apelidos internos (`metric_N`, `dimension_N`), ou recusam com `invalidSort`."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0e4c62ab1ecac80149794fdeecbfe8099b0d96789b29fbfab259b201eb180e64",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 175,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{expression(source.field(query[\"sort\"].to_h[\"field\"]))} #{direction(query[\"sort\"].to_h)} NULLS LAST\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "raw_order"
+      },
+      "user_input": "expression(source.field(query[\"sort\"].to_h[\"field\"]))",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que entra no SQL não vem da requisição. O campo sai de `source.field`, uma lista fechada no registro de fontes (com `sql:` constante, coluna citada por `quote_column_name` e chave jsonb por `connection.quote`); a direção só pode ser ASC ou DESC; `sort_alias` e `dimension_alias` devolvem apelidos internos (`metric_N`, `dimension_N`), ou recusam com `invalidSort`."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "fe6e0c2f46551d97cee1ad1ad81fb83f757701c7cb78050e742c4f893523f6bf",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 206,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{dimension_expression(dimension)} AS #{dimension_alias(index)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "select_list"
+      },
+      "user_input": "dimension_expression(dimension)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A granularidade sai de um case com textos fixos, e o alias é interno (dimension_N)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
       "fingerprint": "d4af0f0bdfce6144cc36f6b8f2c66686c3e06d0061999997ed2ee3eb061a85da",
       "check_name": "SQL",
       "message": "Possible SQL injection",
@@ -1798,18 +440,179 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "d880e563c6fbc05affb5c64d3726acea9e9c29d069f62fa2d8c404fef7e7b3e6",
+      "fingerprint": "1f4f8f049e1bf17de2d2387dfadd69de5f182b3670942de22e51c9e05068eca6",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 252,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{sort_alias(query[\"sort\"].to_h[\"field\"], renames)} #{direction(query[\"sort\"].to_h)}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "sort_alias(query[\"sort\"].to_h[\"field\"], renames)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: sort_alias só devolve nome interno (metric_N, dimension_N), e direction só devolve ASC ou DESC. O que o cliente manda nunca entra."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "601547cfdbfaeefebf70c23edbc6e1c6b9bc28db57e5de61da8c721abc197969",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 254,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{dimension_alias(0)} ASC\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "dimension_alias(0)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: alias interno (dimension_0) e ASC fixo. Nada vem do cliente."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "acf6b2eb9d6d06410ff7070ef36de8b6b988e3f7e0d30999f0722cf8ea14349d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 265,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{(dimension_alias(0) or nil)} ASC\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "dimension_alias(0)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que entra no SQL não vem da requisição. O campo sai de `source.field`, uma lista fechada no registro de fontes (com `sql:` constante, coluna citada por `quote_column_name` e chave jsonb por `connection.quote`); a direção só pode ser ASC ou DESC; `sort_alias` e `dimension_alias` devolvem apelidos internos (`metric_N`, `dimension_N`), ou recusam com `invalidSort`."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "076bcd526c7c69994cd4a573385941772a065d104c2a765ab3a302928af102a4",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
+      "line": 271,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"#{sort_alias(query[\"sort\"].to_h[\"field\"], renames)} #{direction(query[\"sort\"].to_h)} NULLS LAST#{(\", #{(dimension_alias(0) or nil)} ASC\" or \"\")}\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
+        "method": "apply_order"
+      },
+      "user_input": "sort_alias(query[\"sort\"].to_h[\"field\"], renames)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que entra no SQL não vem da requisição. O campo sai de `source.field`, uma lista fechada no registro de fontes (com `sql:` constante, coluna citada por `quote_column_name` e chave jsonb por `connection.quote`); a direção só pode ser ASC ou DESC; `sort_alias` e `dimension_alias` devolvem apelidos internos (`metric_N`, `dimension_N`), ou recusam com `invalidSort`."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1ad7cf7a1d8bfa6384a08348ae07f933a4c8ac8bba51b7798fdcc72fdc20ccd9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/insights/rollups/operational_metrics_backfill.rb",
+      "line": 63,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "DailyChatStat.connection.execute(\"INSERT INTO daily_chat_stats\\n  (id, organization_id, day, metrics, hourly_breakdown, created_at, updated_at)\\nVALUES #{batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")}\\nON CONFLICT (organization_id, day) DO UPDATE\\n  SET metrics = daily_chat_stats.metrics || EXCLUDED.metrics,\\n      hourly_breakdown = EXCLUDED.hourly_breakdown,\\n      updated_at = NOW()\\n\".squish)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Insights::Rollups::OperationalMetricsBackfill",
+        "method": "write"
+      },
+      "user_input": "batch.map do\n ActiveRecord::Base.sanitize_sql_array([\"(gen_random_uuid(), ?, ?, ?::jsonb, ?::jsonb, NOW(), NOW())\", organization.id, day, metrics.except(:hourly).to_json, { :message_count => metrics[:hourly] }.to_json])\n end.join(\", \")",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: cada linha de values sai de sanitize_sql_array, com o valor como parâmetro. O SQL é cru porque upsert_all não aceita expressão no DO UPDATE."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "9c8d011bf73d8d8d6f44a9a6868a3a728c9d00839a70fb9295dcc09ac35507b8",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/services/pipelines/card_query.rb",
-      "line": 161,
+      "line": 100,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS NULL\")",
+      "code": "where(\"#{column} = ?\", value.to_s)",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "Pipelines::CardQuery",
-        "method": "user_condition"
+        "method": "text_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "199290dd25915f375e1d49dda6a5fe25b8e14b57d9195b260425c1ba715a3810",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 101,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS DISTINCT FROM ?\", value.to_s)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "text_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "34abee42c4ca3090217d58fb5720da4a0f025fe8227897595764bfa3d077c5ad",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 102,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} ILIKE ?\", \"%#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "text_condition"
       },
       "user_input": "column",
       "confidence": "Medium",
@@ -1844,18 +647,64 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "ded443fd7e1b75c187548d9c68a458ac16ea6fa0ad17e38d8c4cee31ea6b8365",
+      "fingerprint": "fa03469931db2e54a1972a326ff5610ddf5ad8edeb264c0583bb62c3b5078f0b",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/services/pipelines/card_query.rb",
-      "line": 158,
+      "line": 104,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} IS DISTINCT FROM ?\", value)",
+      "code": "where(\"#{column} ILIKE ?\", \"#{like(value)}%\")",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "Pipelines::CardQuery",
-        "method": "user_condition"
+        "method": "text_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1f75e827b1173ecc24a7af0de1a5f28c542274c282d6c9bf9005c00dfeb18a07",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 105,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} NOT ILIKE ? OR #{column} IS NULL\", \"#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "text_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "02412a5afaa3be2c79b810a3b36f1788a5b432e4e0f7fc9d470d325aaee56d36",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 106,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NULL OR #{column} = ''\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "text_condition"
       },
       "user_input": "column",
       "confidence": "Medium",
@@ -1890,49 +739,1382 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "e6deffeba95f49e06cc1f57f60ebe97742e9175550bac61b3a43a20b1fc286c8",
+      "fingerprint": "c1adf2fb816da15e8693a112dc2e573ea0af343385c9d4b9e23fd757822c027b",
       "check_name": "SQL",
       "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 103,
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 113,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "scope.where(\"#{expression(field)} <= ?\", filter[\"value\"].to_f)",
+      "code": "where(\"#{column} = ?\", value)",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "apply_jsonb_filter"
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
       },
-      "user_input": "expression(field)",
-      "confidence": "Weak",
+      "user_input": "column",
+      "confidence": "Medium",
       "cwe_id": [
         89
       ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). O valor vai como parâmetro (?)."
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
     },
     {
-      "warning_type": "Dangerous Eval",
-      "warning_code": 13,
-      "fingerprint": "e6fd10f980edd6d71499f62e7f849057a570c89584c523e767fc40414fe4bed4",
-      "check_name": "Evaluation",
-      "message": "Dynamic code evaluation",
-      "file": "lib/mini_racer_engine/worker.rb",
-      "line": 223,
-      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "context.eval(source, :filename => \"racer-internal.js\")",
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "61ba0982dffb766d166f51387ce309fcad29c4cac9de7545ff353575493b1b86",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 114,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS DISTINCT FROM ?\", value)",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "MiniRacerEngine::Worker",
-        "method": "internal_eval"
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
       },
-      "user_input": null,
-      "confidence": "Weak",
+      "user_input": "column",
+      "confidence": "Medium",
       "cwe_id": [
-        913,
-        95
+        89
       ],
-      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7eb4ea1a5eae0d7efd3b02c548a32ead074d3a4039fce2f1941ad7a1cfd09ece",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 115,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} > ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7a2d75a311b772464a2eced36b83076b196b80e1936dfdcc9edddc062f2c7c7e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 116,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} >= ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "2c22de42476e6cc45f40ef062c415b00aefcc00bbafdc3bb57e7ea17764b914c",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 117,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} < ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "f688055c8d8eca95663033473d0192c0b1180eb0e53d20817c1875cdf4961115",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 118,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} <= ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1ffbe480859c9b30fe75496009bfbdb9adef8a1637641634997c50e5f3a29e3c",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 119,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} BETWEEN ? AND ?\", value[0], value[1])",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "2707d9b878a10038a480841eb25c61d4dfe624fdcae9528266cb334ba40c737d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 120,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "687b9ccbbe03f37e4522bea8ca487aa4c3b1b15c63d7ef0b928640d0dcbbfb34",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 121,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NOT NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "number_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7f3171e6f0789751fbbfa2b97778c7b3cfbd4b202df96eabba93cb9f9da36b39",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 129,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} BETWEEN ? AND ?\", parse_date(value).in_time_zone.beginning_of_day, parse_date(value).in_time_zone.end_of_day)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "81dd9259dea9ea9bac5dab6882eb5a0dfec9c9db673444916d70e653626e05a1",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 130,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} < ?\", resolve_date_point(value))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "c74a28226c39585e2120b773dec18eec15db7c856f37ba03a31100d6fb77a6bb",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 131,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} > ?\", resolve_date_point(value))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "a2e11f0d1fc52891cc43eefd40d14a7c1837f1c2b21c5819c1780365684ecb1a",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 132,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} BETWEEN ? AND ?\", parse_time(value[0]), parse_time(value[1]))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "5452c3cd63533c6cad34327b3250f4c89de753674a303d122655de869a921cc4",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 135,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} BETWEEN ? AND ?\", resolve_date_range(value).begin, resolve_date_range(value).end)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "16f8da7a7acf5e539274ff6d7aa601aa99b6148016405f3bdffef61b68550fe2",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 138,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} < ? OR #{column} > ? OR #{column} IS NULL\", resolve_date_range(value).begin, resolve_date_range(value).end)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "81030b4c08562a3604585cfa18dc8b159757230fd0b4c49cdea172e20545a4a1",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 139,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "c93c54a5fad8d845deb8ab70aa641fcdd30c93d994304733030c3ca5a4781010",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 140,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NOT NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "date_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "ec62ce8737fb7d7b02f4fa332c838254b06899f242d209ad4adebea8f911e891",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 146,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} = ?\", value.to_s)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "42593b4731ee4e069315d974526787ac95d2429ead371929f40b7c6564b03fc5",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 147,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS DISTINCT FROM ?\", value.to_s)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "c87bdf44b644620132a044d8b3fdc01978835a51c676db046dac87c56363dbdd",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 148,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IN (?)\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0b34b52e51392287b97f49688a655acc64f465839fe658a78e20afec9c51b44d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 149,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} NOT IN (?) OR #{column} IS NULL\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "18bdd6c50b77ed4c26ad920015a0d3d45fd993e00ac3b2ec71f1bb011390bd61",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 150,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NULL OR #{column} = ''\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "bfc33e693dc935c6d76bf1cd081f5743c39b9e8b09dc3fbb4005f97fb6fb00b8",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 151,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NOT NULL AND #{column} <> ''\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "select_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0c3af6394ec33f1e7db1dda5df3f2a95bff40ac07c9305e87db728238d5dd2c4",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 157,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} = ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "ded443fd7e1b75c187548d9c68a458ac16ea6fa0ad17e38d8c4cee31ea6b8365",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 158,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS DISTINCT FROM ?\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "13083910447b60616a4e14f82f4106ea348f580d51953530caa9bd7a86b8cff3",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 159,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IN (?)\", Array(value))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "624638eec8bbadb46d096d98c61dd220931c860e68f12e9bf28ac0fdf9c13c7b",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 160,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} NOT IN (?) OR #{column} IS NULL\", Array(value))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "d880e563c6fbc05affb5c64d3726acea9e9c29d069f62fa2d8c404fef7e7b3e6",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 161,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "2389f195e5923ef6a90a0d1e7591c0a9458e84bfc67aee5134dbda917e4e3086",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 162,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} IS NOT NULL\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "user_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "a07cd1be7400b8de097ffe8624635108964aca96797e05bb94ba9456a953f5a6",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 168,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} && ARRAY[?]::varchar[]\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "array_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "4228a1fdd927cf3f4d0a5fec3cf3ce715405d97d2e7339a0f6e6053c56c3ab66",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 169,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} @> ARRAY[?]::varchar[]\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "array_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "354d6a445b7d0a9c452ba6fd8d00aa19d7b177dbce023d8ad4c986c3a90bb15d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 170,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"NOT (#{column} && ARRAY[?]::varchar[])\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "array_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "c5dac8a9ace78296c4aac716cdec7d6ebee3aed4566f075f911fd2e96d9ccb58",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 171,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} = '{}'\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "array_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "456fc638562ddd12d4f5801c5b96737f61cbecbd8e649c4e3e4cdad97faf60c8",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 172,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{column} <> '{}'\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "array_condition"
+      },
+      "user_input": "column",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1e1345664dbf6b680dabd21cf7cdb8caee915b7a7acf4f80d9c5e853188eda84",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 190,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} = ?\", value.to_s)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "3e44f3c5b79fbbeef76c9845d7d23d930f3e355fa459bdded951c4ca4115b468",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 191,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} IS DISTINCT FROM ?\", value.to_s)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "8a98b427a9ecdfca98465bd8541201bef5e59d9783ae97b09b630de83d6852ff",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 192,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} ILIKE ?\", \"%#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "399a0d9fba6a520c494fb55ee9cff63cb4721afbefc5b9074930e2fe489c6395",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 193,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} NOT ILIKE ? OR #{accessor} IS NULL\", \"%#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "05da24cb96f17e3c8960d2b2b1c43072bc2229440c34aefa0d2605429ab82545",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 194,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} ILIKE ?\", \"#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "48a52d104c690cb5f9bbeb0e1abd6f004b48a61ffe956390af694562591bd3f6",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 195,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} NOT ILIKE ? OR #{accessor} IS NULL\", \"#{like(value)}%\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "f1f2f1539f51c4c457c6fb6dfa0984c711cc498b4c832867db8d318ffcbc62b0",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 196,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} IN (?)\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "f1215cceff2b8eebadac91a3e230ab70aa4fb258d516b7c7b16e31a6dd3c4eaa",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 197,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} NOT IN (?) OR #{accessor} IS NULL\", Array(value).map(&:to_s))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "6f1088634623d4e3e158ff4c7d009b72927e2252d2ef6a00965ebec76ee7dcd5",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 199,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_text"
+      },
+      "user_input": "custom_blank_sql(accessor)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "65fd5c42ea76e2c2318c0ac51c439f2b9c0640cdcab116fb09556c1c89f5e8a9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 207,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} = ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "40ab46d5761f2adf7dc72838bc8fe4a3edd87882437d4aadae932fd59444147f",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 208,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} IS NULL OR NOT (#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"} = ?)\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "20c7ae3ee27a2eb5019d4492f70f635cac878f3144eba0203a127742800d422c",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 209,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} > ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "9014c5bd9fb46e8820e5b617ab20e7d46d4908355b78c48bc61f59d1c6c7b649",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 210,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} >= ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7fd4e1ef524101d3e085aafb565ac7a12612ec4745cfdab7f19aceab14e89a02",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 211,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} < ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "322c8baeeedd59445ce9fb156d075b2e45c6abad55a721527f19c00c4c3a7a28",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 212,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"}\"} <= ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "91650cc50edf6588648a98425ae6c3fd963851860079e976752d7775fb64521a",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 213,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} ~ ? AND #{\"(#{accessor})::numeric\"} BETWEEN ? AND ?\", \"^-?[0-9]+(\\\\.[0-9]+)?$\", value[0], value[1])",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0c3259306e5ad45783aa74b56904948f510910f9ea0bfb33a00c7351638d8dd3",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 215,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_number"
+      },
+      "user_input": "custom_blank_sql(accessor)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "160ebc96e7b7a9b24ee82ab6252f2c40e5b39a958454083d21c0dcd6bd95e629",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 223,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} = ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", parse_date(value))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0d54f0426908cad91847d6dc76ce3185b64c02e54acd23c38282127e5a9153da",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 224,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} < ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_point(value).to_date)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "09006fbd3e1ba4fb3e78fadd1d220cd1481a1ab588113032853e94d0b3ffaf41",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 225,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} > ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_point(value).to_date)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "02537cc3436c6be18d9f097bd9a4418cc16ab9075c4c735ed5d3eb7cd13e2ef9",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 227,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} BETWEEN ? AND ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", parse_date(value[0]), parse_date(value[1]))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "67bbd2baf19184fae4d5ae2264370a0669628c2e15e79ca77baa47d136f1bd1d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 230,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{\"#{accessor} ~ ? AND #{\"(#{accessor})::date\"}\"} BETWEEN ? AND ?\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_range(value).begin.to_date, resolve_date_range(value).end.to_date)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "ba9e92715b866d9cafa21f1a5241fdf282d7a1cab8fe7f2640267288d5b98965",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 233,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} IS NULL OR NOT (#{accessor} ~ ? AND #{\"(#{accessor})::date\"} BETWEEN ? AND ?)\", \"^[0-9]{4}-[0-9]{2}-[0-9]{2}\", resolve_date_range(value).begin.to_date, resolve_date_range(value).end.to_date)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7f867fc8380b36d9fb8ce32c64c1d668270d0b18a5d5589db50b06f45aa6a629",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 236,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_date"
+      },
+      "user_input": "custom_blank_sql(accessor)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "adf351284c352c781d221b022c7f49c288336c1ec0211906184e74b7b7a71f54",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 246,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"NOT (#{custom_blank_sql(accessor)})\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_checkbox"
+      },
+      "user_input": "custom_blank_sql(accessor)",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "0a030b42033cfdc20e246f5d0542a8c6340bfee48a5e68bd2674079db6d05f5e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/pipelines/card_query.rb",
+      "line": 249,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "where(\"#{accessor} IN ('true','t','1')\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Pipelines::CardQuery",
+        "method": "custom_checkbox"
+      },
+      "user_input": "accessor",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
     },
     {
       "warning_type": "SQL Injection",
@@ -1981,142 +2163,52 @@
       "note": "Falso positivo: a expressão sai de COLUMNS, um hash fixo; o sentido só pode ser ASC ou DESC; e a chave do lead score vai citada por connection.quote."
     },
     {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "ec62ce8737fb7d7b02f4fa332c838254b06899f242d209ad4adebea8f911e891",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 146,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} = ?\", value.to_s)",
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "104da17cfebc2663477423dda73d3bfbb75bfb1a74da2bffde724c42084a5793",
+      "check_name": "Evaluation",
+      "message": "Dynamic code evaluation",
+      "file": "lib/mini_racer_engine/worker.rb",
+      "line": 181,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": "::MiniRacer::Context.new(:timeout => Budget.new(:timeout_ms => timeout_ms).timeout_ms, :max_memory => Limits.max_memory(max_memory)).eval(script_source(code, params), :filename => \"user-code.js\")",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "select_condition"
+        "class": "MiniRacerEngine::Worker",
+        "method": "perform"
       },
-      "user_input": "column",
-      "confidence": "Medium",
+      "user_input": null,
+      "confidence": "Weak",
       "cwe_id": [
-        89
+        913,
+        95
       ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
+      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
     },
     {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "f1215cceff2b8eebadac91a3e230ab70aa4fb258d516b7c7b16e31a6dd3c4eaa",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 197,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} NOT IN (?) OR #{accessor} IS NULL\", Array(value).map(&:to_s))",
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "e6fd10f980edd6d71499f62e7f849057a570c89584c523e767fc40414fe4bed4",
+      "check_name": "Evaluation",
+      "message": "Dynamic code evaluation",
+      "file": "lib/mini_racer_engine/worker.rb",
+      "line": 223,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": "context.eval(source, :filename => \"racer-internal.js\")",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
+        "class": "MiniRacerEngine::Worker",
+        "method": "internal_eval"
       },
-      "user_input": "accessor",
-      "confidence": "Medium",
+      "user_input": null,
+      "confidence": "Weak",
       "cwe_id": [
-        89
+        913,
+        95
       ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "f1f2f1539f51c4c457c6fb6dfa0984c711cc498b4c832867db8d318ffcbc62b0",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 196,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{accessor} IN (?)\", Array(value).map(&:to_s))",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "custom_text"
-      },
-      "user_input": "accessor",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "f688055c8d8eca95663033473d0192c0b1180eb0e53d20817c1875cdf4961115",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 118,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} <= ?\", value)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "number_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "fa03469931db2e54a1972a326ff5610ddf5ad8edeb264c0583bb62c3b5078f0b",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/pipelines/card_query.rb",
-      "line": 104,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "where(\"#{column} ILIKE ?\", \"#{like(value)}%\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Pipelines::CardQuery",
-        "method": "text_condition"
-      },
-      "user_input": "column",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o que é interpolado nunca vem do cliente. A coluna nativa sai da lista fixa de FieldRegistry; a chave de campo personalizado vem do banco e passa por CUSTOM_KEY_FORMAT em jsonb_accessor; o operador é conferido por FilterDefinition. Todo valor vai como bind."
-    },
-    {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "fe6e0c2f46551d97cee1ad1ad81fb83f757701c7cb78050e742c4f893523f6bf",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/custom_dashboards/query_builders/active_record_builder.rb",
-      "line": 206,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "Arel.sql(\"#{dimension_expression(dimension)} AS #{dimension_alias(index)}\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "CustomDashboards::QueryBuilders::ActiveRecordBuilder",
-        "method": "select_list"
-      },
-      "user_input": "dimension_expression(dimension)",
-      "confidence": "Medium",
-      "cwe_id": [
-        89
-      ],
-      "note": "Falso positivo: o campo já passou pela lista da fonte em QueryEngine, e a coluna vai citada pelo adaptador (quote_table_name, quote_column_name, quote). A granularidade sai de um case com textos fixos, e o alias é interno (dimension_N)."
+      "note": "Falso positivo: este eval é o do V8 (MiniRacer::Context), não o do Ruby. Executar JavaScript de cliente é a função do motor de scripts, e ele roda isolado, com limites. Ver docs/migration/api/script-engine.md."
     }
   ],
   "brakeman_version": "8.0.5"
