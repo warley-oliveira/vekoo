@@ -1311,7 +1311,7 @@ Validado de ponta a ponta contra o Redis: o webhook entra no Puma, o Sidekiq pro
 
 ### `ChatChannel`
 
-A conversa aberta. Params: `{ "chatId" }`. Exige `chat`. Conversa que não existe ou é de outra organização é recusada.
+A conversa aberta. Params: `{ "chatId" }`. Exige `chat`. Conversa que não existe ou é de outra organização é recusada. Quem perde a conversa com ela aberta, por reatribuição ou troca de departamento, para de receber eventos, sem aviso próprio: a assinatura continua de pé e fica muda, e `send_message` não sai. Com `chat_list_to: assigned`, a lista recebe `remove`.
 
 **Recebe**, uma mensagem nova ou alterada (status, reação, apagada, conteúdo que chegou depois). **Funda por `id`**, sem tratar como evento à parte.
 
@@ -1505,7 +1505,7 @@ A lista de conversas. Sem params. Exige `chat`. `chat_list_to` decide o que cheg
 | Evento | Payload |
 |---|---|
 | Criada ou alterada | `{ "action": "upsert", "event": <Conversa> }` |
-| Removida da lista | `{ "action": "remove", "event": { "id" } }` |
+| Removida da lista: apagada, ou a pessoa com `assigned` deixou de ser a responsável | `{ "action": "remove", "event": { "id" } }` |
 | Resposta de `request_recent` | `{ "action": "recent_chats", "events": [<Conversa>] }` |
 
 ```json

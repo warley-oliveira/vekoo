@@ -5,7 +5,10 @@ class ChatChannel < ApplicationCable::Channel
     chat = find_chat(params[:chatId] || params[:chat_id])
     return reject unless chat && current_account.can?(:chat)
 
-    stream_from ChatMessage::Base.stream_for(chat)
+    @chat_id = chat.id.to_s
+    stream_from ChatMessage::Base.stream_for(chat), coder: ActiveSupport::JSON do |message|
+      deliver_from_stream(message)
+    end
   rescue StandardError => e
     Rails.logger.error(e.full_message)
     reject
@@ -68,6 +71,14 @@ class ChatChannel < ApplicationCable::Channel
   end
 
   private
+
+  # Tudo o que a conversa transmite passa por aqui. O aviso de que a atribuição mudou não vai para a tela: é a deixa para conferir de
+  # novo, e quem não enxerga mais a conversa para de ouvir.
+  def deliver_from_stream(message)
+    return transmit(message) unless message["event"] == Chat::ACCESS_CHANGED_EVENT
+
+    stop_all_streams if find_chat(@chat_id).nil?
+  end
 
   def chat_from(data)
     return nil unless current_account.can?(:chat)
