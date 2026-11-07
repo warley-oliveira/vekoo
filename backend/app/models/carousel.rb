@@ -34,6 +34,7 @@ class Carousel < ApplicationRecord
   validate :theme_must_be_complete
   validate :cards_must_be_a_list
   validate :cards_must_not_be_huge
+  validate :folder_belongs_to_organization, if: :folder_id_changed?
 
   scope :active, -> { where(trashed_at: nil) }
   scope :trashed, -> { where.not(trashed_at: nil) }
@@ -80,6 +81,13 @@ class Carousel < ApplicationRecord
   # O documento é texto e referência de imagem, nunca a imagem em si. Sem este
   # teto, nada impede alguém de continuar enfiando data URL em base64 no jsonb
   # e inchar o banco — que é exatamente o que o upload de verdade veio resolver.
+  # A chave estrangeira só diz que a pasta existe, em qualquer organização.
+  def folder_belongs_to_organization
+    return if folder_id.blank? || Folder.exists?(id: folder_id, organization_id: organization_id)
+
+    errors.add(:folder_id, :invalid)
+  end
+
   def cards_must_not_be_huge
     return unless cards.is_a?(Array)
 
