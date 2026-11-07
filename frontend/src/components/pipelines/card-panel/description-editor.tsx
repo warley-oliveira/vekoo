@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { getSchema } from "@tiptap/core"
 import { Color } from "@tiptap/extension-color"
 import { Highlight } from "@tiptap/extension-highlight"
@@ -15,7 +15,9 @@ import { TextStyle } from "@tiptap/extension-text-style"
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react"
 import { StarterKit } from "@tiptap/starter-kit"
 import { useTranslation } from "react-i18next"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { keepKnownContent } from "./description-schema"
 import { SlashCommands } from "./description-slash"
@@ -45,6 +47,9 @@ const EXTENSIONS = [
 const SCHEMA = getSchema(EXTENSIONS)
 
 const SAVE_DELAY_MS = 1_200
+/** Descrição longa não empurra o resto do card para longe. Editando, ela abre inteira. */
+const COLLAPSED_MAX_PX = 220
+const COLLAPSE_SLACK_PX = 12
 
 /** Card que nasceu de gatilho ou automação só tem texto puro: vira parágrafos no editor. */
 function plainTextToDoc(text: string): JSONContent {
@@ -85,6 +90,10 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
   const pending = useRef<JSONContent | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const frameRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [overflowing, setOverflowing] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [editing, setEditing] = useState(false)
   // A extensão nasce uma vez só, e a língua pode mudar depois: ela pergunta aqui na hora de mostrar.
   const translate = useRef(t)
   translate.current = t
@@ -124,6 +133,8 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
         class: "min-h-24 px-3 py-2 text-sm outline-none",
       },
     },
+    onFocus: () => setEditing(true),
+    onBlur: () => setEditing(false),
     onUpdate: ({ editor: current }) => {
       pending.current = current.getJSON()
       if (timer.current) clearTimeout(timer.current)
@@ -145,7 +156,20 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
   // Fechar o card salva o que falta.
   useEffect(() => () => flush(), [flush])
 
+  // Antes de pintar, para o conteúdo inteiro não piscar antes de recolher.
+  useLayoutEffect(() => {
+    const element = contentRef.current
+    if (!element) return
+    const measure = () => setOverflowing(element.offsetHeight > COLLAPSED_MAX_PX + COLLAPSE_SLACK_PX)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
   if (!editor) return null
+
+  const collapsed = overflowing && !expanded && !editing
 
   return (
     <div className="flex flex-col gap-1">
@@ -156,7 +180,44 @@ export default function DescriptionEditor({ value, fallbackText, onSave }: Descr
         <DescriptionToolbar editor={editor} imageOpen={imageOpen} onImageOpenChange={setImageOpen} />
         {/* Com dedo, a seleção já traz o menu do aparelho, e a barra de cima tem as mesmas ações. */}
         {isTouch ? null : <DescriptionBubble editor={editor} frameRef={frameRef} />}
-        <EditorContent editor={editor} onBlur={flush} className="description-editor" />
+        <div
+          // `clip`, e não `hidden`: o que está escondido não pode ser rolado por dentro, por um cursor
+          // ou pela busca da página, o que levaria o "Mostrar mais" para o meio do texto.
+          className={collapsed ? "relative overflow-clip" : undefined}
+          style={collapsed ? { maxHeight: COLLAPSED_MAX_PX } : undefined}
+        >
+          <div ref={contentRef}>
+            <EditorContent editor={editor} onBlur={flush} className="description-editor" />
+          </div>
+          {collapsed ? (
+            <div className="absolute inset-x-0 bottom-0 flex h-20 items-end justify-center bg-linear-to-t from-background to-transparent pb-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-primary hover:text-primary pointer-coarse:h-10"
+                onClick={() => setExpanded(true)}
+              >
+                <ChevronDown />
+                {t("pipelines.description.showMore")}
+              </Button>
+            </div>
+          ) : null}
+        </div>
+        {overflowing && expanded && !editing ? (
+          <div className="flex justify-center border-t py-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-primary hover:text-primary pointer-coarse:h-10"
+              onClick={() => setExpanded(false)}
+            >
+              <ChevronUp />
+              {t("pipelines.description.showLess")}
+            </Button>
+          </div>
+        ) : null}
       </div>
       <p aria-live="polite" className="h-4 text-xs text-muted-foreground">
         {status === "saving"

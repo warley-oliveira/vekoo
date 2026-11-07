@@ -405,6 +405,8 @@
         "divider": { "label": "Linha divisória", "hint": "Separa um assunto do outro" },
         "image": { "label": "Imagem", "hint": "Por um endereço na internet" }
       },
+      "showMore": "Mostrar mais",
+      "showLess": "Mostrar menos",
       "linkHint": "Deixe em branco para tirar o link.",
       "apply": "Aplicar"
     },

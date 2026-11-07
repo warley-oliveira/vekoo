@@ -405,6 +405,8 @@
         "divider": { "label": "Divider", "hint": "Separates one topic from another" },
         "image": { "label": "Image", "hint": "From an address on the web" }
       },
+      "showMore": "Show more",
+      "showLess": "Show less",
       "linkHint": "Leave it blank to remove the link.",
       "apply": "Apply"
     },
