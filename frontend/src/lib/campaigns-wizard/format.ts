@@ -1,7 +1,7 @@
 import type { TFunction } from "i18next"
 
 import { formatNumber } from "@/lib/format-number"
-import { hourOf } from "./estimate"
+import { hourOf, timezoneLabel } from "./estimate"
 
 // Tempo em palavras, para a pessoa nunca ler "intervalo de 180 segundos".
 
@@ -38,6 +38,14 @@ export function describeDays(days: number[], t: TFunction, language: string): st
   return new Intl.ListFormat(language, { style: "long", type: "conjunction" }).format(
     sorted.map((day) => weekdayName(day, language, "long"))
   )
+}
+
+/** Um fuso que a tela não conhece ainda sai pelo nome de origem, sem o sublinhado. */
+export function describeTimezone(timezone: string, t: TFunction, language: string): string {
+  const city = t(`campaignsWizard.timezones.${timezone}`, {
+    defaultValue: timezone.split("/").at(-1)?.replace(/_/g, " ") ?? timezone,
+  })
+  return timezoneLabel(city, timezone, language)
 }
 
 export function isFullDay(start: string, end: string): boolean {

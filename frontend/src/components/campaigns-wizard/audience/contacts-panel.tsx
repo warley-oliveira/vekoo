@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { Loader2, SearchX, Users } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 import { mutate as globalMutate } from "swr"
 
 import {
@@ -253,7 +253,12 @@ export default function ContactsPanel({ onClose }: { onClose: () => void }) {
     [options?.tags]
   )
   const connectorOptions = useMemo(
-    () => phoneConnectors.map((item) => ({ value: item.id, label: item.name })),
+    () =>
+      phoneConnectors.map((item) => {
+        // Dois canais podem ter o mesmo nome: o número é o que os separa.
+        const number = "numberFormatted" in item ? item.numberFormatted : null
+        return { value: item.id, label: number ? `${item.name} · ${number}` : item.name }
+      }),
     [phoneConnectors]
   )
 

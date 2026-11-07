@@ -159,6 +159,8 @@ export function TextComposer({ caption = false }: { caption?: boolean }) {
 
       <MessagesError />
 
+      <p className="text-xs text-pretty text-muted-foreground">{t("campaignsWizard.message.variablesHint")}</p>
+
       <div className="flex flex-col items-start gap-1">
         <Button
           type="button"

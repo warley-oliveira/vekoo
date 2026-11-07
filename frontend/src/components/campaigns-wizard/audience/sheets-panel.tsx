@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { FileSpreadsheet, Loader2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 
 import { Callout, SidePanel, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"

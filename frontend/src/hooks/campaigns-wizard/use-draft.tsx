@@ -187,12 +187,14 @@ export function DraftProvider({
 
   useEffect(() => {
     const unsubscribe = form.subscribe({
-      formState: { values: true },
-      callback: () => {
+      formState: { values: true, isDirty: true },
+      callback: ({ isDirty }) => {
         if (finishedRef.current) return
 
+        // `isDirty`, para contar só o que a pessoa fez: o número que a tela já escolhe sozinha, ou abrir
+        // uma cópia e sair, não pode deixar um rascunho na lista.
         const values = form.getValues()
-        if (!idRef.current && !hasContent(values, initialValues)) return
+        if (!idRef.current && !(isDirty && hasContent(values, initialValues))) return
 
         const changes = idRef.current
           ? changedKeys(toDraftPayload(values, fallbackName), savedRef.current)

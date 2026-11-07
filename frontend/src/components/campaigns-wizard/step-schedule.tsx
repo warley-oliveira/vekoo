@@ -25,10 +25,9 @@ import {
   nearestStop,
   paceOf,
   perDayFor,
-  timezoneLabel,
   type PacePreset,
 } from "@/lib/campaigns-wizard/estimate"
-import { formatRange, isFullDay, weekdayName } from "@/lib/campaigns-wizard/format"
+import { describeTimezone, formatRange, isFullDay, weekdayName } from "@/lib/campaigns-wizard/format"
 import type { WizardValues } from "@/lib/campaigns-wizard/form"
 import { formatFullDateTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
@@ -72,7 +71,7 @@ function DaysField() {
               className={cn(
                 "flex h-10 min-w-11 items-center justify-center rounded-lg border px-2 text-sm capitalize transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                 active
-                  ? "border-primary bg-primary text-primary-foreground"
+                  ? "border-primary bg-primary/10 font-medium text-primary"
                   : "text-muted-foreground hover:bg-muted"
               )}
             >
@@ -233,8 +232,8 @@ function AdvancedPace() {
   const { errors } = useFormState<WizardValues>({ name: "intervalMax" })
 
   const timezoneOptions = useMemo(
-    () => TIMEZONES.map((value) => ({ value, label: timezoneLabel(value, language) })),
-    [language]
+    () => TIMEZONES.map((value) => ({ value, label: describeTimezone(value, t, language) })),
+    [language, t]
   )
 
   return (

@@ -1,6 +1,7 @@
 import {
   useCallback,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -83,8 +84,20 @@ export function VariableField({
   const isMobile = useIsMobile()
   const menuId = useId()
   const fieldRef = useRef<(HTMLTextAreaElement & HTMLInputElement) | null>(null)
+  const cursorRef = useRef<number | null>(null)
   const [trigger, setTrigger] = useState<Trigger | null>(null)
   const [active, setActive] = useState(0)
+
+  // No mesmo quadro em que o texto novo entra: o React põe o cursor no fim ao trocar o valor, e a próxima
+  // tecla não pode cair lá.
+  useLayoutEffect(() => {
+    if (cursorRef.current === null) return
+
+    const field = fieldRef.current
+    field?.focus()
+    field?.setSelectionRange(cursorRef.current, cursorRef.current)
+    cursorRef.current = null
+  }, [value])
 
   const options = useMemo<Option[]>(() => {
     const builtIn = BUILT_IN_VARIABLES.map((name) => ({
@@ -127,14 +140,9 @@ export function VariableField({
       const needsSpace = !range && start > 0 && !/\s/.test(value[start - 1])
       const inserted = `${needsSpace ? " " : ""}${token}`
 
+      cursorRef.current = start + inserted.length
       onChange(`${value.slice(0, start)}${inserted}${value.slice(end)}`)
       setTrigger(null)
-
-      const cursor = start + inserted.length
-      requestAnimationFrame(() => {
-        field?.focus()
-        field?.setSelectionRange(cursor, cursor)
-      })
     },
     [onChange, value]
   )
@@ -180,7 +188,6 @@ export function VariableField({
     "aria-describedby": ariaDescribedBy,
     "aria-autocomplete": "list" as const,
     "aria-controls": open ? menuId : undefined,
-    "aria-expanded": open || undefined,
     "aria-activedescendant": open ? `${menuId}-${activeIndex}` : undefined,
     onChange: handleChange,
     onKeyDown: handleKeyDown,

@@ -36,18 +36,30 @@ function FreeComposer() {
   )
 }
 
-function Composer({ onPreviewTemplate }: { onPreviewTemplate: (id: string) => void }) {
+function Composer({
+  onPreviewTemplate,
+  onOpenTemplate,
+}: {
+  onPreviewTemplate: (id: string | null) => void
+  onOpenTemplate: (id: string) => void
+}) {
   const { control } = useFormContext<WizardValues>()
   const mode = useWatch({ control, name: "campaignMode" })
 
-  return mode === "template" ? <TemplateComposer onPreview={onPreviewTemplate} /> : <FreeComposer />
+  return mode === "template" ? (
+    <TemplateComposer onPreview={onPreviewTemplate} onOpenPreview={onOpenTemplate} />
+  ) : (
+    <FreeComposer />
+  )
 }
 
 /** O que dizer: de onde sai, o texto e o que acontece quando responderem, com a prévia ao lado. */
 export function StepMessage() {
   const { t } = useTranslation()
   const [previewOpen, setPreviewOpen] = useState(false)
-  const [focusTemplateId, setFocusTemplateId] = useState<string | null>(null)
+  // No computador, o modelo sob o mouse. No celular, o que a pessoa pediu para ver.
+  const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null)
+  const [openedTemplateId, setOpenedTemplateId] = useState<string | null>(null)
 
   return (
     <section aria-labelledby="wizard-step-message" className="flex flex-col gap-6">
@@ -60,7 +72,13 @@ export function StepMessage() {
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex min-w-0 flex-col gap-6">
           <ChannelPicker />
-          <Composer onPreviewTemplate={setFocusTemplateId} />
+          <Composer
+            onPreviewTemplate={setHoveredTemplateId}
+            onOpenTemplate={(id) => {
+              setOpenedTemplateId(id)
+              setPreviewOpen(true)
+            }}
+          />
 
           {/* No celular a prévia abre sob demanda: o teclado já ocupa a metade da tela. */}
           <Button
@@ -68,7 +86,7 @@ export function StepMessage() {
             variant="outline"
             className="self-start lg:hidden pointer-coarse:h-10"
             onClick={() => {
-              setFocusTemplateId(null)
+              setOpenedTemplateId(null)
               setPreviewOpen(true)
             }}
           >
@@ -80,7 +98,7 @@ export function StepMessage() {
         </div>
 
         <aside className="sticky top-6 hidden lg:block" aria-label={t("campaignsWizard.preview.title")}>
-          <MessagePreview focusTemplateId={focusTemplateId} />
+          <MessagePreview focusTemplateId={hoveredTemplateId} />
         </aside>
       </div>
 
@@ -89,7 +107,7 @@ export function StepMessage() {
         onOpenChange={setPreviewOpen}
         title={t("campaignsWizard.preview.title")}
       >
-        <MessagePreview />
+        <MessagePreview focusTemplateId={openedTemplateId} />
       </ResponsiveDialog>
     </section>
   )

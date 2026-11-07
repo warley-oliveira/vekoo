@@ -23,8 +23,8 @@ import {
   useRecipientSummary,
 } from "@/hooks/campaigns-wizard/use-campaign-options"
 import { useDraft } from "@/hooks/campaigns-wizard/use-draft"
-import { estimateCampaign, timezoneLabel } from "@/lib/campaigns-wizard/estimate"
-import { describeDays, describeHours, formatRange } from "@/lib/campaigns-wizard/format"
+import { estimateCampaign } from "@/lib/campaigns-wizard/estimate"
+import { describeDays, describeHours, describeTimezone, formatRange } from "@/lib/campaigns-wizard/format"
 import { filledMessages, type WizardStep, type WizardValues } from "@/lib/campaigns-wizard/form"
 import { MAX_NAME_LENGTH, stepOfField } from "@/lib/campaigns-wizard/schema"
 import { asToken, variableProblems } from "@/lib/campaigns-wizard/variables"
@@ -142,7 +142,7 @@ export function StepReview() {
     ? wabaPhones.map((number) => number.displayPhoneNumber).filter(Boolean)
     : webConnectors.filter((item) => item.active).map((item) => {
         const number = connectorNumber(item)
-        return number ? `${connectorLabel(item)} (${number})` : connectorLabel(item)
+        return number ? `${connectorLabel(item)} · ${number}` : connectorLabel(item)
       })
 
   const problems = variableProblems(
@@ -348,7 +348,7 @@ export function StepReview() {
                   {t("campaignsWizard.review.window", {
                     days: describeDays(values.sendDays, t, language),
                     hours: describeHours(values.sendWindowStart, values.sendWindowEnd, t),
-                    timezone: timezoneLabel(values.timezone, language),
+                    timezone: describeTimezone(values.timezone, t, language),
                   })}
                 </p>
                 <p className="text-muted-foreground">

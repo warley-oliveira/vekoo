@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Download, FileText, Loader2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 
 import { Callout, FileDropzone, SidePanel, useConfirm, type DropzoneFile } from "@/components/shared"
 import { Button } from "@/components/ui/button"

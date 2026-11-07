@@ -170,9 +170,8 @@ export const TIMEZONES = [
   "UTC",
 ] as const
 
-/** "São Paulo (GMT-3)". A diferença vem do `Intl`, não de uma tabela que envelhece. */
-export function timezoneLabel(timezone: string, language: string): string {
-  const city = timezone.split("/").at(-1)?.replace(/_/g, " ") ?? timezone
+/** "São Paulo (GMT-3)". O nome vem de quem chama, e a diferença do `Intl`, não de uma tabela que envelhece. */
+export function timezoneLabel(city: string, timezone: string, language: string): string {
   const offset = new Intl.DateTimeFormat(language, { timeZone: timezone, timeZoneName: "shortOffset" })
     .formatToParts(new Date())
     .find((part) => part.type === "timeZoneName")?.value

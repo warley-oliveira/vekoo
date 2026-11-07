@@ -40,6 +40,7 @@ export function useRecipientImport() {
   const { ensureDraft } = useDraft()
   const [state, setState] = useState(IDLE)
   const stopRef = useRef(false)
+  const campaignRef = useRef<string | null>(null)
   const jobRef = useRef<{ total: number; nextBatch: NextBatch } | null>(null)
 
   const run = useCallback(
@@ -53,6 +54,7 @@ export function useRecipientImport() {
 
       try {
         const campaignId = await ensureDraft()
+        campaignRef.current = campaignId
 
         while (current.sent < job.total) {
           if (stopRef.current) {
@@ -85,6 +87,7 @@ export function useRecipientImport() {
       } catch (error) {
         current = { ...current, phase: "failed", error }
         setState(current)
+        if (campaignRef.current) void mutate(recipientSummaryKey(campaignRef.current))
         return current
       }
     },
@@ -104,6 +107,8 @@ export function useRecipientImport() {
 
   const stop = useCallback(() => {
     stopRef.current = true
+    // Quem já foi está na lista: o total na tela precisa dizer isso, mesmo com o painel fechando.
+    if (campaignRef.current) void mutate(recipientSummaryKey(campaignRef.current))
   }, [])
 
   const reset = useCallback(() => {

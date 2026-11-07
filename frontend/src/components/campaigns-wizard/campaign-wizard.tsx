@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { FormProvider, useForm, useFormContext, useWatch, type Resolver } from "react-hook-form"
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useFormState,
+  useWatch,
+  type Resolver,
+} from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useSearchParams } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AnimatePresence, motion } from "motion/react"
 import { ArrowLeft, ArrowRight, Check, Loader2, Rocket, Trash2, X } from "lucide-react"
-import { toast } from "sonner"
 
 import { ActionsMenu, ConfirmDialog, useConfirm } from "@/components/shared"
 import { useShell } from "@/components/app-shell"
@@ -45,6 +51,7 @@ import {
   type TemplateParamRule,
 } from "@/lib/campaigns-wizard/schema"
 import type { Campaign, CampaignResponse, LaunchResponse } from "@/lib/campaigns-wizard/types"
+import { toast } from "@/lib/campaigns-wizard/notify"
 import { asToken, variableProblems } from "@/lib/campaigns-wizard/variables"
 import { formatFullDateTime, formatTime } from "@/lib/date-format"
 import { formatNumber } from "@/lib/format-number"
@@ -109,17 +116,23 @@ function LeaveGuard() {
   const { t } = useTranslation()
   const { flush } = useDraft()
   const status = useSaveState((state) => state.status)
-  const when = status === "pending" || status === "saving" || status === "error"
-  const { blocked, proceed, reset } = useUnsavedChanges(when)
+  const unsaved = status === "pending" || status === "saving" || status === "error"
+  // A guarda segura a navegação até salvar: se ela desligasse assim que o rascunho ficasse salvo, a saída
+  // que estava esperando se perderia, e o clique da pessoa não daria em nada.
+  const [leaving, setLeaving] = useState(false)
+  const { blocked, proceed, reset } = useUnsavedChanges(unsaved || leaving)
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     if (!blocked) return
 
     let current = true
+    setLeaving(true)
     flush()
       .then(() => {
-        if (current) proceed()
+        if (!current) return
+        proceed()
+        setLeaving(false)
       })
       .catch(() => {
         if (current) setFailed(true)
@@ -135,10 +148,12 @@ function LeaveGuard() {
       onOpenChange={(open) => {
         if (open) return
         setFailed(false)
+        setLeaving(false)
         reset()
       }}
       onConfirmed={() => {
         setFailed(false)
+        setLeaving(false)
         proceed()
       }}
       destructive
@@ -150,19 +165,87 @@ function LeaveGuard() {
   )
 }
 
+/**
+ * Leva a URL de `new` para `edit` assim que o rascunho existir, para recarregar a página não perder nada.
+ * Espera a fila de salvar acalmar: com a guarda ligada, a troca de endereço viraria uma pergunta de sair.
+ * Fica depois de `LeaveGuard`: quando este efeito roda, a guarda daquele já desligou.
+ */
+function RouteSync() {
+  const navigate = useNavigate()
+  const { campaignId } = useDraft()
+  const status = useSaveState((state) => state.status)
+  const calm = status === "saved" || status === "idle"
+
+  useEffect(() => {
+    if (!campaignId || !calm) return
+
+    const target = `/campaigns/${campaignId}/edit`
+    if (window.location.pathname === target) return
+
+    const query = new URLSearchParams(window.location.search)
+    query.delete("duplicate")
+    const search = query.toString()
+    navigate(`${target}${search ? `?${search}` : ""}`, { replace: true })
+  }, [calm, campaignId, navigate])
+
+  return null
+}
+
+/**
+ * O erro some assim que a pessoa corrige. O formulário não é enviado de uma vez (cada passo cobra o seu),
+ * então o `reValidateMode` do react-hook-form nunca entra em cena: quem revalida é este. Só escuta enquanto
+ * há erro na tela, e só confere o que estava errado, para não acusar o que ela ainda nem preencheu.
+ */
+function ErrorSync() {
+  const form = useFormContext<WizardValues>()
+  const { errors } = useFormState({ control: form.control })
+  const names = Object.keys(errors).join(",")
+
+  useEffect(() => {
+    if (!names) return
+
+    return form.subscribe({
+      formState: { values: true },
+      callback: () => void form.trigger(names.split(",") as (keyof WizardValues)[]),
+    })
+  }, [form, names])
+
+  return null
+}
+
 /* ---------- passos ---------- */
+
+/** O que já está de pé. O visto de um passo diz que ele está pronto, não que a pessoa passou por ali. */
+function useStepsDone(): Record<WizardStep, boolean> {
+  const { control } = useFormContext<WizardValues>()
+  const { campaignId } = useDraft()
+  const { summary } = useRecipientSummary(campaignId)
+  const [mode, connectorIds, phoneNumberIds, messageType, messages, attachmentId, templateIds] = useWatch({
+    control,
+    name: ["campaignMode", "connectorIds", "phoneNumberIds", "messageType", "messages", "attachmentId", "templateIds"],
+  })
+
+  const hasMessage =
+    mode === "template"
+      ? phoneNumberIds.length > 0 && templateIds.length > 0
+      : connectorIds.length > 0 &&
+        (messageType === "media" ? Boolean(attachmentId) : filledMessages({ messages }).length > 0)
+
+  return { audience: summary.total > 0, message: hasMessage, schedule: true, review: false }
+}
 
 function WizardStepper() {
   const { t } = useTranslation()
   const { step, goTo } = useWizardNav()
+  const finished = useStepsDone()
   const current = WIZARD_STEPS.indexOf(step)
 
   return (
     <nav aria-label={t("campaignsWizard.steps.label")}>
       <ol className="flex items-center gap-1 sm:gap-2">
         {WIZARD_STEPS.map((key, index) => {
-          const done = index < current
           const active = index === current
+          const done = !active && index < current && finished[key]
 
           return (
             <li key={key} className={cn("flex min-w-0 items-center gap-1 sm:gap-2", index < WIZARD_STEPS.length - 1 && "flex-1")}>
@@ -642,7 +725,6 @@ function resumeStep(campaign: Campaign): WizardStep {
 export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignWizardProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const navigate = useNavigate()
   const { scroller } = useShell()
   const { isMobileShell } = useMobileShell()
   const [params, setParams] = useSearchParams()
@@ -702,6 +784,15 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
     [setParams]
   )
 
+  // A barra de ações fica presa embaixo: quem anda com Tab não pode acabar com o campo atrás dela.
+  useEffect(() => {
+    if (!scroller) return
+    scroller.style.scrollPaddingBottom = "6rem"
+    return () => {
+      scroller.style.scrollPaddingBottom = ""
+    }
+  }, [scroller])
+
   // Cada passo abre do topo, e o foco vai junto para o título, para o leitor de tela anunciar.
   const firstRender = useRef(true)
   useEffect(() => {
@@ -712,7 +803,7 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
     scroller?.scrollTo({ top: 0 })
     const timer = window.setTimeout(() => {
       document.getElementById(`wizard-step-${step}`)?.focus({ preventScroll: true })
-    }, 200)
+    }, 400)
     return () => window.clearTimeout(timer)
   }, [scroller, step])
 
@@ -724,17 +815,6 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
       onAudienceEmpty: () => setAudienceError(true),
     }),
     [audienceError, goTo, step]
-  )
-
-  const handleCreated = useCallback(
-    (id: string) => {
-      onDraftCreated(id)
-      const query = new URLSearchParams(window.location.search)
-      query.delete("duplicate")
-      const search = query.toString()
-      navigate(`/campaigns/${id}/edit${search ? `?${search}` : ""}`, { replace: true })
-    },
-    [navigate, onDraftCreated]
   )
 
   usePageTitle(campaign?.name ?? t("navigation.routes.campaignNew"), {
@@ -750,10 +830,12 @@ export function CampaignWizard({ campaign, copyFrom, onDraftCreated }: CampaignW
         initialSaved={initialSaved}
         initialValues={initialValues}
         fallbackName={fallbackName}
-        onCreated={handleCreated}
+        onCreated={onDraftCreated}
       >
         <WizardNavProvider value={nav}>
           <LeaveGuard />
+          <RouteSync />
+          <ErrorSync />
           <TemplateRulesBridge rules={rules} />
           <ScheduleKeeper />
 

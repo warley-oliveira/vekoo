@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Trash2, UserRoundX } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 
 import {
   EmptyState,

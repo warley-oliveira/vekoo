@@ -9,7 +9,7 @@ import {
   Trash2,
   Users,
 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 
 import { Callout, ErrorState, ListSkeleton, StatusBadge, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"

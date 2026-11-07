@@ -12,7 +12,7 @@ import {
   Star,
   Store,
 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 
 import {
   Callout,
@@ -96,7 +96,14 @@ function PlaceRow({
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium">{place.title}</span>
           <span className="block truncate text-xs text-muted-foreground">
-            {[place.categoryName, place.city].filter(Boolean).join(" · ")}
+            {[
+              place.categoryName,
+              place.city,
+              // O mesmo lugar pode ter sido encontrado em duas buscas: diz de qual veio.
+              "extractionQuery" in place ? (place as PlaceContact).extractionQuery : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </span>
           <span className="flex items-center gap-2 text-xs text-muted-foreground tabular-nums">
             {place.totalScore ? (
@@ -494,20 +501,22 @@ export default function PlacesPanel({ available, onClose }: { available: boolean
     onClose()
   }
 
+  // Nos já encontrados a seleção é da página: a lista inteira pode ter milhares.
+  const severalPages = tab === "existing" && (existing.data?.meta.totalPages ?? 1) > 1
+  const selectAllLabel = t(
+    severalPages ? "campaignsWizard.places.selectAllPage" : "campaignsWizard.places.selectAll",
+    { count: selectable.length, formatted: formatNumber(selectable.length, language) }
+  )
+
   const selectAllRow = (
     <label className="flex min-h-10 cursor-pointer items-center gap-3 rounded-lg bg-muted/60 px-3 py-2 text-sm">
       <Checkbox
         checked={allSelected}
         indeterminate={someSelected}
         onCheckedChange={toggleAll}
-        aria-label={t("campaignsWizard.places.selectAll", { count: selectable.length })}
+        aria-label={selectAllLabel}
       />
-      <span className="font-medium">
-        {t("campaignsWizard.places.selectAll", {
-          count: selectable.length,
-          formatted: formatNumber(selectable.length, language),
-        })}
-      </span>
+      <span className="font-medium">{selectAllLabel}</span>
     </label>
   )
 

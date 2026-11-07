@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useFormContext, useFormState, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
-import { FileText, RefreshCw, SearchX, TriangleAlert } from "lucide-react"
+import { Eye, FileText, RefreshCw, SearchX, TriangleAlert } from "lucide-react"
 
 import {
   Callout,
@@ -41,7 +41,7 @@ export function templateFitsCampaign(template: WhatsappTemplate): boolean {
   )
 }
 
-/** As posições que precisam de valor. A primeira, vazia, o servidor preenche com o nome. */
+/** As lacunas do corpo, pela posição. */
 export function templatePositions(template: WhatsappTemplate): string[] {
   return templateVariables(template).map((variable) => variable.name)
 }
@@ -51,51 +51,71 @@ function TemplateRow({
   selected,
   onToggle,
   onPreview,
+  onOpenPreview,
 }: {
   template: WhatsappTemplate
   selected: boolean
   onToggle: () => void
   onPreview: () => void
+  onOpenPreview: () => void
 }) {
   const { t } = useTranslation()
   const usable = templateFitsCampaign(template)
 
   return (
-    <label
+    <div
       onMouseEnter={onPreview}
-      onFocus={onPreview}
       className={cn(
-        "flex min-h-14 cursor-pointer items-start gap-3 rounded-lg border p-2.5 transition-colors hover:bg-muted/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
+        "flex items-start gap-1 rounded-lg border transition-colors hover:bg-muted/50 has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
         selected && "border-primary bg-primary/5",
-        !usable && "cursor-not-allowed opacity-70 hover:bg-transparent"
+        !usable && "opacity-70 hover:bg-transparent"
       )}
     >
-      <Checkbox
-        checked={selected}
-        disabled={!usable}
-        onCheckedChange={onToggle}
-        aria-label={templateTitle(template.name)}
-        className="mt-0.5"
-      />
-      <span className="min-w-0 flex-1">
-        <span className="flex flex-wrap items-center gap-1.5">
-          <span className="text-sm font-medium">{templateTitle(template.name)}</span>
-          <StatusBadge tone="neutral">
-            {t(`connectors.templates.categories.${template.category}`, {
-              defaultValue: template.category ?? "",
-            })}
-          </StatusBadge>
-          <span className="text-xs text-muted-foreground">
-            {t(`connectors.templates.languages.${template.language}`, {
-              defaultValue: template.language ?? "",
-            })}
+      <label
+        onFocus={onPreview}
+        className={cn(
+          "flex min-h-14 min-w-0 flex-1 cursor-pointer items-start gap-3 p-2.5",
+          !usable && "cursor-not-allowed"
+        )}
+      >
+        <Checkbox
+          checked={selected}
+          disabled={!usable}
+          onCheckedChange={onToggle}
+          aria-label={templateTitle(template.name)}
+          className="mt-0.5"
+        />
+        <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-1.5">
+            <span className="text-sm font-medium">{templateTitle(template.name)}</span>
+            <StatusBadge tone="neutral">
+              {t(`connectors.templates.categories.${template.category}`, {
+                defaultValue: template.category ?? "",
+              })}
+            </StatusBadge>
+            <span className="text-xs text-muted-foreground">
+              {t(`connectors.templates.languages.${template.language}`, {
+                defaultValue: template.language ?? "",
+              })}
+            </span>
+          </span>
+          <span className="mt-0.5 line-clamp-2 block text-xs text-pretty text-muted-foreground">
+            {usable ? templateSummary(template) : t("campaignsWizard.template.notUsable")}
           </span>
         </span>
-        <span className="mt-0.5 line-clamp-2 block text-xs text-pretty text-muted-foreground">
-          {usable ? templateSummary(template) : t("campaignsWizard.template.notUsable")}
-        </span>
-      </span>
-    </label>
+      </label>
+      {/* Sem mouse para passar por cima: no celular, ver o modelo antes de escolher é um toque. */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        className="m-1 shrink-0 text-muted-foreground lg:hidden pointer-coarse:size-10"
+        aria-label={t("campaignsWizard.template.preview", { name: templateTitle(template.name) })}
+        onClick={onOpenPreview}
+      >
+        <Eye />
+      </Button>
+    </div>
   )
 }
 
@@ -147,7 +167,13 @@ function TemplateParams({
 }
 
 /** Modelos aprovados: procurar, escolher um ou mais (um rodízio) e dizer o que entra em cada lacuna. */
-export function TemplateComposer({ onPreview }: { onPreview: (id: string) => void }) {
+export function TemplateComposer({
+  onPreview,
+  onOpenPreview,
+}: {
+  onPreview: (id: string | null) => void
+  onOpenPreview: (id: string) => void
+}) {
   const { t } = useTranslation()
   const language = useLanguage()
   const canManage = useCan("core_settings")
@@ -296,7 +322,8 @@ export function TemplateComposer({ onPreview }: { onPreview: (id: string) => voi
           className="border-0 p-4"
         />
       ) : (
-        <div className="flex flex-col gap-2">
+        // Passar o mouse mostra o modelo na prévia; sair da lista volta para o que foi escolhido.
+        <div className="flex flex-col gap-2" onMouseLeave={() => onPreview(null)} onBlur={() => onPreview(null)}>
           {found.map((template) => (
             <TemplateRow
               key={template.id}
@@ -304,6 +331,7 @@ export function TemplateComposer({ onPreview }: { onPreview: (id: string) => voi
               selected={templateIds.includes(template.id)}
               onToggle={() => toggle(template)}
               onPreview={() => onPreview(template.id)}
+              onOpenPreview={() => onOpenPreview(template.id)}
             />
           ))}
         </div>

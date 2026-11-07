@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useParams, useSearchParams } from "react-router"
+import { Link, useNavigationType, useParams, useSearchParams } from "react-router"
 import { CalendarClock, Send } from "lucide-react"
 
 import { CampaignWizard } from "@/components/campaigns-wizard/campaign-wizard"
 import { EmptyState, ErrorState, PageBody, PageSkeleton } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useApi } from "@/hooks/use-api"
+import { usePageTitle } from "@/hooks/use-header-slot"
 import { ApiError } from "@/lib/api"
 import type { CampaignResponse } from "@/lib/campaigns-wizard/types"
 
@@ -30,9 +31,11 @@ function openSession(number: number, routeId: string | null, duplicateId: string
   return { number, campaignId: routeId, duplicateId, routeId, routeDuplicateId: duplicateId }
 }
 
-function LockedCampaign({ id, status }: { id: string; status: string }) {
+function LockedCampaign({ id, name, status }: { id: string; name: string; status: string }) {
   const { t } = useTranslation()
   const scheduled = status === "scheduled"
+
+  usePageTitle(name, { backTo: "/campaigns", parentTitle: t("navigation.campaigns") })
 
   return (
     <PageBody>
@@ -105,7 +108,7 @@ function WizardLoader({
   }
 
   if (campaignId && opened && opened.status !== "draft") {
-    return <LockedCampaign id={opened.id} status={opened.status} />
+    return <LockedCampaign id={opened.id} name={opened.name} status={opened.status} />
   }
 
   return (
@@ -120,6 +123,7 @@ function WizardLoader({
 export default function CampaignWizardPage() {
   const { campaignId } = useParams<{ campaignId: string }>()
   const [searchParams] = useSearchParams()
+  const navigationType = useNavigationType()
   const routeId = campaignId ?? null
   const routeDuplicateId = routeId ? null : searchParams.get("duplicate")
 
@@ -127,7 +131,12 @@ export default function CampaignWizardPage() {
   const [createdId, setCreatedId] = useState<string | null>(null)
 
   if (routeId !== session.routeId || routeDuplicateId !== session.routeDuplicateId) {
-    if (routeId !== null && routeId === createdId) {
+    // O voltar do aparelho pode cair num passo de antes de o rascunho existir: ainda é o mesmo formulário,
+    // e `RouteSync` devolve a URL para `edit`. Um "Nova campanha" de verdade entra como PUSH.
+    const sameDraft = routeId !== null && routeId === createdId
+    const backBeforeDraft = routeId === null && createdId !== null && navigationType === "POP"
+
+    if (sameDraft || backBeforeDraft) {
       setSession({ ...session, routeId, routeDuplicateId })
     } else {
       setSession(openSession(session.number + 1, routeId, routeDuplicateId))

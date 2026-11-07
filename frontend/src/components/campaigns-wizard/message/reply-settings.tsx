@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChevronDown, Plus } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/lib/campaigns-wizard/notify"
 import { z } from "zod"
 
 import {

@@ -132,6 +132,15 @@ export function ChannelPicker() {
   )
   const numbers = useMemo(() => (selectedWaba ? wabaNumbers(selectedWaba) : []), [selectedWaba])
 
+  // Campanha antiga pode apontar para a conta oficial no modo texto, que a tela não oferece: fora da janela
+  // de 24 horas a WABA só aceita modelo, e os destinatários falhariam um a um.
+  useEffect(() => {
+    if (!isLoaded || connectorIds.length === 0) return
+
+    const known = connectorIds.filter((id) => channels.web.some((item) => item.id === id))
+    if (known.length !== connectorIds.length) setValue("connectorIds", known)
+  }, [channels.web, connectorIds, isLoaded, setValue])
+
   // O modo que existe, quando só existe um.
   useEffect(() => {
     if (!isLoaded) return
