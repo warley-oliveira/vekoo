@@ -26,7 +26,10 @@ module Agenda
     # As mensagens que a tela de simulação oferece, da mais antiga para a mais nova: as mesmas que
     # entrariam no pedido, com o id para escolher.
     #
-    # @return [Array<Hash>] { id:, role:, content:, createdAt: }
+    # `typeElement` e `mediaType` dizem o que a mensagem é, como no chat: áudio sem transcrição guarda
+    # só um traço em `content`, e a tela precisa mostrar "Áudio", não "-".
+    #
+    # @return [Array<Hash>] { id:, role:, content:, createdAt:, typeElement:, mediaType: }
     def candidates(chat, limit: nil)
       size = (limit.presence || CANDIDATES_LIMIT).to_i.clamp(1, CANDIDATES_LIMIT)
 
@@ -34,14 +37,22 @@ module Agenda
                        .where(chat_id: chat.id, :role.in => ChatMessage::Base::REAL_ROLES, is_span: false, tool_calls: nil)
                        .order_by(created_at: :desc)
                        .limit(size)
-                       .pluck(:id, :role, :content, :created_at)
+                       .pluck(:id, :role, :content, :created_at, :_type, :media_type)
                        .reverse
-                       .filter_map do |id, role, content, created_at|
+                       .filter_map do |id, role, content, created_at, type, media_type|
         next if content.blank?
 
-        { id: id.to_s, role: role, content: content.to_s.truncate(MAX_CHARS), createdAt: ApplicationSerializer.epoch_ms(created_at) }
+        {
+          id: id.to_s, role: role, content: content.to_s.truncate(MAX_CHARS),
+          createdAt: ApplicationSerializer.epoch_ms(created_at),
+          typeElement: TYPE_ELEMENTS.fetch(type, "text"), mediaType: media_type
+        }
       end
     end
+
+    TYPE_ELEMENTS = {
+      "ChatMessage::Audio" => "audio", "ChatMessage::Image" => "image", "ChatMessage::Media" => "media"
+    }.freeze
 
     def object_ids(ids)
       ids.filter_map { |id| BSON::ObjectId.from_string(id.to_s) if BSON::ObjectId.legal?(id.to_s) }

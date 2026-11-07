@@ -589,6 +589,15 @@ RSpec.describe "Agenda: calendários", type: :request do
             expect(json["messages"].map { |message| message["content"] }).to eq(%w[Primeira Segunda])
           end
 
+          it "diz o tipo da mensagem, para áudio sem transcrição não aparecer como um traço" do
+            create(:chat_audio_message, chat: chat, content: "-")
+
+            get messages_path, params: { bookingId: booking.id.to_s }, headers: headers
+
+            expect(json["messages"].first).to include("typeElement" => "text")
+            expect(json["messages"].last).to include("content" => "-", "typeElement" => "audio")
+          end
+
           it "respeita o limite, com teto" do
             get messages_path, params: { bookingId: booking.id.to_s, limit: 1 }, headers: headers
 

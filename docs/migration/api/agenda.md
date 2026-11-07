@@ -599,11 +599,14 @@ Exige `calendar`, e não `chat`: quem só configura a agenda também testa um le
 ```json
 {
   "messages": [
-    { "id": "6aee3cab5d4d5c0eb9961be7", "role": "user", "content": "Boa tarde. Vocês fazem camiseta para empresa? Somos 40 pessoas.", "createdAt": 1793902020000 },
-    { "id": "6aee3cab5d4d5c0eb9961be8", "role": "assistant", "content": "Boa tarde, Carlos! Fazemos sim, com desconto a partir de 20 peças. Vou te mandar a tabela.", "createdAt": 1793902380000 }
+    { "id": "6aee3cab5d4d5c0eb9961be7", "role": "user", "content": "Boa tarde. Vocês fazem camiseta para empresa? Somos 40 pessoas.", "createdAt": 1793902020000, "typeElement": "text", "mediaType": null },
+    { "id": "6aee3cab5d4d5c0eb9961be8", "role": "assistant", "content": "Boa tarde, Carlos! Fazemos sim, com desconto a partir de 20 peças. Vou te mandar a tabela.", "createdAt": 1793902380000, "typeElement": "text", "mediaType": null },
+    { "id": "6aee3cab5d4d5c0eb9961be9", "role": "user", "content": "-", "createdAt": 1793902500000, "typeElement": "audio", "mediaType": null }
   ]
 }
 ```
+
+`typeElement` (`text`, `image`, `audio`, `media`) e `mediaType` são os mesmos do chat: áudio sem transcrição guarda só `-` em `content`, e a tela mostra "Áudio".
 
 ### `POST .../contact-notification-preview`
 
