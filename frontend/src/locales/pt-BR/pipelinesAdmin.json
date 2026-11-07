@@ -81,7 +81,7 @@
       "house": "Casa"
     },
     "settings": {
-      "pageDescription": "O que este pipeline é e como ele funciona. Cada assunto salva sozinho.",
+      "pageDescription": "O que este pipeline é e como ele funciona. Cada assunto tem o próprio botão de salvar.",
       "identity": {
         "title": "Identidade",
         "description": "Como o pipeline aparece no menu e nas listas.",

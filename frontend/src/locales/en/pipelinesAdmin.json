@@ -81,7 +81,7 @@
       "house": "House"
     },
     "settings": {
-      "pageDescription": "What this pipeline is and how it works. Each topic saves on its own.",
+      "pageDescription": "What this pipeline is and how it works. Each topic has its own save button.",
       "identity": {
         "title": "Identity",
         "description": "How the pipeline shows up in the menu and in lists.",
