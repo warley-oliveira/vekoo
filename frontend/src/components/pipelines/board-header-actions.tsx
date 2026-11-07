@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useBoardMutations } from "@/hooks/pipelines/use-boards"
 import { useIsMobile } from "@/hooks/use-is-mobile"
+import { ALL_PIPELINES_PATH } from "@/lib/navigation"
 import { pipelineErrorText } from "@/lib/pipelines/errors"
 import { boardViewUrl, type BoardView } from "@/lib/pipelines/paths"
 import type { Board } from "@/lib/pipelines/types"
@@ -100,7 +101,7 @@ export function BoardMenu({ board, onRename }: { board: Board; onRename: () => v
     })
     if (confirmed) {
       toast.success(t("pipelines.boards.archived"))
-      navigate("/pipelines?all=1")
+      navigate(ALL_PIPELINES_PATH)
     }
   }
 
@@ -138,7 +139,7 @@ export function BoardMenu({ board, onRename }: { board: Board; onRename: () => v
             {t("pipelines.boards.archivedCards")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem render={<Link to="/pipelines?all=1" />}>
+          <DropdownMenuItem render={<Link to={ALL_PIPELINES_PATH} />}>
             <LayoutGrid />
             {t("pipelines.boards.all")}
           </DropdownMenuItem>

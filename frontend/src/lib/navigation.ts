@@ -234,6 +234,8 @@ export const NAV_GROUPS: NavGroup[] = [
 
 /** A entrada que abre os quadros de pipeline (folha própria no celular). */
 export const PIPELINES_ENTRY_ID = "pipelines"
+/** A lista de todos. `/pipelines`, sozinho, leva ao último pipeline aberto. */
+export const ALL_PIPELINES_PATH = "/pipelines?all=1"
 
 /**
  * As abas fixas da barra inferior, nesta ordem. Fixas de propósito: memória muscular
