@@ -292,8 +292,8 @@
         "filterBarHint": "Search, filters, sorting and clear. On mobile, filters move to a Sheet."
       },
       "overlays": {
-        "openDialog": "Open responsive dialog",
-        "openPanel": "Open side panel",
+        "openDialog": "Open short modal (sm)",
+        "openPanel": "Open detail (xl)",
         "openConfirm": "Confirm deletion",
         "openTyped": "Confirm by typing",
         "openFailing": "Confirm with error",
@@ -320,7 +320,18 @@
         "hookDescription": "The next messages go through it right away.",
         "hookConfirm": "Publish flow",
         "confirmed": "Confirmed",
-        "declined": "Nothing was changed"
+        "declined": "Nothing was changed",
+        "sizesHint": "The size comes from the content. Open each one to compare; on a phone, sm and md are a card and the others fill the screen.",
+        "openSize": "{{size}} modal",
+        "sizeTitle": "{{size}} modal",
+        "sizes": {
+          "sm": "One question or one field: rename, pick an option.",
+          "md": "Short form, up to about five fields.",
+          "lg": "Form with sections, or a simple detail.",
+          "xl": "Detail with tabs, long form, list to pick from.",
+          "2xl": "Two columns, side preview, review table, import.",
+          "full": "Work that needs the screen: pipeline card, code editor, widget editor."
+        }
       },
       "forms": {
         "profile": "Full form",
