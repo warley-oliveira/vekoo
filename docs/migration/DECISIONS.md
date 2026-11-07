@@ -85,7 +85,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 ### Pessoas: tela (fe-settings-people)
 
-- **Padrão das telas de configuração, seguido pelas próximas:** `AreaNav` no topo, `SettingsSection` com salvar por seção, interruptor que vale na hora, edição em `SidePanel`.
+- **Padrão das telas de configuração, seguido pelas próximas:** `AreaNav` no topo, `SettingsSection` com salvar por seção, interruptor que vale na hora, edição em `SidePanel` (depois trocado pelo modal, ver "Modal no lugar de drawer").
 - **Excluir pessoa fica no fim da ficha:** não aparece no menu da linha, explica o efeito e exige digitar EXCLUIR. "Revogar" é o caminho normal.
 - **Campo único "Grupo de permissão"** inclui "Dono", visível só para quem é dono, com confirmação ao promover. Novo cadastro já vem no grupo "Usuário".
 - **Nível `own` não é oferecido:** nenhum controlador o distingue de `all`, então dar a opção enganaria quem configura. Se vier da API, é preservado e aparece com um selo.
@@ -408,6 +408,14 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Freio de contato:** a contagem por período (25 mensagens em 4 minutos adiam a automação em 10 minutos e somam advertência) só valia na Z-API, e saiu. A regra das advertências (`red_flag_count` ≥ 5 desliga a automação) continua no WhatsApp Web, como antes, em `Chats::InboundThrottle`.
 - **Tela de conexão:** saiu a opção "WhatsApp do celular, com mais recursos" e o pedido de QR novo a cada 8 segundos (`generate_qr_code`, `qr_error` em `ConnectorsChannel`).
 - **Para quem lê o código:** `Inbound::ProcessWebhookJob` perdeu o argumento `event`, que só a Z-API usava. Nada cria mais conector Z-API, nem a semente nem `platform:sync`, e a produção nunca teve um. Num banco antigo, porém: um documento `_type: "Connector::Zapi"` faz qualquer consulta que o alcance levantar `Mongoid::Errors::UnknownModel`, inclusive a lista de canais da organização inteira; e um `Connector::WhatsappWeb` com `provider_api: "zapi"` carrega, cai na AIVA para falar com o provedor e não salva mais (validação de `provider_api`). Os dois devem ser apagados, com as conversas deles: `Connector::Base.collection.find("$or" => [{ _type: "Connector::Zapi" }, { provider_api: "zapi" }])`.
+
+### Modal no lugar de drawer (modals)
+
+- **Diretiva da pessoa: toda tarefa, edição ou detalhe abre em modal com tamanho dinâmico; drawer só para informação de baixa relevância.** O `SidePanel` (folha pela direita) saiu do kit, e os usos viraram `ResponsiveDialog` (38 em 36 arquivos, mais a vitrine; os 13 do calendário ficam com a frente do calendário).
+- **Um modal só, com seis tamanhos** escolhidos pelo conteúdo: `sm` 24rem, `md` 28rem, `lg` 32rem, `xl` 42rem, `2xl` 56rem e `full` (até 88rem × 90dvh, altura fixa). A altura acompanha o conteúdo até o teto; `fixedHeight` trava no teto para wizard e abas não saltarem. Ganhou `headerActions`.
+- **Celular (vetável):** `sm` e `md` como cartão centrado com 16 px de margem; `lg` para cima em tela cheia. Ambos presos ao viewport visível, para o teclado não cobrir campo nem botão. Voltar à folha de baixo é trocar `MOBILE_PRESENTATION` para `"sheet"` no componente.
+- **Card do pipeline em `full`**, com detalhes à esquerda e comentários e atividade ao lado a partir de 1024 px; abaixo disso, as três abas de antes. Continua abrindo por `?card=`.
+- **Ficaram como drawer:** menu "Mais" e escolha de pipeline da barra inferior, central de notificações no celular, ações da página no cabeçalho do celular, menus do chat no celular (conversa, mensagem, seleção, anexar, mensagens rápidas), filtros e seletores (`FilterBar`, `FilterPopover`, `ResponsivePopover`) e o inspetor de bloco do editor de carrossel no celular, que precisa deixar a arte à vista.
 
 ## 2. Pendências por frente
 

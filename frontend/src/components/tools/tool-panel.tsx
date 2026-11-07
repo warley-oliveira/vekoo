@@ -7,7 +7,7 @@ import { ChevronRight, ExternalLink, FlaskConical, Lightbulb, PencilRuler, Shiel
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { Callout, DetailSkeleton, ErrorState, FormActions, SidePanel, StatusBadge, TextField, useConfirm, useFormSubmit } from "@/components/shared"
+import { Callout, DetailSkeleton, ErrorState, FormActions, ResponsiveDialog, StatusBadge, TextField, useConfirm, useFormSubmit } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { useCatalogTool, useToolCatalog, useToolInstallationMutations, useToolInstallations } from "@/hooks/tools/use-tool-catalog"
@@ -64,9 +64,9 @@ export function ToolPanel({ toolId, open, onOpenChange }: ToolPanelProps) {
   if (!summary) {
     const missing = !detail.isLoading && !catalog.isLoading
     return (
-      <SidePanel open={open} onOpenChange={onOpenChange} title={t("tools.panel.loading")} size="lg">
+      <ResponsiveDialog open={open} onOpenChange={onOpenChange} title={t("tools.panel.loading")} size="lg">
         {missing ? <ErrorState error={detail.error} onRetry={() => void detail.reload()} /> : <DetailSkeleton rows={5} />}
-      </SidePanel>
+      </ResponsiveDialog>
     )
   }
 
@@ -223,7 +223,7 @@ function LoadedPanel({
   )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
@@ -325,7 +325,7 @@ function LoadedPanel({
           <p className="text-xs text-muted-foreground">{t("tools.panel.reversible")}</p>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

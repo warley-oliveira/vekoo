@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { ChevronRight, MessageCircle, Waypoints } from "lucide-react"
 
-import { Callout, DetailSkeleton, ErrorState, RelativeTime, SidePanel, StatusBadge, Timeline, type TimelineItem } from "@/components/shared"
+import { Callout, DetailSkeleton, ErrorState, RelativeTime, ResponsiveDialog, StatusBadge, Timeline, type TimelineItem } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useCan } from "@/hooks/use-can"
@@ -33,7 +33,7 @@ export function ExecutionPanel({
   const { execution, error, isLoading, reload } = useFlowExecution(flowId, shownId)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={Boolean(executionId)}
       onOpenChange={(next) => {
         if (!next) onClose()
@@ -49,7 +49,7 @@ export function ExecutionPanel({
       ) : (
         <ExecutionBody flowId={flowId} execution={execution} definition={definition} />
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Download, FileText, Loader2 } from "lucide-react"
 import { toast } from "@/lib/campaigns-wizard/notify"
 
-import { Callout, FileDropzone, SidePanel, useConfirm, type DropzoneFile } from "@/components/shared"
+import { Callout, FileDropzone, ResponsiveDialog, useConfirm, type DropzoneFile } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useColumnMapping } from "@/hooks/campaigns-wizard/use-column-mapping"
@@ -147,12 +147,13 @@ export default function FileImportPanel({ onClose }: { onClose: () => void }) {
   const percent = progress?.fraction !== null && progress ? Math.round(progress.fraction! * 100) : null
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
       }}
-      size="xl"
+      size="2xl"
+      fixedHeight
       title={t("campaignsWizard.import.title")}
       description={parsed ? undefined : t("campaignsWizard.import.description")}
       disablePointerDismissal={Boolean(parsed) || sending}
@@ -269,6 +270,6 @@ export default function FileImportPanel({ onClose }: { onClose: () => void }) {
           </Button>
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

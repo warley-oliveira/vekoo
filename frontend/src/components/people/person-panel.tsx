@@ -11,7 +11,7 @@ import {
   MultiSelectField,
   PhoneField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextField,
   UnsavedChangesDialog,
@@ -158,7 +158,7 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
   )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -411,6 +411,6 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

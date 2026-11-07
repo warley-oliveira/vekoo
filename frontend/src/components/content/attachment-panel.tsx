@@ -13,7 +13,7 @@ import {
   FormField,
   KeyValueList,
   RelativeTime,
-  SidePanel,
+  ResponsiveDialog,
   TextareaField,
   TextField,
   UnsavedChangesDialog,
@@ -128,7 +128,7 @@ export function AttachmentPanel({
   const url = file ? apiAssetUrl(file.url) : null
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -287,6 +287,6 @@ export function AttachmentPanel({
           </Button>
         </div>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

@@ -11,7 +11,7 @@ import {
   Field,
   SearchableSelect,
   SelectInput,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
   TagChip,
   UserAvatar,
@@ -73,7 +73,7 @@ export function ChatPanel({ chatId, funnelId, board, onClose, onMove, onPatch, o
   const phone = contactPhone(contact?.phoneNumber)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       key={openCount}
       open={open}
       onOpenChange={(next) => {
@@ -107,7 +107,7 @@ export function ChatPanel({ chatId, funnelId, board, onClose, onMove, onPatch, o
           onCatalogChange={onCatalogChange}
         />
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

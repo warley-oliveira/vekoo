@@ -14,7 +14,7 @@ export type FormProps<
 
 /**
  * Formulário em página. Dá contexto ao `FormActions` e usa `useFormSubmit`. Dentro de
- * `SidePanel` e `ResponsiveDialog`, use o `onSubmit` deles: o conteúdo vai para um
+ * `ResponsiveDialog`, use o `onSubmit` deles: o conteúdo vai para um
  * portal e o botão não estaria dentro deste `<form>`.
  */
 export function Form<

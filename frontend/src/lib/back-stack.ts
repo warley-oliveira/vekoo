@@ -11,8 +11,8 @@
 //
 // Há dois tipos de camada:
 // - As da própria tela (painel do chat, seleção, emoji), que se declaram com `useBackLayer`.
-// - Tudo que vem do Base UI, que aparece no `document.body` em um portal: `SidePanel`,
-//   `ResponsiveDialog`, `BottomSheet`, menus, seletores. Ninguém precisa declarar.
+// - Tudo que vem do Base UI, que aparece no `document.body` em um portal: `ResponsiveDialog`,
+//   `BottomSheet`, menus, seletores. Ninguém precisa declarar.
 //
 // Três encontros com o roteador, que também escreve no histórico:
 // - Painel que abriu junto com uma entrada própria (`?card=`, com push): voltar já é o do roteador, e

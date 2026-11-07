@@ -12,7 +12,7 @@ import {
   FacetedFilter,
   FilterBar,
   ListSkeleton,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
   TablePagination,
   TagChip,
@@ -265,12 +265,13 @@ export default function ContactsPanel({ onClose }: { onClose: () => void }) {
   const rows = data?.contacts ?? []
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
       }}
       size="xl"
+      fixedHeight
       title={t("campaignsWizard.contacts.title")}
       description={t("campaignsWizard.contacts.description")}
       disablePointerDismissal={dirty}
@@ -423,6 +424,6 @@ export default function ContactsPanel({ onClose }: { onClose: () => void }) {
           </p>
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

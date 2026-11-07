@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
-import { Callout, DetailSkeleton, ErrorState, FormActions, SidePanel, useFormSubmit } from "@/components/shared"
+import { Callout, DetailSkeleton, ErrorState, FormActions, ResponsiveDialog, useFormSubmit } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDataSources, useFilterOptions } from "@/hooks/custom-dashboards/use-custom-dashboards"
@@ -159,8 +159,6 @@ export function WidgetEditorPanel({ target, period, onClose, onApply }: WidgetEd
   )
 }
 
-const PANEL_CLASS = "data-[side=right]:sm:max-w-2xl data-[side=right]:lg:max-w-5xl"
-
 function PanelShell({
   target,
   open,
@@ -174,14 +172,14 @@ function PanelShell({
 }) {
   const { t } = useTranslation()
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       title={t(target.kind === "new" ? "customDashboards.editor.newTitle" : "customDashboards.editor.editTitle")}
-      className={PANEL_CLASS}
+      size="full"
     >
       {children}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 
@@ -262,16 +260,16 @@ function EditorForm({
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
       }}
       title={t(target.kind === "new" ? "customDashboards.editor.newTitle" : "customDashboards.editor.editTitle")}
       description={sentence || undefined}
-      className={PANEL_CLASS}
+      size="full"
       onSubmit={submitWithFeedback}
-      bodyClassName="p-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:overflow-hidden"
+      bodyClassName="p-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:overflow-hidden"
       footer={
         <FormActions
           form={form}
@@ -318,7 +316,7 @@ function EditorForm({
           </div>
         </div>
       </FormProvider>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

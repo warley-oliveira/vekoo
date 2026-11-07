@@ -8,7 +8,7 @@ import {
   EmptyState,
   ErrorState,
   SearchInput,
-  SidePanel,
+  ResponsiveDialog,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useOpenCount, useRetained } from "@/hooks/use-panel-session"
@@ -61,7 +61,7 @@ export function ExtractionResultsPanel({ extractionId, onClose }: ExtractionResu
       : undefined
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) onClose()
@@ -108,7 +108,7 @@ export function ExtractionResultsPanel({ extractionId, onClose }: ExtractionResu
         error={error}
         onRetry={() => void mutate()}
       />
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

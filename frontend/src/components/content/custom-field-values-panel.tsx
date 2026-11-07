@@ -14,7 +14,7 @@ import {
   ListSkeleton,
   SearchInput,
   SelectInput,
-  SidePanel,
+  ResponsiveDialog,
   useConfirm,
   type DateRangeValue,
 } from "@/components/shared"
@@ -269,7 +269,7 @@ export function CustomFieldValuesPanel({
     })
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -619,7 +619,7 @@ export function CustomFieldValuesPanel({
           </motion.div>
         </AnimatePresence>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

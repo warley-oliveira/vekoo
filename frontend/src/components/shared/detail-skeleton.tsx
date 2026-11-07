@@ -13,7 +13,7 @@ export type DetailSkeletonProps = {
   className?: string
 }
 
-/** Detalhe de um registro carregando, dentro de `SidePanel` ou de uma página própria. */
+/** Detalhe de um registro carregando, dentro de `ResponsiveDialog` ou de uma página própria. */
 export function DetailSkeleton({
   rows = 5,
   avatar = true,

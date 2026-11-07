@@ -25,7 +25,6 @@ import {
   SearchInput,
   SegmentedControl,
   SelectInput,
-  SidePanel,
   TablePagination,
   useConfirm,
 } from "@/components/shared"
@@ -567,12 +566,13 @@ export default function PlacesPanel({
 
   return (
     <>
-      <SidePanel
+      <ResponsiveDialog
         open={open}
         onOpenChange={(next) => {
           if (!next) void close()
         }}
         size="xl"
+        fixedHeight
         title={t("campaignsWizard.places.title")}
         description={t("campaignsWizard.places.description")}
         disablePointerDismissal={count > 0 || sending}
@@ -921,7 +921,7 @@ export default function PlacesPanel({
             </div>
           </div>
         )}
-      </SidePanel>
+      </ResponsiveDialog>
       <PlaceDetails place={details} onClose={() => setDetails(null)} />
     </>
   )

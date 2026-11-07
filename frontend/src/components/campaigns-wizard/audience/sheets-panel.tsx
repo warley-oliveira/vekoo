@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { FileSpreadsheet, Loader2 } from "lucide-react"
 import { toast } from "@/lib/campaigns-wizard/notify"
 
-import { Callout, SidePanel, useConfirm } from "@/components/shared"
+import { Callout, ResponsiveDialog, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useColumnMapping } from "@/hooks/campaigns-wizard/use-column-mapping"
@@ -118,12 +118,13 @@ export default function SheetsPanel({
   const readyCount = mapping.mapped?.summary.ready ?? 0
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void close()
       }}
-      size="xl"
+      size="2xl"
+      fixedHeight
       title={t("campaignsWizard.sheets.title")}
       description={parsed ? undefined : t("campaignsWizard.sheets.description")}
       disablePointerDismissal={Boolean(parsed) || sending}
@@ -265,6 +266,6 @@ export default function SheetsPanel({
           <p className="text-xs text-pretty text-muted-foreground">{t("campaignsWizard.sheets.privacy")}</p>
         </div>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

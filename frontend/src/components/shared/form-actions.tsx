@@ -17,7 +17,7 @@ export type FormActionsProps = {
   submitLabel: string
   onCancel?: () => void
   cancelLabel?: string
-  /** O formulário, quando não há `<Form>` em volta (dentro de `SidePanel` e `ResponsiveDialog`). */
+  /** O formulário, quando não há `<Form>` em volta (dentro de `ResponsiveDialog`). */
   form?: UseFormReturn<any, any, any>
   /** Ação à esquerda, como "Excluir". */
   secondary?: ReactNode

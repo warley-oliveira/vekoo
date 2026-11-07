@@ -292,8 +292,8 @@
         "filterBarHint": "Busca, filtros, ordenação e limpar. No celular, os filtros vão para uma Sheet."
       },
       "overlays": {
-        "openDialog": "Abrir diálogo responsivo",
-        "openPanel": "Abrir painel lateral",
+        "openDialog": "Abrir modal curto (sm)",
+        "openPanel": "Abrir detalhe (xl)",
         "openConfirm": "Confirmar exclusão",
         "openTyped": "Confirmar digitando",
         "openFailing": "Confirmar com erro",
@@ -320,7 +320,18 @@
         "hookDescription": "As próximas mensagens já passam por ele.",
         "hookConfirm": "Publicar fluxo",
         "confirmed": "Confirmado",
-        "declined": "Nada foi alterado"
+        "declined": "Nada foi alterado",
+        "sizesHint": "O tamanho vem do conteúdo. Abra cada um para comparar; no celular, sm e md são cartão e os outros, tela cheia.",
+        "openSize": "Modal {{size}}",
+        "sizeTitle": "Modal {{size}}",
+        "sizes": {
+          "sm": "Uma pergunta ou um campo: renomear, escolher uma opção.",
+          "md": "Formulário curto, até uns cinco campos.",
+          "lg": "Formulário com seções, ou um detalhe simples.",
+          "xl": "Detalhe com abas, formulário longo, lista para escolher.",
+          "2xl": "Duas colunas, prévia ao lado, tabela de conferência, importação.",
+          "full": "Trabalho que pede a tela: card do pipeline, editor de código, editor de widget."
+        }
       },
       "forms": {
         "profile": "Formulário completo",

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import { SidePanel } from "@/components/shared"
+import { ResponsiveDialog } from "@/components/shared"
 import { WIDGET_CSS_VARIABLES } from "./widget-css-variables"
 
 /**
@@ -19,7 +19,7 @@ export function WidgetGuide({
   const limits = t("connectors.widget.guide.limits", { returnObjects: true }) as unknown as string[]
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={onOpenChange}
       size="lg"
@@ -68,6 +68,6 @@ export function WidgetGuide({
           </ul>
         </section>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }

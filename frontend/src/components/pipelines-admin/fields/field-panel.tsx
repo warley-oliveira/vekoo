@@ -11,7 +11,7 @@ import {
   FormActions,
   RadioField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TagChip,
   TextField,
@@ -139,7 +139,7 @@ export function FieldPanel({ board, field, initialStageId, open, onOpenChange }:
   )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -249,7 +249,7 @@ export function FieldPanel({ board, field, initialStageId, open, onOpenChange }:
           </div>
         </div>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

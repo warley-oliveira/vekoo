@@ -13,7 +13,7 @@ import { applyServerErrors } from "./apply-server-errors"
  *   await apiPost("/contacts", values)
  *   toast.success(t("contacts.created"))
  * })
- * <SidePanel onSubmit={submit} …>
+ * <ResponsiveDialog onSubmit={submit} …>
  * ```
  */
 export function useFormSubmit<TValues extends FieldValues, TContext, TTransformed extends FieldValues>(

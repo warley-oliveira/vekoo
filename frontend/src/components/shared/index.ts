@@ -39,7 +39,6 @@ export * from "./file-type-icon"
 /* Sobreposições */
 export * from "./responsive-dialog"
 export * from "./responsive-popover"
-export * from "./side-panel"
 export * from "./confirm-dialog"
 export * from "./use-confirm"
 export * from "./unsaved-changes-dialog"

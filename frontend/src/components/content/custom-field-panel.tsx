@@ -18,7 +18,7 @@ import {
   NumberInput,
   RadioField,
   SelectField,
-  SidePanel,
+  ResponsiveDialog,
   SwitchField,
   TextareaField,
   TextField,
@@ -209,7 +209,7 @@ export function CustomFieldPanel({
     .map((other) => ({ value: other.key, label: other.name }))
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) void requestClose()
@@ -365,7 +365,7 @@ export function CustomFieldPanel({
           </div>
         ) : null}
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

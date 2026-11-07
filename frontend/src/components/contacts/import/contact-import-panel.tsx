@@ -5,7 +5,7 @@ import { useNavigate } from "react-router"
 import { ArrowLeft, Check, Plus } from "lucide-react"
 
 import { useConnectorTexts } from "@/components/connectors/connector-texts"
-import { KeyValueList, SidePanel, useConfirm } from "@/components/shared"
+import { KeyValueList, ResponsiveDialog, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useImportOutcome, useImportSender } from "@/hooks/contacts/use-contact-imports"
 import { useContactFilterOptions } from "@/hooks/contacts/use-contacts"
@@ -310,12 +310,13 @@ function ImportPanelBody({
     )
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={view !== null}
       onOpenChange={(open) => {
         if (!open) void close()
       }}
-      size="xl"
+      size="2xl"
+      fixedHeight
       title={title}
       description={description}
       // Clicar fora não pode jogar fora o que a pessoa mapeou com cuidado.
@@ -380,7 +381,7 @@ function ImportPanelBody({
           </motion.div>
         </AnimatePresence>
       </div>
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

@@ -11,7 +11,7 @@ import {
   SearchInput,
   SegmentedControl,
   SelectInput,
-  SidePanel,
+  ResponsiveDialog,
   useConfirm,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -329,7 +329,7 @@ const ViewsSection = memo(function ViewsSection({
 })
 
 /**
- * O construtor de filtros e as visões salvas, num painel lateral. Vale à medida que se monta: cada
+ * O construtor de filtros e as visões salvas, num modal. Vale à medida que se monta: cada
  * condição completa já filtra a lista atrás do painel, e a incompleta espera. "Lembrar" guarda neste
  * navegador, para o filtro continuar lá da próxima vez.
  */
@@ -404,7 +404,7 @@ export default function FilterPanel({
 
   return (
     <>
-      <SidePanel
+      <ResponsiveDialog
         open={open}
         onOpenChange={onOpenChange}
         size="lg"
@@ -492,7 +492,7 @@ export default function FilterPanel({
             }}
           />
         </div>
-      </SidePanel>
+      </ResponsiveDialog>
 
       {saving ? (
         <SaveViewDialog

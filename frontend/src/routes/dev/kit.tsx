@@ -65,10 +65,10 @@ import {
   SearchInput,
   SectionCard,
   SegmentedControl,
+  type ResponsiveDialogSize,
   type SelectOption,
   SelectField,
   SettingsSection,
-  SidePanel,
   SortMenu,
   Sparkline,
   StatTile,
@@ -88,6 +88,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useBoolean } from "@/hooks/use-boolean"
+import { useGuardedClose } from "@/hooks/use-panel-session"
 import { ApiError, type PaginationMeta } from "@/lib/api"
 import { isValidPhone } from "@/lib/format-phone"
 import { matchesSearch } from "@/lib/search-text"
@@ -1145,10 +1146,14 @@ function ReverseExample() {
 
 /* ---------- sobreposições ---------- */
 
+const DIALOG_SIZES: ResponsiveDialogSize[] = ["sm", "md", "lg", "xl", "2xl", "full"]
+
 function OverlaysSection() {
   const { t } = useTranslation()
   const dialog = useBoolean()
   const panel = useBoolean()
+  const [sized, setSized] = useState<ResponsiveDialogSize | null>(null)
+  const [shownSize, setShownSize] = useState<ResponsiveDialogSize>("md")
   const destructive = useBoolean()
   const typed = useBoolean()
   const failing = useBoolean()
@@ -1166,8 +1171,15 @@ function OverlaysSection() {
   const submit = useFormSubmit(form, async () => {
     await new Promise((resolve) => setTimeout(resolve, 600))
     toast.success(t("kit.showcase.overlays.confirmed"))
+    form.reset(form.getValues())
     dialog.onFalse()
   })
+  // Fechar pelo X, Esc ou clique fora com o nome alterado pergunta antes; Cancelar fecha direto.
+  const closeDialog = useCallback(() => {
+    form.reset()
+    dialog.onFalse()
+  }, [dialog, form])
+  const guardedClose = useGuardedClose(form.formState.isDirty, closeDialog)
 
   async function askFromPanel() {
     const confirmed = await confirm({
@@ -1219,9 +1231,58 @@ function OverlaysSection() {
         </Button>
       </div>
 
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-muted-foreground">{t("kit.showcase.overlays.sizesHint")}</p>
+        <div className="flex flex-wrap gap-2">
+          {DIALOG_SIZES.map((size) => (
+            <Button
+              key={size}
+              variant="outline"
+              size="sm"
+              data-testid={`open-size-${size}`}
+              onClick={() => {
+                setShownSize(size)
+                setSized(size)
+              }}
+            >
+              {t("kit.showcase.overlays.openSize", { size })}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <ResponsiveDialog
+        open={sized !== null}
+        onOpenChange={(open) => {
+          if (!open) setSized(null)
+        }}
+        size={shownSize}
+        title={t("kit.showcase.overlays.sizeTitle", { size: shownSize })}
+        description={t(`kit.showcase.overlays.sizes.${shownSize}`)}
+        footer={
+          <Button variant="outline" onClick={() => setSized(null)}>
+            {t("kit.actions.close")}
+          </Button>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground">{t("kit.showcase.overlays.panelBody")}</p>
+          <TextField
+            control={form.control}
+            name="name"
+            label={t("kit.showcase.overlays.dialogField")}
+          />
+          <ListSkeleton rows={shownSize === "sm" ? 2 : 6} avatar />
+        </div>
+      </ResponsiveDialog>
+
       <ResponsiveDialog
         open={dialog.value}
-        onOpenChange={dialog.setValue}
+        onOpenChange={(open) => {
+          if (open) dialog.onTrue()
+          else void guardedClose()
+        }}
+        size="sm"
         title={t("kit.showcase.overlays.dialogTitle")}
         description={t("kit.showcase.overlays.dialogDescription")}
         onSubmit={submit}
@@ -1229,7 +1290,7 @@ function OverlaysSection() {
           <FormActions
             form={form}
             submitLabel={t("kit.showcase.overlays.dialogSubmit")}
-            onCancel={dialog.onFalse}
+            onCancel={closeDialog}
           />
         }
       >
@@ -1241,9 +1302,10 @@ function OverlaysSection() {
         />
       </ResponsiveDialog>
 
-      <SidePanel
+      <ResponsiveDialog
         open={panel.value}
         onOpenChange={panel.setValue}
+        size="xl"
         title={t("kit.showcase.overlays.panelTitle")}
         description={t("kit.showcase.overlays.panelDescription")}
         headerActions={<CopyButton value={SAMPLE.email} />}
@@ -1276,7 +1338,7 @@ function OverlaysSection() {
           <DetailSkeleton />
           <ListSkeleton rows={12} avatar />
         </div>
-      </SidePanel>
+      </ResponsiveDialog>
 
       <ConfirmDialog
         open={destructive.value}

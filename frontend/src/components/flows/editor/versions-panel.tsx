@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { RotateCcw } from "lucide-react"
 import { toast } from "sonner"
 
-import { ErrorState, ListSkeleton, RelativeTime, SidePanel, StatusBadge, useConfirm } from "@/components/shared"
+import { ErrorState, ListSkeleton, RelativeTime, ResponsiveDialog, StatusBadge, useConfirm } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useFlowVersions } from "@/hooks/flows/use-flows"
 import { apiGet } from "@/lib/api"
@@ -25,7 +25,7 @@ export function VersionsPanel() {
   const { versions, isLoading, error, reload } = useFlowVersions(flow.id, open)
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => setDialog(next ? "versions" : null)}
       title={t("flows.versions.title")}
@@ -43,7 +43,7 @@ export function VersionsPanel() {
           ))}
         </ul>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
 

@@ -27,7 +27,7 @@ import {
   SearchableSelect,
   SegmentedControl,
   SelectInput,
-  SidePanel,
+  ResponsiveDialog,
   StatusBadge,
 } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -46,6 +46,7 @@ import { useCardActions } from "@/hooks/pipelines/use-card-actions"
 import { useCardDetail, useWatchCard } from "@/hooks/pipelines/use-card-detail"
 import { usePeopleOptions } from "@/hooks/pipelines/use-people-options"
 import { useChannel } from "@/hooks/use-channel"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { useLanguage } from "@/lib/i18n"
 import { ApiError, apiAssetUrl } from "@/lib/api"
 import { formatDate } from "@/lib/date-format"
@@ -75,6 +76,9 @@ import { StageTrack } from "./stage-track"
 const DescriptionEditor = lazy(() => import("./description-editor"))
 
 type PanelTab = "details" | "comments" | "activity"
+
+/** A partir daqui, detalhes e conversa cabem lado a lado. */
+const WIDE_QUERY = "(min-width: 1024px)"
 
 function PropertyRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -572,7 +576,11 @@ type CardPanelProps = {
   onClose: () => void
 }
 
-/** O card aberto, em painel lateral. O endereço (`?card=`) diz qual é, então o link leva até ele. */
+/**
+ * O card aberto, em modal de tela inteira. O endereço (`?card=`) diz qual é, então o link leva até
+ * ele. Em tela larga, os detalhes ficam à esquerda e comentários e atividade, ao lado; abaixo disso,
+ * os três em abas.
+ */
 export default function CardPanel({ board, cardId, open, onClose }: CardPanelProps) {
   const { t } = useTranslation()
   const language = useLanguage()
@@ -584,6 +592,9 @@ export default function CardPanel({ board, cardId, open, onClose }: CardPanelPro
   const watch = useWatchCard(board.id, cardId)
 
   const [tab, setTab] = useState<PanelTab>("details")
+  const wide = useMediaQuery(WIDE_QUERY)
+  // Em tela larga, os detalhes estão sempre à vista: a coluna do lado abre nos comentários.
+  const sideTab: Exclude<PanelTab, "details"> = tab === "details" ? "comments" : tab
 
   // Outra pessoa apagou o card aberto: fecha, e explica. O próprio apagar já avisou.
   useChannel<BoardEvent>("PipelineBoardChannel", params, (message) => {
@@ -627,12 +638,12 @@ export default function CardPanel({ board, cardId, open, onClose }: CardPanelPro
   }
 
   return (
-    <SidePanel
+    <ResponsiveDialog
       open={open}
       onOpenChange={(next) => {
         if (!next) onClose()
       }}
-      size="xl"
+      size="full"
       title={
         <span className="text-sm font-normal text-muted-foreground">
           {card ? <span className="sr-only">{card.title}. </span> : null}
@@ -762,37 +773,74 @@ export default function CardPanel({ board, cardId, open, onClose }: CardPanelPro
             </Callout>
           ) : null}
 
-          <div className="shrink-0 border-b px-4 py-2">
-            <SegmentedControl<PanelTab>
-              fullWidth
-              aria-label={t("pipelines.card.sections")}
-              value={tab}
-              onChange={setTab}
-              options={[
-                { value: "details", label: t("pipelines.card.tabDetails") },
-                {
-                  value: "comments",
-                  label: t("pipelines.card.tabComments"),
-                  count: card.commentsCount,
-                },
-                { value: "activity", label: t("pipelines.card.tabActivity") },
-              ]}
-            />
-          </div>
+          {wide ? (
+            <div className="flex min-h-0 flex-1">
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                <CardDetails card={card} board={board} />
+              </div>
+              <div className="flex min-h-0 w-[min(28rem,40%)] shrink-0 flex-col border-l">
+                <div className="shrink-0 border-b px-4 py-2">
+                  <SegmentedControl<Exclude<PanelTab, "details">>
+                    fullWidth
+                    aria-label={t("pipelines.card.sections")}
+                    value={sideTab}
+                    onChange={setTab}
+                    options={[
+                      {
+                        value: "comments",
+                        label: t("pipelines.card.tabComments"),
+                        count: card.commentsCount,
+                      },
+                      { value: "activity", label: t("pipelines.card.tabActivity") },
+                    ]}
+                  />
+                </div>
+                {sideTab === "comments" ? (
+                  <CardComments boardId={board.id} cardId={card.id} accountId={accountId} />
+                ) : (
+                  <CardActivities
+                    boardId={board.id}
+                    cardId={card.id}
+                    isCrm={board.boardType === "crm"}
+                  />
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="shrink-0 border-b px-4 py-2">
+                <SegmentedControl<PanelTab>
+                  fullWidth
+                  aria-label={t("pipelines.card.sections")}
+                  value={tab}
+                  onChange={setTab}
+                  options={[
+                    { value: "details", label: t("pipelines.card.tabDetails") },
+                    {
+                      value: "comments",
+                      label: t("pipelines.card.tabComments"),
+                      count: card.commentsCount,
+                    },
+                    { value: "activity", label: t("pipelines.card.tabActivity") },
+                  ]}
+                />
+              </div>
 
-          {tab === "details" ? <CardDetails card={card} board={board} /> : null}
-          {tab === "comments" ? (
-            <CardComments boardId={board.id} cardId={card.id} accountId={accountId} />
-          ) : null}
-          {tab === "activity" ? (
-            <CardActivities
-              boardId={board.id}
-              cardId={card.id}
-              isCrm={board.boardType === "crm"}
-            />
-          ) : null}
+              {tab === "details" ? <CardDetails card={card} board={board} /> : null}
+              {tab === "comments" ? (
+                <CardComments boardId={board.id} cardId={card.id} accountId={accountId} />
+              ) : null}
+              {tab === "activity" ? (
+                <CardActivities
+                  boardId={board.id}
+                  cardId={card.id}
+                  isCrm={board.boardType === "crm"}
+                />
+              ) : null}
+            </>
+          )}
         </>
       )}
-    </SidePanel>
+    </ResponsiveDialog>
   )
 }
