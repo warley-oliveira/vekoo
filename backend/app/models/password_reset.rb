@@ -20,6 +20,7 @@ class PasswordReset < ApplicationRecord
   end
 
   def self.open!(user)
+    user = user.user if user.is_a?(Account)
     token = SecureRandom.urlsafe_base64(32)
     reset = create!(
       user: user,
