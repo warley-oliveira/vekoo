@@ -2,8 +2,6 @@
   "organizations": {
     "title": "Hi, {{name}}. Where are we working today?",
     "description": "You're signed in as {{email}}. Each tab works in one organization: you can open two side by side.",
-    "mine_one": "Your organization",
-    "mine_other": "Your {{count}} organizations",
     "searchPlaceholder": "Search organizations",
     "noMatch": "No organization with that name.",
     "openInNewTab": "Open {{name}} in a new tab",
@@ -41,29 +39,38 @@
       "nameTooLong": "Use at most 60 characters."
     },
     "switcher": {
-      "label": "Organizations",
-      "all": "See all {{count}} organizations",
-      "support": "Support: enter another organization",
       "current": "{{name}}, current organization",
       "switch": "Switch"
     },
     "support": {
-      "title": "Vekoo support",
-      "description": "Enter any organization to help the customer. Every entry is logged, and the customer sees your messages signed as Vekoo Support.",
-      "searchPlaceholder": "Organization name, or a member's name or email",
       "empty": "No organization found.",
-      "owner": "{{name}} ({{email}})",
       "noOwner": "No owner",
-      "members_one": "{{count}} person",
-      "members_other": "{{count}} people",
-      "more_one": "{{count}} more organization: refine your search.",
-      "more_other": "{{count}} more organizations: refine your search.",
-      "enter": "Enter",
       "entered": "Support mode in {{name}}.",
       "enterFailed": "Couldn't enter that organization. Try again.",
       "banner": "Support mode",
       "badge": "Support",
       "leave": "Leave"
+    },
+    "picker": {
+      "title": "Switch organization",
+      "description": "Each tab works in one organization. Ctrl or ⌘ + click opens it in a new tab.",
+      "descriptionTouch": "Each tab works in one organization.",
+      "open": "{{name}}: switch organization",
+      "shortcut": "Shortcut: {{keys}}",
+      "searchAll": "Organization, person or email",
+      "mine": "Mine",
+      "all": "All",
+      "allHint": "Entering logs the access and opens in support mode.",
+      "count_one": "{{count}} organization",
+      "count_other": "{{count}} organizations",
+      "mineNoMatch": "None of your organizations has that name.",
+      "mineEmpty": "You're not part of any organization.",
+      "members_one": "{{count}} person",
+      "members_other": "{{count}} people",
+      "credits_one": "{{value}} credit",
+      "credits_other": "{{value}} credits",
+      "current": "Current",
+      "entering": "Entering"
     }
   }
 }

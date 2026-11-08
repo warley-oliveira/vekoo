@@ -2,8 +2,6 @@
   "organizations": {
     "title": "Olá, {{name}}. Onde vamos trabalhar?",
     "description": "Você entrou como {{email}}. Cada aba trabalha numa organização: dá para abrir duas lado a lado.",
-    "mine_one": "Sua organização",
-    "mine_other": "Suas {{count}} organizações",
     "searchPlaceholder": "Buscar organização",
     "noMatch": "Nenhuma organização com esse nome.",
     "openInNewTab": "Abrir {{name}} numa aba nova",
@@ -41,29 +39,38 @@
       "nameTooLong": "Use no máximo 60 caracteres."
     },
     "switcher": {
-      "label": "Organizações",
-      "all": "Ver todas as {{count}} organizações",
-      "support": "Suporte: entrar em outra organização",
       "current": "{{name}}, organização atual",
       "switch": "Trocar"
     },
     "support": {
-      "title": "Suporte Vekoo",
-      "description": "Entre em qualquer organização para ajudar o cliente. Cada entrada fica registrada, e quem atende vê suas mensagens assinadas como Suporte Vekoo.",
-      "searchPlaceholder": "Nome da organização, ou nome ou e-mail de quem participa",
       "empty": "Nenhuma organização encontrada.",
-      "owner": "{{name}} ({{email}})",
       "noOwner": "Sem dono",
-      "members_one": "{{count}} pessoa",
-      "members_other": "{{count}} pessoas",
-      "more_one": "Mais {{count}} organização: refine a busca.",
-      "more_other": "Mais {{count}} organizações: refine a busca.",
-      "enter": "Entrar",
       "entered": "Modo suporte em {{name}}.",
       "enterFailed": "Não foi possível entrar nessa organização. Tente de novo.",
       "banner": "Modo suporte",
       "badge": "Suporte",
       "leave": "Sair"
+    },
+    "picker": {
+      "title": "Trocar de organização",
+      "description": "Cada aba trabalha numa organização. Ctrl ou ⌘ + clique abre numa aba nova.",
+      "descriptionTouch": "Cada aba trabalha numa organização.",
+      "open": "{{name}}: trocar de organização",
+      "shortcut": "Atalho: {{keys}}",
+      "searchAll": "Organização, pessoa ou e-mail",
+      "mine": "Minhas",
+      "all": "Todas",
+      "allHint": "Entrar registra o acesso e abre em modo suporte.",
+      "count_one": "{{count}} organização",
+      "count_other": "{{count}} organizações",
+      "mineNoMatch": "Nenhuma das suas organizações com esse nome.",
+      "mineEmpty": "Você não participa de nenhuma organização.",
+      "members_one": "{{count}} pessoa",
+      "members_other": "{{count}} pessoas",
+      "credits_one": "{{value}} crédito",
+      "credits_other": "{{value}} créditos",
+      "current": "Atual",
+      "entering": "Entrando"
     }
   }
 }

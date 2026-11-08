@@ -115,7 +115,19 @@ export type AccountSummary = {
   role: MemberRole
   support: boolean
   lastSeenAt: number | null
-  organization: { id: string; name: string; logoUrl: string | null }
+  organization: OrganizationSummary
+}
+
+/** O que o seletor mostra de cada organização. */
+export type OrganizationSummary = {
+  id: string
+  name: string
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  logoUrl: string | null
+  plan: string
+  /** Pessoas ativas; o suporte do Vekoo não conta. */
+  membersCount: number
+  creditsLeft: number
 }
 
 /**

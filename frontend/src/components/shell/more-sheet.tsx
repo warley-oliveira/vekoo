@@ -13,7 +13,8 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import { OrganizationBadge } from "@/components/shell/account-menu"
+import { OrganizationBadge } from "@/components/organizations/organization-badge"
+import { useOrganizationSwitcher } from "@/hooks/organizations/use-organization-switcher"
 import { AlertCount } from "@/components/shell/alert-count"
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { CreditsSummary } from "@/components/shell/credits-summary"
@@ -108,6 +109,8 @@ function AccountHeader() {
   const { t } = useTranslation()
   const { session } = useAuth()
   const organizationName = session?.organization.name ?? t("account.fallbackName")
+  const closeSheet = useMobileNav((state) => state.closeSheet)
+  const openSwitcher = useOrganizationSwitcher((state) => state.setOpen)
 
   return (
     <div className="rounded-xl border p-3">
@@ -123,13 +126,15 @@ function AccountHeader() {
             {session?.account.name}
           </p>
         </div>
-        {/* A troca abre a tela de organizações: lista, busca, criar e, para o suporte, a busca. */}
+        {/* O mesmo seletor da barra lateral, em modal: a folha fecha antes, para não empilhar. */}
         <Button
           variant="outline"
           size="sm"
           className="shrink-0"
-          nativeButton={false}
-          render={<Link to="/organizations" />}
+          onClick={() => {
+            closeSheet()
+            openSwitcher(true)
+          }}
         >
           <ArrowLeftRight />
           {t("organizations.switcher.switch")}

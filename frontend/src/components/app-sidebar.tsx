@@ -3,7 +3,7 @@ import { useLocation } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { PanelLeftClose, PanelLeftOpen, Search } from "lucide-react"
 
-import { AccountMenu } from "@/components/shell/account-menu"
+import { OrganizationSwitcherButton, PersonMenu } from "@/components/shell/account-menu"
 import { CreditsSummary } from "@/components/shell/credits-summary"
 import { SidebarNav } from "@/components/shell/sidebar-nav"
 import { Button } from "@/components/ui/button"
@@ -61,8 +61,9 @@ export function AppSidebar({
 
   return (
     <div className="flex h-full flex-col bg-sidebar">
+      {/* Em cima, a organização (abre o seletor); embaixo, a pessoa (o menu dela). */}
       <div className={cn("flex items-center gap-2 p-3", collapsed && "justify-center px-2")}>
-        <AccountMenu collapsed={collapsed} />
+        <OrganizationSwitcherButton collapsed={collapsed} />
         {!collapsed && (
           <Tooltip>
             <TooltipTrigger
@@ -122,8 +123,9 @@ export function AppSidebar({
         <SidebarNav collapsed={collapsed} />
       </div>
 
-      <div className={cn("border-t border-sidebar-border p-3", collapsed && "p-2")}>
+      <div className={cn("flex flex-col gap-2 border-t border-sidebar-border p-3", collapsed && "items-center p-2")}>
         <CreditsSummary collapsed={collapsed} />
+        <PersonMenu collapsed={collapsed} />
       </div>
     </div>
   )
