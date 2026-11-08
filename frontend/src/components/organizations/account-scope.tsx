@@ -50,7 +50,7 @@ export function AccountScope({ children }: { children: ReactNode }) {
   return (
     <AccountRouteScope hashid={hashid}>
       {children}
-      {session.account.support && <SupportBanner organizationName={session.organization.name} />}
+      {/* {session.account.support && <SupportBanner organizationName={session.organization.name} />} */}
     </AccountRouteScope>
   )
 }
