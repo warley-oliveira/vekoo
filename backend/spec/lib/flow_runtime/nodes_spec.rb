@@ -274,6 +274,23 @@ RSpec.describe "Blocos de fluxo" do
 
       expect(result.variables["saiu_por"]).to eq("true")
     end
+
+    it "compara texto sem maiúscula, acento nem espaço nas pontas" do
+      expect(run_block("condition", { rules: [ rule("vars.x", "equals", "sim") ] }, handles: %w[true false], variables: { x: " Sím " }).variables["saiu_por"]).to eq("true")
+      expect(run_block("condition", { rules: [ rule("contact.name", "contains", "fernanda") ] }, handles: %w[true false]).variables["saiu_por"]).to eq("true")
+      expect(run_block("condition", { rules: [ rule("vars.x", "in", values: [ "Azul ", "verde" ]) ] }, handles: %w[true false], variables: { x: "azul" }).variables["saiu_por"]).to eq("true")
+    end
+
+    it "número com vírgula decimal, e texto que não é número nunca é maior" do
+      expect(run_block("condition", { rules: [ rule("vars.x", "greater_than", "14,5") ] }, handles: %w[true false], variables: { x: "14,90" }).variables["saiu_por"]).to eq("true")
+      expect(run_block("condition", { rules: [ rule("vars.x", "greater_than", "1.000") ] }, handles: %w[true false], variables: { x: "1.234,56" }).variables["saiu_por"]).to eq("true")
+      expect(run_block("condition", { rules: [ rule("vars.x", "greater_than", "3") ] }, handles: %w[true false], variables: { x: "abc" }).variables["saiu_por"]).to eq("false")
+      expect(run_block("condition", { rules: [ rule("vars.x", "less_than", "3") ] }, handles: %w[true false], variables: { x: "abc" }).variables["saiu_por"]).to eq("false")
+    end
+
+    it "aceita o campo entre chaves, como o seletor de variável escreve" do
+      expect(run_block("condition", { rules: [ rule("{{vars.x}}", "equals", "a") ] }, handles: %w[true false], variables: { x: "a" }).variables["saiu_por"]).to eq("true")
+    end
   end
 
   describe "switch" do
@@ -282,6 +299,13 @@ RSpec.describe "Blocos de fluxo" do
 
       expect(run_block("switch", { field: "{{vars.x}}", cases: cases }, handles: %w[a b default], variables: { x: "2" }).variables["saiu_por"]).to eq("b")
       expect(run_block("switch", { field: "{{vars.x}}", cases: cases }, handles: %w[a b default], variables: { x: "3" }).variables["saiu_por"]).to eq("default")
+    end
+
+    it "casa sem maiúscula, acento nem espaço" do
+      cases = [ { id: "a", value: "Cartão" }, { id: "b", value: "pix" } ]
+
+      expect(run_block("switch", { field: "{{vars.x}}", cases: cases }, handles: %w[a b default], variables: { x: " cartao" }).variables["saiu_por"]).to eq("a")
+      expect(run_block("switch", { field: "{{vars.x}}", cases: cases }, handles: %w[a b default], variables: { x: "PIX" }).variables["saiu_por"]).to eq("b")
     end
   end
 
@@ -333,6 +357,19 @@ RSpec.describe "Blocos de fluxo" do
 
       expect(execution.status).to eq("completed")
       expect(sent_texts.length).to eq(61)
+    end
+
+    it "lê a lista de um campo do contato, guardada como texto" do
+      chat.update(custom_attributes: { "filhos" => '["Lia","Théo"]' })
+      flow_campo = published_flow(
+        organization,
+        [ node("t", "trigger_manual"), node("l", "loop", source: "{{contact.custom_attributes.filhos}}"), node("corpo", "send_text", text: "{{vars.item}}") ],
+        [ edge("t", "l"), edge("l", "corpo", "each"), edge("corpo", "l") ]
+      )
+
+      run_flow(flow_campo, chat: chat)
+
+      expect(sent_texts).to eq(%w[Lia Théo])
     end
 
     it "respeita o máximo de voltas" do

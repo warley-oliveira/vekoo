@@ -47,14 +47,27 @@ module FlowRuntime
         data["index_variable"].presence || "index"
       end
 
+      SCOPES = %w[vars contact chat message].freeze
+
+      # `{{vars.lista}}`, `{{contact.custom_attributes.lista}}` ou só o nome da variável. A lista guardada como texto (um
+      # campo do contato, a resposta de um serviço que veio como texto) é lida como JSON.
       def resolve_items
         source = data["source"]
         return source if source.is_a?(Array)
         return nil unless source.is_a?(String)
 
-        # `{{vars.lista}}` ou o nome da variável.
-        name = source.gsub(/[{}\s]/, "").delete_prefix("vars.")
-        ExecutionContext::Templating.dig_value(variables, name.split("."))
+        path = source.gsub(/[{}\s]/, "").split(".")
+        path.unshift("vars") unless SCOPES.include?(path.first)
+        as_list(ExecutionContext::Templating.dig_value(context.scope_for_template, path))
+      end
+
+      def as_list(value)
+        return value unless value.is_a?(String)
+
+        parsed = JSON.parse(value)
+        parsed.is_a?(Array) ? parsed : nil
+      rescue JSON::ParserError
+        nil
       end
     end
   end
