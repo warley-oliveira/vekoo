@@ -153,7 +153,7 @@ module VekooAutomationSeeds
              buttons: [ { id: "comprar", title: "Quero comprar" }, { id: "suporte", title: "Preciso de ajuda" } ],
              invalid_text: "Não entendi. Responda com o número da opção.",
              save_to: "motivo"),
-        node("vendas", "assign_team", 840, -120, team_id: organization.teams.find_by(name: "Comercial")&.id.to_s),
+        node("vendas", "assign_team", 840, -120, team_id: organization.teams.find_by(name: "Comercial")&.id.to_s, team_name: "Comercial"),
         node("etiqueta", "add_tag", 1120, -120, tag_name: "quer-comprar"),
         node("loja", "send_text", 1400, -120, text: "Ótimo! Já vou te passar para quem cuida das vendas."),
         node("suporte", "add_tag", 840, 120, tag_name: "suporte"),

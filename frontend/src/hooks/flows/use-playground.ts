@@ -32,10 +32,11 @@ export type TestStep = {
   id: string
   nodeId: string
   nodeType: string
-  status: "success" | "suspended" | "error" | "decision"
+  status: "success" | "suspended" | "error" | "decision" | "tool"
   durationMs?: number
   error?: string
   decision?: { label: string | null; reason: string | null; stay: boolean; turn: number | null }
+  tool?: { name: string; failed: boolean; simulated: boolean }
 }
 
 let sequence = 0
@@ -147,6 +148,17 @@ export function usePlayground(flowId: string, handlers: Handlers) {
             durationMs: message.durationMs,
             at,
           })
+          setSteps((current) => [
+            ...current,
+            {
+              id: nextId(),
+              nodeId: message.nodeId,
+              nodeType: "ai_assistant",
+              status: "tool",
+              durationMs: message.durationMs,
+              tool: { name: message.name, failed: Boolean(message.error), simulated: message.simulated },
+            },
+          ])
           break
         case "variables":
           setVariables(message.variables ?? {})

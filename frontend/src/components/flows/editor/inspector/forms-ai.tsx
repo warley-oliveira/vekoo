@@ -352,7 +352,7 @@ export function AssistantForm() {
 
       {interactive ? <ToolsPicker /> : null}
 
-      <Section title={t("flows.fields.ai_assistant.modelTitle")}>
+      <Section>
         <ModelPicker />
       </Section>
 
@@ -608,7 +608,7 @@ export function ExtractorForm() {
       <Section title={t("flows.fields.ai_parameter_extractor.fieldsTitle")} description={t("flows.fields.ai_parameter_extractor.fieldsHint")}>
         <FieldRefsPicker refs={refs} onChange={(fields) => set({ fields }, { coalesce: "" })} />
       </Section>
-      <Section title={t("flows.fields.ai_assistant.modelTitle")}>
+      <Section>
         <ModelPicker />
       </Section>
       <Advanced defaultOpen={Boolean(str(data.system_prompt))}>

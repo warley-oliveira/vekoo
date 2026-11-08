@@ -19,6 +19,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { MessageText } from "@/components/chat/thread/message-parts"
 import { apiAssetUrl } from "@/lib/api"
 import { Callout, SegmentedControl, StatusBadge, type StatusTone } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -298,7 +299,10 @@ const TestBubble = memo(function TestBubble({ item, onPick }: { item: TestItem; 
     return (
       <div className="max-w-[85%] self-start">
         {item.sender ? <p className="mb-0.5 px-1 text-[11px] text-muted-foreground">{item.sender}</p> : null}
-        <p className="rounded-2xl rounded-bl-sm bg-card px-3 py-2 text-sm whitespace-pre-wrap shadow-xs">{item.text}</p>
+        {/* Como o contato veria no WhatsApp: *negrito*, _itálico_ e links. */}
+        <p className="rounded-2xl rounded-bl-sm bg-card px-3 py-2 text-sm whitespace-pre-wrap shadow-xs">
+          <MessageText text={item.text} />
+        </p>
       </div>
     )
   }
@@ -561,11 +565,17 @@ function StepRow({ step }: { step: TestStep }) {
             ) : null}
             {step.status === "success" ? <Check className="size-3.5 shrink-0 text-status-success" aria-hidden /> : null}
             {step.status === "suspended" ? <Clock className="size-3.5 shrink-0 text-status-warning" aria-hidden /> : null}
-            {step.status === "error" ? <CircleAlert className="size-3.5 shrink-0 text-status-danger" aria-hidden /> : null}
+            {step.status === "error" || step.tool?.failed ? <CircleAlert className="size-3.5 shrink-0 text-status-danger" aria-hidden /> : null}
+            {step.status === "tool" && !step.tool?.failed ? <Wrench className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> : null}
           </span>
           <span className="block text-xs text-pretty text-muted-foreground">
             {step.status === "error" ? (step.error ?? t("flows.test.stepFailed")) : null}
             {step.status === "suspended" ? t("flows.test.stepWaiting") : null}
+            {step.status === "tool" && step.tool
+              ? t(step.tool.failed ? "flows.test.stepToolFailed" : step.tool.simulated ? "flows.test.stepToolSimulated" : "flows.test.stepTool", {
+                  name: t(`flows.test.toolNames.${step.tool.name}`, { defaultValue: step.tool.name }),
+                })
+              : null}
             {step.status === "success" && step.nodeType.startsWith("pipeline_") ? t("flows.test.stepSkippedBoard") : null}
             {step.status === "decision" && step.decision
               ? step.decision.stay

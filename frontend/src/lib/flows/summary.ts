@@ -185,7 +185,7 @@ export function blockSummary(type: string, data: BlockData, t: TFunction): Block
         ? say("assignAgent", { name: str(data.account_name) })
         : say("assignPool", { count: list(data.account_pool).length })
     case "assign_team":
-      return say("assignTeam", { name: str(data.team_name) })
+      return say("assignTeam", { name: str(data.team_name) || t("flows.summary.teamUnnamed") })
     case "transfer_to_human":
       return str(data.team_name) || str(data.account_name)
         ? say("transferTo", { name: str(data.account_name) || str(data.team_name) })
@@ -199,11 +199,11 @@ export function blockSummary(type: string, data: BlockData, t: TFunction): Block
     case "resume_automation":
       return say("resume")
     case "set_funnel_stage":
-      return say("funnelStage", { funnel: str(data.funnel_name), stage: str(data.stage_name) || str(data.stage_id) })
+      return say("funnelStage", { funnel: str(data.funnel_name), stage: str(data.stage_name) || t("flows.summary.stageUnnamed") })
     case "pipeline_create_card":
-      return say("createCard", { board: str(data.board_name), stage: str(data.stage_name) || str(data.stage_id) })
+      return say("createCard", { board: str(data.board_name), stage: str(data.stage_name) || t("flows.summary.stageUnnamed") })
     case "pipeline_move_card":
-      return say("moveCard", { stage: str(data.stage_name) || str(data.stage_id) })
+      return say("moveCard", { stage: str(data.stage_name) || t("flows.summary.stageUnnamed") })
     case "pipeline_update_card": {
       const filled = UPDATE_CARD_FIELDS.filter((key) => str(data[key])).length
       return say("updateCard", { count: filled })
@@ -227,7 +227,7 @@ export function blockSummary(type: string, data: BlockData, t: TFunction): Block
     case "pipeline_archive_card":
       return say("archiveCard")
     case "pipeline_create_deal":
-      return say("createDeal", { stage: str(data.stage_name) || str(data.stage_id) })
+      return say("createDeal", { stage: str(data.stage_name) || t("flows.summary.stageUnnamed") })
     case "pipeline_update_deal":
       return say("updateDeal")
     case "http_request":
@@ -236,7 +236,7 @@ export function blockSummary(type: string, data: BlockData, t: TFunction): Block
       // Sem o nome guardado (fluxo de modelo, ou feito pela API), o id não diz nada a ninguém.
       return say("tool", { name: str(data.tool_name) || t("flows.summary.toolUnnamed") })
     case "goto_flow":
-      return say("goto", { name: str(data.target_flow_name) })
+      return say("goto", { name: str(data.target_flow_name) || t("flows.summary.flowUnnamed") })
     case "catalog_search":
       return str(data.query) ? say("catalogQuery", { query: human(data.query) }) : say("catalog")
     case "end":
