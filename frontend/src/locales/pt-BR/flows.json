@@ -476,6 +476,7 @@
       "createDeal": "Em {{stage}}",
       "updateDeal": "Muda a última venda criada",
       "tool": "Executa {{name}}",
+      "toolUnnamed": "a função escolhida",
       "goto": "Chama {{name}}",
       "catalogQuery": "Busca: {{query}}",
       "catalog": "Busca pelo que o contato escreveu",
@@ -1062,6 +1063,46 @@
         "gone": "Função que não existe mais",
         "manage": "Ver ferramentas e funções"
       },
+      "tools": {
+        "title": "O que a IA pode fazer",
+        "hint": "A IA usa só o que estiver ligado aqui, e só quando a conversa pede.",
+        "nativeLabel": "Do Vekoo",
+        "customLabel": "Funções personalizadas",
+        "customHint": "As que você escreveu ou instalou: consultar frete, estoque, um sistema seu.",
+        "loadFailed": "Não conseguimos ver o que a organização tem agora. As escolhas continuam salvas.",
+        "testNote": "No teste, marcar horário e mexer em card não acontecem de verdade: a IA responde como se tivesse feito.",
+        "count_one": "{{count}} ligada",
+        "count_other": "{{count}} ligadas",
+        "unavailableTag": "Falta configurar",
+        "groups": {
+          "agenda": {
+            "title": "Agenda",
+            "description": "Ver serviços e horários livres, marcar e cancelar horários do contato.",
+            "unavailable": "Cadastre profissionais e serviços no Calendário para ligar.",
+            "setup": "Abrir o Calendário"
+          },
+          "catalog": {
+            "title": "Catálogo",
+            "description": "Procurar produtos e serviços e mostrar detalhes, preço e foto.",
+            "unavailable": "O catálogo ainda está vazio.",
+            "setup": "Abrir o Catálogo"
+          },
+          "contact": {
+            "title": "Contato",
+            "description": "Saber nome, telefone e campos do contato, e guardar o que ele contar."
+          },
+          "tags": {
+            "title": "Etiquetas",
+            "description": "Pôr e tirar as etiquetas que a organização já usa."
+          },
+          "pipeline": {
+            "title": "Pipeline",
+            "description": "Criar um card para o contato e mudar a etapa dos cards dele.",
+            "unavailable": "Crie um pipeline para ligar.",
+            "setup": "Abrir os Pipelines"
+          }
+        }
+      },
       "ai_intent_classification": {
         "note": "Lê a última mensagem e segue pelo assunto que mais combina. Usa o modelo rápido, sem o histórico.",
         "promptPlaceholder": "Pedidos de troca contam como suporte.",
@@ -1237,7 +1278,36 @@
       "title": "Testar o fluxo",
       "tabs": "O que ver do teste",
       "tabChat": "Conversa",
-      "tabSteps": "O que cada bloco fez",
+      "tabSteps": "Blocos",
+      "tabVariables": "Variáveis",
+      "variablesEmpty": "O que o fluxo guardar (respostas, dados da IA, resultado de funções) aparece aqui, com o nome para usar nos textos.",
+      "variableEmpty": "(vazio)",
+      "toolUsed": "Usou",
+      "toolFailed": "Falhou ao usar",
+      "toolSimulated": "simulado",
+      "toolInput": "O que a IA mandou",
+      "toolOutput": "O que voltou",
+      "toolNothing": "Nada",
+      "toolNames": {
+        "agenda_list_services": "Serviços da agenda",
+        "agenda_list_professionals": "Profissionais da agenda",
+        "agenda_available_slots": "Horários livres",
+        "agenda_create_booking": "Marcar horário",
+        "agenda_list_bookings": "Horários do contato",
+        "agenda_cancel_booking": "Cancelar horário",
+        "catalog_search": "Busca no catálogo",
+        "catalog_get_item": "Detalhes do item",
+        "catalog_categories": "Categorias do catálogo",
+        "contact_get": "Dados do contato",
+        "contact_update": "Guardar dados do contato",
+        "tags_list": "Etiquetas",
+        "tag_add": "Pôr etiqueta",
+        "tag_remove": "Tirar etiqueta",
+        "pipeline_list_boards": "Pipelines",
+        "pipeline_list_cards": "Cards do contato",
+        "pipeline_create_card": "Criar card",
+        "pipeline_move_card": "Mudar card de etapa"
+      },
       "stop": "Parar o teste",
       "restart": "Testar de novo",
       "close": "Fechar o teste",

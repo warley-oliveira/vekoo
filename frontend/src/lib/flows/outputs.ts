@@ -123,5 +123,11 @@ export function uniqueOutputId(label: string, taken: Iterable<string>, fallback 
 export function dedupeEdges(edges: DefinitionEdge[]): DefinitionEdge[] {
   const seen = new Map<string, DefinitionEdge>()
   for (const edge of edges) seen.set(`${edge.source}|${normalizeHandle(edge.sourceHandle)}`, edge)
-  return Array.from(seen.values())
+  // Duas saídas para o mesmo bloco com o mesmo id (definição feita fora do editor): o quadro precisa de ids únicos.
+  const ids = new Set<string>()
+  return Array.from(seen.values()).map((edge) => {
+    const id = ids.has(edge.id) ? `${edge.id}-${normalizeHandle(edge.sourceHandle)}` : edge.id
+    ids.add(id)
+    return id === edge.id ? edge : { ...edge, id }
+  })
 }

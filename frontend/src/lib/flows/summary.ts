@@ -233,7 +233,8 @@ export function blockSummary(type: string, data: BlockData, t: TFunction): Block
     case "http_request":
       return { text: `${str(data.method) || "GET"} ${str(data.url)}` }
     case "execute_tool":
-      return say("tool", { name: str(data.tool_name) || str(data.tool_id) })
+      // Sem o nome guardado (fluxo de modelo, ou feito pela API), o id não diz nada a ninguém.
+      return say("tool", { name: str(data.tool_name) || t("flows.summary.toolUnnamed") })
     case "goto_flow":
       return say("goto", { name: str(data.target_flow_name) })
     case "catalog_search":

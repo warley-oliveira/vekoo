@@ -15,6 +15,18 @@ export type TestItem =
   | { id: string; kind: "media"; url: string | null; attachmentId: string | null; caption: string | null; at: number }
   | { id: string; kind: "options"; text: string; options: { id: string; title: string }[]; at: number }
   | { id: string; kind: "note"; tone: "info" | "warning" | "danger" | "success"; code: string; params?: Record<string, unknown>; at: number }
+  | {
+      id: string
+      kind: "tool"
+      name: string
+      native: boolean
+      input: unknown
+      output: unknown
+      error: string | null
+      simulated: boolean
+      durationMs: number
+      at: number
+    }
 
 export type TestStep = {
   id: string
@@ -41,6 +53,7 @@ export function usePlayground(flowId: string, handlers: Handlers) {
   const [status, setStatus] = useState<TestStatus>("idle")
   const [items, setItems] = useState<TestItem[]>([])
   const [steps, setSteps] = useState<TestStep[]>([])
+  const [variables, setVariables] = useState<Record<string, unknown>>({})
 
   const handlersRef = useRef(handlers)
   useEffect(() => {
@@ -121,6 +134,23 @@ export function usePlayground(flowId: string, handlers: Handlers) {
           }
           break
         }
+        case "tool_call":
+          pushItem({
+            id: nextId(),
+            kind: "tool",
+            name: message.name,
+            native: message.native,
+            input: message.input,
+            output: message.output,
+            error: message.error,
+            simulated: message.simulated,
+            durationMs: message.durationMs,
+            at,
+          })
+          break
+        case "variables":
+          setVariables(message.variables ?? {})
+          break
         case "suspended":
           setStatus(message.status === "waiting" ? "waitingTime" : "waiting")
           if (message.status === "waiting") note("info", "waitingTime")
@@ -170,6 +200,7 @@ export function usePlayground(flowId: string, handlers: Handlers) {
   const start = useCallback(async () => {
     setItems([])
     setSteps([])
+    setVariables({})
     setStatus("starting")
     handlersRef.current.onReset()
     try {
@@ -206,5 +237,5 @@ export function usePlayground(flowId: string, handlers: Handlers) {
     await apiDelete(`/flows/${flowId}/playground/${executionId}`).catch(() => undefined)
   }, [executionId, flowId])
 
-  return { executionId, status, items, steps, connected, start, send, stop }
+  return { executionId, status, items, steps, variables, connected, start, send, stop }
 }

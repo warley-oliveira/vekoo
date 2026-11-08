@@ -6,6 +6,7 @@ import { useApi } from "@/hooks/use-api"
 import { apiGet, apiPatch, apiPost } from "@/lib/api"
 import type { WhatsappTemplate } from "@/lib/connectors/types"
 import type {
+  NativeToolGroup,
   PipelineBoardOption,
   PipelineCustomField,
   PipelineLabel,
@@ -48,6 +49,14 @@ export function usePipelineLabels() {
 export function useToolOptions() {
   const { data, isLoading, mutate } = useApi<{ tools: ToolSummary[] }>("/tools?summary=true&perPage=100", REFERENCE_DATA)
   return { tools: data?.tools ?? NO_TOOLS, isLoading, reload: mutate }
+}
+
+const NO_NATIVE: NativeToolGroup[] = []
+
+/** O que o Vekoo já sabe fazer pela IA, sem código, e se a organização tem com o que usar. */
+export function useNativeTools() {
+  const { data, isLoading, error } = useApi<{ nativeTools: NativeToolGroup[] }>("/flows/native-tools", REFERENCE_DATA)
+  return { groups: data?.nativeTools ?? NO_NATIVE, isLoading, error }
 }
 
 export function useToolDetail(id: string | null) {

@@ -1,16 +1,28 @@
-import { useMemo, useRef, useState, type ReactNode } from "react"
+import { useId, useMemo, useRef, useState, type ReactNode } from "react"
 import { Link } from "react-router"
 import { useTranslation } from "react-i18next"
-import { Bot, ChevronDown, Signpost, X } from "lucide-react"
+import {
+  Bot,
+  CalendarDays,
+  ChevronDown,
+  Columns3,
+  ShoppingBag,
+  Signpost,
+  Tag,
+  UserRound,
+  X,
+  type LucideIcon,
+} from "lucide-react"
 
 import { CreatableSelect, MultiSelectInput, type SelectOption } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useToolOptions } from "@/hooks/flows/use-flow-references"
+import { useNativeTools, useToolOptions } from "@/hooks/flows/use-flow-references"
 import { fieldKeyFromLabel, type FieldRef } from "@/lib/flows/fields"
 import { uniqueOutputId } from "@/lib/flows/outputs"
+import { NATIVE_TOOL_GROUPS, type NativeToolGroupKey } from "@/lib/flows/types"
 import { cn } from "@/lib/utils"
 
 import { useEditor, useEditorApi } from "../store"
@@ -394,10 +406,25 @@ function ModelPicker() {
   )
 }
 
+const NATIVE_ICONS: Record<NativeToolGroupKey, LucideIcon> = {
+  agenda: CalendarDays,
+  catalog: ShoppingBag,
+  contact: UserRound,
+  tags: Tag,
+  pipeline: Columns3,
+}
+const NATIVE_SETUP: Partial<Record<NativeToolGroupKey, string>> = { agenda: "/calendar", catalog: "/catalog", pipeline: "/pipelines" }
+
+/**
+ * O que a IA pode fazer: primeiro o que o Vekoo já sabe (agenda, catálogo...), ligado por grupo, e depois as funções
+ * personalizadas. Quem desenha o fluxo pensa em "a IA marca horário", e não nas seis funções que isso exige.
+ */
 function ToolsPicker() {
   const { t } = useTranslation()
   const { data, set } = useBlockForm()
+  const { groups, isLoading: loadingNative, error: nativeError } = useNativeTools()
   const { tools, isLoading } = useToolOptions()
+  const native = useMemo(() => (Array.isArray(data.native_tools) ? (data.native_tools as string[]) : []), [data.native_tools])
   const ids = useMemo(() => (Array.isArray(data.tool_ids) ? (data.tool_ids as string[]) : []), [data.tool_ids])
   const options = useMemo<SelectOption[]>(() => {
     const known = tools.map((tool) => ({ value: tool.id, label: tool.name, description: tool.description ?? undefined }))
@@ -408,29 +435,121 @@ function ToolsPicker() {
     return isLoading ? known : [...known, ...gone]
   }, [ids, isLoading, t, tools])
 
+  const toggle = (key: string, on: boolean) => {
+    const next = on ? [...native.filter((item) => item !== key), key] : native.filter((item) => item !== key)
+    set({ native_tools: NATIVE_TOOL_GROUPS.filter((group) => next.includes(group)) }, { coalesce: "" })
+  }
+  const touchesRealWork = native.includes("agenda") || native.includes("pipeline")
+  const rows = groups.length > 0 ? groups : NATIVE_TOOL_GROUPS.map((key) => ({ key, available: true, tools: [] }))
+
   return (
-    <Section title={t("flows.fields.tool_ids.title")} description={t("flows.fields.tool_ids.hint")}>
-      {!isLoading && tools.length === 0 ? (
-        <Note>{t("flows.fields.tool_ids.empty")}</Note>
-      ) : (
-        <Field id="ai-tools">
-          <MultiSelectInput
-            id="ai-tools"
-            value={ids}
-            options={options}
-            placeholder={t("flows.fields.tool_ids.placeholder")}
-            onChange={(next) => set({ tool_ids: next }, { coalesce: "" })}
-          />
-        </Field>
-      )}
-      <Link
-        to="/tools"
-        target="_blank"
-        className="self-start rounded text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-      >
-        {t("flows.fields.tool_ids.manage")}
-      </Link>
+    <Section
+      title={t("flows.fields.tools.title")}
+      description={t("flows.fields.tools.hint")}
+      action={
+        native.length + ids.length > 0 ? (
+          <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground tabular-nums">
+            {t("flows.fields.tools.count", { count: native.length + ids.length })}
+          </span>
+        ) : null
+      }
+    >
+      <div className="flex flex-col gap-1.5">
+        <p className="text-xs font-medium text-muted-foreground">{t("flows.fields.tools.nativeLabel")}</p>
+        {nativeError ? <Note>{t("flows.fields.tools.loadFailed")}</Note> : null}
+        <ul className="flex flex-col divide-y rounded-lg border" aria-busy={loadingNative || undefined}>
+          {rows.map((group) => (
+            <NativeToolRow
+              key={group.key}
+              group={group.key}
+              available={loadingNative || Boolean(nativeError) || group.available}
+              checked={native.includes(group.key)}
+              onChange={(on) => toggle(group.key, on)}
+            />
+          ))}
+        </ul>
+        {touchesRealWork ? <Note>{t("flows.fields.tools.testNote")}</Note> : null}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <p className="text-xs font-medium text-muted-foreground">{t("flows.fields.tools.customLabel")}</p>
+        {!isLoading && tools.length === 0 ? (
+          <Note>{t("flows.fields.tool_ids.empty")}</Note>
+        ) : (
+          <Field id="ai-tools" hint={t("flows.fields.tools.customHint")}>
+            <MultiSelectInput
+              id="ai-tools"
+              value={ids}
+              options={options}
+              placeholder={t("flows.fields.tool_ids.placeholder")}
+              onChange={(next) => set({ tool_ids: next }, { coalesce: "" })}
+            />
+          </Field>
+        )}
+        <Link
+          to="/tools"
+          target="_blank"
+          className="inline-flex min-h-10 items-center self-start rounded text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        >
+          {t("flows.fields.tool_ids.manage")}
+        </Link>
+      </div>
     </Section>
+  )
+}
+
+function NativeToolRow({
+  group,
+  available,
+  checked,
+  onChange,
+}: {
+  group: NativeToolGroupKey
+  available: boolean
+  checked: boolean
+  onChange: (on: boolean) => void
+}) {
+  const { t } = useTranslation()
+  const id = useId()
+  const Icon = NATIVE_ICONS[group]
+  const setup = NATIVE_SETUP[group]
+  // Ligada antes de a organização perder o que usava: continua à vista, com o aviso, para poder desligar.
+  const blocked = !available && !checked
+
+  return (
+    <li className="flex min-h-14 items-start gap-3 px-3 py-2.5">
+      <span
+        className={cn(
+          "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg",
+          checked ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+        )}
+      >
+        <Icon className="size-4" aria-hidden />
+      </span>
+      <div className="min-w-0 flex-1">
+        <label htmlFor={id} className={cn("flex items-center gap-2 text-sm font-medium", blocked && "text-muted-foreground")}>
+          {t(`flows.fields.tools.groups.${group}.title`)}
+          {!available ? (
+            <span className="rounded-full bg-status-warning/10 px-1.5 py-px text-[11px] font-normal text-status-warning">
+              {t("flows.fields.tools.unavailableTag")}
+            </span>
+          ) : null}
+        </label>
+        <p className="mt-0.5 text-xs text-pretty text-muted-foreground">
+          {available ? t(`flows.fields.tools.groups.${group}.description`) : t(`flows.fields.tools.groups.${group}.unavailable`)}
+        </p>
+        {!available && setup ? (
+          <Link
+            to={setup}
+            target="_blank"
+            className="mt-1 inline-flex min-h-8 items-center rounded text-xs font-medium text-foreground underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            {t(`flows.fields.tools.groups.${group}.setup`)}
+          </Link>
+        ) : null}
+      </div>
+      <Switch id={id} className="mt-1.5" checked={checked} disabled={blocked} onCheckedChange={onChange} />
+    </li>
   )
 }
 

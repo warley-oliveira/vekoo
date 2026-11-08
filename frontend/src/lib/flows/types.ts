@@ -184,6 +184,19 @@ export type PlaygroundMessage =
       turn: number | null
       at: string
     }
+  | {
+      kind: "tool_call"
+      nodeId: string
+      name: string
+      native: boolean
+      input: unknown
+      output: unknown
+      error: string | null
+      simulated: boolean
+      durationMs: number
+      at: string
+    }
+  | { kind: "variables"; variables: Record<string, unknown>; at: string }
   | { kind: "suspended"; status: "waiting" | "waiting_for_message"; currentNodeId: string | null; at: string }
   | { kind: "completed"; at: string }
   | { kind: "failed"; message: string | null; at: string }
@@ -191,6 +204,12 @@ export type PlaygroundMessage =
   | { kind: "user_message"; body: string; at: string }
 
 /* ---------- O que um bloco escolhe ---------- */
+
+export const NATIVE_TOOL_GROUPS = ["agenda", "catalog", "contact", "tags", "pipeline"] as const
+export type NativeToolGroupKey = (typeof NATIVE_TOOL_GROUPS)[number]
+
+/** `GET /flows/native-tools`: um grupo de ferramentas do Vekoo que a Conversa com IA pode usar. */
+export type NativeToolGroup = { key: NativeToolGroupKey; available: boolean; tools: string[] }
 
 export type ToolSummary = {
   id: string

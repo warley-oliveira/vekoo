@@ -476,6 +476,7 @@
       "createDeal": "In {{stage}}",
       "updateDeal": "Changes the last sale created",
       "tool": "Runs {{name}}",
+      "toolUnnamed": "the chosen function",
       "goto": "Calls {{name}}",
       "catalogQuery": "Searches: {{query}}",
       "catalog": "Searches for what the contact wrote",
@@ -1062,6 +1063,46 @@
         "gone": "Function that no longer exists",
         "manage": "See tools and functions"
       },
+      "tools": {
+        "title": "What the AI can do",
+        "hint": "The AI only uses what is turned on here, and only when the conversation calls for it.",
+        "nativeLabel": "Built into Vekoo",
+        "customLabel": "Custom functions",
+        "customHint": "The ones you wrote or installed: shipping quotes, stock, a system of your own.",
+        "loadFailed": "We couldn't check what the organization has right now. Your choices are still saved.",
+        "testNote": "In a test, booking and changing cards don't really happen: the AI answers as if it had.",
+        "count_one": "{{count}} on",
+        "count_other": "{{count}} on",
+        "unavailableTag": "Needs setup",
+        "groups": {
+          "agenda": {
+            "title": "Calendar",
+            "description": "See services and free times, book and cancel the contact's appointments.",
+            "unavailable": "Add professionals and services in Calendar to turn this on.",
+            "setup": "Open Calendar"
+          },
+          "catalog": {
+            "title": "Catalog",
+            "description": "Look up products and services and show details, price and photo.",
+            "unavailable": "The catalog is still empty.",
+            "setup": "Open Catalog"
+          },
+          "contact": {
+            "title": "Contact",
+            "description": "Know the contact's name, phone and fields, and save what they share."
+          },
+          "tags": {
+            "title": "Tags",
+            "description": "Add and remove the tags the organization already uses."
+          },
+          "pipeline": {
+            "title": "Pipeline",
+            "description": "Create a card for the contact and move their cards to another stage.",
+            "unavailable": "Create a pipeline to turn this on.",
+            "setup": "Open Pipelines"
+          }
+        }
+      },
       "ai_intent_classification": {
         "note": "Reads the last message and follows the topic that fits best. Uses the fast model, without the history.",
         "promptPlaceholder": "Exchange requests count as support.",
@@ -1237,7 +1278,36 @@
       "title": "Test the flow",
       "tabs": "What to see from the test",
       "tabChat": "Conversation",
-      "tabSteps": "What each block did",
+      "tabSteps": "Blocks",
+      "tabVariables": "Variables",
+      "variablesEmpty": "What the flow saves (answers, AI data, function results) shows up here, with the name to use in texts.",
+      "variableEmpty": "(empty)",
+      "toolUsed": "Used",
+      "toolFailed": "Failed to use",
+      "toolSimulated": "simulated",
+      "toolInput": "What the AI sent",
+      "toolOutput": "What came back",
+      "toolNothing": "Nothing",
+      "toolNames": {
+        "agenda_list_services": "Calendar services",
+        "agenda_list_professionals": "Calendar professionals",
+        "agenda_available_slots": "Free times",
+        "agenda_create_booking": "Book a time",
+        "agenda_list_bookings": "Contact's bookings",
+        "agenda_cancel_booking": "Cancel a booking",
+        "catalog_search": "Catalog search",
+        "catalog_get_item": "Item details",
+        "catalog_categories": "Catalog categories",
+        "contact_get": "Contact details",
+        "contact_update": "Save contact details",
+        "tags_list": "Tags",
+        "tag_add": "Add tag",
+        "tag_remove": "Remove tag",
+        "pipeline_list_boards": "Pipelines",
+        "pipeline_list_cards": "Contact's cards",
+        "pipeline_create_card": "Create card",
+        "pipeline_move_card": "Move card"
+      },
       "stop": "Stop the test",
       "restart": "Test again",
       "close": "Close the test",

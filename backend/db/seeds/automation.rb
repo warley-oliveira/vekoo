@@ -99,7 +99,7 @@ module VekooAutomationSeeds
   end
 
   def edge(source, target, handle = nil)
-    { "id" => "#{source}-#{target}", "source" => source, "target" => target, "sourceHandle" => handle }.compact
+    { "id" => [ source, target, handle ].compact.join("-"), "source" => source, "target" => target, "sourceHandle" => handle }.compact
   end
 
   def definition(nodes, edges, **extra)
@@ -124,7 +124,7 @@ module VekooAutomationSeeds
 
   def seed_flows(organization, account, tools)
     {
-      welcome: flow(organization, account, "Boas-vindas da Doma", "first_message", welcome_definition,
+      welcome: flow(organization, account, "Boas-vindas da Doma", "first_message", welcome_definition(organization),
                     description: "Recebe quem chega pela primeira vez e separa quem quer comprar de quem precisa de ajuda."),
       budget: flow(organization, account, "Pedido de orçamento", "keyword", budget_definition(tools),
                    description: "Quando a pessoa fala em orçamento, coleta o CEP e responde com o frete."),
@@ -143,7 +143,7 @@ module VekooAutomationSeeds
     }
   end
 
-  def welcome_definition
+  def welcome_definition(organization)
     definition(
       [
         node("gatilho", "trigger_first_message", 0, label: "Primeira mensagem"),
@@ -153,7 +153,7 @@ module VekooAutomationSeeds
              buttons: [ { id: "comprar", title: "Quero comprar" }, { id: "suporte", title: "Preciso de ajuda" } ],
              invalid_text: "Não entendi. Responda com o número da opção.",
              save_to: "motivo"),
-        node("vendas", "assign_team", 840, -120, team_id: ""),
+        node("vendas", "assign_team", 840, -120, team_id: organization.teams.find_by(name: "Comercial")&.id.to_s),
         node("etiqueta", "add_tag", 1120, -120, tag_name: "quer-comprar"),
         node("loja", "send_text", 1400, -120, text: "Ótimo! Já vou te passar para quem cuida das vendas."),
         node("suporte", "add_tag", 840, 120, tag_name: "suporte"),
@@ -173,7 +173,7 @@ module VekooAutomationSeeds
       [
         node("gatilho", "trigger_keyword", 0, label: "Orçamento", keywords: %w[orçamento orcamento frete]),
         node("cep", "ask_question", 280, text: "Claro! Qual é o seu CEP?", save_to: "cep"),
-        node("frete", "execute_tool", 560, tool_id: tools[:frete].id.to_s, params: { cep: "{{vars.cep}}" }, save_response_to: "frete"),
+        node("frete", "execute_tool", 560, tool_id: tools[:frete].id.to_s, tool_name: tools[:frete].name, params: { cep: "{{vars.cep}}" }, save_response_to: "frete"),
         node("deu_certo", "condition", 840, match: "all", rules: [ { field: "vars.frete.ok", operator: "equals", value: "true" } ]),
         node("resposta", "send_text", 1120, -120, text: "Para o seu CEP, o frete fica R$ {{vars.frete.valor}} e chega em {{vars.frete.prazo_dias}} dias."),
         node("erro", "send_text", 1120, 120, text: "Não consegui consultar esse CEP. Pode conferir?"),
@@ -223,6 +223,7 @@ module VekooAutomationSeeds
              model_size: "fast",
              system_prompt: "Você atende {{contact.name}} no WhatsApp. Responda em poucas frases, sem listas.",
              tool_ids: [ tools[:frete].id.to_s ],
+             native_tools: %w[catalog contact tags],
              min_turns: 1,
              max_turns: 10,
              outputs: [ { id: "falar_com_pessoa", label: "Falar com uma pessoa", when: "O cliente pede para falar com uma pessoa" } ]),

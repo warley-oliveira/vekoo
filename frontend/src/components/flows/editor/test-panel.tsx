@@ -2,7 +2,21 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useReactFlow } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
-import { ArrowUp, Check, CircleAlert, CircleStop, Clock, FlaskConical, Info, Loader2, RotateCcw, TriangleAlert, X } from "lucide-react"
+import {
+  ArrowUp,
+  Check,
+  ChevronDown,
+  CircleAlert,
+  CircleStop,
+  Clock,
+  FlaskConical,
+  Info,
+  Loader2,
+  RotateCcw,
+  TriangleAlert,
+  Wrench,
+  X,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { apiAssetUrl } from "@/lib/api"
@@ -72,7 +86,7 @@ function TestBody() {
   const reactFlow = useReactFlow()
   const preset = useMotionPreset()
   const setOpen = useEditorUi((state) => state.setTestOpen)
-  const [tab, setTab] = useState<"chat" | "steps">("chat")
+  const [tab, setTab] = useState<"chat" | "steps" | "variables">("chat")
 
   // O bloco que está rodando precisa estar à vista, e não atrás deste painel.
   const follow = useCallback(
@@ -112,7 +126,8 @@ function TestBody() {
     }),
     [follow, runApi]
   )
-  const { status, items, steps, start, send, stop } = usePlayground(flow.id, handlers)
+  const { status, items, steps, variables, start, send, stop } = usePlayground(flow.id, handlers)
+  const variableCount = Object.keys(variables).length
 
   // Abriu: grava o que está no quadro, porque o teste roda o rascunho salvo.
   const startRef = useRef(start)
@@ -204,16 +219,15 @@ function TestBody() {
           options={[
             { value: "chat", label: t("flows.test.tabChat") },
             { value: "steps", label: t("flows.test.tabSteps"), count: steps.length },
+            { value: "variables", label: t("flows.test.tabVariables"), count: variableCount },
           ]}
         />
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden">
-        {tab === "chat" ? (
-          <ConversationView items={items} busy={busy} onPick={(text) => void send(text)} />
-        ) : (
-          <StepsView steps={steps} />
-        )}
+        {tab === "chat" ? <ConversationView items={items} busy={busy} onPick={(text) => void send(text)} /> : null}
+        {tab === "steps" ? <StepsView steps={steps} /> : null}
+        {tab === "variables" ? <VariablesView variables={variables} /> : null}
       </div>
 
       {tab === "chat" ? (
@@ -318,6 +332,8 @@ const TestBubble = memo(function TestBubble({ item, onPick }: { item: TestItem; 
     )
   }
 
+  if (item.kind === "tool") return <ToolCallBubble item={item} />
+
   const Icon = NOTE_ICONS[item.tone]
   const params =
     item.code === "pipelineSkipped"
@@ -338,6 +354,99 @@ const TestBubble = memo(function TestBubble({ item, onPick }: { item: TestItem; 
     </p>
   )
 })
+
+/** O que a IA consultou ou fez no meio da resposta. Fechado, uma linha; aberto, o que foi e o que voltou. */
+function ToolCallBubble({ item }: { item: Extract<TestItem, { kind: "tool" }> }) {
+  const { t } = useTranslation()
+  const language = useLanguage()
+  const [open, setOpen] = useState(false)
+  const failed = Boolean(item.error)
+  const label = t(`flows.test.toolNames.${item.name}`, { defaultValue: item.name })
+
+  return (
+    <div className="w-full max-w-[85%] self-start">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        className={cn(
+          "flex min-h-9 w-full items-center gap-2 rounded-lg border border-dashed bg-card/60 px-2.5 py-1.5 text-left text-xs",
+          "transition-colors hover:bg-card focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+        )}
+      >
+        <Wrench className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+        <span className="min-w-0 flex-1 truncate">
+          <span className="text-muted-foreground">{t(failed ? "flows.test.toolFailed" : "flows.test.toolUsed")} </span>
+          <span className="font-medium text-foreground">{label}</span>
+        </span>
+        {item.simulated ? (
+          <span className="shrink-0 rounded-full bg-muted px-1.5 py-px text-[11px] text-muted-foreground">{t("flows.test.toolSimulated")}</span>
+        ) : null}
+        <span className="shrink-0 text-muted-foreground tabular-nums">
+          {t("flows.test.ms", { value: formatNumber(item.durationMs, language) })}
+        </span>
+        {failed ? (
+          <CircleAlert className="size-3.5 shrink-0 text-status-danger" aria-hidden />
+        ) : (
+          <Check className="size-3.5 shrink-0 text-status-success" aria-hidden />
+        )}
+        <ChevronDown className={cn("size-3.5 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
+      </button>
+      {open ? (
+        <div className="mt-1 space-y-2 rounded-lg border bg-card p-2.5 text-xs">
+          {failed ? <p className="text-status-danger">{item.error}</p> : null}
+          <JsonBlock label={t("flows.test.toolInput")} value={item.input} />
+          <JsonBlock label={t("flows.test.toolOutput")} value={item.output} />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function JsonBlock({ label, value }: { label: string; value: unknown }) {
+  const { t } = useTranslation()
+  const text = useMemo(() => {
+    if (value == null || (typeof value === "object" && Object.keys(value as object).length === 0)) return t("flows.test.toolNothing")
+    return typeof value === "string" ? value : JSON.stringify(value, null, 2)
+  }, [t, value])
+  return (
+    <div>
+      <p className="mb-1 font-medium text-muted-foreground">{label}</p>
+      <pre className="max-h-48 overflow-auto rounded-md bg-muted/60 p-2 font-mono text-[11px] leading-relaxed break-words whitespace-pre-wrap">
+        {text}
+      </pre>
+    </div>
+  )
+}
+
+/** As variáveis da execução como estão agora: o que as perguntas, a IA e as funções guardaram. */
+function VariablesView({ variables }: { variables: Record<string, unknown> }) {
+  const { t } = useTranslation()
+  const entries = Object.entries(variables)
+  if (entries.length === 0) {
+    return <p className="p-6 text-center text-sm text-pretty text-muted-foreground">{t("flows.test.variablesEmpty")}</p>
+  }
+  return (
+    <dl className="h-full divide-y overflow-y-auto px-3 py-1">
+      {entries.map(([name, value]) => (
+        <div key={name} className="flex flex-col gap-1 py-2.5">
+          <dt className="font-mono text-xs text-muted-foreground">{`{{vars.${name}}}`}</dt>
+          <dd className="min-w-0 text-sm break-words whitespace-pre-wrap">
+            {value == null || value === "" ? (
+              <span className="text-muted-foreground">{t("flows.test.variableEmpty")}</span>
+            ) : typeof value === "object" ? (
+              <pre className="max-h-40 overflow-auto rounded-md bg-muted/60 p-2 font-mono text-[11px] leading-relaxed">
+                {JSON.stringify(value, null, 2)}
+              </pre>
+            ) : (
+              String(value)
+            )}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
 
 function Composer({
   disabled,
