@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { List, Loader2, Megaphone, Trash2 } from "lucide-react"
 
 import { ActionsMenu, RelativeTime, StatusBadge, type RowAction } from "@/components/shared"

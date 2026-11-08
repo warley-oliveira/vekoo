@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import { endOfDay, startOfDay, toDateInputValue } from "@/lib/date-format"
 

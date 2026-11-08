@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Navigate, useParams, useSearchParams } from "react-router"
+import { Navigate, useParams, useSearchParams } from "@/lib/router"
 
 import { CardGridSkeleton, PageBody } from "@/components/shared"
 import { BoardWorkspace } from "@/components/pipelines/board-workspace"

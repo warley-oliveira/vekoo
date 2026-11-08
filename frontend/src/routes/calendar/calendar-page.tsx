@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useLocation } from "react-router"
+import { useLocation } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { CalendarOff, Plus, RefreshCw } from "lucide-react"

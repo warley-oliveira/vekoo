@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { Download, Loader2, PackageOpen, Search } from "lucide-react"
 import { toast } from "sonner"
 

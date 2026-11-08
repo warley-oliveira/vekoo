@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { useFormContext, useFormState, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Eye, FileText, RefreshCw, SearchX, TriangleAlert } from "lucide-react"
 
 import {

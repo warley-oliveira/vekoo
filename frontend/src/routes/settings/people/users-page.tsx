@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { Crown, Eye, Pencil, RotateCcw, UserPlus, UserX } from "lucide-react"
 
 import { PeopleAreaNav } from "@/components/people/area-nav"

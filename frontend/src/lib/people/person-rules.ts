@@ -12,23 +12,34 @@ export type PersonRules = {
   /** A organização nunca fica sem um dono com acesso. */
   isLastOwner: boolean
   canEdit: boolean
+  /** Nome, e-mail e telefone: só de quem não está em outra organização. */
+  canEditIdentity: boolean
   canChangeAccess: boolean
   /** A própria senha só muda no perfil, onde a senha atual é pedida. */
   canChangePassword: boolean
   canRevoke: boolean
   canRestore: boolean
   canDelete: boolean
+  /** Passar a posse: dono (ou o suporte) para alguém ativo que ainda não é dono. */
+  canTransferOwnership: boolean
 }
 
 export function activeOwners(people: Person[]): Person[] {
   return people.filter((person) => person.role === "owner" && !person.revokedAt)
 }
 
-export function rulesFor(person: Person, actor: Account, people: Person[]): PersonRules {
+export function rulesFor(
+  person: Person,
+  actor: Pick<Account, "id" | "role" | "support">,
+  people: Person[]
+): PersonRules {
   const isSelf = person.id === actor.id
   const isOwner = person.role === "owner"
   const isRevoked = Boolean(person.revokedAt)
-  const isLocked = isOwner && actor.role !== "owner"
+  // O suporte do Vekoo age como dono (a API confere igual).
+  const actsAsOwner = actor.role === "owner" || actor.support
+  const isLocked = isOwner && !actsAsOwner
+  const shared = Boolean(person.identityShared)
   const isLastOwner = isOwner && !isRevoked && activeOwners(people).length <= 1
   const canAct = !isLocked
 
@@ -38,11 +49,13 @@ export function rulesFor(person: Person, actor: Account, people: Person[]): Pers
     isLocked,
     isLastOwner,
     canEdit: canAct,
+    canEditIdentity: canAct && !shared,
     canChangeAccess: canAct && !isLastOwner,
-    canChangePassword: canAct && !isSelf,
+    canChangePassword: canAct && !isSelf && !shared,
     canRevoke: canAct && !isSelf && !isRevoked && !isLastOwner,
     canRestore: canAct && isRevoked,
     canDelete: canAct && !isSelf && !isLastOwner,
+    canTransferOwnership: actsAsOwner && !isSelf && !isOwner && !isRevoked,
   }
 }
 

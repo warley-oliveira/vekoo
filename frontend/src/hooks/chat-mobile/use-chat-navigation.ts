@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 
 import { closeLayersThen } from "@/lib/back-stack"
 

@@ -137,7 +137,8 @@ RSpec.describe Push::Delivery do
             "title" => "Novo agendamento",
             "body" => "Com Ana, às 14h",
             "tag" => "agenda",
-            "data" => { "url" => "/calendar", "timestamp" => Time.current.to_i, "bookingId" => "42" },
+            # O link abre na organização do aviso, com o vínculo de quem recebe.
+            "data" => { "url" => "/a/#{account.hashid}/calendar", "timestamp" => Time.current.to_i, "bookingId" => "42" },
             "actions" => [ { "action" => "open_calendar", "title" => "Abrir agenda" } ],
             "requireInteraction" => false,
             "silent" => false,

@@ -9,7 +9,7 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import {
   ActionsMenu,

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react"
 import { useWatch, type UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { GraduationCap } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import {
   Callout,

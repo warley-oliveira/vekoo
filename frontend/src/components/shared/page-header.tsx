@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import { useHeaderSlot, usePageTitle, type HeaderSlotPlacement } from "@/hooks/use-header-slot"
 import {

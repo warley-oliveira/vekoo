@@ -1,6 +1,10 @@
 # POST /login, DELETE /logout e GET /me — a sessão de quem está usando.
+#
+# A sessão é da pessoa. `/me` vale fora de qualquer organização (a tela de escolher organização
+# usa) e, com `X-Account`, traz também o vínculo, a organização e o saldo daquela aba.
 class SessionsController < AuthenticatedController
   skip_before_action :require_session, only: :create
+  skip_account_requirement
 
   # A única porta da API que aceita palpite. Sem limite, adivinhar senha é só
   # questão de tempo — e `SignIn` distingue de propósito "e-mail não existe" de
@@ -24,7 +28,8 @@ class SessionsController < AuthenticatedController
     ).call
 
     if result.success?
-      render json: SessionSerializer.one(result.session), status: :created
+      account = result.session.user.memberships.limit(2).to_a.then { |found| found.one? ? found.first : nil }
+      render json: SessionSerializer.one(result.session, account: account), status: :created
     else
       render_error(
         status: :unauthorized,
@@ -35,17 +40,22 @@ class SessionsController < AuthenticatedController
     end
   end
 
-  # Quem está aí? É o que a tela pergunta ao abrir, com o token guardado.
+  # Quem está aí? É o que a tela pergunta ao abrir, com o token guardado. Com `X-Account`, o
+  # vínculo pedido precisa valer (mesmos erros de qualquer rota); sem ele, vem o único vínculo da
+  # pessoa, ou nenhum.
   def show
-    render json: SessionSerializer.one(current_session)
+    return require_account if requested_account_hashid && current_account.nil?
+
+    current_account&.update_column(:last_seen_at, Time.current)
+    render json: SessionSerializer.one(current_session, account: current_account)
   end
 
   # O WebSocket é conferido só ao conectar: sem isto, o de um aparelho que ficou aberto continuaria
   # recebendo depois de sair. Os das outras sessões voltam sozinhos.
   def destroy
-    account = current_account
+    user = current_user
     current_session.destroy!
-    account.reconnect_realtime
+    user.reconnect_realtime
     head :no_content
   end
 

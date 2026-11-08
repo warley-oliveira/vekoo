@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate } from "@/lib/router"
 import { AlertCircle, CircleSlash, Copy, Eye, Pause, PencilLine, Play, SquareCheck, Trash2 } from "lucide-react"
 
 import { ActionsMenu, RelativeTime, type RowAction } from "@/components/shared"

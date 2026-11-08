@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "@/lib/router"
 import { ChevronRight, Code2, Lock, PencilRuler, Plus, Search, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 

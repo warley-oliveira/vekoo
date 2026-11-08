@@ -89,7 +89,7 @@ module MiniRacerEngine::Workers
     # plataforma: aqui, só em quem atende nesta organização.
     def assign_user_by_email(params)
       conversation = require_chat!
-      conversation.assigned_account_id = attendants.find_by(email: params[0].to_s)&.id
+      conversation.assigned_account_id = attendants.with_email(params[0]).take&.id
       conversation.save!
     end
 

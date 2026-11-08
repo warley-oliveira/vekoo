@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { AlertTriangle, MessagesSquare, RefreshCw } from "lucide-react"
 
 import { Callout, EmptyState, ErrorState } from "@/components/shared"

@@ -71,7 +71,7 @@ module Pipelines
       return unless saved_change_to_assigned_to_id?
 
       old_id, new_id = saved_change_to_assigned_to_id
-      names = Account.where(id: [ old_id, new_id ].compact).pluck(:id, :name).to_h
+      names = Account.where(id: [ old_id, new_id ].compact).names_by_id
 
       log_activity("assigned", {
         from_account_id: old_id,

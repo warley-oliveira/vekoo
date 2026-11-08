@@ -84,7 +84,7 @@ module Agenda
 
     # A conta que recebe o aviso: a ligada, ou uma da organização com o mesmo e-mail.
     def notice_account
-      account || (Account.find_by(email: email.to_s.strip.downcase, organization_id: organization_id) if email.present?)
+      account || (Account.with_email(email).find_by(organization_id: organization_id) if email.present?)
     end
 
     private

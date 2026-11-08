@@ -1,4 +1,4 @@
-import type { Navigator, To } from "react-router"
+import type { Navigator, To } from "@/lib/router"
 
 import { closeLayersThen, traverseHistory } from "./back-stack"
 

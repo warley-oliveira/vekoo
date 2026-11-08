@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { MessagesSquare, SearchX } from "lucide-react"
 

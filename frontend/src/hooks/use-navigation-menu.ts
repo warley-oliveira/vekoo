@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react"
-import { matchPath, useLocation } from "react-router"
+import { matchPath, useLocation } from "@/lib/router"
 
 import { useAlerts, type AlertBadges } from "@/hooks/use-alerts"
 import { useCanAccess } from "@/hooks/use-can"

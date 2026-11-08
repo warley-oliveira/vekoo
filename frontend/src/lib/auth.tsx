@@ -8,16 +8,23 @@ import {
   useState,
   type ReactNode,
 } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useSWRConfig } from "swr"
 
+import {
+  forgetAccount,
+  forgetAllAccounts,
+  setCurrentAccountHashid,
+} from "@/lib/account-scope"
 import {
   ApiError,
   apiDelete,
   apiGet,
   apiPatch,
   apiPost,
+  setAccountLostHandler,
   setUnauthorizedHandler,
+  type ApiErrorCode,
 } from "@/lib/api"
 import { closeCable, openCable, setClosedByServerHandler } from "@/lib/cable"
 import i18n, { currentLanguage } from "@/lib/i18n"
@@ -31,6 +38,12 @@ import { unsubscribeDevice } from "@/lib/push"
 import { clearToken, getToken, setToken } from "@/lib/token"
 
 // A sessão de quem está usando, servida pelo Rails.
+//
+// Duas camadas:
+//   - a **pessoa** (`identity`: `user` e as organizações dela, `accounts`), que vale em todas as
+//     abas — o token é um só;
+//   - a **organização desta aba** (`session`: o vínculo, a organização e o saldo), que mora na URL
+//     (`/a/<hashid>/...`) e entra por `enterAccount`. Fora de uma organização, `session` é `null`.
 //
 // O token viaja em `Authorization: Bearer` e mora em `lib/token.ts` — o
 // backend documenta a troca futura por cookie httpOnly, que custa aquele
@@ -80,8 +93,41 @@ export type PermissionKey =
 /** `none` nega; qualquer outro nível dá acesso. Para decidir, use `useCan`. */
 export type PermissionLevel = "none" | "all" | (string & {})
 
+/** A pessoa: identidade e login, iguais em todas as organizações dela. */
+export type User = {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  locale: string | null
+  /** Caminho relativo à API: use `apiAssetUrl`. */
+  avatarUrl: string | null
+  /** Suporte do Vekoo: entra em qualquer organização. Só leitura. */
+  master: boolean
+  createdAt: number
+}
+
+/** Uma organização da pessoa, para escolher e trocar: o vínculo e o mínimo da organização. */
+export type AccountSummary = {
+  id: string
+  /** O identificador da URL (`/a/<hashid>`) e do cabeçalho `X-Account`. */
+  hashid: string
+  role: MemberRole
+  support: boolean
+  lastSeenAt: number | null
+  organization: { id: string; name: string; logoUrl: string | null }
+}
+
+/**
+ * O vínculo da pessoa com a organização desta aba. Nome, e-mail, telefone, idioma e foto são da
+ * pessoa (valem em todas as organizações); papel, grupo e permissões são deste vínculo.
+ */
 export type Account = {
   id: string
+  hashid: string
+  userId: string
+  /** O vínculo de suporte do Vekoo: aparece para o cliente como "Suporte Vekoo". */
+  support: boolean
   name: string
   email: string
   organizationId: string
@@ -99,7 +145,16 @@ export type Account = {
 
 export type Credits = { total: number; used: number; left: number }
 
-export type Session = {
+/** A pessoa da sessão, fora de qualquer organização. */
+export type Identity = {
+  user: User
+  /** Os vínculos ativos, um por organização. O de suporte não entra. */
+  accounts: AccountSummary[]
+  expiresAt: number
+}
+
+/** A sessão dentro da organização desta aba. */
+export type Session = Identity & {
   account: Account
   organization: Organization
   /**
@@ -112,7 +167,29 @@ export type Session = {
 }
 
 /** O que `POST /login`, `POST /signup` e `GET /me` devolvem. */
-type SessionPayload = Session & { token?: string }
+type SessionPayload = Identity & {
+  account: Account | null
+  organization: Organization | null
+  credits: Credits | null
+  token?: string
+}
+
+/** Por que a aba saiu da organização sem a pessoa pedir. A escolha de organização explica. */
+export type AccountLostReason = { code: ApiErrorCode; hashid: string | null }
+
+function identityOf(payload: SessionPayload): Identity {
+  return { user: payload.user, accounts: payload.accounts, expiresAt: payload.expiresAt }
+}
+
+function scopedOf(payload: SessionPayload): Session | null {
+  if (!payload.account || !payload.organization || !payload.credits) return null
+  return {
+    ...identityOf(payload),
+    account: payload.account,
+    organization: payload.organization,
+    credits: payload.credits,
+  }
+}
 
 /**
  * Erro de autenticação. Carrega o campo alvo e um **código** — a mensagem é
@@ -206,6 +283,9 @@ type SignUpInput = {
 }
 
 type AuthContextValue = {
+  /** A pessoa da sessão. `null` fora da sessão. */
+  identity: Identity | null
+  /** A sessão na organização desta aba. `null` fora de uma organização. */
   session: Session | null
   /** false enquanto o `GET /me` da abertura não respondeu. */
   ready: boolean
@@ -223,6 +303,14 @@ type AuthContextValue = {
   signingOut: boolean
   /** A sessão acabou sem a pessoa pedir (acesso revogado, por exemplo), e por quê. */
   signedOutReason: SignedOutReason | null
+  /** A aba perdeu a organização (vínculo revogado ou removido), e qual era. */
+  accountLost: AccountLostReason | null
+  /** Abre a organização `hashid` nesta aba: lê `/me` com ela e troca o cache. */
+  enterAccount: (hashid: string) => Promise<void>
+  /** A aba sai da organização (tela de escolha). A sessão continua. */
+  leaveAccount: () => void
+  /** Relê as organizações da pessoa (`GET /accounts`), depois de criar ou entrar numa. */
+  refreshAccounts: () => Promise<AccountSummary[]>
   /**
    * Troca a conta ou a organização da sessão pelo que a API acabou de devolver: `/profile`
    * e `/organization` respondem no mesmo formato de `/me`. Sem nova requisição.
@@ -230,8 +318,9 @@ type AuthContextValue = {
   updateSession: (changes: Partial<Pick<Session, "account" | "organization">>) => void
   /** Lê `/me` de novo: as permissões da pessoa podem ter mudado. */
   refreshSession: () => Promise<void>
-  signIn: (email: string, password: string) => Promise<Session>
-  signUp: (input: SignUpInput) => Promise<Session>
+  signIn: (email: string, password: string) => Promise<Identity>
+  /** Cria a pessoa, a organização e o vínculo de dono: devolve a organização nova. */
+  signUp: (input: SignUpInput) => Promise<AccountSummary | null>
   signOut: () => Promise<void>
   /** Devolve o token de redefinição fora de produção — não há e-mail ainda. */
   requestPasswordReset: (email: string) => Promise<{ token?: string }>
@@ -241,7 +330,9 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [identity, setIdentity] = useState<Identity | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [accountLost, setAccountLost] = useState<AccountLostReason | null>(null)
   const [ready, setReady] = useState(false)
   const [bootError, setBootError] = useState(false)
   const [bootAttempt, setBootAttempt] = useState(0)
@@ -254,13 +345,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const expiring = useRef(false)
   // Sair de propósito não é sessão que acabou, mesmo que o `/logout` responda 401.
   const leaving = useRef(false)
-  // A conta de agora, para quem ouve a troca de idioma, que acontece fora do React.
-  const accountRef = useRef<Account | null>(null)
+  // A pessoa de agora, para quem ouve a troca de idioma, que acontece fora do React.
+  const userRef = useRef<User | null>(null)
+  // A organização que esta aba está abrindo ou abriu: a resposta de uma troca anterior não vale.
+  const enteringRef = useRef<string | null>(null)
 
   /** Apaga tudo que era da conta anterior — cache do SWR inclusive. */
   const dropSession = useCallback(() => {
     clearToken()
-    accountRef.current = null
+    userRef.current = null
+    enteringRef.current = null
+    setCurrentAccountHashid(null)
+    setIdentity(null)
     setSession(null)
     // Sem isto, quem entrar em seguida vê por um instante os carrosséis de quem
     // saiu: as chaves do SWR são globais e não sabem de quem é o dado.
@@ -288,13 +384,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setUnauthorizedHandler(null)
   }, [dropSession, navigate])
 
-  // O WebSocket acompanha a sessão: abre ao entrar, troca de token ao trocar de
-  // conta e fecha ao sair. É o único ponto que liga as duas coisas.
-  const cableToken = session ? getToken() : null
+  // A organização da aba sumiu para esta pessoa (revogada, removida, ou o link era de outra
+  // pessoa): a aba sai dela e vai para a escolha. A sessão continua.
   useEffect(() => {
-    if (cableToken) openCable(cableToken)
+    setAccountLostHandler((code, hashid) => {
+      if (hashid) forgetAccount(hashid)
+      setAccountLost({ code, hashid })
+      enteringRef.current = null
+      setCurrentAccountHashid(null)
+      setSession(null)
+      void mutate(() => true, undefined, { revalidate: false })
+      navigate("/organizations", { replace: true })
+    })
+    return () => setAccountLostHandler(null)
+  }, [mutate, navigate])
+
+  // O WebSocket acompanha a organização da aba: abre ao entrar nela, troca de conexão ao trocar
+  // de organização ou de conta, e fecha fora de uma organização. É o único ponto que liga as duas.
+  const cableToken = session ? getToken() : null
+  const cableAccount = session?.account.hashid ?? null
+  useEffect(() => {
+    if (cableToken) openCable(cableToken, cableAccount)
     else closeCable()
-  }, [cableToken])
+  }, [cableToken, cableAccount])
 
   // O servidor derrubou o WebSocket de propósito: a sessão acabou. Sem isto, quem está
   // parado numa tela só descobriria no próximo clique. Quem diz o motivo é a API: o 401
@@ -310,52 +422,65 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /* ---------- idioma da pessoa ---------- */
 
-  const saveLanguage = useCallback((accountId: string, language: string) => {
+  // O idioma é da pessoa: `PATCH /profile` grava no `User`, e vale em todas as organizações. A
+  // gravação precisa de uma organização (a rota responde o vínculo); fora de uma, fica pendente
+  // e vai na próxima vez que a pessoa abrir uma.
+  const saveLanguage = useCallback((userId: string, language: string) => {
     apiPatch<Account>("/profile", { profile: { locale: language } })
       .then((account) => {
         forgetPendingLanguage()
         setSession((current) =>
           current?.account.id === account.id ? { ...current, account } : current
         )
+        setIdentity((current) =>
+          current && current.user.id === account.userId
+            ? { ...current, user: { ...current.user, locale: account.locale } }
+            : current
+        )
       })
       .catch(() => {
         // A escolha continua valendo neste aparelho e vai para o servidor na próxima sessão.
-        rememberPendingLanguage(accountId, language)
+        rememberPendingLanguage(userId, language)
       })
   }, [])
 
-  /** Ao começar a sessão, vale o idioma da conta, exceto escolha local ainda não gravada. */
-  const adoptAccountLanguage = useCallback(
-    (account: Account) => {
-      const pending = pendingLanguage(account.id)
-      if (pending && pending !== account.locale) saveLanguage(account.id, pending)
-      if (pending && pending === account.locale) forgetPendingLanguage()
+  /** Ao começar a sessão, vale o idioma da pessoa, exceto escolha local ainda não gravada. */
+  const adoptUserLanguage = useCallback((user: User) => {
+    const pending = pendingLanguage(user.id)
+    if (pending && pending === user.locale) forgetPendingLanguage()
 
-      const language = pending ?? supportedLanguage(account.locale)
-      // Antes de trocar o idioma, para quem ouve a troca não achar que a pessoa escolheu.
-      accountRef.current = language ? { ...account, locale: language } : account
-      if (language && language !== currentLanguage()) void i18n.changeLanguage(language)
-    },
-    [saveLanguage]
-  )
+    const language = pending ?? supportedLanguage(user.locale)
+    // Antes de trocar o idioma, para quem ouve a troca não achar que a pessoa escolheu.
+    userRef.current = language ? { ...user, locale: language } : user
+    if (language && language !== currentLanguage()) void i18n.changeLanguage(language)
+  }, [])
+
+  // Escolha pendente sobe assim que houver uma organização aberta (é lá que `/profile` responde).
+  const scopedAccountId = session?.account.id
+  useEffect(() => {
+    const user = userRef.current
+    if (!scopedAccountId || !user) return
+    const pending = pendingLanguage(user.id)
+    if (pending && pending !== identity?.user.locale) saveLanguage(user.id, pending)
+  }, [scopedAccountId, identity?.user.locale, saveLanguage])
 
   // Vale para os dois menus e para o perfil: todos trocam o idioma do mesmo jeito. Com a
   // sessão aberta, o idioma só muda por escolha da pessoa.
-  const accountId = session?.account.id
+  const userId = identity?.user.id
   useEffect(() => {
-    if (!accountId) return
+    if (!userId) return
 
     function onLanguageChanged(language: string) {
-      const account = accountRef.current
-      if (!account || account.locale === language) return
+      const user = userRef.current
+      if (!user || user.locale === language) return
 
-      accountRef.current = { ...account, locale: language }
-      saveLanguage(account.id, language)
+      userRef.current = { ...user, locale: language }
+      saveLanguage(user.id, language)
     }
 
     i18n.on("languageChanged", onLanguageChanged)
     return () => i18n.off("languageChanged", onLanguageChanged)
-  }, [accountId, saveLanguage])
+  }, [userId, saveLanguage])
 
   // Abertura: quem já tem token continua de onde parou.
   useEffect(() => {
@@ -372,8 +497,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     apiGet<SessionPayload>("/me", { skipAuthHandler: true })
       .then((payload) => {
         if (cancelled) return
-        adoptAccountLanguage(payload.account)
-        setSession(payload)
+        adoptUserLanguage(payload.user)
+        setIdentity(identityOf(payload))
       })
       .catch((error: unknown) => {
         if (cancelled) return
@@ -393,7 +518,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [bootAttempt, adoptAccountLanguage])
+  }, [bootAttempt, adoptUserLanguage])
 
   const retryBoot = useCallback(() => {
     setReady(false)
@@ -401,43 +526,116 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const start = useCallback(
-    (payload: SessionPayload): Session => {
+    (payload: SessionPayload): Identity => {
       if (payload.token) setToken(payload.token)
-      const next: Session = {
-        account: payload.account,
-        organization: payload.organization,
-        credits: payload.credits,
-        expiresAt: payload.expiresAt,
-      }
+      const next = identityOf(payload)
       setSignedOutReason(null)
-      adoptAccountLanguage(next.account)
-      setSession(next)
+      setAccountLost(null)
+      adoptUserLanguage(next.user)
+      setIdentity(next)
       return next
     },
-    [adoptAccountLanguage]
+    [adoptUserLanguage]
   )
+
+  const enterAccount = useCallback(
+    async (hashid: string) => {
+      if (enteringRef.current === hashid) return
+      enteringRef.current = hashid
+      // O cache do SWR é por caminho, sem saber de qual organização é o dado: ao trocar, esvazia.
+      setSession(null)
+      void mutate(() => true, undefined, { revalidate: false })
+      setCurrentAccountHashid(hashid)
+      try {
+        const payload = await apiGet<SessionPayload>("/me")
+        if (enteringRef.current !== hashid) return
+        const scoped = scopedOf(payload)
+        if (!scoped) return
+        // Um idioma recém-escolhido pode estar a caminho: a escolha é mais nova que esta leitura.
+        const locale = userRef.current?.locale ?? scoped.account.locale
+        setIdentity(identityOf(payload))
+        setAccountLost(null)
+        setSession({ ...scoped, account: { ...scoped.account, locale } })
+      } catch (error) {
+        // O 401 e a organização perdida já foram tratados em `api.ts`; sem rede, tenta de novo.
+        if (enteringRef.current === hashid) enteringRef.current = null
+        throw error
+      }
+    },
+    [mutate]
+  )
+
+  const leaveAccount = useCallback(() => {
+    if (enteringRef.current === null && !session) return
+    enteringRef.current = null
+    setCurrentAccountHashid(null)
+    setSession(null)
+    void mutate(() => true, undefined, { revalidate: false })
+  }, [mutate, session])
+
+  const refreshAccounts = useCallback(async () => {
+    const { accounts } = await apiGet<{ accounts: AccountSummary[] }>("/accounts")
+    setIdentity((current) => (current ? { ...current, accounts } : current))
+    setSession((current) => (current ? { ...current, accounts } : current))
+    return accounts
+  }, [])
 
   const updateSession = useCallback(
     (changes: Partial<Pick<Session, "account" | "organization">>) => {
-      if (changes.account) accountRef.current = changes.account
+      const account = changes.account
+      if (account && userRef.current) {
+        userRef.current = { ...userRef.current, name: account.name, locale: account.locale }
+      }
       setSession((current) => (current ? { ...current, ...changes } : current))
+      // A identidade é da pessoa: o que o perfil gravou vale para a lista de organizações também.
+      if (account) {
+        setIdentity((current) =>
+          current && current.user.id === account.userId
+            ? {
+                ...current,
+                user: {
+                  ...current.user,
+                  name: account.name,
+                  phone: account.phone,
+                  locale: account.locale,
+                  avatarUrl: account.avatarUrl,
+                },
+              }
+            : current
+        )
+      }
+      // O nome da organização aparece no seletor e na escolha de organização.
+      const organization = changes.organization
+      if (organization) {
+        const rename = (accounts: AccountSummary[]) =>
+          accounts.map((item) =>
+            item.organization.id === organization.id
+              ? { ...item, organization: { ...item.organization, name: organization.name, logoUrl: organization.logoUrl } }
+              : item
+          )
+        setIdentity((current) => (current ? { ...current, accounts: rename(current.accounts) } : current))
+        setSession((current) => (current ? { ...current, accounts: rename(current.accounts) } : current))
+      }
     },
     []
   )
 
   const refreshSession = useCallback(async () => {
-    const { account, organization, credits, expiresAt } =
-      await apiGet<SessionPayload>("/me")
+    const payload = await apiGet<SessionPayload>("/me")
     // Saiu enquanto a leitura vinha: esta resposta não pode ressuscitar a sessão.
-    if (accountRef.current?.id !== account.id) return
+    if (!userRef.current || userRef.current.id !== payload.user.id) return
+    setIdentity(identityOf(payload))
+    const scoped = scopedOf(payload)
+    if (!scoped) return
     // Um idioma recém-escolhido pode estar a caminho: a escolha é mais nova que esta leitura.
-    const merged = { ...account, locale: accountRef.current.locale }
-    accountRef.current = merged
-    setSession({ account: merged, organization, credits, expiresAt })
+    const merged = { ...scoped.account, locale: userRef.current.locale }
+    setSession((current) =>
+      current && current.account.id === scoped.account.id ? { ...scoped, account: merged } : current
+    )
   }, [])
 
   const signIn = useCallback(
-    async (email: string, password: string): Promise<Session> => {
+    async (email: string, password: string): Promise<Identity> => {
       try {
         const payload = await apiPost<SessionPayload>(
           "/login",
@@ -453,7 +651,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const signUp = useCallback(
-    async (input: SignUpInput): Promise<Session> => {
+    async (input: SignUpInput): Promise<AccountSummary | null> => {
       try {
         const payload = await apiPost<SessionPayload>(
           "/signup",
@@ -467,7 +665,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
           { skipAuthHandler: true }
         )
-        return start(payload)
+        const next = start(payload)
+        return next.accounts.find((item) => item.hashid === payload.account?.hashid) ?? null
       } catch (error) {
         throw toAuthError(error, "signUpFailed")
       }
@@ -495,6 +694,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       /* segue */
     }
     dropSession()
+    forgetAllAccounts()
     setSigningOut(false)
     leaving.current = false
   }, [dropSession])
@@ -516,12 +716,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(
     () => ({
+      identity,
       session,
       ready,
       bootError,
       retryBoot,
       signingOut,
       signedOutReason,
+      accountLost,
+      enterAccount,
+      leaveAccount,
+      refreshAccounts,
       updateSession,
       refreshSession,
       signIn,
@@ -531,12 +736,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       resetPassword,
     }),
     [
+      identity,
       session,
       ready,
       bootError,
       retryBoot,
       signingOut,
       signedOutReason,
+      accountLost,
+      enterAccount,
+      leaveAccount,
+      refreshAccounts,
       updateSession,
       refreshSession,
       signIn,
@@ -556,10 +766,10 @@ export function useAuth(): AuthContextValue {
   return ctx
 }
 
-/** Sessão garantida — para telas que só existem depois de entrar. */
+/** Sessão garantida — para telas que só existem dentro de uma organização. */
 export function useSession(): Session {
   const { session } = useAuth()
-  if (!session) throw new Error("useSession usado fora de uma área autenticada")
+  if (!session) throw new Error("useSession usado fora de uma organização")
   return session
 }
 

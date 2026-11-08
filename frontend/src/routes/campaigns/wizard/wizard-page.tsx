@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigationType, useParams, useSearchParams } from "react-router"
+import { Link, useNavigationType, useParams, useSearchParams } from "@/lib/router"
 import { CalendarClock, Send } from "lucide-react"
 
 import { CampaignWizard } from "@/components/campaigns-wizard/campaign-wizard"

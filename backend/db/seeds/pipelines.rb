@@ -157,11 +157,11 @@ module VekooPipelinesSeeds
   module_function
 
   def call
-    owner = Account.find_by(email: DEMO_EMAIL)
+    owner = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless owner
 
     organization = owner.organization
-    load Rails.root.join("db/seeds/access.rb") unless organization.accounts.where(email: "juliana.ferreira@exemplo.com.br").exists?
+    load Rails.root.join("db/seeds/access.rb") unless organization.accounts.with_email("juliana.ferreira@exemplo.com.br").exists?
     load Rails.root.join("db/seeds/connectors.rb") unless organization.chats.exists?
 
     @organization = organization
@@ -176,7 +176,7 @@ module VekooPipelinesSeeds
 
   def person(email)
     @people ||= {}
-    @people[email] ||= @organization.accounts.find_by(email: email) || @owner
+    @people[email] ||= @organization.accounts.with_email(email).take || @owner
   end
 
   def seed_labels

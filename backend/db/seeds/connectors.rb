@@ -139,7 +139,7 @@ module VekooConnectorSeeds
   module_function
 
   def call
-    account = Account.find_by(email: DEMO_EMAIL)
+    account = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless account
 
     organization = account.organization
@@ -225,7 +225,7 @@ module VekooConnectorSeeds
       audience_user_name: spec[:username],
       status: spec[:status],
       automation_enabled: spec[:status] == "open",
-      assigned_account_id: spec[:assigned] && Account.find_by(email: spec[:assigned])&.id,
+      assigned_account_id: spec[:assigned] && Account.for_email(spec[:assigned])&.id,
       team_id: spec[:team] && organization.teams.find_by(name: spec[:team])&.id,
       chat_tag_ids: spec[:tags].map { |name| tags.fetch(name).id } + system_tag_ids(tags, spec),
       unread_messages: spec[:unread],
@@ -339,7 +339,7 @@ module VekooConnectorSeeds
   def operator_id(chat, who, extras)
     return if who == :contact || extras[:automated]
 
-    Account.find_by(organization_id: chat.organization_id, name: extras[:sender])&.id
+    Account.joins(:user).find_by(organization_id: chat.organization_id, users: { name: extras[:sender] })&.id
   end
 
   def build_note(chat, role_base_type, content, at)

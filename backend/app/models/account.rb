@@ -1,45 +1,43 @@
-# A conta da pessoa. Uma conta pertence a uma organização e o e-mail é único
-# no produto inteiro (convidar a mesma pessoa para várias organizações entra
-# em uma etapa futura).
+# O vínculo de uma pessoa (`User`) com uma organização: papel, grupo de permissões,
+# departamentos e revogação. Uma pessoa tem um vínculo por organização. O nome ficou `Account`
+# de propósito: todo `account_id` gravado no Postgres e no Mongo continua valendo.
+#
+# A identidade (nome, e-mail, telefone, idioma, foto, senha) é do `User` e vale em todas as
+# organizações. Para o código que já lia `account.name`, ela continua aqui por delegação; e
+# atribuir `name`/`email`/`password` num vínculo novo monta o `User` junto (convite, cadastro,
+# semente, factories).
+#
+# `support: true` é o vínculo que o suporte do Vekoo (`User#master`) ganha ao entrar numa
+# organização: dá o hashid da URL e o autor das ações, e não aparece em Pessoas, contagens,
+# seletores nem atribuição (`Organization#accounts` não o enxerga).
 class Account < ApplicationRecord
   ROLES = %w[owner member].freeze
-  # Igual ao que a tela valida (zod) — o mesmo mínimo dos dois lados.
-  MINIMUM_PASSWORD_LENGTH = 8
-  EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\.[^@\s]+\z/
+  MINIMUM_PASSWORD_LENGTH = User::MINIMUM_PASSWORD_LENGTH
+  EMAIL_FORMAT = User::EMAIL_FORMAT
+  # Como o cliente vê o autor das ações do suporte: nome do produto, não da pessoa.
+  SUPPORT_NAME = "Suporte Vekoo"
+  IDENTITY_WRITERS = %i[name email phone locale password password_confirmation].freeze
 
   belongs_to :organization
+  belongs_to :user, autosave: true
   belongs_to :access_role, optional: true
 
   has_many :team_memberships, dependent: :destroy
   has_many :teams, through: :team_memberships
-
-  has_many :sessions, dependent: :destroy
-  has_many :password_resets, dependent: :destroy
   # `nullify` na migration: a conta sai, a imagem fica — o carrossel que a usa
   # continua de pé.
   has_many :uploads, dependent: :nullify
-  has_many :push_devices, dependent: :destroy
 
-  has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_fill: [ 256, 256 ], format: :jpg, saver: { quality: 85 }
-  end
+  delegate :phone, :locale, :sessions, :password_resets, :push_devices,
+    :authenticate, :master?, to: :user, allow_nil: true
 
-  has_secure_password
-
-  normalizes :email, with: ->(email) { email.strip.downcase }
-  normalizes :name, with: ->(name) { name.squish }
-  normalizes :phone, with: ->(phone) { phone.strip.presence }
-  normalizes :locale, with: ->(locale) { locale.strip.presence }
   # Na origem o campo aceitava nulo, que queria dizer "atende normalmente".
   normalizes :setup_only, with: ->(setup_only) { setup_only || false }, apply_to_nil: true
 
-  validates :name, presence: true, length: { minimum: 2, maximum: 60 }
-  validates :email, presence: true, format: { with: EMAIL_FORMAT }, uniqueness: true
-  validates :password, length: { minimum: MINIMUM_PASSWORD_LENGTH }, allow_nil: true
   validates :role, inclusion: { in: ROLES }
-  validates :phone, length: { maximum: 30 }, allow_nil: true
-  validates :locale, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }, allow_nil: true
+  validates :user_id, uniqueness: { scope: :organization_id }, if: -> { user_id.present? }
   validate :access_role_belongs_to_organization
+  validate :identity_is_valid
 
   # O Mongo não tem chave estrangeira: os avisos da pessoa saem junto com ela.
   after_destroy { AccountNotice.where(account_id: id).delete_all }
@@ -48,25 +46,118 @@ class Account < ApplicationRecord
 
   scope :active, -> { where(revoked_at: nil) }
   scope :revoked, -> { where.not(revoked_at: nil) }
+  scope :members, -> { where(support: false) }
+  scope :with_identity, -> { joins(:user) }
+  scope :with_email, ->(email) { joins(:user).where(users: { email: email.to_s.strip.downcase }) }
+  scope :by_name, -> { joins(:user).order("users.name", "accounts.id") }
+  # A foto é da pessoa: o `with_attached_avatar` de antes, agora pelo `User`.
+  scope :with_attached_avatar, -> { includes(user: { avatar_attachment: :blob }) }
+
+  IDENTITY_WRITERS.each do |attribute|
+    define_method(:"#{attribute}=") { |value| identity.public_send(:"#{attribute}=", value) }
+  end
+
+  # --- hashid ---------------------------------------------------------------
+
+  def self.hashids
+    Rails.configuration.x.account_hashid
+  end
+
+  def self.decode_hashid(hashid)
+    return nil unless hashid.is_a?(String) && hashid.match?(/\A[a-z0-9]{1,32}\z/)
+
+    hashids.decode(hashid).first
+  rescue Hashids::InputError
+    nil
+  end
+
+  # O vínculo de uma pessoa pelo hashid. `nil` tanto para o que não existe quanto para o de
+  # outra pessoa: quem chama responde igual aos dois, sem dizer se a organização existe.
+  def self.find_by_hashid_for(user, hashid)
+    number = decode_hashid(hashid)
+    return nil unless user && number
+
+    find_by(number: number, user_id: user.id)
+  end
+
+  def hashid
+    number && self.class.hashids.encode(number)
+  end
+
+  # --- e-mail, nome -----------------------------------------------------------
+
+  # O vínculo mais antigo de quem tem esse e-mail; com `organization`, o daquela organização; com
+  # `role`, só com aquele papel (as sementes acham a organização de demonstração pela dona).
+  def self.for_email(email, organization: nil, role: nil)
+    scope = joins(:user).where(users: { email: email.to_s.strip.downcase }, support: false)
+    scope = scope.where(organization_id: organization.is_a?(Organization) ? organization.id : organization) if organization
+    scope = scope.where(role: role) if role
+    scope.order(:created_at).first
+  end
+
+  # `{ id => nome }`, para listar autores e responsáveis.
+  def self.names_by_id
+    joins(:user).pluck("accounts.id", "users.name", "accounts.support").to_h do |id, name, support|
+      [ id, support ? SUPPORT_NAME : name ]
+    end
+  end
+
+  # O cliente vê o suporte como o produto, não como a pessoa: sem nome, e-mail nem foto dela.
+  def name
+    support? ? SUPPORT_NAME : user&.name
+  end
+
+  def email
+    support? ? nil : user&.email
+  end
+
+  def avatar
+    support? ? nil : user&.avatar
+  end
+
+  def identity
+    user || build_user
+  end
+
+  # --- papel e permissões ---------------------------------------------------
 
   def owner?
     role == "owner"
+  end
+
+  # Quem vê e pode tudo: o dono, o vínculo de suporte e o suporte do Vekoo em qualquer vínculo.
+  def full_access?
+    owner? || support? || master? || false
   end
 
   def revoked?
     revoked_at.present?
   end
 
+  # O vínculo vale para esta pessoa agora? O de suporte só enquanto ela for suporte; o comum,
+  # enquanto não for revogado. O suporte do Vekoo entra mesmo num vínculo revogado.
+  def usable_by?(someone)
+    return false unless someone && user_id == someone.id
+    return someone.master? if support?
+
+    !revoked? || someone.master?
+  end
+
   # Corta o acesso sem apagar nada: as conversas, os cards e o histórico da pessoa
   # continuam apontando para ela. Idempotente — quem já foi revogado mantém a data
   # original, que é a que importa para saber quando o acesso foi cortado.
+  #
+  # A sessão é da pessoa, e ela pode ter outras organizações: só cai se este era o último
+  # vínculo, que é quando o token passa a responder `accessRevoked`.
   def revoke!(at: Time.current)
     return if revoked?
 
     transaction do
       update!(revoked_at: at)
-      Session.remember_revoked(sessions)
-      sessions.destroy_all
+      if user.locked_out?
+        Session.remember_revoked(user.sessions)
+        user.sessions.destroy_all
+      end
     end
     disconnect_realtime
   end
@@ -77,13 +168,9 @@ class Account < ApplicationRecord
     update!(revoked_at: nil)
   end
 
-  # Derruba as sessões abertas, como a troca de senha pelo link já fazia. Com `except`, poupa a sessão de
-  # quem está pedindo. O WebSocket é identificado pela conta, e não pela sessão: cai o de todos os
-  # aparelhos, e o de quem tem token que ainda vale volta sozinho.
+  # Derruba as sessões da pessoa (são dela, não do vínculo). Ver `User#end_sessions!`.
   def end_sessions!(except: nil)
-    scope = except ? sessions.where.not(id: except.id) : sessions
-    scope.destroy_all
-    except ? reconnect_realtime : disconnect_realtime
+    user.end_sessions!(except: except)
   end
 
   # A permissão é conferida ao assinar o canal, e a conexão guarda a conta enquanto ficar aberta: quem
@@ -93,10 +180,10 @@ class Account < ApplicationRecord
     disconnect_realtime(reconnect: true)
   end
 
-  # Dono vê tudo; os demais valem pelo grupo de permissões. Sem grupo, valem os
+  # Dono e suporte veem tudo; os demais valem pelo grupo de permissões. Sem grupo, valem os
   # defaults de membro.
   def permission_level(key)
-    return "all" if owner?
+    return "all" if full_access?
 
     (access_role&.permissions || AccessRole::MEMBER_PERMISSIONS)[key.to_s].presence || "none"
   end
@@ -126,5 +213,16 @@ class Account < ApplicationRecord
     return if access_role&.organization_id == organization_id
 
     errors.add(:access_role_id, :invalid)
+  end
+
+  # Os erros do `User` saem com o nome do campo, como antes da separação: `field: "email"`.
+  def identity_is_valid
+    errors.attribute_names.select { |name| name.to_s.start_with?("user.") }.each { |name| errors.delete(name) }
+    return if user.nil? || (user.persisted? && !user.changed?)
+
+    errors.delete(:user)
+    return if user.valid?
+
+    user.errors.each { |error| errors.import(error) }
   end
 end

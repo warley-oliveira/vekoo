@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useWatch, type Control, type UseFormSetError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link, useLocation, useNavigate, useParams } from "react-router"
+import { Link, useLocation, useNavigate, useParams } from "@/lib/router"
 import { ExternalLink, Loader2, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 

@@ -67,7 +67,7 @@ module Contacts
       @lookups_records = records
       @lookups = {
         tags: ChatTag.where(organization_id: organization.id.to_s, :_id.in => records.flat_map { |chat| Array(chat.chat_tag_ids) }.uniq).only(:name).index_by(&:id),
-        accounts: organization.accounts.where(id: records.map(&:assigned_account_id).compact.uniq).pluck(:id, :name).to_h,
+        accounts: Account.where(organization_id: organization.id, id: records.map(&:assigned_account_id).compact.uniq).names_by_id,
         teams: organization.teams.where(id: records.map(&:team_id).compact.uniq).pluck(:id, :name).to_h,
         connectors: Connector::Base.where(organization_id: organization.id.to_s, :_id.in => records.map(&:connector_id).compact.uniq).index_by(&:id)
       }

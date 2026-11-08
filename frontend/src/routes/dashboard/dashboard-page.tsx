@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { CalendarDays, ChartNoAxesCombined, Plus } from "lucide-react"
 
 import "@/components/dashboard/viz-tokens.css"

@@ -99,3 +99,5 @@ group :test do
   # Nenhuma spec fala com provedor de verdade: rede fechada, stubs explícitos.
   gem "webmock"
 end
+
+gem "hashids", "~> 1.0"

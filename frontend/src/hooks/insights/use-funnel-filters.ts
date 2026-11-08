@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import type { BoardFilters, DateField, Funnel } from "@/components/funnels/types"
 import { useLocalStorage } from "@/hooks/use-local-storage"

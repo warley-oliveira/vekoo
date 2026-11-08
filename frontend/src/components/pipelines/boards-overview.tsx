@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { Archive, ArchiveRestore, Pencil, Plus, SquareKanban } from "lucide-react"
 import { toast } from "sonner"

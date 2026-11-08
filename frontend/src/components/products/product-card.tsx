@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Images } from "lucide-react"
 
 import { ActionsMenu, StatusBadge, type RowAction } from "@/components/shared"

@@ -143,7 +143,7 @@ module Funnels
       ids = chats.filter_map(&:assigned_account_id).uniq
       return {} if ids.empty?
 
-      Account.where(organization_id: funnel.organization_id, id: ids).pluck(:id, :name).to_h
+      Account.where(organization_id: funnel.organization_id, id: ids).names_by_id
     end
 
     def tags_for(chats)

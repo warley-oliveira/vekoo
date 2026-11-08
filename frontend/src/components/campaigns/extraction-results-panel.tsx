@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Megaphone, Store, Trash2 } from "lucide-react"
 
 import {

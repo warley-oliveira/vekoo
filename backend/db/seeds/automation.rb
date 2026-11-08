@@ -25,7 +25,7 @@ module VekooAutomationSeeds
     # Fora do `load` envolto, os dois arquivos definem constantes de JavaScript a cada vez que rodam.
     silently { CATALOG.each { |file| load file.to_s, true } }
 
-    account = Account.find_by(email: DEMO_EMAIL)
+    account = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless account
 
     organization = account.organization

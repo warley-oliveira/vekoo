@@ -11,7 +11,7 @@ module Pipelines
     COLUMNS = {
       "title" => "LOWER(pipeline_cards.title)",
       "stage" => "pipeline_stages.position",
-      "assignee" => "LOWER(accounts.name)",
+      "assignee" => "LOWER(users.name)",
       "priority" => PRIORITY,
       "dueDate" => "pipeline_cards.due_date",
       "value" => "pipeline_cards.deal_value",
@@ -31,7 +31,7 @@ module Pipelines
       return cards unless expression
 
       way = direction.to_s == "desc" ? "DESC" : "ASC"
-      scope = sort.to_s == "assignee" ? cards.left_joins(:assigned_to) : cards
+      scope = sort.to_s == "assignee" ? cards.left_joins(assigned_to: :user) : cards
       scope.reorder(Arel.sql("#{expression} #{way} NULLS LAST, #{TIE_BREAK}"))
     end
 

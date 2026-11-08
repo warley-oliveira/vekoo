@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import {
   contactsPath,

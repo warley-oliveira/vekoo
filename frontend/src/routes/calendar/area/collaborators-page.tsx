@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { motion } from "motion/react"
 import { Plus, Users } from "lucide-react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { toast } from "sonner"
 
 import { useCalendarArea } from "@/components/calendar/area/area-context"

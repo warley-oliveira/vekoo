@@ -22,14 +22,20 @@ module Push
         ENV["VAPID_PUBLIC_KEY"].presence
       end
 
-      # `recipient` é a `Account` ou o e-mail dela (o e-mail é único no produto, e é
-      # assim que o código reciclado da origem chama).
+      # `recipient` é a `Account` (o vínculo: o aviso é de uma organização), o `User` (o teste do
+      # próprio aparelho) ou o e-mail, como o código reciclado da origem chama. O link do aviso
+      # ganha o prefixo do vínculo de quem recebe (`AccountLink`), para abrir na organização certa.
       def send_notification(recipient, title, body, options = {})
         return not_configured unless configured?
 
-        devices = devices_of(recipient)
+        account = recipient_account(recipient)
+        devices = devices_of(recipient, account)
         return { success: false, error: "noDevices" } if devices.empty?
 
+        if account
+          options = options.merge(url: AccountLink.path(account, options[:url]),
+            actions: AccountLink.actions(account, options[:actions]))
+        end
         payload = build_payload(title, body, options).as_json
         devices.each { |device| Push::DeliveryJob.perform_later(device.id, payload) }
 
@@ -40,7 +46,7 @@ module Push
       # é o job que decide tentar de novo.
       def deliver(device, payload)
         return not_configured unless configured?
-        return { success: false, error: "revoked" } if device.account.revoked?
+        return { success: false, error: "revoked" } if device.user.locked_out?
 
         response = WebPush.payload_send(
           message: payload.to_json,
@@ -65,11 +71,21 @@ module Push
 
       private
 
-      def devices_of(recipient)
-        accounts = recipient.is_a?(Account) ? Account.where(id: recipient.id) : Account.where(email: recipient.to_s.strip.downcase)
+      def recipient_account(recipient)
+        case recipient
+        when Account then recipient
+        when User then nil
+        else Account.for_email(recipient)
+        end
+      end
 
-        # Revogado não recebe: a assinatura fica, para o caso de o acesso voltar.
-        PushDevice.where(account_id: accounts.active.select(:id)).to_a
+      # Vínculo revogado não recebe: a assinatura fica, para o caso de o acesso voltar. O vínculo
+      # de suporte também não: ninguém está "de plantão" como suporte.
+      def devices_of(recipient, account)
+        return PushDevice.where(user_id: recipient.id).to_a if recipient.is_a?(User)
+        return [] if account.nil? || account.revoked? || account.support?
+
+        PushDevice.where(user_id: account.user_id).to_a
       end
 
       def not_configured

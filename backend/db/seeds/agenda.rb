@@ -119,7 +119,7 @@ module VekooAgendaSeeds
   module_function
 
   def call
-    owner = Account.find_by(email: DEMO_EMAIL)
+    owner = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless owner
 
     organization = owner.organization
@@ -154,7 +154,7 @@ module VekooAgendaSeeds
 
   def seed_professionals(organization, calendar)
     PROFESSIONALS.to_h do |spec|
-      account = spec[:email] && Account.find_by(email: spec[:email], organization_id: organization.id)
+      account = spec[:email] && Account.for_email(spec[:email], organization: organization)
       name = account&.name || spec[:name]
 
       professional = Agenda::Professional.where(calendar_id: calendar.id, name: name).first_or_create! do |record|

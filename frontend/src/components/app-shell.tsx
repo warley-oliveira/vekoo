@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react"
-import { Outlet, useLocation } from "react-router"
+import { Outlet, useLocation } from "@/lib/router"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { CreateCarouselDialog } from "@/components/create-carousel-dialog"

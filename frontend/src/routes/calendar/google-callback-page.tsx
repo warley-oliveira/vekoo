@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ArrowLeft, CalendarX2, Loader2, RefreshCw } from "lucide-react"
-import { Link, useNavigate, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "@/lib/router"
 import { toast } from "sonner"
 
 import { PageBody } from "@/components/shared"

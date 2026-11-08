@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { ArrowRight, ChevronLeft, ChevronRight, Pencil, Plus, UserPlus } from "lucide-react"
 
 import { ErrorState, ListSkeleton, UserAvatar } from "@/components/shared"

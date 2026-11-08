@@ -1,13 +1,14 @@
 # Contrato da API: domínio "access"
 
-Pessoas, departamentos, grupos de permissões, perfil, organização, avisos, alertas e push.
+Pessoas, organizações da pessoa, suporte do Vekoo, departamentos, grupos de permissões, perfil, organização, avisos, alertas e push.
 
 As respostas de exemplo são reais, capturadas do servidor rodando com a semente (`db/seeds/access.rb`), e os eventos dos canais vieram de um cliente WebSocket de verdade. Ids, URLs de imagem e mapas de permissões foram encurtados com `…` só para leitura. O payload do push vem do que as specs conferem: não houve navegador de verdade recebendo.
 
 ## Regras gerais
 
-- **Autenticação:** `Authorization: Bearer <token>`. Sem sessão válida, toda rota responde `401 unauthorized`.
-- **A organização vem da sessão.** Não há id de organização na URL. Id de outra organização responde `404 notFound`, nunca `403`.
+- **Autenticação:** `Authorization: Bearer <token>`. A sessão é da **pessoa** (`User`) e vale em todas as organizações dela. Sem sessão válida, toda rota responde `401 unauthorized`.
+- **A organização vem do vínculo da aba:** `X-Account: <hashid>`, o hashid da `Account` (o vínculo da pessoa com uma organização). A API confere que o vínculo é da pessoa da sessão e está ativo; daí saem `current_account` e `current_organization`. Nenhuma rota recebe id de organização. Sem o cabeçalho, vale o único vínculo ativo da pessoa; com mais de um, `400 accountRequired`. Rotas da pessoa (`/me`, `/logout`, `/accounts`, `POST /organizations`, `/support/*`, `/push-devices`) não exigem o cabeçalho.
+- **Id de recurso de outra organização** responde `404 notFound`, nunca `403`. **Hashid de vínculo de outra pessoa** responde `404 accountNotFound`, igual a um hashid que não existe: a resposta não diz se a organização existe.
 - **Entrada em envelope explícito**, em camelCase: `{ "user": { "teamIds": [...] } }`. Corpo solto, ou envelope que não é objeto, responde `400 parameterMissing`. As exceções estão indicadas em cada rota: ações que não são recurso e upload de arquivo.
 - **Saída:** chaves em camelCase, datas em milissegundos desde a época, ids como string.
 - **Listagens:** `{ "<recurso>": [...], "meta": { "page", "perPage", "total", "totalPages", "hasMore" } }`, com `?page=` e `?perPage=` (teto de 100).
@@ -22,11 +23,18 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 |---|---|---|
 | 400 | `parameterMissing` | Falta o envelope, a origem do alerta ou o arquivo. `field` diz qual. |
 | 401 | `unauthorized` | Sem sessão ou sessão vencida. |
-| 401 | `accessRevoked` | O acesso foi revogado: `POST /login` com a senha certa (com a errada, continua `wrongPassword`) e qualquer rota com o token que a pessoa já tinha. O token é lembrado em cache até vencer; cache perdido, ou pessoa restaurada, volta a ser `unauthorized`. |
+| 401 | `accessRevoked` | A pessoa perdeu o acesso a **todas** as organizações dela (o último vínculo foi revogado): `POST /login` com a senha certa (com a errada, continua `wrongPassword`) e qualquer rota com o token que ela já tinha. O token é lembrado em cache até vencer; cache perdido, ou vínculo restaurado, volta a ser `unauthorized`. Com outra organização ativa, a sessão continua e só aquela organização responde `403 accountRevoked`. |
+| 400 | `accountRequired` | Sem `X-Account`, e a pessoa tem mais de uma organização. |
+| 403 | `accountRevoked` | `X-Account` é de um vínculo da própria pessoa, revogado. A tela leva para a escolha de organização. |
+| 404 | `accountNotFound` | `X-Account` não existe, é de outra pessoa, ou é o vínculo de suporte de quem deixou de ser suporte. |
 | 403 | `forbidden` | Sem a permissão da rota, ou quem não é dono mexendo no dono. |
 | 404 | `notFound` | Não existe, ou é de outra organização ou pessoa. |
 | 422 | `unprocessable` | Validação. `field` é o primeiro campo inválido (onde pôr o foco); `details` traz todos: `{ "name": ["…"] }`. |
-| 422 | `emailTaken` | E-mail em uso, nesta ou em outra organização (é único no produto). |
+| 422 | `emailTaken` | `POST /signup` com e-mail que já tem conta (é único no produto). |
+| 422 | `alreadyMember` | `POST /users` com o e-mail de quem já está nesta organização (ativo ou revogado). |
+| 422 | `sharedIdentity` | `PATCH /users/:id` mudando nome, e-mail, telefone ou senha de quem também está em outra organização (ou é suporte). `field` é o primeiro campo recusado. |
+| 422 | `alreadyOwner` / `accountRevoked` | `POST /users/:id/transfer-ownership` para quem já é dono, ou para vínculo revogado. |
+| 422 | `supportCannotLeave` | `POST /users/leave` pelo vínculo de suporte. |
 | 422 | `lastOwner` | A ação deixaria a organização sem dono com acesso. |
 | 422 | `cannotRevokeSelf` / `cannotDeleteSelf` | Ninguém revoga nem exclui a si mesmo por `/users`. |
 | 422 | `ownPasswordInProfile` | Tentou trocar a própria senha por `/users`. Em `/profile` a senha atual é exigida. |
@@ -40,11 +48,101 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 
 ---
 
+## Sessão, organizações da pessoa e WebSocket
+
+### `POST /login`, `POST /signup`, `GET /me`
+
+Os três respondem no mesmo formato. `user` é a pessoa; `accounts`, os vínculos ativos dela, um por organização (o de suporte não entra); `account`, `organization` e `credits` são os da organização pedida em `X-Account` ou, sem o cabeçalho, os do único vínculo, e `null` quando a pessoa tem mais de um. `token` só vem em `login` e `signup`. `GET /me` com `X-Account` que não vale responde os erros da tabela acima.
+
+`GET /me` com `X-Account: v8q3bw93` (encurtado):
+
+```json
+{
+  "user": {
+    "id": "ea8ff3af-…", "name": "Marina Duarte", "email": "marina.duarte@exemplo.com.br",
+    "phone": null, "locale": null, "avatarUrl": null, "master": false, "createdAt": 1791502360619
+  },
+  "accounts": [
+    { "id": "b56a981d-…", "hashid": "7kxn7q4r", "role": "owner", "support": false, "lastSeenAt": 1794096637809,
+      "organization": { "id": "ddbca24b-…", "name": "Marina Duarte Conteúdo", "logoUrl": null } },
+    { "id": "141c16ce-…", "hashid": "v8q3bw93", "role": "member", "support": false, "lastSeenAt": 1794096806991,
+      "organization": { "id": "edfc7702-…", "name": "Clínica Bem Viver", "logoUrl": null } }
+  ],
+  "account": {
+    "id": "141c16ce-…", "hashid": "v8q3bw93", "userId": "ea8ff3af-…", "name": "Marina Duarte",
+    "email": "marina.duarte@exemplo.com.br", "organizationId": "edfc7702-…", "role": "member", "support": false,
+    "phone": null, "locale": null, "avatarUrl": null, "accessRoleId": "4ed00375-…",
+    "permissions": { "chat": "all", "core_settings": "all", "…": "…" }, "createdAt": 1794094362833
+  },
+  "organization": { "id": "edfc7702-…", "name": "Clínica Bem Viver", "…": "…" },
+  "credits": { "total": 50, "used": 0, "left": 50 },
+  "expiresAt": 1796688362000
+}
+```
+
+- `hashid` é o identificador público do vínculo: vai na URL do front (`/a/<hashid>/...`) e em `X-Account`. O inteiro que ele codifica nunca sai pela API. Sal, alfabeto e tamanho mínimo em `config/initializers/hashid.rb` (`HASHID_SALT`).
+- `GET /me` com organização grava `lastSeenAt` do vínculo.
+- Login: a senha é da pessoa. Quem perdeu todas as organizações recebe `401 accessRevoked`; quem nunca teve (vínculo removido) entra e pode criar a sua.
+- `POST /signup` cria a pessoa, a organização e o vínculo de dono; `account` vem preenchido.
+
+### `GET /accounts`
+
+Os vínculos ativos da pessoa, no formato de `accounts` acima: `{ "accounts": [...] }`. Sem `X-Account`.
+
+### `POST /organizations`
+
+```json
+{ "organization": { "name": "Clínica Bem Viver" } }
+```
+
+`201`, o vínculo novo (formato de `accounts`), com `role: "owner"`. A organização nasce com os grupos padrão e o aviso de boas-vindas. Nome inválido: `422`, `field: "name"`. Mesmo limite do cadastro: 5 por hora, por pessoa.
+
+### WebSocket
+
+`/cable?token=<token>&account=<hashid>`. A conexão é de **um vínculo**: a aba que troca de organização abre outra conexão, e todo canal lê o vínculo da conexão. Sem `account`, vale o único vínculo ativo; hashid de outra pessoa, de vínculo revogado ou de suporte de quem deixou de ser suporte: conexão recusada. Revogar o vínculo derruba as conexões daquela organização (`{ "type": "disconnect", "reason": "remote", "reconnect": false }`); as das outras organizações da pessoa continuam.
+
+---
+
+## Suporte do Vekoo: `/support`
+
+Para `User#master`. Para qualquer outra pessoa, as rotas respondem `404 notFound`. `master` só muda por `bin/rails "support:grant[EMAIL]"` / `support:revoke`, ou console: nenhuma rota, parâmetro ou serializer escreve nele.
+
+| Rota | O que faz |
+|---|---|
+| `GET /support/organizations?q=&page=&perPage=` | Busca por nome da organização (sem acento) ou por nome ou e-mail de quem participa. |
+| `POST /support/organizations/:id/enter` | `201`, o vínculo de suporte daquela organização (formato de `accounts`, `support: true`), criado na primeira entrada. Registra a entrada. |
+
+```json
+{
+  "organizations": [
+    { "id": "edfc7702-…", "name": "Clínica Bem Viver", "createdAt": 1792366362605, "membersCount": 2,
+      "owner": { "name": "Patrícia Gomes", "email": "patricia.gomes@exemplo.com.br" } }
+  ],
+  "meta": { "page": 1, "perPage": 25, "total": 1, "totalPages": 1, "hasMore": false }
+}
+```
+
+**O vínculo de suporte** (`support: true`) dá ao suporte o hashid da URL e o autor das ações que pedem um `account_id` (mandar mensagem, atribuir, comentar). Ele:
+
+- tem todas as permissões (`can?` sempre verdadeiro; `Chat.visible_to` vê tudo), e o `User#master` também, em qualquer vínculo;
+- não aparece em `/users`, contagens de grupo e departamento, `/chats/people`, seletores, atribuição automática, convites nem cobrança (`Organization#accounts` não o enxerga);
+- aparece para o cliente como **"Suporte Vekoo"** (`account.name`), nunca com o nome da pessoa;
+- não recebe push;
+- deixa de valer na hora em que a pessoa deixa de ser suporte (REST `404 accountNotFound`, WebSocket recusado).
+
+Quem já participa da organização como pessoa entra pelo próprio vínculo, que vale para o suporte mesmo revogado.
+
+**Registro:** cada `enter` grava um `SupportAccess` (pessoa, organização, vínculo, IP, navegador, quando). Voltar pela URL depois de 30 minutos sem uso grava de novo. Consulta: `bin/rails "support:accesses[20]"` ou `SupportAccess.recent` no console.
+
+---
+
 ## Pessoas: `/users`
 
 **Quem pode:** ler é aberto a qualquer sessão, porque o chat, a agenda e os pipelines listam colegas para atribuir. O resto exige `core_settings`.
 
 Quem não tem `core_settings` recebe só o **resumo** (`id`, `name`, `email`, `avatarUrl`, `teamIds`, `setupOnly`) e só de quem está ativo, mesmo pedindo `status=all`.
+
+Cada item é um **vínculo** desta organização (`id` é o `account_id`). Nome, e-mail, telefone, idioma e foto são da pessoa e iguais em todas as organizações dela; papel, grupo, departamentos, `setupOnly` e revogação são do vínculo. A ficha completa traz também `hashid`, `userId`, `support` (sempre `false` aqui: o vínculo de suporte não aparece) e `identityShared` (a pessoa também está em outra organização).
 
 **Regras de `core_settings`:**
 
@@ -122,11 +220,11 @@ A pessoa, no mesmo formato da listagem. Pessoa revogada responde `404` a quem n�
 | `false` | `false` | `false` | E-mail livre: siga para o cadastro. |
 | `true` | `true` | `false` | Já está nesta organização. |
 | `true` | `true` | `true` | Está aqui, com o acesso revogado: ofereça restaurar. |
-| `true` | `false` | `false` | Tem conta em **outra** organização e **não pode** ser adicionado. Na origem isso vinculava a conta; aqui uma conta pertence a uma organização só. |
+| `true` | `false` | `false` | Já tem conta no Vekoo, em outra organização. O convite cria **só o vínculo**: a pessoa entra com a senha que já usa. |
 
 ### `POST /users`
 
-`core_settings`. `name`, `email` e `password` são obrigatórios. A senha precisa ter 8 caracteres ou mais. `role` padrão é `member`.
+`core_settings`. Para quem ainda não tem conta no Vekoo, `name`, `email` e `password` são obrigatórios (senha de 8 caracteres ou mais), e a pessoa nasce aqui. Para quem já tem, basta `email` e o que é do vínculo (`role`, `accessRoleId`, `teamIds`, `setupOnly`): nome, telefone e senha do pedido são ignorados. Quem já está nesta organização: `422 alreadyMember`. `role` padrão é `member`.
 
 ```json
 {
@@ -189,6 +287,7 @@ Validação (`POST /users` com `{ "user": { "name": "", "email": "x" } }`):
 - `teamIds` **substitui** os departamentos. Sem a chave, nada muda; `[]` limpa.
 - `accessRoleId: null` tira a pessoa do grupo, e ela passa a valer pelos padrões de membro.
 - `password` vazio é ignorado: é a tela de edição sem ninguém querer trocar. A própria senha responde `422 ownPasswordInProfile`.
+- Nome, e-mail, telefone e senha são da pessoa: só mudam por aqui enquanto ela não estiver em outra organização (nem for suporte). Senão, `422 sharedIdentity`, e nada do pedido é gravado. Mandar os mesmos valores de volta não é mudança.
 
 ### `POST /users/:id/revoke`
 
@@ -200,7 +299,15 @@ Validação (`POST /users` com `{ "user": { "name": "", "email": "x" } }`):
 
 ### `DELETE /users/:id`
 
-`core_settings`. **Apaga de verdade**, com os avisos, dispositivos e vínculos da pessoa: `204`. Para só cortar o acesso, use `revoke`, que preserva o histórico.
+`core_settings`. **Tira o vínculo** desta organização, com os avisos e departamentos dele: `204`. A pessoa continua existindo, com as outras organizações e os aparelhos dela. Ids guardados em conversas e cards ficam órfãos: para só cortar o acesso, use `revoke`, que preserva o histórico.
+
+### `POST /users/:id/transfer-ownership`
+
+`core_settings`, e só quem é dono (ou o suporte): os outros recebem `403`. A pessoa vira dona e quem pediu vira membro (sem grupo), na mesma transação. O suporte passa a posse sem rebaixar ninguém. Responde a ficha da nova dona. Para quem já é dono: `422 alreadyOwner`; vínculo revogado: `422 accountRevoked`.
+
+### `POST /users/leave`
+
+Qualquer sessão, sobre o próprio vínculo: sai desta organização (`204`). O último dono com acesso não sai (`422 lastOwner`); o vínculo de suporte também não (`422 supportCannotLeave`).
 
 ---
 
@@ -277,7 +384,7 @@ Validação (`POST /users` com `{ "user": { "name": "", "email": "x" } }`):
 
 ## Perfil: `/profile`
 
-Qualquer sessão, sempre sobre a própria conta. Todas as respostas trazem a conta, no mesmo formato de `account` em `/me`.
+Qualquer sessão, sempre sobre a própria pessoa. **Nome, telefone, idioma, foto e senha são do `User` e valem em todas as organizações dela.** As respostas trazem o vínculo da aba, no mesmo formato de `account` em `/me` (com a identidade já atualizada).
 
 ### `GET /profile`
 
@@ -311,7 +418,7 @@ Para trocar a senha:
 
 - `currentPassword` é obrigatória para trocar a senha: `422 wrongPassword`, `field: "currentPassword"`. Se ela estiver errada, nada do pedido é gravado.
 - `passwordConfirmation` é opcional, mas se vier precisa bater.
-- Trocar a senha derruba as outras sessões. A sessão atual continua.
+- Trocar a senha derruba as outras sessões da pessoa, em todas as organizações. A sessão atual continua.
 - E-mail, papel e grupo não mudam por aqui: são ignorados.
 - `locale`: `pt-BR`, `en` ou vazio.
 
@@ -416,6 +523,7 @@ Qualquer sessão. A lista junta **duas fontes**, e é o `key` que diz qual delas
 | De quem é | Da **organização inteira**: quem lê, lê por todos | Só da pessoa |
 | `id` | UUID | BSON |
 | `DELETE` | Apaga para todo mundo | Arquiva |
+| `url` e `actions[].urlPath` | | Saem com o prefixo do vínculo de quem recebe: `/a/<hashid>/calendar`. O gravado é o caminho puro. |
 
 O contrato anterior não mudou: `notifications`, `unread` e os quatro campos do aviso do produto continuam iguais. O que entrou é acréscimo.
 
@@ -442,10 +550,10 @@ O contrato anterior não mudou: `notifications`, `unread` e os quatro campos do 
       "read": false,
       "title": "Novo agendamento confirmado",
       "description": "Ana Beatriz marcou Limpeza de pele para quinta-feira, às 14h.",
-      "url": "/calendar",
+      "url": "/a/7kxn7q4r/calendar",
       "category": "calendar",
       "actions": [
-        { "action": "open_calendar", "title": "Abrir agenda", "urlPath": "/calendar" },
+        { "action": "open_calendar", "title": "Abrir agenda", "urlPath": "/a/7kxn7q4r/calendar" },
         { "action": "dismiss", "title": "Dispensar" }
       ],
       "readAt": null,
@@ -458,9 +566,9 @@ O contrato anterior não mudou: `notifications`, `unread` e os quatro campos do 
       "read": false,
       "title": "Conversa atribuída a você",
       "description": "Paulo Mendes está esperando resposta sobre o orçamento da reforma.",
-      "url": "/chat",
+      "url": "/a/7kxn7q4r/chat",
       "category": "chat",
-      "actions": [{ "action": "open_chat", "title": "Abrir conversa", "urlPath": "/chat" }],
+      "actions": [{ "action": "open_chat", "title": "Abrir conversa", "urlPath": "/a/7kxn7q4r/chat" }],
       "readAt": null,
       "archivedAt": null
     },
@@ -485,7 +593,7 @@ O contrato anterior não mudou: `notifications`, `unread` e os quatro campos do 
 
 ### Canal `NotificationsChannel`
 
-`{ "channel": "NotificationsChannel" }`, sem parâmetros: a pessoa vem da sessão, e qualquer id enviado no `subscribe` é ignorado.
+`{ "channel": "NotificationsChannel" }`, sem parâmetros: o vínculo vem da conexão (`account=`), e qualquer id enviado no `subscribe` é ignorado.
 
 Ao assinar, e sempre que o total muda por `read`, `read-all` ou `DELETE` (para as outras abas):
 
@@ -504,7 +612,7 @@ Quando nasce um aviso para a pessoa:
     "read": false,
     "title": "Teste de fumaça",
     "description": "Nasceu em outro processo.",
-    "url": "/settings/users",
+    "url": "/a/7kxn7q4r/settings/users",
     "category": "system",
     "actions": [],
     "readAt": null,
@@ -603,7 +711,7 @@ Sem `code`, resolve tudo daquela origem. Sem `originType` ou `originId`: `400`, 
 
 ### Canal `OrganizationAlertsChannel`
 
-`{ "channel": "OrganizationAlertsChannel" }`, sem parâmetros: a organização vem da sessão. Ao assinar e a cada alerta levantado ou resolvido:
+`{ "channel": "OrganizationAlertsChannel" }`, sem parâmetros: a organização vem do vínculo da conexão. Ao assinar e a cada alerta levantado ou resolvido:
 
 ```json
 { "badges": { "connectors": 2, "flows": 1 } }
@@ -639,7 +747,7 @@ Um alerta ativo por origem + código: levantar de novo atualiza em vez de duplic
 
 ## Push: `/push-devices`
 
-Qualquer sessão, sempre sobre os dispositivos da própria pessoa.
+Qualquer sessão, sempre sobre os dispositivos da própria pessoa. Os aparelhos são do `User`, não da organização: valem para os avisos de todas as organizações dela, e as rotas não exigem `X-Account`. O `data.url` do push sai com o prefixo do vínculo de quem recebe (`/a/<hashid>/...`), e o `sw-push.js` só reaproveita a aba que já está naquela organização. Vínculo revogado e vínculo de suporte não recebem.
 
 **VAPID por ENV:** `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (`mailto:…`). Para gerar as chaves:
 
@@ -692,8 +800,8 @@ Mesmo formato da origem:
   "title": "Novo agendamento",
   "body": "Com Ana, às 14h",
   "tag": "notice-6aedf59817e85f2f1c88fd53",
-  "data": { "url": "/calendar", "timestamp": 1793979800, "noticeId": "6aedf59817e85f2f1c88fd53", "category": "calendar" },
-  "actions": [{ "action": "open_calendar", "title": "Abrir agenda", "urlPath": "/calendar" }],
+  "data": { "url": "/a/7kxn7q4r/calendar", "timestamp": 1793979800, "noticeId": "6aedf59817e85f2f1c88fd53", "category": "calendar" },
+  "actions": [{ "action": "open_calendar", "title": "Abrir agenda", "urlPath": "/a/7kxn7q4r/calendar" }],
   "requireInteraction": false,
   "silent": false,
   "vibrate": [200, 100, 200]
@@ -737,10 +845,19 @@ Tudo acréscimo: nenhum campo existente mudou.
 | `POST /login` | Novo erro `401 accessRevoked`. |
 | Toda rota com sessão | O token de quem foi revogado responde `401 accessRevoked`, em vez de `unauthorized`. |
 | `GET /notifications`, `POST /notifications/read-all` | Ganham `meta` e os avisos da pessoa. A lista passa a ser paginada (20 por padrão). |
+| **Multi-organização** | |
+| Toda rota de organização | Lê a organização de `X-Account` (ver Regras gerais). Novos erros `accountNotFound`, `accountRevoked` (403), `accountRequired`. |
+| `GET /me`, `POST /login`, `POST /signup` | Ganham `user` e `accounts`; `account`, `organization` e `credits` podem vir `null` (mais de uma organização, sem `X-Account`). `account` ganha `hashid`, `userId` e `support`. |
+| `/users` | Ficha ganha `hashid`, `userId`, `support`, `identityShared`. `POST` com e-mail de quem já tem conta cria só o vínculo; `DELETE` tira só o vínculo. Novos: `transfer-ownership`, `leave`. |
+| `/profile` | Grava na pessoa (vale em todas as organizações). |
+| `/push-devices` | Da pessoa, sem `X-Account`: um aparelho recebe os avisos de todas as organizações dela. |
+| Avisos e push | `url` e `urlPath` com o prefixo `/a/<hashid>` de quem recebe. |
 
 ## Semente
 
 `bin/rails db:seed`, na organização de `marina.duarte@exemplo.com.br`. Senha de todos: `carrossel123`.
+
+A Marina também participa de uma segunda organização, **Clínica Bem Viver** (dona: Patrícia Gomes, `patricia.gomes@exemplo.com.br`), como `Gerente`, com três mensagens rápidas: é o que exercita a escolha de organização e duas abas ao mesmo tempo. Fora de produção, a semente cria o suporte da demonstração, `suporte@vekoo.com.br` / `suporte-vekoo-123` (`master`, sem organização própria); em produção nunca, nem com `SEED_DEMO_DATA=1`.
 
 | Pessoa | Grupo | Departamentos | Observação |
 |---|---|---|---|

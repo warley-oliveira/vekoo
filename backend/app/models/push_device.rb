@@ -5,21 +5,20 @@ class PushDevice < ApplicationRecord
   # viraria uma forma de alcançar a rede por dentro.
   INTERNAL_HOST = /(\A|\.)(localhost|local|internal|intranet|lan|home|corp)\z/i
 
-  belongs_to :organization
-  belongs_to :account
-
-  before_validation { self.organization_id = account&.organization_id }
+  # Da pessoa, e não do vínculo: o navegador é um só para todas as organizações dela. O aviso de
+  # cada organização leva o link com o vínculo de quem recebe (`AccountLink`).
+  belongs_to :user
 
   validates :endpoint, presence: true, uniqueness: true, length: { maximum: 2048 }
   validates :p256dh_key, presence: true
   validates :auth_key, presence: true
   validate :endpoint_is_public_https
 
-  # O endpoint identifica o navegador: quem entra com outra conta nele herda a
-  # assinatura, e a conta anterior para de receber ali.
-  def self.register!(account:, endpoint:, p256dh_key:, auth_key:, user_agent: nil)
+  # O endpoint identifica o navegador: quem entra com outra pessoa nele herda a
+  # assinatura, e a anterior para de receber ali.
+  def self.register!(user:, endpoint:, p256dh_key:, auth_key:, user_agent: nil)
     device = find_or_initialize_by(endpoint: endpoint)
-    device.update!(account: account, p256dh_key: p256dh_key, auth_key: auth_key, user_agent: user_agent)
+    device.update!(user: user, p256dh_key: p256dh_key, auth_key: auth_key, user_agent: user_agent)
     device
   rescue ActiveRecord::RecordNotUnique
     # O mesmo navegador assinando duas vezes ao mesmo tempo: a linha agora existe.

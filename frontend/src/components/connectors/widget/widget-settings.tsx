@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useController, useForm, useWatch, type UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AnimatePresence, motion } from "motion/react"
 import { BookOpen, Eye, ImagePlus, KeyRound, Loader2, Moon, Plus, Sun, Trash2, TriangleAlert } from "lucide-react"

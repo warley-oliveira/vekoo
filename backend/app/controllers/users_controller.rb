@@ -9,19 +9,19 @@ class UsersController < PlatformController
   # rotas varreriam a lista de e-mails que `SessionsController` protege.
   EMAIL_PROBES_PER_MINUTE = 30
 
-  require_permission :core_settings, except: %i[index show]
+  require_permission :core_settings, except: %i[index show leave]
 
   rate_limit to: EMAIL_PROBES_PER_MINUTE, within: 1.minute, only: %i[check_email create],
     by: -> { current_account.id },
     with: -> { render_too_many_requests }
 
-  before_action :set_person, only: %i[update destroy revoke restore]
-  around_action :handle_refusals, only: %i[create update destroy revoke restore]
+  before_action :set_person, only: %i[update destroy revoke restore transfer_ownership]
+  around_action :handle_refusals, only: %i[create update destroy revoke restore transfer_ownership leave]
 
   # Sem `perPage`, vêm até 100: a lista inteira, na prática, que é o que os seletores de
   # atribuição querem.
   def index
-    records, meta = paginate(filtered_people.order(:name, :id), per_page: Paginated::MAX_PER_PAGE)
+    records, meta = paginate(filtered_people.by_name, per_page: Paginated::MAX_PER_PAGE)
 
     render json: { users: records.map { |account| serialize(account) }, meta: meta }
   end
@@ -30,9 +30,10 @@ class UsersController < PlatformController
     render json: serialize(visible_people.find(params[:id]))
   end
 
-  # GET /users/check-email?email= — o passo inicial do cadastro. Como o e-mail é único no
-  # produto, `exists` sem `hasOrganizationAccess` quer dizer "tem conta em outra organização
-  # e não pode ser adicionado aqui".
+  # GET /users/check-email?email= — o passo inicial do convite. `exists` sem
+  # `hasOrganizationAccess` quer dizer "já tem conta no Vekoo, em outra organização": o convite
+  # cria só o vínculo, e a pessoa entra com a senha que já usa. O nome não sai daqui, para a
+  # rota não virar consulta de quem é quem.
   def check_email
     email = params[:email].to_s.strip.downcase
     if email.blank?
@@ -40,10 +41,10 @@ class UsersController < PlatformController
         message: t("errors.email_required"))
     end
 
-    account = Account.find_by(email: email)
-    here = account.present? && account.organization_id == current_organization.id
+    user = User.find_by_login(email)
+    account = user && current_organization.accounts.find_by(user_id: user.id)
 
-    render json: { exists: account.present?, hasOrganizationAccess: here, revoked: here && account.revoked? }
+    render json: { exists: user.present?, hasOrganizationAccess: account.present?, revoked: account&.revoked? || false }
   end
 
   def create
@@ -67,6 +68,17 @@ class UsersController < PlatformController
 
   def restore
     render json: PersonSerializer.one(manager.restore(@person))
+  end
+
+  # POST /users/:id/transfer-ownership — a pessoa vira dona, e quem pediu vira membro.
+  def transfer_ownership
+    render json: PersonSerializer.one(manager.transfer_ownership(@person))
+  end
+
+  # POST /users/leave — sair desta organização. Só tira o próprio vínculo.
+  def leave
+    manager.leave
+    head :no_content
   end
 
   private
@@ -96,7 +108,7 @@ class UsersController < PlatformController
   end
 
   def visible_people
-    people = current_organization.accounts.includes(:access_role, :team_memberships).with_attached_avatar
+    people = current_organization.accounts.includes(:access_role, :team_memberships, user: :accounts).with_attached_avatar
     manages_people? ? people : people.active
   end
 
@@ -125,7 +137,7 @@ class UsersController < PlatformController
 
   def matching(people, term)
     pattern = "%#{Account.sanitize_sql_like(term.to_s.strip)}%"
-    people.where("accounts.name ILIKE :pattern OR accounts.email ILIKE :pattern", pattern: pattern)
+    people.joins(:user).where("users.name ILIKE :pattern OR users.email ILIKE :pattern", pattern: pattern)
   end
 
   def serialize(account)

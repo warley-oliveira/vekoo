@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, MoreHorizontal, Star } from "lucide-react"
 

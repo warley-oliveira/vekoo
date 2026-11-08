@@ -29,7 +29,12 @@
       "defaultAccessRole": "Os grupos padrão não podem ser excluídos.",
       "tooManyRequests": "Foram muitas tentativas em pouco tempo. Espere um minuto e tente de novo.",
       "noPushDevices": "Nenhum aparelho está recebendo avisos nesta conta.",
-      "pushNotConfigured": "O servidor deste ambiente não está preparado para enviar avisos."
+      "pushNotConfigured": "O servidor deste ambiente não está preparado para enviar avisos.",
+      "sharedIdentity": "Essa pessoa também participa de outra organização: nome, e-mail, telefone e senha só mudam no perfil dela.",
+      "alreadyMember": "Essa pessoa já faz parte desta organização.",
+      "alreadyOwner": "Essa pessoa já é dona da organização.",
+      "accountRevoked": "O acesso dessa pessoa está revogado. Restaure antes.",
+      "supportCannotLeave": "O acesso de suporte não sai da organização: é só voltar para a lista de organizações."
     },
     "users": {
       "tableLabel": "Pessoas da organização",
@@ -121,8 +126,10 @@
         "openPerson": "Abrir ficha",
         "revokedTitle": "Essa pessoa está aqui, com o acesso revogado",
         "revokedDescription": "Restaure o acesso para ela voltar com o mesmo histórico.",
-        "elsewhereTitle": "Esse e-mail já tem conta em outra organização",
-        "elsewhereDescription": "No Vekoo, cada conta pertence a uma organização só. Peça outro e-mail a essa pessoa."
+        "elsewhereTitle": "Essa pessoa já tem conta no Vekoo",
+        "elsewhereDescription": "Ela entra com o e-mail e a senha que já usa, e esta organização aparece na lista dela. Nome, telefone e senha são dela: aqui você escolhe só o que ela pode fazer.",
+        "detailsStepExisting": "Este e-mail já tem conta no Vekoo. Escolha o que a pessoa pode fazer aqui.",
+        "invitedHint": "Ela já pode entrar com a senha que usa no Vekoo e escolher esta organização."
       },
       "edit": {
         "submit": "Salvar alterações",
@@ -148,12 +155,12 @@
         "done": "{{name}} voltou a ter acesso."
       },
       "delete": {
-        "action": "Excluir de vez",
-        "title": "Excluir {{name}} de vez?",
-        "description": "Isso não tem volta. As conversas e os cards que estão com {{name}} ficam sem responsável, e o nome some do histórico. Para só cortar o acesso, cancele e use Revogar acesso.",
-        "confirm": "Excluir de vez",
-        "word": "EXCLUIR",
-        "done": "Conta de {{name}} excluída."
+        "action": "Remover da organização",
+        "title": "Remover {{name}} da organização?",
+        "description": "{{name}} perde o acesso a esta organização, e as conversas e os cards que estão com ela ficam sem responsável. A conta dela no Vekoo e as outras organizações continuam. Para só cortar o acesso por um tempo, cancele e use Revogar acesso.",
+        "confirm": "Remover da organização",
+        "word": "REMOVER",
+        "done": "{{name}} saiu da organização."
       },
       "password": {
         "title": "Senha",
@@ -175,6 +182,16 @@
         "title": "Tornar {{name}} dono?",
         "description": "Quem é dono pode tudo na organização, inclusive alterar outros donos.",
         "confirm": "Tornar dono"
+      },
+      "identityShared": "{{name}} também participa de outra organização. Nome, e-mail, telefone e senha são dela e valem lá também: só ela muda, no próprio perfil. Aqui você muda o que ela pode fazer nesta organização.",
+      "transfer": {
+        "sectionTitle": "Posse da organização",
+        "hint": "Passe a posse para {{name}}: ela vira dona, e você continua aqui como participante.",
+        "action": "Passar a posse",
+        "title": "Passar a posse para {{name}}?",
+        "description": "{{name}} passa a ser dona da organização, com todas as permissões. Você deixa de ser dono e continua com acesso, como participante sem grupo. Só a nova dona pode devolver.",
+        "confirm": "Passar a posse",
+        "done": "{{name}} agora é dona da organização."
       }
     },
     "teams": {
@@ -412,7 +429,7 @@
         "nameRequired": "Escreva o seu nome completo.",
         "nameTooLong": "Nome muito longo.",
         "email": "E-mail",
-        "emailHint": "Quem administra a organização pode trocar o seu e-mail.",
+        "emailHint": "O e-mail é o seu login no Vekoo. Quem administra a organização só pode trocá-lo enquanto você participar apenas dela.",
         "phone": "WhatsApp",
         "phoneInvalid": "Esse número não parece completo."
       },
@@ -432,6 +449,17 @@
         "mismatch": "As senhas não são iguais.",
         "submit": "Trocar senha",
         "saved": "Senha trocada. Os outros aparelhos precisam entrar de novo."
+      },
+      "everywhere_one": "Seu perfil é seu, não da organização: nome, foto, telefone, idioma e senha valem onde você entrar no Vekoo.",
+      "everywhere_other": "Seu perfil é seu, não da organização: nome, foto, telefone, idioma e senha valem nas suas {{count}} organizações.",
+      "leave": {
+        "title": "Sair de {{organization}}",
+        "description": "Você deixa de ter acesso a esta organização. Sua conta no Vekoo e as outras organizações continuam.",
+        "action": "Sair da organização",
+        "confirmTitle": "Sair de {{organization}}?",
+        "confirmDescription": "Você perde o acesso a {{organization}} na hora, e as conversas e os cards que estão com você ficam sem responsável. Para voltar, alguém que administra precisa convidar você de novo.",
+        "confirm": "Sair da organização",
+        "done": "Você saiu de {{organization}}."
       }
     },
     "notifications": {

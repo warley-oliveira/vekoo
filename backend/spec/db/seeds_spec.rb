@@ -86,7 +86,9 @@ RSpec.describe "db/seeds.rb" do
     end
   end
 
-  let(:organization) { Organization.first }
+  # A semente de "access" cria uma segunda organização (a da Marina como participante): a de
+  # demonstração é a dela como dona.
+  let(:organization) { Account.for_email("marina.duarte@exemplo.com.br", role: "owner").organization }
 
   it "traz o acervo da ferramenta inteiro" do
     expect(ThemePreset.count).to eq(8)
@@ -110,13 +112,13 @@ RSpec.describe "db/seeds.rb" do
   it "deixa a conta de demonstração pronta para entrar" do
     # A semente do domínio "access" põe outras pessoas na organização: a dona é achada pelo
     # e-mail, e continua sendo uma só.
-    account = organization.accounts.find_by!(email: "marina.duarte@exemplo.com.br")
+    account = organization.accounts.with_email("marina.duarte@exemplo.com.br").sole
 
     expect(organization.accounts.where(role: "owner")).to contain_exactly(account)
     expect(account.role).to eq("owner")
     expect(account.authenticate("carrossel123")).to be_truthy
     # A senha nunca fica em texto puro, nem na semente.
-    expect(account.password_digest).not_to include("carrossel123")
+    expect(account.user.password_digest).not_to include("carrossel123")
   end
 
   it "traz os 14 carrosséis — 12 na biblioteca e 2 na lixeira" do

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import {
   Bell,

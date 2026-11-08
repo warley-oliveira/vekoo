@@ -5,7 +5,10 @@ class PersonSerializer < ApplicationSerializer
     AccountSerializer.one(account).merge(
       teamIds: team_ids(account),
       setupOnly: account.setup_only,
-      revokedAt: epoch_ms(account.revoked_at)
+      revokedAt: epoch_ms(account.revoked_at),
+      # A pessoa também está em outra organização: nome, e-mail, telefone e senha são dela e só
+      # mudam no perfil dela (`sharedIdentity`). Diz só que existe outra, nunca qual.
+      identityShared: identity_shared?(account)
     )
   end
 
@@ -27,4 +30,10 @@ class PersonSerializer < ApplicationSerializer
     account.team_memberships.map(&:team_id)
   end
   private_class_method :team_ids
+
+  # `size`: aproveita `includes(user: :accounts)` da listagem.
+  def self.identity_shared?(account)
+    account.user.master? || account.user.accounts.size > 1
+  end
+  private_class_method :identity_shared?
 end

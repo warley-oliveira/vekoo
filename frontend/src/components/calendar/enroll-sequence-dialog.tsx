@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ListChecks } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { toast } from "sonner"
 
 import { EmptyState, ErrorState, FormActions, ListSkeleton, ResponsiveDialog, StatusBadge } from "@/components/shared"

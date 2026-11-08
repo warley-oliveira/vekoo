@@ -86,7 +86,7 @@ module CustomDashboards
 
     # Os cadastros que dão nome a um id: { id: nome }, sempre dentro da organização.
     NAMED = {
-      accounts: ->(organization) { organization.accounts.order(:name).pluck(:id, :name) },
+      accounts: ->(organization) { organization.accounts.by_name.pluck("accounts.id", "users.name") },
       teams: ->(organization) { organization.teams.order(:name).pluck(:id, :name) },
       connectors: ->(organization) { named_documents(organization.connectors, :display_name) },
       agenda_professionals: ->(organization) { named_documents(organization.agenda_professionals, :name) },

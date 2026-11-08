@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { Archive, ArchiveRestore, ExternalLink, RotateCcw, ThumbsDown, Trash2, Trophy } from "lucide-react"
 import { toast } from "sonner"
 

@@ -5,7 +5,7 @@
 # Devolve a sessão já aberta: quem acabou de se cadastrar não deveria precisar
 # entrar de novo.
 class SignUp
-  Result = Struct.new(:session, :error, keyword_init: true) do
+  Result = Struct.new(:session, :account, :error, keyword_init: true) do
     def success? = error.nil?
   end
 
@@ -54,7 +54,7 @@ class SignUp
       session = Session.start!(account, user_agent: @user_agent, ip_address: @ip_address)
     end
 
-    Result.new(session: session)
+    Result.new(session: session, account: account)
   rescue ActiveRecord::RecordNotUnique
     # Duas pessoas se cadastrando com o mesmo e-mail ao mesmo tempo: quem
     # chegou depois recebe o mesmo recado de e-mail já cadastrado.

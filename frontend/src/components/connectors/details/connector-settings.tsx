@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Pause, Power, RefreshCw, Unplug } from "lucide-react"
 import { toast } from "sonner"
 

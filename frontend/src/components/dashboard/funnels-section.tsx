@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { ArrowRight } from "lucide-react"
 
 import { EmptyState, TagChip } from "@/components/shared"

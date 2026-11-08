@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate } from "@/lib/router"
 import { ArrowRight, Loader2, Users } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -11,6 +11,7 @@ import { AuthLayout } from "@/components/auth-layout"
 import { Field, PasswordInput } from "@/components/form-field"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { accountPath } from "@/lib/account-scope"
 import { AuthError, suggestOrganizationName, useAuth } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 
@@ -62,14 +63,14 @@ export function SignUpPage() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const session = await signUp(values)
+      const account = await signUp(values)
       toast(
         t("auth.signup.createdToast", {
-          organization: session.organization.name,
+          organization: account?.organization.name ?? values.organizationName,
         }),
         { description: t("auth.signup.createdDescription") }
       )
-      navigate("/", { replace: true })
+      navigate(account ? accountPath(account.hashid, "/") : "/", { replace: true })
     } catch (error) {
       if (error instanceof AuthError) {
         const field = error.field === "form" ? "root" : error.field

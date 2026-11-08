@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react"
 import { useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useParams, useSearchParams } from "react-router"
+import { Link, useNavigate, useParams, useSearchParams } from "@/lib/router"
 import { CircleSlash, Copy, Loader2, Megaphone, Pause, PencilLine, Play, Trash2 } from "lucide-react"
 
 import { ActivityCard } from "@/components/campaigns/activity-card"

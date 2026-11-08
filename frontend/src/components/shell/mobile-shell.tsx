@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect } from "react"
-import { useLocation } from "react-router"
+import { useLocation } from "@/lib/router"
 
 import { SHEET_EXIT_MS } from "@/components/shell/bottom-sheet"
 import { HeaderSlotSheet } from "@/components/shell/header-slot"

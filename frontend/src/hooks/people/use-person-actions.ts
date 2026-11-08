@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import { useConfirm } from "@/components/shared"
+import { useAuth } from "@/lib/auth"
 import { errorMessage } from "@/lib/people/error-message"
 import { firstName } from "@/lib/people/person-rules"
 import type { Person } from "@/lib/people/types"
@@ -15,7 +16,8 @@ import { usePersonMutations } from "./use-people"
 export function usePersonActions() {
   const { t } = useTranslation()
   const confirm = useConfirm()
-  const { revokePerson, restorePerson, deletePerson } = usePersonMutations()
+  const { revokePerson, restorePerson, deletePerson, transferOwnership } = usePersonMutations()
+  const { refreshSession } = useAuth()
 
   const restore = useCallback(
     async (person: Person) => {
@@ -67,5 +69,24 @@ export function usePersonActions() {
     [confirm, deletePerson, t]
   )
 
-  return { revoke, restore, remove }
+  // Quem passa a posse deixa de ser dono: a sessão relê o papel e as permissões.
+  const transfer = useCallback(
+    async (person: Person) => {
+      const name = firstName(person.name)
+      const confirmed = await confirm({
+        title: t("people.users.transfer.title", { name }),
+        description: t("people.users.transfer.description", { name }),
+        confirmLabel: t("people.users.transfer.confirm"),
+        onConfirm: async () => {
+          await transferOwnership(person.id)
+          await refreshSession().catch(() => undefined)
+        },
+      })
+      if (confirmed) toast.success(t("people.users.transfer.done", { name }))
+      return confirmed
+    },
+    [confirm, refreshSession, t, transferOwnership]
+  )
+
+  return { revoke, restore, remove, transfer }
 }

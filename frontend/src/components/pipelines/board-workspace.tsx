@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Navigate, useNavigate, useSearchParams } from "react-router"
+import { Navigate, useNavigate, useSearchParams } from "@/lib/router"
 import { useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { RefreshCw, Settings2 } from "lucide-react"

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { CircleAlert, Plus, Sparkles, Zap } from "lucide-react"
 import { toast } from "sonner"
 

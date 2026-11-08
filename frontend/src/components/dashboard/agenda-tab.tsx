@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { AlertTriangle, ArrowRight, CalendarSearch, Check, RefreshCw, X } from "lucide-react"
 
 import {
