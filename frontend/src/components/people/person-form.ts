@@ -52,6 +52,20 @@ export function createPersonSchema(t: TFunction) {
     })
 }
 
+/**
+ * Convidar quem já tem conta no Vekoo: nome, telefone e senha são da pessoa e não se pedem. Só o
+ * que é do vínculo (grupo, departamentos, "não atende") vale.
+ */
+export function invitePersonSchema(t: TFunction) {
+  return z.object({
+    ...baseShape(t),
+    name: z.string(),
+    phone: z.string(),
+    password: z.string(),
+    passwordConfirmation: z.string(),
+  })
+}
+
 /** Ao editar, a senha só conta se a pessoa abriu a seção de trocar. */
 export function editPersonSchema(t: TFunction) {
   return z
@@ -81,12 +95,13 @@ export function accessValueOf(person: Pick<Person, "role" | "accessRoleId">): st
 export function accessOptions(
   roles: AccessRole[] | undefined,
   roleName: (role: AccessRole) => string,
-  actor: Pick<Account, "role">,
+  actor: Pick<Account, "role" | "support">,
   ownerLabel: string,
   includeOwner = false
 ): SelectOption[] {
   const groups = (roles ?? []).map((role) => ({ value: role.id, label: roleName(role) }))
-  return actor.role === "owner" || includeOwner
+  // O suporte do Vekoo pode tudo, inclusive dar a posse (a API confere do mesmo jeito).
+  return actor.role === "owner" || actor.support || includeOwner
     ? [{ value: OWNER_ACCESS, label: ownerLabel }, ...groups]
     : groups
 }

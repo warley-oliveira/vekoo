@@ -2,11 +2,14 @@ import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
+import { DoorOpen, Users } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import { AccountAreaNav } from "@/components/people/area-nav"
+import { Callout } from "@/components/shared/callout"
 import { ImagePicker } from "@/components/shared/image-picker"
+import { Button } from "@/components/ui/button"
 import {
   Field,
   Form,
@@ -18,10 +21,13 @@ import {
   TextField,
   UnsavedChangesDialog,
   UserAvatar,
+  useConfirm,
 } from "@/components/shared"
 import { Input } from "@/components/ui/input"
 import { useProfile } from "@/hooks/people/use-profile"
-import { apiAssetUrl } from "@/lib/api"
+import { apiAssetUrl, apiPost } from "@/lib/api"
+import { useAuth, useSession } from "@/lib/auth"
+import { useNavigate } from "@/lib/router"
 import { isValidPhone } from "@/lib/format-phone"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
 
@@ -60,6 +66,28 @@ export default function ProfilePage() {
   const { t, i18n } = useTranslation()
   const language = useLanguage()
   const { account, updateProfile, uploadAvatar, removeAvatar } = useProfile()
+  const session = useSession()
+  const { refreshAccounts } = useAuth()
+  const confirm = useConfirm()
+  const navigate = useNavigate()
+  const accountsCount = session.accounts.length
+
+  // Sair tira só o próprio vínculo: a conta no Vekoo e as outras organizações continuam.
+  async function leave() {
+    const organization = session.organization.name
+    const left = await confirm({
+      title: t("people.profile.leave.confirmTitle", { organization }),
+      description: t("people.profile.leave.confirmDescription", { organization }),
+      confirmLabel: t("people.profile.leave.confirm"),
+      destructive: true,
+      // A recusa (último dono) aparece no próprio diálogo, com a frase do servidor.
+      onConfirm: () => apiPost("/users/leave"),
+    })
+    if (!left) return
+    await refreshAccounts().catch(() => undefined)
+    toast.success(t("people.profile.leave.done", { organization }))
+    navigate("/organizations", { replace: true })
+  }
 
   const profileSchema = useMemo(() => buildProfileSchema(t), [t])
   const profileForm = useForm<ProfileValues>({
@@ -91,6 +119,11 @@ export default function ProfilePage() {
       />
 
       <div className="flex flex-col gap-6">
+        {/* O perfil é da pessoa: nome, foto, telefone, idioma e senha valem em todas as organizações. */}
+        <Callout icon={<Users />} role="status">
+          {t("people.profile.everywhere", { count: accountsCount })}
+        </Callout>
+
         <SettingsSection
           title={t("people.profile.photo.title")}
           description={t("people.profile.photo.description")}
@@ -214,6 +247,20 @@ export default function ProfilePage() {
             <FormActions submitLabel={t("people.profile.password.submit")} requireChanges />
           </Form>
         </SettingsSection>
+
+        {!session.account.support && (
+          <SettingsSection
+            title={t("people.profile.leave.title", { organization: session.organization.name })}
+            description={t("people.profile.leave.description")}
+          >
+            <div>
+              <Button variant="outline" className="pointer-coarse:h-10" onClick={() => void leave()}>
+                <DoorOpen />
+                {t("people.profile.leave.action")}
+              </Button>
+            </div>
+          </SettingsSection>
+        )}
       </div>
     </PageBody>
   )

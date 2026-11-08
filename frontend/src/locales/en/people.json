@@ -29,7 +29,12 @@
       "defaultAccessRole": "Default groups can't be deleted.",
       "tooManyRequests": "Too many attempts in a short time. Wait a minute and try again.",
       "noPushDevices": "No device is receiving alerts on this account.",
-      "pushNotConfigured": "The server in this environment isn't set up to send alerts."
+      "pushNotConfigured": "The server in this environment isn't set up to send alerts.",
+      "sharedIdentity": "This person is also in another organization: name, email, phone and password only change in their own profile.",
+      "alreadyMember": "This person is already in this organization.",
+      "alreadyOwner": "This person already owns the organization.",
+      "accountRevoked": "This person's access is revoked. Restore it first.",
+      "supportCannotLeave": "Support access doesn't leave an organization: just go back to the organization list."
     },
     "users": {
       "tableLabel": "People in the organization",
@@ -121,8 +126,10 @@
         "openPerson": "Open details",
         "revokedTitle": "This person is here, with revoked access",
         "revokedDescription": "Restore their access and they come back with the same history.",
-        "elsewhereTitle": "This email already has an account in another organization",
-        "elsewhereDescription": "On Vekoo, each account belongs to a single organization. Ask this person for another email."
+        "elsewhereTitle": "This person already has a Vekoo account",
+        "elsewhereDescription": "They sign in with the email and password they already use, and this organization shows up in their list. Name, phone and password are theirs: here you only choose what they can do.",
+        "detailsStepExisting": "This email already has a Vekoo account. Choose what this person can do here.",
+        "invitedHint": "They can sign in now with their Vekoo password and pick this organization."
       },
       "edit": {
         "submit": "Save changes",
@@ -148,12 +155,12 @@
         "done": "{{name}} has access again."
       },
       "delete": {
-        "action": "Delete for good",
-        "title": "Delete {{name}} for good?",
-        "description": "This can't be undone. Conversations and cards assigned to {{name}} are left without an owner, and the name disappears from history. To just cut off access, cancel and use Revoke access.",
-        "confirm": "Delete for good",
-        "word": "DELETE",
-        "done": "{{name}}'s account deleted."
+        "action": "Remove from organization",
+        "title": "Remove {{name}} from the organization?",
+        "description": "{{name}} loses access to this organization, and the conversations and cards assigned to them are left without an owner. Their Vekoo account and other organizations stay. To cut access only for a while, cancel and use Revoke access.",
+        "confirm": "Remove from organization",
+        "word": "REMOVE",
+        "done": "{{name}} left the organization."
       },
       "password": {
         "title": "Password",
@@ -175,6 +182,16 @@
         "title": "Make {{name}} an owner?",
         "description": "Owners can do anything in the organization, including changing other owners.",
         "confirm": "Make owner"
+      },
+      "identityShared": "{{name}} is also part of another organization. Name, email, phone and password are theirs and apply there too: only they can change them, in their own profile. Here you change what they can do in this organization.",
+      "transfer": {
+        "sectionTitle": "Organization ownership",
+        "hint": "Hand ownership over to {{name}}: they become the owner, and you stay here as a member.",
+        "action": "Transfer ownership",
+        "title": "Transfer ownership to {{name}}?",
+        "description": "{{name}} becomes the owner of the organization, with every permission. You stop being an owner and keep your access as a member with no group. Only the new owner can give it back.",
+        "confirm": "Transfer ownership",
+        "done": "{{name}} now owns the organization."
       }
     },
     "teams": {
@@ -412,7 +429,7 @@
         "nameRequired": "Enter your full name.",
         "nameTooLong": "That name is too long.",
         "email": "Email",
-        "emailHint": "Whoever manages the organization can change your email.",
+        "emailHint": "Your email is your Vekoo login. Whoever manages the organization can only change it while you belong to that organization alone.",
         "phone": "WhatsApp",
         "phoneInvalid": "That number doesn't look complete."
       },
@@ -432,6 +449,17 @@
         "mismatch": "The passwords don't match.",
         "submit": "Change password",
         "saved": "Password changed. Your other devices need to sign in again."
+      },
+      "everywhere_one": "Your profile is yours, not the organization's: name, photo, phone, language and password apply wherever you sign in to Vekoo.",
+      "everywhere_other": "Your profile is yours, not the organization's: name, photo, phone, language and password apply across your {{count}} organizations.",
+      "leave": {
+        "title": "Leave {{organization}}",
+        "description": "You lose access to this organization. Your Vekoo account and other organizations stay.",
+        "action": "Leave organization",
+        "confirmTitle": "Leave {{organization}}?",
+        "confirmDescription": "You lose access to {{organization}} right away, and the conversations and cards assigned to you are left without an owner. To come back, someone who manages it has to invite you again.",
+        "confirm": "Leave organization",
+        "done": "You left {{organization}}."
       }
     },
     "notifications": {

@@ -8,6 +8,11 @@ export type Person = Account & {
   /** "Não atribuir atendimentos": administra, mas não aparece para receber conversas. */
   setupOnly: boolean
   revokedAt: number | null
+  /**
+   * Também está em outra organização: nome, e-mail, telefone e senha são da pessoa e só mudam no
+   * perfil dela. A API recusa com `sharedIdentity`.
+   */
+  identityShared?: boolean
 }
 
 export type Team = {
