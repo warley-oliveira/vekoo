@@ -8,7 +8,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - **Funis sem assistente:** modelo novo `Funnel`, com etapas próprias, no lugar das `classification_steps` do assistente.
 - **Sem RabbitMQ:** eventos do Evolution chegam por webhook.
-- **Uma organização por pessoa:** sem multi-workspace, como já previsto no `CLAUDE.md`.
+- ~~**Uma organização por pessoa**~~: substituída por "Multi-organização e suporte (multi-org)", abaixo.
 - **Carrosséis continuam no menu**, no grupo CRIAÇÃO. `/` passa a abrir o Dashboard, e a biblioteca de carrosséis muda para `/carousels`.
 - **Semente de exemplo fora de produção:** os domínios só semeiam em produção com `SEED_DEMO_DATA=1`, porque criam pessoas com senha conhecida. A semente original (conta de demonstração e carrosséis) continua como estava.
 
@@ -418,6 +418,32 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Celular (vetável):** `sm` e `md` como cartão centrado com 16 px de margem; `lg` para cima em tela cheia. Ambos presos ao viewport visível, para o teclado não cobrir campo nem botão. Voltar à folha de baixo é trocar `MOBILE_PRESENTATION` para `"sheet"` no componente.
 - **Card do pipeline em `full`**, com detalhes à esquerda e comentários e atividade ao lado a partir de 1024 px; abaixo disso, as três abas de antes. Continua abrindo por `?card=`.
 - **Ficaram como drawer:** menu "Mais" e escolha de pipeline da barra inferior, central de notificações no celular, ações da página no cabeçalho do celular, menus do chat no celular (conversa, mensagem, seleção, anexar, mensagens rápidas), filtros e seletores (`FilterBar`, `FilterPopover`, `ResponsivePopover`) e o inspetor de bloco do editor de carrossel no celular, que precisa deixar a arte à vista.
+
+### Multi-organização e suporte (multi-org)
+
+- **Pessoa separada do vínculo.** `User` é a identidade e o login (e-mail único, senha, nome, telefone, idioma, foto, sessões, pedidos de senha, aparelhos de push, `master`). `Account` continua com esse nome e vira o vínculo `User` × `Organization` (papel, grupo, departamentos, `setup_only`, revogação, `support`), único por par. Manter o nome foi deliberado: todo `account_id` no Postgres e no Mongo segue válido sem migrar dado. `Account` delega a identidade e aceita `name`/`email`/`password` para montar a pessoa junto (convite, cadastro, semente, factories), o que manteve o código reciclado de pé.
+- **Migração com o mesmo id.** Cada conta vira um `User` com o id dela; sessões, pedidos de senha, aparelhos e a foto mudam de dono só pela coluna, e ninguém precisa entrar de novo. Roda numa transação; volta enquanto ninguém tiver duas organizações (depois, recusa em vez de perder vínculo). Spec com dados no formato de produção nos dois sentidos, e ensaio num banco populado como o `main`.
+- **A URL e o cabeçalho levam o vínculo, não a organização** (decisão da pessoa): `/a/<hashid>/...` no front, `X-Account: <hashid>` na API e `account=` no WebSocket. O hashid codifica `accounts.number` (sequência própria; o inteiro nunca sai), com sal em `HASHID_SALT`, alfabeto minúsculo e 8 caracteres. Hashid de outra pessoa ou inexistente: `404 accountNotFound`, igual para os dois. Próprio e revogado: `403 accountRevoked`. **Prefixo `/a/`**, curto e neutro; as rotas de conta (`/login`, `/signup`, `/forgot-password`, `/reset-password/:token`, `/organizations`, `/auth/*`) ficam sem ele.
+- **Sem cabeçalho, o único vínculo ativo** (`400 accountRequired` com mais de um). Mantém de pé o app de carrosséis de hoje e PWA antigo em cache durante o deploy. Vetável: exigir sempre o cabeçalho.
+- **WebSocket por vínculo, não por pessoa.** A conexão é identificada pelo `Account`; trocar de organização na aba troca de conexão. Assim nenhum canal mudou (todos leem `current_account`), cada assinatura fica presa à organização, e `reconnect_realtime` derruba exatamente as abas daquela organização. Pedido original era "a conexão identifica o User e as assinaturas levam a organização"; o desenho escolhido dá a mesma garantia com menos superfície.
+- **Organização por aba no front:** `@/lib/router` reexporta o react-router e põe o prefixo em todo caminho absoluto (`Link`, `NavLink`, `Navigate`, `useNavigate`), e `useLocation` devolve o caminho sem ele. As telas não mudaram; o lint proíbe importar `react-router` direto. A aba guarda a sua em `sessionStorage`, e o navegador, a última usada (para a aba nova e o login). O cache do SWR é esvaziado ao trocar de organização na mesma aba.
+- **`/` e links antigos:** a última organização desta aba, a do navegador, ou a única; senão a escolha (`/organizations?next=`), que volta para a tela pedida. Login com mais de uma organização leva à escolha (ou à última usada).
+- **Revogar a organização da aba:** o WebSocket cai, `/me` responde `accountRevoked`, e a aba vai para a escolha com o recado; as outras abas seguem. **Revogar o último vínculo** ainda derruba as sessões e faz o login responder `accessRevoked`, como antes. Vínculo **removido** (`DELETE /users/:id`) não bloqueia o login: a pessoa entra e pode criar a sua organização.
+- **Identidade compartilhada:** quem administra uma organização só muda nome, e-mail, telefone e senha de quem não está em outra (`422 sharedIdentity`; `identityShared` na ficha). Sem isso, o dono de uma organização tomaria a conta de alguém em outra. A pessoa muda os seus no perfil.
+- **Convite de quem já tem conta** cria só o vínculo, ignorando nome e senha do pedido; não há aceite: a organização aparece na lista da pessoa no próximo `/me`. Vetável: convite com aceite por e-mail (depende do serviço de e-mail, que não existe).
+- **Remover = tirar o vínculo** (`DELETE /users/:id`); a pessoa, os aparelhos e as outras organizações ficam. **Sair** (`POST /users/leave`) é o mesmo para si. **Passar a posse** rebaixa quem passou a membro sem grupo. O último dono não sai.
+- **Suporte do Vekoo:** `users.master`, só por `bin/rails "support:grant[EMAIL]"` / `support:revoke` ou console. Entra em qualquer organização pela tela de organizações; na primeira entrada nasce um vínculo `support: true`, obrigatório porque é ele que dá o hashid da URL e o autor das ações. Ele tem tudo liberado, não aparece em Pessoas, contagens, seletores, atribuição nem push, e para o cliente é "Suporte Vekoo". Cada entrada fica em `SupportAccess` (pessoa, organização, IP, navegador, quando), e voltar pela URL depois de 30 minutos registra de novo. Na tela, um aviso fixo "Modo suporte · organização · Sair". O `master` vale também nos vínculos comuns da pessoa (`can?` sempre verdadeiro).
+- **Aparelhos de push são da pessoa,** não do vínculo: um navegador recebe os avisos de todas as organizações dela, e cada push leva o link com o hashid de quem recebe. O `sw-push.js` só reaproveita a aba que já está naquela organização.
+- **Busca do suporte sem acento** por `translate`, para não pedir a extensão `unaccent` ao Postgres de produção.
+- **Semente:** a Marina é dona de "Marina Duarte Conteúdo" e Gerente em "Clínica Bem Viver" (dona: Patrícia Gomes). O suporte da demonstração (`suporte@vekoo.com.br`) só existe fora de produção, nem com `SEED_DEMO_DATA=1`.
+
+**Pendências (multi-org):**
+
+- **`main` tem o `staff` (`organizations.internal`, `PATCH /me/organization`, sessão agindo noutra organização).** Ao juntar, ele deve virar o suporte daqui: `staff` → `master`, e a troca de organização → `/a/<hashid>` com o vínculo de suporte. A migração desta frente roda depois das do `main`, mas o código de `staff` precisa ser reescrito sobre `X-Account`.
+- **E-mail de convite e de "você foi adicionado"**: não há serviço de e-mail. Quando houver, o link leva `/a/<hashid>` do vínculo de quem recebe (`AccountLink.path`).
+- **Ticket curto para o WebSocket** continua pendente (o token de 30 dias vai na query, agora com o hashid ao lado).
+- **Cobrança por organização** ainda não existe; quando existir, o vínculo de suporte não conta (`Organization#accounts` já o exclui).
+- **Não verificado:** a migração no Postgres de produção de verdade (ensaiada num banco local populado como o `main`); push real num aparelho com duas organizações.
 
 ## 2. Pendências por frente
 

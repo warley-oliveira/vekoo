@@ -6,7 +6,7 @@ Nomes de domínio, para quem vem da origem: `Appointment` é agendamento (`Agend
 
 ## Regras gerais
 
-- **A organização vem da sessão.** Nenhuma URL leva o id dela. Id de outra organização responde `404`, sem dizer que existe. Quando o id vem no corpo (profissional, serviço, conversa de um agendamento), responde `422` no campo.
+- **A organização vem do vínculo da aba** (`X-Account: <hashid>`, conferido contra a pessoa da sessão; ver `access.md`). Nenhuma URL leva o id dela. Id de outra organização responde `404`, sem dizer que existe. Quando o id vem no corpo (profissional, serviço, conversa de um agendamento), responde `422` no campo.
 - **Entrada com envelope**, em camelCase: `{ "calendar": { "name": "..." } }`. As ações pequenas leem os campos soltos e estão marcadas aqui.
 - **Saída** em camelCase. Ids são texto. Datas em **milissegundos**, com duas exceções que são dias e não instantes: `startDate` e `endDate` da turma, em `AAAA-MM-DD`.
 - **Listagens** têm `{ <recurso>: [...], meta: { page, perPage, total, totalPages, hasMore } }`, com `?page=` e `?perPage=`. Até 100 por página, e 100 é o padrão aqui. `GET /calendar-events` não é paginado: quem limita é o intervalo.

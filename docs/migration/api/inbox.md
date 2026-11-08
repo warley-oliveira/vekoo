@@ -11,7 +11,7 @@ O envio de mensagem, o tempo real da conversa (`ChatChannel`, `ChatListChannel`)
 ## Regras gerais
 
 - **Autenticação:** `Authorization: Bearer <token>`. Sem sessão válida, `401 unauthorized`. A única rota daqui sem sessão é `GET /contacts/download-export`, que é autorizada pelo token do link.
-- **A organização vem da sessão.** Não há id de organização na URL. Id de outra organização, ou de conversa que a pessoa não pode ver, responde `404 notFound`, nunca `403`.
+- **A organização vem do vínculo da aba** (`X-Account: <hashid>`, conferido contra a pessoa da sessão; ver `access.md`). Nenhuma rota recebe id de organização. Id de outra organização, ou de conversa que a pessoa não pode ver, responde `404 notFound`, nunca `403`.
 - **Entrada, em camelCase.** Cadastros usam envelope com o nome do recurso: `{ "quickReply": { ... } }`, `{ "chatView": { ... } }`, `{ "chatTag": { ... } }`, `{ "customField": { ... } }`, e `{ "chat": { ... } }` no `PATCH /chats/:id`. Ações vão soltas: `POST /chats`, os lotes de `/contacts/*`, `POST /contact-imports`, `.../normalize`, `.../reaction`. Arquivo vai em multipart, solto.
 - **Saída:** chaves em camelCase, datas em milissegundos desde a época, ids como string. Conversa, mensagem, etiqueta, canal e campo personalizado têm id do Mongo (24 hexadecimais); conta, departamento, mensagem rápida, visão, anexo e importação, UUID.
 - **Listagens:** `{ "<recurso>": [...], "meta": { "page", "perPage", "total", "totalPages", "hasMore" } }`, com `?page=` e `?perPage=` (de 1 a 100). O padrão é 25; 20 em `/attachments`; 100 nos cadastros curtos, `/chat-tags`, `/chat-views`, `/quick-replies` e `/custom-fields`. **`/chats` e `/unified-contacts` não trazem `total` nem `totalPages`:** a lista recarrega a todo evento, e contar a cada página custaria um índice inteiro da organização. Só `hasMore`.
@@ -2541,7 +2541,7 @@ Com Puma, Sidekiq e cliente real, foram exercitadas todas as rotas e os dois can
 
 ## De cada hook da origem ao endpoint
 
-Conferido contra `aiva-frontend/src/api`. Na origem o id da conta ia na URL, e aqui a organização vem da sessão.
+Conferido contra `aiva-frontend/src/api`. Na origem o id da conta ia na URL; aqui a organização vem do vínculo da aba (`X-Account`).
 
 ### `src/api/chat/`
 
