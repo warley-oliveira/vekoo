@@ -1,0 +1,69 @@
+{
+  "organizations": {
+    "title": "Hi, {{name}}. Where are we working today?",
+    "description": "You're signed in as {{email}}. Each tab works in one organization: you can open two side by side.",
+    "mine_one": "Your organization",
+    "mine_other": "Your {{count}} organizations",
+    "searchPlaceholder": "Search organizations",
+    "noMatch": "No organization with that name.",
+    "openInNewTab": "Open {{name}} in a new tab",
+    "empty": {
+      "title": "You're not part of any organization yet",
+      "description": "Create your own to get started, or ask whoever manages your team to invite you by email."
+    },
+    "roles": {
+      "owner": "Owner",
+      "member": "Member"
+    },
+    "lost": {
+      "revoked": {
+        "title": "Your access to that organization was revoked",
+        "description": "Whoever manages that organization removed your access. Your other organizations are still here."
+      },
+      "notFound": {
+        "title": "That organization isn't available to you",
+        "description": "The link may belong to someone else, or you left that organization. Pick one of yours."
+      },
+      "required": {
+        "title": "Pick an organization",
+        "description": "You're part of more than one: tell us which one to use in this tab."
+      }
+    },
+    "create": {
+      "open": "Create organization",
+      "title": "Create organization",
+      "description": "You'll be the owner, and you can invite your team later.",
+      "name": "Organization name",
+      "namePlaceholder": "e.g. Bem Viver Clinic",
+      "submit": "Create organization",
+      "created": "{{name}} was created.",
+      "nameTooShort": "Use at least 2 characters.",
+      "nameTooLong": "Use at most 60 characters."
+    },
+    "switcher": {
+      "label": "Organizations",
+      "all": "See all {{count}} organizations",
+      "support": "Support: enter another organization",
+      "current": "{{name}}, current organization",
+      "switch": "Switch"
+    },
+    "support": {
+      "title": "Vekoo support",
+      "description": "Enter any organization to help the customer. Every entry is logged, and the customer sees your messages signed as Vekoo Support.",
+      "searchPlaceholder": "Organization name, or a member's name or email",
+      "empty": "No organization found.",
+      "owner": "{{name}} ({{email}})",
+      "noOwner": "No owner",
+      "members_one": "{{count}} person",
+      "members_other": "{{count}} people",
+      "more_one": "{{count}} more organization: refine your search.",
+      "more_other": "{{count}} more organizations: refine your search.",
+      "enter": "Enter",
+      "entered": "Support mode in {{name}}.",
+      "enterFailed": "Couldn't enter that organization. Try again.",
+      "banner": "Support mode",
+      "badge": "Support",
+      "leave": "Leave"
+    }
+  }
+}

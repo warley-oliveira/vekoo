@@ -1,0 +1,69 @@
+{
+  "organizations": {
+    "title": "Olá, {{name}}. Onde vamos trabalhar?",
+    "description": "Você entrou como {{email}}. Cada aba trabalha numa organização: dá para abrir duas lado a lado.",
+    "mine_one": "Sua organização",
+    "mine_other": "Suas {{count}} organizações",
+    "searchPlaceholder": "Buscar organização",
+    "noMatch": "Nenhuma organização com esse nome.",
+    "openInNewTab": "Abrir {{name}} numa aba nova",
+    "empty": {
+      "title": "Você ainda não participa de nenhuma organização",
+      "description": "Crie a sua para começar, ou peça a quem administra a sua equipe para convidar você pelo seu e-mail."
+    },
+    "roles": {
+      "owner": "Dono",
+      "member": "Participante"
+    },
+    "lost": {
+      "revoked": {
+        "title": "Seu acesso àquela organização foi revogado",
+        "description": "Quem administra a organização tirou o seu acesso. As outras continuam aqui."
+      },
+      "notFound": {
+        "title": "Essa organização não está disponível para você",
+        "description": "O link pode ser de outra pessoa, ou você saiu dessa organização. Escolha uma das suas."
+      },
+      "required": {
+        "title": "Escolha a organização",
+        "description": "Você participa de mais de uma: diga em qual quer trabalhar nesta aba."
+      }
+    },
+    "create": {
+      "open": "Criar organização",
+      "title": "Criar organização",
+      "description": "Você entra como dona ou dono, e pode convidar a equipe depois.",
+      "name": "Nome da organização",
+      "namePlaceholder": "Ex.: Clínica Bem Viver",
+      "submit": "Criar organização",
+      "created": "{{name}} foi criada.",
+      "nameTooShort": "Use pelo menos 2 caracteres.",
+      "nameTooLong": "Use no máximo 60 caracteres."
+    },
+    "switcher": {
+      "label": "Organizações",
+      "all": "Ver todas as {{count}} organizações",
+      "support": "Suporte: entrar em outra organização",
+      "current": "{{name}}, organização atual",
+      "switch": "Trocar"
+    },
+    "support": {
+      "title": "Suporte Vekoo",
+      "description": "Entre em qualquer organização para ajudar o cliente. Cada entrada fica registrada, e quem atende vê suas mensagens assinadas como Suporte Vekoo.",
+      "searchPlaceholder": "Nome da organização, ou nome ou e-mail de quem participa",
+      "empty": "Nenhuma organização encontrada.",
+      "owner": "{{name}} ({{email}})",
+      "noOwner": "Sem dono",
+      "members_one": "{{count}} pessoa",
+      "members_other": "{{count}} pessoas",
+      "more_one": "Mais {{count}} organização: refine a busca.",
+      "more_other": "Mais {{count}} organizações: refine a busca.",
+      "enter": "Entrar",
+      "entered": "Modo suporte em {{name}}.",
+      "enterFailed": "Não foi possível entrar nessa organização. Tente de novo.",
+      "banner": "Modo suporte",
+      "badge": "Suporte",
+      "leave": "Sair"
+    }
+  }
+}

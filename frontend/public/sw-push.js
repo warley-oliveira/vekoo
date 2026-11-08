@@ -41,10 +41,26 @@ self.addEventListener('push', (event) => {
   )
 })
 
-/** Foca uma janela do app e leva para o destino; sem janela, abre uma. */
+/** `/a/<hashid>/...`: a organização da aba. O link do aviso já vem com a de quem recebe. */
+function accountPrefix(url) {
+  const match = new URL(url).pathname.match(/^\/a\/[^/]+\//)
+  return match ? match[0] : null
+}
+
+/**
+ * Foca uma janela do app e leva para o destino; sem janela, abre uma. Cada aba trabalha numa
+ * organização: com o destino numa organização, só serve a aba que já está nela, para o clique
+ * não arrancar outra aba da organização dela.
+ */
 async function openTarget(target) {
   const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-  const client = windows.find((candidate) => candidate.url.startsWith(HOME) && 'focus' in candidate)
+  const prefix = accountPrefix(target)
+  const client = windows.find(
+    (candidate) =>
+      candidate.url.startsWith(HOME) &&
+      'focus' in candidate &&
+      (!prefix || accountPrefix(candidate.url) === prefix)
+  )
 
   if (client && new URL(target).origin === self.location.origin) {
     await client.focus()
