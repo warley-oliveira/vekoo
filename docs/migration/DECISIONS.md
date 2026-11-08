@@ -446,6 +446,29 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 - **Cobrança por organização** ainda não existe; quando existir, o vínculo de suporte não conta (`Organization#accounts` já o exclui).
 - **Não verificado:** a migração no Postgres de produção de verdade (ensaiada num banco local populado como o `main`); push real num aparelho com duas organizações.
 
+### Fluxos de ponta a ponta (flows)
+
+Cada bloco foi exercitado num fluxo publicado, com a mensagem entrando pelo webhook da Evolution (provedor simulado) e saindo para o provedor, e no Testar pelo canal de verdade: 59 de 59 conferências (`~/.cache/vekoo-shot/wt39/e2e-flows.mjs`, `e2e-playground.mjs`). A Evolution local de verdade criou a instância, entregou o QR pelo webhook e recebeu o envio do Vekoo (`e2e-evolution.mjs`; roteiro em `docs/migration/tools/evolution-local.md`). A Conversa com IA rodou com o modelo rápido de verdade, com ferramenta nativa e personalizada, numa conversa real e no Testar.
+
+- **Ferramentas nativas na Conversa com IA, em Ruby** (`native_tools`: agenda, catálogo, contato, etiquetas, pipeline), sobre os serviços das telas, sem mini_racer. O bloco escolhe por grupo, não por função. Escopo da organização **e da conversa**: cancelar horário e mover card só os do próprio contato (o `Agenda::BookingService` aceitava qualquer horário do calendário pelo id); etiqueta só a que já existe; campo do contato só o que a organização tem. Vetável: deixar o modelo criar etiqueta.
+- **No Testar, marcar e cancelar horário e criar e mover card são simulados** (`simulated: true`), como os blocos de Pipelines; etiqueta e campo valem na conversa de teste, que não aparece em lista. A agenda recebe o dia e a hora no fuso do calendário.
+- **Crédito por volta de ferramenta:** cada chamada ao modelo depois de uma ferramenta custa 1 a mais (até 5 voltas). Antes, uma resposta com três voltas custava o mesmo que uma sem ferramenta. Medido: a conversa de 3 mensagens com catálogo, etiqueta e frete gastou 6 créditos e 8 chamadas ao Haiku (6.829 tokens de entrada, 4.908 lidos do cache, 1.255 de saída). Vetável: o valor, ou cobrar por ferramenta.
+- **Condição e desvio comparam como a pessoa lê:** sem maiúscula, acento nem espaço nas pontas; número aceita vírgula decimal; texto que não é número nunca é maior nem menor. Antes, "contém fernanda" não casava com "Fernanda".
+- **O laço lê qualquer variável** (`contact.*`, `chat.*`, `message.*`) e a lista guardada como texto JSON. Antes, só `vars.*`.
+- **Rajada na ordem em que o contato mandou** (a pendência "três, uma, duas" do qa-e2e): a caixa guarda o horário do provedor.
+- **Testar:** cada ferramenta aparece na conversa (o que foi, o que voltou, se foi simulada) e na aba Blocos; aba nova Variáveis; a resposta da IA aparece com a formatação do WhatsApp; o fluxo chamado por "Ir para outro fluxo" aparece no mesmo teste (falava num canal que a tela não ouvia). Eventos `tool_call` e `variables` em `FlowPlaygroundChannel`.
+- **Erro interno do provedor** (Evolution sem WhatsApp conectado responde 500 com JSON cru) vira "O WhatsApp não conseguiu enviar agora. Confira se o canal está conectado em Integrações." A recusa com motivo continua como veio.
+- **Configuração do bloco continua num inspetor à direita**, e não num modal: o canvas fica à vista enquanto se edita, a ligação entre blocos acende no quadro e o Testar usa o mesmo lugar. É a exceção à diretiva de modal, por ser editor; no celular, o inspetor já é tela cheia. Vetável.
+- **Suíte do back sem as chaves pagas do `.env`**: `spec/support/webmock.rb` apaga `OPENAI_API_KEY` e `OPENAI_ACCESS_TOKEN` ao carregar. Com a chave da OpenAI no `.env`, três specs do catálogo iam à rede.
+
+**Pendências (flows):**
+
+- **Envio para a Evolution sem WhatsApp conectado segura o job por ~3 minutos** (3 tentativas de até 60 s, medido: 193 s). Na vida real só acontece se o WhatsApp cair com o canal ainda ativo. Reforça a pendência "Timeout de provedor".
+- **`QRCODE_LIMIT=1` no `.env` da Evolution local** dá um QR só (uns 20 s). O roteiro sobe com `QRCODE_LIMIT=30` pela linha de comando; em produção, conferir o valor.
+- **Botões e listas nativos:** `send_interactive` manda as opções numeradas no texto em todos os canais. Na WABA dá para usar botões de verdade (até 3) e lista (até 10); na Evolution, botões não são confiáveis. Não feito.
+- **Não exercitado de verdade:** telefone real na Evolution (a pessoa vai conectar), `send_template` (só no Testar e em spec), `ai_audio_transcription` com áudio real, ferramentas nativas de agenda e pipeline com o modelo real (só em spec e no simulado do Testar), modelo principal (Opus) nos fluxos.
+- **O saldo de créditos na barra lateral** não se atualiza depois de um Testar com IA: só ao recarregar.
+
 ## 2. Pendências por frente
 
 ### Ponta a ponta e varredura: precisam de decisão

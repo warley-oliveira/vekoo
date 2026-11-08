@@ -325,17 +325,17 @@ Em "Saídas", `next` é a saída padrão. Todo bloco de IA aceita `onError`, e o
 | `send_template` | message | Modelo do WhatsApp | `template_name`, `parameters[]`, `sender_name?`. Só WABA; nos outros canais, passa adiante | `next` |
 | `send_interactive` | message | Botões ou lista | `text`, `buttons[]: { id, title }`, `invalid_text?`, `save_to?`, `sender_name?`. Espera a resposta, que vale pelo número ou título | o `id` do botão, ou `next` |
 | `ask_question` | message | Perguntar | `text`, `save_to?`, `sender_name?`. Espera a resposta | `next` |
-| `ai_assistant` | ai | Assistente IA | `mode`: interactive ou processing; `system_prompt`, `model_size`: main ou fast; `use_history`, `tool_ids[]`, `min_turns`, `max_turns`, `sender_name?`, `outputs[]: { id, label, when, default?, parameters[]: { name, type, description, required } }` | o `id` de cada saída, `maxTurns`, `onError` |
+| `ai_assistant` | ai | Assistente IA | `mode`: interactive ou processing; `system_prompt`, `model_size`: main ou fast; `use_history`, `tool_ids[]` (funções em JS), `native_tools[]` (grupos nativos: agenda, catalog, contact, tags, pipeline; ver "Ferramentas nativas"), `min_turns`, `max_turns`, `sender_name?`, `outputs[]: { id, label, when, default?, parameters[]: { name, type, description, required } }` | o `id` de cada saída, `maxTurns`, `onError` |
 | `ai_sentiment` | ai | Sentimento | `outputs[]`: padrão positive, neutral, negative. Grava `last_sentiment` | o `id` de cada saída, `onError`, `next` |
 | `ai_intent_classification` | ai | Classificar intenção | `system_prompt?`, `outputs[]: { id, label, when }`. Grava `last_intent` | o `id` de cada saída, `default`, `onError`, `next` |
 | `ai_parameter_extractor` | ai | Extrair parâmetros | `system_prompt?`, `model_size`, `fields[]: { name, type, description }`. Grava cada campo | `next`, `onError` |
 | `ai_audio_transcription` | ai | Transcrever áudio | `audio_url?`, `save_to?` (padrão `last_transcription`). Sem URL, usa a transcrição que a mensagem já trouxe | `next`, `onError` |
-| `condition` | logic | Condição | `match`: all ou any; `rules[]: { field, operator, value, values[] }`. Operadores: equals, not_equals, contains, not_contains, starts_with, ends_with, greater_than, less_than, is_empty, is_not_empty, exists, not_exists, in, not_in. `field` é um caminho: `vars.x`, `message.text` | `true`, `false`, `next` |
-| `switch` | logic | Switch | `field` (texto com variáveis), `cases[]: { id, value }` | o `id` de cada caso, `default`, `next` |
+| `condition` | logic | Condição | `match`: all ou any; `rules[]: { field, operator, value, values[] }`. Operadores: equals, not_equals, contains, not_contains, starts_with, ends_with, greater_than, less_than, is_empty, is_not_empty, exists, not_exists, in, not_in. `field` é um caminho: `vars.x`, `message.text` (com ou sem chaves). Texto compara sem maiúscula, acento nem espaço nas pontas; número aceita vírgula decimal ("14,90", "1.234,56"), e o que não é número nunca é maior nem menor | `true`, `false`, `next` |
+| `switch` | logic | Switch | `field` (texto com variáveis), `cases[]: { id, value }`. Compara como a condição | o `id` de cada caso, `default`, `next` |
 | `wait` | logic | Aguardar | `amount`, `unit`: seconds, minutes, hours, days. Até 30 dias | `next` |
 | `wait_for_message` | logic | Aguardar mensagem | `save_to?` | `next` |
 | `set_variable` | logic | Definir variável | `assignments[]: { name, value }` | `next` |
-| `loop` | logic | Repetir | `source`: `{{vars.lista}}`, o nome, ou uma lista; `loop_variable` (padrão `item`), `index_variable` (padrão `index`), `max_iterations` (até 100). O último bloco do corpo liga de volta aqui | `each`, `done`, `next` |
+| `loop` | logic | Repetir | `source`: `{{vars.lista}}`, `{{contact.custom_attributes.x}}`, `{{chat.*}}`, `{{message.*}}`, o nome da variável, ou uma lista; texto com uma lista em JSON é lido como lista; `loop_variable` (padrão `item`), `index_variable` (padrão `index`), `max_iterations` (até 100). O último bloco do corpo liga de volta aqui | `each`, `done`, `next` |
 | `add_tag` | action | Adicionar etiqueta | `tag_id` ou `tag_name` (cria se preciso) | `next` |
 | `remove_tag` | action | Remover etiqueta | `tag_id` ou `tag_name` | `next` |
 | `set_custom_attribute` | action | Definir campo do contato | `key`, `value` | `next` |
@@ -633,6 +633,36 @@ Resposta `200`:
 ```
 
 ---
+
+## Ferramentas nativas
+
+O bloco `ai_assistant` (modo conversa) oferece ao modelo, além das funções em JS de `tool_ids`, os grupos de `native_tools`. Rodam em Ruby (`FlowRuntime::NativeTools`), no processo que já executa o fluxo, sobre os serviços das telas: só função personalizada leva o bloco ao processo de scripts. Tudo fica na organização do fluxo **e na conversa atual**: horário, card e etiqueta de outro contato não existem para o modelo, mesmo com o id certo.
+
+| Grupo | Funções | Disponível quando |
+|---|---|---|
+| `agenda` | `agenda_list_services`, `agenda_list_professionals`, `agenda_available_slots`, `agenda_create_booking`, `agenda_list_bookings`, `agenda_cancel_booking` | há calendário de profissionais. O modelo recebe o dia e a hora no fuso dele |
+| `catalog` | `catalog_search`, `catalog_get_item`, `catalog_categories` | o catálogo tem item |
+| `contact` | `contact_get`, `contact_update` (nome e campos que a organização tem) | sempre |
+| `tags` | `tags_list`, `tag_add`, `tag_remove` (só etiqueta que já existe) | sempre |
+| `pipeline` | `pipeline_list_boards`, `pipeline_list_cards`, `pipeline_create_card`, `pipeline_move_card` | há pipeline ativo |
+
+No teste do editor, `agenda_create_booking`, `agenda_cancel_booking`, `pipeline_create_card` e `pipeline_move_card` não fazem nada e respondem `{ ok: true, simulated: true }`. Erro volta ao modelo como `{ error }`, curto e em inglês, e o log do bloco guarda `output.tools: [{ name, native, ok, simulated?, ms }]` e `output.rounds`.
+
+### `GET /flows/native-tools`
+
+Exige `flows`.
+
+```json
+{
+  "nativeTools": [
+    { "key": "agenda", "available": false, "tools": ["agenda_list_services", "agenda_list_professionals", "agenda_available_slots", "agenda_create_booking", "agenda_list_bookings", "agenda_cancel_booking"] },
+    { "key": "catalog", "available": true, "tools": ["catalog_search", "catalog_get_item", "catalog_categories"] },
+    { "key": "contact", "available": true, "tools": ["contact_get", "contact_update"] },
+    { "key": "tags", "available": true, "tools": ["tags_list", "tag_add", "tag_remove"] },
+    { "key": "pipeline", "available": true, "tools": ["pipeline_list_boards", "pipeline_list_cards", "pipeline_create_card", "pipeline_move_card"] }
+  ]
+}
+```
 
 ## Ferramentas
 
@@ -1198,6 +1228,8 @@ Resposta `200`:
 | `media` | `attachmentId`, `url`, `caption` |
 | `event` | `name`: `template_sent`, `interactive_sent`, `attachment_missing` (`payload.reasons`) ou `pipeline_skipped` (`payload.type`); `payload` |
 | `ai_decision` | `nodeId`, `decision` (o id da saída, ou `stay`), `label`, `reason`, `turn` |
+| `tool_call` | `nodeId`, `name`, `native`, `input`, `output` (até 8 KB cada), `error`, `simulated`, `durationMs`: cada ferramenta que a IA usou |
+| `variables` | `variables`: todas, como ficaram, a cada bloco que muda alguma |
 | `suspended` | `status`: waiting ou waiting_for_message; `currentNodeId` |
 | `completed` | |
 | `failed` | `message` |
@@ -1297,7 +1329,7 @@ Sequência real, numa pergunta seguida de IA:
 `Chats::InboundFlow` chama `Flows::InboundDispatcher.call(chat:, text:, event:, message_id:)` quando a automação pode rodar.
 
 1. **Caminho rápido.** Organização sem fluxo de mensagem, sem execução viva na conversa e sem fluxo de campanha não paga nada.
-2. **Debounce.** A mensagem entra numa caixa dentro do documento da conversa (`$push` atômico), e só a primeira agenda um job, com 3 s por padrão (`organization.settings["flow_debounce_seconds"]`, de 0 a 60). As seguintes empurram o prazo: é **um job agendado por conversa**, e não um por mensagem. Enquanto o contato digita (`composing` ou `recording` em `presence.<chatId>`, que `Inbound::EvolutionEvents` grava e vale 10 s), espera mais, até 30 s. Só a Evolution manda presença: nos outros canais, vale só o prazo.
+2. **Debounce.** A mensagem entra numa caixa dentro do documento da conversa (`$push` atômico), e só a primeira agenda um job, com 3 s por padrão (`organization.settings["flow_debounce_seconds"]`, de 0 a 60). As seguintes empurram o prazo: é **um job agendado por conversa**, e não um por mensagem. Enquanto o contato digita (`composing` ou `recording` em `presence.<chatId>`, que `Inbound::EvolutionEvents` grava e vale 10 s), espera mais, até 30 s. Só a Evolution manda presença: nos outros canais, vale só o prazo. A caixa sai **na ordem em que o contato mandou** (`sent_at`, do provedor, com a chegada como desempate dentro do mesmo segundo): os webhooks de uma rajada rodam em paralelo e chegam fora de ordem.
 3. **Execução rodando na conversa:** a caixa espera, e o fim da rodada a entrega. É o que impede o mesmo bloco de rodar duas vezes.
 4. **`Flows::Dispatch`:** retoma quem está em `waiting_for_message`. Se ninguém esperava, começa os fluxos: o da campanha (`chat.outreach_flow_id`, conferindo a organização e que está publicado), ou então os publicados cujo gatilho casa.
 
@@ -1336,6 +1368,7 @@ Todos os que casam começam, como na origem. Um fluxo com a palavra `pix` e outr
 | `ai_sentiment`, `ai_intent_classification` | 1 |
 | `ai_audio_transcription` com `audio_url` | 1 |
 | `ai_audio_transcription` da mensagem recebida | 0 |
+| `ai_assistant`, cada volta ao modelo depois de uma ferramenta | +1 |
 
 Falha do modelo devolve o crédito daquela chamada (o juiz que já decidiu fica pago). Sem saldo, o modelo não é chamado, a execução para (ou segue por `onError`) e a organização recebe o alerta `flow_no_credits`. `aiCosts` em `/catalog` ainda não lista estes valores.
 
