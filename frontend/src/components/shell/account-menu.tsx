@@ -182,7 +182,7 @@ export function AccountMenu({ collapsed }: { collapsed: boolean }) {
               {personName}
             </span>
             <span className="truncate text-xs font-normal text-muted-foreground">
-              {session?.account.email}
+              {session?.user.email}
             </span>
           </DropdownMenuLabel>
         </DropdownMenuGroup>

@@ -185,6 +185,16 @@ RSpec.describe "Multi-organização e suporte", type: :request do
       expect(json["organizations"].map { |o| o["name"] }).to contain_exactly("Marina Duarte Conteúdo", "Clínica Bem Viver")
     end
 
+    it "aparece para o cliente como Suporte Vekoo, sem o e-mail nem a foto da pessoa" do
+      account = Support::Entry.call(user: master, organization: organization)
+
+      expect(account.name).to eq("Suporte Vekoo")
+      expect(account.email).to be_nil
+      expect(account.avatar).to be_nil
+      expect(Account.where(id: account.id).names_by_id).to eq(account.id => "Suporte Vekoo")
+      expect(Pipelines::PersonPayload.json(account)).to include(name: "Suporte Vekoo", email: nil, avatarUrl: nil)
+    end
+
     it "entra de novo pelo mesmo vínculo de suporte" do
       first = Support::Entry.call(user: master, organization: organization)
       again = Support::Entry.call(user: master, organization: organization)

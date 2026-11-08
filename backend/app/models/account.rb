@@ -28,7 +28,7 @@ class Account < ApplicationRecord
   # continua de pé.
   has_many :uploads, dependent: :nullify
 
-  delegate :email, :phone, :locale, :avatar, :sessions, :password_resets, :push_devices,
+  delegate :phone, :locale, :sessions, :password_resets, :push_devices,
     :authenticate, :master?, to: :user, allow_nil: true
 
   # Na origem o campo aceitava nulo, que queria dizer "atende normalmente".
@@ -102,8 +102,17 @@ class Account < ApplicationRecord
     end
   end
 
+  # O cliente vê o suporte como o produto, não como a pessoa: sem nome, e-mail nem foto dela.
   def name
     support? ? SUPPORT_NAME : user&.name
+  end
+
+  def email
+    support? ? nil : user&.email
+  end
+
+  def avatar
+    support? ? nil : user&.avatar
   end
 
   def identity

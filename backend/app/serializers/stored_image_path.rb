@@ -3,7 +3,7 @@
 # prefixa com a URL da API, do mesmo jeito que faz com as imagens do editor.
 module StoredImagePath
   def self.for(attachment, variant)
-    return nil unless attachment.attached?
+    return nil unless attachment&.attached?
 
     Rails.application.routes.url_helpers.rails_storage_proxy_url(attachment.variant(variant), only_path: true)
   end
