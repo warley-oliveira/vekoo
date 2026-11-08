@@ -15,7 +15,7 @@ class RegistrationsController < ApplicationController
     ).call
 
     if result.success?
-      render json: SessionSerializer.one(result.session), status: :created
+      render json: SessionSerializer.one(result.session, account: result.account), status: :created
     else
       render_error(
         status: :unprocessable_entity,

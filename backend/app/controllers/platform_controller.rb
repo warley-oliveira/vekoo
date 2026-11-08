@@ -1,8 +1,9 @@
 # Base de toda a plataforma de atendimento (chat, contatos, pipelines, agenda…).
 #
-# O equivalente em Vekoo do workspace é a `Organization` da sessão: não há id de
-# organização na URL, e toda consulta parte de `current_organization`. Assim um
-# id adivinhado nunca alcança o dado de outra organização.
+# O equivalente em Vekoo do workspace é a `Organization` do vínculo da aba: o front manda
+# o hashid da `Account` em `X-Account`, `Authenticatable` confere que ela é da pessoa da
+# sessão e está ativa, e toda consulta parte de `current_organization`. Nenhuma rota
+# recebe id de organização, e um id adivinhado nunca alcança o dado de outra.
 class PlatformController < AuthenticatedController
   include Paginated
   include CamelParams
@@ -22,6 +23,7 @@ class PlatformController < AuthenticatedController
   def set_current_context
     return unless current_account
 
+    Current.user = current_user
     Current.account = current_account
     Current.organization = current_organization
     Current.session = current_session
