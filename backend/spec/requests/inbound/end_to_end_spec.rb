@@ -11,7 +11,7 @@ RSpec.describe "Webhooks de entrada", type: :request do
   before { allow(Flows::InboundDispatcher).to receive(:call) }
 
   def expect_delivered(chat, text:, event: "first_message")
-    expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: text, event: event, message_id: anything)
+    expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: text, event: event, message_id: anything, sent_at: anything)
   end
 
   describe "WhatsApp Cloud" do

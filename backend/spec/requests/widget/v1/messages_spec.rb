@@ -218,7 +218,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
         send_message("olá", clientMessageId: "cliente-1")
 
         expect(Flows::InboundDispatcher).to have_received(:call).with(
-          chat: visitor_chat, text: "olá", event: "first_message", message_id: "cliente-1"
+          chat: visitor_chat, text: "olá", event: "first_message", message_id: "cliente-1", sent_at: anything
         )
       end
 
@@ -227,7 +227,7 @@ RSpec.describe "Widget::V1::Messages", type: :request do
         send_message("segunda")
 
         expect(Flows::InboundDispatcher).to have_received(:call).with(
-          chat: visitor_chat, text: "segunda", event: "message_received", message_id: nil
+          chat: visitor_chat, text: "segunda", event: "message_received", message_id: nil, sent_at: anything
         )
       end
 
