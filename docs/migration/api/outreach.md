@@ -12,7 +12,7 @@ Em desenvolvimento normal, a API fica em `http://localhost:3040`.
 ## Regras gerais
 
 - **Autenticação:** `Authorization: Bearer <token>`. Sem sessão válida, `401 unauthorized`.
-- **A organização vem da sessão.** Id de outra organização responde `404 notFound`, nunca `403`.
+- **A organização vem do vínculo da aba** (`X-Account: <hashid>`, conferido contra a pessoa da sessão; ver `access.md`). Id de outra organização responde `404 notFound`, nunca `403`.
 - **Entrada:** corpo JSON solto, sem envelope, em camelCase, como o `useCampaignMutations` da origem mandava. `templateParams` passa com as chaves intactas.
 - **Saída:** chaves em camelCase, datas em milissegundos desde a época, ids como string.
 - **Listagens:** `{ "<recurso>": [...], "meta": { "page", "perPage", "total", "totalPages", "hasMore" } }`, com `?page=` e `?perPage=` (25 por padrão, 100 no máximo).

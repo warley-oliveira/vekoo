@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { Settings2 } from "lucide-react"
 

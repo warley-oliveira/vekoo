@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
 import { Loader2, UserMinus, UserPlus, Users } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { toast } from "sonner"
 import useSWR from "swr"
 

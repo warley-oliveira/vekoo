@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useParams, useSearchParams } from "react-router"
+import { Link, useParams, useSearchParams } from "@/lib/router"
 import { ChevronRight, Play, Waypoints } from "lucide-react"
 
 import { ExecutionPanel } from "@/components/flows/execution-panel"

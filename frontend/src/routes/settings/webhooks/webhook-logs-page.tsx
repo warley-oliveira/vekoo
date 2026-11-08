@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "@/lib/router"
 import { History, RefreshCw } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 

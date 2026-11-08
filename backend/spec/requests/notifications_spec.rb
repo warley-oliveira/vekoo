@@ -75,9 +75,9 @@ RSpec.describe "Avisos unificados", type: :request do
         "read" => false,
         "title" => "Conversa atribuída a você",
         "description" => "Ana Beatriz está esperando resposta.",
-        "url" => "/chat/123",
+        "url" => "/a/#{account.hashid}/chat/123",
         "category" => "chat",
-        "actions" => [ { "action" => "open_chat", "title" => "Abrir conversa", "urlPath" => "/chat/123" } ],
+        "actions" => [ { "action" => "open_chat", "title" => "Abrir conversa", "urlPath" => "/a/#{account.hashid}/chat/123" } ],
         "readAt" => nil,
         "archivedAt" => nil
       )

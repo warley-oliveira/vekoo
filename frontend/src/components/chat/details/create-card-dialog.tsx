@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { useForm, useWatch } from "react-hook-form"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"

@@ -100,7 +100,7 @@ module VekooInboxSeeds
   module_function
 
   def call
-    account = Account.find_by(email: DEMO_EMAIL)
+    account = Account.for_email(DEMO_EMAIL, role: "owner")
     return nil unless account
 
     organization = account.organization

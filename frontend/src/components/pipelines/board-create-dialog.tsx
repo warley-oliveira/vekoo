@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, SquareKanban, type LucideIcon } from "lucide-react"

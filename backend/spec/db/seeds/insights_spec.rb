@@ -155,7 +155,7 @@ RSpec.describe "db/seeds/insights.rb", type: :request do
   end
 
   it "sem a conta de demonstração, não faz nada" do
-    Account.where(email: "marina.duarte@exemplo.com.br").update_all(email: "outra@exemplo.com.br")
+    User.where(email: "marina.duarte@exemplo.com.br").update_all(email: "outra@exemplo.com.br")
 
     expect { seed }.not_to change(Funnel, :count)
   end

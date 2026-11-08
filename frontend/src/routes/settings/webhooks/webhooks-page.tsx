@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate } from "@/lib/router"
 import { History, Pencil, Plus, RefreshCw, Search, ShieldCheck, Trash2, Webhook as WebhookIcon } from "lucide-react"
 import { toast } from "sonner"
 

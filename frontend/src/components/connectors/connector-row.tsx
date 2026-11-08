@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate } from "@/lib/router"
 import { ChevronRight, Pause, Power, RefreshCw, Settings2, Unplug } from "lucide-react"
 
 import { ActionsMenu, RelativeTime, StatusBadge } from "@/components/shared"

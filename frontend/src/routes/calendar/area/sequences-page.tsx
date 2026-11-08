@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
 import { CircleHelp, ListChecks, Plus, Sparkles } from "lucide-react"
-import { Link, useSearchParams } from "react-router"
+import { Link, useSearchParams } from "@/lib/router"
 import { toast } from "sonner"
 
 import { useCalendarArea } from "@/components/calendar/area/area-context"

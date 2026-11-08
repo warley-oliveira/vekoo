@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { Layers, ListChecks, Pencil, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 

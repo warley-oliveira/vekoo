@@ -1,7 +1,5 @@
-import { API_URL, apiAssetUrl } from "@/lib/api"
+import { API_URL, apiAssetUrl, sessionRequestHeaders } from "@/lib/api"
 import { downloadFile, fileNameFromDisposition, type BlobFetcher } from "@/lib/file-utils"
-import { currentLanguage } from "@/lib/i18n"
-import { getToken } from "@/lib/token"
 
 /** `mediaUrl` vem como caminho da API ou como endereço de fora. Vazio vira `null`. */
 export function mediaSource(path: string | null | undefined): string | null {
@@ -10,9 +8,7 @@ export function mediaSource(path: string | null | undefined): string | null {
 
 /** O proxy autenticado (`GET /media/download`): entrega o nome original e alcança CDN sem CORS. */
 function fetchFromProxy(url: string, signal?: AbortSignal): Promise<Response> {
-  const headers = new Headers({ "Accept-Language": currentLanguage() })
-  const token = getToken()
-  if (token) headers.set("Authorization", `Bearer ${token}`)
+  const headers = new Headers(sessionRequestHeaders())
 
   return fetch(`${API_URL}/media/download?url=${encodeURIComponent(url)}`, { headers, signal })
 }

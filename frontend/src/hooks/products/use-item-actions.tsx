@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { CheckSquare, CirclePause, CirclePlay, ExternalLink, Pencil, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 

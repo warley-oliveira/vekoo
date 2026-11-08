@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 import { ChevronUp, Menu, type LucideIcon } from "lucide-react"

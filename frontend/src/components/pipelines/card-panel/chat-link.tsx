@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { ExternalLink, MessageCircle, Unlink } from "lucide-react"
 

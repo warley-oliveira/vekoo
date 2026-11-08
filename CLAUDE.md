@@ -44,7 +44,9 @@ All derived from `PORT_OFFSET` in `.env`. Docker Compose is namespaced via
 - **First time:** `bin/setup` (creates `.env`, Mongo indexes, database and seed)
 - **Every day:** `bin/dev` (infra, pending migrations and new indexes, then Rails, both Sidekiqs and Vite)
 - **Backend tests:** `cd backend && bundle exec rspec`
-- **Demo account:** `marina.duarte@exemplo.com.br` / `carrossel123`
+- **Demo account:** `marina.duarte@exemplo.com.br` / `carrossel123` (in two organizations: owner of
+  "Marina Duarte Conteúdo", member of "Clínica Bem Viver"). Demo Vekoo support (`master`, dev only):
+  `suporte@vekoo.com.br` / `suporte-vekoo-123`.
 
 **WSL2 rule (hard):** this repo must live on the Linux filesystem (`~/workspace/...`),
 **never** under `/mnt/c`. Windows-mounted paths destroy Vite HMR and Rails boot performance.
@@ -58,8 +60,11 @@ The root `.env` is the single source of truth. The backend reads it via the syml
 contract in `docs/migration/api/<domain>.md`. `docs/migration/DECISIONS.md` records what was decided and
 what is still open. The rules that apply everywhere:
 
-- **Backend:** thin controllers on `PlatformController` (the organization comes from the session, never
-  the URL); business logic in service objects; JSON through `ApplicationSerializer` (camelCase, dates in
+- **Backend:** thin controllers on `PlatformController`. **The organization comes from the tab's
+  account:** the front sends the hashid of the person's `Account` (their link to one organization) in
+  `X-Account` (and `account=` on the WebSocket); `Authenticatable` checks it belongs to the session's
+  `User` and is active, and `current_account`/`current_organization` come from it — never from an id in
+  the path or body. A foreign or unknown hashid is `404 accountNotFound`. Business logic in service objects; JSON through `ApplicationSerializer` (camelCase, dates in
   **milliseconds**, ids as strings); errors always `{ error: { code, field?, message, details? } }`.
   Background work goes through ActiveJob on Sidekiq, and client JavaScript only on the `scripts` queue,
   a process of its own. RSpec only — there is no Minitest.
@@ -82,7 +87,9 @@ what is still open. The rules that apply everywhere:
   locale per request from `?locale=` or `Accept-Language`. Example content in the seeds is the fictional
   *user's work*, not UI — it stays pt-BR on purpose.
 - **Frontend:** data through `useApi` (SWR) over the typed client in `@/lib/api`, realtime through
-  `useChannel`, permissions through `useCan`. **Read `src/components/shared/README.md` before building a
+  `useChannel`, permissions through `useCan`. Every platform screen lives under `/a/:account/...`;
+  import the router from `@/lib/router` (never `react-router`, the lint refuses it), which prefixes
+  absolute paths with the tab's account, so screens keep writing `/chat`. **Read `src/components/shared/README.md` before building a
   screen:** `@/components/shared` is the kit, with a live showcase at `/dev/kit`. **Every task, edit or
   detail opens in a modal (`ResponsiveDialog`) sized by its content; a drawer only for low-relevance
   information** (action menus, pickers, filters, notifications). Never `Dialog` or `Sheet` directly, no
@@ -92,6 +99,8 @@ what is still open. The rules that apply everywhere:
   screen must work at 390 px.
 - **Routes (hard rule):** every URL path in the platform is in **English**, kebab-case —
   frontend routes and Rails API paths alike (`/login`, `/quick-replies`, `/folders/:id`, `/settings/users`).
+  Platform screens carry the account prefix (`/a/<hashid>/settings/users`); account-level screens don't
+  (`/login`, `/signup`, `/organizations`).
   Query params too (`?next=`). Only the **visible copy** is pt-BR; the URL never is. Same for file and
   component names.
 - **Git:** single `main` branch. No feature-branch flow. Small, descriptive commits. Until the decision to
@@ -121,7 +130,8 @@ tela nem sempre usa o nome do código:
 
 | Código | Na tela | Contrato |
 |---|---|---|
-| `Organization` (o workspace, vem da sessão), `Account`, `AccessRole`, `Team` | Organização, Usuário, Grupo, Departamento | `access` |
+| `User` (a pessoa e o login: e-mail, senha, nome, foto, idioma; `master` = suporte do Vekoo) | Pessoa, Perfil | `access` |
+| `Organization` (o workspace), `Account` (o vínculo `User` × `Organization`: papel, grupo, revogação; vem de `X-Account`), `AccessRole`, `Team` | Organização, Usuário, Grupo, Departamento | `access` |
 | `Connector::*` (`WhatsappCloud`, `WhatsappWeb`, `WebWidget`…), `WhatsappTemplate` | Integrações | `connectors` |
 | `Chat`, `ChatMessage::*`, `ChatTag`, `QuickReply`, `Attachment`, `CustomField`, `Copilot` | Chat, Contatos, Etiquetas, Mensagens Rápidas | `inbox` |
 | `Flow`, `Tool`, `ToolFunction::*`, `Hook` | Fluxos, Ferramentas, Webhooks | `automation` |
@@ -132,8 +142,11 @@ tela nem sempre usa o nome do código:
 | `Outreach::*` | Campanhas | `outreach` |
 | `lib/mini_racer_engine` | Script de cliente em V8 isolado | `script-engine` |
 
-**Autenticação:** sessão por `Authorization: Bearer` (o banco guarda só o resumo SHA-256 do token). **Criar
-conta cria a organização** e a pessoa entra como `owner`. Permissão por `AccessRole` e `Account#can?`.
+**Autenticação:** sessão do `User` por `Authorization: Bearer` (o banco guarda só o resumo SHA-256 do
+token); a organização da aba vem do vínculo em `X-Account`. Uma pessoa pode estar em várias organizações,
+um `Account` por organização. **Criar conta cria a organização** e a pessoa entra como `owner`. Permissão
+por `AccessRole` e `Account#can?`, que é sempre verdadeiro para dono, para o vínculo de suporte e para
+`User#master` (o suporte do Vekoo, ligado só por `bin/rails "support:grant[EMAIL]"`).
 
 **Semente:** `db/seeds.rb` tem o acervo e a conta de demonstração, e cada domínio tem a sua em
 `db/seeds/<domain>.rb`, tudo idempotente. Em produção só o acervo roda, a menos que `SEED_DEMO_DATA=1`: dado do produto que precisa

@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 /**
  * O estado de uma coleção na URL: abrir um item e voltar devolve a pessoa aonde ela estava, e dá para

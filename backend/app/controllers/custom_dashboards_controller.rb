@@ -53,7 +53,7 @@ class CustomDashboardsController < PlatformController
   def index
     records, meta = paginate(current_organization.custom_dashboards.order_by(updated_at: :desc), per_page: Paginated::MAX_PER_PAGE)
     list = records.to_a
-    creators = current_organization.accounts.where(id: list.map(&:created_by_account_id).uniq).pluck(:id, :name).to_h
+    creators = Account.where(organization_id: current_organization.id, id: list.map(&:created_by_account_id).uniq).names_by_id
 
     render json: { customDashboards: list.map { |dashboard| CustomDashboardSerializer.summary(dashboard, creators: creators) }, meta: meta }
   end

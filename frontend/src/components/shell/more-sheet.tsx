@@ -1,7 +1,8 @@
 import { Fragment, useMemo } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import {
+  ArrowLeftRight,
   Bell,
   Building2,
   ChevronDown,
@@ -21,6 +22,7 @@ import {
   Collapsible,
   CollapsibleContent,
 } from "@/components/ui/collapsible"
+import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useCan } from "@/hooks/use-can"
 import { useMobileNav } from "@/hooks/use-mobile-nav"
@@ -121,6 +123,17 @@ function AccountHeader() {
             {session?.account.name}
           </p>
         </div>
+        {/* A troca abre a tela de organizações: lista, busca, criar e, para o suporte, a busca. */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0"
+          nativeButton={false}
+          render={<Link to="/organizations" />}
+        >
+          <ArrowLeftRight />
+          {t("organizations.switcher.switch")}
+        </Button>
       </div>
       <CreditsSummary />
     </div>

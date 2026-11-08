@@ -7,7 +7,7 @@ Dashboard, funis e dashboards personalizados, mais o que estes domínios ligam a
 ## Regras gerais
 
 - **Autenticação:** `Authorization: Bearer <token>`. Sem sessão válida, `401 unauthorized`.
-- **A organização vem da sessão.** Id de outra organização responde `404 notFound`, nunca `403`.
+- **A organização vem do vínculo da aba** (`X-Account: <hashid>`, conferido contra a pessoa da sessão; ver `access.md`). Id de outra organização responde `404 notFound`, nunca `403`.
 - **Entrada, em camelCase.** Cadastro com envelope: `{ "funnel": { ... } }`, `{ "customDashboard": { ... } }`. Ação e consulta vão soltas: `{ "stageId": ... }`, `{ "dataSource": ... }`.
 - **Saída:** chaves em camelCase, datas em milissegundos, ids como string. Dia sem hora sai como texto (`"2026-10-08"`), porque é o dia da organização, e não um instante.
 - **Mapas livres ficam como estão:** `chatsByChannel`, `labels`, `fieldLabels`, `rows`, `filterOptions`, e `query`, `visualConfig`, `layout` e `globalFilters` dos widgets. As chaves ali são dados.

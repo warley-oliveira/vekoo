@@ -8,7 +8,7 @@ import {
   type Resolver,
 } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "@/lib/router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AnimatePresence, motion } from "motion/react"
 import { ArrowLeft, ArrowRight, Check, Loader2, Rocket, Trash2, X } from "lucide-react"
@@ -31,6 +31,7 @@ import { useImmersive } from "@/hooks/use-app-shell"
 import { useHeaderSlot, usePageTitle } from "@/hooks/use-header-slot"
 import { useMobileShell } from "@/hooks/use-mobile-shell"
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes"
+import { stripAccountPath } from "@/lib/account-scope"
 import { apiDelete, apiPost } from "@/lib/api"
 import {
   LINKED_EXTRACTION_PARAM,
@@ -182,7 +183,7 @@ function RouteSync() {
     if (!campaignId || !calm) return
 
     const target = `/campaigns/${campaignId}/edit`
-    if (window.location.pathname === target) return
+    if (stripAccountPath(window.location.pathname) === target) return
 
     const query = new URLSearchParams(window.location.search)
     query.delete("duplicate")

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useForm, useWatch, type UseFormReturn } from "react-hook-form"
 import type { TFunction } from "i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowLeft, ChevronRight, FileText } from "lucide-react"

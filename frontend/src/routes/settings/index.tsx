@@ -1,4 +1,4 @@
-import { Navigate, Route } from "react-router"
+import { Navigate, Route } from "@/lib/router"
 
 import { useCan } from "@/hooks/use-can"
 import { settingsContentRoutes } from "@/routes/settings/content"

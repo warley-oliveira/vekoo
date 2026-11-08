@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { useController, useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Info, Plus, TriangleAlert, X } from "lucide-react"
 
 import {

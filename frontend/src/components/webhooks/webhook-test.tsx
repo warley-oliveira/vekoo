@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { mutate as globalMutate } from "swr"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { CheckCircle2, CircleAlert, Loader2, Send } from "lucide-react"
 
 import { Callout, SegmentedControl, useConfirm } from "@/components/shared"

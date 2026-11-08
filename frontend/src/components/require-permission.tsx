@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react"
-import { Navigate } from "react-router"
+import { Navigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 

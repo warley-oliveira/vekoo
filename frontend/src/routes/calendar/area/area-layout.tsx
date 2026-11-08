@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { CalendarX2 } from "lucide-react"
-import { Navigate, Route, Routes, useNavigate, useParams } from "react-router"
+import { Navigate, Route, Routes, useNavigate, useParams } from "@/lib/router"
 
 import { CalendarAreaContext } from "@/components/calendar/area/area-context"
 import {

@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { ChevronRight, LayoutGrid, SquareKanban } from "lucide-react"
 

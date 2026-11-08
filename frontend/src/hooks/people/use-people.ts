@@ -97,6 +97,16 @@ export function usePersonMutations() {
     [mutate, revalidate]
   )
 
+  // A posse muda de mãos: as duas fichas mudam de papel, então a lista vem de novo.
+  const transferOwnership = useCallback(
+    async (id: string) => {
+      const person = await apiPost<Person>(`/users/${id}/transfer-ownership`)
+      await revalidate()
+      return person
+    },
+    [revalidate]
+  )
+
   const updatePerson = useCallback(
     async (id: string, input: PersonInput) =>
       settle(await apiPatch<Person>(`/users/${id}`, { user: input })),
@@ -157,6 +167,7 @@ export function usePersonMutations() {
 
   return {
     createPerson,
+    transferOwnership,
     updatePerson,
     revokePerson,
     restorePerson,

@@ -1,3 +1,4 @@
+import { currentAccountHashid } from "@/lib/account-scope"
 import { currentLanguage } from "@/lib/i18n"
 import { clearToken, getToken } from "@/lib/token"
 // Pelo efeito colateral: precisa rodar antes do primeiro render, para ouvir o `popstate`
@@ -41,6 +42,9 @@ export type ApiErrorCode =
   | "resetTokenInvalid"
   | "noCredits"
   | "tooManyRequests"
+  | "accountNotFound"
+  | "accountRevoked"
+  | "accountRequired"
   | "network"
   | "unknown"
   | (string & {})
@@ -103,6 +107,41 @@ export function setUnauthorizedHandler(handler: UnauthorizedHandler | null) {
   onUnauthorized = handler
 }
 
+/* ---------- organização perdida ---------- */
+
+// A sessão vale, mas a organização desta aba não: o vínculo foi revogado ou removido (ou o hashid
+// da URL nunca foi desta pessoa). A aba sai da organização e cai na escolha. Mesmo desenho do 401.
+const ACCOUNT_LOST = new Set<ApiErrorCode>(["accountNotFound", "accountRevoked", "accountRequired"])
+type AccountLostHandler = (code: ApiErrorCode, hashid: string | null) => void
+let onAccountLost: AccountLostHandler | null = null
+
+export function setAccountLostHandler(handler: AccountLostHandler | null) {
+  onAccountLost = handler
+}
+
+function reactToFailure(error: ApiError, skipAuthHandler: boolean | undefined, hashid: string | null) {
+  if (skipAuthHandler) return
+  if (error.status === 401) {
+    clearToken()
+    onUnauthorized?.(error.code)
+  } else if (ACCOUNT_LOST.has(error.code) && hashid === currentAccountHashid()) {
+    // Só se a aba ainda está naquela organização: a resposta atrasada de antes da troca não conta.
+    onAccountLost?.(error.code, hashid)
+  }
+}
+
+/** Os cabeçalhos de toda requisição: idioma, sessão e a organização da aba. */
+function sessionHeaders(set: (name: string, value: string) => void): string | null {
+  // Idioma por cabeçalho, não por `?locale=`: um parâmetro entraria na chave do
+  // SWR e trocar de idioma invalidaria o cache inteiro sem necessidade.
+  set("Accept-Language", currentLanguage())
+  const token = getToken()
+  if (token) set("Authorization", `Bearer ${token}`)
+  const hashid = currentAccountHashid()
+  if (hashid) set("X-Account", hashid)
+  return hashid
+}
+
 export type ApiInit = RequestInit & {
   /**
    * Não trate o 401 como sessão expirada. Vale para entrar, criar conta e para
@@ -134,17 +173,16 @@ function toApiError(status: number, envelope: ErrorEnvelope | undefined) {
 
 export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
   const { skipAuthHandler, headers, ...rest } = init ?? {}
-  const token = getToken()
 
   const merged = new Headers(headers)
   if (!merged.has("Content-Type") && !(rest.body instanceof FormData)) {
     merged.set("Content-Type", "application/json")
   }
   if (rest.body instanceof FormData) merged.delete("Content-Type")
-  // Idioma por cabeçalho, não por `?locale=`: um parâmetro entraria na chave do
-  // SWR e trocar de idioma invalidaria o cache inteiro sem necessidade.
-  merged.set("Accept-Language", currentLanguage())
-  if (token) merged.set("Authorization", `Bearer ${token}`)
+  const explicit = merged.get("X-Account")
+  const hashid = sessionHeaders((name, value) => merged.set(name, value))
+  // Quem chama pode escolher a organização (a tela de escolha lendo `/me` de outra).
+  if (explicit) merged.set("X-Account", explicit)
 
   let res: Response
   try {
@@ -162,17 +200,24 @@ export async function apiFetch<T>(path: string, init?: ApiInit): Promise<T> {
     }
 
     const error = toApiError(res.status, envelope)
-
-    if (res.status === 401 && !skipAuthHandler) {
-      clearToken()
-      onUnauthorized?.(error.code)
-    }
-
+    reactToFailure(error, skipAuthHandler, explicit ?? hashid)
     throw error
   }
 
   if (res.status === 204) return undefined as T
   return (await res.json()) as T
+}
+
+/**
+ * Para quem faz `fetch` ou `XMLHttpRequest` próprio (SSE, download, upload do editor): os mesmos
+ * cabeçalhos de sessão e de organização que o cliente manda.
+ */
+export function sessionRequestHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {}
+  sessionHeaders((name, value) => {
+    headers[name] = value
+  })
+  return headers
 }
 
 /* ---------- atalhos ---------- */
@@ -243,9 +288,7 @@ export function apiUpload<T>(
 
     xhr.open(method, `${API_URL}${path}`)
     // Sem Content-Type: é o navegador quem escreve o `boundary` do multipart.
-    xhr.setRequestHeader("Accept-Language", currentLanguage())
-    const token = getToken()
-    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`)
+    const hashid = sessionHeaders((name, value) => xhr.setRequestHeader(name, value))
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable && event.total > 0) {
@@ -268,10 +311,7 @@ export function apiUpload<T>(
       }
 
       const error = toApiError(xhr.status, body as ErrorEnvelope | undefined)
-      if (xhr.status === 401 && !skipAuthHandler) {
-        clearToken()
-        onUnauthorized?.(error.code)
-      }
+      reactToFailure(error, skipAuthHandler, hashid)
       reject(error)
     }
     xhr.onerror = () => {

@@ -2,6 +2,8 @@
 # (`emailNotFound`, `wrongPassword`) — distinguir os dois é escolha de produto:
 # a tela diz "não encontramos esse e-mail" em vez de um "dados inválidos" que
 # não ajuda ninguém.
+#
+# Quem entra é a pessoa (`User`); em qual organização ela vai trabalhar, a tela decide depois.
 class SignIn
   Result = Struct.new(:session, :error, keyword_init: true) do
     def success? = error.nil?
@@ -17,18 +19,19 @@ class SignIn
   end
 
   def call
-    account = Account.find_by(email: @email)
-    return failure("emailNotFound", "email") if account.nil?
-    return failure("wrongPassword", "password") unless account.authenticate(@password)
-    # Depois da senha: só quem é a pessoa fica sabendo que o acesso foi cortado.
-    return failure("accessRevoked", "email") if account.revoked?
+    user = User.find_by(email: @email)
+    return failure("emailNotFound", "email") if user.nil?
+    return failure("wrongPassword", "password") unless user.authenticate(@password)
+    # Depois da senha: só quem é a pessoa fica sabendo que o acesso foi cortado. Vale para quem
+    # perdeu todas as organizações; com uma ainda ativa, entra e escolhe.
+    return failure("accessRevoked", "email") if user.locked_out?
 
-    # Entrar é o único momento garantido em que se toca nas sessões da conta:
+    # Entrar é o único momento garantido em que se toca nas sessões da pessoa:
     # aproveitamos para varrer as vencidas, em vez de deixá-las acumulando para
     # sempre à espera de um agendador que não existe.
-    account.sessions.where(expires_at: ...Time.current).delete_all
+    user.sessions.where(expires_at: ...Time.current).delete_all
 
-    Result.new(session: Session.start!(account, user_agent: @user_agent, ip_address: @ip_address))
+    Result.new(session: Session.start!(user, user_agent: @user_agent, ip_address: @ip_address))
   end
 
   private

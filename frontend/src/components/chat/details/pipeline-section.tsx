@@ -1,5 +1,5 @@
 import { lazy, memo, Suspense, useState } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { Plus } from "lucide-react"
 

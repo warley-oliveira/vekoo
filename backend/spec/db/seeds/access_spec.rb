@@ -35,7 +35,7 @@ RSpec.describe "db/seeds/access.rb" do
     people = organization.accounts.where.not(id: owner.id)
 
     expect(people.count).to eq(5)
-    expect(people.pluck(:name)).to contain_exactly(
+    expect(people.map(&:name)).to contain_exactly(
       "Rafael Nunes", "Camila Rocha", "Thiago Almeida", "Juliana Ferreira", "Beatriz Lima"
     )
     expect(people.pluck(:role).uniq).to eq([ "member" ])
@@ -43,12 +43,12 @@ RSpec.describe "db/seeds/access.rb" do
   end
 
   it "liga cada pessoa ao grupo e aos departamentos, e marca quem não atende" do
-    thiago = organization.accounts.find_by!(email: "thiago.almeida@exemplo.com.br")
+    thiago = organization.accounts.with_email("thiago.almeida@exemplo.com.br").sole
     expect(thiago.access_role.name).to eq("Usuário")
     expect(thiago.teams.pluck(:name)).to contain_exactly("Atendimento", "Pós-venda")
     expect(thiago.setup_only).to be(false)
 
-    beatriz = organization.accounts.find_by!(email: "beatriz.lima@exemplo.com.br")
+    beatriz = organization.accounts.with_email("beatriz.lima@exemplo.com.br").sole
     expect(beatriz.setup_only).to be(true)
     expect(beatriz.can?(:core_settings)).to be(true)
   end
@@ -78,9 +78,25 @@ RSpec.describe "db/seeds/access.rb" do
     )
   end
 
+  it "põe a Marina numa segunda organização, como participante, e cria o suporte da demonstração" do
+    clinic = Organization.find_by!(name: "Clínica Bem Viver")
+    marina_there = clinic.accounts.find_by!(user_id: owner.user_id)
+
+    expect(marina_there).to have_attributes(role: "member")
+    expect(marina_there.access_role.name).to eq("Gerente")
+    expect(clinic.accounts.where(role: "owner").map(&:email)).to eq([ "patricia.gomes@exemplo.com.br" ])
+    expect(owner.user.memberships.count).to eq(2)
+
+    support = User.find_by!(email: "suporte@vekoo.com.br")
+    expect(support).to be_master
+    expect(support.accounts).to be_empty
+  end
+
   it "é idempotente: rodar de novo não duplica nada" do
     expect { seed }
       .to not_change(Account, :count)
+      .and not_change(User, :count)
+      .and not_change(Organization, :count)
       .and not_change(AccessRole, :count)
       .and not_change(Team, :count)
       .and not_change(TeamMembership, :count)
@@ -89,7 +105,7 @@ RSpec.describe "db/seeds/access.rb" do
   end
 
   it "rodar de novo não desfaz o que a pessoa mudou por conta própria" do
-    rafael = organization.accounts.find_by!(email: "rafael.nunes@exemplo.com.br")
+    rafael = organization.accounts.with_email("rafael.nunes@exemplo.com.br").sole
     rafael.update!(password: "senha-trocada-depois")
     notice = AccountNotice.for_account(owner).where(title: "Novo agendamento confirmado").take
     notice.mark_as_read!

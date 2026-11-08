@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Navigate, useLocation, useParams } from "react-router"
+import { Navigate, useLocation, useParams } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 

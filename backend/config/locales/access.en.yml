@@ -12,9 +12,18 @@ en:
     default_access_role: "Default groups can't be deleted."
     no_push_devices: "No device is receiving notifications on this account."
     push_not_configured: "Push notifications aren't set up in this environment."
+    shared_identity: "This person is also in another organization: name, email, phone and password only change in their own profile."
+    not_owner: "Only an owner can do that."
+    already_owner: "This person already owns the organization."
+    support_only: "Only Vekoo support can do that."
+    already_member: "This person is already in this organization."
+    support_cannot_leave: "Support access doesn't leave an organization: just go back to the organization list."
+    account_revoked: "This person's access is revoked. Restore it first."
 
   auth:
     access_revoked: "Your access to this organization was revoked. Talk to whoever manages the account."
+    account_revoked: "Your access to this organization was revoked. Pick another organization."
+    account_required: "Choose which organization you want to work in."
 
   push:
     test_title: "Test notification"
@@ -39,10 +48,18 @@ en:
               unknown_key: "has a resource that doesn't exist: %{key}"
               unknown_level: "has an access level that doesn't exist for %{key}"
     models:
+      user: "person"
       access_role: "group"
       team: "department"
       push_device: "device"
     attributes:
+      user:
+        name: "name"
+        email: "email"
+        password: "password"
+        phone: "phone"
+        locale: "language"
+        password_confirmation: "password confirmation"
       account:
         phone: "phone"
         locale: "language"

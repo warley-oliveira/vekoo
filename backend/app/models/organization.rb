@@ -7,7 +7,13 @@ class Organization < ApplicationRecord
 
   PLANS = %w[free].freeze
 
-  has_many :accounts, dependent: :destroy
+  # As pessoas da organização. O vínculo de suporte (`support: true`) fica de fora de propósito:
+  # ele não aparece em Pessoas, contagens, seletores nem atribuição.
+  has_many :accounts, -> { where(support: false) }, dependent: :destroy, inverse_of: :organization
+  has_many :support_accounts, -> { where(support: true) }, class_name: "Account", dependent: :destroy,
+    inverse_of: :organization
+  has_many :users, through: :accounts
+  has_many :support_accesses, dependent: :delete_all
   has_many :folders, dependent: :destroy
   has_many :carousels, dependent: :destroy
   has_many :notifications, dependent: :destroy

@@ -12,9 +12,18 @@ pt-BR:
     default_access_role: "Os grupos padrão não podem ser excluídos."
     no_push_devices: "Nenhum dispositivo está recebendo notificações nesta conta."
     push_not_configured: "As notificações push não estão configuradas neste ambiente."
+    shared_identity: "Essa pessoa também participa de outra organização: nome, e-mail, telefone e senha só mudam no perfil dela."
+    not_owner: "Só quem é dono pode fazer isso."
+    already_owner: "Essa pessoa já é dona da organização."
+    support_only: "Só o suporte do Vekoo pode fazer isso."
+    already_member: "Essa pessoa já faz parte desta organização."
+    support_cannot_leave: "O acesso de suporte não sai da organização: é só voltar para a lista de organizações."
+    account_revoked: "O acesso dessa pessoa está revogado. Restaure antes."
 
   auth:
     access_revoked: "Seu acesso a esta organização foi revogado. Fale com quem administra a conta."
+    account_revoked: "Seu acesso a esta organização foi revogado. Escolha outra organização."
+    account_required: "Escolha em qual organização você quer trabalhar."
 
   push:
     test_title: "Notificação de teste"
@@ -38,11 +47,24 @@ pt-BR:
             permissions:
               unknown_key: "traz um recurso que não existe: %{key}"
               unknown_level: "traz um nível de acesso que não existe em %{key}"
+      user:
+        attributes:
+          # "senha" é feminino — a mensagem genérica sairia "curto demais".
+          password:
+            too_short: "é curta demais (mínimo de %{count} caracteres)"
     models:
+      user: "pessoa"
       access_role: "grupo"
       team: "departamento"
       push_device: "dispositivo"
     attributes:
+      user:
+        name: "nome"
+        email: "e-mail"
+        password: "senha"
+        phone: "telefone"
+        locale: "idioma"
+        password_confirmation: "confirmação da senha"
       account:
         phone: "telefone"
         locale: "idioma"

@@ -16,13 +16,13 @@ Leitura obrigatória para todo sub-agent. O inventário do que migrar está em
 
 | Origem (ancient-app) | Vekoo | Observação |
 |---|---|---|
-| `Admin::CoreAccount` (workspace) | **`Organization`** | A organização vem da **sessão**. Não há id de organização na URL (`ca_hashid` deixa de existir). |
+| `Admin::CoreAccount` (workspace) | **`Organization`** | A organização vem do **vínculo da aba**: o front manda o hashid da `Account` em `X-Account` (no WebSocket, `account=`), e a API confere que ele é da pessoa da sessão. Nenhuma rota da API recebe id de organização. |
 | `Admin::Organization` (o **assistente**) | **não existe** | Assistentes estão fora do escopo; quem automatiza é o **Fluxo** (`Flow`). |
-| `Admin::User` | **`Account`** | Pertence a uma organização (`account.organization`). |
-| `Admin::UserAccess` | colunas em `Account` | `access_role_id`, `revoked_at`. Sem multi-workspace por enquanto. |
+| `Admin::User` | **`User`** | A pessoa e o login (e-mail único, senha, nome, foto, idioma). `master` é o suporte do Vekoo. |
+| `Admin::UserAccess` | **`Account`** | O vínculo `User` × `Organization`: `role`, `access_role_id`, `revoked_at`, `setup_only`, `support`. Um por organização; é o `account_id` de tudo. `account.name`/`email` vêm da pessoa, por delegação. |
 | `Admin::AuthorizationRole` / `auth_map` | **`AccessRole`** / `permissions` | Chaves em `AccessRole::KEYS`. |
 | `Admin::Department` | **`Team`** | Na tela continua "Departamento". |
-| `Admin::Current` | **`Current`** | `Current.account`, `Current.organization`. |
+| `Admin::Current` | **`Current`** | `Current.user`, `Current.account`, `Current.organization`. |
 | IDs inteiros | **UUID** (Postgres) e **BSON string** (Mongo) | Campo Mongoid que aponta para Postgres é `type: String`. No front, todo id é `string`. |
 
 **"organization" muda de sentido.** Na origem é o assistente; aqui é o workspace. O `recycle.rb` converte o antigo sentido no marcador `legacy_assistant` antes de renomear. **Um arquivo só está portado quando `grep -rn "legacy_assistant\|LegacyAssistant\|LegacyUserAccess" <arquivo>` não acha nada** — cada ocorrência é uma decisão: remover, trocar pela organização, ou trocar pelo equivalente em fluxos.
@@ -117,6 +117,9 @@ end
 ```
 
 - Herdam de `PlatformController` (sessão, `Current`, `@organization`, `paginate`, `require_permission`, e a entrada camelCase → snake_case; mapas livres passam intactos, ver `CamelParams::DEFAULT_OPAQUE`).
+- **A organização é a do vínculo da aba** (`X-Account: <hashid>`), conferido em `Authenticatable` contra o `User` da sessão: hashid de outra pessoa ou que não existe responde `404 accountNotFound`; vínculo próprio revogado, `403 accountRevoked`; sem cabeçalho, vale o único vínculo ativo, e com mais de um, `400 accountRequired`. Rota que é da pessoa e não de uma organização (`/me`, `/accounts`, `/organizations`, suporte, aparelhos de push) chama `skip_account_requirement`.
+- **Pessoas e nomes:** listas de pessoas partem de `organization.accounts`, que não enxerga o vínculo de suporte. Nome e e-mail moram em `users`: ordene com `Account.by_name`, ache por e-mail com `Account.with_email(email)` / `Account.for_email(email, organization:, role:)`, e tire `{ id => nome }` com `Account.names_by_id` (o suporte sai como "Suporte Vekoo"). Foto: `Account.with_attached_avatar`.
+- **Link do front gerado no back** (aviso, push, e-mail) leva o vínculo de quem recebe: `AccountLink.path(account, "/calendar")` → `/a/<hashid>/calendar`. Grave o caminho puro; `AccountNoticeSerializer` e `Push::Delivery` já põem o prefixo.
 - **Entrada com envelope explícito:** o front manda `{ quickReply: { name: "x" } }` e o controlador lê `params.require(:quick_reply).permit(:name)`. `PlatformController` desliga o `wrap_parameters` do Rails, porque ele conflita com o camelCase. Controlador que hoje aceita corpo solto lê os campos soltos (`params[:name]`), sem `require`.
 - **Saída:** serializer explícito (`app/serializers/`, herda `ApplicationSerializer`): chaves em **camelCase**, datas em **milissegundos** (`epoch_ms`), ids como string. Mapas livres (atributos personalizados, definição de fluxo) saem como estão.
 - **Erro:** sempre `render_error` / `render_invalid` / `render_forbidden` (`{ error: { code, field?, message, details? } }`). `code` em camelCase é contrato de máquina; `message` vem de `config/locales`.
@@ -138,7 +141,7 @@ Billing/planos/pacotes (`Stripe`, `Packages::`, `PlanLimitEnforcement`, `plan_ga
 ### Specs (obrigatórias)
 
 - **Toda classe ou endpoint novo tem spec.** Recicle as specs da origem (`recycle.rb` também serve) quando fizer sentido; onde elas só testam dublês, reescreva contra o banco de verdade.
-- Request specs entram como a API manda: `headers: auth_headers(account)` e `as: :json`, sem stub de autenticação. Cubra: sessão ausente (401), permissão (403), isolamento entre organizações (404), validação (422).
+- Request specs entram como a API manda: `headers: auth_headers(account)` (sessão da pessoa + `X-Account` do vínculo) e `as: :json`, sem stub de autenticação. Cubra: sessão ausente (401), permissão (403), isolamento entre organizações (404), validação (422). Factory: `create(:account, name:, email:)` monta a pessoa junto; `create(:account, user: outra.user)` põe a mesma pessoa em outra organização; `create(:account, :support)` é o vínculo de suporte.
 - Grupo sem nenhum acesso, para testar 403: `create(:access_role, organization:, permissions: AccessRole::BLANK_PERMISSIONS)`. Não monte o mapa à mão: os níveis são validados, e `chat_list_to` não aceita `none`.
 - `create` em documento Mongoid é permitido: o Mongo de teste é real e limpo a cada exemplo. Rede fechada por WebMock: stub explícito para cada provedor. Factories por domínio em `spec/factories/<dominio>.rb`.
 - Antes de encerrar: `cd backend && bundle exec rspec` **inteiro** verde no seu worktree. Não apague nem pule spec para passar.
@@ -195,6 +198,8 @@ Não copie o layout da origem por inércia: pergunte qual é a melhor forma de a
 
 Está pronta e é o que as telas devem usar. Não recrie nada disto:
 
+**Organização na URL.** Toda tela da plataforma mora em `/a/<hashid>/...` (o vínculo da pessoa com a organização da aba). As rotas continuam escritas sem o prefixo (`path="/chat"`), e **o roteador vem de `@/lib/router`**, nunca de `react-router` (o lint recusa): `Link`, `NavLink`, `Navigate` e `useNavigate` põem o prefixo, e `useLocation().pathname` vem sem ele. Para `href` cru ou `window.open`, `useAccountHref()`. O cliente da API manda `X-Account` sozinho; `fetch` próprio usa `sessionRequestHeaders()` de `@/lib/api`. A organização perdida (revogada, removida) leva a aba para `/organizations`.
+
 ```ts
 // Rota: src/routes/<dominio>/index.tsx fica pequeno; a página entra por lazy().
 // Não mexa em App.tsx: ele já importa o index.tsx de cada domínio.
@@ -215,8 +220,12 @@ useFullBleed(active)   // sem padding do <main>; a tela reserva --app-bottom-nav
 // @/hooks/use-channel: params por valor; mesmo canal e params dividem a assinatura
 useChannel<T>(nome | null, params?, onMessage?): { connected, perform(acao, dados?) => boolean }
 
-// @/hooks/use-can
+// @/hooks/use-can — o suporte do Vekoo (`session.user.master`) passa sempre
 useCan(key?): boolean; useCanAccess(): (key?) => boolean; usePermissionLevel(key)
+
+// @/lib/auth: `identity` (a pessoa e as organizações dela) e `session` (a organização desta aba)
+useAuth(): { identity, session, enterAccount, leaveAccount, refreshAccounts, … }; useSession()
+// @/lib/router: useAccountHashid(), useAccountHref()(path)
 <RequirePermission permission="chat" fallback?>   // sem fallback, redireciona e avisa
 
 // @/hooks/use-back-layer: camada que não é popup do Base UI (seleção, painel feito à mão). O resto é sozinho.

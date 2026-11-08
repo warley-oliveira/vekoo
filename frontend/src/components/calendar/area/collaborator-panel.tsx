@@ -3,7 +3,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { Trash2 } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { toast } from "sonner"
 import { z } from "zod"
 

@@ -331,11 +331,25 @@ RSpec.describe "Pessoas da organização", type: :request do
       expect(json.dig("error", "field")).to eq("passwordConfirmation")
     end
 
-    it "recusa e-mail em uso, aqui ou em outra organização, com código próprio" do
-      post "/users", params: { user: valid.merge(email: stranger.email) }, headers: auth_headers(owner), as: :json
+    it "convida quem já tem conta em outra organização: cria só o vínculo, sem tocar na pessoa" do
+      digest = stranger.user.password_digest
+
+      expect {
+        post "/users", params: { user: valid.merge(email: stranger.email.upcase, name: "Outro Nome", password: "trocada123") },
+          headers: auth_headers(owner), as: :json
+      }.to change(Account, :count).by(1).and not_change(User, :count)
+
+      expect(response).to have_http_status(:created)
+      expect(json).to include("name" => stranger.name, "email" => stranger.email, "organizationId" => organization.id)
+      expect(stranger.user.reload).to have_attributes(name: stranger.name, password_digest: digest)
+      expect(stranger.reload.organization_id).to eq(other_organization.id)
+    end
+
+    it "recusa quem já está nesta organização, com código próprio" do
+      post "/users", params: { user: valid.merge(email: attendant.email) }, headers: auth_headers(owner), as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json.dig("error", "code")).to eq("emailTaken")
+      expect(json.dig("error", "code")).to eq("alreadyMember")
       expect(json.dig("error", "field")).to eq("email")
     end
 
@@ -698,7 +712,7 @@ RSpec.describe "Pessoas da organização", type: :request do
   end
 
   describe "DELETE /users/:id" do
-    it "apaga a pessoa e tudo que é só dela" do
+    it "tira o vínculo e o que é só dele, sem apagar a pessoa nem os aparelhos dela" do
       device = create(:push_device, account: attendant)
       notice = create(:account_notice, account: attendant)
       other_notice = create(:account_notice, account: owner)
@@ -707,7 +721,8 @@ RSpec.describe "Pessoas da organização", type: :request do
 
       expect(response).to have_http_status(:no_content)
       expect(Account.exists?(attendant.id)).to be(false)
-      expect(PushDevice.exists?(device.id)).to be(false)
+      expect(User.exists?(attendant.user_id)).to be(true)
+      expect(PushDevice.exists?(device.id)).to be(true)
       expect(AccountNotice.where(id: notice.id).exists?).to be(false)
       expect(AccountNotice.where(id: other_notice.id).exists?).to be(true)
     end

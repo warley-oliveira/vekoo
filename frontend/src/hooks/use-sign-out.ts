@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 

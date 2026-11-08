@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { useParams } from "react-router"
+import { useParams } from "@/lib/router"
 
 import { FlowEditor } from "@/components/flows/editor/flow-editor"
 import { EmptyState, ErrorState, PageBody, PageHeader } from "@/components/shared"

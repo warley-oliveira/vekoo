@@ -30,7 +30,7 @@ class NotificationsChannel < ApplicationCable::Channel
 
     ActionCable.server.broadcast(
       account_stream(notice.organization_id, notice.account_id),
-      { notification: AccountNoticeSerializer.one(notice), unreadCount: Notifications::Feed.unread_count(account) }
+      { notification: AccountNoticeSerializer.one(notice, account: account), unreadCount: Notifications::Feed.unread_count(account) }
     )
   end
 

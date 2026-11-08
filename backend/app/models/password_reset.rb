@@ -3,7 +3,7 @@
 class PasswordReset < ApplicationRecord
   DURATION = 2.hours
 
-  belongs_to :account
+  belongs_to :user
 
   scope :usable, -> { where(used_at: nil, expires_at: Time.current..) }
 
@@ -19,10 +19,11 @@ class PasswordReset < ApplicationRecord
     usable.find_by(token_digest: digest(token))
   end
 
-  def self.open!(account)
+  def self.open!(user)
+    user = user.user if user.is_a?(Account)
     token = SecureRandom.urlsafe_base64(32)
     reset = create!(
-      account: account,
+      user: user,
       token_digest: digest(token),
       expires_at: DURATION.from_now
     )

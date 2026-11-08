@@ -1,11 +1,12 @@
 import { lazy, Suspense, type ReactNode } from "react"
-import { Navigate, Route, Routes } from "react-router"
+import { Navigate, Route, Routes } from "@/lib/router"
 
 import {
   AuthSplash,
   RedirectIfAuthenticated,
   RequireAuth,
 } from "@/components/auth-guard"
+import { AccountRedirect, AccountScope } from "@/components/organizations/account-scope"
 import { RootRedirect } from "@/components/require-permission"
 import { RouteBoundary } from "@/components/shell/route-boundary"
 import { calendarRoutes } from "@/routes/calendar"
@@ -28,6 +29,11 @@ import { instagramCallbackRoute } from "@/routes/settings/integrations"
 // de `<Route>`, com a página em `lazy()`. Quem traz uma tela nova mexe no arquivo do
 // seu domínio, não aqui. A casca e as telas de entrada também são `lazy`, para o
 // primeiro carregamento levar só o que aquela pessoa vai usar.
+//
+// Toda tela da plataforma mora dentro de uma organização: `/a/<hashid>/...`, o hashid do
+// vínculo da pessoa com ela. As rotas de domínio continuam escritas sem o prefixo (`/chat`):
+// elas casam dentro de `/a/:account/*`, e `lib/router` põe o prefixo nos links. Fora dele
+// ficam a entrada, a conta e a escolha de organização (`/organizations`).
 
 const AppShell = lazy(() =>
   import("@/components/app-shell").then((m) => ({ default: m.AppShell }))
@@ -50,6 +56,9 @@ const ResetPasswordPage = lazy(() =>
   import("@/routes/reset-password").then((m) => ({
     default: m.ResetPasswordPage,
   }))
+)
+const OrganizationsPage = lazy(() =>
+  import("@/routes/organizations").then((m) => ({ default: m.OrganizationsPage }))
 )
 
 /** Tela inteira carregando: entrada, editor e a própria casca. */
@@ -105,40 +114,66 @@ export default function App() {
 
       {/* Dentro da sessão */}
       <Route element={<RequireAuth />}>
-        {/* Editor em tela cheia — fora do AppShell de propósito */}
+        {/* Escolher a organização: da pessoa, não de uma organização */}
         <Route
-          path="/carousels/:carouselId/edit"
+          path="/organizations"
           element={
             <FullScreen>
-              <EditorPage />
+              <OrganizationsPage />
             </FullScreen>
           }
         />
         <Route
+          path="/a/:account/*"
           element={
-            <FullScreen>
-              <AppShell />
-            </FullScreen>
+            <AccountScope>
+              <PlatformRoutes />
+            </AccountScope>
           }
-        >
-          <Route path="/" element={<RootRedirect />} />
-          {dashboardRoutes}
-          {flowsRoutes}
-          {calendarRoutes}
-          {pipelineAdminRoutes}
-          {pipelinesRoutes}
-          {chatRoutes}
-          {contactsRoutes}
-          {catalogRoutes}
-          {funnelsRoutes}
-          {campaignWizardRoutes}
-          {campaignsRoutes}
-          {carouselsRoutes}
-          {settingsRoutes}
-          {devRoutes}
-        </Route>
+        />
+        {/* `/` e os links de antes da organização na URL */}
+        <Route path="*" element={<AccountRedirect />} />
       </Route>
+    </Routes>
+  )
+}
 
+/** As telas de uma organização, sem o prefixo `/a/:account` (ver o comentário do topo). */
+function PlatformRoutes() {
+  return (
+    <Routes>
+      {/* Editor em tela cheia — fora do AppShell de propósito */}
+      <Route
+        path="/carousels/:carouselId/edit"
+        element={
+          <FullScreen>
+            <EditorPage />
+          </FullScreen>
+        }
+      />
+      <Route
+        element={
+          <FullScreen>
+            <AppShell />
+          </FullScreen>
+        }
+      >
+        <Route path="/" element={<RootRedirect />} />
+        {dashboardRoutes}
+        {flowsRoutes}
+        {calendarRoutes}
+        {pipelineAdminRoutes}
+        {pipelinesRoutes}
+        {chatRoutes}
+        {contactsRoutes}
+        {catalogRoutes}
+        {funnelsRoutes}
+        {campaignWizardRoutes}
+        {campaignsRoutes}
+        {carouselsRoutes}
+        {settingsRoutes}
+        {devRoutes}
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

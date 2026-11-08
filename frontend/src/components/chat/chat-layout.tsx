@@ -1,5 +1,5 @@
 import { lazy, memo, Suspense, useCallback } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { MessagesSquare } from "lucide-react"

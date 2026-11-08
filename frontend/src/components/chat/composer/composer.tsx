@@ -1,5 +1,5 @@
 import { lazy, memo, Suspense, useMemo, type ComponentType, type Ref } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { SWRConfig } from "swr"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"

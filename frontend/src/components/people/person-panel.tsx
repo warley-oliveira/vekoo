@@ -2,8 +2,8 @@ import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trans, useTranslation } from "react-i18next"
-import { Link } from "react-router"
-import { KeyRound, Lock, RotateCcw, UserX } from "lucide-react"
+import { Link } from "@/lib/router"
+import { Crown, KeyRound, Lock, RotateCcw, Users, UserX } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -62,7 +62,7 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
   const { account: actor } = useSession()
   const confirm = useConfirm()
   const { updatePerson } = usePersonMutations()
-  const { revoke, restore, remove } = usePersonActions()
+  const { revoke, restore, remove, transfer } = usePersonActions()
   const { teams, isLoading: loadingTeams } = useTeams()
   const { roles, isLoading: loadingRoles, error: rolesError } = useAccessRoles()
   const roleName = useRoleName()
@@ -214,6 +214,10 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
           <Callout icon={<Lock />}>{t("people.users.locked")}</Callout>
         ) : null}
 
+        {!rules.isLocked && !rules.canEditIdentity && !rules.isSelf ? (
+          <Callout icon={<Users />}>{t("people.users.identityShared", { name })}</Callout>
+        ) : null}
+
         <div className="flex flex-col gap-4">
           <TextField
             control={form.control}
@@ -221,7 +225,7 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
             label={t("people.users.fields.name")}
             autoComplete="off"
             spellCheck={false}
-            disabled={locked}
+            disabled={locked || !rules.canEditIdentity}
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField
@@ -231,14 +235,14 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
               inputMode="email"
               label={t("people.users.fields.email")}
               autoComplete="off"
-              disabled={locked}
+              disabled={locked || !rules.canEditIdentity}
             />
             <PhoneField
               control={form.control}
               name="phone"
               label={t("people.users.fields.phone")}
               optional
-              disabled={locked}
+              disabled={locked || !rules.canEditIdentity}
             />
           </div>
         </div>
@@ -361,6 +365,30 @@ export function PersonPanel({ person, people, open, onOpenChange }: PersonPanelP
                 </Button>
               </div>
             )}
+          </div>
+        ) : null}
+
+        {rules.canTransferOwnership ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-5">
+            <div className="min-w-0 flex-1 basis-56">
+              <p className="text-sm font-medium">{t("people.users.transfer.sectionTitle")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("people.users.transfer.hint", { name })}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="pointer-coarse:h-10"
+              onClick={() => {
+                void transfer(person).then((done) => {
+                  if (done) close()
+                })
+              }}
+            >
+              <Crown />
+              {t("people.users.transfer.action")}
+            </Button>
           </div>
         ) : null}
 

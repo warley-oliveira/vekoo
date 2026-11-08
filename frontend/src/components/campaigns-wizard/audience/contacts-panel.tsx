@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Loader2, SearchX, Users } from "lucide-react"
 import { toast } from "@/lib/campaigns-wizard/notify"
 import { mutate as globalMutate } from "swr"

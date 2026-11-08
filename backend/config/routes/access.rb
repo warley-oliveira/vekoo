@@ -5,12 +5,23 @@
 resources :users, only: %i[index show create update destroy] do
   collection do
     get "check-email", action: :check_email
+    post :leave
   end
 
   member do
     post :revoke
     post :restore
+    post "transfer-ownership", action: :transfer_ownership
   end
+end
+
+# --- as organizações da pessoa e o suporte (valem sem `X-Account`) ----------------
+get  "accounts"      => "memberships#index"
+post "organizations" => "memberships#create"
+
+scope :support, as: :support do
+  get  "organizations"           => "support#organizations"
+  post "organizations/:id/enter" => "support#enter", as: :enter_organization
 end
 
 resources :teams, only: %i[index show create update destroy]

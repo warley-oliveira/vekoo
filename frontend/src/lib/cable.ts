@@ -12,8 +12,9 @@ import { API_URL } from "@/lib/api"
 //   assinaturas do ActionCable fica reenviando esse `subscribe` a cada 500 ms, para
 //   sempre. Então dois componentes no mesmo canal (com os mesmos parâmetros)
 //   compartilham a mesma assinatura, por contagem de ouvintes.
-// - **Sobreviver à troca de sessão.** O token vai na URL, então trocar de conta é
-//   trocar de consumer. Quem já estava ouvindo continua ouvindo: as assinaturas são
+// - **Sobreviver à troca de sessão e de organização.** O token e a organização da aba
+//   (`account`, o hashid de `X-Account`) vão na URL, então trocar de conta ou de organização é
+//   trocar de consumer: a conexão do servidor é presa a um vínculo. Quem já estava ouvindo continua ouvindo: as assinaturas são
 //   refeitas aqui, sem o componente perceber.
 // - **Não insistir em canal que não responde.** Um canal sem classe no servidor (o
 //   front chegou antes do back) nunca é confirmado nem recusado, e o mesmo guardião
@@ -45,6 +46,7 @@ type Entry = {
 const entries = new Map<string, Entry>()
 let consumer: Consumer | null = null
 let currentToken: string | null = null
+let currentAccount: string | null = null
 let onClosedByServer: (() => void) | null = null
 let closedByServerNotified = false
 
@@ -64,9 +66,10 @@ function notifyClosedByServer() {
   onClosedByServer?.()
 }
 
-function cableUrl(token: string): string {
+function cableUrl(token: string, account: string | null): string {
   const base = API_URL.replace(/^http/, "ws").replace(/\/+$/, "")
-  return `${base}/cable?token=${encodeURIComponent(token)}`
+  const query = `token=${encodeURIComponent(token)}`
+  return `${base}/cable?${query}${account ? `&account=${encodeURIComponent(account)}` : ""}`
 }
 
 function setStatus(entry: Entry, connected: boolean) {
@@ -124,6 +127,7 @@ export function closeCable(): void {
   consumer?.disconnect()
   consumer = null
   currentToken = null
+  currentAccount = null
   for (const entry of entries.values()) {
     clearConfirmTimer(entry)
     entry.subscription = null
@@ -131,13 +135,17 @@ export function closeCable(): void {
   }
 }
 
-/** Abre o WebSocket da sessão. Mesmo token é no-op; outro token troca o consumer. */
-export function openCable(token: string): void {
-  if (token === currentToken && consumer) return
+/**
+ * Abre o WebSocket da sessão na organização da aba. Mesmo token e mesma organização é no-op;
+ * qualquer troca troca o consumer.
+ */
+export function openCable(token: string, account: string | null): void {
+  if (token === currentToken && account === currentAccount && consumer) return
   closeCable()
   currentToken = token
+  currentAccount = account
   closedByServerNotified = false
-  consumer = createConsumer(cableUrl(token))
+  consumer = createConsumer(cableUrl(token, account))
   for (const entry of entries.values()) attach(entry)
 }
 

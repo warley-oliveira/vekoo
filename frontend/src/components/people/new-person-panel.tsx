@@ -3,7 +3,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
-import { ArrowRight, Loader2, RotateCcw } from "lucide-react"
+import { ArrowRight, Loader2, RotateCcw, UserCheck } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -33,6 +33,7 @@ import {
   accessOptions,
   accessToInput,
   createPersonSchema,
+  invitePersonSchema,
   teamOptions,
   type PersonFormValues,
 } from "./person-form"
@@ -45,7 +46,7 @@ type NewPersonPanelProps = {
   onOpenPerson: (id: string) => void
 }
 
-type Conflict = { email: string; kind: "here" | "revoked" | "elsewhere" }
+type Conflict = { email: string; kind: "here" | "revoked" }
 
 function normalizedEmail(email: string) {
   return email.trim().toLowerCase()
@@ -53,8 +54,9 @@ function normalizedEmail(email: string) {
 
 /**
  * Adicionar alguém começa pelo e-mail, porque ele é único no produto inteiro: antes de pedir
- * nome e senha, vale saber se a pessoa já está aqui, se foi revogada, ou se é de outra
- * organização, caso em que não dá para adicionar.
+ * nome e senha, vale saber se a pessoa já está aqui, se foi revogada, ou se já tem conta no
+ * Vekoo (em outra organização). Nesse último caso o convite cria só o vínculo: ela entra com a
+ * senha que já usa, e nome e senha não são pedidos.
  */
 export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: NewPersonPanelProps) {
   const { t } = useTranslation()
@@ -69,10 +71,16 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
   const [step, setStep] = useState<"email" | "details">("email")
   const [checking, setChecking] = useState(false)
   const [foundConflict, setFoundConflict] = useState<Conflict | null>(null)
+  // O e-mail já tem conta no Vekoo: nome, telefone e senha são dela, e não se pedem aqui.
+  const [existingUser, setExistingUser] = useState(false)
+  const existingRef = useRef(false)
+  existingRef.current = existingUser
 
   const schema = useMemo(() => createPersonSchema(t), [t])
+  const inviteSchema = useMemo(() => invitePersonSchema(t), [t])
   const form = useForm<PersonFormValues>({
-    resolver: zodResolver(schema),
+    resolver: (values, context, options) =>
+      zodResolver(existingRef.current ? inviteSchema : schema)(values, context, options),
     defaultValues: {
       name: "",
       email: "",
@@ -106,8 +114,8 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
     : undefined
 
   useEffect(() => {
-    if (step === "details") form.setFocus("name")
-  }, [form, step])
+    if (step === "details" && !existingUser) form.setFocus("name")
+  }, [form, step, existingUser])
 
   const close = () => onOpenChange(false)
 
@@ -119,16 +127,12 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
     setChecking(true)
     try {
       const result = await checkEmail(candidate)
-      if (!result.exists) {
+      if (!result.hasOrganizationAccess) {
         setFoundConflict(null)
+        setExistingUser(result.exists)
         setStep("details")
       } else {
-        const kind = !result.hasOrganizationAccess
-          ? "elsewhere"
-          : result.revoked
-            ? "revoked"
-            : "here"
-        setFoundConflict({ email: candidate, kind })
+        setFoundConflict({ email: candidate, kind: result.revoked ? "revoked" : "here" })
       }
     } catch (error) {
       form.setError("email", { type: "server", message: errorMessage(t, error) })
@@ -138,18 +142,25 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
   }
 
   const submitDetails = useFormSubmit(form, async (values) => {
-    await createPerson({
-      name: values.name.trim(),
+    const membership = {
       email: normalizedEmail(values.email),
-      phone: values.phone || null,
-      password: values.password,
-      passwordConfirmation: values.passwordConfirmation,
       teamIds: values.teamIds,
       setupOnly: values.setupOnly,
       ...accessToInput(values.access),
-    })
-    toast.success(t("people.users.create.done", { name: firstName(values.name) }), {
-      description: t("people.users.create.doneHint"),
+    }
+    const created = await createPerson(
+      existingUser
+        ? membership
+        : {
+            ...membership,
+            name: values.name.trim(),
+            phone: values.phone || null,
+            password: values.password,
+            passwordConfirmation: values.passwordConfirmation,
+          }
+    )
+    toast.success(t("people.users.create.done", { name: firstName(created.name) }), {
+      description: t(existingUser ? "people.users.create.invitedHint" : "people.users.create.doneHint"),
     })
     close()
   })
@@ -176,7 +187,7 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
       description={
         step === "email"
           ? t("people.users.create.emailStep")
-          : t("people.users.create.detailsStep")
+          : t(existingUser ? "people.users.create.detailsStepExisting" : "people.users.create.detailsStep")
       }
       size="lg"
       onSubmit={handleSubmit}
@@ -228,6 +239,7 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
                 className="h-auto p-0 text-xs"
                 onClick={() => {
                   form.clearErrors("email")
+                  setExistingUser(false)
                   setStep("email")
                 }}
               >
@@ -241,11 +253,7 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
           {step === "email" ? (
             conflict ? (
               <motion.div key={conflict.kind} {...preset.fade}>
-                {conflict.kind === "elsewhere" ? (
-                  <Callout tone="warning" role="status" title={t("people.users.create.elsewhereTitle")}>
-                    {t("people.users.create.elsewhereDescription")}
-                  </Callout>
-                ) : conflict.kind === "here" ? (
+                {conflict.kind === "here" ? (
                   <Callout
                     role="status"
                     title={t("people.users.create.hereTitle")}
@@ -296,6 +304,16 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
             ) : null
           ) : (
             <motion.div key="details" {...preset.slideUp} className="flex flex-col gap-5">
+              {existingUser ? (
+                <Callout
+                  tone="info"
+                  role="status"
+                  icon={<UserCheck />}
+                  title={t("people.users.create.elsewhereTitle")}
+                >
+                  {t("people.users.create.elsewhereDescription")}
+                </Callout>
+              ) : (
               <div className="flex flex-col gap-4">
                 <TextField
                   control={form.control}
@@ -329,8 +347,9 @@ export function NewPersonPanel({ people, open, onOpenChange, onOpenPerson }: New
                   />
                 </div>
               </div>
+              )}
 
-              <div className="flex flex-col gap-4 border-t pt-5">
+              <div className={existingUser ? "flex flex-col gap-4" : "flex flex-col gap-4 border-t pt-5"}>
                 <SelectField
                   control={form.control}
                   name="access"

@@ -1,7 +1,5 @@
-import { API_URL, ApiError, apiAssetUrl } from "@/lib/api"
+import { API_URL, ApiError, apiAssetUrl, sessionRequestHeaders } from "@/lib/api"
 import { fileNameFromDisposition, triggerBlobDownload } from "@/lib/file-utils"
-import { currentLanguage } from "@/lib/i18n"
-import { getToken } from "@/lib/token"
 import { selectionIdCount, selectionQuery, type ContactSelectionTarget } from "./filters"
 
 // Os dois jeitos de baixar. A API os separa: `GET /contacts/export` responde o CSV na hora, com
@@ -24,10 +22,7 @@ export async function exportNow(target: ContactSelectionTarget, signal?: AbortSi
   try {
     response = await fetch(`${API_URL}/contacts/export?${selectionQuery(target)}`, {
       signal,
-      headers: {
-        Authorization: `Bearer ${getToken() ?? ""}`,
-        "Accept-Language": currentLanguage(),
-      },
+      headers: sessionRequestHeaders(),
     })
   } catch (error) {
     if (signal?.aborted) throw error

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion } from "motion/react"
 import { CalendarPlus, EyeOff, FlaskConical, Loader2 } from "lucide-react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 
 import {
   Callout,

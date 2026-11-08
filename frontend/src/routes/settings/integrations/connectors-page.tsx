@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { Plug, Plus, RefreshCw, Search } from "lucide-react"
 

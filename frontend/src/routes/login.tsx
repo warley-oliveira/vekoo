@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "@/lib/router"
 import { ArrowRight, Loader2, Wand2 } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -53,12 +53,13 @@ export function LoginPage() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const session = await signIn(values.email, values.password)
+      const identity = await signIn(values.email, values.password)
       toast(
         t("auth.login.welcomeBack", {
-          name: session.account.name.split(" ")[0],
+          name: identity.user.name.split(" ")[0],
         })
       )
+      // Com uma organização (ou a última desta aba), `/` abre nela; com mais, a escolha.
       navigate(next, { replace: true })
     } catch (error) {
       if (error instanceof AuthError) {

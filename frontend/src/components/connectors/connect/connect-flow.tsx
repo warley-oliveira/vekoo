@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { ChevronRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"

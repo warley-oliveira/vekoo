@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Navigate, Outlet, useLocation, useSearchParams } from "react-router"
+import { Navigate, Outlet, useLocation, useSearchParams } from "@/lib/router"
 import { RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,14 +11,14 @@ import { useAuth } from "@/lib/auth"
 // cada recarregamento.
 
 export function RequireAuth() {
-  const { session, ready, bootError } = useAuth()
+  const { identity, ready, bootError } = useAuth()
   const location = useLocation()
 
   if (!ready) return <AuthSplash />
   // Servidor fora do ar não é sessão inválida: mandar para o login faria a
   // pessoa digitar a senha contra uma API que não responde.
   if (bootError) return <BootError />
-  if (!session) {
+  if (!identity) {
     // Guarda para onde a pessoa queria ir, para voltar depois de entrar.
     const target = `${location.pathname}${location.search}`
     const next = target === "/" ? "" : `?next=${encodeURIComponent(target)}`
@@ -47,14 +47,14 @@ export function safeNext(raw: string | null): string | null {
  * biblioteca, como acontecia.
  */
 export function RedirectIfAuthenticated() {
-  const { session, ready, signingOut } = useAuth()
+  const { identity, ready, signingOut } = useAuth()
   const [searchParams] = useSearchParams()
 
   if (!ready) return <AuthSplash />
   // Saindo, a tela já veio para o login, mas a sessão só cai quando as chamadas de saída
   // terminam. Mandar de volta aqui remontaria a casca, que revincularia o push à conta
   // que está saindo.
-  if (session && !signingOut) {
+  if (identity && !signingOut) {
     return <Navigate to={safeNext(searchParams.get("next")) ?? "/"} replace />
   }
   return <Outlet />

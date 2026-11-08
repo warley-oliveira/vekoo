@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api"
+import { apiFetch, sessionRequestHeaders } from "@/lib/api"
 import { getCatalog } from "@/lib/catalog"
 import type { ImageSource } from "@/lib/doc"
 
@@ -104,8 +104,9 @@ export function uploadImageFile(
       const base = import.meta.env.VITE_API_URL ?? "http://localhost:3040"
       request.open("POST", `${base}/uploads`)
 
-      const token = localStorage.getItem("vekoo.token.v1")
-      if (token) request.setRequestHeader("Authorization", `Bearer ${token}`)
+      for (const [name, value] of Object.entries(sessionRequestHeaders())) {
+        request.setRequestHeader(name, value)
+      }
 
       request.upload.onprogress = (event) => {
         if (event.lengthComputable) {

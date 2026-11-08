@@ -9,7 +9,7 @@ import {
   type DragEvent,
   type KeyboardEvent,
 } from "react"
-import { useNavigate, useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import { ImageUp, SearchX, WifiOff } from "lucide-react"

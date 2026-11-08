@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react"
-import { useLocation } from "react-router"
+import { useLocation } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 
 import { ErrorState } from "@/components/error-state"

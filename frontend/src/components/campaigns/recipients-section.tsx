@@ -1,7 +1,7 @@
 import { forwardRef, memo, useCallback, useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { Copy, MessageCircle, MessageCircleReply, Users } from "lucide-react"
 import { toast } from "sonner"
 

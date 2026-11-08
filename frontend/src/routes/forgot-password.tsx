@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trans, useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { ArrowLeft, KeyRound, Loader2, MailCheck } from "lucide-react"
 import { z } from "zod"
 

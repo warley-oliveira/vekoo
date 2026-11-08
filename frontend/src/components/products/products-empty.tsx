@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Plus, ScanSearch, ShoppingBag, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"

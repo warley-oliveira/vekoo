@@ -4,7 +4,9 @@
 class Session < ApplicationRecord
   DURATION = 30.days
 
-  belongs_to :account
+  # Da pessoa: vale em todas as organizações dela. O vínculo de cada requisição vem do
+  # cabeçalho `X-Account` e é conferido à parte (`Authenticatable`, `ApplicationCable::Connection`).
+  belongs_to :user
 
   scope :active, -> { where(expires_at: Time.current..) }
 
@@ -18,16 +20,18 @@ class Session < ApplicationRecord
   def self.authenticate(token)
     return nil if token.blank?
 
-    # Revogar já apaga as sessões; o `merge` fecha a corrida com quem estava entrando
-    # naquele instante. Vale para a API e para o WebSocket, que passam os dois aqui.
-    active.joins(:account).merge(Account.active).find_by(token_digest: digest(token))
+    # Revogar o último vínculo apaga as sessões; o `locked_out?` fecha a corrida com quem
+    # estava entrando naquele instante. Vale para a API e para o WebSocket.
+    session = active.includes(:user).find_by(token_digest: digest(token))
+    session unless session.nil? || session.user.locked_out?
   end
 
   # Abre a sessão e devolve o registro já com o token cru em memória.
-  def self.start!(account, user_agent: nil, ip_address: nil)
+  # Aceita o vínculo também: é a pessoa dele que entra.
+  def self.start!(user, user_agent: nil, ip_address: nil)
     token = SecureRandom.urlsafe_base64(32)
     session = create!(
-      account: account,
+      user: user.is_a?(Account) ? user.user : user,
       token_digest: digest(token),
       user_agent: user_agent&.truncate(255),
       ip_address: ip_address,
@@ -47,17 +51,19 @@ class Session < ApplicationRecord
       remaining = session.expires_at - Time.current
       next unless remaining.positive?
 
-      Rails.cache.write(revoked_key(session.token_digest), session.account_id, expires_in: remaining)
+      Rails.cache.write(revoked_key(session.token_digest), session.user_id, expires_in: remaining)
     end
   end
 
-  # A conta é conferida agora: quem foi restaurado não tem mais o que ser avisado, e o
+  # A pessoa é conferida agora: quem foi restaurado não tem mais o que ser avisado, e o
   # token antigo dele é só um token que não vale.
   def self.revoked_token?(token)
     return false if token.blank?
 
-    account_id = Rails.cache.read(revoked_key(digest(token)))
-    account_id.present? && Account.revoked.exists?(id: account_id)
+    user_id = Rails.cache.read(revoked_key(digest(token)))
+    return false if user_id.blank?
+
+    User.find_by(id: user_id)&.locked_out? || false
   end
 
   def self.revoked_key(token_digest)

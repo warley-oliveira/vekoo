@@ -198,6 +198,14 @@ ssh deploy@107.152.37.137 'ls -lh /var/backups/vekoo'    # db, mongo e storage
 kamal deploy
 ```
 
+Entre as migrations está a que **separa a pessoa do vínculo** (`20261107003801_split_users_from_accounts`): cada conta vira um `User` com o mesmo id e os mesmos e-mail, senha, nome, telefone, idioma e foto, e a conta passa a ser o vínculo dela com a organização. Sessões, pedidos de nova senha e aparelhos de push mudam de dono só pela coluna: **ninguém precisa entrar de novo**, e todo `account_id` gravado no Postgres e no Mongo continua valendo. Roda numa transação; se algo falhar, nada muda e o deploy volta para a versão anterior. A volta (`db:rollback`) existe enquanto ninguém estiver em duas organizações. Antes, `HASHID_SALT` no `.env.deploy`, se quiser um sal próprio: ele entra na URL do front (`/a/<hashid>/...`) e **não pode mudar depois**, ou todo link guardado quebra.
+
+Depois do deploy, ligue o suporte do Vekoo para quem atende (a pessoa precisa ter conta):
+
+```bash
+kamal app exec -r web --reuse "bin/rails 'support:grant[suporte@vekoo.com.br]'"
+```
+
 **8. Publique o front** ([seção 7.1](#71-front-na-cloudflare)), com as variáveis novas.
 
 **9. Registre o que fica fora do repositório** ([seção 7.2](#72-o-que-se-registra-fora-do-repositório)) e [confira](#8-o-que-conferir-depois-do-deploy).
@@ -341,7 +349,9 @@ kamal app logs -r web --since 15m | grep -E 'MONGOID: Created indexes|Puma start
 | O quê | Como | Espera |
 |---|---|---|
 | API | `curl -s -o /dev/null -w '%{http_code}\n' https://syco.vekoo.app/up` | `200` |
-| Sessão e dados | `/login` na tela, com uma conta; abrir `/dashboard`, `/chat`, `/carousels` | Telas com dados, sem erro. O dashboard usa `hint`: se ele abre, os índices estão lá |
+| Sessão e dados | `/login` na tela, com uma conta; abrir o Dashboard, o Chat e os Carrosséis | A URL vira `/a/<hashid>/dashboard`, com dados, sem erro. O dashboard usa `hint`: se ele abre, os índices estão lá |
+| Pessoas e vínculos | `kamal app exec -r web --reuse "bin/rails runner 'p [User.count, Account.count, Account.where(user_id: nil).count]'"` | Os dois primeiros iguais ao número de contas de antes; o terceiro, `0` |
+| Sessão de antes do deploy | Um navegador que já estava logado, recarregado | Continua dentro, sem pedir senha |
 | Índices | `kamal mongoc`, depois `db.chats.getIndexes().length` | `9` nesta versão, e não `1` |
 | pgvector | `kamal dbc`, depois `SELECT extversion FROM pg_extension WHERE extname = 'vector';` | Uma versão |
 | Catálogo de ferramentas | `/tools`, na tela | 8 ferramentas nesta versão, e não uma lista vazia |
@@ -386,6 +396,16 @@ docker exec -i vekoo-api-mongodb sh -c 'exec mongorestore --quiet -u "$MONGO_INI
 # Anexos, no host
 docker run --rm -i -v vekoo_storage:/data alpine tar xzf - -C /data < storage-AAAAMMDD-HHMMSS.tar.gz
 ```
+
+**Suporte do Vekoo.** Quem tem `master` entra em qualquer organização pela tela de organizações, e cada entrada fica registrada:
+
+```bash
+kamal app exec -r web --reuse "bin/rails 'support:grant[pessoa@vekoo.com.br]'"    # liga
+kamal app exec -r web --reuse "bin/rails 'support:revoke[pessoa@vekoo.com.br]'"   # desliga, e as abas de suporte caem na hora
+kamal app exec -r web --reuse "bin/rails 'support:accesses[50]'"                  # as últimas entradas: quando, quem, organização, IP
+```
+
+Nenhuma rota da API liga `master`. No console, `SupportAccess.recent` traz o mesmo registro.
 
 **Sintomas:**
 

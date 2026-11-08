@@ -15,7 +15,7 @@ O coração do atendimento: conversa, mensagem e canais (WhatsApp Cloud, WhatsAp
 ## Regras gerais
 
 - **Autenticação:** `Authorization: Bearer <token>`. Sem sessão válida, `401 unauthorized`. `/inbound/*` e `/widget/v1/*` têm autenticação própria, descrita em cada seção.
-- **A organização vem da sessão.** Não há id de organização na URL. Id de outra organização responde `404 notFound`, nunca `403`.
+- **A organização vem do vínculo da aba** (`X-Account: <hashid>`, conferido contra a pessoa da sessão; ver `access.md`). Nenhuma rota recebe id de organização. Id de outra organização responde `404 notFound`, nunca `403`.
 - **Entrada:** corpo JSON solto, sem envelope, em camelCase: `{ "sendCollaboratorName": true }`. É diferente do domínio access. `components` (modelos) e `context` (widget) são mapas livres e passam como vieram.
 - **Saída:** chaves em camelCase, datas em milissegundos desde a época, ids como string. Conector, conversa e mensagem têm id do Mongo (24 hexadecimais); conta, departamento e organização, UUID.
 - **Listagens:** `{ "<recurso>": [...], "meta": { "page", "perPage", "total", "totalPages", "hasMore" } }`, com `?page=` e `?perPage=`.
