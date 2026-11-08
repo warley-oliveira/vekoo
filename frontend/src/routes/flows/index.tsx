@@ -1,5 +1,5 @@
 import { lazy } from "react"
-import { Route } from "react-router"
+import { Route } from "@/lib/router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
 import { toolsRoutes } from "@/routes/tools"

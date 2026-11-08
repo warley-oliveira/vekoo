@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Trans, useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 

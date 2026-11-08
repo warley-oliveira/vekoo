@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { ChevronRight, CircleAlert, ExternalLink } from "lucide-react"
 
 import { Callout, CopyButton, DetailSkeleton, ErrorState, KeyValueList, ResponsiveDialog, StatusBadge } from "@/components/shared"

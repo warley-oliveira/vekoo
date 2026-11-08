@@ -3,7 +3,7 @@ import { ReactFlowProvider } from "@xyflow/react"
 import { useTranslation } from "react-i18next"
 import { Redo2, RefreshCw, Sparkles, Undo2, X } from "lucide-react"
 import { toast } from "sonner"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import { Callout, ConfirmDialog, EmptyState, SegmentedControl } from "@/components/shared"
 import { Button } from "@/components/ui/button"

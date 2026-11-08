@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { ChevronRight, MessageCircle, Waypoints } from "lucide-react"
 
 import { Callout, DetailSkeleton, ErrorState, RelativeTime, ResponsiveDialog, StatusBadge, Timeline, type TimelineItem } from "@/components/shared"

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { Code2, ExternalLink, Pencil } from "lucide-react"
 
 import { MultiSelectInput, SelectInput, type SelectOption } from "@/components/shared"

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useParams, useSearchParams } from "react-router"
+import { useNavigate, useParams, useSearchParams } from "@/lib/router"
 import { Unplug } from "lucide-react"
 
 import {

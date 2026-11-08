@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { Download, ExternalLink, MessageSquareText, Trash2 } from "lucide-react"
 import { toast } from "sonner"

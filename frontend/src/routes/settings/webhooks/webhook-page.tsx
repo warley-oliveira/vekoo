@@ -3,7 +3,7 @@ import { motion } from "motion/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "@/lib/router"
 import { Code2, Globe, History, Loader2, Pencil, Plus, Send, Tag, Trash2, Undo2, Unplug } from "lucide-react"
 import { toast } from "sonner"
 

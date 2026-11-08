@@ -1,6 +1,6 @@
 import { memo, useSyncExternalStore, type ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useSearchParams } from "react-router"
+import { Link, useSearchParams } from "@/lib/router"
 import {
   CircleCheck,
   CircleSlash,

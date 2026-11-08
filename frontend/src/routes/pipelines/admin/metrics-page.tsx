@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "@/lib/router"
 import { BarChart3, EyeOff } from "lucide-react"
 
 import {

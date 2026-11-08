@@ -13,7 +13,7 @@ import {
   UserCheck,
   UserX,
 } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import {
   CopyButton,

@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState, type ContextType } from "
 import {
   UNSAFE_DataRouterContext as DataRouterContext,
   UNSAFE_NavigationContext as NavigationContext,
-} from "react-router"
+} from "@/lib/router"
 
 import { guardBrowserNavigation, type PendingNavigation } from "@/lib/navigation-guard"
 

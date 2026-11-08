@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 import { Plus } from "lucide-react"
 
 import { ErrorState } from "@/components/shared"

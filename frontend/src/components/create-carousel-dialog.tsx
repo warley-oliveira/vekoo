@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { ArrowRight, Loader2, Sparkles } from "lucide-react"
 import { toast } from "sonner"

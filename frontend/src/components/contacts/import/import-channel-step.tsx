@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Unplug } from "lucide-react"
 
 import { ConnectorMark } from "@/components/connectors/channel-mark"

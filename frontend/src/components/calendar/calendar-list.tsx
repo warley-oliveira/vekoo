@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { CalendarDays, ChevronDown, GraduationCap, Plus, Settings2, Users } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"

@@ -1,9 +1,29 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
+  "plugins": [
+    "react",
+    "typescript",
+    "oxc"
+  ],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react-router",
+            "message": "Importe de @/lib/router: ele põe a organização da aba (/a/<hashid>) nos caminhos."
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
@@ -15,6 +35,14 @@
       ],
       "rules": {
         "react/only-export-components": "off"
+      }
+    },
+    {
+      "files": [
+        "src/lib/router.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
       }
     }
   ]

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 /**
  * Painel aberto no endereço (`?reply=<id>`, `?new=1`): dá para mandar o link, e recarregar não

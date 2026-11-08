@@ -1,5 +1,4 @@
-import { ApiError } from "@/lib/api"
-import { getToken } from "@/lib/token"
+import { ApiError, sessionRequestHeaders } from "@/lib/api"
 
 // Leitura de Server-Sent Events.
 //
@@ -38,13 +37,12 @@ export async function* streamEvents(
   body: unknown,
   signal?: AbortSignal
 ): AsyncGenerator<SseEvent> {
-  const token = getToken()
   const res = await fetch(`${BASE_URL}${path}`, {
     method: "POST",
     signal,
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...sessionRequestHeaders(),
     },
     body: JSON.stringify(body),
   })

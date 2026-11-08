@@ -1,4 +1,4 @@
-import { Route } from "react-router"
+import { Route } from "@/lib/router"
 
 import { RouteFrame } from "@/components/shell/route-frame"
 import { CampaignWizardPage } from "./wizard/lazy"

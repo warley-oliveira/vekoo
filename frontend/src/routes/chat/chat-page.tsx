@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect } from "react"
-import { useNavigate, useParams, useSearchParams } from "react-router"
+import { useNavigate, useParams, useSearchParams } from "@/lib/router"
 
 import { ChatLayout } from "@/components/chat/chat-layout"
 import { useFullBleed } from "@/hooks/use-app-shell"

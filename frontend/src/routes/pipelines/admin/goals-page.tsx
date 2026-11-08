@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "@/lib/router"
 import { ChevronLeft, ChevronRight, Goal as GoalIcon, Pencil, Plus, Target, Trash2, UserPlus } from "lucide-react"
 import { toast } from "sonner"
 

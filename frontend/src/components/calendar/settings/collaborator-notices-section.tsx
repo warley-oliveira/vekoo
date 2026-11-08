@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { TFunction } from "i18next"
 import { AlertTriangle, BellRing, MessageCircleWarning, Pencil, Plus, Trash2 } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { toast } from "sonner"
 
 import {

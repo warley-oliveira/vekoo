@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useController, useFormState, useWatch, type Control } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Code2, Contact, Globe, Plus, ShieldAlert, Tag, Trash2, TriangleAlert } from "lucide-react"
 
 import { GatedCodeEditor } from "@/components/tools/gated-code-editor"

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { useLocalStorage } from "@/hooks/use-local-storage"

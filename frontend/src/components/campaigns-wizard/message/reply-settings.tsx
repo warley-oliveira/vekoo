@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { useController, useForm, useFormContext, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChevronDown, Plus } from "lucide-react"
 import { toast } from "@/lib/campaigns-wizard/notify"

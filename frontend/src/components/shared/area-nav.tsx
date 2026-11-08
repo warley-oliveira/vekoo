@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from "react"
-import { NavLink, useLocation } from "react-router"
+import { NavLink, useLocation } from "@/lib/router"
 
 import { cn } from "@/lib/utils"
 

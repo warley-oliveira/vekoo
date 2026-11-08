@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 
 type LaunchParams = { targetURL?: string }
 type LaunchQueue = { setConsumer: (consumer: (params: LaunchParams) => void) => void }

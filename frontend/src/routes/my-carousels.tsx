@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Navigate, useLocation, useNavigate, useParams } from "react-router"
+import { Navigate, useLocation, useNavigate, useParams } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import {

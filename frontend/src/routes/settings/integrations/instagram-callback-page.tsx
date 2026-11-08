@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "@/lib/router"
 import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"

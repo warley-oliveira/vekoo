@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from "react"
-import { useSearchParams } from "react-router"
+import { useSearchParams } from "@/lib/router"
 
 import { useLocalStorage } from "@/hooks/use-local-storage"
 

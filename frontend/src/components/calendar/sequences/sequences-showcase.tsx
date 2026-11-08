@@ -2,7 +2,7 @@ import { Fragment, useState, type JSX } from "react"
 import { useTranslation } from "react-i18next"
 import { AnimatePresence, motion, type Variants } from "motion/react"
 import { ArrowLeft, ArrowRight, Check, Settings2, X } from "lucide-react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 
 import { ResponsiveDialog } from "@/components/shared"
 import { Button } from "@/components/ui/button"

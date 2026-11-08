@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { ExternalLink, MessageSquare } from "lucide-react"
 import { toast } from "sonner"
 

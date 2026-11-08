@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate, useSearchParams } from "react-router"
+import { Link, useNavigate, useSearchParams } from "@/lib/router"
 import { Archive, Copy, ListChecks, Pencil, Plus, Power, Settings2, Sparkles, Trash2, Wrench } from "lucide-react"
 import { toast } from "sonner"
 

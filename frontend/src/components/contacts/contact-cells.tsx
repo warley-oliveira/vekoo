@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Zap, ZapOff } from "lucide-react"
 
 import { ChannelMark } from "@/components/connectors/channel-mark"

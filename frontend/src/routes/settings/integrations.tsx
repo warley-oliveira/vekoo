@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react"
-import { Route } from "react-router"
+import { Route } from "@/lib/router"
 
 import { AuthSplash } from "@/components/auth-guard"
 import { RouteFrame } from "@/components/shell/route-frame"

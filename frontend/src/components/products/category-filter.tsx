@@ -1,6 +1,6 @@
 import { useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { Settings2 } from "lucide-react"
 
 import { ResponsivePopover, useFilterLayout } from "@/components/shared"

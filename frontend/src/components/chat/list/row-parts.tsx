@@ -13,6 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { LoadingRegion } from "@/components/shared"
 import { useLongPress } from "@/hooks/use-long-press"
+import { useAccountHref } from "@/lib/router"
 import { formatDate, formatTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { meaningfulContent, messageKind } from "@/lib/chat/message-rules"
@@ -73,6 +74,8 @@ export function ListRow({
   onHold?: () => void
 }) {
   const hold = useLongPress(onHold ?? NOTHING, { delay: HOLD_MS })
+  // Link de verdade (Ctrl+clique abre outra aba): leva a organização da aba, como os do roteador.
+  const accountHref = useAccountHref()
   // Só o toque: em tela larga, segurar o botão do mouse continua sendo arrastar ou selecionar.
   const holdHandlers = onHold
     ? {
@@ -133,7 +136,7 @@ export function ListRow({
   return (
     <div className="px-1.5 py-px">
       <a
-        href={href}
+        href={accountHref(href)}
         onClick={handleClick}
         aria-current={selected ? "true" : undefined}
         aria-label={ariaLabel}

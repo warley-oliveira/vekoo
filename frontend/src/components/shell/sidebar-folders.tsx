@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useLocation, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react"
 import { toast } from "sonner"

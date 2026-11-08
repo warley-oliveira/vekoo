@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { CornerDownRight, Loader2, SearchIcon, type LucideIcon } from "lucide-react"
 

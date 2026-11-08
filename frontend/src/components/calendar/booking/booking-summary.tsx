@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Ban, CalendarDays, Clock, Globe, MessageCircle, NotebookText, ClipboardList, User } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import { Callout, UserAvatar } from "@/components/shared"
 import type { BookingActions } from "@/hooks/calendar/use-booking-actions"

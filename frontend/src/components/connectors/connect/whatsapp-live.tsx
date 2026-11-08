@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { Loader2, QrCode, Smartphone } from "lucide-react"
 import { toast } from "sonner"

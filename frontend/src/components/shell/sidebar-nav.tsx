@@ -1,5 +1,5 @@
 import { useEffect, useId, type ReactNode } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 import { useTranslation } from "react-i18next"
 import { ChevronDown, type LucideIcon } from "lucide-react"
 import { toast } from "sonner"

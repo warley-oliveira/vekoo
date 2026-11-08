@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { Ban, GraduationCap, ListChecks, MapPin, MessageCircle, User } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "@/lib/router"
 
 import { Button } from "@/components/ui/button"
 import { useCan } from "@/hooks/use-can"

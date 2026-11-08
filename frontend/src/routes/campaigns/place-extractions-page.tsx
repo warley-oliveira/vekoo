@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router"
+import { useNavigate } from "@/lib/router"
 import { Info, MapPinned, Store } from "lucide-react"
 
 import { CampaignsAreaNav } from "@/components/campaigns/campaigns-area-nav"
