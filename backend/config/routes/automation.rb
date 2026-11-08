@@ -2,6 +2,8 @@
 # Caminhos em inglês e kebab-case: resources :quick_replies, path: "quick-replies".
 
 resources :flows, only: %i[index show create update destroy] do
+  get "native-tools", on: :collection, action: :native_tools
+
   member do
     match :definition, via: %i[put patch], action: :update_definition
     post :publish

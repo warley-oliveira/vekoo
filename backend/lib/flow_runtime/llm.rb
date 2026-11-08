@@ -12,6 +12,7 @@ module FlowRuntime
     COSTS = { "main" => 2, "fast" => 1 }.freeze
     MODELS = { "main" => Ai::Chat::AGENT_MODEL, "fast" => Ai::Chat::FAST_MODEL }.freeze
     MAX_TOOL_ROUNDS = 5
+    EXTRA_ROUND_COST = 1
 
     def self.size_of(value)
       MODELS.key?(value.to_s) ? value.to_s : "main"
@@ -23,12 +24,14 @@ module FlowRuntime
 
     # Quanto a última `converse` gastou, nos campos de `ChatMessage`: a resposta que ela gerou guarda isso. Soma as rodadas de
     # ferramenta. O juiz de saída fica de fora, porque é outro modelo e `usage_model` só cabe um.
-    attr_reader :conversation_usage
+    attr_reader :conversation_usage, :rounds, :extra_credits
 
     def initialize(organization, chat: Ai::Chat.new)
       @organization = organization
       @chat = chat
       @conversation_usage = {}
+      @rounds = 0
+      @extra_credits = 0
     end
 
     # Uma resposta em JSON, no formato de `schema`. O corte de tokens leva em conta o pensamento, que conta nele.
@@ -60,6 +63,8 @@ module FlowRuntime
     def converse(system:, messages:, tools: [], size: "main", instruction: nil, effort: "medium", cost: nil, &on_tool)
       size = self.class.size_of(size)
       @conversation_usage = {}
+      @rounds = 0
+      @extra_credits = 0
 
       billed(cost || self.class.cost_of(size)) do
         run_tool_loop(system, messages.dup, tools, MODELS.fetch(size), instruction, effort, &on_tool)
@@ -70,8 +75,12 @@ module FlowRuntime
 
     attr_reader :organization, :chat
 
+    # Cada volta depois de uma ferramenta é outra chamada ao modelo, com a conversa inteira de novo: custa `EXTRA_ROUND_COST`
+    # a mais. Sem saldo para a volta, para ali, e a resposta é a falta de crédito, como em qualquer chamada.
     def run_tool_loop(system, messages, tools, model, instruction, effort)
-      MAX_TOOL_ROUNDS.times do
+      MAX_TOOL_ROUNDS.times do |round|
+        charge_extra_round! if round.positive?
+        @rounds = round + 1
         response = chat.respond(system: system, messages: messages, tools: tools, context: instruction, model: model, effort: effort)
         log_usage(model, response)
         add_conversation_usage(model, response)
@@ -93,6 +102,12 @@ module FlowRuntime
     rescue StandardError => e
       Rails.logger.warn("[FlowRuntime::Llm] ferramenta #{call.name}: #{e.class}: #{e.message}")
       { type: :tool_result, tool_use_id: call.id, content: { error: e.message.truncate(500) }.to_json, is_error: true }
+    end
+
+    def charge_extra_round!
+      raise NoCredits unless organization.consume_credits(EXTRA_ROUND_COST)
+
+      @extra_credits += EXTRA_ROUND_COST
     end
 
     def billed(cost)

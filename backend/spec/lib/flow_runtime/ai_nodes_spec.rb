@@ -237,6 +237,74 @@ RSpec.describe "Blocos de IA" do
     end
   end
 
+  describe "ai_assistant, com ferramentas nativas" do
+    let!(:tag) { create(:chat_tag, organization_id: organization.id.to_s, name: "quer-orcamento") }
+    let(:tool) { create(:tool_function, organization: organization, name: "consultar_frete", js_code: "return { prazo: 3 };") }
+
+    def assistant_flow(**data)
+      published_flow(organization, [ node("t", "trigger_manual"), node("ia", "ai_assistant", **data) ], [ edge("t", "ia") ])
+    end
+
+    it "roda em Ruby, aqui mesmo, sem passar pelo processo de scripts, e o modelo responde com o resultado" do
+      contact_says("quero um orçamento")
+      llm = script_llm(llm_tool("tag_add", { "name" => "quer-orcamento" }, id: "toolu_1"), llm_text("Anotei seu pedido de orçamento."))
+
+      execution = nil
+      expect { execution = run_flow(assistant_flow(native_tools: %w[tags]), chat: chat, message: "quero um orçamento") }.not_to have_enqueued_job(Flows::ScriptStepJob)
+
+      expect(sent_texts).to eq([ "Anotei seu pedido de orçamento." ])
+      expect(chat.reload.chat_tag_ids).to eq([ tag.id ])
+      expect(llm.seen.first[:tools].pluck(:name)).to eq(%w[tags_list tag_add tag_remove])
+      expect(JSON.parse(llm.seen.last[:messages].last[:content].first[:content])).to eq("ok" => true, "tag" => "quer-orcamento")
+      expect(log_of(execution.reload, "ia").output["tools"]).to match([ { "name" => "tag_add", "native" => true, "ok" => true, "ms" => a_kind_of(Integer) } ])
+    end
+
+    it "nativas e personalizadas juntas: a personalizada leva o bloco ao processo de scripts" do
+      contact_says("frete?")
+      llm = script_llm(llm_text("Chega em 3 dias."))
+
+      expect { run_flow(assistant_flow(native_tools: %w[tags], tool_ids: [ tool.id.to_s ]), chat: chat, message: "frete?") }.to have_enqueued_job(Flows::ScriptStepJob)
+      perform_enqueued_jobs
+
+      expect(llm.seen.first[:tools].pluck(:name)).to eq(%w[tags_list tag_add tag_remove consultar_frete])
+    end
+
+    it "cada volta depois de uma ferramenta custa um crédito a mais" do
+      contact_says("quero um orçamento")
+      script_llm(llm_tool("tags_list", {}), llm_tool("tag_add", { "name" => "quer-orcamento" }), llm_text("Pronto."))
+
+      execution = run_flow(assistant_flow(native_tools: %w[tags]), chat: chat, message: "quero um orçamento").reload
+
+      # 2 da resposta no modelo principal, mais as duas voltas depois das ferramentas.
+      expect(spent).to eq(4)
+      expect(log_of(execution, "ia").output["rounds"]).to eq(3)
+    end
+
+    it "sem crédito para a volta seguinte, para com o aviso de crédito" do
+      organization.update!(credits_total: 2, credits_used: 0)
+      contact_says("quero um orçamento")
+      script_llm(llm_tool("tags_list", {}), llm_text("Pronto."))
+
+      execution = run_flow(assistant_flow(native_tools: %w[tags]), chat: chat, message: "quero um orçamento").reload
+
+      expect(execution).to have_attributes(status: "failed", error_message: I18n.t("automation.flows.errors.no_credits"))
+      expect(sent_texts).to be_empty
+    end
+
+    it "no teste do editor, cada chamada aparece com o que foi e o que voltou" do
+      contact_says("quero um orçamento")
+      script_llm(llm_tool("tag_add", { "name" => "quer-orcamento" }), llm_text("Anotei."))
+      execution = FlowExecution.create!(
+        flow: assistant_flow(native_tools: %w[tags]), flow_version: Flow.last.published_version, organization_id: organization.id,
+        chat_id: chat.id.to_s, status: "pending", context: { "variables" => {} }, playground: true, started_at: Time.current, current_node_id: "t"
+      )
+
+      expect { FlowRuntime::Engine.resume(execution, last_message: FlowRuntime::InboundMessage.new("quero um orçamento"), from: "pending") }
+        .to have_broadcasted_to(FlowRuntime::MessageDispatcher.playground_stream(execution))
+        .with(a_hash_including("kind" => "tool_call", "name" => "tag_add", "native" => true, "input" => { "name" => "quer-orcamento" }, "output" => a_hash_including("ok" => true)))
+    end
+  end
+
   describe "ai_assistant, processando" do
     let(:flow) do
       published_flow(

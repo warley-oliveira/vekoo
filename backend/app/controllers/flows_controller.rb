@@ -22,6 +22,16 @@ class FlowsController < PlatformController
     render json: { flow: FlowSerializer.full(@flow) }
   end
 
+  # GET /flows/native-tools: o que o bloco "Conversa com IA" pode oferecer ao modelo sem JavaScript, e se a organização tem
+  # com o que usar (agenda sem calendário, catálogo vazio e pipeline sem quadro vêm `available: false`).
+  def native_tools
+    render json: {
+      nativeTools: FlowRuntime::NativeTools.availability(current_organization).map do |group|
+        { key: group[:key], available: group[:available], tools: group[:tools] }
+      end
+    }
+  end
+
   # POST /flows { flow: { name, description?, triggerType?, connectorFilter? }, template? }
   def create
     template = params[:template].present? ? FlowTemplate.find(params[:template]) : nil

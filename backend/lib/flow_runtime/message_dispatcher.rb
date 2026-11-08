@@ -43,6 +43,12 @@ module FlowRuntime
       broadcast(:ai_decision, **payload) if playground?
     end
 
+    # Uma ferramenta que a IA chamou, com o que mandou e o que voltou: só aparece no teste. Na execução de verdade, o
+    # log do bloco guarda o nome, se deu certo e quanto levou.
+    def report_tool_call(payload)
+      broadcast(:tool_call, **payload) if playground?
+    end
+
     def playground?
       @execution.playground?
     end

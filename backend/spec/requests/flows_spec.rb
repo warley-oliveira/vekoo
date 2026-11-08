@@ -27,6 +27,27 @@ RSpec.describe "Fluxos", type: :request do
     end
   end
 
+  describe "GET /flows/native-tools" do
+    it "lista os grupos de ferramentas nativas e se a organização tem com o que usar" do
+      create(:pipeline_board, organization: organization)
+      get "/flows/native-tools", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      groups = response.parsed_body["nativeTools"]
+      expect(groups.pluck("key")).to eq(FlowRuntime::NativeTools::GROUPS)
+      expect(groups.to_h { |group| [ group["key"], group["available"] ] }).to include("agenda" => false, "pipeline" => true, "tags" => true)
+      expect(groups.find { |group| group["key"] == "pipeline" }["tools"]).to include("pipeline_create_card")
+    end
+
+    it "401 sem sessão e 403 sem a permissão" do
+      get "/flows/native-tools", as: :json
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/flows/native-tools", headers: no_access_headers, as: :json
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   describe "GET /flows, o que cada um fez" do
     it "traz o último uso, os últimos resultados e a semana, sem contar o teste do editor" do
       flow = flow_with_draft(name: "Com histórico")

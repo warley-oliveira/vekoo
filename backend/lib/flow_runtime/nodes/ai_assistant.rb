@@ -10,13 +10,17 @@ module FlowRuntime
       CONTINUE_PROMPT = "(Instrução interna) Continue o atendimento.".freeze
       CHAT_START = "(Início da conversa.)".freeze
 
-      # Quem usa ferramenta roda JavaScript de cliente: precisa do processo de scripts. Sem ferramenta, nem passa por lá.
+      # Quem usa função personalizada roda JavaScript de cliente: precisa do processo de scripts. As nativas são Ruby e
+      # rodam aqui mesmo, e sem ferramenta nenhuma o bloco nem passa por lá.
       def self.script_process?(node, context)
         data = node["data"] || {}
         return false if data["mode"].to_s == "processing" || Array(data["tool_ids"]).compact_blank.empty?
 
-        ToolRegistry.for(organization: context.organization, tool_ids: data["tool_ids"]).any?
+        ToolRegistry.for(organization: context.organization, tool_ids: data["tool_ids"]).custom.any?
       end
+
+      MAX_TOOL_LOG = 10
+      TOOL_PREVIEW_BYTES = 8.kilobytes
 
       def call
         return process_synchronous if data["mode"].to_s == "processing"
@@ -96,20 +100,32 @@ module FlowRuntime
       end
 
       def reply(instruction: nil, hint: nil, judged: false, log: {})
-        text = converse(reply_messages, [ instruction, hint, widget_context ].compact_blank.join("\n\n").presence, judged)
+        text = converse(reply_messages, [ instruction, hint, clock, widget_context ].compact_blank.join("\n\n").presence, judged)
 
         if text.present?
           delivery = dispatcher.send_text(text, sender_name: data["sender_name"].presence, generated: true, usage: llm.conversation_usage)
           context.append_playground_message("assistant", text) if context.playground?
         end
 
-        suspend(:wait_for_message, log: { input: { messages: reply_messages.length }, output: log.merge(reply: text, **(delivery ? delivery.to_log : {})) })
+        output = log.merge(reply: text, **(delivery ? delivery.to_log : {}))
+        output[:tools] = tool_calls if tool_calls.any?
+        output[:rounds] = llm.rounds if llm.rounds > 1
+        suspend(:wait_for_message, log: { input: { messages: reply_messages.length }, output: output })
+      end
+
+      def registry
+        @registry ||= ToolRegistry.for(
+          organization: organization, tool_ids: data["tool_ids"], native: data["native_tools"], chat: chat, playground: context.playground?
+        )
+      end
+
+      # Quem marca horário precisa saber que dia é hoje, no fuso da agenda.
+      def clock
+        registry.native.agenda_clock if registry.native.agenda?
       end
 
       # Conversa com as ferramentas que o bloco escolheu. O juiz já cobrou a chamada dele, e a rodada não paga duas vezes.
       def converse(messages, instruction, judged)
-        registry = ToolRegistry.for(organization: organization, tool_ids: data["tool_ids"])
-
         llm.converse(
           system: system_prompt,
           messages: messages,
@@ -125,10 +141,32 @@ module FlowRuntime
         end
       end
 
+      # Cada chamada aparece no teste na hora, e fica no log do bloco (nome, se deu certo, quanto levou).
       def invoke_tool(tool, input)
-        tool.invoke(input, organization: organization, chat: chat)
-      rescue ::MiniRacer::Error, MiniRacerEngine::Error => e
-        { error: e.message.truncate(500) }
+        started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        output = begin
+          tool.invoke(input, organization: organization, chat: chat)
+        rescue ::MiniRacer::Error, MiniRacerEngine::Error => e
+          { error: e.message.truncate(500) }
+        end
+        record_tool_call(tool, input, output, ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000).to_i)
+        output
+      end
+
+      def record_tool_call(tool, input, output, duration_ms)
+        native = tool.respond_to?(:native?) && tool.native?
+        error = output.is_a?(Hash) ? (output[:error] || output["error"]) : nil
+        simulated = output.is_a?(Hash) && output[:simulated] == true
+        tool_calls << { name: tool.name, native: native, ok: error.nil?, simulated: simulated || nil, ms: duration_ms }.compact if tool_calls.length < MAX_TOOL_LOG
+
+        dispatcher.report_tool_call(
+          nodeId: node_id, name: tool.name, native: native, input: Limits.clip(input, TOOL_PREVIEW_BYTES), output: Limits.clip(output, TOOL_PREVIEW_BYTES),
+          error: error&.to_s&.truncate(300), simulated: simulated, durationMs: duration_ms
+        )
+      end
+
+      def tool_calls
+        @tool_calls ||= []
       end
 
       def exit_judge(turns)
