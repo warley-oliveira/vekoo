@@ -9,8 +9,7 @@ class SessionSerializer < ApplicationSerializer
 
     payload = {
       user: UserSerializer.one(user),
-      accounts: user.memberships.includes(organization: { logo_attachment: :blob }).order(:created_at)
-                    .map { |membership| AccountSerializer.summary(membership) },
+      accounts: AccountSerializer.summaries(user.memberships.order(:created_at)),
       account: account && AccountSerializer.one(account),
       organization: organization && OrganizationSerializer.one(organization),
       credits: organization && CreditsSerializer.one(organization),

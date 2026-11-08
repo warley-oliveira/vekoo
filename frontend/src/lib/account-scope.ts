@@ -111,6 +111,20 @@ export function accountPath(hashid: string, path: string): string {
   return `${ACCOUNT_PATH_PREFIX}${hashid}${path === "/" ? "" : path}`
 }
 
+/** Parece o id de um registro (`/chat/123`, `/folders/0b6f…`), e não o nome de uma área. */
+const RECORD_SEGMENT = /\d/
+
+/**
+ * Para onde a troca de organização leva, dentro da outra: a mesma área (`/chat/123` → `/chat`,
+ * `/settings/users/9` → `/settings/users`). O registro aberto é desta organização e não existe lá.
+ */
+export function switchTargetPath(pathname: string): string {
+  const [first, second] = pathname.split("/").filter(Boolean)
+  if (!first) return "/"
+  if (first === "settings" && second && !RECORD_SEGMENT.test(second)) return `/${first}/${second}`
+  return `/${first}`
+}
+
 /**
  * A organização para abrir sem a pessoa escolher: a última desta aba, a última do navegador ou a
  * única. Com mais de uma e nenhuma lembrada, `null`: a pessoa escolhe.

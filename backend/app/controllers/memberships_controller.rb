@@ -14,8 +14,7 @@ class MembershipsController < AuthenticatedController
     with: -> { render_too_many_requests }
 
   def index
-    accounts = current_user.memberships.includes(organization: { logo_attachment: :blob }).order(:created_at)
-    render json: { accounts: accounts.map { |account| AccountSerializer.summary(account) } }
+    render json: { accounts: AccountSerializer.summaries(current_user.memberships.order(:created_at)) }
   end
 
   def create

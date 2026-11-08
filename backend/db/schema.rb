@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_003801) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -344,6 +344,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_003801) do
     t.jsonb "settings", default: {}, null: false
     t.string "timezone", default: "America/Sao_Paulo", null: false
     t.datetime "updated_at", null: false
+    t.index ["name", "id"], name: "index_organizations_on_name_and_id"
     t.check_constraint "credits_used >= 0 AND credits_used <= credits_total", name: "organizations_credits_within_total"
   end
 

@@ -18,7 +18,7 @@ import {
   TextField,
   UnsavedChangesDialog,
 } from "@/components/shared"
-import { OrganizationBadge } from "@/components/shell/account-menu"
+import { OrganizationBadge } from "@/components/organizations/organization-badge"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { useOrganization } from "@/hooks/people/use-organization"

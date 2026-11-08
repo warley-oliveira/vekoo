@@ -11,6 +11,7 @@ import { Outlet, useLocation } from "@/lib/router"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { CreateCarouselDialog } from "@/components/create-carousel-dialog"
+import { OrganizationSwitcherDialog } from "@/components/organizations/organization-switcher"
 import { SearchPalette } from "@/components/search-palette"
 import { DocumentTitle } from "@/components/shell/header-slot"
 import { MobileHeader } from "@/components/shell/mobile-header"
@@ -131,6 +132,7 @@ export function AppShell() {
 
         <SearchPalette open={searchOpen} onOpenChange={setSearchOpen} />
         <CreateCarouselDialog open={createOpen} onOpenChange={setCreateOpen} />
+        <OrganizationSwitcherDialog />
       </NavigationProvider>
     </ShellContext.Provider>
   )

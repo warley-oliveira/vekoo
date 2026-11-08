@@ -223,5 +223,78 @@ RSpec.describe "Multi-organização e suporte", type: :request do
       expect(response).to have_http_status(:ok)
       expect(organization.accounts.count).to eq(1)
     end
+
+    it "lista todas as organizações do sistema de página em página, por cursor, sem repetir nem pular" do
+      [ "Ateliê Sol", "Barbearia do Zé", "Café Mineiro", "Doceria Lima" ].each { |name| create(:organization, name: name) }
+      headers = bearer(master)
+      seen = []
+      cursor = nil
+
+      loop do
+        get "/support/organizations", params: { perPage: 2, cursor: cursor }.compact, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(json["organizations"].size).to be <= 2
+        seen.concat(json["organizations"].map { |o| o["name"] })
+        expect(json.dig("meta", "total")).to(cursor ? be_nil : eq(Organization.count))
+        cursor = json.dig("meta", "nextCursor")
+        break unless json.dig("meta", "hasMore")
+      end
+
+      expect(seen).to eq(Organization.order(:name, :id).pluck(:name))
+      expect(cursor).to be_nil
+    end
+
+    it "traz o que o seletor mostra: logo, plano, créditos, quantas pessoas e o dono" do
+      create(:account, organization: clinic, role: "owner", name: "Patrícia Gomes")
+      Support::Entry.call(user: master, organization: clinic)
+
+      get "/support/organizations", params: { q: "clinica" }, headers: bearer(master)
+
+      entry = json["organizations"].sole
+      expect(entry).to include("name" => "Clínica Bem Viver", "plan" => "free", "logoUrl" => nil,
+        "creditsLeft" => clinic.credits_left, "membersCount" => 2)
+      expect(entry["owner"]).to include("name" => "Patrícia Gomes")
+    end
+
+    it "recusa cursor que não veio dali" do
+      get "/support/organizations", params: { cursor: "nao-e-cursor" }, headers: bearer(master)
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig("error", "code")).to eq("invalidCursor")
+    end
+  end
+
+  describe "as organizações da pessoa (GET /accounts e /me)" do
+    it "só os vínculos ativos dela: nem a organização de fora, nem a revogada, nem a de suporte" do
+      outsider
+      revoked = create(:account, user: marina.user, organization: create(:organization, name: "Loja Revogada"))
+      revoked.revoke!
+
+      get "/accounts", headers: bearer(marina.user)
+      names = json["accounts"].map { |a| a.dig("organization", "name") }
+
+      expect(names).to contain_exactly("Marina Duarte Conteúdo", "Clínica Bem Viver")
+      expect(response.body).not_to include(outsider.organization.name, outsider.email)
+    end
+
+    it "traz plano, créditos e quantas pessoas há em cada uma, sem contar o suporte" do
+      create(:account, organization: organization, role: "member", name: "Camila Rocha")
+      Support::Entry.call(user: master, organization: organization)
+
+      get "/accounts", headers: bearer(marina.user)
+      mine = json["accounts"].find { |a| a["hashid"] == marina.hashid }
+
+      expect(mine["organization"]).to include("plan" => "free", "membersCount" => 2,
+        "creditsLeft" => organization.credits_left, "logoUrl" => nil)
+    end
+
+    it "o suporte que também participa de uma organização vê só esse vínculo, não os de suporte" do
+      create(:account, user: master, organization: clinic, role: "member")
+      Support::Entry.call(user: master, organization: organization)
+
+      get "/accounts", headers: bearer(master)
+
+      expect(json["accounts"].map { |a| a.dig("organization", "name") }).to eq([ "Clínica Bem Viver" ])
+    end
   end
 end

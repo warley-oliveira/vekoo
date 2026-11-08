@@ -41,7 +41,8 @@
     "fallbackName": "Your account",
     "invite": "Invite people",
     "signOut": "Sign out",
-    "signOutToast": "You've signed out."
+    "signOutToast": "You've signed out.",
+    "personMenu": "{{name}}'s menu"
   },
   "credits": {
     "remaining": "{{remaining}} <muted>of {{total}} credits</muted>",

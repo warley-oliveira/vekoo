@@ -64,9 +64,11 @@ Os três respondem no mesmo formato. `user` é a pessoa; `accounts`, os vínculo
   },
   "accounts": [
     { "id": "b56a981d-…", "hashid": "7kxn7q4r", "role": "owner", "support": false, "lastSeenAt": 1794096637809,
-      "organization": { "id": "ddbca24b-…", "name": "Marina Duarte Conteúdo", "logoUrl": null } },
+      "organization": { "id": "ddbca24b-…", "name": "Marina Duarte Conteúdo", "logoUrl": null,
+                        "plan": "free", "membersCount": 6, "creditsLeft": 36 } },
     { "id": "141c16ce-…", "hashid": "v8q3bw93", "role": "member", "support": false, "lastSeenAt": 1794096806991,
-      "organization": { "id": "edfc7702-…", "name": "Clínica Bem Viver", "logoUrl": null } }
+      "organization": { "id": "edfc7702-…", "name": "Clínica Bem Viver", "logoUrl": null,
+                        "plan": "free", "membersCount": 2, "creditsLeft": 50 } }
   ],
   "account": {
     "id": "141c16ce-…", "hashid": "v8q3bw93", "userId": "ea8ff3af-…", "name": "Marina Duarte",
@@ -81,7 +83,8 @@ Os três respondem no mesmo formato. `user` é a pessoa; `accounts`, os vínculo
 ```
 
 - `hashid` é o identificador público do vínculo: vai na URL do front (`/a/<hashid>/...`) e em `X-Account`. O inteiro que ele codifica nunca sai pela API. Sal, alfabeto e tamanho mínimo em `config/initializers/hashid.rb` (`HASHID_SALT`).
-- `GET /me` com organização grava `lastSeenAt` do vínculo.
+- `GET /me` com organização grava `lastSeenAt` do vínculo (o seletor põe a última usada no topo).
+- Em cada organização, o que o seletor mostra: `logoUrl` (o logo de `POST /organization/logo`), `plan`, `membersCount` (pessoas ativas; o vínculo de suporte não conta) e `creditsLeft`. A contagem sai numa consulta só para a lista inteira.
 - Login: a senha é da pessoa. Quem perdeu todas as organizações recebe `401 accessRevoked`; quem nunca teve (vínculo removido) entra e pode criar a sua.
 - `POST /signup` cria a pessoa, a organização e o vínculo de dono; `account` vem preenchido.
 
@@ -109,18 +112,21 @@ Para `User#master`. Para qualquer outra pessoa, as rotas respondem `404 notFound
 
 | Rota | O que faz |
 |---|---|
-| `GET /support/organizations?q=&page=&perPage=` | Busca por nome da organização (sem acento) ou por nome ou e-mail de quem participa. |
+| `GET /support/organizations?q=&cursor=&perPage=` | Todas as organizações do sistema, por nome, de página em página. `q` busca por nome da organização (sem acento) ou por nome ou e-mail de quem participa. |
 | `POST /support/organizations/:id/enter` | `201`, o vínculo de suporte daquela organização (formato de `accounts`, `support: true`), criado na primeira entrada. Registra a entrada. |
 
 ```json
 {
   "organizations": [
-    { "id": "edfc7702-…", "name": "Clínica Bem Viver", "createdAt": 1792366362605, "membersCount": 2,
+    { "id": "edfc7702-…", "name": "Clínica Bem Viver", "logoUrl": null, "plan": "free", "creditsLeft": 50,
+      "createdAt": 1792366362605, "membersCount": 2,
       "owner": { "name": "Patrícia Gomes", "email": "patricia.gomes@exemplo.com.br" } }
   ],
-  "meta": { "page": 1, "perPage": 25, "total": 1, "totalPages": 1, "hasMore": false }
+  "meta": { "perPage": 30, "hasMore": true, "nextCursor": "WyJDbMOtbmljYSBCZW0gVml2ZXIiLCJlZGZjNzcwMi0uLi4iXQ", "total": 62 }
 }
 ```
+
+**Paginação por cursor** (e não por página): com milhares de organizações, `OFFSET` fica mais lento a cada página, e uma organização criada no meio da rolagem repetiria ou pularia uma linha. A próxima página é `?cursor=<nextCursor>` com o mesmo `q`; `nextCursor` é `null` na última. `perPage` vai de 1 a 100 (padrão 30). `total` só vem na primeira página (sem `cursor`); nas outras, `null`. Cursor que não veio daqui: `400 invalidCursor`, `field: "cursor"`. A ordem é `(name, id)`, com índice próprio.
 
 **O vínculo de suporte** (`support: true`) dá ao suporte o hashid da URL e o autor das ações que pedem um `account_id` (mandar mensagem, atribuir, comentar). Ele:
 

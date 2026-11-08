@@ -22,9 +22,11 @@ class AccountSerializer < ApplicationSerializer
     }
   end
 
-  # Para escolher a organização: o bastante para listar e abrir, sem permissões.
-  def self.summary(account)
+  # Para escolher a organização: o bastante para listar, mostrar e abrir, sem permissões. `membersCount`
+  # conta as pessoas ativas (o vínculo de suporte não entra); `summaries` faz a contagem de uma vez.
+  def self.summary(account, members_count: nil)
     organization = account.organization
+    members_count ||= Account.members.active.where(organization_id: organization.id).count
     {
       id: account.id,
       hashid: account.hashid,
@@ -34,8 +36,18 @@ class AccountSerializer < ApplicationSerializer
       organization: {
         id: organization.id,
         name: organization.name,
-        logoUrl: StoredImagePath.for(organization.logo, :display)
+        logoUrl: StoredImagePath.for(organization.logo, :display),
+        plan: organization.plan,
+        membersCount: members_count,
+        creditsLeft: organization.credits_left
       }
     }
+  end
+
+  # As organizações da pessoa (sessão, `GET /accounts`): uma consulta para as contagens.
+  def self.summaries(accounts)
+    accounts = accounts.includes(organization: { logo_attachment: :blob }).to_a
+    counts = Account.members.active.where(organization_id: accounts.map(&:organization_id)).group(:organization_id).count
+    accounts.map { |account| summary(account, members_count: counts[account.organization_id] || 0) }
   end
 end
