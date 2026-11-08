@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 import { RefreshCw } from "lucide-react"
 
 import { AuthSplash } from "@/components/auth-guard"
-import { SupportBanner } from "@/components/organizations/support-banner"
 import { Button } from "@/components/ui/button"
 import { VekooMark } from "@/components/vekoo-mark"
 import { accountPath, pickAccount } from "@/lib/account-scope"
