@@ -22,6 +22,13 @@ RSpec.describe Connectors::SendFailure do
       expect(described_class.reason(StandardError.new("Número não encontrado no WhatsApp"))).to eq("Número não encontrado no WhatsApp")
     end
 
+    it "erro interno do provedor, com o JSON cru, vira uma frase" do
+      crash = RuntimeError.new('Failed to send message: {"status":500,"error":"Internal Server Error","response":{"message":"Cannot read properties of undefined (reading \'find\')"}}')
+
+      expect(described_class.reason(crash)).to eq(I18n.t("connectors.messages.provider_failed"))
+      expect(described_class.reason(RuntimeError.new('Failed to send message: {"status":400,"response":{"message":"exists false"}}'))).to include("exists false")
+    end
+
     it "responde no idioma da requisição" do
       phrase = I18n.with_locale(:en) { described_class.reason(Net::OpenTimeout.new("execution expired")) }
 

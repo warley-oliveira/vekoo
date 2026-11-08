@@ -59,6 +59,7 @@ en:
       attachment_not_found: "Attachment %{name} not found."
       attachment_blank: "Attachment %{name} is blank."
       channel_unreachable: "The channel did not respond. Try again in a moment."
+      provider_failed: "WhatsApp could not send right now. Check that the channel is connected in Integrations."
       cited_attachment_missing: "A cited attachment no longer exists and was not sent."
       template_failed: "The message template could not be sent."
       template_fallback: "Template: %{name}"
