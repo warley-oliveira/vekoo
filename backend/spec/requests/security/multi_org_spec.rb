@@ -175,6 +175,16 @@ RSpec.describe "Multi-organização e suporte", type: :request do
       expect(json["meta"]["total"]).to eq(1)
     end
 
+    it "busca sem acento e pelo e-mail de quem participa" do
+      marina_at_clinic
+
+      get "/support/organizations", params: { q: "clinica" }, headers: bearer(master)
+      expect(json["organizations"].map { |o| o["name"] }).to eq([ "Clínica Bem Viver" ])
+
+      get "/support/organizations", params: { q: marina.email.upcase }, headers: bearer(master)
+      expect(json["organizations"].map { |o| o["name"] }).to contain_exactly("Marina Duarte Conteúdo", "Clínica Bem Viver")
+    end
+
     it "entra de novo pelo mesmo vínculo de suporte" do
       first = Support::Entry.call(user: master, organization: organization)
       again = Support::Entry.call(user: master, organization: organization)

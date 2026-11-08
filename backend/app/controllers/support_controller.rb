@@ -42,10 +42,20 @@ class SupportController < AuthenticatedController
     render_not_found unless current_user.master?
   end
 
+  # Sem acento dos dois lados: "clinica" acha "Clínica". `translate`, e não a extensão `unaccent`,
+  # para não pedir nada novo ao Postgres de produção.
+  ORGANIZATION_MATCH = <<~SQL.squish.freeze
+    translate(lower(organizations.name), 'áàâãäéèêëíìîïóòôõöúùûüçñ', 'aaaaaeeeeiiiiooooouuuucn') LIKE :pattern
+  SQL
+  PERSON_MATCH = <<~SQL.squish.freeze
+    translate(lower(users.name), 'áàâãäéèêëíìîïóòôõöúùûüçñ', 'aaaaaeeeeiiiiooooouuuucn') LIKE :pattern
+    OR lower(users.email) LIKE :pattern
+  SQL
+
   def matching(scope, term)
-    pattern = "%#{Organization.sanitize_sql_like(term.to_s.strip)}%"
-    people = Account.members.joins(:user).where("users.email ILIKE :pattern OR users.name ILIKE :pattern", pattern: pattern)
-    scope.where("organizations.name ILIKE :pattern", pattern: pattern).or(scope.where(id: people.select(:organization_id)))
+    pattern = "%#{Organization.sanitize_sql_like(I18n.transliterate(term.to_s.strip).downcase)}%"
+    people = Account.members.joins(:user).where(PERSON_MATCH, pattern: pattern)
+    scope.where(ORGANIZATION_MATCH, pattern: pattern).or(scope.where(id: people.select(:organization_id)))
   end
 
   def owners_of(organizations)
