@@ -149,14 +149,14 @@ RSpec.describe Inbound::MetaMessagingEvents do
     it "entrega aos fluxos como primeira mensagem" do
       receive_message(text: "Olá")
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Olá", event: "first_message", message_id: "m_1")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Olá", event: "first_message", message_id: "m_1", sent_at: anything)
     end
 
     it "as seguintes são message_received" do
       receive_message(text: "Olá", mid: "m_1")
       receive_message(text: "Oi de novo", mid: "m_2")
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Oi de novo", event: "message_received", message_id: "m_2")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Oi de novo", event: "message_received", message_id: "m_2", sent_at: anything)
     end
 
     it "atualiza a prévia e conta como não lida" do
@@ -257,7 +257,7 @@ RSpec.describe Inbound::MetaMessagingEvents do
         expect(message).to have_attributes(role: "user", image_url: start_with("/rails/active_storage/blobs/proxy/"))
         expect(blob_of(message).download).to eq("bytes-jpeg")
         expect(blob_of(message).filename.to_s).to eq("m_1.jpg")
-        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "", event: "first_message", message_id: "m_1")
+        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "", event: "first_message", message_id: "m_1", sent_at: anything)
       end
 
       it "sem URL não enfileira" do
@@ -540,7 +540,7 @@ RSpec.describe Inbound::MetaMessagingEvents do
     it "entrega aos fluxos" do
       receive_event(postback: { title: "Quero comprar", payload: "COMPRAR" })
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Quero comprar", event: "first_message", message_id: "postback_1786732755000")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Quero comprar", event: "first_message", message_id: "postback_1786732755000", sent_at: anything)
     end
 
     it "sem título, usa o payload" do

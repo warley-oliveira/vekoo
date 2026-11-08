@@ -67,7 +67,7 @@ RSpec.describe AudioMessageJob do
       run_job
 
       expect(message.content).to eq("Quero marcar um horário")
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "Quero marcar um horário", event: "first_message", message_id: "A1")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "Quero marcar um horário", event: "first_message", message_id: "A1", sent_at: a_kind_of(Time))
     end
 
     it "manda para a transcrição o arquivo baixado" do

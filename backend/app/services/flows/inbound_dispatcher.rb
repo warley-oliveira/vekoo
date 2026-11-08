@@ -24,13 +24,15 @@ module Flows
     # O job agendado sumiu (o Redis caiu): a próxima mensagem agenda outro.
     STALE_DEADLINE = 5.minutes
 
-    def self.call(chat:, text:, event: "message_received", message_id: nil)
-      new(chat, text, event, message_id).call
+    # @param sent_at [Time, nil] quando o contato mandou. Os webhooks de uma rajada são processados em paralelo e chegam
+    #   aqui em qualquer ordem: a caixa é lida na ordem do envio (ver DebouncedDispatchJob).
+    def self.call(chat:, text:, event: "message_received", message_id: nil, sent_at: nil)
+      new(chat, text, event, message_id, sent_at).call
     end
 
     # Contato criado e transferência humana nascem na conversa, não no caminho da mensagem: quem entrega mensagem chama `call`.
     def self.fire_event(chat:, event:)
-      new(chat, "", event, nil).call
+      new(chat, "", event, nil, nil).call
     end
 
     # Fim de uma rodada: o que chegou enquanto a execução rodava esperou na caixa, e sai agora.
@@ -64,11 +66,12 @@ module Flows
       seconds.to_i.clamp(0, MAX_DEBOUNCE_SECONDS)
     end
 
-    def initialize(chat, text, event, message_id)
+    def initialize(chat, text, event, message_id, sent_at = nil)
       @chat = chat
       @text = text.to_s
       @event = event.to_s
       @message_id = message_id
+      @sent_at = sent_at
     end
 
     def call
@@ -118,7 +121,7 @@ module Flows
     end
 
     def item(now)
-      { "text" => text, "event" => event, "message_id" => message_id, "at" => now.to_f }
+      { "text" => text, "event" => event, "message_id" => message_id, "at" => now.to_f, "sent_at" => @sent_at&.to_f }.compact
     end
 
     def job_pending?(before)

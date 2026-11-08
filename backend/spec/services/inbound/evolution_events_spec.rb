@@ -911,14 +911,14 @@ RSpec.describe Inbound::EvolutionEvents do
       it "entrega aos fluxos" do
         upsert(message: { conversation: "hello there" })
 
-        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "hello there", event: "first_message", message_id: message_id)
+        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "hello there", event: "first_message", message_id: message_id, sent_at: anything)
       end
 
       it "na segunda mensagem o evento é message_received" do
         upsert(id: "M1")
         upsert(id: "M2", message: { conversation: "De novo" })
 
-        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "De novo", event: "message_received", message_id: "M2")
+        expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "De novo", event: "message_received", message_id: "M2", sent_at: anything)
       end
 
       it "guarda o nome do contato" do
@@ -1194,7 +1194,7 @@ RSpec.describe Inbound::EvolutionEvents do
 
         expect(Flows::InboundDispatcher).to have_received(:call).once
         expect(Flows::InboundDispatcher).to have_received(:call).with(
-          chat: chat_of, text: "Agora sim", event: "first_message", message_id: message_id
+          chat: chat_of, text: "Agora sim", event: "first_message", message_id: message_id, sent_at: anything
         )
       end
 
@@ -1204,7 +1204,7 @@ RSpec.describe Inbound::EvolutionEvents do
         upsert(message: { conversation: "Agora sim" })
 
         expect(Flows::InboundDispatcher).to have_received(:call).with(
-          chat: chat_of, text: "Agora sim", event: "message_received", message_id: message_id
+          chat: chat_of, text: "Agora sim", event: "message_received", message_id: message_id, sent_at: anything
         )
       end
 

@@ -71,9 +71,12 @@ module Flows
       before && Array(before["flow_inbox"])
     end
 
+    # Na ordem em que o contato mandou, e não na de chegada: os webhooks de uma rajada rodam em paralelo. O provedor dá o
+    # segundo; dentro do mesmo segundo vale a chegada.
     def dispatch(chat, items)
       return if items.empty?
 
+      items = items.each_with_index.sort_by { |item, index| [ (item["sent_at"] || item["at"]).to_f.floor, item["at"].to_f, index ] }.map(&:first)
       Dispatch.call(
         chat: chat,
         text: items.map { |item| item["text"].to_s }.compact_blank.join("\n"),

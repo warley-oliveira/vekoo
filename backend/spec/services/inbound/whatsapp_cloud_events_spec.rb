@@ -94,7 +94,7 @@ RSpec.describe Inbound::WhatsappCloudEvents do
       receive_text
 
       expect(Flows::InboundDispatcher).to have_received(:call).with(
-        chat: chat_of, text: "Olá", event: "first_message", message_id: waba_message_id
+        chat: chat_of, text: "Olá", event: "first_message", message_id: waba_message_id, sent_at: anything
       )
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Inbound::WhatsappCloudEvents do
       receive_text(id: "wamid.2", body: "Tudo bem?")
 
       expect(Flows::InboundDispatcher).to have_received(:call).with(
-        chat: chat_of, text: "Tudo bem?", event: "message_received", message_id: "wamid.2"
+        chat: chat_of, text: "Tudo bem?", event: "message_received", message_id: "wamid.2", sent_at: anything
       )
     end
 
@@ -313,7 +313,7 @@ RSpec.describe Inbound::WhatsappCloudEvents do
       receive_webhook(webhook(messages: [ button_message ]))
 
       expect(Flows::InboundDispatcher).to have_received(:call).with(
-        chat: chat_of, text: "Conferir orçamento", event: "first_message", message_id: button_id
+        chat: chat_of, text: "Conferir orçamento", event: "first_message", message_id: button_id, sent_at: anything
       )
     end
 
@@ -574,7 +574,7 @@ RSpec.describe Inbound::WhatsappCloudEvents do
 
       expect(result).to eq(processed: [ "document:#{document_id}" ], warnings: [], errors: [])
       expect(Flows::InboundDispatcher).to have_received(:call).with(
-        chat: chat_of, text: caption, event: "first_message", message_id: document_id
+        chat: chat_of, text: caption, event: "first_message", message_id: document_id, sent_at: anything
       )
     end
 

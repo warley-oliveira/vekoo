@@ -323,6 +323,16 @@ RSpec.describe "Blocos de fluxo" do
     it "guarda o valor com as variáveis trocadas" do
       expect(run_block("set_variable", { assignments: [ { name: "saudacao", value: "Oi {{contact.name}}" }, { name: "", value: "x" } ] }).variables).to eq("saudacao" => "Oi Fernanda Lima")
     end
+
+    it "no teste do editor, a tela recebe as variáveis como ficaram" do
+      flow = published_flow(organization, [ node("t", "trigger_manual"), node("v", "set_variable", assignments: [ { name: "cupom", value: "DOMA10" } ]) ], [ edge("t", "v") ])
+      allow(ActionCable.server).to receive(:broadcast).and_call_original
+
+      execution = run_flow(flow, chat: chat, playground: true)
+
+      expect(ActionCable.server).to have_received(:broadcast)
+        .with(FlowRuntime::MessageDispatcher.playground_stream(execution), hash_including(kind: "variables", variables: { "cupom" => "DOMA10" }))
+    end
   end
 
   describe "loop" do
@@ -717,6 +727,18 @@ RSpec.describe "Blocos de fluxo" do
       expect(execution.status).to eq("completed")
       expect(execution.variables).to include("de_la" => "ok")
       expect(FlowExecution.where(flow: target).take.status).to eq("completed")
+    end
+
+    it "no teste do editor, o outro fluxo fala no canal que a tela está ouvindo" do
+      falante = published_flow(organization, [ node("t", "trigger_manual"), node("s", "send_text", text: "sou o outro") ], [ edge("t", "s") ])
+      pai = published_flow(organization, [ node("t", "trigger_manual"), node("b", "goto_flow", target_flow_id: falante.id) ], [ edge("t", "b") ])
+      allow(ActionCable.server).to receive(:broadcast).and_call_original
+
+      execution = run_flow(pai, chat: chat, playground: true)
+
+      stream = FlowRuntime::MessageDispatcher.playground_stream(execution)
+      expect(ActionCable.server).to have_received(:broadcast).with(stream, hash_including(kind: "text", body: "sou o outro"))
+      expect(FlowExecution.where(flow: falante).take.context["playground_stream_id"]).to eq(execution.id)
     end
 
     it "não alcança fluxo de outra organização" do

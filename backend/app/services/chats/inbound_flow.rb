@@ -87,7 +87,7 @@ module Chats
       return if chat.connector.is_a?(Connector::WhatsappWeb) && InboundThrottle.new(chat).red_flagged?
       return defer_outside_window if outside_window?
 
-      InboundDelivery.call(chat: chat, text: text, event: event, message_id: message.message_id)
+      InboundDelivery.call(chat: chat, text: text, event: event, message_id: message.message_id, sent_at: message.created_at)
     end
 
     def event

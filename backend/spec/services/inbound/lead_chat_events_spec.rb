@@ -158,14 +158,14 @@ RSpec.describe Inbound::LeadChatEvents do
     it "entrega aos fluxos como primeira mensagem" do
       receive_event
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Olá! Tenho interesse", event: "first_message", message_id: content_id)
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Olá! Tenho interesse", event: "first_message", message_id: content_id, sent_at: anything)
     end
 
     it "as seguintes são message_received" do
       receive_event
       receive_event(id: "segunda", text: "Oi?")
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Oi?", event: "message_received", message_id: "segunda")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "Oi?", event: "message_received", message_id: "segunda", sent_at: anything)
     end
 
     it "guarda os dados da sessão na conversa" do
@@ -360,7 +360,7 @@ RSpec.describe Inbound::LeadChatEvents do
       expect(message).to have_attributes(role: "user", content: "-")
       expect(blob_of(message).download).to eq("bytes-mp3")
       expect(blob_of(message).filename.to_s).to eq("#{phone}-#{content_id}.mp3")
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "", event: "first_message", message_id: content_id)
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat_of, text: "", event: "first_message", message_id: content_id, sent_at: anything)
     end
 
     it "áudio nosso entra como nosso e pausa a automação" do

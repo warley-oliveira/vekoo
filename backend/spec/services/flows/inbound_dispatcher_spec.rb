@@ -70,6 +70,20 @@ RSpec.describe Flows::InboundDispatcher do
       expect(chat.reload).to have_attributes(flow_inbox: nil, flow_inbox_deadline: nil)
     end
 
+    it "a rajada sai na ordem em que o contato mandou, mesmo chegando fora de ordem" do
+      echo = published_flow(organization, [ node("t", "trigger_message_received"), node("a", "send_text", text: "{{message.text}}") ], [ edge("t", "a") ], trigger_type: "message_received")
+      Flow.where.not(id: echo.id).update_all(status: "archived")
+      sent = 1.minute.ago.change(usec: 0)
+
+      described_class.call(chat: chat, text: "três", message_id: "m3", sent_at: sent + 2.seconds)
+      described_class.call(chat: chat, text: "uma", message_id: "m1", sent_at: sent)
+      described_class.call(chat: chat, text: "duas", message_id: "m2", sent_at: sent + 1.second)
+      settle
+
+      expect(sent_texts).to eq([ "uma\nduas\ntrês" ])
+      expect(FlowExecution.where(flow: echo).take.context["last_message_id"]).to be_nil
+    end
+
     it "o job que acorda antes do prazo se reagenda, sem nascer outro" do
       freeze_time do
         say("oi")

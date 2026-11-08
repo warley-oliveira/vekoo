@@ -21,7 +21,7 @@ RSpec.describe Chats::InboundFlow do
 
       expect(chat.reload.unread_messages).to eq(1)
       expect(Flows::InboundDispatcher).to have_received(:call).with(
-        chat: chat, text: "Quero saber o preço", event: "first_message", message_id: "wamid.1"
+        chat: chat, text: "Quero saber o preço", event: "first_message", message_id: "wamid.1", sent_at: a_kind_of(Time)
       )
     end
 
@@ -148,7 +148,7 @@ RSpec.describe Chats::InboundFlow do
       described_class.perform_now(chat.id.to_s, chat.organization_id, "oi", "message_received", "wamid.9")
 
       expect(chat.reload.scheduled_outside_business_work).to be_nil
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "oi", event: "message_received", message_id: "wamid.9")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "oi", event: "message_received", message_id: "wamid.9", sent_at: nil)
     end
 
     it "não entrega se uma pessoa assumiu nesse meio-tempo" do

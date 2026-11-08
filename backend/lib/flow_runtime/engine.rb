@@ -11,7 +11,9 @@ module FlowRuntime
   class Engine
     class << self
       # @return [FlowExecution, nil] nil quando já há uma execução viva deste fluxo nesta conversa
-      def start(flow:, chat: nil, last_message: nil, variables: {}, playground: false, version: nil, idempotency_key: nil, event: nil, depth: 0)
+      # @param stream_id [String, nil] no teste do editor, a execução que a tela está ouvindo: um "Ir para outro fluxo" fala
+      #   no mesmo canal que o fluxo de cima, senão a tela nunca veria o que o outro fluxo mandou
+      def start(flow:, chat: nil, last_message: nil, variables: {}, playground: false, version: nil, idempotency_key: nil, event: nil, depth: 0, stream_id: nil)
         version ||= flow.published_version || flow.draft_version
         raise ArgumentError, "Flow has no usable version" unless version
 
@@ -31,7 +33,8 @@ module FlowRuntime
             "variables" => Limits.bound_variables(stored.merge(variables.to_h.stringify_keys)),
             "message_seq" => last_message ? 1 : 0,
             "event" => event,
-            "depth" => depth
+            "depth" => depth,
+            "playground_stream_id" => (stream_id if playground)
           }.compact,
           playground: playground,
           started_at: Time.current,
@@ -156,7 +159,15 @@ module FlowRuntime
         locked_at: Time.current,
         context: execution.context.merge("steps" => execution.context["steps"].to_i + 1)
       )
-      ChatData.new(execution).persist(result.variables) if result.variables.present?
+      return if result.variables.blank?
+
+      ChatData.new(execution).persist(result.variables)
+      broadcast_variables
+    end
+
+    # O teste mostra as variáveis como estão agora, a cada bloco que muda alguma.
+    def broadcast_variables
+      broadcast_playground(:variables, variables: Limits.clip(execution.variables, Limits::MAX_LOG_BYTES))
     end
 
     # O último bloco do fluxo também guarda o que coletou.
@@ -166,6 +177,7 @@ module FlowRuntime
       execution.merge_variables!(result.variables)
       execution.save!
       ChatData.new(execution).persist(result.variables)
+      broadcast_variables
     end
 
     def log_node(node, result, duration_ms)

@@ -138,7 +138,7 @@ RSpec.describe ImageMessageJob do
     it "entrega a legenda aos fluxos como primeira mensagem" do
       run_job
 
-      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "Olha isso", event: "first_message", message_id: "M1")
+      expect(Flows::InboundDispatcher).to have_received(:call).with(chat: chat, text: "Olha isso", event: "first_message", message_id: "M1", sent_at: a_kind_of(Time))
     end
 
     it "sem legenda, entrega texto vazio" do

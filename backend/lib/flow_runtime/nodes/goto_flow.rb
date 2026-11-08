@@ -18,7 +18,8 @@ module FlowRuntime
           variables: variables,
           playground: context.playground?,
           event: "goto_flow",
-          depth: depth
+          depth: depth,
+          stream_id: (context.execution.context["playground_stream_id"].presence || context.execution.id if context.playground?)
         )
         return skip("already_running") unless sub
 

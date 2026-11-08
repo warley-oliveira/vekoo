@@ -1,8 +1,10 @@
 module FlowRuntime
   # O que sai do fluxo para o contato. No teste do editor nada vai para o canal: vira evento em tempo real.
   class MessageDispatcher
+    # O fluxo chamado por "Ir para outro fluxo", no teste, fala no canal de quem chamou (`playground_stream_id`).
     def self.playground_stream(execution)
-      ApplicationCable::Channel.organization_stream(execution.organization_id, "flow-playground:#{execution.id}")
+      id = execution.context.to_h["playground_stream_id"].presence || execution.id
+      ApplicationCable::Channel.organization_stream(execution.organization_id, "flow-playground:#{id}")
     end
 
     def initialize(execution)
