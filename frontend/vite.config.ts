@@ -40,7 +40,10 @@ export default defineConfig(({ mode }) => {
           display: "standalone",
           orientation: "portrait-primary",
           // `--primary` e `--background` de src/index.css, em hex: o manifesto não
-          // entende oklch.
+          // entende oklch. Ele também não tem um par para o escuro que os navegadores
+          // leiam: a tela de abertura do PWA sai clara, e a barra do sistema acompanha
+          // o tema assim que a página carrega (`meta theme-color`, por `theme-init.js`
+          // e `lib/theme.ts`).
           theme_color: "#7132e0",
           background_color: "#fefdfd",
           lang: "pt-BR",

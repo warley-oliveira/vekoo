@@ -47,4 +47,25 @@ RSpec.describe "platform:sync" do
     expect(roles.pluck(:name)).to eq([ "Gerente" ])
     expect(roles.first.permissions).to eq("chat" => "own")
   end
+
+  describe "rename_aiva" do
+    it "troca o provedor aiva_api por vekoo_api e não mexe nos outros" do
+      organization = create(:organization)
+      old = create(:connector_whatsapp_web, :vekoo, organization: organization)
+      old.set(provider_api: "aiva_api")
+      evolution = create(:connector_whatsapp_web, organization: organization, provider_api: "evolution_api")
+
+      expect(PlatformTasks.rename_aiva).to eq(1)
+
+      expect(old.reload.provider_api).to eq("vekoo_api")
+      expect(evolution.reload.provider_api).to eq("evolution_api")
+    end
+
+    it "não muda nada ao rodar de novo" do
+      create(:connector_whatsapp_web, :vekoo, organization: create(:organization)).set(provider_api: "aiva_api")
+      PlatformTasks.rename_aiva
+
+      expect(PlatformTasks.rename_aiva).to eq(0)
+    end
+  end
 end

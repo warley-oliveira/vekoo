@@ -1,6 +1,6 @@
 module Inbound
   # POST /inbound/evolution/:codename, onde `codename` é o nome da instância (`IWA-<id>`).
-  # Na origem estes eventos vinham por RabbitMQ, e o provider AIVA já entregava neste formato.
+  # Na origem estes eventos vinham por RabbitMQ, e o provider Vekoo já entregava neste formato.
   class EvolutionController < BaseController
     def receive
       codename = params[:codename].to_s

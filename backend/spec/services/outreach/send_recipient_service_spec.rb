@@ -238,10 +238,10 @@ RSpec.describe Outreach::SendRecipientService do
       end
     end
 
-    context "quando o provedor não consulta números (AIVA)" do
-      let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
+    context "quando o provedor não consulta números (Vekoo)" do
+      let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization) }
 
-      before { stub_request(:post, "http://aiva.test/message/sendText/#{connector.instance_name}").to_return(status: 201, body: { key: { id: "AIVA-1" } }.to_json, headers: OutreachHelpers::JSON_HEADERS) }
+      before { stub_request(:post, "http://vekoo.test/message/sendText/#{connector.instance_name}").to_return(status: 201, body: { key: { id: "VEKOO-1" } }.to_json, headers: OutreachHelpers::JSON_HEADERS) }
 
       it "não consulta, e reaproveita a conversa da outra forma do número" do
         inbound = create(:chat, connector: connector, organization_id: organization.id, external_id: "#{without_nine}@s.whatsapp.net")
@@ -263,7 +263,7 @@ RSpec.describe Outreach::SendRecipientService do
       end
 
       it "não reaproveita a conversa de outro canal" do
-        other = create(:connector_whatsapp_web, :aiva, organization: organization)
+        other = create(:connector_whatsapp_web, :vekoo, organization: organization)
         create(:chat, connector: other, organization_id: organization.id, external_id: without_nine)
 
         deliver

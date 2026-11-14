@@ -4,7 +4,6 @@ import { SWRConfig } from "swr"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
-  Bot,
   Loader2,
   Mic,
   Paperclip,
@@ -89,9 +88,11 @@ function EmojiButton({ onPick }: { onPick: (emoji: string) => void }) {
 export const ReplyBar = memo(function ReplyBar({
   chatId,
   contactName,
+  className,
 }: {
   chatId: string
   contactName: string
+  className?: string
 }) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
@@ -101,7 +102,7 @@ export const ReplyBar = memo(function ReplyBar({
   return (
     <AnimatePresence initial={false}>
       {message ? (
-        <motion.div key="reply" {...preset.slideUp} className="flex items-center gap-1 pb-2">
+        <motion.div key="reply" {...preset.slideUp} className={cn("flex items-center gap-1 pb-2", className)}>
           <QuotedMessage message={message} contactName={contactName} className="min-w-0 flex-1" />
           <Button
             type="button"
@@ -122,6 +123,11 @@ export const ReplyBar = memo(function ReplyBar({
 /**
  * Quem está cuidando da conversa. Com a automação ligada, avisa antes: responder pausa. É o aviso
  * certo para a intervenção humana, porque quem responde é quem precisa saber o que vai acontecer.
+ *
+ * Uma pílula clara presa logo acima do composer, com um ponto violeta: o ponto é o único sinal de
+ * "algo está agindo aqui", e o texto continua no cinza da interface. Pausada com hora para voltar, o
+ * ponto fica cinza. Ao responder, a pílula desce para dentro do composer e some: é a pausa
+ * acontecendo diante de quem respondeu.
  */
 export const AutomationHint = memo(function AutomationHint({
   chat,
@@ -133,30 +139,52 @@ export const AutomationHint = memo(function AutomationHint({
 }) {
   const { t } = useTranslation()
   const language = useLanguage()
+  const preset = useMotionPreset()
 
-  if (chat.partial) return null
+  const state = chat.partial
+    ? null
+    : chat.automationEnabled
+      ? "on"
+      : chat.automationResumeAt
+        ? "resumes"
+        : null
 
-  if (chat.automationEnabled) {
-    return (
-      <p className="flex items-center gap-1.5 pb-1.5 text-xs text-muted-foreground">
-        <Bot aria-hidden className="size-3.5 shrink-0" />
-        {t(short ? "chatMobile.composer.automationOn" : "chat.composer.automationOn")}
-      </p>
-    )
-  }
+  const motionProps = preset.reduced
+    ? preset.fade
+    : {
+        initial: { opacity: 0, y: 6, scale: 0.97 },
+        animate: { opacity: 1, y: 0, scale: 1 },
+        exit: { opacity: 0, y: 6, scale: 0.97 },
+        transition: preset.spring,
+      }
 
-  if (chat.automationResumeAt) {
-    return (
-      <p className="flex items-center gap-1.5 pb-1.5 text-xs text-muted-foreground">
-        <Bot aria-hidden className="size-3.5 shrink-0" />
-        {t("chat.composer.automationResumes", {
-          when: formatRelative(chat.automationResumeAt, language),
-        })}
-      </p>
-    )
-  }
-
-  return null
+  return (
+    <AnimatePresence initial={false}>
+      {state ? (
+        <motion.div key={state} {...motionProps} className="flex justify-center pb-1.5">
+          <p
+            role="status"
+            className="inline-flex max-w-full items-center gap-2 rounded-full bg-card/95 px-3 py-1 text-xs leading-4 text-muted-foreground shadow-xs ring-1 ring-border/60"
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "size-1.5 shrink-0 rounded-full",
+                state === "on" ? "bg-primary" : "bg-muted-foreground/50"
+              )}
+            />
+            <span className="min-w-0">
+              {state === "on"
+                ? t(short ? "chatMobile.composer.automationOn" : "chat.composer.automationOn")
+                : t("chat.composer.automationResumes", {
+                    when: formatRelative(chat.automationResumeAt as number, language),
+                  })}
+            </span>
+          </p>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  )
 })
 
 /**
@@ -170,8 +198,10 @@ export function ReadOnlyNotice() {
   const { t } = useTranslation()
 
   return (
-    <div className={cn("shrink-0 border-t px-4 pt-3 text-center text-sm text-muted-foreground", BOTTOM_PADDING)}>
-      {t("chat.composer.readOnly")}
+    <div className={cn("flex shrink-0 justify-center px-4 pt-2", BOTTOM_PADDING)}>
+      <p className="rounded-full bg-card/95 px-3.5 py-1.5 text-center text-sm text-muted-foreground shadow-xs ring-1 ring-border/60">
+        {t("chat.composer.readOnly")}
+      </p>
     </div>
   )
 }
@@ -198,7 +228,7 @@ function ComposerNotice({ chat, mode }: { chat: Chat; mode: ComposerMode }) {
         : t("chat.composer.disconnected")
 
   return (
-    <div className={cn("shrink-0 border-t px-3 pt-3 md:px-5", BOTTOM_PADDING)}>
+    <div className={cn("shrink-0 px-3 pt-2 md:px-5", BOTTOM_PADDING)}>
       <Callout
         tone={mode === "disconnected" ? "warning" : "neutral"}
         icon={<TriangleAlert className="size-4" />}
@@ -253,6 +283,75 @@ export const Composer = memo(function Composer({
   )
 })
 
+/**
+ * À direita, o microfone; com texto, enviar. Os dois ocupam o mesmo lugar e trocam com fade e
+ * escala curtos: a pessoa vê o botão virar, em vez de um piscar. Enviar é o único violeta cheio do
+ * composer, porque é a ação principal.
+ */
+const SendOrRecord = memo(function SendOrRecord({
+  hasText,
+  onSend,
+  onRecord,
+}: {
+  hasText: boolean
+  onSend: () => void
+  onRecord: () => void
+}) {
+  const { t } = useTranslation()
+  const preset = useMotionPreset()
+  const hidden = preset.reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }
+  const transition = preset.reduced ? { duration: 0.15 } : preset.spring
+
+  return (
+    <span className="grid shrink-0 place-items-center">
+      <AnimatePresence initial={false}>
+        {hasText ? (
+          <motion.span
+            key="send"
+            className="[grid-area:1/1]"
+            initial={hidden}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={hidden}
+            transition={transition}
+          >
+            <Button
+              type="button"
+              size="icon"
+              className="rounded-full pointer-coarse:size-10"
+              aria-label={t("chat.composer.send")}
+              title={t("chat.composer.send")}
+              onClick={onSend}
+            >
+              <SendHorizontal />
+            </Button>
+          </motion.span>
+        ) : (
+          <motion.span
+            key="mic"
+            className="[grid-area:1/1]"
+            initial={hidden}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={hidden}
+            transition={transition}
+          >
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="rounded-full text-muted-foreground pointer-coarse:size-10"
+              aria-label={t("chat.recorder.start")}
+              title={t("chat.recorder.start")}
+              onClick={onRecord}
+            >
+              <Mic />
+            </Button>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
+  )
+})
+
 function ComposerBox({ chatId, chat, contactName, onSent, ref }: ComposerBoxProps) {
   const { t } = useTranslation()
   const preset = useMotionPreset()
@@ -285,32 +384,9 @@ function ComposerBox({ chatId, chat, contactName, onSent, ref }: ComposerBoxProp
   )
 
   return (
-    <div className={cn("relative shrink-0 border-t px-3 pt-2 md:px-5", BOTTOM_PADDING)}>
+    <div className={cn("relative shrink-0 px-3 pt-1 md:px-5", BOTTOM_PADDING)}>
       <QuickRepliesPrefetch />
       <AutomationHint chat={chat} />
-      <ReplyBar chatId={chatId} contactName={contactName} />
-
-      {unfilled ? (
-        <p role="status" className="flex items-start gap-1.5 pb-1.5 text-xs text-status-warning">
-          <TriangleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
-          <span className="min-w-0">{t("chat.composer.unfilledVariable", { marker: unfilled })}</span>
-        </p>
-      ) : null}
-
-      {notice ? (
-        <p role="alert" className="flex items-center justify-between gap-2 pb-2 text-xs text-status-warning">
-          {notice}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            aria-label={t("chat.recorder.dismiss")}
-            onClick={recorder.dismissNotice}
-          >
-            <X />
-          </Button>
-        </p>
-      ) : null}
 
       <div className="relative">
         {slash ? (
@@ -322,113 +398,119 @@ function ComposerBox({ chatId, chat, contactName, onSent, ref }: ComposerBoxProp
           />
         ) : null}
 
-        <AnimatePresence initial={false} mode="popLayout">
-          {recorder.isBusy ? (
-            <motion.div
-              key="recorder"
-              {...preset.fade}
-              className="flex min-h-11 items-center gap-1 rounded-2xl border bg-background px-1.5 py-1"
-            >
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      disabled={sending}
-                      className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
-                      aria-label={t("chat.recorder.discard")}
-                      onClick={recorder.cancel}
-                    />
-                  }
-                >
-                  <Trash2 />
-                </TooltipTrigger>
-                <TooltipContent>{t("chat.recorder.discard")}</TooltipContent>
-              </Tooltip>
+        {/* O cartão flutua sobre a conversa: branco, cantos bem redondos e sombra baixa. Resposta
+            citada e avisos moram dentro dele, porque são sobre o que está sendo escrito. */}
+        <div className="overflow-hidden rounded-[1.375rem] bg-card shadow-lg ring-1 shadow-foreground/[0.06] ring-border/70 transition-shadow focus-within:ring-ring/60">
+          <ReplyBar chatId={chatId} contactName={contactName} className="px-2 pt-2 pb-0" />
 
-              <span aria-hidden className="size-2 shrink-0 animate-pulse rounded-full bg-status-danger" />
-              <span
-                role="timer"
-                aria-label={t("chat.recorder.elapsed")}
-                className="w-10 shrink-0 text-center text-sm text-muted-foreground tabular-nums"
-              >
-                {formatDuration(recorder.elapsed)}
-              </span>
-              <RecorderWaveform analyser={recorder.analyser} active={recorder.isRecording} />
+          {unfilled ? (
+            <p role="status" className="flex items-start gap-1.5 px-3.5 pt-2 text-xs text-status-warning">
+              <TriangleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+              <span className="min-w-0">{t("chat.composer.unfilledVariable", { marker: unfilled })}</span>
+            </p>
+          ) : null}
 
-              <Button
-                type="button"
-                size="icon"
-                disabled={sending}
-                className="shrink-0 rounded-full pointer-coarse:size-10"
-                aria-label={t("chat.recorder.send")}
-                onClick={recorder.stopAndSend}
-              >
-                {sending ? <Loader2 className="animate-spin" /> : <SendHorizontal />}
-              </Button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="text"
-              {...preset.fade}
-              className="flex items-end gap-0.5 rounded-2xl border bg-background px-1.5 py-1 transition-colors focus-within:border-ring/70"
-            >
-              <EmojiButton onPick={insertText} />
+          {notice ? (
+            <p role="alert" className="flex items-center justify-between gap-2 pt-1 pr-1.5 pl-3.5 text-xs text-status-warning">
+              {notice}
               <Button
                 type="button"
                 variant="ghost"
-                size="icon"
-                className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
-                aria-label={t("chat.composer.attach")}
-                title={t("chat.composer.attach")}
-                onClick={() => attachments.current?.pick()}
+                size="icon-xs"
+                className="pointer-coarse:size-10"
+                aria-label={t("chat.recorder.dismiss")}
+                onClick={recorder.dismissNotice}
               >
-                <Paperclip />
+                <X />
               </Button>
-              {composerActions}
+            </p>
+          ) : null}
 
-              <textarea
-                ref={textarea}
-                rows={1}
-                aria-label={t("chat.composer.label")}
-                placeholder={t(isTouch ? "chat.composer.placeholderTouch" : "chat.composer.placeholder")}
-                enterKeyHint={isTouch ? "enter" : "send"}
-                onInput={refreshFromInput}
-                onClick={refreshFromInput}
-                onKeyDown={onKeyDown}
-                onPaste={onPaste}
-                className="max-h-40 min-h-8 min-w-0 flex-1 resize-none bg-transparent px-1.5 py-1.5 text-base leading-5 outline-none placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-10 pointer-coarse:py-2.5"
-              />
+          <AnimatePresence initial={false} mode="popLayout">
+            {recorder.isBusy ? (
+              <motion.div
+                key="recorder"
+                {...preset.fade}
+                className="flex min-h-12 items-center gap-1 px-2 py-1.5"
+              >
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        disabled={sending}
+                        className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
+                        aria-label={t("chat.recorder.discard")}
+                        onClick={recorder.cancel}
+                      />
+                    }
+                  >
+                    <Trash2 />
+                  </TooltipTrigger>
+                  <TooltipContent>{t("chat.recorder.discard")}</TooltipContent>
+                </Tooltip>
 
-              {hasText ? (
+                <span aria-hidden className="size-2 shrink-0 animate-pulse rounded-full bg-status-danger" />
+                <span
+                  role="timer"
+                  aria-label={t("chat.recorder.elapsed")}
+                  className="w-10 shrink-0 text-center text-sm text-muted-foreground tabular-nums"
+                >
+                  {formatDuration(recorder.elapsed)}
+                </span>
+                <RecorderWaveform analyser={recorder.analyser} active={recorder.isRecording} />
+
                 <Button
                   type="button"
                   size="icon"
+                  disabled={sending}
                   className="shrink-0 rounded-full pointer-coarse:size-10"
-                  aria-label={t("chat.composer.send")}
-                  title={t("chat.composer.send")}
-                  onClick={submit}
+                  aria-label={t("chat.recorder.send")}
+                  onClick={recorder.stopAndSend}
                 >
-                  <SendHorizontal />
+                  {sending ? <Loader2 className="animate-spin" /> : <SendHorizontal />}
                 </Button>
-              ) : (
+              </motion.div>
+            ) : (
+              <motion.div key="text" {...preset.fade} className="flex min-h-12 items-end gap-0.5 px-2 py-1.5">
+                <EmojiButton onPick={insertText} />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   className="shrink-0 rounded-full text-muted-foreground pointer-coarse:size-10"
-                  aria-label={t("chat.recorder.start")}
-                  title={t("chat.recorder.start")}
-                  onClick={() => void recorder.start()}
+                  aria-label={t("chat.composer.attach")}
+                  title={t("chat.composer.attach")}
+                  onClick={() => attachments.current?.pick()}
                 >
-                  <Mic />
+                  <Paperclip />
                 </Button>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {composerActions}
+
+                <textarea
+                  ref={textarea}
+                  rows={1}
+                  aria-label={t("chat.composer.label")}
+                  placeholder={t(isTouch ? "chat.composer.placeholderTouch" : "chat.composer.placeholder")}
+                  enterKeyHint={isTouch ? "enter" : "send"}
+                  onInput={refreshFromInput}
+                  onClick={refreshFromInput}
+                  onKeyDown={onKeyDown}
+                  onPaste={onPaste}
+                  className="max-h-40 min-h-9 min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-base leading-5 outline-none placeholder:text-muted-foreground md:text-sm pointer-coarse:min-h-10 pointer-coarse:py-2.5"
+                />
+
+                <SendOrRecord
+                  hasText={hasText}
+                  onSend={submit}
+                  onRecord={() => void recorder.start()}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       <AttachmentDialog ref={attachments} chatId={chatId} onSent={onAttachmentsSent} />

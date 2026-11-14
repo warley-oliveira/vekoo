@@ -219,10 +219,10 @@ RSpec.describe "Controladores de webhook", type: :request do
       expect_enqueued("evolution", codename)
     end
 
-    it "aceita instância que está com o provedor AIVA" do
-      aiva = create(:connector_whatsapp_web, :aiva, organization: organization)
+    it "aceita instância que está com o provedor Vekoo" do
+      vekoo = create(:connector_whatsapp_web, :vekoo, organization: organization)
 
-      post inbound_path(aiva, :evolution, "IWA-#{aiva.id}"), params: body, as: :json
+      post inbound_path(vekoo, :evolution, "IWA-#{vekoo.id}"), params: body, as: :json
 
       expect(response).to have_http_status(:ok)
     end

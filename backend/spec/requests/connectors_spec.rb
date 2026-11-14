@@ -316,8 +316,8 @@ RSpec.describe "Connectors", type: :request do
         expect(json["extras"]).to eq("qrCode" => "QR-EM-BASE64")
       end
 
-      it "aceita o plano padrão da tela (aiva_api), que roda sobre a Evolution" do
-        create_connector(connectorType: "whatsapp_web", providerApi: "aiva_api")
+      it "aceita o plano padrão da tela (vekoo_api), que roda sobre a Evolution" do
+        create_connector(connectorType: "whatsapp_web", providerApi: "vekoo_api")
 
         expect(response).to have_http_status(:created)
         expect(json.dig("connector", "providerApi")).to eq("evolution_api")
@@ -357,7 +357,7 @@ RSpec.describe "Connectors", type: :request do
         expect(json["error"]).to include("code" => "unprocessable", "field" => "providerApi")
         expect(json.dig("error", "message")).to be_present
         expect(Connector::WhatsappWeb.where(organization_id: organization.id).count).to eq(0)
-        expect(a_request(:any, /evolution|aiva/)).not_to have_been_made
+        expect(a_request(:any, /evolution|vekoo/)).not_to have_been_made
       end
     end
 
@@ -689,11 +689,11 @@ RSpec.describe "Connectors", type: :request do
         expect(connector.reload.status).to eq(:active)
       end
 
-      it "liga pelo provedor AIVA, criando a instância, o webhook e a conexão" do
-        connector = create(:connector_whatsapp_web, :aiva, organization: organization, status: :inactive)
-        create_instance = stub_request(:post, "http://aiva.test/instance/create").to_return(provider_json({ hash: { apikey: "chave" } }, status: 201))
-        webhook = stub_request(:post, "http://aiva.test/webhook/set/#{connector.instance_name}").to_return(provider_json({}, status: 201))
-        connect = stub_request(:get, "http://aiva.test/instance/connect/#{connector.instance_name}").to_return(provider_json({}))
+      it "liga pelo provedor Vekoo, criando a instância, o webhook e a conexão" do
+        connector = create(:connector_whatsapp_web, :vekoo, organization: organization, status: :inactive)
+        create_instance = stub_request(:post, "http://vekoo.test/instance/create").to_return(provider_json({ hash: { apikey: "chave" } }, status: 201))
+        webhook = stub_request(:post, "http://vekoo.test/webhook/set/#{connector.instance_name}").to_return(provider_json({}, status: 201))
+        connect = stub_request(:get, "http://vekoo.test/instance/connect/#{connector.instance_name}").to_return(provider_json({}))
 
         act(connector, :activate)
 
@@ -758,8 +758,8 @@ RSpec.describe "Connectors", type: :request do
       end
 
       it "reinicia a instância do outro provedor pela rota dele" do
-        connector = create(:connector_whatsapp_web, :aiva, organization: organization)
-        reload = stub_request(:get, "http://aiva.test/instance/reload/#{connector.instance_name}").to_return(provider_json({}))
+        connector = create(:connector_whatsapp_web, :vekoo, organization: organization)
+        reload = stub_request(:get, "http://vekoo.test/instance/reload/#{connector.instance_name}").to_return(provider_json({}))
 
         act(connector, :reload)
 

@@ -17,8 +17,14 @@
       name="description"
       content="Atendimento, automação e carrosséis para Instagram, tudo em um lugar só."
     />
-    <!-- A cor do fundo: a barra de status se confunde com o cabeçalho. -->
+    <!--
+      A cor do fundo: a barra de status se confunde com o cabeçalho. O valor aqui é o do claro;
+      `theme-init.js`, logo abaixo, troca pelo do tema da pessoa antes de pintar.
+    -->
     <meta name="theme-color" content="#fefdfd" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Bloqueante de propósito, e minúsculo: sem ele, quem usa o escuro veria o claro piscar. -->
+    <script src="/theme-init.js"></script>
 
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

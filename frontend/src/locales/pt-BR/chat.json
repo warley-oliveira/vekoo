@@ -167,7 +167,10 @@
       "notFoundHint": "Ela pode ter sido excluída, ou você não tem acesso a ela.",
       "backToList": "Voltar para as conversas",
       "loadFailed": "Não foi possível abrir a conversa.",
-      "retry": "Tentar de novo"
+      "retry": "Tentar de novo",
+      "recording": "gravando áudio…",
+      "newMessages_one": "{{formatted}} nova mensagem",
+      "newMessages_other": "{{formatted}} novas mensagens"
     },
     "day": {
       "today": "Hoje",

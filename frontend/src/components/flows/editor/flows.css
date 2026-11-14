@@ -9,6 +9,13 @@
   --flow-line: oklch(0.72 0.008 285);
 }
 
+/* No escuro o quadro fica um degrau abaixo do card, para os blocos saltarem dele. */
+.dark .flow-canvas {
+  --flow-canvas-bg: oklch(0.155 0.006 285);
+  --flow-dots: oklch(0.34 0.008 285);
+  --flow-line: oklch(0.5 0.01 285);
+}
+
 .flow-canvas .react-flow {
   --xy-background-color: var(--flow-canvas-bg);
   --xy-background-pattern-color: var(--flow-dots);

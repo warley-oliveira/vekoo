@@ -30,6 +30,7 @@ import { useAuth, useSession } from "@/lib/auth"
 import { useNavigate } from "@/lib/router"
 import { isValidPhone } from "@/lib/format-phone"
 import { SUPPORTED_LANGUAGES, useLanguage } from "@/lib/i18n"
+import { ThemeSegmented } from "@/components/shell/theme-picker"
 
 const MIN_PASSWORD = 8
 
@@ -205,6 +206,10 @@ export default function ProfilePage() {
             }))}
             className="sm:max-w-xs"
           />
+        </SettingsSection>
+
+        <SettingsSection title={t("theme.label")} description={t("theme.description")}>
+          <ThemeSegmented />
         </SettingsSection>
 
         <SettingsSection

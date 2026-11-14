@@ -37,7 +37,7 @@ export const RichTextWidget = memo(function RichTextWidget({
 
   return (
     <div
-      className="flex h-full flex-col gap-2 overflow-y-auto leading-relaxed [scrollbar-width:thin]"
+      className="flex h-full flex-col gap-2 overflow-y-auto leading-relaxed"
       style={{ fontSize: config.fontSize ?? DEFAULT_TEXT_SIZE }}
     >
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={MARKDOWN}>

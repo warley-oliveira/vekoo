@@ -3,7 +3,7 @@
 class Connector::WhatsappWeb
   module Providers
     # Provider for Evolution API v2 (https://doc.evolution-api.com/v2).
-    # Shares the apikey-in-header auth model with [AivaApi] but the v2 endpoint
+    # Shares the apikey-in-header auth model with [VekooApi] but the v2 endpoint
     # paths and JSON payloads differ — most notably:
     #   - `sendText` uses a top-level `text` field (no `textMessage` wrapper)
     #   - `sendMedia` is JSON (not multipart) and accepts URL or base64 inline

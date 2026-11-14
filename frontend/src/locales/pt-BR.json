@@ -15,6 +15,13 @@
     "pt-BR": "Português (Brasil)",
     "en": "English"
   },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema",
+    "description": "Claro, escuro ou o mesmo do seu aparelho. Fica guardado neste navegador."
+  },
   "plans": {
     "free": "Plano Grátis"
   },

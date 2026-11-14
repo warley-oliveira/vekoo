@@ -261,7 +261,7 @@ export const StageColumn = memo(function StageColumn({
 
       <div
         ref={setScroller}
-        className="flex min-h-12 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain px-2 pt-0.5 pb-1 [scrollbar-width:thin]"
+        className="flex min-h-12 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain px-2 pt-0.5 pb-1"
       >
         <SortableContext id={stage.id} items={ids} strategy={verticalListSortingStrategy}>
           <StageCardList cards={cards} stageId={stage.id} meta={meta} root={scroller} />

@@ -4,6 +4,7 @@ import { X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { getTagStyle } from "@/lib/tag-color"
+import { useResolvedTheme } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 export type TagChipProps = Omit<ComponentProps<"span">, "children" | "color"> & {
@@ -30,9 +31,10 @@ export function TagChip({
   ...props
 }: TagChipProps) {
   const { t } = useTranslation()
+  const theme = useResolvedTheme()
   const tagStyle = useMemo(
-    () => (color ? getTagStyle(color, variant) : undefined),
-    [color, variant]
+    () => (color ? getTagStyle(color, variant, theme) : undefined),
+    [color, variant, theme]
   )
 
   return (

@@ -1,4 +1,5 @@
-import { memo, type MouseEvent, type ReactNode } from "react"
+import { memo, useEffect, useRef, type MouseEvent, type ReactNode } from "react"
+import { AnimatePresence, motion, useAnimate } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
   Check,
@@ -18,7 +19,10 @@ import { formatDate, formatTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import { formatNumber } from "@/lib/format-number"
+import { useMotionPreset } from "@/lib/motion"
+import type { ContactPresence } from "@/lib/chat/thread-store"
 import { cn } from "@/lib/utils"
+import { PresenceIndicator } from "../thread/presence-indicator"
 
 const DAY_MS = 24 * 60 * 60 * 1000
 const HOLD_MS = 450
@@ -41,6 +45,34 @@ function useListTime(at: number | null | undefined): string {
     return new Intl.DateTimeFormat(language, { weekday: "short" }).format(at).replace(".", "")
   }
   return formatDate(at, language, "short")
+}
+
+/**
+ * A marca da conversa aberta: o fundo lilás com um fio violeta à esquerda. É uma peça só para a
+ * lista inteira (`layoutId`), então ao abrir outra conversa ela desliza da linha antiga até a nova:
+ * a pessoa vê para onde foi, em vez de um destaque sumir e outro surgir. Com menos movimento, só
+ * aparece no lugar.
+ */
+function SelectedIndicator() {
+  const preset = useMotionPreset()
+  const className = "pointer-events-none absolute inset-0 rounded-lg bg-accent"
+  const bar = (
+    <span className="absolute inset-y-3 left-0 w-[3px] rounded-full bg-primary md:inset-y-2.5" />
+  )
+
+  if (preset.reduced) {
+    return (
+      <span aria-hidden className={className}>
+        {bar}
+      </span>
+    )
+  }
+
+  return (
+    <motion.span aria-hidden layoutId="chat-list-selected" transition={preset.spring} className={className}>
+      {bar}
+    </motion.span>
+  )
 }
 
 /**
@@ -105,7 +137,7 @@ export function ListRow({
           onClick={selection.onToggle}
           className={cn(
             "flex min-h-[4.25rem] w-full items-start gap-3 rounded-lg px-2.5 py-2.5 text-left transition-colors outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 md:min-h-[3.75rem] md:py-2 md:select-auto",
-            selection.checked ? "bg-accent text-accent-foreground" : "hover:bg-muted/70"
+            selection.checked ? "bg-accent text-accent-foreground" : "hover:bg-chat-hover"
           )}
         >
           <span className="flex size-10 shrink-0 items-center justify-center">
@@ -142,13 +174,14 @@ export function ListRow({
         aria-label={ariaLabel}
         {...holdHandlers}
         className={cn(
-          "flex min-h-[4.25rem] items-start gap-3 rounded-lg px-2.5 py-2.5 transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:active:bg-muted/70 md:min-h-[3.75rem] md:py-2",
-          selected ? "bg-accent text-accent-foreground" : "hover:bg-muted/70",
+          "relative flex min-h-[4.25rem] items-start gap-3 rounded-lg px-2.5 py-2.5 transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 pointer-coarse:active:bg-chat-hover md:min-h-[3.75rem] md:py-2",
+          selected ? "text-accent-foreground" : "hover:bg-chat-hover",
           onHold && "select-none [-webkit-touch-callout:none]"
         )}
       >
+        {selected ? <SelectedIndicator /> : null}
         <span className="relative mt-0.5 shrink-0">{avatar}</span>
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="relative flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="flex items-baseline justify-between gap-2">
             {title}
             <span className="flex shrink-0 items-center gap-1">{meta}</span>
@@ -173,7 +206,7 @@ export function RowName({
   const { t } = useTranslation()
   return (
     <span className="flex min-w-0 items-center gap-1.5">
-      <span className={cn("truncate text-sm", unread ? "font-semibold" : "font-medium")}>
+      <span className={cn("truncate text-sm text-foreground", unread ? "font-semibold" : "font-medium")}>
         {children}
       </span>
       {officialApi ? (
@@ -203,17 +236,47 @@ export function RowTime({ at, unread }: { at: number | null | undefined; unread:
   )
 }
 
+/**
+ * As não lidas. Ao mudar, o número pulsa uma vez (escala de ida e volta, 300 ms): é o "mais uma"
+ * que a pessoa percebe com o canto do olho. Nasce crescendo quando a conversa sai do zero, e some
+ * encolhendo ao ser lida. Montar a linha (abrir a tela, rolar a lista) não anima nada.
+ */
 export function UnreadBadge({ count, label }: { count: number; label: string }) {
   const language = useLanguage()
-  if (count <= 0) return null
+  const preset = useMotionPreset()
+  const [scope, animate] = useAnimate<HTMLSpanElement>()
+  const previous = useRef(count)
+
+  useEffect(() => {
+    const before = previous.current
+    previous.current = count
+    if (before <= 0 || count <= 0 || count === before || !scope.current) return
+    void animate(
+      scope.current,
+      preset.reduced ? { opacity: [0.4, 1] } : { scale: [1, 1.25, 1] },
+      { duration: 0.3, ease: "easeOut" }
+    )
+  }, [animate, count, preset.reduced, scope])
+
+  const hidden = preset.reduced ? { opacity: 0 } : { opacity: 0, scale: 0.5 }
 
   return (
-    <span
-      aria-label={label}
-      className="flex h-[1.125rem] min-w-[1.125rem] shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[0.6875rem] font-semibold text-primary-foreground tabular-nums"
-    >
-      {count > 99 ? "99+" : formatNumber(count, language)}
-    </span>
+    <AnimatePresence initial={false}>
+      {count > 0 ? (
+        <motion.span
+          key="unread"
+          ref={scope}
+          aria-label={label}
+          initial={hidden}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={hidden}
+          transition={preset.reduced ? { duration: 0.15 } : preset.spring}
+          className="flex h-[1.125rem] min-w-[1.125rem] shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[0.6875rem] font-semibold text-primary-foreground tabular-nums"
+        >
+          {count > 99 ? "99+" : formatNumber(count, language)}
+        </motion.span>
+      ) : null}
+    </AnimatePresence>
   )
 }
 
@@ -231,13 +294,24 @@ export const LastMessagePreview = memo(function LastMessagePreview({
   content,
   by,
   unread,
+  presence = null,
 }: {
   type: string | null
   content: string | null
   by: string | null
   unread: boolean
+  /** Digitando ou gravando agora: toma o lugar da prévia, que volta quando a mensagem chegar. */
+  presence?: ContactPresence
 }) {
   const { t } = useTranslation()
+
+  if (presence) {
+    return (
+      <span className="flex min-w-0 items-center text-[0.8125rem] leading-5 text-foreground/80">
+        <PresenceIndicator presence={presence} />
+      </span>
+    )
+  }
 
   // Figurinha chega como `sticker` em `lastMessageType`; o resto, como o elemento da mensagem.
   const kind =
@@ -255,7 +329,7 @@ export const LastMessagePreview = memo(function LastMessagePreview({
     <span
       className={cn(
         "flex min-w-0 items-center gap-1 text-[0.8125rem] leading-5",
-        unread ? "text-foreground" : "text-muted-foreground"
+        unread ? "font-medium text-foreground" : "text-muted-foreground"
       )}
     >
       {by === "assistant" ? <CheckCheck aria-hidden className="size-3.5 shrink-0 opacity-60" /> : null}

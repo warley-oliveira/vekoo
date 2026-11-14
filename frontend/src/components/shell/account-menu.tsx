@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Kbd } from "@/components/ui/kbd"
+import { ThemeSubmenu } from "@/components/shell/theme-picker"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   ORGANIZATION_SWITCHER_SHORTCUT,
@@ -105,7 +106,7 @@ export function OrganizationSwitcherButton({ collapsed }: { collapsed: boolean }
   )
 }
 
-/** A pessoa: perfil, avisos, a organização (para quem administra), idioma e sair. */
+/** A pessoa: perfil, avisos, a organização (para quem administra), idioma, tema e sair. */
 export function PersonMenu({ collapsed }: { collapsed: boolean }) {
   const { t } = useTranslation()
   const { session } = useAuth()
@@ -169,6 +170,7 @@ export function PersonMenu({ collapsed }: { collapsed: boolean }) {
           </>
         )}
         <LanguageSubmenu />
+        <ThemeSubmenu />
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>
           <LogOut /> {t("account.signOut")}

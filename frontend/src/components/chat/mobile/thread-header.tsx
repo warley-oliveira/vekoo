@@ -17,16 +17,17 @@ import {
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { UserAvatar } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { useContactPresence } from "@/hooks/chat/use-contact-presence"
 import { useThreadActions } from "@/hooks/chat/use-thread-actions"
 import { apiAssetUrl } from "@/lib/api"
 import { channelKey, contactHandle, isConnectorDown } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
-import { useThreadStore } from "@/lib/chat/thread-store"
 import { openCopilot, toggleContactDetails } from "@/lib/chat-details/panel-store"
 import { openTemplateSender } from "@/lib/chat-details/template-sender-store"
 import { cn } from "@/lib/utils"
 import { ChannelBadge } from "../channel-icon"
 import { ThreadHeaderExtras } from "../extension-points"
+import { PresenceIndicator } from "../thread/presence-indicator"
 import type { ThreadHeaderProps } from "../thread/thread-header"
 import { SheetRow } from "./sheet-row"
 
@@ -39,7 +40,7 @@ const RenameDialog = lazy(() => import("./rename-dialog"))
  */
 export default memo(function MobileThreadHeader({ chat, connector, onBack }: ThreadHeaderProps) {
   const { t } = useTranslation()
-  const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
+  const presence = useContactPresence(chat.id)
   const [menuOpen, setMenuOpen] = useState(false)
   const [renaming, setRenaming] = useState(false)
   const closeRename = useCallback(() => setRenaming(false), [])
@@ -94,6 +95,7 @@ export default memo(function MobileThreadHeader({ chat, connector, onBack }: Thr
           <span className="relative shrink-0">
             <UserAvatar
               name={name}
+              colorSeed={chat.externalId}
               src={chat.profilePictureUrl ? apiAssetUrl(chat.profilePictureUrl) : null}
               className="size-9"
             />
@@ -104,8 +106,8 @@ export default memo(function MobileThreadHeader({ chat, connector, onBack }: Thr
               {name}
             </span>
             <span className="flex min-w-0 items-center gap-1 text-xs leading-4 text-muted-foreground" aria-live="polite">
-              {typing ? (
-                <span className="truncate text-primary">{t("chat.thread.typing")}</span>
+              {presence ? (
+                <PresenceIndicator presence={presence} />
               ) : (
                 <>
                   {ready ? (

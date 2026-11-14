@@ -156,12 +156,15 @@ existir em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
 pipeline — nunca projeto, deck, slide, asset ou workspace. Botões com verbo, o mesmo verbo do começo ao
 fim de cada ação. Dados fictícios com conteúdo brasileiro de verdade, nunca lorem ipsum.
 
-**Direção visual:** tema claro, interface quieta e quase sem cor; hierarquia por
+**Direção visual:** claro e escuro, os dois quietos e quase sem cor (Sistema é o padrão; a
+pessoa troca no menu dela e em Perfil); hierarquia por
 tipografia (títulos `font-heading` = Bricolage Grotesque; texto = Geist) e espaçamento.
 Um único acento saturado (violeta, `--primary`) reservado a ação principal, seleção e
 foco. A única outra coisa saturada na tela é a obra do usuário: capas de carrossel
 (`CarouselCover`) têm cor própria e **cantos retos** (Instagram não arredonda imagem) — o
 resto da interface pode ser suave. Status usam os tons sóbrios de `StatusBadge`.
+Cor só por token de `index.css`, que tem os dois temas (`:root` e `.dark`): componente
+nenhum pergunta o tema, e a obra do usuário não muda com ele.
 
 ---
 

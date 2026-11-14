@@ -97,9 +97,9 @@ export function availableActions(connector: Connector) {
 }
 
 /**
- * Evolution e AIVA jogam fora o que chega durante a pausa, e não há como recuperar. É
+ * Evolution e Vekoo jogam fora o que chega durante a pausa, e não há como recuperar. É
  * regra do provedor, e a confirmação precisa dizer com todas as letras. Sem provedor
- * gravado, o back-end usa a AIVA, que também descarta.
+ * gravado, o back-end usa a Vekoo, que também descarta.
  */
 export function pauseDiscardsMessages(connector: Connector): boolean {
   return connector.type === "whatsapp_web"

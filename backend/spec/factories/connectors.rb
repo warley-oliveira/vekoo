@@ -27,9 +27,9 @@ FactoryBot.define do
     number_id { "5531971810932" }
     profile_name { "Loja da Ana" }
 
-    trait :aiva do
-      provider_api { "aiva_api" }
-      base_url { "http://aiva.test" }
+    trait :vekoo do
+      provider_api { "vekoo_api" }
+      base_url { "http://vekoo.test" }
     end
   end
 

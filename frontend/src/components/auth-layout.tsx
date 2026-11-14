@@ -117,7 +117,7 @@ function Showcase({ reduceMotion }: { reduceMotion: boolean }) {
                 ease: "easeOut",
               }}
               style={{ rotate: `${(index - 1) * 2.5}deg` }}
-              className="min-w-0 max-w-[15rem] flex-1 shadow-[0_18px_40px_-24px_oklch(0.185_0.005_285/0.45)]"
+              className="min-w-0 max-w-[15rem] flex-1 shadow-art"
             >
               <CardArt
                 card={carousel.cards[0]}

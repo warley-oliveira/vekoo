@@ -40,8 +40,8 @@ RSpec.describe "SSRF por URL de mídia de provedor", type: :request do
     it_behaves_like "não busca o endereço interno"
   end
 
-  describe "AIVA: mídia a enviar" do
-    let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
+  describe "Vekoo: mídia a enviar" do
+    let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization) }
     let(:action) { connector.send_media_message("5531971810932", MediaMessageDto.new("image", "x.png", media_url: INTERNAL_URL)) }
 
     before { stub_request(:post, %r{/message/sendMediaFile/}).to_return(status: 200, body: {}.to_json) }

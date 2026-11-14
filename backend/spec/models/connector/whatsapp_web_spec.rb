@@ -7,19 +7,19 @@ RSpec.describe Connector::WhatsappWeb do
 
   let(:organization) { create(:organization) }
   let(:evolution) { create(:connector_whatsapp_web, organization: organization, instance_name: "WS-EVO") }
-  let(:aiva) { create(:connector_whatsapp_web, :aiva, organization: organization, instance_name: "WS-AIVA") }
+  let(:vekoo) { create(:connector_whatsapp_web, :vekoo, organization: organization, instance_name: "WS-VEKOO") }
 
   describe "escolha do provedor ao criar" do
     def create_connector(**attributes)
       described_class.create!(organization_id: organization.id, instance_name: "WS-1", **attributes)
     end
 
-    it "fica com o padrão do modelo quando ninguém informa (na origem era aiva_api; aqui, evolution_api)" do
+    it "fica com o padrão do modelo quando ninguém informa (na origem era vekoo_api; aqui, evolution_api)" do
       expect(create_connector.provider_api).to eq("evolution_api")
     end
 
     it "respeita o provedor explícito" do
-      expect(create_connector(provider_api: "aiva_api").provider_api).to eq("aiva_api")
+      expect(create_connector(provider_api: "vekoo_api").provider_api).to eq("vekoo_api")
     end
 
     it "recusa um provedor que não existe" do
@@ -30,17 +30,17 @@ RSpec.describe Connector::WhatsappWeb do
     end
 
     it "lê o padrão do ambiente" do
-      with_env("WHATSAPP_WEB_DEFAULT_PROVIDER" => "aiva_api") do
-        expect(create_connector.provider_api).to eq("aiva_api")
+      with_env("WHATSAPP_WEB_DEFAULT_PROVIDER" => "vekoo_api") do
+        expect(create_connector.provider_api).to eq("vekoo_api")
       end
     end
   end
 
   describe "endereço e chave do provedor" do
     it "preenche base_url pelo provedor, a partir do ambiente" do
-      with_env("EVOLUTION_API_URL" => "http://evo.interno", "WHATSAPP_API_URL" => "http://aiva.interno") do
+      with_env("EVOLUTION_API_URL" => "http://evo.interno", "WHATSAPP_API_URL" => "http://vekoo.interno") do
         expect(described_class.create!(organization_id: organization.id, provider_api: "evolution_api").base_url).to eq("http://evo.interno")
-        expect(described_class.create!(organization_id: organization.id, provider_api: "aiva_api").base_url).to eq("http://aiva.interno")
+        expect(described_class.create!(organization_id: organization.id, provider_api: "vekoo_api").base_url).to eq("http://vekoo.interno")
       end
     end
 
@@ -56,8 +56,8 @@ RSpec.describe Connector::WhatsappWeb do
     end
 
     it "usa WHATSAPP_API_KEY nos outros provedores" do
-      with_env("WHATSAPP_API_KEY" => "global-aiva") do
-        expect(described_class.new(provider_api: "aiva_api").provider_api_key).to eq("global-aiva")
+      with_env("WHATSAPP_API_KEY" => "global-vekoo") do
+        expect(described_class.new(provider_api: "vekoo_api").provider_api_key).to eq("global-vekoo")
       end
     end
 
@@ -89,18 +89,18 @@ RSpec.describe Connector::WhatsappWeb do
   describe "#provider" do
     it "despacha para o módulo do provedor" do
       expect(evolution.provider).to eq(described_class::Providers::EvolutionApi)
-      expect(aiva.provider).to eq(described_class::Providers::AivaApi)
+      expect(vekoo.provider).to eq(described_class::Providers::VekooApi)
     end
 
-    it "cai na AIVA quando o provedor gravado não existe mais" do
-      expect(described_class.new(provider_api: "sumiu").provider).to eq(described_class::Providers::AivaApi)
+    it "cai na Vekoo quando o provedor gravado não existe mais" do
+      expect(described_class.new(provider_api: "sumiu").provider).to eq(described_class::Providers::VekooApi)
     end
   end
 
   describe "#evolution_provider?" do
     it "reconhece a Evolution" do
       expect(evolution.evolution_provider?).to be(true)
-      expect(aiva.evolution_provider?).to be(false)
+      expect(vekoo.evolution_provider?).to be(false)
     end
   end
 
@@ -216,19 +216,19 @@ RSpec.describe Connector::WhatsappWeb do
 
   describe "#reload_instance" do
     it "não chama o provedor sem estar ativo" do
-      connector = create(:connector_whatsapp_web, :aiva, organization: organization, status: :inactive)
+      connector = create(:connector_whatsapp_web, :vekoo, organization: organization, status: :inactive)
 
       expect(connector.reload_instance).to be_nil
-      expect(a_request(:any, /aiva\.test/)).not_to have_been_made
+      expect(a_request(:any, /vekoo\.test/)).not_to have_been_made
     end
   end
 
   describe "#logout_instance" do
     it "não chama o provedor sem estar ativo" do
-      connector = create(:connector_whatsapp_web, :aiva, organization: organization, status: :inactive)
+      connector = create(:connector_whatsapp_web, :vekoo, organization: organization, status: :inactive)
 
       expect(connector.logout_instance).to be_nil
-      expect(a_request(:any, /aiva\.test/)).not_to have_been_made
+      expect(a_request(:any, /vekoo\.test/)).not_to have_been_made
     end
   end
 

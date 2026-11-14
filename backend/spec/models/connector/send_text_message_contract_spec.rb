@@ -57,10 +57,10 @@ RSpec.describe "Contrato de Connector#send_text_message" do
   end
 
   describe Connector::WhatsappWeb do
-    { aiva: "http://aiva.test", evolution: "http://evolution.test" }.each do |provider, base|
+    { vekoo: "http://vekoo.test", evolution: "http://evolution.test" }.each do |provider, base|
       context "com o provedor #{provider}" do
         let(:connector) do
-          traits = provider == :aiva ? [ :aiva ] : []
+          traits = provider == :vekoo ? [ :vekoo ] : []
           create(:connector_whatsapp_web, *traits, organization: organization, instance_name: "WS-1")
         end
         let(:url) { "#{base}/message/sendText/WS-1" }
@@ -86,7 +86,7 @@ RSpec.describe "Contrato de Connector#send_text_message" do
     end
 
     it "devolve nil desconectado" do
-      closed = create(:connector_whatsapp_web, :aiva, organization: organization, status: :closed)
+      closed = create(:connector_whatsapp_web, :vekoo, organization: organization, status: :closed)
 
       expect(closed.send_text_message("5511999999999", "oi")).to be_nil
     end

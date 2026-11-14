@@ -75,7 +75,7 @@ export function SegmentedControl<T extends string = string>({
               <motion.span
                 layoutId={indicatorId}
                 transition={preset.spring}
-                className="absolute inset-0 rounded-md bg-background shadow-xs ring-1 ring-foreground/5"
+                className="absolute inset-0 rounded-md bg-background shadow-xs ring-1 ring-foreground/5 dark:bg-foreground/12 dark:ring-foreground/10"
               />
             ) : null}
             <span className="relative z-10 inline-flex items-center gap-1.5">

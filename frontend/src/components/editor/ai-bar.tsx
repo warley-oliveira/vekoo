@@ -84,7 +84,7 @@ export function AiBar({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={dismiss}
-            className="absolute inset-0 bg-foreground/25 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-scrim/25 backdrop-blur-[2px]"
           />
 
           <motion.div

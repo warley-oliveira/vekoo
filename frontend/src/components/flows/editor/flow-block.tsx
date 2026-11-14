@@ -111,7 +111,7 @@ export const FlowBlock = memo(function FlowBlock({ id, type, data, selected }: N
       <div
         className={cn(
           "flow-block relative w-66 rounded-xl border bg-card transition-[border-color,box-shadow] duration-150 motion-reduce:transition-none",
-          "shadow-[0_1px_2px_oklch(0.2_0.01_285/0.05)]",
+          "shadow-hairline",
           selected ? "border-primary ring-3 ring-primary/15" : "hover:border-foreground/20"
         )}
         data-family={family}

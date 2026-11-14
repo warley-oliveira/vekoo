@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next"
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { BLOCK_CATALOG, isTrigger } from "@/lib/flows/catalog"
 import { BLOCK_BASE_HEIGHT, BLOCK_WIDTH, FIT_OPTIONS, READABLE_ZOOM } from "@/lib/flows/layout"
+import { useResolvedTheme } from "@/lib/theme"
 
 import { BLOCK_DRAG_TYPE } from "./block-picker"
 import { CanvasToolbar } from "./canvas-toolbar"
@@ -60,6 +61,7 @@ export function FlowCanvas() {
   const reactFlow = useReactFlow<BlockNode, LinkEdge>()
   const isMobile = useIsMobile()
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const theme = useResolvedTheme()
 
   const nodes = useEditor((state) => state.nodes)
   const edges = useEditor((state) => state.edges)
@@ -208,6 +210,8 @@ export function FlowCanvas() {
         onlyRenderVisibleElements={nodes.length >= VIRTUALIZE_FROM}
         ariaLabelConfig={ariaLabels}
         proOptions={{ hideAttribution: true }}
+        // Só o que o xyflow pinta sozinho (minimapa, controles); as cores do quadro são de `flows.css`.
+        colorMode={theme}
         panOnScroll={false}
         zoomOnDoubleClick={false}
       >

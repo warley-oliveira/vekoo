@@ -77,7 +77,7 @@ function MobileSheet({ onClose }: { onClose: () => void }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
         onClick={onClose}
-        className="absolute inset-0 bg-foreground/40"
+        className="absolute inset-0 bg-scrim/40"
       />
       <motion.div
         role="dialog"

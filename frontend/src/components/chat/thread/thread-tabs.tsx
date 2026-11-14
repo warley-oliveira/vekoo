@@ -50,7 +50,7 @@ export const ThreadTabs = memo(function ThreadTabs({
                 value={chat.chatId}
                 className={cn("h-10 flex-none gap-1.5 px-1", !chat.matched && "opacity-50 grayscale")}
               >
-                <ChannelIcon channel={channel} className="size-3.5" />
+                <ChannelIcon channel={channel} colored className="size-3.5" />
                 <span className="flex flex-col items-start leading-tight">
                   <span className="flex items-center gap-1 text-[0.8125rem]">
                     <span className="max-w-36 truncate">{name}</span>

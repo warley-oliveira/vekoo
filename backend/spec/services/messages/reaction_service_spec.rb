@@ -188,8 +188,8 @@ RSpec.describe Messages::ReactionService do
       end
     end
 
-    context "com a AIVA" do
-      let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
+    context "com a Vekoo" do
+      let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization) }
 
       it_behaves_like "canal sem reação"
     end

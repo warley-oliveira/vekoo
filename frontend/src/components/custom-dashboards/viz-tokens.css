@@ -8,7 +8,7 @@
  *   vizinhos: CVD pior par 12,2 (deuteranopia); visão normal 21,6; todas no faixa de luz e acima do piso de croma.
  *   as três primeiras, todos os pares: CVD 8,0; visão normal 17,4.
  *   âmbar fica em 2,25:1 sobre o card, com legenda e tabela como alívio, que é a condição da skill para ficar abaixo de 3:1.
- * Ao trocar um valor, rode de novo. O produto só tem tema claro: não há par escuro para validar.
+ * Ao trocar um valor, rode de novo, nos dois temas.
  */
 :root {
   --viz-cat-1: var(--primary); /* violeta, #7132e0 */
@@ -19,4 +19,21 @@
   --viz-cat-6: oklch(0.75 0.14 80); /* âmbar */
   --viz-cat-7: oklch(0.62 0.11 175); /* verde-azulado, o mesmo de --viz-series-human */
   --viz-cat-8: oklch(0.5 0.17 27); /* vermelho */
+}
+
+/*
+ * Escuro, na mesma ordem, contra o card escuro (#151519), `--mode dark`: todas na faixa de luz
+ * (0,48 a 0,67) e acima do piso de croma; vizinhos: CVD pior par 9,9 (deuteranopia); visão normal
+ * 17,2; todas >= 3:1. O violeta aqui é um degrau abaixo do `--primary` escuro, para caber na faixa.
+ */
+.dark,
+.theme-dark {
+  --viz-cat-1: oklch(0.66 0.17 292);
+  --viz-cat-2: oklch(0.66 0.13 50);
+  --viz-cat-3: oklch(0.62 0.13 250);
+  --viz-cat-4: oklch(0.64 0.14 140);
+  --viz-cat-5: oklch(0.64 0.18 350);
+  --viz-cat-6: oklch(0.665 0.13 85);
+  --viz-cat-7: oklch(0.65 0.11 175);
+  --viz-cat-8: oklch(0.58 0.18 27);
 }

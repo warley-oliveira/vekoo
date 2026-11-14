@@ -2,11 +2,11 @@
 
 class Connector::WhatsappWeb
   module Providers
-    # Provider for the in-house "AIVA" Evolution-style WhatsApp HTTP API.
+    # Provider for the in-house "Vekoo" Evolution-style WhatsApp HTTP API.
     # All requests go through HTTParty against `connector.base_url`, with
     # the instance-scoped path `/<endpoint>/<instance_name>` and the apikey
     # header from `connector.headers`.
-    module AivaApi
+    module VekooApi
       module_function
 
       # ---- messaging -----------------------------------------------------------

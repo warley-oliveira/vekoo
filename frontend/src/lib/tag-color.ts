@@ -5,6 +5,10 @@ type Rgb = { r: number; g: number; b: number }
 
 const WHITE: Rgb = { r: 255, g: 255, b: 255 }
 const BLACK: Rgb = { r: 0, g: 0, b: 0 }
+/** `--card` do tema escuro: a superfície onde a etiqueta suave assenta no escuro. */
+const DARK_SURFACE: Rgb = { r: 21, g: 21, b: 25 }
+/** No escuro o tom precisa de um pouco mais de cor para não sumir no fundo. */
+const DARK_TINT = 0.2
 const MIN_CONTRAST = 4.5
 /** Opacidade do fundo da etiqueta suave sobre o branco. */
 const TINT = 0.12
@@ -104,8 +108,28 @@ export type TagStyle = {
   borderColor: string
 }
 
-/** Estilo pronto da etiqueta: suave por padrão, com texto de contraste garantido. */
-export function getTagStyle(color: string, variant: "soft" | "solid" = "soft"): TagStyle {
+/**
+ * Cor do texto para o escuro: a cor da etiqueta, clareada só o necessário para passar de 4,5:1
+ * sobre `background`. Mesmo matiz, o espelho de `getTagTextColor`.
+ */
+function getDarkTagTextColor(base: Rgb, surface: Rgb): string {
+  let current = base
+  for (let step = 1; step <= 20 && contrast(current, surface) < MIN_CONTRAST; step++) {
+    current = mix(base, WHITE, step * 0.05)
+  }
+  return toHex(current)
+}
+
+/**
+ * Estilo pronto da etiqueta: suave por padrão, com texto de contraste garantido. `theme` é o da
+ * tela (`useResolvedTheme()`): no escuro o tom suave assenta no card escuro e o texto clareia.
+ * A sólida é a cor da pessoa, igual nos dois.
+ */
+export function getTagStyle(
+  color: string,
+  variant: "soft" | "solid" = "soft",
+  theme: "light" | "dark" = "light"
+): TagStyle {
   const base = parseHexColor(color) ?? parseHexColor(FALLBACK)!
 
   if (variant === "solid") {
@@ -114,6 +138,15 @@ export function getTagStyle(color: string, variant: "soft" | "solid" = "soft"): 
       color: getReadableTextColor(hex),
       backgroundColor: hex,
       borderColor: "transparent",
+    }
+  }
+
+  if (theme === "dark") {
+    const background = mix(DARK_SURFACE, base, DARK_TINT)
+    return {
+      color: getDarkTagTextColor(base, background),
+      backgroundColor: toHex(background),
+      borderColor: toHex(mix(DARK_SURFACE, base, DARK_TINT * 2)),
     }
   }
 

@@ -1,0 +1,66 @@
+/*
+ * O fundo da conversa: um cinza neutro, levemente frio, com um pontilhado fino. É o que separa "a
+ * conversa" do resto da interface, e deixa a bolha do contato (no branco do cartão) e o composer
+ * flutuando por cima com contraste. As cores são os tokens `--chat-surface` e `--chat-surface-dot`, em
+ * `index.css`.
+ *
+ * O fundo fica no contêiner, e não no que rola: rolar não repinta o pontilhado.
+ */
+.chat-surface {
+  background-color: var(--chat-surface);
+  background-image: radial-gradient(var(--chat-surface-dot) 0.85px, transparent 1.25px);
+  background-size: 16px 16px;
+  background-position: center top;
+}
+
+/* Quem pediu contraste maior perde o enfeite, e a leitura das bolhas fica com a cor lisa. */
+@media (prefers-contrast: more) {
+  .chat-surface {
+    background-image: none;
+  }
+}
+
+/*
+ * Os três pontos do "digitando". Laço infinito de propósito: é um estado vivo, que dura enquanto o
+ * contato digita, e some sozinho. Só `transform` e `opacity`. Com menos movimento, só pisca.
+ */
+@keyframes chat-typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+@keyframes chat-typing-dot-reduced {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.chat-typing-dot {
+  animation: chat-typing-dot 1.2s ease-in-out infinite;
+}
+
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-typing-dot {
+    animation-name: chat-typing-dot-reduced;
+  }
+}

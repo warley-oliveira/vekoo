@@ -6,6 +6,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type RefObject,
 } from "react"
 import { animate, useReducedMotion } from "motion/react"
 
@@ -18,6 +19,13 @@ const INTENT_PX = 8
 /** Soltar além de uma fração da tela, ou rápido assim (px/ms), volta. */
 const COMMIT_RATIO = 0.35
 const COMMIT_VELOCITY = 0.5
+/** Quanto a tela de baixo anda para a esquerda enquanto esta entra: a navegação "empurra". */
+const PUSH_RATIO = 0.25
+
+/** Onde a tela de baixo fica quando esta está em `x` (0 aberta, `width` fechada). */
+function pushOffset(x: number, width: number): number {
+  return -Math.max(width - x, 0) * PUSH_RATIO
+}
 
 /** No Safari do iOS o próprio navegador já volta pela borda: dois gestos no mesmo dedo brigam. */
 function browserOwnsEdgeSwipe(): boolean {
@@ -46,6 +54,11 @@ export type SlidePaneProps = {
   onPeek?: (peeking: boolean) => void
   /** Terminou de entrar ou de sair. */
   onSettled?: (open: boolean) => void
+  /**
+   * A tela de baixo, que é empurrada um quarto para a esquerda enquanto esta entra e volta junto
+   * quando esta sai, inclusive seguindo o dedo. Como num app nativo: as duas andam juntas.
+   */
+  under?: RefObject<HTMLElement | null>
   children: ReactNode
 }
 
@@ -67,6 +80,7 @@ export function SlidePane({
   onBack,
   onPeek,
   onSettled,
+  under,
   children,
 }: SlidePaneProps) {
   const reduced = useReducedMotion()
@@ -98,9 +112,21 @@ export function SlidePane({
       // fica no painel, e não num campo.
       if (!element.contains(document.activeElement)) element.focus({ preventScroll: true })
     }
-    if (!isOpen) setMounted(false)
+    if (!isOpen) {
+      setMounted(false)
+      // Em repouso, sem `transform`, pelo mesmo motivo da tela de cima, e no quadro seguinte pelo
+      // mesmo motivo também.
+      const below = under?.current
+      const token = run.current
+      if (below) {
+        below.style.transform = ""
+        window.requestAnimationFrame(() => {
+          if (token === run.current) below.style.transform = ""
+        })
+      }
+    }
     latest.current.onSettled?.(isOpen)
-  }, [])
+  }, [under])
 
   const slide = useCallback((target: "in" | "out", then: () => void) => {
     const element = pane.current
@@ -121,8 +147,11 @@ export function SlidePane({
     running.current.forEach((animation) => animation.stop())
     running.current = []
 
+    const below = under?.current ?? null
+
     if (latest.current.reduced) {
       // Sem deslize: a navegação continua, e só o que entra aparece com um fade curto.
+      if (below) below.style.transform = ""
       element.style.transform = `translateX(${to}px)`
       backdrop.style.opacity = String(toOpacity)
       if (target === "in") {
@@ -149,8 +178,22 @@ export function SlidePane({
     )
     const fading = animate(backdrop, { opacity: [fromOpacity, toOpacity] }, transition)
     running.current = [moving, fading]
+    if (below) {
+      running.current.push(
+        animate(
+          below,
+          {
+            transform: [
+              `translateX(${pushOffset(from, width)}px)`,
+              `translateX(${pushOffset(to, width)}px)`,
+            ],
+          },
+          transition
+        )
+      )
+    }
     void moving.then(finish)
-  }, [])
+  }, [under])
 
   const firstRun = useRef(true)
   useLayoutEffect(() => {
@@ -232,6 +275,7 @@ export function SlidePane({
       if (latest.current.reduced) return
       ;(element as HTMLDivElement).style.transform = `translateX(${distance}px)`
       ;(backdrop as HTMLDivElement).style.opacity = String(Math.max(1 - distance / width, 0))
+      if (under?.current) under.current.style.transform = `translateX(${pushOffset(distance, width)}px)`
     }
 
     function finish(commit: boolean) {
@@ -271,7 +315,7 @@ export function SlidePane({
       <div
         ref={scrim}
         aria-hidden
-        className="pointer-events-none fixed inset-0 bg-foreground/10"
+        className="pointer-events-none fixed inset-0 bg-overlay"
         style={{ zIndex: zIndex - 1 }}
       />
       <section

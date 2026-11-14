@@ -87,7 +87,7 @@ export const PartsChart = memo(function PartsChart({ parts, donut, config, anima
         </div>
 
         {config.showLegend !== false ? (
-          <ul className="flex max-h-full shrink-0 flex-col gap-1.5 overflow-y-auto text-xs [scrollbar-width:thin] @sm:w-1/2">
+          <ul className="flex max-h-full shrink-0 flex-col gap-1.5 overflow-y-auto text-xs @sm:w-1/2">
             {parts.map((part) => (
               <li key={part.key} className="flex min-w-0 items-center gap-2">
                 <span aria-hidden className="size-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: part.color }} />

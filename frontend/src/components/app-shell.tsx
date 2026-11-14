@@ -117,7 +117,8 @@ export function AppShell() {
               ref={setScroller}
               className={cn(
                 "relative min-h-0 flex-1 overscroll-contain",
-                fullBleed ? "overflow-hidden" : "overflow-y-auto",
+                // A faixa da barra fica reservada: a página não pula de lado quando passa a rolar.
+                fullBleed ? "overflow-hidden" : "overflow-y-auto [scrollbar-gutter:stable]",
                 isMobileShell && "pt-(--app-header-total)",
                 // A tela dona da própria rolagem reserva a folga no fim do que rola.
                 isMobileShell && !fullBleed && "pb-(--app-bottom-nav-total)"

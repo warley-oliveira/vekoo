@@ -119,7 +119,7 @@ export function ImagePicker({
           >
             {preview}
             {busy ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-foreground/40 text-background">
+              <div className="absolute inset-0 flex items-center justify-center bg-scrim/50 text-scrim-foreground">
                 <Loader2 className="size-5 animate-spin" aria-hidden />
               </div>
             ) : null}

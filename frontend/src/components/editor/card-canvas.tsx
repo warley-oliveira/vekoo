@@ -140,7 +140,7 @@ export function CardCanvas() {
               width: `min(100%, calc(100cqh * ${ratio}))`,
               transform: zoom > 1 ? `scale(${zoom})` : undefined,
             }}
-            className="relative shrink-0 shadow-[0_18px_40px_-24px_oklch(0.185_0.005_285/0.45)]"
+            className="relative shrink-0 shadow-art"
           >
             <EditableCard card={active} theme={theme} format={format} />
             {safeArea === "on" && <SafeAreaOverlay />}

@@ -146,8 +146,8 @@ RSpec.describe Inbound::MediaDownload do
       end
     end
 
-    context "provider AIVA" do
-      let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
+    context "provider Vekoo" do
+      let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization) }
 
       let(:raw) { { key: { id: "E1" }, message: { imageMessage: { url: "https://cdn/enc" } } }.with_indifferent_access }
 
@@ -156,7 +156,7 @@ RSpec.describe Inbound::MediaDownload do
       end
 
       it "pede o binário à instância, com o trecho do webhook" do
-        retrieve = stub_request(:post, "http://aiva.test/chat/retrieverMediaMessage/#{connector.instance_name}")
+        retrieve = stub_request(:post, "http://vekoo.test/chat/retrieverMediaMessage/#{connector.instance_name}")
           .with(body: raw.to_json, headers: { "apikey" => "chave-evolution" })
           .to_return(status: 200, body: "jpeg")
 
@@ -169,7 +169,7 @@ RSpec.describe Inbound::MediaDownload do
 
       it "levanta quando a instância recusa" do
         allow(Connector::WhatsappWeb::Providers::Base).to receive(:sleep)
-        stub_request(:post, "http://aiva.test/chat/retrieverMediaMessage/#{connector.instance_name}").to_return(status: 500, body: "fora")
+        stub_request(:post, "http://vekoo.test/chat/retrieverMediaMessage/#{connector.instance_name}").to_return(status: 500, body: "fora")
 
         expect { download }.to raise_error(/código de resposta 500/)
       end

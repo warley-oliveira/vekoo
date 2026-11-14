@@ -32,11 +32,14 @@ function ThreadFallback({ onBack }: { onBack: () => void }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <MobileThreadHeaderSkeleton onBack={onBack} />
-      <div className="min-h-0 flex-1">
-        <MessagesSkeleton />
-      </div>
-      <div className="shrink-0 border-t p-2 pb-safe">
-        <Skeleton className="h-11 w-full rounded-full" />
+      {/* No mesmo papel da conversa: as bolhas do esqueleto são brancas e sumiriam no fundo liso. */}
+      <div className="chat-surface flex min-h-0 flex-1 flex-col">
+        <div className="min-h-0 flex-1">
+          <MessagesSkeleton />
+        </div>
+        <div className="shrink-0 p-2 pb-safe">
+          <Skeleton className="h-11 w-full rounded-full bg-card shadow-sm" />
+        </div>
       </div>
     </div>
   )
@@ -167,6 +170,7 @@ export default function MobileChatLayout({
         covered={detailsCover}
         label={t("chatMobile.panes.thread")}
         zIndex={THREAD_Z}
+        under={list}
         canSwipe={threadOnTop}
         onBack={goToList}
         onPeek={setThreadPeeking}

@@ -87,7 +87,7 @@ export const MessageMedia = memo(function MessageMedia({
             className="size-full object-cover"
           />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex size-10 items-center justify-center rounded-full bg-foreground/60 text-background">
+            <span className="flex size-10 items-center justify-center rounded-full bg-scrim/60 text-scrim-foreground">
               <Play aria-hidden className="size-4 fill-current" />
             </span>
           </span>
@@ -210,7 +210,7 @@ const GridTile = memo(function GridTile({
             className="size-full object-cover"
           />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex size-8 items-center justify-center rounded-full bg-foreground/60 text-background">
+            <span className="flex size-8 items-center justify-center rounded-full bg-scrim/60 text-scrim-foreground">
               <Play aria-hidden className="size-3.5 fill-current" />
             </span>
           </span>

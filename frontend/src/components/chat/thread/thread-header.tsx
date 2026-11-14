@@ -1,5 +1,6 @@
 import { memo, useCallback, useRef } from "react"
 import { useNavigate } from "@/lib/router"
+import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
   Bot,
@@ -22,18 +23,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useContactPresence } from "@/hooks/chat/use-contact-presence"
 import { useThreadActions } from "@/hooks/chat/use-thread-actions"
 import { useIsTouch } from "@/hooks/use-media-query"
 import { apiAssetUrl } from "@/lib/api"
 import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName } from "@/lib/chat/chat-store"
 import { toggleContactDetails } from "@/lib/chat-details/panel-store"
-import { useThreadStore } from "@/lib/chat/thread-store"
 import type { Chat } from "@/lib/chat/types"
+import { useMotionPreset } from "@/lib/motion"
 import { cn } from "@/lib/utils"
-import { ChannelBadge } from "../channel-icon"
+import { ChannelBadge, ChannelIcon } from "../channel-icon"
 import { HAS_DETAILS_PANEL, ThreadHeaderExtras, ThreadMenuExtras } from "../extension-points"
 import { EditableName, type EditableNameHandle } from "./editable-name"
+import { PresenceIndicator } from "./presence-indicator"
 
 /** O que todo cabeçalho de conversa recebe: o da tela larga e o do celular. */
 export type ThreadHeaderProps = {
@@ -49,7 +52,8 @@ export type ThreadHeaderProps = {
 export const ThreadHeader = memo(function ThreadHeader({ chat, connector }: ThreadHeaderProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const typing = useThreadStore((state) => state.threads[chat.id]?.typing ?? false)
+  const presence = useContactPresence(chat.id)
+  const preset = useMotionPreset()
   const nameField = useRef<EditableNameHandle>(null)
   const isTouch = useIsTouch()
 
@@ -74,12 +78,16 @@ export const ThreadHeader = memo(function ThreadHeader({ chat, connector }: Thre
   } = useThreadActions(chat, { onRemoved })
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3 md:px-4">
+    <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-3 md:px-4">
+      {/* Quem é vem primeiro: o avatar maior, no tom do contato e com um aro claro, é o rosto da
+          conversa, e o selo diz por onde ela fala. */}
       <span className="relative shrink-0">
         <UserAvatar
           size="lg"
           name={name}
+          colorSeed={chat.externalId}
           src={chat.profilePictureUrl ? apiAssetUrl(chat.profilePictureUrl) : null}
+          className="size-11 ring-2 ring-background"
         />
         <ChannelBadge channel={channel} label={t(`chat.channel.${channel}`)} />
       </span>
@@ -90,8 +98,25 @@ export const ThreadHeader = memo(function ThreadHeader({ chat, connector }: Thre
         ) : (
           <h2 className="truncate font-heading text-base leading-6 font-semibold tracking-tight">{name}</h2>
         )}
-        <p className="truncate text-xs text-muted-foreground" aria-live="polite">
-          {typing ? t("chat.thread.typing") : [handle, channelName].filter(Boolean).join(" · ")}
+        {/* "digitando" toma o lugar do canal, sem mexer na linha: os dois ocupam a mesma célula e
+            trocam com fade. */}
+        <p className="grid text-xs text-muted-foreground" aria-live="polite">
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={presence ?? "channel"}
+              {...preset.fade}
+              className="flex min-w-0 items-center gap-1.5 [grid-area:1/1]"
+            >
+              {presence ? (
+                <PresenceIndicator presence={presence} />
+              ) : (
+                <>
+                  <ChannelIcon channel={channel} colored className="size-3.5 shrink-0" />
+                  <span className="truncate">{[channelName, handle].filter(Boolean).join(" · ")}</span>
+                </>
+              )}
+            </motion.span>
+          </AnimatePresence>
         </p>
       </div>
 

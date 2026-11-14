@@ -141,7 +141,7 @@ env:
     - INSTAGRAM_APP_SECRET
     - EVOLUTION_API_URL             # WhatsApp Web, provedor padrão: sem as duas, QR code falha
     - EVOLUTION_API_KEY
-    - WHATSAPP_API_URL              # provedor AIVA: sem as duas, só ele para
+    - WHATSAPP_API_URL              # provedor Vekoo: sem as duas, só ele para
     - WHATSAPP_API_KEY
     - GOOGLE_CALENDAR_CLIENT_ID     # Google Agenda: sem as duas, conectar responde googleNotConfigured
     - GOOGLE_CALENDAR_CLIENT_SECRET

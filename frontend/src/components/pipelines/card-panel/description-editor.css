@@ -187,3 +187,24 @@
 .description-editor .ProseMirror.resize-cursor {
   cursor: col-resize;
 }
+
+/*
+ * Escuro. As cores da descrição são da pessoa e vão para o documento em hex, pensadas para o
+ * branco. O realce é um fundo pastel: por cima dele, tinta escura (o `color: inherit` que o
+ * Tiptap escreve no `style` daria texto claro sobre o pastel). O texto colorido sobe um degrau
+ * para passar de 4,5:1 no card escuro; o documento guarda a mesma cor nos dois temas.
+ */
+.dark .description-editor .ProseMirror mark {
+  color: oklch(0.2 0.01 285) !important;
+}
+.dark .description-editor .ProseMirror mark * {
+  color: inherit !important;
+}
+.dark .description-editor [style*="color: #71717a"] { color: oklch(0.72 0.01 285) !important; }
+.dark .description-editor [style*="color: #dc2626"] { color: oklch(0.72 0.17 25) !important; }
+.dark .description-editor [style*="color: #ea580c"] { color: oklch(0.75 0.15 50) !important; }
+.dark .description-editor [style*="color: #ca8a04"] { color: oklch(0.8 0.14 85) !important; }
+.dark .description-editor [style*="color: #059669"] { color: oklch(0.75 0.13 165) !important; }
+.dark .description-editor [style*="color: #2563eb"] { color: oklch(0.72 0.14 260) !important; }
+.dark .description-editor [style*="color: #7c3aed"] { color: oklch(0.72 0.16 292) !important; }
+.dark .description-editor [style*="color: #db2777"] { color: oklch(0.73 0.17 355) !important; }

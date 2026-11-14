@@ -69,13 +69,13 @@ module Connectors
       Result.new(connector: connector)
     end
 
-    # O plano padrão ("aiva_api" na tela de escolha da origem) roda hoje sobre a Evolution.
+    # O plano padrão ("vekoo_api" na tela de escolha da origem) roda hoje sobre a Evolution.
     # Sem provider explícito vale o padrão do modelo.
     def provider_attributes
       provider = params[:provider_api].presence
       return {} unless provider
 
-      { provider_api: provider == "aiva_api" ? "evolution_api" : provider }
+      { provider_api: provider == "vekoo_api" ? "evolution_api" : provider }
     end
 
     def lead_chat

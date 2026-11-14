@@ -162,8 +162,9 @@ const Conversation = memo(function Conversation({
 
   return (
     <ThreadContext.Provider value={context}>
+      {/* O fundo vai até debaixo do composer: ele flutua sobre a conversa, e não numa faixa à parte. */}
       <div
-        className="relative flex min-h-0 flex-1 flex-col"
+        className="chat-surface relative flex min-h-0 flex-1 flex-col"
         onKeyDown={onKeyDown}
         onDragOver={onDragOver}
         onDragLeave={(event) => {
@@ -173,10 +174,11 @@ const Conversation = memo(function Conversation({
       >
         {!connected ? <ReconnectingNotice /> : null}
 
-        {/* No celular quem anima é o painel inteiro: duas animações juntas seriam só mais trabalho. */}
-        <motion.div ref={history} key={chatId} {...(variant ? {} : preset.fade)} className="min-h-0 flex-1">
+        {/* Quem anima a troca de conversa é a coluna inteira (`ThreadEntry`, na tela larga) ou o painel
+            que desliza (no celular): aqui dentro, nada. */}
+        <div ref={history} className="min-h-0 flex-1">
           <MessageList ref={list} threadKey={chatId} onRetry={retryLoad} />
-        </motion.div>
+        </div>
 
         <AnimatePresence>
           {dragging ? (
@@ -443,7 +445,7 @@ export default memo(function ChatThread({
     return (
       <div className="flex h-full min-h-0 flex-col">
         {variant ? <variant.ThreadHeaderSkeleton onBack={onBack} /> : <ThreadHeaderSkeleton />}
-        <div className="min-h-0 flex-1">
+        <div className="chat-surface min-h-0 flex-1">
           <MessagesSkeleton />
         </div>
       </div>
@@ -464,7 +466,7 @@ export default memo(function ChatThread({
       ) : null}
 
       {showTimeline ? (
-        <>
+        <div className="chat-surface flex min-h-0 flex-1 flex-col">
           <AllChannelsTimeline
             externalId={chat.externalId}
             chats={contactChats}
@@ -473,7 +475,7 @@ export default memo(function ChatThread({
             contactPicture={chat.profilePictureUrl}
           />
           <ReadOnlyNotice />
-        </>
+        </div>
       ) : (
         <Conversation
           key={chatId}

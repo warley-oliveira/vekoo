@@ -15,6 +15,13 @@
     "pt-BR": "Português (Brasil)",
     "en": "English"
   },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "description": "Light, dark, or the same as your device. Saved in this browser."
+  },
   "plans": {
     "free": "Free plan"
   },

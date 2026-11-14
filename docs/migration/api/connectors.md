@@ -1,6 +1,6 @@
 # Contrato da API: domínio "connectors"
 
-O coração do atendimento: conversa, mensagem e canais (WhatsApp Cloud, WhatsApp Web com os provedores Evolution e AIVA, Instagram Direct, Messenger, LeadChat e widget do site), webhooks de entrada, mídia e tempo real.
+O coração do atendimento: conversa, mensagem e canais (WhatsApp Cloud, WhatsApp Web com os provedores Evolution e Vekoo, Instagram Direct, Messenger, LeadChat e widget do site), webhooks de entrada, mídia e tempo real.
 
 **A listagem de conversas e de mensagens por REST não está aqui:** é do domínio inbox, em cima de `ChatSerializer` e `ChatMessageSerializer` (formatos em [Conversa e mensagem](#conversa-e-mensagem)). Aqui ficam os canais de tempo real, que já enviam e recebem.
 
@@ -72,13 +72,13 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 | `connectorType` | `type` na resposta | Corpo | Depois de criar |
 |---|---|---|---|
 | `whatsapp_cloud` | `whatsapp_cloud` | `code` (Embedded Signup) ou `accessToken`; `phoneNumberId`, `wabaId`, `businessId` | `active`, ou `failed` com o motivo |
-| `whatsapp_web` | `whatsapp_web` | `providerApi?` (`evolution_api`, `aiva_api`), `phoneNumberPairing?` | `pending`: o QR code chega por `ConnectorsChannel` |
+| `whatsapp_web` | `whatsapp_web` | `providerApi?` (`evolution_api`, `vekoo_api`), `phoneNumberPairing?` | `pending`: o QR code chega por `ConnectorsChannel` |
 | `lead_chat` | `lead_chat` | `phoneNumberId`, `accessToken` | `active`, ou `failed` |
 | `meta_channels` | `facebook_messenger`, e `instagramConnector` se a página tiver conta profissional | `code` (Facebook Login) | `active` |
 | `instagram_direct` | `instagram_direct` | `code` (Instagram Login), `redirectUri` | `active` |
 | `web_widget` | `web_widget` | nada | `inactive`: a pessoa personaliza e liga em `PATCH /connectors/:id/widget` |
 
-`aiva_api` em `providerApi` cria sobre a Evolution, como a tela de escolha da origem fazia. Sem `providerApi`, vale `WHATSAPP_WEB_DEFAULT_PROVIDER`. Tipo ou provedor que não existe responde `422`: `invalidConnectorType` em `connectorType`, ou `unprocessable` em `providerApi`.
+`vekoo_api` em `providerApi` cria sobre a Evolution, como a tela de escolha da origem fazia. Sem `providerApi`, vale `WHATSAPP_WEB_DEFAULT_PROVIDER`. Tipo ou provedor que não existe responde `422`: `invalidConnectorType` em `connectorType`, ou `unprocessable` em `providerApi`.
 
 **Se a ativação falhar, a resposta continua `201`,** com `status: "failed"` e o motivo em `errorMessage`: o canal fica criado para a pessoa ver e tentar de novo em `POST /connectors/:id/activate`, em vez de sobrar um órfão a cada tentativa.
 
@@ -89,7 +89,7 @@ Sempre `{ "error": { "code", "message", "field"?, "details"? } }`. `code` é o c
 | `inactive` | Nunca ligado, ou desligado. |
 | `pending` | Esperando o QR code ser lido. |
 | `active` | Conectado. `active: true` só neste estado. |
-| `paused` | Pausado pela pessoa: a automação não roda. **Em WhatsApp Web pela Evolution ou AIVA, o que chega durante a pausa é descartado e não volta**, como na origem. Avise ao pedir a confirmação. |
+| `paused` | Pausado pela pessoa: a automação não roda. **Em WhatsApp Web pela Evolution ou Vekoo, o que chega durante a pausa é descartado e não volta**, como na origem. Avise ao pedir a confirmação. |
 | `failed` | A conexão falhou. O motivo está em `errorMessage`. |
 | `closed` | Desconectado (pela pessoa, pelo celular ou pelo provedor). |
 | `reject` | O WhatsApp bloqueou o número. Não volta sozinho. |
@@ -1062,7 +1062,7 @@ Quem chama é o provedor, nunca a tela. Sem sessão. Respondem `200` sem corpo e
 |---|---|---|
 | `GET`, `POST /inbound/whatsapp-cloud/:id` | WhatsApp Cloud | Desafio com `verificationToken` do conector. Assinatura `X-Hub-Signature-256`. |
 | `GET`, `POST /inbound/meta-messaging` | Instagram e Messenger | Desafio com `META_MESSAGING_VERIFY_TOKEN`. Assinatura `X-Hub-Signature-256`. |
-| `POST /inbound/evolution/:codename?token=` | Evolution e AIVA | `codename` é `IWA-<id do conector>`. `token`, abaixo. |
+| `POST /inbound/evolution/:codename?token=` | Evolution e Vekoo | `codename` é `IWA-<id do conector>`. `token`, abaixo. |
 | `POST /inbound/lead-chat/:id/event?token=` | LeadChat | `token`, abaixo. |
 
 Evolution e LeadChat não assinam o que mandam. O `token` é um HMAC do id do conector, derivado de `secret_key_base` (`Connector::Base#inbound_token`), e vai na URL que a ativação entrega ao provedor. Token ausente ou errado responde `404`, igual a conector que não existe. Conector criado antes disso precisa ter o webhook configurado de novo no provedor. Trocar `secret_key_base` invalida todos, como já invalida os tokens cifrados.
@@ -1840,7 +1840,7 @@ A semente não preenche `DailyChatStat`: o formato de `metrics` é do domínio i
 | `INSTAGRAM_APP_ID`, `INSTAGRAM_APP_SECRET` | App do Instagram Login, que é outro. |
 | `META_MESSAGING_VERIFY_TOKEN` | Desafio do webhook de Instagram e Messenger. |
 | `EVOLUTION_API_URL`, `EVOLUTION_API_KEY` | Servidor da Evolution. |
-| `WHATSAPP_API_URL`, `WHATSAPP_API_KEY` | Servidor do provider AIVA. |
+| `WHATSAPP_API_URL`, `WHATSAPP_API_KEY` | Servidor do provider Vekoo. |
 | `WHATSAPP_WEB_DEFAULT_PROVIDER` | Provedor padrão do WhatsApp Web. |
 | `OPENAI_ACCESS_TOKEN` | Transcrição de áudio pelo Whisper. Sem ela, o áudio fica sem transcrição. |
 | `MEDIA_PROXY_ALLOWED_HOSTS` | Hosts externos aceitos em `/media/*`. |

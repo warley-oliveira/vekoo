@@ -12,7 +12,7 @@ import {
 } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { ArrowDown, Loader2, MessageCircleDashed } from "lucide-react"
+import { ArrowDown, Loader2 } from "lucide-react"
 import { Virtuoso, type Components, type VirtuosoHandle } from "react-virtuoso"
 
 import { ErrorState, InlineError } from "@/components/shared"
@@ -20,7 +20,12 @@ import { Button } from "@/components/ui/button"
 import { useDayLabel } from "@/hooks/chat/use-day-label"
 import { useMotionPreset } from "@/lib/motion"
 import { useThreadUi } from "@/lib/chat/stores"
-import { getThreadMessages, loadOlder, useThreadStore } from "@/lib/chat/thread-store"
+import {
+  getThreadMessages,
+  loadOlder,
+  useThreadStore,
+  type ContactPresence,
+} from "@/lib/chat/thread-store"
 import {
   buildThreadRows,
   firstMessageIdOf,
@@ -30,8 +35,11 @@ import {
 import type { ChatMessage } from "@/lib/chat/types"
 import { formatNumber } from "@/lib/format-number"
 import { useLanguage } from "@/lib/i18n"
+import { DAY_PILL } from "./day-pill"
+import { ConversationArt } from "./conversation-art"
 import { MessageRow } from "./message-row"
-import { useThreadContext } from "./thread-context"
+import { PresenceIndicator } from "./presence-indicator"
+import { createFreshTracker, FreshContext, NEVER_FRESH, useThreadContext } from "./thread-context"
 import { MessagesSkeleton } from "./thread-skeleton"
 
 /**
@@ -72,7 +80,7 @@ type ListContext = {
   olderError: unknown
   hasMore: boolean
   onRetryOlder: () => void
-  typing: boolean
+  presence: ContactPresence
 }
 
 function OlderEdge({ context }: { context?: ListContext }) {
@@ -98,21 +106,31 @@ function OlderEdge({ context }: { context?: ListContext }) {
   )
 }
 
+/**
+ * O fim da conversa, onde o contato "escreve": a bolha de digitando nasce do lado dele, como a
+ * mensagem que vai chegar. Crescer aqui mantém o fim à vista (`stayAtBottom`).
+ */
 function BottomEdge({ context }: { context?: ListContext }) {
-  const { t } = useTranslation()
+  const preset = useMotionPreset()
+  const presence = context?.presence ?? null
 
   return (
-    <div className="px-3 pt-1 pb-3 md:px-5">
-      {context?.typing ? (
-        <span role="status" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="flex gap-0.5" aria-hidden>
-            <span className="size-1 animate-pulse rounded-full bg-muted-foreground" />
-            <span className="size-1 animate-pulse rounded-full bg-muted-foreground [animation-delay:150ms]" />
-            <span className="size-1 animate-pulse rounded-full bg-muted-foreground [animation-delay:300ms]" />
-          </span>
-          {t("chat.thread.typing")}
-        </span>
-      ) : null}
+    <div className="flex min-h-4 items-start px-3 pt-1.5 pb-2.5 md:px-5" role="status">
+      <AnimatePresence initial={false}>
+        {presence ? (
+          <motion.span
+            key="presence"
+            initial={preset.reduced ? { opacity: 0 } : { opacity: 0, x: -8, scale: 0.96 }}
+            animate={preset.reduced ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={preset.spring}
+            style={{ transformOrigin: "0% 100%" }}
+            className="inline-flex h-8 items-center rounded-2xl rounded-bl-md bg-card px-3 text-xs text-muted-foreground shadow-xs ring-1 ring-border/60"
+          >
+            <PresenceIndicator presence={presence} />
+          </motion.span>
+        ) : null}
+      </AnimatePresence>
     </div>
   )
 }
@@ -143,15 +161,17 @@ function useBottomAnchor(scroller: HTMLElement | null) {
   }, [scroller])
 }
 
-/** A data do que está no alto, enquanto rola: situa quem desce por um histórico longo. */
+/**
+ * A data do que está no alto, presa no topo enquanto rola: situa quem desce por um histórico longo.
+ * É a mesma pílula do separador, para ler como "o separador que ficou preso".
+ */
 const FloatingDay = memo(function FloatingDay({ day }: { day: number }) {
   const label = useDayLabel(day)
-  return (
-    <span className="rounded-full border bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground shadow-xs">
-      {label}
-    </span>
-  )
+  return <span className={DAY_PILL}>{label}</span>
 })
+
+/** Quanto a data presa fica depois que a rolagem para: some sem piscar entre um gesto e outro. */
+const DAY_LINGER_MS = 1_200
 
 function dayOfRow(row: ThreadRow | undefined): number | null {
   if (!row || row.kind === "outgoing") return null
@@ -198,7 +218,17 @@ export const MessageList = memo(function MessageList({
   const hasMore = useThreadStore((state) => state.threads[threadKey]?.hasMore ?? false)
   const loadingOlder = useThreadStore((state) => state.threads[threadKey]?.loadingOlder ?? false)
   const olderError = useThreadStore((state) => state.threads[threadKey]?.olderError ?? null)
-  const typing = useThreadStore((state) => state.threads[threadKey]?.typing ?? false)
+  const presence = useThreadStore((state) => state.threads[threadKey]?.presence ?? null)
+
+  // O que já estava aqui ao abrir não anima: só o que chegar depois. Nasce com as primeiras linhas,
+  // seja do store (reabrir é instantâneo) ou da primeira página.
+  const [fresh, setFresh] = useState(NEVER_FRESH)
+  if (fresh === NEVER_FRESH && messages.length > 0) {
+    setFresh(createFreshTracker(messages.map((message) => message.id)))
+  }
+  if (fresh === NEVER_FRESH && status !== "loading" && messages.length === 0) {
+    setFresh(createFreshTracker([]))
+  }
 
   const previousRows = useRef<ThreadRow[]>([])
   const rows = useMemo(
@@ -252,7 +282,15 @@ export const MessageList = memo(function MessageList({
       seenUntil.current = messages.at(-1)?.createdAt ?? 0
       setMissed(0)
     } else {
-      setMissed(messages.filter((message) => message.createdAt > seenUntil.current).length)
+      // Só conversa conta como novidade: nota do histórico (quem assumiu, automação) não chama ninguém.
+      setMissed(
+        messages.filter(
+          (message) =>
+            message.createdAt > seenUntil.current &&
+            (message.role === "user" || message.role === "assistant") &&
+            !message.hasSpan
+        ).length
+      )
     }
   }, [atBottom, messages])
 
@@ -323,13 +361,24 @@ export const MessageList = memo(function MessageList({
   // A data flutuante só aparece enquanto rola, e só muda quando muda o dia. As antigas descem antes
   // de chegar ao topo; depois de uma falha, só pelo botão, para não insistir sozinho.
   const [floatingDay, setFloatingDay] = useState<number | null>(null)
-  const [scrolling, setScrolling] = useState(false)
+  const [showDay, setShowDay] = useState(false)
+  const [dayInline, setDayInline] = useState(false)
+  const dayTimer = useRef<number | undefined>(undefined)
+  const onScrolling = useCallback((scrolling: boolean) => {
+    window.clearTimeout(dayTimer.current)
+    if (scrolling) setShowDay(true)
+    else dayTimer.current = window.setTimeout(() => setShowDay(false), DAY_LINGER_MS)
+  }, [])
+  useEffect(() => () => window.clearTimeout(dayTimer.current), [])
   const onRange = useCallback(
     ({ startIndex }: { startIndex: number }) => {
       const index = startIndex - anchorRef.current
       visibleStart.current = index
-      const day = dayOfRow(rowsRef.current[index])
+      const row = rowsRef.current[index]
+      const day = dayOfRow(row)
       if (day !== null) setFloatingDay((current) => (current === day ? current : day))
+      // O separador do dia já está no alto da tela: a data presa seria a mesma pílula duas vezes.
+      setDayInline(Boolean(row && row.day !== null))
 
       const thread = useThreadStore.getState().threads[threadKey]
       if (index < PRELOAD_ROWS && thread?.hasMore && !thread.loadingOlder && !thread.olderError) {
@@ -349,9 +398,9 @@ export const MessageList = memo(function MessageList({
       olderError,
       hasMore,
       onRetryOlder: retryOlder,
-      typing,
+      presence,
     }),
-    [hasMore, loadingOlder, olderError, retryOlder, typing]
+    [hasMore, loadingOlder, olderError, presence, retryOlder]
   )
 
   // No toque, as ações de uma bolha ficam à mostra até tocar em outro lugar.
@@ -378,82 +427,103 @@ export const MessageList = memo(function MessageList({
 
   if (rows.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
-        <MessageCircleDashed aria-hidden className="size-5 text-muted-foreground" />
-        <p className="text-sm font-medium">{t("chat.thread.empty")}</p>
-        <p className="max-w-xs text-sm text-muted-foreground">{t("chat.thread.emptyHint")}</p>
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
+        <ConversationArt />
+        <div className="space-y-1">
+          <p className="font-heading text-base font-semibold tracking-tight">{t("chat.thread.empty")}</p>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            {t("chat.thread.emptyHint")}
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="relative h-full min-h-0">
-      <Virtuoso<ThreadRow, ListContext>
-        key={threadKey}
-        ref={virtuoso}
-        scrollerRef={sheetActions ? captureScroller : undefined}
-        onScroll={onScroll}
-        aria-label={t("chat.thread.history")}
-        className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
-        style={{ height: "100%" }}
-        data={rows}
-        context={context}
-        components={LIST_COMPONENTS}
-        computeItemKey={(_, row) => row.key}
-        itemContent={(_, row) => <MessageRow row={row} />}
-        firstItemIndex={anchor.index}
-        initialTopMostItemIndex={{ index: rows.length - 1, align: "end" }}
-        alignToBottom
-        followOutput={(isAtBottom) => (isAtBottom ? "auto" : false)}
-        atBottomStateChange={setAtBottom}
-        totalListHeightChanged={stayAtBottom}
-        atBottomThreshold={AT_BOTTOM_THRESHOLD}
-        increaseViewportBy={VIEWPORT_MARGIN}
-        rangeChanged={onRange}
-        isScrolling={setScrolling}
-      />
+    <FreshContext.Provider value={fresh}>
+      <div className="relative h-full min-h-0">
+        <Virtuoso<ThreadRow, ListContext>
+          key={threadKey}
+          ref={virtuoso}
+          scrollerRef={sheetActions ? captureScroller : undefined}
+          onScroll={onScroll}
+          aria-label={t("chat.thread.history")}
+          className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
+          style={{ height: "100%" }}
+          data={rows}
+          context={context}
+          components={LIST_COMPONENTS}
+          computeItemKey={(_, row) => row.key}
+          itemContent={(_, row) => <MessageRow row={row} />}
+          firstItemIndex={anchor.index}
+          initialTopMostItemIndex={{ index: rows.length - 1, align: "end" }}
+          alignToBottom
+          followOutput={(isAtBottom) => (isAtBottom ? "auto" : false)}
+          atBottomStateChange={setAtBottom}
+          totalListHeightChanged={stayAtBottom}
+          atBottomThreshold={AT_BOTTOM_THRESHOLD}
+          increaseViewportBy={VIEWPORT_MARGIN}
+          rangeChanged={onRange}
+          isScrolling={onScrolling}
+        />
 
-      <AnimatePresence>
-        {scrolling && floatingDay !== null ? (
-          <motion.div
-            key="day"
-            {...preset.fade}
-            className="pointer-events-none absolute inset-x-0 top-2 flex justify-center"
-          >
-            <FloatingDay day={floatingDay} />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {!atBottom ? (
-          <motion.div
-            key="down"
-            {...preset.slideUp}
-            className="absolute right-4 bottom-3 md:right-6"
-          >
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="relative size-9 rounded-full bg-background shadow-sm pointer-coarse:size-10"
-              aria-label={
-                missed > 0
-                  ? t("chat.thread.scrollDownWithNew", { count: missed })
-                  : t("chat.thread.scrollDown")
-              }
-              onClick={scrollToBottom}
+        <AnimatePresence>
+          {showDay && !dayInline && floatingDay !== null ? (
+            <motion.div
+              key="day"
+              {...preset.fade}
+              className="pointer-events-none absolute inset-x-0 top-2 flex justify-center"
             >
-              <ArrowDown />
-              {missed > 0 ? (
-                <span className="absolute -top-1.5 -right-1 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-primary px-1 text-[0.6875rem] font-semibold text-primary-foreground tabular-nums">
-                  {missed > 99 ? "99+" : formatNumber(missed, language)}
-                </span>
-              ) : null}
-            </Button>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
+              <FloatingDay day={floatingDay} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+
+        {/* Quem está lendo mais acima não é puxado para baixo: a novidade vira um convite para descer,
+            no meio, onde o olho já está. Sem novidade, só a seta discreta no canto. */}
+        <AnimatePresence initial={false}>
+          {!atBottom && missed > 0 ? (
+            <motion.div
+              key="new"
+              {...preset.slideUp}
+              className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center"
+            >
+              <Button
+                type="button"
+                variant="outline"
+                className="pointer-events-auto h-9 gap-1.5 rounded-full bg-card pr-3 pl-2.5 text-xs font-medium shadow-md ring-1 ring-border/60 pointer-coarse:h-10"
+                aria-label={t("chat.thread.scrollDownWithNew", { count: missed })}
+                onClick={scrollToBottom}
+              >
+                <span aria-hidden className="size-1.5 rounded-full bg-primary" />
+                {t("chat.thread.newMessages", {
+                  count: missed,
+                  formatted: missed > 99 ? "99+" : formatNumber(missed, language),
+                })}
+                <ArrowDown aria-hidden className="size-3.5 text-muted-foreground" />
+              </Button>
+            </motion.div>
+          ) : null}
+          {!atBottom && missed === 0 ? (
+            <motion.div
+              key="down"
+              {...preset.slideUp}
+              className="absolute right-4 bottom-3 md:right-6"
+            >
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="size-9 rounded-full bg-card shadow-md ring-1 ring-border/60 pointer-coarse:size-10"
+                aria-label={t("chat.thread.scrollDown")}
+                onClick={scrollToBottom}
+              >
+                <ArrowDown />
+              </Button>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </FreshContext.Provider>
   )
 })

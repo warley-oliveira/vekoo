@@ -1,5 +1,5 @@
 module Inbound
-  # Eventos da Evolution API v2 (e do provider AIVA, que fala o mesmo formato). Na origem
+  # Eventos da Evolution API v2 (e do provider Vekoo, que fala o mesmo formato). Na origem
   # chegavam por RabbitMQ; aqui, pelo webhook `/inbound/evolution/:codename`.
   class EvolutionEvents < Base
     include PublicMediaUrl
@@ -40,7 +40,7 @@ module Inbound
       data = payload[:data]
       status_code = data&.dig(:statusCode)
       qrcode_base64 = data&.dig(:qrcode, :base64)
-      # `pairingCode` é o nome na Evolution v2; `pairCode`, no provider AIVA.
+      # `pairingCode` é o nome na Evolution v2; `pairCode`, no provider Vekoo.
       pair_code = data&.dig(:qrcode, :pairingCode).presence || data&.dig(:qrcode, :pairCode).presence
 
       if status_code != 500
@@ -315,7 +315,7 @@ module Inbound
     # ========================================================================
 
     # Entregue e lida, das mensagens que enviamos. Evolution v2 manda o id do WhatsApp em
-    # `keyId` (o `messageId` é o id interno dela); o provider AIVA, em `id`.
+    # `keyId` (o `messageId` é o id interno dela); o provider Vekoo, em `id`.
     #
     # Sem nova tentativa de propósito: o status pode chegar antes de o envio gravar o id, mas o
     # próximo (entregue depois do enviado, lida depois de entregue) corrige, e cada retry por

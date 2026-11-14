@@ -96,7 +96,7 @@ export function ChartCard({
 
 function ChartTable({ table }: { table: ChartTableData }) {
   return (
-    <div className="max-h-72 overflow-auto [scrollbar-width:thin]">
+    <div className="max-h-72 overflow-auto">
       <Table>
         <TableHeader className="sticky top-0 z-10 bg-card">
           <TableRow>

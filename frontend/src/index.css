@@ -4,7 +4,11 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/bricolage-grotesque";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * `dark:` vale dentro de `<html class="dark">` e de um trecho `.theme-dark` (a vitrine mostra os
+ * dois temas lado a lado). Um trecho `.theme-light` desliga o `dark:` dentro dele.
+ */
+@custom-variant dark (&:is(.dark *, .theme-dark *):not(.theme-light, .theme-light *));
 
 @theme inline {
     --font-heading: 'Bricolage Grotesque Variable', var(--font-sans);
@@ -50,11 +54,19 @@
 }
 
 /*
- * Tema claro, quieto. A única cor saturada da interface é o acento (violeta),
+ * Dois temas, a mesma quietude. A única cor saturada da interface é o acento (violeta),
  * reservado à ação principal, seleção e foco — todo o resto é neutro.
- * Capas de carrossel têm cor própria e cantos retos; isso as separa da ferramenta.
+ * Capas de carrossel têm cor própria e cantos retos; isso as separa da ferramenta, e
+ * nenhum dos dois temas toca nelas.
+ *
+ * Como funciona: `:root` tem o claro, `.dark` (no `<html>`) redefine os mesmos tokens. Quem
+ * põe a classe é `/theme-init.js`, antes de pintar, e depois `lib/theme.ts`. Componente
+ * nenhum pergunta o tema: usa o token, e o token já é o certo. `dark:` do Tailwind existe
+ * para o raro caso em que a forma muda, não só a cor.
  */
-:root {
+:root,
+.theme-light {
+    color-scheme: light;
     --background: oklch(0.995 0.001 90);
     --foreground: oklch(0.185 0.005 285);
     --card: oklch(1 0 0);
@@ -88,6 +100,21 @@
     --sidebar-border: oklch(0.925 0.003 285);
     --sidebar-ring: oklch(0.6 0.2 292);
 
+    /* Seleção de texto e sombras: cor de tinta, nunca preto puro, para assentar no fundo. */
+    --selection: oklch(0.51 0.24 292 / 0.18);
+    --shadow-ink: oklch(0.185 0.005 285 / 0.45);
+    --shadow-ink-soft: oklch(0.2 0.01 285 / 0.05);
+    /* Véu atrás de modal e folha. */
+    --overlay: oklch(0.185 0.005 285 / 0.1);
+    /*
+     * Escurecer o que está por baixo (foto, arte, mídia) para pôr controle por cima. Igual nos
+     * dois temas, de propósito: `bg-foreground/40` viraria um véu branco no escuro.
+     */
+    --scrim: oklch(0.185 0.005 285);
+    --scrim-foreground: oklch(0.985 0.002 285);
+}
+
+:root {
     /*
      * Cromo do celular. `env()` resolve para 0 até o `viewport-fit=cover` estar no meta
      * viewport, então é inofensivo no desktop.
@@ -102,6 +129,69 @@
      */
     --app-bottom-nav-total: 0px;
     --app-header-total: 0px;
+}
+
+/*
+ * Tema escuro. Camadas por luminância, como no claro, só que ao contrário: quanto mais perto
+ * da pessoa, mais clara a superfície (barra lateral < fundo < card < popover e modal). O cinza
+ * leva o mesmo matiz frio (285) do claro, com um fio de croma: nada de preto puro nem cinza
+ * morto. Texto principal fica abaixo do branco puro, que vibra no escuro.
+ *
+ * O violeta sobe de claridade: sobre o fundo escuro ele precisa de 4,5:1 como texto
+ * (`text-primary`, 5,6:1 no popover), e por isso o texto dentro do botão passa a ser escuro
+ * (6,3:1). Bordas são translúcidas: a mesma borda serve em todas as camadas.
+ * Contrastes conferidos em `~/.cache/vekoo-shot/wt43/contrast.mjs`.
+ */
+.dark,
+.theme-dark {
+    color-scheme: dark;
+    --background: oklch(0.165 0.006 285);
+    --foreground: oklch(0.955 0.004 285);
+    --card: oklch(0.198 0.007 285);
+    --card-foreground: oklch(0.955 0.004 285);
+    --popover: oklch(0.228 0.008 285);
+    --popover-foreground: oklch(0.955 0.004 285);
+    --primary: oklch(0.68 0.17 292);
+    --primary-foreground: oklch(0.17 0.03 292);
+    --secondary: oklch(0.255 0.007 285);
+    --secondary-foreground: oklch(0.94 0.004 285);
+    --muted: oklch(0.255 0.007 285);
+    --muted-foreground: oklch(0.71 0.012 285);
+    --accent: oklch(0.28 0.05 292);
+    --accent-foreground: oklch(0.86 0.08 292);
+    --destructive: oklch(0.68 0.19 22);
+    --border: oklch(1 0 0 / 0.1);
+    --input: oklch(1 0 0 / 0.14);
+    --ring: oklch(0.7 0.15 292);
+    /* Do mais apagado ao mais forte, como no claro: `--chart-2` é o cinza de contexto (4,6:1 no card). */
+    --chart-1: oklch(0.34 0.006 285);
+    --chart-2: oklch(0.6 0.008 285);
+    --chart-3: oklch(0.7 0.008 285);
+    --chart-4: oklch(0.8 0.006 285);
+    --chart-5: oklch(0.9 0.004 285);
+    --sidebar: oklch(0.15 0.006 285);
+    --sidebar-foreground: oklch(0.955 0.004 285);
+    --sidebar-primary: oklch(0.68 0.17 292);
+    --sidebar-primary-foreground: oklch(0.17 0.03 292);
+    --sidebar-accent: oklch(0.235 0.007 285);
+    --sidebar-accent-foreground: oklch(0.955 0.004 285);
+    --sidebar-border: oklch(1 0 0 / 0.08);
+    --sidebar-ring: oklch(0.7 0.15 292);
+
+    --selection: oklch(0.68 0.17 292 / 0.32);
+    --shadow-ink: oklch(0.05 0.01 285 / 0.7);
+    --shadow-ink-soft: oklch(0.05 0.01 285 / 0.3);
+    --overlay: oklch(0.08 0.01 285 / 0.6);
+}
+
+/* `bg-overlay`, `bg-scrim/40 text-scrim-foreground`, e as sombras na cor de tinta do tema:
+   `shadow-art` debaixo da obra, `shadow-hairline` em bloco solto. */
+@theme inline {
+    --color-overlay: var(--overlay);
+    --color-scrim: var(--scrim);
+    --color-scrim-foreground: var(--scrim-foreground);
+    --shadow-art: 0 18px 40px -24px var(--shadow-ink);
+    --shadow-hairline: 0 1px 2px var(--shadow-ink-soft);
 }
 
 /* Áreas seguras: notch e barra de gestos, no PWA instalado e no navegador. */
@@ -138,7 +228,8 @@
     --color-status-accent-soft: var(--status-accent-soft);
 }
 
-:root {
+:root,
+.theme-light {
     --status-neutral: oklch(0.44 0.008 285);
     --status-neutral-soft: oklch(0.955 0.002 285);
     --status-success: oklch(0.44 0.09 160);
@@ -151,6 +242,153 @@
     --status-info-soft: oklch(0.955 0.016 245);
     --status-accent: var(--accent-foreground);
     --status-accent-soft: var(--accent);
+}
+
+/* No escuro o par se inverte: texto claro e dessaturado sobre um fundo escuro com um fio do
+   matiz. Cada texto passa de 6,5:1 sobre o próprio fundo e sobre o card. */
+.dark,
+.theme-dark {
+    --status-neutral: oklch(0.78 0.008 285);
+    --status-neutral-soft: oklch(0.265 0.006 285);
+    --status-success: oklch(0.79 0.11 160);
+    --status-success-soft: oklch(0.26 0.03 160);
+    --status-warning: oklch(0.83 0.11 80);
+    --status-warning-soft: oklch(0.27 0.035 75);
+    --status-danger: oklch(0.77 0.13 25);
+    --status-danger-soft: oklch(0.265 0.038 25);
+    --status-info: oklch(0.79 0.09 245);
+    --status-info-soft: oklch(0.26 0.03 245);
+    --status-accent: var(--accent-foreground);
+    --status-accent-soft: var(--accent);
+}
+
+/*
+ * Chat: a única tela com calor de propósito (decisão da pessoa, segunda rodada do chat). O resto do
+ * app segue quieto. Aqui moram as cores que dão vida à conversa sem roubar o papel do violeta, que
+ * continua só para ação principal, seleção e foco:
+ *
+ * - `avatar-1..8`: o fundo e a letra das iniciais, um tom por contato, sorteado pelo id (sempre o
+ *   mesmo). Oito matizes espalhados pelo círculo, todos com a mesma luminosidade e croma, para
+ *   nenhum gritar mais que o outro; o violeta (292) fica de fora, para não parecer seleção.
+ * - `channel-*`: a cor reconhecível de cada canal, contida (o ícone na cor, sobre um fundo suave).
+ * - `chat-*`: o fundo da conversa (neutro, levemente frio), o pontilhado, o hover e a bolha nossa.
+ *   Sem amarelo, bege ou creme: a pessoa recusou esses tons; o calor vem dos avatares, dos selos e
+ *   da seleção.
+ */
+@theme inline {
+    --color-avatar-1: var(--avatar-1);
+    --color-avatar-1-foreground: var(--avatar-1-foreground);
+    --color-avatar-2: var(--avatar-2);
+    --color-avatar-2-foreground: var(--avatar-2-foreground);
+    --color-avatar-3: var(--avatar-3);
+    --color-avatar-3-foreground: var(--avatar-3-foreground);
+    --color-avatar-4: var(--avatar-4);
+    --color-avatar-4-foreground: var(--avatar-4-foreground);
+    --color-avatar-5: var(--avatar-5);
+    --color-avatar-5-foreground: var(--avatar-5-foreground);
+    --color-avatar-6: var(--avatar-6);
+    --color-avatar-6-foreground: var(--avatar-6-foreground);
+    --color-avatar-7: var(--avatar-7);
+    --color-avatar-7-foreground: var(--avatar-7-foreground);
+    --color-avatar-8: var(--avatar-8);
+    --color-avatar-8-foreground: var(--avatar-8-foreground);
+    --color-channel-whatsapp: var(--channel-whatsapp);
+    --color-channel-whatsapp-soft: var(--channel-whatsapp-soft);
+    --color-channel-instagram: var(--channel-instagram);
+    --color-channel-instagram-soft: var(--channel-instagram-soft);
+    --color-channel-messenger: var(--channel-messenger);
+    --color-channel-messenger-soft: var(--channel-messenger-soft);
+    --color-channel-web: var(--channel-web);
+    --color-channel-web-soft: var(--channel-web-soft);
+    --color-channel-other: var(--channel-other);
+    --color-channel-other-soft: var(--channel-other-soft);
+    --color-chat-surface: var(--chat-surface);
+    --color-chat-surface-dot: var(--chat-surface-dot);
+    --color-chat-hover: var(--chat-hover);
+    --color-chat-bubble-own: var(--chat-bubble-own);
+    --color-chat-bubble-own-ring: var(--chat-bubble-own-ring);
+}
+
+:root,
+.theme-light {
+    /*
+     * Fundo L 0.88, letra L 0.40-0.43: a letra passa de 4,5:1 sobre o próprio fundo. Matizes só de
+     * 150 a 262 e de 322 a 18, sem amarelo, bege ou laranja (a pessoa recusou esses tons no chat) e
+     * longe do violeta da seleção (292).
+     */
+    --avatar-1: oklch(0.88 0.07 18);
+    --avatar-1-foreground: oklch(0.43 0.14 20);
+    --avatar-2: oklch(0.88 0.06 262);
+    --avatar-2-foreground: oklch(0.43 0.14 262);
+    --avatar-3: oklch(0.88 0.07 152);
+    --avatar-3-foreground: oklch(0.4 0.1 152);
+    --avatar-4: oklch(0.88 0.06 182);
+    --avatar-4-foreground: oklch(0.4 0.08 185);
+    --avatar-5: oklch(0.88 0.06 205);
+    --avatar-5-foreground: oklch(0.41 0.09 210);
+    --avatar-6: oklch(0.88 0.06 232);
+    --avatar-6-foreground: oklch(0.42 0.12 238);
+    --avatar-7: oklch(0.88 0.07 345);
+    --avatar-7-foreground: oklch(0.43 0.15 350);
+    --avatar-8: oklch(0.88 0.06 322);
+    --avatar-8-foreground: oklch(0.43 0.14 322);
+
+    --channel-whatsapp: oklch(0.56 0.14 152);
+    --channel-whatsapp-soft: oklch(0.95 0.04 152);
+    --channel-instagram: oklch(0.56 0.19 8);
+    --channel-instagram-soft: oklch(0.955 0.03 8);
+    --channel-messenger: oklch(0.55 0.17 255);
+    --channel-messenger-soft: oklch(0.95 0.03 255);
+    --channel-web: oklch(0.52 0.1 225);
+    --channel-web-soft: oklch(0.95 0.025 225);
+    --channel-other: oklch(0.5 0.01 285);
+    --channel-other-soft: oklch(0.955 0.003 285);
+
+    /* Neutro levemente frio: o branco das bolhas e do composer descola com contraste. */
+    --chat-surface: oklch(0.966 0.006 255);
+    --chat-surface-dot: oklch(0.45 0.03 260 / 0.16);
+    --chat-hover: oklch(0.962 0.008 262);
+    --chat-bubble-own: oklch(0.94 0.032 292);
+    --chat-bubble-own-ring: oklch(0.51 0.24 292 / 0.12);
+}
+
+.dark,
+.theme-dark {
+    /* Par escuro dos tokens do chat (regra do README do kit): fundo do avatar em L 0.31, letra em
+       L 0.84, canal clareado para ler sobre o card, superfícies abaixo do card (0.198). */
+    --avatar-1: oklch(0.31 0.06 18);
+    --avatar-1-foreground: oklch(0.84 0.09 18);
+    --avatar-2: oklch(0.31 0.06 262);
+    --avatar-2-foreground: oklch(0.84 0.09 262);
+    --avatar-3: oklch(0.31 0.06 152);
+    --avatar-3-foreground: oklch(0.84 0.09 152);
+    --avatar-4: oklch(0.31 0.06 185);
+    --avatar-4-foreground: oklch(0.84 0.09 185);
+    --avatar-5: oklch(0.31 0.06 210);
+    --avatar-5-foreground: oklch(0.84 0.09 210);
+    --avatar-6: oklch(0.31 0.06 238);
+    --avatar-6-foreground: oklch(0.84 0.09 238);
+    --avatar-7: oklch(0.31 0.06 350);
+    --avatar-7-foreground: oklch(0.84 0.09 350);
+    --avatar-8: oklch(0.31 0.06 322);
+    --avatar-8-foreground: oklch(0.84 0.09 322);
+
+    --channel-whatsapp: oklch(0.74 0.14 152);
+    --channel-whatsapp-soft: oklch(0.27 0.045 152);
+    --channel-instagram: oklch(0.74 0.15 8);
+    --channel-instagram-soft: oklch(0.27 0.045 8);
+    --channel-messenger: oklch(0.74 0.13 255);
+    --channel-messenger-soft: oklch(0.27 0.045 255);
+    --channel-web: oklch(0.74 0.09 225);
+    --channel-web-soft: oklch(0.27 0.035 225);
+    --channel-other: oklch(0.74 0.01 285);
+    --channel-other-soft: oklch(0.265 0.006 285);
+
+    --chat-surface: oklch(0.158 0.008 262);
+    --chat-surface-dot: oklch(0.85 0.02 260 / 0.08);
+    --chat-hover: oklch(0.215 0.01 262);
+    --chat-bubble-own: oklch(0.3 0.065 292);
+    --chat-bubble-own-ring: oklch(0.68 0.17 292 / 0.22);
 }
 
 /*
@@ -263,6 +501,177 @@
     -webkit-tap-highlight-color: transparent;
     }
   ::selection {
-    background: oklch(0.51 0.24 292 / 0.18);
+    background: var(--selection);
     }
+}
+
+/*
+ * Véu de modal, folha e alerta. A primitiva pinta `bg-black/10`, que some no escuro: aqui o véu
+ * vem do token (`--overlay`), igual ao de antes no claro e mais denso no escuro.
+ */
+[data-slot="dialog-overlay"],
+[data-slot="alert-dialog-overlay"],
+[data-slot="sheet-overlay"] {
+  background-color: var(--overlay);
+}
+
+/*
+ * Troca de tema. Com View Transitions (`lib/theme.ts`), a página inteira atravessa de um tema
+ * para o outro num só quadro, sem cada elemento animar por conta própria. Sem elas, as cores
+ * transitam por 200 ms, só enquanto `theme-switching` estiver no `<html>`. Quem pediu menos
+ * movimento troca na hora: o script nem entra em nenhum dos dois caminhos.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease-out;
+}
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition-property: color, background-color, border-color, outline-color, fill, stroke, box-shadow !important;
+  transition-duration: 200ms !important;
+  transition-timing-function: ease-out !important;
+}
+
+/*
+ * Barra de rolagem, uma só para o app inteiro.
+ *
+ * Em repouso, um fio de 4 px no meio de uma faixa de 12 px, com trilho transparente. O contêiner
+ * sob o mouse ganha contraste; sobre a própria barra, ela alarga para 8 px; arrastando, fica mais
+ * forte ainda. A faixa tem sempre a mesma largura: alargar não empurra nada.
+ *
+ * - Chromium e Safari: `::-webkit-scrollbar`. O Chromium ignora esses pseudo-elementos num
+ *   elemento com `scrollbar-width` ou `scrollbar-color`, então o padrão (abaixo) só vale onde
+ *   `::-webkit-scrollbar` não existe. `[scrollbar-width:none]` continua escondendo nos dois.
+ * - Firefox: `scrollbar-width: thin` e `scrollbar-color`, que ele anima sozinho.
+ * - Toque e caneta: nada daqui. O sistema desenha a barra sobreposta dele.
+ *
+ * O contraste por contêiner usa `--sb-thumb`, registrada sem herança: cada elemento tem a sua, e
+ * um rolável dentro de um contêiner sob o mouse não acende junto. Ela anima (cor registrada), e
+ * a barra repinta a cada quadro.
+ *
+ * Tudo em `@layer base`: `[scrollbar-width:none]` e `no-scrollbar` (utilitários) vencem.
+ * O `ScrollArea` do kit desenha a própria barra em DOM e segue as mesmas cores e larguras.
+ */
+@property --sb-thumb {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+
+:root,
+.theme-light,
+.theme-dark {
+  --scrollbar-thumb: color-mix(in oklch, var(--foreground) 16%, transparent);
+  --scrollbar-thumb-near: color-mix(in oklch, var(--foreground) 28%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklch, var(--foreground) 40%, transparent);
+  --scrollbar-thumb-active: color-mix(in oklch, var(--foreground) 52%, transparent);
+}
+
+@media (prefers-contrast: more) {
+  :root,
+  .theme-light,
+  .theme-dark {
+    --scrollbar-thumb: color-mix(in oklch, var(--foreground) 45%, transparent);
+    --scrollbar-thumb-near: color-mix(in oklch, var(--foreground) 55%, transparent);
+    --scrollbar-thumb-hover: color-mix(in oklch, var(--foreground) 70%, transparent);
+    --scrollbar-thumb-active: var(--foreground);
+  }
+}
+
+@layer base {
+  @media (hover: hover) and (pointer: fine) {
+    * {
+      --sb-thumb: var(--scrollbar-thumb);
+    }
+    *:hover {
+      --sb-thumb: var(--scrollbar-thumb-near);
+    }
+    /* Só onde rola: um `transition` em todo elemento brigaria com os das primitivas. */
+    :where(main, [class*="overflow-auto"], [class*="overflow-y-auto"], [class*="overflow-x-auto"], [class*="overflow-scroll"]) {
+      transition: --sb-thumb 160ms ease-out;
+    }
+
+    @supports selector(::-webkit-scrollbar) {
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+        background: transparent;
+      }
+      ::-webkit-scrollbar-track,
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        --sb-thumb: inherit;
+        min-width: 32px;
+        min-height: 32px;
+        border: 4px solid transparent;
+        border-radius: 9999px;
+        background-color: var(--sb-thumb);
+        background-clip: padding-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        border-width: 2px;
+        background-color: var(--scrollbar-thumb-hover);
+      }
+      ::-webkit-scrollbar-thumb:active {
+        border-width: 2px;
+        background-color: var(--scrollbar-thumb-active);
+      }
+      /* Os botões de seta do Windows e do Linux não cabem num fio. */
+      ::-webkit-scrollbar-button {
+        display: none;
+      }
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--sb-thumb) transparent;
+      }
+    }
+
+    @media (prefers-contrast: more) {
+      @supports selector(::-webkit-scrollbar) {
+        ::-webkit-scrollbar-thumb {
+          border-width: 3px;
+        }
+      }
+    }
+  }
+}
+
+/* O `ScrollArea` do kit (Base UI), nas mesmas cores e larguras. A primitiva fica intacta. */
+@media (hover: hover) and (pointer: fine) {
+  [data-slot="scroll-area-scrollbar"] {
+    padding: 4px;
+    border: 0;
+    transition: padding 150ms ease-out;
+  }
+  [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
+    width: 12px;
+  }
+  [data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] {
+    height: 12px;
+  }
+  [data-slot="scroll-area-scrollbar"]:hover,
+  [data-slot="scroll-area-scrollbar"]:has([data-slot="scroll-area-thumb"]:active) {
+    padding: 2px;
+  }
+  [data-slot="scroll-area-thumb"] {
+    background-color: var(--scrollbar-thumb);
+    transition: background-color 150ms ease-out;
+  }
+  [data-slot="scroll-area"]:hover [data-slot="scroll-area-thumb"] {
+    background-color: var(--scrollbar-thumb-near);
+  }
+  [data-slot="scroll-area-scrollbar"]:hover [data-slot="scroll-area-thumb"] {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  [data-slot="scroll-area-thumb"]:active {
+    background-color: var(--scrollbar-thumb-active);
+  }
 }

@@ -338,7 +338,7 @@ export const WidgetTwinTable = memo(function WidgetTwinTable({
   const language = useLanguage()
 
   return (
-    <div className="h-full overflow-auto [scrollbar-width:thin]">
+    <div className="h-full overflow-auto">
       <Table aria-label={title}>
         <TableHeader className="sticky top-0 z-10 bg-card">
           <TableRow>

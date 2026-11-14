@@ -309,7 +309,7 @@ Pelo corpo:
 
 ### `GET /chats/:id`
 
-A conversa, a lista de campos personalizados que a tela mostra e o provedor do canal. `connectorProvider`: `evolution_api` ou `aiva_api` no WhatsApp Web, e o tipo do canal nos outros (`whatsapp_cloud`, `instagram_direct`...). Para decidir o que oferecer, prefira `reactionsSupported`, em `GET /chats/self-filter`.
+A conversa, a lista de campos personalizados que a tela mostra e o provedor do canal. `connectorProvider`: `evolution_api` ou `vekoo_api` no WhatsApp Web, e o tipo do canal nos outros (`whatsapp_cloud`, `instagram_direct`...). Para decidir o que oferecer, prefira `reactionsSupported`, em `GET /chats/self-filter`.
 
 Resposta `200`:
 

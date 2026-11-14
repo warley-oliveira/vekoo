@@ -103,7 +103,7 @@ RSpec.describe Inbound::EvolutionEvents do
       expect(message.reload.status).to eq("read")
     end
 
-    it "aceita o formato do provider AIVA, com o id em `id`" do
+    it "aceita o formato do provider Vekoo, com o id em `id`" do
       handle("messages.update", { id: "SENT-1", remoteJid: jid, status: "READ" })
 
       expect(message.reload.status).to eq("read")

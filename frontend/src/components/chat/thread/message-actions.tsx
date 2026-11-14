@@ -22,7 +22,7 @@ import { useThreadContext } from "./thread-context"
 // `emoji-picker-react` é grande: só desce quando alguém pede "mais emojis".
 const EmojiPicker = lazy(() => import("../composer/emoji-picker"))
 
-const actionButton = "size-7 text-muted-foreground pointer-coarse:size-9"
+const actionButton = "size-7 rounded-full text-muted-foreground pointer-coarse:size-10"
 
 /** Reagir: as seis rápidas e, no "+", o seletor completo. */
 function ReactionPicker({
@@ -207,11 +207,13 @@ export const MessageActions = memo(function MessageActions({
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center gap-0.5 self-center transition-opacity",
+        // Uma barrinha flutuante, no cartão, ao lado da bolha: as três ações leem como um grupo e
+        // não somem no fundo pontilhado. Entra com fade e um quase nada de escala, em 150 ms.
+        "flex shrink-0 items-center gap-0.5 self-center rounded-full bg-card/95 p-0.5 shadow-sm ring-1 ring-border/60 transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-opacity",
         own ? "flex-row-reverse" : "flex-row",
         visible
-          ? "opacity-100"
-          : "pointer-events-none opacity-0 group-hover/message:pointer-events-auto group-hover/message:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100 has-[[aria-expanded=true]]:pointer-events-auto has-[[aria-expanded=true]]:opacity-100"
+          ? "scale-100 opacity-100"
+          : "pointer-events-none scale-95 opacity-0 group-hover/message:pointer-events-auto group-hover/message:scale-100 group-hover/message:opacity-100 focus-within:pointer-events-auto focus-within:scale-100 focus-within:opacity-100 has-[[aria-expanded=true]]:pointer-events-auto has-[[aria-expanded=true]]:scale-100 has-[[aria-expanded=true]]:opacity-100"
       )}
     >
       {canReact ? (

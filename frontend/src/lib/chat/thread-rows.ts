@@ -45,7 +45,14 @@ export type ThreadRow =
   | { kind: "ad-greeting"; key: string; message: ChatMessage; messages: [ChatMessage]; day: number | null }
   | { kind: "widget-context"; key: string; message: ChatMessage; messages: [ChatMessage]; day: number | null }
   | { kind: "waiting"; key: string; message: ChatMessage; messages: [ChatMessage]; day: number | null }
-  | { kind: "outgoing"; key: string; outgoing: OutgoingMessage; day: null }
+  | {
+      kind: "outgoing"
+      key: string
+      outgoing: OutgoingMessage
+      day: null
+      /** Encosta na bolha anterior quando ela também é de quem está escrevendo agora. */
+      startsGroup: boolean
+    }
 
 function isConversationMessage(message: ChatMessage): boolean {
   if (message.role !== "user" && message.role !== "assistant") return false
@@ -95,7 +102,10 @@ function sameAuthor(a: ChatMessage, b: ChatMessage): boolean {
 
 function sameRow(a: ThreadRow, b: ThreadRow): boolean {
   if (a.kind !== b.kind || a.day !== b.day) return false
-  if (a.kind === "outgoing") return a.outgoing === (b as typeof a).outgoing
+  if (a.kind === "outgoing") {
+    const other = b as typeof a
+    return a.outgoing === other.outgoing && a.startsGroup === other.startsGroup
+  }
 
   const other = b as Exclude<ThreadRow, { kind: "outgoing" }>
   if (a.messages.length !== other.messages.length) return false
@@ -212,8 +222,26 @@ export function buildThreadRows(
     }
   }
 
+  // A otimista se encosta como a de verdade vai se encostar: quando o servidor responder, a bolha
+  // troca de linha sem mudar de lugar nem de cantos.
   for (const entry of outbox) {
-    rows.push({ kind: "outgoing", key: entry.localId, outgoing: entry, day: null })
+    const before = rows[rows.length - 1]
+    let startsGroup = true
+    if (before?.kind === "outgoing") {
+      startsGroup = false
+    } else if (before && (before.kind === "message" || before.kind === "media-group")) {
+      const last = before.messages[before.messages.length - 1]
+      if (
+        last.role === "assistant" &&
+        last.messageOrigin === "frontend" &&
+        entry.createdAt - last.createdAt <= BUBBLE_GROUP_WINDOW_MS &&
+        startOfDay(entry.createdAt) === startOfDay(last.createdAt)
+      ) {
+        before.endsGroup = false
+        startsGroup = false
+      }
+    }
+    rows.push({ kind: "outgoing", key: entry.localId, outgoing: entry, day: null, startsGroup })
   }
 
   if (previous.length === 0) return rows

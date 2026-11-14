@@ -25,6 +25,7 @@ import {
 import type { CalendarFilterOptions } from "@/lib/calendar/types"
 import { useLanguage } from "@/lib/i18n"
 import { getTagStyle } from "@/lib/tag-color"
+import { useResolvedTheme } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 const VIEW_ICON = {
@@ -260,6 +261,7 @@ export function CalendarFiltersButton({
         .map((item) => ({ value: item.id, label: item.name })),
     [options?.services, selectedCalendarIds]
   )
+  const theme = useResolvedTheme()
   const tagOptions = useMemo<FacetOption[]>(
     () =>
       (options?.tags ?? []).map((tag) => ({
@@ -269,11 +271,11 @@ export function CalendarFiltersButton({
           <span
             aria-hidden
             className="size-2.5 rounded-full"
-            style={tag.color ? { backgroundColor: getTagStyle(tag.color).backgroundColor } : undefined}
+            style={tag.color ? { backgroundColor: getTagStyle(tag.color, "soft", theme).backgroundColor } : undefined}
           />
         ),
       })),
-    [options?.tags]
+    [options?.tags, theme]
   )
 
   return (

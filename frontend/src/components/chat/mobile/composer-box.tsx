@@ -252,7 +252,9 @@ export default function MobileComposerBox({
   return (
     <div
       ref={root}
-      className="relative shrink-0 border-t bg-background [contain:layout_style]"
+      // Sem faixa própria: o composer flutua no fundo da conversa, como na tela larga. Só o painel de
+      // emoji, que toma o lugar do teclado, tem fundo sólido.
+      className="relative shrink-0 [contain:layout_style]"
     >
       <div
         className={cn(
@@ -340,8 +342,8 @@ export default function MobileComposerBox({
 
             <div
               className={cn(
-                "relative flex min-h-11 min-w-0 flex-1 items-end rounded-[1.375rem] bg-muted/70 transition-colors",
-                !recording && "focus-within:bg-muted"
+                "relative flex min-h-11 min-w-0 flex-1 items-end rounded-[1.375rem] bg-card shadow-sm ring-1 ring-border/70 transition-shadow",
+                !recording && "focus-within:ring-ring/60"
               )}
             >
               {/* Gravando, a caixa continua aí, escondida: segurar o botão não pode derrubar o teclado
@@ -501,7 +503,7 @@ export default function MobileComposerBox({
       </div>
 
       {emojiOpen ? (
-        <div className="pb-safe" data-emoji-panel>
+        <div className="bg-background pb-safe" data-emoji-panel>
           <div className="flex h-11 items-center justify-between border-t pr-1 pl-3">
             <span className="text-xs font-medium text-muted-foreground">{t("chat.composer.emoji")}</span>
             <Button

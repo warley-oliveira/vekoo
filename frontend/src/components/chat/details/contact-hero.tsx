@@ -123,7 +123,7 @@ export const ContactHero = memo(function ContactHero({ chatId }: { chatId: strin
             <UserAvatar name={name} src={picture} className="size-14 text-base" />
           </button>
         ) : (
-          <UserAvatar name={name} className="size-14 shrink-0 text-base" />
+          <UserAvatar name={name} colorSeed={chat.externalId} className="size-14 shrink-0 text-base" />
         )}
 
         <div className="min-w-0 flex-1">

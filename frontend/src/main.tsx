@@ -2,9 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from '@/lib/router'
 import { SWRConfig } from 'swr'
-import { Toaster } from 'sonner'
 import './index.css'
 import App from './App.tsx'
+import { AppToaster } from '@/components/shell/app-toaster'
 import { PwaUpdatePrompt } from '@/components/shell/pwa-update-prompt'
 import { TooltipProvider } from '@/components/ui/tooltip'
 // Antes do roteador montar: quem ouve o voltar primeiro é quem decide. Ver o módulo.
@@ -14,8 +14,10 @@ import { AuthProvider } from '@/lib/auth'
 import { CatalogProvider } from '@/lib/catalog'
 import { startPwa } from '@/lib/pwa'
 import { swrConfig } from '@/lib/swr-config'
+import { startTheme } from '@/lib/theme'
 import { dropLegacyStorage } from '@/lib/token'
 
+startTheme()
 dropLegacyStorage()
 startPwa()
 
@@ -31,14 +33,7 @@ createRoot(document.getElementById('root')!).render(
           <AuthProvider>
             <TooltipProvider>
               <App />
-              {/* Os avisos sobem junto com a barra inferior, em vez de cobri-la. */}
-              <Toaster
-                position="bottom-right"
-                offset={{ bottom: 'calc(var(--app-bottom-nav-total) + 1rem)' }}
-                mobileOffset={{
-                  bottom: 'calc(var(--app-bottom-nav-total) + 0.75rem)',
-                }}
-              />
+              <AppToaster />
               <PwaUpdatePrompt />
             </TooltipProvider>
           </AuthProvider>

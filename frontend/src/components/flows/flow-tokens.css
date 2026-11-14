@@ -15,6 +15,13 @@
   --flow-family-neutral-soft: var(--status-neutral-soft);
 }
 
+/* As famílias que vêm de status já trocam sozinhas; a de IA tem par próprio no escuro. */
+.dark,
+.theme-dark {
+  --flow-family-ai: oklch(0.78 0.1 340);
+  --flow-family-ai-soft: oklch(0.28 0.045 340);
+}
+
 .flow-block[data-family="start"] {
   --block-tint: var(--flow-family-start);
   --block-tint-soft: var(--flow-family-start-soft);

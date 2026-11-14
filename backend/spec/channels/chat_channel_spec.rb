@@ -724,7 +724,7 @@ RSpec.describe ChatChannel, type: :channel do
     end
 
     context "com o serviço recusando" do
-      let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization) }
+      let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization) }
 
       it "transmite a falha com as reações atuais, para a tela reverter" do
         target.set(reactions: [ { "emoji" => "❤️", "from" => "user" } ])
@@ -761,7 +761,7 @@ RSpec.describe ChatChannel, type: :channel do
     context "quando algo inesperado quebra" do
       it "registra sem derrubar o canal" do
         target
-        connector.set(provider_api: "aiva_api")
+        connector.set(provider_api: "vekoo_api")
         allow(Rails.logger).to receive(:error)
         allow(ChatMessageSerializer).to receive(:reactions).and_raise("boom")
 

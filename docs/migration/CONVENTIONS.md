@@ -162,7 +162,7 @@ React 19 + TS estrito, Tailwind v4, shadcn **base-nova sobre `@base-ui/react`** 
 
 ### Direção visual
 
-O produto é **quieto e moderno**, não um painel corporativo: tema claro, quase sem cor, hierarquia por tipografia (`font-heading` = Bricolage Grotesque; texto = Geist) e espaçamento generoso. **Um único acento saturado** (violeta, `--primary`) reservado a ação principal, seleção e foco. Nada de sombras pesadas, gradientes decorativos, bordas em tudo, ou cor para enfeitar. Status usam os tons sóbrios de `StatusBadge`. Tokens sempre pelo tema: **sem hex solto em componente** (a exceção é cor escolhida pela pessoa, como etiquetas e pastas).
+O produto é **quieto e moderno**, não um painel corporativo: claro e escuro, quase sem cor, hierarquia por tipografia (`font-heading` = Bricolage Grotesque; texto = Geist) e espaçamento generoso. **Um único acento saturado** (violeta, `--primary`) reservado a ação principal, seleção e foco. Nada de sombras pesadas, gradientes decorativos, bordas em tudo, ou cor para enfeitar. Status usam os tons sóbrios de `StatusBadge`. Tokens sempre pelo tema: **sem hex solto em componente** (a exceção é cor escolhida pela pessoa, como etiquetas e pastas).
 
 Não copie o layout da origem por inércia: pergunte qual é a melhor forma de apresentar aquilo hoje. Tabela só quando for mesmo a melhor representação, e então `DataTable`. Prefira lista densa bem espaçada, cards e painéis laterais (`Sheet`) a modais empilhados.
 

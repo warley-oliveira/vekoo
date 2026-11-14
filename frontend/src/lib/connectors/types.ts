@@ -71,7 +71,7 @@ export type WhatsappCloudConnector = ConnectorBase<"whatsapp_cloud"> & {
   phoneNumberList: WhatsappPhoneNumber[]
 }
 
-export type WhatsappProvider = "evolution_api" | "aiva_api"
+export type WhatsappProvider = "evolution_api" | "vekoo_api"
 
 export type WhatsappWebConnector = ConnectorBase<"whatsapp_web"> & {
   providerApi: WhatsappProvider | null

@@ -85,7 +85,10 @@ import {
   useFormSubmit,
   UserAvatar,
 } from "@/components/shared"
+import { ThemeSegmented } from "@/components/shell/theme-picker"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 import { useBoolean } from "@/hooks/use-boolean"
 import { useGuardedClose } from "@/hooks/use-panel-session"
@@ -163,7 +166,7 @@ const SAMPLE = {
   inviteLink: "https://vekoo.app/convite/9f3a",
 }
 
-const SECTIONS = ["page", "data", "collections", "overlays", "forms", "skeletons"] as const
+const SECTIONS = ["theme", "page", "data", "collections", "overlays", "forms", "skeletons"] as const
 
 /* ---------- moldura ---------- */
 
@@ -236,6 +239,7 @@ export default function KitPage() {
         ))}
       </nav>
 
+      <ThemeSection />
       <PageSection />
       <DataSection />
       <CollectionsSection />
@@ -243,6 +247,82 @@ export default function KitPage() {
       <FormsSection />
       <SkeletonsSection />
     </PageBody>
+  )
+}
+
+/* ---------- tema e rolagem ---------- */
+
+const THEME_SCOPES = ["light", "dark"] as const
+const TONES: StatusTone[] = ["neutral", "success", "warning", "danger", "info", "accent"]
+/** As camadas, da mais funda à mais perto: no escuro, cada uma um degrau mais clara. */
+const SURFACES = [
+  ["background", "bg-background"],
+  ["card", "bg-card"],
+  ["popover", "bg-popover"],
+] as const
+
+/**
+ * Um tema dentro do outro: `.theme-light` e `.theme-dark` redefinem os tokens só no trecho, e o
+ * `dark:` segue o trecho. É assim que a vitrine mostra os dois lado a lado, com o seletor valendo
+ * para o resto da página.
+ */
+function ThemeSample({ scope }: { scope: (typeof THEME_SCOPES)[number] }) {
+  const { t } = useTranslation()
+  return (
+    <div className={`theme-${scope} flex min-w-0 flex-col gap-4 rounded-xl border bg-background p-4 text-foreground`}>
+      <p className="text-sm font-medium">{t(`theme.${scope}`)}</p>
+      <div className="grid grid-cols-3 gap-2 text-xs">
+        {SURFACES.map(([surface, className]) => (
+          <div key={surface} className={`flex h-14 items-end rounded-lg border p-2 ${className}`}>
+            <span className="text-muted-foreground">{t(`kit.showcase.theme.surfaces.${surface}`)}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm">{t("kit.showcase.actions.create")}</Button>
+        <Button size="sm" variant="outline">{t("kit.showcase.actions.export")}</Button>
+        <Button size="sm" variant="secondary">{t("kit.showcase.actions.edit")}</Button>
+        <Button size="sm" variant="destructive">{t("kit.showcase.actions.delete")}</Button>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {TONES.map((tone) => (
+          <StatusBadge key={tone} tone={tone}>{t(`kit.showcase.theme.tones.${tone}`)}</StatusBadge>
+        ))}
+      </div>
+      <Input aria-label={t("kit.showcase.theme.placeholder")} placeholder={t("kit.showcase.theme.placeholder")} />
+      <div className="grid grid-cols-2 gap-3">
+        <div className="h-40 overflow-y-auto rounded-lg border p-2 text-sm">
+          {CONTACTS.map((contact) => (
+            <p key={contact.id} className="py-1.5">{contact.name}</p>
+          ))}
+        </div>
+        <ScrollArea className="h-40 rounded-lg border">
+          <div className="p-2 text-sm">
+            {CONTACTS.map((contact) => (
+              <p key={contact.id} className="py-1.5">{contact.company}</p>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  )
+}
+
+function ThemeSection() {
+  const { t } = useTranslation()
+  return (
+    <Section id="theme" title={t("kit.showcase.sections.theme")}>
+      <Example title={t("theme.label")} hint={t("kit.showcase.theme.pickerHint")}>
+        <ThemeSegmented />
+      </Example>
+      <Example title={t("kit.showcase.theme.sideBySide")} hint={t("kit.showcase.theme.sideBySideHint")}>
+        <div className="grid gap-4 md:grid-cols-2">
+          {THEME_SCOPES.map((scope) => (
+            <ThemeSample key={scope} scope={scope} />
+          ))}
+        </div>
+      </Example>
+    </Section>
   )
 }
 

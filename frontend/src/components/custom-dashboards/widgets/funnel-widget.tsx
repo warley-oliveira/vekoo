@@ -34,7 +34,7 @@ export const FunnelWidget = memo(function FunnelWidget({ model, config }: Funnel
 
   return (
     // `center-safe`: com mais etapas do que cabem, o centro normal cortaria o topo, sem rolagem que chegue até ele.
-    <ol className="flex h-full min-h-0 flex-col justify-center-safe gap-2.5 overflow-y-auto pr-1 [scrollbar-width:thin]">
+    <ol className="flex h-full min-h-0 flex-col justify-center-safe gap-2.5 overflow-y-auto pr-1">
       {items.map(({ category, value, ratio, step }) => {
         const custom = config.valueMap?.[category.id]?.color
         return (

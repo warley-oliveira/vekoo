@@ -8,7 +8,7 @@ module Messages
   # Suporte por provider:
   # - Evolution API (`Connector::WhatsappWeb` com `provider_api == 'evolution_api'`):
   #   `POST /message/sendReaction/{instance}`.
-  # - AIVA e WABA: não expõem envio de reação — o service recusa e o
+  # - Vekoo e WABA: não expõem envio de reação — o service recusa e o
   #   frontend esconde a opção (gate por `connector_provider`).
   class ReactionService
     # A Evolution valida "um emoji ou string vazia" e devolve 400 caso contrário;

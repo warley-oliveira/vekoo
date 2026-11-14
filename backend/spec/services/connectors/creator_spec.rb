@@ -148,8 +148,8 @@ RSpec.describe Connectors::Creator do
       expect(create_connector(connector_type: "whatsapp_web").connector.instance_api_key).to eq("chave-antiga")
     end
 
-    it "roda o plano padrão da tela de escolha (aiva_api) sobre a Evolution" do
-      connector = create_connector(connector_type: "whatsapp_web", provider_api: "aiva_api").connector
+    it "roda o plano padrão da tela de escolha (vekoo_api) sobre a Evolution" do
+      connector = create_connector(connector_type: "whatsapp_web", provider_api: "vekoo_api").connector
 
       expect(connector.provider_api).to eq("evolution_api")
       expect(a_request(:post, evolution_url("/instance/create"))).to have_been_made

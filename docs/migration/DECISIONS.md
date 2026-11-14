@@ -62,9 +62,9 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 - **Configurações que moravam no assistente** foram para `organization.settings` (`automation_*`, `business_work*`, `auto_clear_context_*`), com um endpoint novo: `/automation-settings`.
 - **Removidos por dependerem do LLM ou da automação:** `tag_name_stop_phrase`, `stop_automation_phases`, `delay_response` e o debounce de `last.message`.
 - **Transcrição de áudio (Whisper) mantida:** exige `OPENAI_ACCESS_TOKEN`, automação ligada e créditos acima de 0, e **não debita créditos**.
-- **Pausa de canal:** na Evolution e na AIVA, o que chega durante a pausa é descartado, como na origem. A tela precisa avisar ao pedir confirmação.
+- **Pausa de canal:** na Evolution e na Vekoo, o que chega durante a pausa é descartado, como na origem. A tela precisa avisar ao pedir confirmação.
 - **Modelagem:** `Contact` é um objeto sobre `Chat`, sem coleção própria; `chat_tags` guarda a relação de um lado só; há uma única stream por conversa.
-- **Webhooks** vão para job com o corpo cru e 3 tentativas. AIVA e Evolution ficam unificados em `/inbound/evolution/:codename`, sem RabbitMQ. A assinatura da Meta é conferida quando os segredos existem.
+- **Webhooks** vão para job com o corpo cru e 3 tentativas. Vekoo e Evolution ficam unificados em `/inbound/evolution/:codename`, sem RabbitMQ. A assinatura da Meta é conferida quando os segredos existem.
 - **Mídia de contato com advertência agora é gravada** (a origem descartava).
 - **Segurança:** tokens cifrados em repouso; credenciais fixas viraram ENV; o QR code exige `core_settings`; `/connectors` em leitura é aberto a qualquer conta, porque o chat precisa da lista de canais.
 - **Criação e ativação:** `POST /connectors` com ativação falha responde `201` com `status: failed`, e `activate` também responde `200` quando o provedor recusa. Reativar pela tela continua respondendo `422`.
@@ -99,7 +99,7 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 - **Conexão:** no celular, o código de pareamento é o padrão, e não o QR. O diálogo pode ser fechado durante a espera, com aviso; só fica travado enquanto há pedido em andamento.
 - **Linguagem:** `IWA-...` é trocado na tela pelo nome do tipo, inclusive nos avisos da API.
-- **Ações por tipo:** widget só tem ligar e desligar, porque o site exige `active`. Canal sem provedor gravado também avisa do descarte na pausa, porque o back-end usa AIVA nesse caso.
+- **Ações por tipo:** widget só tem ligar e desligar, porque o site exige `active`. Canal sem provedor gravado também avisa do descarte na pausa, porque o back-end usa Vekoo nesse caso.
 - **Messenger foi ligado** (estava comentado na origem) e usa `VITE_FB_APP_ID`, porque o back troca o código com `META_APP_ID`.
 - **Criar LeadChat não é oferecido**, como na origem; os que já existem funcionam.
 - **Modelos:** variáveis detectadas do texto; máximo de 3 botões, sendo 1 de telefone e 2 de URL; URL dinâmica pede exemplo. A mídia do cabeçalho é um campo de URL pública por enquanto.
@@ -405,12 +405,12 @@ API e WebSocket reais, com provedor simulado: 295 de 295 conferências. Roteiro 
 
 ### Z-API removido (rm-zapi)
 
-- **O provedor Z-API saiu por inteiro**, por decisão de produto: o conector próprio (`Connector::Zapi`), o provedor `zapi` do WhatsApp Web (`Providers::Zapi`, `zapi_instance_id`, `zapi_token`, a flag `features["zapi"]`), o cliente `lib/zapi_client`, as rotas `/inbound/zapi/...` e `Inbound::ZapiEvents`, `Connector::DisconnectionLog` (só a Z-API gravava), `ZAPI_ACCOUNT_TOKEN` e `ZAPI_CLIENT_TOKEN`. WhatsApp Cloud, Evolution, AIVA e os outros canais não mudam.
+- **O provedor Z-API saiu por inteiro**, por decisão de produto: o conector próprio (`Connector::Zapi`), o provedor `zapi` do WhatsApp Web (`Providers::Zapi`, `zapi_instance_id`, `zapi_token`, a flag `features["zapi"]`), o cliente `lib/zapi_client`, as rotas `/inbound/zapi/...` e `Inbound::ZapiEvents`, `Connector::DisconnectionLog` (só a Z-API gravava), `ZAPI_ACCOUNT_TOKEN` e `ZAPI_CLIENT_TOKEN`. WhatsApp Cloud, Evolution, Vekoo e os outros canais não mudam.
 - **Pedir o que saiu responde o erro de validação de sempre:** `connectorType: "zapi"` dá `422 invalidConnectorType`, e `providerApi: "zapi"` dá `422 unprocessable` em `providerApi`. Webhook antigo apontado para `/inbound/zapi/...` responde `404` e não enfileira nada.
 - **"Apagar para todos" saiu junto**, porque só a Z-API revogava mensagem. `DELETE /chats/:id/messages/:id` e `Messages::DeletionService` não existem mais; `bulk-delete` recebe só `messageIds`, apaga só daqui e responde `{ deletedIds }`; o evento `messages_deleted` perdeu `scope`; o conector perdeu `deleteForEveryoneSupported`. A tela oferece só "Excluir para mim". `deletedAt` e `deletedScope` continuam na mensagem, para o que já foi apagado.
 - **Freio de contato:** a contagem por período (25 mensagens em 4 minutos adiam a automação em 10 minutos e somam advertência) só valia na Z-API, e saiu. A regra das advertências (`red_flag_count` ≥ 5 desliga a automação) continua no WhatsApp Web, como antes, em `Chats::InboundThrottle`.
 - **Tela de conexão:** saiu a opção "WhatsApp do celular, com mais recursos" e o pedido de QR novo a cada 8 segundos (`generate_qr_code`, `qr_error` em `ConnectorsChannel`).
-- **Para quem lê o código:** `Inbound::ProcessWebhookJob` perdeu o argumento `event`, que só a Z-API usava. Nada cria mais conector Z-API, nem a semente nem `platform:sync`, e a produção nunca teve um. Num banco antigo, porém: um documento `_type: "Connector::Zapi"` faz qualquer consulta que o alcance levantar `Mongoid::Errors::UnknownModel`, inclusive a lista de canais da organização inteira; e um `Connector::WhatsappWeb` com `provider_api: "zapi"` carrega, cai na AIVA para falar com o provedor e não salva mais (validação de `provider_api`). Os dois devem ser apagados, com as conversas deles: `Connector::Base.collection.find("$or" => [{ _type: "Connector::Zapi" }, { provider_api: "zapi" }])`.
+- **Para quem lê o código:** `Inbound::ProcessWebhookJob` perdeu o argumento `event`, que só a Z-API usava. Nada cria mais conector Z-API, nem a semente nem `platform:sync`, e a produção nunca teve um. Num banco antigo, porém: um documento `_type: "Connector::Zapi"` faz qualquer consulta que o alcance levantar `Mongoid::Errors::UnknownModel`, inclusive a lista de canais da organização inteira; e um `Connector::WhatsappWeb` com `provider_api: "zapi"` carrega, cai na Vekoo para falar com o provedor e não salva mais (validação de `provider_api`). Os dois devem ser apagados, com as conversas deles: `Connector::Base.collection.find("$or" => [{ _type: "Connector::Zapi" }, { provider_api: "zapi" }])`.
 
 ### Modal no lugar de drawer (modals)
 
@@ -475,6 +475,29 @@ Cada bloco foi exercitado num fluxo publicado, com a mensagem entrando pelo webh
 - **Botões e listas nativos:** `send_interactive` manda as opções numeradas no texto em todos os canais. Na WABA dá para usar botões de verdade (até 3) e lista (até 10); na Evolution, botões não são confiáveis. Não feito.
 - **Não exercitado de verdade:** telefone real na Evolution (a pessoa vai conectar), `send_template` (só no Testar e em spec), `ai_audio_transcription` com áudio real, ferramentas nativas de agenda e pipeline com o modelo real (só em spec e no simulado do Testar), modelo principal (Opus) nos fluxos.
 - **O saldo de créditos na barra lateral** não se atualiza depois de um Testar com IA: só ao recarregar.
+
+### Aiva vira Vekoo (rename-aiva)
+
+- **O nome velho saiu do código, dos testes e das docs:** `Providers::AivaApi` é `Providers::VekooApi` (arquivo e spec renomeados), e o valor `aiva_api` de `provider_api` (conector, `providerApi` da API, `connectorProvider` do chat, `WhatsappProvider` no front) é `vekoo_api`. A sigla solta em prosa virou "Vekoo"; em identificador, `VEKOO`.
+- **Banco:** só `provider_api` dos conectores guardava o nome velho. `bin/rails platform:rename_aiva` troca `aiva_api` por `vekoo_api`, direto na coleção, idempotente, e avisa se `WHATSAPP_WEB_DEFAULT_PROVIDER` ainda tem o nome velho. Enquanto não roda, o conector antigo continua falando pelo mesmo módulo (provedor desconhecido cai no `VekooApi`), mas não salva, pela validação. Nenhuma variável de ambiente tinha o nome no próprio nome.
+- **Ficou de propósito:** `window.aiva`, `aiva('...')` e as variáveis CSS `--aiva-*` do widget, que o bundle embutível (`aiva-frontend/widget`) lê e que muda junto com ele; os domínios `aiva-assets.com`, a conta "Aiva" da Cloudflare e o bucket da AIVA, que existem lá fora; os caminhos `~/sandbox/aiva-frontend`; e os nomes da origem (`Aiva::ChatAssistant`, `X-Aiva-*`), citados como origem.
+
+### Tema escuro e barra de rolagem (theme)
+
+- **Claro, Escuro e Sistema, com Sistema por padrão.** A escolha fica no navegador (`vekoo.theme`), e não no perfil: é por aparelho (o celular no escuro, o computador do trabalho no claro), e a tela pinta antes da API responder. Seletor no menu da pessoa (ao lado do idioma), no menu "Mais" do celular e em Perfil. Vetável: guardar no perfil, ver as pendências.
+- **Mecanismo:** classe `dark` no `<html>`, a variante que o shadcn e o Tailwind v4 já esperam (`@custom-variant dark`). Os tokens de `index.css` têm dois blocos, `:root, .theme-light` e `.dark, .theme-dark`; os CSS de domínio (gráficos, fluxos, descrição) fazem o mesmo. `.theme-light` e `.theme-dark` servem para um trecho fixo num tema: a vitrine mostra os dois lado a lado, e a prévia em tela cheia do editor de carrossel fica sempre clara.
+- **Sem flash:** `public/theme-init.js`, bloqueante no `<head>`, põe a classe e a cor da barra do navegador antes de pintar. É arquivo, e não script embutido, porque a CSP de produção só aceita script do site (um hash na CSP quebraria a cada edição). Conferido gravando os quadros desde a navegação, com o escuro guardado e o sistema no claro: nenhum quadro claro depois do `about:blank`.
+- **O escuro:** cinza frio (matiz 285, o mesmo do claro) com um fio de croma, nunca preto puro; camadas por luminância (barra lateral 0,15 < fundo 0,165 < card 0,198 < popover 0,228); bordas translúcidas; texto a 0,955. **O violeta sobe para 0,68 e o texto do botão fica escuro** (6,3:1): com texto branco ele não passaria de 4,5:1 como `text-primary` sobre o fundo. Vetável: violeta mais escuro com texto branco, aceitando `text-primary` abaixo de AA.
+- **Gráficos com degraus próprios no escuro**, validados com a skill de dataviz (`--mode dark`, superfície #151519), e não o claro invertido. Etiqueta suave recalculada para o card escuro (`getTagStyle(..., theme)`); Monaco com temas `vekoo-light` e `vekoo-dark` lidos dos tokens em tempo de execução; sonner com as superfícies do tema; xyflow com `colorMode`.
+- **Troca suave:** View Transitions quando o navegador tem (220 ms, a página atravessa inteira), senão transição de cor de 200 ms só durante a troca; nada com `prefers-reduced-motion`.
+- **Barra de rolagem global** em `index.css`, só com mouse: fio de 4 px numa faixa fixa de 12 px, contraste ao passar sobre o contêiner (cor registrada com `@property`, animada), 8 px sobre a barra, mais forte arrastando; `prefers-contrast: more` deixa mais visível. `::-webkit-scrollbar` no Chromium e no Safari, `scrollbar-width`/`scrollbar-color` só no Firefox (no Chromium eles desligariam os pseudo-elementos). Saiu `[scrollbar-width:thin]` de dez contêineres pelo mesmo motivo. O `<main>` tem `scrollbar-gutter: stable`: medido, a largura útil é a mesma numa página que rola e numa que não.
+
+**Pendências (theme):**
+
+- **Guardar o tema no perfil** (proposta, sem endpoint): `User#theme` (`light`/`dark`/`system`) em `PATCH /me`, devolvido em `/me`. O navegador continua mandando na primeira pintura; o perfil só vale num navegador sem escolha guardada.
+- **Manifesto do PWA:** não há par escuro que os navegadores leiam; a tela de abertura sai clara, e a barra do sistema acompanha assim que a página carrega.
+- **Tokens novos do Chat** (outro agente): precisam do bloco escuro, como descrito no README do kit.
+- **Não verificado:** Safari e Firefox de verdade (barra e View Transitions), leitor de tela no seletor, Windows com alto contraste (`forced-colors`).
 
 ## 2. Pendências por frente
 

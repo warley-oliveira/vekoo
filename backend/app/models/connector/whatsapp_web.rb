@@ -18,11 +18,11 @@ class Connector::WhatsappWeb < Connector::Base
   # documented in `Providers::Base`. Adding a new provider = one module file
   # + one entry here.
   PROVIDERS = {
-    "aiva_api" => Providers::AivaApi,
+    "vekoo_api" => Providers::VekooApi,
     "evolution_api" => Providers::EvolutionApi
   }.freeze
 
-  # Sem isto, um provider desconhecido cairia no AIVA sem `base_url`, e a ativação sairia para
+  # Sem isto, um provider desconhecido cairia no Vekoo sem `base_url`, e a ativação sairia para
   # `http://:80` levando a chave no cabeçalho.
   validates :provider_api, inclusion: { in: PROVIDERS.keys }, allow_nil: true
 
@@ -51,7 +51,7 @@ class Connector::WhatsappWeb < Connector::Base
   def self.default_base_url(provider_api)
     case provider_api.to_s
     when "evolution_api" then ENV.fetch("EVOLUTION_API_URL", "http://localhost:8089")
-    when "aiva_api" then ENV.fetch("WHATSAPP_API_URL", "http://localhost:8080")
+    when "vekoo_api" then ENV.fetch("WHATSAPP_API_URL", "http://localhost:8080")
     end
   end
 
@@ -64,7 +64,7 @@ class Connector::WhatsappWeb < Connector::Base
   end
 
   def provider
-    PROVIDERS.fetch(provider_api) { PROVIDERS.fetch("aiva_api") }
+    PROVIDERS.fetch(provider_api) { PROVIDERS.fetch("vekoo_api") }
   end
 
   def evolution_provider?

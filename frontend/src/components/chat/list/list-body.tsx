@@ -11,7 +11,8 @@ import {
 } from "@/hooks/chat/use-chat-refs"
 import { useChatList } from "@/hooks/chat/use-chat-list"
 import { useUnifiedContactList } from "@/hooks/chat/use-unified-contact-list"
-import { seedChat } from "@/lib/chat/chat-store"
+import { seedChat, subscribeChatEvents } from "@/lib/chat/chat-store"
+import { markLiveChange } from "@/lib/chat/live-change"
 import { toQueryConditions } from "@/lib/chat/filters"
 import { resolveInitialChat, type ChatListQuery } from "@/lib/chat/list-query"
 import { useLastChannel, useListFilters, useOpenChatStore } from "@/lib/chat/stores"
@@ -19,6 +20,7 @@ import type { Chat, UnifiedContact } from "@/lib/chat/types"
 import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selection"
 import { useChatVariant } from "../chat-variant"
 import { ChatRow } from "./chat-row"
+import { ReorderSlot } from "./reorder-slot"
 import { ChatListSkeleton } from "./row-parts"
 import { UnifiedRow } from "./unified-row"
 
@@ -71,7 +73,11 @@ function useEmptyState(query: ChatListQuery, onCreate: () => void) {
 
   return filtered
     ? {
-        icon: <SearchX className="size-5" />,
+        icon: (
+          <span className="flex size-12 items-center justify-center rounded-full bg-avatar-6 text-avatar-6-foreground">
+            <SearchX className="size-5" />
+          </span>
+        ),
         title: t("chat.list.noResults"),
         description: t("chat.list.noResultsHint"),
         action: {
@@ -84,7 +90,11 @@ function useEmptyState(query: ChatListQuery, onCreate: () => void) {
         className: "border-0",
       }
     : {
-        icon: <MessagesSquare className="size-5" />,
+        icon: (
+          <span className="flex size-12 items-center justify-center rounded-full bg-avatar-2 text-avatar-2-foreground">
+            <MessagesSquare className="size-5" />
+          </span>
+        ),
         title: t("chat.list.empty"),
         description: t("chat.list.emptyHint"),
         action: { label: t("chat.list.newChat"), onClick: onCreate },
@@ -119,15 +129,17 @@ const ChannelChats = memo(function ChannelChats({
       className="h-full"
       items={list.items}
       getItemKey={(id) => id}
-      renderItem={(id) => (
-        <ChatRow
-          chatId={id}
-          connectors={connectors}
-          tags={tags}
-          people={people}
-          onOpen={openChat}
-          holdToSelect={mobile}
-        />
+      renderItem={(id, index) => (
+        <ReorderSlot index={index}>
+          <ChatRow
+            chatId={id}
+            connectors={connectors}
+            tags={tags}
+            people={people}
+            onOpen={openChat}
+            holdToSelect={mobile}
+          />
+        </ReorderSlot>
       )}
       hasMore={list.hasMore}
       loading={list.loading}
@@ -225,13 +237,15 @@ const AllContacts = memo(function AllContacts({
       className="h-full"
       items={list.items}
       getItemKey={(contact) => contact.externalId}
-      renderItem={(contact) => (
-        <UnifiedRow
-          contact={contact}
-          connectors={connectors}
-          onOpen={openContact}
-          holdToSelect={mobile}
-        />
+      renderItem={(contact, index) => (
+        <ReorderSlot index={index}>
+          <UnifiedRow
+            contact={contact}
+            connectors={connectors}
+            onOpen={openContact}
+            holdToSelect={mobile}
+          />
+        </ReorderSlot>
       )}
       hasMore={list.hasMore}
       loading={list.loading}
@@ -250,6 +264,16 @@ const AllContacts = memo(function AllContacts({
 /** Qual lista mostrar sai da aba: "Todos" junta os canais por contato, e um canal lista conversas. */
 export function ListBody({ onCreate }: { onCreate: () => void }) {
   const query = useListQuery()
+
+  // O que vem do store de conversas (socket, ou a própria pessoa agindo) é novidade: a lista que se
+  // reordenar por causa disso anima. Trocar de aba ou de filtro não passa por aqui.
+  useEffect(
+    () =>
+      subscribeChatEvents((event) => {
+        if (event.type !== "resync") markLiveChange()
+      }),
+    []
+  )
 
   return query.connectorId ? (
     <ChannelChats query={query} onCreate={onCreate} />

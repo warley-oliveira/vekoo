@@ -240,7 +240,7 @@ export function FunnelBoardView({
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveChat(null)}
     >
-      <div className="-mx-4 flex min-h-0 flex-1 gap-3 overflow-x-auto px-4 pb-3 [scrollbar-width:thin] md:-mx-6 md:px-6">
+      <div className="-mx-4 flex min-h-0 flex-1 gap-3 overflow-x-auto px-4 pb-3 md:-mx-6 md:px-6">
         {columns.map((column) => (
           <BoardColumn
             key={columnKey(column.stageId)}

@@ -42,7 +42,7 @@
 }
 
 .cd-grid .react-grid-item.react-draggable-dragging {
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  box-shadow: 0 8px 24px -8px var(--shadow-ink);
   border-radius: 0.75rem;
 }
 

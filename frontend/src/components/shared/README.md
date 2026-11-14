@@ -7,11 +7,32 @@ Antes de criar um componente, procure aqui. Se faltar algo genérico, é melhor 
 ## Regras que valem para o kit inteiro
 
 - **Texto:** nada literal. Todo rótulo que o kit recebe por prop já vem de `t()` da tela; o que o kit escreve sozinho (paginação, "Limpar filtros") está em `locales/*/kit.json`.
-- **Cor:** só tokens. Status com `StatusBadge` ou `bg-status-*` e `text-status-*`. Hex só em cor escolhida pela pessoa (`TagChip`, pasta).
+- **Cor:** só tokens, que já valem nos dois temas (ver *Tema claro e escuro*). Status com `StatusBadge` ou `bg-status-*` e `text-status-*`. Hex só em cor escolhida pela pessoa (`TagChip`, pasta).
 - **Toque:** `Button` e os campos do kit já têm alvo de 40 px em tela de toque, por `index.css`. `<button>` cru não tem: use `Button`.
 - **Altura em toque:** para um botão visualmente maior, `className="pointer-coarse:h-10"`.
 - **Datas:** a API entrega milissegundos. `RelativeTime` e `lib/date-format` aceitam ms, ISO e `Date`. Campos de formulário usam `Date | null`; mande `.getTime()` para a API.
 - **Vazio é `null`:** `defaultValues` com **todos** os campos, `null` nos vazios. Campo sem padrão faz `isDirty` nascer `true`, e o aviso de sair sem salvar aparece à toa.
+
+## Tema claro e escuro
+
+O app tem os dois, e **Sistema** é o padrão. A pessoa escolhe no menu dela (pé da barra lateral), no menu "Mais" do celular e em Perfil (`ThemeSubmenu` e `ThemeSegmented`, de `@/components/shell/theme-picker`). A escolha fica no navegador (`vekoo.theme`).
+
+- **Componente não pergunta o tema.** Use o token (`bg-card`, `text-muted-foreground`, `border`, `bg-status-*`), e ele já é o certo. `dark:` só quando a *forma* muda no escuro, não a cor.
+- **Camadas:** `bg-sidebar` < `bg-background` < `bg-card` < `bg-popover` (popover, modal, aviso). No escuro, quanto mais perto da pessoa, mais clara.
+- **Véu e escurecer mídia:** `bg-overlay` atrás de algo que se abre; `bg-scrim/40 text-scrim-foreground` para pôr controle sobre foto ou arte. Nunca `bg-foreground/40` como véu: no escuro ele vira branco.
+- **Sombra:** `shadow-art` debaixo da obra, `shadow-hairline` num bloco solto; as do Tailwind (`shadow-sm`…) servem nos dois.
+- **Quem desenha fora do CSS** (Monaco, sonner, xyflow, cor calculada em JS, como `getTagStyle(color, variant, theme)`) lê `useResolvedTheme()` de `@/lib/theme`.
+- **A obra não muda:** capa e editor de carrossel pintam com as cores do carrossel. Um trecho que precisa ficar sempre claro (a prévia em tela cheia do editor) leva a classe `theme-light`; `theme-dark` faz o contrário.
+- **Token novo:** declare em `index.css` (ou no CSS do domínio) duas vezes, no bloco claro (`:root, .theme-light`) e no escuro (`.dark, .theme-dark`). Token que só aponta para outro (`--x: var(--primary)`) também precisa aparecer no escuro se for lido dentro de `.theme-dark`.
+- **Testar no escuro:** troque no menu da pessoa, ou emule `prefers-color-scheme: dark` no DevTools com o tema em Sistema. `/dev/kit` abre com o seletor e os dois temas lado a lado.
+
+## Barra de rolagem
+
+Uma só, global, em `index.css`: um fio de 4 px numa faixa de 12 px com trilho transparente; ganha contraste com o mouse sobre o contêiner, alarga para 8 px sobre a própria barra e fica mais forte arrastando. Mais visível com `prefers-contrast: more`. Em toque o sistema desenha a dele. O `ScrollArea` segue as mesmas cores e larguras.
+
+- **Não ponha `[scrollbar-width:thin]`** num contêiner: no Chromium ele desliga a barra do app e volta a do sistema. `[scrollbar-width:none]` (ou `no-scrollbar`) segue valendo para esconder.
+- **Sem pulo de layout:** o `<main>` reserva a faixa (`scrollbar-gutter: stable`). Num painel que passa a rolar e não pode mexer, faça o mesmo com `[scrollbar-gutter:stable]`.
+- Monaco desenha a dele, nas mesmas cores; o canvas do fluxo e o calendário não usam barra do navegador.
 
 ## Qual usar
 
@@ -394,10 +415,11 @@ Etiqueta com a cor que a pessoa escolheu. O contraste do texto é calculado: ama
 
 ### `UserAvatar` e `AvatarStack`
 
-Foto ou iniciais sobre fundo neutro. O nome é o que o leitor de tela anuncia. A pilha mostra até `max` rostos e o "+N".
+Foto ou iniciais sobre fundo neutro. O nome é o que o leitor de tela anuncia. A pilha mostra até `max` rostos e o "+N". Com `colorSeed` (o id do contato), as iniciais saem num dos tons `avatar-*` do tema, sempre o mesmo para a mesma semente: hoje só o chat usa, onde a pessoa pediu calor.
 
 ```tsx
 <UserAvatar name={contact.name} src={contact.avatarUrl} size="sm" status="online" />
+<UserAvatar name={chat.userName} colorSeed={chat.externalId} size="lg" />
 <AvatarStack users={members} max={4} />
 ```
 

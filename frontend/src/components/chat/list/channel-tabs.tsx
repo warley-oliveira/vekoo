@@ -49,7 +49,7 @@ export const ChannelTabs = memo(function ChannelTabs() {
               title={tab.down ? t("chat.list.channelDown", { name: tab.name }) : tab.name}
               className="flex-none px-1.5 text-[0.8125rem]"
             >
-              <ChannelIcon channel={tab.channel} className="size-3.5" />
+              <ChannelIcon channel={tab.channel} colored={!tab.down} className="size-3.5" />
               <span className="max-w-28 truncate">{tab.name}</span>
               {tab.down ? (
                 <span aria-hidden className="size-1.5 rounded-full bg-status-warning" />

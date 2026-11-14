@@ -9,10 +9,20 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useRowEngaged } from "@/hooks/chat/use-row-engaged"
 import { useLongPress } from "@/hooks/use-long-press"
 import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
+import {
+  BUBBLE_ENTER_MS,
+  BUBBLE_REDUCED_TRANSITION,
+  bubbleEntry,
+  bubbleEntryFrom,
+} from "@/lib/chat/bubble-motion"
 import { useMotionPreset } from "@/lib/motion"
 import { bubbleText, meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import { useMessageSelection, useThreadUi } from "@/lib/chat/stores"
-import { useThreadStore, type OutgoingMessage } from "@/lib/chat/thread-store"
+import {
+  optimisticEchoStartedAt,
+  useThreadStore,
+  type OutgoingMessage,
+} from "@/lib/chat/thread-store"
 import type { ThreadRow } from "@/lib/chat/thread-rows"
 import type { ChatMessage } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
@@ -25,31 +35,43 @@ import {
   MessageMeta,
   MessageText,
   QuotedMessage,
-  StatusIcon,
+  StatusSwap,
   WaitingText,
 } from "./message-parts"
 import { MessageReactions } from "./message-reactions"
 import { AdGreeting, WidgetContext } from "./special-cards"
-import { useThreadContext } from "./thread-context"
+import { useFreshTracker, useThreadContext } from "./thread-context"
 
 // O player traz o canvas da onda e o caminho do fallback de Opus: desce com o primeiro áudio.
 const AudioPlayer = lazy(() => import("../media/audio-player"))
 
-const ENTER_WINDOW_MS = 4_000
+type Entry = { kind: "enter" } | { kind: "continue"; progress: number } | null
 
-/** Mensagem que acabou de chegar entra com um movimento curto; rolar a lista não anima nada. */
-function useIsFresh(createdAt: number): boolean {
-  const [fresh] = useState(() => Date.now() - createdAt < ENTER_WINDOW_MS)
-  return fresh
+/**
+ * O que acabou de chegar. Decidido uma vez, ao montar: rolar e voltar não anima de novo. A que tomou
+ * o lugar de uma otimista só continua a entrada dela, se ainda estava subindo.
+ */
+function useEntry(id: string, createdAt: number): Entry {
+  const tracker = useFreshTracker()
+  const [entry] = useState<Entry>(() => {
+    const fresh = tracker.claim(id, createdAt)
+    const optimisticAt = optimisticEchoStartedAt(id)
+    if (optimisticAt === undefined) return fresh ? { kind: "enter" } : null
+    const elapsed = Date.now() - optimisticAt
+    return fresh && elapsed < BUBBLE_ENTER_MS ? { kind: "continue", progress: elapsed / BUBBLE_ENTER_MS } : null
+  })
+  return entry
 }
 
 function FreshEntry({
+  id,
   createdAt,
   own,
   className,
   children,
   ...rest
 }: {
+  id: string
   createdAt: number
   own: boolean
   className?: string
@@ -57,10 +79,10 @@ function FreshEntry({
   "data-message-id"?: string
   onPointerEnter?: () => void
 }) {
-  const fresh = useIsFresh(createdAt)
+  const entry = useEntry(id, createdAt)
   const preset = useMotionPreset()
 
-  if (!fresh) {
+  if (!entry) {
     return (
       <div className={className} {...rest}>
         {children}
@@ -68,16 +90,16 @@ function FreshEntry({
     )
   }
 
+  const motionProps =
+    entry.kind === "continue"
+      ? bubbleEntryFrom(entry.progress, preset.reduced)
+      : {
+          ...bubbleEntry(own, preset.reduced),
+          transition: preset.reduced ? BUBBLE_REDUCED_TRANSITION : preset.spring,
+        }
+
   return (
-    <motion.div
-      className={className}
-      initial={
-        preset.reduced ? { opacity: 0 } : { opacity: 0, y: 6, x: own ? 4 : -4 }
-      }
-      animate={preset.reduced ? { opacity: 1 } : { opacity: 1, y: 0, x: 0 }}
-      transition={preset.springSoft}
-      {...rest}
-    >
+    <motion.div className={className} {...motionProps} {...rest}>
       {children}
     </motion.div>
   )
@@ -183,6 +205,15 @@ function useTouchActions(id: string, inSheet: boolean) {
   return { active, handlers, didFire }
 }
 
+/**
+ * As duas bolhas sobre o fundo neutro. A do contato é o branco do cartão, com uma sombra baixa para
+ * flutuar; a nossa é um lilás um pouco mais vivo que o acento (`chat-bubble-own`), com um fio do
+ * violeta quase invisível. Nenhuma das duas é saturada: o violeta cheio continua só para ação
+ * principal, seleção e foco.
+ */
+const CONTACT_BUBBLE = "bg-card shadow-sm shadow-foreground/[0.04] ring-1 ring-border/50"
+const OWN_BUBBLE = "bg-chat-bubble-own ring-1 ring-chat-bubble-own-ring"
+
 /** No celular a bolha é um alvo de segurar: nem seleção de texto, nem o menu do sistema por cima. */
 const HOLD_TARGET = "select-none [-webkit-touch-callout:none]"
 
@@ -254,6 +285,7 @@ const MessageBubble = memo(function MessageBubble({
 
   return (
     <FreshEntry
+      id={message.id}
       createdAt={message.createdAt}
       own={own}
       data-message-id={message.id}
@@ -301,7 +333,7 @@ const MessageBubble = memo(function MessageBubble({
           <div
             className={cn(
               "relative min-w-0 rounded-2xl",
-              sticker ? "" : own ? "bg-accent" : "bg-muted",
+              sticker ? "" : own ? OWN_BUBBLE : CONTACT_BUBBLE,
               !sticker && (isMedia ? "p-1" : "px-3 py-1.5"),
               own && !startsGroup && !sticker && "rounded-tr-md",
               own && !endsGroup && !sticker && "rounded-br-md",
@@ -399,6 +431,7 @@ const MediaGroupRow = memo(function MediaGroupRow({
 
   return (
     <FreshEntry
+      id={last.id}
       createdAt={last.createdAt}
       own={own}
       data-message-id={sheetActions ? last.id : undefined}
@@ -430,7 +463,7 @@ const MediaGroupRow = memo(function MediaGroupRow({
             {first.senderName}
           </span>
         ) : null}
-        <div className={cn("w-full rounded-2xl p-1", own ? "bg-accent" : "bg-muted")}>
+        <div className={cn("w-full rounded-2xl p-1", own ? OWN_BUBBLE : CONTACT_BUBBLE)}>
           <MediaGrid messages={row.messages} threadKey={threadKey} selecting={selecting} />
           <div className="flex justify-end px-1 pt-1">
             <MessageMeta message={last} own={own} floating={false} />
@@ -459,10 +492,13 @@ const NoteRow = memo(function NoteRow({ message }: { message: ChatMessage }) {
 
   return (
     <div className="flex justify-center px-4 pt-3" data-message-id={message.id}>
+      {/* Uma pílula clara, menor que a de data: no fundo pontilhado, texto solto perderia a leitura. */}
       <p
         className={cn(
-          "flex max-w-md items-center gap-1.5 text-center text-xs",
-          warning ? "text-status-warning" : "text-muted-foreground"
+          "flex max-w-md items-center gap-1.5 rounded-full px-3 py-1 text-center text-xs ring-1",
+          warning
+            ? "bg-status-warning-soft text-status-warning ring-status-warning/15"
+            : "bg-card/80 text-muted-foreground ring-border/50"
         )}
       >
         <Icon aria-hidden className="size-3.5 shrink-0" />
@@ -475,44 +511,69 @@ const NoteRow = memo(function NoteRow({ message }: { message: ChatMessage }) {
 const WaitingRow = memo(function WaitingRow({ message }: { message: ChatMessage }) {
   return (
     <div className="flex justify-start px-3 pt-3 md:px-5" data-message-id={message.id}>
-      <div className="rounded-2xl bg-muted px-3 py-2">
+      <div className={cn("rounded-2xl px-3 py-2", CONTACT_BUBBLE)}>
         <WaitingText />
       </div>
     </div>
   )
 })
 
-/** A mensagem que a pessoa acabou de enviar, antes do servidor responder. */
-const OutgoingRow = memo(function OutgoingRow({ outgoing }: { outgoing: OutgoingMessage }) {
+/** Até aqui depois de criada, a otimista ainda é "a que acabou de sair do composer". */
+const OUTGOING_ENTER_MS = 1_500
+
+/**
+ * A mensagem que a pessoa acabou de enviar, antes do servidor responder. É ela que nasce do
+ * composer; quando o servidor confirma, a de verdade toma o lugar sem entrar de novo, e só o
+ * relógio vira ✓.
+ */
+const OutgoingRow = memo(function OutgoingRow({
+  outgoing,
+  startsGroup,
+}: {
+  outgoing: OutgoingMessage
+  startsGroup: boolean
+}) {
   const { t } = useTranslation()
   const { retry, threadKey } = useThreadContext()
+  const preset = useMotionPreset()
   const failed = outgoing.status === "failed"
+  // Ao voltar para uma conversa com envio pendente, a bolha já estava lá: não nasce de novo.
+  const [fresh] = useState(() => Date.now() - outgoing.createdAt < OUTGOING_ENTER_MS)
 
   return (
-    <div className="flex justify-end px-3 pt-3 md:px-5">
+    <motion.div
+      className={cn("flex justify-end px-3 md:px-5", startsGroup ? "pt-3" : "pt-0.5")}
+      {...(fresh ? bubbleEntry(true, preset.reduced) : {})}
+      transition={preset.reduced ? BUBBLE_REDUCED_TRANSITION : preset.spring}
+    >
       <div className="flex max-w-[min(36rem,82%)] flex-col items-end">
         <div
           className={cn(
-            "min-w-0 rounded-2xl bg-accent px-3 py-1.5 text-sm leading-5 break-words whitespace-pre-wrap",
-            failed && "ring-1 ring-status-danger/40"
+            "min-w-0 rounded-2xl px-3 py-1.5 text-sm leading-5 break-words whitespace-pre-wrap",
+            OWN_BUBBLE,
+            !startsGroup && "rounded-tr-md",
+            failed && "ring-status-danger/40"
           )}
         >
           <MessageText text={outgoing.text} />
           <span className="float-right mt-1.5 ml-3 inline-flex items-center text-muted-foreground">
-            <StatusIcon
+            <StatusSwap
               status={failed ? "failed" : "pending"}
               label={t(`chat.message.status.${failed ? "failed" : "pending"}`)}
             />
           </span>
         </div>
         {failed ? (
-          <div className="mt-1 flex flex-wrap items-center justify-end gap-x-2 px-1 text-xs text-status-danger">
+          <motion.div
+            {...preset.fade}
+            className="mt-1 flex flex-wrap items-center justify-end gap-x-2 px-1 text-xs text-status-danger"
+          >
             <span>{t(`chat.message.outgoing.${outgoing.failure ?? "timeout"}`)}</span>
             <Button
               type="button"
               variant="ghost"
               size="xs"
-              className="h-5 px-1.5 text-status-danger hover:text-status-danger"
+              className="h-5 px-1.5 text-status-danger hover:text-status-danger pointer-coarse:h-10"
               onClick={() =>
                 retry({
                   id: outgoing.localId,
@@ -525,10 +586,10 @@ const OutgoingRow = memo(function OutgoingRow({ outgoing }: { outgoing: Outgoing
               <RefreshCw />
               {t("chat.message.retry")}
             </Button>
-          </div>
+          </motion.div>
         ) : null}
       </div>
-    </div>
+    </motion.div>
   )
 })
 
@@ -543,7 +604,9 @@ export const MessageRow = memo(function MessageRow({ row }: { row: ThreadRow }) 
       {row.kind === "waiting" ? <WaitingRow message={row.message} /> : null}
       {row.kind === "ad-greeting" ? <AdGreeting message={row.message} /> : null}
       {row.kind === "widget-context" ? <WidgetContext message={row.message} /> : null}
-      {row.kind === "outgoing" ? <OutgoingRow outgoing={row.outgoing} /> : null}
+      {row.kind === "outgoing" ? (
+        <OutgoingRow outgoing={row.outgoing} startsGroup={row.startsGroup} />
+      ) : null}
     </>
   )
 })

@@ -18,10 +18,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useIsMobile } from "@/hooks/use-is-mobile"
+import { useResolvedTheme } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 import { ApiReference } from "./api-reference"
 import { monaco } from "./monaco-setup"
+import { defineMonacoThemes, MONACO_THEMES } from "./monaco-theme"
 import { RunOutput } from "./run-output"
 import { scriptDefinitions } from "./script-definitions"
 import { credentialsDeclaration, paramsDeclaration, WRAPPER_LINES_BEFORE, wrapForValidation } from "./script-types"
@@ -164,6 +166,7 @@ export default function CodeEditorCore({
     validateRef.current?.()
   }, [credentialsKey, isScript, paramsDefinition, paramsKey])
 
+  const resolvedTheme = useResolvedTheme()
   const handleMount = useCallback<OnMount>(
     (editor) => {
       editorRef.current = editor
@@ -365,7 +368,8 @@ export default function CodeEditorCore({
             value={value}
             onChange={(next) => onChange(next ?? "")}
             onMount={handleMount}
-            theme="vs"
+            beforeMount={defineMonacoThemes}
+            theme={MONACO_THEMES[resolvedTheme]}
             loading={<Skeleton className="size-full rounded-none" />}
             options={{
               ariaLabel,

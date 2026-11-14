@@ -19,6 +19,7 @@ import { AlertCount } from "@/components/shell/alert-count"
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { CreditsSummary } from "@/components/shell/credits-summary"
 import { FoldersSection } from "@/components/shell/sidebar-folders"
+import { ThemeSegmented } from "@/components/shell/theme-picker"
 import {
   Collapsible,
   CollapsibleContent,
@@ -327,6 +328,11 @@ function AccountSection() {
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
+        </div>
+
+        <div className="flex h-11 items-center justify-between gap-3 px-3">
+          <span className="text-sm">{t("theme.label")}</span>
+          <ThemeSegmented compact />
         </div>
 
         <button

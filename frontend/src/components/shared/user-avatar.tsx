@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { User } from "lucide-react"
 
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { avatarTone } from "@/lib/avatar-tone"
 import { cn } from "@/lib/utils"
 
 export type UserAvatarStatus = "online" | "away" | "offline"
@@ -17,6 +18,11 @@ export type UserAvatarProps = Omit<ComponentProps<typeof Avatar>, "children"> & 
   name?: string | null
   src?: string | null
   status?: UserAvatarStatus
+  /**
+   * Com isto, as iniciais saem num dos tons `avatar-*` do tema, sorteado pela semente (o id do
+   * contato, para ficar igual na lista e no cabeçalho). Sem, o fundo é neutro.
+   */
+  colorSeed?: string | null
 }
 
 /** "Marina Duarte" vira "MD". Com um nome só, a primeira letra. */
@@ -29,8 +35,19 @@ function getInitials(name: string): string {
   return (first + last).toLocaleUpperCase()
 }
 
-/** Pessoa ou contato: foto, ou iniciais sobre fundo neutro. O nome é o que o leitor de tela anuncia. */
-export function UserAvatar({ name, src, status, size, className, ...props }: UserAvatarProps) {
+/**
+ * Pessoa ou contato: foto, ou iniciais sobre fundo neutro (ou no tom do contato, com `colorSeed`). O
+ * nome é o que o leitor de tela anuncia.
+ */
+export function UserAvatar({
+  name,
+  src,
+  status,
+  size,
+  colorSeed,
+  className,
+  ...props
+}: UserAvatarProps) {
   const { t } = useTranslation()
   const initials = name ? getInitials(name) : ""
 
@@ -43,7 +60,7 @@ export function UserAvatar({ name, src, status, size, className, ...props }: Use
       {...props}
     >
       {src ? <AvatarImage src={src} alt="" /> : null}
-      <AvatarFallback className="font-medium">
+      <AvatarFallback className={cn("font-medium", colorSeed && cn(avatarTone(colorSeed).fill, "font-semibold"))}>
         {initials || <User className="size-1/2" />}
       </AvatarFallback>
       {status ? (

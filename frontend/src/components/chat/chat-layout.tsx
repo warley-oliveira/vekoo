@@ -1,9 +1,10 @@
-import { lazy, memo, Suspense, useCallback } from "react"
+import { lazy, memo, Suspense, useCallback, useState, type ReactNode } from "react"
 import { useNavigate } from "@/lib/router"
 import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
-import { MessagesSquare } from "lucide-react"
+import { MessageSquarePlus } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { useChatMobile } from "@/hooks/chat-mobile/use-chat-mobile"
 import { useDetailsPanel } from "@/lib/chat/stores"
 import { useDetailsPrefs } from "@/lib/chat-details/panel-store"
@@ -11,28 +12,90 @@ import { useMotionPreset } from "@/lib/motion"
 import { ChatDetailsPanel, HAS_DETAILS_PANEL } from "./extension-points"
 import { ListPanel } from "./list/list-panel"
 import { ChatListSkeleton } from "./list/row-parts"
+import { ConversationArt } from "./thread/conversation-art"
 import { ThreadSkeleton } from "./thread/thread-skeleton"
+import "./chat-surface.css"
 
 // A conversa pesa (lista virtual, player, composer) e nem sempre é aberta no primeiro segundo.
 const ChatThread = lazy(() => import("./thread/chat-thread"))
 // Dedo e polegar: só desce para quem está no celular.
 const MobileChatLayout = lazy(() => import("./mobile/mobile-chat-layout"))
+const NewChatDialog = lazy(() => import("./list/new-chat-dialog"))
 
+/**
+ * Nenhuma conversa aberta. Já no fundo da conversa, com a ilustração das duas bolhas: a coluna
+ * avisa o que vai aparecer ali. A chamada é começar uma conversa, que é o que dá para fazer sem
+ * escolher uma da lista.
+ */
 function NoChatSelected() {
   const { t } = useTranslation()
+  const [newChatOpen, setNewChatOpen] = useState(false)
+  const [newChatEverOpen, setNewChatEverOpen] = useState(false)
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-      <span className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-        <MessagesSquare aria-hidden className="size-5" />
-      </span>
-      <div className="space-y-1">
-        <h2 className="font-heading text-lg font-semibold tracking-tight">
-          {t("chat.thread.noneTitle")}
-        </h2>
-        <p className="max-w-xs text-sm text-muted-foreground">{t("chat.thread.noneHint")}</p>
+    <div className="chat-surface flex h-full flex-col items-center justify-center px-6 text-center">
+      <div className="flex flex-col items-center gap-4">
+        <ConversationArt />
+        <div className="space-y-1">
+          <h2 className="font-heading text-lg font-semibold tracking-tight">
+            {t("chat.thread.noneTitle")}
+          </h2>
+          <p className="max-w-xs text-sm text-muted-foreground">{t("chat.thread.noneHint")}</p>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="bg-card pointer-coarse:h-10"
+          onClick={() => {
+            setNewChatEverOpen(true)
+            setNewChatOpen(true)
+          }}
+        >
+          <MessageSquarePlus />
+          {t("chat.list.newChat")}
+        </Button>
       </div>
+      {newChatEverOpen ? (
+        <Suspense fallback={null}>
+          <NewChatDialog open={newChatOpen} onOpenChange={setNewChatOpen} />
+        </Suspense>
+      ) : null}
     </div>
+  )
+}
+
+/** Trocas mais próximas que isto são alguém passando pela lista: a conversa só aparece, sem animar. */
+const QUICK_SWITCH_MS = 220
+
+let lastThreadEntryAt = 0
+
+/**
+ * A conversa que acabou de ser escolhida entra com um fade e um deslocamento curto, vindo do lado da
+ * lista: diz "abriu esta", sem as mensagens entrarem uma a uma (elas já estão lá). Uma por conversa,
+ * por `key`: a anterior sai na hora, então trocar rápido nunca empilha animação. Quem troca muito
+ * depressa (teclado, cliques seguidos) não vê movimento nenhum, e nada pisca. O primeiro desenho da
+ * tela não anima.
+ */
+function ThreadEntry({ animate, children }: { animate: boolean; children: ReactNode }) {
+  const preset = useMotionPreset()
+  const [enter] = useState(() => {
+    const now = performance.now()
+    const quick = now - lastThreadEntryAt < QUICK_SWITCH_MS
+    lastThreadEntryAt = now
+    return animate && !quick
+  })
+
+  if (!enter) return <div className="h-full min-h-0">{children}</div>
+
+  return (
+    <motion.div
+      className="h-full min-h-0"
+      initial={preset.reduced ? { opacity: 0.6 } : { opacity: 0.4, x: -10 }}
+      animate={preset.reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+      transition={preset.reduced ? { duration: 0.15, ease: "easeOut" } : preset.spring}
+    >
+      {children}
+    </motion.div>
   )
 }
 
@@ -58,6 +121,12 @@ const WideChatLayout = memo(function WideChatLayout({
 
   const showDetails = HAS_DETAILS_PANEL && detailsOpen && (Boolean(chatId) || showsCopilot)
 
+  // A conversa da abertura da tela (link direto, recarregar) já nasce no lugar; daí em diante, cada
+  // troca anima.
+  const [openedWith, setOpenedWith] = useState<string | null | undefined>(chatId)
+  if (openedWith !== undefined && chatId !== openedWith) setOpenedWith(undefined)
+  const animateEntry = openedWith === undefined
+
   const preset = useMotionPreset()
   const panelMotion = preset.reduced
     ? preset.fade
@@ -80,9 +149,11 @@ const WideChatLayout = memo(function WideChatLayout({
 
       <section className="min-h-0 min-w-0 flex-1 bg-background">
         {chatId ? (
-          <Suspense fallback={<ThreadSkeleton withHeader />}>
-            <ChatThread chatId={chatId} onBack={goToList} />
-          </Suspense>
+          <ThreadEntry key={chatId} animate={animateEntry}>
+            <Suspense fallback={<ThreadSkeleton withHeader />}>
+              <ChatThread chatId={chatId} onBack={goToList} />
+            </Suspense>
+          </ThreadEntry>
         ) : (
           <NoChatSelected />
         )}

@@ -16,7 +16,7 @@ module Chats
       end
     end
 
-    # O que a tela usa para liberar recursos por provedor: `evolution_api`, `aiva_api`,
+    # O que a tela usa para liberar recursos por provedor: `evolution_api`, `vekoo_api`,
     # `whatsapp_cloud`, `instagram_direct`... `reactionsSupported` vem no próprio conector, em
     # /chats/self-filter.
     def connector_provider(chat)

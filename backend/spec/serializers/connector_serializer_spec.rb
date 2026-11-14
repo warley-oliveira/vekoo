@@ -103,9 +103,9 @@ RSpec.describe ConnectorSerializer do
     end
 
     it "diz o que cada provider do WhatsApp Web suporta" do
-      connector = create(:connector_whatsapp_web, :aiva, organization: organization)
+      connector = create(:connector_whatsapp_web, :vekoo, organization: organization)
 
-      expect(described_class.one(connector)).to include(providerApi: "aiva_api", reactionsSupported: false)
+      expect(described_class.one(connector)).to include(providerApi: "vekoo_api", reactionsSupported: false)
       expect(described_class.one(connector)).not_to have_key(:deleteForEveryoneSupported)
     end
 

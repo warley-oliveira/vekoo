@@ -128,10 +128,10 @@ function MethodStep({
 
     // Vem `201` mesmo se o provedor recusar: o canal fica criado, `failed`, e a tela
     // seguinte mostra o motivo. Tentar de novo ativa este mesmo canal, em vez de outro.
-    // `aiva_api` é o plano padrão da tela de escolha da origem: o back-end cria sobre a Evolution.
+    // `vekoo_api` é o plano padrão da tela de escolha da origem: o back-end cria sobre a Evolution.
     const { connector: created } = await apiPost<ConnectorCreated>("/connectors", {
       connectorType: "whatsapp_web",
-      providerApi: "aiva_api",
+      providerApi: "vekoo_api",
       ...(phone ? { phoneNumberPairing: phone } : {}),
     })
     storeConnector(created)

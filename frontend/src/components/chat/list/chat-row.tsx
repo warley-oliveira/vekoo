@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next"
 import { Bot } from "lucide-react"
 
 import { TagChip, UserAvatar } from "@/components/shared"
+import { useContactPresence } from "@/hooks/chat/use-contact-presence"
 import { apiAssetUrl } from "@/lib/api"
+import { avatarTone } from "@/lib/avatar-tone"
 import { channelKey, contactHandle, type ChatConnector } from "@/lib/chat/channel"
 import { chatDisplayName, useChat } from "@/lib/chat/chat-store"
 import { useOpenChatStore } from "@/lib/chat/stores"
@@ -12,7 +14,13 @@ import { useChatListPrefs } from "@/lib/chat-details/list-prefs"
 import { useChatSelection } from "@/lib/chat-details/selection"
 import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
 import { ChannelBadge } from "../channel-icon"
-import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
+import {
+  LastMessagePreview,
+  ListRow,
+  RowName,
+  RowTime,
+  UnreadBadge,
+} from "./row-parts"
 
 const MAX_TAGS = 2
 
@@ -41,6 +49,8 @@ export const ChatRow = memo(function ChatRow({
   const { t } = useTranslation()
   const chat = useChat(chatId)
   const selected = useOpenChatStore((state) => state.chatId === chatId)
+  // O canal só conta "digitando" de quem está com a conversa aberta: as outras linhas não assinam.
+  const presence = useContactPresence(selected ? chatId : null)
   const selecting = useChatSelection((state) => state.active)
   const checked = useChatSelection((state) => state.ids.has(chatId))
   const showTags = useChatListPrefs((state) => state.showTags)
@@ -91,7 +101,9 @@ export const ChatRow = memo(function ChatRow({
           <UserAvatar
             size="lg"
             name={name}
+            colorSeed={chat.externalId}
             src={chat.profilePictureUrl ? apiAssetUrl(chat.profilePictureUrl) : null}
+            className={unread ? avatarTone(chat.externalId).ring : undefined}
           />
           <ChannelBadge channel={channel} label={t(`chat.channel.${channel}`)} />
         </>
@@ -120,6 +132,7 @@ export const ChatRow = memo(function ChatRow({
           content={chat.lastMessageContent}
           by={chat.lastMessageBy}
           unread={unread}
+          presence={presence}
         />
         <span className="flex shrink-0 items-center gap-1.5">
           {assignee ? (

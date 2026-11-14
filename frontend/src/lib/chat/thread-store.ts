@@ -48,6 +48,9 @@ export type OutgoingMessage = {
   failure?: "offline" | "timeout"
 }
 
+/** O que o canal conta do contato agora. Só a Evolution informa. */
+export type ContactPresence = "composing" | "recording" | null
+
 export type ThreadState = {
   status: "loading" | "ready" | "error"
   error: unknown
@@ -63,8 +66,8 @@ export type ThreadState = {
   connectorProvider: string | null
   attributeList: AttributeDefinition[]
   outbox: OutgoingMessage[]
-  /** O contato está digitando, quando o canal contar. */
-  typing: boolean
+  /** O contato está digitando ou gravando áudio, quando o canal contar. */
+  presence: ContactPresence
   touchedAt: number
 }
 
@@ -88,7 +91,7 @@ function emptyThread(): ThreadState {
     connectorProvider: null,
     attributeList: [],
     outbox: [],
-    typing: false,
+    presence: null,
     touchedAt: Date.now(),
   }
 }
@@ -157,17 +160,45 @@ function newestAt(messages: ChatMessage[]): number {
 }
 
 /** O eco de uma mensagem nossa tira a versão otimista da fila, na ordem de envio. */
+/**
+ * As mensagens que chegaram no lugar de uma bolha otimista, com a hora em que a otimista nasceu. A
+ * bolha já estava na tela: a de verdade não entra de novo, só continua a entrada de onde a otimista
+ * parou (o eco local chega em menos de 100 ms) e troca o relógio pelo status. Guarda poucas.
+ */
+const echoes = new Map<string, number>()
+const MAX_ECHOES = 50
+
+function rememberEcho(id: string, optimisticAt: number) {
+  echoes.set(id, optimisticAt)
+  if (echoes.size > MAX_ECHOES) echoes.delete(echoes.keys().next().value as string)
+}
+
+/** Se esta mensagem tomou o lugar de uma bolha otimista que a pessoa acabou de ver. */
+export function isOptimisticEcho(id: string): boolean {
+  return echoes.has(id)
+}
+
+/** Quando nasceu a bolha otimista que esta mensagem substituiu. */
+export function optimisticEchoStartedAt(id: string): number | undefined {
+  return echoes.get(id)
+}
+
 function settleOutbox(outbox: OutgoingMessage[], incoming: ChatMessage): OutgoingMessage[] {
   if (outbox.length === 0) return outbox
   if (incoming.role !== "assistant" || incoming.messageOrigin !== "frontend") return outbox
 
   const content = (incoming.content ?? "").trim()
   const index = outbox.findIndex((entry) => entry.payload.trim() === content)
-  if (index >= 0) return outbox.filter((_, position) => position !== index)
+  if (index >= 0) {
+    rememberEcho(incoming.id, outbox[index].createdAt)
+    return outbox.filter((_, position) => position !== index)
+  }
 
   // Mensagem longa ou com anexo sai em partes, com o texto já tratado pelo servidor: a primeira
   // parte que chega responde pela mais antiga da fila.
-  return incoming.isSpan ? outbox.slice(1) : outbox
+  if (!incoming.isSpan) return outbox
+  rememberEcho(incoming.id, outbox[0].createdAt)
+  return outbox.slice(1)
 }
 
 /** Só o que é novo para este histórico conta como eco: mensagem antiga igual não responde. */
@@ -217,7 +248,8 @@ export function applyChannelMessage(key: string, payload: ChatChannelMessage): v
       const { messageIds } = payload as { messageIds: string[] }
       applyDeleted(key, messageIds ?? [])
     } else if (payload.event === "presence") {
-      setTyping(key, (payload as { value?: string }).value === "composing")
+      const value = (payload as { value?: string }).value
+      setPresence(key, value === "composing" || value === "recording" ? value : null)
     }
     return
   }
@@ -225,26 +257,27 @@ export function applyChannelMessage(key: string, payload: ChatChannelMessage): v
   if ("id" in payload && payload.id) {
     const message = payload as ChatMessage
     receiveMessage(key, message)
-    if (message.role === "user") setTyping(key, false)
+    if (message.role === "user") setPresence(key, null)
   }
 }
 
-const typingTimers = new Map<string, ReturnType<typeof setTimeout>>()
+const presenceTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
 /**
- * "Digitando". Sem evento de fim garantido, então expira sozinho, no mesmo prazo que o servidor
- * guarda a presença. Só a Evolution informa: nos outros canais o aviso simplesmente não aparece.
+ * "Digitando" e "gravando áudio". Sem evento de fim garantido, então expira sozinho, no mesmo prazo
+ * que o servidor guarda a presença. Só a Evolution informa: nos outros canais o aviso simplesmente
+ * não aparece.
  */
-function setTyping(key: string, typing: boolean) {
-  const timer = typingTimers.get(key)
+function setPresence(key: string, presence: ContactPresence) {
+  const timer = presenceTimers.get(key)
   if (timer) clearTimeout(timer)
-  typingTimers.delete(key)
+  presenceTimers.delete(key)
 
-  if (threadOf(key)?.typing !== typing) patch(key, () => ({ typing }))
-  if (typing) {
-    typingTimers.set(
+  if (threadOf(key)?.presence !== presence) patch(key, () => ({ presence }))
+  if (presence) {
+    presenceTimers.set(
       key,
-      setTimeout(() => setTyping(key, false), TYPING_TTL_MS)
+      setTimeout(() => setPresence(key, null), TYPING_TTL_MS)
     )
   }
 }

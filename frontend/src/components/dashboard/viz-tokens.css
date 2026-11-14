@@ -3,8 +3,8 @@
  * violeta marca o que está em destaque, e só a autoria das mensagens precisa de matizes.
  *
  * Tudo aqui passou por `dataviz/scripts/validate_palette.js`, contra a superfície dos cards
- * (`--card`, branco). Ao trocar um valor, rode de novo. O produto só tem tema claro: não há
- * par escuro para validar.
+ * (`--card`, branco). Ao trocar um valor, rode de novo, nos dois temas: o escuro tem os próprios
+ * degraus (abaixo), validados contra o card escuro (#151519) com `--mode dark`.
  */
 :root {
   /* Marcas de uma série só: barras ranqueadas, tempo de resposta. 4,66:1 sobre o card. */
@@ -54,4 +54,39 @@
   --viz-heat-4: oklch(0.72 0.135 292);
   --viz-heat-5: oklch(0.62 0.18 292);
   --viz-heat-6: oklch(0.51 0.24 292);
+}
+
+/*
+ * Escuro: os mesmos papéis, com degraus próprios, e não o claro invertido. Validado com
+ * `validate_palette.js --mode dark --surface "#151519"`:
+ *   autoria (violeta, verde-azulado, terracota), todos os pares: CVD 10,4; visão normal 21,3; >= 3:1.
+ *   contexto: 2,45:1, com o mesmo alívio de legenda e tabela do claro.
+ * Ordinal e calor seguem "mais é mais contraste": no escuro, do escuro para o claro.
+ */
+.dark,
+.theme-dark {
+  --viz-ink: oklch(0.72 0.03 292);
+  --viz-context: oklch(0.45 0.01 285);
+  --viz-accent: var(--primary);
+  --viz-track: var(--muted);
+  --viz-series-inbound: var(--viz-context);
+  --viz-series-automation: var(--primary);
+  --viz-series-human: oklch(0.65 0.11 175);
+  --viz-series-campaign: oklch(0.66 0.13 50);
+  --viz-show: var(--viz-context);
+  --viz-no-show: oklch(0.6 0.17 27);
+
+  --viz-step-1: oklch(0.4 0.06 292);
+  --viz-step-2: oklch(0.48 0.08 292);
+  --viz-step-3: oklch(0.56 0.1 292);
+  --viz-step-4: oklch(0.64 0.11 292);
+  --viz-step-5: oklch(0.72 0.11 292);
+  --viz-step-6: oklch(0.8 0.1 292);
+
+  --viz-heat-1: oklch(0.25 0.025 292);
+  --viz-heat-2: oklch(0.32 0.06 292);
+  --viz-heat-3: oklch(0.4 0.09 292);
+  --viz-heat-4: oklch(0.49 0.12 292);
+  --viz-heat-5: oklch(0.58 0.15 292);
+  --viz-heat-6: oklch(0.68 0.17 292);
 }

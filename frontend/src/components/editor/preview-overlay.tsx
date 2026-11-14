@@ -69,7 +69,7 @@ export function PreviewOverlay({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="fixed inset-0 z-50 flex flex-col bg-foreground/90 backdrop-blur-sm"
+      className="theme-light fixed inset-0 z-50 flex flex-col bg-foreground/90 backdrop-blur-sm"
     >
       <div className="flex h-14 shrink-0 items-center justify-between px-3">
         <span className="text-sm text-background/80 tabular-nums">

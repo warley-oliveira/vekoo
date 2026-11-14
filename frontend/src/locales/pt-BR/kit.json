@@ -170,6 +170,7 @@
         "kit": "Kit"
       },
       "sections": {
+        "theme": "Tema e rolagem",
         "page": "Página",
         "data": "Dados",
         "collections": "Coleções",
@@ -401,6 +402,25 @@
         "cards": "Grade de cards",
         "detail": "Detalhe",
         "page": "Página"
+      },
+      "theme": {
+        "pickerHint": "Vale para o app inteiro, na hora. O mesmo do menu da pessoa e de Perfil.",
+        "sideBySide": "Os dois temas lado a lado",
+        "sideBySideHint": "Superfícies, botões, status, campo e as duas barras de rolagem (a do navegador e a do ScrollArea). Passe o mouse e arraste a barra.",
+        "surfaces": {
+          "background": "Fundo",
+          "card": "Card",
+          "popover": "Popover e modal"
+        },
+        "tones": {
+          "neutral": "Neutro",
+          "success": "Ativo",
+          "warning": "Pendente",
+          "danger": "Falhou",
+          "info": "Novo",
+          "accent": "Destaque"
+        },
+        "placeholder": "Nome do contato"
       }
     },
     "sortable": {

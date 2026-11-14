@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
+RSpec.describe Connector::WhatsappWeb::Providers::VekooApi do
   before { stub_every_host_as_public }
 
   include ConnectorHelpers
 
   let(:organization) { create(:organization) }
-  let(:connector) { create(:connector_whatsapp_web, :aiva, organization: organization, instance_name: "WS-AIVA", api_key: "chave-aiva") }
-  let(:base) { "http://aiva.test" }
+  let(:connector) { create(:connector_whatsapp_web, :vekoo, organization: organization, instance_name: "WS-VEKOO", api_key: "chave-vekoo") }
+  let(:base) { "http://vekoo.test" }
   let(:fixture) { Rails.root.join("spec/fixtures/files/foto.png").to_s }
 
   before { allow(Connector::WhatsappWeb::Providers::Base).to receive(:sleep) }
@@ -17,11 +17,11 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   describe "#activate" do
     let(:create_instance) do
       stub_request(:post, "#{base}/instance/create")
-        .with(headers: { "apikey" => "chave-aiva" })
+        .with(headers: { "apikey" => "chave-vekoo" })
         .to_return(json_reply({ hash: { apikey: "NEW-KEY" } }))
     end
-    let(:set_webhook) { stub_request(:post, "#{base}/webhook/set/WS-AIVA").to_return(json_reply({})) }
-    let(:connect) { stub_request(:get, "#{base}/instance/connect/WS-AIVA").to_return(json_reply({})) }
+    let(:set_webhook) { stub_request(:post, "#{base}/webhook/set/WS-VEKOO").to_return(json_reply({})) }
+    let(:connect) { stub_request(:get, "#{base}/instance/connect/WS-VEKOO").to_return(json_reply({})) }
 
     before do
       create_instance
@@ -34,13 +34,13 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
       expect(create_instance).to have_been_requested
       expect(connect).to have_been_requested
-      expect(a_request(:post, "#{base}/webhook/set/WS-AIVA")
+      expect(a_request(:post, "#{base}/webhook/set/WS-VEKOO")
         .with(body: { enabled: true, url: "https://api.vekoo.test/inbound/evolution/IWA-#{connector.id}?token=#{connector.inbound_token}" }.to_json)).to have_been_made
       expect(connector.reload).to have_attributes(instance_api_key: "NEW-KEY", status_cd: "pending")
     end
 
     it "gera o nome da instância quando ela não tem um" do
-      unnamed = create(:connector_whatsapp_web, :aiva, organization: organization, instance_name: nil, api_key: "chave-aiva")
+      unnamed = create(:connector_whatsapp_web, :vekoo, organization: organization, instance_name: nil, api_key: "chave-vekoo")
       name = "IWA-#{unnamed.id}"
       stub_request(:post, "#{base}/webhook/set/#{name}").to_return(json_reply({}))
       stub_request(:get, "#{base}/instance/connect/#{name}").to_return(json_reply({}))
@@ -77,44 +77,44 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     end
 
     it "levanta quando o webhook não é aceito" do
-      stub_request(:post, "#{base}/webhook/set/WS-AIVA").to_return(status: 500, body: "boom")
+      stub_request(:post, "#{base}/webhook/set/WS-VEKOO").to_return(status: 500, body: "boom")
 
       expect { connector.activate }.to raise_error(/Failed to connect instance/)
     end
 
     it "levanta quando a conexão falha" do
-      stub_request(:get, "#{base}/instance/connect/WS-AIVA").to_return(status: 500, body: "boom")
+      stub_request(:get, "#{base}/instance/connect/WS-VEKOO").to_return(status: 500, body: "boom")
 
       expect { connector.activate }.to raise_error(/Failed to connect instance/)
     end
 
     it "não escreve a chave da instância nem o código de pareamento no log" do
-      stub_request(:get, "#{base}/instance/connect/WS-AIVA").to_return(json_reply({ pairingCode: "PAREAMENTO-1", base64: "QR-B64" }))
+      stub_request(:get, "#{base}/instance/connect/WS-VEKOO").to_return(json_reply({ pairingCode: "PAREAMENTO-1", base64: "QR-B64" }))
 
       log = captured_log { connector.activate }
 
       expect(log).to include("activate - create")
-      expect(log).not_to include("NEW-KEY", "PAREAMENTO-1", "QR-B64", "chave-aiva")
+      expect(log).not_to include("NEW-KEY", "PAREAMENTO-1", "QR-B64", "chave-vekoo")
     end
   end
 
   describe "#setup_webhook!" do
     it "manda a URL e segue em silêncio na resposta 2xx" do
-      request = stub_request(:post, "#{base}/webhook/set/WS-AIVA").to_return(json_reply({}, status: 201))
+      request = stub_request(:post, "#{base}/webhook/set/WS-VEKOO").to_return(json_reply({}, status: 201))
 
       expect { connector.setup_webhook! }.not_to raise_error
       expect(request).to have_been_requested
     end
 
     it "levanta quando a resposta não é 2xx" do
-      stub_request(:post, "#{base}/webhook/set/WS-AIVA").to_return(status: 500, body: "boom")
+      stub_request(:post, "#{base}/webhook/set/WS-VEKOO").to_return(status: 500, body: "boom")
 
       expect { connector.setup_webhook! }.to raise_error(/Failed to connect instance/)
     end
   end
 
   describe "#send_text_message" do
-    let(:url) { "#{base}/message/sendText/WS-AIVA" }
+    let(:url) { "#{base}/message/sendText/WS-VEKOO" }
 
     it "manda no envelope textMessage com o JID completo e devolve o id" do
       request = stub_request(:post, url)
@@ -133,7 +133,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
       expect(a_request(:post, url).with(body: hash_including("number" => "5511999999999@s.whatsapp.net"))).to have_been_made
     end
 
-    it "ignora a citação: a AIVA não tem como responder a uma mensagem" do
+    it "ignora a citação: a Vekoo não tem como responder a uma mensagem" do
       stub_request(:post, url).to_return(json_reply({ key: { id: "OUT-MID" } }))
 
       connector.send_text_message("55119", "oi", nil, reply_to_external_id: "PAI")
@@ -163,12 +163,12 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   end
 
   describe "#send_media_message" do
-    let(:url) { "#{base}/message/sendMediaFile/WS-AIVA" }
+    let(:url) { "#{base}/message/sendMediaFile/WS-VEKOO" }
 
     context "com arquivo local" do
       it "manda multipart para sendMediaFile com número, tipo, nome e legenda" do
         request = stub_request(:post, url)
-          .with(headers: { "apikey" => "chave-aiva" }) { |req|
+          .with(headers: { "apikey" => "chave-vekoo" }) { |req|
             req.headers["Content-Type"].start_with?("multipart/form-data") &&
               req.body.include?(%(name="number")) && req.body.include?("5511999999999") &&
               req.body.include?(%(name="mediatype")) && req.body.include?("image") &&
@@ -275,7 +275,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   end
 
   describe "#send_audio_message_by_url" do
-    let(:url) { "#{base}/message/sendWhatsAppAudio/WS-AIVA" }
+    let(:url) { "#{base}/message/sendWhatsAppAudio/WS-VEKOO" }
 
     it "manda no envelope audioMessage" do
       request = stub_request(:post, url)
@@ -303,7 +303,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
   describe "#mark_read_message" do
     it "marca por PUT, com fromMe falso" do
-      request = stub_request(:put, "#{base}/chat/markMessageAsRead/WS-AIVA")
+      request = stub_request(:put, "#{base}/chat/markMessageAsRead/WS-VEKOO")
         .with(body: { readMessages: [ { remoteJid: "55119@s.whatsapp.net", fromMe: false, id: "MID-1" } ] }.to_json)
         .to_return(json_reply({}))
 
@@ -314,7 +314,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   end
 
   describe "#send_presence" do
-    let(:url) { "#{base}/message/sendPresenceUpdate/WS-AIVA" }
+    let(:url) { "#{base}/message/sendPresenceUpdate/WS-VEKOO" }
 
     it "manda presença e número" do
       request = stub_request(:post, url).with(body: { presence: "composing", number: "5511999999999" }.to_json).to_return(json_reply({}))
@@ -333,11 +333,11 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   end
 
   describe "#retriever_media_message" do
-    let(:url) { "#{base}/chat/retrieverMediaMessage/WS-AIVA" }
+    let(:url) { "#{base}/chat/retrieverMediaMessage/WS-VEKOO" }
 
     it "devolve o corpo em base64 quando pedido" do
       request = stub_request(:post, url)
-        .with(headers: { "apikey" => "chave-aiva" }, body: { key: { id: "MID-1" } }.to_json)
+        .with(headers: { "apikey" => "chave-vekoo" }, body: { key: { id: "MID-1" } }.to_json)
         .to_return(status: 200, body: "BINARIO")
 
       expect(connector.retriever_media_message("MID-1", :audio, true)).to eq(Base64.strict_encode64("BINARIO"))
@@ -372,7 +372,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
   end
 
   describe "#retriever_media_message_complete" do
-    let(:url) { "#{base}/chat/retrieverMediaMessage/WS-AIVA" }
+    let(:url) { "#{base}/chat/retrieverMediaMessage/WS-VEKOO" }
 
     it "manda a mensagem inteira e devolve base64" do
       request = stub_request(:post, url).with(body: { key: { id: "MID" }, message: { foo: 1 } }.to_json).to_return(status: 200, body: "BINARIO")
@@ -395,7 +395,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
   describe "#reload_instance" do
     it "chama /instance/reload estando ativo" do
-      request = stub_request(:get, "#{base}/instance/reload/WS-AIVA").to_return(json_reply({}))
+      request = stub_request(:get, "#{base}/instance/reload/WS-VEKOO").to_return(json_reply({}))
 
       connector.reload_instance
 
@@ -403,14 +403,14 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     end
 
     it "levanta quando o provedor recusa" do
-      stub_request(:get, "#{base}/instance/reload/WS-AIVA").to_return(status: 500, body: "boom")
+      stub_request(:get, "#{base}/instance/reload/WS-VEKOO").to_return(status: 500, body: "boom")
 
       expect { connector.reload_instance }.to raise_error(/Failed to send message/)
     end
   end
 
   describe "#logout_instance" do
-    let(:url) { "#{base}/instance/logout/WS-AIVA" }
+    let(:url) { "#{base}/instance/logout/WS-VEKOO" }
 
     [ 200, 201, 401, 404 ].each do |code|
       it "aceita #{code} e fecha o conector" do
@@ -436,7 +436,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     it "lê o perfil da instância na lista" do
       stub_request(:get, url).to_return(json_reply([
         { instance: { instanceName: "OUTRA", owner: "1@s.whatsapp.net", profileName: "Outra" } },
-        { instance: { instanceName: "WS-AIVA", owner: "5511999999999@s.whatsapp.net", profilePictureUrl: "http://x/pic.jpg", profileName: "Bob" } }
+        { instance: { instanceName: "WS-VEKOO", owner: "5511999999999@s.whatsapp.net", profilePictureUrl: "http://x/pic.jpg", profileName: "Bob" } }
       ]))
 
       connector.fetch_current_information(ignore_migration: true)
@@ -458,7 +458,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     end
 
     it "aguenta instância ainda sem dono" do
-      stub_request(:get, url).to_return(json_reply([ { instance: { instanceName: "WS-AIVA", profileName: "Bob" } } ]))
+      stub_request(:get, url).to_return(json_reply([ { instance: { instanceName: "WS-VEKOO", profileName: "Bob" } } ]))
 
       connector.fetch_current_information(ignore_migration: true)
 
@@ -467,7 +467,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
 
     it "migra as conversas antes, salvo quando mandam ignorar" do
       stub_request(:get, url).to_return(json_reply([]))
-      old = create(:connector_whatsapp_web, :aiva, organization: organization, status: :closed, number_id: connector.number_id)
+      old = create(:connector_whatsapp_web, :vekoo, organization: organization, status: :closed, number_id: connector.number_id)
       chat = create(:chat, connector: old)
 
       connector.fetch_current_information(ignore_migration: true)
@@ -478,7 +478,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     end
   end
 
-  describe "o que a AIVA não tem" do
+  describe "o que a Vekoo não tem" do
     it "reação é só da Evolution" do
       expect { connector.send_reaction("55119", "ALVO", true, "👍") }.to raise_error(NoMethodError)
     end
@@ -486,7 +486,7 @@ RSpec.describe Connector::WhatsappWeb::Providers::AivaApi do
     it "não confere número: devolve os dígitos sem chamar nada" do
       expect(connector.verifies_whatsapp_numbers?).to be(false)
       expect(connector.resolve_whatsapp_number("+55 48 98831-4715")).to eq("5548988314715")
-      expect(a_request(:any, /aiva\.test/)).not_to have_been_made
+      expect(a_request(:any, /vekoo\.test/)).not_to have_been_made
     end
   end
 end

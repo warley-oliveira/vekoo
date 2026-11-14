@@ -187,7 +187,7 @@ export const CartesianChart = memo(function CartesianChart({ type, model, config
     const total = model.additive && model.partition ? item.total : 0
     return (
       // `data-cd-grows`: na pilha do celular, o card acompanha a lista em vez de rolar dentro da página.
-      <div data-cd-grows className="h-full min-h-0 overflow-y-auto pr-1 [scrollbar-width:thin]">
+      <div data-cd-grows className="h-full min-h-0 overflow-y-auto pr-1">
         <RankedBars
           color={item.color}
           items={categories.map((category, index) => {

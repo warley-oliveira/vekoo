@@ -39,7 +39,7 @@ RSpec.describe Connectors::ExternalId do
         HTTParty.post(url)
       end
 
-      it "lê key.id: Evolution e AIVA" do
+      it "lê key.id: Evolution e Vekoo" do
         expect(described_class.from(response(json_reply({ key: { id: "3EB0" } })))).to eq("3EB0")
       end
 
@@ -95,10 +95,10 @@ RSpec.describe Connectors::ExternalId do
   describe "de ponta a ponta com cada conector" do
     let(:organization) { create(:organization) }
 
-    it "AIVA" do
-      connector = create(:connector_whatsapp_web, :aiva, organization: organization, instance_name: "W")
+    it "Vekoo" do
+      connector = create(:connector_whatsapp_web, :vekoo, organization: organization, instance_name: "W")
       stub_request(:get, "https://cdn.exemplo.com/foto.jpg").to_return(status: 200, body: "BYTES")
-      stub_request(:post, "http://aiva.test/message/sendMediaFile/W").to_return(json_reply({ key: { id: "A1" } }))
+      stub_request(:post, "http://vekoo.test/message/sendMediaFile/W").to_return(json_reply({ key: { id: "A1" } }))
 
       expect(described_class.from(connector.send_media_message("553199999", media_dto))).to eq("A1")
     end

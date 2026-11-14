@@ -17,6 +17,18 @@ module PlatformTasks
   def backfill_access_roles
     Organization.where.missing(:access_roles).find_each { |organization| AccessRole.seed_defaults_for(organization) }
   end
+
+  # O código veio de outro produto, a AIVA, e o provedor de WhatsApp Web se chamava `aiva_api`. O
+  # nome virou `vekoo_api`, e o único lugar do banco que guardava o velho é `provider_api` dos
+  # conectores (Mongo): o Postgres não tinha nenhum. Direto na coleção, sem validação nem callback
+  # (o `before_update` do conector fala com o provedor). Idempotente. Devolve quantos mudaram.
+  RENAMED_PROVIDERS = { "aiva_api" => "vekoo_api" }.freeze
+
+  def rename_aiva
+    RENAMED_PROVIDERS.sum do |old, new|
+      Connector::Base.collection.update_many({ provider_api: old }, { "$set" => { provider_api: new } }).modified_count
+    end
+  end
 end
 
 namespace :platform do
@@ -24,5 +36,13 @@ namespace :platform do
   task sync: :environment do
     PlatformTasks.sync_tool_catalog
     PlatformTasks.backfill_access_roles
+  end
+
+  desc "Troca o nome velho do provedor de WhatsApp Web (aiva_api) pelo novo (vekoo_api) nos conectores"
+  task rename_aiva: :environment do
+    puts "Conectores com o provedor renomeado: #{PlatformTasks.rename_aiva}"
+    if PlatformTasks::RENAMED_PROVIDERS.key?(ENV["WHATSAPP_WEB_DEFAULT_PROVIDER"])
+      warn "WHATSAPP_WEB_DEFAULT_PROVIDER ainda tem o nome velho: troque por #{PlatformTasks::RENAMED_PROVIDERS[ENV["WHATSAPP_WEB_DEFAULT_PROVIDER"]]}."
+    end
   end
 end

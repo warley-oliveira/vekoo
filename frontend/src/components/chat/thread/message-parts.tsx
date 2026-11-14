@@ -1,4 +1,5 @@
-import { memo, useMemo } from "react"
+import { memo, useMemo, useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
 import { useTranslation } from "react-i18next"
 import {
   AlertCircle,
@@ -19,9 +20,12 @@ import { formatTime } from "@/lib/date-format"
 import { useLanguage } from "@/lib/i18n"
 import { formatMessage } from "@/lib/chat/format-message"
 import { mediaSource } from "@/lib/chat/media"
+import { isOptimisticEcho } from "@/lib/chat/thread-store"
+import { useMotionPreset } from "@/lib/motion"
 import { meaningfulContent, messageKind } from "@/lib/chat/message-rules"
 import type { ChatMessage, MessageStatus } from "@/lib/chat/types"
 import { cn } from "@/lib/utils"
+import { DAY_PILL } from "./day-pill"
 
 /** O texto da mensagem, com links e formatação do WhatsApp. Só recalcula se o texto mudar. */
 export const MessageText = memo(function MessageText({ text }: { text: string }) {
@@ -53,6 +57,42 @@ export function StatusIcon({ status, label }: { status: MessageStatus; label: st
   }
 }
 
+/**
+ * O status que troca: relógio, ✓, ✓✓, lido. O novo entra por cima do antigo no mesmo lugar (uma
+ * célula de grade, sem mexer na largura da linha), com fade e um quase nada de escala. Só anima
+ * quando muda: abrir a conversa mostra o status como está. `enterOnMount` é para a mensagem que
+ * tomou o lugar da otimista: o ✓ dela é a troca do relógio que estava ali.
+ */
+export const StatusSwap = memo(function StatusSwap({
+  status,
+  label,
+  enterOnMount = false,
+}: {
+  status: MessageStatus
+  label: string
+  enterOnMount?: boolean
+}) {
+  const preset = useMotionPreset()
+  const hidden = preset.reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }
+
+  return (
+    <span className="inline-grid shrink-0 place-items-center">
+      <AnimatePresence initial={enterOnMount}>
+        <motion.span
+          key={status}
+          className="inline-flex [grid-area:1/1]"
+          initial={hidden}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={hidden}
+          transition={preset.reduced ? { duration: 0.15 } : preset.spring}
+        >
+          <StatusIcon status={status} label={label} />
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
+})
+
 /** Hora e status, encaixados no fim da última linha do texto, como nos apps de mensagem. */
 export function MessageMeta({
   message,
@@ -66,6 +106,7 @@ export function MessageMeta({
   const { t } = useTranslation()
   const language = useLanguage()
   const automated = own && message.messageOrigin === "platform"
+  const [echo] = useState(() => isOptimisticEcho(message.id))
 
   return (
     <span
@@ -79,7 +120,11 @@ export function MessageMeta({
       ) : null}
       <span>{formatTime(message.createdAt, language)}</span>
       {own && message.status ? (
-        <StatusIcon status={message.status} label={t(`chat.message.status.${message.status}`)} />
+        <StatusSwap
+          status={message.status}
+          label={t(`chat.message.status.${message.status}`)}
+          enterOnMount={echo}
+        />
       ) : null}
     </span>
   )
@@ -110,7 +155,7 @@ export const DaySeparator = memo(function DaySeparator({ day }: { day: number })
 
   return (
     <div role="separator" aria-label={label} className="flex justify-center pt-5 pb-2">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <span className={DAY_PILL}>{label}</span>
     </div>
   )
 })

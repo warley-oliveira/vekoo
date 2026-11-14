@@ -167,7 +167,10 @@
       "notFoundHint": "It may have been deleted, or you may not have access to it.",
       "backToList": "Back to conversations",
       "loadFailed": "We couldn't open the conversation.",
-      "retry": "Try again"
+      "retry": "Try again",
+      "recording": "recording audio…",
+      "newMessages_one": "{{formatted}} new message",
+      "newMessages_other": "{{formatted}} new messages"
     },
     "day": {
       "today": "Today",

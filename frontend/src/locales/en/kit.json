@@ -170,6 +170,7 @@
         "kit": "Kit"
       },
       "sections": {
+        "theme": "Theme and scrolling",
         "page": "Page",
         "data": "Data",
         "collections": "Collections",
@@ -401,6 +402,25 @@
         "cards": "Card grid",
         "detail": "Detail",
         "page": "Page"
+      },
+      "theme": {
+        "pickerHint": "Applies to the whole app, instantly. The same one as in the person menu and Profile.",
+        "sideBySide": "Both themes side by side",
+        "sideBySideHint": "Surfaces, buttons, statuses, a field and both scrollbars (the browser's and ScrollArea's). Hover and drag the bar.",
+        "surfaces": {
+          "background": "Background",
+          "card": "Card",
+          "popover": "Popover and dialog"
+        },
+        "tones": {
+          "neutral": "Neutral",
+          "success": "Active",
+          "warning": "Pending",
+          "danger": "Failed",
+          "info": "New",
+          "accent": "Highlight"
+        },
+        "placeholder": "Contact name"
       }
     },
     "sortable": {

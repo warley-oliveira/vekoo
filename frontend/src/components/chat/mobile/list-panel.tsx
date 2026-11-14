@@ -107,7 +107,7 @@ const ListChips = memo(function ListChips() {
                 title={tab.down ? t("chat.list.channelDown", { name: tab.name }) : tab.name}
                 onSelect={() => setConnectorId(tab.id)}
               >
-                <ChannelIcon channel={tab.key} />
+                <ChannelIcon channel={tab.key} colored />
                 <span className="max-w-32 truncate">{tab.name}</span>
                 {tab.down ? (
                   <span

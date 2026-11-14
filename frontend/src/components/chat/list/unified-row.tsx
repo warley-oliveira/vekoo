@@ -2,7 +2,9 @@ import { memo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { UserAvatar } from "@/components/shared"
+import { useContactPresence } from "@/hooks/chat/use-contact-presence"
 import { apiAssetUrl } from "@/lib/api"
+import { avatarTone } from "@/lib/avatar-tone"
 import {
   channelKey,
   contactHandle,
@@ -15,7 +17,13 @@ import { selectableChatIds, useChatSelection } from "@/lib/chat-details/selectio
 import { haptic, swallowReleaseClick } from "@/lib/chat-mobile/haptics"
 import { cn } from "@/lib/utils"
 import { ChannelBadge, ChannelIcon } from "../channel-icon"
-import { LastMessagePreview, ListRow, RowName, RowTime, UnreadBadge } from "./row-parts"
+import {
+  LastMessagePreview,
+  ListRow,
+  RowName,
+  RowTime,
+  UnreadBadge,
+} from "./row-parts"
 
 export type UnifiedRowProps = {
   contact: UnifiedContact
@@ -37,6 +45,11 @@ export const UnifiedRow = memo(function UnifiedRow({
 }: UnifiedRowProps) {
   const { t } = useTranslation()
   const selected = useOpenChatStore((state) => state.externalId === contact.externalId)
+  // O canal só conta "digitando" de quem está com a conversa aberta: as outras linhas não assinam.
+  const openChatId = useOpenChatStore((state) =>
+    state.externalId === contact.externalId ? state.chatId : null
+  )
+  const presence = useContactPresence(openChatId)
   const selecting = useChatSelection((state) => state.active)
   // Uma linha de contato pode ser várias conversas: marcar marca as que casaram com o filtro.
   const chatIds = selectableChatIds(contact.chats)
@@ -87,7 +100,9 @@ export const UnifiedRow = memo(function UnifiedRow({
           <UserAvatar
             size="lg"
             name={name}
+            colorSeed={contact.externalId}
             src={contact.profilePictureUrl ? apiAssetUrl(contact.profilePictureUrl) : null}
+            className={unread ? avatarTone(contact.externalId).ring : undefined}
           />
           {contact.chats.length === 1 ? (
             <ChannelBadge channel={channel} label={t(`chat.channel.${channel}`)} />
@@ -110,6 +125,7 @@ export const UnifiedRow = memo(function UnifiedRow({
           content={contact.lastMessageContent}
           by={contact.lastMessageBy}
           unread={unread}
+          presence={presence}
         />
         <UnreadBadge
           count={contact.totalUnread}
@@ -135,7 +151,7 @@ export const UnifiedRow = memo(function UnifiedRow({
                   dim && "opacity-40"
                 )}
               >
-                <ChannelIcon channel={key} className="size-3" />
+                <ChannelIcon channel={key} colored={!dim} className="size-3" />
               </span>
             )
           })}
