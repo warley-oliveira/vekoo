@@ -5,6 +5,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { useNavigate } from "@/lib/router"
+
+import { useActiveBrand } from "@/lib/brand-context"
 import { useTranslation } from "react-i18next"
 import { ArrowDown, ArrowUp, MoreHorizontal, Star } from "lucide-react"
 
@@ -49,6 +51,7 @@ export function CarouselTable({
   const language = useLanguage()
   const { toggleFavorite } = useCarouselMutations()
   const navigate = useNavigate()
+  const { path } = useActiveBrand()
 
   const columns = [
     columnHelper.display({
@@ -195,7 +198,7 @@ export function CarouselTable({
                 e.dataTransfer.effectAllowed = "move"
               }}
               onClick={() =>
-                navigate(`/carousels/${row.original.id}/edit`)
+                navigate(path(`/carousels/${row.original.id}/edit`))
               }
             >
               {row.getVisibleCells().map((cell) => (

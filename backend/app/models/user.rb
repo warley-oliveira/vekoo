@@ -4,6 +4,10 @@
 # `master` é o suporte do Vekoo: entra em qualquer organização com todas as permissões. Só liga
 # por tarefa (`bin/rails support:grant EMAIL`) ou console. Nenhum controlador e nenhum
 # parâmetro permitido escrevem nele.
+#
+# `staff` é quem opera a criação na Vekoo: a curadoria do banco de referências (`/admin`) e a
+# entrada nas organizações internas (as das marcas de teste), pela mesma lista do suporte. Só liga
+# por `bin/rails 'staff:grant[EMAIL]'`.
 class User < ApplicationRecord
   # Igual ao que a tela valida (zod) — o mesmo mínimo dos dois lados.
   MINIMUM_PASSWORD_LENGTH = 8
@@ -33,7 +37,7 @@ class User < ApplicationRecord
   validates :phone, length: { maximum: 30 }, allow_nil: true
   validates :locale, inclusion: { in: ->(_) { I18n.available_locales.map(&:to_s) } }, allow_nil: true
 
-  after_update_commit :drop_support_realtime, if: -> { saved_change_to_master? && !master? }
+  after_update_commit :drop_support_realtime, if: -> { (saved_change_to_master? && !master?) || (saved_change_to_staff? && !staff?) }
 
   def self.find_by_login(email)
     find_by(email: email.to_s.strip.downcase)

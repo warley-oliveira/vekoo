@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { ChevronDown, type LucideIcon } from "lucide-react"
 import { toast } from "sonner"
 
+import { BrandSwitcher } from "@/components/brand-switcher"
 import { AlertCount, AlertDot } from "@/components/shell/alert-count"
 import { FoldersSection } from "@/components/shell/sidebar-folders"
 import {
@@ -49,6 +50,12 @@ export function SidebarNav({ collapsed }: { collapsed: boolean }) {
     >
       {groups.map((group) => (
         <NavSection key={group.id} title={t(group.titleKey)} collapsed={collapsed}>
+          {/* A Criação mora na marca ativa: o seletor abre o grupo. */}
+          {group.id === "creation" && (
+            <li className="mb-1">
+              <BrandSwitcher rail={collapsed} />
+            </li>
+          )}
           {group.entries.map((entry) => (
             <li key={entry.id}>
               <SidebarEntry entry={entry} collapsed={collapsed} />

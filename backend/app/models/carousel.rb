@@ -26,6 +26,10 @@ class Carousel < ApplicationRecord
 
   belongs_to :organization
   belongs_to :folder, optional: true
+  # Opcional só no modelo, por causa do legado (ver `orphans`): criar sem
+  # marca é recusado — todo carrossel nasce dentro de uma.
+  belongs_to :brand_core, optional: true
+  belongs_to :brand_core_version, optional: true
 
   normalizes :title, with: ->(title) { title.squish }
 
@@ -35,6 +39,7 @@ class Carousel < ApplicationRecord
   validate :cards_must_be_a_list
   validate :cards_must_not_be_huge
   validate :folder_belongs_to_organization, if: :folder_id_changed?
+  validate :must_be_born_in_a_brand, on: :create
 
   scope :active, -> { where(trashed_at: nil) }
   scope :trashed, -> { where.not(trashed_at: nil) }
@@ -42,8 +47,12 @@ class Carousel < ApplicationRecord
   scope :trashed_first, -> { order(trashed_at: :desc) }
   scope :expired_trash, -> { trashed.where(trashed_at: ...TRASH_RETENTION.ago) }
   scope :sorted_by, ->(key) { order(SORTS.fetch(key.to_s, SORTS["recent"])) }
+  scope :in_brand, ->(brand_id) { where(brand_core_id: brand_id) }
+  # Legado: o que foi criado antes de existir marca. Some com a migração.
+  scope :orphans, -> { where(brand_core_id: nil) }
 
   before_validation :stamp_edited_at, on: :create
+  before_validation :stamp_brand_version, on: :create
 
   def trashed?
     trashed_at.present?
@@ -61,6 +70,20 @@ class Carousel < ApplicationRecord
 
   def stamp_edited_at
     self.edited_at ||= Time.current
+  end
+
+  # A versão publicada da marca no momento em que o carrossel nasceu — a
+  # proveniência mínima que a biblioteca mostra.
+  def stamp_brand_version
+    return unless brand_core&.published?
+
+    self.brand_core_version ||= brand_core.versions.find_by(number: brand_core.current_version)
+  end
+
+  def must_be_born_in_a_brand
+    return errors.add(:brand_core, :blank) if brand_core.nil?
+
+    errors.add(:brand_core, :invalid) if brand_core.organization_id != organization_id
   end
 
   # O tema recolore o carrossel inteiro; faltando uma tinta, o card renderiza

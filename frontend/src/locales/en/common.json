@@ -1,0 +1,40 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "back": "Back",
+    "undo": "Undo",
+    "rename": "Rename",
+    "duplicate": "Duplicate",
+    "export": "Export",
+    "delete": "Delete",
+    "restore": "Restore",
+    "esc": "Esc"
+  },
+  "language": {
+    "label": "Language",
+    "pt-BR": "Português (Brasil)",
+    "en": "English"
+  },
+  "plans": {
+    "free": "Free plan"
+  },
+  "errors": {
+    "network": "We couldn't reach the server. Check your connection.",
+    "unauthorized": "Your session ended. Sign in again.",
+    "notFound": "We couldn't find what you were looking for.",
+    "unprocessable": "Something in the data doesn't add up.",
+    "parameterMissing": "Some information was missing.",
+    "noCredits": "You're out of credits.",
+    "unknown": "Something went wrong. Try again in a moment.",
+    "retry": "Try again",
+    "loadFailedTitle": "Couldn't load",
+    "loadFailedDescription": "The connection dropped along the way. Try again."
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "description": "Light, dark, or the same as your device. Saved in this browser."
+  }
+}

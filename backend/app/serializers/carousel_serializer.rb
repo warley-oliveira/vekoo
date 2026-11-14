@@ -13,6 +13,10 @@ class CarouselSerializer < ApplicationSerializer
       cards: carousel.cards,
       caption: carousel.caption,
       folderId: carousel.folder_id,
+      brandId: carousel.brand_core_id,
+      # A versão publicada da marca quando o carrossel nasceu (nulo no
+      # legado e em marca ainda não publicada).
+      brandCoreVersion: carousel.brand_core_version&.number,
       favorite: carousel.favorite,
       editedAt: epoch_ms(carousel.edited_at),
       trashedAt: epoch_ms(carousel.trashed_at)

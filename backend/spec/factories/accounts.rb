@@ -8,6 +8,11 @@ FactoryBot.define do
     trait :master do
       master { true }
     end
+
+    # Pessoa da Vekoo: entra na área /admin e nas organizações internas.
+    trait :staff do
+      staff { true }
+    end
   end
 
   # O vínculo da pessoa com a organização. `name`, `email`, `password`, `phone` e `locale` são da
@@ -23,14 +28,20 @@ FactoryBot.define do
       password { "carrossel123" }
       phone { nil }
       locale { nil }
+      # `staff` é da pessoa (`User#staff`): `create(:account, :staff)` monta uma pessoa da Vekoo.
+      staff { false }
     end
 
-    user { association :user, name: name, email: email, password: password, phone: phone, locale: locale }
+    user { association :user, name: name, email: email, password: password, phone: phone, locale: locale, staff: staff }
 
     trait :support do
       support { true }
       role { "member" }
       user { association :user, :master }
+    end
+
+    trait :staff do
+      staff { true }
     end
   end
 end

@@ -10,7 +10,26 @@ pt-BR:
     too_many_requests: "Tentativas demais. Espere alguns minutos e tente de novo."
     secret_header_needs_retyping: "Digite de novo o valor de %{name}: ele não fica guardado para outro endereço nem para outro cabeçalho."
     unprocessable: "Não foi possível salvar. Confira os campos."
+    brand_required: "Todo carrossel nasce dentro de uma marca. Escolha a marca antes de criar."
     parameter_missing: "Faltou informar %{param}."
+    images_required: "Envie ao menos uma imagem do post (ou o link direto de uma imagem)."
+    too_many_images: "No máximo 10 imagens por referência."
+    image_invalid: "Esse arquivo não é uma imagem que dê para abrir."
+    image_too_large: "Cada imagem pode ter até 10 MB."
+    url_not_image: "Esse link não é de uma imagem. Envie um print do post."
+    url_refused: "Esse endereço não é aceito. Use um link https público."
+    url_failed: "Não deu para baixar a imagem desse link. Envie o arquivo."
+    analysis_not_retryable: "Só a análise que falhou pode rodar de novo."
+    analysis_running: "A análise ainda está rodando. Espere ela terminar para editar."
+    eval_incomplete: "A rodada ainda tem pares sem avaliação. O resultado sai quando todos estiverem avaliados."
+    card_archived: "Card arquivado é só leitura. Reabra para editar."
+    handles_required: "Cole ao menos um @ de conta do Instagram."
+    too_many_handles: "No máximo %{max} contas por lote."
+    invalid_handles: "Alguns itens não são @ de Instagram. Confira e tente de novo."
+    instagram_not_configured: "A importação do Instagram não está configurada neste ambiente (DEPLOY.md, Instagram)."
+    instagram_token_invalid: "O token do Instagram venceu ou foi revogado. Gere outro (DEPLOY.md, Instagram)."
+    nothing_selected: "Escolha ao menos um post para analisar."
+    import_not_retryable: "Esta conta não tem o que tentar de novo."
     # Mensagens de validação do Active Record (o produto não usa o rails-i18n).
     format: "%{attribute} %{message}"
     messages:
@@ -25,17 +44,38 @@ pt-BR:
       too_long: "é longo demais (máximo de %{count} caracteres)"
       not_a_number: "não é um número"
       greater_than_or_equal_to: "deve ser maior ou igual a %{count}"
+      too_many_lines: "tem linhas demais"
+      line_too_long: "tem uma linha longa demais"
+      too_many_items: "tem itens demais"
+      too_small: "é pequeno demais"
       less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+      invalid_transition: "não pode ir de %{from} para %{to}"
+      leak: "cita a origem da referência (%{term})"
+      copied: "repete uma frase do post"
 
   auth:
     email_not_found: "Não encontramos uma conta com esse e-mail."
     wrong_password: "Senha incorreta. Tente de novo."
     email_taken: "Esse e-mail já tem conta no Vekoo."
+    signup_closed: "O cadastro ainda está fechado: por enquanto, só entra quem foi convidado."
     reset_token_invalid: "Esse link de nova senha venceu ou já foi usado."
 
   ai:
     failed: "A geração falhou. Tente de novo."
     busy: "Já há uma geração em andamento. Espere ela terminar."
+
+  onboarding:
+    unknown_kind: "Não sei propor isso."
+    cannot_finish: "Ainda falta responder o mínimo: nome, o que você faz, cores e fontes."
+    cannot_go_back: "Esta já é a primeira pergunta."
+    logo_required: "Envie a logo ou peça um logotipo para a Vekoo."
+    wordmark_failed: "Não deu para desenhar o logotipo. Você pode enviar um arquivo."
+
+  agent:
+    untitled: "Pedido sem título"
+    busy: "Ainda estou preparando o pedido anterior. Só um instante."
+    attachment_unknown: "Essa foto não está no acervo da marca."
+    cost_cap: "A criação por conversa está indisponível agora. Tente mais tarde."
 
   credits:
     no_credits: "Seus créditos acabaram."
@@ -46,6 +86,48 @@ pt-BR:
 
   carousels:
     copy_suffix: "cópia"
+
+  brand_core:
+    invalid: "Alguma coisa nesta etapa não confere. Confira os campos."
+    incomplete: "Falta preencher o mínimo da marca para publicar."
+    # Nomes dos papéis de cor, para as cores derivadas terem nome sem obrigar
+    # a pessoa a batizar seis cores que ela não escolheu uma a uma.
+    roles:
+      dark_background: "Fundo escuro"
+      light_background: "Fundo claro"
+      text_on_dark: "Texto no escuro"
+      text_on_light: "Texto no claro"
+      muted: "Apoio"
+      accent: "Destaque"
+      campaign: "Campanha"
+    tones:
+      direct: "direto"
+      warm: "acolhedor"
+      playful: "divertido"
+      technical: "técnico"
+      inspiring: "inspirador"
+      sober: "sóbrio"
+      bold: "ousado"
+      educational: "didático"
+    assets:
+      bad_kind: "Esse tipo de ativo não existe."
+      too_large: "O arquivo passa do tamanho máximo de %{max}."
+      unsupported_logo: "O logo precisa ser uma imagem PNG, SVG, JPEG ou WebP — de preferência PNG com fundo transparente."
+      unsupported_glyph: "O glifo precisa ser uma imagem PNG, SVG, JPEG ou WebP — de preferência PNG com fundo transparente."
+      unsupported_photo: "Esse arquivo não é uma imagem JPEG, PNG ou WebP."
+      unsupported_font: "Esse arquivo não é uma fonte TTF, OTF ou WOFF2."
+
+  images:
+    unavailable: "A geração de imagens ainda não está ligada nesta conta."
+  pieces:
+    locked: "Esta peça está aprovada. Desfaça a aprovação para editar."
+    conflict: "Esta peça foi alterada em outra aba. Recarregue para continuar."
+    errors:
+      values_invalid: "Alguma coisa nos campos da peça não confere."
+      brand_not_published: "Publique a marca antes de gerar peças."
+      engine_unknown: "Esse tipo de peça não existe."
+      format_unsupported: "Esse tipo de peça não sai nesse formato."
+      render_failed: "A geração falhou. Tente de novo."
 
   activerecord:
     errors:
@@ -62,6 +144,11 @@ pt-BR:
       carousel: "carrossel"
       folder: "pasta"
       organization: "organização"
+      brand_core: "marca"
+      brand_asset: "ativo da marca"
+      brand_core_version: "versão da marca"
+      piece: "peça"
+      reference_card: "card de referência"
     attributes:
       account:
         name: "nome"
@@ -82,3 +169,29 @@ pt-BR:
       folder:
         name: "nome"
         color: "cor"
+      brand_core:
+        status: "situação"
+        document: "documento"
+      brand_asset:
+        kind: "tipo"
+        variant: "versão"
+        filename: "arquivo"
+        content_type: "formato"
+        byte_size: "tamanho"
+      piece:
+        title: "título"
+        engine_id: "tipo de peça"
+        format: "formato"
+        status: "situação"
+      reference_card:
+        status: "situação"
+        origin: "origem"
+        niche: "nicho"
+        size: "porte"
+        archetypes: "arquétipos"
+        objective: "objetivo"
+        format: "formato"
+        suggested_layout_id: "layout sugerido"
+        analysis: "análise"
+        source: "fonte"
+        archived_reason: "motivo"

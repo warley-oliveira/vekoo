@@ -11,6 +11,7 @@ import { useCan, useCanAccess } from "@/hooks/use-can"
 import { useCarousels } from "@/hooks/use-carousels"
 import { useNavigation } from "@/hooks/use-navigation"
 import { apiAssetUrl } from "@/lib/api"
+import { brandPath, useCurrentBrandId } from "@/lib/brand-context"
 import { contactLine } from "@/lib/calendar/contact"
 import type { ChatLookupItem } from "@/lib/calendar/types"
 import { cardPlainText, cardTitle } from "@/lib/doc"
@@ -58,7 +59,9 @@ const MAX_CAROUSELS = 6
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const { t } = useTranslation()
   const language = useLanguage()
-  const { carousels } = useCarousels({})
+  // A busca vive na casca, fora de `/brands/:brandId`: os carrosséis são os da marca de agora.
+  const brandId = useCurrentBrandId()
+  const { carousels } = useCarousels({ brandId: brandId ?? undefined })
   const { groups: navGroups } = useNavigation()
   const can = useCanAccess()
   const canChat = useCan("chat")
@@ -202,16 +205,17 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
             <CardArt card={carousel.cards[0]} theme={carousel.theme} format={carousel.format} />
           </div>
         ),
-        go: () =>
-          leave(carousel.folderId ? `/folders/${carousel.folderId}` : "/carousels", {
-            highlight: carousel.id,
-          }),
+        go: () => {
+          const sub = carousel.folderId ? `/folders/${carousel.folderId}` : "/carousels"
+          const owner = carousel.brandId ?? brandId
+          leave(owner ? brandPath(owner, sub) : sub, { highlight: carousel.id })
+        },
       }))
 
     return [...pageItems, ...contactItems, ...carouselItems]
     // `leave` só fecha e navega: não muda o resultado.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carousels, debounced, language, lookup, pages, query, remote, t])
+  }, [brandId, carousels, debounced, language, lookup, pages, query, remote, t])
 
   useEffect(() => {
     setActiveIndex(0)

@@ -4,6 +4,7 @@ RSpec.describe "Carrosséis", type: :request do
   let(:account) { create(:account) }
   let(:organization) { account.organization }
   let(:headers) { auth_headers(account) }
+  let(:brand) { create(:brand_core, organization: organization) }
 
   describe "GET /carousels" do
     it "lista os ativos, do mais recente para o mais antigo, em resumo" do
@@ -107,12 +108,42 @@ RSpec.describe "Carrosséis", type: :request do
   end
 
   describe "POST /carousels" do
+    it "não nasce fora de uma marca" do
+      post "/carousels", params: { carousel: { title: "Solto" } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json.dig("error", "code")).to eq("brandRequired")
+      expect(json.dig("error", "field")).to eq("brandId")
+    end
+
+    it "nasce com as cores da marca publicada e a versão dela" do
+      published = create(:brand_core, :published, organization: organization)
+      published.versions.create!(number: 1, snapshot: published.document)
+
+      post "/carousels", params: { carousel: { brandId: published.id, title: "Da marca" } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(json["brandId"]).to eq(published.id)
+      expect(json["brandCoreVersion"]).to eq(1)
+      expect(json["theme"]).to include("bg" => "#3b2a1a", "ink" => "#f6efe3", "accent" => "#e8b64c")
+      expect(json["theme"].keys).to match_array(Carousel::THEME_KEYS)
+    end
+
+    it "filtra a lista pela marca" do
+      mine = create(:carousel, organization: organization, brand_core: brand)
+      create(:carousel, organization: organization)
+
+      get "/carousels", params: { brand_id: brand.id }, headers: headers
+
+      expect(json["carousels"].map { |c| c["id"] }).to eq([ mine.id ])
+    end
+
     it "cria com o tema do catálogo quando nenhum é enviado" do
       ThemePreset.create!(key: "paper", position: 0, theme: {
         "bg" => "a", "surface" => "b", "ink" => "c", "accent" => "d", "accentInk" => "e"
       })
 
-      post "/carousels", params: { carousel: { title: "Novo carrossel" } }, headers: headers, as: :json
+      post "/carousels", params: { carousel: { brandId: brand.id,  title: "Novo carrossel" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:created)
       expect(json["theme"]["bg"]).to eq("a")
@@ -121,7 +152,7 @@ RSpec.describe "Carrosséis", type: :request do
     end
 
     it "recusa formato que o produto não desenha" do
-      post "/carousels", params: { carousel: { title: "X", format: "9:16" } }, headers: headers, as: :json
+      post "/carousels", params: { carousel: { brandId: brand.id,  title: "X", format: "9:16" } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json["error"]["details"]).to have_key("format")
@@ -129,7 +160,7 @@ RSpec.describe "Carrosséis", type: :request do
 
     it "recusa tema incompleto — faltando tinta o card renderiza com buraco" do
       post "/carousels",
-        params: { carousel: { title: "X", theme: { "bg" => "oklch(0.9 0 0)" } } },
+        params: { carousel: { brandId: brand.id, title: "X", theme: { "bg" => "oklch(0.9 0 0)" } } },
         headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)

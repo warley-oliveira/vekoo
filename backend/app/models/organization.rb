@@ -31,6 +31,14 @@ class Organization < ApplicationRecord
   include OrganizationRelations::Insights
   include OrganizationRelations::Outreach
   include OrganizationRelations::Automation
+  has_many :brand_cores, dependent: :destroy
+  has_many :brand_assets, dependent: :destroy
+  has_many :pieces, dependent: :destroy
+  has_many :agent_conversations, dependent: :destroy
+  has_many :agent_turns, dependent: :destroy
+  # Telemetria do onboarding: sem isto a exclusão da organização parava na
+  # chave estrangeira (aconteceu ao apagar a demonstração em produção).
+  has_many :onboarding_events, dependent: :delete_all
 
   normalizes :name, with: ->(name) { name.squish }
 

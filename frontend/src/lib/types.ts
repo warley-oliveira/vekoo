@@ -16,6 +16,10 @@ export type Carousel = {
   /** Legenda do post — o texto que acompanha as imagens no Instagram. */
   caption?: string
   folderId: string | null
+  /** A marca em que o carrossel nasceu (`null` só no legado ainda sem marca). */
+  brandId: string | null
+  /** A versão publicada da marca quando ele nasceu — a proveniência mínima. */
+  brandCoreVersion: number | null
   favorite: boolean
   editedAt: number
   trashedAt: number | null
@@ -32,6 +36,7 @@ export type CarouselSummary = Carousel & { cardCount: number }
 export type Folder = {
   id: string
   name: string
+  brandId: string | null
   color: string
   createdAt: number
   /** Quantos carrosséis ativos a pasta tem — contado pelo servidor. */

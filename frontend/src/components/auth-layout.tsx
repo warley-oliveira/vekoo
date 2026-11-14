@@ -3,6 +3,7 @@ import { Link } from "@/lib/router"
 import { Trans, useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 
+import { LanguagePicker } from "@/components/language-picker"
 import { CardArt } from "@/components/editor/card-art"
 import { VekooMark } from "@/components/vekoo-mark"
 import { SHOWCASE_CAROUSELS } from "@/lib/showcase"
@@ -33,13 +34,16 @@ export function AuthLayout({
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <div className="flex flex-col px-6 py-8 sm:px-10">
-        <Link
-          to="/login"
-          className="inline-flex w-fit rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          aria-label={t("auth.layout.markAria")}
-        >
-          <VekooMark className="text-xl" />
-        </Link>
+        <div className="flex items-start justify-between gap-4">
+          <Link
+            to="/login"
+            className="inline-flex w-fit rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            aria-label={t("auth.layout.markAria")}
+          >
+            <VekooMark className="text-xl" />
+          </Link>
+          <LanguagePicker className="pt-1" />
+        </div>
 
         <motion.main
           initial={reduceMotion ? false : { opacity: 0, y: 8 }}

@@ -1,0 +1,172 @@
+{
+  "onboarding": {
+    "intro": {
+      "titleLead": "Tell us about your brand.",
+      "titleRest": "The platform builds the rest.",
+      "sub": "It's a conversation, not a form. No question is about design — they're about your business.",
+      "cards": {
+        "detail": {
+          "title": "Detail becomes content",
+          "body": "Everything you say here becomes the base of every piece the engine writes. “Sourdough bread, baked at 6 a.m.” goes further than “bakery”."
+        },
+        "help": {
+          "title": "Stuck? Ask “make it for me”",
+          "body": "Color, font, way of speaking: if you don't have it, the platform proposes options with a preview. You choose."
+        },
+        "later": {
+          "title": "Nothing here is final",
+          "body": "You can change everything later and keep adding. The more the brand knows about itself, the sharper the content."
+        }
+      },
+      "footer": "// about 3 minutes. you can leave halfway and pick up where you stopped.",
+      "cta": "Start the conversation →"
+    },
+    "opening": {
+      "intro": "Let's build your brand's brandcore. I ask, you answer your way. If you get stuck on one, ask “make it for me”.",
+      "first": "First: what's the brand called and what does it sell?"
+    },
+    "questions": {
+      "brand": "What's the brand called and what does it sell?",
+      "audience": "Who is it for? Describe the customer you most want to attract.",
+      "differential": "What makes someone choose you over a competitor?",
+      "voice": "How does the brand talk? Give me a sentence it would say in a post.",
+      "banned": "And what would it never say? Words, tone, topics that stay out.",
+      "offers": "Main products or services, with prices if you have them.",
+      "logo": "Do you have a logo? Send it here or ask “make it for me”.",
+      "palette": "Colors and font: do you have them or should we propose?",
+      "fonts": "Colors and font: do you have them or should we propose?"
+    },
+    "topics": {
+      "brand": "brand",
+      "audience": "audience",
+      "differential": "differentiator",
+      "voice": "tone of voice",
+      "banned": "blocklist",
+      "offers": "offer",
+      "logo": "logo",
+      "palette": "palette and font"
+    },
+    "status": {
+      "brand": "brand saved ✓",
+      "audience": "audience saved ✓",
+      "differential": "differentiator saved ✓",
+      "voice": "tone of voice saved ✓",
+      "banned": "blocklist saved ✓",
+      "offers": "offer saved ✓",
+      "logoUploaded": "logo received ✓",
+      "logoNoted": "wordmark noted ✓",
+      "palette": "palette saved ✓",
+      "fonts": "font saved ✓",
+      "logoSaved": "logo saved to assets ✓ · download or swap it anytime"
+    },
+    "confirm": {
+      "voice": "Tone of voice saved ✓",
+      "palette": "Palette saved ✓",
+      "fonts": "Font saved ✓",
+      "logo": "Wordmark chosen ✓"
+    },
+    "agent": {
+      "followUpGeneric": "Can you be more specific? The more detail, the better the engine writes.",
+      "adjustAsk": "What do you want to adjust? Tell me the topic and the new value.",
+      "fontMissing": "{{font}} isn't among the open fonts, so I can't draw with it. Ask “make it for me” and I'll propose three that come close.",
+      "fontPartial": "{{kept}} is in. {{font}} isn't among the open fonts, so I can't draw with it. Ask “make it for me” and I'll propose three that come close, keeping {{kept}}.",
+      "wordmarkNoted": "Noted. I'll draw the wordmark at the end, with the font you choose.",
+      "logoOpaque": "This logo has a solid background. On dark pieces a white box will show around it. If you can, send the version with a transparent background.",
+      "suggest": {
+        "voice": "Three ways of speaking, based on what you told me. Click the one that sounds like your brand.",
+        "palette": "Three palettes, based on what you told me. Click the one that looks like your brand.",
+        "fonts": "Three font pairs. Click the one that fits the palette.",
+        "fontsKept": "Three fonts to pair with {{kept}}. Click the one that fits."
+      },
+      "wordmarkReady": "I drew three versions of the wordmark in your font. The first one is already in the summary — click another if you like it better."
+    },
+    "resume": "We stopped here: {{topic}}. Shall we continue?",
+    "empty": "no brand built yet",
+    "progress": "brandcore · {{current}}/{{total}}",
+    "questionLabel": "{{number}} / {{topic}}",
+    "back": {
+      "action": "← previous question",
+      "a11y": "Back to the previous question",
+      "echo": "← back to: {{topic}}"
+    },
+    "leave": {
+      "action": "← home",
+      "a11y": "Leave to the brand's home — the conversation is saved"
+    },
+    "resumeCard": {
+      "title": "Your brand is halfway done",
+      "position": "The conversation stopped at question {{current}} of {{total}}. Everything you've said is saved.",
+      "notStarted_one": "The brand conversation hasn't started yet. It's {{count}} question about your business.",
+      "notStarted_other": "The brand conversation hasn't started yet. It's {{count}} questions about your business.",
+      "continue": "Pick up where I left off",
+      "start": "Start the conversation"
+    },
+    "chip": "not sure — make it for me",
+    "placeholder": "answer your way",
+    "summary": {
+      "done": "brandcore built ✓",
+      "body": "Check the summary. If it's right, publish and the engine starts working with it. If not, tell me what to adjust.",
+      "publish": "Publish brandcore →",
+      "adjust": "Adjust something /",
+      "labels": {
+        "brand": "BRAND",
+        "what": "WHAT IT SELLS",
+        "audience": "FOR WHOM",
+        "differential": "DIFFERENTIATOR",
+        "voice": "TONE OF VOICE",
+        "banned": "BLOCKLIST",
+        "offers": "OFFER",
+        "logo": "LOGO",
+        "palette": "PALETTE",
+        "fonts": "FONTS"
+      }
+    },
+    "errors": {
+      "modelDown": "The engine didn't respond. Your answer was saved. Try again.",
+      "retry": "Try again",
+      "offline": "No connection. Nothing was lost. Come back when the network does.",
+      "logoUpload": "The logo didn't upload. Try again or ask “make it for me”.",
+      "publish": "Not published. The brandcore is saved as a draft. Try again in a moment."
+    },
+    "options": {
+      "palette": "Proposed palettes",
+      "fonts": "Proposed font pairs",
+      "voice": "Proposed voices",
+      "wordmark": "Suggested wordmarks",
+      "roles": {
+        "display": "titles",
+        "utility": "text"
+      },
+      "logoConcepts": {
+        "title": "Symbol + name",
+        "nameOnly": "Name only",
+        "drawing": "Drawing…",
+        "failed_one": "One of the symbol proposals didn't come out — the others are here.",
+        "failed_other": "{{count}} symbol proposals didn't come out — the others are here.",
+        "label": "{{direction}} · {{arrangement}}",
+        "directions": {
+          "figurative": "Figurative",
+          "geometric": "Geometric",
+          "monogram": "Monogram",
+          "emblem": "Emblem"
+        },
+        "arrangements": {
+          "horizontal": "beside the name",
+          "stacked": "above the name"
+        }
+      }
+    },
+    "a11y": {
+      "attachLogo": "Send my logo",
+      "send": "Send answer",
+      "thinking": "The agent is replying",
+      "thread": "Brandcore conversation"
+    },
+    "preview": {
+      "kicker": "New",
+      "name": "Your brand",
+      "concept": "What you do shows up here.",
+      "footer": "@your.handle"
+    }
+  }
+}

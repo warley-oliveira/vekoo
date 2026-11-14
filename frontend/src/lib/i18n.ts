@@ -3,19 +3,21 @@ import LanguageDetector from "i18next-browser-languagedetector"
 import { initReactI18next, useTranslation } from "react-i18next"
 
 import { buildBundle, type Bundle } from "@/lib/i18n-bundles"
-import ptBR from "@/locales/pt-BR.json"
 
 // i18n do app. pt-BR é o idioma de origem (é onde a copy nasce e é revisada);
 // en existe desde já para o texto nunca voltar a ser escrito solto no JSX.
 // Um único namespace e nenhum estado de "traduções carregando" nas telas: `main.tsx` espera
 // `i18nReady` antes de desenhar, e trocar de idioma só vale depois de o idioma chegar.
 //
-// Cada domínio traz o seu arquivo em `locales/<lang>/<dominio>.json` (raiz do JSON
-// = nome do domínio) e entra sozinho, pelo glob: ninguém disputa o mesmo arquivo e
-// ninguém precisa editar este módulo. `locales/<lang>.json` segue valendo.
+// Cada domínio (ou módulo) traz o seu arquivo em `locales/<lang>/<dominio>.json` (raiz do JSON
+// = nome do domínio) e entra sozinho, pelo glob: ninguém disputa o mesmo arquivo e ninguém
+// precisa editar este módulo. `scripts/check-i18n.mjs` (no `npm run lint`) confere que os dois
+// idiomas têm as mesmas chaves e que nenhum texto ficou solto no JSX. Os textos de `/admin`
+// moram em `src/admin/locales/` e entram só com ela.
 //
 // pt-BR vem no pacote inicial, porque também é o fallback; o inglês desce em chunk próprio
-// (`i18n-en.ts`). Juntos, eram metade do JavaScript da primeira visita.
+// (`i18n-en.ts`). Interpolação com formatador do Intl vem de fábrica: `{{quantos, number}}`,
+// `{{preco, currency(BRL)}}`, `{{quando, datetime}}` saem no idioma ativo sem código nenhum.
 
 export const SUPPORTED_LANGUAGES = ["pt-BR", "en"] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
@@ -66,7 +68,7 @@ export const i18nReady = i18n
   .use(initReactI18next)
   .init({
     resources: {
-      "pt-BR": { translation: buildBundle(ptBR, sourceFiles) },
+      "pt-BR": { translation: buildBundle({}, sourceFiles) },
     },
     partialBundledLanguages: true,
     supportedLngs: SUPPORTED_LANGUAGES,
@@ -92,6 +94,17 @@ export const i18nReady = i18n
       escapeValue: false,
     },
     returnNull: false,
+    // Chave que não existe em idioma nenhum (nem no fallback pt-BR) é bug de
+    // programa: em desenvolvimento ela aparece marcada na tela e no console,
+    // para não passar despercebida; em produção sai calada — melhor um espaço
+    // vazio do que `brand.overview.readyTitle` na cara de quem usa.
+    parseMissingKeyHandler: (key: string) => {
+      if (import.meta.env.DEV) {
+        console.warn(`[i18n] chave sem tradução: ${key}`)
+        return `⟦${key}⟧`
+      }
+      return ""
+    },
   })
   .catch(() => undefined)
 

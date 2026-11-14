@@ -629,6 +629,7 @@ export function TranscriptionForm() {
           mono
           variableName
           optional
+          // i18n-exempt: exemplo de nome de variável
           placeholder="last_transcription"
           hint={t("flows.fields.ai_audio_transcription.saveHint")}
         />

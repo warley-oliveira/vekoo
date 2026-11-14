@@ -1,0 +1,20 @@
+{
+  "orphans": {
+    "title": "Atribuir marca ao que veio antes",
+    "back": "Voltar",
+    "description": "Estes carrosséis (e pastas) foram criados antes de existir marca. Entregue-os a uma marca da conta. Esta tela some quando não sobrar nenhum.",
+    "targetBrand": "Marca de destino",
+    "counts": "{{carousels}} carrosséis e {{folders}} pastas sem marca",
+    "assignAll": "Atribuir tudo",
+    "assignOne": "Atribuir",
+    "inTrash": "na lixeira",
+    "assignedToast_one": "{{count}} carrossel atribuído.",
+    "assignedToast_other": "{{count}} carrosséis atribuídos.",
+    "assignFailed": "Não deu para atribuir.",
+    "doneTitle": "Tudo tem marca",
+    "doneDescription": "Não sobrou nada de antes. Esta tela pode ser removida.",
+    "banner_one": "{{count}} item de antes de existir marca ainda sem dona.",
+    "banner_other": "{{count}} itens de antes de existir marca ainda sem dona.",
+    "bannerCta": "Atribuir marca"
+  }
+}

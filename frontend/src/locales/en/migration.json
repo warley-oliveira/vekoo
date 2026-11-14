@@ -1,0 +1,20 @@
+{
+  "orphans": {
+    "title": "Assign a brand to what came before",
+    "back": "Back",
+    "description": "These carousels (and folders) were created before brands existed. Hand them to one of the account's brands. This screen disappears when none are left.",
+    "targetBrand": "Target brand",
+    "counts": "{{carousels}} carousels and {{folders}} folders without a brand",
+    "assignAll": "Assign all",
+    "assignOne": "Assign",
+    "inTrash": "in trash",
+    "assignedToast_one": "{{count}} carousel assigned.",
+    "assignedToast_other": "{{count}} carousels assigned.",
+    "assignFailed": "Couldn't assign.",
+    "doneTitle": "Everything has a brand",
+    "doneDescription": "Nothing from before is left. This screen can be removed.",
+    "banner_one": "{{count}} item from before brands still has no owner.",
+    "banner_other": "{{count}} items from before brands still have no owner.",
+    "bannerCta": "Assign brand"
+  }
+}

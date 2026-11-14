@@ -24,6 +24,7 @@ import {
 import { useCarouselDrop } from "@/hooks/use-carousel-drop"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { useFolderMutations, useFolders } from "@/hooks/use-folders"
+import { brandPath, useCurrentBrandId } from "@/lib/brand-context"
 import { useCatalog } from "@/lib/catalog"
 import type { Folder } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -51,7 +52,9 @@ export function FoldersSection({
   compactEmpty = false,
 }: FoldersSectionProps) {
   const { t } = useTranslation()
-  const { folders, isLoading, error, reload } = useFolders()
+  // As pastas são da marca de agora. Sem marca ainda, a seção não aparece.
+  const brandId = useCurrentBrandId()
+  const { folders, isLoading, error, reload } = useFolders(brandId ?? undefined)
   const { createFolder: create } = useFolderMutations()
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
@@ -63,10 +66,11 @@ export function FoldersSection({
   async function createFolder(name: string, color: string) {
     setSaving(true)
     try {
-      const folder = await create(name, color)
+      if (!brandId) return
+      const folder = await create(brandId, name, color)
       setCreating(false)
       toast(t("folders.created", { name }))
-      navigate(`/folders/${folder.id}`, { replace: replaceHistory })
+      navigate(brandPath(brandId, `/folders/${folder.id}`), { replace: replaceHistory })
       onNavigate?.()
     } catch {
       toast.error(t("folders.createFailed"))
@@ -74,6 +78,8 @@ export function FoldersSection({
       setSaving(false)
     }
   }
+
+  if (!brandId) return null
 
   if (collapsed) {
     return (
@@ -179,11 +185,14 @@ function FolderRow({
   const confirm = useConfirm()
   const { move } = useCarouselMutations()
   const navigate = useNavigate()
+  const currentBrandId = useCurrentBrandId()
   const [renaming, setRenaming] = useState(false)
   // Contado pelo servidor, junto com a lista — a tela não tem mais todos os
   // carrosséis em memória para contar sozinha.
   const count = folder.carouselCount
-  const to = `/folders/${folder.id}`
+  const brandId = folder.brandId ?? currentBrandId
+  const to = brandId ? brandPath(brandId, `/folders/${folder.id}`) : `/folders/${folder.id}`
+  const listPath = brandId ? brandPath(brandId, "/carousels") : "/carousels"
   const active = pathname === to
 
   const { dragOver, dropHandlers } = useCarouselDrop((id) => {
@@ -274,7 +283,7 @@ function FolderRow({
                     toast(t("folders.deleted", { name: folder.name }), {
                       description: t("folders.deletedDescription"),
                     })
-                    navigate("/carousels")
+                    navigate(listPath)
                   }}
                 >
                   <Trash2 /> {t("folders.deleteFolder")}

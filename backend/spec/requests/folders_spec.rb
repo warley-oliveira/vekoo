@@ -4,6 +4,7 @@ RSpec.describe "Pastas", type: :request do
   let(:account) { create(:account) }
   let(:organization) { account.organization }
   let(:headers) { auth_headers(account) }
+  let(:brand) { create(:brand_core, organization: organization) }
 
   it "lista em ordem alfabética com a contagem de carrosséis" do
     zebra = create(:folder, organization: organization, name: "Zebra")
@@ -20,7 +21,7 @@ RSpec.describe "Pastas", type: :request do
 
   it "cria uma pasta" do
     post "/folders",
-      params: { folder: { name: "Clientes", color: "oklch(0.62 0.12 292)" } },
+      params: { folder: { brandId: brand.id, name: "Clientes", color: "oklch(0.62 0.12 292)" } },
       headers: headers, as: :json
 
     expect(response).to have_http_status(:created)
@@ -28,7 +29,7 @@ RSpec.describe "Pastas", type: :request do
   end
 
   it "recusa pasta sem nome" do
-    post "/folders", params: { folder: { name: " ", color: "oklch(0.62 0.12 292)" } }, headers: headers, as: :json
+    post "/folders", params: { folder: { brandId: brand.id, name: " ", color: "oklch(0.62 0.12 292)" } }, headers: headers, as: :json
 
     expect(response).to have_http_status(:unprocessable_content)
     expect(json["error"]["details"]).to have_key("name")
@@ -37,7 +38,7 @@ RSpec.describe "Pastas", type: :request do
   it "renomeia" do
     folder = create(:folder, organization: organization)
 
-    patch "/folders/#{folder.id}", params: { folder: { name: "Outro nome" } }, headers: headers, as: :json
+    patch "/folders/#{folder.id}", params: { folder: { brandId: brand.id, name: "Outro nome" } }, headers: headers, as: :json
 
     expect(json["name"]).to eq("Outro nome")
   end

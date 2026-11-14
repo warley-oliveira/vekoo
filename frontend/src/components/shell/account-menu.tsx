@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 import {
+  ShieldCheck,
   ArrowLeftRight,
   Bell,
   Building2,
@@ -168,6 +169,12 @@ export function PersonMenu({ collapsed }: { collapsed: boolean }) {
               <UserPlus /> {t("account.invite")}
             </DropdownMenuItem>
           </>
+        )}
+        {/* A curadoria do banco de referências: só a equipe da Vekoo (a API confere de novo). */}
+        {person?.staff && (
+          <DropdownMenuItem render={<Link to="/admin/references" />}>
+            <ShieldCheck /> {t("account.curation")}
+          </DropdownMenuItem>
         )}
         <LanguageSubmenu />
         <ThemeSubmenu />

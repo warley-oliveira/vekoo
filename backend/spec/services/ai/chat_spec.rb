@@ -267,4 +267,42 @@ RSpec.describe Ai::Chat do
       end
     end
   end
+  describe "fallback de recusa" do
+    def message(model)
+      double(stop_reason: :end_turn, content: [ double(type: :text, text: "{}") ], model: model,
+        usage: double(input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 0, cache_creation_input_tokens: 0))
+    end
+
+    it "vai pelo caminho beta com a nova tentativa do servidor e conta o modelo que respondeu" do
+      beta_messages = double
+      client = instance_double(Anthropic::Client, beta: double(messages: beta_messages))
+      allow(beta_messages).to receive(:create).and_return(message("claude-opus-5"))
+
+      answer = described_class.new(client: client).answer(system: [], messages: [], model: "claude-opus-5-5", fallbacks: :default)
+
+      expect(beta_messages).to have_received(:create).with(hash_including(fallbacks: :default, betas: [ described_class::FALLBACK_BETA ]))
+      expect(answer.model).to eq("claude-opus-5")
+    end
+
+    it "conta sempre o modelo que atendeu, mesmo sem fallback" do
+      messages = double
+      client = instance_double(Anthropic::Client, messages: messages)
+      allow(messages).to receive(:create).and_return(message("claude-sonnet-5-5"))
+
+      answer = described_class.new(client: client).answer(system: [], messages: [], model: "claude-opus-5-5")
+
+      expect(answer.model).to eq("claude-sonnet-5-5")
+    end
+
+    it "sem fallback, segue no caminho normal" do
+      messages = double
+      client = instance_double(Anthropic::Client, messages: messages)
+      allow(messages).to receive(:create).and_return(message("claude-opus-5-5"))
+
+      answer = described_class.new(client: client).answer(system: [], messages: [], model: "claude-opus-5-5")
+
+      expect(messages).to have_received(:create).with(hash_excluding(:fallbacks, :betas))
+      expect(answer.model).to eq("claude-opus-5-5")
+    end
+  end
 end

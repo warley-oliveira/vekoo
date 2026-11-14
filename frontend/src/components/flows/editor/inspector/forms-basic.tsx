@@ -444,6 +444,7 @@ function RuleField({
         <Input
           className="font-mono md:text-[13px]"
           aria-label={t("flows.fields.condition.field")}
+          // i18n-exempt: exemplo de caminho de variável
           placeholder="vars.status"
           value={value}
           onChange={(event) => onChange(event.target.value.replace(/[{}\s]/g, ""))}
@@ -846,6 +847,7 @@ export function HttpRequestForm() {
               >
                 <Input
                   aria-label={t("flows.fields.http_request.headerName")}
+                  // i18n-exempt: nome de cabeçalho HTTP
                   placeholder="Authorization"
                   className="font-mono md:text-[13px]"
                   value={header.key}

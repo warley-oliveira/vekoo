@@ -546,6 +546,7 @@ function AppearanceTab({
             control={form.control}
             name="customCss"
             label={t("connectors.widget.css.label")}
+            // i18n-exempt: exemplo de CSS
             placeholder=":host { --aiva-bubble-radius: 4px; }"
             spellCheck={false}
             rows={5}

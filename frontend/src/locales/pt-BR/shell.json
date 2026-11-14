@@ -1,8 +1,99 @@
 {
-  "auth": {
-    "errors": {
-      "accessRevoked": "O acesso desta conta foi encerrado. Fale com quem administra a organização."
+  "shell": {
+    "openMenu": "Abrir menu",
+    "collapseMenu": "Recolher menu",
+    "expandMenu": "Expandir menu",
+    "nav": {
+      "carousels": "Meus carrosséis",
+      "search": "Buscar",
+      "templates": "Modelos",
+      "brands": "Marca",
+      "trash": "Lixeira",
+      "home": "Início",
+      "contents": "Conteúdos",
+      "create": "Criar"
+    },
+    "createBlank": "Começar em branco",
+    "createBlankToast": "Começar em branco abre o editor — ele chega na próxima etapa.",
+    "createCarousel": "Criar carrossel",
+    "notifications": {
+      "label": "Notificações",
+      "aria": "Notificações",
+      "ariaUnread": "Notificações ({{count}} não lidas)",
+      "markAllRead": "Marcar todas como lidas",
+      "empty": "Nenhuma notificação por aqui.",
+      "loadFailed": "Não deu para carregar os avisos."
+    },
+    "live": {
+      "online": "motor no ar",
+      "connecting": "conectando…",
+      "offline": "motor fora do ar",
+      "onlineHint": "Conexão em tempo real ativa: peças e respostas chegam sozinhas.",
+      "connectingHint": "Abrindo a conexão em tempo real.",
+      "offlineHint": "Sem conexão em tempo real. O que terminar aparece quando a página recarregar."
     }
+  },
+  "notifications": {
+    "templates": {
+      "title": "Modelos novos na área",
+      "body": "Chegaram 6 modelos de carrossel para lojas e serviços locais."
+    },
+    "folders": {
+      "title": "Dica: organize com pastas",
+      "body": "Arraste um carrossel para uma pasta no menu lateral para movê-lo."
+    },
+    "welcome": {
+      "title": "Boas-vindas ao Vekoo!",
+      "body": "Seus 50 créditos grátis já estão na conta. Bora criar o primeiro carrossel?"
+    }
+  },
+  "account": {
+    "menuAria": "Menu da conta {{organization}}",
+    "fallbackName": "Sua conta",
+    "settings": "Configurações",
+    "settingsToast": "As configurações chegam em breve.",
+    "invite": "Convidar pessoas",
+    "inviteToast": "Convidar pessoas chega em uma próxima etapa.",
+    "inviteToastDescription": "Elas vão entrar em “{{organization}}” e ver os mesmos carrosséis.",
+    "curation": "Curadoria",
+    "signOut": "Sair",
+    "signOutToast": "Você saiu da sua conta.",
+    "personMenu": "Menu de {{name}}"
+  },
+  "credits": {
+    "remaining": "{{remaining, number}} <muted>de {{total, number}} créditos</muted>",
+    "aria": "{{remaining, number}} de {{total, number}} créditos",
+    "used": "Créditos usados",
+    "upgrade": "Melhorar plano",
+    "upgradeToast": "A troca de plano chega em breve.",
+    "loadFailed": "Não deu para carregar seus créditos."
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "Buscar contatos, carrosséis e telas…",
+    "hint": "Digite um nome, um telefone ou o título de um carrossel.",
+    "noResults": "Nada encontrado para “{{query}}”.",
+    "resultsAria": "Resultados da busca",
+    "unnamedContact": "Contato sem nome",
+    "groups": {
+      "pages": "Telas",
+      "contacts": "Contatos",
+      "carousels": "Carrosséis"
+    }
+  },
+  "brandSwitcher": {
+    "label": "Marcas da conta",
+    "aria": "Marca ativa: {{name}}. Trocar de marca",
+    "untitled": "Marca sem nome",
+    "settings": "Configurações da marca",
+    "newBrand": "Nova marca",
+    "createdToast": "Marca criada. Vamos montá-la.",
+    "createFailed": "Não deu para criar a marca.",
+    "loading": "Abrindo a sua marca…",
+    "incomplete": "Cadastro incompleto",
+    "organizations": "Organização",
+    "organizationFailed": "Não deu para trocar de organização.",
+    "internalBadge": "teste"
   },
   "navigation": {
     "aria": "Navegação principal",
@@ -120,6 +211,26 @@
       "dismiss": "Dispensar",
       "applying": "Atualizando…",
       "applyingDescription": "A página recarrega sozinha em um instante."
-    }
+    },
+    "brandHome": "Início da marca",
+    "create": "Criar",
+    "contents": "Conteúdos",
+    "brand": "Marca",
+    "piece": "Peça",
+    "orphans": "Migração"
+  },
+  "brandHome": {
+    "createTitle": "Criar",
+    "createCarousel": "Criar carrossel",
+    "createCarouselHint": "Descreva o assunto e receba um carrossel pronto para editar.",
+    "createPiece": "Criar uma peça",
+    "createPieceHint": "Descreva em uma frase e receba 2–3 opções prontas, com a cara da marca.",
+    "recentTitle": "Saiu por último",
+    "recentEmpty": "Nada gerado ainda nesta marca. Comece por um carrossel ou uma peça.",
+    "allContents": "Ver tudo",
+    "brandTitle": "A marca",
+    "brandSettings": "Configurar",
+    "contentsCount_one": "{{count}} conteúdo na marca",
+    "contentsCount_other": "{{count}} conteúdos na marca"
   }
 }

@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vekoo — Peça em uma frase. Receba com a cara da sua marca.</title>
+<meta name="description" content="Post, story, carrossel, vídeo e animação com a voz e o visual da sua marca. Assinatura fixa pela plataforma, crédito de IA a preço de custo. Entre na lista de espera.">
+<meta property="og:title" content="Vekoo — conteúdo com a cara da sua marca, pedido em uma frase">
+<meta property="og:description" content="Assinatura fixa. Crédito de IA a preço de custo, sem margem. Lista de espera aberta.">
+
+<!-- Evita o "flash" de tema claro pra quem escolheu o escuro -->
+<script>try{if(localStorage.getItem('vekoo-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================================
+   VEKOO — LANDING SAAS v2 (pré-lançamento / waitlist)
+   Modelo: assinatura fixa pela plataforma + crédito de IA a preço de custo.
+
+   TEMA: light é o padrão. [data-theme="dark"] redefine SÓ tokens.
+   Nenhuma regra de UI usa cor crua — sempre var(--token).
+   EXCEÇÃO DECLARADA: as PEÇAS (.piece) são conteúdo de outras marcas e
+   recebem as cores delas via custom properties inline (--p-bg, --p-fg...).
+
+   ESTRUTURA: [0] TOKENS · [1] BASE · [2] COMPONENTES · [3] SEÇÕES
+              [4] PEÇAS · [5] ACESSIBILIDADE · [6] TABLET · [7] MOBILE
+
+   CONFIG editável no topo do <script>: preço da assinatura, endpoint da
+   lista e custo médio de IA por formato (calculadora + demo).
+   ============================================================================ */
+
+
+/* ============================================================================
+   [0] TOKENS
+   ============================================================================ */
+:root {
+  color-scheme: light;
+
+  --bg: #F4F1EA;
+  --fg: #0A0A0A;
+  --muted: #6F6A60;
+  --muted-strong: #4A463E;
+  --faint: rgba(10, 10, 10, 0.045);
+  --border: rgba(10, 10, 10, 0.12);
+  --border-strong: rgba(10, 10, 10, 0.22);
+
+  --surface: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.55) 100%);
+  --surface-hover: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
+  --card-border: transparent;                      /* light: card se sustenta na sombra */
+  --shadow: 0 1px 2px rgba(10, 10, 10, 0.04), 0 10px 30px rgba(10, 10, 10, 0.05);
+
+  --header-bg: rgba(244, 241, 234, 0.85);
+  --input-bg: rgba(10, 10, 10, 0.035);
+  --btn-bg: #0A0A0A;
+  --btn-fg: #F4F1EA;
+  --btn-bg-hover: #2E2E2E;
+  --green: #16A34A;
+  --green-glow: rgba(22, 163, 74, 0.35);
+  --danger: #B42318;                               /* PROPOSTA: erro de formulário (AA sobre --bg) */
+  --ghost-v: rgba(10, 10, 10, 0.04);
+  --grid-dot: rgba(10, 10, 10, 0.09);              /* textura do hero */
+
+  --holo: linear-gradient(120deg, #0891B2, #2563EB, #7C3AED, #C026D3, #DB2777, #0891B2);
+
+  --container: 1280px;
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0A0A0A;
+  --fg: #F4F1EA;
+  --muted: #6B6B6B;
+  --muted-strong: #B5B0A4;
+  --faint: rgba(244, 241, 234, 0.06);
+  --border: rgba(244, 241, 234, 0.12);
+  --border-strong: rgba(244, 241, 234, 0.25);
+
+  --surface: linear-gradient(180deg, rgba(244, 241, 234, 0.045) 0%, rgba(244, 241, 234, 0.008) 100%);
+  --surface-hover: rgba(244, 241, 234, 0.06);
+  --card-border: rgba(244, 241, 234, 0.12);        /* dark: sem sombra, borda segura o card */
+  --shadow: none;
+
+  --header-bg: rgba(10, 10, 10, 0.85);
+  --input-bg: rgba(244, 241, 234, 0.06);
+  --btn-bg: #F4F1EA;
+  --btn-fg: #0A0A0A;
+  --btn-bg-hover: #B5B0A4;
+  --green: #4ADE80;
+  --green-glow: rgba(74, 222, 128, 0.5);
+  --danger: #F97066;
+  --ghost-v: rgba(244, 241, 234, 0.06);
+  --grid-dot: rgba(244, 241, 234, 0.08);
+
+  --holo: linear-gradient(120deg, #00E5FF, #5EEAD4, #C4B5FD, #A855F7, #EC4899, #38BDF8, #00E5FF);
+}
+
+
+/* ============================================================================
+   [1] BASE
+   ============================================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 320ms ease, color 320ms ease;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.028em;
+}
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 500; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+.l1, .l2 { display: block; }
+.l2 { opacity: 0.5; margin-top: 0.08em; }
+
+.container { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.tag::before { content: ''; width: 24px; height: 1px; background: var(--muted); }
+
+.mono-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes holoFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.holo {
+  background: var(--holo);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: holoFlow 6s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* Revelação ao scroll — nunca usada no h1 nem no formulário do hero */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out);
+}
+[data-animate].is-visible { opacity: 1; transform: none; }
+
+
+/* ============================================================================
+   [2] COMPONENTES
+   ============================================================================ */
+
+/* --- Botões --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-primary:hover { background: var(--btn-bg-hover); transform: translateY(-1px); }
+.btn-primary .arrow { transition: transform var(--transition); }
+.btn-primary:hover .arrow { transform: translateX(4px); }
+.btn-primary:disabled { opacity: 0.6; cursor: progress; transform: none; }
+.btn-ghost { color: var(--muted-strong); padding: 16px 0; }
+.btn-ghost:hover { color: var(--fg); }
+/* Contorno — mesma linguagem do antigo .plan-cta, agora reutilizável */
+.btn-line {
+  padding: 12px 20px;
+  font-size: 12px;
+  border: 1px solid var(--border-strong);
+  color: var(--fg);
+}
+.btn-line:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+
+/* --- Pill --- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+button.pill:hover { color: var(--fg); border-color: var(--fg); }
+.pill[aria-selected="true"], .pill[aria-pressed="true"],
+button.pill[aria-selected="true"]:hover, button.pill[aria-pressed="true"]:hover {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border-color: var(--btn-bg);
+}
+
+/* --- Card base --- */
+.card {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  position: relative;
+}
+/* Item em destaque: borda lateral 3px com a aurora (uso aprovado) */
+.is-featured::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: -1px; bottom: -1px;
+  width: 3px;
+  border-radius: 4px 0 0 4px;
+  background: var(--holo);
+  background-size: 100% 300%;
+  animation: holoFlow 6s ease-in-out infinite;
+}
+
+/* --- Formulário da lista (1 campo) --- */
+.wl-row { display: flex; gap: 8px; }
+.wl-input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  transition: border-color var(--transition), background var(--transition);
+}
+.wl-input::placeholder { color: var(--muted); }
+.wl-input:hover { border-color: var(--border-strong); }
+.wl-input:focus { outline: none; border-color: var(--fg); }
+.wl-input[aria-invalid="true"] { border-color: var(--danger); }
+.wl-row .btn { height: 52px; padding-top: 0; padding-bottom: 0; }
+.wl-hint {
+  margin-top: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.wl-error { margin-top: 10px; font-size: 13px; color: var(--danger); }
+
+.wl-done { animation: doneIn 500ms var(--ease-out); }
+@keyframes doneIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.wl-done-head { display: flex; gap: 16px; align-items: flex-start; outline: none; }
+.wl-check {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 600;
+}
+.wl-done-head strong {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.wl-done-head span { display: block; font-size: 14px; color: var(--muted-strong); line-height: 1.55; }
+.wl-extra { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
+.wl-extra .mono-label { display: block; margin-bottom: 10px; }
+.wl-extra .wl-input { height: 44px; font-size: 14px; }
+.wl-extra .btn { height: 44px; }
+.wl-perfil { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.wl-saved { margin-top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--green); min-height: 16px; }
+
+/* --- Range (calculadora) --- */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  --fill: 20%;
+  cursor: pointer;
+}
+.range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--fg) var(--fill), var(--border-strong) var(--fill));
+}
+.range::-moz-range-track { height: 2px; background: var(--border-strong); }
+.range::-moz-range-progress { height: 2px; background: var(--fg); }
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--fg);
+  transition: transform var(--transition);
+}
+.range::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--fg);
+}
+.range:hover::-webkit-slider-thumb { transform: scale(1.15); }
+.range:focus { outline: none; }
+.range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--faint), 0 0 0 5px var(--fg); }
+.range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--faint), 0 0 0 5px var(--fg); }
+
+
+/* ============================================================================
+   [3] SEÇÕES
+   ============================================================================ */
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--header-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 transparent;
+  transition: background 320ms ease, box-shadow 320ms ease;
+}
+.header.is-scrolled { box-shadow: 0 1px 0 var(--border); }
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 18px 0;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.logo-group { display: flex; align-items: baseline; gap: 14px; flex-shrink: 0; }
+.logo { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+.logo-tag { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.nav { flex: 1; display: flex; justify-content: center; gap: 36px; }
+.nav a { font-size: 13px; color: var(--muted-strong); transition: color var(--transition); position: relative; }
+.nav a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px;
+  background: var(--fg); transform: scaleX(0); transform-origin: left; transition: transform var(--transition);
+}
+.nav a:hover, .nav a.is-current { color: var(--fg); }
+.nav a.is-current::after { transform: scaleX(1); }
+.nav-cta {
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 2px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.nav-cta:hover { background: var(--btn-bg-hover); }
+.menu-toggle { display: none; font-size: 24px; line-height: 1; padding: 4px 8px; }
+
+.theme-switch { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; padding: 6px 0; }
+.tsw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+.theme-switch:hover .tsw-label { color: var(--fg); }
+.tsw-track {
+  position: relative;
+  width: 46px; height: 24px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  transition: border-color 400ms ease, background 400ms ease;
+  flex-shrink: 0;
+}
+.tsw-thumb {
+  position: absolute;
+  top: 50%; left: 3.5px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transform: translateY(-50%);
+  transition: left 400ms cubic-bezier(0.34, 1.56, 0.64, 1), background 400ms ease;
+}
+.theme-switch:hover .tsw-track { border-color: var(--fg); }
+.theme-switch:hover .tsw-thumb { background: var(--fg); }
+[data-theme="dark"] .tsw-track {
+  border-color: transparent;
+  background: var(--holo);
+  background-size: 300% 300%;
+  animation: holoFlow 5s ease-in-out infinite;
+}
+[data-theme="dark"] .tsw-thumb { left: 26px; background: var(--fg); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  padding: 100px 32px 32px;
+  flex-direction: column;
+  gap: 4px;
+}
+.mobile-menu.open { display: flex; animation: doneIn 300ms var(--ease-out); }
+.mobile-menu a {
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 20px 0;
+  font-size: 24px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-close { position: absolute; top: 24px; right: 32px; font-size: 32px; color: var(--fg); }
+
+/* ===== HERO ===== */
+.hero { padding: 64px 0 88px; position: relative; overflow: hidden; }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 75% 45%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 75% 45%, #000 0%, transparent 75%);
+  pointer-events: none;
+}
+.hero > .container { position: relative; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 40px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+.hero-meta::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+.hero h1 { margin-bottom: 28px; max-width: 640px; }
+.hero-sub {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted-strong);
+  margin-bottom: 36px;
+  max-width: 560px;
+}
+.hero-sub strong { color: var(--fg); font-weight: 600; }
+.hero .wl-wrap { max-width: 520px; }
+.hero-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 36px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-formats span { display: inline-flex; align-items: center; gap: 8px; }
+.hero-formats span::before { content: ''; width: 4px; height: 4px; background: var(--muted); border-radius: 50%; }
+
+/* --- Demo interativa: pedido → peça --- */
+.demo {
+  --stage-h: 320px;
+  overflow: hidden;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.demo-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.demo-brand { display: inline-flex; align-items: center; gap: 8px; color: var(--muted-strong); min-width: 0; }
+.demo-brand i { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; transition: background 400ms ease; }
+.demo-brand span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.demo-state { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: color var(--transition); }
+.demo-state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: pulse 0.9s ease-in-out infinite; }
+.demo-state.is-ok { color: var(--green); }
+.demo-state.is-ok::before { background: var(--green); box-shadow: 0 0 8px var(--green-glow); animation: none; }
+.demo-prompt {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 16px;
+  min-height: 78px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fg);
+}
+.demo-prompt .q { font-family: 'IBM Plex Mono', monospace; color: var(--muted); }
+.cursor {
+  display: inline-block;
+  width: 2px; height: 1.1em;
+  margin-left: 2px;
+  background: var(--fg);
+  vertical-align: text-bottom;
+  animation: blink 1s steps(1) infinite;
+}
+.demo-stage { position: relative; height: calc(var(--stage-h) + 48px); padding: 24px 0; }
+.demo-stage-inner { position: relative; height: var(--stage-h); }
+.demo-piece, .demo-skel {
+  position: absolute;
+  top: 0; left: 50%;
+  height: var(--stage-h);
+  width: calc(var(--stage-h) * 0.8);
+  opacity: 0;
+  transform: translate(-50%, 10px) scale(0.98);
+  transition: opacity 450ms ease, transform 550ms var(--ease-out), width 300ms ease;
+  pointer-events: none;
+}
+.demo-piece.is-story, [data-shape="story"] .demo-skel { width: calc(var(--stage-h) * 0.5625); }
+.demo-piece.is-on, .demo-skel.is-on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.demo-skel {
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: linear-gradient(100deg, var(--faint) 30%, var(--border) 50%, var(--faint) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+}
+.demo-progress { height: 2px; background: var(--border); }
+.demo-progress span { display: block; height: 100%; width: 0; background: var(--fg); transition: width 600ms ease; }
+.demo-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.demo-foot b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+.demo-foot b.ok { color: var(--green); }
+.demo-chips {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ===== GALERIA (marquee) ===== */
+.gallery { padding: 24px 0 100px; }
+.gallery-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.gallery-head p { font-size: 14px; color: var(--muted-strong); max-width: 460px; }
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track { display: flex; width: max-content; animation: marquee 70s linear infinite; }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-set { display: flex; gap: 20px; padding-right: 20px; align-items: flex-end; }
+.m-item { width: 232px; flex-shrink: 0; transition: transform 400ms var(--ease-out); }
+.m-item.is-story { width: 163px; }
+.m-item:hover { transform: translateY(-6px); }
+.m-item figcaption {
+  margin-top: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ===== SEÇÕES PADRÃO ===== */
+section { padding: 100px 0; scroll-margin-top: 72px; }
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  margin-bottom: 72px;
+  align-items: start;
+}
+.section-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 12px; }
+.section-head-right p { font-size: 17px; color: var(--muted-strong); margin-top: 24px; max-width: 640px; line-height: 1.65; }
+
+/* --- Problema --- */
+.pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pain-card { padding: 48px 36px; overflow: hidden; }
+.pain-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), var(--faint), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+.pain-card:hover::after { opacity: 1; }
+.pain-card .mono-label { margin-bottom: 24px; }
+.pain-card h3 { font-size: 22px; line-height: 1.25; margin-bottom: 16px; }
+.pain-card p { font-size: 14px; line-height: 1.6; color: var(--muted-strong); }
+
+/* --- Método --- */
+.method-flow { display: flex; flex-direction: column; gap: 16px; }
+.flow-step {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 24px;
+  padding: 32px;
+  align-items: center;
+  transition: background var(--transition);
+}
+.flow-step::before { opacity: 0; transition: opacity 400ms ease; }
+.flow-step.is-current::before { opacity: 1; }
+.flow-step:hover { background: var(--surface-hover); }
+.flow-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); transition: color var(--transition); }
+.flow-step.is-current .flow-num { color: var(--fg); }
+.flow-content h4 { font-size: 16px; margin-bottom: 6px; }
+.flow-content p { font-size: 14px; color: var(--muted-strong); line-height: 1.6; max-width: 640px; }
+.flow-content q { quotes: '“' '”'; color: var(--fg); }
+.flow-actor { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+/* --- Preço: duas linhas na conta --- */
+.bill { display: grid; grid-template-columns: 1fr 1.75fr; gap: 24px; align-items: stretch; }
+.bill-card { padding: 44px 40px; display: flex; flex-direction: column; }
+.bill-card .mono-label { margin-bottom: 18px; }
+.bill-card h3 { font-size: 22px; margin-bottom: 10px; }
+.bill-card > p { font-size: 14px; color: var(--muted-strong); line-height: 1.6; max-width: 520px; }
+
+.price-big {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 28px 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+.price-big small { font-size: 13px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+.price-note { font-size: 13px; color: var(--muted-strong); line-height: 1.55; margin-bottom: 28px; }
+.plan-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.plan-list li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; font-size: 14px; color: var(--muted-strong); line-height: 1.5; }
+.plan-list li::before { content: '✓'; font-family: 'IBM Plex Mono', monospace; color: var(--green); font-weight: 600; }
+.bill-card .btn-primary { margin-top: auto; }
+.bill-foot {
+  margin-top: 16px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.calc { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 28px; align-items: start; }
+.c-row { padding: 8px 0 6px; }
+.c-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+.c-head label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: var(--fg); letter-spacing: 0.02em; }
+.c-head output { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted-strong); font-variant-numeric: tabular-nums; }
+
+.receipt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+  padding: 20px 20px 18px;
+  background: var(--input-bg);
+}
+.receipt .mono-label { margin-bottom: 12px !important; }
+.r-line { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; color: var(--muted-strong); }
+.r-line .lead { flex: 1; min-width: 12px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
+.r-line .v { color: var(--fg); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.r-sep { border-top: 1px solid var(--border-strong); margin: 10px 0 8px; }
+.r-zero .v { color: var(--green); }
+.r-total { font-size: 14px; color: var(--fg); font-weight: 500; padding-top: 6px; }
+.r-total .v { font-size: 18px; }
+.receipt-note { margin-top: 14px; font-family: 'Inter', sans-serif; font-size: 12px; line-height: 1.55; color: var(--muted); }
+
+/* --- FAQ --- */
+.faq-list { max-width: 900px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-question {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  text-align: left;
+  padding: 26px 0;
+}
+.faq-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); }
+.faq-text { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 500; color: var(--fg); letter-spacing: -0.01em; }
+.faq-icon { font-family: 'IBM Plex Mono', monospace; font-size: 24px; color: var(--muted); width: 24px; text-align: center; transition: transform var(--transition), color var(--transition); }
+.faq-question:hover .faq-icon { color: var(--fg); }
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--fg); }
+.faq-answer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms var(--ease-out); }
+.faq-answer > div { overflow: hidden; }
+.faq-item.open .faq-answer { grid-template-rows: 1fr; }
+.faq-answer p { font-size: 15px; color: var(--muted-strong); line-height: 1.65; padding: 0 60px 28px 84px; }
+
+/* --- CTA final --- */
+.cta-final { text-align: center; padding: 140px 32px; position: relative; overflow: hidden; }
+.cta-final::before {
+  content: 'V';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(300px, 50vw, 600px);
+  font-weight: 700;
+  color: var(--ghost-v);
+  letter-spacing: -0.05em;
+  user-select: none;
+  pointer-events: none;
+}
+.cta-final > * { position: relative; }
+.cta-final .tag { margin-bottom: 32px; }
+.cta-final h2 { margin-bottom: 24px; }
+.cta-final > p { font-size: 17px; color: var(--muted-strong); max-width: 580px; margin: 0 auto 40px; line-height: 1.65; }
+.cta-final .wl-wrap { max-width: 520px; margin: 0 auto; text-align: left; }
+.cta-final .wl-hint { text-align: center; }
+
+/* --- Footer --- */
+.footer { padding: 80px 0 32px; border-top: 1px solid var(--border); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 60px; }
+.footer-brand .logo { display: block; margin-bottom: 16px; font-size: 28px; }
+.footer-brand p { font-size: 14px; color: var(--muted-strong); line-height: 1.6; max-width: 380px; margin-bottom: 24px; }
+.footer-col h4 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; font-weight: 500; }
+.footer-col a { display: block; padding: 6px 0; font-size: 14px; color: var(--muted-strong); transition: color var(--transition); }
+.footer-col a:hover { color: var(--fg); }
+.footer-bottom {
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+
+/* ============================================================================
+   [4] PEÇAS — renderizadas em HTML, cores da marca via props inline.
+   Tipografia escala com a largura da peça (container query units).
+   ============================================================================ */
+.piece {
+  --p-accent2: var(--p-accent);
+  position: relative;
+  aspect-ratio: 4 / 5;
+  container-type: inline-size;          /* cqw dos filhos = largura da peça */
+  background: var(--p-bg);
+  color: var(--p-fg);
+  border-radius: 4px;
+  overflow: hidden;
+  justify-content: flex-end;
+  align-items: stretch;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  isolation: isolate;
+}
+.piece.is-story { aspect-ratio: 9 / 16; }
+/* Padding e layout moram no filho: cqw na própria raiz mediria o ancestral */
+.piece > .p-in {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 9cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: inherit;
+  align-items: inherit;
+  text-align: inherit;
+}
+.p-in > * { position: relative; }
+.piece.is-center { justify-content: center; }
+.piece.is-middle { justify-content: center; text-align: center; align-items: center; }
+.p-kicker { font-size: 3.6cqw; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; margin-bottom: 3.5cqw; }
+.p-title { font-size: 10.5cqw; font-weight: 600; line-height: 1.04; letter-spacing: -0.035em; display: block; }
+.is-story .p-title { font-size: 13cqw; }
+.p-foot { font-size: 3.2cqw; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 5cqw; opacity: 0.75; }
+.p-bar { width: 12cqw; height: 1.2cqw; background: var(--p-accent); margin-bottom: 4cqw; display: block; }
+.p-rule { height: 1px; background: currentColor; opacity: 0.35; margin: 3.5cqw 0; display: block; }
+.p-pill { align-self: center; font-size: 3.4cqw; font-weight: 600; padding: 1.6cqw 4cqw; border: 1px solid currentColor; border-radius: 999px; margin-bottom: 5cqw; }
+.p-big { display: block; font-size: 11cqw; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; color: var(--p-accent); margin-top: 8cqw; }
+.p-small { display: block; font-size: 3cqw; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--p-accent); margin-top: auto; }
+.p-dots { position: absolute; left: 9cqw; top: 9cqw; display: flex; gap: 1.6cqw; }
+.p-dots i { width: 7cqw; height: 7cqw; border-radius: 50%; background: currentColor; }
+
+/* Decorações (camada atrás do texto) */
+.p-circle::before {
+  content: ''; position: absolute; z-index: 0;
+  width: 68%; aspect-ratio: 1; border-radius: 50%;
+  top: 7%; right: 6%;
+  background: var(--p-accent2);
+}
+.p-stripes::before {
+  content: ''; position: absolute; z-index: 0;
+  left: 0; right: 0; top: 0; height: 38%;
+  background: repeating-linear-gradient(120deg, var(--p-accent) 0 7%, var(--p-accent2) 7% 12%, transparent 12% 19%);
+}
+.p-diag::before {
+  content: ''; position: absolute; z-index: 0; inset: 0;
+  background: linear-gradient(115deg, transparent 0 24%, var(--p-accent2) 24% 36%, transparent 36% 46%, var(--p-accent2) 46% 52%, transparent 52%);
+  opacity: 0.85;
+}
+
+/* --- Variantes animadas (só rodam com .is-on na demo) --- */
+/* Story: barras de progresso no topo */
+.p-story-bars { position: absolute !important; top: 4cqw; left: 5cqw; right: 5cqw; display: flex; gap: 1.5cqw; }
+.p-story-bars i { flex: 1; height: 0.9cqw; border-radius: 2px; background: color-mix(in srgb, currentColor 30%, transparent); position: relative; overflow: hidden; }
+.p-story-bars i:first-child::after { content: ''; position: absolute; inset: 0; background: currentColor; transform-origin: left; transform: scaleX(0); }
+.is-on .p-story-bars i:first-child::after { animation: storyFill 5s linear infinite; }
+@keyframes storyFill { to { transform: scaleX(1); } }
+
+/* Carrossel: slides deslizam + pontos */
+.piece.is-carousel > .p-in { padding: 0; }
+.p-slides { display: flex; width: 300%; height: 100%; }
+.p-slide { width: 33.3333%; height: 100%; padding: 9cqw; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+.is-on .p-slides { animation: carousel 7.5s var(--ease-out) infinite; }
+@keyframes carousel {
+  0%, 27%   { transform: translateX(0); }
+  33%, 60%  { transform: translateX(-33.3333%); }
+  66%, 94%  { transform: translateX(-66.6667%); }
+  100%      { transform: translateX(0); }
+}
+.p-cdots { position: absolute !important; bottom: 4.5cqw; left: 0; right: 0; display: flex; justify-content: center; gap: 1.8cqw; }
+.p-cdots i { width: 1.8cqw; height: 1.8cqw; border-radius: 50%; background: currentColor; opacity: 0.35; }
+.is-on .p-cdots i:nth-child(1) { animation: cdot1 7.5s infinite; }
+.is-on .p-cdots i:nth-child(2) { animation: cdot2 7.5s infinite; }
+.is-on .p-cdots i:nth-child(3) { animation: cdot3 7.5s infinite; }
+@keyframes cdot1 { 0%, 30% { opacity: 1; } 31%, 97% { opacity: 0.35; } 98%, 100% { opacity: 1; } }
+@keyframes cdot2 { 0%, 30% { opacity: 0.35; } 31%, 63% { opacity: 1; } 64%, 100% { opacity: 0.35; } }
+@keyframes cdot3 { 0%, 63% { opacity: 0.35; } 64%, 97% { opacity: 1; } 98%, 100% { opacity: 0.35; } }
+.p-count { position: absolute !important; top: 6cqw; right: 6cqw; font-size: 3cqw; font-weight: 600; letter-spacing: 0.08em; padding: 1cqw 2.6cqw; border-radius: 999px; background: color-mix(in srgb, var(--p-bg) 70%, black); }
+
+/* Vídeo e animação: texto cinético em loop de 6s */
+.k { display: block; opacity: 0; transform: translateY(40%); }
+.is-on .k1 { animation: kin1 6s var(--ease-out) infinite; }
+.is-on .k2 { animation: kin2 6s var(--ease-out) infinite; }
+.is-on .k3 { animation: kin3 6s var(--ease-out) infinite; }
+@keyframes kin1 { 0%, 3% { opacity: 0; transform: translateY(40%); } 11%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; transform: translateY(-20%); } }
+@keyframes kin2 { 0%, 14% { opacity: 0; transform: translateY(40%); } 22%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; transform: translateY(-20%); } }
+@keyframes kin3 { 0%, 25% { opacity: 0; transform: translateY(40%); } 33%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; transform: translateY(-20%); } }
+.p-player { position: absolute !important; left: 6cqw; right: 6cqw; bottom: 5cqw; display: flex; align-items: center; gap: 3cqw; font-size: 3.4cqw; font-weight: 600; font-variant-numeric: tabular-nums; }
+.p-player .track { flex: 1; height: 0.9cqw; border-radius: 2px; background: color-mix(in srgb, currentColor 30%, transparent); overflow: hidden; }
+.p-player .track::after { content: ''; display: block; height: 100%; background: currentColor; transform-origin: left; transform: scaleX(0); }
+.is-on .p-player .track::after { animation: storyFill 6s linear infinite; }
+.piece.has-player > .p-in { padding-bottom: 16cqw; }
+
+.p-grow { width: 0; }
+.is-on .p-grow { animation: grow 6s var(--ease-out) infinite; }
+@keyframes grow { 0%, 5% { width: 0; } 20%, 88% { width: 12cqw; } 96%, 100% { width: 0; } }
+.p-orbit {
+  position: absolute !important; z-index: 0 !important;
+  top: 9cqw; right: 9cqw;
+  width: 30cqw; aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+.p-orbit::after {
+  content: ''; position: absolute; top: -1.6cqw; left: 50%;
+  width: 3.2cqw; height: 3.2cqw; margin-left: -1.6cqw;
+  border-radius: 50%; background: var(--p-accent);
+}
+.is-on .p-orbit { animation: orbit 6s linear infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+.p-loop { position: absolute !important; top: 6cqw; left: 9cqw; font-size: 3cqw; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+
+
+/* ============================================================================
+   [5] ACESSIBILIDADE — movimento reduzido desliga tudo
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  [data-animate], .k { opacity: 1 !important; transform: none !important; }
+  .p-grow { width: 12cqw; }
+  .marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .marquee-set[aria-hidden="true"] { display: none; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ============================================================================
+   [6] TABLET — até 1024px
+   ============================================================================ */
+@media (max-width: 1024px) {
+  .header-inner { justify-content: space-between; gap: 16px; }
+  .logo-tag, .nav { display: none; }
+  .theme-switch { margin-left: auto; }
+  .tsw-label { display: none; }
+  .menu-toggle { display: block; }
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .hero::before { -webkit-mask-image: radial-gradient(ellipse 90% 50% at 50% 75%, #000, transparent 75%); mask-image: radial-gradient(ellipse 90% 50% at 50% 75%, #000, transparent 75%); }
+  .demo { max-width: 560px; }
+  .section-head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .bill { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+
+/* ============================================================================
+   [7] MOBILE — até 640px
+   ============================================================================ */
+@media (max-width: 640px) {
+  .container { padding: 0 20px; }
+  .nav-cta { display: none; }
+  .mobile-close { right: 20px; }
+  .mobile-menu { padding: 100px 20px 32px; }
+  .hero { padding: 36px 0 56px; }
+  .hero h1 { font-size: 1.95rem; line-height: 1.28; letter-spacing: -0.035em; }
+  .hero-meta { margin-bottom: 28px; }
+  .hero-sub { font-size: 15px; line-height: 1.7; margin-bottom: 28px; }
+  .wl-row { flex-direction: column; }
+  .wl-row .wl-input { flex: none; width: 100%; }
+  .wl-row .btn { width: 100%; }
+  .hero-formats { margin-top: 28px; }
+  .demo { --stage-h: 280px; }
+  .demo-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .demo-chips::-webkit-scrollbar { display: none; }
+  .demo-bar { font-size: 10px; }
+  .gallery { padding: 8px 0 70px; }
+  .m-item { width: 180px; }
+  .m-item.is-story { width: 127px; }
+  section { padding: 70px 0; }
+  .pain-card { padding: 32px 24px; }
+  .flow-step {
+    grid-template-columns: 1fr auto;
+    gap: 14px 16px;
+    padding: 28px 24px;
+    align-items: start;
+  }
+  .flow-num { grid-column: 1; grid-row: 1; }
+  .flow-actor { grid-column: 2; grid-row: 1; justify-self: end; }
+  .flow-content { grid-column: 1 / -1; grid-row: 2; }
+  .bill-card { padding: 32px 24px; }
+  .calc { grid-template-columns: 1fr; gap: 24px; }
+  .price-big { font-size: 38px; }
+  .faq-question { grid-template-columns: 36px 1fr auto; gap: 14px; }
+  .faq-text { font-size: 15px; }
+  .faq-answer p { padding: 0 8px 24px 50px; }
+  .cta-final { padding: 100px 20px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container header-inner">
+    <div class="logo-group">
+      <a href="#" class="logo" aria-label="Vekoo — topo da página">Vekoo</a>
+      <span class="logo-tag">Plataforma</span>
+    </div>
+    <nav class="nav" aria-label="Seções">
+      <a href="#formatos">Formatos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#preco">Preço</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="theme-switch" id="theme-switch" aria-pressed="false" aria-label="Alternar modo escuro">
+      <span class="tsw-label" id="tsw-label">Modo escuro</span>
+      <span class="tsw-track"><span class="tsw-thumb"></span></span>
+    </button>
+    <button class="nav-cta" data-join>Entrar na lista →</button>
+    <button class="menu-toggle" id="menu-open" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">≡</button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="mobile-close" id="menu-close" aria-label="Fechar menu">×</button>
+  <a href="#formatos">Formatos</a>
+  <a href="#como-funciona">Como funciona</a>
+  <a href="#preco">Preço</a>
+  <a href="#faq">FAQ</a>
+  <a href="#" data-join>Entrar na lista →</a>
+</div>
+
+<main>
+
+<!-- ======================================================================
+     HERO — promessa, prova (demo gerando peças) e um CTA de 1 campo
+     ====================================================================== -->
+<section class="hero" id="topo" aria-labelledby="hero-title">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">Em breve · Lista de espera aberta</div>
+        <h1 id="hero-title">
+          <span class="l1">Peça em uma frase.</span>
+          <span class="l2">Receba com a cara da sua <span class="holo">marca</span>.</span>
+        </h1>
+        <p class="hero-sub">Post, story, carrossel, vídeo e animação na voz e no visual do seu negócio. Você paga uma assinatura fixa pela plataforma. <strong>O crédito de IA sai a preço de custo — sem margem da Vekoo em cima.</strong></p>
+
+        <div class="wl-wrap" data-wl="hero" id="hero-wl"></div>
+
+        <div class="hero-formats" aria-label="Formatos">
+          <span>Post</span><span>Story</span><span>Carrossel</span><span>Vídeo</span><span>Animação</span>
+        </div>
+      </div>
+
+      <!-- Demo: mostra o produto funcionando. Auto-play, pausa no hover/fora da tela. -->
+      <div class="demo card" id="demo" data-animate>
+        <div class="demo-bar">
+          <span class="demo-brand"><i id="demo-dot"></i><span>Marca: <span id="demo-brand">Café do Alto</span></span></span>
+          <span class="demo-state is-ok" id="demo-state" aria-live="polite">pronta</span>
+        </div>
+        <div class="demo-prompt">
+          <span class="q" aria-hidden="true">›</span>
+          <span><span id="demo-typed">um post do passo a passo da V60 pro fim de semana</span><span class="cursor" aria-hidden="true"></span></span>
+        </div>
+        <div class="demo-stage" data-shape="post" id="demo-stage">
+          <div class="demo-stage-inner">
+            <div class="demo-skel" aria-hidden="true"></div>
+
+            <!-- POST · Café do Alto -->
+            <div class="piece demo-piece is-center is-on" data-fmt="post" style="--p-bg:#F1E6D3;--p-fg:#3A2A1C;--p-accent:#3A2A1C" role="img" aria-label="Post: V60 em casa, o passo a passo — Café do Alto"><div class="p-in">
+              <span class="p-kicker">Métodos · Nº 3</span>
+              <span class="p-rule"></span>
+              <span class="p-title">V60 em casa: o passo a passo</span>
+              <span class="p-rule"></span>
+              <span class="p-foot">Café do Alto</span>
+            </div></div>
+
+            <!-- STORY · Marina Duarte Conteúdo -->
+            <div class="piece demo-piece is-story" data-fmt="story" style="--p-bg:#2B1D3A;--p-fg:#F4ECFF;--p-accent:#A78BFA" role="img" aria-label="Story: Conteúdo que vende sem parecer anúncio — mentoria"><div class="p-in">
+              <span class="p-story-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="p-title" style="margin-top:auto">Conteúdo que vende sem parecer anúncio.</span>
+              <span class="p-big">Mentoria aberta</span>
+              <span class="p-foot">Marina Duarte Conteúdo</span>
+            </div></div>
+
+            <!-- CARROSSEL · Doma Store -->
+            <div class="piece demo-piece is-carousel p-stripes" data-fmt="carrossel" style="--p-bg:#8A1F2B;--p-fg:#FFF4EC;--p-accent:#E08A2E;--p-accent2:#C55A2A" role="img" aria-label="Carrossel de 3 slides: Bazar de inverno até 60% off — Doma Store"><div class="p-in">
+              <span class="p-count" aria-hidden="true">1/3</span>
+              <div class="p-slides">
+                <div class="p-slide">
+                  <span class="p-kicker">Só até domingo</span>
+                  <span class="p-title">Bazar de inverno até 60% off</span>
+                  <span class="p-foot">Doma Store · Curitiba</span>
+                </div>
+                <div class="p-slide">
+                  <span class="p-kicker">02 · Casacos</span>
+                  <span class="p-title">Peças de lã a partir de R$ 89</span>
+                  <span class="p-foot">Enquanto durar o estoque</span>
+                </div>
+                <div class="p-slide">
+                  <span class="p-kicker">03 · Onde</span>
+                  <span class="p-title">Loja e site. Mesmo preço.</span>
+                  <span class="p-foot">domastore · link na bio</span>
+                </div>
+              </div>
+              <span class="p-cdots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div></div>
+
+            <!-- VÍDEO · Treino em Casa -->
+            <div class="piece demo-piece is-story p-diag has-player" data-fmt="video" style="--p-bg:#1B1D22;--p-fg:#FFFFFF;--p-accent:#B5D94A;--p-accent2:#4F6B2A" role="img" aria-label="Vídeo de 15 segundos: 20 minutos e acabou a desculpa"><div class="p-in">
+              <span class="p-bar"></span>
+              <span class="p-kicker">Sem equipamento</span>
+              <span class="p-title"><span class="k k1">20 minutos</span><span class="k k2">e acabou</span><span class="k k3">a desculpa</span></span>
+              <span class="p-player" aria-hidden="true"><span>▶</span><span class="track"></span><span>0:15</span></span>
+            </div></div>
+
+            <!-- ANIMAÇÃO · Viva Imóveis -->
+            <div class="piece demo-piece" data-fmt="animacao" style="--p-bg:#12306B;--p-fg:#FFFFFF;--p-accent:#F2C230" role="img" aria-label="Animação em loop: Financiamento, o que ninguém te explica — Viva Imóveis"><div class="p-in">
+              <span class="p-loop" aria-hidden="true">Loop · 6s</span>
+              <span class="p-orbit" aria-hidden="true"></span>
+              <span class="p-bar p-grow"></span>
+              <span class="p-kicker">Guia do primeiro imóvel</span>
+              <span class="p-title"><span class="k k1">Financiamento:</span><span class="k k2">o que ninguém</span><span class="k k3">te explica</span></span>
+              <span class="p-foot">Viva Imóveis</span>
+            </div></div>
+          </div>
+        </div>
+        <div class="demo-progress" aria-hidden="true"><span id="demo-fill" style="width:100%"></span></div>
+        <div class="demo-foot">
+          <span>Custo da IA <b id="demo-cost">R$ 0,30</b></span>
+          <span>Margem Vekoo <b class="ok">R$ 0,00</b></span>
+        </div>
+        <div class="demo-chips" role="tablist" aria-label="Escolha um formato pra ver gerando" id="demo-chips"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     GALERIA — prova de variedade: marcas diferentes, mesmo motor
+     ====================================================================== -->
+<div class="gallery" id="formatos" aria-labelledby="gallery-title">
+  <div class="container gallery-head">
+    <div class="tag" id="gallery-title">O que sai daqui</div>
+    <p>Cada peça é de uma marca diferente. Todas saíram de um pedido em uma frase, com o brandcore da marca por trás.</p>
+  </div>
+  <div class="marquee" id="marquee"><div class="marquee-track" id="marquee-track"></div></div>
+</div>
+
+<!-- ======================================================================
+     01 PROBLEMA — por que as saídas de hoje falham
+     ====================================================================== -->
+<section aria-labelledby="problema-title">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-num">01 / Contexto</div>
+        <div class="tag">O problema</div>
+      </div>
+      <div class="section-head-right">
+        <h2 id="problema-title" data-animate><span class="l1">Conteúdo bom pede marca, ferramenta e verba.</span><span class="l2">Quase sempre falta uma das três.</span></h2>
+      </div>
+    </div>
+
+    <div class="pain-grid">
+      <article class="pain-card card" data-animate data-delay="0">
+        <div class="mono-label">01 / Identidade</div>
+        <h3>ChatGPT + Canva não é uma marca.</h3>
+        <p>Texto que qualquer um poderia ter escrito, visual que todo mundo já viu. Seu público reconhece template de longe.</p>
+      </article>
+      <article class="pain-card card" data-animate data-delay="120">
+        <div class="mono-label">02 / Ferramentas</div>
+        <h3>Um app pra cada formato.</h3>
+        <p>Post num lugar, vídeo em outro, animação num terceiro. Cada um com a sua mensalidade — e nenhum conhece a sua marca.</p>
+      </article>
+      <article class="pain-card card" data-animate data-delay="240">
+        <div class="mono-label">03 / Preço</div>
+        <h3>Crédito de IA virou caixa-preta.</h3>
+        <p>Você compra pacote sem saber quanto a IA custa de verdade, nem quanto ficou no meio do caminho.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     02 MÉTODO
+     ====================================================================== -->
+<section id="como-funciona" aria-labelledby="metodo-title">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-num">02 / Método</div>
+        <div class="tag">Como funciona</div>
+      </div>
+      <div class="section-head-right">
+        <h2 id="metodo-title" data-animate><span class="l1">Você descreve a marca uma vez.</span><span class="l2">Depois é só pedir.</span></h2>
+        <p>O método que a Vekoo usa como estúdio, empacotado numa plataforma. Sem formulário, sem brief, sem escolher ferramenta.</p>
+      </div>
+    </div>
+
+    <div class="method-flow">
+      <div class="flow-step card is-featured" data-animate data-delay="0">
+        <div class="flow-num">— 01</div>
+        <div class="flow-content">
+          <h4>Descreva a marca</h4>
+          <p>Uma conversa guiada, uma pergunta por vez, monta o brandcore: tom de voz, público, oferta, o que a marca nunca diria. Sem logo ou paleta? O “cria pra mim” propõe opções e você escolhe.</p>
+        </div>
+        <div class="flow-actor">Você · uma vez</div>
+      </div>
+      <div class="flow-step card is-featured" data-animate data-delay="120">
+        <div class="flow-num">— 02</div>
+        <div class="flow-content">
+          <h4>Peça em uma frase</h4>
+          <p><q>Um story pro Dia dos Pais amanhã.</q> A plataforma escolhe o formato, escreve na voz da marca e gera a peça. Antes de gerar, você vê quanto o pedido consome.</p>
+        </div>
+        <div class="flow-actor">Plataforma</div>
+      </div>
+      <div class="flow-step card is-featured" data-animate data-delay="240">
+        <div class="flow-num">— 03</div>
+        <div class="flow-content">
+          <h4>Ajuste conversando</h4>
+          <p><q>Deixa o título mais curto.</q> <q>Troca o fundo.</q> A peça muda na hora, sem abrir editor. Quando estiver do seu jeito, baixe pronta pra postar.</p>
+        </div>
+        <div class="flow-actor">Você aprova</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     03 PREÇO — duas linhas na conta: assinatura (nossa) + crédito (da IA)
+     ====================================================================== -->
+<section id="preco" aria-labelledby="preco-title">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-num">03 / Preço</div>
+        <div class="tag">Como você paga</div>
+      </div>
+      <div class="section-head-right">
+        <h2 id="preco-title" data-animate><span class="l1">Duas linhas na conta.</span><span class="l2">Só uma é nossa.</span></h2>
+        <p>A assinatura paga a plataforma. O crédito paga a IA que gera cada peça — e vai inteiro pra ela. A gente não ganha no combustível.</p>
+      </div>
+    </div>
+
+    <div class="bill">
+      <!-- Linha 1: assinatura -->
+      <article class="bill-card card is-featured" data-animate data-delay="0">
+        <div class="mono-label">Linha 1 · Assinatura</div>
+        <h3>Plataforma Vekoo</h3>
+        <p>Um plano. Todos os formatos liberados.</p>
+        <div class="price-big" id="price-big">R$ —<small> / mês</small></div>
+        <p class="price-note" id="price-note">Valor final anunciado primeiro pra lista. Quem entra agora trava o preço de fundador enquanto for assinante.</p>
+        <ul class="plan-list" id="plan-list"></ul>
+        <button class="btn btn-primary" data-join>Garantir preço de fundador <span class="arrow">→</span></button>
+        <div class="bill-foot">Sem fidelidade · cancela quando quiser</div>
+      </article>
+
+      <!-- Linha 2: créditos + calculadora -->
+      <article class="bill-card card" data-animate data-delay="120">
+        <div class="mono-label">Linha 2 · Crédito de IA</div>
+        <h3>Recarga a preço de custo.</h3>
+        <p>Você recarrega quando quiser, no valor que quiser. Monte o seu mês e veja quanto sai:</p>
+
+        <div class="calc">
+          <div id="calc-rows"></div>
+          <div class="receipt" aria-live="polite">
+            <div class="mono-label">// Estimativa do mês</div>
+            <div id="receipt-lines"></div>
+            <div class="r-sep"></div>
+            <div class="r-line"><span>Crédito de IA</span><span class="lead"></span><span class="v" id="r-credit">R$ 0,00</span></div>
+            <div class="r-line r-zero"><span>Margem Vekoo</span><span class="lead"></span><span class="v">R$ 0,00</span></div>
+            <div class="r-line"><span>Assinatura</span><span class="lead"></span><span class="v" id="r-sub">fundador</span></div>
+            <div class="r-sep"></div>
+            <div class="r-line r-total"><span id="r-total-label">Recarga sugerida</span><span class="lead"></span><span class="v" id="r-total">R$ 0,00</span></div>
+            <p class="receipt-note">Estimativa com o custo médio de hoje por formato. O consumo real de cada pedido aparece antes de você gerar.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     04 FAQ — uma pergunta por objeção real
+     ====================================================================== -->
+<section id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-num">04 / FAQ</div>
+        <div class="tag">Perguntas frequentes</div>
+      </div>
+      <div class="section-head-right">
+        <h2 id="faq-title" data-animate>O que todo mundo pergunta antes de entrar.</h2>
+      </div>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- ======================================================================
+     CTA FINAL
+     ====================================================================== -->
+<section class="cta-final" aria-labelledby="cta-title">
+  <div class="tag">Lista de espera</div>
+  <h2 id="cta-title" data-animate>Entre antes. Pague menos. Pra sempre.</h2>
+  <p>As vagas abrem em ondas. Quem entra agora trava o preço de fundador da assinatura enquanto for assinante.</p>
+  <div class="wl-wrap" data-wl="final"></div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo">Vekoo</span>
+        <p>A plataforma de conteúdo da Vekoo. Você descreve a marca uma vez e pede o resto em uma frase. Assinatura fixa, crédito de IA a preço de custo.</p>
+        <div class="mono-label">Vekoo Studio · Minas Gerais · Est. 2026</div>
+      </div>
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <a href="#formatos">Formatos</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#preco">Preço</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Vekoo</h4>
+        <a href="https://vekoobrasil.com">Estúdio / site</a>
+        <a href="mailto:comercial@vekoobrasil.com">comercial@vekoobrasil.com</a>
+        <a href="#">@vekoo</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Vekoo · Todos os direitos reservados</div>
+      <div>Minas Gerais / Brasil</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Template do formulário (1 campo) + sucesso com etapa opcional -->
+<template id="wl-template">
+  <form class="wl-form" novalidate>
+    <div class="wl-row">
+      <label class="sr-only">Seu e-mail</label>
+      <input class="wl-input" type="email" name="email" placeholder="seu@email.com" autocomplete="email" inputmode="email" required>
+      <button type="submit" class="btn btn-primary"><span class="btn-label">Entrar na lista</span> <span class="arrow">→</span></button>
+    </div>
+    <p class="wl-error" role="alert" hidden></p>
+    <p class="wl-hint">Só o e-mail. Preço de fundador travado enquanto for assinante.</p>
+  </form>
+  <div class="wl-done" hidden>
+    <div class="wl-done-head" tabindex="-1">
+      <span class="wl-check holo" aria-hidden="true">✓</span>
+      <div>
+        <strong>Você está na lista.</strong>
+        <span>Preço de fundador travado. O convite chega por e-mail quando a sua onda abrir.</span>
+      </div>
+    </div>
+    <form class="wl-extra" novalidate>
+      <span class="mono-label">Opcional · aviso também no WhatsApp</span>
+      <div class="wl-row">
+        <label class="sr-only">WhatsApp</label>
+        <input class="wl-input" type="tel" name="whats" placeholder="(31) 9 0000-0000" autocomplete="tel" inputmode="tel">
+        <button type="submit" class="btn btn-line">Salvar</button>
+      </div>
+      <div class="wl-perfil" role="group" aria-label="Você é">
+        <button type="button" class="pill" aria-pressed="false" data-perfil="dono">Dono(a) de negócio</button>
+        <button type="button" class="pill" aria-pressed="false" data-perfil="social">Social media / agência</button>
+        <button type="button" class="pill" aria-pressed="false" data-perfil="criador">Criador(a)</button>
+      </div>
+      <p class="wl-saved" aria-live="polite"></p>
+    </form>
+  </div>
+</template>
+
+<script>
+(function () {
+'use strict';
+
+/* ==========================================================================
+   CONFIG — único lugar pra mexer em preço, lista e custos
+   ========================================================================== */
+const VEKOO = {
+  // Assinatura mensal em R$. null = "valor anunciado primeiro pra lista".
+  price: null,
+  // Endpoint da lista (POST JSON). null = simula sucesso (modo protótipo).
+  // Campos enviados: { email, source } e depois { email, whats?, perfil? }
+  endpoint: null,
+  // O que a assinatura inclui. [CONFIRMAR] limites de marca antes de publicar.
+  includes: [
+    'Todos os formatos: post, story, carrossel, vídeo e animação',
+    'Brandcore com onboarding guiado e “cria pra mim”',
+    'Criação por conversa, com modo avançado quando quiser controle',
+    'Multi-marca: cada marca com o seu brandcore',
+    'Histórico de versões da marca'
+  ]
+};
+
+/* Custo médio de IA por peça, em R$.
+   ⚠ PLACEHOLDER — substituir pelo custo REAL medido na API antes de publicar.
+   A LP promete "preço de custo": número errado aqui vira propaganda enganosa. */
+const FORMATS = [
+  { id: 'post',      name: 'Post',      one: 'post',      many: 'posts',      cost: 0.30, def: 12, max: 60 },
+  { id: 'story',     name: 'Story',     one: 'story',     many: 'stories',    cost: 0.30, def: 8,  max: 60 },
+  { id: 'carrossel', name: 'Carrossel', one: 'carrossel', many: 'carrosséis', cost: 1.20, def: 4,  max: 30 },
+  { id: 'video',     name: 'Vídeo',     one: 'vídeo 15s', many: 'vídeos 15s', cost: 6.00, def: 2,  max: 20 },
+  { id: 'animacao',  name: 'Animação',  one: 'animação',  many: 'animações',  cost: 1.50, def: 2,  max: 20 }
+];
+const fmt = id => FORMATS.find(f => f.id === id);
+
+const FAQ = [
+  ['O que é o brandcore?',
+   'É o DNA da sua marca dentro da plataforma: tom de voz, público, oferta, referências visuais, o que você nunca diria. Tudo que é gerado nasce dali. Você descreve uma vez, numa conversa guiada, e refina quando quiser.'],
+  ['Como assim “preço de custo”?',
+   'A IA que gera texto, imagem e vídeo cobra por uso. Quando você recarrega crédito, esse valor paga esse uso, sem margem da Vekoo em cima. Cada pedido mostra quanto consome antes de você gerar.'],
+  ['Então como a Vekoo ganha dinheiro?',
+   'Com a assinatura. Ela paga a plataforma: brandcore, criação por conversa, todos os formatos e o que a gente lançar daqui pra frente. O crédito é combustível; a gente não ganha no combustível.'],
+  ['Quanto vai custar a assinatura?',
+   'O valor final sai primeiro pra quem está na lista. Quem entra agora trava o preço de fundador enquanto for assinante. Depois do lançamento, o valor sobe pra quem chegar.'],
+  ['Não tenho logo nem paleta. Dá?',
+   'Dá. No onboarding, o “cria pra mim” propõe logo, paleta e tipografia a partir do que você contou sobre a marca. Você escolhe, o brandcore guarda.'],
+  ['É tudo feito por IA?',
+   'A produção é automatizada. O método por trás é o do estúdio: eixos de conteúdo, estrutura de peça e padrão de qualidade definidos por quem faz isso profissionalmente. IA aqui é ferramenta, não a dona do negócio.'],
+  ['Tem fidelidade ou multa?',
+   'Não. Assinatura mensal, cancela quando quiser.'],
+  ['Quando lança?',
+   'A lista entra primeiro, em ondas. O convite chega por e-mail — e por WhatsApp, se você deixar o número depois de entrar.']
+];
+
+/* Galeria: peças reais do motor, recriadas em HTML.
+   TROCAR por exports PNG reais (1080×1350 / 1080×1920) quando houver. */
+const GALLERY = [
+  { bg: '#0E6B34', fg: '#FFFFFF', accent: '#E6E04A', accent2: '#2F8A3F', deco: 'circle', bar: 1, kicker: 'Nutrição sem neura', title: '5 trocas simples para comer melhor', cap: 'Nutrição · carrossel' },
+  { story: 1, bg: '#2B1D3A', fg: '#F4ECFF', accent: '#A78BFA', dots: 1, title: 'Conteúdo que vende sem parecer anúncio.', big: 'Mentoria aberta', cap: 'Mentoria · story' },
+  { bg: '#8A1F2B', fg: '#FFF4EC', accent: '#E08A2E', accent2: '#C55A2A', deco: 'stripes', kicker: 'Só até domingo', title: 'Bazar de inverno até 60% off', foot: 'Doma Store · Curitiba', cap: 'Moda · carrossel' },
+  { bg: '#12306B', fg: '#FFFFFF', accent: '#F2C230', bar: 1, kicker: 'Guia do primeiro imóvel', title: 'Financiamento: o que ninguém te explica', foot: 'Viva Imóveis', cap: 'Imobiliária · carrossel' },
+  { bg: '#EDCB3A', fg: '#2A2410', accent: '#2A2410', rules: 1, center: 1, kicker: 'Revisão Enem · História', title: 'Revolução Industrial em 8 cards', foot: 'Prof. Henrique Sales', cap: 'Educação · carrossel' },
+  { bg: '#1B1D22', fg: '#FFFFFF', accent: '#B5D94A', accent2: '#4F6B2A', deco: 'diag', bar: 1, kicker: 'Sem equipamento', title: '20 minutos e acabou a desculpa', cap: 'Fitness · carrossel' },
+  { bg: '#F1E6D3', fg: '#3A2A1C', accent: '#3A2A1C', rules: 1, center: 1, kicker: 'Métodos · Nº 3', title: 'V60 em casa: o passo a passo', foot: 'Café do Alto', cap: 'Cafeteria · carrossel' },
+  { bg: '#A994D6', fg: '#231A3D', accent: '#231A3D', pill: 'Saúde mental', middle: 1, title: 'Ansiedade: 6 sinais que o corpo dá', foot: 'Dra. Luiza Prado', cap: 'Psicologia · carrossel' }
+];
+
+/* Demo do hero: um exemplo por formato */
+const DEMO = [
+  { fmt: 'post',      brand: 'Café do Alto',           dot: '#8B5E34', prompt: 'um post do passo a passo da V60 pro fim de semana' },
+  { fmt: 'story',     brand: 'Marina Duarte Conteúdo', dot: '#7C3AED', prompt: 'um story avisando que a mentoria abriu' },
+  { fmt: 'carrossel', brand: 'Doma Store',             dot: '#B3263A', prompt: 'carrossel do bazar de inverno, só até domingo' },
+  { fmt: 'video',     brand: 'Treino em Casa',         dot: '#6E8F2E', prompt: 'vídeo de 15s chamando pro treino sem equipamento' },
+  { fmt: 'animacao',  brand: 'Viva Imóveis',           dot: '#2251A8', prompt: 'animação pro guia do primeiro imóvel' }
+];
+
+/* ==========================================================================
+   UTIL
+   ========================================================================== */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function tween(el, to, dur = 420) {
+  const from = parseFloat(el.dataset.v || '0');
+  el.dataset.v = to;
+  if (reduceMotion || from === to) { el.textContent = brl.format(to); return; }
+  const t0 = performance.now();
+  (function step(now) {
+    const k = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = brl.format(from + (to - from) * e);
+    if (k < 1 && el.dataset.v == to) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ==========================================================================
+   TEMA
+   ========================================================================== */
+const root = document.documentElement;
+const sw = $('#theme-switch');
+function syncSwitch() {
+  const dark = root.getAttribute('data-theme') === 'dark';
+  sw.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  $('#tsw-label').textContent = dark ? 'Modo claro' : 'Modo escuro';
+}
+sw.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  syncSwitch();
+  try { localStorage.setItem('vekoo-theme', next); } catch (e) {}
+});
+syncSwitch();
+
+/* ==========================================================================
+   HEADER + MENU MOBILE
+   ========================================================================== */
+const header = $('#header');
+const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+const menu = $('#mobile-menu'), menuOpen = $('#menu-open');
+function setMenu(open) {
+  menu.classList.toggle('open', open);
+  menuOpen.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) $('#menu-close').focus(); else menuOpen.focus({ preventScroll: true });
+}
+menuOpen.addEventListener('click', () => setMenu(true));
+$('#menu-close').addEventListener('click', () => setMenu(false));
+$$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) setMenu(false); });
+
+// Nav: marca a seção atual
+const navLinks = $$('.nav a');
+const navObs = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    navLinks.forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === '#' + en.target.id));
+  });
+}, { rootMargin: '-45% 0px -50% 0px' });
+['formatos', 'como-funciona', 'preco', 'faq'].forEach(id => { const el = document.getElementById(id); if (el) navObs.observe(el); });
+
+/* ==========================================================================
+   LISTA DE ESPERA — 1 campo; WhatsApp e perfil só depois, opcionais
+   ========================================================================== */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const lead = { email: null };
+let joined = false;
+
+function send(data) {
+  if (!VEKOO.endpoint) return new Promise(r => setTimeout(r, 650));
+  return fetch(VEKOO.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); });
+}
+
+const tpl = $('#wl-template');
+$$('[data-wl]').forEach((wrap, i) => {
+  wrap.appendChild(tpl.content.cloneNode(true));
+  const form = $('.wl-form', wrap), input = $('.wl-input', form), err = $('.wl-error', form);
+  const btn = $('button[type=submit]', form), label = $('.btn-label', btn);
+  const uid = 'wl-' + wrap.dataset.wl;
+  input.id = uid + '-email'; $('label', form).htmlFor = input.id;
+  err.id = uid + '-err'; input.setAttribute('aria-describedby', err.id);
+
+  input.addEventListener('input', () => {
+    if (!err.hidden) { err.hidden = true; input.removeAttribute('aria-invalid'); }
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const v = input.value.trim();
+    if (!EMAIL_RE.test(v)) {
+      err.textContent = v ? 'Confere o e-mail — parece que falta alguma coisa.' : 'Coloca seu e-mail pra guardar o seu lugar.';
+      err.hidden = false;
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+    btn.disabled = true; label.textContent = 'Guardando…';
+    try {
+      await send({ email: v, source: wrap.dataset.wl });
+      lead.email = v;
+      markJoined(wrap);
+    } catch (x) {
+      err.textContent = 'Não deu pra salvar agora. Tenta de novo em instantes.';
+      err.hidden = false;
+      btn.disabled = false; label.textContent = 'Entrar na lista';
+    }
+  });
+
+  // Etapa opcional
+  const extra = $('.wl-extra', wrap), whats = $('input[name=whats]', extra), saved = $('.wl-saved', extra);
+  whats.id = uid + '-whats'; $('label', extra).htmlFor = whats.id;
+  whats.addEventListener('input', () => {
+    const d = whats.value.replace(/\D/g, '').slice(0, 11);
+    let out = d;
+    if (d.length > 2) out = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    if (d.length > 7) out = '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(-4);
+    whats.value = out;
+  });
+  extra.addEventListener('submit', async e => {
+    e.preventDefault();
+    const d = whats.value.replace(/\D/g, '');
+    if (d.length < 10) { saved.style.color = 'var(--danger)'; saved.textContent = 'Número incompleto — DDD + número.'; whats.focus(); return; }
+    saved.style.color = ''; saved.textContent = 'Salvando…';
+    try { await send({ email: lead.email, whats: d }); saved.textContent = '✓ WhatsApp anotado'; }
+    catch (x) { saved.style.color = 'var(--danger)'; saved.textContent = 'Não salvou. Tenta de novo.'; }
+  });
+  $$('[data-perfil]', extra).forEach(p => p.addEventListener('click', async () => {
+    $$('[data-perfil]', extra).forEach(o => o.setAttribute('aria-pressed', o === p ? 'true' : 'false'));
+    try { await send({ email: lead.email, perfil: p.dataset.perfil }); saved.style.color = ''; saved.textContent = '✓ Anotado'; } catch (x) {}
+  }));
+});
+
+function markJoined(origin) {
+  joined = true;
+  $$('[data-wl]').forEach(w => {
+    $('.wl-form', w).hidden = true;
+    $('.wl-done', w).hidden = false;
+  });
+  const head = $('.wl-done-head', origin);
+  if (head) head.focus({ preventScroll: true });
+}
+
+// Todo CTA leva pro formulário do hero (um CTA, um lugar)
+$$('[data-join]').forEach(b => b.addEventListener('click', e => {
+  e.preventDefault();
+  const wrap = $('#hero-wl');
+  wrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+  const target = joined ? $('.wl-done-head', wrap) : $('.wl-input', wrap);
+  setTimeout(() => target && target.focus({ preventScroll: true }), reduceMotion ? 0 : 450);
+}));
+
+/* ==========================================================================
+   DEMO DO HERO — digita o pedido, mostra o progresso, entrega a peça
+   ========================================================================== */
+(function demo() {
+  const el = $('#demo');
+  const stage = $('#demo-stage'), skel = $('.demo-skel', stage);
+  const pieces = $$('.demo-piece', stage);
+  const typed = $('#demo-typed'), state = $('#demo-state'), fill = $('#demo-fill');
+  const cost = $('#demo-cost'), brand = $('#demo-brand'), dot = $('#demo-dot');
+  const chipsEl = $('#demo-chips');
+
+  const chips = DEMO.map((ex, i) => {
+    const b = document.createElement('button');
+    b.className = 'pill'; b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.tabIndex = i === 0 ? 0 : -1;
+    b.textContent = fmt(ex.fmt).name;
+    b.addEventListener('click', () => play(i));
+    b.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const n = (i + (e.key === 'ArrowRight' ? 1 : -1) + DEMO.length) % DEMO.length;
+      chips[n].focus(); play(n);
+    });
+    chipsEl.appendChild(b);
+    return b;
+  });
+
+  let timers = [], idx = 0, inView = false, hovering = false, started = false;
+  const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+  const setState = (t, ok) => { state.textContent = t; state.classList.toggle('is-ok', !!ok); };
+
+  dot.style.background = DEMO[0].dot;
+  cost.dataset.v = fmt('post').cost;
+  cost.textContent = brl.format(fmt('post').cost);
+
+  function show(ex) {
+    pieces.forEach(p => {
+      const on = p.dataset.fmt === ex.fmt;
+      p.classList.remove('is-on');
+      if (on) { void p.offsetWidth; p.classList.add('is-on'); } // reinicia as animações
+    });
+  }
+
+  function play(i) {
+    timers.forEach(clearTimeout); timers = [];
+    idx = i;
+    const ex = DEMO[i], f = fmt(ex.fmt);
+    chips.forEach((c, j) => { c.setAttribute('aria-selected', j === i ? 'true' : 'false'); c.tabIndex = j === i ? 0 : -1; });
+    brand.textContent = ex.brand;
+    dot.style.background = ex.dot;
+    stage.dataset.shape = (ex.fmt === 'story' || ex.fmt === 'video') ? 'story' : 'post';
+
+    if (reduceMotion) {
+      typed.textContent = ex.prompt; setState('pronta', true);
+      fill.style.width = '100%'; show(ex); tween(cost, f.cost);
+      return;
+    }
+
+    pieces.forEach(p => p.classList.remove('is-on'));
+    skel.classList.add('is-on');
+    typed.textContent = '';
+    fill.style.width = '0%';
+    setState('ouvindo o pedido');
+    cost.textContent = '—'; cost.dataset.v = 0;
+
+    const chars = Array.from(ex.prompt);
+    chars.forEach((ch, k) => at(150 + k * 26, () => { typed.textContent += ch; }));
+    const t = 150 + chars.length * 26 + 250;
+    at(t,        () => { setState('lendo o brandcore');          fill.style.width = '30%'; });
+    at(t + 650,  () => { setState('escrevendo na voz da marca'); fill.style.width = '62%'; });
+    at(t + 1350, () => { setState('montando a peça');            fill.style.width = '90%'; });
+    at(t + 2050, () => {
+      fill.style.width = '100%';
+      setState('pronta', true);
+      skel.classList.remove('is-on');
+      show(ex);
+      tween(cost, f.cost);
+    });
+    at(t + 2050 + 5600, next);
+  }
+
+  function next() {
+    if (inView && !hovering && !document.hidden) play((idx + 1) % DEMO.length);
+    else at(700, next);
+  }
+
+  el.addEventListener('mouseenter', () => { hovering = true; });
+  el.addEventListener('mouseleave', () => { hovering = false; });
+  el.addEventListener('focusin', () => { hovering = true; });
+  el.addEventListener('focusout', () => { hovering = false; });
+
+  // Primeira peça já aparece pronta (prova sem esperar). O ciclo começa depois.
+  new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      inView = en.isIntersecting;
+      if (inView && !started && !reduceMotion) { started = true; at(3500, next); }
+    });
+  }, { threshold: 0.35 }).observe(el);
+})();
+
+/* ==========================================================================
+   GALERIA (marquee)
+   ========================================================================== */
+function pieceHTML(p) {
+  const cls = ['piece',
+    p.deco ? 'p-' + p.deco : '',
+    p.story ? 'is-story' : '',
+    p.center ? 'is-center' : '',
+    p.middle ? 'is-middle' : ''].join(' ');
+  const style = `--p-bg:${p.bg};--p-fg:${p.fg};--p-accent:${p.accent};` + (p.accent2 ? `--p-accent2:${p.accent2}` : '');
+  let h = `<div class="${cls}" style="${style}"><div class="p-in">`;
+  if (p.dots) h += '<span class="p-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  if (p.pill) h += `<span class="p-pill">${esc(p.pill)}</span>`;
+  if (p.bar) h += '<span class="p-bar"></span>';
+  if (p.kicker) h += `<span class="p-kicker">${esc(p.kicker)}</span>`;
+  if (p.rules) h += '<span class="p-rule"></span>';
+  h += `<span class="p-title">${esc(p.title)}</span>`;
+  if (p.rules) h += '<span class="p-rule"></span>';
+  if (p.big) h += `<span class="p-big">${esc(p.big)}</span>`;
+  if (p.foot) h += `<span class="p-foot">${esc(p.foot)}</span>`;
+  return h + '</div></div>';
+}
+(function gallery() {
+  const track = $('#marquee-track');
+  const set = items => items.map(p =>
+    `<figure class="m-item${p.story ? ' is-story' : ''}">${pieceHTML(p)}<figcaption>${esc(p.cap)}</figcaption></figure>`
+  ).join('');
+  track.innerHTML =
+    `<div class="marquee-set" role="list" aria-label="Exemplos de peças">${set(GALLERY)}</div>` +
+    `<div class="marquee-set" aria-hidden="true">${set(GALLERY)}</div>`;
+  $$('.marquee-set:first-child figure', track).forEach(f => f.setAttribute('role', 'listitem'));
+})();
+
+/* ==========================================================================
+   PREÇO — plano + calculadora de crédito
+   ========================================================================== */
+(function pricing() {
+  $('#plan-list').innerHTML = VEKOO.includes.map(t => `<li>${esc(t)}</li>`).join('');
+
+  const hasPrice = typeof VEKOO.price === 'number';
+  if (hasPrice) {
+    $('#price-big').innerHTML = `R$ ${VEKOO.price.toLocaleString('pt-BR')}<small> / mês</small>`;
+    $('#price-note').textContent = 'Preço de fundador: quem entra na lista trava esse valor enquanto for assinante.';
+    $('#r-sub').textContent = brl.format(VEKOO.price);
+    $('#r-total-label').textContent = 'Total do mês';
+  }
+
+  const rowsEl = $('#calc-rows'), linesEl = $('#receipt-lines');
+  const qty = {}, lineV = {}, lineQ = {}, outs = {};
+
+  FORMATS.forEach(f => {
+    qty[f.id] = f.def;
+    const row = document.createElement('div');
+    row.className = 'c-row';
+    row.innerHTML =
+      `<div class="c-head"><label for="r-${f.id}">${f.name}</label><output for="r-${f.id}" id="o-${f.id}"></output></div>` +
+      `<input class="range" type="range" id="r-${f.id}" min="0" max="${f.max}" step="1" value="${f.def}">`;
+    rowsEl.appendChild(row);
+    const input = $('input', row);
+    outs[f.id] = $('output', row);
+    const sync = () => {
+      qty[f.id] = +input.value;
+      input.style.setProperty('--fill', (input.value / f.max * 100) + '%');
+      input.setAttribute('aria-valuetext', `${input.value} por mês`);
+      update();
+    };
+    input.addEventListener('input', sync);
+    input.style.setProperty('--fill', (f.def / f.max * 100) + '%');
+
+    const line = document.createElement('div');
+    line.className = 'r-line';
+    line.innerHTML = `<span class="q"></span><span class="lead"></span><span class="v">R$ 0,00</span>`;
+    linesEl.appendChild(line);
+    lineQ[f.id] = $('.q', line);
+    lineV[f.id] = $('.v', line);
+  });
+
+  function update() {
+    let sum = 0;
+    FORMATS.forEach(f => {
+      const n = qty[f.id], v = n * f.cost;
+      sum += v;
+      outs[f.id].textContent = `${n}/mês · ${brl.format(f.cost)} cada`;
+      lineQ[f.id].textContent = `${n} ${n === 1 ? f.one : f.many}`;
+      lineV[f.id].textContent = brl.format(v);
+    });
+    tween($('#r-credit'), sum);
+    tween($('#r-total'), sum + (hasPrice ? VEKOO.price : 0));
+  }
+  update();
+})();
+
+/* ==========================================================================
+   FAQ — acordeão acessível
+   ========================================================================== */
+(function faq() {
+  const list = $('#faq-list');
+  list.innerHTML = FAQ.map(([q, a], i) => {
+    const n = String(i + 1).padStart(2, '0');
+    return `<div class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq-a-${i}" id="faq-q-${i}">
+        <span class="faq-num">${n}</span><span class="faq-text">${esc(q)}</span><span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" id="faq-a-${i}" role="region" aria-labelledby="faq-q-${i}"><div><p>${esc(a)}</p></div></div>
+    </div>`;
+  }).join('');
+  $$('.faq-question', list).forEach(b => b.addEventListener('click', () => {
+    const item = b.parentElement, open = !item.classList.contains('open');
+    item.classList.toggle('open', open);
+    b.setAttribute('aria-expanded', open);
+  }));
+})();
+
+/* ==========================================================================
+   MOVIMENTO — revelação ao scroll, passo atual do método, spotlight
+   ========================================================================== */
+const reveal = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const d = parseInt(en.target.dataset.delay || 0, 10);
+    setTimeout(() => en.target.classList.add('is-visible'), d);
+    reveal.unobserve(en.target);
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+$$('[data-animate]').forEach(el => reveal.observe(el));
+
+const steps = $$('.flow-step');
+const stepObs = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (en.isIntersecting) steps.forEach(s => s.classList.toggle('is-current', s === en.target));
+  });
+}, { rootMargin: '-42% 0px -42% 0px' });
+steps.forEach(s => stepObs.observe(s));
+
+if (!reduceMotion && window.matchMedia('(hover: hover)').matches) {
+  $$('.pain-card').forEach(c => c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }));
+}
+
+})();
+</script>
+</body>
+</html>

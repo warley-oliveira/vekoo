@@ -134,11 +134,12 @@ class Account < ApplicationRecord
     revoked_at.present?
   end
 
-  # O vínculo vale para esta pessoa agora? O de suporte só enquanto ela for suporte; o comum,
+  # O vínculo vale para esta pessoa agora? O de suporte só enquanto ela for suporte (ou staff, numa
+  # organização interna); o comum,
   # enquanto não for revogado. O suporte do Vekoo entra mesmo num vínculo revogado.
   def usable_by?(someone)
     return false unless someone && user_id == someone.id
-    return someone.master? if support?
+    return Support::Entry.allowed?(someone, organization) if support?
 
     !revoked? || someone.master?
   end

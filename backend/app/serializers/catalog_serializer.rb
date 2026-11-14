@@ -11,7 +11,12 @@ class CatalogSerializer < ApplicationSerializer
     card: 1,
     rewrite: 1,
     image: 2,
-    caption: 1
+    caption: 1,
+    # A conversa de criação: uma chamada ao modelo e 2–3 peças renderizadas.
+    # Custa mais que a reescrita e menos que o carrossel inteiro.
+    agent: 6,
+    # O ajuste em linguagem natural: mesma chamada, uma peça só.
+    agentAdjust: 2
   }.freeze
 
   def self.call

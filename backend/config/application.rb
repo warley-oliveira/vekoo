@@ -59,5 +59,11 @@ module Backend
     config.i18n.available_locales = [ :"pt-BR", :en ]
     config.i18n.default_locale = :"pt-BR"
     config.i18n.fallbacks = [ :"pt-BR" ]
+
+    # O WebSocket do ActionCable confere a origem como o CORS confere a da
+    # API: a mesma lista, vinda das mesmas variáveis.
+    config.action_cable.allowed_request_origins = ENV.fetch("FRONTEND_ORIGINS") {
+      ENV.fetch("FRONTEND_ORIGIN", "http://localhost:#{ENV.fetch('VITE_PORT', 5173)}")
+    }.split(",").map(&:strip).reject(&:empty?)
   end
 end

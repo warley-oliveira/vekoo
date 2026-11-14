@@ -1,0 +1,28 @@
+id: carousel-body
+name: { pt-BR: "Lâmina interna", en: "Carousel slide" }
+description:
+  pt-BR: "Lâmina do meio do carrossel: fundo de cor, título e texto, com o número da lâmina. Uma ideia por lâmina."
+  en: "A middle slide: solid background, title and text, with the slide number. One idea per slide."
+formats: [carousel]
+background_options: [color]
+background_default: { type: color, color_token: surface }
+align_options: [left]
+slots:
+  title: { type: text, role_default: headline, max_chars: 70, max_lines: 3, required: true }
+  body:  { type: text, role_default: body, max_chars: 220, max_lines: 7 }
+  logo:  { type: logo, default_visible: false }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: slide_number, box: { left: 80, top: 88 }, size: 28 }
+    # O título começa na mesma altura em todas as lâminas do miolo (30%): ao
+    # arrastar, o olho ancora nele. Texto curto não sobe: a letra cresce
+    # (`PieceDocument::Fit`, um degrau só para o carrossel inteiro).
+    - kind: stack
+      box: { left: 80, right: 80, top: "30%", bottom: 160 }
+      anchor: top
+      gap: 32
+      ink: background
+      items: [ { slot: title, size: 80 }, { slot: body, size: 44 } ]
+    - { kind: logo, slot: logo, box: { right: 80, bottom: 80 }, height: 40 }

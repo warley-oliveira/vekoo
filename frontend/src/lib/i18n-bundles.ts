@@ -18,7 +18,7 @@ function mergeBundles(base: Bundle, extra: Bundle): Bundle {
   return merged
 }
 
-/** `locales/<lang>.json` e depois os arquivos por domínio, em ordem de nome. */
+/** Os arquivos por domínio, em ordem de nome, fundidos sobre `base`. */
 export function buildBundle(base: Bundle, domainFiles: Record<string, Bundle>): Bundle {
   return Object.keys(domainFiles)
     .sort()

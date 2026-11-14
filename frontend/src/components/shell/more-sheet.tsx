@@ -8,6 +8,7 @@ import {
   ChevronDown,
   LogOut,
   Search,
+  ShieldCheck,
   UserPlus,
   UserRound,
   type LucideIcon,
@@ -18,6 +19,7 @@ import { useOrganizationSwitcher } from "@/hooks/organizations/use-organization-
 import { AlertCount } from "@/components/shell/alert-count"
 import { BottomSheet } from "@/components/shell/bottom-sheet"
 import { CreditsSummary } from "@/components/shell/credits-summary"
+import { BrandSwitcher } from "@/components/brand-switcher"
 import { FoldersSection } from "@/components/shell/sidebar-folders"
 import { ThemeSegmented } from "@/components/shell/theme-picker"
 import {
@@ -91,6 +93,11 @@ export function MoreSheet({ onOpenSearch }: { onOpenSearch: () => void }) {
         {sections.map((section) => (
           <section key={section.id}>
             <h3 className={SECTION_TITLE}>{t(section.titleKey)}</h3>
+            {section.id === "creation" && (
+              <div className="mb-2">
+                <BrandSwitcher onNavigate={closeSheet} />
+              </div>
+            )}
             <EntryGrid entries={section.entries} />
             {section.id === "creation" && (
               <div className="mt-1">
@@ -272,6 +279,7 @@ function AccountSection() {
   const canInvite = useCan("core_settings")
   const closeSheet = useMobileNav((state) => state.closeSheet)
   const signOut = useSignOut()
+  const { session } = useAuth()
 
   return (
     <section>
@@ -304,6 +312,14 @@ function AccountSection() {
               onClick={closeSheet}
             />
           </>
+        )}
+        {session?.user.staff && (
+          <AccountLink
+            to="/admin/references"
+            icon={ShieldCheck}
+            label={t("account.curation")}
+            onClick={closeSheet}
+          />
         )}
 
         <div className="flex h-11 items-center justify-between gap-3 px-3">

@@ -1,5 +1,5 @@
 module Support
-  # O suporte do Vekoo entrando numa organização. Devolve o vínculo que a URL vai levar e registra
+  # O suporte do Vekoo (ou staff, numa organização interna) entrando numa organização. Devolve o vínculo que a URL vai levar e registra
   # a entrada (`SupportAccess`), sempre.
   #
   # O vínculo de suporte (`support: true`) nasce na primeira entrada e fica: é ele que dá o hashid
@@ -10,6 +10,14 @@ module Support
       new(...).call
     end
 
+    # O suporte (`master`) entra em qualquer organização; staff, só nas internas da Vekoo (as das
+    # marcas de teste da curadoria).
+    def self.allowed?(user, organization)
+      return false unless user && organization
+
+      user.master? || (user.staff? && organization.internal?)
+    end
+
     def initialize(user:, organization:, ip_address: nil, user_agent: nil)
       @user = user
       @organization = organization
@@ -18,7 +26,7 @@ module Support
     end
 
     def call
-      raise ArgumentError, "só o suporte do Vekoo entra assim" unless @user.master?
+      raise ArgumentError, "só o suporte do Vekoo entra assim" unless self.class.allowed?(@user, @organization)
 
       account = Account.find_by(user_id: @user.id, organization_id: @organization.id) || create_support_account
       SupportAccess.record!(account, ip_address: @ip_address, user_agent: @user_agent)

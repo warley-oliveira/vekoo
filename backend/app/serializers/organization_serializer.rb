@@ -10,6 +10,7 @@ class OrganizationSerializer < ApplicationSerializer
       features: organization.features,
       settings: settings_of(organization),
       logoUrl: StoredImagePath.for(organization.logo, :display),
+      internal: organization.internal,
       createdAt: epoch_ms(organization.created_at)
     }
   end

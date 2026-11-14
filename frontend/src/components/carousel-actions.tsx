@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useCarouselMutations } from "@/hooks/use-carousel-mutations"
 import { useFolders } from "@/hooks/use-folders"
+import { brandPath, useActiveBrand } from "@/lib/brand-context"
 import type { CarouselSummary } from "@/lib/types"
 
 // Menu de ações de um carrossel — o mesmo na grade, na lista e onde mais
@@ -44,7 +45,8 @@ export function CarouselActionsMenu({
   align = "end",
 }: CarouselActionsMenuProps) {
   const { t } = useTranslation()
-  const { folders } = useFolders()
+  const { brandId } = useActiveBrand()
+  const { folders } = useFolders(brandId)
   const actions = useCarouselMutations()
   const navigate = useNavigate()
   const [renameOpen, setRenameOpen] = useState(false)
@@ -143,7 +145,7 @@ export function CarouselActionsMenu({
           <DropdownMenuItem
             onClick={() =>
               // Quem desenha os cards para exportar é o editor: ele abre direto no diálogo.
-              navigate(`/carousels/${carousel.id}/edit`, { state: { export: true } })
+              navigate(brandPath(brandId, `/carousels/${carousel.id}/edit`), { state: { export: true } })
             }
           >
             <Download /> {t("common.export")}

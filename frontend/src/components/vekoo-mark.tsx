@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 export function VekooMark({ className }: { className?: string }) {
   return (
     <span className={cn("font-heading text-lg font-bold tracking-tight", className)}>
+      {/* i18n-exempt: a marca */}
       vekoo<span className="text-primary">.</span>
     </span>
   )

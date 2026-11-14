@@ -4,6 +4,15 @@ Registro vivo, escrito pelo integrador a partir do relatório de cada frente. A 
 
 ## 1. Decisões que podem ser vetadas
 
+### Merge da `main` em 2026-11-13 (marcas, peças, curadoria)
+
+- **`staff` é da pessoa:** a `main` criou `accounts.staff` quando a conta ainda era a pessoa. Com a separação `User` × `Account`, ele foi para `users.staff` (`MoveStaffToUsers`, que roda em qualquer ordem em relação à `SplitUsersFromAccounts`). `UserSerializer` expõe `staff` ao lado de `master`; `account.staff` saiu.
+- **Sem "organização em que a sessão age":** `sessions.acting_organization_id` e `PATCH /me/organization` saíram. A organização de toda requisição continua vindo do vínculo em `X-Account`. Staff entra nas organizações internas pela lista do suporte (`/support/organizations`, filtrada às internas para quem não é `master`), com um vínculo de suporte, como o `master`. `organizations.internal` fica.
+- **A primeira marca nasce com a organização** também em `POST /organizations` (o seletor), não só no cadastro, porque todo conteúdo nasce dentro de uma marca.
+- **Conta de demonstração:** só em development e test, ou com `SEED_DEMO_DATA=1` (as duas regras juntas); os seeds dos domínios só rodam com ela.
+- **Front:** a criação mora em `/a/<hashid>/brands/:brandId/...`; `/` continua sendo o Dashboard da plataforma, e `/carousels`, `/folders/:id`, `/trash`, `/templates` levam à marca ativa. A casca, os tokens e a direção visual são os da plataforma.
+- **Deploy:** vale a produção da `main` (servidor `107.152.37.59`, Let's Encrypt, registry local, pgvector fixado por digest). O que era da plataforma (Mongo, papel `scripts`, segredos dos canais) foi somado ao `deploy.yml` e aos secrets; `META_APP_ID` ficou no `env.clear` (público) e serve aos canais e à curadoria. O roteiro do primeiro deploy da plataforma virou apêndice do `DEPLOY.md`.
+
 ### Arquitetura (ver MANIFEST)
 
 - **Funis sem assistente:** modelo novo `Funnel`, com etapas próprias, no lugar das `classification_steps` do assistente.

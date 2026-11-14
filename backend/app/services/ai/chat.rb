@@ -26,6 +26,15 @@ module Ai
     # Falha vinda do modelo ou da rede. Quem chama traduz para `failed`.
     class Failed < StandardError; end
 
+    # O que `answer` devolve: o texto e o que ele custou. Com ferramentas,
+    # também os pedidos de ferramenta (`tool_uses`: id, nome, entrada) e o
+    # conteúdo cru (`content`), que volta ao modelo **como veio** — os blocos
+    # de pensamento entre uma ferramenta e outra precisam ir junto.
+    Answer = Struct.new(:text, :usage, :model, :content, :tool_uses, :stop_reason, keyword_init: true) do
+      def tool_uses = self[:tool_uses] || []
+      def tool_use? = tool_uses.any?
+    end
+
     def self.available? = ENV["ANTHROPIC_API_KEY"].present?
 
     def initialize(client: nil)
@@ -47,7 +56,7 @@ module Ai
 
       stream.text.each { |piece| yield piece }
     rescue ::Anthropic::Errors::APIStatusError => e
-      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
     rescue ::Anthropic::Errors::APIConnectionError => e
       raise Failed, e.class.name.demodulize
     end
@@ -82,6 +91,67 @@ module Ai
       raise Failed, e.class.name.demodulize
     end
 
+    # Uma resposta com **a conta junto**: texto, tokens e modelo.
+    #
+    # Existe separada de `complete` porque o agente de criação precisa saber o
+    # que gastou (é dessa soma que sai o teto de OPEX) e porque ele manda o
+    # contexto em vários blocos de sistema, com mais de um ponto de cache — o
+    # catálogo de motores é igual para todo mundo, a ficha da marca é igual
+    # para a marca, e só o pedido muda.
+    #
+    # `system:` recebe os blocos já prontos (com `cache_control` onde quem
+    # chama quiser); `messages:` recebe a conversa inteira.
+    #
+    # `tools:` liga o uso de ferramenta (escolha do modelo, `auto`): quando ele
+    # pede uma, a resposta volta com `tool_uses` e quem chama roda o laço.
+    #
+    # `fallbacks: :default` vai pelo caminho beta, com a nova tentativa do
+    # servidor quando o modelo recusa.
+    #
+    # O `model` da resposta é sempre o de quem **atendeu** (o campo `model` da
+    # mensagem), não o pedido: com o fallback eles divergem, e é por quem
+    # atendeu que o custo é calculado e o log é escrito.
+    def answer(system:, messages:, model: MODEL, max_tokens: 8_000, effort: "medium", schema: nil, tools: nil, fallbacks: nil)
+      output_config = { effort: effort }
+      # A saída estruturada fica atrás de uma chave: ligada, o modelo é
+      # obrigado a devolver o formato; desligada (o padrão), o `Agent::Plan`
+      # extrai o JSON do texto e a validação contra o manifesto faz o resto.
+      output_config[:format_] = { type: :json_schema, schema: schema } if schema
+
+      request = {
+        model: model.to_s.to_sym,
+        max_tokens: max_tokens,
+        system_: Array(system),
+        thinking: { type: "adaptive" },
+        output_config: output_config,
+        messages: messages
+      }
+      request[:tools] = tools if tools.present?
+      message =
+        if fallbacks
+          client.beta.messages.create(**request, fallbacks: fallbacks, betas: [ FALLBACK_BETA ])
+        else
+          client.messages.create(**request)
+        end
+
+      raise Failed, "refusal" if message.stop_reason == :refusal
+
+      Answer.new(
+        text: message.content.filter_map { |block| block.text if block.type == :text }.join,
+        usage: self.class.usage_from(message.usage),
+        model: message.model.to_s.presence || model.to_s,
+        content: message.content,
+        tool_uses: message.content.filter_map { |block|
+          { id: block.id, name: block.name, input: block.input.to_h.deep_stringify_keys } if block.type == :tool_use
+        },
+        stop_reason: message.stop_reason
+      )
+    rescue ::Anthropic::Errors::APIStatusError => e
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
+    rescue ::Anthropic::Errors::APIConnectionError => e
+      raise Failed, e.class.name.demodulize
+    end
+
     # O conteúdo de uma resposta como volta na rodada seguinte. Os blocos de pensamento precisam
     # voltar intactos. A exceção é a virada de modelo no meio da escrita: o que veio antes do último
     # bloco `fallback` foi do modelo que recusou, e pensamento e chamada de ferramenta dele não valem
@@ -101,6 +171,18 @@ module Ai
       end
     end
 
+    # Os quatro números que a conta precisa. Cache lido e cache escrito têm
+    # preços diferentes da entrada normal — juntar tudo em "input" mentiria em
+    # até 12×.
+    def self.usage_from(usage)
+      {
+        input: usage&.input_tokens.to_i,
+        output: usage&.output_tokens.to_i,
+        cacheRead: usage&.cache_read_input_tokens.to_i,
+        cacheWrite: usage&.cache_creation_input_tokens.to_i
+      }
+    end
+
     # Uma resposta só, para quando não há o que mostrar em pedaços.
     def complete(system:, prompt:, max_tokens: 1_000, effort: "low", model: MODEL)
       message = client.messages.create(
@@ -118,7 +200,7 @@ module Ai
 
       message.content.filter_map { |block| block.text if block.type == :text }.join
     rescue ::Anthropic::Errors::APIStatusError => e
-      raise Failed, "#{e.class.name.demodulize}: #{e.type}"
+      raise Failed, "#{e.class.name.demodulize}: #{e.type} — #{e.message.to_s[0, 400]}"
     rescue ::Anthropic::Errors::APIConnectionError => e
       raise Failed, e.class.name.demodulize
     end

@@ -1,0 +1,111 @@
+{
+  "agent": {
+    "hero": {
+      "title": "What are we making?",
+      "description": "Describe it in one sentence. The assistant writes the copy with {{brand}}'s details, creates the photo when one is missing and delivers the pieces ready."
+    },
+    "composer": {
+      "label": "Describe the piece you want",
+      "placeholder": "Write what you want to create…",
+      "examples": [
+        "a story for Father's Day tomorrow",
+        "a post about our cheese bread with a photo fresh out of the oven",
+        "a post for Wednesday's promotion",
+        "3 photos of the shop window in the morning for the feed",
+        "a story saying the October class is on sale"
+      ],
+      "adjustExamples": [
+        "make the background darker",
+        "shorten the line",
+        "put the price front and centre",
+        "try a more direct tone",
+        "use the other brand colour"
+      ],
+      "attach": "Attach photo",
+      "hint": "{{credits}} credits per request · new photo, {{image}} each",
+      "send": "Create",
+      "working": "Creating…",
+      "attachmentsAria": "Photos attached to the request",
+      "removePhoto": "Remove {{name}}",
+      "photoAdded": "Photo added to the brand's assets.",
+      "photoFailed": "Couldn't upload the photo.",
+      "photoType": "Upload a JPEG, PNG or WebP image.",
+      "photoTooLarge": "That image is over the size limit."
+    },
+    "turn": {
+      "aria": "Request from {{when}}",
+      "results_one": "{{count}} option. Pick one and refine it, or download it as is.",
+      "results_other": "{{count}} options. Pick one and refine it, or download it as is.",
+      "oneResult": "Done. Ask for another tweak if it isn't quite right.",
+      "questionHint": "Without that fact the piece would carry an invented number. Answer below and I'll carry on.",
+      "answer": "Answer",
+      "failedHint": "No credits were charged.",
+      "retry": "Try again",
+      "varyRequest": "Other compositions of this piece",
+      "adjustLabel": "tweak to the chosen piece",
+      "failedHintPhotos": "The request wasn't charged. The photo it created stays in the brand's photos.",
+      "photos_one": "Done: {{count}} photo. It's already in the brand's photos — use it in a piece or download it.",
+      "photos_other": "Done: {{count}} photos. They're already in the brand's photos — use one in a piece or download it."
+    },
+    "variation": {
+      "download": "Download",
+      "adjust": "Tweak",
+      "vary": "Vary",
+      "open": "Open {{title}} in the gallery"
+    },
+    "recent": {
+      "title": "Recent requests",
+      "delete": "Delete “{{title}}”",
+      "deleted": "Request deleted. The pieces stay in the gallery.",
+      "deleteFailed": "Couldn't delete the request.",
+      "retention_one": "Requests disappear after {{count}} day of inactivity. The pieces stay.",
+      "retention_other": "Requests disappear after {{count}} days of inactivity. The pieces stay."
+    },
+    "errors": {
+      "failed": "I couldn't put the piece together right now.",
+      "agentInvalidPlan": "I couldn't fit that request into any piece type. Try describing it another way.",
+      "brandNotPublished": "The brand needs to be published.",
+      "noCredits": "You're out of credits.",
+      "busy": "I'm still working on the previous request.",
+      "costCapReached": "Creating by conversation is unavailable right now. Try again later.",
+      "sendFailed": "Couldn't send the request."
+    },
+    "brandNotPublished": {
+      "title": "Publish the brand first",
+      "description": "The assistant writes with the colours, fonts, voice and products of the published version. Fill in the minimum and publish to start.",
+      "cta": "Go to the brand"
+    },
+    "advancedLink": "Advanced mode: pick the piece type and fill it in by hand",
+    "newRequest": "New request",
+    "backToNew": "Start a new request",
+    "adjustingChip": "Tweaking “{{title}}”",
+    "adjustingCancel": "Cancel the tweak",
+    "progress": {
+      "reading": "Reading the request and the brand…",
+      "photo": "Creating the photo: {{caption}}",
+      "composing": "Checking the photo and putting the rest together…",
+      "seconds": "{{seconds}}s"
+    },
+    "photo": {
+      "developing": "developing · {{seconds}}s",
+      "notOut": "didn't come out",
+      "zoom": "Enlarge: {{caption}}",
+      "zoomHint": "The photo, larger.",
+      "download": "Download",
+      "downloadFailed": "Couldn't download the photo.",
+      "use": "Use in a piece",
+      "attached": "Photo attached. Now describe the piece.",
+      "stepOne": "photo · {{caption}}",
+      "stepMany": "{{count}} photos · {{caption}}",
+      "strip_one": "Photo created for these pieces. It's already in the brand's photos.",
+      "strip_other": "{{count}} photos created for these pieces. They're already in the brand's photos.",
+      "errors": {
+        "blocked": "the generator turned this photo down",
+        "failed": "the photo didn't come out",
+        "unavailable": "photo generator unavailable",
+        "noCredits": "no credits left for the photo",
+        "costCapReached": "photos unavailable right now"
+      }
+    }
+  }
+}

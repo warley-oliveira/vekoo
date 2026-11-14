@@ -1,0 +1,26 @@
+{
+  "taxonomy": {
+    "niches": {
+      "food_beverage": "Alimentação e bebidas",
+      "real_estate": "Imóveis",
+      "healthcare": "Saúde",
+      "beauty_aesthetics": "Beleza e estética",
+      "fashion_retail": "Moda e varejo",
+      "fitness": "Fitness e esporte",
+      "education": "Educação",
+      "professional_services": "Serviços profissionais",
+      "pet": "Pet",
+      "home_construction": "Casa e construção"
+    },
+    "archetypes": {
+      "premium_minimal": { "label": "Premium e minimalista", "hint": "Muito respiro, pouco texto, a foto é a estrela." },
+      "popular_warm": { "label": "Popular e calorosa", "hint": "Cores quentes, conversa próxima, oferta clara." },
+      "technical_authority": { "label": "Técnica e didática", "hint": "Dados, explicação e um tom seguro." },
+      "young_irreverent": { "label": "Jovem e irreverente", "hint": "Humor e letras com personalidade." },
+      "natural_artisanal": { "label": "Natural e artesanal", "hint": "Texturas, tons de terra, processo e origem." },
+      "caring_welcoming": { "label": "Acolhedora", "hint": "Pessoas, depoimentos e um tom de cuidado." },
+      "bold_energetic": { "label": "Ousada e enérgica", "hint": "Alto contraste e convite forte para agir." },
+      "traditional_heritage": { "label": "Tradicional", "hint": "História, tempo de casa e estética clássica." }
+    }
+  }
+}

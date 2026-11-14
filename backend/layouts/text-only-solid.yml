@@ -1,0 +1,34 @@
+id: text-only-solid
+name: { pt-BR: "Só texto, fundo de cor", en: "Text only, solid colour" }
+description:
+  pt-BR: "Fundo na cor da marca e só texto. Para frases fortes, avisos, preço em destaque e posts tipográficos."
+  en: "Brand-colour background and text only. For strong lines, notices, a headline price and typographic posts."
+formats: [feed_square, feed_portrait, story, carousel]
+background_options: [color]
+background_default: { type: color, color_token: primary }
+align_options: [left, center]
+slots:
+  badge: { type: text, role_default: label, max_chars: 30 }
+  title: { type: text, role_default: display, max_chars: 90, max_lines: 4, required: true }
+  body:  { type: text, role_default: body, max_chars: 160, max_lines: 4 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - kind: stack
+      box: { left: 96, right: 96, top: 120, bottom: 200 }
+      anchor: center
+      gap: 32
+      ink: background
+      items: [ { slot: badge, size: 32 }, { slot: title, size: 96 }, { slot: body, size: 40 } ]
+    - { kind: logo, slot: logo, box: { left: 96, bottom: 96 }, height: 56 }
+  story:
+    - { kind: fill, box: full }
+    - kind: stack
+      box: { left: 96, right: 96, top: 300, bottom: 420 }
+      anchor: center
+      gap: 36
+      ink: background
+      items: [ { slot: badge, size: 34 }, { slot: title, size: 104 }, { slot: body, size: 42 } ]
+    - { kind: logo, slot: logo, box: { left: 96, bottom: 320 }, height: 60 }

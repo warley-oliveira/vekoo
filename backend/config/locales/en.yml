@@ -7,7 +7,26 @@ en:
     too_many_requests: "Too many attempts. Wait a few minutes and try again."
     secret_header_needs_retyping: "Type the value of %{name} again: it isn't kept for another address or another header."
     unprocessable: "We couldn't save that. Check the fields."
+    brand_required: "Every carousel is born inside a brand. Pick the brand before creating."
     parameter_missing: "Missing %{param}."
+    images_required: "Send at least one image of the post (or a direct image link)."
+    too_many_images: "Up to 10 images per reference."
+    image_invalid: "That file isn't an image we can open."
+    image_too_large: "Each image can be up to 10 MB."
+    url_not_image: "That link isn't an image. Send a screenshot of the post."
+    url_refused: "That address isn't accepted. Use a public https link."
+    url_failed: "We couldn't download the image from that link. Send the file."
+    analysis_not_retryable: "Only a failed analysis can run again."
+    analysis_running: "The analysis is still running. Wait for it to finish before editing."
+    eval_incomplete: "The round still has pairs without a verdict. Results come out once every pair is rated."
+    card_archived: "An archived card is read-only. Reopen it to edit."
+    handles_required: "Paste at least one Instagram account @."
+    too_many_handles: "Up to %{max} accounts per batch."
+    invalid_handles: "Some items aren't Instagram @s. Check them and try again."
+    instagram_not_configured: "Instagram import isn't set up in this environment (DEPLOY.md, Instagram)."
+    instagram_token_invalid: "The Instagram token expired or was revoked. Generate a new one (DEPLOY.md, Instagram)."
+    nothing_selected: "Pick at least one post to analyze."
+    import_not_retryable: "There's nothing to retry for this account."
     format: "%{attribute} %{message}"
     messages:
       blank: "can't be blank"
@@ -21,17 +40,38 @@ en:
       too_long: "is too long (maximum is %{count} characters)"
       not_a_number: "is not a number"
       greater_than_or_equal_to: "must be greater than or equal to %{count}"
+      too_many_lines: "has too many lines"
+      line_too_long: "has a line that is too long"
+      too_many_items: "has too many items"
+      too_small: "is too small"
       less_than_or_equal_to: "must be less than or equal to %{count}"
+      invalid_transition: "can't go from %{from} to %{to}"
+      leak: "mentions where the reference came from (%{term})"
+      copied: "repeats a sentence from the post"
 
   auth:
     email_not_found: "We couldn't find an account with that email."
     wrong_password: "Wrong password. Try again."
     email_taken: "That email already has a Vekoo account."
+    signup_closed: "Sign-up is still closed: for now, only invited people can join."
     reset_token_invalid: "This password link has expired or was already used."
 
   ai:
     failed: "The generation failed. Try again."
     busy: "There's already a generation running. Wait for it to finish."
+
+  onboarding:
+    unknown_kind: "I can't propose that."
+    cannot_finish: "Still missing the basics: name, what you do, colours and fonts."
+    cannot_go_back: "This is already the first question."
+    logo_required: "Upload your logo or let Vekoo draw a wordmark."
+    wordmark_failed: "Couldn't draw the wordmark. You can upload a file instead."
+
+  agent:
+    untitled: "Untitled request"
+    busy: "I'm still working on the previous request. One moment."
+    attachment_unknown: "That photo is not in the brand's assets."
+    cost_cap: "Creating by conversation is unavailable right now. Try again later."
 
   credits:
     no_credits: "You're out of credits."
@@ -43,12 +83,57 @@ en:
   carousels:
     copy_suffix: "copy"
 
+  brand_core:
+    invalid: "Something in this step doesn't add up. Check the fields."
+    incomplete: "The brand minimum isn't filled in yet, so it can't be published."
+    roles:
+      dark_background: "Dark background"
+      light_background: "Light background"
+      text_on_dark: "Text on dark"
+      text_on_light: "Text on light"
+      muted: "Support"
+      accent: "Accent"
+      campaign: "Campaign"
+    tones:
+      direct: "direct"
+      warm: "warm"
+      playful: "playful"
+      technical: "technical"
+      inspiring: "inspiring"
+      sober: "sober"
+      bold: "bold"
+      educational: "educational"
+    assets:
+      bad_kind: "That asset type doesn't exist."
+      too_large: "The file is over the %{max} limit."
+      unsupported_logo: "The logo must be a PNG, SVG, JPEG or WebP image — ideally a PNG with a transparent background."
+      unsupported_glyph: "The glyph must be a PNG, SVG, JPEG or WebP image — ideally a PNG with a transparent background."
+      unsupported_photo: "That file isn't a JPEG, PNG or WebP image."
+      unsupported_font: "That file isn't a TTF, OTF or WOFF2 font."
+
+  images:
+    unavailable: "Image generation isn't switched on for this account yet."
+  pieces:
+    locked: "This piece is approved. Undo the approval to edit it."
+    conflict: "This piece was changed in another tab. Reload to continue."
+    errors:
+      values_invalid: "Something in the piece fields doesn't add up."
+      brand_not_published: "Publish the brand before generating pieces."
+      engine_unknown: "That piece type doesn't exist."
+      format_unsupported: "That piece type doesn't come in that format."
+      render_failed: "Generation failed. Try again."
+
   activerecord:
     models:
       account: "account"
       carousel: "carousel"
       folder: "folder"
       organization: "organization"
+      brand_core: "brand"
+      brand_asset: "brand asset"
+      brand_core_version: "brand version"
+      piece: "piece"
+      reference_card: "reference card"
     attributes:
       account:
         name: "name"
@@ -68,3 +153,29 @@ en:
       folder:
         name: "name"
         color: "color"
+      brand_core:
+        status: "status"
+        document: "document"
+      brand_asset:
+        kind: "kind"
+        variant: "variant"
+        filename: "file"
+        content_type: "format"
+        byte_size: "size"
+      piece:
+        title: "title"
+        engine_id: "piece type"
+        format: "format"
+        status: "status"
+      reference_card:
+        status: "status"
+        origin: "origin"
+        niche: "niche"
+        size: "size"
+        archetypes: "archetypes"
+        objective: "objective"
+        format: "format"
+        suggested_layout_id: "suggested layout"
+        analysis: "analysis"
+        source: "source"
+        archived_reason: "reason"

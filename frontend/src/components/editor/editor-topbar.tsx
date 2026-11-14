@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Link, useLocation } from "@/lib/router"
 import { useTranslation } from "react-i18next"
+
+import { brandPath, useBrandIdFromRoute } from "@/lib/brand-context"
 import { AnimatePresence } from "motion/react"
 import {
   ArrowLeft,
@@ -37,7 +39,13 @@ export function EditorTopbar({ onOpenAi }: { onOpenAi: () => void }) {
     return true
   })
 
-  const backTo = folderId ? `/folders/${folderId}` : "/carousels"
+  const brandId = useBrandIdFromRoute()
+  // Sem marca na URL (link de antes da marca), a lista de carrosséis da marca ativa.
+  const backTo = brandId
+    ? brandPath(brandId, folderId ? `/folders/${folderId}` : "/carousels")
+    : folderId
+      ? `/folders/${folderId}`
+      : "/carousels"
   const active = activeCard(state)
   const activeIndex = active ? state.doc.cards.indexOf(active) : 0
   const hasCards = state.doc.cards.length > 0

@@ -3,18 +3,21 @@ import type { Carousel, CarouselSummary } from "@/lib/types"
 
 // Leitura dos carrosséis.
 //
-// Só `folder_id` e `trashed` entram na chave. Favorito, a aba "recentes" e a
-// ordenação ficam no cliente: a lista de uma organização cabe na memória, trocar
-// de aba fica instantâneo, e cada chave a menos é uma lista a menos para
-// remendar em cada atualização otimista.
+// `brand_id`, `folder_id` e `trashed` entram na chave. Favorito, a aba
+// "recentes" e a ordenação ficam no cliente: a lista de uma marca cabe na
+// memória, trocar de aba fica instantâneo, e cada chave a menos é uma lista
+// a menos para remendar em cada atualização otimista.
 
 export type CarouselFilters = {
+  /** A marca ativa — todo carrossel pertence a uma. */
+  brandId?: string
   folderId?: string | null
   trashed?: boolean
 }
 
 export function carouselsKey(filters: CarouselFilters = {}): string {
   const params = new URLSearchParams()
+  if (filters.brandId) params.set("brand_id", filters.brandId)
   if (filters.trashed) params.set("trashed", "true")
   if (filters.folderId) params.set("folder_id", filters.folderId)
   const query = params.toString()

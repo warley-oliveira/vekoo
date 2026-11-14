@@ -1,0 +1,40 @@
+# Post com título, parágrafo de apoio e uma caixa de destaque com filete.
+id: promo_box
+name: { pt-BR: "Caixa de promoção", en: "Promo box" }
+description:
+  pt-BR: "Título na fonte display, parágrafo de apoio e uma caixa de destaque com tag, descrição e preço."
+  en: "Display headline, supporting paragraph and a highlight box with tag, description and price."
+formats: [post]
+fields:
+  - id: title
+    type: text
+    required: true
+    label: { pt-BR: "Título", en: "Title" }
+    constraints: { maxLines: 2, maxCharsPerLine: 22 }
+  - id: support
+    type: text
+    required: false
+    label: { pt-BR: "Parágrafo de apoio", en: "Supporting paragraph" }
+    constraints: { maxLines: 3, maxCharsPerLine: 44 }
+  - id: tag
+    type: text
+    required: true
+    label: { pt-BR: "Tag da caixa", en: "Box tag" }
+    hint: { pt-BR: "Ex.: só esta semana", en: "E.g. this week only" }
+    constraints: { maxLines: 1, maxChars: 20 }
+  - id: description
+    type: text
+    required: true
+    label: { pt-BR: "Descrição da oferta", en: "Offer description" }
+    constraints: { maxLines: 2, maxCharsPerLine: 34 }
+  - id: price
+    type: text
+    required: true
+    label: { pt-BR: "Preço ou oferta", en: "Price or offer" }
+    hint: { pt-BR: "Ex.: R$ 39 · 20% de desconto", en: "E.g. $39 · 20% off" }
+    constraints: { maxLines: 1, maxChars: 40 }
+  - id: background
+    type: choice
+    required: false
+    label: { pt-BR: "Fundo", en: "Background" }
+    source: palette.backgrounds

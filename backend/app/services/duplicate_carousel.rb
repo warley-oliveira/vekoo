@@ -9,6 +9,7 @@ class DuplicateCarousel
 
   def call
     @carousel.organization.carousels.create!(
+      brand_core: @carousel.brand_core,
       title: @title.presence || default_title,
       format: @carousel.format,
       theme: @carousel.theme.deep_dup,

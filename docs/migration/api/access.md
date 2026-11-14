@@ -60,7 +60,7 @@ Os três respondem no mesmo formato. `user` é a pessoa; `accounts`, os vínculo
 {
   "user": {
     "id": "ea8ff3af-…", "name": "Marina Duarte", "email": "marina.duarte@exemplo.com.br",
-    "phone": null, "locale": null, "avatarUrl": null, "master": false, "createdAt": 1791502360619
+    "phone": null, "locale": null, "avatarUrl": null, "master": false, "staff": false, "createdAt": 1791502360619
   },
   "accounts": [
     { "id": "b56a981d-…", "hashid": "7kxn7q4r", "role": "owner", "support": false, "lastSeenAt": 1794096637809,
@@ -108,7 +108,7 @@ Os vínculos ativos da pessoa, no formato de `accounts` acima: `{ "accounts": [.
 
 ## Suporte do Vekoo: `/support`
 
-Para `User#master`. Para qualquer outra pessoa, as rotas respondem `404 notFound`. `master` só muda por `bin/rails "support:grant[EMAIL]"` / `support:revoke`, ou console: nenhuma rota, parâmetro ou serializer escreve nele.
+Para `User#master`, e para `User#staff` só nas organizações **internas** da Vekoo (`organizations.internal`, as das marcas de teste da curadoria): a lista traz só elas e entrar em outra é `404`. Para qualquer outra pessoa, as rotas respondem `404 notFound`. `staff` só muda por `bin/rails "staff:grant[EMAIL]"` / `staff:revoke`; o vínculo de suporte de staff numa interna para de valer quando a pessoa deixa de ser staff ou a organização deixa de ser interna. `master` só muda por `bin/rails "support:grant[EMAIL]"` / `support:revoke`, ou console: nenhuma rota, parâmetro ou serializer escreve nele.
 
 | Rota | O que faz |
 |---|---|

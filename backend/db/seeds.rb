@@ -9,6 +9,13 @@
 #      escritos em pt-BR de nichos variados. É *obra do usuário* fictício, não
 #      interface: fica em pt-BR mesmo quando a API responde em inglês.
 #
+# **A demonstração só existe em development e test.** A conta tem e-mail e
+# senha escritos neste arquivo, então em qualquer outro ambiente — produção
+# inclusive, onde o `db:prepare` de um banco vazio roda esta semente — só o
+# acervo é aplicado. Não há chave para ligar: quem precisar de conta lá usa o
+# cadastro, como todo mundo. Nenhuma semente cria conta staff
+# (`bin/rails 'staff:grant[email]'` é o único caminho).
+#
 # Idempotente: os ids são UUIDv5 derivados do apelido de cada registro
 # (`car-nutricao` → sempre o mesmo UUID), então rodar de novo atualiza em vez
 # de duplicar.
@@ -16,6 +23,7 @@
 #   bin/rails db:seed
 
 require "active_support/core_ext/digest/uuid"
+require "zlib"
 
 # Semear duas vezes no mesmo processo é normal (a spec de idempotência faz
 # isso); sem esta linha, a segunda vez enche o log de "already initialized
@@ -348,6 +356,11 @@ module VekooSeeds
 
   DEMO_EMAIL = "marina.duarte@exemplo.com.br"
   DEMO_PASSWORD = "carrossel123"
+  DEMO_ENVIRONMENTS = %w[development test].freeze
+
+  # A conta de demonstração tem senha pública: só em development e test, a menos que o ambiente
+  # seja de demonstração (`SEED_DEMO_DATA=1`). `db:prepare` roda esta semente em banco vazio.
+  def demo? = DEMO_ENVIRONMENTS.include?(Rails.env.to_s) || ENV["SEED_DEMO_DATA"] == "1"
 
   def seed_demo_account!
     organization = Organization.find_or_initialize_by(id: id_for("org-marina"))
@@ -389,7 +402,12 @@ module VekooSeeds
 
   def carousel!(organization, slug, attributes)
     carousel = Carousel.find_or_initialize_by(id: id_for(slug))
-    carousel.assign_attributes(attributes.merge(organization: organization, folder: nil))
+    brand = organization.brand_cores.first
+    carousel.assign_attributes(attributes.merge(
+      organization: organization, folder: nil, brand_core: brand,
+      # Nasceram depois da publicação: carregam a versão publicada da marca.
+      brand_core_version: brand.versions.find_by(number: brand.current_version)
+    ))
     carousel.save!
     carousel
   end
@@ -985,19 +1003,241 @@ module VekooSeeds
       ])
   end
 
-  # A conta de demonstração tem senha pública. Em produção, só o acervo, que é dado do produto, a menos
-  # que o ambiente seja de demonstração. `db:prepare` roda esta semente em banco vazio.
-  def demo?
-    !Rails.env.production? || ENV["SEED_DEMO_DATA"] == "1"
+
+  # -------------------------------------------------------------------------
+  # O Brandcore da Marina — a marca dela como dado estruturado, completo e
+  # publicado, com duas versões no histórico. É o que as telas do formulário
+  # e o preview do "cartão da marca" mostram em desenvolvimento.
+
+  def brand_document_v1
+    {
+      "identity" => {
+        "name" => "Marina Duarte Conteúdo",
+        "segment" => "Estratégia de conteúdo para pequenos negócios",
+        "concept" => "Conteúdo que vende sem parecer anúncio.",
+        "positioning" => "A estrategista que traduz marketing para quem toca o próprio negócio: " \
+          "sem jargão, com exemplo na mão e um carrossel por semana que traz cliente.",
+        "characters" => [
+          { "id" => "per-marina", "name" => "Marina", "role" => "Fundadora e voz principal — aparece em primeira pessoa" },
+          { "id" => "per-teo", "name" => "Téo", "role" => "Assistente que responde dúvidas nos comentários" }
+        ],
+        "address" => "Belo Horizonte, MG",
+        "instagram" => "marinaduarte.conteudo",
+        "networks" => [
+          { "id" => "rede-tiktok", "network" => "tiktok", "handle" => "@marinaduarte.conteudo" },
+          { "id" => "rede-site", "network" => "site", "handle" => "marinaduarte.com.br" }
+        ]
+      },
+      "palette" => {
+        "colors" => [
+          { "id" => "cor-ameixa", "name" => "Ameixa", "hex" => "#2b1d3a", "role" => "darkBackground" },
+          { "id" => "cor-creme", "name" => "Creme", "hex" => "#f4ecff", "role" => "textOnDark" },
+          { "id" => "cor-papel", "name" => "Papel", "hex" => "#f7f2ec", "role" => "lightBackground" },
+          { "id" => "cor-tinta", "name" => "Tinta", "hex" => "#1e1528", "role" => "textOnLight" },
+          { "id" => "cor-nevoa", "name" => "Névoa", "hex" => "#8b7f99", "role" => "muted" },
+          { "id" => "cor-violeta", "name" => "Violeta", "hex" => "#7c3aed", "role" => "accent" }
+        ]
+      },
+      "typography" => {
+        "display" => {
+          "family" => "Bricolage Grotesque", "source" => "catalog", "weights" => [ 600, 700, 800 ],
+          "usage" => "Títulos, números de destaque e capas", "assetId" => nil
+        },
+        "utility" => {
+          "family" => "Geist", "source" => "catalog", "weights" => [ 400, 500, 600 ],
+          "usage" => "Corpo, listas, rodapé e legendas", "assetId" => nil
+        },
+        "rules" => [ "Nunca itálico", "Negrito não é ênfase: é hierarquia", "Título nunca passa de duas linhas" ]
+      },
+      "styles" => { "roles" => BrandCore::Schema.default_styles },
+      "voice" => {
+        "essence" => "Explica como amiga que entende do assunto: clara, direta e com exemplo na mão.",
+        "tones" => [ "direct", "warm", "educational" ],
+        "toneNote" => "Pode brincar, mas nunca às custas de quem está começando.",
+        "bannedWords" => [
+          { "id" => "ban-alavancar", "text" => "alavancar" },
+          { "id" => "ban-disruptivo", "text" => "disruptivo" },
+          { "id" => "ban-valor", "text" => "conteúdo de valor" },
+          { "id" => "ban-engajar", "text" => "engajar" },
+          { "id" => "ban-sinergia", "text" => "sinergia" }
+        ],
+        "qualityRules" => {
+          "maxOneAntithesis" => true, "alwaysConcreteData" => true, "noEmojiRendered" => true,
+          "noGenericClaims" => true, "noStackedExclamation" => true
+        },
+        "examples" => [
+          { "id" => "ex-1", "text" => "Você não precisa postar todo dia. Precisa postar o que a pessoa salva. Esta semana: um carrossel, sete dias de retorno." },
+          { "id" => "ex-2", "text" => "Preço no post ou no direct? No post. Quem some quando vê o número não ia comprar." }
+        ]
+      },
+      # O que a Marina vende. É daqui que o agente tira todo número que a
+      # peça mostra — e é por isso que ele nunca precisa inventar um.
+      "offers" => {
+        "items" => [
+          {
+            "id" => "of-mentoria", "name" => "Mentoria individual", "price" => "R$ 890/mês",
+            "description" => "Quatro encontros ao vivo por mês, com plano de conteúdo revisado junto.",
+            "validity" => "Vagas abrem no primeiro dia útil de cada mês"
+          },
+          {
+            "id" => "of-workshop", "name" => "Workshop Carrossel que vende", "price" => "R$ 149",
+            "description" => "Três horas ao vivo, com um modelo pronto para adaptar ao seu negócio.",
+            "validity" => "28 de setembro, online, 19h"
+          },
+          {
+            "id" => "of-turma", "name" => "Turma de outubro da mentoria", "price" => "20% de desconto",
+            "description" => "Mesma mentoria, com desconto para quem entra na turma de outubro.",
+            "validity" => "Até 15 de setembro"
+          }
+        ]
+      },
+      "notes" => {
+        "text" => "Atendimento: Seg–Qui 9h–18h · Sex 9h–17h\n" \
+          "Responde direct em até um dia útil\n" \
+          "Nunca faz post de \"bom dia\": todo post ensina ou vende"
+      }
+    }
   end
 
+  # A segunda versão: entrou a cor de campanha e a Marina afinou a essência.
+  def brand_document_v2
+    v1 = brand_document_v1
+    v1["palette"]["colors"] << { "id" => "cor-coral", "name" => "Coral", "hex" => "#ff6b4a", "role" => "campaign" }
+    v1["voice"]["essence"] = "Explica como amiga que entende do assunto: clara, direta, com exemplo na mão e sem prometer milagre."
+    v1
+  end
+
+  def seed_brand_core!(organization, account)
+    v1 = brand_document_v1
+    v2 = brand_document_v2
+
+    brand_core = BrandCore.find_or_initialize_by(id: id_for("brandcore-marina"))
+    brand_core.assign_attributes(
+      organization: organization,
+      status: "published",
+      document: v2,
+      published_document: v2,
+      progress: { "visitedSteps" => BrandCore::Schema::STEPS, "lastStep" => "notes" },
+      current_version: 2,
+      published_at: 3.days.ago
+    )
+    brand_core.save!
+
+    versions = [
+      [ "brandcore-marina-v1", 1, v1, [], 12.days.ago ],
+      [ "brandcore-marina-v2", 2, v2, BrandCore::Diff.call(v1, v2), 3.days.ago ]
+    ]
+    # Publicações feitas mexendo na tela em desenvolvimento saem: a semente é
+    # o retrato exato, não um acúmulo.
+    brand_core.versions.where.not(id: versions.map { |slug, *| id_for(slug) }).delete_all
+    versions.each do |slug, number, snapshot, changes, at|
+      version = BrandCoreVersion.find_or_initialize_by(id: id_for(slug))
+      version.update!(brand_core: brand_core, account: account, number: number,
+        snapshot: snapshot, change_list: changes, created_at: at)
+    end
+
+    seed_brand_assets!(brand_core, organization, account)
+    brand_core
+  end
+
+  # Logos gerados aqui mesmo (um PNG com fundo transparente de verdade): a
+  # semente não depende de arquivo binário no repositório.
+  def seed_brand_assets!(brand_core, organization, account)
+    [
+      [ "brand-logo-light", "logo", "light", "logo-claro.png", [ 124, 58, 237 ] ],
+      [ "brand-logo-dark", "logo", "dark", "logo-escuro.png", [ 244, 236, 255 ] ],
+      [ "brand-glyph-light", "glyph", "light", "glifo-claro.png", [ 124, 58, 237 ] ]
+    ].each do |slug, kind, variant, filename, rgb|
+      asset = BrandAsset.find_or_initialize_by(id: id_for(slug))
+      png = transparent_png(kind == "glyph" ? 96 : 288, 96, rgb)
+      asset.assign_attributes(
+        brand_core: brand_core, organization: organization, account: account,
+        kind: kind, variant: variant, filename: filename, content_type: "image/png",
+        byte_size: png.bytesize, width: kind == "glyph" ? 96 : 288, height: 96, transparent: true,
+        # As duas variantes são **uma** logo (o mesmo grupo), enviada pela Marina.
+        logo_id: kind == "logo" ? id_for("brand-logo") : nil,
+        meta: kind == "logo" ? { "origin" => "upload" } : {}
+      )
+      asset.file.purge if asset.file.attached? && asset.file.byte_size != png.bytesize
+      asset.file.attach(io: StringIO.new(png), filename: filename, content_type: "image/png") unless asset.file.attached?
+      asset.save!
+    end
+  end
+
+  # Um disco da cor da marca sobre fundo transparente — o bastante para as
+  # telas mostrarem um logo de verdade, com alfa de verdade.
+  def transparent_png(width, height, rgb)
+    chunk = ->(type, data) {
+      body = type.b + data.b
+      [ data.bytesize ].pack("N") + body + [ Zlib.crc32(body) ].pack("N")
+    }
+    radius = height / 2.0 - 4
+    rows = (0...height).map { |y|
+      pixels = (0...width).flat_map { |x|
+        # Uma fileira de discos ao longo da largura, para o logo largo.
+        cx = ((x / height) * height) + height / 2.0
+        inside = ((x - cx)**2 + (y - height / 2.0)**2) <= radius**2
+        rgb + [ inside ? 255 : 0 ]
+      }.pack("C*")
+      "\x00".b + pixels
+    }.join
+    "\x89PNG\r\n\x1a\n".b +
+      chunk.call("IHDR", [ width, height, 8, 6, 0, 0, 0 ].pack("NNCCCCC")) +
+      chunk.call("IDAT", Zlib::Deflate.deflate(rows)) +
+      chunk.call("IEND", "")
+  end
+
+
+  # -------------------------------------------------------------------------
+  # Peças de exemplo: uma por motor, geradas na hora sobre a marca publicada
+  # da Marina.
+
+  PIECE_EXAMPLES = [
+    [ "peca-statement", "statement", "story", "Conteúdo que vende",
+      { "phrase" => "Conteúdo que vende\nsem parecer anúncio.", "label" => "mentoria a partir de", "price" => "R$ 890/mês" } ],
+    [ "peca-preco-heroi", "preco_heroi", "post", "Mentoria individual",
+      { "label" => "Mentoria individual", "price" => "R$ 890/mês", "subline" => "4 encontros por mês, ao vivo" } ],
+    [ "peca-foto-copy", "foto_copy", "post", "Bastidores",
+      { "copy" => "Um carrossel por semana.\nSete dias de retorno.", "price" => "R$ 890/mês" } ],
+    [ "peca-promo-box", "promo_box", "post", "Mentoria de outubro",
+      { "title" => "Sua marca, com estratégia", "support" => "Um mês de acompanhamento para transformar o que você já sabe em conteúdo que traz cliente.",
+        "tag" => "vagas limitadas", "description" => "Mentoria individual, 4 encontros", "price" => "R$ 890/mês" } ],
+    [ "peca-tabela", "tabela", "post", "Guia da semana",
+      { "title" => "O que postar esta semana", "rows" => [ "Segunda | bastidor do trabalho | reels", "Quarta | dúvida frequente | carrossel", "Sexta | prova social | story", "Mentoria | acompanhamento mensal | R$ 890/mês" ] } ],
+    [ "peca-programa", "programa_evento", "story", "Workshop Carrossel que vende",
+      { "title" => "Workshop\nCarrossel que vende", "schedule" => [ "19h | Abertura e método", "19h30 | Do assunto ao roteiro", "20h15 | Ao vivo: montando um carrossel", "21h | Perguntas" ], "partner" => "Online, ao vivo · 28 de setembro" } ],
+    [ "peca-contagem", "contagem", "story", "Faltam 3 dias",
+      { "mode" => "number", "number" => 3, "subline" => "dias para o workshop", "series" => "sequence" } ],
+    [ "peca-destaque", "destaque_item", "post", "Mentoria individual",
+      { "name" => "Mentoria individual", "composition" => "Quatro encontros por mês, plano de conteúdo semanal e revisão dos posts antes de publicar.", "price" => "R$ 890/mês", "note" => "turmas de setembro abertas" } ]
+  ].freeze
+
+  def seed_pieces!(organization, account)
+    brand_core = organization.brand_cores.first
+    PIECE_EXAMPLES.each do |slug, engine_id, format, title, values|
+      piece = Piece.find_or_initialize_by(id: id_for(slug))
+      piece.assign_attributes(
+        organization: organization, brand_core: brand_core, account: account,
+        engine_id: engine_id, format: format, title: title, values: values, status: "queued", error: nil
+      )
+      piece.save!
+      RenderPiece.new(piece).call
+    end
+    organization.pieces.where.not(id: PIECE_EXAMPLES.map { |slug, *| id_for(slug) }).destroy_all
+  end
+
+  # Devolve a organização de demonstração — ou nil fora de development/test,
+  # onde só o acervo é aplicado.
   def call
     seed_catalog!
-    return unless demo?
+    return nil unless demo?
 
     organization = seed_demo_account!
     seed_notifications!(organization)
+    # A marca antes dos carrosséis: todo conteúdo nasce dentro dela.
+    seed_brand_core!(organization, organization.owner)
     seed_carousels!(organization)
+    seed_pieces!(organization, organization.owner)
     # Nenhuma pasta de propósito: a conta de demonstração começa sem pastas,
     # é assim que a tela mostra o convite a criar a primeira (e o aviso
     # "organize com pastas" faz sentido).
@@ -1007,7 +1247,17 @@ end
 
 organization = VekooSeeds.call
 
-puts <<~REPORT if organization
+unless organization
+  puts <<~REPORT
+    Semente aplicada (#{Rails.env}): só o acervo.
+
+      Acervo      #{ThemePreset.count} temas · #{LibraryImage.count} imagens · #{PaletteColor.count} cores
+      Demonstração não criada — ela só existe em #{VekooSeeds::DEMO_ENVIRONMENTS.join(' e ')} (ou com SEED_DEMO_DATA=1).
+  REPORT
+  return
+end
+
+puts <<~REPORT
   Semente aplicada.
 
     Acervo      #{ThemePreset.count} temas · #{LibraryImage.count} imagens · #{PaletteColor.count} cores
@@ -1017,13 +1267,11 @@ puts <<~REPORT if organization
     Cards       #{organization.carousels.sum { |c| c.cards.length }}
     Pastas      #{organization.folders.count}
     Avisos      #{organization.notifications.count} (#{organization.notifications.unread.count} não lidos)
+    Marca       #{organization.brand_cores.first.full_document.dig("identity", "name")} · v#{organization.brand_cores.first.current_version} · #{organization.brand_cores.first.completeness.percent}% · #{organization.brand_cores.first.assets.count} ativos
+    Peças       #{organization.pieces.where(status: "ready").count} prontas (#{Engines::Registry.ids.length} motores)
 REPORT
 
-# Cada domínio da plataforma de atendimento semeia os próprios dados de exemplo.
-#
-# Fora de produção: `db:prepare` roda esta semente em banco vazio, e estes arquivos
-# criam pessoas com senha conhecida, algumas com acesso às configurações. Para
-# carregá-los num ambiente de produção de demonstração: SEED_DEMO_DATA=1.
-if !Rails.env.production? || ENV["SEED_DEMO_DATA"] == "1"
-  Rails.root.glob("db/seeds/*.rb").sort.each { |file| load file }
-end
+# Cada domínio da plataforma de atendimento semeia os próprios dados de exemplo. Chega aqui só
+# com a demonstração criada (`VekooSeeds.demo?`): estes arquivos criam pessoas com senha
+# conhecida, algumas com acesso às configurações.
+Rails.root.glob("db/seeds/*.rb").sort.each { |file| load file }

@@ -70,7 +70,8 @@ export function SignUpPage() {
         }),
         { description: t("auth.signup.createdDescription") }
       )
-      navigate(account ? accountPath(account.hashid, "/") : "/", { replace: true })
+      // A primeira marca nasce com a conta: `/brands` leva direto ao onboarding por conversa dela.
+      navigate(account ? accountPath(account.hashid, "/brands") : "/", { replace: true })
     } catch (error) {
       if (error instanceof AuthError) {
         const field = error.field === "form" ? "root" : error.field

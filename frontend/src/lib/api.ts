@@ -13,9 +13,17 @@ import "@/lib/navigation-guard"
 // `message` já vem no idioma da requisição, como rede de segurança para
 // códigos que a tela não enumerou.
 
-/** Origem da API. O WebSocket parte dela também (ver `lib/cable.ts`). */
+/**
+ * Origem da API. O WebSocket parte dela também (ver `lib/cable.ts`). Sem `VITE_API_URL`, a API
+ * mora no mesmo host da página, na porta do Rails: é o que faz o app funcionar pela rede local,
+ * aberto por IP em outro aparelho, sem gerar um bundle por endereço.
+ */
 export const API_URL: string =
-  import.meta.env.VITE_API_URL ?? "http://localhost:3040"
+  import.meta.env.VITE_API_URL ||
+  `${window.location.protocol}//${window.location.hostname}:${import.meta.env.VITE_RAILS_PORT}`
+
+/** O mesmo `API_URL`, com o nome que as telas de criação usam. */
+export const BASE_URL = API_URL
 
 /** Imagem servida pela API (`avatarUrl`, `logoUrl`): o caminho vem relativo a ela. */
 export function apiAssetUrl(path: string): string {
@@ -39,12 +47,19 @@ export type ApiErrorCode =
   | "emailNotFound"
   | "wrongPassword"
   | "emailTaken"
+  | "signupClosed"
   | "resetTokenInvalid"
   | "noCredits"
   | "tooManyRequests"
   | "accountNotFound"
   | "accountRevoked"
   | "accountRequired"
+  | "brandIncomplete"
+  | "brandNotPublished"
+  | "busy"
+  | "costCapReached"
+  | "conflict"
+  | "pieceLocked"
   | "network"
   | "unknown"
   | (string & {})
@@ -218,6 +233,58 @@ export function sessionRequestHeaders(): Record<string, string> {
     headers[name] = value
   })
   return headers
+}
+
+/** `GET` cru com os cabeçalhos de sessão e de organização; erro já no formato `ApiError`. */
+async function sessionFetch(path: string): Promise<Response> {
+  const headers = new Headers()
+  const hashid = sessionHeaders((name, value) => headers.set(name, value))
+
+  let res: Response
+  try {
+    res = await fetch(`${API_URL}${path}`, { headers })
+  } catch {
+    throw new ApiError({ status: 0, code: "network" })
+  }
+  if (!res.ok) {
+    let envelope: ErrorEnvelope | undefined
+    try {
+      envelope = (await res.json()) as ErrorEnvelope
+    } catch {
+      /* corpo não-JSON */
+    }
+    const error = toApiError(res.status, envelope)
+    reactToFailure(error, false, hashid)
+    throw error
+  }
+  return res
+}
+
+/**
+ * Baixa um arquivo da API com a sessão (o `Authorization` não vai num `<a
+ * href>`): busca o blob e entrega ao navegador com o nome que o servidor deu.
+ */
+export async function apiDownload(path: string, fallbackName: string): Promise<void> {
+  const res = await sessionFetch(path)
+  const disposition = res.headers.get("Content-Disposition") ?? ""
+  const name = /filename="([^"]+)"/.exec(disposition)?.[1] ?? fallbackName
+  const url = URL.createObjectURL(await res.blob())
+  const link = document.createElement("a")
+  link.href = url
+  link.download = name
+  document.body.append(link)
+  link.click()
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
+}
+
+/**
+ * Um binário da API com a sessão — para imagem que não pode ir num `<img
+ * src>` aberto (a miniatura privada da curadoria, por exemplo).
+ */
+export async function apiBlob(path: string): Promise<Blob> {
+  const res = await sessionFetch(path)
+  return res.blob()
 }
 
 /* ---------- atalhos ---------- */

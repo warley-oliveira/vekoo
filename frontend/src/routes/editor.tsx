@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useCarousel } from "@/hooks/use-carousels"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 import { ApiError } from "@/lib/api"
+import { brandPath } from "@/lib/brand-context"
 import { duplicateBlock, newId, type Block } from "@/lib/doc"
 
 // O editor vive fora do AppShell de propósito: tela cheia, topo próprio,
@@ -31,7 +32,8 @@ import { duplicateBlock, newId, type Block } from "@/lib/doc"
 // (com o painel de propriedades entre canvas e barra quando há seleção).
 
 export function EditorPage() {
-  const { carouselId } = useParams()
+  const { carouselId, brandId } = useParams()
+  const location = useLocation()
   // Aqui vem o documento **inteiro** (`GET /carousels/:id`); a biblioteca só
   // recebe o resumo, com o card 1.
   const { carousel, isLoading, error, reload } = useCarousel(carouselId)
@@ -41,6 +43,16 @@ export function EditorPage() {
   // Qualquer outro erro é falha de leitura, e falha de leitura se tenta de novo.
   if (error instanceof ApiError && error.code === "notFound") return <MissingCarousel />
   if (error || !carousel) return <EditorLoadError error={error} onRetry={reload} />
+  // Link de antes da marca (`/carousels/:id/edit`): o mesmo editor, na marca do carrossel.
+  if (!brandId && carousel.brandId) {
+    return (
+      <Navigate
+        to={brandPath(carousel.brandId, `/carousels/${carousel.id}/edit`)}
+        state={location.state}
+        replace
+      />
+    )
+  }
 
   return (
     <EditorProvider key={carousel.id} carousel={carousel}>
@@ -221,9 +233,10 @@ function EditorHotkeys({ onToggleAi }: { onToggleAi: () => void }) {
 function MissingCarousel() {
   const { t } = useTranslation()
 
+  const { brandId } = useParams()
   useEffect(() => {
     toast(t("editor.notFoundToast"))
   }, [t])
 
-  return <Navigate to="/carousels" replace />
+  return <Navigate to={brandId ? `/brands/${brandId}/carousels` : "/carousels"} replace />
 }

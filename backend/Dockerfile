@@ -2,13 +2,22 @@
 # Imagem de produção da API Vekoo. Construída pelo Kamal (`kamal deploy`), nunca
 # usada em desenvolvimento — no WSL2 o Rails roda nativo (ver docker-compose.yml).
 ARG RUBY_VERSION=3.4.10
+
+# --- vtracer -----------------------------------------------------------------
+# Vetoriza o símbolo das logos que a Vekoo propõe (Logos::Concepts): binário
+# fixo, compilado da versão publicada com o Cargo.lock dela. Só o executável
+# vai para a imagem final. O dev usa o mesmo binário, tirado deste estágio.
+FROM docker.io/library/rust:1.85-slim-bookworm AS vtracer
+RUN cargo install vtracer --version 0.6.4 --locked --root /opt/vtracer
+
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim AS base
 
 WORKDIR /rails
 
 # Só dependências de runtime:
 #   libpq5            -> gem pg
-#   libvips           -> image_processing / variantes do Active Storage
+#   libvips           -> motores de peça (Pango), PngInspector, Active Storage
+#   fontconfig + DejaVu -> fonte de reserva do Pango quando BrandFonts falha
 #   libyaml-0-2       -> psych
 #   libjemalloc2      -> RSS menor sob carga de Puma + Sidekiq
 #   libstdc++6        -> extensão C++ do mini_racer (o V8 vem estático na gem libv8-node)
@@ -16,12 +25,15 @@ WORKDIR /rails
 #                        (Connector::WhatsappCloud). Sem ele o arquivo segue como veio, em ogg,
 #                        que nem todo navegador toca.
 #   postgresql-client -> pg_isready/psql no entrypoint e em `kamal shell`
+#   chromium          -> renderizador "navegador" das peças (Ferrum abre a rota
+#                        /render do front e fotografa cada lâmina)
 #
 # O pgvector não pede nada aqui: a extensão mora na imagem do Postgres (ver deploy.yml), e a gem
 # neighbor só fala SQL.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      curl ffmpeg libjemalloc2 libpq5 libstdc++6 libvips libyaml-0-2 postgresql-client && \
+      chromium curl ffmpeg fontconfig fonts-dejavu-core libjemalloc2 libpq5 libstdc++6 libvips \
+      libyaml-0-2 postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 ENV RAILS_ENV=production \
@@ -55,6 +67,7 @@ FROM base
 
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
+COPY --from=vtracer /opt/vtracer/bin/vtracer /usr/local/bin/vtracer
 
 # uid/gid 1000 tem que bater com o dono do volume nomeado vekoo_storage —
 # um volume novo nasce com o dono do diretório da imagem.

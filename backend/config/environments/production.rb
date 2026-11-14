@@ -92,6 +92,11 @@ Rails.application.configure do
   # Proteção contra DNS rebinding / Host header. APP_HOSTS vem do deploy.yml.
   config.hosts = ENV.fetch("APP_HOSTS", "").split(",").map(&:strip).reject(&:empty?)
 
+  # Cadastro fechado até o lançamento: só os e-mails de SIGNUP_ALLOWLIST
+  # (separados por vírgula, segredo do Kamal) criam conta. Sem a variável,
+  # ninguém — fechado é o padrão. Dev e test não definem isto e ficam abertos.
+  config.x.signup_allowlist = ENV.fetch("SIGNUP_ALLOWLIST", "")
+
   # O kamal-proxy sonda o healthcheck pelo IP do container, não pelo domínio.
   # Sem esta exclusão o /up toma 403, o Kamal considera o deploy insalubre e
   # faz rollback — em todo deploy, para sempre.

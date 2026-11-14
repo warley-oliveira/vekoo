@@ -1,0 +1,323 @@
+{
+  "pieces": {
+    "title": "Pieces",
+    "catalog": {
+      "heading": "Advanced mode",
+      "description": "Pick the piece type and fill the fields in by hand. The everyday path is to describe what you want and let the assistant build it.",
+      "open": "Create",
+      "fields_one": "{{count}} field",
+      "fields_other": "{{count}} fields",
+      "series": "Series",
+      "formats": {
+        "post": "Post 1080×1350",
+        "story": "Story (9:16)",
+        "feed_square": "Square post (1:1)",
+        "feed_portrait": "Portrait post (4:5)",
+        "carousel": "Carousel"
+      },
+      "formatShort": {
+        "post": "Post",
+        "story": "Story",
+        "feed_square": "Post 1:1",
+        "feed_portrait": "Post 4:5",
+        "carousel": "Carousel"
+      },
+      "loadFailed": "Couldn't load the engines.",
+      "backToChat": "Back to creating by conversation"
+    },
+    "list": {
+      "heading": "Your pieces",
+      "newPiece": "New piece",
+      "emptyTitle": "No pieces yet",
+      "emptyDescription": "Pick a piece type, fill in the fields and the image comes out ready with your brand.",
+      "allEngines": "All types",
+      "engineFilterAria": "Filter by type",
+      "frames_one": "{{count}} image",
+      "frames_other": "{{count}} images",
+      "openAria": "Open {{title}}",
+      "outdatedOnly": "Outdated only",
+      "outdatedCount_one": "{{count}} piece came out of an earlier brand version.",
+      "outdatedCount_other": "{{count}} pieces came out of an earlier brand version."
+    },
+    "status": {
+      "queued": "Queued",
+      "rendering": "Generating…",
+      "ready": "Ready",
+      "failed": "Failed",
+      "outdated": "Brand changed",
+      "draft": "Draft"
+    },
+    "form": {
+      "heading": "New piece",
+      "back": "Change type",
+      "format": "Format",
+      "title": "Piece name",
+      "titlePlaceholder": "Just so you can find it later. Optional.",
+      "create": "Generate piece",
+      "creating": "Sending…",
+      "createdToast": "Piece queued. We'll let you know when it's ready.",
+      "createFailed": "Couldn't create the piece.",
+      "required": "required",
+      "counters": {
+        "lines": "{{used}}/{{max}} lines",
+        "chars": "{{used}}/{{max}}",
+        "items": "{{used}}/{{max}} items"
+      },
+      "choice": {
+        "placeholder": "Choose",
+        "none": "Brand default"
+      },
+      "image": {
+        "none": "No photo",
+        "placeholderHint": "The placeholder stays.",
+        "empty": "No photo in the brand. Upload under Brand → Assets.",
+        "pick": "Brand photo"
+      },
+      "list": {
+        "add": "Add row",
+        "remove": "Remove row",
+        "placeholder": "label | description | value"
+      },
+      "validation": {
+        "required": "Fill in this field.",
+        "tooLong": "Over the character limit.",
+        "tooManyLines": "Over the line limit.",
+        "tooManyItems": "Over the item limit.",
+        "notANumber": "Use a number.",
+        "tooSmall": "Number below the minimum.",
+        "tooLarge": "Number above the maximum."
+      },
+      "brandNotPublished": {
+        "title": "Publish the brand first",
+        "description": "Pieces only read the published version of the Brandcore. Complete the minimum and publish to start generating.",
+        "cta": "Go to the brand"
+      },
+      "optional": "optional"
+    },
+    "preview": {
+      "title": "Preview",
+      "hint": "Updates as you edit. For a series, it's the first frame.",
+      "loading": "Generating preview…",
+      "empty": "Fill in the required fields to see the preview.",
+      "blockedTitle": "The preview couldn't be generated",
+      "alt": "Piece preview"
+    },
+    "detail": {
+      "back": "Pieces",
+      "regenerate": "Generate again",
+      "regenerating": "Queued…",
+      "regeneratedToast": "Piece back in the queue.",
+      "regenerateFailed": "Couldn't generate again.",
+      "delete": "Delete piece",
+      "deleteTitle": "Delete this piece?",
+      "deleteDescription": "The images go away. The values aren't kept anywhere else.",
+      "deletedToast": "Piece deleted.",
+      "deleteFailed": "Couldn't delete.",
+      "download": "Download",
+      "frame": "Image {{index}}",
+      "values": "Fields",
+      "provenance": "Provenance",
+      "brandVersion": "Brand version used",
+      "renderedAt": "Generated {{when}}",
+      "failedTitle": "Generation failed",
+      "waiting": "The image shows up here as soon as it's ready.",
+      "outdatedTitle": "The brand changed since this piece",
+      "outdatedDescription": "It came out of an earlier version. Generate again to use today's colors, fonts and voice.",
+      "caption": "Caption"
+    },
+    "errors": {
+      "brandNotPublished": "The brand must be published.",
+      "valuesInvalid": "Something in the fields doesn't add up.",
+      "renderFailed": "Generation failed. Try again.",
+      "engineUnknown": "That piece type no longer exists.",
+      "formatUnsupported": "That piece type doesn't come in that format.",
+      "unknown": "Something went wrong during generation."
+    },
+    "live": {
+      "ready": "\"{{title}}\" is ready.",
+      "failed": "\"{{title}}\" failed to generate."
+    },
+    "documentPending": "// preview arrives with the renderer",
+    "renderers": {
+      "label": "renderer",
+      "react": "Browser",
+      "libvips": "Server",
+      "again": "Render again",
+      "render": "Render",
+      "empty": "This version hasn't been rendered by the {{renderer}} yet.",
+      "rendering": "Rendering with the {{renderer}}…",
+      "error": "Couldn't render. Try again.",
+      "failed": "Couldn't request the render. Try again."
+    }
+  },
+  "contents": {
+    "kind": {
+      "carousel": "Carousel"
+    },
+    "meta": "{{format}} · {{when}} · brand {{version}}",
+    "filters": {
+      "allKinds": "All types",
+      "allFormats": "All formats",
+      "kindAria": "Filter by type",
+      "formatAria": "Filter by format",
+      "periodAria": "Filter by period",
+      "period": {
+        "7": "Last 7 days",
+        "30": "Last 30 days",
+        "all": "All time"
+      }
+    },
+    "emptyTitle": "Nothing here with these filters",
+    "emptyDescription": "Everything the brand generates shows up here: engine pieces and editor carousels.",
+    "regenerateAll": "Regenerate outdated",
+    "regenerateAllToast_one": "{{count}} piece back in the queue.",
+    "regenerateAllToast_other": "{{count}} pieces back in the queue."
+  },
+  "pieceEditor": {
+    "back": "← contents",
+    "eyebrow": "03 / piece",
+    "renders": "PNGs",
+    "conflict": "This piece was changed in another tab. Reload so you don't overwrite it.",
+    "reload": "Reload",
+    "canvasSize": "{{width}}×{{height}}",
+    "save": {
+      "saving": "saving…",
+      "saved": "saved",
+      "savedAgo": "saved {{seconds}}s ago",
+      "error": "not saved — try again",
+      "conflict": "changed in another tab"
+    },
+    "slots": {
+      "title": "Title",
+      "body": "Body",
+      "badge": "Tag",
+      "price": "Price",
+      "image": "Image",
+      "logo": "Logo"
+    },
+    "tokens": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "surface": "Light background"
+    },
+    "panel": {
+      "slideOf": "slide {{index}} of {{total}}",
+      "undo": "Undo",
+      "redo": "Redo",
+      "layout": "layout",
+      "background": "background",
+      "show": "Show {{slot}}",
+      "placeholder": "Write here",
+      "willCut": "will be cut",
+      "lines_one": "up to {{count}} line",
+      "lines_other": "up to {{count}} lines",
+      "size": "size",
+      "smaller": "Smaller",
+      "bigger": "Bigger",
+      "align": "Alignment",
+      "aligns": {
+        "left": "Left",
+        "center": "Center"
+      },
+      "scrim": {
+        "title": "gradient",
+        "levels": {
+          "none": "None",
+          "light": "Light",
+          "default": "Default",
+          "strong": "Strong"
+        },
+        "warning": "The text may be hard to read on this photo (contrast {{contrast}}:1). Try the strong gradient or another photo."
+      }
+    },
+    "image": {
+      "none": "no photo",
+      "swap": "Swap",
+      "focal": "Focal point",
+      "remove": "Remove",
+      "focalHint": "// drag the photo in the preview to choose what stays centred",
+      "pickTitle": "Choose an image",
+      "pickDescription": "From the brand photos or a new file — the file joins the brand assets.",
+      "tabAssets": "Brand assets",
+      "tabUpload": "Upload file",
+      "noAssets": "The brand has no photos yet. Upload the first one in the other tab.",
+      "drop": "Drop the photo here or click to choose",
+      "uploading": "Uploading…",
+      "uploadHint": "// png, jpg or svg, up to 10 MB",
+      "tabGenerate": "Generate"
+    },
+    "logo": {
+      "variant": "Logo version",
+      "forDark": "For dark backgrounds",
+      "forLight": "For light backgrounds"
+    },
+    "caption": {
+      "title": "caption",
+      "hashtags": "hashtags",
+      "addTag": "new hashtag — Enter to add",
+      "removeTag": "Remove {{tag}}"
+    },
+    "free": {
+      "moved": "// free position",
+      "reset": "back to the layout spot",
+      "hint": "// drag anything on the post; guides snap to margins and centre"
+    },
+    "slides": {
+      "label": "Slides",
+      "open": "Slide {{index}}",
+      "menu": "Slide {{index}} options",
+      "duplicate": "Duplicate",
+      "remove": "Remove",
+      "add": "Slide",
+      "lockedHint": "Cover and closing slide stay in place",
+      "removeTitle": "Remove this slide?",
+      "removeBody": "Its text goes with it. Ctrl+Z brings it back.",
+      "previous": "Previous slide",
+      "next": "Next slide",
+      "applyToInterior": "apply to all inner slides"
+    }
+  },
+  "images": {
+    "placeholder": "E.g. cheese bread fresh out of the oven, on a checkered cloth, morning light",
+    "promptLabel": "What the photo should show",
+    "format": "Format",
+    "count": "How many options",
+    "formats": {
+      "feed_portrait": "Post 4:5",
+      "feed_square": "Square 1:1",
+      "story": "Story 9:16"
+    },
+    "cost_one": "uses {{count}} credit · you have {{left}}",
+    "cost_other": "uses {{count}} credits · you have {{left}}",
+    "generate_one": "Generate {{count}} image",
+    "generate_other": "Generate {{count}} images",
+    "reference": "// optional: a brand photo as reference (the product, the place)",
+    "useReference": "Use {{name}} as reference",
+    "withReference": "with reference",
+    "empty": "Nothing generated for this brand yet. Describe the first photo above.",
+    "emptyEditor": "Describe the photo; it comes out in the piece's ratio and joins the brand photos.",
+    "status": {
+      "queued": "queued",
+      "running": "generating…",
+      "done": "ready",
+      "failed": "didn't come out"
+    },
+    "partial_one": "{{count}} didn't come out — credit refunded",
+    "partial_other": "{{count}} didn't come out — credits refunded",
+    "use": "Use this photo",
+    "download": "download",
+    "retry": "Try again",
+    "unavailableTitle": "Image generation isn't on yet",
+    "unavailableBody": "When it is, it shows up here. Meanwhile, brand photos come in through Brand → Assets.",
+    "errors": {
+      "blocked": "The generator refused this request. Describe it another way.",
+      "unavailable": "Image generation isn't on. Nothing was charged.",
+      "failed": "The generator didn't answer. The credit was refunded.",
+      "noCredits": "No credits left to generate.",
+      "capReached": "Generation is temporarily unavailable.",
+      "request": "Couldn't request the image. Try again.",
+      "load": "Couldn't load the images."
+    }
+  }
+}

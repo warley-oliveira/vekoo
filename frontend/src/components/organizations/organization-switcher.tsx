@@ -32,7 +32,8 @@ export function OrganizationSwitcherDialog() {
   const navigate = useNavigate()
   const isTouch = useIsTouch()
   const [creating, setCreating] = useState(false)
-  const master = Boolean(session?.user.master)
+  // O suporte do Vekoo vê todas as organizações; a equipe (`staff`), as internas (marcas de teste).
+  const master = Boolean(session?.user.master || session?.user.staff)
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {

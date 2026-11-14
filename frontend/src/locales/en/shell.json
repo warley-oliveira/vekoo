@@ -1,8 +1,99 @@
 {
-  "auth": {
-    "errors": {
-      "accessRevoked": "This account's access has ended. Talk to whoever manages the organization."
+  "shell": {
+    "openMenu": "Open menu",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "nav": {
+      "carousels": "My carousels",
+      "search": "Search",
+      "templates": "Templates",
+      "brands": "Brand",
+      "trash": "Trash",
+      "home": "Home",
+      "contents": "Contents",
+      "create": "Create"
+    },
+    "createBlank": "Start from scratch",
+    "createBlankToast": "Starting from scratch opens the editor — it arrives in the next stage.",
+    "createCarousel": "Create carousel",
+    "notifications": {
+      "label": "Notifications",
+      "aria": "Notifications",
+      "ariaUnread": "Notifications ({{count}} unread)",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications here.",
+      "loadFailed": "We couldn't load your notifications."
+    },
+    "live": {
+      "online": "engine live",
+      "connecting": "connecting…",
+      "offline": "engine offline",
+      "onlineHint": "Real-time connection is on: pieces and replies arrive on their own.",
+      "connectingHint": "Opening the real-time connection.",
+      "offlineHint": "No real-time connection. Finished work shows up when the page reloads."
     }
+  },
+  "notifications": {
+    "templates": {
+      "title": "New templates are in",
+      "body": "6 new carousel templates for local shops and services just landed."
+    },
+    "folders": {
+      "title": "Tip: organize with folders",
+      "body": "Drag a carousel onto a folder in the sidebar to move it."
+    },
+    "welcome": {
+      "title": "Welcome to Vekoo!",
+      "body": "Your 50 free credits are already in your account. Ready to create your first carousel?"
+    }
+  },
+  "account": {
+    "menuAria": "{{organization}} account menu",
+    "fallbackName": "Your account",
+    "settings": "Settings",
+    "settingsToast": "Settings are coming soon.",
+    "invite": "Invite people",
+    "inviteToast": "Inviting people arrives in a next stage.",
+    "inviteToastDescription": "They'll join “{{organization}}” and see the same carousels.",
+    "curation": "Curation",
+    "signOut": "Sign out",
+    "signOutToast": "You've signed out.",
+    "personMenu": "{{name}}'s menu"
+  },
+  "credits": {
+    "remaining": "{{remaining, number}} <muted>of {{total, number}} credits</muted>",
+    "aria": "{{remaining, number}} of {{total, number}} credits",
+    "used": "Credits used",
+    "upgrade": "Upgrade plan",
+    "upgradeToast": "Changing plans is coming soon.",
+    "loadFailed": "We couldn't load your credits."
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search contacts, carousels and screens…",
+    "hint": "Type a name, a phone number or a carousel title.",
+    "noResults": "Nothing found for “{{query}}”.",
+    "resultsAria": "Search results",
+    "unnamedContact": "Unnamed contact",
+    "groups": {
+      "pages": "Screens",
+      "contacts": "Contacts",
+      "carousels": "Carousels"
+    }
+  },
+  "brandSwitcher": {
+    "label": "Account brands",
+    "aria": "Active brand: {{name}}. Switch brand",
+    "untitled": "Unnamed brand",
+    "settings": "Brand settings",
+    "newBrand": "New brand",
+    "createdToast": "Brand created. Let's set it up.",
+    "createFailed": "Couldn't create the brand.",
+    "loading": "Opening your brand…",
+    "incomplete": "Setup incomplete",
+    "organizations": "Organization",
+    "organizationFailed": "Couldn't switch organization.",
+    "internalBadge": "test"
   },
   "navigation": {
     "aria": "Main navigation",
@@ -120,6 +211,26 @@
       "dismiss": "Dismiss",
       "applying": "Updating…",
       "applyingDescription": "The page will reload by itself in a moment."
-    }
+    },
+    "brandHome": "Brand home",
+    "create": "Create",
+    "contents": "Content",
+    "brand": "Brand",
+    "piece": "Piece",
+    "orphans": "Migration"
+  },
+  "brandHome": {
+    "createTitle": "Create",
+    "createCarousel": "Create carousel",
+    "createCarouselHint": "Describe the topic and get a carousel ready to edit.",
+    "createPiece": "Create a piece",
+    "createPieceHint": "Describe it in one sentence and get 2–3 finished options, in the brand's own look.",
+    "recentTitle": "Latest",
+    "recentEmpty": "Nothing generated for this brand yet. Start with a carousel or a piece.",
+    "allContents": "See all",
+    "brandTitle": "The brand",
+    "brandSettings": "Set up",
+    "contentsCount_one": "{{count}} content in the brand",
+    "contentsCount_other": "{{count}} contents in the brand"
   }
 }

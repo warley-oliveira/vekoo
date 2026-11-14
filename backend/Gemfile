@@ -8,9 +8,9 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
-# Use Redis adapter to run Action Cable in production
-# Teto do adaptador Redis do Action Cable: sem ele, toda transmissão levanta
-# Gem::LoadError em desenvolvimento e produção (o adaptador das specs não pega).
+# Use Redis adapter to run Action Cable in production. O adaptador do Action
+# Cable 8.1 pede `redis < 6`; a 6.0 derrubava todo broadcast em produção
+# (`spec/channels/cable_adapter_spec.rb`).
 gem "redis", ">= 4.0.1", "< 6"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -74,8 +74,7 @@ gem "web-push", "~> 3.1"
 # Ordenação de colunas, cards e itens.
 gem "acts_as_list", "~> 1.2"
 
-# Busca semântica do catálogo (pgvector) e embeddings.
-gem "neighbor", "~> 0.6"
+# Busca semântica do catálogo (pgvector) e embeddings (a gem `neighbor` está mais abaixo).
 gem "ruby-openai", "~> 8.3"
 
 # Google Agenda.
@@ -101,3 +100,16 @@ group :test do
 end
 
 gem "hashids", "~> 1.0"
+gem "ferrum", "~> 0.19.1"
+
+# Credenciais do Google (Application Default Credentials) para o Vertex AI —
+# a geração de imagens (`Ai::GeminiImage`).
+gem "googleauth", "~> 1.17"
+
+# Tipo `vector` (pgvector) no ActiveRecord e busca por vizinho mais próximo —
+# o embedding do banco de referências.
+gem "neighbor", "~> 1.2"
+
+# Validação do JSON de análise das referências contra o JSON Schema que também
+# vai ao modelo como saída estruturada.
+gem "json_schemer", "~> 2.5"

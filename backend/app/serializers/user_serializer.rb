@@ -10,6 +10,8 @@ class UserSerializer < ApplicationSerializer
       locale: user.locale,
       avatarUrl: StoredImagePath.for(user.avatar, :thumb),
       master: user.master?,
+      # Pessoa da Vekoo: a tela mostra a curadoria (`/admin`), que a API confere de novo.
+      staff: user.staff?,
       createdAt: epoch_ms(user.created_at)
     }
   end

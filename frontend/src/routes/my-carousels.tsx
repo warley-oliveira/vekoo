@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 
 import { useShell } from "@/components/app-shell"
+import { BrandNudge } from "@/components/brand/brand-nudge"
 import { CarouselGridCard } from "@/components/carousel-grid-card"
 import {
   CarouselGridSkeleton,
@@ -40,6 +41,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useCarousels } from "@/hooks/use-carousels"
 import { useFolders } from "@/hooks/use-folders"
 import { useHeaderSlot, usePageTitle } from "@/hooks/use-header-slot"
+import { useActiveBrand } from "@/lib/brand-context"
 import { useLanguage } from "@/lib/i18n"
 import {
   SORT_OPTIONS,
@@ -117,7 +119,8 @@ export function MyCarouselsPage() {
     return () => clearTimeout(timer)
   }, [highlightId, location.pathname, navigate])
 
-  const { folders, isLoading: loadingFolders } = useFolders()
+  const { brandId, path } = useActiveBrand()
+  const { folders, isLoading: loadingFolders } = useFolders(brandId)
   const folder = params.folderId
     ? folders?.find((f) => f.id === params.folderId)
     : undefined
@@ -131,6 +134,7 @@ export function MyCarouselsPage() {
   // O servidor devolve a pasta já filtrada; abas e ordenação ficam no cliente,
   // que é onde elas são instantâneas.
   const { carousels, isLoading, error, reload } = useCarousels({
+    brandId,
     folderId: params.folderId ?? null,
   })
 
@@ -149,7 +153,7 @@ export function MyCarouselsPage() {
   // Pasta apagada / URL inválida → volta para a tela principal. Só depois de a
   // lista de pastas chegar: antes disso, "não achei" quer dizer "ainda não sei".
   if (params.folderId && !loadingFolders && folders && !folder) {
-    return <Navigate to="/carousels" replace />
+    return <Navigate to={path("/carousels")} replace />
   }
 
   if (error) {
@@ -166,6 +170,7 @@ export function MyCarouselsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">
+      {!folder && <BrandNudge />}
       {isFirstRun ? (
         <FirstCarouselHero />
       ) : (

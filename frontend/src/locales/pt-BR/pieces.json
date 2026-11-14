@@ -1,0 +1,323 @@
+{
+  "pieces": {
+    "title": "Peças",
+    "catalog": {
+      "heading": "Modo avançado",
+      "description": "Escolha o tipo de peça e preencha os campos à mão. O caminho de todo dia é descrever o que você quer e deixar o assistente montar.",
+      "open": "Criar",
+      "fields_one": "{{count}} campo",
+      "fields_other": "{{count}} campos",
+      "series": "Série",
+      "formats": {
+        "post": "Post 1080×1350",
+        "story": "Story (9:16)",
+        "feed_square": "Post quadrado (1:1)",
+        "feed_portrait": "Post retrato (4:5)",
+        "carousel": "Carrossel"
+      },
+      "formatShort": {
+        "post": "Post",
+        "story": "Story",
+        "feed_square": "Post 1:1",
+        "feed_portrait": "Post 4:5",
+        "carousel": "Carrossel"
+      },
+      "loadFailed": "Não deu para carregar os motores.",
+      "backToChat": "Voltar para a criação por conversa"
+    },
+    "list": {
+      "heading": "Suas peças",
+      "newPiece": "Nova peça",
+      "emptyTitle": "Nenhuma peça ainda",
+      "emptyDescription": "Escolha um tipo de peça, preencha os campos e a imagem sai pronta com a sua marca.",
+      "allEngines": "Todos os tipos",
+      "engineFilterAria": "Filtrar por tipo",
+      "frames_one": "{{count}} imagem",
+      "frames_other": "{{count}} imagens",
+      "openAria": "Abrir {{title}}",
+      "outdatedOnly": "Só desatualizadas",
+      "outdatedCount_one": "{{count}} peça saiu de uma versão anterior da marca.",
+      "outdatedCount_other": "{{count}} peças saíram de uma versão anterior da marca."
+    },
+    "status": {
+      "queued": "Na fila",
+      "rendering": "Gerando…",
+      "ready": "Pronta",
+      "failed": "Falhou",
+      "outdated": "Marca mudou",
+      "draft": "Rascunho"
+    },
+    "form": {
+      "heading": "Nova peça",
+      "back": "Trocar tipo",
+      "format": "Formato",
+      "title": "Nome da peça",
+      "titlePlaceholder": "Só para você achar depois. Opcional.",
+      "create": "Gerar peça",
+      "creating": "Enviando…",
+      "createdToast": "Peça na fila. Avisamos quando ficar pronta.",
+      "createFailed": "Não deu para criar a peça.",
+      "required": "obrigatório",
+      "counters": {
+        "lines": "{{used}}/{{max}} linhas",
+        "chars": "{{used}}/{{max}}",
+        "items": "{{used}}/{{max}} itens"
+      },
+      "choice": {
+        "placeholder": "Escolher",
+        "none": "Padrão da marca"
+      },
+      "image": {
+        "none": "Sem foto",
+        "placeholderHint": "Fica o espaço reservado.",
+        "empty": "Nenhuma foto na marca. Envie em Marca → Ativos.",
+        "pick": "Foto da marca"
+      },
+      "list": {
+        "add": "Adicionar linha",
+        "remove": "Remover linha",
+        "placeholder": "rótulo | descrição | valor"
+      },
+      "validation": {
+        "required": "Preencha este campo.",
+        "tooLong": "Passou do máximo de caracteres.",
+        "tooManyLines": "Passou do máximo de linhas.",
+        "tooManyItems": "Passou do máximo de itens.",
+        "notANumber": "Use um número.",
+        "tooSmall": "Número abaixo do mínimo.",
+        "tooLarge": "Número acima do máximo."
+      },
+      "brandNotPublished": {
+        "title": "Publique a marca antes",
+        "description": "As peças leem só a versão publicada do Brandcore. Complete o mínimo e publique para começar a gerar.",
+        "cta": "Ir para a marca"
+      },
+      "optional": "opcional"
+    },
+    "preview": {
+      "title": "Prévia",
+      "hint": "Atualiza enquanto você edita. Em série, é o primeiro quadro.",
+      "loading": "Gerando prévia…",
+      "empty": "Preencha os campos obrigatórios para ver a prévia.",
+      "blockedTitle": "A prévia não pôde ser gerada",
+      "alt": "Prévia da peça"
+    },
+    "detail": {
+      "back": "Peças",
+      "regenerate": "Gerar de novo",
+      "regenerating": "Na fila…",
+      "regeneratedToast": "Peça de volta à fila.",
+      "regenerateFailed": "Não deu para gerar de novo.",
+      "delete": "Excluir peça",
+      "deleteTitle": "Excluir esta peça?",
+      "deleteDescription": "As imagens somem. Os valores não são guardados em outro lugar.",
+      "deletedToast": "Peça excluída.",
+      "deleteFailed": "Não deu para excluir.",
+      "download": "Baixar",
+      "frame": "Imagem {{index}}",
+      "values": "Campos",
+      "provenance": "Proveniência",
+      "brandVersion": "Versão da marca usada",
+      "renderedAt": "Gerada {{when}}",
+      "failedTitle": "A geração falhou",
+      "waiting": "A imagem aparece aqui assim que ficar pronta.",
+      "outdatedTitle": "A marca mudou desde esta peça",
+      "outdatedDescription": "Ela saiu de uma versão anterior. Gere de novo para sair com as cores, as fontes e a voz de hoje.",
+      "caption": "Legenda"
+    },
+    "errors": {
+      "brandNotPublished": "A marca precisa estar publicada.",
+      "valuesInvalid": "Alguma coisa nos campos não confere.",
+      "renderFailed": "A geração falhou. Tente de novo.",
+      "engineUnknown": "Esse tipo de peça não existe mais.",
+      "formatUnsupported": "Esse tipo de peça não sai nesse formato.",
+      "unknown": "Algo deu errado na geração."
+    },
+    "live": {
+      "ready": "\"{{title}}\" ficou pronta.",
+      "failed": "\"{{title}}\" falhou na geração."
+    },
+    "documentPending": "// prévia chega com o renderizador",
+    "renderers": {
+      "label": "renderizador",
+      "react": "Navegador",
+      "libvips": "Servidor",
+      "again": "Renderizar de novo",
+      "render": "Renderizar",
+      "empty": "Esta versão ainda não foi renderizada pelo {{renderer}}.",
+      "rendering": "Renderizando pelo {{renderer}}…",
+      "error": "Não deu para renderizar. Tente de novo.",
+      "failed": "Não deu para pedir o render. Tente de novo."
+    }
+  },
+  "contents": {
+    "kind": {
+      "carousel": "Carrossel"
+    },
+    "meta": "{{format}} · {{when}} · marca {{version}}",
+    "filters": {
+      "allKinds": "Todos os tipos",
+      "allFormats": "Todos os formatos",
+      "kindAria": "Filtrar por tipo",
+      "formatAria": "Filtrar por formato",
+      "periodAria": "Filtrar por período",
+      "period": {
+        "7": "Últimos 7 dias",
+        "30": "Últimos 30 dias",
+        "all": "Todo o período"
+      }
+    },
+    "emptyTitle": "Nada por aqui com esses filtros",
+    "emptyDescription": "Tudo que a marca gera aparece aqui: peças dos motores e carrosséis do editor.",
+    "regenerateAll": "Regenerar desatualizadas",
+    "regenerateAllToast_one": "{{count}} peça de volta à fila.",
+    "regenerateAllToast_other": "{{count}} peças de volta à fila."
+  },
+  "pieceEditor": {
+    "back": "← conteúdos",
+    "eyebrow": "03 / peça",
+    "renders": "PNGs",
+    "conflict": "Esta peça foi alterada em outra aba. Recarregue para não sobrescrever.",
+    "reload": "Recarregar",
+    "canvasSize": "{{width}}×{{height}}",
+    "save": {
+      "saving": "salvando…",
+      "saved": "salvo",
+      "savedAgo": "salvo há {{seconds}}s",
+      "error": "não salvo — tentar de novo",
+      "conflict": "alterada em outra aba"
+    },
+    "slots": {
+      "title": "Título",
+      "body": "Corpo",
+      "badge": "Selo",
+      "price": "Preço",
+      "image": "Imagem",
+      "logo": "Logo"
+    },
+    "tokens": {
+      "primary": "Principal",
+      "secondary": "Secundária",
+      "accent": "Destaque",
+      "surface": "Fundo claro"
+    },
+    "panel": {
+      "slideOf": "lâmina {{index}} de {{total}}",
+      "undo": "Desfazer",
+      "redo": "Refazer",
+      "layout": "layout",
+      "background": "fundo",
+      "show": "Mostrar {{slot}}",
+      "placeholder": "Escreva aqui",
+      "willCut": "vai cortar",
+      "lines_one": "até {{count}} linha",
+      "lines_other": "até {{count}} linhas",
+      "size": "tamanho",
+      "smaller": "Diminuir",
+      "bigger": "Aumentar",
+      "align": "Alinhamento",
+      "aligns": {
+        "left": "Esquerda",
+        "center": "Centro"
+      },
+      "scrim": {
+        "title": "degradê",
+        "levels": {
+          "none": "Sem",
+          "light": "Leve",
+          "default": "Padrão",
+          "strong": "Forte"
+        },
+        "warning": "O texto pode ficar difícil de ler sobre esta foto (contraste {{contrast}}:1). Tente o degradê forte ou outra foto."
+      }
+    },
+    "image": {
+      "none": "sem foto",
+      "swap": "Trocar",
+      "focal": "Ponto focal",
+      "remove": "Remover",
+      "focalHint": "// arraste a foto no preview para escolher o que fica no centro",
+      "pickTitle": "Escolher imagem",
+      "pickDescription": "Das fotos da marca ou de um arquivo novo — o arquivo entra nos ativos da marca.",
+      "tabAssets": "Ativos da marca",
+      "tabUpload": "Enviar arquivo",
+      "noAssets": "A marca ainda não tem fotos. Envie a primeira na outra aba.",
+      "drop": "Arraste a foto aqui ou clique para escolher",
+      "uploading": "Enviando…",
+      "uploadHint": "// png, jpg ou svg, até 10 MB",
+      "tabGenerate": "Gerar"
+    },
+    "logo": {
+      "variant": "Versão da logo",
+      "forDark": "Para fundo escuro",
+      "forLight": "Para fundo claro"
+    },
+    "caption": {
+      "title": "legenda",
+      "hashtags": "hashtags",
+      "addTag": "nova hashtag — Enter para adicionar",
+      "removeTag": "Tirar {{tag}}"
+    },
+    "free": {
+      "moved": "// posição livre",
+      "reset": "voltar ao lugar do layout",
+      "hint": "// arraste qualquer elemento no post; as guias grudam nas margens e no centro"
+    },
+    "slides": {
+      "label": "Lâminas",
+      "open": "Lâmina {{index}}",
+      "menu": "Opções da lâmina {{index}}",
+      "duplicate": "Duplicar",
+      "remove": "Remover",
+      "add": "Lâmina",
+      "lockedHint": "Capa e chamada final ficam no lugar",
+      "removeTitle": "Remover esta lâmina?",
+      "removeBody": "O texto dela sai junto. Dá para desfazer com Ctrl+Z.",
+      "previous": "Lâmina anterior",
+      "next": "Próxima lâmina",
+      "applyToInterior": "aplicar a todas as internas"
+    }
+  },
+  "images": {
+    "placeholder": "Ex.: pão de queijo saindo do forno, em cima de um pano xadrez, luz da manhã",
+    "promptLabel": "O que a foto deve mostrar",
+    "format": "Formato",
+    "count": "Quantas opções",
+    "formats": {
+      "feed_portrait": "Post 4:5",
+      "feed_square": "Quadrado 1:1",
+      "story": "Story 9:16"
+    },
+    "cost_one": "usa {{count}} crédito · você tem {{left}}",
+    "cost_other": "usa {{count}} créditos · você tem {{left}}",
+    "generate_one": "Gerar {{count}} imagem",
+    "generate_other": "Gerar {{count}} imagens",
+    "reference": "// opcional: uma foto da marca como referência (o produto, o lugar)",
+    "useReference": "Usar {{name}} como referência",
+    "withReference": "com referência",
+    "empty": "Nada gerado ainda nesta marca. Descreva a primeira foto acima.",
+    "emptyEditor": "Descreva a foto; ela sai na proporção da peça e entra nas fotos da marca.",
+    "status": {
+      "queued": "na fila",
+      "running": "gerando…",
+      "done": "pronta",
+      "failed": "não saiu"
+    },
+    "partial_one": "{{count}} não saiu — o crédito voltou",
+    "partial_other": "{{count}} não saíram — o crédito voltou",
+    "use": "Usar esta foto",
+    "download": "baixar",
+    "retry": "Tentar de novo",
+    "unavailableTitle": "Geração de imagens ainda não está ligada",
+    "unavailableBody": "Quando estiver, ela aparece aqui. Enquanto isso, as fotos da marca entram por Marca → Ativos.",
+    "errors": {
+      "blocked": "O gerador recusou este pedido. Descreva de outro jeito.",
+      "unavailable": "A geração de imagens não está ligada. Nada foi cobrado.",
+      "failed": "O gerador não respondeu. O crédito voltou.",
+      "noCredits": "Sem créditos para gerar.",
+      "capReached": "A geração está temporariamente indisponível.",
+      "request": "Não deu para pedir a imagem. Tente de novo.",
+      "load": "Não deu para carregar as imagens."
+    }
+  }
+}

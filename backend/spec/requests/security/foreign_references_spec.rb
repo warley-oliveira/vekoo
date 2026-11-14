@@ -12,7 +12,8 @@ RSpec.describe "Referência a registro de outra organização", type: :request d
     let(:carousel) { create(:carousel, organization: organization) }
 
     it "não cria dentro da pasta de outra organização" do
-      post "/carousels", params: { carousel: { title: "Novo", format: Carousel::FORMATS.first, folderId: foreign_folder.id } }, headers: headers, as: :json
+      brand = create(:brand_core, organization: organization)
+      post "/carousels", params: { carousel: { title: "Novo", format: Carousel::FORMATS.first, folderId: foreign_folder.id, brandId: brand.id } }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json.dig("error", "field")).to eq("folderId")

@@ -1,16 +1,15 @@
-# Kamal 2 — API Vekoo em syco.vekoo.app. Passo a passo em DEPLOY.md.
+# Kamal 2 — API Vekoo em syco.vekoo.app (e api.107-152-37-59.sslip.io)
 #
-# TLS: NÃO usamos Let's Encrypt. syco.vekoo.app está atrás do proxy da Cloudflare
-# (nuvem laranja), então o desafio ACME HTTP-01 do kamal-proxy não fecha de forma
-# confiável. Em vez disso o kamal-proxy serve um certificado próprio, hoje
-# autoassinado, com o modo SSL da zona em Full.
+# syco.vekoo.app é proxied na Cloudflare; o hostname sslip.io (que resolve para o
+# IP embutido nele) é o acesso direto à origem. Os dois têm certificado do Let's
+# Encrypt emitido pelo kamal-proxy (HTTP-01). O host foi provisionado com
+# `bin/deploy-setup <chave> open` — 80/443 abertos ao mundo, não só às faixas da
+# Cloudflare. O front fica no Cloudflare (wrangler), fora deste host. Ver DEPLOY.md.
 
 minimum_version: 2.12.0
 service: vekoo-api
 
-# Sem "ghcr.io/" na frente — o Kamal concatena `registry.server` sozinho.
-# `.downcase` porque repositório Docker não aceita maiúscula.
-image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api
+image: vekoo-api
 
 # O primeiro papel é o primário: `web` sobe primeiro, prepara os bancos no entrypoint
 # (índices do Mongo, migrations, dado do produto), e o Kamal só sobe os outros depois
@@ -18,10 +17,10 @@ image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api
 servers:
   web:
     hosts:
-      - 107.152.37.137
+      - 107.152.37.59
   worker:
     hosts:
-      - 107.152.37.137
+      - 107.152.37.59
     cmd: bundle exec sidekiq -C config/sidekiq.yml
     proxy: false                    # worker não recebe tráfego HTTP
     env:
@@ -35,7 +34,7 @@ servers:
   # `execute_tool` e `ai_assistant` com ferramenta e a ação de script do webhook ficam parados.
   scripts:
     hosts:
-      - 107.152.37.137
+      - 107.152.37.59
     cmd: bundle exec sidekiq -C config/sidekiq_scripts.yml
     proxy: false
     options:
@@ -49,17 +48,14 @@ servers:
         WEB_CONCURRENCY: 0
 
 proxy:
-  # Certificado de origem, carregado dos secrets (.kamal/secrets).
-  ssl:
-    certificate_pem: SSL_CERTIFICATE_PEM
-    private_key_pem: SSL_PRIVATE_KEY_PEM
-  host: syco.vekoo.app
+  # Let's Encrypt pelo kamal-proxy, inclusive para syco (proxied na Cloudflare):
+  # o desafio HTTP-01 atravessa a Cloudflare porque *Always Use HTTPS* está
+  # desligado na zona. Ligar essa opção quebra a renovação do certificado.
+  ssl: true
+  hosts:
+    - syco.vekoo.app
+    - api.107-152-37-59.sslip.io    # acesso direto, sem a Cloudflare
   app_port: 80
-  ssl_redirect: true
-  # true porque existe um proxy confiável na frente (Cloudflare) e queremos o IP
-  # real do cliente via X-Forwarded-For. Só é seguro porque o firewall do host
-  # aceita 80/443 apenas das faixas da Cloudflare — ver bin/deploy-setup.
-  forward_headers: true
   healthcheck:
     path: /up
     interval: 3
@@ -71,24 +67,17 @@ proxy:
   response_timeout: 300
   buffering:
     requests: true
-    max_request_body: 52_428_800    # 50 MB — upload de imagem do editor e importação do catálogo
+    max_request_body: 52_428_800    # 50 MB — upload de logo, foto, fonte, imagem do editor e importação do catálogo
     # O padrão do Kamal é guardar a resposta inteira antes de repassar, e o SSE da geração por IA
     # chegaria todo de uma vez no fim. `max_response_body: 0` não desliga isso, só tira o teto.
     responses: false
 
+# Registry local do Kamal: a imagem sobe por túnel SSH, sem GHCR nem token.
 registry:
-  server: ghcr.io
-  username:
-    - REGISTRY_USER
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  server: localhost:5555
 
 builder:
   arch: amd64
-  cache:
-    type: registry
-    image: <%= ENV.fetch("REGISTRY_USER").downcase %>/vekoo-api-cache
-    options: mode=max
 
 ssh:
   user: deploy
@@ -104,17 +93,35 @@ env:
     RAILS_ENV: production
     RAILS_MAX_THREADS: 5
     WEB_CONCURRENCY: 2
-    APP_HOSTS: syco.vekoo.app                        # config.hosts
-    # CORS e origem do /cable, sem curinga — lista explícita. A URL do Worker entra
-    # junto porque a zona vekoo.app vive em outra conta Cloudflare: enquanto o domínio
-    # não for apontado para este Worker, é por workers.dev que o front atende.
-    FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.warleyolf.workers.dev
+    APP_HOSTS: syco.vekoo.app,api.107-152-37-59.sslip.io      # config.hosts
+    # CORS e origem do /cable, sem curinga — lista explícita.
+    FRONTEND_ORIGINS: https://my.vekoo.app,https://vekoo.vekoo.workers.dev
     BACKEND_URL: https://syco.vekoo.app              # webhooks, mídia e URLs absolutas de anexo
+    # Renderizador "navegador" das peças: o Chromium da imagem abre a rota
+    # /render do front publicado. Sem estas duas, o React falha limpo e o
+    # libvips (o padrão) continua desenhando.
+    FRONTEND_URL: https://my.vekoo.app
+    CHROME_PATH: /usr/bin/chromium
+    PIECE_RENDERER: libvips
+    API_ORIGIN: https://syco.vekoo.app               # URL absoluta dos blobs
     REDIS_URL: redis://vekoo-api-redis:6379/0        # fila do Sidekiq
     CABLE_REDIS_URL: redis://vekoo-api-redis:6379/1  # pub/sub do ActionCable
     CACHE_REDIS_URL: redis://vekoo-api-redis:6379/2  # Rails.cache (trava da geração)
     # O Thruster corta a resposta em 30s por padrão, abaixo do response_timeout do proxy.
     HTTP_WRITE_TIMEOUT: 300
+    AGENT_MODEL: claude-sonnet-5-5
+    AGENT_MONTHLY_COST_CENTS_CAP: 50000
+    # Vertex AI (imagens e embedding) — conta de serviço `vekoo-api-vertex` (DEPLOY.md §2)
+    GOOGLE_GENAI_USE_VERTEXAI: "True"
+    GOOGLE_CLOUD_PROJECT: logical-lock-512900-p7
+    GOOGLE_CLOUD_LOCATION: global          # Nano Banana
+    EMBEDDING_LOCATION: us-central1        # gemini-embedding-001
+    # App da Meta: Business Discovery da curadoria, WhatsApp oficial e Messenger. Público, por isso
+    # aqui e não nos secrets.
+    META_APP_ID: "2244673452932169"
+    META_IG_USER_ID: "17841434450042278"
+    META_GRAPH_VERSION: v26.0
+    REFERENCES_IN_GENERATION: "off"      # liga depois do teste lado a lado
     # O Google devolve o login para a TELA, e não para a API.
     GOOGLE_CALENDAR_REDIRECT_URI: https://my.vekoo.app/calendar/google-callback
     WHATSAPP_WEB_DEFAULT_PROVIDER: evolution_api
@@ -128,13 +135,15 @@ env:
     - HASHID_SALT                   # URL do front (/a/<hashid>): vazio vale o padrão; trocar quebra links guardados
     - DATABASE_URL                  # Postgres. Sem ela, a API não sobe
     - MONGODB_URI                   # Mongo. Sem ela, a API não sobe
-    - ANTHROPIC_API_KEY             # Claude: geração, copiloto e blocos de IA param, sem cobrar crédito
+    - ANTHROPIC_API_KEY             # Claude: agente, geração, copiloto e blocos de IA param, sem cobrar crédito
+    - SIGNUP_ALLOWLIST              # e-mails que podem criar conta; vazio = cadastro fechado
+    - GOOGLE_CREDENTIALS_BASE64     # Vertex (imagens e embedding): sem ela, geração de imagem indisponível
+    - META_ACCESS_TOKEN             # Business Discovery da curadoria: sem ele, importação não configurada
     - OPENAI_API_KEY                # busca semântica do catálogo: sem ela, só por texto
     - OPENAI_ACCESS_TOKEN           # Whisper: sem ela, áudio fica sem transcrição
     - VAPID_PUBLIC_KEY              # push do PWA: sem as três, nada é enviado
     - VAPID_PRIVATE_KEY
     - VAPID_SUBJECT
-    - META_APP_ID                   # WhatsApp oficial e Messenger: sem ele, não conectam
     - META_APP_SECRET               # vazio com o do Instagram: webhook da Meta sem conferir assinatura
     - META_MESSAGING_VERIFY_TOKEN   # sem ele, a Meta não valida o webhook de Instagram e Messenger
     - INSTAGRAM_APP_ID              # Instagram Login: sem ele, não conecta
@@ -161,12 +170,13 @@ volumes:
 
 accessories:
   db:
-    # O Postgres 16 oficial com a extensão vector, de que a busca do catálogo depende.
-    # O sufixo fixa o major (major novo recusa PGDATA existente) e a distro (glibc nova muda a
-    # ordenação de texto e invalida os índices). ANTES de trocar esta imagem num volume que já
-    # existe, confira a glibc: DEPLOY.md, "Trocar a imagem do Postgres".
-    image: pgvector/pgvector:pg16-trixie
-    host: 107.152.37.137
+    # Postgres 16 + pgvector (embedding do banco de referências), fixado na
+    # tag e no digest: major novo recusa PGDATA existente, e o Debian tem que
+    # ser o da imagem anterior — trixie, glibc 2.41, conferido no servidor em
+    # 2026-10-27 — para a collation não mudar. O digest é o da imagem testada
+    # no dev. Só vale depois de `kamal accessory reboot db` (DEPLOY.md §2).
+    image: pgvector/pgvector:0.8.7-pg16-trixie@sha256:40d828eda66737aaacb934387a337babf1455ebd56e9bdd13fc08e211257c972
+    host: 107.152.37.59
     # SEM `port:` — publicar porta de container escreve direto na chain DOCKER-USER
     # do iptables e IGNORA o ufw, expondo o Postgres à internet.
     env:
@@ -187,7 +197,7 @@ accessories:
   # depende de transação multi-documento. Backup: bin/deploy-setup (vekoo-backup).
   mongodb:
     image: mongo:7.0                # fixado no major: subir de major pede passo a passo
-    host: 107.152.37.137
+    host: 107.152.37.59
     # SEM `port:`, pelo mesmo motivo do Postgres. O host é o nome do container (rede `kamal`).
     #
     # Por padrão o WiredTiger pega metade da RAM menos 1 GB, sem enxergar os vizinhos: seriam
@@ -209,7 +219,7 @@ accessories:
 
   redis:
     image: redis:7.4-alpine
-    host: 107.152.37.137
+    host: 107.152.37.59
     # O redis-server default NÃO persiste — um reboot descartaria a fila inteira.
     # noeviction para a fila nunca ser despejada por pressão de memória.
     cmd: "redis-server --appendonly yes --appendfsync everysec --maxmemory 256mb --maxmemory-policy noeviction"

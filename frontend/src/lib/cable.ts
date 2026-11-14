@@ -210,3 +210,66 @@ export function performOnChannel(
   if (!entry?.subscription || !entry.connected) return false
   return entry.subscription.perform(action, data)
 }
+
+/**
+ * Identidade desta aba, mandada em `X-Client-Id` a cada mutação: é como a
+ * aba reconhece o eco do que ela mesma acabou de salvar e não recarrega
+ * por cima do que a pessoa está digitando.
+ */
+const CLIENT_ID_KEY = "vekoo.client"
+
+function makeClientId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+}
+
+let clientId: string | null = null
+
+export function getClientId(): string {
+  if (clientId) return clientId
+  try {
+    clientId = sessionStorage.getItem(CLIENT_ID_KEY)
+    if (!clientId) {
+      clientId = makeClientId()
+      sessionStorage.setItem(CLIENT_ID_KEY, clientId)
+    }
+  } catch {
+    clientId = makeClientId()
+  }
+  return clientId
+}
+
+export type ChannelHandlers<Message> = {
+  received: (message: Message) => void
+  connected?: () => void
+  disconnected?: () => void
+}
+
+/**
+ * O formato das telas de criação (`AgentChannel`, `BrandCoreChannel`, `PieceChannel`) sobre o
+ * mesmo consumer da aba: a assinatura é dividida e refeita na troca de organização como as de
+ * `useChannel`. `connected`/`disconnected` só disparam quando o estado muda (e `connected` logo
+ * de cara, se a assinatura já estava de pé). `null` quando ainda não há sessão aberta.
+ */
+export function subscribe<Message>(
+  channel: string,
+  handlers: ChannelHandlers<Message>,
+  params: ChannelParams = {}
+): (() => void) | null {
+  if (!currentToken) return null
+  let last: boolean | null = null
+  return joinChannel(channel, params, {
+    onMessage: (message) => handlers.received(message as Message),
+    onStatus: (connected) => {
+      if (last === null && !connected) {
+        last = false
+        return
+      }
+      if (connected === last) return
+      last = connected
+      if (connected) handlers.connected?.()
+      else handlers.disconnected?.()
+    },
+  })
+}

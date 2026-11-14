@@ -1,0 +1,172 @@
+{
+  "onboarding": {
+    "intro": {
+      "titleLead": "Conta da sua marca.",
+      "titleRest": "O resto a plataforma monta.",
+      "sub": "É uma conversa, não um formulário. Nenhuma pergunta é sobre design — é sobre o seu negócio.",
+      "cards": {
+        "detail": {
+          "title": "Detalhe vira conteúdo",
+          "body": "Tudo o que você contar aqui vira a base de cada peça que o motor escrever. “Pão de fermentação natural, assado às 6h” rende mais do que “padaria”."
+        },
+        "help": {
+          "title": "Travou? Pede “cria pra mim”",
+          "body": "Cor, fonte, jeito de falar: se você não tem, a plataforma propõe opções com prévia. Você escolhe."
+        },
+        "later": {
+          "title": "Nada aqui é definitivo",
+          "body": "Dá pra mudar tudo depois e ir acrescentando. Quanto mais a marca sabe de si, mais afiado o conteúdo."
+        }
+      },
+      "footer": "// uns 3 minutos. dá pra sair no meio e voltar de onde parou.",
+      "cta": "Começar a conversa →"
+    },
+    "opening": {
+      "intro": "Vamos montar o brandcore da sua marca. Eu pergunto, você responde do seu jeito. Se travar em alguma, pede “cria pra mim”.",
+      "first": "Primeira: como se chama a marca e o que ela vende?"
+    },
+    "questions": {
+      "brand": "Como se chama a marca e o que ela vende?",
+      "audience": "Pra quem é? Descreve o cliente que você mais quer atrair.",
+      "differential": "O que faz alguém escolher você e não o concorrente?",
+      "voice": "Como a marca fala? Me dá um exemplo de frase que ela diria num post.",
+      "banned": "E o que ela nunca diria? Palavras, tom, assuntos que ficam de fora.",
+      "offers": "Produtos ou serviços principais, com preço se tiver.",
+      "logo": "Você já tem logo? Manda aqui ou pede “cria pra mim”.",
+      "palette": "Cores e fonte: já existem ou a gente propõe?",
+      "fonts": "Cores e fonte: já existem ou a gente propõe?"
+    },
+    "topics": {
+      "brand": "marca",
+      "audience": "público",
+      "differential": "diferencial",
+      "voice": "tom de voz",
+      "banned": "lista negra",
+      "offers": "oferta",
+      "logo": "logo",
+      "palette": "paleta e fonte"
+    },
+    "status": {
+      "brand": "marca gravada ✓",
+      "audience": "público gravado ✓",
+      "differential": "diferencial gravado ✓",
+      "voice": "tom de voz gravado ✓",
+      "banned": "lista negra gravada ✓",
+      "offers": "oferta gravada ✓",
+      "logoUploaded": "logo recebida ✓",
+      "logoNoted": "logotipo anotado ✓",
+      "palette": "paleta gravada ✓",
+      "fonts": "fonte gravada ✓",
+      "logoSaved": "logo salva em ativos ✓ · você baixa e troca quando quiser"
+    },
+    "confirm": {
+      "voice": "Tom de voz gravado ✓",
+      "palette": "Paleta gravada ✓",
+      "fonts": "Fonte gravada ✓",
+      "logo": "Logotipo escolhido ✓"
+    },
+    "agent": {
+      "followUpGeneric": "Dá pra ser mais específico? Quanto mais detalhe, melhor o motor escreve.",
+      "adjustAsk": "O que você quer ajustar? Me diz o tema e o novo valor.",
+      "fontMissing": "Não acho {{font}} entre as fontes abertas, então não consigo desenhar com ela. Pede “cria pra mim” que eu proponho três que chegam perto.",
+      "fontPartial": "{{kept}} entrou. {{font}} não está entre as fontes abertas, então não consigo desenhar com ela. Pede “cria pra mim” que eu proponho três que chegam perto, mantendo a {{kept}}.",
+      "wordmarkNoted": "Anotado. Desenho o logotipo no fim, com a fonte que você escolher.",
+      "logoOpaque": "Essa logo tem fundo sólido. Em peça de fundo escuro vai aparecer um retângulo branco em volta dela. Se der, envie a versão com fundo transparente.",
+      "suggest": {
+        "voice": "Três jeitos de falar, com base no que você contou. Clica no que soa como a sua marca.",
+        "palette": "Três paletas, com base no que você contou. Clica na que parece a sua marca.",
+        "fonts": "Três pares de fonte. Clica no que combina com a paleta.",
+        "fontsKept": "Três fontes para usar com a {{kept}}. Clica na que combina."
+      },
+      "wordmarkReady": "Desenhei três versões do logotipo com a sua fonte. A primeira já está no resumo — clica em outra se gostar mais."
+    },
+    "resume": "Paramos aqui: {{topic}}. Seguimos?",
+    "empty": "nenhuma marca montada ainda",
+    "progress": "brandcore · {{current}}/{{total}}",
+    "questionLabel": "{{number}} / {{topic}}",
+    "back": {
+      "action": "← pergunta anterior",
+      "a11y": "Voltar à pergunta anterior",
+      "echo": "← de volta: {{topic}}"
+    },
+    "leave": {
+      "action": "← início",
+      "a11y": "Sair para o início da marca — a conversa fica salva"
+    },
+    "resumeCard": {
+      "title": "Sua marca está pela metade",
+      "position": "A conversa parou na pergunta {{current}} de {{total}}. O que você já contou está salvo.",
+      "notStarted_one": "A conversa da marca ainda não começou. É {{count}} pergunta sobre o seu negócio.",
+      "notStarted_other": "A conversa da marca ainda não começou. São {{count}} perguntas sobre o seu negócio.",
+      "continue": "Continuar de onde parei",
+      "start": "Começar a conversa"
+    },
+    "chip": "não sei — cria pra mim",
+    "placeholder": "responde do seu jeito",
+    "summary": {
+      "done": "brandcore montado ✓",
+      "body": "Confere o resumo. Se estiver certo, publica e o motor começa a trabalhar com isso. Se não, me diz o que ajustar.",
+      "publish": "Publicar brandcore →",
+      "adjust": "Ajustar algo /",
+      "labels": {
+        "brand": "MARCA",
+        "what": "O QUE VENDE",
+        "audience": "PRA QUEM",
+        "differential": "DIFERENCIAL",
+        "voice": "TOM DE VOZ",
+        "banned": "LISTA NEGRA",
+        "offers": "OFERTA",
+        "logo": "LOGO",
+        "palette": "PALETA",
+        "fonts": "FONTES"
+      }
+    },
+    "errors": {
+      "modelDown": "O motor não respondeu. Sua resposta ficou salva. Tenta de novo.",
+      "retry": "Tenta de novo",
+      "offline": "Sem conexão. Nada se perdeu. Volta quando a rede voltar.",
+      "logoUpload": "A logo não subiu. Tenta de novo ou pede “cria pra mim”.",
+      "publish": "Não publicou. O brandcore está salvo como rascunho. Tenta de novo em instantes."
+    },
+    "options": {
+      "palette": "Paletas propostas",
+      "fonts": "Pares de fontes propostos",
+      "voice": "Vozes propostas",
+      "wordmark": "Logotipos propostos",
+      "roles": {
+        "display": "título",
+        "utility": "texto"
+      },
+      "logoConcepts": {
+        "title": "Símbolo + nome",
+        "nameOnly": "Só o nome",
+        "drawing": "Desenhando…",
+        "failed_one": "Uma das propostas com símbolo não saiu — as outras estão aqui.",
+        "failed_other": "{{count}} propostas com símbolo não saíram — as outras estão aqui.",
+        "label": "{{direction}} · {{arrangement}}",
+        "directions": {
+          "figurative": "Figurativo",
+          "geometric": "Geométrico",
+          "monogram": "Monograma",
+          "emblem": "Emblema"
+        },
+        "arrangements": {
+          "horizontal": "ao lado do nome",
+          "stacked": "em cima do nome"
+        }
+      }
+    },
+    "a11y": {
+      "attachLogo": "Enviar minha logo",
+      "send": "Enviar resposta",
+      "thinking": "O agente está respondendo",
+      "thread": "Conversa do brandcore"
+    },
+    "preview": {
+      "kicker": "Novidade",
+      "name": "Sua marca",
+      "concept": "O que você faz aparece aqui.",
+      "footer": "@seu.perfil"
+    }
+  }
+}

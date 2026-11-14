@@ -6,6 +6,7 @@ import {
   isCarouselKey,
   toSummary,
 } from "@/hooks/use-carousels"
+import { isFoldersKey } from "@/hooks/use-folders"
 import { apiDelete, apiPatch, apiPost } from "@/lib/api"
 import type {
   CarouselCard,
@@ -36,6 +37,8 @@ export type CarouselPatch = {
 }
 
 export type CreateCarouselInput = {
+  /** A marca em que o carrossel nasce — sem ela a API recusa. */
+  brandId: string
   title: string
   format: CarouselFormat
   theme: CarouselTheme
@@ -127,7 +130,7 @@ export function useCarouselMutations() {
       } finally {
         await resync()
         // A contagem por pasta é do servidor.
-        await mutate("/folders")
+        await mutate(isFoldersKey)
       }
     },
     [mutate, resync]
@@ -142,7 +145,7 @@ export function useCarouselMutations() {
     async (input: CreateCarouselInput): Promise<Carousel> => {
       const created = await apiPost<Carousel>("/carousels", { carousel: input })
       await resync()
-      await mutate("/folders")
+      await mutate(isFoldersKey)
       return created
     },
     [mutate, resync]

@@ -1,0 +1,32 @@
+id: carousel-cover
+name: { pt-BR: "Capa do carrossel", en: "Carousel cover" }
+description:
+  pt-BR: "A primeira lâmina: imagem cheia, título grande e o sinal de que tem mais (arrasta →)."
+  en: "The first slide: full image, big title and the swipe hint."
+formats: [carousel]
+position: first
+background_options: [color]
+background_default: { type: color, color_token: primary }
+align_options: [left, center]
+slots:
+  image: { type: image }
+  badge: { type: text, role_default: label, max_chars: 24 }
+  title: { type: text, role_default: display, max_chars: 60, max_lines: 3, required: true }
+  body:  { type: text, role_default: body, max_chars: 100, max_lines: 2 }
+  logo:  { type: logo, default_visible: true }
+
+geometry:
+  default:
+    - { kind: fill, box: full }
+    - { kind: image, slot: image, box: full, optional: true }
+    # Mais alto e com curva menor que o padrão: escurece antes do título
+    # começar, e o texto branco segura em foto movimentada (prédio, árvores).
+    - { kind: scrim, box: { left: 0, right: 0, bottom: 0, height: "85%" }, from: bottom, opacity: 0.8, curve: 0.9, when: image }
+    - { kind: logo, slot: logo, box: { left: 80, top: 80 }, height: 56 }
+    - { kind: swipe_hint, box: { right: 80, top: 88 }, size: 28, text: "arrasta →" }
+    - kind: stack
+      box: { left: 80, right: 80, bottom: 104 }
+      anchor: bottom
+      gap: 26
+      ink: auto
+      items: [ { slot: badge, size: 30 }, { slot: title, size: 88 }, { slot: body, size: 38 } ]

@@ -7,7 +7,11 @@
 #   POST /support/organizations/:id/enter  o vínculo de suporte daquela organização (criado na primeira
 #                                          vez) e o registro da entrada
 #
-# Para quem não é suporte, as duas respondem `404 notFound`: a rota não existe para essa pessoa.
+# Staff (`User#staff`) usa a mesma área, só com as organizações internas da Vekoo (as das marcas de
+# teste da curadoria): a lista mostra só elas, e entrar em outra é `404`.
+#
+# Para quem não é suporte nem staff, as duas respondem `404 notFound`: a rota não existe para essa
+# pessoa.
 # `master` nunca muda por aqui (nem por rota nenhuma): só por `bin/rails support:grant`.
 class SupportController < AuthenticatedController
   include CamelParams
@@ -22,6 +26,7 @@ class SupportController < AuthenticatedController
   # organização criada no meio da rolagem empurraria a lista (repetindo ou pulando uma).
   def organizations
     scope = Organization.order(:name, :id)
+    scope = scope.where(internal: true) unless current_user.master?
     scope = matching(scope, params[:q]) if params[:q].present?
     total = scope.count if params[:cursor].blank?
 
@@ -43,7 +48,7 @@ class SupportController < AuthenticatedController
 
   def enter
     organization = Organization.find_by(id: params[:id].to_s)
-    return render_not_found unless organization
+    return render_not_found unless Support::Entry.allowed?(current_user, organization)
 
     account = Support::Entry.call(user: current_user, organization: organization,
       ip_address: request.remote_ip, user_agent: request.user_agent)
@@ -54,7 +59,7 @@ class SupportController < AuthenticatedController
   private
 
   def require_master
-    render_not_found unless current_user.master?
+    render_not_found unless current_user.master? || current_user.staff?
   end
 
   # Sem acento dos dois lados: "clinica" acha "Clínica". `translate`, e não a extensão `unaccent`,

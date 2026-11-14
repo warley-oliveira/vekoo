@@ -214,6 +214,7 @@ function PanelBody({ toolId, nodeId, onClose }: { toolId: string | null; nodeId:
                 value={name}
                 disabled={locked}
                 className="font-mono md:text-[13px]"
+                // i18n-exempt: exemplo de nome de função
                 placeholder="consultar_cep"
                 aria-invalid={Boolean(name) && !nameValid}
                 onChange={(event) => change(setName)(event.target.value)}

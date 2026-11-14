@@ -18,7 +18,7 @@ class RegistrationsController < ApplicationController
       render json: SessionSerializer.one(result.session, account: result.account), status: :created
     else
       render_error(
-        status: :unprocessable_entity,
+        status: result.error.code == "signupClosed" ? :forbidden : :unprocessable_entity,
         code: result.error.code,
         field: result.error.field,
         message: message_for(result.error),
@@ -30,7 +30,7 @@ class RegistrationsController < ApplicationController
   private
 
   def message_for(error)
-    return t("auth.#{error.code.underscore}") if error.code == "emailTaken"
+    return t("auth.#{error.code.underscore}") if error.code.in?(%w[emailTaken signupClosed])
 
     error.message.presence || t("errors.unprocessable")
   end

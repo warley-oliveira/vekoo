@@ -4,6 +4,7 @@ import { matchPath, useLocation } from "@/lib/router"
 import { useAlerts, type AlertBadges } from "@/hooks/use-alerts"
 import { useCanAccess } from "@/hooks/use-can"
 import { usePipelineBoards } from "@/hooks/use-pipeline-boards"
+import { brandPath, useCurrentBrandId } from "@/lib/brand-context"
 import {
   NAV_GROUPS,
   PIPELINES_ENTRY_ID,
@@ -58,6 +59,7 @@ export function useNavigationMenu(): NavigationMenu {
   const can = useCanAccess()
   const { boards } = usePipelineBoards()
   const { badges } = useAlerts()
+  const brandId = useCurrentBrandId()
 
   const groups = useMemo<NavGroup[]>(() => {
     const boardChildren: NavChild[] = boards.map((board) => ({
@@ -70,13 +72,17 @@ export function useNavigationMenu(): NavigationMenu {
       ...group,
       entries: group.entries
         .filter((entry) => can(entry.permission))
-        .map((entry) =>
-          entry.id === PIPELINES_ENTRY_ID
-            ? { ...entry, children: boardChildren }
-            : entry
-        ),
+        .map((entry) => {
+          if (entry.id === PIPELINES_ENTRY_ID) return { ...entry, children: boardChildren }
+          // Criação: o caminho na marca de agora. Sem marca conhecida, fica o `to` que passa
+          // pelo `BrandGate`.
+          if (entry.brandSub !== undefined && brandId) {
+            return { ...entry, to: brandPath(brandId, entry.brandSub) }
+          }
+          return entry
+        }),
     })).filter((group) => group.entries.length > 0)
-  }, [boards, can])
+  }, [boards, brandId, can])
 
   const entries = useMemo(() => groups.flatMap((group) => group.entries), [groups])
 

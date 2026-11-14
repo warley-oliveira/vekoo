@@ -175,4 +175,56 @@ RSpec.describe "db/seeds.rb" do
       .and not_change(ThemePreset, :count)
       .and not_change(PaletteColor, :count)
   end
+
+  it "traz o Brandcore da Marina publicado, com histórico e logos de verdade" do
+    brand_core = organization.brand_cores.first
+    expect(brand_core.status).to eq("published")
+    expect(brand_core.current_version).to eq(2)
+    expect(brand_core.versions.pluck(:number)).to eq([ 2, 1 ])
+    expect(brand_core.versions.first.change_list).to include(
+      "section" => "palette", "path" => "palette.colors.cor-coral", "kind" => "added"
+    )
+    expect(brand_core.completeness.minimum_met?).to be(true)
+    expect(brand_core.completeness.percent).to eq(100)
+    expect(brand_core.generation_contract[:ready]).to be(true)
+    expect(brand_core.assets.where(kind: "logo").pluck(:variant)).to contain_exactly("light", "dark")
+    expect(brand_core.assets.all?(&:transparent)).to be(true)
+  end
+
+  it "semeia o Brandcore duas vezes sem duplicar" do
+    expect { silence_stream { load Rails.root.join("db/seeds.rb") } }
+      .to not_change(BrandCore, :count).and not_change(BrandCoreVersion, :count).and not_change(BrandAsset, :count)
+  end
+
+  it "faz todo carrossel nascer dentro da marca da Marina" do
+    expect(organization.carousels.orphans).not_to exist
+    expect(organization.carousels.pluck(:brand_core_id).uniq).to eq([ organization.brand_cores.first.id ])
+    # Nasceram depois da publicação: carregam a versão publicada da marca.
+    expect(organization.carousels.map { |c| c.brand_core_version&.number }.uniq).to eq([ 2 ])
+  end
+
+  # A conta de demonstração tem a senha escrita na semente: fora de
+  # development e test ela não pode nascer — nem no `db:prepare` de produção.
+  %w[production staging].each do |environment|
+    it "em #{environment}, aplica só o acervo — sem conta, organização nem staff" do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::EnvironmentInquirer.new(environment))
+
+      expect {
+        expect(VekooSeeds.call).to be_nil
+      }.to not_change(Account, :count).and not_change(Organization, :count).and not_change(ThemePreset, :count)
+    end
+  end
+
+  it "não cria conta staff em ambiente nenhum" do
+    expect(User.where(staff: true)).not_to exist
+  end
+
+  it "traz uma peça pronta por motor" do
+    ready = organization.pieces.where(status: "ready")
+    expect(ready.map(&:engine_id).uniq.sort).to eq(Engines::Registry.ids.sort)
+    expect(ready.all? { |piece| piece.images.attached? }).to be(true)
+    expect(organization.pieces.find_by(engine_id: "contagem").images.count).to eq(3)
+
+    expect(organization.pieces.where(status: "failed")).not_to exist
+  end
 end

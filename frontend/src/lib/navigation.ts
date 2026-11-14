@@ -1,5 +1,8 @@
 import {
   CalendarDays,
+  House,
+  Images,
+  Sparkles,
   Funnel,
   Layers,
   LayoutDashboard,
@@ -41,6 +44,11 @@ export type NavEntry = {
   match?: string[]
   /** Casa só com o caminho exato. */
   end?: boolean
+  /**
+   * Entrada de Criação: o caminho dentro da marca ativa (`""` é o início dela). Com marca
+   * conhecida, `to` vira `/brands/<marca><brandSub>`.
+   */
+  brandSub?: string
   permission?: PermissionKey
   alertKey?: string
   children?: NavChild[]
@@ -146,35 +154,69 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    // Sem permissão: é a ferramenta de carrosséis, aberta a toda a organização. Por
-    // isso `/carousels` é o destino de último recurso de quem não acessa mais nada.
+    // Sem permissão: é a ferramenta de criação, aberta a toda a organização. Tudo aqui mora na
+    // marca ativa (`/brands/:brandId/...`): `brandSub` é o caminho dentro dela, e
+    // `useNavigationMenu` troca `to` pelo caminho na marca de agora. O `to` daqui é o de quem
+    // ainda não tem marca escolhida: `BrandGate` escolhe e leva à mesma tela.
     id: "creation",
     titleKey: "navigation.groups.creation",
     entries: [
+      {
+        id: "brandHome",
+        titleKey: "navigation.brandHome",
+        icon: House,
+        to: "/brands",
+        brandSub: "",
+        match: ["/brands/:brandId"],
+        end: true,
+      },
+      {
+        id: "create",
+        titleKey: "navigation.create",
+        icon: Sparkles,
+        to: "/brands?to=%2Fcreate",
+        brandSub: "/create",
+        match: ["/brands/:brandId/create"],
+      },
+      {
+        id: "contents",
+        titleKey: "navigation.contents",
+        icon: Images,
+        to: "/brands?to=%2Fcontents",
+        brandSub: "/contents",
+        match: ["/brands/:brandId/contents"],
+      },
       {
         id: "carousels",
         titleKey: "navigation.carousels",
         icon: Layers,
         to: "/carousels",
-        end: true,
+        brandSub: "/carousels",
+        match: ["/brands/:brandId/carousels", "/brands/:brandId/folders"],
       },
       {
         id: "templates",
         titleKey: "navigation.templates",
         icon: LayoutTemplate,
         to: "/templates",
+        brandSub: "/templates",
+        match: ["/brands/:brandId/templates"],
       },
       {
-        id: "brands",
-        titleKey: "navigation.brands",
+        id: "brand",
+        titleKey: "navigation.brand",
         icon: Palette,
-        to: "/brands",
+        to: "/brands?to=%2Fsettings",
+        brandSub: "/settings",
+        match: ["/brands/:brandId/settings", "/brands/:brandId/setup"],
       },
       {
         id: "trash",
         titleKey: "navigation.trash",
         icon: Trash2,
         to: "/trash",
+        brandSub: "/trash",
+        match: ["/brands/:brandId/trash"],
       },
     ],
   },
@@ -325,7 +367,7 @@ export function selectMobileTabs(entries: NavEntry[], activeEntryId: string | nu
 
 /**
  * Para onde vai quem não pode ver a tela pedida (ou abriu `/`): a primeira área do
- * menu a que tem acesso. Sempre existe uma, porque `/carousels` não exige permissão.
+ * menu a que tem acesso. Sempre existe uma, porque a Criação não exige permissão.
  */
 export function firstAllowedPath(
   can: (permission?: PermissionKey) => boolean
@@ -335,5 +377,5 @@ export function firstAllowedPath(
       if (entry.to && can(entry.permission)) return entry.to
     }
   }
-  return "/carousels"
+  return "/brands"
 }

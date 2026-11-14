@@ -83,7 +83,8 @@ export function OrganizationPicker({ variant, target, onNavigated, onCreate }: O
   const [entering, setEntering] = useState<string | null>(null)
 
   const user = identity?.user ?? session?.user
-  const master = Boolean(user?.master)
+  // O suporte do Vekoo vê todas as organizações; a equipe (`staff`), as internas (marcas de teste).
+  const master = Boolean(user?.master || user?.staff)
   const accounts = identity?.accounts ?? session?.accounts ?? NO_ACCOUNTS
   const currentHashid = session?.account.hashid ?? null
   const currentOrganizationId = session?.organization.id ?? null

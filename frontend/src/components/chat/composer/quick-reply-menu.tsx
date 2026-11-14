@@ -218,6 +218,7 @@ export const QuickReplyMenu = memo(function QuickReplyMenu({
               {t("chat.quickReplies.hintInsert")}
             </span>
             <span className="flex items-center gap-1">
+              {/* i18n-exempt: nome da tecla */}
               <Kbd>Esc</Kbd>
               {t("chat.quickReplies.hintClose")}
             </span>

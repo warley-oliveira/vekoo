@@ -26,6 +26,8 @@ class MembershipsController < AuthenticatedController
       organization.save!
       account.save!
       organization.notifications.create!(key: "welcome", notified_at: Time.current)
+      # A primeira marca nasce com a organização: todo conteúdo nasce dentro dela (como no cadastro).
+      organization.brand_cores.create!
     end
 
     render json: AccountSerializer.summary(account), status: :created

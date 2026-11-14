@@ -4,6 +4,12 @@
 #
 #   ssh root@<IP> "bash -s -- $(base64 -w0 ~/.ssh/vekoo_deploy.pub)" < bin/deploy-setup
 #
+# Segundo argumento opcional: o modo do firewall dos containers.
+#   cloudflare (padrão) -> 80/443 só das faixas da Cloudflare (domínio proxied)
+#   open                -> 80/443 abertos ao mundo (DNS direto no IP, Let's
+#                          Encrypt pelo kamal-proxy — o desafio HTTP-01 vem de
+#                          qualquer lugar)
+#
 # A chave pública vai em base64 porque o ssh junta os argumentos numa string de
 # comando única, sem re-aspá-los: passada crua, o shell remoto a quebra nos
 # espaços e só "ssh-ed25519" chega em $1 — gravando uma authorized_keys inválida.
@@ -70,6 +76,8 @@ fi
 PUBKEY_B64="${1:-}"
 [ -n "$PUBKEY_B64" ] || { echo "FATAL: passe a chave pública em base64 como \$1"; exit 1; }
 PUBKEY="$(echo "$PUBKEY_B64" | base64 -d)"
+FIREWALL="${2:-cloudflare}"
+case "$FIREWALL" in cloudflare|open) ;; *) echo "FATAL: firewall '$FIREWALL' (use cloudflare|open)"; exit 1 ;; esac
 
 # --- pacotes base ----------------------------------------------------------
 log "Pacotes base"
@@ -163,8 +171,17 @@ ufw --force enable
 # A regra casa SÓ o que entra pela interface externa. Um DROP genérico em
 # "dports 80,443" mataria também o tráfego interno do kamal-proxy para o
 # container da API, que também escuta na 80 — e derrubaria o site inteiro.
-log "Firewall dos containers: 80/443 só da Cloudflare"
 install -d -m 755 /usr/local/sbin /var/lib/${APP}
+if [ "$FIREWALL" = open ]; then
+  log "Firewall dos containers: 80/443 abertos (modo open)"
+  # Desfaz um modo cloudflare anterior, se houver.
+  systemctl disable --now ${APP}-docker-firewall.timer ${APP}-docker-firewall.service 2>/dev/null || true
+  for ipt in iptables ip6tables; do
+    "$ipt" -D DOCKER-USER -j VEKOO-CF 2>/dev/null || true
+    "$ipt" -F VEKOO-CF 2>/dev/null && "$ipt" -X VEKOO-CF 2>/dev/null || true
+  done
+else
+log "Firewall dos containers: 80/443 só da Cloudflare"
 cat > /usr/local/sbin/${APP}-docker-firewall <<'FW'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -238,6 +255,7 @@ UNIT
 systemctl daemon-reload
 systemctl enable --now ${APP}-docker-firewall.service
 systemctl enable --now ${APP}-docker-firewall.timer
+fi
 
 # A máquina de deploy abre MUITAS conexões SSH por deploy. Sem estar na
 # ignoreip, ela trip o jail no meio de um build longo e o Kamal morre com

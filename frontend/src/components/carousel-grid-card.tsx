@@ -8,6 +8,7 @@ import { CardArt } from "@/components/editor/card-art"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { useActiveBrand } from "@/lib/brand-context"
 import { formatRelative } from "@/lib/format"
 import { useLanguage } from "@/lib/i18n"
 import type { CarouselSummary } from "@/lib/types"
@@ -29,6 +30,7 @@ export function CarouselGridCard({
   const language = useLanguage()
   const { toggleFavorite } = useCarouselMutations()
   const navigate = useNavigate()
+  const { path } = useActiveBrand()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export function CarouselGridCard({
   }, [highlighted])
 
   function openEditor() {
-    navigate(`/carousels/${carousel.id}/edit`)
+    navigate(path(`/carousels/${carousel.id}/edit`))
   }
 
   return (

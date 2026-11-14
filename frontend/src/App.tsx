@@ -5,10 +5,12 @@ import {
   AuthSplash,
   RedirectIfAuthenticated,
   RequireAuth,
+  RequireStaff,
 } from "@/components/auth-guard"
 import { AccountRedirect, AccountScope } from "@/components/organizations/account-scope"
 import { RootRedirect } from "@/components/require-permission"
 import { RouteBoundary } from "@/components/shell/route-boundary"
+import { BrandLayout } from "@/routes/brand-layout"
 import { calendarRoutes } from "@/routes/calendar"
 import { campaignsRoutes } from "@/routes/campaigns"
 import { campaignWizardRoutes } from "@/routes/campaigns/wizard"
@@ -41,6 +43,14 @@ const AppShell = lazy(() =>
 const EditorPage = lazy(() =>
   import("@/routes/editor").then((m) => ({ default: m.EditorPage }))
 )
+const OnboardingPage = lazy(() =>
+  import("@/routes/onboarding").then((m) => ({ default: m.OnboardingPage }))
+)
+const RenderPage = lazy(() =>
+  import("@/routes/render").then((m) => ({ default: m.RenderPage }))
+)
+// A área da Vekoo (curadoria) carrega sob demanda: o assinante nunca baixa este código.
+const AdminApp = lazy(() => import("@/admin"))
 const LoginPage = lazy(() =>
   import("@/routes/login").then((m) => ({ default: m.LoginPage }))
 )
@@ -112,7 +122,19 @@ export default function App() {
       {/* Janela de passagem do login do Instagram: sem guarda, para não perder o código. */}
       {instagramCallbackRoute}
 
+      {/* A peça para o Chromium do export fotografar: sem sessão (o token vem na URL), sem
+          organização e sem chrome do app. */}
+      <Route
+        path="/render"
+        element={
+          <FullScreen>
+            <RenderPage />
+          </FullScreen>
+        }
+      />
+
       {/* Dentro da sessão */}
+
       <Route element={<RequireAuth />}>
         {/* Escolher a organização: da pessoa, não de uma organização */}
         <Route
@@ -142,13 +164,53 @@ export default function App() {
 function PlatformRoutes() {
   return (
     <Routes>
-      {/* Editor em tela cheia — fora do AppShell de propósito */}
+      {/* Editor em tela cheia — fora do AppShell de propósito. O caminho de antes da marca
+          segue abrindo: o editor acha a marca pelo carrossel. */}
+      <Route
+        path="/brands/:brandId/carousels/:carouselId/edit"
+        element={
+          <BrandLayout>
+            <FullScreen>
+              <EditorPage />
+            </FullScreen>
+          </BrandLayout>
+        }
+      />
       <Route
         path="/carousels/:carouselId/edit"
         element={
           <FullScreen>
             <EditorPage />
           </FullScreen>
+        }
+      />
+      {/* Onboarding também em tela cheia: uma conversa, sem menu disputando a atenção de quem
+          ainda não tem uma marca. O `/:step` era o onboarding de telas — o link antigo cai na
+          conversa, que retoma sozinha de onde parou. */}
+      <Route
+        path="/brands/:brandId/onboarding"
+        element={
+          <BrandLayout>
+            <FullScreen>
+              <OnboardingPage />
+            </FullScreen>
+          </BrandLayout>
+        }
+      />
+      <Route
+        path="/brands/:brandId/onboarding/:step"
+        element={<Navigate to=".." relative="path" replace />}
+      />
+      {/* A curadoria do banco de referências — só staff, com layout próprio. Dentro da
+          organização: a API usa o vínculo da aba (`X-Account`) como curador. */}
+      <Route
+        path="/admin/*"
+        element={
+          <RequireStaff>
+            <FullScreen>
+              <AdminApp />
+            </FullScreen>
+          </RequireStaff>
         }
       />
       <Route

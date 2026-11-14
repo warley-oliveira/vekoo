@@ -3,6 +3,9 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/bricolage-grotesque";
+/* Mono dos labels e status da conversa do brandcore — o "log" da plataforma. */
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
 
 /*
  * `dark:` vale dentro de `<html class="dark">` e de um trecho `.theme-dark` (a vitrine mostra os
@@ -13,6 +16,31 @@
 @theme inline {
     --font-heading: 'Bricolage Grotesque Variable', var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
+    /* Labels e status da conversa do Brandcore, o "log" da plataforma. */
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    /* Texto das conversas de criação: o mesmo do resto do app. */
+    --font-chat: var(--font-sans);
+    /*
+     * `vk-*`: os nomes que as telas de criação (Brandcore, onboarding, peças) usam. Não são
+     * outra paleta: cada um aponta para um token do tema, abaixo, e acompanha claro e escuro.
+     */
+    --color-vk-bg: var(--vk-bg);
+    --color-vk-fg: var(--vk-fg);
+    --color-vk-muted: var(--vk-muted);
+    --color-vk-muted-strong: var(--vk-muted-strong);
+    --color-vk-border: var(--vk-border);
+    --color-vk-border-strong: var(--vk-border-strong);
+    --color-vk-surface: var(--vk-surface);
+    --color-vk-track: var(--vk-track);
+    --color-vk-green: var(--vk-green);
+    --color-vk-term-ok: var(--vk-term-ok);
+    --color-vk-faint: var(--vk-faint);
+    --color-vk-input: var(--vk-input-bg);
+    --color-vk-btn: var(--vk-btn-bg);
+    --color-vk-btn-fg: var(--vk-btn-fg);
+    --color-vk-btn-hover: var(--vk-btn-bg-hover);
+    --radius-vk-sm: var(--vk-radius-sm);
+    --radius-vk: var(--vk-radius);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -674,4 +702,84 @@ html.theme-switching *::after {
   [data-slot="scroll-area-thumb"]:active {
     background-color: var(--scrollbar-thumb-active);
   }
+}
+
+/*
+ * Os nomes `vk-*` das telas de criação, sobre os tokens do tema. Vieram de uma paleta própria
+ * (papel off-white, tinta preta); aqui viram o claro e o escuro da plataforma, com o violeta
+ * como único acento: o "botão de tinta" é o `--primary`.
+ */
+:root {
+    --vk-bg: var(--background);
+    --vk-fg: var(--foreground);
+    --vk-muted: var(--muted-foreground);
+    --vk-muted-strong: color-mix(in oklch, var(--muted-foreground) 70%, var(--foreground));
+    --vk-border: var(--border);
+    --vk-border-strong: color-mix(in oklch, var(--border) 55%, var(--foreground) 22%);
+    --vk-track: var(--muted);
+    --vk-faint: color-mix(in oklch, var(--muted) 70%, transparent);
+    --vk-input-bg: color-mix(in oklch, var(--muted) 60%, transparent);
+    --vk-surface: var(--card);
+    --vk-green: var(--status-success);
+    --vk-green-glow: color-mix(in oklch, var(--status-success) 35%, transparent);
+    --vk-term-ok: var(--status-success);
+    --vk-btn-bg: var(--primary);
+    --vk-btn-fg: var(--primary-foreground);
+    --vk-btn-bg-hover: color-mix(in oklch, var(--primary) 88%, var(--foreground));
+    /* O brilho da barra de progresso: o próprio acento, em degradê. */
+    --vk-holo: linear-gradient(120deg, var(--primary), var(--ring), var(--accent-foreground), var(--primary));
+    /* A guia do arrasto livre: o acento, que lê sobre qualquer peça. */
+    --vk-guide: var(--primary);
+    --vk-radius-sm: calc(var(--radius) * 0.8);
+    --vk-radius: var(--radius);
+}
+
+/* A barra de progresso da criação. */
+@utility bg-holo {
+    background-image: var(--vk-holo);
+}
+
+/*
+ * A foto revelando: o degradê do acento, desfocado, em dois véus que derivam em ritmos
+ * diferentes (9s e 13s, sentidos opostos). Só `transform` anima. Com movimento reduzido, os
+ * véus ficam parados.
+ */
+@layer components {
+    .photo-developing {
+        isolation: isolate;
+        overflow: hidden;
+        background: var(--vk-faint);
+    }
+
+    .photo-developing::before,
+    .photo-developing::after {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        z-index: -1;
+        background-image: var(--vk-holo);
+        border-radius: 45%;
+        filter: blur(32px) saturate(0.7);
+        opacity: 0.22;
+        animation: vk-drift 9s ease-in-out infinite alternate;
+    }
+
+    .photo-developing::after {
+        inset: -15% -40% -45% -5%;
+        opacity: 0.14;
+        animation-duration: 13s;
+        animation-direction: alternate-reverse;
+    }
+}
+
+@keyframes vk-drift {
+    from { transform: translate3d(-14%, -10%, 0) rotate(0deg) scale(1); }
+    to { transform: translate3d(12%, 14%, 0) rotate(38deg) scale(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .photo-developing::before,
+    .photo-developing::after {
+        animation: none;
+    }
 }
