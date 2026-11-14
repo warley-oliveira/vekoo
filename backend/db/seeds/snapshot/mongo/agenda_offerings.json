@@ -1,0 +1,82 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7671"
+    },
+    "buffer_before": 0,
+    "buffer_after": 15,
+    "time_increment_interval": 30,
+    "distribution": {
+      "6aee29eb64d3ea36e87c766b": 60,
+      "6aee29eb64d3ea36e87c766d": 40
+    },
+    "guest_limit": 1,
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Prova com hora marcada",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "duration": 45,
+    "description": "Uma hora só sua no provador, com as peças separadas.",
+    "success_message": "Avise que as peças ficam separadas até o fim do horário.",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.472Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.472Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7672"
+    },
+    "buffer_before": 0,
+    "buffer_after": 0,
+    "time_increment_interval": 30,
+    "distribution": {
+      "6aee29eb64d3ea36e87c766f": 100
+    },
+    "guest_limit": 1,
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Ajuste de roupa",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "duration": 30,
+    "description": "Barra, cintura e manga, com a costureira.",
+    "success_message": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.483Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.483Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7673"
+    },
+    "buffer_before": 15,
+    "buffer_after": 15,
+    "time_increment_interval": 60,
+    "distribution": {
+      "6aee29eb64d3ea36e87c766b": 50,
+      "6aee29eb64d3ea36e87c766d": 50
+    },
+    "guest_limit": 1,
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Consultoria de estilo",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "duration": 90,
+    "description": "Conversa sobre o seu guarda-roupa, com sugestão de peças.",
+    "success_message": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.492Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.492Z"
+    }
+  }
+]

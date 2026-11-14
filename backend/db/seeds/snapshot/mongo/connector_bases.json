@@ -1,0 +1,106 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bb5"
+    },
+    "allowed_origins": [],
+    "primary_color": "#5B93FF",
+    "position": "bottom-right",
+    "welcome_message": "Olá! Como podemos ajudar?",
+    "bot_display_name": "Site da Doma Store",
+    "launcher_icon": "chat",
+    "locale": "pt-BR",
+    "rate_limit_per_min": 20,
+    "daily_message_cap": 0,
+    "daily_visitor_cap": 0,
+    "pre_chat_fields": "name_phone",
+    "auto_page_context": true,
+    "proactive_enabled": true,
+    "delivery_mode": "rolling",
+    "launcher_size": 60,
+    "bubble_radius": 16,
+    "panel_radius": 18,
+    "font_family": "",
+    "custom_css": "",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "status_cd": "active",
+    "send_collaborator_name": false,
+    "_type": "Connector::WebWidget",
+    "public_token": "pk_widget_LO8djCVQJNa85-jriGH0-KhaAEZUjeHC",
+    "signing_secret_ciphertext": "pUxCqfMgzDDJNaCV2znZ7OfZmeMlQcTm+wV4M3sR6C/okzi4SswDroOFxqATLHtekRCHVYQMl/zlrJlaE8WlbrK4--/qZ0hwDpDzplgphu--iqcwPl5VCvaz0uSUqjf8dw==",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.892Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.892Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "status_cd": "closed",
+    "provider_api": "evolution_api",
+    "base_url": "http://evolution.invalid",
+    "number_id": "5541930001234",
+    "profile_name": "Doma Store",
+    "send_collaborator_name": false,
+    "_type": "Connector::WhatsappWeb",
+    "instance_name": "IWA-6aee0e5717c01071cdba2bb6",
+    "updated_at": {
+      "$date": "2026-11-08T02:39:45.820Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.904Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "phone_number_details": {},
+    "phone_number_list": [],
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "status_cd": "inactive",
+    "phone_number_id": 100000000001,
+    "waba_id": 200000000001,
+    "business_id": 300000000001,
+    "verified_name": "Doma Store",
+    "display_phone_number": "+55 41 3000-1234",
+    "quality_rating": "GREEN",
+    "fb_status": "CONNECTED",
+    "send_collaborator_name": false,
+    "_type": "Connector::WhatsappCloud",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.913Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.913Z"
+    },
+    "verification_token": "a2o4j6djalm9nruz2gop2av9qy2j3g6j"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bb8"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "status_cd": "inactive",
+    "auth_provider": "instagram_login",
+    "instagram_account_id": "178410000000001",
+    "instagram_username": "domastore",
+    "account_name": "Doma Store",
+    "followers_count": 12480,
+    "follows_count": 320,
+    "media_count": 412,
+    "send_collaborator_name": false,
+    "_type": "Connector::InstagramDirect",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.920Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.920Z"
+    },
+    "verification_token": "nddepgil7tkffkkw9jvdokge7vryir2y"
+  }
+]

@@ -1,0 +1,1021 @@
+[
+  {
+    "_id": {
+      "$oid": "6aedf773116334bb5267cc1c"
+    },
+    "actions": [
+      {
+        "action": "open_calendar",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento confirmado",
+    "description": "Ana Beatriz marcou Limpeza de pele para quinta-feira, às 14h.",
+    "category": "calendar",
+    "url": "/calendar",
+    "created_at": {
+      "$date": "2026-11-06T14:51:15.730Z"
+    },
+    "read_at": {
+      "$date": "2026-11-07T18:23:07.476Z"
+    },
+    "archived_at": null,
+    "updated_at": {
+      "$date": "2026-11-07T18:23:07.477Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aedf773116334bb5267cc1d"
+    },
+    "actions": [
+      {
+        "action": "open_chat",
+        "title": "Abrir conversa",
+        "urlPath": "/chat"
+      }
+    ],
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Conversa atribuída a você",
+    "description": "Paulo Mendes está esperando resposta sobre o orçamento da reforma.",
+    "category": "chat",
+    "url": "/chat",
+    "created_at": {
+      "$date": "2026-11-06T12:51:15.792Z"
+    },
+    "read_at": null,
+    "archived_at": null,
+    "updated_at": {
+      "$date": "2026-11-06T15:51:15.793Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aedf773116334bb5267cc1e"
+    },
+    "actions": [],
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "Fernanda Souza cancelou a sessão de sexta-feira, às 10h.",
+    "category": "calendar",
+    "url": "/calendar",
+    "created_at": {
+      "$date": "2026-11-05T13:51:15.802Z"
+    },
+    "read_at": {
+      "$date": "2026-11-05T14:01:15.802Z"
+    },
+    "archived_at": null,
+    "updated_at": {
+      "$date": "2026-11-06T15:51:15.803Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aedf773116334bb5267cc1f"
+    },
+    "actions": [],
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Sua exportação de contatos ficou pronta",
+    "description": "O arquivo com 1.248 contatos está disponível para baixar por 7 dias.",
+    "category": "system",
+    "url": "/contacts",
+    "created_at": {
+      "$date": "2026-11-04T13:51:15.811Z"
+    },
+    "read_at": {
+      "$date": "2026-11-04T14:01:15.811Z"
+    },
+    "archived_at": null,
+    "updated_at": {
+      "$date": "2026-11-06T15:51:15.812Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aedf773116334bb5267cc20"
+    },
+    "actions": [],
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Bem-vinda à equipe de atendimento",
+    "description": "Rafael adicionou você ao departamento Comercial.",
+    "category": "general",
+    "url": null,
+    "created_at": {
+      "$date": "2026-11-01T15:51:15.819Z"
+    },
+    "read_at": null,
+    "archived_at": {
+      "$date": "2026-11-02T15:51:15.819Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T15:51:15.819Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5f7563117ff84a7ea568"
+    },
+    "actions": [],
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tempo da etapa esgotado",
+    "description": "O card \"Kit de boas-vindas da Agência Lume\" passou de 72h na etapa \"Proposta enviada\".",
+    "url": "/pipelines/48014125-46c3-432b-8f98-266df3aa391f/board?card=8dc90d91-2104-4cac-8204-d17a252281c4",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-06T23:15:00.996Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:15:00.996Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5f7563117ff84a7ea569"
+    },
+    "actions": [],
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tempo da etapa esgotado",
+    "description": "O card \"Pedido de uniformes da Escola Girassol\" passou de 24h na etapa \"Novos contatos\".",
+    "url": "/pipelines/48014125-46c3-432b-8f98-266df3aa391f/board?card=e1516521-09d3-497f-8c23-72e1b68b582b",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-06T23:15:01.126Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:15:01.126Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5f7563117ff84a7ea56a"
+    },
+    "actions": [],
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tempo da etapa esgotado",
+    "description": "O card \"Pedido 48177: Márcia Regina\" passou de 48h na etapa \"Separação\".",
+    "url": "/pipelines/ece4576b-cca2-4cff-bd98-ab5c59a5e9ee/board?card=35398ff6-b983-4f21-9899-acebec3b15c1",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-06T23:15:01.170Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:15:01.170Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6886fb6f5046fc6b471d"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:53:42.120Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:53:42.120Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee689cfb6f5046fc6b4722"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:54:04.461Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:54:04.461Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6905fb6f5046fc6b4724"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:55:49.545Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:55:49.545Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee691cfb6f5046fc6b4729"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:56:12.170Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:56:12.170Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6923fb6f5046fc6b472b"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com Fernanda Lima em 05/11, 15:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:56:19.991Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:56:19.991Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69b9fb6f5046fc6b4731"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:58:49.338Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:58:49.338Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69d0fb6f5046fc6b4736"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:59:12.883Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:59:12.883Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69d8fb6f5046fc6b4738"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com Fernanda Lima em 05/11, 15:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-06T23:59:20.672Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:59:20.672Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a20fb6f5046fc6b473b"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:00:32.531Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:32.531Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a37fb6f5046fc6b4744"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:00:55.706Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:55.706Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a53fb6f5046fc6b4746"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com  em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:01:23.457Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:23.457Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a67fb6f5046fc6b4748"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:01:43.023Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:43.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a7efb6f5046fc6b4751"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:02:06.040Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:02:06.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d74fb6f5046fc6b4774"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:14:44.769Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:44.769Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d8dfb6f5046fc6b477d"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:15:09.709Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:15:09.709Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d95fb6f5046fc6b477f"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com Fernanda Lima em 05/11, 15:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:15:17.304Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:15:17.304Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e59fb6f5046fc6b4781"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:18:33.776Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:33.776Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e72fb6f5046fc6b478a"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:18:58.516Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:58.516Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee701ffb6f5046fc6b478c"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento de Prova com hora marcada com Ana Beatriz Moura em 18/11, 10:30.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:26:07.202Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:07.202Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7038fb6f5046fc6b4795"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Agendamento cancelado",
+    "description": "O agendamento com Ana Beatriz Moura em 18/11, 14:00 foi cancelado.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:26:32.096Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:32.096Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7040fb6f5046fc6b4797"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com Fernanda Lima em 05/11, 15:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:26:40.446Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:40.446Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71d8fb6f5046fc6b47a5"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 09:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:28.944Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:28.944Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71d9fb6f5046fc6b47a7"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 10:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:29.003Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:29.003Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71d9fb6f5046fc6b47a9"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 11:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:29.057Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:29.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71d9fb6f5046fc6b47ab"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 13:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:29.112Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:29.112Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71d9fb6f5046fc6b47ad"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 14:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:29.169Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:29.169Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee71e9fb6f5046fc6b47af"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Novo agendamento",
+    "description": "Você tem um novo agendamento com  em 02/12, 00:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-07T00:33:45.211Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:33:45.211Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee723163117ff84a7ea56d"
+    },
+    "actions": [],
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Pipeline",
+    "description": "Olá wt22 motor",
+    "url": "/pipelines/655d3852-f87e-4d76-bc47-1249c4bb7e2d/board?card=7deb4544-f6d1-4cc3-9b0d-252bc81da185",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-07T00:35:14.997Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:34:57.713Z"
+    },
+    "archived_at": {
+      "$date": "2026-11-07T00:35:14.996Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefa8ee56856f7c5375b710"
+    },
+    "actions": [],
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tempo da etapa esgotado",
+    "description": "O card \"Camila Ferraz\" passou de 72h na etapa \"Proposta enviada\".",
+    "url": "/pipelines/48014125-46c3-432b-8f98-266df3aa391f/board?card=12f43b09-0215-4595-9a65-1f7da996567e",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-07T22:40:46.089Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T22:40:46.089Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefa8ee56856f7c5375b711"
+    },
+    "actions": [],
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tempo da etapa esgotado",
+    "description": "O card \"Patrícia Gomes\" passou de 24h na etapa \"Novos contatos\".",
+    "url": "/pipelines/48014125-46c3-432b-8f98-266df3aa391f/board?card=bb3a210b-11d5-4635-b858-7cfed18de2bc",
+    "category": "general",
+    "updated_at": {
+      "$date": "2026-11-07T22:40:46.305Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T22:40:46.305Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af36d50c39f962ef5c54e4f"
+    },
+    "actions": [
+      {
+        "action": "navigate",
+        "title": "Abrir agenda",
+        "urlPath": "/calendar"
+      },
+      {
+        "action": "dismiss",
+        "title": "Dispensar"
+      }
+    ],
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Lembrete de agendamento",
+    "description": "Daqui a pouco: Consultoria de estilo com Márcia Regina Costa, às 15:00.",
+    "url": "/calendar",
+    "category": "calendar",
+    "updated_at": {
+      "$date": "2026-11-10T19:15:28.033Z"
+    },
+    "created_at": {
+      "$date": "2026-11-10T19:15:28.033Z"
+    }
+  }
+]

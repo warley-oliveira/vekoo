@@ -1,0 +1,240 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bb9"
+    },
+    "name": "cliente-novo",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#7c3aed",
+    "description": "Primeiro contato",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.927Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.927Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bba"
+    },
+    "name": "orcamento",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#2563eb",
+    "description": "Pediu orçamento",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.931Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.931Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bbb"
+    },
+    "name": "troca",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#059669",
+    "description": "Troca ou devolução",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.934Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.934Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bbc"
+    },
+    "name": "retorno",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#d97706",
+    "description": "Precisa de retorno",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.937Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.937Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bbd"
+    },
+    "name": "urgente",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#dc2626",
+    "description": "Responder primeiro",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.940Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.940Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bbe"
+    },
+    "name": "vip",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#db2777",
+    "description": "Cliente de sempre",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.944Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.944Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bbf"
+    },
+    "name": "pos-venda",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#0891b2",
+    "description": "Já comprou",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.947Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bc0"
+    },
+    "name": "ganho",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#2ecc71",
+    "description": "Ganho",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.949Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.949Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bc1"
+    },
+    "name": "perdido",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#e74c3c",
+    "description": "Perdido",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.952Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.952Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb826"
+    },
+    "name": "aguardando-operador",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#f59e0b",
+    "description": "A automação passou para uma pessoa",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.321Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.321Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb827"
+    },
+    "name": "atacado",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#4f46e5",
+    "description": "Compra para revender",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.324Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.324Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb828"
+    },
+    "name": "reclamacao",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#b91c1c",
+    "description": "Precisa de atenção do pós-venda",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.330Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.330Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7675"
+    },
+    "name": "compareceu",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#2ecc71",
+    "description": "Compareceu",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.588Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.588Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7679"
+    },
+    "name": "nao-compareceu",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#e74c3c",
+    "description": "Não compareceu",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.722Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.722Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee81f863117ff84a7ea570"
+    },
+    "name": "atendimento-humano",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#f1c40f",
+    "updated_at": {
+      "$date": "2026-11-07T01:42:16.633Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T01:42:16.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefd8077ed60bcb76d0a161"
+    },
+    "name": "carrinho-abandonado",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "color": "#f1c40f",
+    "updated_at": {
+      "$date": "2026-11-08T02:01:43.230Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T02:01:43.230Z"
+    }
+  }
+]

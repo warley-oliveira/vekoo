@@ -1,0 +1,1655 @@
+[
+  {
+    "id": "08c00af5-51b5-49b3-93d8-bcb2c1b5c99d",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-etiqueta",
+          "source": "gatilho",
+          "target": "etiqueta"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_human_handoff",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "atendimento-humano"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:59.002992Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.989505Z",
+    "updated_at": "2026-11-06T23:12:59.003572Z"
+  },
+  {
+    "id": "58b93bc7-e9a7-4b6c-9c04-5f75e668ad1d",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-etiqueta",
+          "source": "gatilho",
+          "target": "etiqueta",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "link-6a283b49",
+          "source": "ai-assistant-bc60a20b",
+          "target": "send-text-fe01a088",
+          "sourceHandle": "onError"
+        },
+        {
+          "id": "link-fed08e5b",
+          "source": "ai-assistant-e18a29e5",
+          "target": "ask-question-6d9cc50f",
+          "sourceHandle": "maxTurns"
+        },
+        {
+          "id": "link-7087bf9a",
+          "source": "etiqueta",
+          "target": "send-text-2688ea00",
+          "sourceHandle": "next"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_first_message",
+          "position": {
+            "x": -240,
+            "y": -272
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "atendimento-humano"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 144,
+            "y": -256
+          }
+        },
+        {
+          "id": "ai-assistant-bc60a20b",
+          "data": {
+            "mode": "interactive",
+            "outputs": [
+              {
+                "id": "teste",
+                "when": "",
+                "label": "Teste"
+              }
+            ],
+            "tool_ids": [],
+            "min_turns": 1,
+            "model_size": "main",
+            "use_history": true,
+            "system_prompt": "efseswfreswrfwer"
+          },
+          "type": "ai_assistant",
+          "position": {
+            "x": 632,
+            "y": -208
+          }
+        },
+        {
+          "id": "send-text-fe01a088",
+          "data": {
+            "text": ""
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1072,
+            "y": -64
+          }
+        },
+        {
+          "id": "ai-assistant-e18a29e5",
+          "data": {
+            "mode": "interactive",
+            "outputs": [],
+            "tool_ids": [],
+            "max_turns": 2,
+            "min_turns": 1,
+            "model_size": "main",
+            "sender_name": "{{contact.id}}",
+            "use_history": true,
+            "native_tools": [],
+            "system_prompt": ""
+          },
+          "type": "ai_assistant",
+          "position": {
+            "x": 504,
+            "y": -400
+          }
+        },
+        {
+          "id": "ask-question-6d9cc50f",
+          "data": {
+            "text": "Olá {{contact.name}}, tudo bem?",
+            "save_to": "tudo_bem"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 960,
+            "y": -248
+          }
+        },
+        {
+          "id": "send-text-2688ea00",
+          "data": {
+            "text": "Olá {{contact.name}}, seja bem vindo!"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 568,
+            "y": 40
+          }
+        }
+      ],
+      "fields": [],
+      "viewport": {
+        "x": 318.7068062827225,
+        "y": 497.7431282722513,
+        "zoom": 0.8318062827225131
+      },
+      "base_prompt": ""
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:59.008814Z",
+    "updated_at": "2026-11-14T03:50:22.075769Z"
+  },
+  {
+    "id": "64bb5451-4fa8-4296-bc5f-2b0df0c3745a",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-cep",
+          "source": "gatilho",
+          "target": "cep"
+        },
+        {
+          "id": "cep-frete",
+          "source": "cep",
+          "target": "frete"
+        },
+        {
+          "id": "frete-deu_certo",
+          "source": "frete",
+          "target": "deu_certo",
+          "sourceHandle": "success"
+        },
+        {
+          "id": "frete-erro",
+          "source": "frete",
+          "target": "erro",
+          "sourceHandle": "error"
+        },
+        {
+          "id": "deu_certo-resposta",
+          "source": "deu_certo",
+          "target": "resposta",
+          "sourceHandle": "true"
+        },
+        {
+          "id": "deu_certo-erro",
+          "source": "deu_certo",
+          "target": "erro",
+          "sourceHandle": "false"
+        },
+        {
+          "id": "resposta-campo",
+          "source": "resposta",
+          "target": "campo"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "label": "Orçamento",
+            "keywords": [
+              "orçamento",
+              "orcamento",
+              "frete"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "cep",
+          "data": {
+            "text": "Claro! Qual é o seu CEP?",
+            "save_to": "cep"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "frete",
+          "data": {
+            "params": {
+              "cep": "{{vars.cep}}"
+            },
+            "tool_id": "6aee5efa894f668c1fea47df",
+            "save_response_to": "frete"
+          },
+          "type": "execute_tool",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "deu_certo",
+          "data": {
+            "match": "all",
+            "rules": [
+              {
+                "field": "vars.frete.ok",
+                "value": "true",
+                "operator": "equals"
+              }
+            ]
+          },
+          "type": "condition",
+          "position": {
+            "x": 840,
+            "y": 0
+          }
+        },
+        {
+          "id": "resposta",
+          "data": {
+            "text": "Para o seu CEP, o frete fica R$ {{vars.frete.valor}} e chega em {{vars.frete.prazo_dias}} dias."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1120,
+            "y": -120
+          }
+        },
+        {
+          "id": "erro",
+          "data": {
+            "text": "Não consegui consultar esse CEP. Pode conferir?"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1120,
+            "y": 120
+          }
+        },
+        {
+          "id": "campo",
+          "data": {
+            "key": "cep",
+            "value": "{{vars.cep}}"
+          },
+          "type": "set_custom_attribute",
+          "position": {
+            "x": 1400,
+            "y": -120
+          }
+        }
+      ],
+      "fields": [
+        {
+          "key": "cep",
+          "type": "string",
+          "label": "CEP"
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.802776Z",
+    "updated_at": "2026-11-06T23:12:58.802776Z"
+  },
+  {
+    "id": "909f9a24-5664-451d-bc89-672312a3e86c",
+    "flow_id": "96593c93-12cb-4fd8-9903-6f1cdb313dcf",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "ia-humano",
+          "source": "ia",
+          "target": "humano",
+          "sourceHandle": "falar_com_pessoa"
+        },
+        {
+          "id": "ia-humano-maxTurns",
+          "source": "ia",
+          "target": "humano",
+          "sourceHandle": "maxTurns"
+        },
+        {
+          "id": "link-d95a2566",
+          "source": "gatilho",
+          "target": "send-text-c0e95392",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "link-fb227256",
+          "source": "send-text-c0e95392",
+          "target": "ia",
+          "sourceHandle": "next"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "keywords": [
+              "atendente"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": -328,
+            "y": 160
+          }
+        },
+        {
+          "id": "ia",
+          "data": {
+            "mode": "interactive",
+            "outputs": [
+              {
+                "id": "falar_com_pessoa",
+                "when": "O cliente pede para falar com uma pessoa",
+                "label": "Falar com uma pessoa"
+              }
+            ],
+            "tool_ids": [
+              "6aee5efa894f668c1fea47df"
+            ],
+            "max_turns": 10,
+            "min_turns": 1,
+            "model_size": "fast",
+            "system_prompt": "Você atende {{contact.name}} no WhatsApp. Responda em poucas frases, sem listas."
+          },
+          "type": "ai_assistant",
+          "position": {
+            "x": 464,
+            "y": 200
+          }
+        },
+        {
+          "id": "humano",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 840,
+            "y": 104
+          }
+        },
+        {
+          "id": "send-text-c0e95392",
+          "data": {
+            "text": "Olá, tudo bem?"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 48,
+            "y": 240
+          }
+        }
+      ],
+      "fields": [],
+      "viewport": {
+        "x": 321.1240310077519,
+        "y": 369.7732558139535,
+        "zoom": 0.9525193798449613
+      },
+      "base_prompt": "Você é a atendente da Doma Store, loja de roupas de Curitiba. Fale de forma simpática e direta."
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.957519Z",
+    "updated_at": "2026-11-08T02:56:10.394203Z"
+  },
+  {
+    "id": "92261339-908e-4acf-94f1-40b1a3e1f2fb",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-cep",
+          "source": "gatilho",
+          "target": "cep"
+        },
+        {
+          "id": "cep-frete",
+          "source": "cep",
+          "target": "frete"
+        },
+        {
+          "id": "frete-deu_certo",
+          "source": "frete",
+          "target": "deu_certo",
+          "sourceHandle": "success"
+        },
+        {
+          "id": "frete-erro",
+          "source": "frete",
+          "target": "erro",
+          "sourceHandle": "error"
+        },
+        {
+          "id": "deu_certo-resposta",
+          "source": "deu_certo",
+          "target": "resposta",
+          "sourceHandle": "true"
+        },
+        {
+          "id": "deu_certo-erro",
+          "source": "deu_certo",
+          "target": "erro",
+          "sourceHandle": "false"
+        },
+        {
+          "id": "resposta-campo",
+          "source": "resposta",
+          "target": "campo"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "label": "Orçamento",
+            "keywords": [
+              "orçamento",
+              "orcamento",
+              "frete"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "cep",
+          "data": {
+            "text": "Claro! Qual é o seu CEP?",
+            "save_to": "cep"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "frete",
+          "data": {
+            "params": {
+              "cep": "{{vars.cep}}"
+            },
+            "tool_id": "6aee5efa894f668c1fea47df",
+            "save_response_to": "frete"
+          },
+          "type": "execute_tool",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "deu_certo",
+          "data": {
+            "match": "all",
+            "rules": [
+              {
+                "field": "vars.frete.ok",
+                "value": "true",
+                "operator": "equals"
+              }
+            ]
+          },
+          "type": "condition",
+          "position": {
+            "x": 840,
+            "y": 0
+          }
+        },
+        {
+          "id": "resposta",
+          "data": {
+            "text": "Para o seu CEP, o frete fica R$ {{vars.frete.valor}} e chega em {{vars.frete.prazo_dias}} dias."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1120,
+            "y": -120
+          }
+        },
+        {
+          "id": "erro",
+          "data": {
+            "text": "Não consegui consultar esse CEP. Pode conferir?"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1120,
+            "y": 120
+          }
+        },
+        {
+          "id": "campo",
+          "data": {
+            "key": "cep",
+            "value": "{{vars.cep}}"
+          },
+          "type": "set_custom_attribute",
+          "position": {
+            "x": 1400,
+            "y": -120
+          }
+        }
+      ],
+      "fields": [
+        {
+          "key": "cep",
+          "type": "string",
+          "label": "CEP"
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:58.795302Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.781751Z",
+    "updated_at": "2026-11-06T23:12:58.795903Z"
+  },
+  {
+    "id": "950124bc-e85c-4585-9820-87305ec2e0d8",
+    "flow_id": "1a9de246-94e7-4f7d-a7da-29c0b4440a9d",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-oi",
+          "source": "gatilho",
+          "target": "oi",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "oi-busca",
+          "source": "oi",
+          "target": "busca",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "link-68bc16e0",
+          "source": "busca",
+          "target": "ai-assistant-93d3ccc2",
+          "sourceHandle": "found"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_manual",
+          "position": {
+            "x": -248,
+            "y": -72
+          }
+        },
+        {
+          "id": "oi",
+          "data": {
+            "text": "Oi, {{contact.name}}! Faz tempo que você não aparece. Chegou coleção nova."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 64,
+            "y": -360
+          }
+        },
+        {
+          "id": "busca",
+          "data": {
+            "limit": 3,
+            "query": "coleção nova",
+            "save_to": "produtos"
+          },
+          "type": "catalog_search",
+          "position": {
+            "x": 456,
+            "y": -96
+          }
+        },
+        {
+          "id": "ai-assistant-93d3ccc2",
+          "data": {
+            "mode": "interactive",
+            "outputs": [],
+            "tool_ids": [],
+            "min_turns": 1,
+            "model_size": "main",
+            "use_history": true,
+            "system_prompt": ""
+          },
+          "type": "ai_assistant",
+          "position": {
+            "x": 880,
+            "y": -312
+          }
+        }
+      ],
+      "fields": [],
+      "viewport": {
+        "x": 576,
+        "y": 765,
+        "zoom": 1
+      },
+      "base_prompt": ""
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:59.035909Z",
+    "updated_at": "2026-11-08T02:00:34.982121Z"
+  },
+  {
+    "id": "96094a08-7477-4a3b-9678-25a4fc7915f3",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-oi",
+          "source": "gatilho",
+          "target": "oi"
+        },
+        {
+          "id": "oi-pergunta",
+          "source": "oi",
+          "target": "pergunta"
+        },
+        {
+          "id": "pergunta-vendas",
+          "source": "pergunta",
+          "target": "vendas",
+          "sourceHandle": "comprar"
+        },
+        {
+          "id": "vendas-etiqueta",
+          "source": "vendas",
+          "target": "etiqueta"
+        },
+        {
+          "id": "etiqueta-loja",
+          "source": "etiqueta",
+          "target": "loja"
+        },
+        {
+          "id": "loja-fim",
+          "source": "loja",
+          "target": "fim"
+        },
+        {
+          "id": "pergunta-suporte",
+          "source": "pergunta",
+          "target": "suporte",
+          "sourceHandle": "suporte"
+        },
+        {
+          "id": "suporte-humano",
+          "source": "suporte",
+          "target": "humano"
+        },
+        {
+          "id": "humano-fim",
+          "source": "humano",
+          "target": "fim"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "label": "Primeira mensagem"
+          },
+          "type": "trigger_first_message",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "oi",
+          "data": {
+            "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "pergunta",
+          "data": {
+            "text": "Como posso te ajudar hoje?",
+            "buttons": [
+              {
+                "id": "comprar",
+                "title": "Quero comprar"
+              },
+              {
+                "id": "suporte",
+                "title": "Preciso de ajuda"
+              }
+            ],
+            "save_to": "motivo",
+            "invalid_text": "Não entendi. Responda com o número da opção."
+          },
+          "type": "send_interactive",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "vendas",
+          "data": {
+            "team_id": ""
+          },
+          "type": "assign_team",
+          "position": {
+            "x": 840,
+            "y": -120
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "quer-comprar"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 1120,
+            "y": -120
+          }
+        },
+        {
+          "id": "loja",
+          "data": {
+            "text": "Ótimo! Já vou te passar para quem cuida das vendas."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1400,
+            "y": -120
+          }
+        },
+        {
+          "id": "suporte",
+          "data": {
+            "tag_name": "suporte"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 840,
+            "y": 120
+          }
+        },
+        {
+          "id": "humano",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 1120,
+            "y": 120
+          }
+        },
+        {
+          "id": "fim",
+          "data": {},
+          "type": "end",
+          "position": {
+            "x": 1680,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.754927Z",
+    "updated_at": "2026-11-06T23:12:58.754927Z"
+  },
+  {
+    "id": "bf226c17-26bd-4084-998a-7ddc8c52f9c4",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-nota",
+          "source": "gatilho",
+          "target": "nota"
+        },
+        {
+          "id": "nota-boa",
+          "source": "nota",
+          "target": "boa"
+        },
+        {
+          "id": "boa-obrigada",
+          "source": "boa",
+          "target": "obrigada",
+          "sourceHandle": "true"
+        },
+        {
+          "id": "boa-conta",
+          "source": "boa",
+          "target": "conta",
+          "sourceHandle": "false"
+        },
+        {
+          "id": "conta-transfere",
+          "source": "conta",
+          "target": "transfere"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_manual",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "nota",
+          "data": {
+            "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+            "save_to": "nota"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "boa",
+          "data": {
+            "rules": [
+              {
+                "field": "vars.nota",
+                "value": "8",
+                "operator": "greater_than"
+              }
+            ]
+          },
+          "type": "condition",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "obrigada",
+          "data": {
+            "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 840,
+            "y": -120
+          }
+        },
+        {
+          "id": "conta",
+          "data": {
+            "text": "Poxa, sentimos muito. O que poderia ter sido melhor?",
+            "save_to": "motivo"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 840,
+            "y": 120
+          }
+        },
+        {
+          "id": "transfere",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 1120,
+            "y": 120
+          }
+        }
+      ],
+      "fields": [
+        {
+          "key": "nota",
+          "type": "string",
+          "label": "Nota"
+        },
+        {
+          "key": "motivo",
+          "type": "string",
+          "label": "Motivo"
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:58.846477Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.832938Z",
+    "updated_at": "2026-11-06T23:12:58.847578Z"
+  },
+  {
+    "id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-oi",
+          "source": "gatilho",
+          "target": "oi"
+        },
+        {
+          "id": "oi-pergunta",
+          "source": "oi",
+          "target": "pergunta"
+        },
+        {
+          "id": "pergunta-vendas",
+          "source": "pergunta",
+          "target": "vendas",
+          "sourceHandle": "comprar"
+        },
+        {
+          "id": "vendas-etiqueta",
+          "source": "vendas",
+          "target": "etiqueta"
+        },
+        {
+          "id": "etiqueta-loja",
+          "source": "etiqueta",
+          "target": "loja"
+        },
+        {
+          "id": "loja-fim",
+          "source": "loja",
+          "target": "fim"
+        },
+        {
+          "id": "pergunta-suporte",
+          "source": "pergunta",
+          "target": "suporte",
+          "sourceHandle": "suporte"
+        },
+        {
+          "id": "suporte-humano",
+          "source": "suporte",
+          "target": "humano"
+        },
+        {
+          "id": "humano-fim",
+          "source": "humano",
+          "target": "fim"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "label": "Primeira mensagem"
+          },
+          "type": "trigger_first_message",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "oi",
+          "data": {
+            "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "pergunta",
+          "data": {
+            "text": "Como posso te ajudar hoje?",
+            "buttons": [
+              {
+                "id": "comprar",
+                "title": "Quero comprar"
+              },
+              {
+                "id": "suporte",
+                "title": "Preciso de ajuda"
+              }
+            ],
+            "save_to": "motivo",
+            "invalid_text": "Não entendi. Responda com o número da opção."
+          },
+          "type": "send_interactive",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "vendas",
+          "data": {
+            "team_id": ""
+          },
+          "type": "assign_team",
+          "position": {
+            "x": 840,
+            "y": -120
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "quer-comprar"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 1120,
+            "y": -120
+          }
+        },
+        {
+          "id": "loja",
+          "data": {
+            "text": "Ótimo! Já vou te passar para quem cuida das vendas."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 1400,
+            "y": -120
+          }
+        },
+        {
+          "id": "suporte",
+          "data": {
+            "tag_name": "suporte"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 840,
+            "y": 120
+          }
+        },
+        {
+          "id": "humano",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 1120,
+            "y": 120
+          }
+        },
+        {
+          "id": "fim",
+          "data": {},
+          "type": "end",
+          "position": {
+            "x": 1680,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:58.746636Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.732157Z",
+    "updated_at": "2026-11-06T23:12:58.748590Z"
+  },
+  {
+    "id": "d002c851-1cb6-4a2a-9e5a-a897d6529b3d",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-nota",
+          "source": "gatilho",
+          "target": "nota",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "nota-boa",
+          "source": "nota",
+          "target": "boa",
+          "sourceHandle": "next"
+        },
+        {
+          "id": "boa-obrigada",
+          "source": "boa",
+          "target": "obrigada",
+          "sourceHandle": "true"
+        },
+        {
+          "id": "boa-conta",
+          "source": "boa",
+          "target": "conta",
+          "sourceHandle": "false"
+        },
+        {
+          "id": "link-256ff72e",
+          "source": "conta",
+          "target": "transfere",
+          "sourceHandle": "next"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_manual",
+          "position": {
+            "x": -264,
+            "y": -240
+          }
+        },
+        {
+          "id": "nota",
+          "data": {
+            "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+            "save_to": "nota"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 112,
+            "y": -184
+          }
+        },
+        {
+          "id": "boa",
+          "data": {
+            "rules": [
+              {
+                "field": "vars.nota",
+                "value": "8",
+                "operator": "greater_than"
+              }
+            ]
+          },
+          "type": "condition",
+          "position": {
+            "x": 440,
+            "y": -112
+          }
+        },
+        {
+          "id": "obrigada",
+          "data": {
+            "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 904,
+            "y": -360
+          }
+        },
+        {
+          "id": "conta",
+          "data": {
+            "text": "Poxa, sentimos muito. O que poderia ter sido melhor?",
+            "save_to": "motivo"
+          },
+          "type": "ask_question",
+          "position": {
+            "x": 800,
+            "y": -32
+          }
+        },
+        {
+          "id": "transfere",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 1192,
+            "y": 80
+          }
+        }
+      ],
+      "fields": [
+        {
+          "key": "nota",
+          "type": "string",
+          "label": "Nota"
+        },
+        {
+          "key": "motivo",
+          "type": "string",
+          "label": "Motivo"
+        }
+      ],
+      "viewport": {
+        "x": 332,
+        "y": 593,
+        "zoom": 1
+      },
+      "base_prompt": ""
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.856241Z",
+    "updated_at": "2026-11-07T18:26:24.438809Z"
+  },
+  {
+    "id": "d6d4f2fe-aa0d-4cfc-b160-f21849b5738e",
+    "flow_id": "3741ca62-5680-4236-a3be-5260791c72ec",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-espera",
+          "source": "gatilho",
+          "target": "espera"
+        },
+        {
+          "id": "espera-lembrete",
+          "source": "espera",
+          "target": "lembrete"
+        },
+        {
+          "id": "lembrete-etiqueta",
+          "source": "lembrete",
+          "target": "etiqueta"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_webhook",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "espera",
+          "data": {
+            "unit": "days",
+            "amount": 1
+          },
+          "type": "wait",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "lembrete",
+          "data": {
+            "text": "Oi, {{contact.name}}! Você deixou {{vars.webhook.body.produto}} no carrinho. Separei com 10% de desconto: DOMA10."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "carrinho-abandonado"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 840,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:58.900178Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.883658Z",
+    "updated_at": "2026-11-06T23:12:58.900620Z"
+  },
+  {
+    "id": "d7f8811a-c130-4059-956e-49e12fd569b8",
+    "flow_id": "59928022-fa24-44ef-a947-a8a141b26779",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-oi",
+          "source": "gatilho",
+          "target": "oi"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "keywords": [
+              "black"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "oi",
+          "data": {
+            "text": "A Black Friday acabou, mas temos promoções toda semana!"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": "2026-11-06T23:12:59.077504Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:59.062510Z",
+    "updated_at": "2026-11-06T23:12:59.077923Z"
+  },
+  {
+    "id": "d93ed1c2-83a2-4a3b-a017-34f6b8abb66c",
+    "flow_id": "96593c93-12cb-4fd8-9903-6f1cdb313dcf",
+    "version_number": 1,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-ia",
+          "source": "gatilho",
+          "target": "ia"
+        },
+        {
+          "id": "ia-humano",
+          "source": "ia",
+          "target": "humano",
+          "sourceHandle": "falar_com_pessoa"
+        },
+        {
+          "id": "ia-humano",
+          "source": "ia",
+          "target": "humano",
+          "sourceHandle": "maxTurns"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "keywords": [
+              "atendente"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "ia",
+          "data": {
+            "mode": "interactive",
+            "outputs": [
+              {
+                "id": "falar_com_pessoa",
+                "when": "O cliente pede para falar com uma pessoa",
+                "label": "Falar com uma pessoa"
+              }
+            ],
+            "tool_ids": [
+              "6aee5efa894f668c1fea47df"
+            ],
+            "max_turns": 10,
+            "min_turns": 1,
+            "model_size": "fast",
+            "system_prompt": "Você atende {{contact.name}} no WhatsApp. Responda em poucas frases, sem listas."
+          },
+          "type": "ai_assistant",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "humano",
+          "data": {},
+          "type": "transfer_to_human",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "base_prompt": "Você é a atendente da Doma Store, loja de roupas de Curitiba. Fale de forma simpática e direta."
+    },
+    "published_at": "2026-11-06T23:12:58.951576Z",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.936516Z",
+    "updated_at": "2026-11-06T23:12:58.952076Z"
+  },
+  {
+    "id": "e636b6b5-ecb6-43c5-a64b-1208ae33e03d",
+    "flow_id": "3741ca62-5680-4236-a3be-5260791c72ec",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-espera",
+          "source": "gatilho",
+          "target": "espera"
+        },
+        {
+          "id": "espera-lembrete",
+          "source": "espera",
+          "target": "lembrete"
+        },
+        {
+          "id": "lembrete-etiqueta",
+          "source": "lembrete",
+          "target": "etiqueta"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {},
+          "type": "trigger_webhook",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "espera",
+          "data": {
+            "unit": "days",
+            "amount": 1
+          },
+          "type": "wait",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        {
+          "id": "lembrete",
+          "data": {
+            "text": "Oi, {{contact.name}}! Você deixou {{vars.webhook.body.produto}} no carrinho. Separei com 10% de desconto: DOMA10."
+          },
+          "type": "send_text",
+          "position": {
+            "x": 560,
+            "y": 0
+          }
+        },
+        {
+          "id": "etiqueta",
+          "data": {
+            "tag_name": "carrinho-abandonado"
+          },
+          "type": "add_tag",
+          "position": {
+            "x": 840,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:58.906912Z",
+    "updated_at": "2026-11-06T23:12:58.906912Z"
+  },
+  {
+    "id": "f68f1aef-05ec-466c-ae76-382f25ec38dc",
+    "flow_id": "59928022-fa24-44ef-a947-a8a141b26779",
+    "version_number": 2,
+    "definition": {
+      "edges": [
+        {
+          "id": "gatilho-oi",
+          "source": "gatilho",
+          "target": "oi"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gatilho",
+          "data": {
+            "keywords": [
+              "black"
+            ]
+          },
+          "type": "trigger_keyword",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "oi",
+          "data": {
+            "text": "A Black Friday acabou, mas temos promoções toda semana!"
+          },
+          "type": "send_text",
+          "position": {
+            "x": 280,
+            "y": 0
+          }
+        }
+      ],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      }
+    },
+    "published_at": null,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "created_at": "2026-11-06T23:12:59.084559Z",
+    "updated_at": "2026-11-06T23:12:59.084559Z"
+  }
+]

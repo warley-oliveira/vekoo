@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1e25d166-780b-41de-bee4-6ce81b9f67a5",
+    "stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+    "title": "Entender o prazo de entrega",
+    "position": 2,
+    "required": true,
+    "created_at": "2026-11-06T21:58:34.733780Z",
+    "updated_at": "2026-11-06T21:58:34.733780Z"
+  },
+  {
+    "id": "3d533ec7-87f2-45c8-a07e-cd140024a8d2",
+    "stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+    "title": "Embalar com a nota fiscal",
+    "position": 2,
+    "required": true,
+    "created_at": "2026-11-06T21:58:33.282865Z",
+    "updated_at": "2026-11-06T21:58:33.282865Z"
+  },
+  {
+    "id": "9db56547-55c1-499a-833d-b2856f370508",
+    "stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+    "title": "Confirmar quantidade de peças",
+    "position": 1,
+    "required": true,
+    "created_at": "2026-11-06T21:58:34.703928Z",
+    "updated_at": "2026-11-06T21:58:34.703928Z"
+  },
+  {
+    "id": "a7b19e01-e45d-4518-bcee-04d18fd80790",
+    "stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+    "title": "Anotar quem decide a compra",
+    "position": 3,
+    "required": false,
+    "created_at": "2026-11-06T21:58:34.750870Z",
+    "updated_at": "2026-11-06T21:58:34.750870Z"
+  },
+  {
+    "id": "c6061826-ccbf-45be-9b0c-3f7c40dd3288",
+    "stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+    "title": "Enviar a tabela de preços",
+    "position": 1,
+    "required": true,
+    "created_at": "2026-11-06T21:58:34.778930Z",
+    "updated_at": "2026-11-06T21:58:34.778930Z"
+  },
+  {
+    "id": "dea57e02-6923-4c20-a10f-6533817516c3",
+    "stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+    "title": "Conferir as peças",
+    "position": 1,
+    "required": true,
+    "created_at": "2026-11-06T21:58:33.251428Z",
+    "updated_at": "2026-11-06T21:58:33.251428Z"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e1"
+    },
+    "enabled": true,
+    "tool_function_ids": [
+      "6aee5efa894f668c1fea47e2",
+      "6aee5efa894f668c1fea47e3",
+      "6aee5efa894f668c1fea47e4",
+      "6aee5efa894f668c1fea47e5",
+      "6aee5efa894f668c1fea47e6"
+    ],
+    "tool_id": "6aee5efa894f668c1fea47de",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.631Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.617Z"
+    }
+  }
+]

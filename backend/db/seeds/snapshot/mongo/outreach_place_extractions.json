@@ -1,0 +1,567 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6377e"
+    },
+    "max_places": 100,
+    "language": "pt-BR",
+    "filters": {},
+    "status": "completed",
+    "results": [
+      {
+        "title": "Padaria Pão Quente",
+        "phone": "(41) 3322-1040",
+        "phone_unformatted": "554133221040",
+        "address": "Rua XV de Novembro, 870 - Centro, Curitiba - PR",
+        "street": "Rua XV de Novembro, 870",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80187-776",
+        "country_code": "BR",
+        "neighborhood": "Centro",
+        "website": "https://padaria-pao-quente.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.7,
+        "reviews_count": 312,
+        "image_url": "https://picsum.photos/seed/padaria-pao-quente/400/300",
+        "url": "https://www.google.com/maps/search/padaria-pao-quente",
+        "place_id": "seed-padaria-pao-quente",
+        "latitude": -25.4206,
+        "longitude": -49.2933,
+        "instagram": "https://instagram.com/padariapaoquente",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Panificadora Araucária",
+        "phone": "(41) 3254-7788",
+        "phone_unformatted": "554132547788",
+        "address": "Av. Sete de Setembro, 3100 - Rebouças, Curitiba - PR",
+        "street": "Av. Sete de Setembro, 3100",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80596-724",
+        "country_code": "BR",
+        "neighborhood": "Rebouças",
+        "website": "https://panificadora-araucaria.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.5,
+        "reviews_count": 187,
+        "image_url": "https://picsum.photos/seed/panificadora-araucaria/400/300",
+        "url": "https://www.google.com/maps/search/panificadora-araucaria",
+        "place_id": "seed-panificadora-araucaria",
+        "latitude": -25.4209,
+        "longitude": -49.2593,
+        "instagram": "https://instagram.com/panificadoraaraucaria",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Doce Sabor Confeitaria",
+        "phone": "(41) 3029-1515",
+        "phone_unformatted": "554130291515",
+        "address": "Rua Comendador Araújo, 215 - Batel, Curitiba - PR",
+        "street": "Rua Comendador Araújo, 215",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80990-478",
+        "country_code": "BR",
+        "neighborhood": "Batel",
+        "website": "https://doce-sabor-confeitaria.exemplo.com.br",
+        "category_name": "Confeitaria",
+        "categories": [
+          "Confeitaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.8,
+        "reviews_count": 540,
+        "image_url": "https://picsum.photos/seed/doce-sabor-confeitaria/400/300",
+        "url": "https://www.google.com/maps/search/doce-sabor-confeitaria",
+        "place_id": "seed-doce-sabor-confeitaria",
+        "latitude": -25.4014,
+        "longitude": -49.2738,
+        "instagram": "https://instagram.com/docesaborconfeitaria",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Pão & Prosa",
+        "phone": "(41) 3343-9021",
+        "phone_unformatted": "554133439021",
+        "address": "Rua Mateus Leme, 1422 - São Francisco, Curitiba - PR",
+        "street": "Rua Mateus Leme, 1422",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80638-224",
+        "country_code": "BR",
+        "neighborhood": "São Francisco",
+        "website": "https://pao-prosa.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.6,
+        "reviews_count": 96,
+        "image_url": "https://picsum.photos/seed/pao-prosa/400/300",
+        "url": "https://www.google.com/maps/search/pao-prosa",
+        "place_id": "seed-pao-prosa",
+        "latitude": -25.4487,
+        "longitude": -49.2928,
+        "instagram": "https://instagram.com/paoprosa",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Padaria do Bairro",
+        "phone": "(41) 3276-4410",
+        "phone_unformatted": "554132764410",
+        "address": "Rua Padre Anchieta, 2050 - Bigorrilho, Curitiba - PR",
+        "street": "Rua Padre Anchieta, 2050",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80756-776",
+        "country_code": "BR",
+        "neighborhood": "Bigorrilho",
+        "website": "https://padaria-do-bairro.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.3,
+        "reviews_count": 221,
+        "image_url": "https://picsum.photos/seed/padaria-do-bairro/400/300",
+        "url": "https://www.google.com/maps/search/padaria-do-bairro",
+        "place_id": "seed-padaria-do-bairro",
+        "latitude": -25.4273,
+        "longitude": -49.297200000000004,
+        "instagram": "https://instagram.com/padariadobairro",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Massa Madre Curitiba",
+        "phone": "(41) 99912-3344",
+        "phone_unformatted": "5541999123344",
+        "address": "Alameda Prudente de Moraes, 680 - Mercês, Curitiba - PR",
+        "street": "Alameda Prudente de Moraes, 680",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80371-882",
+        "country_code": "BR",
+        "neighborhood": "Mercês",
+        "website": "https://massa-madre-curitiba.exemplo.com.br",
+        "category_name": "Padaria artesanal",
+        "categories": [
+          "Padaria artesanal",
+          "Lanchonete"
+        ],
+        "total_score": 4.9,
+        "reviews_count": 415,
+        "image_url": "https://picsum.photos/seed/massa-madre-curitiba/400/300",
+        "url": "https://www.google.com/maps/search/massa-madre-curitiba",
+        "place_id": "seed-massa-madre-curitiba",
+        "latitude": -25.4116,
+        "longitude": -49.2783,
+        "instagram": "https://instagram.com/massamadrecuritiba",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Trigo Dourado",
+        "phone": "(41) 3362-8080",
+        "phone_unformatted": "554133628080",
+        "address": "Rua Itupava, 1300 - Alto da XV, Curitiba - PR",
+        "street": "Rua Itupava, 1300",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80532-759",
+        "country_code": "BR",
+        "neighborhood": "Alto da XV",
+        "website": "https://trigo-dourado.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.4,
+        "reviews_count": 143,
+        "image_url": "https://picsum.photos/seed/trigo-dourado/400/300",
+        "url": "https://www.google.com/maps/search/trigo-dourado",
+        "place_id": "seed-trigo-dourado",
+        "latitude": -25.4416,
+        "longitude": -49.2456,
+        "instagram": "https://instagram.com/trigodourado",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Vó Nair Pães e Doces",
+        "phone": "(41) 3247-6655",
+        "phone_unformatted": "554132476655",
+        "address": "Av. República Argentina, 2800 - Água Verde, Curitiba - PR",
+        "street": "Av. República Argentina, 2800",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80270-598",
+        "country_code": "BR",
+        "neighborhood": "Água Verde",
+        "website": "https://vo-nair-paes-e-doces.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.6,
+        "reviews_count": 278,
+        "image_url": "https://picsum.photos/seed/vo-nair-paes-e-doces/400/300",
+        "url": "https://www.google.com/maps/search/vo-nair-paes-e-doces",
+        "place_id": "seed-vo-nair-paes-e-doces",
+        "latitude": -25.4526,
+        "longitude": -49.297000000000004,
+        "instagram": "https://instagram.com/vonairpaesedoces",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      }
+    ],
+    "results_count": 8,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "search_query": "padaria",
+    "location": "Curitiba, PR",
+    "started_at": {
+      "$date": "2026-11-02T19:39:31.412Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-02T19:41:31.412Z"
+    },
+    "created_at": {
+      "$date": "2026-11-02T19:39:31.412Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.414Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6377f"
+    },
+    "max_places": 100,
+    "language": "pt-BR",
+    "filters": {},
+    "status": "completed",
+    "results": [
+      {
+        "title": "Padaria Pão Quente",
+        "phone": "(41) 3322-1040",
+        "phone_unformatted": "554133221040",
+        "address": "Rua XV de Novembro, 870 - Centro, Curitiba - PR",
+        "street": "Rua XV de Novembro, 870",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80655-490",
+        "country_code": "BR",
+        "neighborhood": "Centro",
+        "website": "https://padaria-pao-quente.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.7,
+        "reviews_count": 312,
+        "image_url": "https://picsum.photos/seed/padaria-pao-quente/400/300",
+        "url": "https://www.google.com/maps/search/padaria-pao-quente",
+        "place_id": "seed-padaria-pao-quente",
+        "latitude": -25.4316,
+        "longitude": -49.2449,
+        "instagram": "https://instagram.com/padariapaoquente",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Doce Sabor Confeitaria",
+        "phone": "(41) 3029-1515",
+        "phone_unformatted": "554130291515",
+        "address": "Rua Comendador Araújo, 215 - Batel, Curitiba - PR",
+        "street": "Rua Comendador Araújo, 215",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80526-798",
+        "country_code": "BR",
+        "neighborhood": "Batel",
+        "website": "https://doce-sabor-confeitaria.exemplo.com.br",
+        "category_name": "Confeitaria",
+        "categories": [
+          "Confeitaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.8,
+        "reviews_count": 540,
+        "image_url": "https://picsum.photos/seed/doce-sabor-confeitaria/400/300",
+        "url": "https://www.google.com/maps/search/doce-sabor-confeitaria",
+        "place_id": "seed-doce-sabor-confeitaria",
+        "latitude": -25.4491,
+        "longitude": -49.2809,
+        "instagram": "https://instagram.com/docesaborconfeitaria",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Pão & Prosa",
+        "phone": "(41) 3343-9021",
+        "phone_unformatted": "554133439021",
+        "address": "Rua Mateus Leme, 1422 - São Francisco, Curitiba - PR",
+        "street": "Rua Mateus Leme, 1422",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80699-610",
+        "country_code": "BR",
+        "neighborhood": "São Francisco",
+        "website": "https://pao-prosa.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.6,
+        "reviews_count": 96,
+        "image_url": "https://picsum.photos/seed/pao-prosa/400/300",
+        "url": "https://www.google.com/maps/search/pao-prosa",
+        "place_id": "seed-pao-prosa",
+        "latitude": -25.4598,
+        "longitude": -49.244200000000006,
+        "instagram": "https://instagram.com/paoprosa",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Massa Madre Curitiba",
+        "phone": "(41) 99912-3344",
+        "phone_unformatted": "5541999123344",
+        "address": "Alameda Prudente de Moraes, 680 - Mercês, Curitiba - PR",
+        "street": "Alameda Prudente de Moraes, 680",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80025-961",
+        "country_code": "BR",
+        "neighborhood": "Mercês",
+        "website": "https://massa-madre-curitiba.exemplo.com.br",
+        "category_name": "Padaria artesanal",
+        "categories": [
+          "Padaria artesanal",
+          "Lanchonete"
+        ],
+        "total_score": 4.9,
+        "reviews_count": 415,
+        "image_url": "https://picsum.photos/seed/massa-madre-curitiba/400/300",
+        "url": "https://www.google.com/maps/search/massa-madre-curitiba",
+        "place_id": "seed-massa-madre-curitiba",
+        "latitude": -25.4436,
+        "longitude": -49.241200000000006,
+        "instagram": "https://instagram.com/massamadrecuritiba",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      },
+      {
+        "title": "Vó Nair Pães e Doces",
+        "phone": "(41) 3247-6655",
+        "phone_unformatted": "554132476655",
+        "address": "Av. República Argentina, 2800 - Água Verde, Curitiba - PR",
+        "street": "Av. República Argentina, 2800",
+        "city": "Curitiba",
+        "state": "PR",
+        "postal_code": "80696-403",
+        "country_code": "BR",
+        "neighborhood": "Água Verde",
+        "website": "https://vo-nair-paes-e-doces.exemplo.com.br",
+        "category_name": "Padaria",
+        "categories": [
+          "Padaria",
+          "Lanchonete"
+        ],
+        "total_score": 4.6,
+        "reviews_count": 278,
+        "image_url": "https://picsum.photos/seed/vo-nair-paes-e-doces/400/300",
+        "url": "https://www.google.com/maps/search/vo-nair-paes-e-doces",
+        "place_id": "seed-vo-nair-paes-e-doces",
+        "latitude": -25.448,
+        "longitude": -49.2595,
+        "instagram": "https://instagram.com/vonairpaesedoces",
+        "facebook": "",
+        "opening_hours": [
+          {
+            "day": "segunda-feira",
+            "hours": "07:00 às 19:00"
+          },
+          {
+            "day": "sábado",
+            "hours": "07:00 às 13:00"
+          }
+        ]
+      }
+    ],
+    "results_count": 5,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "search_query": "padaria artesanal",
+    "location": "Batel, Curitiba",
+    "started_at": {
+      "$date": "2026-11-05T19:39:31.420Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-05T19:41:31.420Z"
+    },
+    "created_at": {
+      "$date": "2026-11-05T19:39:31.420Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.421Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63780"
+    },
+    "max_places": 100,
+    "language": "pt-BR",
+    "filters": {},
+    "status": "failed",
+    "results": [],
+    "results_count": 0,
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "search_query": "clínica de estética",
+    "location": "Belo Horizonte, MG",
+    "error_code": "apifyQuotaExceeded",
+    "started_at": {
+      "$date": "2026-11-04T19:41:31.425Z"
+    },
+    "completed_at": {
+      "$date": "2026-11-04T19:41:39.425Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.427Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:41:31.427Z"
+    }
+  }
+]

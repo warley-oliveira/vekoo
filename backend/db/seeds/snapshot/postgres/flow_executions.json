@@ -1,0 +1,533 @@
+[
+  {
+    "id": "24f245b5-3369-44b4-ad98-73aeebdd74b6",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee8759c6c482ea9bd943df",
+    "contact_id": "981e76ec-dec4-41a2-a76f-7306a9fdf886",
+    "current_node_id": "pergunta",
+    "status": "waiting_for_message",
+    "context": {
+      "depth": 0,
+      "event": "first_message",
+      "steps": 1,
+      "variables": {},
+      "node_state": {
+        "pergunta": {
+          "sent": true
+        }
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-07T02:05:17.583106Z",
+    "completed_at": null,
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": "870fdb05-0d7d-44a6-9d90-90846c180780:6aee8759c6c482ea9bd943df:wt20-0",
+    "created_at": "2026-11-07T02:05:17.586338Z",
+    "updated_at": "2026-11-07T02:05:17.679896Z"
+  },
+  {
+    "id": "391c0334-b0f1-400f-b84f-6a240d9af1d5",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "flow_version_id": "08c00af5-51b5-49b3-93d8-bcb2c1b5c99d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee8759c6c482ea9bd943df",
+    "contact_id": "981e76ec-dec4-41a2-a76f-7306a9fdf886",
+    "current_node_id": "etiqueta",
+    "status": "completed",
+    "context": {
+      "depth": 0,
+      "event": "human_handoff",
+      "variables": {},
+      "message_seq": 0
+    },
+    "playground": false,
+    "started_at": "2026-11-07T02:05:20.753895Z",
+    "completed_at": "2026-11-07T02:05:20.787525Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-07T02:05:20.758534Z",
+    "updated_at": "2026-11-07T02:05:20.788046Z"
+  },
+  {
+    "id": "40e553f1-83ca-4435-9eac-60baf6bc23c5",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee27e6832f77baac1fb82a",
+    "contact_id": "5541999110002",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Otávio Ribeiro"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-24T23:12:59.407882Z",
+    "completed_at": "2026-10-24T23:13:02.407882Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-24T23:12:59.407882Z",
+    "updated_at": "2026-10-24T23:12:59.407882Z"
+  },
+  {
+    "id": "44dc65f1-ffdd-4767-841f-3b159ccf505b",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "flow_version_id": "bf226c17-26bd-4084-998a-7ddc8c52f9c4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee27e6832f77baac1fb82d",
+    "contact_id": "5541999110005",
+    "current_node_id": "obrigada",
+    "status": "waiting_for_message",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Isabela Nogueira"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-31T23:12:59.363291Z",
+    "completed_at": null,
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-31T23:12:59.363291Z",
+    "updated_at": "2026-10-31T23:12:59.363291Z"
+  },
+  {
+    "id": "4df9556e-deea-4f09-b96d-6bdc323e27a2",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "flow_version_id": "bf226c17-26bd-4084-998a-7ddc8c52f9c4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bda",
+    "contact_id": "5511987651234",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Carlos Eduardo Santos"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-23T23:12:59.220367Z",
+    "completed_at": "2026-10-23T23:13:02.220367Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-23T23:12:59.220367Z",
+    "updated_at": "2026-10-23T23:12:59.220367Z"
+  },
+  {
+    "id": "61cfc62b-19fa-49a1-8cc0-fb2288c1cecb",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "flow_version_id": "92261339-908e-4acf-94f1-40b1a3e1f2fb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee27e6832f77baac1fb82b",
+    "contact_id": "5541999110003",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Sofia Carvalho"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-03T23:12:59.457095Z",
+    "completed_at": "2026-11-03T23:13:02.457095Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-03T23:12:59.457095Z",
+    "updated_at": "2026-11-03T23:12:59.457095Z"
+  },
+  {
+    "id": "6704e997-8612-490f-886a-333cb7eea679",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "flow_version_id": "92261339-908e-4acf-94f1-40b1a3e1f2fb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee27e6832f77baac1fb82c",
+    "contact_id": "5541999110004",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Bruno Teixeira"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-17T23:12:59.317972Z",
+    "completed_at": "2026-10-17T23:13:02.317972Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-17T23:12:59.317972Z",
+    "updated_at": "2026-10-17T23:12:59.317972Z"
+  },
+  {
+    "id": "8278e28a-0c82-448f-b4e4-33a340f6832f",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee81effb6f5046fc6b47b8",
+    "contact_id": "0b10535c-8aeb-4744-8b0e-facf6e0ccd95",
+    "current_node_id": "pergunta",
+    "status": "waiting_for_message",
+    "context": {
+      "depth": 0,
+      "event": "first_message",
+      "steps": 1,
+      "variables": {},
+      "node_state": {
+        "pergunta": {
+          "sent": true
+        }
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-07T01:42:13.103319Z",
+    "completed_at": null,
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": "870fdb05-0d7d-44a6-9d90-90846c180780:6aee81effb6f5046fc6b47b8:wt20-0",
+    "created_at": "2026-11-07T01:42:13.115532Z",
+    "updated_at": "2026-11-07T01:42:13.288475Z"
+  },
+  {
+    "id": "8d7eb276-6b4c-4a41-85a4-1499c12c80d7",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "flow_version_id": "08c00af5-51b5-49b3-93d8-bcb2c1b5c99d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee81effb6f5046fc6b47b8",
+    "contact_id": "0b10535c-8aeb-4744-8b0e-facf6e0ccd95",
+    "current_node_id": "etiqueta",
+    "status": "completed",
+    "context": {
+      "depth": 0,
+      "event": "human_handoff",
+      "variables": {},
+      "message_seq": 0
+    },
+    "playground": false,
+    "started_at": "2026-11-07T01:42:16.605880Z",
+    "completed_at": "2026-11-07T01:42:16.651095Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-07T01:42:16.611011Z",
+    "updated_at": "2026-11-07T01:42:16.651649Z"
+  },
+  {
+    "id": "8db99594-3d8c-4dc5-bb93-c5b117fce42a",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "flow_version_id": "bf226c17-26bd-4084-998a-7ddc8c52f9c4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee27e6832f77baac1fb829",
+    "contact_id": "5541999110001",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Helena Martins"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-23T23:12:59.499965Z",
+    "completed_at": "2026-10-23T23:13:02.499965Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-23T23:12:59.499965Z",
+    "updated_at": "2026-10-23T23:12:59.499965Z"
+  },
+  {
+    "id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "flow_version_id": "58b93bc7-e9a7-4b6c-9c04-5f75e668ad1d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee719b8cd938569901bb32",
+    "contact_id": "9999999999@whatsapp",
+    "current_node_id": "ask-question-6d9cc50f",
+    "status": "cancelled",
+    "context": {
+      "steps": 2,
+      "variables": {
+        "tudo_bem": "oi"
+      },
+      "node_state": {
+        "ai-assistant-e18a29e5": {},
+        "ask-question-6d9cc50f": {}
+      },
+      "message_seq": 3,
+      "consumed_seq": 1,
+      "recorded_seq": 2,
+      "playground_messages": [
+        {
+          "role": "user",
+          "content": "Olá"
+        },
+        {
+          "role": "assistant",
+          "content": "Olá! Tudo bem? Como posso ajudar você hoje?"
+        },
+        {
+          "role": "user",
+          "content": "Como se chama?"
+        }
+      ]
+    },
+    "playground": true,
+    "started_at": "2026-11-09T15:29:53.810651Z",
+    "completed_at": "2026-11-09T15:30:48.181469Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-09T15:29:53.827024Z",
+    "updated_at": "2026-11-09T15:30:48.181907Z"
+  },
+  {
+    "id": "c48bed97-6318-4350-9850-103d9b594f7c",
+    "flow_id": "57cee4a5-9f09-415c-a525-24845c6b4f13",
+    "flow_version_id": "bf226c17-26bd-4084-998a-7ddc8c52f9c4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2be7",
+    "contact_id": "5541991234567",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Lucas Oliveira"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-05T23:12:59.655366Z",
+    "completed_at": "2026-11-05T23:13:02.655366Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-05T23:12:59.655366Z",
+    "updated_at": "2026-11-05T23:12:59.655366Z"
+  },
+  {
+    "id": "c4de5c73-8566-4d1b-a23b-9155e868142d",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bf0",
+    "contact_id": "5571999990000",
+    "current_node_id": "vendas",
+    "status": "waiting_for_message",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Roberto Nascimento"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-05T23:12:59.546542Z",
+    "completed_at": null,
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-05T23:12:59.546542Z",
+    "updated_at": "2026-11-05T23:12:59.546542Z"
+  },
+  {
+    "id": "d0142a0b-952b-4fac-af07-75f09ef9569b",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bcc",
+    "contact_id": "visitante-joao-pedro",
+    "current_node_id": null,
+    "status": "failed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "João Pedro Almeida"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-11-04T23:12:59.114759Z",
+    "completed_at": "2026-11-04T23:13:02.114759Z",
+    "error_message": "O canal recusou a mensagem: número sem WhatsApp.",
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-04T23:12:59.114759Z",
+    "updated_at": "2026-11-04T23:12:59.114759Z"
+  },
+  {
+    "id": "da10a3fc-4859-4608-9470-bddc2c45c75b",
+    "flow_id": "e3c52458-c515-4782-bac7-3fef5ab2e471",
+    "flow_version_id": "08c00af5-51b5-49b3-93d8-bcb2c1b5c99d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bcc",
+    "contact_id": "visitante-joao-pedro",
+    "current_node_id": "etiqueta",
+    "status": "completed",
+    "context": {
+      "depth": 0,
+      "event": "human_handoff",
+      "variables": {},
+      "message_seq": 0
+    },
+    "playground": false,
+    "started_at": "2026-11-08T03:40:51.918574Z",
+    "completed_at": "2026-11-08T03:40:51.976075Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-11-08T03:40:51.929785Z",
+    "updated_at": "2026-11-08T03:40:51.976460Z"
+  },
+  {
+    "id": "e077a257-63c7-47a8-b9f7-01271f3a6d70",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "flow_version_id": "92261339-908e-4acf-94f1-40b1a3e1f2fb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bc6",
+    "contact_id": "visitante-ana-beatriz",
+    "current_node_id": "deu_certo",
+    "status": "waiting_for_message",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Ana Beatriz Moura"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-30T23:12:59.173614Z",
+    "completed_at": null,
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-30T23:12:59.173614Z",
+    "updated_at": "2026-10-30T23:12:59.173614Z"
+  },
+  {
+    "id": "eee0511e-3759-4628-8b45-573897556b13",
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "flow_version_id": "cd490e63-6ffe-4702-87fa-7656c290a508",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2bd3",
+    "contact_id": "5531971810932",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Fernanda Lima"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-23T23:12:59.268554Z",
+    "completed_at": "2026-10-23T23:13:02.268554Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-23T23:12:59.268554Z",
+    "updated_at": "2026-10-23T23:12:59.268554Z"
+  },
+  {
+    "id": "f750f36c-0d62-4017-9380-fb6706a86817",
+    "flow_id": "e7c033da-4559-411c-9699-ee0c6aa78f43",
+    "flow_version_id": "92261339-908e-4acf-94f1-40b1a3e1f2fb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "chat_id": "6aee0e5817c01071cdba2be0",
+    "contact_id": "5521998761234",
+    "current_node_id": null,
+    "status": "completed",
+    "context": {
+      "event": "message_received",
+      "variables": {
+        "nome": "Márcia Regina Costa"
+      },
+      "message_seq": 1
+    },
+    "playground": false,
+    "started_at": "2026-10-29T23:12:59.609087Z",
+    "completed_at": "2026-10-29T23:13:02.609087Z",
+    "error_message": null,
+    "run_token": null,
+    "locked_at": null,
+    "resume_token": null,
+    "resume_at": null,
+    "idempotency_key": null,
+    "created_at": "2026-10-29T23:12:59.609087Z",
+    "updated_at": "2026-10-29T23:12:59.609087Z"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "0879b62d-6869-4c57-a94d-146ad9c4209e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Pós-venda",
+    "description": "Depois da entrega: troca, ajuste e retorno.",
+    "created_at": "2026-11-06T21:41:36.458373Z",
+    "updated_at": "2026-11-06T21:41:36.458373Z"
+  },
+  {
+    "id": "c4132df9-752e-42ff-897e-4814c9a93e6c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Vendas da loja",
+    "description": "Do primeiro contato até o pedido fechado.",
+    "created_at": "2026-11-06T21:41:36.357109Z",
+    "updated_at": "2026-11-06T21:41:36.357109Z"
+  }
+]

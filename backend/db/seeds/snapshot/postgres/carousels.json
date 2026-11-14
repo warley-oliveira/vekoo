@@ -1,0 +1,3608 @@
+[
+  {
+    "id": "059119c3-f877-54b9-9016-4ce08356b5e2",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Ideias soltas (apagar depois)",
+    "format": "1:1",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.9 0.02 90)",
+      "ink": "oklch(0.35 0.02 90)",
+      "accent": "oklch(0.6 0.1 55)",
+      "surface": "oklch(0.86 0.025 90)",
+      "accentInk": "oklch(0.97 0.01 90)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-velho-lixeira-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-velho-lixeira-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Notas"
+              }
+            ]
+          },
+          {
+            "id": "card-velho-lixeira-1-b2",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-velho-lixeira-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Ideias soltas de conteúdo"
+              }
+            ]
+          },
+          {
+            "id": "card-velho-lixeira-1-b4",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-velho-lixeira-1-b5",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "rascunho"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-09-09T01:53:44.117385Z",
+    "trashed_at": "2026-10-14T01:53:44.117478Z",
+    "created_at": "2026-08-16T01:56:39.485203Z",
+    "updated_at": "2026-11-08T01:53:44.121422Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "1297ac93-67ff-542d-bcde-53ec07b6d4e8",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Demitido sem justa causa? Seus direitos",
+    "format": "4:5",
+    "caption": null,
+    "favorite": true,
+    "theme": {
+      "bg": "oklch(0.27 0.01 285)",
+      "ink": "oklch(0.96 0.01 85)",
+      "accent": "oklch(0.8 0.12 85)",
+      "surface": "oklch(0.32 0.012 285)",
+      "accentInk": "oklch(0.27 0.01 285)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-justa-causa-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Direito do trabalho"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-1-b2",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-justa-causa-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Demitido sem justa causa? Seus direitos"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-1-b4",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-justa-causa-1-b5",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Renata Campos Advocacia"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Saldo de salário e aviso prévio"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Dias trabalhados no mês + 30 dias de aviso (mais 3 por ano de casa)."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Multa de 40% do FGTS"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Sobre TODO o saldo depositado, não só o do último emprego."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Férias e 13º proporcionais"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Inclusive férias vencidas com 1/3, se houver."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Seguro-desemprego"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "De 3 a 5 parcelas, conforme o tempo trabalhado."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-6",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Prazo para pagar: 10 dias"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Passou disso, a empresa deve multa de um salário seu."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-justa-causa-7",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-justa-causa-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Recebeu errado?"
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Você tem até 2 anos para reclamar."
+              }
+            ]
+          },
+          {
+            "id": "card-justa-causa-7-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Avaliação gratuita do caso",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-24T01:53:44.057452Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.437322Z",
+    "updated_at": "2026-11-08T01:53:44.061225Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "1d9aadc7-439c-5198-bfef-a31d25ee2d90",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Teste — promoção dia das mães",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.6 0.15 350)",
+      "ink": "oklch(0.98 0.01 350)",
+      "accent": "oklch(0.9 0.1 90)",
+      "surface": "oklch(0.55 0.14 350)",
+      "accentInk": "oklch(0.45 0.13 350)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-teste-lixeira-1",
+        "align": "top",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 17,
+            "tint": "accent",
+            "style": "beams"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-teste-lixeira-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Rascunho"
+              }
+            ]
+          },
+          {
+            "id": "card-teste-lixeira-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Dia das Mães com 30% off"
+              }
+            ]
+          },
+          {
+            "id": "card-teste-lixeira-1-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Doma Store"
+              }
+            ]
+          }
+        ],
+        "layout": "image-top"
+      },
+      {
+        "bg": null,
+        "id": "card-teste-lixeira-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-teste-lixeira-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Presentes até R$ 99"
+              }
+            ]
+          },
+          {
+            "id": "card-teste-lixeira-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Lenços, nécessaires e canecas personalizadas."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-09-29T01:53:44.107514Z",
+    "trashed_at": "2026-10-30T01:53:44.107615Z",
+    "created_at": "2026-08-16T01:56:39.476210Z",
+    "updated_at": "2026-11-08T01:53:44.110218Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "43f06468-b62f-5514-9a86-ffca83f3de1b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "V60 em casa: o passo a passo",
+    "format": "1:1",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.93 0.03 85)",
+      "ink": "oklch(0.3 0.05 55)",
+      "accent": "oklch(0.55 0.12 45)",
+      "surface": "oklch(0.89 0.04 85)",
+      "accentInk": "oklch(0.96 0.02 85)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-v60-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-v60-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Métodos · nº 3"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-1-b2",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-v60-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "V60 em casa: o passo a passo"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-1-b4",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-v60-1-b5",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Café do Alto"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-v60-2",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-v60-2-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "A receita base"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-2-b2",
+            "type": "stat",
+            "align": "start",
+            "color": "accent",
+            "label": "de café para 250 ml de água a 92–94 °C",
+            "value": "15 g"
+          },
+          {
+            "id": "card-v60-2-b3",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Moagem média, como açúcar cristal."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-v60-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-v60-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Escalde o filtro"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Tira o gosto de papel e aquece o porta-filtro. Descarte a água."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-v60-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-v60-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Pré-infusão — 30s"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Despeje 50ml em círculos e espere o café 'florescer'."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-v60-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-v60-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Despeje em 3 etapas"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Círculos lentos de dentro pra fora. Total: 2min30 a 3min."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-v60-6",
+        "align": "top",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 33,
+            "tint": "accent",
+            "style": "dots"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-v60-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Prove antes de adoçar"
+              }
+            ]
+          },
+          {
+            "id": "card-v60-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Nosso grão da semana tem notas de rapadura e laranja. Vem provar."
+              }
+            ]
+          }
+        ],
+        "layout": "image-top"
+      }
+    ],
+    "edited_at": "2026-10-31T01:53:44.022440Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.408998Z",
+    "updated_at": "2026-11-08T01:53:44.026430Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "53742fca-5151-5da7-9c1f-b9d549f6c155",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Financiamento: o que ninguém te explica",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.32 0.1 260)",
+      "ink": "oklch(0.97 0.005 260)",
+      "accent": "oklch(0.85 0.15 85)",
+      "surface": "oklch(0.28 0.09 260)",
+      "accentInk": "oklch(0.28 0.09 260)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-financiamento-1",
+        "align": "bottom",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-1-b1",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-financiamento-1-b2",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Guia do primeiro imóvel"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Financiamento: o que ninguém te explica"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Viva Imóveis"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Entrada não é só a entrada"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "ITBI e cartório somam 4 a 5% do valor do imóvel. Coloque na conta."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "SAC ou Price?"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "SAC começa com parcela maior e cai todo mês. Price é fixa — e mais cara no total."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Use o FGTS a seu favor"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Vale para entrada e para amortizar a cada 2 anos."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "A taxa é negociável"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Leve a proposta de um banco para o outro. Funciona."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-6",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Simule antes de visitar"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Saber seu teto evita se apaixonar pelo imóvel errado."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-financiamento-7",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-financiamento-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Quer uma simulação sem compromisso?"
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Chama a gente no direct ou no WhatsApp da bio."
+              }
+            ]
+          },
+          {
+            "id": "card-financiamento-7-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Pedir simulação",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-11-05T01:53:43.986647Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.375171Z",
+    "updated_at": "2026-11-08T01:53:43.989416Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "60aad396-ce97-5acc-814e-7b35b9a2cf74",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Bazar de inverno — até 60% off",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.42 0.14 20)",
+      "ink": "oklch(0.96 0.02 80)",
+      "accent": "oklch(0.85 0.15 85)",
+      "surface": "oklch(0.37 0.13 20)",
+      "accentInk": "oklch(0.35 0.12 20)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-bazar-1",
+        "align": "top",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 5,
+            "tint": "accent",
+            "style": "beams"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-bazar-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Só até domingo"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Bazar de inverno até 60% off"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-1-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Doma Store · Curitiba"
+              }
+            ]
+          }
+        ],
+        "layout": "image-top"
+      },
+      {
+        "bg": null,
+        "id": "card-bazar-2",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bazar-2-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Tricô de lã merino"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-2-b2",
+            "type": "stat",
+            "align": "start",
+            "color": "accent",
+            "label": "era R$ 259 — do P ao GG, cinco cores",
+            "value": "R$ 129"
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bazar-3",
+        "align": "center",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 11,
+            "tint": "accent",
+            "style": "waves"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-bazar-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Jaqueta corta-vento por R$ 149"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Impermeável, forro em fleece, perfeita pro vento de Curitiba."
+              }
+            ]
+          }
+        ],
+        "layout": "image-left"
+      },
+      {
+        "bg": null,
+        "id": "card-bazar-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bazar-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "O mapa do bazar"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-4-b2",
+            "rows": [
+              [
+                "Peça",
+                "Antes",
+                "Agora"
+              ],
+              [
+                "Tricô merino",
+                "R$ 259",
+                "R$ 129"
+              ],
+              [
+                "Corta-vento",
+                "R$ 279",
+                "R$ 149"
+              ],
+              [
+                "Bota tratorada",
+                "R$ 349",
+                "R$ 199"
+              ]
+            ],
+            "type": "table"
+          },
+          {
+            "id": "card-bazar-4-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Do 34 ao 40 · do P ao GG"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bazar-5",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bazar-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Frete grátis acima de R$ 250"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-5-b2",
+            "type": "divider",
+            "style": "dots"
+          },
+          {
+            "id": "card-bazar-5-b3",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Para todo o Brasil, enviado em até 24h."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bazar-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bazar-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Corre que é só até domingo"
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Loja no Batel ou pelo site — link na bio."
+              }
+            ]
+          },
+          {
+            "id": "card-bazar-6-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Ver as ofertas",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-11-06T23:53:43.973531Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.365463Z",
+    "updated_at": "2026-11-08T01:53:43.977439Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "709dbcdc-bf79-56d6-b37d-791f25467e01",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Quanto cobrar por um bolo caseiro",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.87 0.06 10)",
+      "ink": "oklch(0.32 0.08 30)",
+      "accent": "oklch(0.5 0.18 15)",
+      "surface": "oklch(0.83 0.06 10)",
+      "accentInk": "oklch(0.95 0.03 10)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-bolos-1",
+        "align": "top",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 13,
+            "tint": "accent",
+            "style": "beams"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-bolos-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Confeitaria lucrativa"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Quanto cobrar pelo seu bolo"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-1-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Doce da Bia · encomendas"
+              }
+            ]
+          }
+        ],
+        "layout": "image-top"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Custo dos ingredientes"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Pese TUDO, até a pitada de sal. Planilha simples resolve."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Seu tempo vale dinheiro"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Defina sua hora (ex.: R$ 25) e multiplique pelas horas de produção."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Gás, luz e embalagem"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Some 10 a 15% do custo como despesa indireta."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-5",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-5-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "A fórmula"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-5-b2",
+            "type": "stat",
+            "align": "start",
+            "color": "accent",
+            "label": "ingredientes + tempo + despesas = seu preço mínimo",
+            "value": "× 2"
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "\"Mas o mercado cobra menos\""
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-6-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Bolo caseiro de verdade não compete com bolo de esquina. Posicione-se."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-bolos-7",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-bolos-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Baixe a planilha pronta"
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Manda PREÇO no direct que eu envio de graça."
+              }
+            ]
+          },
+          {
+            "id": "card-bolos-7-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Quero a planilha",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-21T01:53:44.070934Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.447169Z",
+    "updated_at": "2026-11-08T01:53:44.074710Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "7996664a-0a1a-52e5-af28-1db564eff05b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "7 ganchos que seguram o dedo",
+    "format": "1:1",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.88 0.2 125)",
+      "ink": "oklch(0.2 0.02 145)",
+      "accent": "oklch(0.2 0.02 145)",
+      "surface": "oklch(0.84 0.19 125)",
+      "accentInk": "oklch(0.88 0.2 125)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-ganchos-1",
+        "align": "bottom",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-1-b1",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-ganchos-1-b2",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Copy pra feed"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "7 ganchos que seguram o dedo"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "@almeidadoconteudo"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-2",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "1. O erro"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-2-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "O erro que 9 em cada 10 lojas cometem no Instagram."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-3",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "2. O contraste"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-3-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Postei todo dia por 30 dias. Vendi menos que no mês anterior."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-4",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "3. A pergunta proibida"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-4-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Por que ninguém te contou isso sobre tráfego pago?"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-5",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "4. O número específico"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-5-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "R$ 4.372 em vendas com um carrossel. A estrutura:"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "5. A confissão"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-6-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Eu cobrava barato porque tinha medo. Isso mudou quando..."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-7",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "6. O antes e depois"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Mostre o resultado no card 1 e o caminho nos seguintes."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ganchos-8",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ganchos-8-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "7. A lista incompleta"
+              }
+            ]
+          },
+          {
+            "id": "card-ganchos-8-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "5 ferramentas gratuitas — a 4ª quase ninguém conhece."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-17T01:53:44.082716Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.457804Z",
+    "updated_at": "2026-11-08T01:53:44.086082Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "9e4e1e25-584b-56f9-ad99-e000cee2d5a5",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Ansiedade: 6 sinais que o corpo dá",
+    "format": "4:5",
+    "caption": null,
+    "favorite": true,
+    "theme": {
+      "bg": "oklch(0.72 0.09 300)",
+      "ink": "oklch(0.22 0.05 300)",
+      "accent": "oklch(0.97 0.01 300)",
+      "surface": "oklch(0.68 0.09 300)",
+      "accentInk": "oklch(0.22 0.05 300)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-ansiedade-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-1-b1",
+            "type": "button",
+            "align": "center",
+            "label": "Saúde mental",
+            "variant": "outline"
+          },
+          {
+            "id": "card-ansiedade-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Ansiedade: 6 sinais que o corpo dá"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-1-b3",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-ansiedade-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Dra. Luiza Prado · CRP 06/98432"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "1. Aperto no peito"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Sensação de sufoco sem causa física aparente."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "2. Estômago embrulhado"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "O intestino é muito sensível ao estresse — não é frescura."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "3. Mandíbula travada"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Bruxismo e dor de cabeça tensional ao acordar."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "4. Sono que não descansa"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Dormir 8 horas e acordar exausta é um sinal, não preguiça."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-6",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "5. Irritação com tudo"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Pavio curto pode ser o corpo pedindo pausa."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-7",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "6. Coração acelerado à toa"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Taquicardia em repouso merece atenção — médica e psicológica."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-ansiedade-8",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-ansiedade-8-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Sentiu que era sobre você?"
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-8-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Terapia é cuidado, não luxo. Atendo online — agenda na bio."
+              }
+            ]
+          },
+          {
+            "id": "card-ansiedade-8-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Agendar uma conversa",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-30T01:53:44.034608Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.417778Z",
+    "updated_at": "2026-11-08T01:53:44.037861Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "ccd2706b-1cc6-5de9-8f2c-72dfc530977c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Revolução Industrial em 8 cards",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.85 0.16 95)",
+      "ink": "oklch(0.2 0.02 95)",
+      "accent": "oklch(0.4 0.14 25)",
+      "surface": "oklch(0.8 0.15 95)",
+      "accentInk": "oklch(0.85 0.16 95)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-enem-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-1-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Revisão ENEM · História"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-1-b2",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-enem-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Revolução Industrial em 8 cards"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-1-b4",
+            "type": "divider",
+            "style": "line"
+          },
+          {
+            "id": "card-enem-1-b5",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Prof. Henrique Sales"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Onde e quando"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Inglaterra, segunda metade do século XVIII. Carvão, ferro e capital acumulado."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Por que a Inglaterra?"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Cercamentos, mão de obra livre, colônias e uma burguesia forte."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "1ª fase: vapor e têxtil"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Máquina a vapor de Watt, tear mecânico e as primeiras fábricas."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "2ª fase: aço, eletricidade e petróleo"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Século XIX: ferrovias, telégrafo e produção em massa."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-6",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Condições de trabalho"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Jornadas de 14h, trabalho infantil — daí nascem ludismo e cartismo."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-7",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-7-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "O que o ENEM cobra"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-7-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Relação técnica–sociedade e crítica às condições operárias, não decoreba de datas."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-enem-8",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-enem-8-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Quer o mapa mental completo?"
+              }
+            ]
+          },
+          {
+            "id": "card-enem-8-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Comenta REVISA que eu mando no direct."
+              }
+            ]
+          },
+          {
+            "id": "card-enem-8-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Comentar REVISA",
+            "variant": "outline"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-11-04T01:53:43.998542Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.383554Z",
+    "updated_at": "2026-11-08T01:53:44.001450Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "d26cd052-184b-59e7-b987-2efe46c840ba",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Banho e tosa: mitos e verdades",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.68 0.16 55)",
+      "ink": "oklch(0.99 0.01 85)",
+      "accent": "oklch(0.25 0.05 55)",
+      "surface": "oklch(0.63 0.15 55)",
+      "accentInk": "oklch(0.99 0.01 85)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-tosa-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-1-b1",
+            "type": "button",
+            "align": "center",
+            "label": "Papo de tutor",
+            "variant": "outline"
+          },
+          {
+            "id": "card-tosa-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Banho e tosa: mitos e verdades"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-1-b3",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-tosa-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "AuQmia Pet · Vila Mariana"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-tosa-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "\"Tosar no verão refresca\" — MITO"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "O pelo protege do calor e do sol. Tosa máquina zero pode causar queimadura."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-tosa-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "\"Banho toda semana faz mal\" — DEPENDE"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Com produto certo e secagem completa, semanal é tranquilo."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-tosa-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "\"Tosa higiênica é frescura\" — MITO"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Evita infecção e desconforto. É saúde, não estética."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-tosa-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "\"Perfume de pet é seguro\" — VERDADE"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Desde que específico veterinário. Nunca use o seu."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-tosa-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-tosa-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Agende pelo WhatsApp"
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Leva e traz grátis na Vila Mariana e região."
+              }
+            ]
+          },
+          {
+            "id": "card-tosa-6-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Chamar no WhatsApp",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-27T01:53:44.046313Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.427921Z",
+    "updated_at": "2026-11-08T01:53:44.049284Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "d3a59e10-ea54-5432-ba39-857062bff8e0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "5 trocas simples para comer melhor",
+    "format": "4:5",
+    "caption": null,
+    "favorite": true,
+    "theme": {
+      "bg": "oklch(0.46 0.13 155)",
+      "ink": "oklch(0.97 0.02 110)",
+      "accent": "oklch(0.88 0.17 110)",
+      "surface": "oklch(0.4 0.12 155)",
+      "accentInk": "oklch(0.3 0.09 155)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-nutricao-1",
+        "align": "bottom",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-nutricao-1-b1",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-nutricao-1-b2",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Nutrição sem neura"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "5 trocas simples para comer melhor"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "@nutricarolribeiro"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-nutricao-2",
+        "align": "center",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 21,
+            "tint": "accent",
+            "style": "blob"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-nutricao-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Refrigerante → água com gás e limão"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Mata a vontade do gelado com bolha e corta o açúcar do dia."
+              }
+            ]
+          }
+        ],
+        "layout": "image-right"
+      },
+      {
+        "bg": null,
+        "id": "card-nutricao-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-nutricao-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Pão branco → pão de fermentação natural"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Mais saciedade e digestão mais leve no café da manhã."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-nutricao-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-nutricao-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Biscoito da tarde → castanhas e fruta"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-4-b2",
+            "type": "list",
+            "color": "ink",
+            "items": [
+              [
+                {
+                  "text": "Castanhas: um punhado fechado"
+                }
+              ],
+              [
+                {
+                  "text": "Fruta da estação, madura"
+                }
+              ],
+              [
+                {
+                  "text": "Água antes — sede engana fome"
+                }
+              ]
+            ],
+            "style": "check"
+          },
+          {
+            "id": "card-nutricao-4-b3",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Energia de verdade para não chegar morrendo de fome no jantar."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-nutricao-5",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-nutricao-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Fritura de todo dia → airfryer"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-5-b2",
+            "type": "quote",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "A mesma crocância, uma fração da gordura — e sem cheiro de óleo pela casa."
+              }
+            ],
+            "attribution": "Carol Ribeiro · nutricionista"
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-nutricao-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-nutricao-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Salva esse post e começa por UMA troca"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Consistência vale mais que perfeição. Me conta qual você escolheu!"
+              }
+            ]
+          },
+          {
+            "id": "card-nutricao-6-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Salvar este post",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-11-07T23:53:43.949809Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.353442Z",
+    "updated_at": "2026-11-08T01:53:43.964961Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "f0055fd5-ad2a-5ee7-a9d4-63772d7668c8",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Home office sem dor nas costas",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.48 0.09 200)",
+      "ink": "oklch(0.97 0.01 200)",
+      "accent": "oklch(0.9 0.06 90)",
+      "surface": "oklch(0.43 0.08 200)",
+      "accentInk": "oklch(0.35 0.07 200)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-homeoffice-1",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-1-b1",
+            "type": "button",
+            "align": "center",
+            "label": "Fisio no dia a dia",
+            "variant": "outline"
+          },
+          {
+            "id": "card-homeoffice-1-b2",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Home office sem dor nas costas"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-1-b3",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-homeoffice-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Movimente Fisioterapia"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-homeoffice-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Tela na altura dos olhos"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-2-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Suporte ou pilha de livros: o topo do monitor na linha do olhar."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-homeoffice-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Pés apoiados, sempre"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-3-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Se não alcançam o chão, use um apoio. Joelho a 90 graus."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-homeoffice-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "O lombar precisa de apoio"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-4-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Almofada na curvatura da lombar já muda o seu dia."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-homeoffice-5",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-5-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Levante a cada 50 minutos"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-5-b2",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Timer no celular. Dois minutos andando valem mais que alongar 20."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-homeoffice-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-homeoffice-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Dor que passa de 2 semanas"
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Não é normal. Avaliação presencial ou por vídeo — link na bio."
+              }
+            ]
+          },
+          {
+            "id": "card-homeoffice-6-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Agendar avaliação",
+            "variant": "outline"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-10-09T01:53:44.095570Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.466699Z",
+    "updated_at": "2026-11-08T01:53:44.098596Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  },
+  {
+    "id": "ff6c29cb-f689-5220-a92e-63d4a6db8729",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "folder_id": null,
+    "title": "Treino de 20 minutos sem desculpa",
+    "format": "4:5",
+    "caption": null,
+    "favorite": false,
+    "theme": {
+      "bg": "oklch(0.2 0.01 285)",
+      "ink": "oklch(0.98 0 0)",
+      "accent": "oklch(0.88 0.2 125)",
+      "surface": "oklch(0.26 0.015 285)",
+      "accentInk": "oklch(0.2 0.01 285)"
+    },
+    "cards": [
+      {
+        "bg": null,
+        "id": "card-treino-1",
+        "align": "bottom",
+        "image": {
+          "zoom": 1,
+          "focus": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "source": {
+            "kind": "art",
+            "seed": 7,
+            "tint": "accent",
+            "style": "beams"
+          }
+        },
+        "blocks": [
+          {
+            "id": "card-treino-1-b1",
+            "type": "divider",
+            "style": "accent"
+          },
+          {
+            "id": "card-treino-1-b2",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Sem equipamento"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-1-b3",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "20 minutos e acabou a desculpa"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-1-b4",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "@felipetreina"
+              }
+            ]
+          }
+        ],
+        "layout": "image-full"
+      },
+      {
+        "bg": null,
+        "id": "card-treino-2",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-treino-2-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Aquecimento — 3 min"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-2-b2",
+            "type": "list",
+            "color": "ink",
+            "items": [
+              [
+                {
+                  "text": "Polichinelo — 40s"
+                }
+              ],
+              [
+                {
+                  "text": "Agachamento livre — 40s"
+                }
+              ],
+              [
+                {
+                  "text": "Mobilidade de quadril — 40s"
+                }
+              ]
+            ],
+            "style": "number"
+          },
+          {
+            "id": "card-treino-2-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Repete o circuito 2×"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-treino-3",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-treino-3-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Bloco 1 — pernas e glúteo"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-3-b2",
+            "type": "list",
+            "color": "ink",
+            "items": [
+              [
+                {
+                  "text": "Agachamento — 45s"
+                }
+              ],
+              [
+                {
+                  "text": "Afundo alternado — 45s"
+                }
+              ],
+              [
+                {
+                  "text": "Descanso — 30s"
+                }
+              ]
+            ],
+            "style": "number"
+          },
+          {
+            "id": "card-treino-3-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "3 rodadas"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-treino-4",
+        "align": "top",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-treino-4-b1",
+            "role": "title",
+            "type": "text",
+            "align": "start",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Bloco 2 — peito e core"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-4-b2",
+            "type": "list",
+            "color": "ink",
+            "items": [
+              [
+                {
+                  "text": "Flexão (vale joelho) — 45s"
+                }
+              ],
+              [
+                {
+                  "text": "Prancha — 45s"
+                }
+              ],
+              [
+                {
+                  "text": "Descanso — 30s"
+                }
+              ]
+            ],
+            "style": "number"
+          },
+          {
+            "id": "card-treino-4-b3",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "3 rodadas"
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-treino-5",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-treino-5-b1",
+            "role": "caption",
+            "type": "text",
+            "align": "start",
+            "color": "accent",
+            "spans": [
+              {
+                "text": "Finalizador"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-5-b2",
+            "type": "stat",
+            "align": "start",
+            "color": "accent",
+            "label": "burpee no seu ritmo — anota quantos fez",
+            "value": "2 min"
+          },
+          {
+            "id": "card-treino-5-b3",
+            "role": "body",
+            "type": "text",
+            "align": "start",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Semana que vem a meta é bater o seu número."
+              }
+            ]
+          }
+        ],
+        "layout": "no-image"
+      },
+      {
+        "bg": null,
+        "id": "card-treino-6",
+        "align": "center",
+        "image": null,
+        "blocks": [
+          {
+            "id": "card-treino-6-b1",
+            "role": "title",
+            "type": "text",
+            "align": "center",
+            "color": "ink",
+            "spans": [
+              {
+                "text": "Faz 3× por semana"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-6-b2",
+            "role": "body",
+            "type": "text",
+            "align": "center",
+            "color": "muted",
+            "spans": [
+              {
+                "text": "Salva o post e me marca no story treinando!"
+              }
+            ]
+          },
+          {
+            "id": "card-treino-6-b3",
+            "type": "button",
+            "align": "center",
+            "label": "Salvar o treino",
+            "variant": "solid"
+          }
+        ],
+        "layout": "no-image"
+      }
+    ],
+    "edited_at": "2026-11-02T01:53:44.010021Z",
+    "trashed_at": null,
+    "created_at": "2026-08-16T01:56:39.398068Z",
+    "updated_at": "2026-11-08T01:53:44.013734Z",
+    "brand_core_id": null,
+    "brand_core_version_id": null
+  }
+]

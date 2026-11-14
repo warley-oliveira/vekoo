@@ -1,0 +1,58 @@
+[
+  {
+    "id": "25860111-1fbd-4553-9b9f-98ea3fd27d94",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Urgente",
+    "color": "#B91C1C",
+    "created_at": "2026-11-06T21:58:32.826799Z",
+    "updated_at": "2026-11-06T21:58:32.826799Z"
+  },
+  {
+    "id": "44e9445d-326d-46c2-9358-ac3bceacb0b4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Retorno",
+    "color": "#D97706",
+    "created_at": "2026-11-06T21:58:32.792528Z",
+    "updated_at": "2026-11-06T21:58:32.792528Z"
+  },
+  {
+    "id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Atacado",
+    "color": "#1D4ED8",
+    "created_at": "2026-11-06T21:58:32.692151Z",
+    "updated_at": "2026-11-06T21:58:32.692151Z"
+  },
+  {
+    "id": "7c66e376-9554-486d-898d-de7092098c8d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Troca",
+    "color": "#7C3AED",
+    "created_at": "2026-11-06T21:58:32.867825Z",
+    "updated_at": "2026-11-06T21:58:32.867825Z"
+  },
+  {
+    "id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Quente",
+    "color": "#DC2626",
+    "created_at": "2026-11-06T21:58:32.724077Z",
+    "updated_at": "2026-11-06T21:58:32.724077Z"
+  },
+  {
+    "id": "94fff74c-6c5a-482a-9172-217b17da6e06",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Entrega",
+    "color": "#0891B2",
+    "created_at": "2026-11-06T21:58:32.941108Z",
+    "updated_at": "2026-11-06T21:58:32.941108Z"
+  },
+  {
+    "id": "c8bfaedb-918a-4244-b135-6cceeba32fdc",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Indicação",
+    "color": "#059669",
+    "created_at": "2026-11-06T21:58:32.766029Z",
+    "updated_at": "2026-11-06T21:58:32.766029Z"
+  }
+]

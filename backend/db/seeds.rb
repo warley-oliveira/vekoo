@@ -362,6 +362,11 @@ module VekooSeeds
   # seja de demonstração (`SEED_DEMO_DATA=1`). `db:prepare` roda esta semente em banco vazio.
   def demo? = DEMO_ENVIRONMENTS.include?(Rails.env.to_s) || ENV["SEED_DEMO_DATA"] == "1"
 
+  # A demonstração vem do retrato do banco de desenvolvimento (`db/seeds/snapshot/`, gravado por
+  # `bin/rails db:snapshot:dump`; ver lib/demo_snapshot.rb) quando ele existe. A semente escrita à mão,
+  # aqui e em `db/seeds/<domínio>.rb`, é o plano B: vale sem retrato, ou com `SEED_SOURCE=handwritten`.
+  def snapshot? = demo? && ENV["SEED_SOURCE"] != "handwritten" && DemoSnapshot.present?
+
   def seed_demo_account!
     organization = Organization.find_or_initialize_by(id: id_for("org-marina"))
     organization.assign_attributes(
@@ -1243,6 +1248,21 @@ module VekooSeeds
     # "organize com pastas" faz sentido).
     organization
   end
+end
+
+if VekooSeeds.snapshot?
+  VekooSeeds.seed_catalog!
+  result = DemoSnapshot.load!
+  info = DemoSnapshot.manifest
+  puts <<~REPORT
+    Semente aplicada (#{Rails.env}): acervo e o retrato do banco de desenvolvimento.
+
+      Acervo      #{ThemePreset.count} temas · #{LibraryImage.count} imagens · #{PaletteColor.count} cores
+      Retrato     de #{info["dumpedAt"]} · datas +#{result[:days]} dia(s) · #{info["postgres"].values.sum} linhas em #{result[:tables]} tabelas · #{info["mongo"].values.sum} documentos em #{result[:collections]} coleções
+      Entrar      #{VekooSeeds::DEMO_EMAIL} / #{VekooSeeds::DEMO_PASSWORD} (senha da semente; o retrato guarda a de quando foi tirado)
+      Semente à mão: SEED_SOURCE=handwritten bin/rails db:seed (num banco vazio: bin/rails db:reset)
+  REPORT
+  return
 end
 
 organization = VekooSeeds.call

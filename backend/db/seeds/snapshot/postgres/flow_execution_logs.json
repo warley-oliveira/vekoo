@@ -1,0 +1,1037 @@
+[
+  {
+    "id": "06b3d802-ad63-4ae9-80b8-3825480be68d",
+    "flow_execution_id": "4df9556e-deea-4f09-b96d-6bdc323e27a2",
+    "node_id": "nota",
+    "node_type": "ask_question",
+    "input": {
+      "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+      "save_to": "nota"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:12:59.220367Z",
+    "created_at": "2026-11-06T23:12:59.235888Z",
+    "updated_at": "2026-11-06T23:12:59.235888Z"
+  },
+  {
+    "id": "0dbd9461-34bf-47ad-9a43-1932194b7b1a",
+    "flow_execution_id": "61cfc62b-19fa-49a1-8cc0-fb2288c1cecb",
+    "node_id": "cep",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Claro! Qual é o seu CEP?",
+      "save_to": "cep"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-03T23:12:59.457095Z",
+    "created_at": "2026-11-06T23:12:59.470499Z",
+    "updated_at": "2026-11-06T23:12:59.470499Z"
+  },
+  {
+    "id": "11f17780-e13b-4034-9fd5-b9cfcf623fb0",
+    "flow_execution_id": "d0142a0b-952b-4fac-af07-75f09ef9569b",
+    "node_id": "vendas",
+    "node_type": "assign_team",
+    "input": {
+      "team_id": ""
+    },
+    "output": {},
+    "duration_ms": 110,
+    "status": "error",
+    "error_message": "O canal recusou a mensagem: número sem WhatsApp.",
+    "executed_at": "2026-11-04T23:13:01.114759Z",
+    "created_at": "2026-11-06T23:12:59.160951Z",
+    "updated_at": "2026-11-06T23:12:59.160951Z"
+  },
+  {
+    "id": "16519476-f844-4569-b0a1-4c862cf016ef",
+    "flow_execution_id": "6704e997-8612-490f-886a-333cb7eea679",
+    "node_id": "cep",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Claro! Qual é o seu CEP?",
+      "save_to": "cep"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-17T23:12:59.317972Z",
+    "created_at": "2026-11-06T23:12:59.333174Z",
+    "updated_at": "2026-11-06T23:12:59.333174Z"
+  },
+  {
+    "id": "1a921cd3-7ce4-4b87-b629-a77c6528316a",
+    "flow_execution_id": "61cfc62b-19fa-49a1-8cc0-fb2288c1cecb",
+    "node_id": "deu_certo",
+    "node_type": "condition",
+    "input": {
+      "match": "all",
+      "rules": [
+        {
+          "field": "vars.frete.ok",
+          "value": "true",
+          "operator": "equals"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-03T23:13:01.457095Z",
+    "created_at": "2026-11-06T23:12:59.490889Z",
+    "updated_at": "2026-11-06T23:12:59.490889Z"
+  },
+  {
+    "id": "1aa1418b-9a02-4702-8192-f789ad0482cd",
+    "flow_execution_id": "6704e997-8612-490f-886a-333cb7eea679",
+    "node_id": "deu_certo",
+    "node_type": "condition",
+    "input": {
+      "match": "all",
+      "rules": [
+        {
+          "field": "vars.frete.ok",
+          "value": "true",
+          "operator": "equals"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-17T23:13:01.317972Z",
+    "created_at": "2026-11-06T23:12:59.353386Z",
+    "updated_at": "2026-11-06T23:12:59.353386Z"
+  },
+  {
+    "id": "258c3f04-25a7-43d7-a9f7-6cda14ba64f6",
+    "flow_execution_id": "f750f36c-0d62-4017-9380-fb6706a86817",
+    "node_id": "deu_certo",
+    "node_type": "condition",
+    "input": {
+      "match": "all",
+      "rules": [
+        {
+          "field": "vars.frete.ok",
+          "value": "true",
+          "operator": "equals"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-29T23:13:01.609087Z",
+    "created_at": "2026-11-06T23:12:59.645965Z",
+    "updated_at": "2026-11-06T23:12:59.645965Z"
+  },
+  {
+    "id": "269e5ed5-8176-4139-a445-0533efc5c9ab",
+    "flow_execution_id": "391c0334-b0f1-400f-b84f-6a240d9af1d5",
+    "node_id": "etiqueta",
+    "node_type": "add_tag",
+    "input": {
+      "tag_name": "atendimento-humano"
+    },
+    "output": {
+      "tag": "atendimento-humano"
+    },
+    "duration_ms": 6,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-07T02:05:20.778882Z",
+    "created_at": "2026-11-07T02:05:20.779160Z",
+    "updated_at": "2026-11-07T02:05:20.779160Z"
+  },
+  {
+    "id": "29929aff-08f3-44c3-a120-d147fce42c08",
+    "flow_execution_id": "8db99594-3d8c-4dc5-bb93-c5b117fce42a",
+    "node_id": "nota",
+    "node_type": "ask_question",
+    "input": {
+      "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+      "save_to": "nota"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:12:59.499965Z",
+    "created_at": "2026-11-06T23:12:59.519410Z",
+    "updated_at": "2026-11-06T23:12:59.519410Z"
+  },
+  {
+    "id": "29ecb20e-7818-40f1-b286-f5c2534a0f86",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "ai-assistant-e18a29e5",
+    "node_type": "ai_assistant",
+    "input": {
+      "last_user": "Como se chama?"
+    },
+    "output": {
+      "data": {},
+      "turn": 2,
+      "reason": "limite de 2 mensagens neste bloco",
+      "decision": "maxTurns"
+    },
+    "duration_ms": 33,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:30:15.382691Z",
+    "created_at": "2026-11-09T15:30:15.382893Z",
+    "updated_at": "2026-11-09T15:30:15.382893Z"
+  },
+  {
+    "id": "2a3de209-8f67-4294-875c-7aab184ab5b8",
+    "flow_execution_id": "e077a257-63c7-47a8-b9f7-01271f3a6d70",
+    "node_id": "deu_certo",
+    "node_type": "condition",
+    "input": {
+      "match": "all",
+      "rules": [
+        {
+          "field": "vars.frete.ok",
+          "value": "true",
+          "operator": "equals"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-10-30T23:13:01.173614Z",
+    "created_at": "2026-11-06T23:12:59.213065Z",
+    "updated_at": "2026-11-06T23:12:59.213065Z"
+  },
+  {
+    "id": "34f45aef-7644-4501-891a-1b25528cd93d",
+    "flow_execution_id": "8db99594-3d8c-4dc5-bb93-c5b117fce42a",
+    "node_id": "obrigada",
+    "node_type": "send_text",
+    "input": {
+      "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:01.499965Z",
+    "created_at": "2026-11-06T23:12:59.538984Z",
+    "updated_at": "2026-11-06T23:12:59.538984Z"
+  },
+  {
+    "id": "3d61404f-c06f-4a81-9298-b7c8115d32a8",
+    "flow_execution_id": "61cfc62b-19fa-49a1-8cc0-fb2288c1cecb",
+    "node_id": "frete",
+    "node_type": "execute_tool",
+    "input": {
+      "params": {
+        "cep": "{{vars.cep}}"
+      },
+      "tool_id": "6aee5efa894f668c1fea47df",
+      "save_response_to": "frete"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-03T23:13:00.457095Z",
+    "created_at": "2026-11-06T23:12:59.479771Z",
+    "updated_at": "2026-11-06T23:12:59.479771Z"
+  },
+  {
+    "id": "4c49af25-a735-461c-8b7d-5964cf49564b",
+    "flow_execution_id": "c48bed97-6318-4350-9850-103d9b594f7c",
+    "node_id": "boa",
+    "node_type": "condition",
+    "input": {
+      "rules": [
+        {
+          "field": "vars.nota",
+          "value": "8",
+          "operator": "greater_than"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:13:00.655366Z",
+    "created_at": "2026-11-06T23:12:59.682001Z",
+    "updated_at": "2026-11-06T23:12:59.682001Z"
+  },
+  {
+    "id": "5141c8cd-2c5c-4745-a05a-7ab689f0c5e7",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "ai-assistant-e18a29e5",
+    "node_type": "ai_assistant",
+    "input": {},
+    "output": {
+      "waiting_for_first_user_message": true
+    },
+    "duration_ms": 0,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:29:54.054721Z",
+    "created_at": "2026-11-09T15:29:54.054875Z",
+    "updated_at": "2026-11-09T15:29:54.054875Z"
+  },
+  {
+    "id": "53dda7bd-e840-4aec-b41e-c7bfcc8104d7",
+    "flow_execution_id": "c4de5c73-8566-4d1b-a23b-9155e868142d",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:13:00.546542Z",
+    "created_at": "2026-11-06T23:12:59.586600Z",
+    "updated_at": "2026-11-06T23:12:59.586600Z"
+  },
+  {
+    "id": "602c387e-d611-4cba-a1fa-58f515d4eabd",
+    "flow_execution_id": "44dc65f1-ffdd-4767-841f-3b159ccf505b",
+    "node_id": "boa",
+    "node_type": "condition",
+    "input": {
+      "rules": [
+        {
+          "field": "vars.nota",
+          "value": "8",
+          "operator": "greater_than"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-31T23:13:00.363291Z",
+    "created_at": "2026-11-06T23:12:59.388287Z",
+    "updated_at": "2026-11-06T23:12:59.388287Z"
+  },
+  {
+    "id": "63a28d18-cc3c-4433-9cea-4d863cf9b3b4",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "ask-question-6d9cc50f",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Olá {{contact.name}}, tudo bem?"
+    },
+    "output": {
+      "asked": "Olá João da Silva, tudo bem?",
+      "awaiting_reply": true
+    },
+    "duration_ms": 7,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:30:15.410728Z",
+    "created_at": "2026-11-09T15:30:15.410912Z",
+    "updated_at": "2026-11-09T15:30:15.410912Z"
+  },
+  {
+    "id": "6d27b9ef-ae9d-405c-a4bf-b43c4b4251e5",
+    "flow_execution_id": "d0142a0b-952b-4fac-af07-75f09ef9569b",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-04T23:13:00.114759Z",
+    "created_at": "2026-11-06T23:12:59.152598Z",
+    "updated_at": "2026-11-06T23:12:59.152598Z"
+  },
+  {
+    "id": "6e941184-87c6-445c-9686-c18183521181",
+    "flow_execution_id": "c4de5c73-8566-4d1b-a23b-9155e868142d",
+    "node_id": "vendas",
+    "node_type": "assign_team",
+    "input": {
+      "team_id": ""
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:13:01.546542Z",
+    "created_at": "2026-11-06T23:12:59.598624Z",
+    "updated_at": "2026-11-06T23:12:59.598624Z"
+  },
+  {
+    "id": "7c3fec16-11f3-4b7a-82e8-01add52cc66a",
+    "flow_execution_id": "4df9556e-deea-4f09-b96d-6bdc323e27a2",
+    "node_id": "obrigada",
+    "node_type": "send_text",
+    "input": {
+      "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:01.220367Z",
+    "created_at": "2026-11-06T23:12:59.257107Z",
+    "updated_at": "2026-11-06T23:12:59.257107Z"
+  },
+  {
+    "id": "7e568359-25a5-467c-97c6-e677c857e0be",
+    "flow_execution_id": "24f245b5-3369-44b4-ad98-73aeebdd74b6",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "sent": "Como posso te ajudar hoje?",
+      "buttons": 2
+    },
+    "duration_ms": 27,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-07T02:05:17.670240Z",
+    "created_at": "2026-11-07T02:05:17.670447Z",
+    "updated_at": "2026-11-07T02:05:17.670447Z"
+  },
+  {
+    "id": "7ed2402c-59cc-4722-8b35-522fc844c587",
+    "flow_execution_id": "8d7eb276-6b4c-4a41-85a4-1499c12c80d7",
+    "node_id": "etiqueta",
+    "node_type": "add_tag",
+    "input": {
+      "tag_name": "atendimento-humano"
+    },
+    "output": {
+      "tag": "atendimento-humano"
+    },
+    "duration_ms": 17,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-07T01:42:16.643052Z",
+    "created_at": "2026-11-07T01:42:16.643222Z",
+    "updated_at": "2026-11-07T01:42:16.643222Z"
+  },
+  {
+    "id": "7f6fa76e-090f-498c-81a9-7defffd3ce4b",
+    "flow_execution_id": "44dc65f1-ffdd-4767-841f-3b159ccf505b",
+    "node_id": "nota",
+    "node_type": "ask_question",
+    "input": {
+      "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+      "save_to": "nota"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-31T23:12:59.363291Z",
+    "created_at": "2026-11-06T23:12:59.377113Z",
+    "updated_at": "2026-11-06T23:12:59.377113Z"
+  },
+  {
+    "id": "8994189a-5572-4b1e-8f50-aeba0fd0d2bc",
+    "flow_execution_id": "24f245b5-3369-44b4-ad98-73aeebdd74b6",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "sent": "Oi, Teste Celular wt20! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "duration_ms": 23,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-07T02:05:17.622114Z",
+    "created_at": "2026-11-07T02:05:17.622314Z",
+    "updated_at": "2026-11-07T02:05:17.622314Z"
+  },
+  {
+    "id": "8c39246c-b5eb-4630-ad8b-6eef326a0391",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "etiqueta",
+    "node_type": "add_tag",
+    "input": {
+      "tag_name": "atendimento-humano"
+    },
+    "output": {
+      "tag": "atendimento-humano"
+    },
+    "duration_ms": 23,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:29:54.017904Z",
+    "created_at": "2026-11-09T15:29:54.020429Z",
+    "updated_at": "2026-11-09T15:29:54.020429Z"
+  },
+  {
+    "id": "97eaf549-ebef-426e-9d60-6bc3273804cc",
+    "flow_execution_id": "eee0511e-3759-4628-8b45-573897556b13",
+    "node_id": "vendas",
+    "node_type": "assign_team",
+    "input": {
+      "team_id": ""
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:01.268554Z",
+    "created_at": "2026-11-06T23:12:59.306575Z",
+    "updated_at": "2026-11-06T23:12:59.306575Z"
+  },
+  {
+    "id": "99c4b9fd-2944-4c3a-866a-2a8f27020141",
+    "flow_execution_id": "4df9556e-deea-4f09-b96d-6bdc323e27a2",
+    "node_id": "boa",
+    "node_type": "condition",
+    "input": {
+      "rules": [
+        {
+          "field": "vars.nota",
+          "value": "8",
+          "operator": "greater_than"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:00.220367Z",
+    "created_at": "2026-11-06T23:12:59.246077Z",
+    "updated_at": "2026-11-06T23:12:59.246077Z"
+  },
+  {
+    "id": "9c0fc740-b7d3-4bf5-8516-40f1cc7d2c6c",
+    "flow_execution_id": "40e553f1-83ca-4435-9eac-60baf6bc23c5",
+    "node_id": "vendas",
+    "node_type": "assign_team",
+    "input": {
+      "team_id": ""
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-24T23:13:01.407882Z",
+    "created_at": "2026-11-06T23:12:59.446409Z",
+    "updated_at": "2026-11-06T23:12:59.446409Z"
+  },
+  {
+    "id": "a16049b7-7165-4431-92f0-cbe77a35a14f",
+    "flow_execution_id": "d0142a0b-952b-4fac-af07-75f09ef9569b",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-04T23:12:59.114759Z",
+    "created_at": "2026-11-06T23:12:59.141652Z",
+    "updated_at": "2026-11-06T23:12:59.141652Z"
+  },
+  {
+    "id": "a22c63f0-fc82-4c51-a793-5a146e20d01d",
+    "flow_execution_id": "40e553f1-83ca-4435-9eac-60baf6bc23c5",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-24T23:12:59.407882Z",
+    "created_at": "2026-11-06T23:12:59.424011Z",
+    "updated_at": "2026-11-06T23:12:59.424011Z"
+  },
+  {
+    "id": "a6a8cc26-9911-4616-ab67-edd6c33b5b3a",
+    "flow_execution_id": "da10a3fc-4859-4608-9470-bddc2c45c75b",
+    "node_id": "etiqueta",
+    "node_type": "add_tag",
+    "input": {
+      "tag_name": "atendimento-humano"
+    },
+    "output": {
+      "tag": "atendimento-humano"
+    },
+    "duration_ms": 11,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-08T03:40:51.967561Z",
+    "created_at": "2026-11-08T03:40:51.967746Z",
+    "updated_at": "2026-11-08T03:40:51.967746Z"
+  },
+  {
+    "id": "a7e353e1-9ed3-49b0-a439-78f50d9de7d7",
+    "flow_execution_id": "6704e997-8612-490f-886a-333cb7eea679",
+    "node_id": "frete",
+    "node_type": "execute_tool",
+    "input": {
+      "params": {
+        "cep": "{{vars.cep}}"
+      },
+      "tool_id": "6aee5efa894f668c1fea47df",
+      "save_response_to": "frete"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-17T23:13:00.317972Z",
+    "created_at": "2026-11-06T23:12:59.343934Z",
+    "updated_at": "2026-11-06T23:12:59.343934Z"
+  },
+  {
+    "id": "a9e0d115-86d7-4163-92f7-c32308cff93c",
+    "flow_execution_id": "8db99594-3d8c-4dc5-bb93-c5b117fce42a",
+    "node_id": "boa",
+    "node_type": "condition",
+    "input": {
+      "rules": [
+        {
+          "field": "vars.nota",
+          "value": "8",
+          "operator": "greater_than"
+        }
+      ]
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:00.499965Z",
+    "created_at": "2026-11-06T23:12:59.530524Z",
+    "updated_at": "2026-11-06T23:12:59.530524Z"
+  },
+  {
+    "id": "ab897b69-9a18-4aa9-8003-1dc3c94cc4f9",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "ask-question-6d9cc50f",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Olá {{contact.name}}, tudo bem?"
+    },
+    "output": {
+      "answer": "oi"
+    },
+    "duration_ms": 7,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:30:39.982975Z",
+    "created_at": "2026-11-09T15:30:39.983106Z",
+    "updated_at": "2026-11-09T15:30:39.983106Z"
+  },
+  {
+    "id": "ac7482db-adf5-4260-98ed-b5bf6ebfaed7",
+    "flow_execution_id": "c4de5c73-8566-4d1b-a23b-9155e868142d",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:12:59.546542Z",
+    "created_at": "2026-11-06T23:12:59.577915Z",
+    "updated_at": "2026-11-06T23:12:59.577915Z"
+  },
+  {
+    "id": "c570ee51-d647-43bb-81a9-c080783b3975",
+    "flow_execution_id": "eee0511e-3759-4628-8b45-573897556b13",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:13:00.268554Z",
+    "created_at": "2026-11-06T23:12:59.294969Z",
+    "updated_at": "2026-11-06T23:12:59.294969Z"
+  },
+  {
+    "id": "c7bd0d3d-64ad-481a-8270-35488a95ac8e",
+    "flow_execution_id": "8278e28a-0c82-448f-b4e4-33a340f6832f",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "sent": "Como posso te ajudar hoje?",
+      "buttons": 2
+    },
+    "duration_ms": 29,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-07T01:42:13.278887Z",
+    "created_at": "2026-11-07T01:42:13.279283Z",
+    "updated_at": "2026-11-07T01:42:13.279283Z"
+  },
+  {
+    "id": "d0eb4dae-ab9f-407c-bd41-e00594f3f75c",
+    "flow_execution_id": "eee0511e-3759-4628-8b45-573897556b13",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-23T23:12:59.268554Z",
+    "created_at": "2026-11-06T23:12:59.283717Z",
+    "updated_at": "2026-11-06T23:12:59.283717Z"
+  },
+  {
+    "id": "d6f19bbc-4697-4db8-b9f3-ef3ebe3cbdd6",
+    "flow_execution_id": "40e553f1-83ca-4435-9eac-60baf6bc23c5",
+    "node_id": "pergunta",
+    "node_type": "send_interactive",
+    "input": {
+      "text": "Como posso te ajudar hoje?",
+      "buttons": [
+        {
+          "id": "comprar",
+          "title": "Quero comprar"
+        },
+        {
+          "id": "suporte",
+          "title": "Preciso de ajuda"
+        }
+      ],
+      "save_to": "motivo",
+      "invalid_text": "Não entendi. Responda com o número da opção."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-24T23:13:00.407882Z",
+    "created_at": "2026-11-06T23:12:59.436223Z",
+    "updated_at": "2026-11-06T23:12:59.436223Z"
+  },
+  {
+    "id": "df3618a2-2a3d-4ea1-981a-6fc3ece78d50",
+    "flow_execution_id": "f750f36c-0d62-4017-9380-fb6706a86817",
+    "node_id": "cep",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Claro! Qual é o seu CEP?",
+      "save_to": "cep"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-29T23:12:59.609087Z",
+    "created_at": "2026-11-06T23:12:59.621759Z",
+    "updated_at": "2026-11-06T23:12:59.621759Z"
+  },
+  {
+    "id": "e170c6f6-fdd8-4622-a739-c949e455f44d",
+    "flow_execution_id": "98ebe41a-f8c6-4780-8a1c-540bb35b8e43",
+    "node_id": "ai-assistant-e18a29e5",
+    "node_type": "ai_assistant",
+    "input": {
+      "messages": 1
+    },
+    "output": {
+      "turn": 1,
+      "reply": "Olá! Tudo bem? Como posso ajudar você hoje?",
+      "reason": "nenhuma saída conectada",
+      "decision": "stay"
+    },
+    "duration_ms": 1808,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-11-09T15:30:02.295583Z",
+    "created_at": "2026-11-09T15:30:02.295765Z",
+    "updated_at": "2026-11-09T15:30:02.295765Z"
+  },
+  {
+    "id": "e1da6bd8-bb0f-4da2-a105-a3cd8b3c07b8",
+    "flow_execution_id": "c48bed97-6318-4350-9850-103d9b594f7c",
+    "node_id": "nota",
+    "node_type": "ask_question",
+    "input": {
+      "text": "De 0 a 10, o quanto você recomendaria a Doma para uma amiga?",
+      "save_to": "nota"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:12:59.655366Z",
+    "created_at": "2026-11-06T23:12:59.671614Z",
+    "updated_at": "2026-11-06T23:12:59.671614Z"
+  },
+  {
+    "id": "e22af213-3de3-4002-88d6-c5199b872689",
+    "flow_execution_id": "f750f36c-0d62-4017-9380-fb6706a86817",
+    "node_id": "frete",
+    "node_type": "execute_tool",
+    "input": {
+      "params": {
+        "cep": "{{vars.cep}}"
+      },
+      "tool_id": "6aee5efa894f668c1fea47df",
+      "save_response_to": "frete"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-29T23:13:00.609087Z",
+    "created_at": "2026-11-06T23:12:59.632194Z",
+    "updated_at": "2026-11-06T23:12:59.632194Z"
+  },
+  {
+    "id": "e639f552-364d-4615-804e-be968dd6bd13",
+    "flow_execution_id": "c48bed97-6318-4350-9850-103d9b594f7c",
+    "node_id": "obrigada",
+    "node_type": "send_text",
+    "input": {
+      "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-05T23:13:01.655366Z",
+    "created_at": "2026-11-06T23:12:59.694341Z",
+    "updated_at": "2026-11-06T23:12:59.694341Z"
+  },
+  {
+    "id": "ef906edd-f834-4edc-9db2-b1b9c1fff334",
+    "flow_execution_id": "e077a257-63c7-47a8-b9f7-01271f3a6d70",
+    "node_id": "cep",
+    "node_type": "ask_question",
+    "input": {
+      "text": "Claro! Qual é o seu CEP?",
+      "save_to": "cep"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 40,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-30T23:12:59.173614Z",
+    "created_at": "2026-11-06T23:12:59.188866Z",
+    "updated_at": "2026-11-06T23:12:59.188866Z"
+  },
+  {
+    "id": "f36969d6-a4e7-4c99-b953-845c51290e42",
+    "flow_execution_id": "e077a257-63c7-47a8-b9f7-01271f3a6d70",
+    "node_id": "frete",
+    "node_type": "execute_tool",
+    "input": {
+      "params": {
+        "cep": "{{vars.cep}}"
+      },
+      "tool_id": "6aee5efa894f668c1fea47df",
+      "save_response_to": "frete"
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 75,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-10-30T23:13:00.173614Z",
+    "created_at": "2026-11-06T23:12:59.202803Z",
+    "updated_at": "2026-11-06T23:12:59.202803Z"
+  },
+  {
+    "id": "fa10af26-19a1-498e-a576-31f9f37771ad",
+    "flow_execution_id": "44dc65f1-ffdd-4767-841f-3b159ccf505b",
+    "node_id": "obrigada",
+    "node_type": "send_text",
+    "input": {
+      "text": "Ficamos muito felizes! Obrigada, {{contact.name}}."
+    },
+    "output": {
+      "ok": true
+    },
+    "duration_ms": 110,
+    "status": "suspended",
+    "error_message": null,
+    "executed_at": "2026-10-31T23:13:01.363291Z",
+    "created_at": "2026-11-06T23:12:59.399377Z",
+    "updated_at": "2026-11-06T23:12:59.399377Z"
+  },
+  {
+    "id": "fbcd1eff-731c-4c3f-8c23-6c03bdc4b22c",
+    "flow_execution_id": "8278e28a-0c82-448f-b4e4-33a340f6832f",
+    "node_id": "oi",
+    "node_type": "send_text",
+    "input": {
+      "text": "Oi, {{contact.name}}! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "output": {
+      "sent": "Oi, Teste Celular wt20! Que bom ter você aqui na Doma Store. 💜"
+    },
+    "duration_ms": 89,
+    "status": "success",
+    "error_message": null,
+    "executed_at": "2026-11-07T01:42:13.227637Z",
+    "created_at": "2026-11-07T01:42:13.227855Z",
+    "updated_at": "2026-11-07T01:42:13.227855Z"
+  }
+]

@@ -1,0 +1,192 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47df"
+    },
+    "parameters": [
+      {
+        "name": "cep",
+        "type": "string",
+        "required": true,
+        "description": "CEP de destino, só com números"
+      }
+    ],
+    "js_code": "const cep = String(params.cep || '').replace(/\\D/g, '');\nif (cep.length !== 8) return { ok: false, erro: 'CEP inválido' };\nconst sul = cep.startsWith('8') || cep.startsWith('9');\nreturn { ok: true, prazo_dias: sul ? 2 : 6, valor: sul ? 14.9 : 29.9 };\n",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "consultar_frete",
+    "description": "Calcula o prazo e o valor do frete para um CEP.",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cep\": {\n      \"type\": \"string\",\n      \"description\": \"CEP de destino, só com números\"\n    }\n  },\n  \"required\": [\n    \"cep\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.590Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.590Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e0"
+    },
+    "parameters": [
+      {
+        "name": "numero",
+        "type": "string",
+        "required": true,
+        "description": "O número do pedido"
+      }
+    ],
+    "js_code": "const res = await fetch('https://api.domastore.example/pedidos/' + encodeURIComponent(params.numero), {\n  headers: { Authorization: 'Bearer ' + (credentials.api_key || '') }\n});\nif (!res.ok) return { ok: false, status: res.status };\nreturn await res.json();\n",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "status_do_pedido",
+    "description": "Diz em que situação está um pedido da loja.",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"numero\": {\n      \"type\": \"string\",\n      \"description\": \"O número do pedido\"\n    }\n  },\n  \"required\": [\n    \"numero\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.599Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.599Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e2"
+    },
+    "parameters": [
+      {
+        "name": "document",
+        "type": "string",
+        "required": true,
+        "description": "O CPF ou CNPJ a validar (aceita com ou sem máscara)"
+      }
+    ],
+    "js_code": "function onlyDigits(s) { return String(s || '').replace(/\\D/g, ''); }\n\nfunction validateCpf(cpf) {\n  if (cpf.length !== 11 || /^(\\d)\\1+$/.test(cpf)) return false;\n  let sum = 0;\n  for (let i = 0; i < 9; i++) sum += parseInt(cpf[i], 10) * (10 - i);\n  let d1 = (sum * 10) % 11;\n  if (d1 === 10) d1 = 0;\n  if (d1 !== parseInt(cpf[9], 10)) return false;\n  sum = 0;\n  for (let i = 0; i < 10; i++) sum += parseInt(cpf[i], 10) * (11 - i);\n  let d2 = (sum * 10) % 11;\n  if (d2 === 10) d2 = 0;\n  return d2 === parseInt(cpf[10], 10);\n}\n\nfunction validateCnpj(cnpj) {\n  if (cnpj.length !== 14 || /^(\\d)\\1+$/.test(cnpj)) return false;\n  const calc = (slice, weights) => {\n    let sum = 0;\n    for (let i = 0; i < weights.length; i++) sum += parseInt(slice[i], 10) * weights[i];\n    const r = sum % 11;\n    return r < 2 ? 0 : 11 - r;\n  };\n  const w1 = [5,4,3,2,9,8,7,6,5,4,3,2];\n  const w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];\n  const d1 = calc(cnpj.slice(0, 12), w1);\n  if (d1 !== parseInt(cnpj[12], 10)) return false;\n  const d2 = calc(cnpj.slice(0, 13), w2);\n  return d2 === parseInt(cnpj[13], 10);\n}\n\nconst digits = onlyDigits(params.document);\nlet kind = null;\nlet valid = false;\nif (digits.length === 11)      { kind = 'cpf';  valid = validateCpf(digits); }\nelse if (digits.length === 14) { kind = 'cnpj'; valid = validateCnpj(digits); }\nelse                           { kind = 'unknown'; valid = false; }\n\nreturn { valid: valid, kind: kind, normalized: digits };\n",
+    "name": "validate_cpf_cnpj",
+    "description": "Valida CPF ou CNPJ aplicando os dígitos verificadores. Retorna { valid, kind: cpf|cnpj|unknown, normalized }.",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "tool_installation_id": "6aee5efa894f668c1fea47e1",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"document\": {\n      \"type\": \"string\",\n      \"description\": \"O CPF ou CNPJ a validar (aceita com ou sem máscara)\"\n    }\n  },\n  \"required\": [\n    \"document\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.620Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.620Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e3"
+    },
+    "parameters": [
+      {
+        "name": "cep",
+        "type": "string",
+        "required": true,
+        "description": "CEP de 8 dígitos (com ou sem hífen)"
+      }
+    ],
+    "js_code": "const cep = String(params.cep || '').replace(/\\D/g, '');\nif (cep.length !== 8) {\n  return { error: 'CEP inválido: precisa ter 8 dígitos', cep: params.cep };\n}\nconst res = await fetch('https://viacep.com.br/ws/' + cep + '/json/');\nif (!res.ok) {\n  return { error: 'Falha na consulta ViaCEP', status: res.status };\n}\nconst data = await res.json();\nif (data.erro) return { error: 'CEP não encontrado', cep: cep };\nreturn {\n  cep: data.cep,\n  logradouro: data.logradouro,\n  complemento: data.complemento,\n  bairro: data.bairro,\n  cidade: data.localidade,\n  uf: data.uf,\n  ibge: data.ibge\n};\n",
+    "name": "lookup_cep",
+    "description": "Consulta o endereço de um CEP brasileiro via API pública ViaCEP.",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "tool_installation_id": "6aee5efa894f668c1fea47e1",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cep\": {\n      \"type\": \"string\",\n      \"description\": \"CEP de 8 dígitos (com ou sem hífen)\"\n    }\n  },\n  \"required\": [\n    \"cep\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.623Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.623Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e4"
+    },
+    "parameters": [
+      {
+        "name": "birth_date",
+        "type": "string",
+        "required": true,
+        "description": "Data de nascimento no formato YYYY-MM-DD"
+      }
+    ],
+    "js_code": "const raw = String(params.birth_date || '').trim();\nif (!raw) return { error: 'birth_date obrigatório' };\nconst birth = new Date(raw);\nif (isNaN(birth.getTime())) return { error: 'birth_date inválida; use YYYY-MM-DD' };\nconst today = new Date();\nlet age = today.getFullYear() - birth.getFullYear();\nconst m = today.getMonth() - birth.getMonth();\nif (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;\nreturn { age: age, birth_date: raw };\n",
+    "name": "calculate_age",
+    "description": "Calcula a idade em anos completos a partir de uma data de nascimento.",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "tool_installation_id": "6aee5efa894f668c1fea47e1",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"birth_date\": {\n      \"type\": \"string\",\n      \"description\": \"Data de nascimento no formato YYYY-MM-DD\"\n    }\n  },\n  \"required\": [\n    \"birth_date\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.625Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.625Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e5"
+    },
+    "parameters": [
+      {
+        "name": "phone",
+        "type": "string",
+        "required": true,
+        "description": "Telefone com ou sem máscara, com ou sem DDI 55"
+      }
+    ],
+    "js_code": "const digits = String(params.phone || '').replace(/\\D/g, '');\nif (digits.length < 10 || digits.length > 13) {\n  return { error: 'telefone inválido', original: params.phone };\n}\nlet national = digits;\nif (national.startsWith('55') && (national.length === 12 || national.length === 13)) {\n  national = national.slice(2);\n}\nif (national.length !== 10 && national.length !== 11) {\n  return { error: 'telefone inválido após normalização', original: params.phone };\n}\nconst ddd = national.slice(0, 2);\nconst rest = national.slice(2);\nconst formatted = rest.length === 9\n  ? '(' + ddd + ') ' + rest.slice(0, 5) + '-' + rest.slice(5)\n  : '(' + ddd + ') ' + rest.slice(0, 4) + '-' + rest.slice(4);\nreturn {\n  e164: '+55' + national,\n  national: national,\n  formatted: formatted,\n  ddd: ddd\n};\n",
+    "name": "format_phone_br",
+    "description": "Normaliza um telefone brasileiro para E.164 (+55…) e formato visual.",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "tool_installation_id": "6aee5efa894f668c1fea47e1",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"phone\": {\n      \"type\": \"string\",\n      \"description\": \"Telefone com ou sem máscara, com ou sem DDI 55\"\n    }\n  },\n  \"required\": [\n    \"phone\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.627Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.627Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47e6"
+    },
+    "parameters": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "Texto a transformar"
+      },
+      {
+        "name": "action",
+        "type": "string",
+        "required": true,
+        "description": "'encode' ou 'decode'",
+        "enum": [
+          "encode",
+          "decode"
+        ]
+      }
+    ],
+    "js_code": "const action = String(params.action || 'encode').toLowerCase();\nconst text = String(params.text || '');\nif (action === 'encode') return { result: btoa(text), action: 'encode' };\nif (action === 'decode') {\n  try { return { result: atob(text), action: 'decode' }; }\n  catch (e) { return { error: 'base64 inválido', message: e.message }; }\n}\nreturn { error: \"action deve ser 'encode' ou 'decode'\" };\n",
+    "name": "base64_encode_decode",
+    "description": "Codifica ou decodifica um texto em base64.",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "tool_installation_id": "6aee5efa894f668c1fea47e1",
+    "_type": "ToolFunction::MiniRacer",
+    "parameters_json": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"text\": {\n      \"type\": \"string\",\n      \"description\": \"Texto a transformar\"\n    },\n    \"action\": {\n      \"type\": \"string\",\n      \"description\": \"'encode' ou 'decode'\",\n      \"enum\": [\n        \"encode\",\n        \"decode\"\n      ]\n    }\n  },\n  \"required\": [\n    \"text\",\n    \"action\"\n  ]\n}",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.629Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.629Z"
+    }
+  }
+]

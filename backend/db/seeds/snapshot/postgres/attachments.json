@@ -1,0 +1,182 @@
+[
+  {
+    "id": "03df72e9-52ea-44b7-9678-28d4bd89485a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-azul.png",
+    "description": null,
+    "file_name": "foto-azul.png",
+    "private": true,
+    "created_at": "2026-11-06T21:53:08.423318Z",
+    "updated_at": "2026-11-06T21:53:08.492010Z"
+  },
+  {
+    "id": "0c00ebda-5894-402e-b534-c82e0a953bfe",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "arquivo-grande.bin",
+    "description": null,
+    "file_name": "arquivo-grande.bin",
+    "private": true,
+    "created_at": "2026-11-06T21:50:17.615455Z",
+    "updated_at": "2026-11-06T21:50:17.649268Z"
+  },
+  {
+    "id": "1539a4c6-ca67-4149-aeb7-c6000343067e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Guia de medidas",
+    "description": "Medidas de cada tamanho, de PP a GG.",
+    "file_name": "guia-de-medidas.pdf",
+    "private": false,
+    "created_at": "2026-11-06T19:17:57.510638Z",
+    "updated_at": "2026-11-06T19:17:57.544055Z"
+  },
+  {
+    "id": "1748619f-6d5c-4130-91f3-578101881580",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Lookbook de verão",
+    "description": "As peças da nova coleção.",
+    "file_name": "lookbook-verao.png",
+    "private": false,
+    "created_at": "2026-11-06T19:17:57.589275Z",
+    "updated_at": "2026-11-06T19:17:57.962266Z"
+  },
+  {
+    "id": "17c22899-1c34-4e69-bbf8-1a1977c8b3cf",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-teste.png",
+    "description": null,
+    "file_name": "foto-teste.png",
+    "private": true,
+    "created_at": "2026-11-06T21:29:26.294565Z",
+    "updated_at": "2026-11-06T21:29:26.433365Z"
+  },
+  {
+    "id": "28038aaa-e673-465f-9556-6f16ffbb0f02",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-laranja.png",
+    "description": null,
+    "file_name": "foto-laranja.png",
+    "private": true,
+    "created_at": "2026-11-06T21:54:52.645096Z",
+    "updated_at": "2026-11-06T21:54:52.731841Z"
+  },
+  {
+    "id": "3dedb554-d11a-4bcc-8ee6-9bb57ea8739f",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-verde.png",
+    "description": null,
+    "file_name": "foto-verde.png",
+    "private": true,
+    "created_at": "2026-11-06T21:54:52.591585Z",
+    "updated_at": "2026-11-06T21:54:52.651390Z"
+  },
+  {
+    "id": "4055e388-955d-4e6a-b8d7-37698d356522",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Tabela de preços de atacado",
+    "description": "Revisada em novembro. Só para compras a partir de 10 peças.",
+    "file_name": "tabela-atacado.pdf",
+    "private": false,
+    "created_at": "2026-11-06T19:17:57.381349Z",
+    "updated_at": "2026-11-06T19:17:57.410403Z"
+  },
+  {
+    "id": "5b5ba418-c143-4048-a716-0350a0c557bd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-teste.png",
+    "description": null,
+    "file_name": "foto-teste.png",
+    "private": true,
+    "created_at": "2026-11-06T21:31:41.001853Z",
+    "updated_at": "2026-11-06T21:31:41.103161Z"
+  },
+  {
+    "id": "820adfd9-4e7f-43f8-883b-128f89111015",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "video-teste.mp4",
+    "description": null,
+    "file_name": "video-teste.mp4",
+    "private": true,
+    "created_at": "2026-11-06T22:02:13.037629Z",
+    "updated_at": "2026-11-06T22:02:13.213017Z"
+  },
+  {
+    "id": "8ab243b2-9ca0-4d21-9a4c-ae71eff0d2cf",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-verde.png",
+    "description": null,
+    "file_name": "foto-verde.png",
+    "private": true,
+    "created_at": "2026-11-06T21:53:08.470095Z",
+    "updated_at": "2026-11-06T21:53:08.531855Z"
+  },
+  {
+    "id": "ae23ddcb-158f-417d-910a-07b85a96728d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-azul.png",
+    "description": null,
+    "file_name": "foto-azul.png",
+    "private": true,
+    "created_at": "2026-11-07T01:45:59.090902Z",
+    "updated_at": "2026-11-07T01:45:59.228621Z"
+  },
+  {
+    "id": "bab0ef1c-5f8a-4d1b-b0d2-d09f89dede1a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "tabela-teste.pdf",
+    "description": null,
+    "file_name": "tabela-teste.pdf",
+    "private": true,
+    "created_at": "2026-11-06T21:31:41.065621Z",
+    "updated_at": "2026-11-06T21:31:41.102880Z"
+  },
+  {
+    "id": "d4c48df1-4adf-4cfc-8aa3-40130daf15e6",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-azul.png",
+    "description": null,
+    "file_name": "foto-azul.png",
+    "private": true,
+    "created_at": "2026-11-06T21:54:52.539361Z",
+    "updated_at": "2026-11-06T21:54:52.589052Z"
+  },
+  {
+    "id": "dd2cd55c-018f-467f-a45f-6ea6b47a04f0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-azul.png",
+    "description": null,
+    "file_name": "foto-azul.png",
+    "private": true,
+    "created_at": "2026-11-07T02:05:52.947590Z",
+    "updated_at": "2026-11-07T02:05:53.023230Z"
+  },
+  {
+    "id": "ea8f1231-c086-4931-a127-fa3b02b76ef3",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "foto-laranja.png",
+    "description": null,
+    "file_name": "foto-laranja.png",
+    "private": true,
+    "created_at": "2026-11-06T21:53:08.519853Z",
+    "updated_at": "2026-11-06T21:53:08.587726Z"
+  },
+  {
+    "id": "f20f3b62-5d9e-43a3-ab7a-430b3bd15fea",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "tabela-teste.pdf",
+    "description": null,
+    "file_name": "tabela-teste.pdf",
+    "private": true,
+    "created_at": "2026-11-06T21:29:26.361672Z",
+    "updated_at": "2026-11-06T21:29:26.403761Z"
+  },
+  {
+    "id": "f5f112ea-13cd-457e-8158-739c5ff8ac38",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Vestido midi de linho",
+    "description": "Foto para mandar no chat.",
+    "file_name": "vestido-midi-linho.png",
+    "private": false,
+    "created_at": "2026-11-06T19:17:57.673786Z",
+    "updated_at": "2026-11-06T19:17:58.066409Z"
+  }
+]

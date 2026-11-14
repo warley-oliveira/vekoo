@@ -5,7 +5,11 @@ require "rails_helper"
 # `db/seeds.rb` de ponta a ponta no banco de teste.
 RSpec.describe "db/seeds.rb" do
   # Uma vez só para o arquivo inteiro — semear é caro e o resultado é o mesmo.
+  # Aqui se testa a semente escrita à mão; o retrato do banco de desenvolvimento tem a sua spec
+  # (spec/lib/demo_snapshot_spec.rb) e, existindo, tomaria o lugar dela.
   before(:all) do
+    @seed_source = ENV["SEED_SOURCE"]
+    ENV["SEED_SOURCE"] = "handwritten"
     self.use_transactional_tests = false
     self.class.clean_database
 
@@ -15,6 +19,16 @@ RSpec.describe "db/seeds.rb" do
   after(:all) do
     self.class.clean_database
     self.use_transactional_tests = true
+    ENV["SEED_SOURCE"] = @seed_source
+  end
+
+  # Os exemplos que semeiam de novo também: a suíte devolve o ENV entre um exemplo e outro.
+  around do |example|
+    previous = ENV["SEED_SOURCE"]
+    ENV["SEED_SOURCE"] = "handwritten"
+    example.run
+  ensure
+    ENV["SEED_SOURCE"] = previous
   end
 
   # Fora da transação nada se desfaz sozinho, e cada domínio semeia as próprias tabelas: uma

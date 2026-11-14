@@ -1,0 +1,98 @@
+[
+  {
+    "id": "30aaa3f5-9b3e-4668-a9c6-6285ad62d90b",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "automation_source": null,
+    "body": "Dá para dar os 5% à vista? O lote inteiro sai de uma vez.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": false,
+    "created_at": "2026-11-06T10:15:00.000000Z",
+    "updated_at": "2026-11-06T10:15:00.000000Z"
+  },
+  {
+    "id": "31d617f5-35bd-427c-a857-bd306ae3a006",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "automation_source": null,
+    "body": "Boa, vou oferecer. Obrigada!",
+    "edited_at": null,
+    "parent_id": "84b7e811-3ad6-414a-91d4-eb825d346d43",
+    "pinned": false,
+    "created_at": "2026-11-06T11:15:00.000000Z",
+    "updated_at": "2026-11-06T11:15:00.000000Z"
+  },
+  {
+    "id": "3e9f4372-bbd1-4cb6-a146-b16bc4789d79",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "automation_source": null,
+    "body": "Rastreio enviado por modelo, porque a janela de 24 horas já tinha fechado.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": false,
+    "created_at": "2026-11-05T10:15:00.000000Z",
+    "updated_at": "2026-11-05T10:15:00.000000Z"
+  },
+  {
+    "id": "43c433b9-9a41-47f7-a173-264f7ecbefb3",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "automation_source": null,
+    "body": "Separei o cinto. Sai hoje pela Loggi.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": false,
+    "created_at": "2026-11-06T10:15:00.000000Z",
+    "updated_at": "2026-11-06T10:15:00.000000Z"
+  },
+  {
+    "id": "84b7e811-3ad6-414a-91d4-eb825d346d43",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "automation_source": null,
+    "body": "Se fechar acima de 50 peças, dá para fazer o frete grátis.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": false,
+    "created_at": "2026-11-06T10:15:00.000000Z",
+    "updated_at": "2026-11-06T10:15:00.000000Z"
+  },
+  {
+    "id": "9c18db02-40f8-4967-89e3-c1776e69fcc8",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "automation_source": null,
+    "body": "Mandei duas mensagens e nada. Tento de novo depois do feriado.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": false,
+    "created_at": "2026-11-01T10:15:00.000000Z",
+    "updated_at": "2026-11-01T10:15:00.000000Z"
+  },
+  {
+    "id": "dabf651a-61e4-49cb-bb49-45492412a5ac",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "automation_source": null,
+    "body": "Ela está preocupada: é para um evento no sábado.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": true,
+    "created_at": "2026-11-05T10:15:00.000000Z",
+    "updated_at": "2026-11-05T10:15:00.000000Z"
+  },
+  {
+    "id": "f04375af-162e-485b-ac21-344621201ba4",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "automation_source": null,
+    "body": "Ele vai levar a tabela para a diretoria. Combinei de ligar na quinta.",
+    "edited_at": null,
+    "parent_id": null,
+    "pinned": true,
+    "created_at": "2026-11-05T10:15:00.000000Z",
+    "updated_at": "2026-11-05T10:15:00.000000Z"
+  }
+]

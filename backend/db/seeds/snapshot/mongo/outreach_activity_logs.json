@@ -1,0 +1,361 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6361e"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-16T16:41:31.066Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-16T16:41:31.066Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c635df"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6361f"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-16T17:41:31.066Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-16T17:41:31.066Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c635df"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63620"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-17T19:41:31.066Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-17T19:41:31.066Z"
+    },
+    "action": "completed",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c635df"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6367e"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-06T16:41:31.112Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T16:41:31.112Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63621"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6367f"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-06T17:41:31.112Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T17:41:31.112Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63621"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636bd"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-04T16:41:31.160Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-04T16:41:31.160Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63680"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636be"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-04T17:41:31.160Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-04T17:41:31.160Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63680"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636bf"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-04T20:41:31.160Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-04T20:41:31.160Z"
+    },
+    "action": "paused",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63680"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636dd"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-03T16:41:31.184Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-03T16:41:31.184Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c636c0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636de"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-03T17:41:31.184Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-03T17:41:31.184Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c636c0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636df"
+    },
+    "metadata": {
+      "reason": "noActiveConnectors"
+    },
+    "created_at": {
+      "$date": "2026-11-03T20:41:31.184Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-03T20:41:31.184Z"
+    },
+    "action": "paused",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c636c0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6370e"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-06T18:41:31.204Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T18:41:31.204Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c636e0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6370f"
+    },
+    "metadata": {
+      "scheduled_at": 1795770000000,
+      "timezone": "America/Sao_Paulo"
+    },
+    "created_at": {
+      "$date": "2026-11-06T18:42:31.204Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T18:42:31.204Z"
+    },
+    "action": "scheduled",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c636e0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63729"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-11-06T18:41:31.238Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T18:41:31.238Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63710"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63753"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-28T16:41:31.267Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-28T16:41:31.267Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c6372a"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63754"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-28T17:41:31.267Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-28T17:41:31.267Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c6372a"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63755"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-28T19:41:31.267Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-28T19:41:31.267Z"
+    },
+    "action": "cancelled",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c6372a"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6377b"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-31T18:41:31.320Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-31T18:41:31.320Z"
+    },
+    "action": "created",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63756"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6377c"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-31T19:41:31.320Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-31T19:41:31.320Z"
+    },
+    "action": "launched",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63756"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6377d"
+    },
+    "metadata": {},
+    "created_at": {
+      "$date": "2026-10-31T20:21:31.320Z"
+    },
+    "updated_at": {
+      "$date": "2026-10-31T20:21:31.320Z"
+    },
+    "action": "completed",
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63756"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af7d919774a6fe7f8dc08d0"
+    },
+    "metadata": {},
+    "action": "created",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "campaign_id": {
+      "$oid": "6af7d919774a6fe7f8dc08cf"
+    },
+    "updated_at": {
+      "$date": "2026-11-14T03:44:25.305Z"
+    },
+    "created_at": {
+      "$date": "2026-11-14T03:44:25.305Z"
+    }
+  }
+]

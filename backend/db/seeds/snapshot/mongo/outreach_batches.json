@@ -1,0 +1,210 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6367c"
+    },
+    "position_offset": 0,
+    "recipient_ids": [
+      {
+        "$oid": "6aee2d6b039be5e2e5c63648"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63649"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364a"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364b"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364c"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364d"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364e"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6364f"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63650"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63651"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63652"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63653"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63654"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63655"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63656"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63657"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63658"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63659"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365a"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365b"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365c"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365d"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365e"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6365f"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63660"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63661"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63662"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63663"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63664"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63665"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63666"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63667"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63668"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63669"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366a"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366b"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366c"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366d"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366e"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6366f"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63670"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63671"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63672"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63673"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63674"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63675"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63676"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63677"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63678"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c63679"
+      }
+    ],
+    "status_cd": "processing",
+    "consecutive_failures": 0,
+    "connector_id": "6aee0e5717c01071cdba2bb6",
+    "channel_key": "6aee0e5717c01071cdba2bb6:",
+    "sequence": 0,
+    "scheduled_at": {
+      "$date": "2026-11-06T19:41:31.144Z"
+    },
+    "next_send_at": {
+      "$date": "2026-12-08T01:53:45.495Z"
+    },
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63621"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.145Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:41:31.145Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6367d"
+    },
+    "position_offset": 50,
+    "recipient_ids": [
+      {
+        "$oid": "6aee2d6b039be5e2e5c6367a"
+      },
+      {
+        "$oid": "6aee2d6b039be5e2e5c6367b"
+      }
+    ],
+    "status_cd": "scheduled",
+    "consecutive_failures": 0,
+    "connector_id": "6aee0e5717c01071cdba2bb6",
+    "channel_key": "6aee0e5717c01071cdba2bb6:",
+    "sequence": 1,
+    "scheduled_at": null,
+    "next_send_at": null,
+    "campaign_id": {
+      "$oid": "6aee2d6b039be5e2e5c63621"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.150Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:41:31.150Z"
+    }
+  }
+]

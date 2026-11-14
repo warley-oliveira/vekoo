@@ -1,0 +1,170 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7698"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": 2,
+    "schedule_window_start": "19:00",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.234Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.234Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7699"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": 2,
+    "schedule_window_start": "19:00",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.275Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.275Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769a"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": 4,
+    "schedule_window_start": "19:00",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.285Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.285Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769b"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": null,
+    "schedule_window_start": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.296Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.296Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a1"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": null,
+    "schedule_window_start": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.445Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.445Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a2"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": null,
+    "schedule_window_start": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.453Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.453Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a3"
+    },
+    "status": "active",
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "enrolled_at": {
+      "$date": "2026-10-09T03:00:00Z"
+    },
+    "schedule_day_of_week": null,
+    "schedule_window_start": null,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.462Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.462Z"
+    }
+  }
+]

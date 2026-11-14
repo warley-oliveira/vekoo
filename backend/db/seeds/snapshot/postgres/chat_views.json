@@ -1,0 +1,98 @@
+[
+  {
+    "id": "4adcbbe3-0454-4a74-b93c-7fe85a777985",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Curitiba e Londrina",
+    "payload": [
+      {
+        "values": [
+          "Curitiba",
+          "Londrina"
+        ],
+        "valueType": "text",
+        "attributeKey": "custom_attributes.cidade",
+        "queryOperator": "and",
+        "filterOperator": "equal_to"
+      }
+    ],
+    "personal": true,
+    "created_at": "2026-11-06T19:17:57.915158Z",
+    "updated_at": "2026-11-06T19:17:57.915158Z"
+  },
+  {
+    "id": "5c1c75d2-1e59-423b-b01d-076d2be09bb1",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Compra acima de R$ 500",
+    "payload": [
+      {
+        "values": [
+          "500"
+        ],
+        "valueType": "number",
+        "attributeKey": "custom_attributes.ticket_medio",
+        "queryOperator": "and",
+        "filterOperator": "is_greater_than"
+      }
+    ],
+    "personal": true,
+    "created_at": "2026-11-06T19:17:57.925424Z",
+    "updated_at": "2026-11-06T19:17:57.925424Z"
+  },
+  {
+    "id": "80a67471-abae-45d3-a040-b65b29acce20",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Sem dono",
+    "payload": [
+      {
+        "values": [],
+        "attributeKey": "assigned_account_id",
+        "queryOperator": "and",
+        "filterOperator": "is_empty"
+      }
+    ],
+    "personal": false,
+    "created_at": "2026-11-06T19:17:57.889004Z",
+    "updated_at": "2026-11-06T19:17:57.889004Z"
+  },
+  {
+    "id": "a95bcd58-2fa2-4ae1-a665-a4903df8e271",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Não lidas",
+    "payload": [
+      {
+        "values": [
+          "0"
+        ],
+        "attributeKey": "unread_messages",
+        "queryOperator": "and",
+        "filterOperator": "is_greater_than"
+      }
+    ],
+    "personal": false,
+    "created_at": "2026-11-06T19:17:57.859495Z",
+    "updated_at": "2026-11-06T19:17:57.859495Z"
+  },
+  {
+    "id": "b6517cb2-604b-46db-b542-f15db8002e35",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Fechadas",
+    "payload": [
+      {
+        "values": [
+          "closed"
+        ],
+        "attributeKey": "status",
+        "queryOperator": "and",
+        "filterOperator": "equal_to"
+      }
+    ],
+    "personal": false,
+    "created_at": "2026-11-06T19:17:57.903201Z",
+    "updated_at": "2026-11-06T19:17:57.903201Z"
+  }
+]

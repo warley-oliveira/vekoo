@@ -1,0 +1,98 @@
+[
+  {
+    "id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "email": "juliana.ferreira@exemplo.com.br",
+    "password_digest": "$2a$12$nr//3TjoQE5oj5uEH.pvtOqPSFFKVdalMidGb9dXdkiTpGFQHWEDm",
+    "name": "Juliana Ferreira",
+    "phone": "5531954321098",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-06T15:51:15.523058Z",
+    "updated_at": "2026-11-06T15:51:15.523058Z",
+    "staff": false
+  },
+  {
+    "id": "60f4e9bf-8aba-42a9-b5a7-86eb50c5b005",
+    "email": "beatriz.lima@exemplo.com.br",
+    "password_digest": "$2a$12$GHmDRxHa8QE.zDI/XymAKulczF5bO4Zcy8GGTpYIKY6jLwzRASFNW",
+    "name": "Beatriz Lima",
+    "phone": "5541943210987",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-06T15:51:15.700121Z",
+    "updated_at": "2026-11-06T15:51:15.700121Z",
+    "staff": false
+  },
+  {
+    "id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "email": "rafael.nunes@exemplo.com.br",
+    "password_digest": "$2a$12$0n1PfCZ2OfVS7i.EIpVJNeQQBnywXWPHvo8nTQN3ElaI4toQirk4.",
+    "name": "Rafael Nunes",
+    "phone": "5511987654321",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-06T15:51:14.964505Z",
+    "updated_at": "2026-11-06T15:51:14.964505Z",
+    "staff": false
+  },
+  {
+    "id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "email": "camila.rocha@exemplo.com.br",
+    "password_digest": "$2a$12$4IwkPTEyYj3rTSHrKPZJo.TS389VBjA/BQQEUjpJBks0ssxZC9Eb.",
+    "name": "Camila Rocha",
+    "phone": "5511976543210",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-06T15:51:15.156131Z",
+    "updated_at": "2026-11-06T15:51:15.156131Z",
+    "staff": false
+  },
+  {
+    "id": "a8425076-926c-4055-8982-97ac7588a13c",
+    "email": "patricia.gomes@exemplo.com.br",
+    "password_digest": "$2a$12$vKmZgY5AOsnemenNe4zs5.VvxFSBE/4k4avb3FjGhYuYB04EWF5fW",
+    "name": "Patrícia Gomes",
+    "phone": "5511932109876",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-08T00:57:49.880178Z",
+    "updated_at": "2026-11-08T00:57:49.880178Z",
+    "staff": false
+  },
+  {
+    "id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "email": "thiago.almeida@exemplo.com.br",
+    "password_digest": "$2a$12$lTduN.BIDTqFAjIJLj26A.W8j1ktf.BuBep0e7fg94DfrG/OCnnya",
+    "name": "Thiago Almeida",
+    "phone": "5521965432109",
+    "locale": null,
+    "master": false,
+    "created_at": "2026-11-06T15:51:15.339780Z",
+    "updated_at": "2026-11-06T15:51:15.339780Z",
+    "staff": false
+  },
+  {
+    "id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "email": "marina.duarte@exemplo.com.br",
+    "password_digest": "$2a$12$4EUNU/tQ...zgVlCg7XNcugUGIQi4/Mo6wUJ7mkJncM1UtVtrFkGa",
+    "name": "Marina Duarte",
+    "phone": null,
+    "locale": "pt-BR",
+    "master": false,
+    "created_at": "2026-10-08T07:31:26.159941Z",
+    "updated_at": "2026-11-08T01:53:43.883233Z",
+    "staff": false
+  },
+  {
+    "id": "c30a3ef1-60aa-4c38-a2b1-eea2b08d195b",
+    "email": "suporte@vekoo.com.br",
+    "password_digest": "$2a$12$2IgCRiJntRfmGJEfdSchqelJWejYkaKiofHBjpJMP1EAgxvaB1K96",
+    "name": "Suporte Vekoo",
+    "phone": null,
+    "locale": "pt-BR",
+    "master": true,
+    "created_at": "2026-11-08T00:57:50.562174Z",
+    "updated_at": "2026-11-08T02:53:43.693084Z",
+    "staff": false
+  }
+]

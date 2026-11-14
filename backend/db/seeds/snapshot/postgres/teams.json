@@ -1,0 +1,26 @@
+[
+  {
+    "id": "101aacb8-42f7-4e3e-87cf-f58f3cc1b452",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Comercial",
+    "created_at": "2026-11-06T15:51:14.762530Z",
+    "updated_at": "2026-11-06T15:51:14.762530Z",
+    "active": true
+  },
+  {
+    "id": "994867fe-35e0-4962-96d6-151119377432",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Pós-venda",
+    "created_at": "2026-11-06T15:51:14.773169Z",
+    "updated_at": "2026-11-06T15:51:14.773169Z",
+    "active": true
+  },
+  {
+    "id": "b9b36a60-ab39-4f8f-a149-781769af3ad4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Atendimento",
+    "created_at": "2026-11-06T15:51:14.751968Z",
+    "updated_at": "2026-11-06T15:51:14.751968Z",
+    "active": true
+  }
+]

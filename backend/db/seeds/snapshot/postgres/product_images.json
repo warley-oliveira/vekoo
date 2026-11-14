@@ -1,0 +1,389 @@
+[
+  {
+    "id": "0a43dcaa-9c5b-48a9-93d4-820d9aee2ed8",
+    "product_item_id": "43a3cf97-72f5-4e4e-a7ff-c15647fc0346",
+    "source_url": "https://picsum.photos/seed/doma-vela-capim-limao-1/800/800",
+    "alt": "Vela Aromática de Capim-Limão, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:03.056002Z",
+    "updated_at": "2026-11-06T15:54:03.056002Z"
+  },
+  {
+    "id": "14426a21-4110-4909-b114-60f02eaecb4d",
+    "product_item_id": "7a2cfb72-5493-45dd-9817-a873dbf74572",
+    "source_url": "https://picsum.photos/seed/doma-vestido-chemise-listrado-1/800/800",
+    "alt": "Vestido Chemise Listrado, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:01.915823Z",
+    "updated_at": "2026-11-06T15:54:01.915823Z"
+  },
+  {
+    "id": "1b234c07-7c98-440c-9525-4495ad2fc86c",
+    "product_item_id": "ab3fb34f-3e9c-491a-8e30-3b914ba5b248",
+    "source_url": "https://picsum.photos/seed/doma-vaso-barro-2/800/800",
+    "alt": "Vaso de Barro Pintado à Mão, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.940513Z",
+    "updated_at": "2026-11-06T15:54:02.940513Z"
+  },
+  {
+    "id": "1c3b3fd5-0535-4084-8d71-e8fcc43abcaa",
+    "product_item_id": "51edbe2f-2b1e-45e6-8853-40a7b2652c78",
+    "source_url": "https://picsum.photos/seed/doma-camisa-algodao-oversized-2/800/800",
+    "alt": "Camisa de Algodão Oversized, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.076871Z",
+    "updated_at": "2026-11-06T15:54:02.076871Z"
+  },
+  {
+    "id": "1c8204af-0169-4c12-8427-e7e821481673",
+    "product_item_id": "383ec365-0da9-4451-bf7b-f9d7fdec2eaf",
+    "source_url": "https://picsum.photos/seed/doma-kit-cafe-manha-2/800/800",
+    "alt": "Kit Café da Manhã, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:03.119920Z",
+    "updated_at": "2026-11-06T15:54:03.119920Z"
+  },
+  {
+    "id": "21b797e8-eee0-42d3-b9c3-310d4d7a878c",
+    "product_item_id": "383ec365-0da9-4451-bf7b-f9d7fdec2eaf",
+    "source_url": "https://picsum.photos/seed/doma-kit-cafe-manha-1/800/800",
+    "alt": "Kit Café da Manhã, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:03.106865Z",
+    "updated_at": "2026-11-06T15:54:03.106865Z"
+  },
+  {
+    "id": "378b07cc-2314-40ab-b37f-a37d97c0210b",
+    "product_item_id": "9091c3a0-9f79-425b-ae67-83f9cd32df3c",
+    "source_url": "https://picsum.photos/seed/doma-lenco-seda-1/800/800",
+    "alt": "Lenço de Seda Estampado, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.557067Z",
+    "updated_at": "2026-11-06T15:54:02.557067Z"
+  },
+  {
+    "id": "44d5b299-a33a-42a0-9d43-8bc39de411a0",
+    "product_item_id": "ab3fb34f-3e9c-491a-8e30-3b914ba5b248",
+    "source_url": "https://picsum.photos/seed/doma-vaso-barro-3/800/800",
+    "alt": "Vaso de Barro Pintado à Mão, foto 3",
+    "position": 2,
+    "created_at": "2026-11-06T15:54:02.949767Z",
+    "updated_at": "2026-11-06T15:54:02.949767Z"
+  },
+  {
+    "id": "4558889a-2f42-4374-adc6-8f978573d298",
+    "product_item_id": "5bdd299d-9115-48f7-b953-d3dacc7afd6b",
+    "source_url": "https://picsum.photos/seed/doma-regata-canelada-1/800/800",
+    "alt": "Regata Canelada Básica, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.124666Z",
+    "updated_at": "2026-11-06T15:54:02.124666Z"
+  },
+  {
+    "id": "46deaf87-1129-42c3-9a5a-16d7ad191185",
+    "product_item_id": "c3b36070-ddea-42d2-87e5-14912cec2711",
+    "source_url": "https://picsum.photos/seed/doma-ecobag-1/800/800",
+    "alt": "Ecobag de Algodão Cru, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.504592Z",
+    "updated_at": "2026-11-06T15:54:02.504592Z"
+  },
+  {
+    "id": "5430dfa8-6271-4768-8c62-48d30c6fa75e",
+    "product_item_id": "8a228fe1-978e-4ebe-9e65-f635fe3d15a9",
+    "source_url": "https://picsum.photos/seed/doma-camiseta-pima-3/800/800",
+    "alt": "Camiseta de Algodão Pima, foto 3",
+    "position": 2,
+    "created_at": "2026-11-06T15:54:02.178692Z",
+    "updated_at": "2026-11-06T15:54:02.178692Z"
+  },
+  {
+    "id": "5b2d79ff-b311-4d9a-a7ef-4e002d2c6196",
+    "product_item_id": "60422e87-b63b-4cd1-b31f-ee16998518f2",
+    "source_url": "https://picsum.photos/seed/doma-vestido-midi-linho-2/800/800",
+    "alt": "Vestido Midi de Linho, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:01.863358Z",
+    "updated_at": "2026-11-06T15:54:01.863358Z"
+  },
+  {
+    "id": "5fae5d43-2782-47b3-a420-458d0ab566bb",
+    "product_item_id": "df4c7105-d038-42b4-ad4a-80f5d0951a6b",
+    "source_url": "https://picsum.photos/seed/doma-camiseta-caju-1/800/800",
+    "alt": "Camiseta Estampada Caju, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.241881Z",
+    "updated_at": "2026-11-06T15:54:02.241881Z"
+  },
+  {
+    "id": "63d79ddb-83ba-48c3-9627-050eec7e42cb",
+    "product_item_id": "8a228fe1-978e-4ebe-9e65-f635fe3d15a9",
+    "source_url": "https://picsum.photos/seed/doma-camiseta-pima-2/800/800",
+    "alt": "Camiseta de Algodão Pima, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.170874Z",
+    "updated_at": "2026-11-06T15:54:02.170874Z"
+  },
+  {
+    "id": "6891e283-6dd1-4beb-8ffa-61a88cdb1249",
+    "product_item_id": "7a2cfb72-5493-45dd-9817-a873dbf74572",
+    "source_url": "https://picsum.photos/seed/doma-vestido-chemise-listrado-2/800/800",
+    "alt": "Vestido Chemise Listrado, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:01.924804Z",
+    "updated_at": "2026-11-06T15:54:01.924804Z"
+  },
+  {
+    "id": "6d280bf6-3cbe-4f6d-893b-3194d119c992",
+    "product_item_id": "b8b0e634-172d-41d7-9901-5b864513daf8",
+    "source_url": "https://picsum.photos/seed/doma-mochila-couro-1/800/800",
+    "alt": "Mochila de Couro Legítimo, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.432231Z",
+    "updated_at": "2026-11-06T15:54:02.432231Z"
+  },
+  {
+    "id": "72fc882a-8399-4724-a929-a18dda81d6bb",
+    "product_item_id": "87604bd3-42d8-42c4-b5e8-a8dd94241e7e",
+    "source_url": "https://picsum.photos/seed/doma-manta-trico-1/800/800",
+    "alt": "Manta de Tricô para Sofá, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.992868Z",
+    "updated_at": "2026-11-06T15:54:02.992868Z"
+  },
+  {
+    "id": "743f7537-59ae-4bd5-821e-8e38640f774d",
+    "product_item_id": "60422e87-b63b-4cd1-b31f-ee16998518f2",
+    "source_url": "https://picsum.photos/seed/doma-vestido-midi-linho-1/800/800",
+    "alt": "Vestido Midi de Linho, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:01.856331Z",
+    "updated_at": "2026-11-06T15:54:01.856331Z"
+  },
+  {
+    "id": "8468079b-6cd1-487c-8c72-6a6f0f2a08e7",
+    "product_item_id": "ab3fb34f-3e9c-491a-8e30-3b914ba5b248",
+    "source_url": "https://picsum.photos/seed/doma-vaso-barro-1/800/800",
+    "alt": "Vaso de Barro Pintado à Mão, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.931321Z",
+    "updated_at": "2026-11-06T15:54:02.931321Z"
+  },
+  {
+    "id": "8b57ab30-34e8-4fe3-bea3-10373de64ebb",
+    "product_item_id": "87604bd3-42d8-42c4-b5e8-a8dd94241e7e",
+    "source_url": "https://picsum.photos/seed/doma-manta-trico-2/800/800",
+    "alt": "Manta de Tricô para Sofá, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:03.001115Z",
+    "updated_at": "2026-11-06T15:54:03.001115Z"
+  },
+  {
+    "id": "911e3840-37c1-4a9e-bae9-bde170183bad",
+    "product_item_id": "8a228fe1-978e-4ebe-9e65-f635fe3d15a9",
+    "source_url": "https://picsum.photos/seed/doma-camiseta-pima-1/800/800",
+    "alt": "Camiseta de Algodão Pima, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.162992Z",
+    "updated_at": "2026-11-06T15:54:02.162992Z"
+  },
+  {
+    "id": "943647d4-9021-4ddc-bc26-12ac20bc6d21",
+    "product_item_id": "5ec3f5af-6483-40a7-a8ba-5f222a6f58b3",
+    "source_url": "https://picsum.photos/seed/doma-caneca-ceramica-1/800/800",
+    "alt": "Caneca de Cerâmica Artesanal, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.659562Z",
+    "updated_at": "2026-11-06T15:54:02.659562Z"
+  },
+  {
+    "id": "9620112e-5c76-4de0-ae09-62fb56e0a61c",
+    "product_item_id": "6d4a7bad-87c0-44a4-baa1-02fbfe8a3c7e",
+    "source_url": "https://picsum.photos/seed/doma-blusa-viscose-amarracao-2/800/800",
+    "alt": "Blusa de Viscose com Amarração, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.021789Z",
+    "updated_at": "2026-11-06T15:54:02.021789Z"
+  },
+  {
+    "id": "9964161e-8b53-484b-a809-215bf92f27e6",
+    "product_item_id": "b8b0e634-172d-41d7-9901-5b864513daf8",
+    "source_url": "https://picsum.photos/seed/doma-mochila-couro-2/800/800",
+    "alt": "Mochila de Couro Legítimo, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.440233Z",
+    "updated_at": "2026-11-06T15:54:02.440233Z"
+  },
+  {
+    "id": "a54a1e47-79bb-471b-90f1-fdb725f87b2c",
+    "product_item_id": "6d4a7bad-87c0-44a4-baa1-02fbfe8a3c7e",
+    "source_url": "https://picsum.photos/seed/doma-blusa-viscose-amarracao-1/800/800",
+    "alt": "Blusa de Viscose com Amarração, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.013436Z",
+    "updated_at": "2026-11-06T15:54:02.013436Z"
+  },
+  {
+    "id": "a9658f05-43b0-41bd-8206-64d62f45d734",
+    "product_item_id": "e3dbc25f-742a-4e6a-bfb1-ec90e792beb8",
+    "source_url": "https://picsum.photos/seed/doma-necessaire-1/800/800",
+    "alt": "Nécessaire Personalizada, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:03.160804Z",
+    "updated_at": "2026-11-06T15:54:03.160804Z"
+  },
+  {
+    "id": "adf2a20c-8412-4559-9a75-9ac55183b5ad",
+    "product_item_id": "d5c072bc-6ea8-46b6-a068-1e0f71004344",
+    "source_url": "https://picsum.photos/seed/doma-tabua-frios-1/800/800",
+    "alt": "Tábua de Frios em Madeira, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.779783Z",
+    "updated_at": "2026-11-06T15:54:02.779783Z"
+  },
+  {
+    "id": "b3356869-62c6-4d07-bfcc-4b906f28c63e",
+    "product_item_id": "0f8f3d69-fdc4-4f1b-8f3a-56740bdc2c9d",
+    "source_url": "https://picsum.photos/seed/doma-almofada-bordada-1/800/800",
+    "alt": "Almofada de Algodão Bordada, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.877821Z",
+    "updated_at": "2026-11-06T15:54:02.877821Z"
+  },
+  {
+    "id": "b3b01df8-3bb3-457a-8617-79ce7f7142e6",
+    "product_item_id": "24dd66bd-09db-4c9e-add7-c4fa800f2328",
+    "source_url": "https://picsum.photos/seed/doma-lenco-tie-dye-1/800/800",
+    "alt": "Lenço de Algodão Tie-Dye, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.612698Z",
+    "updated_at": "2026-11-06T15:54:02.612698Z"
+  },
+  {
+    "id": "b763aded-ce30-4eb6-a11b-de8cfd0684ee",
+    "product_item_id": "7e9a7fe6-8627-4736-aa34-148747c26b13",
+    "source_url": "https://picsum.photos/seed/doma-polo-piquet-1/800/800",
+    "alt": "Polo de Piquet, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.288748Z",
+    "updated_at": "2026-11-06T15:54:02.288748Z"
+  },
+  {
+    "id": "b9d1a9b7-334f-442b-95c9-b1a6e73be94f",
+    "product_item_id": "51edbe2f-2b1e-45e6-8853-40a7b2652c78",
+    "source_url": "https://picsum.photos/seed/doma-camisa-algodao-oversized-1/800/800",
+    "alt": "Camisa de Algodão Oversized, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.066466Z",
+    "updated_at": "2026-11-06T15:54:02.066466Z"
+  },
+  {
+    "id": "bc0b0cb9-1117-497f-86cd-57edcc784822",
+    "product_item_id": "b8b0e634-172d-41d7-9901-5b864513daf8",
+    "source_url": "https://picsum.photos/seed/doma-mochila-couro-3/800/800",
+    "alt": "Mochila de Couro Legítimo, foto 3",
+    "position": 2,
+    "created_at": "2026-11-06T15:54:02.447807Z",
+    "updated_at": "2026-11-06T15:54:02.447807Z"
+  },
+  {
+    "id": "c9112617-d2ed-4d17-a202-9d72cd5af2bb",
+    "product_item_id": "60422e87-b63b-4cd1-b31f-ee16998518f2",
+    "source_url": "https://picsum.photos/seed/doma-vestido-midi-linho-3/800/800",
+    "alt": "Vestido Midi de Linho, foto 3",
+    "position": 2,
+    "created_at": "2026-11-06T15:54:01.871937Z",
+    "updated_at": "2026-11-06T15:54:01.871937Z"
+  },
+  {
+    "id": "cf4167e5-4a80-4ce3-b56b-961ef0dd18a8",
+    "product_item_id": "7e9a7fe6-8627-4736-aa34-148747c26b13",
+    "source_url": "https://picsum.photos/seed/doma-polo-piquet-2/800/800",
+    "alt": "Polo de Piquet, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.297481Z",
+    "updated_at": "2026-11-06T15:54:02.297481Z"
+  },
+  {
+    "id": "d664a085-5cb8-4498-8f68-18efecc45b78",
+    "product_item_id": "5ec3f5af-6483-40a7-a8ba-5f222a6f58b3",
+    "source_url": "https://picsum.photos/seed/doma-caneca-ceramica-2/800/800",
+    "alt": "Caneca de Cerâmica Artesanal, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.668362Z",
+    "updated_at": "2026-11-06T15:54:02.668362Z"
+  },
+  {
+    "id": "db3a5fee-681a-4afe-81b0-e2ac8fa1b96e",
+    "product_item_id": "e8e43d0b-2a6f-4183-8246-b0e228d3b5eb",
+    "source_url": "https://picsum.photos/seed/doma-bolsa-palha-2/800/800",
+    "alt": "Bolsa de Palha Tramada, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.388501Z",
+    "updated_at": "2026-11-06T15:54:02.388501Z"
+  },
+  {
+    "id": "dce61f79-718d-4471-a588-ec1eeac4ef32",
+    "product_item_id": "0f8f3d69-fdc4-4f1b-8f3a-56740bdc2c9d",
+    "source_url": "https://picsum.photos/seed/doma-almofada-bordada-2/800/800",
+    "alt": "Almofada de Algodão Bordada, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.887081Z",
+    "updated_at": "2026-11-06T15:54:02.887081Z"
+  },
+  {
+    "id": "e88c4d46-5142-49d2-bedb-255dfc3f4886",
+    "product_item_id": "0f136670-55b1-4617-bfd5-9189b019dd1c",
+    "source_url": "https://picsum.photos/seed/doma-xicaras-cafe-2/800/800",
+    "alt": "Jogo de Xícaras de Café (6 peças), foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.712099Z",
+    "updated_at": "2026-11-06T15:54:02.712099Z"
+  },
+  {
+    "id": "ee8ee4d0-950b-42fd-bf72-2a81fbde7aab",
+    "product_item_id": "0f136670-55b1-4617-bfd5-9189b019dd1c",
+    "source_url": "https://picsum.photos/seed/doma-xicaras-cafe-1/800/800",
+    "alt": "Jogo de Xícaras de Café (6 peças), foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.703360Z",
+    "updated_at": "2026-11-06T15:54:02.703360Z"
+  },
+  {
+    "id": "f21428e8-eabb-4616-820a-41aff61c84a1",
+    "product_item_id": "9091c3a0-9f79-425b-ae67-83f9cd32df3c",
+    "source_url": "https://picsum.photos/seed/doma-lenco-seda-2/800/800",
+    "alt": "Lenço de Seda Estampado, foto 2",
+    "position": 1,
+    "created_at": "2026-11-06T15:54:02.571545Z",
+    "updated_at": "2026-11-06T15:54:02.571545Z"
+  },
+  {
+    "id": "f2d37a0b-dd29-4ae4-a68a-5045a5adb0e1",
+    "product_item_id": "25ae6093-c4df-4b78-8165-720fd01d5dd2",
+    "source_url": "https://picsum.photos/seed/doma-avental-linho-1/800/800",
+    "alt": "Avental de Linho, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.828494Z",
+    "updated_at": "2026-11-06T15:54:02.828494Z"
+  },
+  {
+    "id": "f733f0fa-6eb0-445b-bac0-ee1b735a387f",
+    "product_item_id": "e8e43d0b-2a6f-4183-8246-b0e228d3b5eb",
+    "source_url": "https://picsum.photos/seed/doma-bolsa-palha-1/800/800",
+    "alt": "Bolsa de Palha Tramada, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:02.380599Z",
+    "updated_at": "2026-11-06T15:54:02.380599Z"
+  },
+  {
+    "id": "fb4a7ef8-2505-46b4-b5ed-cf85a0ea5f60",
+    "product_item_id": "b30598d8-9ffd-4cfc-8f42-da539f966147",
+    "source_url": "https://picsum.photos/seed/doma-vestido-longo-floral-1/800/800",
+    "alt": "Vestido Longo Estampa Floral, foto 1",
+    "position": 0,
+    "created_at": "2026-11-06T15:54:01.966734Z",
+    "updated_at": "2026-11-06T15:54:01.966734Z"
+  }
+]

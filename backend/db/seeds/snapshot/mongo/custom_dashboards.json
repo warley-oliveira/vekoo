@@ -1,0 +1,324 @@
+[
+  {
+    "_id": {
+      "$oid": "6aeea248b79245ad9ab6ffe8"
+    },
+    "global_filters": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "name": "Atendimento da semana",
+    "description": "Conversas, agenda e equipe, num lugar só.",
+    "icon": "chart",
+    "is_favorite": true,
+    "is_default": false,
+    "updated_at": {
+      "$date": "2026-11-07T04:00:08.456Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T04:00:08.438Z"
+    },
+    "widgets": [
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffe9"
+        },
+        "query": {},
+        "visual_config": {},
+        "position": 0,
+        "widget_type": "section_divider",
+        "title": "Visão geral",
+        "layout": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 1
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffea"
+        },
+        "query": {
+          "dataSource": "conversations",
+          "metrics": [
+            {
+              "aggregation": "count",
+              "label": "Conversas"
+            }
+          ]
+        },
+        "visual_config": {
+          "format": "number"
+        },
+        "position": 1,
+        "widget_type": "kpi",
+        "title": "Conversas novas",
+        "data_source": "conversations",
+        "layout": {
+          "x": 0,
+          "y": 1,
+          "w": 3,
+          "h": 3
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffeb"
+        },
+        "query": {
+          "dataSource": "agenda_bookings",
+          "metrics": [
+            {
+              "aggregation": "count",
+              "label": "Compareceram",
+              "filters": [
+                {
+                  "field": "attendance_status",
+                  "operator": "eq",
+                  "value": "show"
+                }
+              ]
+            }
+          ]
+        },
+        "visual_config": {
+          "format": "number"
+        },
+        "position": 2,
+        "widget_type": "kpi",
+        "title": "Comparecimento",
+        "data_source": "agenda_bookings",
+        "layout": {
+          "x": 3,
+          "y": 1,
+          "w": 3,
+          "h": 3
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffec"
+        },
+        "query": {
+          "dataSource": "conversations",
+          "metrics": [
+            {
+              "aggregation": "count",
+              "label": "Conversas"
+            }
+          ],
+          "dimensions": [
+            {
+              "field": "created_at",
+              "granularity": "day"
+            }
+          ]
+        },
+        "visual_config": {
+          "curved": true,
+          "showGrid": true
+        },
+        "position": 3,
+        "widget_type": "line_chart",
+        "title": "Conversas novas por dia",
+        "data_source": "conversations",
+        "layout": {
+          "x": 6,
+          "y": 1,
+          "w": 6,
+          "h": 5
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffed"
+        },
+        "query": {
+          "dataSource": "conversations",
+          "metrics": [
+            {
+              "aggregation": "count",
+              "label": "Conversas"
+            }
+          ],
+          "dimensions": [
+            {
+              "field": "audience_type"
+            }
+          ]
+        },
+        "visual_config": {
+          "showLegend": true
+        },
+        "position": 4,
+        "widget_type": "donut_chart",
+        "title": "De onde vêm as conversas",
+        "data_source": "conversations",
+        "layout": {
+          "x": 0,
+          "y": 4,
+          "w": 6,
+          "h": 5
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.440Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffee"
+        },
+        "query": {
+          "dataSource": "daily_stats",
+          "metrics": [
+            {
+              "field": "messages_inbound",
+              "aggregation": "sum",
+              "label": "Recebidas"
+            },
+            {
+              "field": "messages_sent_by_human",
+              "aggregation": "sum",
+              "label": "Enviadas pela equipe"
+            }
+          ],
+          "dimensions": [
+            {
+              "field": "day",
+              "granularity": "week"
+            }
+          ]
+        },
+        "visual_config": {
+          "stacked": true,
+          "showLegend": true
+        },
+        "position": 5,
+        "widget_type": "bar_chart",
+        "title": "Mensagens por dia, nos números do dashboard",
+        "data_source": "daily_stats",
+        "layout": {
+          "x": 6,
+          "y": 6,
+          "w": 6,
+          "h": 5
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6ffef"
+        },
+        "query": {
+          "dataSource": "conversations",
+          "metrics": [
+            {
+              "aggregation": "count",
+              "label": "Conversas"
+            },
+            {
+              "aggregation": "count",
+              "label": "Abertas",
+              "filters": [
+                {
+                  "field": "status",
+                  "operator": "eq",
+                  "value": "open"
+                }
+              ]
+            },
+            {
+              "field": "unread_messages",
+              "aggregation": "sum",
+              "label": "Não lidas"
+            }
+          ],
+          "dimensions": [
+            {
+              "field": "assigned_account_id"
+            }
+          ],
+          "sort": {
+            "field": "Conversas",
+            "direction": "desc"
+          }
+        },
+        "visual_config": {
+          "showTotals": true
+        },
+        "position": 6,
+        "widget_type": "table",
+        "title": "Conversas por atendente",
+        "data_source": "conversations",
+        "layout": {
+          "x": 0,
+          "y": 9,
+          "w": 6,
+          "h": 5
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "6aeea248b79245ad9ab6fff0"
+        },
+        "query": {},
+        "visual_config": {
+          "content": "Os números de hoje entram de hora em hora. Para olhar outro período, mude as datas no alto da página."
+        },
+        "position": 7,
+        "widget_type": "rich_text",
+        "title": "Como ler este dashboard",
+        "layout": {
+          "x": 6,
+          "y": 11,
+          "w": 6,
+          "h": 3
+        },
+        "updated_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        },
+        "created_at": {
+          "$date": "2026-11-07T04:00:08.441Z"
+        }
+      }
+    ]
+  }
+]

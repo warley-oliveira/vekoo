@@ -1,0 +1,257 @@
+[
+  {
+    "id": "4ac43b58-fe95-4c3c-a7ee-cb70f5b4e8be",
+    "name": "Onboarding",
+    "description": "Acompanhe a chegada de cada novo cliente, do cadastro ao acompanhamento.",
+    "template_key": "onboarding",
+    "stages_config": [
+      {
+        "name": "Cadastro",
+        "color": "#90CAF9",
+        "position": 0
+      },
+      {
+        "name": "Configuração",
+        "color": "#CE93D8",
+        "position": 1
+      },
+      {
+        "name": "Treinamento",
+        "color": "#FFE082",
+        "position": 2
+      },
+      {
+        "name": "Acompanhamento",
+        "color": "#FFAB91",
+        "position": 3
+      },
+      {
+        "name": "Concluído",
+        "color": "#A5D6A7",
+        "position": 4
+      }
+    ],
+    "custom_fields_config": [
+      {
+        "name": "Plano",
+        "options": [
+          "Básico",
+          "Profissional",
+          "Empresa"
+        ],
+        "field_type": "select"
+      },
+      {
+        "name": "Data de início",
+        "required": true,
+        "field_type": "date"
+      },
+      {
+        "name": "Responsável comercial",
+        "required": false,
+        "field_type": "user"
+      }
+    ],
+    "triggers_config": [],
+    "icon": "user-plus",
+    "color": "#FF9800",
+    "default_board_type": "standard",
+    "created_at": "2026-11-06T22:13:40.011974Z",
+    "updated_at": "2026-11-06T22:13:40.011974Z"
+  },
+  {
+    "id": "4c18bcaa-6199-4e43-bdef-794fc0624dc8",
+    "name": "Suporte",
+    "description": "Acompanhe os pedidos de suporte dos seus clientes, com etapas claras.",
+    "template_key": "suporte",
+    "stages_config": [
+      {
+        "name": "Novo",
+        "color": "#90CAF9",
+        "position": 0
+      },
+      {
+        "name": "Em atendimento",
+        "color": "#FFE082",
+        "position": 1
+      },
+      {
+        "name": "Aguardando cliente",
+        "color": "#FFAB91",
+        "position": 2
+      },
+      {
+        "name": "Resolvido",
+        "color": "#A5D6A7",
+        "position": 3
+      },
+      {
+        "name": "Fechado",
+        "color": "#B0BEC5",
+        "position": 4
+      }
+    ],
+    "custom_fields_config": [
+      {
+        "name": "Categoria",
+        "options": [
+          "Problema",
+          "Dúvida",
+          "Melhoria",
+          "Reclamação"
+        ],
+        "field_type": "select"
+      },
+      {
+        "name": "Urgência",
+        "options": [
+          "Baixa",
+          "Média",
+          "Alta",
+          "Crítica"
+        ],
+        "field_type": "select"
+      },
+      {
+        "name": "Canal de origem",
+        "required": false,
+        "field_type": "text"
+      }
+    ],
+    "triggers_config": [
+      {
+        "name": "Avisar de novo pedido",
+        "actions": [
+          {
+            "type": "notify",
+            "message": "Novo pedido de suporte recebido!"
+          }
+        ],
+        "conditions": {},
+        "event_type": "card_created"
+      }
+    ],
+    "icon": "headset",
+    "color": "#2196F3",
+    "default_board_type": "standard",
+    "created_at": "2026-11-06T22:13:39.987427Z",
+    "updated_at": "2026-11-06T22:13:39.987427Z"
+  },
+  {
+    "id": "c65524b3-fc68-4b07-804e-2affa3186005",
+    "name": "Pipeline com pontuação",
+    "description": "Pipeline com pontuação de contatos. Use um fluxo ou um gatilho com código para somar pontos a cada sinal do contato: resposta no WhatsApp, visita ao site, e-mail aberto.",
+    "template_key": "lead_scoring",
+    "stages_config": [
+      {
+        "name": "Novos contatos",
+        "color": "#3B82F6",
+        "position": 0
+      },
+      {
+        "name": "Qualificação",
+        "color": "#F59E0B",
+        "position": 1
+      },
+      {
+        "name": "Proposta",
+        "color": "#10B981",
+        "position": 2
+      },
+      {
+        "name": "Fechamento",
+        "color": "#6366F1",
+        "position": 3
+      }
+    ],
+    "custom_fields_config": [
+      {
+        "name": "Lead Score",
+        "required": false,
+        "field_type": "number",
+        "default_value": "0"
+      }
+    ],
+    "triggers_config": [],
+    "icon": "trending-up",
+    "color": "#10B981",
+    "default_board_type": "crm",
+    "created_at": "2026-11-06T22:13:40.000389Z",
+    "updated_at": "2026-11-06T22:13:40.000389Z"
+  },
+  {
+    "id": "cec30591-627b-46d2-9a2c-7b0c4be8722c",
+    "name": "Vendas",
+    "description": "Pipeline de vendas com etapas prontas para acompanhar cada negociação.",
+    "template_key": "vendas",
+    "stages_config": [
+      {
+        "name": "Prospecção",
+        "color": "#90CAF9",
+        "position": 0
+      },
+      {
+        "name": "Qualificação",
+        "color": "#CE93D8",
+        "position": 1
+      },
+      {
+        "name": "Proposta",
+        "color": "#FFE082",
+        "position": 2
+      },
+      {
+        "name": "Negociação",
+        "color": "#FFAB91",
+        "position": 3
+      },
+      {
+        "name": "Fechado/Ganho",
+        "color": "#A5D6A7",
+        "position": 4
+      },
+      {
+        "name": "Fechado/Perdido",
+        "color": "#EF9A9A",
+        "position": 5
+      }
+    ],
+    "custom_fields_config": [
+      {
+        "name": "Empresa",
+        "required": false,
+        "field_type": "text"
+      },
+      {
+        "name": "Fonte",
+        "options": [
+          "Inbound",
+          "Outbound",
+          "Indicação",
+          "Outro"
+        ],
+        "field_type": "select"
+      }
+    ],
+    "triggers_config": [
+      {
+        "name": "Avisar ao fechar negócio",
+        "actions": [
+          {
+            "type": "notify",
+            "message": "Negócio fechado com sucesso!"
+          }
+        ],
+        "conditions": {
+          "to_stage_name": "Fechado/Ganho"
+        },
+        "event_type": "card_moved"
+      }
+    ],
+    "icon": "hand-coins",
+    "color": "#4CAF50",
+    "default_board_type": "crm",
+    "created_at": "2026-11-06T22:13:39.975763Z",
+    "updated_at": "2026-11-06T22:13:39.975763Z"
+  }
+]

@@ -1,0 +1,5370 @@
+[
+  {
+    "id": "062fc584-ca9c-49b6-8718-ad3d64e91c9c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-09",
+    "metrics": {
+      "hours_saved": 6.3,
+      "active_chats": 81,
+      "chats_started": 37,
+      "automation_chats": 53,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 26
+      },
+      "messages_avoided": 17,
+      "messages_inbound": 370,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 74,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 23,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 14,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 17,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 35
+      },
+      "out_of_hours_messages": 47,
+      "chats_with_human_touch": 18,
+      "messages_sent_by_human": 163,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 180,
+      "first_response_automation_count": 24,
+      "first_response_human_seconds_sum": 4814.57,
+      "first_response_automation_seconds_sum": 374.55
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 16,
+        "8": 21,
+        "9": 50,
+        "10": 72,
+        "11": 65,
+        "12": 43,
+        "13": 43,
+        "14": 58,
+        "15": 65,
+        "16": 72,
+        "17": 65,
+        "18": 50,
+        "19": 36,
+        "20": 29,
+        "21": 21,
+        "22": 7
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "0eab388e-5cbd-4e5e-98a0-0fd55d2b5596",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-20",
+    "metrics": {
+      "hours_saved": 5.99,
+      "active_chats": 78,
+      "chats_started": 32,
+      "automation_chats": 47,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 23
+      },
+      "messages_avoided": 62,
+      "messages_inbound": 310,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 11,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 51,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 15,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 23,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 42,
+      "chats_with_human_touch": 14,
+      "messages_sent_by_human": 109,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 171,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 4311.42,
+      "first_response_automation_seconds_sum": 593.94
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 8,
+        "8": 18,
+        "9": 42,
+        "10": 60,
+        "11": 54,
+        "12": 36,
+        "13": 36,
+        "14": 48,
+        "15": 54,
+        "16": 60,
+        "17": 54,
+        "18": 42,
+        "19": 30,
+        "20": 24,
+        "21": 18,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "0f5413a4-1e80-48ef-bb79-8cf5d2ab3b57",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-18",
+    "metrics": {
+      "hours_saved": 3.54,
+      "active_chats": 46,
+      "chats_started": 23,
+      "automation_chats": 26,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 33,
+      "messages_inbound": 177,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 5,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 14,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 33,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 23,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 68,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 101,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 3142.26,
+      "first_response_automation_seconds_sum": 211.27
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 10,
+        "9": 24,
+        "10": 35,
+        "11": 31,
+        "12": 21,
+        "13": 21,
+        "14": 28,
+        "15": 31,
+        "16": 35,
+        "17": 31,
+        "18": 24,
+        "19": 17,
+        "20": 14,
+        "21": 10,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "0f640544-ae8c-4d17-ad85-c028327b14af",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-05",
+    "metrics": {
+      "hours_saved": 5.11,
+      "active_chats": 62,
+      "chats_started": 27,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 19
+      },
+      "messages_avoided": 41,
+      "messages_inbound": 280,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 48,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 15,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 11,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 22
+      },
+      "out_of_hours_messages": 30,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 105,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 146,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 4543.12,
+      "first_response_automation_seconds_sum": 286.23
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 16,
+        "9": 37,
+        "10": 54,
+        "11": 48,
+        "12": 32,
+        "13": 32,
+        "14": 43,
+        "15": 48,
+        "16": 54,
+        "17": 48,
+        "18": 37,
+        "19": 27,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "1104b446-8d83-4907-a538-5867d6f3a04a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-27",
+    "metrics": {
+      "hours_saved": 3.92,
+      "active_chats": 65,
+      "chats_started": 29,
+      "automation_chats": 36,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 24,
+      "messages_inbound": 244,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 19,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 41,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 88,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 112,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 4576.71,
+      "first_response_automation_seconds_sum": 253.44
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 13,
+        "9": 31,
+        "10": 45,
+        "11": 40,
+        "12": 27,
+        "13": 27,
+        "14": 36,
+        "15": 40,
+        "16": 45,
+        "17": 40,
+        "18": 31,
+        "19": 22,
+        "20": 18,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "12480276-dba0-4029-96f0-cc7222705b70",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-14",
+    "metrics": {
+      "hours_saved": 3.64,
+      "active_chats": 50,
+      "chats_started": 26,
+      "automation_chats": 32,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 18
+      },
+      "messages_avoided": 15,
+      "messages_inbound": 230,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 19,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 42
+      },
+      "out_of_hours_messages": 30,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 89,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 104,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 2728.01,
+      "first_response_automation_seconds_sum": 423.52
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 12,
+        "9": 30,
+        "10": 43,
+        "11": 38,
+        "12": 25,
+        "13": 25,
+        "14": 34,
+        "15": 38,
+        "16": 43,
+        "17": 38,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "1344e67c-e5fd-4e8f-8a7d-75fe336cc055",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-06",
+    "metrics": {
+      "hours_saved": 3.99,
+      "active_chats": 54,
+      "chats_started": 28,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 43,
+      "messages_inbound": 204,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 33,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 10,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 6,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 15
+      },
+      "out_of_hours_messages": 34,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 71,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 114,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 3142.83,
+      "first_response_automation_seconds_sum": 345.01
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 16,
+        "8": 11,
+        "9": 27,
+        "10": 39,
+        "11": 35,
+        "12": 23,
+        "13": 23,
+        "14": 31,
+        "15": 35,
+        "16": 39,
+        "17": 35,
+        "18": 27,
+        "19": 19,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "1968f091-e8ef-4a88-b523-392fe7e346fc",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-22",
+    "metrics": {
+      "hours_saved": 3.64,
+      "active_chats": 57,
+      "chats_started": 28,
+      "automation_chats": 32,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 26,
+      "messages_inbound": 220,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 11,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 6,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 17,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 36,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 29,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 78,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 104,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 3979.98,
+      "first_response_automation_seconds_sum": 350.67
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 12,
+        "9": 28,
+        "10": 41,
+        "11": 36,
+        "12": 24,
+        "13": 24,
+        "14": 32,
+        "15": 36,
+        "16": 41,
+        "17": 36,
+        "18": 28,
+        "19": 20,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "1aaba384-8f78-4375-a0eb-95b3103b9550",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-31",
+    "metrics": {
+      "hours_saved": 4.2,
+      "active_chats": 57,
+      "chats_started": 23,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 37,
+      "messages_inbound": 247,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 18,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 37,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 26,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 83,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 120,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 3595.29,
+      "first_response_automation_seconds_sum": 335.3
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 13,
+        "9": 32,
+        "10": 45,
+        "11": 41,
+        "12": 27,
+        "13": 27,
+        "14": 36,
+        "15": 41,
+        "16": 45,
+        "17": 41,
+        "18": 32,
+        "19": 22,
+        "20": 18,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "216b4bb2-521d-439d-ae65-27f1f65f5bfb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-09",
+    "metrics": {
+      "hours_saved": 0.81,
+      "active_chats": 10,
+      "chats_started": 5,
+      "automation_chats": 6,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 4
+      },
+      "messages_avoided": 5,
+      "messages_inbound": 45,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 1,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 3,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 1,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 2,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 7,
+      "chats_with_human_touch": 2,
+      "messages_sent_by_human": 18,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 1,
+      "chats_handled_by_automation": 2,
+      "messages_sent_by_automation": 23,
+      "first_response_automation_count": 3,
+      "first_response_human_seconds_sum": 513.55,
+      "first_response_automation_seconds_sum": 42.57
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 9,
+        "8": 2,
+        "9": 6,
+        "10": 8,
+        "11": 7,
+        "12": 5,
+        "13": 5,
+        "14": 7,
+        "15": 7,
+        "16": 8,
+        "17": 7,
+        "18": 6,
+        "19": 4,
+        "20": 3,
+        "21": 2
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "235f80fc-3619-4549-9257-3b757d8b9055",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-17",
+    "metrics": {
+      "hours_saved": 5.78,
+      "active_chats": 68,
+      "chats_started": 30,
+      "automation_chats": 41,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 66,
+      "messages_inbound": 294,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 10,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 46,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 14,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 21,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 35,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 99,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 13,
+      "messages_sent_by_automation": 165,
+      "first_response_automation_count": 20,
+      "first_response_human_seconds_sum": 3977.87,
+      "first_response_automation_seconds_sum": 726.23
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 17,
+        "9": 39,
+        "10": 56,
+        "11": 51,
+        "12": 34,
+        "13": 34,
+        "14": 45,
+        "15": 51,
+        "16": 56,
+        "17": 51,
+        "18": 39,
+        "19": 28,
+        "20": 22,
+        "21": 17,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "2390899e-27ad-4eab-bc6f-629cd826db83",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-22",
+    "metrics": {
+      "hours_saved": 5.99,
+      "active_chats": 82,
+      "chats_started": 33,
+      "automation_chats": 52,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 24
+      },
+      "messages_avoided": 26,
+      "messages_inbound": 352,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 15,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 66,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 21,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 31,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12
+      },
+      "out_of_hours_messages": 50,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 145,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 12,
+      "messages_sent_by_automation": 171,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 2566.17,
+      "first_response_automation_seconds_sum": 498.5
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 20,
+        "9": 47,
+        "10": 68,
+        "11": 61,
+        "12": 40,
+        "13": 40,
+        "14": 54,
+        "15": 61,
+        "16": 68,
+        "17": 61,
+        "18": 47,
+        "19": 34,
+        "20": 27,
+        "21": 20,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "26614b42-4fa0-490c-99a3-f237e70edc0b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-01",
+    "metrics": {
+      "hours_saved": 1.23,
+      "active_chats": 19,
+      "chats_started": 8,
+      "automation_chats": 12,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 7
+      },
+      "messages_avoided": 7,
+      "messages_inbound": 74,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 4,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 2,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 6,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 3
+      },
+      "out_of_hours_messages": 8,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 28,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 4,
+      "messages_sent_by_automation": 35,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 1127.14,
+      "first_response_automation_seconds_sum": 125.32
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 4,
+        "9": 9,
+        "10": 13,
+        "11": 12,
+        "12": 8,
+        "13": 8,
+        "14": 11,
+        "15": 12,
+        "16": 13,
+        "17": 12,
+        "18": 9,
+        "19": 6,
+        "20": 5,
+        "21": 4,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "2724f27e-8cae-4202-9954-dd0111e59cb0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-05",
+    "metrics": {
+      "hours_saved": 3.08,
+      "active_chats": 43,
+      "chats_started": 18,
+      "automation_chats": 28,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 14
+      },
+      "messages_avoided": 5,
+      "messages_inbound": 192,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 37,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 12,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 7,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 9,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 18
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 9,
+      "messages_sent_by_human": 83,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 6,
+      "messages_sent_by_automation": 88,
+      "first_response_automation_count": 10,
+      "first_response_human_seconds_sum": 2455.48,
+      "first_response_automation_seconds_sum": 371.43
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 11,
+        "9": 25,
+        "10": 37,
+        "11": 33,
+        "12": 22,
+        "13": 22,
+        "14": 29,
+        "15": 33,
+        "16": 37,
+        "17": 33,
+        "18": 25,
+        "19": 18,
+        "20": 14,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "2db36aa4-f5ab-48ab-8a20-4d5baa880463",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-21",
+    "metrics": {
+      "hours_saved": 3.64,
+      "active_chats": 51,
+      "chats_started": 21,
+      "automation_chats": 31,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 16
+      },
+      "messages_avoided": 23,
+      "messages_inbound": 201,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 11,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 17,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 38,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 21,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 81,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 104,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 3892.51,
+      "first_response_automation_seconds_sum": 268.0
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 11,
+        "9": 27,
+        "10": 39,
+        "11": 35,
+        "12": 23,
+        "13": 23,
+        "14": 31,
+        "15": 35,
+        "16": 39,
+        "17": 35,
+        "18": 27,
+        "19": 19,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "33338a8b-77d9-4598-afba-e6ee3ee57b11",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-04",
+    "metrics": {
+      "hours_saved": 5.22,
+      "active_chats": 70,
+      "chats_started": 32,
+      "automation_chats": 39,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 23
+      },
+      "messages_avoided": 21,
+      "messages_inbound": 288,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 28,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 14,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 57,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 11,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 18
+      },
+      "out_of_hours_messages": 40,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 128,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 149,
+      "first_response_automation_count": 21,
+      "first_response_human_seconds_sum": 4730.89,
+      "first_response_automation_seconds_sum": 603.06
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 17,
+        "9": 40,
+        "10": 57,
+        "11": 51,
+        "12": 34,
+        "13": 34,
+        "14": 46,
+        "15": 51,
+        "16": 57,
+        "17": 51,
+        "18": 40,
+        "19": 28,
+        "20": 23,
+        "21": 17,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "35e9f51d-5749-45ca-b708-e5765d781b04",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-16",
+    "metrics": {
+      "hours_saved": 0.98,
+      "active_chats": 14,
+      "chats_started": 6,
+      "automation_chats": 9,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 5
+      },
+      "messages_avoided": 3,
+      "messages_inbound": 57,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 2,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 13,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 3,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 5,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 2
+      },
+      "out_of_hours_messages": 8,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 25,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 2,
+      "messages_sent_by_automation": 28,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 583.97,
+      "first_response_automation_seconds_sum": 121.26
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 8,
+        "8": 3,
+        "9": 7,
+        "10": 11,
+        "11": 10,
+        "12": 6,
+        "13": 6,
+        "14": 8,
+        "15": 10,
+        "16": 11,
+        "17": 10,
+        "18": 7,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "360cfcb1-aba8-4a0c-a6a9-cea086b89e02",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-07",
+    "metrics": {
+      "hours_saved": 0.0,
+      "active_chats": 0,
+      "chats_started": 0,
+      "automation_chats": 0,
+      "chats_by_channel": {},
+      "messages_avoided": 0,
+      "messages_inbound": 0,
+      "automation_bookings": 0,
+      "messages_by_account": {},
+      "out_of_hours_messages": 0,
+      "chats_with_human_touch": 0,
+      "messages_sent_by_human": 0,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 0,
+      "chats_handled_by_automation": 0,
+      "messages_sent_by_automation": 0,
+      "first_response_automation_count": 0,
+      "first_response_human_seconds_sum": 0.0,
+      "first_response_automation_seconds_sum": 0.0
+    },
+    "hourly_breakdown": {
+      "message_count": {}
+    },
+    "created_at": "2026-11-07T04:00:08.396831Z",
+    "updated_at": "2026-11-08T05:43:25.885408Z"
+  },
+  {
+    "id": "36cfb313-f84b-4083-8d67-512112a9557d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-10",
+    "metrics": {
+      "hours_saved": 4.69,
+      "active_chats": 55,
+      "chats_started": 24,
+      "automation_chats": 37,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 22,
+      "messages_inbound": 249,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 24,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 12,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 16,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 51
+      },
+      "out_of_hours_messages": 36,
+      "chats_with_human_touch": 9,
+      "messages_sent_by_human": 112,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 134,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 2355.1,
+      "first_response_automation_seconds_sum": 388.55
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 15,
+        "9": 35,
+        "10": 50,
+        "11": 45,
+        "12": 30,
+        "13": 30,
+        "14": 40,
+        "15": 45,
+        "16": 50,
+        "17": 45,
+        "18": 35,
+        "19": 25,
+        "20": 20,
+        "21": 15,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "40d1da06-60a2-43e0-b65a-640e370e5838",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-26",
+    "metrics": {
+      "hours_saved": 4.62,
+      "active_chats": 56,
+      "chats_started": 23,
+      "automation_chats": 34,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 28,
+      "messages_inbound": 232,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 22,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 11,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 47,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 9,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 15
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 104,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 132,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 2094.81,
+      "first_response_automation_seconds_sum": 356.4
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 14,
+        "9": 33,
+        "10": 47,
+        "11": 42,
+        "12": 28,
+        "13": 28,
+        "14": 38,
+        "15": 42,
+        "16": 47,
+        "17": 42,
+        "18": 33,
+        "19": 23,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "454d7bcb-cc39-4bd6-a8a1-81f4ab1c4718",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-26",
+    "metrics": {
+      "hours_saved": 3.5,
+      "active_chats": 42,
+      "chats_started": 19,
+      "automation_chats": 26,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 15
+      },
+      "messages_avoided": 26,
+      "messages_inbound": 181,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 10,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 6,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 16,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 34,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 31,
+      "chats_with_human_touch": 7,
+      "messages_sent_by_human": 74,
+      "messages_sent_by_campaign": 185,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 100,
+      "first_response_automation_count": 11,
+      "first_response_human_seconds_sum": 1536.26,
+      "first_response_automation_seconds_sum": 317.49
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 10,
+        "9": 25,
+        "10": 36,
+        "11": 32,
+        "12": 21,
+        "13": 21,
+        "14": 28,
+        "15": 32,
+        "16": 36,
+        "17": 32,
+        "18": 25,
+        "19": 18,
+        "20": 14,
+        "21": 10,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "4ea343bd-a5f3-4aa9-ab71-a45a1520eda5",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-04",
+    "metrics": {
+      "hours_saved": 4.59,
+      "active_chats": 65,
+      "chats_started": 30,
+      "automation_chats": 41,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 21,
+      "messages_inbound": 252,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 49,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 16,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 24
+      },
+      "out_of_hours_messages": 33,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 110,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 131,
+      "first_response_automation_count": 17,
+      "first_response_human_seconds_sum": 5371.41,
+      "first_response_automation_seconds_sum": 400.58
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 8,
+        "8": 15,
+        "9": 35,
+        "10": 50,
+        "11": 45,
+        "12": 30,
+        "13": 30,
+        "14": 40,
+        "15": 45,
+        "16": 50,
+        "17": 45,
+        "18": 35,
+        "19": 25,
+        "20": 20,
+        "21": 15,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "517816d2-33c9-4ac2-9043-f0e02c9072d1",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-16",
+    "metrics": {
+      "hours_saved": 8.19,
+      "active_chats": 90,
+      "chats_started": 36,
+      "automation_chats": 52,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 25
+      },
+      "messages_avoided": 95,
+      "messages_inbound": 412,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 30,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 15,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 20,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 62
+      },
+      "out_of_hours_messages": 75,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 139,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 10,
+      "chats_handled_by_automation": 15,
+      "messages_sent_by_automation": 234,
+      "first_response_automation_count": 21,
+      "first_response_human_seconds_sum": 5198.47,
+      "first_response_automation_seconds_sum": 494.75
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 9,
+        "8": 24,
+        "9": 56,
+        "10": 80,
+        "11": 72,
+        "12": 48,
+        "13": 48,
+        "14": 64,
+        "15": 72,
+        "16": 80,
+        "17": 72,
+        "18": 56,
+        "19": 40,
+        "20": 32,
+        "21": 24,
+        "22": 8
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "5353a231-4f33-4e08-8799-ddadbeab8a80",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-11",
+    "metrics": {
+      "hours_saved": 3.71,
+      "active_chats": 47,
+      "chats_started": 19,
+      "automation_chats": 29,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 15
+      },
+      "messages_avoided": 34,
+      "messages_inbound": 189,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 34,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 15,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 6
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 72,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 7,
+      "messages_sent_by_automation": 106,
+      "first_response_automation_count": 12,
+      "first_response_human_seconds_sum": 2500.79,
+      "first_response_automation_seconds_sum": 432.41
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 11,
+        "9": 26,
+        "10": 37,
+        "11": 33,
+        "12": 22,
+        "13": 22,
+        "14": 29,
+        "15": 33,
+        "16": 37,
+        "17": 33,
+        "18": 26,
+        "19": 18,
+        "20": 14,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "54f06212-1a31-4848-adea-41cb1c4da2ce",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-13",
+    "metrics": {
+      "hours_saved": 3.71,
+      "active_chats": 45,
+      "chats_started": 21,
+      "automation_chats": 29,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 16
+      },
+      "messages_avoided": 33,
+      "messages_inbound": 193,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 35,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 15,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 6
+      },
+      "out_of_hours_messages": 24,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 73,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 7,
+      "messages_sent_by_automation": 106,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 1753.38,
+      "first_response_automation_seconds_sum": 188.47
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 11,
+        "9": 26,
+        "10": 37,
+        "11": 34,
+        "12": 22,
+        "13": 22,
+        "14": 30,
+        "15": 34,
+        "16": 37,
+        "17": 34,
+        "18": 26,
+        "19": 18,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "5bf1ecf3-2fde-4a82-a13e-4010a0646ab5",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-25",
+    "metrics": {
+      "hours_saved": 5.18,
+      "active_chats": 75,
+      "chats_started": 34,
+      "automation_chats": 45,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 23
+      },
+      "messages_avoided": 55,
+      "messages_inbound": 288,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 13,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 20,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 42,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 10
+      },
+      "out_of_hours_messages": 40,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 93,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 148,
+      "first_response_automation_count": 23,
+      "first_response_human_seconds_sum": 5954.1,
+      "first_response_automation_seconds_sum": 540.12
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 16,
+        "9": 37,
+        "10": 53,
+        "11": 48,
+        "12": 32,
+        "13": 32,
+        "14": 43,
+        "15": 48,
+        "16": 53,
+        "17": 48,
+        "18": 37,
+        "19": 26,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "603945aa-9f5b-4e24-9ce2-fe85f95146c0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-08",
+    "metrics": {
+      "hours_saved": 4.2,
+      "active_chats": 59,
+      "chats_started": 29,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 21,
+      "messages_inbound": 261,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 46,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 14,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 8,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 10,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 21
+      },
+      "out_of_hours_messages": 26,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 99,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 120,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 1854.15,
+      "first_response_automation_seconds_sum": 474.79
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 14,
+        "9": 34,
+        "10": 48,
+        "11": 44,
+        "12": 29,
+        "13": 29,
+        "14": 39,
+        "15": 44,
+        "16": 48,
+        "17": 44,
+        "18": 34,
+        "19": 24,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "603df1d1-a5a5-4c5a-95c9-6564620cd9dd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-03",
+    "metrics": {
+      "hours_saved": 3.19,
+      "active_chats": 44,
+      "chats_started": 23,
+      "automation_chats": 28,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 21,
+      "messages_inbound": 165,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 15,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 32,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 6,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 10
+      },
+      "out_of_hours_messages": 21,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 70,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 91,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 1759.35,
+      "first_response_automation_seconds_sum": 537.66
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 9,
+        "9": 23,
+        "10": 33,
+        "11": 29,
+        "12": 19,
+        "13": 19,
+        "14": 26,
+        "15": 29,
+        "16": 33,
+        "17": 29,
+        "18": 23,
+        "19": 16,
+        "20": 13,
+        "21": 9,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "60f30039-acaf-430d-972b-71a980500655",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-14",
+    "metrics": {
+      "hours_saved": 4.2,
+      "active_chats": 57,
+      "chats_started": 24,
+      "automation_chats": 38,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 38,
+      "messages_inbound": 215,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 39,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 17,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 28,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 82,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 120,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 3322.56,
+      "first_response_automation_seconds_sum": 280.51
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 12,
+        "9": 29,
+        "10": 42,
+        "11": 38,
+        "12": 25,
+        "13": 25,
+        "14": 34,
+        "15": 38,
+        "16": 42,
+        "17": 38,
+        "18": 29,
+        "19": 21,
+        "20": 17,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "62f2691c-1b21-4429-b8d3-95434dacca78",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-12",
+    "metrics": {
+      "hours_saved": 3.96,
+      "active_chats": 54,
+      "chats_started": 27,
+      "automation_chats": 37,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 19
+      },
+      "messages_avoided": 15,
+      "messages_inbound": 247,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 21,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 14,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 45
+      },
+      "out_of_hours_messages": 35,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 98,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 113,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 2630.31,
+      "first_response_automation_seconds_sum": 259.67
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 14,
+        "9": 32,
+        "10": 46,
+        "11": 42,
+        "12": 28,
+        "13": 28,
+        "14": 37,
+        "15": 42,
+        "16": 46,
+        "17": 42,
+        "18": 32,
+        "19": 23,
+        "20": 18,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "63f5becb-7c9f-47fb-b484-19cf5c859732",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-29",
+    "metrics": {
+      "hours_saved": 4.41,
+      "active_chats": 68,
+      "chats_started": 31,
+      "automation_chats": 42,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 22
+      },
+      "messages_avoided": 34,
+      "messages_inbound": 261,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 13,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 20,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 41,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 10
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 92,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 126,
+      "first_response_automation_count": 19,
+      "first_response_human_seconds_sum": 1701.62,
+      "first_response_automation_seconds_sum": 342.49
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 14,
+        "9": 34,
+        "10": 48,
+        "11": 43,
+        "12": 29,
+        "13": 29,
+        "14": 39,
+        "15": 43,
+        "16": 48,
+        "17": 43,
+        "18": 34,
+        "19": 24,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "64896c34-b0c4-4986-b1ff-97d89a1ee527",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-03",
+    "metrics": {
+      "hours_saved": 4.83,
+      "active_chats": 66,
+      "chats_started": 30,
+      "automation_chats": 43,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 20,
+      "messages_inbound": 270,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 54,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 17,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 25
+      },
+      "out_of_hours_messages": 34,
+      "chats_with_human_touch": 14,
+      "messages_sent_by_human": 118,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 138,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 4124.78,
+      "first_response_automation_seconds_sum": 438.51
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 16,
+        "9": 37,
+        "10": 53,
+        "11": 48,
+        "12": 32,
+        "13": 32,
+        "14": 42,
+        "15": 48,
+        "16": 53,
+        "17": 48,
+        "18": 37,
+        "19": 26,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "64da7129-2b38-4544-a3ed-8e44d9f6692a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-07",
+    "metrics": {
+      "hours_saved": 4.9,
+      "active_chats": 64,
+      "chats_started": 30,
+      "automation_chats": 41,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 19,
+      "messages_inbound": 276,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 55,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 17,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 26
+      },
+      "out_of_hours_messages": 34,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 121,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 140,
+      "first_response_automation_count": 17,
+      "first_response_human_seconds_sum": 4064.76,
+      "first_response_automation_seconds_sum": 354.37
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 16,
+        "9": 38,
+        "10": 54,
+        "11": 49,
+        "12": 32,
+        "13": 32,
+        "14": 43,
+        "15": 49,
+        "16": 54,
+        "17": 49,
+        "18": 38,
+        "19": 27,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "65223db9-eaaa-4335-831a-c47657b2e585",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-17",
+    "metrics": {
+      "hours_saved": 4.24,
+      "active_chats": 48,
+      "chats_started": 23,
+      "automation_chats": 31,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 38,
+      "messages_inbound": 208,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 18,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 37,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 39,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 83,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 121,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 3881.23,
+      "first_response_automation_seconds_sum": 369.26
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 12,
+        "9": 29,
+        "10": 42,
+        "11": 37,
+        "12": 25,
+        "13": 25,
+        "14": 33,
+        "15": 37,
+        "16": 42,
+        "17": 37,
+        "18": 29,
+        "19": 21,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "666e16b9-6c9c-4bbd-93d9-c34d112572d7",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-19",
+    "metrics": {
+      "hours_saved": 5.25,
+      "active_chats": 71,
+      "chats_started": 29,
+      "automation_chats": 49,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 51,
+      "messages_inbound": 277,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 10,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 46,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 14,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 21,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 49,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 99,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 150,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 2198.71,
+      "first_response_automation_seconds_sum": 406.55
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 16,
+        "9": 37,
+        "10": 53,
+        "11": 48,
+        "12": 32,
+        "13": 32,
+        "14": 42,
+        "15": 48,
+        "16": 53,
+        "17": 48,
+        "18": 37,
+        "19": 26,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "71908f27-f07c-4be8-830d-4fda36b7f720",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-29",
+    "metrics": {
+      "hours_saved": 2.91,
+      "active_chats": 34,
+      "chats_started": 17,
+      "automation_chats": 19,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 13
+      },
+      "messages_avoided": 33,
+      "messages_inbound": 148,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 10,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 5,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 24,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 4,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 25,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 50,
+      "messages_sent_by_campaign": 295,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 6,
+      "messages_sent_by_automation": 83,
+      "first_response_automation_count": 9,
+      "first_response_human_seconds_sum": 1625.15,
+      "first_response_automation_seconds_sum": 291.11
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 8,
+        "9": 20,
+        "10": 28,
+        "11": 25,
+        "12": 17,
+        "13": 17,
+        "14": 22,
+        "15": 25,
+        "16": 28,
+        "17": 25,
+        "18": 20,
+        "19": 14,
+        "20": 11,
+        "21": 8,
+        "22": 2
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "7408da87-261a-496b-886b-ce389a0aa457",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-29",
+    "metrics": {
+      "hours_saved": 4.13,
+      "active_chats": 59,
+      "chats_started": 28,
+      "automation_chats": 36,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 32,
+      "messages_inbound": 226,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 18,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 40,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12
+      },
+      "out_of_hours_messages": 37,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 86,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 118,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 3905.71,
+      "first_response_automation_seconds_sum": 384.38
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 13,
+        "9": 30,
+        "10": 43,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 43,
+        "17": 39,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "74dd6da7-c980-4273-81a7-77245dbde2fd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-07",
+    "metrics": {
+      "hours_saved": 3.85,
+      "active_chats": 54,
+      "chats_started": 25,
+      "automation_chats": 31,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 12,
+      "messages_inbound": 233,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 21,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 14,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 45
+      },
+      "out_of_hours_messages": 23,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 98,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 110,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 4655.55,
+      "first_response_automation_seconds_sum": 361.53
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 9,
+        "8": 13,
+        "9": 31,
+        "10": 45,
+        "11": 40,
+        "12": 27,
+        "13": 27,
+        "14": 36,
+        "15": 40,
+        "16": 45,
+        "17": 40,
+        "18": 31,
+        "19": 22,
+        "20": 18,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "7969e813-605f-4e86-8ae9-bd2910a76e78",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-27",
+    "metrics": {
+      "hours_saved": 0.98,
+      "active_chats": 15,
+      "chats_started": 7,
+      "automation_chats": 10,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 6,
+      "messages_inbound": 57,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 3,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 1,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 4,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 2
+      },
+      "out_of_hours_messages": 6,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 22,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 1,
+      "chats_handled_by_automation": 2,
+      "messages_sent_by_automation": 28,
+      "first_response_automation_count": 5,
+      "first_response_human_seconds_sum": 278.72,
+      "first_response_automation_seconds_sum": 155.27
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 3,
+        "9": 7,
+        "10": 10,
+        "11": 9,
+        "12": 6,
+        "13": 6,
+        "14": 8,
+        "15": 9,
+        "16": 10,
+        "17": 9,
+        "18": 7,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "7bc21305-b2ce-4a4d-a38c-8b88cdff4858",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-24",
+    "metrics": {
+      "hours_saved": 4.73,
+      "active_chats": 53,
+      "chats_started": 27,
+      "automation_chats": 37,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 19
+      },
+      "messages_avoided": 55,
+      "messages_inbound": 239,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 11,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 17,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 37,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 8
+      },
+      "out_of_hours_messages": 40,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 80,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 135,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 3121.71,
+      "first_response_automation_seconds_sum": 505.29
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 13,
+        "9": 32,
+        "10": 46,
+        "11": 41,
+        "12": 27,
+        "13": 27,
+        "14": 37,
+        "15": 41,
+        "16": 46,
+        "17": 41,
+        "18": 32,
+        "19": 23,
+        "20": 18,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "7c2ee636-3d6a-4cd6-b157-ed0224497433",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-13",
+    "metrics": {
+      "hours_saved": 5.01,
+      "active_chats": 57,
+      "chats_started": 25,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 49,
+      "messages_inbound": 248,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 20,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 43
+      },
+      "out_of_hours_messages": 42,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 94,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 143,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 3407.33,
+      "first_response_automation_seconds_sum": 456.5
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 15,
+        "8": 14,
+        "9": 34,
+        "10": 49,
+        "11": 44,
+        "12": 29,
+        "13": 29,
+        "14": 39,
+        "15": 44,
+        "16": 49,
+        "17": 44,
+        "18": 34,
+        "19": 24,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "7e131b7f-9b30-4c2b-9642-4a828c5c8e1f",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-04",
+    "metrics": {
+      "hours_saved": 1.3,
+      "active_chats": 16,
+      "chats_started": 7,
+      "automation_chats": 9,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 11,
+      "messages_inbound": 68,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 5,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 2,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 14,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 2,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 3
+      },
+      "out_of_hours_messages": 12,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 26,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 37,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 832.4,
+      "first_response_automation_seconds_sum": 110.51
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 5,
+        "8": 4,
+        "9": 9,
+        "10": 13,
+        "11": 12,
+        "12": 8,
+        "13": 8,
+        "14": 10,
+        "15": 12,
+        "16": 13,
+        "17": 12,
+        "18": 9,
+        "19": 6,
+        "20": 5,
+        "21": 4,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "810c4c96-e31a-4b9d-aff9-27a709039496",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-14",
+    "metrics": {
+      "hours_saved": 4.06,
+      "active_chats": 58,
+      "chats_started": 25,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 27,
+      "messages_inbound": 230,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 42,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 12,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 19,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 36,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 89,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 116,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 5180.87,
+      "first_response_automation_seconds_sum": 506.38
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 13,
+        "9": 31,
+        "10": 44,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 44,
+        "17": 39,
+        "18": 31,
+        "19": 22,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "81bf5624-d0f0-48f5-afcf-f6b7e5e1a319",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-23",
+    "metrics": {
+      "hours_saved": 3.96,
+      "active_chats": 58,
+      "chats_started": 29,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 18,
+      "messages_inbound": 250,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 13,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 20,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 44,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 10
+      },
+      "out_of_hours_messages": 25,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 95,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 12,
+      "messages_sent_by_automation": 113,
+      "first_response_automation_count": 17,
+      "first_response_human_seconds_sum": 4240.4,
+      "first_response_automation_seconds_sum": 558.09
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 14,
+        "9": 32,
+        "10": 46,
+        "11": 42,
+        "12": 28,
+        "13": 28,
+        "14": 37,
+        "15": 42,
+        "16": 46,
+        "17": 42,
+        "18": 32,
+        "19": 23,
+        "20": 18,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "8f84421a-67ab-4723-834b-8f2b3ef71426",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-09",
+    "metrics": {
+      "hours_saved": 3.4,
+      "active_chats": 45,
+      "chats_started": 23,
+      "automation_chats": 27,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 17,
+      "messages_inbound": 203,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 17,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 8,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 11,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 37
+      },
+      "out_of_hours_messages": 29,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 80,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 97,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 4577.47,
+      "first_response_automation_seconds_sum": 487.6
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 11,
+        "9": 27,
+        "10": 38,
+        "11": 34,
+        "12": 23,
+        "13": 23,
+        "14": 31,
+        "15": 34,
+        "16": 38,
+        "17": 34,
+        "18": 27,
+        "19": 19,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "9041a7c5-d397-4b66-83b4-ccc9375ca0ff",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-08",
+    "metrics": {
+      "hours_saved": 0.04,
+      "active_chats": 2,
+      "chats_started": 0,
+      "automation_chats": 1,
+      "chats_by_channel": {},
+      "messages_avoided": 0,
+      "messages_inbound": 13,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12,
+        "d5a05004-f8ac-4688-a829-bb0f45531e49": 2
+      },
+      "out_of_hours_messages": 1,
+      "chats_with_human_touch": 0,
+      "messages_sent_by_human": 14,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 0,
+      "chats_handled_by_automation": 0,
+      "messages_sent_by_automation": 1,
+      "first_response_automation_count": 0,
+      "first_response_human_seconds_sum": 0.0,
+      "first_response_automation_seconds_sum": 0.0
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "0": 1,
+        "17": 2,
+        "18": 25
+      }
+    },
+    "created_at": "2026-11-08T05:43:25.210987Z",
+    "updated_at": "2026-11-08T22:00:04.099102Z"
+  },
+  {
+    "id": "90d59d91-5479-4ffe-a84c-45f4a711a79d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-10",
+    "metrics": {
+      "hours_saved": 0.04,
+      "active_chats": 1,
+      "chats_started": 0,
+      "automation_chats": 1,
+      "chats_by_channel": {},
+      "messages_avoided": 1,
+      "messages_inbound": 0,
+      "automation_bookings": 0,
+      "messages_by_account": {},
+      "out_of_hours_messages": 0,
+      "chats_with_human_touch": 0,
+      "messages_sent_by_human": 0,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 0,
+      "chats_handled_by_automation": 0,
+      "messages_sent_by_automation": 1,
+      "first_response_automation_count": 0,
+      "first_response_human_seconds_sum": 0.0,
+      "first_response_automation_seconds_sum": 0.0
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "16": 1
+      }
+    },
+    "created_at": "2026-11-10T20:35:05.803325Z",
+    "updated_at": "2026-11-10T20:35:05.803325Z"
+  },
+  {
+    "id": "92b8424b-dea8-4ada-ac49-16a634c6ab68",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-24",
+    "metrics": {
+      "hours_saved": 3.61,
+      "active_chats": 56,
+      "chats_started": 23,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 25,
+      "messages_inbound": 211,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 17,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 36,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 6,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 33,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 78,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 103,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 3836.56,
+      "first_response_automation_seconds_sum": 469.08
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 4,
+        "8": 12,
+        "9": 28,
+        "10": 40,
+        "11": 36,
+        "12": 24,
+        "13": 24,
+        "14": 32,
+        "15": 36,
+        "16": 40,
+        "17": 36,
+        "18": 28,
+        "19": 20,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "949f8ce8-606d-4074-b99b-7699de3ab24f",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-08",
+    "metrics": {
+      "hours_saved": 5.74,
+      "active_chats": 64,
+      "chats_started": 27,
+      "automation_chats": 40,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 19
+      },
+      "messages_avoided": 62,
+      "messages_inbound": 282,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 22,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 14,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 47
+      },
+      "out_of_hours_messages": 44,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 102,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 164,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 5401.75,
+      "first_response_automation_seconds_sum": 399.66
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 16,
+        "9": 39,
+        "10": 55,
+        "11": 50,
+        "12": 33,
+        "13": 33,
+        "14": 44,
+        "15": 50,
+        "16": 55,
+        "17": 50,
+        "18": 39,
+        "19": 27,
+        "20": 22,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "96348ef2-c5b0-4433-8f08-5712bb313652",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-24",
+    "metrics": {
+      "hours_saved": 3.57,
+      "active_chats": 50,
+      "chats_started": 21,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 16
+      },
+      "messages_avoided": 21,
+      "messages_inbound": 222,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 38,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 17,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 31,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 81,
+      "messages_sent_by_campaign": 210,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 102,
+      "first_response_automation_count": 11,
+      "first_response_human_seconds_sum": 2819.05,
+      "first_response_automation_seconds_sum": 373.42
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 12,
+        "9": 28,
+        "10": 41,
+        "11": 37,
+        "12": 24,
+        "13": 24,
+        "14": 33,
+        "15": 37,
+        "16": 41,
+        "17": 37,
+        "18": 28,
+        "19": 20,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "994f917d-734f-4613-a58b-667d812f7bca",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-12",
+    "metrics": {
+      "hours_saved": 4.24,
+      "active_chats": 50,
+      "chats_started": 21,
+      "automation_chats": 34,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 16
+      },
+      "messages_avoided": 27,
+      "messages_inbound": 218,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 20,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 43
+      },
+      "out_of_hours_messages": 32,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 94,
+      "messages_sent_by_campaign": 191,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 7,
+      "messages_sent_by_automation": 121,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 4573.74,
+      "first_response_automation_seconds_sum": 472.61
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 13,
+        "9": 30,
+        "10": 44,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 44,
+        "17": 39,
+        "18": 30,
+        "19": 22,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "99d9812c-037c-469e-ab39-827300d3e7c9",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-09",
+    "metrics": {
+      "hours_saved": 0.07,
+      "active_chats": 2,
+      "chats_started": 0,
+      "automation_chats": 2,
+      "chats_by_channel": {},
+      "messages_avoided": 2,
+      "messages_inbound": 0,
+      "automation_bookings": 0,
+      "messages_by_account": {},
+      "out_of_hours_messages": 0,
+      "chats_with_human_touch": 0,
+      "messages_sent_by_human": 0,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 0,
+      "chats_handled_by_automation": 0,
+      "messages_sent_by_automation": 2,
+      "first_response_automation_count": 0,
+      "first_response_human_seconds_sum": 0.0,
+      "first_response_automation_seconds_sum": 0.0
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "11": 1,
+        "15": 1
+      }
+    },
+    "created_at": "2026-11-09T15:00:02.007782Z",
+    "updated_at": "2026-11-09T19:00:00.574597Z"
+  },
+  {
+    "id": "9a49bc78-d22d-4620-acc3-bbb55d3f9b8c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-02",
+    "metrics": {
+      "hours_saved": 4.17,
+      "active_chats": 56,
+      "chats_started": 25,
+      "automation_chats": 38,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 5,
+      "messages_inbound": 256,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 24,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 12,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 53,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 9,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 16
+      },
+      "out_of_hours_messages": 26,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 114,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 119,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 4364.21,
+      "first_response_automation_seconds_sum": 376.06
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 19,
+        "8": 14,
+        "9": 34,
+        "10": 49,
+        "11": 44,
+        "12": 29,
+        "13": 29,
+        "14": 39,
+        "15": 44,
+        "16": 49,
+        "17": 44,
+        "18": 34,
+        "19": 24,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "9ce68692-fe97-495c-9a4a-c819a1d4e045",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-21",
+    "metrics": {
+      "hours_saved": 5.08,
+      "active_chats": 68,
+      "chats_started": 28,
+      "automation_chats": 42,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 45,
+      "messages_inbound": 280,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 14,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 21,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 47,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 10
+      },
+      "out_of_hours_messages": 43,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 100,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 145,
+      "first_response_automation_count": 19,
+      "first_response_human_seconds_sum": 3508.45,
+      "first_response_automation_seconds_sum": 570.45
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 16,
+        "9": 37,
+        "10": 53,
+        "11": 48,
+        "12": 32,
+        "13": 32,
+        "14": 42,
+        "15": 48,
+        "16": 53,
+        "17": 48,
+        "18": 37,
+        "19": 26,
+        "20": 21,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "9d7bc85a-c9d2-41ab-84a6-2caf315c6467",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-19",
+    "metrics": {
+      "hours_saved": 3.85,
+      "active_chats": 54,
+      "chats_started": 22,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 7,
+      "messages_inbound": 234,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 15,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 22,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 46,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 24,
+      "chats_with_human_touch": 9,
+      "messages_sent_by_human": 103,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 110,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 4195.5,
+      "first_response_automation_seconds_sum": 529.07
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 13,
+        "9": 31,
+        "10": 45,
+        "11": 41,
+        "12": 27,
+        "13": 27,
+        "14": 36,
+        "15": 41,
+        "16": 45,
+        "17": 41,
+        "18": 31,
+        "19": 22,
+        "20": 18,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "9f8b7db0-cb98-4460-beca-fba7534d0973",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-13",
+    "metrics": {
+      "hours_saved": 1.09,
+      "active_chats": 14,
+      "chats_started": 6,
+      "automation_chats": 9,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 5
+      },
+      "messages_avoided": 7,
+      "messages_inbound": 59,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 2,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 5,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 2,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 3,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12
+      },
+      "out_of_hours_messages": 9,
+      "chats_with_human_touch": 2,
+      "messages_sent_by_human": 24,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 2,
+      "messages_sent_by_automation": 31,
+      "first_response_automation_count": 3,
+      "first_response_human_seconds_sum": 1246.72,
+      "first_response_automation_seconds_sum": 98.43
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 9,
+        "8": 3,
+        "9": 8,
+        "10": 11,
+        "11": 10,
+        "12": 6,
+        "13": 6,
+        "14": 9,
+        "15": 10,
+        "16": 11,
+        "17": 10,
+        "18": 8,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "a1f8b9d4-fc73-465b-9f15-a8fce178a14e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-10",
+    "metrics": {
+      "hours_saved": 3.57,
+      "active_chats": 43,
+      "chats_started": 22,
+      "automation_chats": 28,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 19,
+      "messages_inbound": 186,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 37,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 12,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 7,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 9,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 18
+      },
+      "out_of_hours_messages": 31,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 83,
+      "messages_sent_by_campaign": 200,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 102,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 2832.72,
+      "first_response_automation_seconds_sum": 490.81
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 11,
+        "9": 26,
+        "10": 37,
+        "11": 34,
+        "12": 22,
+        "13": 22,
+        "14": 30,
+        "15": 34,
+        "16": 37,
+        "17": 34,
+        "18": 26,
+        "19": 18,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "a28519e5-543c-480e-a7ed-9ea8aae30a1c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-11",
+    "metrics": {
+      "hours_saved": 5.01,
+      "active_chats": 63,
+      "chats_started": 28,
+      "automation_chats": 43,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 36,
+      "messages_inbound": 261,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 23,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 15,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 49
+      },
+      "out_of_hours_messages": 37,
+      "chats_with_human_touch": 14,
+      "messages_sent_by_human": 107,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 143,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 3228.14,
+      "first_response_automation_seconds_sum": 204.26
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 15,
+        "9": 36,
+        "10": 52,
+        "11": 46,
+        "12": 31,
+        "13": 31,
+        "14": 41,
+        "15": 46,
+        "16": 52,
+        "17": 46,
+        "18": 36,
+        "19": 26,
+        "20": 20,
+        "21": 15,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "a54dd149-f9dd-4eff-b222-d5604d1b555b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-30",
+    "metrics": {
+      "hours_saved": 1.02,
+      "active_chats": 15,
+      "chats_started": 6,
+      "automation_chats": 10,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 5
+      },
+      "messages_avoided": 9,
+      "messages_inbound": 56,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 4,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 2,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 1,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 2
+      },
+      "out_of_hours_messages": 10,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 20,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 1,
+      "chats_handled_by_automation": 2,
+      "messages_sent_by_automation": 29,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 314.03,
+      "first_response_automation_seconds_sum": 109.96
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 8,
+        "8": 3,
+        "9": 7,
+        "10": 10,
+        "11": 9,
+        "12": 6,
+        "13": 6,
+        "14": 8,
+        "15": 9,
+        "16": 10,
+        "17": 9,
+        "18": 7,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "a68a8127-5835-4d7e-8f81-14f06cb55d01",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-15",
+    "metrics": {
+      "hours_saved": 6.19,
+      "active_chats": 72,
+      "chats_started": 29,
+      "automation_chats": 47,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 74,
+      "messages_inbound": 301,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 11,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 46,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 15,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 22,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 54,
+      "chats_with_human_touch": 14,
+      "messages_sent_by_human": 103,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 177,
+      "first_response_automation_count": 17,
+      "first_response_human_seconds_sum": 4074.8,
+      "first_response_automation_seconds_sum": 478.08
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 17,
+        "9": 41,
+        "10": 59,
+        "11": 53,
+        "12": 35,
+        "13": 35,
+        "14": 47,
+        "15": 53,
+        "16": 59,
+        "17": 53,
+        "18": 41,
+        "19": 29,
+        "20": 23,
+        "21": 17,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "a8499964-3db1-4803-8f53-756bfd60e374",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-27",
+    "metrics": {
+      "hours_saved": 3.57,
+      "active_chats": 54,
+      "chats_started": 27,
+      "automation_chats": 33,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 19
+      },
+      "messages_avoided": 13,
+      "messages_inbound": 207,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 19,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 42,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12
+      },
+      "out_of_hours_messages": 24,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 89,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 102,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 2678.77,
+      "first_response_automation_seconds_sum": 378.41
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 12,
+        "9": 28,
+        "10": 40,
+        "11": 36,
+        "12": 24,
+        "13": 24,
+        "14": 32,
+        "15": 36,
+        "16": 40,
+        "17": 36,
+        "18": 28,
+        "19": 20,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "aa2dd0f7-f624-412c-9c60-7d88a59b55cf",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-28",
+    "metrics": {
+      "hours_saved": 3.82,
+      "active_chats": 50,
+      "chats_started": 25,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 17,
+      "messages_inbound": 228,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 20,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 10,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 41,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 8,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 92,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 109,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 3759.37,
+      "first_response_automation_seconds_sum": 316.5
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 13,
+        "9": 30,
+        "10": 43,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 43,
+        "17": 39,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "aa48a621-1cbc-4830-864f-12c94a269729",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-26",
+    "metrics": {
+      "hours_saved": 5.18,
+      "active_chats": 72,
+      "chats_started": 30,
+      "automation_chats": 46,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 24,
+      "messages_inbound": 286,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 18,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 10,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 27,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 56,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 35,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 124,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 148,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 5851.22,
+      "first_response_automation_seconds_sum": 522.94
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 17,
+        "9": 39,
+        "10": 56,
+        "11": 51,
+        "12": 34,
+        "13": 34,
+        "14": 45,
+        "15": 51,
+        "16": 56,
+        "17": 51,
+        "18": 39,
+        "19": 28,
+        "20": 22,
+        "21": 17,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "ac617b7a-fc73-42dd-968c-9c745884b3d0",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-22",
+    "metrics": {
+      "hours_saved": 2.98,
+      "active_chats": 39,
+      "chats_started": 18,
+      "automation_chats": 22,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 14
+      },
+      "messages_avoided": 22,
+      "messages_inbound": 179,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 5,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 13,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 30,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 6
+      },
+      "out_of_hours_messages": 26,
+      "chats_with_human_touch": 7,
+      "messages_sent_by_human": 63,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 6,
+      "messages_sent_by_automation": 85,
+      "first_response_automation_count": 10,
+      "first_response_human_seconds_sum": 1452.04,
+      "first_response_automation_seconds_sum": 194.54
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 7,
+        "8": 10,
+        "9": 23,
+        "10": 33,
+        "11": 30,
+        "12": 20,
+        "13": 20,
+        "14": 26,
+        "15": 30,
+        "16": 33,
+        "17": 30,
+        "18": 23,
+        "19": 16,
+        "20": 13,
+        "21": 10,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "ae1efe1d-1787-4433-84a9-f04fcdcba28b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-28",
+    "metrics": {
+      "hours_saved": 4.8,
+      "active_chats": 63,
+      "chats_started": 31,
+      "automation_chats": 43,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 22
+      },
+      "messages_avoided": 46,
+      "messages_inbound": 250,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 19,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 43,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 42,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 91,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 137,
+      "first_response_automation_count": 16,
+      "first_response_human_seconds_sum": 5090.68,
+      "first_response_automation_seconds_sum": 454.35
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 14,
+        "9": 34,
+        "10": 48,
+        "11": 43,
+        "12": 29,
+        "13": 29,
+        "14": 39,
+        "15": 43,
+        "16": 48,
+        "17": 43,
+        "18": 34,
+        "19": 24,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "afe2484c-973c-4604-8dd2-62fad8fd4a40",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-15",
+    "metrics": {
+      "hours_saved": 3.75,
+      "active_chats": 60,
+      "chats_started": 30,
+      "automation_chats": 41,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 14,
+      "messages_inbound": 231,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 20,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 42
+      },
+      "out_of_hours_messages": 34,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 93,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 107,
+      "first_response_automation_count": 18,
+      "first_response_human_seconds_sum": 3965.49,
+      "first_response_automation_seconds_sum": 653.08
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 13,
+        "9": 30,
+        "10": 43,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 43,
+        "17": 39,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "afe424e7-f886-4586-8489-6df1e8cc62b9",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-01",
+    "metrics": {
+      "hours_saved": 6.51,
+      "active_chats": 78,
+      "chats_started": 33,
+      "automation_chats": 51,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 24
+      },
+      "messages_avoided": 70,
+      "messages_inbound": 359,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 25,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 12,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 53,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 10,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 16
+      },
+      "out_of_hours_messages": 50,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 116,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 186,
+      "first_response_automation_count": 22,
+      "first_response_human_seconds_sum": 4027.99,
+      "first_response_automation_seconds_sum": 607.68
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 15,
+        "8": 20,
+        "9": 47,
+        "10": 67,
+        "11": 60,
+        "12": 40,
+        "13": 40,
+        "14": 53,
+        "15": 60,
+        "16": 67,
+        "17": 60,
+        "18": 47,
+        "19": 33,
+        "20": 26,
+        "21": 20,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "afeea080-a91b-42de-afb8-13727892bcb9",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-02",
+    "metrics": {
+      "hours_saved": 6.9,
+      "active_chats": 88,
+      "chats_started": 37,
+      "automation_chats": 48,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 26
+      },
+      "messages_avoided": 51,
+      "messages_inbound": 358,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 31,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 15,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 67,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 21
+      },
+      "out_of_hours_messages": 55,
+      "chats_with_human_touch": 17,
+      "messages_sent_by_human": 146,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 11,
+      "chats_handled_by_automation": 15,
+      "messages_sent_by_automation": 197,
+      "first_response_automation_count": 19,
+      "first_response_human_seconds_sum": 5325.5,
+      "first_response_automation_seconds_sum": 348.74
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 21,
+        "9": 50,
+        "10": 71,
+        "11": 64,
+        "12": 42,
+        "13": 42,
+        "14": 57,
+        "15": 64,
+        "16": 71,
+        "17": 64,
+        "18": 50,
+        "19": 35,
+        "20": 28,
+        "21": 21,
+        "22": 7
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "aff1ee01-a205-4724-89f4-4e252aca02a7",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-02",
+    "metrics": {
+      "hours_saved": 3.99,
+      "active_chats": 45,
+      "chats_started": 22,
+      "automation_chats": 26,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 29,
+      "messages_inbound": 194,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 39,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 12,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 7,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 9,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 18
+      },
+      "out_of_hours_messages": 30,
+      "chats_with_human_touch": 9,
+      "messages_sent_by_human": 85,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 9,
+      "messages_sent_by_automation": 114,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 3129.36,
+      "first_response_automation_seconds_sum": 238.78
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 5,
+        "8": 12,
+        "9": 28,
+        "10": 40,
+        "11": 36,
+        "12": 24,
+        "13": 24,
+        "14": 32,
+        "15": 36,
+        "16": 40,
+        "17": 36,
+        "18": 28,
+        "19": 20,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "b5a196cf-ba03-4fe0-b7d6-b6daa10541b9",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-18",
+    "metrics": {
+      "hours_saved": 7.07,
+      "active_chats": 77,
+      "chats_started": 32,
+      "automation_chats": 43,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 23
+      },
+      "messages_avoided": 67,
+      "messages_inbound": 339,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 14,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 62,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 19,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 29,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 58,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 135,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 202,
+      "first_response_automation_count": 19,
+      "first_response_human_seconds_sum": 3310.44,
+      "first_response_automation_seconds_sum": 704.6
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 20,
+        "9": 48,
+        "10": 68,
+        "11": 62,
+        "12": 41,
+        "13": 41,
+        "14": 55,
+        "15": 62,
+        "16": 68,
+        "17": 62,
+        "18": 48,
+        "19": 34,
+        "20": 27,
+        "21": 20,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "b5b71e3f-67e4-405b-957b-acf10351e55e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-23",
+    "metrics": {
+      "hours_saved": 0.95,
+      "active_chats": 14,
+      "chats_started": 6,
+      "automation_chats": 10,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 5
+      },
+      "messages_avoided": 10,
+      "messages_inbound": 51,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 2,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 1,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 3,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 10,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 1
+      },
+      "out_of_hours_messages": 7,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 17,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 27,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 1370.15,
+      "first_response_automation_seconds_sum": 96.45
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 2,
+        "9": 6,
+        "10": 9,
+        "11": 8,
+        "12": 5,
+        "13": 5,
+        "14": 7,
+        "15": 8,
+        "16": 9,
+        "17": 8,
+        "18": 6,
+        "19": 4,
+        "20": 3,
+        "21": 2
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "b635599c-6a11-4c7d-8be7-5189023c6200",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-19",
+    "metrics": {
+      "hours_saved": 4.2,
+      "active_chats": 51,
+      "chats_started": 22,
+      "automation_chats": 28,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 35,
+      "messages_inbound": 226,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 9,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 39,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 12,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 18,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 7
+      },
+      "out_of_hours_messages": 34,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 85,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 120,
+      "first_response_automation_count": 12,
+      "first_response_human_seconds_sum": 3106.73,
+      "first_response_automation_seconds_sum": 318.54
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 13,
+        "9": 30,
+        "10": 43,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 43,
+        "17": 39,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "b7cad604-2e3f-44cd-9080-295fa07eafff",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-30",
+    "metrics": {
+      "hours_saved": 4.62,
+      "active_chats": 52,
+      "chats_started": 25,
+      "automation_chats": 31,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 53,
+      "messages_inbound": 225,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 17,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 37,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 6,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 42,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 79,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 132,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 2791.7,
+      "first_response_automation_seconds_sum": 363.14
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 13,
+        "9": 31,
+        "10": 44,
+        "11": 40,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 40,
+        "16": 44,
+        "17": 40,
+        "18": 31,
+        "19": 22,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "b9ee7aaf-2dbc-4df7-a189-504887035d4e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-25",
+    "metrics": {
+      "hours_saved": 1.51,
+      "active_chats": 20,
+      "chats_started": 8,
+      "automation_chats": 11,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 7
+      },
+      "messages_avoided": 11,
+      "messages_inbound": 77,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 3,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 16,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 4,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 2
+      },
+      "out_of_hours_messages": 14,
+      "chats_with_human_touch": 4,
+      "messages_sent_by_human": 32,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 3,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 43,
+      "first_response_automation_count": 5,
+      "first_response_human_seconds_sum": 1481.96,
+      "first_response_automation_seconds_sum": 123.88
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 4,
+        "9": 10,
+        "10": 15,
+        "11": 13,
+        "12": 9,
+        "13": 9,
+        "14": 12,
+        "15": 13,
+        "16": 15,
+        "17": 13,
+        "18": 10,
+        "19": 7,
+        "20": 6,
+        "21": 4,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "c4ccd7e3-2846-41d2-be63-db9db2b2a7dc",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-18",
+    "metrics": {
+      "hours_saved": 1.05,
+      "active_chats": 14,
+      "chats_started": 7,
+      "automation_chats": 9,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 10,
+      "messages_inbound": 52,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 1,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 4,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 2,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 2,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 7,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 20,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 30,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 1123.15,
+      "first_response_automation_seconds_sum": 134.01
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 5,
+        "8": 3,
+        "9": 7,
+        "10": 10,
+        "11": 9,
+        "12": 6,
+        "13": 6,
+        "14": 8,
+        "15": 9,
+        "16": 10,
+        "17": 9,
+        "18": 7,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "c4fcf82a-0bbb-4571-a3a1-e8c27ba93e10",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-28",
+    "metrics": {
+      "hours_saved": 5.18,
+      "active_chats": 65,
+      "chats_started": 30,
+      "automation_chats": 37,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 21
+      },
+      "messages_avoided": 41,
+      "messages_inbound": 295,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 15,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 23,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 49,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 50,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 107,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 148,
+      "first_response_automation_count": 20,
+      "first_response_human_seconds_sum": 5066.83,
+      "first_response_automation_seconds_sum": 650.83
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 16,
+        "9": 39,
+        "10": 56,
+        "11": 50,
+        "12": 33,
+        "13": 33,
+        "14": 44,
+        "15": 50,
+        "16": 56,
+        "17": 50,
+        "18": 39,
+        "19": 28,
+        "20": 22,
+        "21": 16,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "c6d3fdbd-5af5-4952-a12e-13df69eb2e6b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-17",
+    "metrics": {
+      "hours_saved": 4.34,
+      "active_chats": 59,
+      "chats_started": 24,
+      "automation_chats": 39,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 40,
+      "messages_inbound": 224,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 18,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 12,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 38
+      },
+      "out_of_hours_messages": 29,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 84,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 124,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 3920.62,
+      "first_response_automation_seconds_sum": 200.13
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 13,
+        "9": 30,
+        "10": 44,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 44,
+        "17": 39,
+        "18": 30,
+        "19": 22,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "c829d588-d67c-4182-ad3c-d38fb8a3b214",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-06",
+    "metrics": {
+      "hours_saved": 0.0,
+      "active_chats": 2,
+      "chats_started": 2,
+      "automation_chats": 0,
+      "chats_by_channel": {
+        "web": 2
+      },
+      "messages_avoided": 0,
+      "messages_inbound": 5,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 3
+      },
+      "out_of_hours_messages": 0,
+      "chats_with_human_touch": 2,
+      "messages_sent_by_human": 3,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 0,
+      "messages_sent_by_automation": 0,
+      "first_response_automation_count": 0,
+      "first_response_human_seconds_sum": 420.0,
+      "first_response_automation_seconds_sum": 0.0
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "12": 8
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-07T00:00:00.709127Z"
+  },
+  {
+    "id": "c9c5a1af-fa94-463f-9e71-b42bf67ce04c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-20",
+    "metrics": {
+      "hours_saved": 4.03,
+      "active_chats": 54,
+      "chats_started": 23,
+      "automation_chats": 34,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 32,
+      "messages_inbound": 218,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 7,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 18,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 37,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 24,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 83,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 115,
+      "first_response_automation_count": 12,
+      "first_response_human_seconds_sum": 1792.06,
+      "first_response_automation_seconds_sum": 229.94
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 12,
+        "8": 12,
+        "9": 29,
+        "10": 42,
+        "11": 38,
+        "12": 25,
+        "13": 25,
+        "14": 33,
+        "15": 38,
+        "16": 42,
+        "17": 38,
+        "18": 29,
+        "19": 21,
+        "20": 16,
+        "21": 12,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "cc453bee-e035-4012-ae7e-99db26424eff",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-15",
+    "metrics": {
+      "hours_saved": 3.19,
+      "active_chats": 37,
+      "chats_started": 17,
+      "automation_chats": 25,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 3,
+        "whatsapp_api": 13
+      },
+      "messages_avoided": 23,
+      "messages_inbound": 152,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 33,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 14,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 5
+      },
+      "out_of_hours_messages": 22,
+      "chats_with_human_touch": 8,
+      "messages_sent_by_human": 68,
+      "messages_sent_by_campaign": 273,
+      "first_response_human_count": 4,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 91,
+      "first_response_automation_count": 11,
+      "first_response_human_seconds_sum": 965.55,
+      "first_response_automation_seconds_sum": 365.78
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 9,
+        "9": 22,
+        "10": 31,
+        "11": 28,
+        "12": 19,
+        "13": 19,
+        "14": 25,
+        "15": 28,
+        "16": 31,
+        "17": 28,
+        "18": 22,
+        "19": 15,
+        "20": 12,
+        "21": 9,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "d0a7fec5-373e-4c97-bea2-a7d34035c6b2",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-01",
+    "metrics": {
+      "hours_saved": 3.29,
+      "active_chats": 46,
+      "chats_started": 24,
+      "automation_chats": 26,
+      "chats_by_channel": {
+        "web": 2,
+        "instagram": 5,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 17,
+      "messages_inbound": 183,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 36,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 11,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 6,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 8,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 16
+      },
+      "out_of_hours_messages": 22,
+      "chats_with_human_touch": 9,
+      "messages_sent_by_human": 77,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 94,
+      "first_response_automation_count": 12,
+      "first_response_human_seconds_sum": 3451.21,
+      "first_response_automation_seconds_sum": 284.36
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 10,
+        "9": 25,
+        "10": 36,
+        "11": 32,
+        "12": 21,
+        "13": 21,
+        "14": 28,
+        "15": 32,
+        "16": 36,
+        "17": 32,
+        "18": 25,
+        "19": 18,
+        "20": 14,
+        "21": 10,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "d23bb56a-043f-4228-ac48-c69198f8f3d4",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-30",
+    "metrics": {
+      "hours_saved": 5.78,
+      "active_chats": 81,
+      "chats_started": 37,
+      "automation_chats": 46,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 26
+      },
+      "messages_avoided": 52,
+      "messages_inbound": 318,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 16,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 24,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 52,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 12
+      },
+      "out_of_hours_messages": 35,
+      "chats_with_human_touch": 17,
+      "messages_sent_by_human": 113,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 15,
+      "messages_sent_by_automation": 165,
+      "first_response_automation_count": 21,
+      "first_response_human_seconds_sum": 3584.12,
+      "first_response_automation_seconds_sum": 563.06
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 14,
+        "8": 18,
+        "9": 42,
+        "10": 60,
+        "11": 54,
+        "12": 36,
+        "13": 36,
+        "14": 48,
+        "15": 54,
+        "16": 60,
+        "17": 54,
+        "18": 42,
+        "19": 30,
+        "20": 24,
+        "21": 18,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "d27c84bb-25a0-497c-9caa-277c5be31810",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-12",
+    "metrics": {
+      "hours_saved": 3.19,
+      "active_chats": 52,
+      "chats_started": 26,
+      "automation_chats": 36,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 18
+      },
+      "messages_avoided": 29,
+      "messages_inbound": 187,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 6,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 29,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 9,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 13,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 5
+      },
+      "out_of_hours_messages": 23,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 62,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 91,
+      "first_response_automation_count": 13,
+      "first_response_human_seconds_sum": 3752.33,
+      "first_response_automation_seconds_sum": 441.24
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 10,
+        "9": 24,
+        "10": 34,
+        "11": 31,
+        "12": 20,
+        "13": 20,
+        "14": 27,
+        "15": 31,
+        "16": 34,
+        "17": 31,
+        "18": 24,
+        "19": 17,
+        "20": 13,
+        "21": 10,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "d3da4a0d-6337-41d9-bea0-757236915599",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-31",
+    "metrics": {
+      "hours_saved": 3.29,
+      "active_chats": 43,
+      "chats_started": 22,
+      "automation_chats": 30,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 33,
+      "messages_inbound": 171,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 29,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 8,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 5,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 6,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 31,
+      "chats_with_human_touch": 10,
+      "messages_sent_by_human": 61,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 5,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 94,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 2981.77,
+      "first_response_automation_seconds_sum": 356.69
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 9,
+        "9": 23,
+        "10": 33,
+        "11": 29,
+        "12": 19,
+        "13": 19,
+        "14": 26,
+        "15": 29,
+        "16": 33,
+        "17": 29,
+        "18": 23,
+        "19": 16,
+        "20": 13,
+        "21": 9,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "d72eb381-8898-46a8-8bdc-7e0e3d61a39a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-25",
+    "metrics": {
+      "hours_saved": 3.89,
+      "active_chats": 56,
+      "chats_started": 26,
+      "automation_chats": 32,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 18
+      },
+      "messages_avoided": 19,
+      "messages_inbound": 226,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 20,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 10,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 41,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 8,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 27,
+      "chats_with_human_touch": 12,
+      "messages_sent_by_human": 92,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 111,
+      "first_response_automation_count": 17,
+      "first_response_human_seconds_sum": 3875.74,
+      "first_response_automation_seconds_sum": 318.74
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 13,
+        "9": 30,
+        "10": 43,
+        "11": 39,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 39,
+        "16": 43,
+        "17": 39,
+        "18": 30,
+        "19": 21,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "daa419cc-505b-4e0d-b893-8e960658456c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-21",
+    "metrics": {
+      "hours_saved": 6.69,
+      "active_chats": 77,
+      "chats_started": 34,
+      "automation_chats": 49,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 23
+      },
+      "messages_avoided": 78,
+      "messages_inbound": 331,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 12,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 52,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 16,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 24,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 9
+      },
+      "out_of_hours_messages": 50,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 113,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 14,
+      "messages_sent_by_automation": 191,
+      "first_response_automation_count": 19,
+      "first_response_human_seconds_sum": 5199.6,
+      "first_response_automation_seconds_sum": 550.18
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 15,
+        "8": 19,
+        "9": 45,
+        "10": 64,
+        "11": 58,
+        "12": 38,
+        "13": 38,
+        "14": 51,
+        "15": 58,
+        "16": 64,
+        "17": 58,
+        "18": 45,
+        "19": 32,
+        "20": 25,
+        "21": 19,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "dc2e1263-be8e-42bc-8352-64d4dbb14c72",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-20",
+    "metrics": {
+      "hours_saved": 1.58,
+      "active_chats": 17,
+      "chats_started": 7,
+      "automation_chats": 10,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 15,
+      "messages_inbound": 77,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 3,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 15,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 4,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 6,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 2
+      },
+      "out_of_hours_messages": 15,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 30,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 45,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 1154.64,
+      "first_response_automation_seconds_sum": 107.43
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 11,
+        "8": 4,
+        "9": 10,
+        "10": 15,
+        "11": 13,
+        "12": 9,
+        "13": 9,
+        "14": 12,
+        "15": 13,
+        "16": 15,
+        "17": 13,
+        "18": 10,
+        "19": 7,
+        "20": 6,
+        "21": 4,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "de4b1a88-bc5e-4998-921b-4e91a72bc639",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-16",
+    "metrics": {
+      "hours_saved": 4.1,
+      "active_chats": 54,
+      "chats_started": 28,
+      "automation_chats": 35,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 5,
+        "whatsapp_api": 20
+      },
+      "messages_avoided": 38,
+      "messages_inbound": 243,
+      "automation_bookings": 3,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 8,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 37,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 11,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 17,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 6
+      },
+      "out_of_hours_messages": 25,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 79,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 9,
+      "chats_handled_by_automation": 10,
+      "messages_sent_by_automation": 117,
+      "first_response_automation_count": 15,
+      "first_response_human_seconds_sum": 4455.01,
+      "first_response_automation_seconds_sum": 337.09
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 13,
+        "9": 31,
+        "10": 44,
+        "11": 40,
+        "12": 26,
+        "13": 26,
+        "14": 35,
+        "15": 40,
+        "16": 44,
+        "17": 40,
+        "18": 31,
+        "19": 22,
+        "20": 17,
+        "21": 13,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "e22b1bcf-56f3-405c-ac01-fc483ffbd579",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-05",
+    "metrics": {
+      "hours_saved": 6.27,
+      "active_chats": 79,
+      "chats_started": 33,
+      "automation_chats": 52,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 24
+      },
+      "messages_avoided": 82,
+      "messages_inbound": 301,
+      "automation_bookings": 2,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 21,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 10,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 44,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 8,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 14
+      },
+      "out_of_hours_messages": 40,
+      "chats_with_human_touch": 15,
+      "messages_sent_by_human": 97,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 7,
+      "chats_handled_by_automation": 11,
+      "messages_sent_by_automation": 179,
+      "first_response_automation_count": 20,
+      "first_response_human_seconds_sum": 4610.39,
+      "first_response_automation_seconds_sum": 425.08
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 15,
+        "8": 17,
+        "9": 41,
+        "10": 58,
+        "11": 52,
+        "12": 35,
+        "13": 35,
+        "14": 47,
+        "15": 52,
+        "16": 58,
+        "17": 52,
+        "18": 41,
+        "19": 29,
+        "20": 23,
+        "21": 17,
+        "22": 5
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "e3579c7d-ad3d-4673-a868-9e19ad7d4be8",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-08-10",
+    "metrics": {
+      "hours_saved": 3.43,
+      "active_chats": 51,
+      "chats_started": 22,
+      "automation_chats": 30,
+      "chats_by_channel": {
+        "web": 1,
+        "instagram": 4,
+        "whatsapp_api": 17
+      },
+      "messages_avoided": 27,
+      "messages_inbound": 204,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 7,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 33,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 10,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 15,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 6
+      },
+      "out_of_hours_messages": 29,
+      "chats_with_human_touch": 11,
+      "messages_sent_by_human": 71,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 6,
+      "chats_handled_by_automation": 8,
+      "messages_sent_by_automation": 98,
+      "first_response_automation_count": 14,
+      "first_response_human_seconds_sum": 3553.91,
+      "first_response_automation_seconds_sum": 477.31
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 11,
+        "9": 26,
+        "10": 38,
+        "11": 34,
+        "12": 22,
+        "13": 22,
+        "14": 30,
+        "15": 34,
+        "16": 38,
+        "17": 34,
+        "18": 26,
+        "19": 19,
+        "20": 15,
+        "21": 11,
+        "22": 3
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "e9606cf0-d2a4-4058-96ba-f1bd96d6a5fd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-09-06",
+    "metrics": {
+      "hours_saved": 1.12,
+      "active_chats": 15,
+      "chats_started": 7,
+      "automation_chats": 8,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 6,
+      "messages_inbound": 59,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 14,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 3,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 2,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 2,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 5
+      },
+      "out_of_hours_messages": 9,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 26,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 32,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 786.65,
+      "first_response_automation_seconds_sum": 77.28
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 3,
+        "9": 8,
+        "10": 11,
+        "11": 10,
+        "12": 7,
+        "13": 7,
+        "14": 9,
+        "15": 10,
+        "16": 11,
+        "17": 10,
+        "18": 8,
+        "19": 5,
+        "20": 4,
+        "21": 3,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "e9b23251-40dd-45f0-b7d9-bc88107f9b75",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-23",
+    "metrics": {
+      "hours_saved": 6.16,
+      "active_chats": 86,
+      "chats_started": 37,
+      "automation_chats": 57,
+      "chats_by_channel": {
+        "web": 3,
+        "facebook": 1,
+        "instagram": 7,
+        "whatsapp_api": 26
+      },
+      "messages_avoided": 43,
+      "messages_inbound": 344,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 14,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 60,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 19,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 29,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 11
+      },
+      "out_of_hours_messages": 37,
+      "chats_with_human_touch": 17,
+      "messages_sent_by_human": 133,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 12,
+      "chats_handled_by_automation": 17,
+      "messages_sent_by_automation": 176,
+      "first_response_automation_count": 25,
+      "first_response_human_seconds_sum": 5966.35,
+      "first_response_automation_seconds_sum": 493.47
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 18,
+        "8": 19,
+        "9": 46,
+        "10": 66,
+        "11": 59,
+        "12": 39,
+        "13": 39,
+        "14": 53,
+        "15": 59,
+        "16": 66,
+        "17": 59,
+        "18": 46,
+        "19": 33,
+        "20": 26,
+        "21": 19,
+        "22": 6
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "ea91181c-fe6c-4c26-9ce1-7512600d4088",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-10-11",
+    "metrics": {
+      "hours_saved": 1.4,
+      "active_chats": 17,
+      "chats_started": 7,
+      "automation_chats": 12,
+      "chats_by_channel": {
+        "instagram": 1,
+        "whatsapp_api": 6
+      },
+      "messages_avoided": 14,
+      "messages_inbound": 71,
+      "automation_bookings": 1,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 14,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 3,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 2,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 2,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 5
+      },
+      "out_of_hours_messages": 9,
+      "chats_with_human_touch": 3,
+      "messages_sent_by_human": 26,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 2,
+      "chats_handled_by_automation": 3,
+      "messages_sent_by_automation": 40,
+      "first_response_automation_count": 4,
+      "first_response_human_seconds_sum": 556.69,
+      "first_response_automation_seconds_sum": 125.89
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 10,
+        "8": 4,
+        "9": 9,
+        "10": 13,
+        "11": 12,
+        "12": 8,
+        "13": 8,
+        "14": 11,
+        "15": 12,
+        "16": 13,
+        "17": 12,
+        "18": 9,
+        "19": 6,
+        "20": 5,
+        "21": 4,
+        "22": 1
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  },
+  {
+    "id": "f451180d-96fe-4059-a5f8-7619e84b9b8a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "day": "2026-11-03",
+    "metrics": {
+      "hours_saved": 4.31,
+      "active_chats": 66,
+      "chats_started": 31,
+      "automation_chats": 42,
+      "chats_by_channel": {
+        "web": 2,
+        "facebook": 1,
+        "instagram": 6,
+        "whatsapp_api": 22
+      },
+      "messages_avoided": 32,
+      "messages_inbound": 253,
+      "automation_bookings": 0,
+      "messages_by_account": {
+        "2e7dc263-32d2-46ff-9175-acf2605d824b": 19,
+        "6a6b5bda-6a04-44d1-9f44-b463227b0032": 9,
+        "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a": 43,
+        "b2be33f7-77e1-440c-984f-525079e584b3": 7,
+        "b56a981d-00e7-5f4f-a618-de6c0a991000": 13
+      },
+      "out_of_hours_messages": 33,
+      "chats_with_human_touch": 13,
+      "messages_sent_by_human": 91,
+      "messages_sent_by_campaign": 0,
+      "first_response_human_count": 8,
+      "chats_handled_by_automation": 13,
+      "messages_sent_by_automation": 123,
+      "first_response_automation_count": 21,
+      "first_response_human_seconds_sum": 2789.95,
+      "first_response_automation_seconds_sum": 679.2
+    },
+    "hourly_breakdown": {
+      "message_count": {
+        "7": 13,
+        "8": 14,
+        "9": 33,
+        "10": 47,
+        "11": 42,
+        "12": 28,
+        "13": 28,
+        "14": 38,
+        "15": 42,
+        "16": 47,
+        "17": 42,
+        "18": 33,
+        "19": 23,
+        "20": 19,
+        "21": 14,
+        "22": 4
+      }
+    },
+    "created_at": "2026-11-06T21:41:36.319776Z",
+    "updated_at": "2026-11-06T21:41:36.319776Z"
+  }
+]

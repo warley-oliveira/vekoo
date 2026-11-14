@@ -1,0 +1,165 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "color": "#7c3aed",
+    "text_color": "#ffffff",
+    "max_students": 8,
+    "min_students": 3,
+    "default_duration_minutes": 120,
+    "active": true,
+    "visible": true,
+    "recurrence_type": "weekly",
+    "recurrence_end_type": "never",
+    "tags": [
+      "iniciantes"
+    ],
+    "price_currency": "BRL",
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "name": "Oficina de costura criativa",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "description": "Do molde à peça pronta, em turmas pequenas.",
+    "category": "Costura",
+    "room": "Sala do ateliê",
+    "location": "Estúdio Doma, Savassi",
+    "instructor_name": "Renata Vieira",
+    "price_cents": 18000,
+    "start_date": {
+      "$date": "2026-10-09T00:00:00Z"
+    },
+    "schedule": [
+      {
+        "day_of_week": 0,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 1,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 2,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "19:00",
+            "end": "21:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 3,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 4,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "19:00",
+            "end": "21:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 5,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 6,
+        "enabled": false,
+        "windows": []
+      }
+    ],
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.219Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "color": "#0891b2",
+    "text_color": "#ffffff",
+    "max_students": 12,
+    "min_students": 4,
+    "default_duration_minutes": 90,
+    "active": true,
+    "visible": true,
+    "recurrence_type": "biweekly",
+    "recurrence_end_type": "never",
+    "tags": [],
+    "price_currency": "BRL",
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "name": "Clube do tecido",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "description": "A cada quinzena, um tecido novo em mãos e o que fazer com ele.",
+    "category": "Encontro",
+    "room": "Loja",
+    "location": "Estúdio Doma, Savassi",
+    "instructor_name": "Camila Rocha",
+    "price_cents": 4500,
+    "start_date": {
+      "$date": "2026-10-09T00:00:00Z"
+    },
+    "schedule": [
+      {
+        "day_of_week": 0,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 1,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 2,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 3,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 4,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 5,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 6,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "11:30"
+          }
+        ]
+      }
+    ],
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.432Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.432Z"
+    }
+  }
+]

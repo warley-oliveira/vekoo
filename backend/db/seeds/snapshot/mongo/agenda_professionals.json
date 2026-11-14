@@ -1,0 +1,82 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766b"
+    },
+    "color": "#b06046",
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Camila Rocha",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "phone": null,
+    "email": "camila.rocha@exemplo.com.br",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.412Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.412Z"
+    },
+    "service_ids": [
+      {
+        "$oid": "6aee29eb64d3ea36e87c7671"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7673"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766d"
+    },
+    "color": "#2c3e60",
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Thiago Almeida",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "phone": null,
+    "email": "thiago.almeida@exemplo.com.br",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.442Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.442Z"
+    },
+    "service_ids": [
+      {
+        "$oid": "6aee29eb64d3ea36e87c7671"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7673"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766f"
+    },
+    "color": "#059669",
+    "calendar_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "name": "Renata Vieira",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": null,
+    "phone": "5531998123344",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.453Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.453Z"
+    },
+    "service_ids": [
+      {
+        "$oid": "6aee29eb64d3ea36e87c7672"
+      }
+    ]
+  }
+]

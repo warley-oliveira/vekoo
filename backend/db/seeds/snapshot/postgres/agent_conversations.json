@@ -1,0 +1,13 @@
+[
+  {
+    "id": "7bfb00c2-868b-4bcd-a108-7e2d69ed6d56",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "brand_core_id": "7fd60170-a872-4e52-ae11-3108f1f99505",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "title": "onboarding",
+    "last_turn_at": null,
+    "created_at": "2026-11-14T03:41:07.719965Z",
+    "updated_at": "2026-11-14T03:41:07.719965Z",
+    "purpose": "onboarding"
+  }
+]

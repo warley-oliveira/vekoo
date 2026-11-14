@@ -1,0 +1,86 @@
+[
+  {
+    "id": "1cb515c1-2af2-4b84-8618-2f69ad430b96",
+    "hook_id": "835e68dd-c8f8-4e96-8cfa-a0d3685fd0d1",
+    "type": "HookAction::ContactHandling",
+    "config": {
+      "contact_name": "{{body.nome}}",
+      "contact_identifier": "{{body.telefone}}"
+    },
+    "created_at": "2026-11-06T23:13:00.075565Z",
+    "updated_at": "2026-11-06T23:13:00.075565Z"
+  },
+  {
+    "id": "3d6495db-3b08-4302-8982-a7c4c633b87c",
+    "hook_id": "eb66dd3a-224b-4eae-9325-d64412e81df9",
+    "type": "HookAction::ContactHandling",
+    "config": {
+      "contact_name": "{{body.nome}}",
+      "contact_identifier": "{{body.whatsapp}}"
+    },
+    "created_at": "2026-11-06T23:13:00.033964Z",
+    "updated_at": "2026-11-06T23:13:00.033964Z"
+  },
+  {
+    "id": "46a0c876-dae5-4307-8459-03085074afb1",
+    "hook_id": "5514a235-b2a0-45e0-bc82-018df9dc38ec",
+    "type": "HookAction::StartFlow",
+    "config": {
+      "flow_id": "3741ca62-5680-4236-a3be-5260791c72ec",
+      "send_mode": "simple",
+      "connector_id": "6aee0e5717c01071cdba2bb6"
+    },
+    "created_at": "2026-11-06T23:12:59.798893Z",
+    "updated_at": "2026-11-06T23:12:59.798893Z"
+  },
+  {
+    "id": "6f7190ad-8756-4b48-94e4-d480dee7e148",
+    "hook_id": "835e68dd-c8f8-4e96-8cfa-a0d3685fd0d1",
+    "type": "HookAction::HttpRequest",
+    "config": {
+      "url": "https://crm.domastore.example/api/leads",
+      "body": "{\"nome\":\"{{body.nome}}\",\"telefone\":\"{{body.telefone}}\"}",
+      "headers": [
+        {
+          "key": "X-Origem",
+          "value": "vekoo"
+        }
+      ],
+      "http_method": "POST"
+    },
+    "created_at": "2026-11-06T23:13:00.089635Z",
+    "updated_at": "2026-11-06T23:13:00.089635Z"
+  },
+  {
+    "id": "733870d8-c5af-4a37-804e-a51503042bb7",
+    "hook_id": "5514a235-b2a0-45e0-bc82-018df9dc38ec",
+    "type": "HookAction::UserField",
+    "config": {
+      "value_template": "{{body.produto}}",
+      "custom_field_id": "6aee27e5832f77baac1fb820"
+    },
+    "created_at": "2026-11-06T23:12:59.815043Z",
+    "updated_at": "2026-11-06T23:12:59.815043Z"
+  },
+  {
+    "id": "e39f8b21-8b60-410c-b70b-39a634aa5fdb",
+    "hook_id": "5514a235-b2a0-45e0-bc82-018df9dc38ec",
+    "type": "HookAction::ContactHandling",
+    "config": {
+      "contact_name": "{{body.cliente.nome}}",
+      "contact_identifier": "{{body.cliente.telefone}}"
+    },
+    "created_at": "2026-11-06T23:12:59.775495Z",
+    "updated_at": "2026-11-06T23:12:59.775495Z"
+  },
+  {
+    "id": "ecbfcb0e-3f25-44f7-a6d8-15568c0fae8c",
+    "hook_id": "835e68dd-c8f8-4e96-8cfa-a0d3685fd0d1",
+    "type": "HookAction::CodeRunner",
+    "config": {
+      "code": "tag.add('crm');\nreturn params;"
+    },
+    "created_at": "2026-11-06T23:13:00.106676Z",
+    "updated_at": "2026-11-06T23:13:00.106676Z"
+  }
+]

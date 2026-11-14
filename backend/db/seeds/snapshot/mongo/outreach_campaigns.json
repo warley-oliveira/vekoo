@@ -1,0 +1,545 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c635df"
+    },
+    "messages": [
+      "Oi, {{nome}}! Aqui é da Doma Store. As peças de linho da coleção de verão voltaram ao estoque. Quer ver as novidades?",
+      "{{nome}}, tudo bem? O vestido midi que você gostou voltou nas cores terracota e areia. Separo um para você?"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "completed",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 62,
+    "sent_count": 58,
+    "delivered_count": 52,
+    "read_count": 34,
+    "failed_count": 4,
+    "name": "Recompra de verão",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "c4e0bb6e51c7d08b40839e54",
+    "started_at": {
+      "$date": "2026-10-16T17:41:31.066Z"
+    },
+    "planned_at": {
+      "$date": "2026-10-16T17:41:31.066Z"
+    },
+    "completed_at": {
+      "$date": "2026-10-17T19:41:31.066Z"
+    },
+    "scheduled_at": null,
+    "estimated_completion_at": null,
+    "created_at": {
+      "$date": "2026-10-16T16:41:31.066Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.071Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63621"
+    },
+    "messages": [
+      "{{nome}}, a coleção de inverno da Doma Store acabou de chegar: tricô, alfaiataria e 10% na primeira compra. Posso te mandar o catálogo?"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "running",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 90,
+    "sent_count": 36,
+    "delivered_count": 28,
+    "read_count": 12,
+    "failed_count": 2,
+    "name": "Lançamento da coleção de inverno",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "761e3ab1a24c0f49183792aa",
+    "started_at": {
+      "$date": "2026-11-06T17:41:31.112Z"
+    },
+    "planned_at": {
+      "$date": "2026-11-06T17:41:31.112Z"
+    },
+    "completed_at": null,
+    "scheduled_at": null,
+    "estimated_completion_at": {
+      "$date": "2026-11-06T21:25:31.112Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T16:41:31.112Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.119Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63680"
+    },
+    "messages": [
+      "{{nome}}, sua Black Friday começa antes: até 40% em peças selecionadas, só até domingo. Quer o link?"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "paused",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 60,
+    "sent_count": 23,
+    "delivered_count": 20,
+    "read_count": 9,
+    "failed_count": 0,
+    "name": "Black Friday antecipada",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "f78b80bbeeb454f97e8262da",
+    "started_at": {
+      "$date": "2026-11-04T17:41:31.160Z"
+    },
+    "planned_at": {
+      "$date": "2026-11-04T17:41:31.160Z"
+    },
+    "completed_at": null,
+    "scheduled_at": null,
+    "estimated_completion_at": {
+      "$date": "2026-11-06T20:55:31.160Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T16:41:31.160Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.167Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636c0"
+    },
+    "messages": [
+      "{{nome}}, nossa loja física mudou para a Rua Comendador Araújo, 215, no Batel. Passa lá para tomar um café!"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "paused",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 28,
+    "sent_count": 10,
+    "delivered_count": 9,
+    "read_count": 4,
+    "failed_count": 0,
+    "name": "Aviso de troca de endereço",
+    "pause_reason": "noActiveConnectors",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "ce9ff1d039151e8b9625a317",
+    "started_at": {
+      "$date": "2026-11-03T17:41:31.184Z"
+    },
+    "planned_at": {
+      "$date": "2026-11-03T17:41:31.184Z"
+    },
+    "completed_at": null,
+    "scheduled_at": null,
+    "estimated_completion_at": {
+      "$date": "2026-11-06T20:17:31.184Z"
+    },
+    "created_at": {
+      "$date": "2026-11-03T16:41:31.184Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.189Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c636e0"
+    },
+    "messages": [
+      "{{nome}}, já pensou no presente de Natal? Separamos uma curadoria com embalagem presente grátis."
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "scheduled",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 45,
+    "sent_count": 0,
+    "delivered_count": 0,
+    "read_count": 0,
+    "failed_count": 0,
+    "name": "Natal na Doma Store",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "0d3d73e23a45abe37382c78c",
+    "started_at": null,
+    "planned_at": null,
+    "completed_at": null,
+    "scheduled_at": {
+      "$date": "2026-11-27T09:00:00Z"
+    },
+    "estimated_completion_at": null,
+    "created_at": {
+      "$date": "2026-11-06T18:41:31.204Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.209Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63710"
+    },
+    "messages": [
+      "Oi, {{nome}}! Como foi sua última compra na Doma Store? De 0 a 10, quanto você nos recomendaria?"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "draft",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 24,
+    "sent_count": 0,
+    "delivered_count": 0,
+    "read_count": 0,
+    "failed_count": 0,
+    "name": "Pesquisa de satisfação",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "5a805547075931318e856c4d",
+    "started_at": null,
+    "planned_at": null,
+    "completed_at": null,
+    "scheduled_at": null,
+    "estimated_completion_at": null,
+    "created_at": {
+      "$date": "2026-11-06T18:41:31.238Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.251Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c6372a"
+    },
+    "messages": [
+      "{{nome}}, sentimos sua falta! Volte com 15% de desconto usando o cupom VOLTEI."
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "cancelled",
+    "connector_ids": [
+      "6aee0e5717c01071cdba2bb6"
+    ],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee27e5832f77baac1fb826",
+      "6aee27e5832f77baac1fb827"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 180,
+    "daily_limit_per_connector": 300,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 40,
+    "sent_count": 9,
+    "delivered_count": 7,
+    "read_count": 3,
+    "failed_count": 0,
+    "name": "Reativação de clientes inativos",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "92e4a3343f9c27f7f53364f2",
+    "started_at": {
+      "$date": "2026-10-28T17:41:31.267Z"
+    },
+    "planned_at": {
+      "$date": "2026-10-28T17:41:31.267Z"
+    },
+    "completed_at": {
+      "$date": "2026-10-28T19:41:31.267Z"
+    },
+    "scheduled_at": null,
+    "estimated_completion_at": null,
+    "created_at": {
+      "$date": "2026-10-28T16:41:31.267Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.272Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee2d6b039be5e2e5c63756"
+    },
+    "messages": [],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "template",
+    "status_cd": "completed",
+    "connector_ids": [],
+    "phone_number_ids": [
+      "100000000001"
+    ],
+    "template_ids": [
+      "6aee0e5717c01071cdba2bc2"
+    ],
+    "template_params": {
+      "6aee0e5717c01071cdba2bc2": {
+        "1": "{{nome}}",
+        "2": "48213"
+      }
+    },
+    "chat_tag_ids": [],
+    "raise_chats": true,
+    "send_start_hour": 8,
+    "send_end_hour": 20,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 30,
+    "buffer_max_seconds": 60,
+    "daily_limit_per_connector": 1000,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 36,
+    "sent_count": 35,
+    "delivered_count": 31,
+    "read_count": 22,
+    "failed_count": 1,
+    "name": "Aviso de entrega de novembro",
+    "waba_connector_id": "6aee0e5717c01071cdba2bb7",
+    "created_by_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "run_token": "5bad604be1c1b7ee8c2900f4",
+    "started_at": {
+      "$date": "2026-10-31T19:41:31.320Z"
+    },
+    "planned_at": {
+      "$date": "2026-10-31T19:41:31.320Z"
+    },
+    "completed_at": {
+      "$date": "2026-10-31T20:21:31.320Z"
+    },
+    "created_at": {
+      "$date": "2026-10-31T18:41:31.320Z"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:41:31.342Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af7d919774a6fe7f8dc08cf"
+    },
+    "messages": [
+      "asdasdasdadasdasd"
+    ],
+    "message_type_cd": "text",
+    "campaign_mode_cd": "text",
+    "status_cd": "draft",
+    "connector_ids": [],
+    "phone_number_ids": [],
+    "template_ids": [],
+    "template_params": {},
+    "chat_tag_ids": [
+      "6aee0e5717c01071cdba2bb9"
+    ],
+    "raise_chats": true,
+    "send_start_hour": 9,
+    "send_end_hour": 18,
+    "send_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "buffer_min_seconds": 60,
+    "buffer_max_seconds": 120,
+    "daily_limit_per_connector": 500,
+    "timezone": "America/Sao_Paulo",
+    "batch_size": 50,
+    "recipients_count": 2,
+    "sent_count": 0,
+    "delivered_count": 0,
+    "read_count": 0,
+    "failed_count": 0,
+    "replied_count": 0,
+    "name": "Campanha de 14 de novembro",
+    "attachment_id": null,
+    "flow_id": "870fdb05-0d7d-44a6-9d90-90846c180780",
+    "waba_connector_id": null,
+    "created_by_account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "media_url": null,
+    "media_content_type": null,
+    "media_file_name": null,
+    "updated_at": {
+      "$date": "2026-11-14T03:45:30.023Z"
+    },
+    "created_at": {
+      "$date": "2026-11-14T03:44:25.289Z"
+    }
+  }
+]

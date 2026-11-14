@@ -1,0 +1,458 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc7"
+    },
+    "user_name": "Ana Beatriz Moura",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.042Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.042Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bcd"
+    },
+    "user_name": "João Pedro Almeida",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.115Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd4"
+    },
+    "user_name": "Fernanda Lima",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.162Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.162Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bdb"
+    },
+    "user_name": "Carlos Eduardo Santos",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.328Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.328Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be1"
+    },
+    "user_name": "Márcia Regina Costa",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.357Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.357Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be8"
+    },
+    "user_name": "Lucas Oliveira",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.405Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.405Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bed"
+    },
+    "user_name": "Patrícia Gomes",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.423Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.423Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf1"
+    },
+    "user_name": "Roberto Nascimento",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.437Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.437Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf6"
+    },
+    "user_name": "Camila Ferraz",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.459Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.459Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bfb"
+    },
+    "user_name": "Daniela Souza",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.482Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.482Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c00"
+    },
+    "user_name": "Beatriz Carvalho",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.502Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.502Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c04"
+    },
+    "user_name": "Rafael Mendes",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.519Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.519Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c08"
+    },
+    "user_name": "Juliana Prado",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.533Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.533Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0c"
+    },
+    "user_name": "Thiago Ribeiro",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.551Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.551Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c10"
+    },
+    "user_name": "Larissa Teixeira",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.565Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.565Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c14"
+    },
+    "user_name": "Bruno Cardoso",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.578Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.578Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c18"
+    },
+    "user_name": "Aline Barros",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.589Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1c"
+    },
+    "user_name": "Felipe Araújo",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.603Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.603Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c20"
+    },
+    "user_name": "Vanessa Rocha",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.622Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.622Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c24"
+    },
+    "user_name": "Gustavo Martins",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.637Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.637Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c28"
+    },
+    "user_name": "Renata Pires",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.655Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.655Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2c"
+    },
+    "user_name": "Eduardo Freitas",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.667Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.667Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c30"
+    },
+    "user_name": "Sabrina Lopes",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.682Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.682Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c34"
+    },
+    "user_name": "André Moreira",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.696Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.696Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c38"
+    },
+    "user_name": "Priscila Nunes",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.712Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.712Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3c"
+    },
+    "user_name": "Marcelo Duarte",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.727Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c40"
+    },
+    "user_name": "Tatiane Vieira",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.739Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.739Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c44"
+    },
+    "user_name": "Diego Fernandes",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.753Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.753Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c48"
+    },
+    "user_name": "Natália Castro",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.765Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.765Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c4c"
+    },
+    "user_name": "Vinícius Ramos",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.778Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.778Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee47cb4da585ea128482b3"
+    },
+    "user_name": null,
+    "updated_at": {
+      "$date": "2026-11-06T21:34:03.729Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T21:34:03.729Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee4ba33f8ecea569106458"
+    },
+    "user_name": null,
+    "updated_at": {
+      "$date": "2026-11-06T21:50:27.040Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T21:50:27.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee4d4fe652aa5c5cb9fdd0"
+    },
+    "user_name": "Conversa vazia WT15",
+    "updated_at": {
+      "$date": "2026-11-06T21:57:35.248Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T21:57:35.248Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee719b8cd938569901bb31"
+    },
+    "user_name": "João da Silva",
+    "updated_at": {
+      "$date": "2026-11-07T00:32:27.944Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:32:27.944Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee81effb6f5046fc6b47b7"
+    },
+    "user_name": "Teste Celular wt20",
+    "updated_at": {
+      "$date": "2026-11-07T01:42:07.787Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T01:42:07.787Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee8759c6c482ea9bd943de"
+    },
+    "user_name": "Teste Celular wt20",
+    "updated_at": {
+      "$date": "2026-11-07T02:05:13.859Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T02:05:13.859Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee8f6d63117ff84a7ea57c"
+    },
+    "user_name": null,
+    "updated_at": {
+      "$date": "2026-11-07T02:39:41.684Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T02:39:41.684Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee909b63117ff84a7ea580"
+    },
+    "user_name": "Script Teste",
+    "updated_at": {
+      "$date": "2026-11-07T02:44:43.502Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T02:44:43.502Z"
+    }
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769d"
+    },
+    "class_session_id": {
+      "$oid": "6aee29ec64d3ea36e87c769c"
+    },
+    "class_enrollment_id": {
+      "$oid": "6aee29ec64d3ea36e87c769a"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "attendance_status": "no_show",
+    "checked_at": {
+      "$date": "2026-11-06T00:00:00Z"
+    },
+    "checked_by": "Marina Duarte",
+    "guest": false,
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.386Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.386Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769e"
+    },
+    "class_session_id": {
+      "$oid": "6aee29ec64d3ea36e87c769c"
+    },
+    "class_enrollment_id": {
+      "$oid": "6aee29ec64d3ea36e87c769b"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "attendance_status": "show",
+    "checked_at": {
+      "$date": "2026-11-06T00:00:00Z"
+    },
+    "checked_by": "Marina Duarte",
+    "guest": false,
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.398Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.398Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a5"
+    },
+    "class_session_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a4"
+    },
+    "class_enrollment_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a1"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "attendance_status": "no_show",
+    "checked_at": {
+      "$date": "2026-10-24T14:30:00Z"
+    },
+    "checked_by": "Marina Duarte",
+    "guest": false,
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.504Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.504Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a6"
+    },
+    "class_session_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a4"
+    },
+    "class_enrollment_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a2"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "attendance_status": "show",
+    "checked_at": {
+      "$date": "2026-10-24T14:30:00Z"
+    },
+    "checked_by": "Marina Duarte",
+    "guest": false,
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.512Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.512Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a7"
+    },
+    "class_session_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a4"
+    },
+    "class_enrollment_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a3"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "attendance_status": "show",
+    "checked_at": {
+      "$date": "2026-10-24T14:30:00Z"
+    },
+    "checked_by": "Marina Duarte",
+    "guest": false,
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.521Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.521Z"
+    }
+  }
+]

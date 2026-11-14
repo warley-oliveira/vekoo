@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1d89490b-5fa5-4c7d-8d44-141fc2374f78",
+    "pipeline_checklist_id": "0fc4dd87-17fe-4147-aff0-0b26d68431d5",
+    "title": "Separar a camiseta M preta",
+    "completed": true,
+    "position": 1,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:34.047779Z",
+    "updated_at": "2026-11-06T21:58:34.047779Z"
+  },
+  {
+    "id": "360e18f1-e64a-4dce-8a07-5150edc1cb88",
+    "pipeline_checklist_id": "a97f43bd-290d-42b9-82a2-28c5de24ba22",
+    "title": "Conferir a grade de tamanhos",
+    "completed": false,
+    "position": 2,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:35.119126Z",
+    "updated_at": "2026-11-06T21:58:35.119126Z"
+  },
+  {
+    "id": "4999f006-1d77-4f8f-8412-6505cf78a65e",
+    "pipeline_checklist_id": "a97f43bd-290d-42b9-82a2-28c5de24ba22",
+    "title": "Pedir o logo em alta resolução",
+    "completed": true,
+    "position": 1,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:35.105983Z",
+    "updated_at": "2026-11-06T21:58:35.105983Z"
+  },
+  {
+    "id": "53ddd800-373b-4c70-8bda-befe580501d2",
+    "pipeline_checklist_id": "7f20f7d3-1707-4181-8025-8fb130bbfd9f",
+    "title": "Embalar com a nota",
+    "completed": true,
+    "position": 2,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:33.799317Z",
+    "updated_at": "2026-11-06T21:58:33.799317Z"
+  },
+  {
+    "id": "55847511-b6e7-42bb-9082-b010cf735c0e",
+    "pipeline_checklist_id": "7f20f7d3-1707-4181-8025-8fb130bbfd9f",
+    "title": "Localizar o cinto no estoque",
+    "completed": true,
+    "position": 1,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:33.781376Z",
+    "updated_at": "2026-11-06T21:58:33.781376Z"
+  },
+  {
+    "id": "59530c3c-7758-42f6-bc77-93d863f5abee",
+    "pipeline_checklist_id": "a97f43bd-290d-42b9-82a2-28c5de24ba22",
+    "title": "Consultar o prazo com a confecção",
+    "completed": false,
+    "position": 3,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:35.136290Z",
+    "updated_at": "2026-11-06T21:58:35.136290Z"
+  },
+  {
+    "id": "608db9c3-b72e-4774-8061-e698f2adabc4",
+    "pipeline_checklist_id": "7f20f7d3-1707-4181-8025-8fb130bbfd9f",
+    "title": "Agendar a coleta",
+    "completed": false,
+    "position": 3,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:33.818188Z",
+    "updated_at": "2026-11-06T21:58:33.818188Z"
+  },
+  {
+    "id": "806528fc-bcfc-40e8-891a-50dd011c6c2f",
+    "pipeline_checklist_id": "0fc4dd87-17fe-4147-aff0-0b26d68431d5",
+    "title": "Receber a G na loja",
+    "completed": false,
+    "position": 2,
+    "assigned_to_id": null,
+    "created_at": "2026-11-06T21:58:34.066338Z",
+    "updated_at": "2026-11-06T21:58:34.066338Z"
+  }
+]

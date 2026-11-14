@@ -1,0 +1,2729 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7682"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1794229200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "f2d7f8ba-2003-4993-87e9-1a12064d9e05",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-08T13:00:00Z"
+    },
+    "booking_id": "6aee29eb64d3ea36e87c7681",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-08T20:40:04.525Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-08T20:40:04.525Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7683"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1794229200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "7fb85083-cafe-41ee-a351-5c2472d95b19",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-09T11:00:00Z"
+    },
+    "booking_id": "6aee29eb64d3ea36e87c7681",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-09T14:20:02.903Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.048Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-09T14:20:02.903Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7685"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794333600000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "a65e4868-78e3-419f-af3b-6ebd6a533ab0",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-09T18:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:57:35.889Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.071Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7686"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794333600000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "c9fe1c34-213e-4bbd-ae1a-4c028bcad2f2",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-10T16:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:57:35.889Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.077Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7688"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - João Pedro Almeida & Renata Vieira",
+      "booking_start": 1794398400000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "48e3ac6d-72e9-422f-bb14-7eab5d93fd44",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-10T12:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7687",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "updated_at": {
+      "$date": "2026-11-10T15:09:15.220Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.093Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-10T15:09:15.220Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7689"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - João Pedro Almeida & Renata Vieira",
+      "booking_start": 1794398400000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "ff036c04-3b84-48a3-8a60-1b2ff598673a",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-11T10:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7687",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "updated_at": {
+      "$date": "2026-11-14T03:39:54.198Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.099Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-14T03:39:54.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c768b"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Consultoria de estilo - Lucas Oliveira & Camila Rocha",
+      "booking_start": 1794596400000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "40af4282-70a0-430c-8727-d873553b38ac",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-12T19:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c768a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "updated_at": {
+      "$date": "2026-11-14T03:39:56.425Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.117Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-14T03:39:56.425Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c768c"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Consultoria de estilo - Lucas Oliveira & Camila Rocha",
+      "booking_start": 1794596400000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "d880dfea-cad5-4e0d-b44e-8fa2eba9f224",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-13T17:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c768a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "updated_at": {
+      "$date": "2026-11-14T03:40:01.833Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.123Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-14T03:40:01.833Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c768e"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Daniela Souza & Thiago Almeida",
+      "booking_start": 1794664800000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9511eaf4-ef1f-45ca-8eaf-bf5f1c221c02",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-13T14:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c768d",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "updated_at": {
+      "$date": "2026-11-14T03:39:59.387Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.144Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-14T03:39:59.387Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c768f"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Daniela Souza & Thiago Almeida",
+      "booking_start": 1794664800000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "pending",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "41ef2519-7ad3-4f0f-a660-a44129b09998",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-14T12:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c768d",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.149Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.149Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7691"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Patrícia Gomes & Camila Rocha",
+      "booking_start": 1794934800000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "pending",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "702c185c-eb55-440f-a15c-ee786c679ca7",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-16T17:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7690",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.167Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.167Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7692"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Patrícia Gomes & Camila Rocha",
+      "booking_start": 1794934800000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "pending",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6a23eeaa-b718-4ab0-a5b2-a5ba9d954ecc",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T15:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7690",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.175Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.175Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7694"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Carlos Eduardo Santos & Thiago Almeida",
+      "booking_start": 1795095000000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "pending",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6ed69dce-5244-4303-9d40-aadc90be1197",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T13:30:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7693",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.194Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7695"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Carlos Eduardo Santos & Thiago Almeida",
+      "booking_start": 1795095000000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "pending",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "7c3a0ac6-a2cf-454e-9112-a738681c1bb4",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-19T11:30:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7693",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.201Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.201Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6886fb6f5046fc6b471e"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "f204f92b-7e3d-4864-8c13-6d96c52c0ae4",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6886fb6f5046fc6b471c",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:53:58.403Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:53:42.162Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6886fb6f5046fc6b471f"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "a834b2a4-bbd1-4ab7-b7ae-e0e6b4c36731",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6886fb6f5046fc6b471c",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:53:58.403Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:53:42.174Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6896fb6f5046fc6b4720"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "2f613ce3-92dc-41f3-8b72-1f83b870dab9",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6886fb6f5046fc6b471c",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:54:04.448Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:53:58.426Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6896fb6f5046fc6b4721"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "de3faa8e-bbc7-4010-8544-b13670ba886c",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6886fb6f5046fc6b471c",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:54:04.448Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:53:58.435Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6905fb6f5046fc6b4725"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "62dbdd30-d6e3-4202-a37e-0d80b92bba8b",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6905fb6f5046fc6b4723",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:56:06.033Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:55:49.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6905fb6f5046fc6b4726"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "c4785361-e0b1-4287-b1de-d87dea31ef7e",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6905fb6f5046fc6b4723",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:56:06.033Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:55:49.578Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6916fb6f5046fc6b4727"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6d548fa7-4890-4d52-b0c6-51a40497a2cd",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6905fb6f5046fc6b4723",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:56:12.155Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:56:06.054Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6916fb6f5046fc6b4728"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6cb13bb4-c924-4174-9bb2-bd08a76d1514",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6905fb6f5046fc6b4723",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:56:12.155Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:56:06.061Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee696ffb6f5046fc6b472c"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794337200000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "537bfbca-b1b2-4967-962d-8a10ccc86455",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-09T19:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:57:58.467Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:57:35.910Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee696ffb6f5046fc6b472d"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794337200000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "0e6f879a-ae18-4519-97f6-b79db94c88e6",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-10T17:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:57:58.467Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:57:35.918Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6986fb6f5046fc6b472e"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794333600000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "ecc2135f-9de8-4580-9a83-3d67964f041a",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-09T18:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-09T18:00:05.003Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:57:58.482Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-09T18:00:05.003Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6986fb6f5046fc6b472f"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Consultoria de estilo - Márcia Regina Costa & Thiago Almeida",
+      "booking_start": 1794333600000,
+      "professional_name": "Thiago Almeida"
+    },
+    "status_cd": "executed",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "da8c1334-4d54-4612-95e0-32e06f56e711",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-10T16:00:00Z"
+    },
+    "booking_id": "6aee29ec64d3ea36e87c7684",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "updated_at": {
+      "$date": "2026-11-10T19:15:23.488Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:57:58.488Z"
+    },
+    "executed_at": {
+      "$date": "2026-11-10T19:15:23.488Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69b9fb6f5046fc6b4732"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "cec8ec5a-e5fb-4af3-ba36-9c87f4f158cc",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee69b9fb6f5046fc6b4730",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:59:04.760Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:58:49.363Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69b9fb6f5046fc6b4733"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "327f239d-a3d5-4a6d-9cf8-d8ce714a6219",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee69b9fb6f5046fc6b4730",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:59:04.760Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:58:49.374Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69c8fb6f5046fc6b4734"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "094f87cc-b650-41b2-91d1-0ea338141d48",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee69b9fb6f5046fc6b4730",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:59:12.868Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:59:04.782Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee69c8fb6f5046fc6b4735"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9d8afc3b-560b-42e0-b402-8e1c898323b6",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee69b9fb6f5046fc6b4730",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:59:12.868Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:59:04.791Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a20fb6f5046fc6b473c"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "53a7dd7e-2a3a-4cb4-8aef-08fed7b7bd0f",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:34.877Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:32.550Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a20fb6f5046fc6b473d"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "cabc9f61-aaf5-4557-a1df-d81c931c777d",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:34.877Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:32.560Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a22fb6f5046fc6b473e"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "5161fc09-0af1-4998-83d9-e0fbd909ffe2",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T14:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:36.387Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:34.901Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a22fb6f5046fc6b473f"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9a45cf79-a133-4e06-ba60-d43e83098dd4",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T12:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:36.387Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:34.911Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a24fb6f5046fc6b4740"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "cf20c436-faef-437e-9350-4f1c04a59869",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:49.536Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:36.411Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a24fb6f5046fc6b4741"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "710ff6c3-038d-4f75-b5a9-803254783f3b",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:49.536Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:36.422Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a31fb6f5046fc6b4742"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "671c04b2-b6f6-4d93-89bc-ac3b47fbe89e",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:55.686Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:49.559Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a31fb6f5046fc6b4743"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "f27d4204-60af-4f06-b983-1a0c38b8f733",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6a20fb6f5046fc6b473a",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:00:55.686Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:00:49.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a67fb6f5046fc6b4749"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "4b639810-863b-43b5-9a77-94e802b26eeb",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:45.403Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:43.046Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a67fb6f5046fc6b474a"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "dcff949b-2b65-41c0-bb87-e980535323ab",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:45.403Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:43.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a6afb6f5046fc6b474b"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "4855f4f0-e2f7-4cdb-a153-8ba31d076044",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T14:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:48.836Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:46.212Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a6afb6f5046fc6b474c"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6b96c8ea-44b2-46e4-b94b-ae1e015043ea",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T12:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:48.836Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:46.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a6cfb6f5046fc6b474d"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "1d81f875-6540-4064-be74-1a746a04ebaa",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:59.985Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:48.857Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a6cfb6f5046fc6b474e"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "7de0d97c-3513-4373-a82b-2c640f00b5cc",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:01:59.985Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:01:48.868Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a78fb6f5046fc6b474f"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "8afc5333-4b02-4a8f-afbb-be6513494e78",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:02:06.019Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:02:00.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6a78fb6f5046fc6b4750"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6da9d208-5319-42a2-a466-50dd43b6be5d",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6a66fb6f5046fc6b4747",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:02:06.019Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:02:00.024Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6abcfb6f5046fc6b4755"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6726f1a7-1cae-498e-ab92-e3ecb3c81aaf",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6abcfb6f5046fc6b4754",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:15.968Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:08.558Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6abcfb6f5046fc6b4756"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "3408f256-37f6-4544-990f-652c1bb38f2c",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6abcfb6f5046fc6b4754",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:15.968Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:08.566Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6ac3fb6f5046fc6b4757"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "2dd86031-0f65-445a-95bd-1affdbec8f37",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6abcfb6f5046fc6b4754",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:17.956Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:15.991Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6ac4fb6f5046fc6b4758"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "73c51ebd-0550-4f2e-8f4f-45b669b7d2f9",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6abcfb6f5046fc6b4754",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:17.956Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:16.002Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6acffb6f5046fc6b475a"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9c6e3e22-6397-4e15-a0bc-c77a8d9dbd85",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6acffb6f5046fc6b4759",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:37.199Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:27.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6acffb6f5046fc6b475b"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "37876a81-11ac-4cce-9ccb-61b549c81c72",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6acffb6f5046fc6b4759",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:37.199Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:27.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6ad9fb6f5046fc6b475c"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "43838b77-3fad-45f9-816f-26c2680dab13",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6acffb6f5046fc6b4759",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:39.201Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:37.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6ad9fb6f5046fc6b475d"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "02173807-81d9-4010-9350-f91f4f74c4f7",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6acffb6f5046fc6b4759",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:03:39.201Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:03:37.231Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b72fb6f5046fc6b4765"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "c6a070a9-4b2c-4bfe-b1e7-0d5b93a53151",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:17.309Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:10.928Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b72fb6f5046fc6b4766"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795008600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "f3562bf8-f039-4a7e-a0db-148412eef77d",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:17.309Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:10.936Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b79fb6f5046fc6b4767"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "90184c03-96f7-4b71-9645-ea3b9a3da3e1",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:20.446Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:17.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b79fb6f5046fc6b4768"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795021200000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "40d08228-acd3-44b1-a213-6fe74c4dbcd6",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:20.446Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:17.351Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b7cfb6f5046fc6b4769"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795024800000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "c1d4ee1e-e334-4236-b294-78e0ba0dc9e8",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T18:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:26.696Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:20.471Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b7cfb6f5046fc6b476a"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795024800000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "84e23e57-ae0c-451f-ac41-bb67cb6970fb",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T16:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:26.696Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:20.480Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b82fb6f5046fc6b476b"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795017600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "da77abe4-1e35-4684-8641-81f627556a88",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T16:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:29.870Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:26.720Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b82fb6f5046fc6b476c"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795017600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "fa02b92e-96c8-4a11-bf43-b1595580c9ce",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T14:00:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:29.870Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:26.728Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b85fb6f5046fc6b476d"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795023000000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "4a6ae0a4-6e5a-4a28-8ca8-a1fc5afe8292",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:33.018Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:29.920Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b85fb6f5046fc6b476e"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795023000000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "eb17803e-5c10-488d-b498-a12ce492f996",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:33.018Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:29.931Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b89fb6f5046fc6b476f"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795026600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "c0f804f2-cbe3-4538-9e1f-084688877365",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T18:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:37.720Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:33.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6b89fb6f5046fc6b4770"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Ajuste de roupa - Ana Beatriz Moura & Renata Vieira",
+      "booking_start": 1795026600000,
+      "professional_name": "Renata Vieira"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "63ff660e-2a33-43fe-8757-fa6b381114af",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T16:30:00Z"
+    },
+    "booking_id": "6aee6b72fb6f5046fc6b4764",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:06:37.720Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:06:33.062Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d74fb6f5046fc6b4775"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "d53ed46c-0fcc-4fe3-ad7c-a02834087b0a",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:14:47.167Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:44.805Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d74fb6f5046fc6b4776"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "a2289c9c-1e3f-4845-bde4-9f0c719a5b18",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:14:47.167Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:44.823Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d77fb6f5046fc6b4777"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "6342d576-30d7-48f0-906d-f789a30e6026",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T14:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:14:48.913Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:47.196Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d77fb6f5046fc6b4778"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "7ca29000-f574-4521-ade6-d1addfc587c0",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T12:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:14:48.913Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:47.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d78fb6f5046fc6b4779"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "051a77a0-a050-4be6-ac84-c8756ab6f38b",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:15:00.837Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:48.936Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d78fb6f5046fc6b477a"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "71525cd0-d9ec-44b9-8d08-744ce53a8242",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:15:00.837Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:14:48.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d84fb6f5046fc6b477b"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9436e79e-bf35-44d1-b18b-fa7d88fcebfc",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:15:09.683Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:15:00.871Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6d84fb6f5046fc6b477c"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "042c4b3c-7943-4f55-80c9-66323b7f50b6",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6d74fb6f5046fc6b4773",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:15:09.683Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:15:00.883Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e59fb6f5046fc6b4782"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "8d2eceb1-7c30-48fe-b5af-274ff305143a",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:36.226Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:33.797Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e59fb6f5046fc6b4783"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "107a037f-ed97-4039-b89d-de32844e601e",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:36.226Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:33.809Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e5cfb6f5046fc6b4784"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "74af9bce-93f1-49fa-aa0a-24bfe25288a1",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T14:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:37.905Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:36.262Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e5cfb6f5046fc6b4785"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "ec4284ac-f54f-4ab2-ade2-75c740211372",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T12:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:37.905Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:36.276Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e5dfb6f5046fc6b4786"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9a7a5e0e-93c9-4d43-b008-e2dc1bb50e80",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:51.791Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:37.942Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e5dfb6f5046fc6b4787"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "1d4eb79a-dece-4c18-82d8-8dfcaf5ed390",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:51.791Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:37.953Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e6bfb6f5046fc6b4788"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "539fdcb9-a70f-44ce-9968-4f9855a60df2",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:58.498Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:51.818Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee6e6bfb6f5046fc6b4789"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "9036159e-191d-4dd3-8148-b926edc4cad8",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee6e59fb6f5046fc6b4780",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:18:58.498Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:18:51.832Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee701ffb6f5046fc6b478d"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "86e04706-5678-40c5-900d-7f8561793b77",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:09.680Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:07.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee701ffb6f5046fc6b478e"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "0ed95fa2-d6e1-48ea-8041-e87dd7c6e902",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:09.680Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:07.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7021fb6f5046fc6b478f"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "24d76af1-7528-450b-8cf7-0d2eff837c12",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T14:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:11.192Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:09.719Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7021fb6f5046fc6b4790"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795012200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "e4de4fbe-fdf7-480c-b1bd-9f4ab107b056",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T12:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:11.192Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:09.731Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7023fb6f5046fc6b4791"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "b5ccdf3f-ccdc-4da9-beb2-123c92329fa8",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T13:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:25.400Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:11.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7023fb6f5046fc6b4792"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795008600000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "15a70db9-e8d1-479a-9993-3b91e5bfd03f",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T11:30:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:25.400Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:11.234Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7031fb6f5046fc6b4793"
+    },
+    "metadata": {
+      "config_index": 0,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "2097063c-691a-4b44-89a0-95ab65c8fd27",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 1 dia antes",
+    "scheduled_at": {
+      "$date": "2026-11-17T17:00:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:32.067Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:25.452Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee7031fb6f5046fc6b4794"
+    },
+    "metadata": {
+      "config_index": 1,
+      "booking_title": "Prova com hora marcada - Ana Beatriz Moura & Camila Rocha",
+      "booking_start": 1795021200000,
+      "professional_name": "Camila Rocha"
+    },
+    "status_cd": "superseded",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "token": "f5f222e4-8ead-44bb-bab0-0ee98fc828a7",
+    "job_class": "Agenda::ContactNotificationJob",
+    "kind": "booking_reminder",
+    "name": "Lembrete: 2 horas antes",
+    "scheduled_at": {
+      "$date": "2026-11-18T15:00:00Z"
+    },
+    "booking_id": "6aee701ffb6f5046fc6b478b",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T00:26:32.067Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:26:25.471Z"
+    }
+  }
+]

@@ -1,0 +1,1351 @@
+[
+  {
+    "id": "00d9e089-6dda-4d5a-8bf0-c0b1164dd734",
+    "card_id": "e1516521-09d3-497f-8c23-72e1b68b582b",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Pedido de uniformes da Escola Girassol"
+    },
+    "created_at": "2026-11-03T21:58:34.919137Z"
+  },
+  {
+    "id": "03bf8a0f-c34b-4e2f-b658-d5265cbeb744",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-07-22T21:58:36.517600Z"
+  },
+  {
+    "id": "04f5d39d-ff20-4545-a873-5c22f1bb09ed",
+    "card_id": "8dc90d91-2104-4cac-8204-d17a252281c4",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Indicação",
+      "label_id": "c8bfaedb-918a-4244-b135-6cceeba32fdc"
+    },
+    "created_at": "2026-10-25T22:03:35.423185Z"
+  },
+  {
+    "id": "055ba6a2-edd5-4a18-8809-fde345c9cf44",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Separação",
+      "from_stage": "Pedido confirmado",
+      "to_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+      "from_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868"
+    },
+    "created_at": "2026-11-03T21:58:33.564111Z"
+  },
+  {
+    "id": "065ac1c9-7078-4fb9-b450-1236d2193217",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-11-01T21:58:35.772663Z"
+  },
+  {
+    "id": "10e4c3ec-ae0f-401a-b74d-bc7c692d11f0",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "deal_won",
+    "details": {
+      "deal_value": "12400.0"
+    },
+    "created_at": "2026-10-02T21:58:36.395850Z"
+  },
+  {
+    "id": "13b6b0b9-33f0-4b4f-9f1c-cdde76bb002b",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "created",
+    "details": {
+      "title": "Pedido 48177: Márcia Regina"
+    },
+    "created_at": "2026-10-30T21:58:33.564111Z"
+  },
+  {
+    "id": "140322e5-3571-49dd-b8a1-d1ed20302877",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "action": "commented",
+    "details": {
+      "body": "Ela está preocupada: é para um evento no sábado.",
+      "comment_id": "dabf651a-61e4-49cb-bb49-45492412a5ac"
+    },
+    "created_at": "2026-11-06T21:58:33.863902Z"
+  },
+  {
+    "id": "1699c4a1-b6e2-49ac-a854-bbff818d29d5",
+    "card_id": "bb3a210b-11d5-4635-b858-7cfed18de2bc",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Patrícia Gomes"
+    },
+    "created_at": "2026-11-05T21:58:34.804350Z"
+  },
+  {
+    "id": "172bd961-4cbb-4f0a-af61-f230369958ef",
+    "card_id": "a34fd7fe-be5a-4f95-8d04-b51ce0764992",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Separação",
+      "from_stage": "Pedido confirmado",
+      "to_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+      "from_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868"
+    },
+    "created_at": "2026-10-24T21:58:34.079890Z"
+  },
+  {
+    "id": "1ae6a28c-ec5b-4a72-9d77-40681c5bd4e9",
+    "card_id": "9818566f-ea24-467f-a8b7-7ea8c0eb1e69",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Sorveteria Polar"
+    },
+    "created_at": "2026-07-30T21:58:36.609717Z"
+  },
+  {
+    "id": "1b4583f8-a9db-4acc-ae2a-28d1cd1a5693",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-27T21:58:35.895484Z"
+  },
+  {
+    "id": "1c0bb459-d8ca-4006-94a0-adc6c271565f",
+    "card_id": "bc1b740a-bf5a-435f-b432-77e6ece1648d",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "label_added",
+    "details": {
+      "label": "Entrega",
+      "label_id": "94fff74c-6c5a-482a-9172-217b17da6e06"
+    },
+    "created_at": "2026-10-26T22:03:34.162191Z"
+  },
+  {
+    "id": "1eaf6ffc-bece-4af6-b0e9-fe334ae00232",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Loja Flor de Lis"
+    },
+    "created_at": "2026-09-14T21:58:36.318169Z"
+  },
+  {
+    "id": "1eff765f-303f-4ce0-980d-c871d0108aca",
+    "card_id": "d85c9050-f6ea-4aac-aaba-9b585188f076",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Atacado",
+      "label_id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221"
+    },
+    "created_at": "2026-10-18T22:03:35.687859Z"
+  },
+  {
+    "id": "26d4af87-9e6a-43f2-ba8c-a6619378c113",
+    "card_id": "2777618b-57ec-4d77-90d7-09109713e41a",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "deal_lost",
+    "details": {
+      "reason": "Preço acima do orçamento",
+      "deal_value": "1200.0"
+    },
+    "created_at": "2026-11-02T21:58:36.228551Z"
+  },
+  {
+    "id": "2a43770f-7f15-48aa-9f3a-7f7f82e760be",
+    "card_id": "3132a9ef-dffd-4bd2-b5bd-0a6a37ad8279",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Separação",
+      "from_stage": "Pedido confirmado",
+      "to_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+      "from_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868"
+    },
+    "created_at": "2026-09-17T21:58:34.243361Z"
+  },
+  {
+    "id": "2e71fb8d-28f8-4eda-adf2-cf5f60f9f287",
+    "card_id": "2777618b-57ec-4d77-90d7-09109713e41a",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Daniela Souza"
+    },
+    "created_at": "2026-10-23T21:58:36.173577Z"
+  },
+  {
+    "id": "2efadbd3-9985-4918-a291-2c7ad98f6fd6",
+    "card_id": "3132a9ef-dffd-4bd2-b5bd-0a6a37ad8279",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "created",
+    "details": {
+      "title": "Pedido 47950: Rafael Mendes"
+    },
+    "created_at": "2026-09-14T21:58:34.243361Z"
+  },
+  {
+    "id": "2effa012-02c2-44e6-9926-51d4fc80293f",
+    "card_id": "a0efbfa5-d2c7-47b1-8d79-25e5bc43fbeb",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-13T21:58:36.246908Z"
+  },
+  {
+    "id": "2f774c71-5fb5-4f03-a3c7-e9f48f516a13",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-08-18T21:58:36.417749Z"
+  },
+  {
+    "id": "386965f4-0bd4-4254-a09b-958f8a42144c",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Café Colonial Dona Rosa"
+    },
+    "created_at": "2026-10-16T21:58:36.052974Z"
+  },
+  {
+    "id": "38eab220-0409-4514-bb36-33f1ed990eb5",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-29T21:58:35.772663Z"
+  },
+  {
+    "id": "3e43b979-8ce2-42da-abb3-c8afe1d3ee67",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-11-03T21:58:35.895484Z"
+  },
+  {
+    "id": "43cb2246-cfdd-4c27-9211-f302a36f28db",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Atacado",
+      "label_id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221"
+    },
+    "created_at": "2026-10-23T22:03:35.772663Z"
+  },
+  {
+    "id": "461ba791-2039-4d60-91fd-f1c3ee8779a0",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Indicação",
+      "label_id": "c8bfaedb-918a-4244-b135-6cceeba32fdc"
+    },
+    "created_at": "2026-10-16T22:03:36.052974Z"
+  },
+  {
+    "id": "4bea03f0-79c5-4d07-957f-d5f6446b8cb6",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-26T21:58:35.772663Z"
+  },
+  {
+    "id": "4cac67d3-1884-4ed6-859f-a86523d5dcc4",
+    "card_id": "e1516521-09d3-497f-8c23-72e1b68b582b",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Atacado",
+      "label_id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221"
+    },
+    "created_at": "2026-11-03T22:03:34.919137Z"
+  },
+  {
+    "id": "4d86882b-42ad-4af8-b7b3-204df8d4c0b5",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Quente",
+      "label_id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0"
+    },
+    "created_at": "2026-10-26T22:03:35.528366Z"
+  },
+  {
+    "id": "4e14bdc6-bfe8-48a6-8f7a-16835cd859be",
+    "card_id": "3132a9ef-dffd-4bd2-b5bd-0a6a37ad8279",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Enviado",
+      "from_stage": "Separação",
+      "to_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+      "from_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74"
+    },
+    "created_at": "2026-09-20T21:58:34.243361Z"
+  },
+  {
+    "id": "507a50ab-b5b9-4617-a262-6caa00f6ab74",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "created",
+    "details": {
+      "title": "Pedido 48213: Roberto Nascimento"
+    },
+    "created_at": "2026-10-28T21:58:33.305269Z"
+  },
+  {
+    "id": "5141543d-92c0-4c4e-9c0a-e2793bfb6117",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-10-25T21:58:36.052974Z"
+  },
+  {
+    "id": "52786d3f-12bd-4cc3-be67-b76165134525",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "deal_won",
+    "details": {
+      "deal_value": "2750.0"
+    },
+    "created_at": "2026-11-04T21:58:35.997327Z"
+  },
+  {
+    "id": "565321c2-cdfa-4bdf-97ab-1bb69fddcc2f",
+    "card_id": "bc1b740a-bf5a-435f-b432-77e6ece1648d",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "created",
+    "details": {
+      "title": "Pedido 48195: Beatriz Carvalho"
+    },
+    "created_at": "2026-10-26T21:58:34.162191Z"
+  },
+  {
+    "id": "56812bde-828f-467c-9b1d-b01efcdea872",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "label_added",
+    "details": {
+      "label": "Urgente",
+      "label_id": "25860111-1fbd-4553-9b9f-98ea3fd27d94"
+    },
+    "created_at": "2026-10-30T22:03:33.564111Z"
+  },
+  {
+    "id": "56e976ce-d51c-4e4a-9a77-3cabc5f57b19",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Separação",
+      "from_stage": "Pedido confirmado",
+      "to_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+      "from_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868"
+    },
+    "created_at": "2026-10-31T21:58:33.305269Z"
+  },
+  {
+    "id": "5817aba9-d5dd-4221-95a9-260b2570b529",
+    "card_id": "a34fd7fe-be5a-4f95-8d04-b51ce0764992",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Entregue",
+      "from_stage": "Enviado",
+      "to_stage_id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e",
+      "from_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455"
+    },
+    "created_at": "2026-10-30T21:58:34.079890Z"
+  },
+  {
+    "id": "59692131-df3e-421e-b578-d0e29d1e6536",
+    "card_id": "bc1b740a-bf5a-435f-b432-77e6ece1648d",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Entregue",
+      "from_stage": "Enviado",
+      "to_stage_id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e",
+      "from_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455"
+    },
+    "created_at": "2026-11-05T21:58:34.162191Z"
+  },
+  {
+    "id": "5bbfbb22-8111-4633-8728-af573e32041c",
+    "card_id": "3132a9ef-dffd-4bd2-b5bd-0a6a37ad8279",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Acompanhamento",
+      "from_stage": "Entregue",
+      "to_stage_id": "ab951c93-1bb7-4aa5-9564-6a0c3903f7c5",
+      "from_stage_id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e"
+    },
+    "created_at": "2026-09-27T21:58:34.243361Z"
+  },
+  {
+    "id": "5c595056-cee1-463a-9e95-8f6c05e16738",
+    "card_id": "a0efbfa5-d2c7-47b1-8d79-25e5bc43fbeb",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-10-17T21:58:36.246908Z"
+  },
+  {
+    "id": "5db5d383-4c77-466b-808f-7522f6d60ffe",
+    "card_id": "a0efbfa5-d2c7-47b1-8d79-25e5bc43fbeb",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "deal_lost",
+    "details": {
+      "reason": "Fechou com outro fornecedor",
+      "deal_value": "4100.0"
+    },
+    "created_at": "2026-10-22T21:58:36.299517Z"
+  },
+  {
+    "id": "5e3606de-6599-418a-bde2-ef7a4663b936",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-11-05T21:58:35.772663Z"
+  },
+  {
+    "id": "60274bb1-ab28-4e19-baaa-d8bfef267e83",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "deal_won",
+    "details": {
+      "deal_value": "21300.0"
+    },
+    "created_at": "2026-08-03T21:58:36.588321Z"
+  },
+  {
+    "id": "6451e574-8cd7-4384-bf2f-ca1898ea61d3",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-08-21T21:58:36.417749Z"
+  },
+  {
+    "id": "67360d3a-db45-4bad-a540-b5d3c8597318",
+    "card_id": "a34fd7fe-be5a-4f95-8d04-b51ce0764992",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "created",
+    "details": {
+      "title": "Pedido 48098: Lucas Oliveira"
+    },
+    "created_at": "2026-10-21T21:58:34.079890Z"
+  },
+  {
+    "id": "68099f51-d0c9-44a7-b11d-f11850ec670a",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Lucas Oliveira"
+    },
+    "created_at": "2026-10-21T21:58:35.895484Z"
+  },
+  {
+    "id": "69afeba8-d8d6-44de-8bda-d15fc0199915",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-11-01T21:58:35.528366Z"
+  },
+  {
+    "id": "6e678526-14de-43c2-8df0-3d55b401ff01",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Enviado",
+      "from_stage": "Separação",
+      "to_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+      "from_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74"
+    },
+    "created_at": "2026-11-04T21:58:33.305269Z"
+  },
+  {
+    "id": "6e7d73b3-ca03-4546-b686-1f3cf9221d22",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Quente",
+      "label_id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0"
+    },
+    "created_at": "2026-10-23T22:03:35.772663Z"
+  },
+  {
+    "id": "7093b1cb-a956-4292-91ad-9b583691de55",
+    "card_id": "8dc90d91-2104-4cac-8204-d17a252281c4",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-28T21:58:35.423185Z"
+  },
+  {
+    "id": "71a88c0f-a315-4ede-8a0c-e0f770a70866",
+    "card_id": "3132a9ef-dffd-4bd2-b5bd-0a6a37ad8279",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Entregue",
+      "from_stage": "Enviado",
+      "to_stage_id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e",
+      "from_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455"
+    },
+    "created_at": "2026-09-23T21:58:34.243361Z"
+  },
+  {
+    "id": "74426529-cc7f-4a11-a110-efa823192de9",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-08-24T21:58:36.417749Z"
+  },
+  {
+    "id": "7469dffc-a450-43b8-b19b-0ad1da3b32ca",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "commented",
+    "details": {
+      "body": "Dá para dar os 5% à vista? O lote inteiro sai de uma vez.",
+      "comment_id": "30aaa3f5-9b3e-4668-a9c6-6285ad62d90b"
+    },
+    "created_at": "2026-11-06T21:58:35.666336Z"
+  },
+  {
+    "id": "74fdc79b-50ba-4e8d-8ad9-103b2c48400b",
+    "card_id": "d85c9050-f6ea-4aac-aaba-9b585188f076",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-10-28T21:58:35.687859Z"
+  },
+  {
+    "id": "755a81aa-2194-43f2-996e-b9d7afa5e66e",
+    "card_id": "a34fd7fe-be5a-4f95-8d04-b51ce0764992",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Acompanhamento",
+      "from_stage": "Entregue",
+      "to_stage_id": "ab951c93-1bb7-4aa5-9564-6a0c3903f7c5",
+      "from_stage_id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e"
+    },
+    "created_at": "2026-11-03T21:58:34.079890Z"
+  },
+  {
+    "id": "7829cd23-f42e-4190-80e7-5c1fdc0223b1",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-08-28T21:58:36.417749Z"
+  },
+  {
+    "id": "7a3965cf-0eb1-473c-bbc4-0b5a8e3f22da",
+    "card_id": "d85c9050-f6ea-4aac-aaba-9b585188f076",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-24T21:58:35.687859Z"
+  },
+  {
+    "id": "7ac27318-e64b-4f17-9c7f-5b723bc851c3",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Rede Bem Estar: kits de Natal"
+    },
+    "created_at": "2026-07-16T21:58:36.517600Z"
+  },
+  {
+    "id": "7f3688ad-7971-45ab-b5c4-54cad187405b",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Indicação",
+      "label_id": "c8bfaedb-918a-4244-b135-6cceeba32fdc"
+    },
+    "created_at": "2026-10-21T22:03:35.239555Z"
+  },
+  {
+    "id": "8476ac5f-8c8d-4e79-b9f5-30e86bb8a82c",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Retorno",
+      "label_id": "44e9445d-326d-46c2-9358-ac3bceacb0b4"
+    },
+    "created_at": "2026-10-26T22:03:35.528366Z"
+  },
+  {
+    "id": "85a8df28-4faa-4fe4-af19-09285aad2e08",
+    "card_id": "a34fd7fe-be5a-4f95-8d04-b51ce0764992",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Enviado",
+      "from_stage": "Separação",
+      "to_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+      "from_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74"
+    },
+    "created_at": "2026-10-27T21:58:34.079890Z"
+  },
+  {
+    "id": "8798699f-9991-4435-b841-a5382fbe52db",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-10-30T21:58:35.895484Z"
+  },
+  {
+    "id": "8a1368d2-5d58-4fda-9445-c682cc8c1b3c",
+    "card_id": "d85c9050-f6ea-4aac-aaba-9b585188f076",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Coleção de verão da Rede Sol & Mar"
+    },
+    "created_at": "2026-10-18T21:58:35.687859Z"
+  },
+  {
+    "id": "8c2772cd-5e5b-4fec-a4bf-8af2ea2e987c",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Indicação",
+      "label_id": "c8bfaedb-918a-4244-b135-6cceeba32fdc"
+    },
+    "created_at": "2026-10-21T22:03:35.895484Z"
+  },
+  {
+    "id": "8d5c5cc7-add5-4acd-a866-130b6f428fbd",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-07-25T21:58:36.517600Z"
+  },
+  {
+    "id": "8eb4c39e-2a2d-49a3-a7da-60ec21fcdf19",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Carlos Eduardo Santos"
+    },
+    "created_at": "2026-11-01T21:58:34.980394Z"
+  },
+  {
+    "id": "8edd5ada-f320-4188-9834-c99540dbc2a1",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-07-29T21:58:36.517600Z"
+  },
+  {
+    "id": "8fb74f45-713b-43ad-9faf-1269792ebc7f",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Quente",
+      "label_id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0"
+    },
+    "created_at": "2026-11-01T22:03:34.980394Z"
+  },
+  {
+    "id": "8fff7a24-18ff-416f-b61c-73f9dfc5203b",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-22T21:58:36.052974Z"
+  },
+  {
+    "id": "9107e154-e71e-4416-8ae1-f679a8675120",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Reposição da Boutique Maré Alta"
+    },
+    "created_at": "2026-10-21T21:58:35.239555Z"
+  },
+  {
+    "id": "9788845d-81cd-43c3-8bd0-4abf9daa98b0",
+    "card_id": "bc1b740a-bf5a-435f-b432-77e6ece1648d",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Enviado",
+      "from_stage": "Separação",
+      "to_stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+      "from_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74"
+    },
+    "created_at": "2026-11-01T21:58:34.162191Z"
+  },
+  {
+    "id": "9a7db306-e5de-4ca7-99d1-36fc4938c6ac",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "commented",
+    "details": {
+      "body": "Se fechar acima de 50 peças, dá para fazer o frete grátis.",
+      "comment_id": "84b7e811-3ad6-414a-91d4-eb825d346d43"
+    },
+    "created_at": "2026-11-06T21:58:35.205186Z"
+  },
+  {
+    "id": "a04e49a6-ebec-4191-9a91-68cede11d3d8",
+    "card_id": "d85c9050-f6ea-4aac-aaba-9b585188f076",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-21T21:58:35.687859Z"
+  },
+  {
+    "id": "a2cd9a88-02b9-425d-8136-cfcce49d8e48",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "commented",
+    "details": {
+      "body": "Mandei duas mensagens e nada. Tento de novo depois do feriado.",
+      "comment_id": "9c18db02-40f8-4967-89e3-c1776e69fcc8"
+    },
+    "created_at": "2026-11-06T21:58:35.330488Z"
+  },
+  {
+    "id": "a46081e6-452c-4947-85fe-0cd84c12b696",
+    "card_id": "bd6bc9ac-14f7-46ed-a6cb-26afe6df9804",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-24T21:58:35.895484Z"
+  },
+  {
+    "id": "a4d5b902-58cf-45f3-9f96-e5f6b10fe78a",
+    "card_id": "c6c50037-2095-4f5e-b5dd-f865d15d64c9",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "action": "created",
+    "details": {
+      "title": "Troca: João Pedro Almeida"
+    },
+    "created_at": "2026-11-05T21:58:33.931390Z"
+  },
+  {
+    "id": "a9812124-aa0b-459c-831d-3fdba84c28a7",
+    "card_id": "12f43b09-0215-4595-9a65-1f7da996567e",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-31T21:58:35.338687Z"
+  },
+  {
+    "id": "abe479c3-bdd8-4c29-b188-d22464d88f5a",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "commented",
+    "details": {
+      "body": "Separei o cinto. Sai hoje pela Loggi.",
+      "comment_id": "43c433b9-9a41-47f7-a173-264f7ecbefb3"
+    },
+    "created_at": "2026-11-06T21:58:33.902782Z"
+  },
+  {
+    "id": "ac08b923-fcb3-437e-82a8-5c450bbe12e9",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Atacado",
+      "label_id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221"
+    },
+    "created_at": "2026-11-01T22:03:34.980394Z"
+  },
+  {
+    "id": "b029779d-5d70-4f31-96ab-9e989f7614a0",
+    "card_id": "a0efbfa5-d2c7-47b1-8d79-25e5bc43fbeb",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Mercado Bom Preço"
+    },
+    "created_at": "2026-10-07T21:58:36.246908Z"
+  },
+  {
+    "id": "b053e15a-981d-4b41-a404-83bf3530552e",
+    "card_id": "bc1b740a-bf5a-435f-b432-77e6ece1648d",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "moved",
+    "details": {
+      "to_stage": "Separação",
+      "from_stage": "Pedido confirmado",
+      "to_stage_id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+      "from_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868"
+    },
+    "created_at": "2026-10-29T21:58:34.162191Z"
+  },
+  {
+    "id": "b0b476d5-cc55-4b54-a764-7afbd4aeacab",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-11-05T21:58:34.980394Z"
+  },
+  {
+    "id": "b38b152b-0953-4c72-b8a4-09bdd1bcf6ca",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "label_added",
+    "details": {
+      "label": "Entrega",
+      "label_id": "94fff74c-6c5a-482a-9172-217b17da6e06"
+    },
+    "created_at": "2026-10-30T22:03:33.564111Z"
+  },
+  {
+    "id": "b5539932-0221-4799-8a53-47fcd13a73de",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "commented",
+    "details": {
+      "body": "Ele vai levar a tabela para a diretoria. Combinei de ligar na quinta.",
+      "comment_id": "f04375af-162e-485b-ac21-344621201ba4"
+    },
+    "created_at": "2026-11-06T21:58:35.164937Z"
+  },
+  {
+    "id": "b57360ab-c87a-488f-bc44-47c6a75d7124",
+    "card_id": "a0efbfa5-d2c7-47b1-8d79-25e5bc43fbeb",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-10T21:58:36.246908Z"
+  },
+  {
+    "id": "b930887d-ddb8-49a4-921f-08ea38136dfa",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-19T21:58:36.052974Z"
+  },
+  {
+    "id": "b9aef9eb-8deb-4f9d-914d-d1725f02d9bc",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Clube Pinheiros: camisetas do torneio"
+    },
+    "created_at": "2026-08-15T21:58:36.417749Z"
+  },
+  {
+    "id": "bb716a07-30a2-48ff-9d95-3b630dea81b8",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "deal_won",
+    "details": {
+      "deal_value": "3900.0"
+    },
+    "created_at": "2026-10-31T21:58:36.121112Z"
+  },
+  {
+    "id": "be5ca5eb-997b-44c9-8605-86aaf671caad",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-25T21:58:35.239555Z"
+  },
+  {
+    "id": "bf88330a-d258-426d-a537-52173b51dafa",
+    "card_id": "8dc90d91-2104-4cac-8204-d17a252281c4",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-11-01T21:58:35.423185Z"
+  },
+  {
+    "id": "c3ce3940-1847-4f99-89bf-94488099d777",
+    "card_id": "2777618b-57ec-4d77-90d7-09109713e41a",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-10-30T21:58:36.173577Z"
+  },
+  {
+    "id": "c4a4d040-38f0-4188-be0b-3bd7a73a9a83",
+    "card_id": "4b1dcfcf-3a1a-48cf-9d0d-60adcfe407a6",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-10-29T21:58:36.052974Z"
+  },
+  {
+    "id": "c5f16198-5104-410d-9ff4-8bc5c3427a98",
+    "card_id": "8dc90d91-2104-4cac-8204-d17a252281c4",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Atacado",
+      "label_id": "5e40ae91-fa48-4440-9ff1-2f3f013b8221"
+    },
+    "created_at": "2026-10-25T22:03:35.423185Z"
+  },
+  {
+    "id": "c7d74563-88cd-40da-a086-23bff7f9fda4",
+    "card_id": "d3e0a15c-8fce-498a-9862-bfbfedf5eabe",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-07-19T21:58:36.517600Z"
+  },
+  {
+    "id": "c965ae58-b3e4-4c81-9bd7-55346943cb5e",
+    "card_id": "c6c50037-2095-4f5e-b5dd-f865d15d64c9",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "action": "label_added",
+    "details": {
+      "label": "Troca",
+      "label_id": "7c66e376-9554-486d-898d-de7092098c8d"
+    },
+    "created_at": "2026-11-05T22:03:33.931390Z"
+  },
+  {
+    "id": "c97c4944-1306-406f-bc8a-4565f324982e",
+    "card_id": "8dc90d91-2104-4cac-8204-d17a252281c4",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "created",
+    "details": {
+      "title": "Kit de boas-vindas da Agência Lume"
+    },
+    "created_at": "2026-10-25T21:58:35.423185Z"
+  },
+  {
+    "id": "cf055583-1fbf-44c7-a33a-192a528975e3",
+    "card_id": "12f43b09-0215-4595-9a65-1f7da996567e",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Quente",
+      "label_id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0"
+    },
+    "created_at": "2026-10-28T22:03:35.338687Z"
+  },
+  {
+    "id": "de0e4f94-89e3-4c01-8977-aeb71f2ed2a2",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-09-23T21:58:36.318169Z"
+  },
+  {
+    "id": "de75011a-66cd-4af9-8104-6cf93b64ce93",
+    "card_id": "12f43b09-0215-4595-9a65-1f7da996567e",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-11-04T21:58:35.338687Z"
+  },
+  {
+    "id": "e091b6f6-1414-456b-92a2-5ff2c206571a",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "commented",
+    "details": {
+      "body": "Rastreio enviado por modelo, porque a janela de 24 horas já tinha fechado.",
+      "comment_id": "3e9f4372-bbd1-4cb6-a146-b16bc4789d79"
+    },
+    "created_at": "2026-11-06T21:58:33.552674Z"
+  },
+  {
+    "id": "e179b437-ec1e-4fcc-b275-cd6aa255f7b1",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "commented",
+    "details": {
+      "body": "Boa, vou oferecer. Obrigada!",
+      "comment_id": "31d617f5-35bd-427c-a857-bd306ae3a006"
+    },
+    "created_at": "2026-11-06T21:58:35.230479Z"
+  },
+  {
+    "id": "e528c664-e78b-44d9-ae70-bf4fa6464271",
+    "card_id": "2777618b-57ec-4d77-90d7-09109713e41a",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-26T21:58:36.173577Z"
+  },
+  {
+    "id": "e66e5385-c5a7-444f-93cb-c91ffcd1d66a",
+    "card_id": "d153af59-2656-44e9-a486-d4da583fc2a6",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "action": "label_added",
+    "details": {
+      "label": "Entrega",
+      "label_id": "94fff74c-6c5a-482a-9172-217b17da6e06"
+    },
+    "created_at": "2026-10-28T22:03:33.305269Z"
+  },
+  {
+    "id": "e83a3b85-471f-413b-9f26-1082d2577bbb",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Proposta enviada",
+      "from_stage": "Qualificação",
+      "to_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+      "from_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155"
+    },
+    "created_at": "2026-09-20T21:58:36.318169Z"
+  },
+  {
+    "id": "e8c8fec8-7ed8-4cf1-a3c8-d8ec85e5717b",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Fechamento",
+      "from_stage": "Negociação",
+      "to_stage_id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+      "from_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e"
+    },
+    "created_at": "2026-09-27T21:58:36.318169Z"
+  },
+  {
+    "id": "ebf10d4a-efe6-4381-9124-41aae0355384",
+    "card_id": "61d80e66-a0b5-41bc-9acf-ead341ec50d6",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-09-17T21:58:36.318169Z"
+  },
+  {
+    "id": "ed2c5bd6-d08e-4fc5-add5-5abebd568270",
+    "card_id": "10e1c72c-bdd4-40b8-b697-20f3f529a6fa",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "deal_won",
+    "details": {
+      "deal_value": "15800.0"
+    },
+    "created_at": "2026-09-02T21:58:36.489179Z"
+  },
+  {
+    "id": "ee3a4428-ef63-4164-b5ec-8d960d160bd4",
+    "card_id": "12f43b09-0215-4595-9a65-1f7da996567e",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Camila Ferraz"
+    },
+    "created_at": "2026-10-28T21:58:35.338687Z"
+  },
+  {
+    "id": "ee406b06-5e80-4e7b-82b9-bc1f3009179b",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Negociação",
+      "from_stage": "Proposta enviada",
+      "to_stage_id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+      "from_stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe"
+    },
+    "created_at": "2026-11-05T21:58:35.528366Z"
+  },
+  {
+    "id": "f2e7991f-3548-4a38-8391-f56f2a0cf313",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Fernanda Lima"
+    },
+    "created_at": "2026-10-26T21:58:35.528366Z"
+  },
+  {
+    "id": "f3798657-8f34-412b-b036-eeb81b325bcc",
+    "card_id": "b1a67d80-e77e-4c7f-9079-34186f31bbb5",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "label_added",
+    "details": {
+      "label": "Retorno",
+      "label_id": "44e9445d-326d-46c2-9358-ac3bceacb0b4"
+    },
+    "created_at": "2026-10-21T22:03:35.239555Z"
+  },
+  {
+    "id": "fa66251a-4644-46b1-bbf0-5e55dc153d7c",
+    "card_id": "9818566f-ea24-467f-a8b7-7ea8c0eb1e69",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-08-03T21:58:36.609717Z"
+  },
+  {
+    "id": "fc040819-ad4d-4d21-b514-95a6c07cafe5",
+    "card_id": "bb3a210b-11d5-4635-b858-7cfed18de2bc",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "label_added",
+    "details": {
+      "label": "Quente",
+      "label_id": "7e1867df-d106-4984-b65f-e6adfc4cdbb0"
+    },
+    "created_at": "2026-11-05T22:03:34.804350Z"
+  },
+  {
+    "id": "feac2679-402c-406a-a4bc-f103f4bb8d97",
+    "card_id": "67cb434e-4de4-4d53-ae10-cb9f377828f0",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "moved",
+    "details": {
+      "to_stage": "Qualificação",
+      "from_stage": "Novos contatos",
+      "to_stage_id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+      "from_stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85"
+    },
+    "created_at": "2026-10-29T21:58:35.528366Z"
+  },
+  {
+    "id": "ff9cebc9-4829-4314-8a31-3ad595a48d07",
+    "card_id": "6478fff5-f633-441a-9357-ea2fc8f4555c",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "action": "created",
+    "details": {
+      "title": "Hotel Serra Azul: enxoval da loja"
+    },
+    "created_at": "2026-10-23T21:58:35.772663Z"
+  }
+]

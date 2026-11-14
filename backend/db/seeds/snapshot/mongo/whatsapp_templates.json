@@ -1,0 +1,143 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bc2"
+    },
+    "components": [
+      {
+        "type": "BODY",
+        "text": "Olá, {{1}}! Seu pedido {{2}} saiu para entrega. Alguém recebe amanhã à tarde?"
+      },
+      {
+        "type": "BUTTONS",
+        "buttons": [
+          {
+            "type": "QUICK_REPLY",
+            "text": "Sim, pode entregar"
+          },
+          {
+            "type": "QUICK_REPLY",
+            "text": "Quero remarcar"
+          }
+        ]
+      }
+    ],
+    "quality_score": {},
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "template_id": "seed-entrega",
+    "language": "pt_BR",
+    "last_synced_at": {
+      "$date": "2026-11-06T17:28:55.963Z"
+    },
+    "name": "pedido_saiu_para_entrega",
+    "category": "UTILITY",
+    "status_cd": "approved",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.964Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.964Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5717c01071cdba2bc3"
+    },
+    "components": [
+      {
+        "type": "HEADER",
+        "format": "TEXT",
+        "text": "Novidade do mês"
+      },
+      {
+        "type": "BODY",
+        "text": "{{1}}, neste mês o vestido chemise sai com 20% de desconto."
+      },
+      {
+        "type": "FOOTER",
+        "text": "Doma Store"
+      }
+    ],
+    "quality_score": {},
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "template_id": "seed-promocao",
+    "language": "pt_BR",
+    "last_synced_at": {
+      "$date": "2026-11-06T17:28:55.997Z"
+    },
+    "name": "promocao_mes",
+    "category": "MARKETING",
+    "status_cd": "approved",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:55.997Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:55.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc4"
+    },
+    "components": [
+      {
+        "type": "BODY",
+        "text": "{{1}}, as peças que você escolheu ainda estão esperando. Vamos fechar?"
+      }
+    ],
+    "quality_score": {},
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "template_id": "seed-pendente",
+    "language": "pt_BR",
+    "last_synced_at": {
+      "$date": "2026-11-06T17:28:56.003Z"
+    },
+    "name": "lembrete_carrinho",
+    "category": "MARKETING",
+    "status_cd": "pending",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.003Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.003Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc5"
+    },
+    "components": [
+      {
+        "type": "BODY",
+        "text": "Oferta encerrada."
+      }
+    ],
+    "quality_score": {},
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "template_id": "seed-removido",
+    "language": "pt_BR",
+    "last_synced_at": {
+      "$date": "2026-11-06T17:28:56.009Z"
+    },
+    "name": "campanha_antiga",
+    "category": "MARKETING",
+    "status_cd": "removed",
+    "removed_at": {
+      "$date": "2026-10-27T17:28:55.953Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.009Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T17:28:56.009Z"
+    }
+  }
+]

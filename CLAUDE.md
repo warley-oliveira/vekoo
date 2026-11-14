@@ -165,9 +165,16 @@ quem opera a criação na Vekoo: a curadoria (`/admin`) e a entrada nas organiza
 marcas de teste, `organizations.internal`) pela mesma lista do suporte, com um vínculo de suporte; liga só
 por `bin/rails 'staff:grant[EMAIL]'`.
 
-**Semente:** `db/seeds.rb` tem o acervo e a conta de demonstração, e cada domínio tem a sua em
-`db/seeds/<domain>.rb`, tudo idempotente. Em produção só o acervo roda, a menos que `SEED_DEMO_DATA=1`: dado do produto que precisa
-existir em todo ambiente vai em `platform:sync`, que o deploy roda sozinho.
+**Semente:** `db/seeds.rb` aplica o acervo e, como demonstração, o **retrato do banco de desenvolvimento**
+em `db/seeds/snapshot/` (`lib/demo_snapshot.rb`): Postgres, Mongo e arquivos do Active Storage, gravados
+por `bin/rails db:snapshot:dump` e aplicados por `db:seed` (ou `db:snapshot:load`) com **upsert por id** e
+**datas relativas** (andam os dias inteiros passados desde o retrato, com a hora de parede intacta). Fica
+fora: sessões, pedidos de senha, entradas do suporte, push e o acervo. Mudou a demonstração? Mexa no banco
+de dev e grave de novo. Banco que recebeu a semente escrita à mão recusa o retrato (mesmo e-mail com outro
+id): `bin/rails db:reset`. A semente escrita à mão (`db/seeds.rb` + `db/seeds/<domain>.rb`) é o plano B:
+vale sem retrato ou com `SEED_SOURCE=handwritten`, e é a que `spec/db/seeds_spec.rb` testa. Em produção
+só o acervo roda, a menos que `SEED_DEMO_DATA=1`: dado do produto que precisa existir em todo ambiente vai
+em `platform:sync`, que o deploy roda sozinho.
 
 **Onboarding por conversa (a porta de entrada de toda marca):** marca nova cai em
 `/brands/:id/onboarding` — intro e depois uma **conversa**: o agente pergunta um

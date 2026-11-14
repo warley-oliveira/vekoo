@@ -1,0 +1,1885 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "web",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "canal_de_origem": "Instagram",
+      "cidade": "Londrina",
+      "tamanho_preferido": "M"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "visitante-ana-beatriz",
+    "user_name": "Ana Beatriz Moura",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": "101aacb8-42f7-4e3e-87cf-f58f3cc1b452",
+    "session_start_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb5"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bba"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb826"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-09T14:20:03.194Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-09T14:20:03.197Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bc7"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Ana Beatriz Moura, te esperamos daqui a pouco, às 10:00, para Prova com hora marcada com Camila Rocha. Estamos na Rua Pernambuco, 1.000, na Savassi.",
+    "last_message_type": "text",
+    "notes": null
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "web",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 13,
+    "custom_attributes": {
+      "aceita_novidades": "true",
+      "cidade": "Curitiba",
+      "tamanho_preferido": "G",
+      "ticket_medio": "180"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "visitante-joao-pedro",
+    "user_name": "João Pedro Almeida",
+    "audience_user_name": null,
+    "assigned_account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "team_id": "b9b36a60-ab39-4f8f-a149-781769af3ad4",
+    "session_start_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb5"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbb"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      },
+      {
+        "$oid": "6aee81f863117ff84a7ea570"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-08T21:25:11.163Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-09T14:24:29.410Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bcd"
+    },
+    "last_message_by": "user",
+    "last_message_content": "Chegou agora 11133",
+    "last_message_type": "text",
+    "notes": null
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "aniversario": "1989-03-14",
+      "canal_de_origem": "Indicação",
+      "cidade": "Belo Horizonte",
+      "ticket_medio": "500"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531971810932",
+    "user_name": "Fernanda Lima",
+    "audience_user_name": null,
+    "assigned_account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "team_id": "994867fe-35e0-4962-96d6-151119377432",
+    "session_start_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbe"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bbc"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb827"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-05T15:27:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-08T03:51:16.417Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bd4"
+    },
+    "last_message_by": "user",
+    "last_message_content": "-",
+    "last_message_type": "audio"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "canal_de_origem": "Google",
+      "cidade": "São Paulo",
+      "ticket_medio": "950"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5511987651234",
+    "user_name": "Carlos Eduardo Santos",
+    "audience_user_name": null,
+    "assigned_account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "team_id": "101aacb8-42f7-4e3e-87cf-f58f3cc1b452",
+    "session_start_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bba"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb827"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-05T15:47:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.492Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bdb"
+    },
+    "last_message_by": "user",
+    "last_message_content": "Recebi, obrigado. Vou levar para a diretoria e te retorno.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "aceita_novidades": "false",
+      "cidade": "Rio de Janeiro",
+      "tamanho_preferido": "P"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5521998761234",
+    "user_name": "Márcia Regina Costa",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": null,
+    "session_start_at": {
+      "$date": "2026-11-04T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbd"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bbb"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb828"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb826"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7679"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-10T19:15:24.376Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-10T19:15:24.384Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2be1"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Márcia Regina Costa, te esperamos daqui a pouco, às 15:00, para Consultoria de estilo com Thiago Almeida. Estamos na Rua Pernambuco, 1.000, na Savassi.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "canal_de_origem": "Loja física",
+      "cidade": "Curitiba",
+      "ticket_medio": "230"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5541991234567",
+    "user_name": "Lucas Oliveira",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": "b9b36a60-ab39-4f8f-a149-781769af3ad4",
+    "session_start_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbf"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc0"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7679"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-03T15:10:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.510Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2be8"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Que ótimo, Lucas! Qualquer coisa é só chamar.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "cidade": "Belo Horizonte",
+      "tamanho_preferido": "GG",
+      "ticket_medio": "320"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1eda0ba0-7c18-45ae-8364-717915147a09",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531988887777",
+    "user_name": "Patrícia Gomes",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": "101aacb8-42f7-4e3e-87cf-f58f3cc1b452",
+    "session_start_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb828"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:48:51.568Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bed"
+    },
+    "last_message_by": "user",
+    "last_message_content": "Olá! Tenho interesse e queria mais informações, por favor.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "canal_de_origem": "Site",
+      "cidade": "Salvador",
+      "ticket_medio": "1200"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5571999990000",
+    "user_name": "Roberto Nascimento",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": null,
+    "session_start_at": {
+      "$date": "2026-11-02T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-02T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbf"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bbc"
+      },
+      {
+        "$oid": "6aee27e5832f77baac1fb827"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-04T15:32:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-07T18:38:24.638Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bf1"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Roberto, a transportadora confirmou a entrega. Deu tudo certo?",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "instagram",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1eda0ba0-7c18-45ae-8364-717915147a09",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "178410000000042",
+    "user_name": "Camila Ferraz",
+    "audience_user_name": "camila.ferraz",
+    "assigned_account_id": null,
+    "team_id": null,
+    "session_start_at": {
+      "$date": "2026-11-01T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-11-01T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb8"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-11-01T15:25:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.519Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bf6"
+    },
+    "last_message_by": "user",
+    "last_message_content": "Ótimo, vou pedir pelo site!",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {
+      "aceita_novidades": "true",
+      "aniversario": "1994-11-21",
+      "cidade": "Fortaleza",
+      "tamanho_preferido": "M"
+    },
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1eda0ba0-7c18-45ae-8364-717915147a09",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5585996543210",
+    "user_name": "Daniela Souza",
+    "audience_user_name": null,
+    "assigned_account_id": null,
+    "team_id": null,
+    "session_start_at": {
+      "$date": "2026-10-31T15:07:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-31T15:07:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbf"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bbe"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc1"
+      },
+      {
+        "$oid": "6aee29eb64d3ea36e87c7675"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-31T15:11:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.522Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2bfb"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Sem problema, Daniela!",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bff"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1eda0ba0-7c18-45ae-8364-717915147a09",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000000",
+    "user_name": "Beatriz Carvalho",
+    "session_start_at": {
+      "$date": "2026-10-29T09:00:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-29T09:00:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc0"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-29T09:02:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.526Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c00"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c03"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "0dacbc78-95d1-406a-87d6-7d034d9bd856",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000137",
+    "user_name": "Rafael Mendes",
+    "session_start_at": {
+      "$date": "2026-10-28T10:02:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-28T10:02:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bba"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-28T10:05:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.529Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c04"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Para Curitiba, chega em até 2 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c07"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "0dacbc78-95d1-406a-87d6-7d034d9bd856",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000274",
+    "user_name": "Juliana Prado",
+    "session_start_at": {
+      "$date": "2026-10-27T11:04:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-27T11:04:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbb"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-27T11:08:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.532Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c08"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Parcelamos em até 6 vezes sem juros.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0b"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000411",
+    "user_name": "Thiago Ribeiro",
+    "session_start_at": {
+      "$date": "2026-10-26T12:06:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-26T12:06:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbc"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-26T12:11:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.535Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c0c"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0f"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000548",
+    "user_name": "Larissa Teixeira",
+    "session_start_at": {
+      "$date": "2026-10-25T13:08:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-25T13:08:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbd"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc1"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-25T13:14:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.538Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c10"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c13"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {},
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000685",
+    "user_name": "Bruno Cardoso",
+    "session_start_at": {
+      "$date": "2026-10-24T14:10:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-24T14:10:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbe"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-24T14:17:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.576Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c14"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c17"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {},
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000822",
+    "user_name": "Aline Barros",
+    "session_start_at": {
+      "$date": "2026-10-23T15:12:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-23T15:12:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbf"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-23T15:20:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.588Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c18"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Para Curitiba, chega em até 2 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1b"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970000959",
+    "user_name": "Felipe Araújo",
+    "session_start_at": {
+      "$date": "2026-10-22T16:14:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-22T16:14:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-22T16:23:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.540Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c1c"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Parcelamos em até 6 vezes sem juros.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1f"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001096",
+    "user_name": "Vanessa Rocha",
+    "session_start_at": {
+      "$date": "2026-10-21T17:16:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-21T17:16:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bba"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc0"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-21T17:26:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.543Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c20"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c23"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001233",
+    "user_name": "Gustavo Martins",
+    "session_start_at": {
+      "$date": "2026-10-20T09:18:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-20T09:18:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbb"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-20T09:29:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.549Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c24"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c27"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001370",
+    "user_name": "Renata Pires",
+    "session_start_at": {
+      "$date": "2026-10-19T10:20:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-19T10:20:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbc"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-19T10:32:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.553Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c28"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2b"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001507",
+    "user_name": "Eduardo Freitas",
+    "session_start_at": {
+      "$date": "2026-10-18T11:22:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-18T11:22:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbd"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-18T11:35:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.557Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c2c"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Para Curitiba, chega em até 2 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2f"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001644",
+    "user_name": "Sabrina Lopes",
+    "session_start_at": {
+      "$date": "2026-10-17T12:24:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-17T12:24:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbe"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc1"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-17T12:38:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.561Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c30"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Parcelamos em até 6 vezes sem juros.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c33"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001781",
+    "user_name": "André Moreira",
+    "session_start_at": {
+      "$date": "2026-10-16T13:26:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-16T13:26:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbf"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-16T13:41:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.564Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c34"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c37"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970001918",
+    "user_name": "Priscila Nunes",
+    "session_start_at": {
+      "$date": "2026-10-15T14:28:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-15T14:28:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-15T14:44:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.566Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c38"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3b"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970002055",
+    "user_name": "Marcelo Duarte",
+    "session_start_at": {
+      "$date": "2026-10-14T15:30:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-14T15:30:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bba"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-14T15:47:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.568Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c3c"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3f"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970002192",
+    "user_name": "Tatiane Vieira",
+    "session_start_at": {
+      "$date": "2026-10-13T16:32:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-13T16:32:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbb"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bc0"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-13T16:50:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.572Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c40"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Para Curitiba, chega em até 2 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c43"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970002329",
+    "user_name": "Diego Fernandes",
+    "session_start_at": {
+      "$date": "2026-10-12T17:34:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-12T17:34:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbc"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-12T17:53:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.445Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c44"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Parcelamos em até 6 vezes sem juros.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c47"
+    },
+    "automation_enabled": true,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970002466",
+    "user_name": "Natália Castro",
+    "session_start_at": {
+      "$date": "2026-10-11T09:36:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-11T09:36:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbd"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-11T09:56:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.447Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c48"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c4b"
+    },
+    "automation_enabled": false,
+    "status": "closed",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "127cf444-9217-4e89-bed9-2a136631719b"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "5531970002603",
+    "user_name": "Vinícius Ramos",
+    "session_start_at": {
+      "$date": "2026-10-10T10:38:00Z"
+    },
+    "created_at": {
+      "$date": "2026-10-10T10:38:00Z"
+    },
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb7"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee0e5717c01071cdba2bbe"
+      }
+    ],
+    "last_message_at": {
+      "$date": "2026-10-10T10:59:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.577Z"
+    },
+    "audience_id": {
+      "$oid": "6aee0e5817c01071cdba2c4c"
+    },
+    "last_message_by": "assistant",
+    "last_message_content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "last_message_type": "text"
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e6832f77baac1fb829"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "import_feature",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "external_id": "5541999110001",
+    "user_name": "Helena Martins",
+    "last_message_at": {
+      "$date": "2026-11-04T19:17:58.007Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T19:17:58.007Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.413Z"
+    },
+    "assigned_account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "team_id": "b9b36a60-ab39-4f8f-a149-781769af3ad4"
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e6832f77baac1fb82a"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "import_feature",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "external_id": "5541999110002",
+    "user_name": "Otávio Ribeiro",
+    "last_message_at": {
+      "$date": "2026-11-04T19:17:58.008Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T19:17:58.008Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.496Z"
+    },
+    "team_id": "101aacb8-42f7-4e3e-87cf-f58f3cc1b452",
+    "chat_tag_ids": []
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e6832f77baac1fb82b"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "import_feature",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "external_id": "5541999110003",
+    "user_name": "Sofia Carvalho",
+    "last_message_at": {
+      "$date": "2026-11-04T19:17:58.008Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T19:17:58.008Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.412Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e6832f77baac1fb82c"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "import_feature",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "1de241b7-7a90-4440-854a-0a86f24dda47",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "external_id": "5541999110004",
+    "user_name": "Bruno Teixeira",
+    "last_message_at": {
+      "$date": "2026-11-04T19:17:58.009Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T19:17:58.009Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T23:26:25.673Z"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aee27e5832f77baac1fb827"
+      },
+      {
+        "$oid": "6aee0e5717c01071cdba2bb9"
+      }
+    ],
+    "assigned_account_id": null,
+    "team_id": null,
+    "notes": null
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e6832f77baac1fb82d"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "import_feature",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {
+      "c4132df9-752e-42ff-897e-4814c9a93e6c": "763cde30-89b1-4f8f-ab04-e583f8562743",
+      "0879b62d-6869-4c57-a94d-146ad9c4209e": "ad3e685f-fea4-494a-9234-b3351f58c291"
+    },
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "connector_id": {
+      "$oid": "6aee0e5717c01071cdba2bb6"
+    },
+    "external_id": "5541999110005",
+    "user_name": "Isabela Nogueira",
+    "last_message_at": {
+      "$date": "2026-11-04T19:17:58.009Z"
+    },
+    "created_at": {
+      "$date": "2026-11-04T19:17:58.009Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T21:41:36.494Z"
+    },
+    "assigned_account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "chat_tag_ids": []
+  },
+  {
+    "_id": {
+      "$oid": "6aee719b8cd938569901bb32"
+    },
+    "automation_enabled": false,
+    "status": "open",
+    "audience_type": "whatsapp_api",
+    "tags": [],
+    "summary": "",
+    "unread_messages": 0,
+    "custom_attributes": {},
+    "contact_storage": {},
+    "flow_data": {},
+    "funnel_stages": {},
+    "red_flag_count": 0,
+    "external_fields": {},
+    "widget_context": {},
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "external_id": "9999999999@whatsapp",
+    "user_name": "João da Silva",
+    "last_message_at": {
+      "$date": "2026-11-07T00:32:27.933Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-08T02:02:22.800Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T00:32:27.934Z"
+    },
+    "audience_id": {
+      "$oid": "6aee719b8cd938569901bb31"
+    },
+    "chat_tag_ids": [
+      {
+        "$oid": "6aefd8077ed60bcb76d0a161"
+      },
+      {
+        "$oid": "6aee81f863117ff84a7ea570"
+      }
+    ]
+  }
+]

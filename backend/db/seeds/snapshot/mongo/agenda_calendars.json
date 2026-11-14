@@ -1,0 +1,160 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766a"
+    },
+    "rebalancing_period": "week",
+    "calendar_type": "professional",
+    "color": "#b06046",
+    "professional_notifications_settings": [
+      {
+        "time_before": 1,
+        "period": "hours",
+        "message": "Daqui a pouco: {{servico}} com {{nome}}, às {{hora}}.",
+        "push": true,
+        "whatsapp": false
+      }
+    ],
+    "professional_event_notifications": [],
+    "scheduling_notification_config": [
+      {
+        "interval": 1,
+        "period": "days",
+        "message": "Oi, {{nome}}! Passando para lembrar: amanhã, às {{hora}}, é o seu horário de {{servico}} aqui no Estúdio Doma. Se precisar remarcar, é só responder esta mensagem."
+      },
+      {
+        "interval": 2,
+        "period": "hours",
+        "message": "{{nome}}, te esperamos daqui a pouco, às {{hora}}, para {{servico}} com {{profissional}}. Estamos na Rua Pernambuco, 1.000, na Savassi."
+      }
+    ],
+    "attendance_sequences": [
+      {
+        "id": "seed-faltou",
+        "name": "Recuperar quem faltou",
+        "trigger": "no_show",
+        "enabled": true,
+        "auto_enroll": false,
+        "stop_on_reply": true,
+        "ignore_automation_paused": false,
+        "reactivate_automation": false,
+        "auto_enroll_minutes_after_end": 120,
+        "auto_enroll_anchors": [
+          "attendance_mark"
+        ],
+        "steps": [
+          {
+            "id": "seed-faltou-1",
+            "name": "Mesmo dia",
+            "message": "Oi, {{nome}}! Sentimos sua falta hoje. Quer marcar outro horário?",
+            "run_after": 2,
+            "run_after_unit": "hours",
+            "time_from": 9,
+            "time_at": 19,
+            "all_day": false
+          },
+          {
+            "id": "seed-faltou-2",
+            "name": "Dois dias depois",
+            "message": "{{nome}}, ainda temos horários nesta semana. Posso reservar um para você?",
+            "run_after": 2,
+            "run_after_unit": "days",
+            "time_from": 9,
+            "time_at": 19,
+            "all_day": false
+          }
+        ]
+      },
+      {
+        "id": "seed-veio",
+        "name": "Agradecer quem veio",
+        "trigger": "show",
+        "enabled": true,
+        "auto_enroll": false,
+        "stop_on_reply": false,
+        "ignore_automation_paused": false,
+        "reactivate_automation": false,
+        "auto_enroll_minutes_after_end": 60,
+        "auto_enroll_anchors": [
+          "attendance_mark"
+        ],
+        "steps": [
+          {
+            "id": "seed-veio-1",
+            "name": "Pós-atendimento",
+            "message": "Obrigada pela visita, {{nome}}! Como ficou a peça?",
+            "run_after": 1,
+            "run_after_unit": "days",
+            "time_from": 10,
+            "time_at": 18,
+            "all_day": false
+          }
+        ]
+      }
+    ],
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Estúdio Doma",
+    "time_zone": "America/Sao_Paulo",
+    "description": "Provas, ajustes e consultorias com hora marcada.",
+    "scheduling_notification_enabled": true,
+    "scheduling_notification_reactivate_automation": false,
+    "scheduling_notification_ignore_automation_paused": false,
+    "updated_at": {
+      "$date": "2026-11-06T23:21:22.242Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.388Z"
+    },
+    "professional_whatsapp_connector_id": null
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "rebalancing_period": "week",
+    "calendar_type": "class_group",
+    "color": "#7c3aed",
+    "professional_notifications_settings": [],
+    "professional_event_notifications": [],
+    "scheduling_notification_config": [],
+    "attendance_sequences": [],
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Oficinas Doma",
+    "time_zone": "America/Sao_Paulo",
+    "description": "Turmas de costura e encontros.",
+    "scheduling_notification_enabled": false,
+    "scheduling_notification_reactivate_automation": false,
+    "scheduling_notification_ignore_automation_paused": false,
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.207Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.207Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefad4eab7cc3f8451cfd71"
+    },
+    "rebalancing_period": "week",
+    "calendar_type": "class_group",
+    "color": "#059669",
+    "professional_notifications_settings": [],
+    "professional_event_notifications": [],
+    "scheduling_notification_config": [],
+    "attendance_sequences": [],
+    "name": "Aulão Vekoo",
+    "description": null,
+    "time_zone": "America/Sao_Paulo",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "scheduling_notification_enabled": false,
+    "scheduling_notification_reactivate_automation": false,
+    "scheduling_notification_ignore_automation_paused": false,
+    "updated_at": {
+      "$date": "2026-11-07T22:59:26.653Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T22:59:26.653Z"
+    }
+  }
+]

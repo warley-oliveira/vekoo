@@ -1,0 +1,271 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766c"
+    },
+    "blocked_times": [],
+    "days": [
+      {
+        "day_of_week": 0,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 1,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "12:00"
+          },
+          {
+            "start": "13:00",
+            "end": "18:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 2,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "12:00"
+          },
+          {
+            "start": "13:00",
+            "end": "18:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 3,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "12:00"
+          },
+          {
+            "start": "13:00",
+            "end": "18:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 4,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "12:00"
+          },
+          {
+            "start": "13:00",
+            "end": "18:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 5,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "12:00"
+          },
+          {
+            "start": "13:00",
+            "end": "18:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 6,
+        "enabled": false,
+        "windows": []
+      }
+    ],
+    "professional_id": {
+      "$oid": "6aee29eb64d3ea36e87c766b"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.430Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.430Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c766e"
+    },
+    "blocked_times": [],
+    "days": [
+      {
+        "day_of_week": 0,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 1,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 2,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "13:00"
+          },
+          {
+            "start": "14:00",
+            "end": "19:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 3,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "13:00"
+          },
+          {
+            "start": "14:00",
+            "end": "19:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 4,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "13:00"
+          },
+          {
+            "start": "14:00",
+            "end": "19:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 5,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "13:00"
+          },
+          {
+            "start": "14:00",
+            "end": "19:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 6,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "10:00",
+            "end": "13:00"
+          },
+          {
+            "start": "14:00",
+            "end": "19:00"
+          }
+        ]
+      }
+    ],
+    "professional_id": {
+      "$oid": "6aee29eb64d3ea36e87c766d"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.447Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.447Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee29eb64d3ea36e87c7670"
+    },
+    "blocked_times": [],
+    "days": [
+      {
+        "day_of_week": 0,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 1,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "16:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 2,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 3,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "16:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 4,
+        "enabled": false,
+        "windows": []
+      },
+      {
+        "day_of_week": 5,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "16:00"
+          }
+        ]
+      },
+      {
+        "day_of_week": 6,
+        "enabled": true,
+        "windows": [
+          {
+            "start": "09:00",
+            "end": "16:00"
+          }
+        ]
+      }
+    ],
+    "professional_id": {
+      "$oid": "6aee29eb64d3ea36e87c766f"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "updated_at": {
+      "$date": "2026-11-06T19:26:35.457Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:35.457Z"
+    }
+  }
+]

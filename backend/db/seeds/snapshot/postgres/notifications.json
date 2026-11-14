@@ -1,0 +1,20 @@
+[
+  {
+    "id": "4fee53eb-8378-5b4d-a98d-d13a7a372d78",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "key": "welcome",
+    "read": true,
+    "notified_at": "2026-11-02T01:53:43.923916Z",
+    "created_at": "2026-08-16T01:56:39.335724Z",
+    "updated_at": "2026-11-08T01:53:43.941726Z"
+  },
+  {
+    "id": "b1b17e6b-85b3-5d29-be47-b46ff4a68334",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "key": "folders",
+    "read": false,
+    "notified_at": "2026-11-06T01:53:43.923758Z",
+    "created_at": "2026-08-16T01:56:39.326801Z",
+    "updated_at": "2026-11-08T01:53:43.927947Z"
+  }
+]

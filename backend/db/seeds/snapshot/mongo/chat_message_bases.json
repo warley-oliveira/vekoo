@@ -1,0 +1,4180 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc8"
+    },
+    "content": "Oi! Vi o carrossel de vocês no Instagram. O vestido midi de linho ainda tem no M?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-ana-beatriz-0",
+    "sender_name": "Ana Beatriz Moura",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.085Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.086Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bc9"
+    },
+    "content": "Oi, Ana! Que bom ter você aqui. Temos sim, na cor terracota, por R$ 289,90.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-ana-beatriz-1",
+    "sender_name": "Camila Rocha",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:10:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.093Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.093Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bca"
+    },
+    "content": "Vocês entregam em Londrina?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-ana-beatriz-2",
+    "sender_name": "Ana Beatriz Moura",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:13:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.098Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.098Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bcb"
+    },
+    "content": "Se chegar até sexta, já quero fechar",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-ana-beatriz-3",
+    "sender_name": "Ana Beatriz Moura",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:14:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.101Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.101Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bce"
+    },
+    "content": "Bom dia, comprei a camiseta pima no G e ficou grande. Consigo trocar pela M?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-joao-pedro-0",
+    "sender_name": "João Pedro Almeida",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.120Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.120Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bcf"
+    },
+    "content": "Camila Rocha assumiu esta conversa para si.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "assigned-user-notation",
+    "created_at": {
+      "$date": "2026-11-06T15:09:00Z"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.123Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.124Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd0"
+    },
+    "content": "Bom dia, João! Consegue sim. Tenho a M em preto, separo para você?",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-joao-pedro-2",
+    "sender_name": "Camila Rocha",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:11:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.127Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.127Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd1"
+    },
+    "content": "Pode separar, por favor",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [
+      {
+        "emoji": "👍",
+        "from": "assistant",
+        "sender_name": "Camila Rocha",
+        "reacted_at": {
+          "$date": "2026-11-06T15:17:00Z"
+        }
+      }
+    ],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-joao-pedro-3",
+    "sender_name": "João Pedro Almeida",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:16:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.129Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.129Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd2"
+    },
+    "content": "Pronto, separada. Pode trazer a outra na loja até sexta ou pedir a coleta pelos Correios.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-joao-pedro-4",
+    "sender_name": "Camila Rocha",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "status": "delivery_ack",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-06T15:18:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.137Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.138Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd5"
+    },
+    "content": "Oi, tudo bem? A bolsa de palha voltou ao estoque?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-fernanda-lima-0",
+    "sender_name": "Fernanda Lima",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.173Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.174Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd6"
+    },
+    "content": "Oi, Fernanda! Voltou sim, chegou lote novo do Maranhão esta semana.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-fernanda-lima-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:12:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.183Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.183Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd7"
+    },
+    "content": "É essa aqui, da foto",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "media_type": "image",
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-fernanda-lima-2",
+    "sender_name": "Fernanda Lima",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:15:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "caption": "É essa aqui, da foto",
+    "image_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6IjBhMDQ4NWU4LTc5OTEtNDA3Yi05Y2I0LWE4MWM0NjU0YWEzNyIsInB1ciI6ImJsb2JfaWQifX0=--dd74e4ca56d80f497db97cdd5179fb367e66d76e/semente-foto-0.png",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.294Z"
+    },
+    "_type": "ChatMessage::Image",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.294Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd8"
+    },
+    "content": "Essa mesma. Separo uma para você?",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-fernanda-lima-3",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:19:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.300Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.301Z"
+    },
+    "reply_to_message_id": "6aee0e5817c01071cdba2bd7"
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bd9"
+    },
+    "content": "-",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-fernanda-lima-4",
+    "sender_name": "Fernanda Lima",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:27:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "audio_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6IjcwNWZjNDI3LTVlMGItNDVjNi04OWI3LTBkOTQ3ZmM1MmU2ZSIsInB1ciI6ImJsb2JfaWQifX0=--e30f839580d99dfcf6b7a6e4dd483207112c2065/semente-recado.wav",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.315Z"
+    },
+    "_type": "ChatMessage::Audio",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.315Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bdc"
+    },
+    "content": "Boa tarde. Vocês fazem camiseta para empresa? Somos 40 pessoas.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-carlos-eduardo-0",
+    "sender_name": "Carlos Eduardo Santos",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.332Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.332Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bdd"
+    },
+    "content": "Boa tarde, Carlos! Fazemos sim, com desconto a partir de 20 peças. Vou te mandar a tabela.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-carlos-eduardo-1",
+    "sender_name": "Juliana Ferreira",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:13:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.335Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.335Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bde"
+    },
+    "content": "Tabela de atacado",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "media_properties": {
+      "fileName": "tabela-atacado.pdf",
+      "mimeType": "application/pdf"
+    },
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-carlos-eduardo-2",
+    "sender_name": "Juliana Ferreira",
+    "account_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:14:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "caption": "Tabela de atacado",
+    "media_type": "application/pdf",
+    "media_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6IjJlMmM2Y2E3LTI3ODMtNGMwZS1iNmYxLTcxMWM2NGY2MzJhOCIsInB1ciI6ImJsb2JfaWQifX0=--b4aa72cb83fc3ebd360694de16c3134ee0a01ace/tabela-atacado.pdf",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.347Z"
+    },
+    "_type": "ChatMessage::Media",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bdf"
+    },
+    "content": "Recebi, obrigado. Vou levar para a diretoria e te retorno.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-carlos-eduardo-3",
+    "sender_name": "Carlos Eduardo Santos",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-05T15:47:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bda"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.350Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.350Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be2"
+    },
+    "content": "Bom dia!",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-marcia-regina-0",
+    "sender_name": "Márcia Regina Costa",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-04T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.361Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.361Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be3"
+    },
+    "content": "O vestido chemise chegou sem o cinto",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-marcia-regina-1",
+    "sender_name": "Márcia Regina Costa",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-04T15:08:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.363Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.363Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be4"
+    },
+    "content": "Olha como veio a embalagem",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "media_type": "image",
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-marcia-regina-2",
+    "sender_name": "Márcia Regina Costa",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-04T15:09:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "caption": "Olha como veio a embalagem",
+    "image_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ImZlOTNhYzgyLTkwMzctNGIwMi04MWE4LTVlYzBmZGQxYzI5NiIsInB1ciI6ImJsb2JfaWQifX0=--3df66d48bc613d47cf57f8a4cbf3094567299139/semente-foto-1.png",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.377Z"
+    },
+    "_type": "ChatMessage::Image",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.377Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be5"
+    },
+    "content": "",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "media_type": "image",
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-marcia-regina-3",
+    "sender_name": "Márcia Regina Costa",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-04T15:09:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "caption": null,
+    "image_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ImYzYjFkYzQwLTlhMjctNDM1OS05NGFkLTI1MTlkNDAwMTAyOSIsInB1ciI6ImJsb2JfaWQifX0=--d052dc33e19de87d97458a6b8f13a35d0d5af67b/semente-foto-2.png",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.391Z"
+    },
+    "_type": "ChatMessage::Image",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.391Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be6"
+    },
+    "content": "Preciso dele para sábado, estou preocupada",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-marcia-regina-4",
+    "sender_name": "Márcia Regina Costa",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-04T15:10:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.394Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.394Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2be9"
+    },
+    "content": "Chegou certinho, obrigado!",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [
+      {
+        "emoji": "❤️",
+        "from": "assistant",
+        "sender_name": "Camila Rocha",
+        "reacted_at": {
+          "$date": "2026-11-03T15:08:00Z"
+        }
+      }
+    ],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-lucas-oliveira-0",
+    "sender_name": "Lucas Oliveira",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.408Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.408Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bea"
+    },
+    "content": "Que ótimo, Lucas! Qualquer coisa é só chamar.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-lucas-oliveira-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-03T15:10:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.412Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.412Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2beb"
+    },
+    "content": "Thiago Almeida pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "created_at": {
+      "$date": "2026-11-03T15:10:00Z"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be7"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.413Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.413Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bee"
+    },
+    "content": "Olá! Que bom falar com você. Como podemos ajudar?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "instagram-ad-greeting",
+    "created_at": {
+      "$date": "2026-11-03T15:06:59Z"
+    },
+    "external_ad_reply": {
+      "title": "Vestido chemise com 20% de desconto",
+      "body": "Só neste mês, na Doma Store.",
+      "source_type": "ad",
+      "source_id": "seed-anuncio-chemise",
+      "source_url": "https://domastore.exemplo.com.br/vestido-chemise-listrado",
+      "ctwa_clid": "seed-clique-patricia",
+      "greeting_message_body": "Olá! Que bom falar com você. Como podemos ajudar?"
+    },
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.427Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.427Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bef"
+    },
+    "content": "Olá! Tenho interesse e queria mais informações, por favor.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-patricia-gomes-0",
+    "sender_name": "Patrícia Gomes",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-03T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bec"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.428Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.428Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf2"
+    },
+    "content": "Olá, Roberto! Seu pedido 48213 saiu para entrega. Alguém recebe amanhã à tarde?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-roberto-nascimento-0",
+    "sender_name": "Doma Store",
+    "account_id": null,
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-02T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.441Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.442Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf3"
+    },
+    "content": "Sim, pode entregar",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-roberto-nascimento-1",
+    "sender_name": "Roberto Nascimento",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-02T15:32:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.444Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.445Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf4"
+    },
+    "content": "Roberto, a transportadora confirmou a entrega. Deu tudo certo?",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-roberto-nascimento-2",
+    "sender_name": "Rafael Nunes",
+    "account_id": "6a6b5bda-6a04-44d1-9f44-b463227b0032",
+    "status": "failed",
+    "status_message": "Fora da janela de 24 horas. Para iniciar ou retomar a conversa, você deve enviar um Template aprovado.",
+    "created_at": {
+      "$date": "2026-11-04T15:32:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.450Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.451Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf7"
+    },
+    "content": "Oi! Esse vestido do último post tem no GG?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-camila-ferraz-0",
+    "sender_name": "Camila Ferraz",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-01T15:07:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.465Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.466Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf8"
+    },
+    "content": "Oi, Camila! Tem sim, o midi de linho vai do P ao GG.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-camila-ferraz-1",
+    "sender_name": "Camila Rocha",
+    "account_id": "7c35cda8-9097-4045-8fd6-c3d64b1bcd9a",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-01T15:22:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.470Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.470Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bf9"
+    },
+    "content": "Ótimo, vou pedir pelo site!",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-camila-ferraz-2",
+    "sender_name": "Camila Ferraz",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-11-01T15:25:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf5"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.473Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.473Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bfc"
+    },
+    "content": "Mandei a mensagem errada, pode desconsiderar",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-daniela-souza-0",
+    "sender_name": "Daniela Souza",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-31T15:07:00Z"
+    },
+    "deleted_at": {
+      "$date": "2026-10-31T15:08:00Z"
+    },
+    "deleted_scope": "everyone",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.486Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.486Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bfd"
+    },
+    "content": "Desculpa! Era para outra pessoa.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-daniela-souza-1",
+    "sender_name": "Daniela Souza",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-31T15:08:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.488Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.488Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2bfe"
+    },
+    "content": "Sem problema, Daniela!",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-daniela-souza-2",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-31T15:11:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bfa"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.491Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.492Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c01"
+    },
+    "content": "Boa tarde, a loja abre no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-0-0",
+    "sender_name": "Beatriz Carvalho",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-29T09:00:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bff"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.506Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.508Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c02"
+    },
+    "content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-0-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-29T09:02:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bff"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.508Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.511Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c05"
+    },
+    "content": "Qual o prazo de entrega para Curitiba?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-1-0",
+    "sender_name": "Rafael Mendes",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-28T10:02:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c03"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.523Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.525Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c06"
+    },
+    "content": "Para Curitiba, chega em até 2 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-1-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-28T10:05:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c03"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.525Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.526Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c09"
+    },
+    "content": "Vocês parcelam no cartão?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-2-0",
+    "sender_name": "Juliana Prado",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-27T11:04:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c07"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.539Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.540Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0a"
+    },
+    "content": "Parcelamos em até 6 vezes sem juros.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-2-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-27T11:08:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c07"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.540Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.543Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0d"
+    },
+    "content": "Onde fica a loja física?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-3-0",
+    "sender_name": "Thiago Ribeiro",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-26T12:06:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c0b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.555Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.556Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c0e"
+    },
+    "content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-3-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-26T12:11:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c0b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.556Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.558Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c11"
+    },
+    "content": "Preciso cancelar meu pedido de ontem",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-4-0",
+    "sender_name": "Larissa Teixeira",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-25T13:08:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c0f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.568Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.570Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c12"
+    },
+    "content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-4-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-25T13:14:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c0f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.570Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.571Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c15"
+    },
+    "content": "Boa tarde, a loja abre no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-5-0",
+    "sender_name": "Bruno Cardoso",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-24T14:10:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c13"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.581Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.583Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c16"
+    },
+    "content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-5-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-24T14:17:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c13"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.583Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.584Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c19"
+    },
+    "content": "Qual o prazo de entrega para Curitiba?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-6-0",
+    "sender_name": "Aline Barros",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-23T15:12:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c17"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.593Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.595Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1a"
+    },
+    "content": "Para Curitiba, chega em até 2 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-6-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-23T15:20:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c17"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.594Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.597Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1d"
+    },
+    "content": "Vocês parcelam no cartão?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-7-0",
+    "sender_name": "Felipe Araújo",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-22T16:14:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c1b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.606Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c1e"
+    },
+    "content": "Parcelamos em até 6 vezes sem juros.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-7-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-22T16:23:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c1b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.607Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.610Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c21"
+    },
+    "content": "Onde fica a loja física?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-8-0",
+    "sender_name": "Vanessa Rocha",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-21T17:16:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c1f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.627Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.629Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c22"
+    },
+    "content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-8-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-21T17:26:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c1f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.628Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c25"
+    },
+    "content": "Preciso cancelar meu pedido de ontem",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-9-0",
+    "sender_name": "Gustavo Martins",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-20T09:18:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c23"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.642Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c26"
+    },
+    "content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-9-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-20T09:29:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c23"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.643Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c29"
+    },
+    "content": "Boa tarde, a loja abre no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-10-0",
+    "sender_name": "Renata Pires",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-19T10:20:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c27"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.659Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2a"
+    },
+    "content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-10-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-19T10:32:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c27"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.660Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.662Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2d"
+    },
+    "content": "Qual o prazo de entrega para Curitiba?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-11-0",
+    "sender_name": "Eduardo Freitas",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-18T11:22:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c2b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.672Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.674Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c2e"
+    },
+    "content": "Para Curitiba, chega em até 2 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-11-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-18T11:35:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c2b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.674Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.676Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c31"
+    },
+    "content": "Vocês parcelam no cartão?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-12-0",
+    "sender_name": "Sabrina Lopes",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-17T12:24:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c2f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.686Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.687Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c32"
+    },
+    "content": "Parcelamos em até 6 vezes sem juros.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-12-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-17T12:38:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c2f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.687Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.689Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c35"
+    },
+    "content": "Onde fica a loja física?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-13-0",
+    "sender_name": "André Moreira",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-16T13:26:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c33"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.700Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.702Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c36"
+    },
+    "content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-13-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-16T13:41:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c33"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.702Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.704Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c39"
+    },
+    "content": "Preciso cancelar meu pedido de ontem",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-14-0",
+    "sender_name": "Priscila Nunes",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-15T14:28:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c37"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.716Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.717Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3a"
+    },
+    "content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-14-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-15T14:44:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c37"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.717Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.720Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3d"
+    },
+    "content": "Boa tarde, a loja abre no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-15-0",
+    "sender_name": "Marcelo Duarte",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-14T15:30:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c3b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.730Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.732Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c3e"
+    },
+    "content": "Boa tarde! Abrimos sim, das 10h às 16h.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-15-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-14T15:47:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c3b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.732Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.734Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c41"
+    },
+    "content": "Qual o prazo de entrega para Curitiba?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-16-0",
+    "sender_name": "Tatiane Vieira",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-13T16:32:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c3f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.743Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.745Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c42"
+    },
+    "content": "Para Curitiba, chega em até 2 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-16-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-13T16:50:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c3f"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.744Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.747Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c45"
+    },
+    "content": "Vocês parcelam no cartão?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-17-0",
+    "sender_name": "Diego Fernandes",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-12T17:34:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c43"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.756Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.758Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c46"
+    },
+    "content": "Parcelamos em até 6 vezes sem juros.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-17-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-12T17:53:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c43"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.758Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.760Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c49"
+    },
+    "content": "Onde fica a loja física?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-18-0",
+    "sender_name": "Natália Castro",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-11T09:36:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c47"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.768Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.769Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c4a"
+    },
+    "content": "Estamos na Rua das Flores, 120, no Centro de Curitiba.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-18-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-11T09:56:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c47"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.769Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.771Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c4d"
+    },
+    "content": "Preciso cancelar meu pedido de ontem",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "message_id": "seed-historico-19-0",
+    "sender_name": "Vinícius Ramos",
+    "account_id": null,
+    "status": null,
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-10T10:38:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c4b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.781Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.783Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee0e5817c01071cdba2c4e"
+    },
+    "content": "Certo, já cancelei. O estorno cai em até 5 dias úteis.",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "message_id": "seed-historico-19-1",
+    "sender_name": "Thiago Almeida",
+    "account_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "status": "read",
+    "status_message": null,
+    "created_at": {
+      "$date": "2026-10-10T10:59:00Z"
+    },
+    "deleted_at": null,
+    "deleted_scope": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2c4b"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T17:28:56.783Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T17:28:56.784Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5e723f8ecea569106487"
+    },
+    "content": "Marina Duarte atribuiu Camila Rocha a esta conversa.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "assigned-user-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T23:10:42.493Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T23:10:42.494Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:10:42.494Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5e853f8ecea569106489"
+    },
+    "content": "Marina Duarte removeu a atribuição de Camila Rocha desta conversa.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "assigned-user-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-06T23:11:01.177Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-06T23:11:01.178Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:11:01.178Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef7017ab7cc3f8451cfd67"
+    },
+    "content": "Marina Duarte pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:15.646Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:15.646Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:15.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef7019ab7cc3f8451cfd68"
+    },
+    "content": "Marina Duarte retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:17.245Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:17.245Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:17.245Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701aab7cc3f8451cfd69"
+    },
+    "content": "Marina Duarte pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:18.199Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:18.200Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:18.200Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701bab7cc3f8451cfd6a"
+    },
+    "content": "Marina Duarte retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:19.134Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:19.135Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:19.135Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701bab7cc3f8451cfd6b"
+    },
+    "content": "Marina Duarte pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:19.895Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:19.895Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:19.895Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701cab7cc3f8451cfd6c"
+    },
+    "content": "Marina Duarte retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:20.682Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:20.683Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:20.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701dab7cc3f8451cfd6d"
+    },
+    "content": "Marina Duarte pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:21.739Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:21.739Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:21.739Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701fab7cc3f8451cfd6e"
+    },
+    "content": "Marina Duarte retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:23.096Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:23.096Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:23.096Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef701fab7cc3f8451cfd6f"
+    },
+    "content": "Marina Duarte pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:23.834Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:23.834Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:23.834Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aef7020ab7cc3f8451cfd70"
+    },
+    "content": "Marina Duarte retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bf0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-07T18:38:24.639Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-07T18:38:24.639Z"
+    },
+    "created_at": {
+      "$date": "2026-11-07T18:38:24.639Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefd82e7ed60bcb76d0a162"
+    },
+    "content": "A automação foi pausada.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee719b8cd938569901bb32"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T02:02:22.808Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T02:02:22.809Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T02:02:22.809Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefef43c39f962ef5c54e39"
+    },
+    "content": "Suporte Vekoo pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T03:40:51.577Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T03:40:51.578Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T03:40:51.578Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aefef43c39f962ef5c54e3a"
+    },
+    "content": "🤣🤣",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Suporte Vekoo",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T03:40:51.786Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T03:40:51.859Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T03:40:51.787Z"
+    },
+    "message_id": "d3fc7333-e5bd-4e87-903e-1567922859f6",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6aeff1b458a3208208058538"
+    },
+    "content": "Suporte Vekoo atribuiu Marina Duarte a esta conversa.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "assigned-user-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bd3"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T03:51:16.425Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T03:51:16.427Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T03:51:16.427Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0de24c39f962ef5c54e3b"
+    },
+    "content": "Oi, Ana Beatriz Moura! Passando para lembrar: amanhã, às 10:00, é o seu horário de Prova com hora marcada aqui no Estúdio Doma. Se precisar remarcar, é só responder esta mensagem.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "sender_name": "Marina Duarte Conteúdo [Lembrete da agenda]",
+    "status": "pending",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T20:40:04.744Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T20:40:04.787Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T20:40:04.745Z"
+    },
+    "message_id": "497c4c2f-4733-4e13-bda7-aa570ac93ef5"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e0edc39f962ef5c54e3c"
+    },
+    "content": "Olha o nosso guia de medidas para escolher o tamanho certo:\n\nattachment_id_1539a4c6-ca67-4149-aeb7-c6000343067e\nQualquer dúvida, só me chamar",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": true,
+    "reply_to_message_id": null,
+    "sender_name": "Suporte Vekoo",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T20:51:57.605Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T20:51:57.606Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T20:51:57.606Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e0edc39f962ef5c54e3d"
+    },
+    "content": "Olha o nosso guia de medidas para escolher o tamanho certo:",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": true,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "message_id": "96018058-7a63-4743-a772-d546c2c03117",
+    "status": "delivery_ack",
+    "status_message": null,
+    "sender_name": "Suporte Vekoo",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T20:51:57.616Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T20:51:57.616Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T20:51:57.616Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e0edc39f962ef5c54e3e"
+    },
+    "content": null,
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "media_properties": {},
+    "active": true,
+    "is_span": true,
+    "role": "assistant",
+    "media_type": "document",
+    "attachment_id": "1539a4c6-ca67-4149-aeb7-c6000343067e",
+    "has_span": false,
+    "media_url": "/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ImZlY2JjMmQwLWY1YTQtNGRhYS04OTg0LWJmOGVlM2U2NmQ3MyIsInB1ciI6ImJsb2JfaWQifX0=--39083341d5556371b830ba4715b00925b1ee844f/guia-de-medidas.pdf",
+    "sender_name": "Suporte Vekoo",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T20:51:57.622Z"
+    },
+    "_type": "ChatMessage::Media",
+    "updated_at": {
+      "$date": "2026-11-08T20:51:57.628Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T20:51:57.623Z"
+    },
+    "message_id": "cf324059-261e-4477-8ea2-d9416b54618c",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e0eec39f962ef5c54e3f"
+    },
+    "content": "Qualquer dúvida, só me chamar",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": true,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "message_id": "7af28edd-2ded-40e1-80cf-08dc5b395001",
+    "status": "delivery_ack",
+    "status_message": null,
+    "sender_name": "Suporte Vekoo",
+    "account_id": "d5a05004-f8ac-4688-a829-bb0f45531e49",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T20:51:58.634Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T20:51:58.634Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T20:51:58.634Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e537c39f962ef5c54e40"
+    },
+    "content": "Teste de animação 14759",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:10:15.634Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:10:15.658Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:10:15.635Z"
+    },
+    "message_id": "971de33c-3e71-4bd6-98eb-fa1e15cf17c5",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e53958a3208208058539"
+    },
+    "content": "Chegou agora 17747",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:10:17.771Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:10:17.772Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:10:17.772Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e556c39f962ef5c54e41"
+    },
+    "content": "Teste de animação 45548",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:10:46.401Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:10:46.417Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:10:46.402Z"
+    },
+    "message_id": "ef2885cc-f7b1-4e28-b738-af6f88795b57",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e55858a320820805853a"
+    },
+    "content": "Chegou agora 48594",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:10:48.614Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:10:48.614Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:10:48.614Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e5a7c39f962ef5c54e42"
+    },
+    "content": "Teste de animação 26662",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:12:07.518Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:12:07.540Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:12:07.519Z"
+    },
+    "message_id": "13327dce-68f4-4e80-8774-238afe3a8b31",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e5a958a320820805853b"
+    },
+    "content": "Chegou agora 29696",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:12:09.714Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:12:09.715Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:12:09.715Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e718c39f962ef5c54e43"
+    },
+    "content": "Teste de animação 95693",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:18:16.526Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:18:16.547Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:18:16.527Z"
+    },
+    "message_id": "6d43bc2d-c0f9-48d1-b1fb-ce4b2fce43f3",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e71a58a320820805853c"
+    },
+    "content": "Chegou agora 98662",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:18:18.684Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:18:18.685Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:18:18.685Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e727c39f962ef5c54e44"
+    },
+    "content": "Teste de animação 10424",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:18:31.306Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:18:31.320Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:18:31.306Z"
+    },
+    "message_id": "cefacc37-8717-4a5e-ba15-ae0495188253",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e72958a320820805853d"
+    },
+    "content": "Chegou agora 13939",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:18:33.962Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:18:33.963Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:18:33.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e76b58a320820805853e"
+    },
+    "content": "Mais uma dúvida 248",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:19:39.268Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:19:39.269Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:19:39.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e77758a320820805853f"
+    },
+    "content": "Mais uma dúvida 33",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:19:51.052Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:19:51.052Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:19:51.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e78cc39f962ef5c54e45"
+    },
+    "content": "Teste de animação 11952",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:20:12.760Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:20:12.773Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:20:12.761Z"
+    },
+    "message_id": "c10e494f-0ae9-47d1-a265-bfcb129b6c6d",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e78e58a3208208058540"
+    },
+    "content": "Chegou agora 14892",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:20:14.909Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:20:14.909Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:20:14.909Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7a9c39f962ef5c54e46"
+    },
+    "content": "Mais um teste 167",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:20:41.245Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:20:41.258Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:20:41.245Z"
+    },
+    "message_id": "8cf252bf-b1e6-41e4-ade7-2804b104818d",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7b0c39f962ef5c54e47"
+    },
+    "content": "Mais um teste 458",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:20:48.527Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:20:48.540Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:20:48.527Z"
+    },
+    "message_id": "260022ec-924c-4148-aab8-7e469131d32e",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7bec39f962ef5c54e48"
+    },
+    "content": "Mais um teste 819",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:21:02.908Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:21:02.919Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:21:02.908Z"
+    },
+    "message_id": "24118920-dfcc-43c9-a6d7-81c3565fca8f",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7c9c39f962ef5c54e49"
+    },
+    "content": "Teste de animação 72989",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:21:13.434Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:21:13.447Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:21:13.434Z"
+    },
+    "message_id": "6144f087-e34b-4965-a5ec-18e822c3b57f",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7cb58a3208208058541"
+    },
+    "content": "Chegou agora 75457",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:21:15.473Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:21:15.474Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:21:15.474Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e7f558a3208208058542"
+    },
+    "content": "Vocês abrem no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:21:57.727Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:21:57.728Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:21:57.728Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e85e58a3208208058543"
+    },
+    "content": "Vocês abrem no feriado?",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:23:42.109Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:23:42.109Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:23:42.109Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e8a6c39f962ef5c54e4a"
+    },
+    "content": "Teste de animação 93840",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:24:54.492Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:24:54.512Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:24:54.493Z"
+    },
+    "message_id": "669736b6-f72b-4a6f-896a-9ab2086cd5b0",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e8a858a3208208058544"
+    },
+    "content": "Chegou agora 96284",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:24:56.302Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:24:56.303Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:24:56.303Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af0e8b5c39f962ef5c54e4b"
+    },
+    "content": "Teste de animação 8585",
+    "args": {},
+    "message_origin": "frontend",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "has_span": false,
+    "reply_to_message_id": null,
+    "sender_name": "Marina Duarte",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "original_created_at": {
+      "$date": "2026-11-08T21:25:09.088Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:25:09.107Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:25:09.089Z"
+    },
+    "message_id": "34971a45-79f8-42d3-8996-b1dddcd213ed",
+    "status": "delivery_ack"
+  },
+  {
+    "_id": {
+      "$oid": "6af0e8b758a3208208058545"
+    },
+    "content": "Chegou agora 11133",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "user",
+    "sender_name": "João Pedro Almeida",
+    "message_id": null,
+    "context_message": null,
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-08T21:25:11.162Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-08T21:25:11.163Z"
+    },
+    "created_at": {
+      "$date": "2026-11-08T21:25:11.163Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af1d693c39f962ef5c54e4c"
+    },
+    "content": "Ana Beatriz Moura, te esperamos daqui a pouco, às 10:00, para Prova com hora marcada com Camila Rocha. Estamos na Rua Pernambuco, 1.000, na Savassi.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "sender_name": "Marina Duarte Conteúdo [Lembrete da agenda]",
+    "status": "pending",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bc6"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-09T14:20:03.116Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-09T14:20:03.210Z"
+    },
+    "created_at": {
+      "$date": "2026-11-09T14:20:03.131Z"
+    },
+    "message_id": "5a1a65a6-6be8-42a6-913a-a59bfc71af4b"
+  },
+  {
+    "_id": {
+      "$oid": "6af1d78458a3208208058546"
+    },
+    "content": "Suporte Vekoo retomou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-09T14:24:04.296Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-09T14:24:04.297Z"
+    },
+    "created_at": {
+      "$date": "2026-11-09T14:24:04.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af1d79d58a3208208058547"
+    },
+    "content": "Suporte Vekoo pausou a automação.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "base",
+    "role_base_type": "automation-toggle-notation",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2bcc"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-09T14:24:29.419Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-09T14:24:29.420Z"
+    },
+    "created_at": {
+      "$date": "2026-11-09T14:24:29.420Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af20a25c39f962ef5c54e4d"
+    },
+    "content": "Oi, Márcia Regina Costa! Passando para lembrar: amanhã, às 15:00, é o seu horário de Consultoria de estilo aqui no Estúdio Doma. Se precisar remarcar, é só responder esta mensagem.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "sender_name": "Marina Duarte Conteúdo [Lembrete da agenda]",
+    "status": "failed",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-09T18:00:05.094Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-09T18:00:05.114Z"
+    },
+    "created_at": {
+      "$date": "2026-11-09T18:00:05.096Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6af36d4bc39f962ef5c54e4e"
+    },
+    "content": "Márcia Regina Costa, te esperamos daqui a pouco, às 15:00, para Consultoria de estilo com Thiago Almeida. Estamos na Rua Pernambuco, 1.000, na Savassi.",
+    "args": {},
+    "message_origin": "platform",
+    "extended_text_message": {},
+    "reactions": [],
+    "active": true,
+    "is_span": false,
+    "role": "assistant",
+    "sender_name": "Marina Duarte Conteúdo [Lembrete da agenda]",
+    "status": "failed",
+    "chat_id": {
+      "$oid": "6aee0e5817c01071cdba2be0"
+    },
+    "has_span": false,
+    "original_created_at": {
+      "$date": "2026-11-10T19:15:23.830Z"
+    },
+    "_type": "ChatMessage::Text",
+    "updated_at": {
+      "$date": "2026-11-10T19:15:24.406Z"
+    },
+    "created_at": {
+      "$date": "2026-11-10T19:15:23.867Z"
+    }
+  }
+]

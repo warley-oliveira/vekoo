@@ -1,0 +1,29 @@
+[
+  {
+    "id": "6ed585cc-280f-480e-ad8e-7e20d8470643",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "pipeline_saved_filter_id": null,
+    "preset_key": "rotten_deals",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "created_at": "2026-11-06T21:58:37.105479Z",
+    "updated_at": "2026-11-06T21:58:37.105479Z"
+  },
+  {
+    "id": "a0f26452-91dd-45e2-904f-e7c4da895f22",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "pipeline_saved_filter_id": "33e0820a-e554-4ede-bba3-6f3bb0af2e12",
+    "preset_key": null,
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "created_at": "2026-11-06T21:58:37.083624Z",
+    "updated_at": "2026-11-06T21:58:37.083624Z"
+  },
+  {
+    "id": "c0353a26-08f1-4b85-887a-eaf9bd385e38",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "pipeline_saved_filter_id": "58879c87-2ffa-45ed-b656-295d4242d09d",
+    "preset_key": null,
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "created_at": "2026-11-06T21:58:37.094312Z",
+    "updated_at": "2026-11-06T21:58:37.094312Z"
+  }
+]

@@ -1,0 +1,985 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47d7"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "list_pipelines",
+        "description": "Lista todos os pipelines (boards) ativos do workspace, com suas colunas. Use para descobrir em qual pipeline qualificar o lead.",
+        "parameters": [],
+        "js_code": "return kanban.boards().map(b => ({\n  id: b.id,\n  name: b.name,\n  type: b.board_type,\n  columns: (b.columns || []).map(c => ({ id: c.id, name: c.name, position: c.position }))\n}));\n"
+      },
+      {
+        "name": "get_lead_pipeline_context",
+        "description": "Retorna um resumo de todos os cards do LEAD ATUAL em qualquer pipeline do workspace. Use no início do turno para entender em que estágio o lead está.",
+        "parameters": [],
+        "js_code": "const cards = kanban.cardsForConversation();\nif (cards.length === 0) {\n  return { has_card: false, message: 'Lead ainda não está em nenhum pipeline.' };\n}\nreturn {\n  has_card: true,\n  cards: cards.map(c => {\n    const checklists = c.checklists ? c.checklists() : [];\n    const total = checklists.reduce((s, cl) => s + cl.items.length, 0);\n    const done  = checklists.reduce((s, cl) => s + cl.items.filter(i => i.completed).length, 0);\n    return {\n      id: c.id,\n      title: c.title,\n      priority: c.priority,\n      deal_value: c.deal_value,\n      deal_probability: c.deal_probability,\n      column_id: c.kanban_column_id,\n      status: c.won_at ? 'won' : c.lost_at ? 'lost' : 'open',\n      labels: (c.labels || []).map(l => l.name),\n      tags: c.tags || [],\n      progress: total > 0 ? (done + '/' + total) : null\n    };\n  })\n};\n"
+      },
+      {
+        "name": "qualify_lead_in_pipeline",
+        "description": "Cria um card para o LEAD ATUAL em um pipeline. Idempotente: se o lead já tiver card neste pipeline, retorna o existente sem duplicar. Por padrão cria na primeira coluna; passe `column` para escolher outra.",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "type": "string",
+            "required": true,
+            "description": "Nome ou id do pipeline (board)"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": "Título do card (ex.: \"Lead WhatsApp — Maria Souza\")"
+          },
+          {
+            "name": "column",
+            "type": "string",
+            "required": false,
+            "description": "Coluna inicial (id ou nome). Default: primeira coluna do pipeline."
+          },
+          {
+            "name": "priority",
+            "type": "string",
+            "required": false,
+            "description": "Prioridade do card",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          {
+            "name": "deal_value",
+            "type": "number",
+            "required": false,
+            "description": "Valor estimado da venda em reais"
+          },
+          {
+            "name": "company_name",
+            "type": "string",
+            "required": false,
+            "description": "Empresa/conta do lead"
+          },
+          {
+            "name": "contact_email",
+            "type": "string",
+            "required": false,
+            "description": "Email do lead"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Notas livres sobre o lead"
+          }
+        ],
+        "js_code": "const board = kanban.board(params.pipeline);\nif (!board) return { error: 'Pipeline \"' + params.pipeline + '\" não encontrado' };\n\n// Idempotência: já existe card deste lead neste pipeline?\nconst existing = board.cardsForConversation()[0];\nif (existing) {\n  return {\n    already_exists: true,\n    card_id: existing.id,\n    column: (board.columns.find(c => c.id === existing.kanban_column_id) || {}).name,\n    message: 'Lead já está neste pipeline.'\n  };\n}\n\nconst column = params.column ? board.column(params.column) : board.columns[0];\nif (!column) return { error: 'Coluna \"' + (params.column || '(primeira)') + '\" não encontrada' };\n\nconst attrs = { title: params.title };\nif (params.priority)      attrs.priority = params.priority;\nif (params.description)   attrs.description = params.description;\nif (params.company_name)  attrs.company_name = params.company_name;\nif (params.contact_email) attrs.contact_email = params.contact_email;\nif (params.deal_value !== undefined && params.deal_value !== null) {\n  attrs.deal_value = Number(params.deal_value);\n}\n\nconst card = column.createCard(attrs);\nif (!card) return { error: 'Falha ao criar card no pipeline' };\n\ncard.addComment('Lead qualificado pela IA durante o atendimento.');\n\nreturn {\n  created: true,\n  card_id: card.id,\n  pipeline: board.name,\n  column: column.name\n};\n"
+      },
+      {
+        "name": "advance_lead_in_pipeline",
+        "description": "Move o card do LEAD ATUAL para a próxima coluna do pipeline (ou para a coluna indicada em `to_column`). Respeita gates de checklist obrigatório — se houver itens pendentes, retorna `{ blocked: true, pending_items: [...] }` para que a IA peça esses dados antes de tentar de novo.",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "type": "string",
+            "required": true,
+            "description": "Nome ou id do pipeline (board)"
+          },
+          {
+            "name": "to_column",
+            "type": "string",
+            "required": false,
+            "description": "Coluna destino (id ou nome). Default: próxima coluna em sequência."
+          },
+          {
+            "name": "at_end",
+            "type": "boolean",
+            "required": false,
+            "description": "Inserir no fim da coluna destino? Default: false (insere no topo)."
+          }
+        ],
+        "js_code": "const board = kanban.board(params.pipeline);\nif (!board) return { error: 'Pipeline \"' + params.pipeline + '\" não encontrado' };\n\nconst card = board.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card neste pipeline.' };\n\nlet target;\nif (params.to_column) {\n  target = board.column(params.to_column);\n  if (!target) return { error: 'Coluna \"' + params.to_column + '\" não encontrada' };\n} else {\n  const idx = board.columns.findIndex(c => c.id === card.kanban_column_id);\n  target = board.columns[idx + 1];\n  if (!target) return { error: 'Card já está na última coluna do pipeline.' };\n}\n\nconst result = card.moveTo(target.id, !!params.at_end);\n\n// Gate de checklist incompleto vem como result.ok === false\nif (result && result.ok === false && result.error === 'checklist_incomplete') {\n  return {\n    blocked: true,\n    reason: 'checklist_incomplete',\n    pending_items: result.pending_items || [],\n    message: 'Antes de avançar, é necessário concluir os itens obrigatórios listados.'\n  };\n}\n\ncard.addComment('Card movido para \"' + target.name + '\" pela IA.');\nreturn { moved: true, to_column: target.name };\n"
+      },
+      {
+        "name": "update_lead_card",
+        "description": "Atualiza dados do card do LEAD ATUAL (prioridade, valor, probabilidade, empresa, datas, tags, etc.). Use apenas para o card desta conversa.",
+        "parameters": [
+          {
+            "name": "priority",
+            "type": "string",
+            "required": false,
+            "description": "low | medium | high | urgent",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          {
+            "name": "deal_value",
+            "type": "number",
+            "required": false,
+            "description": "Valor atualizado da venda em reais"
+          },
+          {
+            "name": "deal_probability",
+            "type": "number",
+            "required": false,
+            "description": "Probabilidade de fechar (0–100)"
+          },
+          {
+            "name": "company_name",
+            "type": "string",
+            "required": false,
+            "description": "Empresa do lead"
+          },
+          {
+            "name": "contact_email",
+            "type": "string",
+            "required": false,
+            "description": "Email de contato"
+          },
+          {
+            "name": "contact_phone",
+            "type": "string",
+            "required": false,
+            "description": "Telefone (E.164)"
+          },
+          {
+            "name": "expected_close_date",
+            "type": "string",
+            "required": false,
+            "description": "Data esperada de fechamento (YYYY-MM-DD)"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Notas internas sobre o lead"
+          },
+          {
+            "name": "tags",
+            "type": "array",
+            "required": false,
+            "description": "Lista de tags (substitui as anteriores)",
+            "items_type": "string"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst attrs = {};\nif (params.priority !== undefined)            attrs.priority = params.priority;\nif (params.deal_value !== undefined)          attrs.deal_value = Number(params.deal_value);\nif (params.deal_probability !== undefined)    attrs.deal_probability = Number(params.deal_probability);\nif (params.company_name !== undefined)        attrs.company_name = params.company_name;\nif (params.contact_email !== undefined)       attrs.contact_email = params.contact_email;\nif (params.contact_phone !== undefined)       attrs.contact_phone = params.contact_phone;\nif (params.expected_close_date !== undefined) attrs.expected_close_date = params.expected_close_date;\nif (params.description !== undefined)         attrs.description = params.description;\nif (Array.isArray(params.tags))               attrs.tags = params.tags;\n\nif (Object.keys(attrs).length === 0) {\n  return { ok: false, error: 'Nenhum campo enviado para atualizar.' };\n}\n\nconst updated = card.update(attrs);\nreturn updated ? { ok: true, updated } : { ok: false, error: 'Falha ao atualizar card' };\n"
+      },
+      {
+        "name": "mark_lead_won",
+        "description": "Fecha a venda do LEAD ATUAL como GANHA. Aceita opcionalmente valor final e comentário. Define probabilidade em 100% automaticamente.",
+        "parameters": [
+          {
+            "name": "final_value",
+            "type": "number",
+            "required": false,
+            "description": "Valor final fechado em reais"
+          },
+          {
+            "name": "note",
+            "type": "string",
+            "required": false,
+            "description": "Comentário a registrar no card (ex.: contexto do fechamento)"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nif (params.final_value !== undefined) {\n  card.update({ deal_value: Number(params.final_value), deal_probability: 100 });\n}\n\nconst result = card.markWon();\nif (!result) return { ok: false, error: 'Falha ao marcar como ganho' };\n\nconst note = params.note || 'Venda fechada (won) registrada pela IA.';\ncard.addComment(note);\n\nreturn { ok: true, status: 'won', card_id: result.id };\n"
+      },
+      {
+        "name": "mark_lead_lost",
+        "description": "Fecha a venda do LEAD ATUAL como PERDIDA. Sempre informe `reason` para rastreabilidade — o motivo é registrado no card e em comentário.",
+        "parameters": [
+          {
+            "name": "reason",
+            "type": "string",
+            "required": true,
+            "description": "Motivo da perda (ex.: \"preço acima do orçamento\", \"desistiu\")"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst result = card.markLost(params.reason);\nif (!result) return { ok: false, error: 'Falha ao marcar como perdido' };\n\ncard.addComment('Venda perdida (lost) — motivo: ' + params.reason);\nreturn { ok: true, status: 'lost', card_id: result.id, reason: params.reason };\n"
+      },
+      {
+        "name": "add_label_to_lead",
+        "description": "Anexa uma label ao card do LEAD ATUAL. Aceita o NOME da label (cria no workspace se não existir, case-insensitive). Idempotente — anexar duas vezes não duplica.",
+        "parameters": [
+          {
+            "name": "label",
+            "type": "string",
+            "required": true,
+            "description": "Nome da label (ex.: \"lead-quente\", \"vip\")"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst label = card.addLabel(params.label);\nreturn label ? { ok: true, label } : { ok: false, error: 'Falha ao adicionar label' };\n"
+      },
+      {
+        "name": "set_lead_custom_field",
+        "description": "Define o valor de um custom field do card do LEAD ATUAL. A referência ao campo é tolerante (aceita key ou nome, case e acento insensitive). Em campos select o valor também é casado contra as options configuradas.",
+        "parameters": [
+          {
+            "name": "field",
+            "type": "string",
+            "required": true,
+            "description": "Nome ou key do custom field (ex.: \"Qualificação\", \"orcamento\")"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Valor a salvar (string — converta para número se o campo for numérico)"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst updated = card.setCustomField(params.field, params.value);\nif (!updated) return { ok: false, error: 'Falha ao definir custom field' };\n\nreturn {\n  ok: true,\n  field: params.field,\n  stored_value: card.getCustomField(params.field)\n};\n"
+      },
+      {
+        "name": "comment_on_lead_card",
+        "description": "Adiciona um comentário ao card do LEAD ATUAL — visível para o time humano no painel. Use em momentos-chave: qualificação, mudança de intenção, agendamento.",
+        "parameters": [
+          {
+            "name": "body",
+            "type": "string",
+            "required": true,
+            "description": "Texto do comentário"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst comment = card.addComment(params.body);\nreturn comment ? { ok: true, comment } : { ok: false, error: 'Falha ao comentar' };\n"
+      },
+      {
+        "name": "add_checklist_to_lead_card",
+        "description": "Cria um checklist no card do LEAD ATUAL com os itens informados. Útil para rastrear etapas de onboarding ou pré-fechamento.",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "Nome do checklist (ex.: \"Onboarding\", \"Pré-fechamento\")"
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "required": true,
+            "description": "Lista de títulos de itens",
+            "items_type": "string"
+          }
+        ],
+        "js_code": "const card = kanban.cardsForConversation()[0];\nif (!card) return { error: 'Lead ainda não tem card em nenhum pipeline.' };\n\nconst checklist = card.addChecklist(params.name);\nif (!checklist) return { ok: false, error: 'Falha ao criar checklist' };\n\nconst titles = Array.isArray(params.items) ? params.items : [];\nconst added = titles\n  .map(t => checklist.addItem(String(t)))\n  .filter(Boolean);\n\nreturn {\n  ok: true,\n  checklist_id: checklist.id,\n  items_added: added.length,\n  items: added.map(i => ({ id: i.id, title: i.title }))\n};\n"
+      }
+    ],
+    "slug": "pipelines",
+    "name": "Pipelines",
+    "description": "CRM dentro do atendimento: qualifica o lead atual em um pipeline, avança, preenche dados da venda e fecha como ganho ou perdido. Todas as ações agem sobre o card do lead em atendimento (nunca em cards de outros leads).",
+    "image_url": null,
+    "icon": "solar:planet-bold-duotone",
+    "color": "#2563eb",
+    "category": "crm",
+    "updated_at": {
+      "$date": "2026-11-07T05:11:21.519Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.471Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47d8"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "transfer_to_human_by_email",
+        "description": "Atribui a conversa atual a um atendente específico pelo email e pausa a IA.",
+        "parameters": [
+          {
+            "name": "email",
+            "type": "string",
+            "required": true,
+            "description": "Email do atendente"
+          }
+        ],
+        "js_code": "assignUserByEmail(params.email);\ndisableAutomation();\nreturn { ok: true, assigned_to: params.email, automation: 'disabled' };\n"
+      },
+      {
+        "name": "transfer_to_department",
+        "description": "Atribui a conversa a um departamento e pausa a IA.",
+        "parameters": [
+          {
+            "name": "department",
+            "type": "string",
+            "required": true,
+            "description": "Nome do departamento"
+          }
+        ],
+        "js_code": "assignDepartmentByName(params.department);\ndisableAutomation();\nreturn { ok: true, department: params.department, automation: 'disabled' };\n"
+      },
+      {
+        "name": "resume_bot",
+        "description": "Reativa a automação de IA para a conversa atual.",
+        "parameters": [],
+        "js_code": "enableAutomation();\nreturn { ok: true, automation: 'enabled' };\n"
+      },
+      {
+        "name": "list_team_members",
+        "description": "Lista todos os atendentes do workspace (id, nome, email).",
+        "parameters": [],
+        "js_code": "return { users: userList() };\n"
+      },
+      {
+        "name": "assigned_agent",
+        "description": "Retorna o atendente atualmente atribuído à conversa, ou null.",
+        "parameters": [],
+        "js_code": "return { agent: assignedUser() };\n"
+      }
+    ],
+    "slug": "atendimento-humano",
+    "name": "Atendimento Humano",
+    "description": "Transfere a conversa para um atendente ou departamento, pausa/retoma a automação e lista o time da organização.",
+    "image_url": null,
+    "icon": "solar:user-hands-bold-duotone",
+    "color": "#0ea5e9",
+    "category": "communication",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.493Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.493Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47d9"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "add_contact_tag",
+        "description": "Adiciona uma tag ao contato atual. Cria a tag no workspace se não existir.",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tag (ex.: lead-quente)"
+          }
+        ],
+        "js_code": "tag.add(params.name);\nreturn { ok: true, added: params.name };\n"
+      },
+      {
+        "name": "remove_contact_tag",
+        "description": "Remove uma tag do contato atual.",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tag a remover"
+          }
+        ],
+        "js_code": "tag.remove(params.name);\nreturn { ok: true, removed: params.name };\n"
+      },
+      {
+        "name": "list_contact_tags",
+        "description": "Lista todas as tags aplicadas ao contato atual.",
+        "parameters": [],
+        "js_code": "return { tags: tag.listUserTags() };\n"
+      },
+      {
+        "name": "list_workspace_tags",
+        "description": "Lista todas as tags disponíveis no workspace.",
+        "parameters": [],
+        "js_code": "return { tags: tag.list() };\n"
+      }
+    ],
+    "slug": "contact-tags",
+    "name": "Tags do Contato",
+    "description": "Aplica, remove e consulta tags do contato atual — útil para segmentação e gatilhos.",
+    "image_url": null,
+    "icon": "solar:tag-bold-duotone",
+    "color": "#a855f7",
+    "category": "crm",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.518Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.518Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47da"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "remember_fact",
+        "description": "Salva um fato sobre o contato em memória interna (não visível no chat).",
+        "parameters": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": "Chave (ex.: produto_favorito)"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Valor a salvar"
+          }
+        ],
+        "js_code": "contactStorage.setItem(params.key, params.value);\nreturn { ok: true, key: params.key };\n"
+      },
+      {
+        "name": "recall_fact",
+        "description": "Lê um fato previamente salvo. Retorna null se não existir.",
+        "parameters": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": "Chave a buscar"
+          }
+        ],
+        "js_code": "return { value: contactStorage.getItem(params.key) };\n"
+      },
+      {
+        "name": "set_contact_attribute",
+        "description": "Define um atributo visível na ficha do contato (ex.: email, cpf, profissão).",
+        "parameters": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": "Nome do atributo"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Valor (string)"
+          }
+        ],
+        "js_code": "const ok = contactAttribute.setItem(params.key, params.value);\nreturn { ok };\n"
+      },
+      {
+        "name": "get_contact_attribute",
+        "description": "Lê um atributo da ficha do contato.",
+        "parameters": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": "Nome do atributo"
+          }
+        ],
+        "js_code": "return { value: contactAttribute.getItem(params.key) };\n"
+      },
+      {
+        "name": "who_is_this_contact",
+        "description": "Retorna informações básicas do contato atual (nome, telefone, id).",
+        "parameters": [],
+        "js_code": "return getContactInfo();\n"
+      }
+    ],
+    "slug": "contact-memory",
+    "name": "Memória do Contato",
+    "description": "Persiste informações no perfil do contato — desde notas internas (contactStorage) até atributos visíveis no chat (contactAttribute).",
+    "image_url": null,
+    "icon": "solar:brain-bold-duotone",
+    "color": "#f97316",
+    "category": "crm",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.527Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.527Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47db"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "list_services",
+        "description": "Lista todos os serviços disponíveis para agendamento.",
+        "parameters": [],
+        "js_code": "return { services: appointment.services() };\n"
+      },
+      {
+        "name": "list_employees",
+        "description": "Lista todos os profissionais que prestam atendimento.",
+        "parameters": [],
+        "js_code": "return { employees: appointment.employees() };\n"
+      },
+      {
+        "name": "get_available_slots",
+        "description": "Retorna horários disponíveis para um serviço em um período.",
+        "parameters": [
+          {
+            "name": "service_name",
+            "type": "string",
+            "required": true,
+            "description": "Nome do serviço"
+          },
+          {
+            "name": "date_start",
+            "type": "string",
+            "required": true,
+            "description": "YYYY-MM-DDTHH:mm:ss"
+          },
+          {
+            "name": "date_end",
+            "type": "string",
+            "required": true,
+            "description": "YYYY-MM-DDTHH:mm:ss"
+          },
+          {
+            "name": "employee_name",
+            "type": "string",
+            "required": false,
+            "description": "Filtrar por profissional"
+          }
+        ],
+        "js_code": "const slots = appointment.serviceAvailableSlots(\n  params.service_name, params.date_start, params.date_end, params.employee_name\n);\nreturn { slots: slots, count: (slots || []).length };\n"
+      },
+      {
+        "name": "create_appointment",
+        "description": "Cria um agendamento.",
+        "parameters": [
+          {
+            "name": "employee_name",
+            "type": "string",
+            "required": true,
+            "description": "Profissional que vai atender"
+          },
+          {
+            "name": "service_name",
+            "type": "string",
+            "required": true,
+            "description": "Serviço a agendar"
+          },
+          {
+            "name": "start_time",
+            "type": "string",
+            "required": true,
+            "description": "Início em ISO 8601"
+          }
+        ],
+        "js_code": "return appointment.create(params.employee_name, params.service_name, params.start_time);\n"
+      },
+      {
+        "name": "cancel_appointment",
+        "description": "Cancela um agendamento existente pelo ID.",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "type": "string",
+            "required": true,
+            "description": "ID do agendamento"
+          }
+        ],
+        "js_code": "appointment.cancel(params.appointment_id);\nreturn { ok: true, cancelled: params.appointment_id };\n"
+      }
+    ],
+    "slug": "appointments",
+    "name": "Agendamentos",
+    "description": "Consulta serviços, busca horários livres, cria e cancela agendamentos no calendário do workspace.",
+    "image_url": null,
+    "icon": "solar:calendar-mark-bold-duotone",
+    "color": "#14b8a6",
+    "category": "communication",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.536Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.536Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47dc"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "db_create_record",
+        "description": "Cria um registro em uma tabela (cria a tabela se não existir).",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "data",
+            "type": "object",
+            "required": true,
+            "description": "Objeto com os campos"
+          }
+        ],
+        "js_code": "return collection.Create(params.table, params.data || {});\n"
+      },
+      {
+        "name": "db_find_records",
+        "description": "Busca registros que atendem aos critérios.",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "criteria",
+            "type": "object",
+            "required": false,
+            "description": "Filtros (campo: valor)"
+          }
+        ],
+        "js_code": "return collection.Where(params.table, params.criteria || {});\n"
+      },
+      {
+        "name": "db_find_one",
+        "description": "Retorna o primeiro registro que atende aos critérios.",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "criteria",
+            "type": "object",
+            "required": true,
+            "description": "Filtros"
+          }
+        ],
+        "js_code": "return collection.FindOne(params.table, params.criteria);\n"
+      },
+      {
+        "name": "db_update_record",
+        "description": "Atualiza um registro pelo ID (merge parcial).",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID do registro"
+          },
+          {
+            "name": "data",
+            "type": "object",
+            "required": true,
+            "description": "Campos a atualizar"
+          }
+        ],
+        "js_code": "return collection.Update(params.table, params.id, params.data || {});\n"
+      },
+      {
+        "name": "db_delete_record",
+        "description": "Remove um registro pelo ID.",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID do registro"
+          }
+        ],
+        "js_code": "return collection.Delete(params.table, params.id);\n"
+      },
+      {
+        "name": "db_count_records",
+        "description": "Conta registros que atendem aos critérios.",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "criteria",
+            "type": "object",
+            "required": false,
+            "description": "Filtros opcionais"
+          }
+        ],
+        "js_code": "return collection.Count(params.table, params.criteria || {});\n"
+      },
+      {
+        "name": "db_search_records",
+        "description": "Busca textual (case-insensitive) em campos específicos da tabela.",
+        "parameters": [
+          {
+            "name": "table",
+            "type": "string",
+            "required": true,
+            "description": "Nome da tabela"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": "Texto a buscar"
+          },
+          {
+            "name": "fields",
+            "type": "array",
+            "required": true,
+            "description": "Lista de campos onde procurar",
+            "items_type": "string"
+          }
+        ],
+        "js_code": "return collection.Search(params.table, params.text, params.fields || []);\n"
+      }
+    ],
+    "slug": "dynamic-database",
+    "name": "Banco de Dados Dinâmico",
+    "description": "CRUD em tabelas dinâmicas do workspace. Cria, lê, atualiza, conta e busca registros sem precisar criar tabela manualmente.",
+    "image_url": null,
+    "icon": "solar:server-square-bold-duotone",
+    "color": "#6366f1",
+    "category": "utilities",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.544Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.544Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47dd"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "catalog_search",
+        "description": "Busca itens no catálogo por descrição em linguagem natural, código ou modelo. Cada item retorna `image`: para ENVIAR a foto ao cliente, escreva esse valor sozinho em uma linha, sem markdown, sem colchetes e sem texto ao redor.",
+        "parameters": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": true,
+            "description": "O que o cliente procura, com as palavras dele"
+          },
+          {
+            "name": "categories",
+            "type": "array",
+            "required": false,
+            "items_type": "string",
+            "description": "Paths de categoria para restringir (inclui as subcategorias)"
+          },
+          {
+            "name": "tags",
+            "type": "array",
+            "required": false,
+            "items_type": "string",
+            "description": "Tags para restringir a busca"
+          },
+          {
+            "name": "custom",
+            "type": "object",
+            "required": false,
+            "description": "Filtro por campo personalizado: { \"cor\": \"preta\" } ou faixa { \"preco\": { \"min\": 100, \"max\": 500 } }"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": "Máximo de itens (1 a 20)"
+          }
+        ],
+        "js_code": "return catalog.Search(params.query, {\n  categories: params.categories, tags: params.tags,\n  custom: params.custom, limit: params.limit\n});\n"
+      },
+      {
+        "name": "catalog_get_item",
+        "description": "Detalhes completos de um item, pelo código (SKU) ou id. Use depois da busca, quando o cliente escolher um item específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "Código (SKU) ou id do item"
+          }
+        ],
+        "js_code": "return catalog.Get(params.id);\n"
+      },
+      {
+        "name": "catalog_list_categories",
+        "description": "Lista as categorias do catálogo com a quantidade de itens em cada uma. Use para oferecer opções quando o cliente não souber o que quer.",
+        "parameters": [],
+        "js_code": "return catalog.Categories();\n"
+      },
+      {
+        "name": "catalog_facet_values",
+        "description": "Valores disponíveis de uma tag ou campo personalizado, com a contagem de itens. Use para afunilar a conversa: \"temos em preto, branco e azul\".",
+        "parameters": [
+          {
+            "name": "field",
+            "type": "string",
+            "required": true,
+            "description": "A palavra \"tags\" ou a chave de um campo personalizado (ex.: \"cor\")"
+          }
+        ],
+        "js_code": "return catalog.Facets(params.field);\n"
+      },
+      {
+        "name": "catalog_similar_items",
+        "description": "Itens parecidos com um item já mostrado. Use para sugerir alternativas quando o cliente não gostar do que foi apresentado ou o item não servir.",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "Código (SKU) ou id do item de referência"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": "Máximo de sugestões (1 a 20)"
+          }
+        ],
+        "js_code": "return catalog.Similar(params.id, params.limit);\n"
+      }
+    ],
+    "slug": "catalog",
+    "name": "Catálogo",
+    "description": "Busca no catálogo do workspace (produtos, imóveis, serviços). Busca híbrida: semântica por embedding + textual, com filtro por categoria, tag e campos personalizados.",
+    "image_url": null,
+    "icon": "solar:bag-smile-bold-duotone",
+    "color": "#0ea5e9",
+    "category": "ecommerce",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.555Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.555Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee5efa894f668c1fea47de"
+    },
+    "active": true,
+    "credentials_schema": [],
+    "function_templates": [
+      {
+        "name": "validate_cpf_cnpj",
+        "description": "Valida CPF ou CNPJ aplicando os dígitos verificadores. Retorna { valid, kind: cpf|cnpj|unknown, normalized }.",
+        "parameters": [
+          {
+            "name": "document",
+            "type": "string",
+            "required": true,
+            "description": "O CPF ou CNPJ a validar (aceita com ou sem máscara)"
+          }
+        ],
+        "js_code": "function onlyDigits(s) { return String(s || '').replace(/\\D/g, ''); }\n\nfunction validateCpf(cpf) {\n  if (cpf.length !== 11 || /^(\\d)\\1+$/.test(cpf)) return false;\n  let sum = 0;\n  for (let i = 0; i < 9; i++) sum += parseInt(cpf[i], 10) * (10 - i);\n  let d1 = (sum * 10) % 11;\n  if (d1 === 10) d1 = 0;\n  if (d1 !== parseInt(cpf[9], 10)) return false;\n  sum = 0;\n  for (let i = 0; i < 10; i++) sum += parseInt(cpf[i], 10) * (11 - i);\n  let d2 = (sum * 10) % 11;\n  if (d2 === 10) d2 = 0;\n  return d2 === parseInt(cpf[10], 10);\n}\n\nfunction validateCnpj(cnpj) {\n  if (cnpj.length !== 14 || /^(\\d)\\1+$/.test(cnpj)) return false;\n  const calc = (slice, weights) => {\n    let sum = 0;\n    for (let i = 0; i < weights.length; i++) sum += parseInt(slice[i], 10) * weights[i];\n    const r = sum % 11;\n    return r < 2 ? 0 : 11 - r;\n  };\n  const w1 = [5,4,3,2,9,8,7,6,5,4,3,2];\n  const w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];\n  const d1 = calc(cnpj.slice(0, 12), w1);\n  if (d1 !== parseInt(cnpj[12], 10)) return false;\n  const d2 = calc(cnpj.slice(0, 13), w2);\n  return d2 === parseInt(cnpj[13], 10);\n}\n\nconst digits = onlyDigits(params.document);\nlet kind = null;\nlet valid = false;\nif (digits.length === 11)      { kind = 'cpf';  valid = validateCpf(digits); }\nelse if (digits.length === 14) { kind = 'cnpj'; valid = validateCnpj(digits); }\nelse                           { kind = 'unknown'; valid = false; }\n\nreturn { valid: valid, kind: kind, normalized: digits };\n"
+      },
+      {
+        "name": "lookup_cep",
+        "description": "Consulta o endereço de um CEP brasileiro via API pública ViaCEP.",
+        "parameters": [
+          {
+            "name": "cep",
+            "type": "string",
+            "required": true,
+            "description": "CEP de 8 dígitos (com ou sem hífen)"
+          }
+        ],
+        "js_code": "const cep = String(params.cep || '').replace(/\\D/g, '');\nif (cep.length !== 8) {\n  return { error: 'CEP inválido: precisa ter 8 dígitos', cep: params.cep };\n}\nconst res = await fetch('https://viacep.com.br/ws/' + cep + '/json/');\nif (!res.ok) {\n  return { error: 'Falha na consulta ViaCEP', status: res.status };\n}\nconst data = await res.json();\nif (data.erro) return { error: 'CEP não encontrado', cep: cep };\nreturn {\n  cep: data.cep,\n  logradouro: data.logradouro,\n  complemento: data.complemento,\n  bairro: data.bairro,\n  cidade: data.localidade,\n  uf: data.uf,\n  ibge: data.ibge\n};\n"
+      },
+      {
+        "name": "calculate_age",
+        "description": "Calcula a idade em anos completos a partir de uma data de nascimento.",
+        "parameters": [
+          {
+            "name": "birth_date",
+            "type": "string",
+            "required": true,
+            "description": "Data de nascimento no formato YYYY-MM-DD"
+          }
+        ],
+        "js_code": "const raw = String(params.birth_date || '').trim();\nif (!raw) return { error: 'birth_date obrigatório' };\nconst birth = new Date(raw);\nif (isNaN(birth.getTime())) return { error: 'birth_date inválida; use YYYY-MM-DD' };\nconst today = new Date();\nlet age = today.getFullYear() - birth.getFullYear();\nconst m = today.getMonth() - birth.getMonth();\nif (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;\nreturn { age: age, birth_date: raw };\n"
+      },
+      {
+        "name": "format_phone_br",
+        "description": "Normaliza um telefone brasileiro para E.164 (+55…) e formato visual.",
+        "parameters": [
+          {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "Telefone com ou sem máscara, com ou sem DDI 55"
+          }
+        ],
+        "js_code": "const digits = String(params.phone || '').replace(/\\D/g, '');\nif (digits.length < 10 || digits.length > 13) {\n  return { error: 'telefone inválido', original: params.phone };\n}\nlet national = digits;\nif (national.startsWith('55') && (national.length === 12 || national.length === 13)) {\n  national = national.slice(2);\n}\nif (national.length !== 10 && national.length !== 11) {\n  return { error: 'telefone inválido após normalização', original: params.phone };\n}\nconst ddd = national.slice(0, 2);\nconst rest = national.slice(2);\nconst formatted = rest.length === 9\n  ? '(' + ddd + ') ' + rest.slice(0, 5) + '-' + rest.slice(5)\n  : '(' + ddd + ') ' + rest.slice(0, 4) + '-' + rest.slice(4);\nreturn {\n  e164: '+55' + national,\n  national: national,\n  formatted: formatted,\n  ddd: ddd\n};\n"
+      },
+      {
+        "name": "base64_encode_decode",
+        "description": "Codifica ou decodifica um texto em base64.",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": "Texto a transformar"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "required": true,
+            "description": "'encode' ou 'decode'",
+            "enum": [
+              "encode",
+              "decode"
+            ]
+          }
+        ],
+        "js_code": "const action = String(params.action || 'encode').toLowerCase();\nconst text = String(params.text || '');\nif (action === 'encode') return { result: btoa(text), action: 'encode' };\nif (action === 'decode') {\n  try { return { result: atob(text), action: 'decode' }; }\n  catch (e) { return { error: 'base64 inválido', message: e.message }; }\n}\nreturn { error: \"action deve ser 'encode' ou 'decode'\" };\n"
+      }
+    ],
+    "slug": "utilidades-brasil",
+    "name": "Utilidades Brasil",
+    "description": "Conjunto de funções utilitárias para o Brasil: validação de documentos, consulta de CEP, formatação de telefone e mais.",
+    "image_url": null,
+    "icon": "solar:flag-bold-duotone",
+    "color": "#16a34a",
+    "category": "utilities",
+    "updated_at": {
+      "$date": "2026-11-06T23:12:58.572Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T23:12:58.572Z"
+    }
+  }
+]

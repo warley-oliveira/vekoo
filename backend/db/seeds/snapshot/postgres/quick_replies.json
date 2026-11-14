@@ -1,0 +1,101 @@
+[
+  {
+    "id": "14185fb5-e710-4992-bcf5-c96219d1bf83",
+    "organization_id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Convênios",
+    "trigger": "convenios",
+    "content": "Atendemos particular e emitimos recibo para reembolso do seu plano.",
+    "created_at": "2026-11-08T00:57:50.379002Z",
+    "updated_at": "2026-11-08T00:57:50.379002Z"
+  },
+  {
+    "id": "1535b8d9-ce98-4b14-b40f-d68d5eb79b12",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Horário de atendimento",
+    "trigger": "horario",
+    "content": "Atendemos de segunda a sexta, das 9h às 18h, e aos sábados, das 9h às 13h.",
+    "created_at": "2026-11-06T19:17:57.722649Z",
+    "updated_at": "2026-11-06T19:17:57.722649Z"
+  },
+  {
+    "id": "235c3fdf-7538-457e-ab46-6b0c4e6b3114",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Boas-vindas",
+    "trigger": "ola",
+    "content": "Oi! Aqui é da Doma Store. Como posso te ajudar hoje?",
+    "created_at": "2026-11-06T19:17:57.709569Z",
+    "updated_at": "2026-11-06T19:17:57.709569Z"
+  },
+  {
+    "id": "32993ed4-65b0-4380-b737-a8e54a17f4b5",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Agradecimento",
+    "trigger": "obrigada",
+    "content": "Obrigada pela compra! Qualquer coisa, é só chamar por aqui.",
+    "created_at": "2026-11-06T19:17:57.838273Z",
+    "updated_at": "2026-11-06T19:17:57.838273Z"
+  },
+  {
+    "id": "45193f8d-e9d5-4deb-b68b-a2a2bc9d2ea5",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Tabela de preços",
+    "trigger": "tabela",
+    "content": "Segue a nossa tabela de atacado, com pedido mínimo de 10 peças:\n\nattachment_id_4055e388-955d-4e6a-b8d7-37698d356522",
+    "created_at": "2026-11-06T19:17:57.773027Z",
+    "updated_at": "2026-11-06T19:17:57.773027Z"
+  },
+  {
+    "id": "5dc6f22c-f508-418f-9ca9-dd7e9dbe6374",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Prazo de entrega",
+    "trigger": "prazo",
+    "content": "Para capitais do Sul e Sudeste, de 3 a 5 dias úteis. Para as demais regiões, de 6 a 10 dias úteis, a partir da confirmação do pagamento.",
+    "created_at": "2026-11-06T19:17:57.734261Z",
+    "updated_at": "2026-11-06T19:17:57.734261Z"
+  },
+  {
+    "id": "6ef7376a-775a-4078-9b1d-2a962cbb23ab",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Troca e devolução",
+    "trigger": "troca",
+    "content": "Você tem até 30 dias para trocar, com a etiqueta na peça. A primeira troca é por nossa conta. É só me passar o número do pedido.",
+    "created_at": "2026-11-06T19:17:57.746644Z",
+    "updated_at": "2026-11-06T19:17:57.746644Z"
+  },
+  {
+    "id": "7cd79a14-e564-4d32-a0dc-84dc1fc11718",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Guia de medidas",
+    "trigger": "medidas",
+    "content": "Olha o nosso guia de medidas para escolher o tamanho certo:\n\nattachment_id_1539a4c6-ca67-4149-aeb7-c6000343067e",
+    "created_at": "2026-11-06T19:17:57.786332Z",
+    "updated_at": "2026-11-06T19:17:57.786332Z"
+  },
+  {
+    "id": "a625160f-06e2-48cd-ae96-088a004f88fd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Dados do Pix",
+    "trigger": "pix",
+    "content": "Nosso Pix é o CNPJ 11.222.333/0001-81, em nome de Doma Store. Assim que pagar, me manda o comprovante por aqui?",
+    "created_at": "2026-11-06T19:17:57.758478Z",
+    "updated_at": "2026-11-06T19:17:57.758478Z"
+  },
+  {
+    "id": "e7b8e243-74f8-4c1a-901c-02ff700ffac2",
+    "organization_id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Horários",
+    "trigger": "horarios",
+    "content": "Atendemos de segunda a sexta, das 8h às 19h, e aos sábados até o meio-dia.",
+    "created_at": "2026-11-08T00:57:50.340545Z",
+    "updated_at": "2026-11-08T00:57:50.340545Z"
+  },
+  {
+    "id": "f5d0d5b7-18b4-417d-9179-cf2da6c08ebd",
+    "organization_id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Endereço",
+    "trigger": "endereco",
+    "content": "Rua Pamplona, 1200, conjunto 42 — Jardim Paulista, São Paulo.",
+    "created_at": "2026-11-08T00:57:50.360428Z",
+    "updated_at": "2026-11-08T00:57:50.360428Z"
+  }
+]

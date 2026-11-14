@@ -1,0 +1,134 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb820"
+    },
+    "option_values": [],
+    "normalization_history": [],
+    "normalization_strategy": "min",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": false,
+    "name": "Cidade",
+    "value_type": "text",
+    "description": "Onde o contato mora.",
+    "key": "cidade",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.159Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.159Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb821"
+    },
+    "option_values": [
+      "PP",
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "normalization_history": [],
+    "normalization_strategy": "min",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": false,
+    "name": "Tamanho preferido",
+    "value_type": "list",
+    "description": "O tamanho que costuma levar.",
+    "key": "tamanho_preferido",
+    "updated_at": {
+      "$date": "2026-11-06T23:26:25.731Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.166Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb822"
+    },
+    "option_values": [],
+    "normalization_history": [],
+    "normalization_strategy": "avg",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": true,
+    "name": "Ticket médio",
+    "value_type": "number",
+    "description": "Quanto costuma gastar por compra, em reais.",
+    "key": "ticket_medio",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.273Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb823"
+    },
+    "option_values": [],
+    "normalization_history": [],
+    "normalization_strategy": "min",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": false,
+    "name": "Aceita novidades",
+    "value_type": "checkbox",
+    "default_value": "true",
+    "description": "Topa receber lançamentos e promoções.",
+    "key": "aceita_novidades",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.280Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.280Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb824"
+    },
+    "option_values": [],
+    "normalization_history": [],
+    "normalization_strategy": "min",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": false,
+    "name": "Aniversário",
+    "value_type": "date",
+    "description": "Para o cupom do mês.",
+    "key": "aniversario",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.286Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.286Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aee27e5832f77baac1fb825"
+    },
+    "option_values": [
+      "Instagram",
+      "Indicação",
+      "Loja física",
+      "Site",
+      "Google"
+    ],
+    "normalization_history": [],
+    "normalization_strategy": "min",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "auto_normalize": false,
+    "name": "Canal de origem",
+    "value_type": "list",
+    "key": "canal_de_origem",
+    "updated_at": {
+      "$date": "2026-11-06T19:17:57.290Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:17:57.290Z"
+    }
+  }
+]

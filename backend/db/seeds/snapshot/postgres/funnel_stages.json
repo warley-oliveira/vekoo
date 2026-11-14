@@ -1,0 +1,58 @@
+[
+  {
+    "id": "0dacbc78-95d1-406a-87d6-7d034d9bd856",
+    "funnel_id": "c4132df9-752e-42ff-897e-4814c9a93e6c",
+    "name": "Pedido fechado",
+    "position": 3,
+    "created_at": "2026-11-06T21:41:36.378747Z",
+    "updated_at": "2026-11-06T21:41:36.378747Z"
+  },
+  {
+    "id": "127cf444-9217-4e89-bed9-2a136631719b",
+    "funnel_id": "0879b62d-6869-4c57-a94d-146ad9c4209e",
+    "name": "Entrega feita",
+    "position": 0,
+    "created_at": "2026-11-06T21:41:36.462256Z",
+    "updated_at": "2026-11-06T21:41:36.462256Z"
+  },
+  {
+    "id": "176b7bfa-9e9e-4ccd-9396-58d62d7ee776",
+    "funnel_id": "0879b62d-6869-4c57-a94d-146ad9c4209e",
+    "name": "Pediu troca",
+    "position": 1,
+    "created_at": "2026-11-06T21:41:36.463896Z",
+    "updated_at": "2026-11-06T21:41:36.463896Z"
+  },
+  {
+    "id": "1de241b7-7a90-4440-854a-0a86f24dda47",
+    "funnel_id": "c4132df9-752e-42ff-897e-4814c9a93e6c",
+    "name": "Novo contato",
+    "position": 0,
+    "created_at": "2026-11-06T21:41:36.371647Z",
+    "updated_at": "2026-11-06T21:41:36.371647Z"
+  },
+  {
+    "id": "1eda0ba0-7c18-45ae-8364-717915147a09",
+    "funnel_id": "c4132df9-752e-42ff-897e-4814c9a93e6c",
+    "name": "Proposta enviada",
+    "position": 2,
+    "created_at": "2026-11-06T21:41:36.377279Z",
+    "updated_at": "2026-11-06T21:41:36.377279Z"
+  },
+  {
+    "id": "763cde30-89b1-4f8f-ab04-e583f8562743",
+    "funnel_id": "c4132df9-752e-42ff-897e-4814c9a93e6c",
+    "name": "Em atendimento",
+    "position": 1,
+    "created_at": "2026-11-06T21:41:36.375303Z",
+    "updated_at": "2026-11-06T21:41:36.375303Z"
+  },
+  {
+    "id": "ad3e685f-fea4-494a-9234-b3351f58c291",
+    "funnel_id": "0879b62d-6869-4c57-a94d-146ad9c4209e",
+    "name": "Resolvido",
+    "position": 2,
+    "created_at": "2026-11-06T21:41:36.465326Z",
+    "updated_at": "2026-11-06T21:41:36.465326Z"
+  }
+]

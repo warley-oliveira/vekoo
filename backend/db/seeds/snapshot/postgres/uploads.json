@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1d1e7f3e-fa6b-4217-95fa-3fffe6ca1e44",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "filename": "foto-grande.png",
+    "content_type": "image/png",
+    "byte_size": 894571,
+    "width": 1600,
+    "height": 1067,
+    "created_at": "2026-09-07T19:37:18.525278Z",
+    "updated_at": "2026-11-06T17:41:21.280485Z"
+  },
+  {
+    "id": "3aceca15-1dcf-41d3-8a57-dbea5b7e171d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "filename": "foto.png",
+    "content_type": "image/png",
+    "byte_size": 100,
+    "width": 40,
+    "height": 30,
+    "created_at": "2026-09-07T19:05:16.338068Z",
+    "updated_at": "2026-11-06T17:41:20.478581Z"
+  },
+  {
+    "id": "81dbd48f-9e98-4711-81b9-685b065a3a2f",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "filename": "foto-grande.png",
+    "content_type": "image/png",
+    "byte_size": 894571,
+    "width": 1600,
+    "height": 1067,
+    "created_at": "2026-09-07T19:36:53.426233Z",
+    "updated_at": "2026-11-06T17:41:21.230185Z"
+  },
+  {
+    "id": "aeb826f0-08e9-4891-83ed-614d5ab8228b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "account_id": "b56a981d-00e7-5f4f-a618-de6c0a991000",
+    "filename": "foto.png",
+    "content_type": "image/png",
+    "byte_size": 100,
+    "width": 40,
+    "height": 30,
+    "created_at": "2026-09-07T19:05:27.831348Z",
+    "updated_at": "2026-11-06T17:41:20.482622Z"
+  }
+]

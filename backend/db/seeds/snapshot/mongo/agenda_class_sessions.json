@@ -1,0 +1,118 @@
+[
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769c"
+    },
+    "status": "active",
+    "start": {
+      "$date": "2026-11-05T22:00:00Z"
+    },
+    "end": {
+      "$date": "2026-11-06T00:00:00Z"
+    },
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "slot_start": {
+      "$date": "2026-11-05T22:00:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.361Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.331Z"
+    },
+    "notes": "Presença marcada pela semente"
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c769f"
+    },
+    "status": "canceled",
+    "start": {
+      "$date": "2026-11-24T22:00:00Z"
+    },
+    "end": {
+      "$date": "2026-11-25T00:00:00Z"
+    },
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c7697"
+    },
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "slot_start": {
+      "$date": "2026-11-24T22:00:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.421Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.412Z"
+    },
+    "notes": "Feriado: sem aula nesta semana."
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a4"
+    },
+    "status": "active",
+    "start": {
+      "$date": "2026-10-24T13:00:00Z"
+    },
+    "end": {
+      "$date": "2026-10-24T14:30:00Z"
+    },
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "slot_start": {
+      "$date": "2026-10-24T13:00:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.484Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.476Z"
+    },
+    "notes": "Presença marcada pela semente"
+  },
+  {
+    "_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a8"
+    },
+    "status": "canceled",
+    "start": {
+      "$date": "2026-11-21T13:00:00Z"
+    },
+    "end": {
+      "$date": "2026-11-21T14:30:00Z"
+    },
+    "class_group_id": {
+      "$oid": "6aee29ec64d3ea36e87c76a0"
+    },
+    "calendar_id": {
+      "$oid": "6aee29ec64d3ea36e87c7696"
+    },
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "slot_start": {
+      "$date": "2026-11-21T13:00:00Z"
+    },
+    "updated_at": {
+      "$date": "2026-11-06T19:26:36.541Z"
+    },
+    "created_at": {
+      "$date": "2026-11-06T19:26:36.533Z"
+    },
+    "notes": "Feriado: sem aula nesta semana."
+  }
+]

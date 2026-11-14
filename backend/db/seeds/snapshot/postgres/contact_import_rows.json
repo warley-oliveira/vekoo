@@ -1,0 +1,81 @@
+[
+  {
+    "id": "5685fd61-b6e9-4392-9832-9b0c242ef287",
+    "contact_import_id": "fb2bb291-e02d-4592-a1c7-c83f8dc3f9fa",
+    "name": "Otávio Ribeiro",
+    "phone": "5541999110002",
+    "additional_data": {
+      "user_name": "Otávio Ribeiro",
+      "external_id": "5541999110002",
+      "department_name": "Comercial"
+    },
+    "status": "completed",
+    "error_message": null,
+    "processed_at": "2026-11-06T19:17:58.011516Z",
+    "created_at": "2026-11-06T19:17:57.962722Z",
+    "updated_at": "2026-11-06T19:17:58.011537Z"
+  },
+  {
+    "id": "7f6eff19-267c-4f7a-82c1-34903bb4153b",
+    "contact_import_id": "fb2bb291-e02d-4592-a1c7-c83f8dc3f9fa",
+    "name": "Sofia Carvalho",
+    "phone": "5541999110003",
+    "additional_data": {
+      "user_name": "Sofia Carvalho",
+      "external_id": "5541999110003"
+    },
+    "status": "completed",
+    "error_message": null,
+    "processed_at": "2026-11-06T19:17:58.011516Z",
+    "created_at": "2026-11-06T19:17:57.962722Z",
+    "updated_at": "2026-11-06T19:17:58.011537Z"
+  },
+  {
+    "id": "b6a78a4d-8b19-4109-9d2b-26cdc2f2ec40",
+    "contact_import_id": "fb2bb291-e02d-4592-a1c7-c83f8dc3f9fa",
+    "name": "Bruno Teixeira",
+    "phone": "5541999110004",
+    "additional_data": {
+      "user_name": "Bruno Teixeira",
+      "external_id": "5541999110004"
+    },
+    "status": "completed",
+    "error_message": null,
+    "processed_at": "2026-11-06T19:17:58.011516Z",
+    "created_at": "2026-11-06T19:17:57.962722Z",
+    "updated_at": "2026-11-06T19:17:58.011537Z"
+  },
+  {
+    "id": "de2396ac-a58e-4439-9199-608bd6191aad",
+    "contact_import_id": "fb2bb291-e02d-4592-a1c7-c83f8dc3f9fa",
+    "name": "Helena Martins",
+    "phone": "5541999110001",
+    "additional_data": {
+      "user_name": "Helena Martins",
+      "external_id": "5541999110001",
+      "department_name": "Atendimento",
+      "assigned_user_name": "Camila Rocha"
+    },
+    "status": "completed",
+    "error_message": null,
+    "processed_at": "2026-11-06T19:17:58.011516Z",
+    "created_at": "2026-11-06T19:17:57.962722Z",
+    "updated_at": "2026-11-06T19:17:58.011537Z"
+  },
+  {
+    "id": "ee29274a-61ce-4da7-b96a-82da825e8db6",
+    "contact_import_id": "fb2bb291-e02d-4592-a1c7-c83f8dc3f9fa",
+    "name": "Isabela Nogueira",
+    "phone": "5541999110005",
+    "additional_data": {
+      "user_name": "Isabela Nogueira",
+      "external_id": "5541999110005",
+      "assigned_user_name": "Thiago Almeida"
+    },
+    "status": "completed",
+    "error_message": null,
+    "processed_at": "2026-11-06T19:17:58.011516Z",
+    "created_at": "2026-11-06T19:17:57.962722Z",
+    "updated_at": "2026-11-06T19:17:58.011537Z"
+  }
+]

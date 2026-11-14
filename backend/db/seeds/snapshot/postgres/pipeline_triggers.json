@@ -1,0 +1,149 @@
+[
+  {
+    "id": "15f56b87-2186-4b6d-a01a-3f474ffdbd3c",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "stage_id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85",
+    "name": "Distribuir novos contatos",
+    "event_type": "card_created",
+    "conditions": {},
+    "actions": [
+      {
+        "type": "assign_user",
+        "account_ids": [
+          "2e7dc263-32d2-46ff-9175-acf2605d824b",
+          "6a6b5bda-6a04-44d1-9f44-b463227b0032"
+        ]
+      }
+    ],
+    "active": true,
+    "last_round_robin_index": 11,
+    "created_at": "2026-11-06T21:58:36.896880Z",
+    "updated_at": "2026-11-06T21:58:36.896880Z"
+  },
+  {
+    "id": "60d7a265-581c-495a-8248-7bbc09b6a34c",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "stage_id": null,
+    "name": "Abrir o pedido no pós-venda",
+    "event_type": "deal_won",
+    "conditions": {},
+    "actions": [
+      {
+        "type": "create_card",
+        "card_priority": "medium",
+        "target_board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+        "target_stage_id": "07a30c5d-5086-4fad-b1c0-663a54086868",
+        "card_inherit_labels": true,
+        "card_title_template": "Pedido: {{card.company_name}}",
+        "card_description_template": "Negócio de R$ {{card.deal_value}}, fechado por {{card.assigned_to}}."
+      }
+    ],
+    "active": true,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:36.950302Z",
+    "updated_at": "2026-11-06T21:58:36.950302Z"
+  },
+  {
+    "id": "7976f909-3376-42be-ae0d-12145bc28c06",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+    "name": "Avisar a transportadora",
+    "event_type": "card_moved",
+    "conditions": {},
+    "actions": [
+      {
+        "url": "https://api.exemplo.com.br/coletas",
+        "type": "fire_webhook",
+        "method": "POST",
+        "headers": {
+          "X-Chave": "chave-da-transportadora"
+        },
+        "body_template": "{\"pedido\":\"{{card.title}}\",\"etapa\":\"{{stage.name}}\"}"
+      }
+    ],
+    "active": false,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:34.364961Z",
+    "updated_at": "2026-11-06T21:58:34.364961Z"
+  },
+  {
+    "id": "8c851eca-eb0e-49e0-880c-6da81d836bf2",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "stage_id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+    "name": "Pedir o retorno de quem esfriou",
+    "event_type": "sla_breached",
+    "conditions": {
+      "stage_name": "Proposta enviada"
+    },
+    "actions": [
+      {
+        "type": "notify",
+        "message": "{{card.title}} está parado em {{stage.name}}."
+      }
+    ],
+    "active": false,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:36.923665Z",
+    "updated_at": "2026-11-06T21:58:36.923665Z"
+  },
+  {
+    "id": "9281857f-273c-4eef-a6ad-481eb544aebb",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "stage_id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+    "name": "Avisar o contato do envio",
+    "event_type": "card_moved",
+    "conditions": {},
+    "actions": [
+      {
+        "type": "send_whatsapp_message",
+        "target": "card_contact",
+        "message": "Seu pedido saiu para entrega! O código de rastreio é {{card.custom_field.codigo_de_rastreio}}.",
+        "connector_id": "6aee0e5717c01071cdba2bb6"
+      }
+    ],
+    "active": false,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:34.353410Z",
+    "updated_at": "2026-11-06T21:58:34.353410Z"
+  },
+  {
+    "id": "a83c4fad-0070-420d-b788-b7c1a37ad118",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "stage_id": null,
+    "name": "Avisar a gerência de negócio ganho",
+    "event_type": "deal_won",
+    "conditions": {},
+    "actions": [
+      {
+        "type": "notify",
+        "message": "{{card.title}} fechou por R$ {{card.deal_value}}.",
+        "account_ids": [
+          "6a6b5bda-6a04-44d1-9f44-b463227b0032"
+        ]
+      }
+    ],
+    "active": true,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:36.908449Z",
+    "updated_at": "2026-11-06T21:58:36.908449Z"
+  },
+  {
+    "id": "b6ca4ffe-6891-4245-9892-b9344208a3ed",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "stage_id": null,
+    "name": "Somar pontos ao avançar",
+    "event_type": "card_moved",
+    "conditions": {},
+    "actions": [
+      {
+        "code": "const card = kanban.card(params.card.id);\nconst total = card.incrementCustomField('Lead Score', 10);\nreturn { pontos: total };",
+        "type": "run_code",
+        "timeout_ms": 5000
+      }
+    ],
+    "active": true,
+    "last_round_robin_index": 0,
+    "created_at": "2026-11-06T21:58:36.934347Z",
+    "updated_at": "2026-11-06T21:58:36.934347Z"
+  }
+]

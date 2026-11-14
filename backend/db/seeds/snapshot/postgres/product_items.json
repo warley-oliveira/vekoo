@@ -1,0 +1,625 @@
+[
+  {
+    "id": "0f136670-55b1-4617-bfd5-9189b019dd1c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Jogo de Xícaras de Café (6 peças)",
+    "summary": "Seis xícaras de porcelana com pires, para o cafezinho depois do almoço.",
+    "description": null,
+    "external_id": "DOM-COZ-002",
+    "url": "https://domastore.exemplo.com.br/produtos/xicaras-cafe",
+    "active": true,
+    "custom_fields": {
+      "cor": "Branco",
+      "preco": 189.9,
+      "material": "Porcelana",
+      "em_estoque": true
+    },
+    "tags": [
+      "café"
+    ],
+    "index_text_primary": "jogo de xicaras de cafe (6 pecas) dom-coz-002 cafe",
+    "index_text_secondary": "seis xicaras de porcelana com pires, para o cafezinho depois do almoco. casa cozinha branco porcelana",
+    "created_at": "2026-09-18T15:54:02.674799Z",
+    "updated_at": "2026-09-18T15:54:02.674799Z"
+  },
+  {
+    "id": "0f8f3d69-fdc4-4f1b-8f3a-56740bdc2c9d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Almofada de Algodão Bordada",
+    "summary": "Capa de almofada de 45 cm, bordada à mão em ponto cruz.",
+    "description": null,
+    "external_id": "DOM-DEC-001",
+    "url": "https://domastore.exemplo.com.br/produtos/almofada-bordada",
+    "active": true,
+    "custom_fields": {
+      "cor": "Mostarda",
+      "preco": 109.9,
+      "material": "Algodão",
+      "em_estoque": true
+    },
+    "tags": [
+      "artesanal"
+    ],
+    "index_text_primary": "almofada de algodao bordada dom-dec-001 artesanal",
+    "index_text_secondary": "capa de almofada de 45 cm, bordada a mao em ponto cruz. casa decoracao mostarda algodao",
+    "created_at": "2026-09-09T15:54:02.837068Z",
+    "updated_at": "2026-09-09T15:54:02.837068Z"
+  },
+  {
+    "id": "24dd66bd-09db-4c9e-add7-c4fa800f2328",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Lenço de Algodão Tie-Dye",
+    "summary": "Tingido à mão em pequenos lotes, nenhum sai igual ao outro.",
+    "description": null,
+    "external_id": "DOM-LEN-002",
+    "url": "https://domastore.exemplo.com.br/produtos/lenco-tie-dye",
+    "active": true,
+    "custom_fields": {
+      "cor": "Mostarda",
+      "preco": 69.9,
+      "material": "Algodão",
+      "em_estoque": true
+    },
+    "tags": [
+      "artesanal"
+    ],
+    "index_text_primary": "lenco de algodao tie-dye dom-len-002 artesanal",
+    "index_text_secondary": "tingido a mao em pequenos lotes, nenhum sai igual ao outro. acessorios lencos mostarda algodao",
+    "created_at": "2026-09-24T15:54:02.578958Z",
+    "updated_at": "2026-09-24T15:54:02.578958Z"
+  },
+  {
+    "id": "25ae6093-c4df-4b78-8165-720fd01d5dd2",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Avental de Linho",
+    "summary": "Avental de linho com bolso frontal e alça cruzada nas costas.",
+    "description": null,
+    "external_id": "DOM-COZ-004",
+    "url": "https://domastore.exemplo.com.br/produtos/avental-linho",
+    "active": true,
+    "custom_fields": {
+      "cor": "Verde-oliva",
+      "preco": 89.9,
+      "material": "Linho",
+      "em_estoque": true
+    },
+    "tags": [
+      "linho"
+    ],
+    "index_text_primary": "avental de linho dom-coz-004 linho",
+    "index_text_secondary": "avental de linho com bolso frontal e alca cruzada nas costas. casa cozinha verde-oliva linho",
+    "created_at": "2026-09-12T15:54:02.788496Z",
+    "updated_at": "2026-09-12T15:54:02.788496Z"
+  },
+  {
+    "id": "383ec365-0da9-4451-bf7b-f9d7fdec2eaf",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Kit Café da Manhã",
+    "summary": "Duas canecas, um pano de prato e um pacote de café especial de Minas.",
+    "description": "Já vem na caixa de presente, com um cartão escrito à mão se você pedir.",
+    "external_id": "DOM-PRE-001",
+    "url": "https://domastore.exemplo.com.br/produtos/kit-cafe-manha",
+    "active": true,
+    "custom_fields": {
+      "preco": 249.9,
+      "em_estoque": true,
+      "preco_promocional": 219.9
+    },
+    "tags": [
+      "presente",
+      "café"
+    ],
+    "index_text_primary": "kit cafe da manha dom-pre-001 presente cafe",
+    "index_text_secondary": "duas canecas, um pano de prato e um pacote de cafe especial de minas. casa cozinha presentes ja vem na caixa de presente, com um cartao escrito a mao se voce pedir.",
+    "created_at": "2026-08-28T15:54:03.063364Z",
+    "updated_at": "2026-08-28T15:54:03.063364Z"
+  },
+  {
+    "id": "43a3cf97-72f5-4e4e-a7ff-c15647fc0346",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vela Aromática de Capim-Limão",
+    "summary": "Vela de cera de soja com óleo essencial, 40 horas de queima.",
+    "description": null,
+    "external_id": "DOM-DEC-004",
+    "url": "https://domastore.exemplo.com.br/produtos/vela-capim-limao",
+    "active": true,
+    "custom_fields": {
+      "preco": 54.9,
+      "material": "Cera de soja",
+      "em_estoque": true
+    },
+    "tags": [
+      "presente",
+      "aromas"
+    ],
+    "index_text_primary": "vela aromatica de capim-limao dom-dec-004 presente aromas",
+    "index_text_secondary": "vela de cera de soja com oleo essencial, 40 horas de queima. casa decoracao presentes cera de soja",
+    "created_at": "2026-08-31T15:54:03.008460Z",
+    "updated_at": "2026-08-31T15:54:03.008460Z"
+  },
+  {
+    "id": "51edbe2f-2b1e-45e6-8853-40a7b2652c78",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Camisa de Algodão Oversized",
+    "summary": "Camisa ampla de algodão egípcio, com punho dobrável.",
+    "description": "Modelagem larga de propósito. Quem prefere mais ajustada pode escolher um número abaixo.",
+    "external_id": "DOM-BLU-002",
+    "url": "https://domastore.exemplo.com.br/produtos/camisa-algodao-oversized",
+    "active": true,
+    "custom_fields": {
+      "cor": "Branco",
+      "preco": 179.9,
+      "material": "Algodão egípcio",
+      "tamanhos": "P, M, G",
+      "em_estoque": true
+    },
+    "tags": [
+      "algodão",
+      "básico"
+    ],
+    "index_text_primary": "camisa de algodao oversized dom-blu-002 algodao basico",
+    "index_text_secondary": "camisa ampla de algodao egipcio, com punho dobravel. moda feminino blusas branco algodao egipcio p, m, g modelagem larga de proposito. quem prefere mais ajustada pode escolher um numero abaixo.",
+    "created_at": "2026-10-24T15:54:02.030911Z",
+    "updated_at": "2026-10-24T15:54:02.030911Z"
+  },
+  {
+    "id": "5bdd299d-9115-48f7-b953-d3dacc7afd6b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Regata Canelada Básica",
+    "summary": "A regata que vai com tudo: canelada, justa e de alça larga.",
+    "description": null,
+    "external_id": "DOM-BLU-003",
+    "url": "https://domastore.exemplo.com.br/produtos/regata-canelada",
+    "active": true,
+    "custom_fields": {
+      "cor": "Preto",
+      "preco": 69.9,
+      "material": "Algodão com elastano",
+      "tamanhos": "PP, P, M, G",
+      "em_estoque": true
+    },
+    "tags": [
+      "básico"
+    ],
+    "index_text_primary": "regata canelada basica dom-blu-003 basico",
+    "index_text_secondary": "a regata que vai com tudo: canelada, justa e de alca larga. moda feminino blusas preto algodao com elastano pp, p, m, g",
+    "created_at": "2026-10-21T15:54:02.086692Z",
+    "updated_at": "2026-10-21T15:54:02.086692Z"
+  },
+  {
+    "id": "5ec3f5af-6483-40a7-a8ba-5f222a6f58b3",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Caneca de Cerâmica Artesanal",
+    "summary": "Caneca de 350 ml, torneada à mão em ateliê de Cunha (SP).",
+    "description": "Pode ir ao micro-ondas e à lava-louças. O esmalte varia um pouco de peça para peça.",
+    "external_id": "DOM-COZ-001",
+    "url": "https://domastore.exemplo.com.br/produtos/caneca-ceramica",
+    "active": true,
+    "custom_fields": {
+      "cor": "Terracota",
+      "preco": 59.9,
+      "material": "Cerâmica",
+      "em_estoque": true
+    },
+    "tags": [
+      "artesanal",
+      "presente"
+    ],
+    "index_text_primary": "caneca de ceramica artesanal dom-coz-001 artesanal presente",
+    "index_text_secondary": "caneca de 350 ml, torneada a mao em atelie de cunha (sp). casa cozinha presentes terracota ceramica pode ir ao micro-ondas e a lava-loucas. o esmalte varia um pouco de peca para peca.",
+    "created_at": "2026-09-21T15:54:02.620928Z",
+    "updated_at": "2026-09-21T15:54:02.620928Z"
+  },
+  {
+    "id": "60422e87-b63b-4cd1-b31f-ee16998518f2",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vestido Midi de Linho",
+    "summary": "Vestido midi de linho puro, com botões de coco na frente e bolsos laterais.",
+    "description": "Corte evasê que veste bem do P ao GG. O linho é lavado, então não encolhe depois da primeira lavagem. Lavar à mão ou em ciclo delicado e secar à sombra.",
+    "external_id": "DOM-VES-001",
+    "url": "https://domastore.exemplo.com.br/produtos/vestido-midi-linho",
+    "active": true,
+    "custom_fields": {
+      "cor": "Terracota",
+      "preco": 289.9,
+      "material": "Linho",
+      "tamanhos": "P, M, G, GG",
+      "em_estoque": true,
+      "lancamento": "2026-09-15",
+      "guia_de_medidas": "https://domastore.exemplo.com.br/medidas/vestidos"
+    },
+    "tags": [
+      "linho",
+      "lançamento"
+    ],
+    "index_text_primary": "vestido midi de linho dom-ves-001 linho lancamento",
+    "index_text_secondary": "vestido midi de linho puro, com botoes de coco na frente e bolsos laterais. moda feminino vestidos terracota linho p, m, g, gg corte evase que veste bem do p ao gg. o linho e lavado, entao nao encolhe depois da primeira lavagem. lavar a mao ou em ciclo delicado e secar a sombra.",
+    "created_at": "2026-11-05T15:54:01.795881Z",
+    "updated_at": "2026-11-05T15:54:01.795881Z"
+  },
+  {
+    "id": "6d4a7bad-87c0-44a4-baa1-02fbfe8a3c7e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Blusa de Viscose com Amarração",
+    "summary": "Blusa leve, com amarração na cintura que ajusta o caimento.",
+    "description": "Combina com jeans no dia a dia e com alfaiataria no trabalho.",
+    "external_id": "DOM-BLU-001",
+    "url": "https://domastore.exemplo.com.br/produtos/blusa-viscose-amarracao",
+    "active": true,
+    "custom_fields": {
+      "cor": "Areia",
+      "preco": 149.9,
+      "material": "Viscose",
+      "tamanhos": "P, M, G",
+      "em_estoque": true
+    },
+    "tags": [
+      "viscose",
+      "trabalho"
+    ],
+    "index_text_primary": "blusa de viscose com amarracao dom-blu-001 viscose trabalho",
+    "index_text_secondary": "blusa leve, com amarracao na cintura que ajusta o caimento. moda feminino blusas areia viscose p, m, g combina com jeans no dia a dia e com alfaiataria no trabalho.",
+    "created_at": "2026-10-27T15:54:01.975763Z",
+    "updated_at": "2026-10-27T15:54:01.975763Z"
+  },
+  {
+    "id": "7a2cfb72-5493-45dd-9817-a873dbf74572",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vestido Chemise Listrado",
+    "summary": "Chemise de algodão com listras finas e cinto de amarrar do mesmo tecido.",
+    "description": "Abre inteira na frente, então também funciona como sobreposição. Tecido fresco para o verão.",
+    "external_id": "DOM-VES-002",
+    "url": "https://domastore.exemplo.com.br/produtos/vestido-chemise-listrado",
+    "active": true,
+    "custom_fields": {
+      "cor": "Azul-marinho",
+      "preco": 249.9,
+      "material": "Algodão",
+      "tamanhos": "P, M, G",
+      "em_estoque": true,
+      "preco_promocional": 199.9
+    },
+    "tags": [
+      "algodão",
+      "promoção"
+    ],
+    "index_text_primary": "vestido chemise listrado dom-ves-002 algodao promocao",
+    "index_text_secondary": "chemise de algodao com listras finas e cinto de amarrar do mesmo tecido. moda feminino vestidos azul-marinho algodao p, m, g abre inteira na frente, entao tambem funciona como sobreposicao. tecido fresco para o verao.",
+    "created_at": "2026-11-02T15:54:01.879388Z",
+    "updated_at": "2026-11-02T15:54:01.879388Z"
+  },
+  {
+    "id": "7e9a7fe6-8627-4736-aa34-148747c26b13",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Polo de Piquet",
+    "summary": "Polo clássica de piquet, com botões de madrepérola.",
+    "description": null,
+    "external_id": "DOM-CAM-003",
+    "url": "https://domastore.exemplo.com.br/produtos/polo-piquet",
+    "active": true,
+    "custom_fields": {
+      "cor": "Verde-oliva",
+      "preco": 169.9,
+      "material": "Piquet de algodão",
+      "tamanhos": "M, G, GG",
+      "em_estoque": true
+    },
+    "tags": [
+      "trabalho"
+    ],
+    "index_text_primary": "polo de piquet dom-cam-003 trabalho",
+    "index_text_secondary": "polo classica de piquet, com botoes de madreperola. moda masculino camisetas verde-oliva piquet de algodao m, g, gg",
+    "created_at": "2026-10-12T15:54:02.251310Z",
+    "updated_at": "2026-10-12T15:54:02.251310Z"
+  },
+  {
+    "id": "87604bd3-42d8-42c4-b5e8-a8dd94241e7e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Manta de Tricô para Sofá",
+    "summary": "Manta de tricô grosso, de 1,30 m por 1,70 m, para as noites frias.",
+    "description": null,
+    "external_id": "DOM-DEC-003",
+    "url": "https://domastore.exemplo.com.br/produtos/manta-trico",
+    "active": true,
+    "custom_fields": {
+      "cor": "Areia",
+      "preco": 269.9,
+      "material": "Algodão",
+      "em_estoque": true
+    },
+    "tags": [
+      "inverno"
+    ],
+    "index_text_primary": "manta de trico para sofa dom-dec-003 inverno",
+    "index_text_secondary": "manta de trico grosso, de 1,30 m por 1,70 m, para as noites frias. casa decoracao areia algodao",
+    "created_at": "2026-09-03T15:54:02.957773Z",
+    "updated_at": "2026-09-03T15:54:02.957773Z"
+  },
+  {
+    "id": "8a228fe1-978e-4ebe-9e65-f635fe3d15a9",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Camiseta de Algodão Pima",
+    "summary": "Camiseta de algodão pima peruano, de toque macio e gola reforçada.",
+    "description": "Fio longo que quase não forma bolinha. Vem pré-encolhida.",
+    "external_id": "DOM-CAM-001",
+    "url": "https://domastore.exemplo.com.br/produtos/camiseta-pima",
+    "active": true,
+    "custom_fields": {
+      "cor": "Preto",
+      "preco": 119.9,
+      "material": "Algodão pima",
+      "tamanhos": "P, M, G, GG",
+      "em_estoque": true,
+      "guia_de_medidas": "https://domastore.exemplo.com.br/medidas/camisetas"
+    },
+    "tags": [
+      "algodão",
+      "básico"
+    ],
+    "index_text_primary": "camiseta de algodao pima dom-cam-001 algodao basico",
+    "index_text_secondary": "camiseta de algodao pima peruano, de toque macio e gola reforcada. moda masculino camisetas preto algodao pima p, m, g, gg fio longo que quase nao forma bolinha. vem pre-encolhida.",
+    "created_at": "2026-10-18T15:54:02.131775Z",
+    "updated_at": "2026-10-18T15:54:02.131775Z"
+  },
+  {
+    "id": "9091c3a0-9f79-425b-ae67-83f9cd32df3c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Lenço de Seda Estampado",
+    "summary": "Lenço quadrado de seda pura, com estampa exclusiva de folhagens.",
+    "description": null,
+    "external_id": "DOM-LEN-001",
+    "url": "https://domastore.exemplo.com.br/produtos/lenco-seda",
+    "active": true,
+    "custom_fields": {
+      "cor": "Vinho",
+      "preco": 129.9,
+      "material": "Seda",
+      "em_estoque": true,
+      "preco_promocional": 99.9
+    },
+    "tags": [
+      "seda",
+      "presente"
+    ],
+    "index_text_primary": "lenco de seda estampado dom-len-001 seda presente",
+    "index_text_secondary": "lenco quadrado de seda pura, com estampa exclusiva de folhagens. acessorios lencos presentes vinho seda",
+    "created_at": "2026-09-27T15:54:02.514106Z",
+    "updated_at": "2026-09-27T15:54:02.514106Z"
+  },
+  {
+    "id": "ab3fb34f-3e9c-491a-8e30-3b914ba5b248",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vaso de Barro Pintado à Mão",
+    "summary": "Vaso de barro do Vale do Jequitinhonha, pintado com pigmentos naturais.",
+    "description": "Peça decorativa, não vai água direto: use com um vaso interno para flores frescas.",
+    "external_id": "DOM-DEC-002",
+    "url": "https://domastore.exemplo.com.br/produtos/vaso-barro",
+    "active": true,
+    "custom_fields": {
+      "cor": "Terracota",
+      "preco": 159.9,
+      "material": "Barro",
+      "em_estoque": true,
+      "lancamento": "2026-08-20"
+    },
+    "tags": [
+      "artesanal"
+    ],
+    "index_text_primary": "vaso de barro pintado a mao dom-dec-002 artesanal",
+    "index_text_secondary": "vaso de barro do vale do jequitinhonha, pintado com pigmentos naturais. casa decoracao terracota barro peca decorativa, nao vai agua direto: use com um vaso interno para flores frescas.",
+    "created_at": "2026-09-06T15:54:02.896518Z",
+    "updated_at": "2026-09-06T15:54:02.896518Z"
+  },
+  {
+    "id": "ac24d8d0-3ec1-44a8-97f1-c3a7efc22799",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Camiseta Básica Gola V",
+    "summary": "Aguardando fotos da nova remessa.",
+    "description": null,
+    "external_id": "DOM-CAM-004",
+    "url": "https://domastore.exemplo.com.br/produtos/camiseta-gola-v",
+    "active": false,
+    "custom_fields": {
+      "cor": "Branco",
+      "preco": 89.9,
+      "material": "Algodão",
+      "tamanhos": "P, M, G",
+      "em_estoque": false
+    },
+    "tags": [
+      "básico"
+    ],
+    "index_text_primary": "camiseta basica gola v dom-cam-004 basico",
+    "index_text_secondary": "aguardando fotos da nova remessa. moda masculino camisetas branco algodao p, m, g",
+    "created_at": "2026-10-09T15:54:02.308520Z",
+    "updated_at": "2026-10-09T15:54:02.308520Z"
+  },
+  {
+    "id": "b30598d8-9ffd-4cfc-8f42-da539f966147",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vestido Longo Estampa Floral",
+    "summary": "Da coleção passada: longo fluido com estampa de flores do cerrado.",
+    "description": "Peça fora de linha, mantida no catálogo para consulta de quem já comprou.",
+    "external_id": "DOM-VES-003",
+    "url": "https://domastore.exemplo.com.br/produtos/vestido-longo-floral",
+    "active": false,
+    "custom_fields": {
+      "cor": "Vinho",
+      "preco": 329.9,
+      "material": "Viscose",
+      "tamanhos": "M, G",
+      "em_estoque": false
+    },
+    "tags": [
+      "viscose"
+    ],
+    "index_text_primary": "vestido longo estampa floral dom-ves-003 viscose",
+    "index_text_secondary": "da colecao passada: longo fluido com estampa de flores do cerrado. moda feminino vestidos vinho viscose m, g peca fora de linha, mantida no catalogo para consulta de quem ja comprou.",
+    "created_at": "2026-10-30T15:54:01.933446Z",
+    "updated_at": "2026-10-30T15:54:01.933446Z"
+  },
+  {
+    "id": "b5823b9f-083d-4773-b218-333830d28de3",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Vale-presente Doma Store",
+    "summary": null,
+    "description": null,
+    "external_id": null,
+    "url": "https://domastore.exemplo.com.br/produtos/vale-presente",
+    "active": true,
+    "custom_fields": {
+      "preco": 100.0
+    },
+    "tags": [
+      "presente"
+    ],
+    "index_text_primary": "vale-presente doma store presente",
+    "index_text_secondary": "presentes",
+    "created_at": "2026-08-22T15:54:03.167993Z",
+    "updated_at": "2026-08-22T15:54:03.167993Z"
+  },
+  {
+    "id": "b8b0e634-172d-41d7-9901-5b864513daf8",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Mochila de Couro Legítimo",
+    "summary": "Mochila de couro curtido ao vegetal, com divisória para notebook de 14 polegadas.",
+    "description": "O couro ganha marcas do uso com o tempo, e é assim que ele fica bonito. Garantia de um ano na costura.",
+    "external_id": "DOM-BOL-002",
+    "url": "https://domastore.exemplo.com.br/produtos/mochila-couro",
+    "active": true,
+    "custom_fields": {
+      "cor": "Preto",
+      "preco": 459.9,
+      "material": "Couro",
+      "em_estoque": true
+    },
+    "tags": [
+      "couro",
+      "trabalho"
+    ],
+    "index_text_primary": "mochila de couro legitimo dom-bol-002 couro trabalho",
+    "index_text_secondary": "mochila de couro curtido ao vegetal, com divisoria para notebook de 14 polegadas. acessorios bolsas preto couro o couro ganha marcas do uso com o tempo, e e assim que ele fica bonito. garantia de um ano na costura.",
+    "created_at": "2026-10-03T15:54:02.397665Z",
+    "updated_at": "2026-10-03T15:54:02.397665Z"
+  },
+  {
+    "id": "c3b36070-ddea-42d2-87e5-14912cec2711",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Ecobag de Algodão Cru",
+    "summary": "Ecobag resistente, que aguenta a feira da semana inteira.",
+    "description": null,
+    "external_id": "DOM-BOL-003",
+    "url": "https://domastore.exemplo.com.br/produtos/ecobag",
+    "active": true,
+    "custom_fields": {
+      "cor": "Areia",
+      "preco": 49.9,
+      "material": "Algodão cru",
+      "em_estoque": true
+    },
+    "tags": [
+      "presente",
+      "sustentável"
+    ],
+    "index_text_primary": "ecobag de algodao cru dom-bol-003 presente sustentavel",
+    "index_text_secondary": "ecobag resistente, que aguenta a feira da semana inteira. acessorios bolsas presentes areia algodao cru",
+    "created_at": "2026-09-30T15:54:02.458078Z",
+    "updated_at": "2026-09-30T15:54:02.458078Z"
+  },
+  {
+    "id": "d5c072bc-6ea8-46b6-a068-1e0f71004344",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Tábua de Frios em Madeira",
+    "summary": "Tábua de madeira de reflorestamento, acabada com óleo mineral.",
+    "description": null,
+    "external_id": "DOM-COZ-003",
+    "url": "https://domastore.exemplo.com.br/produtos/tabua-frios",
+    "active": true,
+    "custom_fields": {
+      "preco": 139.9,
+      "material": "Madeira de reflorestamento",
+      "em_estoque": false
+    },
+    "tags": [
+      "presente",
+      "sustentável"
+    ],
+    "index_text_primary": "tabua de frios em madeira dom-coz-003 presente sustentavel",
+    "index_text_secondary": "tabua de madeira de reflorestamento, acabada com oleo mineral. casa cozinha presentes madeira de reflorestamento",
+    "created_at": "2026-09-15T15:54:02.719229Z",
+    "updated_at": "2026-09-15T15:54:02.719229Z"
+  },
+  {
+    "id": "df4c7105-d038-42b4-ad4a-80f5d0951a6b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Camiseta Estampada Caju",
+    "summary": "Estampa de caju em serigrafia à base d'água, feita em Recife.",
+    "description": null,
+    "external_id": "DOM-CAM-002",
+    "url": "https://domastore.exemplo.com.br/produtos/camiseta-caju",
+    "active": true,
+    "custom_fields": {
+      "cor": "Branco",
+      "preco": 99.9,
+      "material": "Algodão",
+      "tamanhos": "P, M, G",
+      "em_estoque": true,
+      "lancamento": "2026-10-02"
+    },
+    "tags": [
+      "estampa",
+      "verão"
+    ],
+    "index_text_primary": "camiseta estampada caju dom-cam-002 estampa verao",
+    "index_text_secondary": "estampa de caju em serigrafia a base d'agua, feita em recife. moda masculino camisetas branco algodao p, m, g",
+    "created_at": "2026-10-15T15:54:02.202557Z",
+    "updated_at": "2026-10-15T15:54:02.202557Z"
+  },
+  {
+    "id": "e3dbc25f-742a-4e6a-bfb1-ec90e792beb8",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Nécessaire Personalizada",
+    "summary": "Nécessaire de lona encerada, com bordado das iniciais incluso.",
+    "description": null,
+    "external_id": "DOM-PRE-002",
+    "url": "https://domastore.exemplo.com.br/produtos/necessaire",
+    "active": true,
+    "custom_fields": {
+      "cor": "Verde-oliva",
+      "preco": 79.9,
+      "material": "Lona encerada",
+      "em_estoque": true
+    },
+    "tags": [
+      "presente"
+    ],
+    "index_text_primary": "necessaire personalizada dom-pre-002 presente",
+    "index_text_secondary": "necessaire de lona encerada, com bordado das iniciais incluso. presentes verde-oliva lona encerada",
+    "created_at": "2026-08-25T15:54:03.129187Z",
+    "updated_at": "2026-08-25T15:54:03.129187Z"
+  },
+  {
+    "id": "e8e43d0b-2a6f-4183-8246-b0e228d3b5eb",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "title": "Bolsa de Palha Tramada",
+    "summary": "Bolsa de palha de buriti, trançada à mão por artesãs do Maranhão.",
+    "description": "Cada peça é única e pode variar levemente de tom. Alças de couro e forro de algodão.",
+    "external_id": "DOM-BOL-001",
+    "url": "https://domastore.exemplo.com.br/produtos/bolsa-palha",
+    "active": true,
+    "custom_fields": {
+      "cor": "Areia",
+      "preco": 199.9,
+      "material": "Palha de buriti",
+      "em_estoque": true
+    },
+    "tags": [
+      "artesanal",
+      "verão"
+    ],
+    "index_text_primary": "bolsa de palha tramada dom-bol-001 artesanal verao",
+    "index_text_secondary": "bolsa de palha de buriti, trancada a mao por artesas do maranhao. acessorios bolsas areia palha de buriti cada peca e unica e pode variar levemente de tom. alcas de couro e forro de algodao.",
+    "created_at": "2026-10-06T15:54:02.344284Z",
+    "updated_at": "2026-10-06T15:54:02.344284Z"
+  }
+]

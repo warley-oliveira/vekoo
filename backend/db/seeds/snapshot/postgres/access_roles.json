@@ -1,0 +1,107 @@
+[
+  {
+    "id": "479c5add-924b-44ce-81cc-47f64abc4d9c",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Atendimento por departamento",
+    "permissions": {
+      "chat": "all",
+      "flows": "none",
+      "funnel": "none",
+      "catalog": "all",
+      "calendar": "all",
+      "contacts": "all",
+      "campaigns": "none",
+      "dashboard": "none",
+      "pipelines": "none",
+      "chat_list_to": "team",
+      "core_settings": "none",
+      "custom_dashboards": "none"
+    },
+    "created_at": "2026-11-06T15:51:14.735289Z",
+    "updated_at": "2026-11-06T15:51:14.735289Z"
+  },
+  {
+    "id": "7d61e88d-1bad-49b9-9f56-c7233a9afbaf",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Usuário",
+    "permissions": {
+      "chat": "all",
+      "flows": "none",
+      "funnel": "none",
+      "catalog": "all",
+      "calendar": "all",
+      "contacts": "all",
+      "campaigns": "none",
+      "dashboard": "none",
+      "pipelines": "none",
+      "chat_list_to": "all",
+      "core_settings": "none",
+      "custom_dashboards": "none"
+    },
+    "created_at": "2026-11-06T15:51:14.725945Z",
+    "updated_at": "2026-11-06T15:51:14.725945Z"
+  },
+  {
+    "id": "7e0b9709-104a-4b25-8bcd-93309cb250c8",
+    "organization_id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Usuário",
+    "permissions": {
+      "chat": "all",
+      "flows": "none",
+      "funnel": "none",
+      "catalog": "all",
+      "calendar": "all",
+      "contacts": "all",
+      "campaigns": "none",
+      "dashboard": "none",
+      "pipelines": "none",
+      "chat_list_to": "all",
+      "core_settings": "none",
+      "custom_dashboards": "none"
+    },
+    "created_at": "2026-11-08T00:57:49.679305Z",
+    "updated_at": "2026-11-08T00:57:49.679305Z"
+  },
+  {
+    "id": "9339b3ec-370a-45da-a32f-56b1caf6039b",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Gerente",
+    "permissions": {
+      "chat": "all",
+      "flows": "all",
+      "funnel": "all",
+      "catalog": "all",
+      "calendar": "all",
+      "contacts": "all",
+      "campaigns": "all",
+      "dashboard": "all",
+      "pipelines": "all",
+      "chat_list_to": "all",
+      "core_settings": "all",
+      "custom_dashboards": "all"
+    },
+    "created_at": "2026-11-06T15:51:14.717260Z",
+    "updated_at": "2026-11-06T15:51:14.717260Z"
+  },
+  {
+    "id": "acaef248-32e6-4466-8456-59f6d62d545a",
+    "organization_id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Gerente",
+    "permissions": {
+      "chat": "all",
+      "flows": "all",
+      "funnel": "all",
+      "catalog": "all",
+      "calendar": "all",
+      "contacts": "all",
+      "campaigns": "all",
+      "dashboard": "all",
+      "pipelines": "all",
+      "chat_list_to": "all",
+      "core_settings": "all",
+      "custom_dashboards": "all"
+    },
+    "created_at": "2026-11-08T00:57:49.664963Z",
+    "updated_at": "2026-11-08T00:57:49.664963Z"
+  }
+]

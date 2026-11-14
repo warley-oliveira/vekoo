@@ -1,0 +1,143 @@
+[
+  {
+    "id": "1aadecb1-f833-44f8-93ad-14e0aa442991",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "pipelines",
+    "severity": "warning",
+    "origin_type": "PipelineTrigger",
+    "origin_id": "8f1b4f75-5584-4546-a84f-949aecddc2ce",
+    "origin_name": "wt22 motor",
+    "code": "pipeline_trigger_failed",
+    "message": null,
+    "metadata": {
+      "card_id": "7deb4544-f6d1-4cc3-9b0d-252bc81da185",
+      "board_id": "655d3852-f87e-4d76-bc47-1249c4bb7e2d"
+    },
+    "resolved_at": "2026-11-07T00:34:58.807845Z",
+    "created_at": "2026-11-07T00:34:57.995870Z",
+    "updated_at": "2026-11-07T00:34:58.807894Z"
+  },
+  {
+    "id": "1fbfa02b-e6b0-4374-ab33-e4674a18fbac",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "pipelines",
+    "severity": "warning",
+    "origin_type": "PipelineTrigger",
+    "origin_id": "4db12cb5-5bb6-4dec-95fe-dfb068afe426",
+    "origin_name": "wt22 falha",
+    "code": "pipeline_trigger_failed",
+    "message": null,
+    "metadata": {
+      "card_id": "4f08a7e2-ff85-41d1-91a7-be91da725b6a",
+      "board_id": "6e6032b5-b0dd-47e0-8ade-bf434c7ecc1c"
+    },
+    "resolved_at": "2026-11-06T23:12:08.425200Z",
+    "created_at": "2026-11-06T23:11:31.153842Z",
+    "updated_at": "2026-11-06T23:12:08.425247Z"
+  },
+  {
+    "id": "417442dc-8b7e-4fc6-bbb7-ca1f50d6467d",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "webhooks",
+    "severity": "error",
+    "origin_type": "Hook",
+    "origin_id": "835e68dd-c8f8-4e96-8cfa-a0d3685fd0d1",
+    "origin_name": "Espelho no CRM",
+    "code": "webhook_delivery_failed",
+    "message": null,
+    "metadata": {
+      "webhook_uid": "HnMM8QtFysSdTyR3wHrlYC9x"
+    },
+    "resolved_at": null,
+    "created_at": "2026-11-07T04:00:07.757120Z",
+    "updated_at": "2026-11-07T04:00:07.757120Z"
+  },
+  {
+    "id": "46a4839c-0959-412c-9052-e80e07b1d78a",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "connectors",
+    "severity": "warning",
+    "origin_type": "Connector",
+    "origin_id": "seed-whatsapp-oficial",
+    "origin_name": "WhatsApp oficial",
+    "code": "template_rejected",
+    "message": "A Meta rejeitou o modelo \"confirmacao_agendamento\".",
+    "metadata": {
+      "template": "confirmacao_agendamento"
+    },
+    "resolved_at": null,
+    "created_at": "2026-11-06T15:51:15.856635Z",
+    "updated_at": "2026-11-06T15:51:15.856635Z"
+  },
+  {
+    "id": "832f3b22-e6fa-4b35-bb99-c4a382269624",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "connectors",
+    "severity": "error",
+    "origin_type": "Connector",
+    "origin_id": "seed-whatsapp-loja",
+    "origin_name": "WhatsApp da loja",
+    "code": "connector_disconnected",
+    "message": null,
+    "metadata": {
+      "connector_type": "Connector::WhatsappWeb"
+    },
+    "resolved_at": null,
+    "created_at": "2026-11-06T15:51:15.835130Z",
+    "updated_at": "2026-11-06T15:51:15.835130Z"
+  },
+  {
+    "id": "9374af1e-7d22-4568-8a41-7a70eaa1b2fd",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "pipelines",
+    "severity": "warning",
+    "origin_type": "PipelineTrigger",
+    "origin_id": "702cedc8-38b4-4dfc-9278-ef96b3637fb0",
+    "origin_name": "wt22 falha",
+    "code": "pipeline_trigger_failed",
+    "message": null,
+    "metadata": {
+      "card_id": "a17ea556-fe27-4e2c-8090-f4358bdcf5ea",
+      "board_id": "1a124464-a353-42bd-8a88-3b7ed9cf7350"
+    },
+    "resolved_at": "2026-11-07T00:02:33.416412Z",
+    "created_at": "2026-11-06T23:57:07.354233Z",
+    "updated_at": "2026-11-07T00:02:33.416446Z"
+  },
+  {
+    "id": "e1ea4c6e-eab1-4c84-b42c-f66ebb15e0e2",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "pipelines",
+    "severity": "warning",
+    "origin_type": "PipelineTrigger",
+    "origin_id": "949ae201-9616-4656-9aa5-e18e41706f86",
+    "origin_name": "wt22 código errado",
+    "code": "pipeline_trigger_failed",
+    "message": null,
+    "metadata": {
+      "card_id": "a17ea556-fe27-4e2c-8090-f4358bdcf5ea",
+      "board_id": "1a124464-a353-42bd-8a88-3b7ed9cf7350"
+    },
+    "resolved_at": "2026-11-07T00:02:33.427270Z",
+    "created_at": "2026-11-06T23:57:32.421457Z",
+    "updated_at": "2026-11-07T00:02:33.427286Z"
+  },
+  {
+    "id": "e9589c6d-91fd-4900-81f3-2cad22f96c0e",
+    "organization_id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "category": "pipelines",
+    "severity": "warning",
+    "origin_type": "PipelineTrigger",
+    "origin_id": "508d9a8f-b074-4835-86b2-61429a8f93a0",
+    "origin_name": "wt22 código errado",
+    "code": "pipeline_trigger_failed",
+    "message": null,
+    "metadata": {
+      "card_id": "443d6cc8-7eb8-4db2-aff5-0fe8bdf4c491",
+      "board_id": "d246eccc-6621-4a40-bae4-84d5db12a778"
+    },
+    "resolved_at": "2026-11-06T23:13:38.076320Z",
+    "created_at": "2026-11-06T23:13:28.439664Z",
+    "updated_at": "2026-11-06T23:13:38.076389Z"
+  }
+]

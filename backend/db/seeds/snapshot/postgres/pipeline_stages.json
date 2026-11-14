@@ -1,0 +1,112 @@
+[
+  {
+    "id": "07a30c5d-5086-4fad-b1c0-663a54086868",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "name": "Pedido confirmado",
+    "position": 1,
+    "color": "#90CAF9",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:33.012473Z",
+    "updated_at": "2026-11-06T21:58:33.012473Z"
+  },
+  {
+    "id": "2784ddac-e6f2-4d4f-87e7-47e7fa468455",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "name": "Enviado",
+    "position": 3,
+    "color": "#FFE082",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:33.052419Z",
+    "updated_at": "2026-11-06T21:58:33.052419Z"
+  },
+  {
+    "id": "624ca982-a7ee-4c3d-94ae-40640287d7fe",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "name": "Proposta enviada",
+    "position": 3,
+    "color": "#FFE082",
+    "wip_limit": null,
+    "sla_hours": 72,
+    "created_at": "2026-11-06T21:58:34.459842Z",
+    "updated_at": "2026-11-06T21:58:34.459842Z"
+  },
+  {
+    "id": "95af782c-e75b-456b-b71e-f8e82eb0c155",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "name": "Qualificação",
+    "position": 2,
+    "color": "#CE93D8",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:34.429409Z",
+    "updated_at": "2026-11-06T21:58:34.429409Z"
+  },
+  {
+    "id": "ab951c93-1bb7-4aa5-9564-6a0c3903f7c5",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "name": "Acompanhamento",
+    "position": 5,
+    "color": "#B0BEC5",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:33.087819Z",
+    "updated_at": "2026-11-06T21:58:33.087819Z"
+  },
+  {
+    "id": "bf2c8c2f-4ce7-4697-95fd-dd74ff861a85",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "name": "Novos contatos",
+    "position": 1,
+    "color": "#90CAF9",
+    "wip_limit": null,
+    "sla_hours": 24,
+    "created_at": "2026-11-06T21:58:34.414017Z",
+    "updated_at": "2026-11-06T21:58:34.414017Z"
+  },
+  {
+    "id": "ca7fc457-81b9-49d5-82b1-1a9b79447813",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "name": "Fechamento",
+    "position": 5,
+    "color": "#A5D6A7",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:34.545372Z",
+    "updated_at": "2026-11-06T21:58:34.545372Z"
+  },
+  {
+    "id": "ea919f1f-f3b4-467b-8ba3-9bacfe8fbd7e",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "name": "Entregue",
+    "position": 4,
+    "color": "#A5D6A7",
+    "wip_limit": null,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:33.069229Z",
+    "updated_at": "2026-11-06T21:58:33.069229Z"
+  },
+  {
+    "id": "eb52f531-683e-48bc-b2de-0f2957088c74",
+    "board_id": "ece4576b-cca2-4cff-bd98-ab5c59a5e9ee",
+    "name": "Separação",
+    "position": 2,
+    "color": "#CE93D8",
+    "wip_limit": null,
+    "sla_hours": 48,
+    "created_at": "2026-11-06T21:58:33.029811Z",
+    "updated_at": "2026-11-06T21:58:33.029811Z"
+  },
+  {
+    "id": "ff47cdf6-4b60-45a1-b504-9122b777a46e",
+    "board_id": "48014125-46c3-432b-8f98-266df3aa391f",
+    "name": "Negociação",
+    "position": 4,
+    "color": "#FFAB91",
+    "wip_limit": 8,
+    "sla_hours": null,
+    "created_at": "2026-11-06T21:58:34.499911Z",
+    "updated_at": "2026-11-06T21:58:34.499911Z"
+  }
+]

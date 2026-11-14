@@ -1,0 +1,22 @@
+[
+  {
+    "id": "d7af6748-eb2b-43ab-a3d2-8738edd898ba",
+    "card_id": "71e591b8-16fe-47a4-89cb-71ca68a2d479",
+    "pipeline_stage_checklist_item_id": "9db56547-55c1-499a-833d-b2856f370508",
+    "completed": true,
+    "completed_at": "2026-11-05T21:58:35.080599Z",
+    "completed_by_id": "2e7dc263-32d2-46ff-9175-acf2605d824b",
+    "created_at": "2026-11-06T21:58:35.084616Z",
+    "updated_at": "2026-11-06T21:58:35.084616Z"
+  },
+  {
+    "id": "fbbf6ffe-9661-4ead-ad87-764266237fa0",
+    "card_id": "35398ff6-b983-4f21-9899-acebec3b15c1",
+    "pipeline_stage_checklist_item_id": "dea57e02-6923-4c20-a10f-6533817516c3",
+    "completed": true,
+    "completed_at": "2026-11-05T21:58:33.708025Z",
+    "completed_by_id": "b2be33f7-77e1-440c-984f-525079e584b3",
+    "created_at": "2026-11-06T21:58:33.720174Z",
+    "updated_at": "2026-11-06T21:58:33.720174Z"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "d6a79fcb-c063-4c50-b68a-227d2678cf78",
+    "name": "Clínica Bem Viver",
+    "plan": "free",
+    "credits_total": 50,
+    "credits_used": 0,
+    "created_at": "2026-10-19T00:57:49.613644Z",
+    "updated_at": "2026-11-08T00:57:49.614222Z",
+    "features": {},
+    "settings": {},
+    "timezone": "America/Sao_Paulo",
+    "internal": false
+  },
+  {
+    "id": "ddbca24b-7007-57a0-952c-4a598fe0d158",
+    "name": "Vekoo Colab",
+    "plan": "free",
+    "credits_total": 50,
+    "credits_used": 19,
+    "created_at": "2026-10-09T01:53:43.699684Z",
+    "updated_at": "2026-11-14T03:54:38.961363Z",
+    "features": {},
+    "settings": {
+      "company_info": {
+        "cnpj": "11222333000181",
+        "business_name": "Marina Duarte Conteúdo Digital Ltda"
+      },
+      "chat_settings": {
+        "auto_remove_waiting_operator_tag": false,
+        "reopen_conversation_on_inbound_enabled": false
+      }
+    },
+    "timezone": "America/Sao_Paulo",
+    "internal": false
+  }
+]
